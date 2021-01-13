@@ -25,13 +25,11 @@ $global-nav-height: 44px;
 }
 
 .visuallyhidden {
-  @include visuallyhidden()
+  @include visuallyhidden();
 }
 
 // Safari already inverts img and pictures when inverted-colors is activated,
 // here we prevent from double inverting images
-@media (inverted-colors: inverted) {
-  picture {
-    filter: invert(0);
-  }
+picture {
+  @include invert-colors(0);
 }

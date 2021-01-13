@@ -75,8 +75,17 @@
 @mixin on-keyboard-focus() {
   .fromkeyboard & {
     &:focus {
-      @content
+      @content;
     }
+  }
+}
+
+////
+/// Mixin to invert colors in Safari when inverted-colors is activated on macOS
+////
+@mixin invert-colors($boolean) {
+  @media (inverted-colors: inverted) {
+    filter: invert($boolean);
   }
 }
 
