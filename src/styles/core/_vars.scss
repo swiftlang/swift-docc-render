@@ -33,7 +33,9 @@ $topic-link-icon-spacing: 0.5em;
 // Code Block Style Elements
 $code-block-style-elements-padding: 8px 14px !default;
 $code-listing-with-numbers-padding: 14px 0;
-$code-number-padding: 0 1rem 0 8px;
+$code-number-padding-left: 8px;
+$code-number-padding: 0 1rem 0 $code-number-padding-left;
+$highlighted-border-width: 4px;
 
 // Declaration components
 $code-source-spacing: 0.588rem;
