@@ -1,0 +1,311 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+// A map used to associate scoped breakpoint names with a map of attributes.
+// These attributes will be used to define the appropriate media queries for
+// the "large", "medium", and "small" breakpoints.
+$breakpoint-attributes: (
+  default: (
+    large: (
+      min-width: 1069px,
+      content-width: 980px,
+    ),
+    medium: (
+      min-width: 736px,
+      max-width: 1068px,
+      content-width: 692px,
+    ),
+    small: (
+      min-width: 320px,
+      max-width: 735px,
+      content-width: 280px,
+    ),
+  ),
+  nav: (
+    large: (
+      min-width: 1024px,
+      content-width: 980px,
+    ),
+    medium: (
+      min-width: 768px,
+      max-width: 1023px,
+    ),
+    small: (
+      min-width: 320px,
+      max-width: 767px,
+    ),
+  ),
+);
+
+/// Returns the list of breakpoint names.
+///
+/// @param {String} $scope ["default"]
+///   The optional name of the desired scope ("default" or "nav")
+///
+/// @returns {List}
+///   Returns a list of breakpoint names for the provided scope.
+///
+/// @example scss
+///
+///   breakpoint-names();
+///   // large, medium, small
+///
+@function breakpoint-names($scope: default) {
+  $attributes: map-get-default($breakpoint-attributes, $scope, ());
+  @return map-keys($attributes);
+}
+
+/// Injects the provided style block within a max-width media query so that the
+/// styles only apply to the given breakpoint size.
+///
+/// @param {String} $name
+///   The name of the desired breakpoint ("large", "medium", or "small")
+///
+/// @param {String} $scope ["default"]
+///   The name of the desired scope ("default" or "nav")
+///
+/// @content
+///   The styles to be included within the media query that only apply to a
+///   specific breakpoint.
+///
+/// @example scss
+///
+///   .nav-copy {
+///     @include breakpoint(medium, $scope: nav) {
+///       font-size: 80%;
+///       width: 80%;
+///     }
+///   }
+///   // .nav-copy {
+///   //   @media only screen and (max-width: 1023px) {
+///   //     font-size: 80%;
+///   //     width: 80%;
+///   //   }
+///   // }
+///
+///   .no-large-query-example {
+///     @include breakpoint(large) {
+///       display: none;
+///     }
+///   }
+///   // .no-large-query-example {
+///   //   display: noen;
+///   // }
+///
+@mixin breakpoint($name, $scope: default) {
+  $attributes: map-deep-get($breakpoint-attributes, ($scope, $name), $default: ());
+  $max-width: map-get($attributes, max-width);
+
+  @if $max-width {
+    @media only screen and (max-width: $max-width) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+/// Injects the styles needed to provide an appropriate container for rendering
+/// text content in all breakpoints.
+///
+/// The large/medium breakpoints will set a static pixel width value while the
+/// small breakpoint will use a static percentage width for a more flexible
+/// container at smaller sizes.
+///
+/// @param {String} ["default"]
+///   An optional scope used to determine breakpoint attributes.
+///
+/// @example scss
+///
+///   .copy {
+///     @include breakpoint-content
+///   }
+///   // .copy {
+///   //   margin-left: auto;
+///   //   margin-right: auto;
+///   //   width: 980px;
+///   //   @media only screen and (max-width: 1068px) {
+///   //     width: 692px;
+///   //   }
+///   //   @media only screen and (max-width: 735px) {
+///   //     width: 87.5%;
+///   //   }
+///   // }
+@mixin breakpoint-content($scope: default) {
+  $breakpoints: map-get-default($breakpoint-attributes, $scope, $default: ());
+
+  // Center the content using auto left/right margins
+  margin-left: auto;
+  margin-right: auto;
+
+  @each $breakpoint, $attributes in $breakpoints {
+    $min-width: map-deep-get($breakpoints, ($breakpoint, min-width));
+    $max-width: map-deep-get($breakpoints, ($breakpoint, max-width));
+    $content-width: map-deep-get($breakpoints, ($breakpoint, content-width));
+
+    // Set an appropriate `width` property for each breakpoint.
+    @if $content-width {
+      @include breakpoint($breakpoint) {
+        // Use a fixed pixel value for the large/medium breakpoints.
+        $width: $content-width;
+
+        // Use a fixed percentage width value for the small breakpoint.
+        // The percentage is the ratio of the content-width/min-width sizes.
+        @if $breakpoint == small and $min-width {
+          $width: percentage($content-width / $min-width);
+        }
+
+        width: $width;
+      }
+    }
+  }
+}
+
+/// Injects the provided style block within both a min-width and max-width media
+/// query so that the styles only apply to the given breakpoint size exactly.
+///
+/// @param {String} $name
+///   The name of the desired breakpoint ("large", "medium", or "small")
+///
+/// @param {String} $scope ["default"]
+///   The name of the desired scope ("default" or "nav")
+///
+/// @content
+///   The styles to be included within the media query that only apply to a
+///   specific breakpoint exactly.
+///
+/// @example scss
+///
+///   .nav-copy {
+///     @include breakpoint-exact(medium) {
+///       font-size: 80%;
+///       width: 80%;
+///     }
+///   }
+///   // .nav-copy {
+///   //   @media only screen and (min-width: 736px) and (max-width: 1068px) {
+///   //     font-size: 80%;
+///   //     width: 80%;
+///   //   }
+///   // }
+///
+@mixin breakpoint-exact($name, $scope: default) {
+  $attributes: map-deep-get($breakpoint-attributes, ($scope, $name), $default: ());
+  $min-width: map-get($attributes, min-width);
+  $max-width: map-get($attributes, max-width);
+
+  @if $min-width and $max-width {
+    @media only screen and (min-width: $min-width) and (max-width: $max-width) {
+      @content;
+    }
+  }
+}
+
+/// Injects the provided style block within a min-width media query so that the
+/// styles only apply to the given breakpoint size and those beyond it.
+///
+/// This is essentially inverted behavior from the more common `breakpoint` mixin
+/// that uses a max-width query.
+///
+/// @param {String} $name
+///   The name of the desired breakpoint to start from("large", "medium", or "small")
+///
+/// @param {String} $scope ["default"]
+///   The name of the desired scope ("default" or "nav")
+///
+/// @content
+///   The styles to be included within the media query that only apply to a
+///   specific breakpoint.
+///
+/// @example scss
+///
+///   .nav-copy {
+///     @include breakpoints-from(medium, $scope: nav) {
+///       font-size: 80%;
+///       width: 80%;
+///     }
+///   }
+///   // .nav-copy {
+///   //   @media only screen and (min-width: 768px) {
+///   //     font-size: 80%;
+///   //     width: 80%;
+///   //   }
+///   // }
+///
+@mixin breakpoints-from($name, $scope: default) {
+  $attributes: map-deep-get($breakpoint-attributes, ($scope, $name), $default: ());
+  $min-width: map-get($attributes, min-width);
+
+  @if $min-width {
+    @media only screen and (min-width: $min-width) {
+      @content;
+    }
+  }
+}
+
+/// Injects the provided style block within a min-width media query so that the
+/// styles only apply to the large nav.
+///
+/// @content
+///   The styles to be included within the media query that only apply to the
+///   large nav.
+///
+/// @example scss
+///
+///   .nav-copy {
+///     @include breakpoint-only-largenav {
+///       font-size: 80%;
+///       width: 80%;
+///     }
+///   }
+///   // .nav-copy {
+///   //   @media only screen and (min-width: 1024px) {
+///   //     font-size: 80%;
+///   //     width: 80%;
+///   //   }
+///   // }
+///
+@mixin breakpoint-only-largenav() {
+  @include breakpoints-from(large, $scope: nav) {
+    @content;
+  }
+}
+
+/// Injects the provided style block within a min-width and max-width media
+/// query that represents the breakpoint in between the nav medium and
+/// default medium breakpoints.
+///
+/// @content
+///   The styles to be included within the media query that only apply to the
+///   breakpoint between both medium breakpoints.
+///
+/// @example scss
+///
+///   .nav-copy {
+///     font-size: 80%;
+///     width: 80%;
+///   }
+///   // .nav-copy {
+///   //   @media only screen and (min-width: 768px) and (max-width: 1068px) {
+///   //     font-size: 80%;
+///   //     width: 80%;
+///   //   }
+///   // }
+///
+@mixin breakpoint-between-medium-and-nav-medium() {
+  $min-width: map-deep-get($breakpoint-attributes, (nav, medium, min-width));
+  $max-width: map-deep-get($breakpoint-attributes, (default, medium, max-width));
+
+  @if $min-width and $max-width {
+    @media only screen and (min-width: $min-width) and (max-width: $max-width) {
+      @content;
+    }
+  }
+}

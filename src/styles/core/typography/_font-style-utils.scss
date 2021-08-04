@@ -1,0 +1,148 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+// Typography Utilities
+
+// List of common fonts to share in font groups.
+$default-fonts: ('Helvetica Neue', 'Helvetica', 'Arial', sans-serif) !default;
+
+$font-content:  $default-fonts !default;
+$font-mono: (Menlo, monospace) !default;
+
+// Supported font-weight values
+$font-weight-semibold: 600 !default;
+$font-weight-bold: 700 !default;
+
+//
+// Generate font styles for each specified breakpoint
+//
+// @param {String} $font-style-name - Font styles name
+//
+@mixin font-styles($font-style-name) {
+  // check if the font-styles are already registered, emit a warning otherwise
+  @if map-has-key($font-styles, $font-style-name) {
+    $styles: map-get($font-styles, $font-style-name);
+
+    // stores the last looped attributes
+    $prevAttributes: null;
+
+    @each $breakpoint, $attributes in $styles {
+      // set a default scope
+      $scope: default;
+
+      // if we have a list instead of a string, pull out the scope and attributes
+      // @example
+      //    large: (35_60, nav)
+      @if (type-of($attributes) == 'list') {
+        $scope: nth($attributes, 2);
+        $attributes: nth($attributes, 1);
+      }
+
+      // if the attributes is the same as the one from the previous breakpoint, skip it,
+      // as the bigger one will always cover for it. This makes the css output smaller.
+      // large: (35_60, nav)
+      // medium: (35_60, nav) <- not going to be used
+      // small: (20_20, nav)
+      @if ($prevAttributes != $attributes) {
+        @include breakpoint($breakpoint, $scope) {
+          @include -generate-attributes-for($attributes);
+        }
+      }
+      $prevAttributes: $attributes;
+    }
+  } @else {
+    @warn 'The font style `#{$font-style-name}` is not defined.';
+  }
+}
+
+//
+// Change the unit on a value.
+// This does not convert, only replaces the unit.
+//
+// @param {Number} $value - the value to transform
+//
+// @param {String} $unit - the unit to replace with
+//
+// @example
+// change-unit(22rem, px) => 22px
+// change-unit(22px, em) => 22em
+//
+// If you pass unknown unit, it will return the same value
+// change-unit(22px, rad) => 22px
+//
+// @returns {Number}
+//
+@function change-unit($value, $unit) {
+  // get the single value for a unit
+  $unitNumber: map-get((
+    px: 1px,
+    em: 1em,
+    rem: 1rem,
+  ), $unit);
+  // if there is no such unit, just return the `$value`
+  @if (not $unitNumber) {
+    @return $value;
+  }
+  // set the unit on the `$number`
+  // @see {https://sass-lang.com/documentation/values/numbers#units}
+  @return ($value / ($value * 0 + 1)) * $unitNumber;
+}
+
+//
+// Convert a Number value (px or %) to `em` units.
+//
+// @param {Number} $value - The value to be converted.
+//   If it is a pixel, it will be converted. Anything else is just changed to `em`.
+//
+// @param {Number} $context [$prime-font-size]
+//   The `font-size` value that the `em` will be based on. Uses `$prime-font-size` by default.
+//
+// @returns {Number}
+//
+@function em($value) {
+  // convert the value, based on the type of unit
+  @if unit($value) == 'px' {
+    $value: $value / $body-font-size;
+  }
+
+  @return change-unit($value, em);
+}
+
+//
+// Convert a Number value to `rem`.
+// Conversion is done only to `px` values, other units are just changed.
+//
+// @param {Number} $value - value to convert.
+//
+// @returns {Number}
+//
+@function rem($value) {
+  @return change-unit(em($value), rem);
+}
+
+//
+// Converts a map of key-value paris, to css style rules.
+// @example $map: (font-size: 18px, line-height: 36, weight: 400, letter-spacing: -0.2)
+//
+// @example output
+// {
+//   font-size: 18px;
+//   line-height: 35px;
+//   font-weight: 400;
+// }
+//
+//
+@mixin css-map-to-styles($map) {
+  @each $property, $value in $map {
+    @if $value != null {
+      #{$property}: $value;
+    }
+  }
+}

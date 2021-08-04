@@ -1,0 +1,197 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+//
+// Registered font styles
+//
+// Each font "style" is a map of supported breakpoints for that key.
+// Each of those maps represent CSS font attributes for that style.
+//
+$font-styles: (
+  headline: (
+    large: 48_52,
+    medium: 40_44,
+    small: 32_36
+  ),
+  headline-reduced: (
+    large: 40_44,
+    medium: 32_36,
+    small: 28_32
+  ),
+  eyebrow: (
+    large: 24_28,
+    medium: 21_25,
+  ),
+  eyebrow-reduced: (
+    large: 21_25,
+    small: 19_23
+  ),
+  alert-content: (
+    large: 32_40,
+    medium: 28_36,
+    small: 24_32
+  ),
+  heading-2-reduced: (
+    large: 32_36,
+    medium: 28_32,
+    small: 24_28
+  ),
+  heading-2: (
+    large: 32_40,
+    medium: 28_36,
+    small: 24_32
+  ),
+  label: (
+    large: 24_28,
+    medium: 21_25
+  ),
+  label-reduced: (
+    large: 19_23
+  ),
+  body: (
+    large: 17_25
+  ),
+  body-large: (
+    large: 21_29,
+    small: 19_27
+  ),
+  body-tight: (
+    large: 17_21
+  ),
+  body-reduced: (
+    large: 14_20
+  ),
+  body-reduced-tight: (
+    large: 14_18
+  ),
+  caption: (
+    large: 12_16
+  ),
+  // custom typography for /tutorials
+  metadata-item: (
+    large: 12_16_semibold,
+    small: 11_18_semibold,
+  ),
+  metadata-item-duration: (
+    large: badge_40_40, // "reduced" badge value
+    small: badge_28_28, // "tiny" badge value
+  ),
+  metadata-item-duration-minutes: (
+    large: badge_28_28, // "tiny" badge value
+    small: badge_17_21,
+  ),
+  step-number: (
+    large: 12_16_semibold,
+  ),
+  aside-label: (
+    large: 12_16_semibold,
+  ),
+  code-preview: (
+    large: 12_22_regular_mono,
+  ),
+  code-preview-filename: (
+    large: 16_19,
+    small: 14_20,
+  ),
+  assessments-code: (
+    large: 13_24_regular_mono,
+  ),
+  navigation-title: (
+    large: 19_27_semibold,
+  ),
+  chapter-list-item: (
+    large: 17_25,
+    small: 14_18, // matches "body-reduced-tight" at large
+  ),
+  // tutorial overview
+  tutorials-overview-chapter-title: (
+    large: 21_25_semibold,
+  ),
+  tutorials-overview-hero-meta-time: (
+    large: 19_23_semibold,
+    small: 17_19_semibold,
+  ),
+  ///
+  /// custom typography for /documentation
+  ///
+  documentation-h3: (
+    large: 28_32,
+    medium: 24_28,
+    small: 21_25,
+  ),
+  documentation-h4: (
+    large: 24_28_semibold,
+    medium: 21_25_semibold,
+  ),
+  documentation-h5: (
+    large: 22_26_semibold,
+    medium: 20_24_semibold,
+    small: 18_26_semibold,
+  ),
+  documentation-h6: (
+    large: 17_25_semibold,
+  ),
+  documentation-nav: (
+    large: (15_19, nav),
+    medium: (14_21, nav),
+    small: (14_21, nav),
+  ),
+  documentation-aside-name: (
+    large: 17_26_semibold,
+  ),
+  documentation-code-listing: (
+    large: 15_25_normal_compact_mono
+  ),
+  documentation-code-listing-number: (
+    large: 12_18_normal_compact_mono,
+  ),
+  documentation-figcaption: (
+    large: 14_21,
+  ),
+  // custom typography for /navigation
+  nav-toggles: (
+    large: (12_18, nav),
+    medium: (14_21, nav),
+    small: (14_21, nav),
+  ),
+  form-default-text: (
+    large: form-default-text_17_21
+  ),
+  form-textbox-label-small: (
+    large: form-textbox-label-small_12_21
+  ),
+  button: (
+    large: 17_25
+  ),
+  tabnav-link: (
+    large: tabnav_link_17_17
+  ),
+  badge: (
+    large: 12_16
+  ),
+  // nav typography
+  nav-title: (
+    large: (19_27, nav),
+  ),
+  nav-title-compact: (
+    small: (nav_17_17_semibold, nav)
+  ),
+  nav-title-subhead: (
+    large: (nav_18_18, nav),
+    small: (nav_14_14, nav)
+  ),
+  nav-menu: (
+    large: (nav_12_12, nav),
+    small: (nav_14_14, nav)
+  ),
+  nav-menu-collapsible: (
+    large: (nav_14_14, nav)
+  )
+) !default;

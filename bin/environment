@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# This source file is part of the Swift.org open source project
+#
+# Copyright (c) 2021 Apple Inc. and the Swift project authors
+# Licensed under Apache License v2.0 with Runtime Library Exception
+#
+# See http://swift.org/LICENSE.txt for license information
+# See http://swift.org/CONTRIBUTORS.txt for Swift project authors
+#
+
+# Prints system environment information.
+#
+# Example Output:
+# Node version: v11.5.0
+# NPM version: 6.4.1
+# Browser version: <!-- If applicable, insert your browser name and version number -->
+# URL: <!-- If applicable, insert the URL where the bug was reproducible -->
+# Xcode: Xcode 13.0
+
+echo "Gathering you system's environment information..."
+
+node_version=$(node --version)
+npm_version=$(npm --version)
+i="${i}Node version: ${node_version}\n"
+i="${i}NPM version: ${npm_version}\n"
+i="${i}Browser version: <!-- If applicable, insert your browser name and version number -->\n"
+i="${i}URL: <!-- If applicable, insert the URL where the bug was reproducible -->"
+
+# Check if OS is macOS, if so attempt to retrieve Xcode version
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	xcodebuild_version=$(/usr/bin/xcodebuild -version | grep Xcode)
+	xcodebuild_build=$(/usr/bin/xcodebuild -version | grep Build)
+
+	i="${i}\nXcode: ${xcodebuild_version} (${xcodebuild_build})"
+fi
+
+echo "\n"
+echo "Paste the following into your bug report:"
+echo "-------------------------------------------"
+echo "${i}"
+echo "-------------------------------------------"

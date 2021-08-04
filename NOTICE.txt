@@ -1,0 +1,83 @@
+
+                        The Swift-DocC-Render Project
+                        =============================
+
+Please visit the Swift-DocC-Render web site for more information:
+
+  * https://github.com/apple/swift-docc-render
+
+Copyright (c) 2021 Apple Inc. and the Swift project authors
+
+The Swift Project licenses this file to you under the Apache License, version
+2.0 (the "License"); you may not use this file except in compliance with the
+License. You may obtain a copy of the License at:
+
+  https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+-------------------------------------------------------------------------------
+
+This product depends on Vue.js.
+
+  * LICENSE (MIT):
+    * https://github.com/vuejs/vue/blob/dev/LICENSE
+  * HOMEPAGE:
+    * https://github.com/vuejs/vue
+
+---
+
+This product depends on vue-router.
+
+  * LICENSE (MIT):
+    * https://github.com/vuejs/vue-router/blob/dev/LICENSE
+  * HOMEPAGE:
+    * https://github.com/vuejs/vue-router
+
+---
+
+This product depends on core-js.
+
+  * LICENSE (MIT):
+    * https://github.com/zloirock/core-js/blob/master/LICENSE
+  * HOMEPAGE:
+    * https://github.com/zloirock/core-js
+
+---
+
+This product depends on Highlight.js.
+
+  * LICENSE (BSD-3-Clause):
+    * https://github.com/highlightjs/highlight.js/blob/main/LICENSE
+  * HOMEPAGE:
+    * https://github.com/highlightjs/highlight.js
+
+---
+
+This product depends on the IntersectionObserver polyfill.
+
+  * LICENSE (W3C Software and Document):
+    * https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+  * HOMEPAGE:
+    * https://github.com/w3c/IntersectionObserver/tree/main/polyfill
+
+---
+
+This product depends on PortalVue.
+
+  * LICENSE (MIT):
+    * https://github.com/LinusBorg/portal-vue/blob/develop/LICENCE
+  * HOMEPAGE:
+    * https://github.com/LinusBorg/portal-vue
+
+---
+
+This product depends on webpack-theme-resolver-plugin.
+
+  * LICENSE (MIT):
+    * https://github.com/russmediadigital/webpack-theme-resolver-plugin/blob/master/LICENSE
+  * HOMEPAGE
+    * https://github.com/russmediadigital/webpack-theme-resolver-plugin

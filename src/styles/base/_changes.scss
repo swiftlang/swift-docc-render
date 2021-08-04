@@ -1,0 +1,80 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+////
+/// Globally available class,
+/// Applied on elements that support api changes/diffing
+/// Adds colored borders and icons around the container
+/// @example class="changed changed-added"
+////
+.changed {
+  border: $change-border-stroke-width solid var(--color-changes-modified);
+  border-radius: $big-border-radius;
+  position: relative;
+
+  &.has-multiple-lines, .has-multiple-lines & {
+    border-radius: $border-radius;
+  }
+
+  &::after {
+    right: 0;
+    @include coin($modified-svg, $change-icon-width);
+    margin-top: rem($change-coin-y-offset-reduced);
+    // Workaround for a bug, where -webkit-backdrop-filter not working on iOS when <pre> has `overflow: auto`
+    z-index: 2;
+
+    @include prefers-dark {
+      background-image: $modified-dark-svg;
+    }
+  }
+
+  &-added {
+    border-color: var(--color-changes-added);
+
+    &::after {
+      background-image: $added-svg;
+
+      @include prefers-dark {
+        background-image: $added-dark-svg;
+      }
+    }
+  }
+
+  &-deprecated {
+    border-color: var(--color-changes-deprecated);
+
+    &::after {
+      background-image: $deprecated-svg;
+
+      @include prefers-dark {
+        background-image: $deprecated-dark-svg;
+      }
+    }
+  }
+
+  // Baseline align with first line of text
+  @at-root .link-block &::after,
+  &.link-block::after,
+  &.relationships-item::after {
+    margin-top: 7px;
+  }
+}
+
+.change-added, .change-removed {
+  padding: 2px 0;
+}
+
+.change-removed {
+  background-color: var(--color-highlight-red);
+}
+
+.change-added {
+  background-color: var(--color-highlight-green);
+}

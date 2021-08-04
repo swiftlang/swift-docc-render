@@ -1,0 +1,81 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+/// Returns the value associated with a key in a map, or a default value if no
+/// value is associated with it.
+///
+/// @param {Map} $map
+///
+/// @param {String} $key
+///
+/// @param {*} $default
+///   The value to return if nothing is associated with the given key.
+///
+/// @returns {*}
+///   The value associated with the key or the provided default.
+///
+/// @example scss
+///
+///   $example-map: (a: foo);
+///   map-get-default($example-map, a, bar); // foo
+///   map-get-default($example-map, b, bar); // bar
+///
+@function map-get-default($map, $key, $default) {
+  @return if(map-has-key($map, $key), map-get($map, $key), $default);
+}
+
+/// Returns the value associated with a keypath in a map, or a default value if
+/// no value is associated with it.
+///
+/// @param {Map} $map
+///
+/// @param {List} $keys
+///   A list of keys where each item represents a new level of nesting.
+///
+/// @param {*} $default [null]
+///   The value to return if nothing is associated with the given keypath.
+///
+/// @returns {*}
+///   The value associated with the keypath or the provided default.
+///
+/// @example scss
+///
+///   $example-map: (
+///     foo: (
+///       bar: (
+///         baz: foobarbaz
+///       ),
+///     ),
+///   );
+///
+///   map-deep-get($example-map, (foo, bar, baz)); // foobarbaz
+///   map-deep-get($example-map, (foo, bar, baz), $default: blah); // foobarbaz
+///   map-deep-get($example-map, (foo, bar, foo); // null
+///   map-deep-get($example-map, (foo, foo, baz); // null
+///   map-deep-get($example-map, (foo, bar, foo), $default: blah); // blah
+///
+@function map-deep-get($map, $keys, $default: null) {
+  @each $key in $keys {
+    @if(not $map or not is-map($map)){
+      $map: ();
+    }
+    $map: map-get($map, $key);
+  }
+  @return if($map, $map, $default);
+}
+
+////
+/// Checks if a variable is a map or not
+///
+/// @returns {Boolean}
+////
+@function is-map($map) {
+  @return type-of($map) == map;
+}

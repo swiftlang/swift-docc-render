@@ -1,0 +1,259 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+@mixin overflow-y($value: auto) {
+  overflow-y: $value;
+  // Enables native-style scrolling on a touchscreen
+  // https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariCSSRef/Articles/StandardCSSProperties.html#//apple_ref/doc/uid/TP30001266-SW26
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-overflow-scrolling
+  -webkit-overflow-scrolling: touch;
+}
+
+////
+/// Applies styling to hide an element, while keeping it visible to Voice Over and other assistants.
+////
+@mixin visuallyhidden() {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(0px 0px 99.9% 99.9%);
+  overflow: hidden;
+  height: 1px;
+  width: 1px;
+  padding: 0;
+  border: 0;
+}
+
+////
+/// Used to apply the globalish styles that the ".section-content" class
+/// provided on /documentation pages
+////
+@mixin section-content() {
+  @include breakpoint-content;
+  outline-style: none;
+}
+
+////
+/// Truncates text overflow (at an optional max width) using ellipsis ("...")
+////
+@mixin truncate($max-width: null) {
+  @if ($max-width) {
+    max-width: $max-width;
+  }
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin showonfocus($top, $left, $height, $line-height) {
+  &:focus, &:active {
+    position: relative;
+    float: left;
+    width: fit-content;
+    color: var(--color-figure-blue);
+    font-size: 1em;
+    padding: 0 10px;
+    z-index: 100000;
+    top: $top;
+    left: $left;
+    height: $height;
+    line-height: $line-height;
+    clip-path: unset;
+  }
+}
+
+////
+/// Apply styling only when focused via the keyboard.
+////
+@mixin on-keyboard-focus() {
+  .fromkeyboard & {
+    &:focus {
+      @content
+    }
+  }
+}
+
+////
+/// Replaces the outline effect when an element is in focus, with a box shadow effect.
+/// Applies only when using the keyboard, via `.fromkeyboard` parent class.
+/// This is applied in App.vue.
+////
+@mixin replace-outline-for-shadow-on-focus() {
+  @include on-keyboard-focus() {
+    @include focus-shadow();
+    @content;
+  }
+}
+
+////
+/// Includes content only when in IDE mode
+////
+@mixin inTargetIde() {
+  @if ($is-target-ide == true) {
+    @content;
+  }
+}
+
+////
+/// Includes content only when in Web mode
+////
+@mixin inTargetWeb() {
+  @if ($is-target-ide != true) {
+    @content;
+  }
+}
+
+@mixin placeholder($color, $size:"") {
+  &::placeholder {
+    color: $color;
+    opacity: 1; /* Firefox */
+    @if $size != "" {
+      font-size: $size;
+    }
+  }
+  &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: $color;
+    @if $size != "" {
+      font-size: $size;
+    }
+  }
+  &::-ms-input-placeholder { /* Microsoft Edge */
+    color: $color;
+    @if $size != "" {
+      font-size: $size;
+    }
+  }
+}
+
+@mixin prevent-clipped-svg() {
+  transform: scale(1); // hack for high pixel ratio screens
+  -webkit-transform: scale(1); // https://stackoverflow.com/questions/44170229/
+  overflow: visible;
+}
+
+// Prevent hover state when scrolling and show that state
+// when user taps on element on mobile devices
+@mixin hover-state-fix-scrolling-mobile() {
+  @media (any-hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+  @media (any-hover: none) {
+    &:focus {
+      @content;
+    }
+  }
+}
+
+
+@mixin custom-horizontal-scrollbar() {
+  $border-radius: 10px;
+  $scrollbar-vertical-margin: 2px;
+  $scrollbar-horizontal-margin: (10px - $scrollbar-vertical-margin);
+  $scrollbar-height: 7px;
+  $scrollbar-total-height: $scrollbar-height + ($scrollbar-vertical-margin * 2);
+  $element-bottom-padding: 13px;
+
+  overflow-y: hidden;
+
+  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-color: var(--color-figure-gray-tertiary) transparent; /* Firefox colors */
+  scrollbar-width: thin; /* scrollbar height on Firefox (because it is horizontal) */
+  &::-webkit-scrollbar { /* Chrome & Safari */
+    height: 0;
+  }
+
+  &.scrolling {
+
+    /**
+    * `-webkit-touch-callout` to target Safari on iOS
+    * https://stackoverflow.com/questions/30102792/
+    *`scrollbar-width` to target Firefox
+    * https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
+    *`-ms-overflow-style` to target IE
+    * https://developer.mozilla.org/es/docs/Web/CSS/-ms-overflow-style
+    */
+    @supports not ((-webkit-touch-callout: none) or (scrollbar-width: none) or (-ms-overflow-style: none)) {
+      padding-bottom: $element-bottom-padding - $scrollbar-total-height;
+    }
+
+    /**
+    * Browser compatibility
+    * https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+    */
+    &::-webkit-scrollbar {
+      height: $scrollbar-total-height;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: $border-radius;
+      background-color: var(--color-figure-gray-tertiary);
+      border: $scrollbar-vertical-margin solid transparent;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-track-piece:end {
+      margin-right: $scrollbar-horizontal-margin;
+    }
+
+    &::-webkit-scrollbar-track-piece:start {
+      margin-left: $scrollbar-horizontal-margin;
+    }
+  }
+}
+
+@mixin backdrop-filter-uiblur($percentage: 100%) {
+  $percentage: $percentage / 100%;
+
+  $saturate: 180% * $percentage;
+  $blur: 20px * $percentage;
+
+  backdrop-filter: saturate($saturate) blur($blur);
+}
+
+///
+/// Apply a box-shadow based outline on focus.
+/// For use with rounded elements (e.g., Color Nav, Dot Nav, etc.)
+///
+@mixin focus-shadow($size: $form-focus-size, $color: var(--color-focus-color)) {
+  box-shadow: 0 0 0 $size $color;
+  outline: none;
+}
+
+///
+/// Apply a box-shadow outline on focus, with a 1px border color.
+/// For use with dropdowns and inputs, which have a rounded container.
+///
+@mixin focus-shadow-form-element($args...) {
+  @include focus-shadow($args...);
+  border-color: var(--color-focus-border-color);
+  @content;
+}
+
+///
+/// Apply default focus styles
+///
+/// @param {Number} $offset [1px]
+///   Focus outline offset
+///
+@mixin focus-outline($offset: 1px) {
+  outline: $form-focus-size solid var(--color-focus-color);
+  outline-offset: $offset;
+}
+
+//
+// Calculates the percentage width of a column, by a given column count.
+// @param {Number} $column-count [1] - The size of the column
+// @returns {Number}
+//
+@function calculate-column-width($column-count: 1) {
+  @return ($column-count / $total-columns) * 100%;
+}

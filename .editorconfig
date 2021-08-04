@@ -1,0 +1,15 @@
+# This source file is part of the Swift.org open source project
+#
+# Copyright (c) 2021 Apple Inc. and the Swift project authors
+# Licensed under Apache License v2.0 with Runtime Library Exception
+#
+# See https://swift.org/LICENSE.txt for license information
+# See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+
+[*.{js,jsx,ts,tsx,vue,scss}]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = 100

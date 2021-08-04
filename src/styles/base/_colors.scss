@@ -1,0 +1,39 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+// Ensure that the appropriate system colors are used for default controls like
+// scrollbars and text selection depending on the desired color scheme
+body {
+  color-scheme: light dark;
+
+  &[data-color-scheme="light"] {
+    color-scheme: light;
+  }
+
+  &[data-color-scheme="dark"] {
+    color-scheme: dark;
+  }
+}
+
+body {
+  @include color-vars-light;
+
+  &[data-color-scheme="dark"] {
+    @media screen {
+      @include color-vars-dark;
+    }
+  }
+
+  @media screen and (prefers-color-scheme: dark) {
+    &[data-color-scheme="auto"] {
+      @include color-vars-dark;
+    }
+  }
+}

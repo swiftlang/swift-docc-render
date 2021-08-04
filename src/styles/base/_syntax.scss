@@ -1,0 +1,48 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+@include set-syntax-colors();
+
+.#{$token-classname-prefix} {
+  &-doctag,
+  &-strong {
+    font-weight: bold;
+  }
+
+  &-emphasis,
+  &-link {
+    font-style: italic;
+  }
+
+  // Use the pink "keyword" color instead of the normal blue color for meta
+  // attributes in Swift (`@objc`, `@IBAction`, `@IBOutlet`, etc)
+  [data-syntax="swift"] &-meta {
+    color: var(--syntax-meta, var(--color-syntax-keywords));
+  }
+
+  // For Swift code listings, the "class" token is a parent container for the
+  // entire line containing `class ...` instead of just the "class" text, so
+  // the default color should not be applied to the entire line.
+  [data-syntax="swift"] &-class {
+    color: unset;
+  }
+
+  // Look for internal parameter names in Swift by checking for the "params"
+  // token preceded by another "params" token and remove its color.
+  [data-syntax="swift"] &-params + &-params,
+  [data-syntax="swift"] &-keyword + &-params {
+    color: unset;
+  }
+
+  // Use the red "string" color instead of the normal blue color for JSON keys.
+  [data-syntax="json"] &-attr {
+    color: var(--syntax-attr, var(--color-syntax-strings));
+  }
+}

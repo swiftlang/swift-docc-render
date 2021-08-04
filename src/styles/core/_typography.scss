@@ -1,0 +1,26 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+// Default margin for stacked elements.
+$stacked-margin-small: 0.4em !default;
+
+// Default margin-top for subsequent elements.
+$stacked-margin-large: 0.8em !default;
+
+// Default margin for elements that require extra spacing
+$stacked-margin-xlarge: $stacked-margin-large * 2 !default;
+
+// Used to calculate `em()`s and to set the default `font-size` on `html`.
+$body-font-size: 17px;
+
+@import "typography/font-style-utils";
+@import "typography/font-styles";
+@import "typography/font-attribute-utils";
+@import "typography/font-attributes";

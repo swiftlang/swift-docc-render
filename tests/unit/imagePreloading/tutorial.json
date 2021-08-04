@@ -1,0 +1,2003 @@
+{
+  "hierarchy": {
+    "modules": [
+      {
+        "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Getting-Started",
+        "projects": [
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Check-Your-Understanding"
+              }
+            ]
+          },
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle",
+            "sections": [
+              {
+                "kind": "heading",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H2"
+              },
+              {
+                "kind": "heading",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#A-Section"
+              },
+              {
+                "kind": "heading",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H3"
+              }
+            ]
+          },
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Check-Your-Understanding"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Advanced",
+        "projects": [
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Check-Your-Understanding"
+              }
+            ]
+          },
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Check-Your-Understanding"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Really-Advanced",
+        "projects": [
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Check-Your-Understanding"
+              }
+            ]
+          },
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle",
+            "sections": [
+              {
+                "kind": "heading",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H2"
+              },
+              {
+                "kind": "heading",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#A-Section"
+              },
+              {
+                "kind": "heading",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H3"
+              }
+            ]
+          },
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Check-Your-Understanding"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Extremely-Advanced",
+        "projects": [
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Check-Your-Understanding"
+              }
+            ]
+          },
+          {
+            "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4",
+            "sections": [
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Create-a-New-AR-Project"
+              },
+              {
+                "kind": "task",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Initiate-ARKit-Plane-Detection"
+              },
+              {
+                "kind": "assessment",
+                "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Check-Your-Understanding"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "reference": "doc:\/\/com.example.Test\/tutorials\/TechnologyX",
+    "paths": [
+      [
+        "doc:\/\/com.example.Test\/tutorials\/TechnologyX",
+        "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Volume-B",
+        "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Really-Advanced"
+      ],
+      [
+        "doc:\/\/com.example.Test\/tutorials\/TechnologyX",
+        "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Volume-A",
+        "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Getting-Started"
+      ],
+      [
+        "doc:\/\/com.example.Test\/documentation\/MyKit",
+        "doc:\/\/com.example.Test\/documentation\/TechnologyX\/MyKit-Basics"
+      ],
+      [
+        "doc:\/\/com.example.Test\/documentation\/MyKit",
+        "doc:\/\/com.example.Test\/documentation\/MyKit\/MyClass",
+        "doc:\/\/com.example.Test\/documentation\/TechnologyX\/MyKit-Basics"
+      ],
+      [
+        "doc:\/\/com.example.Test\/documentation\/MyKit"
+      ],
+      [
+        "doc:\/\/com.example.Test\/documentation\/MyKit",
+        "doc:\/\/com.example.Test\/documentation\/MyKit\/MyClass",
+        "doc:\/\/com.example.Test\/documentation\/MyKit\/MyClass\/init(_:)-3743d"
+      ]
+    ]
+  },
+  "schemaVersion": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "sections": [
+    {
+      "content": [
+        {
+          "type": "paragraph",
+          "inlineContent": [
+            {
+              "type": "text",
+              "text": "The first tutorial."
+            }
+          ]
+        }
+      ],
+      "estimatedTimeInMinutes": 20,
+      "title": "Basic Augmented Reality App",
+      "xcodeRequirement": "Xcode 10 beta",
+      "chapter": "Getting Started",
+      "kind": "hero",
+      "video": "video.mov",
+      "backgroundImage": "hero_school.jpg",
+      "projectFiles": "project.zip"
+    },
+    {
+      "kind": "tasks",
+      "tasks": [
+        {
+          "anchor": "Create-a-New-AR-Project",
+          "title": "Create a New AR Project",
+          "contentSection": [
+            {
+              "media": "Sierra.jpg",
+              "kind": "contentAndMedia",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, "
+                    },
+                    {
+                      "type": "reference",
+                      "isActive": true,
+                      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2"
+                    },
+                    {
+                      "type": "text",
+                      "text": " consectetur adipiscing elit, sed do eiusmod tempor incididunt"
+                    },
+                    {
+                      "type": "text",
+                      "text": " "
+                    },
+                    {
+                      "type": "text",
+                      "text": "ut labore et dolore magna aliqua. Phasellus faucibus scelerisque eleifend donec pretium."
+                    },
+                    {
+                      "type": "text",
+                      "text": " "
+                    },
+                    {
+                      "type": "text",
+                      "text": "Ultrices dui sapien eget mi proin sed libero enim. Quis auctor elit sed vulputate mi sit amet."
+                    },
+                    {
+                      "type": "text",
+                      "text": " "
+                    },
+                    {
+                      "type": "text",
+                      "text": "This section link refers to this section itself: "
+                    },
+                    {
+                      "type": "reference",
+                      "isActive": true,
+                      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Create-a-New-AR-Project"
+                    },
+                    {
+                      "type": "text",
+                      "text": "."
+                    },
+                    {
+                      "type": "text",
+                      "text": " "
+                    },
+                    {
+                      "type": "text",
+                      "text": "This section link refers to the next section in this file: "
+                    },
+                    {
+                      "type": "reference",
+                      "isActive": true,
+                      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Initiate-ARKit-Plane-Detection"
+                    },
+                    {
+                      "type": "text",
+                      "text": "."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Quis auctor elit sed vulputate mi sit amet."
+                    }
+                  ]
+                }
+              ],
+              "mediaPosition": "trailing",
+              "layout": "horizontal"
+            },
+            {
+              "kind": "fullWidth",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is some "
+                    },
+                    {
+                      "type": "strong",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "full width"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " content."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "It can have multiple paragraphs, and things like images:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "image",
+                      "identifier": "ardiagram.png"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "I can also do another "
+                    },
+                    {
+                      "type": "codeVoice",
+                      "code": "ContentAndMedia"
+                    },
+                    {
+                      "type": "text",
+                      "text": " like so, but with the image on the leading side:"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "media": "Sierra.jpg",
+              "kind": "contentAndMedia",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, "
+                    },
+                    {
+                      "type": "reference",
+                      "isActive": true,
+                      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2"
+                    },
+                    {
+                      "type": "text",
+                      "text": " consectetur adipiscing elit, sed do eiusmod tempor incididunt."
+                    }
+                  ]
+                }
+              ],
+              "mediaPosition": "leading",
+              "layout": "horizontal"
+            },
+            {
+              "kind": "fullWidth",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Finally, I can have horizontal stacks too:"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "columns",
+              "content": [
+                {
+                  "media": "chapter2.png",
+                  "kind": "contentAndMedia",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "This is some description text."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "There can be multiple "
+                        },
+                        {
+                          "type": "emphasis",
+                          "inlineContent": [
+                            {
+                              "type": "text",
+                              "text": "styled"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "text": " paragraphs."
+                        }
+                      ]
+                    }
+                  ],
+                  "mediaPosition": "trailing",
+                  "layout": "vertical"
+                },
+                {
+                  "media": "chapter3.png",
+                  "kind": "contentAndMedia",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "This is some description text."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "There can be multiple "
+                        },
+                        {
+                          "type": "emphasis",
+                          "inlineContent": [
+                            {
+                              "type": "text",
+                              "text": "styled"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "text": " paragraphs."
+                        }
+                      ]
+                    }
+                  ],
+                  "mediaPosition": "trailing",
+                  "layout": "vertical"
+                }
+              ]
+            },
+            {
+              "kind": "columns",
+              "content": [
+                {
+                  "media": "chapter4.png",
+                  "kind": "contentAndMedia",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "This is some description text."
+                        }
+                      ]
+                    }
+                  ],
+                  "mediaPosition": "trailing",
+                  "layout": "vertical"
+                },
+                {
+                  "media": "chapter5.png",
+                  "kind": "contentAndMedia",
+                  "content": [],
+                  "mediaPosition": "leading",
+                  "layout": "vertical"
+                },
+                {
+                  "media": "chapter6.png",
+                  "kind": "contentAndMedia",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "The description text is optional."
+                        }
+                      ]
+                    }
+                  ],
+                  "mediaPosition": "trailing",
+                  "layout": "vertical"
+                }
+              ]
+            }
+          ],
+          "stepsSection": [
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "text",
+                  "text": "Let’s get started building the Augmented Reality app."
+                }
+              ]
+            },
+            {
+              "code": null,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, consectetur. This step doesn’t have an image."
+                    }
+                  ]
+                }
+              ],
+              "caption": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is a caption."
+                    }
+                  ]
+                },
+                {
+                  "type": "aside",
+                  "style": "note",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "This is a step’s aside."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "step",
+              "runtimePreview": null,
+              "media": null
+            },
+            {
+              "code": null,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, consectetur."
+                    }
+                  ]
+                }
+              ],
+              "caption": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is another caption."
+                    }
+                  ]
+                },
+                {
+                  "type": "aside",
+                  "style": "warning",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "This is a step’s aside."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "step",
+              "runtimePreview": null,
+              "media": "arkit.png"
+            },
+            {
+              "type": "aside",
+              "style": "experiment",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Do something cool."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "code": null,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, consectetur."
+                    }
+                  ]
+                }
+              ],
+              "caption": [
+                {
+                  "type": "aside",
+                  "style": "tip",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "Try this."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "step",
+              "runtimePreview": null,
+              "media": "Sierra.jpg"
+            }
+          ]
+        },
+        {
+          "anchor": "Initiate-ARKit-Plane-Detection",
+          "title": "Initiate ARKit Plane Detection",
+          "contentSection": [
+            {
+              "media": "arkit.png",
+              "kind": "contentAndMedia",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt"
+                    },
+                    {
+                      "type": "text",
+                      "text": " "
+                    },
+                    {
+                      "type": "text",
+                      "text": "ut labore et dolore magna aliqua. Phasellus faucibus scelerisque eleifend donec pretium."
+                    },
+                    {
+                      "type": "text",
+                      "text": " "
+                    },
+                    {
+                      "type": "text",
+                      "text": "This section link refers to the previous section: "
+                    },
+                    {
+                      "type": "reference",
+                      "isActive": true,
+                      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Create-a-New-AR-Project"
+                    },
+                    {
+                      "type": "text",
+                      "text": "."
+                    },
+                    {
+                      "type": "text",
+                      "text": " "
+                    },
+                    {
+                      "type": "text",
+                      "text": "This section link refers to the first section in another tutorial: "
+                    },
+                    {
+                      "type": "reference",
+                      "isActive": true,
+                      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Create-a-New-AR-Project"
+                    },
+                    {
+                      "type": "text",
+                      "text": "."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Ultrices dui sapien eget mi proin sed libero enim. Quis auctor elit sed vulputate mi sit amet."
+                    }
+                  ]
+                }
+              ],
+              "mediaPosition": "trailing",
+              "layout": "horizontal"
+            }
+          ],
+          "stepsSection": [
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "text",
+                  "text": "Let’s open the "
+                },
+                {
+                  "type": "codeVoice",
+                  "code": "ARKit.swift"
+                },
+                {
+                  "type": "text",
+                  "text": " file."
+                }
+              ]
+            },
+            {
+              "code": "code1.swift",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, consectetur."
+                    }
+                  ]
+                }
+              ],
+              "caption": [],
+              "type": "step",
+              "runtimePreview": "code1.png",
+              "media": null
+            },
+            {
+              "code": "code2.swift",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, consectetur."
+                    }
+                  ]
+                }
+              ],
+              "caption": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "A step caption."
+                    }
+                  ]
+                },
+                {
+                  "type": "aside",
+                  "style": "important",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "A step can have more than one aside."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "step",
+              "runtimePreview": "code2.png",
+              "media": null
+            },
+            {
+              "code": "code3.swift",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Click build and run."
+                    }
+                  ]
+                }
+              ],
+              "caption": [
+                {
+                  "type": "aside",
+                  "style": "experiment",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "inlineContent": [
+                        {
+                          "type": "text",
+                          "text": "Try turning it off and back on again."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "step",
+              "runtimePreview": "code3.png",
+              "media": null
+            },
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "text",
+                  "text": "Text inbetween steps."
+                }
+              ]
+            },
+            {
+              "code": "code4.swift",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "Lorem ipsum dolor sit amet, consectetur."
+                    }
+                  ]
+                }
+              ],
+              "caption": [],
+              "type": "step",
+              "runtimePreview": "code4.png",
+              "media": null
+            },
+            {
+              "code": "code5.swift",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This step’s code resets the diff. No lines should be highlighted here! There’s also an invalid image preview (not actually provided), so we don’t show the runtime preview."
+                    }
+                  ]
+                }
+              ],
+              "caption": [],
+              "type": "step",
+              "runtimePreview": "",
+              "media": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "assessments",
+      "assessments": [
+        {
+          "title": [
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "text",
+                  "text": "This is the first question’s "
+                },
+                {
+                  "type": "strong",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "phrasing"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "."
+                }
+              ]
+            }
+          ],
+          "content": [
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "text",
+                  "text": "Phasellus faucibus scelerisque eleifend donec pretium."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "image",
+                  "identifier": "ardiagram.png"
+                }
+              ]
+            },
+            {
+              "type": "codeListing",
+              "syntax": "swift",
+              "code": [
+                "let scene = ARSCNView()",
+                "let anchor = scene.anchor(for: node)"
+              ]
+            }
+          ],
+          "type": "multiple-choice",
+          "choices": [
+            {
+              "content": [
+                {
+                  "type": "codeListing",
+                  "syntax": "swift",
+                  "code": [
+                    "anchor.hitTest(view)"
+                  ]
+                }
+              ],
+              "justification": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is correct because it is."
+                    }
+                  ]
+                }
+              ],
+              "isCorrect": true
+            },
+            {
+              "content": [
+                {
+                  "type": "codeListing",
+                  "syntax": null,
+                  "code": [
+                    "anchor.intersects(view)"
+                  ]
+                }
+              ],
+              "justification": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is incorrect because it is."
+                    }
+                  ]
+                }
+              ],
+              "isCorrect": false
+            },
+            {
+              "content": [
+                {
+                  "type": "codeListing",
+                  "syntax": null,
+                  "code": [
+                    "anchor.intersects(view)"
+                  ]
+                }
+              ],
+              "justification": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is incorrect because it is."
+                    }
+                  ]
+                }
+              ],
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "title": [
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "text",
+                  "text": "This is the next question’s "
+                },
+                {
+                  "type": "emphasis",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "phrasing"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "."
+                }
+              ]
+            }
+          ],
+          "content": [
+            {
+              "type": "paragraph",
+              "inlineContent": [
+                {
+                  "type": "text",
+                  "text": "Phasellus faucibus scelerisque eleifend donec pretium."
+                }
+              ]
+            },
+            {
+              "type": "codeListing",
+              "syntax": "swift",
+              "code": [
+                "let scene = ARSCNView()",
+                "let anchor = scene.anchor(for: node)"
+              ]
+            }
+          ],
+          "type": "multiple-choice",
+          "choices": [
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "codeVoice",
+                      "code": "anchor.hitTest(view)"
+                    }
+                  ]
+                }
+              ],
+              "justification": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is correct because it is. No Justification.reaction is required."
+                    }
+                  ]
+                }
+              ],
+              "isCorrect": true
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "codeVoice",
+                      "code": "anchor.intersects(view)"
+                    }
+                  ]
+                }
+              ],
+              "justification": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is incorrect because it is."
+                    }
+                  ]
+                }
+              ],
+              "isCorrect": false
+            },
+            {
+              "content": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "codeVoice",
+                      "code": "anchor.intersects(view)"
+                    }
+                  ]
+                }
+              ],
+              "justification": [
+                {
+                  "type": "paragraph",
+                  "inlineContent": [
+                    {
+                      "type": "text",
+                      "text": "This is incorrect because it is."
+                    }
+                  ]
+                }
+              ],
+              "isCorrect": false
+            }
+          ]
+        }
+      ],
+      "anchor": "Check-Your-Understanding"
+    },
+    {
+      "media": "arkit.png",
+      "action": {
+        "isActive": true,
+        "type": "reference",
+        "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle",
+        "overridingTitle": "Read article"
+      },
+      "kind": "callToAction",
+      "title": "Making an Augmented Reality App",
+      "featuredEyebrow": "Article",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "This is an abstract for the hero."
+        }
+      ]
+    }
+  ],
+  "identifier": {
+    "url": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial",
+    "interfaceLanguage": "swift"
+  },
+  "references": {
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle": {
+      "role": "article",
+      "title": "Making an Augmented Reality App",
+      "estimatedTime": "20min",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "This is an abstract for the hero."
+        }
+      ],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle",
+      "kind": "article",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/testtutorialarticle"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H3": {
+      "role": "pseudoSymbol",
+      "title": "This is an H3",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H3",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/testtutorialarticle#This-is-an-H3"
+    },
+    "code2.swift": {
+      "syntax": "swift",
+      "content": [
+        "import UIKit",
+        "import SceneKit",
+        "import ARKit",
+        "",
+        "class ViewController: UIViewController, ARSCNViewDelegate {",
+        "",
+        "  @IBOutlet var sceneView: ARSCNView!",
+        "",
+        "  override func viewDidLoad() {",
+        "    super.viewDidLoad()",
+        "",
+        "    \/\/ Set the view's delegate",
+        "    sceneView.delegate = self",
+        "  }",
+        "",
+        "}"
+      ],
+      "fileName": "MyCode.swift",
+      "identifier": "code2.swift",
+      "type": "file",
+      "fileType": "swift",
+      "highlights": [
+        {
+          "line": 18
+        },
+        {
+          "line": 19
+        },
+        {
+          "line": 20
+        }
+      ]
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Create-a-New-AR-Project": {
+      "role": "pseudoSymbol",
+      "title": "Create a New AR Project",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Create-a-New-AR-Project",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial3#Create-a-New-AR-Project"
+    },
+    "Xcode 10 beta": {
+      "title": "Xcode 10 beta",
+      "type": "xcodeRequirement",
+      "identifier": "Xcode 10 beta",
+      "url": "https:\/\/developer.apple.com\/download"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Check-Your-Understanding": {
+      "title": "Check Your Understanding",
+      "type": "link",
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Check-Your-Understanding",
+      "url": "\/tutorials\/technologyx\/tutorial3#Check-Your-Understanding"
+    },
+    "code1.swift": {
+      "syntax": "swift",
+      "content": [
+        "import UIKit",
+        "import SceneKit",
+        "import ARKit",
+        "",
+        "class ViewController: UIViewController, ARSCNViewDelegate {",
+        "",
+        "  @IBOutlet var sceneView: ARSCNView!",
+        "",
+        "  override func viewDidLoad() {",
+        "    super.viewDidLoad()",
+        "  }",
+        "",
+        "}"
+      ],
+      "fileName": "MyCode.swift",
+      "identifier": "code1.swift",
+      "type": "file",
+      "fileType": "swift",
+      "highlights": [
+        {
+          "line": 14
+        },
+        {
+          "line": 15
+        }
+      ]
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2": {
+      "role": "article",
+      "title": "Advanced Augmented Reality App",
+      "estimatedTime": "50min",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "The second tutorial."
+        }
+      ],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2",
+      "kind": "project",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/tutorial2"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#A-Section": {
+      "role": "pseudoSymbol",
+      "title": "A Section",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#A-Section",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/testtutorialarticle#A-Section"
+    },
+    "code3.png": {
+      "alt": "code3",
+      "type": "image",
+      "identifier": "code3.png",
+      "variants": [
+        {
+          "url": "\/images\/code3.png",
+          "size": {
+            "width": 632,
+            "height": 1368
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "hero_school.jpg": {
+      "alt": null,
+      "type": "image",
+      "identifier": "hero_school.jpg",
+      "variants": [
+        {
+          "url": "\/images\/hero_school.jpg",
+          "size": {
+            "width": 1600,
+            "height": 1200
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Check-Your-Understanding": {
+      "title": "Check Your Understanding",
+      "type": "link",
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Check-Your-Understanding",
+      "url": "\/tutorials\/technologyx\/tutorial4#Check-Your-Understanding"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Initiate-ARKit-Plane-Detection": {
+      "role": "pseudoSymbol",
+      "title": "Initiate ARKit Plane Detection",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Initiate-ARKit-Plane-Detection",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial4#Initiate-ARKit-Plane-Detection"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Getting-Started": {
+      "role": "article",
+      "title": "Getting Started",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Getting-Started",
+      "kind": "article",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/getting-started"
+    },
+    "code1.png": {
+      "alt": "code1",
+      "type": "image",
+      "identifier": "code1.png",
+      "variants": [
+        {
+          "url": "\/images\/code1.png",
+          "size": {
+            "width": 632,
+            "height": 1368
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "code4.png": {
+      "alt": "code4",
+      "type": "image",
+      "identifier": "code4.png",
+      "variants": [
+        {
+          "url": "\/images\/code4.png",
+          "size": {
+            "width": 632,
+            "height": 1368
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "project.zip": {
+      "checksum": "ad4adacc8ad53230b59d6158efe603bae57fcc95358b6346b919a5e5d9a98bf5aeac664d9be33a7bc23298f01265a9ca29c5cb26e38d50736b8dccb7a3d515d3",
+      "type": "download",
+      "identifier": "project.zip",
+      "url": "\/downloads\/project.zip"
+    },
+    "ardiagram.png": {
+      "alt": "AR Diagram",
+      "type": "image",
+      "identifier": "ardiagram.png",
+      "variants": [
+        {
+          "url": "\/images\/ardiagram@2x.png",
+          "size": {
+            "width": 496,
+            "height": 187
+          },
+          "traits": [
+            "2x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial": {
+      "role": "article",
+      "title": "Basic Augmented Reality App",
+      "estimatedTime": "20min",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "The first tutorial."
+        }
+      ],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial",
+      "kind": "project",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/tutorial"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Create-a-New-AR-Project": {
+      "role": "pseudoSymbol",
+      "title": "Create a New AR Project",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Create-a-New-AR-Project",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial4#Create-a-New-AR-Project"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Extremely-Advanced": {
+      "role": "article",
+      "title": "Extremely Advanced",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Extremely-Advanced",
+      "kind": "article",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/extremely-advanced"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H2": {
+      "role": "pseudoSymbol",
+      "title": "This is an H2",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/TestTutorialArticle#This-is-an-H2",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/testtutorialarticle#This-is-an-H2"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Create-a-New-AR-Project": {
+      "role": "pseudoSymbol",
+      "title": "Create a New AR Project",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Create-a-New-AR-Project",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial2#Create-a-New-AR-Project"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3": {
+      "role": "article",
+      "title": "Object Detection and Tracking",
+      "estimatedTime": "50min",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "Here is some introduction text that will explain all the things and such you will be doing this project. You are going to learn a lot by building an app."
+        }
+      ],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3",
+      "kind": "project",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/tutorial3"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Really-Advanced": {
+      "role": "article",
+      "title": "Really Advanced",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Really-Advanced",
+      "kind": "article",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/really-advanced"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Initiate-ARKit-Plane-Detection": {
+      "role": "pseudoSymbol",
+      "title": "Initiate ARKit Plane Detection",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Initiate-ARKit-Plane-Detection",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial#Initiate-ARKit-Plane-Detection"
+    },
+    "code2.png": {
+      "alt": "code2",
+      "type": "image",
+      "identifier": "code2.png",
+      "variants": [
+        {
+          "url": "\/images\/code2.png",
+          "size": {
+            "width": 632,
+            "height": 1368
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Advanced": {
+      "role": "article",
+      "title": "Advanced",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Advanced",
+      "kind": "article",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/advanced"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX": {
+      "role": "collection",
+      "title": "Technology X",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "You’ll learn all about Technology X."
+        }
+      ],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX",
+      "kind": "overview",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx"
+    },
+    "video.mov": {
+      "poster": "hero_school.jpg",
+      "alt": null,
+      "type": "video",
+      "identifier": "video.mov",
+      "variants": [
+        {
+          "url": "\/videos\/video~dark.mov",
+          "traits": [
+            "1x",
+            "dark"
+          ]
+        },
+        {
+          "url": "\/videos\/video.mov",
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "arkit.png": {
+      "alt": "An image about ARKit",
+      "type": "image",
+      "identifier": "arkit.png",
+      "variants": [
+        {
+          "url": "\/images\/arkit.png",
+          "size": {
+            "width": 1360,
+            "height": 833
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        },
+        {
+          "url": "\/images\/arkit~dark.png",
+          "size": {
+            "width": 1430,
+            "height": 866
+          },
+          "traits": [
+            "1x",
+            "dark"
+          ]
+        }
+      ]
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Check-Your-Understanding": {
+      "title": "Check Your Understanding",
+      "type": "link",
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Check-Your-Understanding",
+      "url": "\/tutorials\/technologyx\/tutorial#Check-Your-Understanding"
+    },
+    "Sierra.jpg": {
+      "alt": "An image about Sierra.",
+      "type": "image",
+      "identifier": "Sierra.jpg",
+      "variants": [
+        {
+          "url": "\/images\/Sierra.jpg",
+          "size": {
+            "width": 2560,
+            "height": 1440
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "code5.swift": {
+      "syntax": "swift",
+      "content": [
+        "\/\/ This step's code resets the diff.",
+        "\/\/ No lines should be highlighted here!",
+        "",
+        "import UIKit",
+        "import SceneKit",
+        "import ARKit",
+        "",
+        "class ViewController: UIViewController, ARSCNViewDelegate {",
+        "",
+        "  @IBOutlet var sceneView: ARSCNView!",
+        "",
+        "  override func viewDidLoad() {",
+        "    super.viewDidLoad()",
+        "",
+        "    \/\/ Set the view's delegate",
+        "    sceneView.delegate = self",
+        "",
+        "    \/\/ Show statistics such as fps and timing information",
+        "    sceneView.showStatistics = true",
+        "",
+        "    \/\/ Create a new scene",
+        "    let scene = SCNScene(named: \"art.scnassets\/ship.scn\")!",
+        "",
+        "    \/\/ Set the scene to the view",
+        "    sceneView.scene = scene",
+        "  }",
+        "",
+        "}"
+      ],
+      "fileName": "MyCode.swift",
+      "identifier": "code5.swift",
+      "type": "file",
+      "fileType": "swift",
+      "highlights": []
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Initiate-ARKit-Plane-Detection": {
+      "role": "pseudoSymbol",
+      "title": "Initiate ARKit Plane Detection",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Initiate-ARKit-Plane-Detection",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial2#Initiate-ARKit-Plane-Detection"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Check-Your-Understanding": {
+      "title": "Check Your Understanding",
+      "type": "link",
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Check-Your-Understanding",
+      "url": "\/tutorials\/technologyx\/tutorial2#Check-Your-Understanding"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Create-a-New-AR-Project": {
+      "role": "pseudoSymbol",
+      "title": "Create a New AR Project",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "This is some "
+        },
+        {
+          "type": "strong",
+          "inlineContent": [
+            {
+              "type": "text",
+              "text": "full width"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": " content."
+        }
+      ],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Create-a-New-AR-Project",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial#Create-a-New-AR-Project"
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4": {
+      "role": "article",
+      "title": "Persistent Shared Experiences",
+      "estimatedTime": "50min",
+      "abstract": [
+        {
+          "type": "text",
+          "text": "Here is some introduction text that will explain all the things and such you will be doing this project. You are going to learn a lot by building an app."
+        }
+      ],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4",
+      "kind": "project",
+      "type": "topic",
+      "url": "\/tutorials\/technologyx\/tutorial4"
+    },
+    "code4.swift": {
+      "syntax": "swift",
+      "content": [
+        "import UIKit",
+        "import SceneKit",
+        "import ARKit",
+        "",
+        "class ViewController: UIViewController, ARSCNViewDelegate {",
+        "",
+        "  @IBOutlet var sceneView: ARSCNView!",
+        "",
+        "  override func viewDidLoad() {",
+        "    super.viewDidLoad()",
+        "",
+        "    \/\/ Set the view's delegate",
+        "    sceneView.delegate = self",
+        "",
+        "    \/\/ Show statistics such as fps and timing information",
+        "    sceneView.showStatistics = true",
+        "",
+        "    \/\/ Create a new scene",
+        "    let scene = SCNScene(named: \"art.scnassets\/ship.scn\")!",
+        "",
+        "    \/\/ Set the scene to the view",
+        "    sceneView.scene = scene",
+        "    sceneView.scene = scene",
+        "  }",
+        "",
+        "}"
+      ],
+      "fileName": "MyCode.swift",
+      "identifier": "code4.swift",
+      "type": "file",
+      "fileType": "swift",
+      "highlights": [
+        {
+          "line": 30
+        }
+      ]
+    },
+    "chapter2.png": {
+      "alt": "Chapter 2",
+      "type": "image",
+      "identifier": "chapter2.png",
+      "variants": [
+        {
+          "url": "\/images\/chapter2.png",
+          "size": {
+            "width": 319,
+            "height": 179
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "chapter3.png": {
+      "alt": "Chapter 2",
+      "type": "image",
+      "identifier": "chapter2.png",
+      "variants": [
+        {
+          "url": "\/images\/chapter2.png",
+          "size": {
+            "width": 319,
+            "height": 179
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "chapter4.png": {
+      "alt": "Chapter 2",
+      "type": "image",
+      "identifier": "chapter2.png",
+      "variants": [
+        {
+          "url": "\/images\/chapter2.png",
+          "size": {
+            "width": 319,
+            "height": 179
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "chapter5.png": {
+      "alt": "Chapter 2",
+      "type": "image",
+      "identifier": "chapter2.png",
+      "variants": [
+        {
+          "url": "\/images\/chapter2.png",
+          "size": {
+            "width": 319,
+            "height": 179
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "chapter6.png": {
+      "alt": "Chapter 2",
+      "type": "image",
+      "identifier": "chapter2.png",
+      "variants": [
+        {
+          "url": "\/images\/chapter2.png",
+          "size": {
+            "width": 319,
+            "height": 179
+          },
+          "traits": [
+            "1x",
+            "light"
+          ]
+        }
+      ]
+    },
+    "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Initiate-ARKit-Plane-Detection": {
+      "role": "pseudoSymbol",
+      "title": "Initiate ARKit Plane Detection",
+      "abstract": [],
+      "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Initiate-ARKit-Plane-Detection",
+      "kind": "section",
+      "type": "section",
+      "url": "\/tutorials\/technologyx\/tutorial3#Initiate-ARKit-Plane-Detection"
+    },
+    "code3.swift": {
+      "syntax": "swift",
+      "content": [
+        "import UIKit",
+        "import SceneKit",
+        "import ARKit",
+        "",
+        "class ViewController: UIViewController, ARSCNViewDelegate {",
+        "",
+        "  @IBOutlet var sceneView: ARSCNView!",
+        "",
+        "  override func viewDidLoad() {",
+        "    super.viewDidLoad()",
+        "",
+        "    \/\/ Set the view's delegate",
+        "    sceneView.delegate = self",
+        "",
+        "    \/\/ Show statistics such as fps and timing information",
+        "    sceneView.showStatistics = true",
+        "",
+        "    \/\/ Create a new scene",
+        "    let scene = SCNScene(named: \"art.scnassets\/ship.scn\")!",
+        "",
+        "    \/\/ Set the scene to the view",
+        "    sceneView.scene = scene",
+        "  }",
+        "",
+        "}"
+      ],
+      "fileName": "MyCode.swift",
+      "identifier": "code3.swift",
+      "type": "file",
+      "fileType": "swift",
+      "highlights": [
+        {
+          "line": 21
+        },
+        {
+          "line": 22
+        },
+        {
+          "line": 23
+        },
+        {
+          "line": 24
+        },
+        {
+          "line": 25
+        },
+        {
+          "line": 26
+        },
+        {
+          "line": 27
+        },
+        {
+          "line": 28
+        },
+        {
+          "line": 29
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "supportedLanguages": [
+      "occ",
+      "swift"
+    ],
+    "title": "Basic Augmented Reality App",
+    "categoryPathComponent": "TechnologyX",
+    "role": "article",
+    "category": "Technology X"
+  },
+  "kind": "project",
+  "documentVersion": 0
+}

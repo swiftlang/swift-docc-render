@@ -1,0 +1,33 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+// Things in this category are used internally as variables/mixins,
+// but do not directly translate to final CSS output themselves.
+@import './core/maps';
+@import "./core/selectors";
+
+// import the current `theme_vars` here, so they have access to all generic helpers above, while overriding all `!default` variables below.
+@import "~theme/styles/_theme_vars.scss";
+
+// load the rest of the helpers and vars here
+@import "./core/vars";
+@import './core/typography';
+@import './core/colors';
+@import './core/colors/light';
+@import './core/colors/dark';
+@import './core/syntax';
+@import './core/helpers';
+@import './core/changes';
+@import './core/breakpoints';
+@import './core/nav';
+@import './core/buttons';
+
+// import the current theme _core file
+@import "~theme/styles/_theme_core.scss";

@@ -1,0 +1,140 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+$change-border-stroke-width: 1px;
+$change-total-icon-width: rem(17px);
+$change-highlight-vertical-space: 4px;
+$change-icon-width: rem(20px);
+$change-highlight-horizontal-space: 12px;
+$change-highlight-horizontal-space-rem: rem($change-highlight-horizontal-space);
+
+// Width of highlight endcaps only used in this file
+$change-total-coin-space: rem(5px);
+$change-coin-y-offset: 10px;
+$change-coin-y-offset-reduced: 7px;
+
+// Paths to the changes icons
+$modified-svg: url('~theme/assets/img/icons/modified-icon.svg') !default;
+$modified-dark-svg: $modified-svg !default;
+$added-svg: url('~theme/assets/img/icons/added-icon.svg') !default;
+$added-dark-svg: $added-svg !default;
+$deprecated-svg: url('~theme/assets/img/icons/deprecated-icon.svg') !default;
+$deprecated-dark-svg: $deprecated-svg !default;
+
+////
+/// Displays a circular coin at specific dimensions
+///
+/// @param {string/hex} $background-image
+///  Background image
+/// @param {px/rem} size
+///  Size of coin
+////
+@mixin coin(
+  $background-image,
+  $size: $change-icon-width
+) {
+  background-image: $background-image;
+  background-repeat: no-repeat;
+  bottom: 0;
+  content: " ";
+  margin: auto;
+  margin-right: ($change-highlight-horizontal-space - 5);
+  position: absolute;
+  top: 0;
+  width: $size;
+  height: $size;
+}
+
+// Set spacing, display, and word-break such that if an element could show as
+// "changed", it or its children do not shift when turned on or off
+@mixin change-highlight-target() {
+  // Set spacing in case this symbol is changed
+  // so that when "Changes" is turned on, nothing shifts
+  @include change-highlight-horizontal-spacing();
+  @include change-highlight-vertical-spacing();
+
+  // `display: inline-flex` aligns to the bottom AND allows the full
+  // vertical block of wrapped names to be clickable, even if a user happens
+  // to click the space in between lines
+  display: inline-flex;
+
+  @include breakpoint(small) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@mixin change-highlight-end-spacing() {
+  padding-right: $change-icon-width + $change-highlight-horizontal-space-rem;
+}
+
+@mixin change-highlight-horizontal-spacing() {
+  padding-left: rem($change-highlight-horizontal-space);
+  @include change-highlight-end-spacing();
+
+  &.changed {
+    padding-left: $change-highlight-horizontal-space;
+  }
+
+  @include breakpoint(small) {
+    // everything: changed and unchanged
+    padding-left: 0;
+    padding-right: 0;
+
+    &.changed {
+      padding-left: $change-highlight-horizontal-space;
+      @include change-highlight-end-spacing();
+    }
+  }
+}
+
+@mixin change-highlight-vertical-spacing() {
+  $changed-padding: $change-highlight-vertical-space + $change-border-stroke-width;
+  padding-top: $changed-padding;
+  padding-bottom: $changed-padding;
+}
+///
+/// Counteracts the left (start) padding created by `change-highlight-horizontal-spacing()`
+/// in order to keep the text aligned with its siblings.
+/// The 1 value represents the border width.
+///
+@mixin change-highlight-horizontal-text-alignment() {
+  margin-left: rem(-$change-highlight-horizontal-space - 1);
+  width: calc(100% + #{$change-highlight-horizontal-space} + 1px);
+
+  @include change-highlight-horizontal-text-alignment-small();
+}
+
+///
+/// Small vp specific padding and margin to have margin go outside of content symmetrically
+///
+@mixin change-highlight-horizontal-text-alignment-small() {
+  @include breakpoint(small) {
+    &:not(.changed) {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    &.changed {
+      margin-left: rem(-$change-highlight-horizontal-space);
+      width: calc(100% + #{$change-highlight-horizontal-space * 2});
+    }
+  }
+}
+
+////
+/// Apply styles related to the API diff/changes functionality
+/// and relying on the globally available `.changed` class.
+////
+@mixin changedStyles {
+  .changed {
+    @content
+  }
+}

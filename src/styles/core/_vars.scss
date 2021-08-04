@@ -1,0 +1,57 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+// Global variables intended to be shared between several components
+$globalnav-height: 44px;
+
+$form-focus-size: 4px;
+
+// Border radius
+$border-radius: 4px !default;
+$big-border-radius: $border-radius !default;
+
+$contenttable-spacing-single-side: 2rem;
+
+// Shared variables for tutorials-overview page components
+$tutorials-overview-tile-margin-single-side: 2px;
+
+// Shared variables related to articles
+$article-stacked-margin-large: 40px;
+$article-stacked-margin-small: 20px;
+
+// TopicLink components
+$topic-link-icon-width: 1.294rem;
+$topic-link-icon-spacing: 0.5em;
+
+// Code Block Style Elements
+$code-block-style-elements-padding: 8px 14px !default;
+$code-listing-with-numbers-padding: 14px 0;
+$code-number-padding: 0 1rem 0 8px;
+
+// Declaration components
+$code-source-spacing: 0.588rem;
+
+// Step components
+$step-padding-horizontal: 2rem;
+
+// Tutorials
+$inter-section-spacing-single-side: 80px;
+$tutorial-section-spacing-single-side: 80px;
+$step-border-width: 4px !default;
+
+// Section components
+$section-spacing-single-side: 3rem;
+
+// Aside components
+$aside-width-border: 0px !default;
+$aside-width-left-border: 6px !default;
+
+// total number of Grid columns
+$total-columns: 12 !default;

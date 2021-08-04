@@ -1,0 +1,479 @@
+<!--
+  This source file is part of the Swift.org open source project
+
+  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Licensed under Apache License v2.0 with Runtime Library Exception
+
+  See https://swift.org/LICENSE.txt for license information
+  See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+-->
+
+<script>
+import Aside from './ContentNode/Aside.vue';
+import CodeListing from './ContentNode/CodeListing.vue';
+import CodeVoice from './ContentNode/CodeVoice.vue';
+import DictionaryExample from './ContentNode/DictionaryExample.vue';
+import EndpointExample from './ContentNode/EndpointExample.vue';
+import Figure from './ContentNode/Figure.vue';
+import FigureCaption from './ContentNode/FigureCaption.vue';
+import InlineImage from './ContentNode/InlineImage.vue';
+import Reference from './ContentNode/Reference.vue';
+import Table from './ContentNode/Table.vue';
+import StrikeThrough from './ContentNode/StrikeThrough.vue';
+
+const BlockType = {
+  aside: 'aside',
+  codeListing: 'codeListing',
+  endpointExample: 'endpointExample',
+  heading: 'heading',
+  orderedList: 'orderedList',
+  paragraph: 'paragraph',
+  table: 'table',
+  termList: 'termList',
+  unorderedList: 'unorderedList',
+  dictionaryExample: 'dictionaryExample',
+};
+
+const InlineType = {
+  codeVoice: 'codeVoice',
+  emphasis: 'emphasis',
+  image: 'image',
+  inlineHead: 'inlineHead',
+  link: 'link',
+  newTerm: 'newTerm',
+  reference: 'reference',
+  strong: 'strong',
+  text: 'text',
+  superscript: 'superscript',
+  subscript: 'subscript',
+  strikethrough: 'strikethrough',
+};
+
+// Examples of each header style with capital letters showing header cells:
+//
+// "row" (header cells in first row)
+// ---------
+// | A | B |
+// ---------
+// | a | b |
+// ---------
+//
+// "column" (header cells in first column)
+// ---------
+// | A | a |
+// ---------
+// | B | b |
+// ---------
+//
+// "both" (header cells in first row and first column)
+// -------------
+// |   | A | B |
+// -------------
+// | C | a | b |
+// -------------
+//
+// "none" (no header cells)
+// ---------
+// | a | b |
+// ---------
+// | c | d |
+// ---------
+const TableHeaderStyle = {
+  both: 'both',
+  column: 'column',
+  none: 'none',
+  row: 'row',
+};
+
+// Recursively call the passed `createElement` function for each content node
+// and any of its children by mapping each node `type` to a given Vue component
+//
+// Note: A plain string of text is returned for nodes with `type="text"`
+function renderNode(createElement, references) {
+  const renderChildren = children => children.map(
+    renderNode(createElement, references),
+  );
+
+  const renderListItems = items => items.map(item => (
+    createElement('li', {}, (
+      renderChildren(item.content)
+    ))
+  ));
+
+  const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none) => {
+    switch (headerStyle) {
+    // thead with first row and th for each first row cell
+    // tbody with rows where first cell in each row is th, others are td
+    case TableHeaderStyle.both: {
+      const [firstRow, ...otherRows] = rows;
+      return [
+        createElement('thead', {}, [
+          createElement('tr', {}, firstRow.map(cell => (
+            createElement('th', { attrs: { scope: 'col' } }, (
+              renderChildren(cell)
+            ))
+          ))),
+        ]),
+        createElement('tbody', {}, otherRows.map(([firstCell, ...otherCells]) => (
+          createElement('tr', {}, [
+            createElement('th', { attrs: { scope: 'row' } }, (
+              renderChildren(firstCell)
+            )),
+            ...otherCells.map(cell => (
+              createElement('td', {}, (
+                renderChildren(cell)
+              ))
+            )),
+          ])
+        ))),
+      ];
+    }
+    // tbody with rows, th for first cell of each row, td for other cells
+    case TableHeaderStyle.column:
+      return [
+        createElement('tbody', {}, rows.map(([firstCell, ...otherCells]) => (
+          createElement('tr', {}, [
+            createElement('th', { attrs: { scope: 'row' } }, (
+              renderChildren(firstCell)
+            )),
+            ...otherCells.map(cell => (
+              createElement('td', {}, (
+                renderChildren(cell)
+              ))
+            )),
+          ])
+        ))),
+      ];
+      // thead with first row, th in all first row cells, tbody with other
+      // rows that all have td cells
+    case TableHeaderStyle.row: {
+      const [firstRow, ...otherRows] = rows;
+      return [
+        createElement('thead', {}, [
+          createElement('tr', {}, firstRow.map(cell => (
+            createElement('th', { attrs: { scope: 'col' } }, (
+              renderChildren(cell)
+            ))
+          ))),
+        ]),
+        createElement('tbody', {}, otherRows.map(row => (
+          createElement('tr', {}, row.map(cell => (
+            createElement('td', {}, (
+              renderChildren(cell)
+            ))
+          )))
+        ))),
+      ];
+    }
+    default:
+      // tbody with all rows and every cell is td
+      return [
+        createElement('tbody', {}, (
+          rows.map(row => (
+            createElement('tr', {}, (
+              row.map(cell => (
+                createElement('td', {}, (
+                  renderChildren(cell)
+                ))
+              ))
+            ))
+          ))
+        )),
+      ];
+    }
+  };
+
+  const renderFigure = ({
+    metadata: {
+      abstract,
+      anchor,
+      title,
+    },
+    ...node
+  }) => createElement(Figure, { props: { anchor } }, [
+    ...(title && abstract && abstract.length ? [
+      createElement(FigureCaption, { props: { title } }, (
+        renderChildren(abstract)
+      )),
+    ] : []),
+    renderChildren([node]),
+  ]);
+
+  return function render(node) {
+    switch (node.type) {
+    case BlockType.aside: {
+      const props = { kind: node.style, name: node.name };
+      return createElement(Aside, { props }, (
+        renderChildren(node.content)
+      ));
+    }
+    case BlockType.codeListing: {
+      if (node.metadata && node.metadata.anchor) {
+        return renderFigure(node);
+      }
+
+      const props = {
+        syntax: node.syntax,
+        fileType: node.fileType,
+        content: node.code,
+        showLineNumbers: node.showLineNumbers,
+      };
+      return createElement(CodeListing, { props });
+    }
+    case BlockType.endpointExample: {
+      const props = {
+        request: node.request,
+        response: node.response,
+      };
+      return createElement(EndpointExample, { props }, renderChildren(node.summary || []));
+    }
+    case BlockType.heading:
+      return createElement(`h${node.level}`, {
+        attrs: {
+          id: node.anchor,
+        },
+      }, (
+        node.text
+      ));
+    case BlockType.orderedList:
+      return createElement('ol', {}, (
+        renderListItems(node.items)
+      ));
+    case BlockType.paragraph:
+      return createElement('p', {}, (
+        renderChildren(node.inlineContent)
+      ));
+    case BlockType.table:
+      if (node.metadata && node.metadata.anchor) {
+        return renderFigure(node);
+      }
+
+      return createElement(Table, {}, (
+        renderTableChildren(node.rows, node.header)
+      ));
+    case BlockType.termList:
+      return createElement('dl', {}, node.items.map(({ term, definition }) => [
+        createElement('dt', {}, (
+          renderChildren(term.inlineContent)
+        )),
+        createElement('dd', {}, (
+          renderChildren(definition.content)
+        )),
+      ]));
+    case BlockType.unorderedList:
+      return createElement('ul', {}, (
+        renderListItems(node.items)
+      ));
+    case BlockType.dictionaryExample: {
+      const props = {
+        example: node.example,
+      };
+      return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
+    }
+    case InlineType.codeVoice:
+      return createElement(CodeVoice, {}, (
+        node.code
+      ));
+    case InlineType.emphasis:
+    case InlineType.newTerm:
+      return createElement('em', (
+        renderChildren(node.inlineContent)
+      ));
+    case InlineType.image: {
+      if (node.metadata && node.metadata.anchor) {
+        return renderFigure(node);
+      }
+
+      const image = references[node.identifier];
+      return image ? (
+        createElement(InlineImage, {
+          props: {
+            alt: image.alt,
+            variants: image.variants,
+          },
+        })
+      ) : (
+        null
+      );
+    }
+    case InlineType.link:
+      // Note: `InlineType.link` has been deprecated, but may still be found in old JSON.
+      return createElement('a', { attrs: { href: node.destination } }, (
+        node.title
+      ));
+    case InlineType.reference: {
+      const reference = references[node.identifier];
+      if (!reference) return null;
+      const titleInlineContent = node.overridingTitleInlineContent
+          || reference.titleInlineContent;
+      const titlePlainText = node.overridingTitle || reference.title;
+      return createElement(Reference, {
+        props: {
+          url: reference.url,
+          kind: reference.kind,
+          role: reference.role,
+          isActive: node.isActive,
+        },
+      }, (
+        titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText
+      ));
+    }
+    case InlineType.strong:
+    case InlineType.inlineHead:
+      return createElement('strong', (
+        renderChildren(node.inlineContent)
+      ));
+    case InlineType.text:
+      return node.text;
+    case InlineType.superscript:
+      return createElement('sup', renderChildren(node.inlineContent));
+    case InlineType.subscript:
+      return createElement('sub', renderChildren(node.inlineContent));
+    case InlineType.strikethrough:
+      return createElement(StrikeThrough, renderChildren(node.inlineContent));
+    default:
+      return null;
+    }
+  };
+}
+
+export default {
+  name: 'ContentNode',
+  constants: { TableHeaderStyle },
+  render: function render(createElement) {
+    // Dynamically map each content item and any children to their
+    // corresponding components, and wrap the whole tree in a <div>
+    return createElement(this.tag, { class: 'content' }, (
+      this.content.map(renderNode(createElement, this.references), this)
+    ));
+  },
+  inject: {
+    references: {
+      default() {
+        return {};
+      },
+    },
+  },
+  props: {
+    content: {
+      type: Array,
+      required: true,
+    },
+    tag: {
+      type: String,
+      default: () => 'div',
+    },
+  },
+  methods: {
+    // Recursively map a given function over the content node tree. The
+    // provided function will be applied to every node in the tree, regardless
+    // of depth.
+    map(fn) {
+      function $map(nodes = []) {
+        return nodes.map((node) => {
+          switch (node.type) {
+          case BlockType.aside:
+            return fn({
+              ...node,
+              content: $map(node.content),
+            });
+          case BlockType.dictionaryExample:
+            return fn({
+              ...node,
+              summary: $map(node.summary),
+            });
+          case BlockType.paragraph:
+          case InlineType.emphasis:
+          case InlineType.strong:
+          case InlineType.inlineHead:
+          case InlineType.superscript:
+          case InlineType.subscript:
+          case InlineType.strikethrough:
+          case InlineType.newTerm:
+            return fn({
+              ...node,
+              inlineContent: $map(node.inlineContent),
+            });
+          case BlockType.orderedList:
+          case BlockType.unorderedList:
+            return fn({
+              ...node,
+              items: node.items.map(item => ({
+                ...item,
+                content: $map(item.content),
+              })),
+            });
+          case BlockType.table:
+            return fn({
+              ...node,
+              rows: node.rows.map(row => (
+                row.map($map)
+              )),
+            });
+          case BlockType.termList:
+            return fn({
+              ...node,
+              items: node.items.map(item => ({
+                ...item,
+                term: { inlineContent: $map(item.term.inlineContent) },
+                definition: { content: $map(item.definition.content) },
+              })),
+            });
+          default:
+            return fn(node);
+          }
+        });
+      }
+
+      return $map(this.content);
+    },
+    // Recursively walk a given content tree, applying the callback function for
+    // each node encountered (depth first).
+    forEach(fn) {
+      function $forEach(nodes = []) {
+        nodes.forEach((node) => {
+          fn(node);
+          switch (node.type) {
+          case BlockType.aside:
+            $forEach(node.content);
+            break;
+          case BlockType.paragraph:
+          case InlineType.emphasis:
+          case InlineType.strong:
+          case InlineType.inlineHead:
+          case InlineType.newTerm:
+          case InlineType.superscript:
+          case InlineType.subscript:
+          case InlineType.strikethrough:
+            $forEach(node.inlineContent);
+            break;
+          case BlockType.orderedList:
+          case BlockType.unorderedList:
+            node.items.forEach(item => $forEach(item.content));
+            break;
+          case BlockType.dictionaryExample:
+            $forEach(node.summary);
+            break;
+          case BlockType.table:
+            node.rows.forEach((row) => {
+              row.forEach($forEach);
+            });
+            break;
+          case BlockType.termList:
+            node.items.forEach((item) => {
+              $forEach(item.term.inlineContent);
+              $forEach(item.definition.content);
+            });
+            break;
+            // no default
+          }
+        });
+      }
+
+      return $forEach(this.content);
+    },
+  },
+  BlockType,
+  InlineType,
+};
+</script>

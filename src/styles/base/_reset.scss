@@ -1,0 +1,191 @@
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+//============================================================
+// Prevent iOS text size adjust after orientation change, without disabling user zoom.
+//============================================================
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  // This is needed to "extend" the footer background color when the body is small
+  // enough that it does not actually exceed the breakpoint height.
+  background-color: var(--colors-text-background, var(--color-text-background));
+  height: 100%;
+}
+
+//============================================================
+// Remove margin and padding from body and base elements
+//============================================================
+body,
+ul,
+ol,
+li,
+dl,
+dt,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hgroup,
+p,
+blockquote,
+figure,
+form,
+fieldset,
+input,
+legend,
+pre,
+abbr,
+button {
+  margin: 0;
+  padding: 0;
+}
+
+//============================================================
+// Reset font size, weight, and style
+//============================================================
+pre,
+code,
+address,
+caption,
+th,
+figcaption {
+  font-size: 1em;
+  font-weight: normal;
+  font-style: normal;
+}
+
+//============================================================
+// Remove borders from fieldsets/iframes
+// Remove border from an img when inside `a` element in IE 9/10.
+//============================================================
+fieldset,
+iframe,
+img {
+  border: 0;
+}
+
+//============================================================
+// Remove default 'center' alignment on these elements.
+//============================================================
+caption,
+th {
+  text-align: left;
+}
+
+//============================================================
+// Remove most spacing between table cells.
+//============================================================
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+//============================================================
+// Correct `block` display not defined for any HTML5 element in IE 9.
+// Correct `block` display not defined for `details` or `summary` in IE 10/11 and Firefox.
+// Correct `block` display not defined for `main` in IE 11.
+//============================================================
+article,
+aside,
+footer,
+header,
+nav,
+main,
+section,
+summary,
+details,
+hgroup,
+figure,
+figcaption {
+  display: block;
+}
+
+//============================================================
+// Correct `inline-block` display not defined in IE 9.
+// Normalize vertical alignment of `progress` in Chrome and Firefox.
+//============================================================
+audio,
+canvas,
+video,
+progress {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+//============================================================
+// Remove form-like styles from button
+// Address `overflow` set to `hidden` in IE 9/10/11.
+//============================================================
+button {
+  background: none;
+  border: 0;
+  box-sizing: content-box;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  line-height: inherit;
+  overflow: visible;
+  vertical-align: inherit;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+//============================================================
+// Reset for focus
+//============================================================
+:focus {
+  @include focus-outline();
+}
+
+// Remove form-specific Firefox focus styles
+::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+//============================================================
+// Reset for print
+//============================================================
+@media print {
+
+  body,
+  #main,
+  #content {
+    color: #000;
+  }
+
+  a,
+  a:link,
+  a:visited {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .noprint,
+  .hide {
+    display: none;
+  }
+
+}
+
+body {
+  $min-width: map-deep-get($breakpoint-attributes, ('default', small, 'min-width'), false);
+  height: 100%;
+
+  @if $min-width {
+    min-width: $min-width;
+  }
+}
