@@ -47,7 +47,7 @@ export async function scrollBehavior(to, from, savedPosition) {
   }
   if (areEquivalentLocations(to, from)) {
     // Do not change the scroll position if the location hasn't changed.
-    return undefined;
+    return false;
   }
   return { x: 0, y: 0 };
 }
