@@ -48,7 +48,10 @@ export default {
     },
     refComponent() {
       if (this.isInternal) {
-        return this.isSymbolReference ? ReferenceInternalSymbol : ReferenceInternal;
+        if (this.isSymbolReference) {
+          return this.ideTitle ? ReferenceInternal : ReferenceInternalSymbol;
+        }
+        return ReferenceInternal;
       }
       return ReferenceExternal;
     },
@@ -76,6 +79,10 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    ideTitle: {
+      type: String,
+      required: false,
     },
   },
 };
