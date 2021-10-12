@@ -313,7 +313,7 @@ function renderNode(createElement, references) {
           kind: reference.kind,
           role: reference.role,
           isActive: node.isActive,
-          ideTitile: reference.ideTitile,
+          ideTitle: reference.ideTitle,
         },
       }, (
         titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText
