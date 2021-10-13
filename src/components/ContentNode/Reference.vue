@@ -47,13 +47,13 @@ export default {
         && (this.role === TopicRole.symbol || this.role === TopicRole.dictionarySymbol);
     },
     refComponent() {
-      if (this.isInternal) {
-        if (this.isSymbolReference) {
-          return this.ideTitle ? ReferenceInternal : ReferenceInternalSymbol;
-        }
-        return ReferenceInternal;
+      if (!this.isInternal) {
+        return ReferenceExternal;
       }
-      return ReferenceExternal;
+      if (this.isSymbolReference && !this.ideTitle) {
+        return ReferenceInternalSymbol;
+      }
+      return ReferenceInternal;
     },
     urlWithParams({ isInternal }) {
       return isInternal ? buildUrl(this.url, this.$route.query) : this.url;

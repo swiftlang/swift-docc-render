@@ -412,12 +412,14 @@ describe('ContentNode', () => {
         foobar: {
           title: 'FooBar',
           url: '/foo/bar',
+          ideTitle: 'IDETitle',
         },
       });
 
       const reference = wrapper.find('.content').find(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
+      expect(reference.props('ideTitle')).toBe('IDETitle');
       expect(reference.isEmpty()).toBe(false);
       expect(reference.text()).toBe('FooBar');
     });
