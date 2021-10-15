@@ -125,13 +125,11 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$bullet-margin: 0.5em;
-
 .relationships-list {
   list-style: none;
 
   &.column {
-    margin: 0 0 0 $bullet-margin;
+    margin: 0;
   }
 
   // The "inline" style displays items on a single line as a
