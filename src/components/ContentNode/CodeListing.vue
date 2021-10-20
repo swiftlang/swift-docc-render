@@ -185,6 +185,7 @@ code {
   flex-direction: column;
   min-height: 100%;
   border-radius: $border-radius;
+  overflow: auto;
 
   &.single-line {
     border-radius: $big-border-radius;
