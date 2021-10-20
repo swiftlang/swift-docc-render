@@ -144,7 +144,11 @@ export default {
 
 .highlighted {
   background: var(--line-highlight, var(--color-code-line-highlight));
-  box-shadow: inset 4px 0 0 0 var(--color-code-line-highlight-border);
+  border-left: $highlighted-border-width solid var(--color-code-line-highlight-border);
+
+  .code-number {
+    padding-left: $code-number-padding-left - $highlighted-border-width;
+  }
 }
 
 pre {
