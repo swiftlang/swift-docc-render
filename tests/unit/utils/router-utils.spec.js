@@ -88,10 +88,10 @@ describe('router-utils', () => {
       });
     });
 
-    it('resolves as undefined if two urls are the same and have no `hash`', async () => {
+    it('resolves as false if two urls are the same and have no `hash`', async () => {
       const noHashUrl = createRoute('foo', {});
       const resolved = await scrollBehavior(noHashUrl, noHashUrl);
-      expect(resolved).toEqual(undefined);
+      expect(resolved).toEqual(false);
     });
 
     it('resolves with `{ x: 0, y: 0 }` if new url without hash', async () => {
