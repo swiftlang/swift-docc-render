@@ -10,6 +10,7 @@
 
 let isLocked = false;
 let initialClientY = -1;
+let scrolledClientY = 0;
 
 const isIosDevice = () => window.navigator
   && window.navigator.platform
@@ -43,7 +44,16 @@ const isTargetElementTotallyScrolled = targetElement => (
  * A simple locking, that works for the majority of browsers
  */
 function simpleLock() {
-  document.body.style.overflow = 'hidden';
+  // save scrolled Y position when locking
+  scrolledClientY = document.body.getBoundingClientRect().top;
+  // force the Y scrollbar to always appear to prevent jumping issues
+  document.body.style.overflow = 'hidden scroll';
+  // add scrolled Y position to body top before changing the position property
+  document.body.style.top = `${scrolledClientY}px`;
+  // limit the vertical height by fixing the position
+  document.body.style.position = 'fixed';
+  // force body to expand to its whole width
+  document.body.style.width = '100%';
 }
 
 /**
@@ -138,6 +148,9 @@ export default {
     } else {
       // remove all inline styles
       document.body.style.cssText = '';
+
+      // restore scrolled Y position after resetting the position property
+      window.scrollTo(0, Math.abs(scrolledClientY));
     }
     isLocked = false;
   },

@@ -18,6 +18,12 @@ let DOM;
 let container;
 const preventDefault = jest.fn();
 const stopPropagation = jest.fn();
+const getBoundingClientRect = jest.fn();
+const scrollToSpy = jest.fn();
+
+Object.defineProperty(window, 'scrollTo', {
+  value: scrollToSpy,
+});
 
 describe('scroll-lock', () => {
   beforeEach(() => {
@@ -120,10 +126,18 @@ describe('scroll-lock', () => {
   });
 
   describe('other devices', () => {
-    it('toggles `overflow: hidden` on the body', () => {
+    it('toggles CSS properties on the body', () => {
+      const scrolledClientY = -500;
+      document.body.getBoundingClientRect = getBoundingClientRect;
+      getBoundingClientRect.mockReturnValue({ top: scrolledClientY });
+
       expect(document.body.style.overflow).toEqual('');
+      expect(document.body.style.position).toEqual('');
       scrollLock.lockScroll(container);
-      expect(document.body.style.overflow).toEqual('hidden');
+      expect(document.body.style.overflow).toEqual('hidden scroll');
+      expect(document.body.style.position).toEqual('fixed');
+      expect(document.body.style.top).toEqual(`${scrolledClientY}px`);
+      expect(document.body.style.width).toEqual('100%');
       // assert no event listeners are attached
       document.dispatchEvent(createEvent('touchmove', {
         preventDefault,
@@ -133,6 +147,8 @@ describe('scroll-lock', () => {
 
       scrollLock.unlockScroll(container);
       expect(document.body.style.overflow).toEqual('');
+      expect(scrollToSpy).toHaveBeenCalledTimes(1);
+      expect(scrollToSpy).toHaveBeenCalledWith(0, Math.abs(scrolledClientY));
     });
   });
 });
