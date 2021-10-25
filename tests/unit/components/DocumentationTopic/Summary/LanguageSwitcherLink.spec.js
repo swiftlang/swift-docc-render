@@ -8,25 +8,21 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import {
-  shallowMount,
-  RouterLinkStub,
-} from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import LanguageSwitcherLink from 'docc-render/components/DocumentationTopic/Summary/LanguageSwitcherLink.vue';
 
 describe('LanguageSwitcherLink', () => {
   const slots = { default: 'Foo' };
 
-  it('renders a router-link if provided a url', () => {
+  it('renders a anchor if provided a url', () => {
     const url = '/foo';
     const wrapper = shallowMount(LanguageSwitcherLink, {
       propsData: { url },
       slots,
-      stubs: { 'router-link': RouterLinkStub },
     });
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.find('a');
     expect(link.exists()).toBe(true);
-    expect(link.props('to')).toEqual(url);
+    expect(link.attributes('href')).toBe(url);
     expect(link.text()).toBe(slots.default);
   });
 

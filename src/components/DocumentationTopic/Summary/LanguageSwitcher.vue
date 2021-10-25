@@ -15,16 +15,19 @@
       class="language-option swift"
       :class="{ active: swift.active }"
       :url="swift.active ? null : swift.url"
+      @click="chooseLanguage(swift)"
     >{{swift.name}}</LanguageSwitcherLink>
     <LanguageSwitcherLink
       class="language-option objc"
       :class="{ active: objc.active }"
       :url="objc.active ? null : objc.url"
+      @click="chooseLanguage(objc)"
     >{{objc.name}}</LanguageSwitcherLink>
   </Section>
 </template>
 
 <script>
+import { buildUrl } from 'docc-render/utils/url-helper';
 import Language from 'docc-render/constants/Language';
 
 import LanguageSwitcherLink from './LanguageSwitcherLink.vue';
@@ -37,6 +40,18 @@ export default {
     LanguageSwitcherLink,
     Section,
     Title,
+  },
+  inject: {
+    isTargetIDE: {
+      default: () => false,
+    },
+    store: {
+      default() {
+        return {
+          setPreferredLanguage() {},
+        };
+      },
+    },
   },
   props: {
     interfaceLanguage: {
@@ -59,31 +74,44 @@ export default {
     // leading slash so that it doesn't try to link to a page relative to the
     // current URL.
     objc: ({
-      interfaceLanguage, isCurrentPath, objcPath, $route: { query },
+      interfaceLanguage,
+      normalizePath,
+      objcPath,
+      $route: { query },
     }) => ({
       ...Language.objectiveC,
       active: Language.objectiveC.key.api === interfaceLanguage,
-      url: {
-        path: isCurrentPath(objcPath) ? null : `/${objcPath}`,
-        query: { language: Language.objectiveC.key.url, context: query.context },
-      },
+      url: buildUrl(normalizePath(objcPath), {
+        ...query,
+        language: Language.objectiveC.key.url,
+      }),
     }),
     swift: ({
-      interfaceLanguage, isCurrentPath, swiftPath, $route: { query },
+      interfaceLanguage,
+      normalizePath,
+      swiftPath,
+      $route: { query },
     }) => ({
       ...Language.swift,
       active: Language.swift.key.api === interfaceLanguage,
-      url: {
-        path: isCurrentPath(swiftPath) ? null : `/${swiftPath}`,
-        query: { language: undefined, context: query.context },
-      },
+      url: buildUrl(normalizePath(swiftPath), {
+        ...query,
+        language: undefined,
+      }),
     }),
   },
   methods: {
-    isCurrentPath(path) {
-      // the `.replace` call is needed since paths vended by the backend do not
-      // include a leading slash, while the router provided path does
-      return this.$route.path.replace(/^\//, '') === path;
+    chooseLanguage(language) {
+      if (!this.isTargetIDE) {
+        this.store.setPreferredLanguage(language.key.url);
+      }
+
+      this.$router.push(language.url);
+    },
+    normalizePath(path) {
+      // Sometimes `paths` data from `variants` are prefixed with a leading
+      // slash and sometimes they aren't
+      return path.startsWith('/') ? path : `/${path}`;
     },
   },
 };

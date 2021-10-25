@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
@@ -145,5 +146,41 @@ describe('DocumentationTopic', () => {
     });
 
     expect(wrapper.vm.topicData).toEqual(data);
+  });
+
+  it('applies ObjC data when provided as overrides', () => {
+    dataUtils.fetchDataForRouteEnter = jest.fn();
+
+    const oldInterfaceLang = topicData.identifier.interfaceLanguage; // swift
+    const newInterfaceLang = 'occ';
+
+    const variantOverrides = [
+      {
+        traits: [{ interfaceLanguage: newInterfaceLang }],
+        patch: [
+          { op: 'replace', path: '/identifier/interfaceLanguage', value: newInterfaceLang },
+        ],
+      },
+    ];
+    wrapper.setData({
+      topicData: { ...topicData, variantOverrides },
+    });
+    expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(oldInterfaceLang);
+
+    const to = {
+      query: { language: 'objc' },
+    };
+    const from = mocks.$route;
+    const next = jest.fn();
+    // there is probably a more realistic way to simulate this
+    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
+
+    // check that the provided override data has been applied after updating the
+    // route with the "language=objc" query param and also ensure that new data
+    // is not fetched
+    expect(wrapper.vm.topicData.identifier.interfaceLanguage).not.toBe(oldInterfaceLang);
+    expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
+    expect(dataUtils.fetchDataForRouteEnter).not.toBeCalled();
+    expect(next).toBeCalled();
   });
 });

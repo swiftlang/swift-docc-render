@@ -35,6 +35,9 @@ describe('LanguageSwitcher', () => {
         context: 'foo',
       },
     },
+    $router: {
+      push: jest.fn(),
+    },
   };
 
   beforeEach(() => {
@@ -73,10 +76,9 @@ describe('LanguageSwitcher', () => {
     expect(links.at(1).classes('language-option')).toBe(true);
     expect(links.at(1).classes('objc')).toBe(true);
     expect(links.at(1).classes('active')).toBe(false);
-    expect(links.at(1).props('url')).toEqual({
-      path: null,
-      query: { language: Language.objectiveC.key.url, context: 'foo' },
-    });
+    expect(links.at(1).props('url').startsWith('/documentation/foo?')).toBe(true);
+    expect(links.at(1).props('url')).toContain('language=objc');
+    expect(links.at(1).props('url')).toContain('context=foo');
     expect(links.at(1).text()).toBe(Language.objectiveC.name);
   });
 
@@ -93,10 +95,7 @@ describe('LanguageSwitcher', () => {
     expect(links.at(0).classes('language-option')).toBe(true);
     expect(links.at(0).classes('swift')).toBe(true);
     expect(links.at(0).classes('active')).toBe(false);
-    // make sure the `language` parameter is `undefined`,
-    // otherwise Vue-Router has issues with navigating to Swift pages
-    expect(links.at(0).props('url'))
-      .toStrictEqual({ path: null, query: { context: 'foo', language: undefined } });
+    expect(links.at(0).props('url')).toBe('/documentation/foo?context=foo');
     expect(links.at(0).text()).toBe(Language.swift.name);
 
     expect(links.at(1).classes('language-option')).toBe(true);
@@ -120,10 +119,38 @@ describe('LanguageSwitcher', () => {
     expect(links.length).toBe(2);
 
     expect(links.at(0).props('url')).toEqual(null);
-    expect(links.at(1).props('url'))
-      .toStrictEqual({
-        path: null,
-        query: { context: undefined, language: Language.objectiveC.key.url },
-      });
+    expect(links.at(1).props('url')).toBe('/documentation/foo?language=objc');
+  });
+
+  it('stores the preferred language when a link is clicked', () => {
+    const store = { setPreferredLanguage: jest.fn() };
+    wrapper = shallowMount(LanguageSwitcher, {
+      mocks,
+      propsData,
+      provide: { store },
+    });
+
+    let link = wrapper.findAll(LanguageSwitcherLink).at(1);
+    link.vm.$emit('click');
+    expect(store.setPreferredLanguage).toBeCalledWith(Language.objectiveC.key.url);
+
+    link = wrapper.findAll(LanguageSwitcherLink).at(0);
+    link.vm.$emit('click');
+    expect(store.setPreferredLanguage).toBeCalledWith(Language.swift.key.url);
+  });
+
+  it('does not store the preferred language when links are clicked for IDE targets', () => {
+    const store = { setPreferredLanguage: jest.fn() };
+    wrapper = shallowMount(LanguageSwitcher, {
+      mocks,
+      propsData,
+      provide: {
+        isTargetIDE: true,
+        store,
+      },
+    });
+
+    wrapper.findAll(LanguageSwitcherLink).at(1).vm.$emit('click');
+    expect(store.setPreferredLanguage).not.toBeCalled();
   });
 });

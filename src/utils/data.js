@@ -102,3 +102,7 @@ export async function fetchAPIChangesForRoute(route, changes) {
 
   return data;
 }
+
+export function clone(jsonObject) {
+  return JSON.parse(JSON.stringify(jsonObject));
+}
