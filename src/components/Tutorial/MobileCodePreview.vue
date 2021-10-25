@@ -114,7 +114,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .mobile-code-preview {
-  background-color: var(--background, var(--color-code-background));
+  background-color: var(--background, var(--color-step-background));
   padding: $code-listing-with-numbers-padding;
 
   @include breakpoint(small) {
