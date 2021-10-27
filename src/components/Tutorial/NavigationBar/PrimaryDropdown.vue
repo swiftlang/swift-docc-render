@@ -52,14 +52,15 @@
                 <router-link
                   :to="urlWithParams"
                   custom
-                  #default="{ navigate, isActive }"
+                  #default="{ navigate }"
                 >
                   <li
-                    :class="{ [OptionClass]: true, [ActiveOptionClass]: isActive }"
+                    :class="{ [OptionClass]: true,
+                              [ActiveOptionClass]: urlWithParams === $route.path.toLowerCase()}"
                     role="option"
                     :value="title"
-                    :aria-selected="isActive"
-                    :aria-current="isActive ? 'tutorial': false"
+                    :aria-selected="urlWithParams === $route.path.toLowerCase()"
+                    :aria-current="urlWithParams === $route.path.toLowerCase() ? 'tutorial': false"
                     :tabindex="-1"
                     @click="setActive(navigate, closeDropdown, $event)"
                     @keydown.enter="setActive(navigate, closeDropdown, $event)"

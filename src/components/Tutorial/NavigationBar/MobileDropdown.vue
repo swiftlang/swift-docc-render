@@ -38,7 +38,9 @@
               >
                 {{ tutorialTitle }}
               </router-link>
-              <ul v-if="tutorialUrl === $route.path" class="section-list" role="listbox">
+              <ul v-if="tutorialUrl === $route.path.toLowerCase()"
+                  class="section-list"
+                  role="listbox">
                 <li
                   v-for="section in sections"
                   :key="section.title"
