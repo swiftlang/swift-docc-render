@@ -14,35 +14,35 @@
       v-if="shouldRender(AttributeKind.default)"
       v-bind="{ kind: AttributeKind.default, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        Default: <code>{{ attribute.value }}</code>
+        {{ attribute.title || 'Default' }}: <code>{{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.minimum)"
       v-bind="{ kind: AttributeKind.minimum, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        Minimum: <code>{{ attribute.value }}</code>
+        {{ attribute.title || 'Minimum' }}: <code>{{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.minimumExclusive)"
       v-bind="{ kind: AttributeKind.minimumExclusive, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        Minimum: <code>&gt; {{ attribute.value }}</code>
+        {{ attribute.title || 'Minimum' }}: <code>&gt; {{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.maximum)"
       v-bind="{ kind: AttributeKind.maximum, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        Maximum: <code>{{ attribute.value }}</code>
+        {{ attribute.title || 'Maximum' }}: <code>{{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.maximumExclusive)"
       v-bind="{ kind: AttributeKind.maximumExclusive, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        Maximum: <code>&lt; {{ attribute.value }}</code>
+        {{ attribute.title || 'Maximum' }}: <code>&lt; {{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
