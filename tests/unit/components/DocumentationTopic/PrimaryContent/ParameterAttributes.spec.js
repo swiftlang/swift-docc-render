@@ -16,14 +16,15 @@ const { AttributeKind } = ParameterAttributes.constants;
 
 const { ParameterMetaAttribute } = ParameterAttributes.components;
 
-const defaultMetadata = { kind: AttributeKind.default, value: 3 };
-const minimumMetadata = { kind: AttributeKind.minimum, value: 20 };
-const maximumMetadata = { kind: AttributeKind.maximum, value: 50 };
-const minimumExclusiveMetadata = { kind: AttributeKind.minimumExclusive, value: 2 };
-const maximumExclusiveMetadata = { kind: AttributeKind.maximumExclusive, value: 5 };
+const defaultMetadata = { kind: AttributeKind.default, value: 3, title: 'Default' };
+const minimumMetadata = { kind: AttributeKind.minimum, value: 20, title: 'Minimum Value' };
+const maximumMetadata = { kind: AttributeKind.maximum, value: 50, title: 'Maximum Length' };
+const minimumExclusiveMetadata = { kind: AttributeKind.minimumExclusive, value: 2, title: 'Minimum' };
+const maximumExclusiveMetadata = { kind: AttributeKind.maximumExclusive, value: 5, title: 'Maximum' };
 const allowedValuesMetadata = {
   kind: AttributeKind.allowedValues,
   values: ["'one'", "'two'"],
+  title: 'Allowed Values',
 };
 const allowedTypesMetadata = {
   kind: AttributeKind.allowedTypes,
@@ -31,6 +32,7 @@ const allowedTypesMetadata = {
     [{ kind: 'text', text: 'string' }],
     [{ kind: 'text', text: 'number' }],
   ],
+  title: 'Allowed Types',
 };
 
 const mountComponent = propsData => mount(ParameterAttributes, {
@@ -60,12 +62,12 @@ describe('ParameterAttributes', () => {
       metadata
         .at(0)
         .text(),
-    ).toBe('Minimum: 20');
+    ).toBe('Minimum Value: 20');
     expect(
       metadata
         .at(1)
         .text(),
-    ).toBe('Maximum: 50');
+    ).toBe('Maximum Length: 50');
   });
 
   it('displays exclusive min/max metadata', () => {
@@ -150,8 +152,8 @@ describe('ParameterAttributes', () => {
     it('passes changes to default metadata', () => {
       const changes = {
         [AttributeKind.default]: {
-          new: { value: 4 },
-          previous: { value: 2 },
+          new: { value: 4, title: 'Default' },
+          previous: { value: 2, title: 'Default' },
         },
       };
       const wrapper = mountComponent({
@@ -170,12 +172,12 @@ describe('ParameterAttributes', () => {
     it('passes changes to minimum/maximum metadata', () => {
       const changes = {
         [AttributeKind.minimum]: {
-          new: { value: 4 },
-          previous: { value: 2 },
+          new: { value: 4, title: 'Minimum' },
+          previous: { value: 2, title: 'Minimum' },
         },
         [AttributeKind.maximum]: {
-          new: { value: 10 },
-          previous: { value: 7 },
+          new: { value: 10, title: 'Maximum' },
+          previous: { value: 7, title: 'Maximum' },
         },
       };
 
@@ -208,12 +210,12 @@ describe('ParameterAttributes', () => {
     it('passes changes to exclusive minimum/maximum metadata', () => {
       const changes = {
         [AttributeKind.minimumExclusive]: {
-          new: { value: 4 },
-          previous: { value: 2 },
+          new: { value: 4, title: 'Minimum' },
+          previous: { value: 2, title: 'Minimum' },
         },
         [AttributeKind.maximumExclusive]: {
-          new: { value: 10 },
-          previous: { value: 7 },
+          new: { value: 10, title: 'Maximum' },
+          previous: { value: 7, title: 'Maximum' },
         },
       };
 
