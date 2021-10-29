@@ -382,8 +382,14 @@ describe('DocumentationTopic', () => {
       expect(summary.contains(OnThisPageNav)).toBe(false);
     });
 
-    it('does not render a `LanguageSwitcher` for non-IDE targets', () => {
-      expect(wrapper.contains(LanguageSwitcher)).toBe(false);
+    it('renders a `LanguageSwitcher`', () => {
+      const switcher = summary.find(LanguageSwitcher);
+      expect(switcher.exists()).toBe(true);
+      expect(switcher.props()).toEqual({
+        interfaceLanguage: propsData.interfaceLanguage,
+        objcPath: propsData.variants[0].paths[0],
+        swiftPath: propsData.variants[1].paths[0],
+      });
     });
 
     it('renders an `FrameworkList` component in the sidebar', () => {
@@ -645,7 +651,7 @@ describe('DocumentationTopic', () => {
       expect(store.reset).toBeCalled();
     });
 
-    it('routes to the objc variant of a page if that is the preferred language', () => {
+    it('routes to the objc variant of a page if that is the preferred language', async () => {
       const $route = { query: {} };
       const $router = { replace: jest.fn() };
       const store = {
@@ -664,6 +670,7 @@ describe('DocumentationTopic', () => {
         propsData,
         provide: { store },
       });
+      await wrapper.vm.$nextTick();
       expect($router.replace).toBeCalledWith({
         path: `/${propsData.variants[0].paths[0]}`,
         query: { language: Language.objectiveC.key.url },
@@ -683,15 +690,5 @@ describe('isTargetIDE', () => {
 
   it('does not render a `Nav`', () => {
     expect(wrapper.contains(Nav)).toBe(false);
-  });
-
-  it('renders a `LanguageSwitcher`', () => {
-    const switcher = wrapper.find(Summary).find(LanguageSwitcher);
-    expect(switcher.exists()).toBe(true);
-    expect(switcher.props()).toEqual({
-      interfaceLanguage: propsData.interfaceLanguage,
-      objcPath: propsData.variants[0].paths[0],
-      swiftPath: propsData.variants[1].paths[0],
-    });
   });
 });
