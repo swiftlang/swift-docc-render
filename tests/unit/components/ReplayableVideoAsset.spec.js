@@ -30,7 +30,7 @@ describe('ReplayableVideoAsset', () => {
     },
   });
 
-  const playMock = jest.fn();
+  const playMock = jest.fn().mockResolvedValue(undefined);
 
   beforeAll(() => {
     window.matchMedia = () => ({ matches: false });
@@ -69,11 +69,12 @@ describe('ReplayableVideoAsset', () => {
     expect(replayButton.classes('visible')).toBe(false);
   });
 
-  it('plays the video if replay button is clicked', () => {
+  it('plays the video if replay button is clicked', async () => {
     const wrapper = mountWithProps();
 
     expect(playMock).toHaveBeenCalledTimes(0);
     wrapper.find('.replay-button').trigger('click');
+    await playMock;
     expect(playMock).toHaveBeenCalledTimes(1);
   });
 });
