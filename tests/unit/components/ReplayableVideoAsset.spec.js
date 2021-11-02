@@ -12,6 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vue';
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
+import { flushPromises } from '../../../test-utils';
 
 const variants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/myvideo.mp4' }];
 
@@ -74,7 +75,7 @@ describe('ReplayableVideoAsset', () => {
 
     expect(playMock).toHaveBeenCalledTimes(0);
     wrapper.find('.replay-button').trigger('click');
-    await playMock;
+    await flushPromises();
     expect(playMock).toHaveBeenCalledTimes(1);
   });
 });
