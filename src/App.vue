@@ -15,8 +15,10 @@
   >
     <a href="#main" id="skip-nav">Skip Navigation</a>
     <InitialLoadingPlaceholder />
-    <custom-header v-if="hasCustomHeader" :data-color-scheme="preferredColorScheme" />
-    <slot name="header" :isTargetIDE="isTargetIDE" />
+    <slot name="header" :isTargetIDE="isTargetIDE">
+      <!-- Render the custom header by default, if there is no content in the `header` slot -->
+      <custom-header v-if="hasCustomHeader" :data-color-scheme="preferredColorScheme" />
+    </slot>
     <!-- The nav sticky anchor has to always be between the Header and the Content -->
     <div :id="baseNavStickyAnchorId" />
     <slot :isTargetIDE="isTargetIDE">

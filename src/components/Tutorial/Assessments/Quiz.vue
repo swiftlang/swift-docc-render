@@ -189,13 +189,13 @@ export default {
 .controls {
   text-align: center;
   margin-bottom: 40px;
-}
 
-.button-cta {
-  margin: 0.5rem;
-  margin-top: 0;
-  padding: 0.3rem 3rem;
-  min-width: 8rem;
+  .button-cta {
+    margin: 0.5rem;
+    margin-top: 0;
+    padding: 0.3rem 3rem;
+    min-width: 8rem;
+  }
 }
 
 // hide the checkbox
