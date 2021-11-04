@@ -19,6 +19,7 @@
     />
     <a
       class="replay-button"
+      href="#"
       :class="{ visible: this.showsReplayButton }"
       @click.prevent="replay"
     >
@@ -58,13 +59,13 @@ export default {
     };
   },
   methods: {
-    replay() {
+    async replay() {
       const videoPlayer = this.$refs.asset.$el;
       if (videoPlayer) {
         this.showsReplayButton = false;
         // Start video playback from the beginning.
         videoPlayer.currentTime = 0;
-        videoPlayer.play();
+        await videoPlayer.play();
       }
     },
     onVideoEnd() {
