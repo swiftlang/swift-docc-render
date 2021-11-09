@@ -280,6 +280,16 @@ describe('App', () => {
         expect(header.exists()).toBe(true);
         expect(header.attributes('data-color-scheme')).toBeDefined();
       });
+
+      it('does not render a <custom-header>, if a header slot is passed', () => {
+        wrapper = createWrapper({
+          slots: {
+            header: '<div class="header">Header</div>',
+          },
+        });
+        const header = wrapper.find('custom-header-stub');
+        expect(header.exists()).toBe(false);
+      });
     });
 
     it('renders a <custom-footer> if one has been defined', () => {
