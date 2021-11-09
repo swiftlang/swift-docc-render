@@ -10,7 +10,7 @@
 
 <script>
 // This component renders token text as a link to a given type.
-import { buildUrl } from 'docc-render/utils/url-helper';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 export default {
   name: 'TypeIdentifierLink',
@@ -24,22 +24,25 @@ export default {
   render(createElement) {
     const klass = 'type-identifier-link';
     const reference = this.references[this.identifier];
-    return reference && reference.url ? (
-      // resolved reference, use anchor tag
-      createElement('router-link', {
+    // internal and external link
+    if (reference && reference.url) {
+      return createElement(Reference, {
         class: klass,
-        props: { to: buildUrl(reference.url, this.$route.query) },
+        props: {
+          url: reference.url,
+          kind: reference.kind,
+          role: reference.role,
+        },
       }, (
         this.$slots.default
-      ))
-    ) : (
-      // unresolved link, use span tag
-      createElement('span', {
-        class: klass,
-      }, (
-        this.$slots.default
-      ))
-    );
+      ));
+    }
+    // unresolved link, use span tag
+    return createElement('span', {
+      class: klass,
+    }, (
+      this.$slots.default
+    ));
   },
   props: {
     identifier: {

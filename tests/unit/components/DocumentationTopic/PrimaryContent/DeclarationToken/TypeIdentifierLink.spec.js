@@ -8,12 +8,10 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import {
-  shallowMount,
-  RouterLinkStub,
-} from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import TypeIdentifierLink
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/TypeIdentifierLink.vue';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 describe('TypeIdentifierLink', () => {
   const foo = {
@@ -30,14 +28,9 @@ describe('TypeIdentifierLink', () => {
     default: foo.title,
   };
 
-  const stubs = {
-    'router-link': RouterLinkStub,
-  };
-
   const defaultOpts = {
     propsData,
     slots,
-    stubs,
     mocks: {
       $route: {
         query: {},
@@ -62,10 +55,10 @@ describe('TypeIdentifierLink', () => {
     });
 
     expect(wrapper.is('.type-identifier-link')).toBe(true);
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.find(Reference);
     expect(link.exists()).toBe(true);
     expect(link.classes('type-identifier-link')).toBe(true);
-    expect(link.props('to')).toBe(foo.url);
+    expect(link.props('url')).toBe(foo.url);
     expect(link.text()).toBe(foo.title);
   });
 });
