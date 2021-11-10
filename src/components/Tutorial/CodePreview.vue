@@ -204,6 +204,7 @@ $duration: 0.2s;
 .code-preview {
   position: sticky;
   @include overflow-y;
+  background-color: var(--background, var(--color-step-background));
 
   $height-ide: 100vh;
   height: calc(#{$height-ide} - #{$nav-height});
@@ -255,7 +256,6 @@ $duration: 0.2s;
   top: 0;
   right: 0;
   background: var(--color-runtime-preview-background);
-  box-shadow: 0px 0px 3px 0px var(--color-runtime-preview-shadow);
   border-radius: $border-radius;
   margin: $preview-margin;
   margin-left: 0;
@@ -267,6 +267,21 @@ $duration: 0.2s;
   @supports not (width: stretch) {
     display: flex;
     flex-direction: column;
+  }
+
+  &::before {
+    box-shadow: 0px 0px 3px 0px var(--color-runtime-preview-shadow);
+    border-radius: $border-radius;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    @include prefers-dark {
+      mix-blend-mode: difference;
+    }
   }
 }
 
