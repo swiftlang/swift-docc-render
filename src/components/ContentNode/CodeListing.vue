@@ -174,6 +174,7 @@ code {
 
 .code-line-container {
   flex-shrink: 0;
+  padding-right: 14px;
 }
 
 .code-listing,
