@@ -154,13 +154,17 @@ export default {
     })).catch(next);
   },
   beforeRouteUpdate(to, from, next) {
-    if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
+    if (to.path === from.path && to.query.language === Language.objectiveC.key.url
+      && this.objcOverrides) {
       this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
       next();
     } else if (shouldFetchDataForRouteUpdate(to, from)) {
       fetchDataForRouteEnter(to, from, next).then((data) => {
         this.topicDataObjc = null;
         this.topicData = data;
+        if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
+          this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
+        }
         next();
       }).catch(next);
     } else {
