@@ -142,8 +142,7 @@ export default {
   @include font-styles(documentation-nav);
   // vertically align the items
   @include breakpoint-only-largenav() {
-    height: $nav-height-small;
-    padding-top: rem(4px);
+    padding-top: 0;
   }
 }
 

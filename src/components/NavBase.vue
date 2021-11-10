@@ -600,7 +600,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   display: flex;
   align-items: center;
   white-space: nowrap;
-  padding-top: rem(4px);
   box-sizing: border-box;
 
   @include breakpoint(small, $scope: nav) {
