@@ -227,6 +227,7 @@ export default {
 .nav /deep/ .nav-title {
   grid-column: 1;
   width: 90%;
+  padding-top: 0;
 }
 
 .primary-dropdown,
