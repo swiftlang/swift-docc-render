@@ -13,7 +13,7 @@
     <Topic
       v-if="topicData"
       v-bind="topicProps"
-      :key="topicProps.identifier + topicProps.interfaceLanguage"
+      :key="topicKey"
     />
   </CodeTheme>
 </template>
@@ -66,6 +66,10 @@ export default {
         this.topicDataDefault = data;
       },
     },
+    topicKey: ({ $route, topicProps }) => [
+      $route.path,
+      topicProps.interfaceLanguage,
+    ].join(),
     topicProps() {
       const {
         abstract,
