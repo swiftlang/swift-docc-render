@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <router-link v-if="url" :to="url"><slot /></router-link>
+  <a v-if="url" :href="url" @click.prevent="$emit('click')"><slot /></a>
   <span v-else><slot /></span>
 </template>
 

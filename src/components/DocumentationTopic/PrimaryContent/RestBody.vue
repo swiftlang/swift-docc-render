@@ -155,4 +155,14 @@ export default {
 .part-name {
   font-weight: $font-weight-bold;
 }
+
+// The inline display is needed here to allow the optional "Required" text to
+// prefix the actual paragraph of any text.
+.content {
+  display: inline;
+
+  /deep/ p:first-child {
+    display: inline;
+  }
+}
 </style>

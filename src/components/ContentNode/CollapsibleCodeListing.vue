@@ -71,6 +71,7 @@ code {
   display: flex;
   border-left: 4px solid transparent;
   counter-increment: linenumbers;
+  padding-right: 14px;
 }
 
 .code-number {

@@ -45,6 +45,8 @@ $docs-code-listing-border-width: 1px !default;
 
     pre {
       padding: $code-block-style-elements-padding;
+      // setting it to 0 prevents browsers from adding extra right spacing, when having scrollbar
+      padding-right: 0;
 
       > code {
         @include font-styles(documentation-code-listing);

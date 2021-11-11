@@ -98,6 +98,7 @@ import { getSetting } from 'docc-render/utils/theme-settings';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
+import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -113,7 +114,6 @@ import SeeAlso from './DocumentationTopic/SeeAlso.vue';
 import Summary from './DocumentationTopic/Summary.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
-import LanguageSwitcher from './DocumentationTopic/Summary/LanguageSwitcher.vue';
 
 export default {
   name: 'DocumentationTopic',
@@ -307,10 +307,15 @@ export default {
     // hierarchy/breadcrumb for a given topic. We choose to render only the
     // first one.
     parentTopicIdentifiers: ({ hierarchy: { paths: [ids = []] = [] } }) => ids,
-    shouldShowLanguageSwitcher: ({ isTargetIDE, objcPath, swiftPath }) => (
-      isTargetIDE && objcPath && swiftPath
-    ),
+    shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
+  },
+  methods: {
+    normalizePath(path) {
+      // Sometimes `paths` data from `variants` are prefixed with a leading
+      // slash and sometimes they aren't
+      return path.startsWith('/') ? path : `/${path}`;
+    },
   },
   created() {
     // Switch to the Objective-C variant of a page if the query parameter is not
@@ -318,14 +323,17 @@ export default {
     // using the navigation toggle (indicating a semi-global preference/mode)
     if (this.topicState.preferredLanguage === Language.objectiveC.key.url
       && this.interfaceLanguage !== Language.objectiveC.key.api
-      && this.objcPath) {
+      && this.objcPath && this.$route.query.language !== Language.objectiveC.key.url) {
       const { query } = this.$route;
-      this.$router.replace({
-        path: `/${this.objcPath}`,
-        query: {
-          ...query,
-          language: Language.objectiveC.key.url,
-        },
+
+      this.$nextTick().then(() => {
+        this.$router.replace({
+          path: this.normalizePath(this.objcPath),
+          query: {
+            ...query,
+            language: Language.objectiveC.key.url,
+          },
+        });
       });
     }
 
