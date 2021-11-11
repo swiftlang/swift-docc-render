@@ -130,6 +130,9 @@ export default {
     },
   },
   methods: {
+    applyObjcOverrides() {
+      this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
+    },
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
     },
@@ -152,22 +155,21 @@ export default {
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
-        // eslint-disable-next-line no-param-reassign
-        vm.topicDataObjc = apply(clone(vm.topicData), vm.objcOverrides);
+        vm.applyObjcOverrides();
       }
     })).catch(next);
   },
   beforeRouteUpdate(to, from, next) {
     if (to.path === from.path && to.query.language === Language.objectiveC.key.url
       && this.objcOverrides) {
-      this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
+      this.applyObjcOverrides();
       next();
     } else if (shouldFetchDataForRouteUpdate(to, from)) {
       fetchDataForRouteEnter(to, from, next).then((data) => {
         this.topicDataObjc = null;
         this.topicData = data;
         if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
-          this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
+          this.applyObjcOverrides();
         }
         next();
       }).catch(next);
