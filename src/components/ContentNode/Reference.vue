@@ -46,11 +46,14 @@ export default {
       return this.kind === 'symbol'
         && (this.role === TopicRole.symbol || this.role === TopicRole.dictionarySymbol);
     },
+    isDisplaySymbol({ isSymbolReference, titleStyle, ideTitle }) {
+      return ideTitle ? (isSymbolReference && titleStyle === 'symbol') : isSymbolReference;
+    },
     refComponent() {
       if (!this.isInternal) {
         return ReferenceExternal;
       }
-      if (this.isSymbolReference && !this.ideTitle) {
+      if (this.isDisplaySymbol) {
         return ReferenceInternalSymbol;
       }
       return ReferenceInternal;
@@ -81,6 +84,10 @@ export default {
       default: true,
     },
     ideTitle: {
+      type: String,
+      required: false,
+    },
+    titleStyle: {
       type: String,
       required: false,
     },
