@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <Overview v-if="topicData" v-bind="overviewProps" />
+  <Overview v-if="topicData" v-bind="overviewProps" :key="topicKey" />
 </template>
 
 <script>
@@ -40,6 +40,10 @@ export default {
       references,
       sections,
     }),
+    topicKey: ({ $route, topicData }) => [
+      $route.path,
+      topicData.identifier.interfaceLanguage,
+    ].join(),
   },
   beforeRouteEnter(to, from, next) {
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {

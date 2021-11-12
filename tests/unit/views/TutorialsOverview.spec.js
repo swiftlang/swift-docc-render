@@ -29,6 +29,10 @@ describe('TutorialsOverview', () => {
 
   it('renders an `Overview` with data', () => {
     const topicData = {
+      identifier: {
+        interfaceLanguage: 'swift',
+        url: '/tutorials/swiftui',
+      },
       metadata: {},
       references: {},
       sections: [],
