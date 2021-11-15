@@ -73,6 +73,7 @@ describe('Topic', () => {
     wrapper.setData({
       topicData: {
         identifier: {
+          interfaceLanguage: 'swift',
           url: 'foo',
         },
       },
@@ -103,6 +104,7 @@ describe('Topic', () => {
     wrapper.setData({
       topicData: {
         identifier: {
+          interfaceLanguage: 'swift',
           url: 'foo',
         },
       },
@@ -146,6 +148,7 @@ describe('Topic', () => {
           ...props,
           kind: 'article',
           identifier: {
+            interfaceLanguage: 'swift',
             url: 'foo',
           },
         },
@@ -209,6 +212,7 @@ describe('Topic', () => {
           ...props,
           kind: 'project',
           identifier: {
+            interfaceLanguage: 'swift',
             url: 'foo',
           },
         },

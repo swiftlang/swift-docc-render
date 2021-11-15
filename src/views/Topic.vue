@@ -14,7 +14,7 @@
       v-if="topicData"
       v-bind="propsFor(topicData)"
       :is="componentFor(topicData)"
-      :key="topicData.identifier.url"
+      :key="topicKey"
       :hierarchy="hierarchy"
     />
   </div>
@@ -69,6 +69,10 @@ export default {
         technologyNavigation,
       };
     },
+    topicKey: ({ $route, topicData }) => [
+      $route.path,
+      topicData.identifier.interfaceLanguage,
+    ].join(),
   },
   beforeRouteEnter(to, from, next) {
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {

@@ -13,6 +13,7 @@ import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 
@@ -181,6 +182,42 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).not.toBe(oldInterfaceLang);
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(dataUtils.fetchDataForRouteEnter).not.toBeCalled();
+    expect(next).toBeCalled();
+  });
+
+  it('loads new data and applies ObjC data when provided as overrides', async () => {
+    const newInterfaceLang = 'occ';
+    const variantOverrides = [
+      {
+        traits: [{ interfaceLanguage: newInterfaceLang }],
+        patch: [
+          { op: 'replace', path: '/identifier/interfaceLanguage', value: newInterfaceLang },
+        ],
+      },
+    ];
+    const newTopicData = {
+      ...topicData,
+      variantOverrides,
+    };
+
+    dataUtils.fetchDataForRouteEnter = jest.fn().mockResolvedValue(newTopicData);
+    wrapper.setData({ topicData });
+
+    const to = {
+      path: '/documentation/bar',
+      query: { language: 'objc' },
+    };
+    const from = mocks.$route;
+    const next = jest.fn();
+    // there is probably a more realistic way to simulate this
+    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
+    await flushPromises();
+
+    // check that the provided override data has been applied after updating the
+    // route with the "language=objc" query param and ensure that new data has
+    // been fetched
+    expect(dataUtils.fetchDataForRouteEnter).toBeCalled();
+    expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(next).toBeCalled();
   });
 });
