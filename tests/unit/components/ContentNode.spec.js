@@ -413,6 +413,7 @@ describe('ContentNode', () => {
           title: 'FooBar',
           url: '/foo/bar',
           ideTitle: 'IDETitle',
+          titleStyle: 'symbol',
         },
       });
 
@@ -420,6 +421,7 @@ describe('ContentNode', () => {
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
       expect(reference.props('ideTitle')).toBe('IDETitle');
+      expect(reference.props('titleStyle')).toBe('symbol');
       expect(reference.isEmpty()).toBe(false);
       expect(reference.text()).toBe('FooBar');
     });
