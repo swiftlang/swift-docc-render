@@ -11,6 +11,7 @@
 /**
  * Utility functions for working with Assets
  */
+import { baseUrl } from 'docc-render/utils/theme-settings';
 
 /**
  * Separate array of variants by light/dark mode
@@ -49,4 +50,28 @@ export function extractDensities(variants) {
 
     return list;
   }, []);
+}
+
+/**
+ * Joins two URL paths, normalizing slashes, so we dont have double slashes.
+ * Does not work with actual URLs.
+ * @param {Array} parts - list of paths to join.
+ * @return {String}
+ */
+export function pathJoin(parts) {
+  const separator = '/';
+  const replace = new RegExp(`${separator}+`, 'g');
+  return parts.join(separator).replace(replace, separator);
+}
+
+/**
+ * Normalizes asset urls, by prefixing the baseUrl path to them.
+ * @param {String} url
+ * @return {String}
+ */
+export function normalizeAssetUrl(url) {
+  if (!url || typeof url !== 'string' || url.startsWith(baseUrl) || !url.startsWith('/')) {
+    return url;
+  }
+  return pathJoin([baseUrl, url]);
 }

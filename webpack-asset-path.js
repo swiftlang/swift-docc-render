@@ -7,7 +7,8 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+// The variable below is a Webpack magic var, that sets the asset public path dynamically.
+// See https://webpack.js.org/guides/public-path/#on-the-fly
 
-const baseUrl = '';
-const getSetting = jest.fn(() => ({}));
-export { baseUrl, getSetting };
+/* eslint-disable */
+__webpack_public_path__ = window.baseUrl;

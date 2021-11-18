@@ -13,11 +13,17 @@ import Router from 'vue-router';
 import SwiftDocCRenderRouter from 'docc-render/setup-utils/SwiftDocCRenderRouter';
 import { FetchError } from 'docc-render/utils/data';
 
+jest.mock('docc-render/utils/theme-settings', () => ({
+  baseUrl: '/',
+}));
+
 const mockInstance = {
   onError: jest.fn(),
   onReady: jest.fn(),
   replace: jest.fn(),
+  beforeEach: jest.fn(),
 };
+
 jest.mock('vue-router', () => jest.fn(() => (mockInstance)));
 jest.mock('docc-render/utils/router-utils', () => ({
   restoreScrollOnReload: jest.fn(),
