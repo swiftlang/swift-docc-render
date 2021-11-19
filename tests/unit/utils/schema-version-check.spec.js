@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import emitWarningForSchemaVersionMismatch, { CURRENT_SUPPORTED_SCHEMA } from 'docc-render/utils/schema-version-check';
+import emitWarningForSchemaVersionMismatch, { CURRENT_SUPPORTED_SCHEMA, combineVersions, CURRENT_SCHEMA_STRING } from 'docc-render/utils/schema-version-check';
 
 const warnSpy = jest.spyOn(console, 'warn').mockReturnValue('');
 
@@ -23,33 +23,36 @@ describe('schema-version-check', () => {
   });
 
   it('emits a warning if the major version is higher than the supported', () => {
-    emitWarningForSchemaVersionMismatch({
+    const newVersion = {
       ...CURRENT_SUPPORTED_SCHEMA,
       major: CURRENT_SUPPORTED_SCHEMA.major + 1,
-    });
+    };
+    emitWarningForSchemaVersionMismatch(newVersion);
     expect(warnSpy).toHaveBeenCalledTimes(1);
     expect(warnSpy)
-      .toHaveBeenCalledWith('[Swift-DocC-Render] The render node version for this page (1.1.0) has a different major version component than Swift-DocC-Render supports (0.1.0). Compatibility is not guaranteed.');
+      .toHaveBeenCalledWith(`[Swift-DocC-Render] The render node version for this page (${combineVersions(newVersion)}) has a different major version component than Swift-DocC-Render supports (${CURRENT_SCHEMA_STRING}). Compatibility is not guaranteed.`);
   });
 
   it('emits a warning if the major version is lower than the supported', () => {
-    emitWarningForSchemaVersionMismatch({
+    const newVersion = {
       ...CURRENT_SUPPORTED_SCHEMA,
       major: CURRENT_SUPPORTED_SCHEMA.major - 1,
-    });
+    };
+    emitWarningForSchemaVersionMismatch(newVersion);
     expect(warnSpy).toHaveBeenCalledTimes(1);
     expect(warnSpy)
-      .toHaveBeenCalledWith('[Swift-DocC-Render] The render node version for this page (-1.1.0) has a different major version component than Swift-DocC-Render supports (0.1.0). Compatibility is not guaranteed.');
+      .toHaveBeenCalledWith(`[Swift-DocC-Render] The render node version for this page (${combineVersions(newVersion)}) has a different major version component than Swift-DocC-Render supports (${CURRENT_SCHEMA_STRING}). Compatibility is not guaranteed.`);
   });
 
   it('emits a warning if the minor version is higher than the supported', () => {
-    emitWarningForSchemaVersionMismatch({
+    const newVersion = {
       ...CURRENT_SUPPORTED_SCHEMA,
       minor: CURRENT_SUPPORTED_SCHEMA.minor + 1,
-    });
+    };
+    emitWarningForSchemaVersionMismatch(newVersion);
     expect(warnSpy).toHaveBeenCalledTimes(1);
     expect(warnSpy)
-      .toHaveBeenCalledWith('[Swift-DocC-Render] The render node version for this page has a higher minor version (0.2.0) than Swift-DocC-Render supports (0.1.0). Compatibility is not guaranteed.');
+      .toHaveBeenCalledWith(`[Swift-DocC-Render] The render node version for this page has a higher minor version (${combineVersions(newVersion)}) than Swift-DocC-Render supports (${CURRENT_SCHEMA_STRING}). Compatibility is not guaranteed.`);
   });
 
   it('does not emit a warning, if the minor version is lower than the supported', () => {
