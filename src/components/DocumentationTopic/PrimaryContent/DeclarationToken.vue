@@ -9,7 +9,6 @@
 -->
 
 <script>
-import WordBreak from 'docc-render/components/WordBreak.vue';
 import ChangedToken from './DeclarationToken/ChangedToken.vue';
 import RawText from './DeclarationToken/RawText.vue';
 import SyntaxToken from './DeclarationToken/SyntaxToken.vue';
@@ -46,9 +45,7 @@ export default {
     }
     case TokenKind.typeIdentifier: {
       const props = { identifier: this.identifier };
-      return createElement(TypeIdentifierLink, { props }, [
-        createElement(WordBreak, text),
-      ]);
+      return createElement(TypeIdentifierLink, { props }, text);
     }
     case TokenKind.added:
     case TokenKind.removed:

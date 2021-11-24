@@ -47,7 +47,7 @@ describe('DeclarationToken', () => {
     const link = wrapper.find(TypeIdentifierLink);
     expect(link.exists()).toBe(true);
     expect(link.props()).toEqual({ identifier: propsData.identifier });
-    expect(link.contains(WordBreak)).toBe(true);
+    expect(link.contains(WordBreak)).toBe(false);
     expect(link.text()).toBe(propsData.text);
   });
 
