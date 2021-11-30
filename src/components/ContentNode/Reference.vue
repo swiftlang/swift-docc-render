@@ -46,11 +46,17 @@ export default {
       return this.kind === 'symbol'
         && (this.role === TopicRole.symbol || this.role === TopicRole.dictionarySymbol);
     },
+    isDisplaySymbol({ isSymbolReference, titleStyle, ideTitle }) {
+      return ideTitle ? (isSymbolReference && titleStyle === 'symbol') : isSymbolReference;
+    },
     refComponent() {
-      if (this.isInternal) {
-        return this.isSymbolReference ? ReferenceInternalSymbol : ReferenceInternal;
+      if (!this.isInternal) {
+        return ReferenceExternal;
       }
-      return ReferenceExternal;
+      if (this.isDisplaySymbol) {
+        return ReferenceInternalSymbol;
+      }
+      return ReferenceInternal;
     },
     urlWithParams({ isInternal }) {
       return isInternal ? buildUrl(this.url, this.$route.query) : this.url;
@@ -76,6 +82,14 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    ideTitle: {
+      type: String,
+      required: false,
+    },
+    titleStyle: {
+      type: String,
+      required: false,
     },
   },
 };
