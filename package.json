@@ -10,7 +10,9 @@
     "test:license": "./bin/check-source",
     "test:unit": "vue-cli-service test:unit",
     "test:unit:watch": "vue-cli-service test:unit --watch",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "docs:preview": "docc preview ./DocCRender.docc",
+    "docs:build": "docc convert ./DocCRender.docc"
   },
   "files": [
     "src",
