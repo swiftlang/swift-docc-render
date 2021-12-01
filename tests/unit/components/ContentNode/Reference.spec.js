@@ -78,6 +78,23 @@ describe('Reference', () => {
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
 
+  it('renders a `ReferenceInternal` for external "symbol" kind references with human readable name', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: {
+        url: '/documentation/uikit/uiview',
+        kind: 'symbol',
+        role: TopicRole.symbol,
+        ideTitle: 'UIView',
+      },
+      slots: { default: 'UIView' },
+    });
+    const ref = wrapper.find(ReferenceInternal);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+  });
+
   it('renders a `ReferenceInternalSymbol` for external "dictionarySymbol" kind references', () => {
     const wrapper = shallowMount(Reference, {
       localVue,
@@ -86,6 +103,42 @@ describe('Reference', () => {
         url: '/documentation/uikit/uiview',
         kind: 'symbol',
         role: TopicRole.dictionarySymbol,
+      },
+      slots: { default: 'UIView' },
+    });
+    const ref = wrapper.find(ReferenceInternalSymbol);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+  });
+
+  it('renders a `ReferenceInternal` for external "dictionarySymbol" kind references with a human readable name', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: {
+        url: '/documentation/uikit/uiview',
+        kind: 'symbol',
+        role: TopicRole.dictionarySymbol,
+        ideTitle: 'UIView',
+        titleStyle: 'title',
+      },
+      slots: { default: 'UIView' },
+    });
+    const ref = wrapper.find(ReferenceInternal);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+  });
+
+  it('renders a `ReferenceInternalSymbol` for external "dictionarySymbol" kind references with `symbol` title style', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: {
+        url: '/documentation/uikit/uiview',
+        kind: 'symbol',
+        role: TopicRole.dictionarySymbol,
+        ideTitle: 'UIView',
+        titleStyle: 'symbol',
       },
       slots: { default: 'UIView' },
     });

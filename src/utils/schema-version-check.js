@@ -10,15 +10,15 @@
 
 export const CURRENT_SUPPORTED_SCHEMA = {
   major: 0,
-  minor: 1,
+  minor: 2,
   patch: 0,
 };
 
-function combineVersions({ major, minor, patch }) {
+export function combineVersions({ major, minor, patch }) {
   return [major, minor, patch].join('.');
 }
 
-const CURRENT_SCHEMA_STRING = combineVersions(CURRENT_SUPPORTED_SCHEMA);
+export const CURRENT_SCHEMA_STRING = combineVersions(CURRENT_SUPPORTED_SCHEMA);
 
 function constructMinorVersionMessage(current) {
   return `[Swift-DocC-Render] The render node version for this page has a higher minor version (${current}) than Swift-DocC-Render supports (${CURRENT_SCHEMA_STRING}). Compatibility is not guaranteed.`;
