@@ -6,15 +6,15 @@ Learn how DocC-Render is built internally, the principles behind its structure, 
 
 DocC-Render supports rendering reference pages, tutorials, and articles to document your project in a structured manner.
 
-Each page fetches its required render JSON asynchronously, from the `/data` directory. To learn more about the types of pages DocC Render supports, visit the [DocC Docs](https://www.swift.org/documentation/docc).
+Each page fetches its required render JSON asynchronously, from the `/data` directory. To learn more about the types of pages DocC-Render supports, visit the [DocC Docs](https://www.swift.org/documentation/docc).
 
 ### Modular Architecture
 
-The `swift-docc-render` package holds a variety of components that are useful to build pages. All components are packaged as raw Vue files, so Vue applications can utilize them as needed.
+Even though `swift-docc-render` is a Vue.js application, it defines a variety of components and utilities, that could also be used in a modular fashion by some other Vue application. All components are packaged as raw Vue files, so Vue applications can utilize them as needed.
 
 ### Vue Page Structure
 
-Routing in DocC-Render is handled by [Vue Router](https://router.vuejs.org). Pages can be dynamic, meaning a single page can match many urls, but still be rendered by the same Vue Page Component. For example the `/tutorials/:id` route is rendered by the **TutorialOverview** page.
+Routing in DocC-Render is handled by [Vue Router](https://router.vuejs.org), with routes defined in `src/routes.js`. Pages can be dynamic, meaning a single page can match many urls, but still be rendered by the same Vue Page Component. For example the `/tutorials/:id` route is rendered by the **TutorialOverview** page.
 
 For each page type we have:
 
@@ -27,16 +27,18 @@ Each page is made out of isolated sub components, rendered depending on the data
 
 Some of the more generic ones like `ContentNode` or `GridColumn` are in almost every page, whereas others belong to only certain page types. Those belonging to a certain page type, are usually scoped to a folder named after their page type.
 
+`ContentNode` is the backbone of the DocC-Render application, responsible for deeply walking through the Render JSON and rendering each of the smaller building blocks.
+
 ### Internal Links and Routes
 
-Routes in DocC Render are very flexible and define a very relaxed matching pattern.
+Routes in DocC-Render are very flexible and define a very relaxed matching pattern.
 
 For example, the `/documentation/*` route for documentation pages will try to fetch data and render a page using the `*` part of the URL as the path of the data to fetch. The same idea applies to the `/tutorials/*` route.
 
 **Example:** 
-For the route `/documentation/path/to/something` DocC Render will try to fetch DocC generated JSON, using the same nested path `/data/documentation/path/to/something.json`. 
+For the route `/documentation/path/to/something` DocC-Render will try to fetch DocC generated JSON, using the same nested path `/data/documentation/path/to/something.json`. 
 
-Links to pages in DocC Render are generated using references coming from the render JSON. You can use `ReferenceUrlProvider` to get the URL and title from a reference.
+Links to pages in DocC-Render are generated using references coming from the render JSON. You can use `ReferenceUrlProvider` to get the URL and title from a reference.
 
 ```html
 <ReferenceUrlProvider :reference="someFooReference">
@@ -51,7 +53,8 @@ Links to pages in DocC Render are generated using references coming from the ren
 
 ### Stores
 
-A DocC Render store module extracts commonly used data that needs to be reactive and be accessible to multiple components. A store is just an ES Module that exposes a `state` object and some methods.
+A DocC-Render store module extracts commonly used data that needs to be reactive and be accessible to multiple components. 
+A store is just an ES Module that exposes a `state` object and some methods. This is follows the [Simple State Management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch) section from the Vue docs.
 
 ```js
 // src/stores/FooStore.js
@@ -99,7 +102,7 @@ Files inside the `constants` folder are meant to share different constant value 
 
 ### Icons
 
-Icons in DocC Render are Vue components that utilize the `SVGIcon` component. Inside the `SVGIcon` element, you can copy the body of an SVG file with the `svg` tag removed. This is done so we can load vector icons inline, and be able to change properties like colors and fills easily with css.
+Icons in DocC-Render are Vue components that utilize the `SVGIcon` component. Inside the `SVGIcon` element, you can copy the body of an SVG file with the `svg` tag removed. This is done so we can load vector icons inline, and be able to change properties like colors and fills easily with css.
 
 ```html
 <template>
@@ -120,7 +123,7 @@ export default {
 
 ### Styles
 
-Styles in DocC Render are separated between `core` and `base` styles, with the majority of styling being defined as scoped inside the corresponding Vue file.
+Styles in DocC-Render are separated between `core` and `base` styles, with the majority of styling being defined as scoped inside the corresponding Vue file.
 
 > Define styles inside Vue files as **scoped**, so style collisions are reduced to a minimum. 
 
@@ -140,9 +143,11 @@ If you need access to a global mixin or var, from `_core.scss` you have to impor
 </style>
 ```
 
-## Unit tests
+### Local Development
 
-DocC Render is unit tested, using the [Jest](https://jestjs.io/) testing framework. All components and utilities strive to have a corresponding test file inside the  `tests` folder, mirroring the file's location.
+#### Unit tests
+
+DocC-Render is unit tested, using the [Jest](https://jestjs.io/) testing framework. All components and utilities strive to have a corresponding test file inside the  `tests` folder, mirroring the file's location.
 
 Unit tests can be run via:
 
@@ -150,9 +155,9 @@ Unit tests can be run via:
 * `npm run test:unit:watch`  - run only the modified files and watch for changes
 * `npx run test:unit tests/unit/path/to/spec.js`  - run an individual test file
 
-## Code style
+#### Code style
 
-DocC Render uses [ESLint](https://eslint.org/) to format the code and avoid syntax errors. It is following [Airbnb](https://github.com/airbnb/javascript) code styling along with [Vue Style Guide](https://vuejs.org/v2/style-guide/)’s essential configuration.
+DocC-Render uses [ESLint](https://eslint.org/) to format the code and avoid syntax errors. It is following [Airbnb](https://github.com/airbnb/javascript) code styling along with [Vue Style Guide](https://vuejs.org/v2/style-guide/)’s essential configuration.
 
 To run the linter run:
 
@@ -164,26 +169,26 @@ To automatically fix any error, run:
 
 If you use the development server via `npm run serve`, files are linted on each change. Read more about configuring your linter [here](https://cli.vuejs.org/core-plugins/eslint.html#configuration).
 
-## Environment flags
+#### Environment flags
 
-DocC Render has a few build-time environment flags, that allow you to set configuration parameters before building. Read [How to set Environment Variables in Vue CLI](https://cli.vuejs.org/guide/mode-and-env.html#environment-variables).
+DocC-Render has a few build-time environment flags, that allow you to set configuration parameters before building. Read [How to set Environment Variables in Vue CLI](https://cli.vuejs.org/guide/mode-and-env.html#environment-variables).
 
 **List of env variables:**
 
 * **VUE_APP_DEV_SERVER_PROXY** - The HTTP endpoint or  local filepath to read render JSON from when using the development server
 * **VUE_APP_TITLE** - An optional default page title to apply to pages
 
-## Available Scripts
+#### Available Scripts
 
-These are the most commonly used npm scripts you would need to develop DocC Render:
+These are the most commonly used npm scripts you would need to develop DocC-Render:
 
-* **serve** - used while developing DocC Render or a theme. Starts up a custom live-reloading server, which serves a local DocC Render instance.
-* **build** - builds DocC Render, in a state ready for `docc`.
-* **test** - run the entire DocC Render test suite.
+* **serve** - used while developing DocC-Render or a theme. Starts up a custom live-reloading server, which serves a local DocC-Render instance.
+* **build** - builds DocC-Render, in a state ready for `docc`.
+* **test** - run the entire DocC-Render test suite.
 * **lint** - run the linter, to check for code styling errors.
 
-### Configuring the server
+#### Configuring the server
 
-DocC Render uses browser APIs to simulate nested file structures, which means we need to tell the server to redirect those nested paths properly. To see examples for popular server configs, check: [Vue Router Server Configs](https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations) 
+DocC-Render uses browser APIs to simulate nested file structures, which means we need to tell the server to redirect those nested paths properly. To see examples for popular server configs, check: [Vue Router Server Configs](https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations) 
 
 <!-- Copyright (c) 2021 Apple Inc and the Swift Project authors. All Rights Reserved. -->

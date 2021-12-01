@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>DocC Render</string>
+    <string>Swift DocC Render</string>
     <key>CFBundleDisplayName</key>
-    <string>DocC Render</string>
+    <string>Swift DocC Render</string>
     <key>CFBundleIdentifier</key>
-    <string>org.swift.doccrender</string>
+    <string>org.swift.swiftdoccrender</string>
     <key>CFBundleVersion</key>
     <string>0.1.0</string>
 </dict>
