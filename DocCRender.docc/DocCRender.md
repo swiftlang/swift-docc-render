@@ -8,11 +8,11 @@ A web renderer for DocC Archives produced by DocC.
 
 ## Overview
 
-DocC Render allows you to display documentation produced by [DocC](https://www.swift.org/documentation/docc/distributing-documentation-to-other-developers) and is included by default in DocC Archives.
+DocC-Render displays documentation produced by [DocC](https://www.swift.org/documentation/docc) on the web and is included in DocC Archives.
 
 ### How It Works
 
-DocC Render is a Single Page Application, powered by [Vue.js](https://vuejs.org). SPAs are web apps that are rendered entirely in the browser using JavaScript. Pages and content are generated dynamically at runtime, based on DocC generated render JSON data.
+DocC Render is a Single Page Application (SPA for short), powered by [Vue.js](https://vuejs.org). SPAs are web apps that are rendered entirely in the browser using JavaScript. Pages and content are generated dynamically at runtime, based on DocC generated Render JSON data.
 
 ## Topics
 
