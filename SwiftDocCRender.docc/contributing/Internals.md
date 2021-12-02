@@ -136,10 +136,10 @@ If you need access to a global mixin or var, from `_core.scss` you have to impor
 
 ```html
 <style scoped lang="scss">
-    @import '@/styles/_core.scss';
-    .some-class {
-        margin-left: $varfrom-core-folder;
-    }
+  @import '@/styles/_core.scss';
+  .some-class {
+    margin-left: $varfrom-core-folder;
+  }
 </style>
 ```
 
