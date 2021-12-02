@@ -1,4 +1,4 @@
-# Swift DocC Render
+# Swift-DocC-Render
 
 @Metadata {
   @TechnologyRoot

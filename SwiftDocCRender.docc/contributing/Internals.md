@@ -27,7 +27,7 @@ Each page is made out of isolated sub components, rendered depending on the data
 
 Some of the more generic ones like `ContentNode` or `GridColumn` are in almost every page, whereas others belong to only certain page types. Those belonging to a certain page type, are usually scoped to a folder named after their page type.
 
-`ContentNode` is the backbone of the DocC-Render application, responsible for deeply walking through the Render JSON and rendering each of the smaller building blocks.
+`ContentNode` is the backbone of the DocC-Render application, responsible for deeply walking through the Render JSON and rendering each of the smaller building blocks related to markdown content.
 
 ### Internal Links and Routes
 
@@ -54,7 +54,7 @@ Links to pages in DocC-Render are generated using references coming from the ren
 ### Stores
 
 A DocC-Render store module extracts commonly used data that needs to be reactive and be accessible to multiple components. 
-A store is just an ES Module that exposes a `state` object and some methods. This is follows the [Simple State Management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch) section from the Vue docs.
+A store is just an ES Module that exposes a `state` object and some methods. This follows the [Simple State Management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch) section from the Vue docs.
 
 ```js
 // src/stores/FooStore.js
