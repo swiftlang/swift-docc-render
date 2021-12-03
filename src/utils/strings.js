@@ -42,8 +42,14 @@ export function escapeHtml(str) {
 
 // Add the correct grammatical number (singular or plural)
 // to a noun depending on the number of items of an array
-export function pluralize(array) {
-  return array.length === 1 ? '' : 's';
+export function pluralize(str, array) {
+  let plural;
+  if (str.slice(-1) === 'y') {
+    plural = `${str.slice(0, -1)}ies`;
+  } else {
+    plural = `${str}s`;
+  }
+  return array.length === 1 ? str : plural;
 }
 
 // Escape URL hash fragments for use in CSS selectors, which is needed to

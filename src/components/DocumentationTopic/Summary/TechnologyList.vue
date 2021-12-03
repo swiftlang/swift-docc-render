@@ -10,16 +10,16 @@
 
 <template>
   <Section
-    class="frameworks"
+    class="technologies"
     role="complementary"
     :aria-label="computedTitle"
   >
     <Title>{{ computedTitle }}</Title>
     <List>
-      <Item v-for="framework in frameworks" :key="framework.name">
-        <WordBreak class="name">{{ framework.name }}</WordBreak>
+      <Item v-for="technology in technologies" :key="technology.name">
+        <WordBreak class="name">{{ technology.name }}</WordBreak>
         <WordBreak
-          v-for="module in (framework.relatedModules || [])"
+          v-for="module in (technology.relatedModules || [])"
           class="name"
           :key="module"
         >{{ module }}
@@ -38,7 +38,7 @@ import Section from './Section.vue';
 import Title from './Title.vue';
 
 export default {
-  name: 'FrameworkList',
+  name: 'TechnologyList',
   components: {
     Item: ListItem,
     List,
@@ -47,17 +47,17 @@ export default {
     WordBreak,
   },
   props: {
-    frameworks: {
+    technologies: {
       type: Array,
       required: true,
     },
     title: {
       type: String,
-      default: 'Framework',
+      default: 'Technology',
     },
   },
   computed: {
-    computedTitle: ({ title, frameworks }) => `${title}${pluralize(frameworks)}`,
+    computedTitle: ({ title, technologies }) => `${pluralize(title, technologies)}`,
   },
 };
 </script>

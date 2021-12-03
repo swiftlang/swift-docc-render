@@ -63,14 +63,17 @@ describe('escapeHtml', () => {
 });
 
 describe('pluralize', () => {
-  it('return `s` if value is plural', () => {
-    expect(pluralize(['A', 'B'])).toBe('s');
+  it('return word + `s` if value is plural', () => {
+    expect(pluralize('word', ['A', 'B'])).toBe('words');
   });
-  it('return `s` if value is 0', () => {
-    expect(pluralize([])).toBe('s');
+  it('return word + `s` if value is 0', () => {
+    expect(pluralize('word', [])).toBe('words');
   });
-  it('return an empty string if value is singular', () => {
-    expect(pluralize(['A'])).toBe('');
+  it('return word in original form if value is singular', () => {
+    expect(pluralize('word', ['A'])).toBe('word');
+  });
+  it('return technology in correct plural form', () => {
+    expect(pluralize('technology', ['A', 'B'])).toBe('technologies');
   });
 });
 
