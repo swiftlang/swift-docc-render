@@ -11,8 +11,8 @@
     "test:unit": "vue-cli-service test:unit",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "lint": "vue-cli-service lint",
-    "docs:preview": "docc preview ./SwiftDocCRender.docc",
-    "docs:build": "docc convert ./SwiftDocCRender.docc"
+    "docs:preview": "bin/rundocc preview SwiftDocCRender.docc",
+    "docs:build": "bin/rundocc convert SwiftDocCRender.docc"
   },
   "files": [
     "src",
