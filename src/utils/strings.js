@@ -52,6 +52,84 @@ export function pluralize(str, array) {
   return array.length === 1 ? str : plural;
 }
 
+export const PluralCategory = {
+  zero: 'zero',
+  one: 'one',
+  two: 'two',
+  few: 'few',
+  many: 'many',
+  other: 'other',
+};
+
+export const PluralRuleType = {
+  cardinal: 'cardinal',
+  ordinal: 'ordinal',
+};
+
+// Returns the "pluralized" version of some provided text based on an integer
+// count and the user's resolved locale.
+//
+// Choices _must_ be provided for the en-US locale since that will be used as a
+// fallback in the scenario where no choices are provided or available for the
+// resolved locale of a given user.
+//
+// @param {Object} choices An object keyed by locales. Each value should itself
+//   be an object with keys for each plural category supported by the locale
+//   with the value representing the string to return.
+//
+// Examples:
+//
+//   const choices = {
+//     'en-US': {
+//       one: 'day',
+//       other: 'days',
+//     },
+//     'sl_SI': {
+//       one: 'ura',
+//       two: 'uri',
+//       few: 'ure',
+//       other: 'ur',
+//     },
+//   };
+//
+//   // en-US
+//   pluralize(choices, 2); // 'days'
+//   pluralize({ 'en-US': { one: 'Technology, other: 'Technologies' } }, 1) // 'Technology'
+//   pluralize({}, 1) // throws error
+//
+//   // sl_SI
+//   pluralize(choices, 2); // 'uri'
+//   pluralize({ 'sl_SI': choices['sl_SI'] }, 2); // throws error
+export function pluralize2(choices, count) {
+  const { cardinal } = PluralRuleType;
+  const { one, other } = PluralCategory;
+
+  const defaultLocale = 'en-US';
+  const defaultCategory = count === 1 ? one : other;
+
+  // at minimum, there should at least be a "one" and "other" choice for the
+  // "en-US" locale for use as fallback text in the case that a choice for the
+  // user's resolved locale category is not provided/available
+  if (!choices[defaultLocale] || !choices[defaultLocale][defaultCategory]) {
+    throw new Error(`No default choices provided to pluralize using default locale ${defaultLocale}`);
+  }
+
+  let locale = defaultLocale;
+  let category = defaultCategory;
+  if (('Intl' in window) && ('PluralRules' in window.Intl)) {
+    const supportedLocales = Object.keys(choices);
+    const pluralRules = new Intl.PluralRules(supportedLocales, { type: cardinal });
+    const resolvedCategory = pluralRules.select(count);
+    const resolvedLocale = pluralRules.resolvedOptions().locale;
+    if (choices[resolvedLocale] && choices[resolvedLocale][resolvedCategory]) {
+      locale = resolvedLocale;
+      category = resolvedCategory;
+    }
+  }
+
+  return choices[locale][category];
+}
+
 // Escape URL hash fragments for use in CSS selectors, which is needed to
 // utilize vue-router support for linking to on-page elements when the ID value
 // is a number (or any string with a leading digit).

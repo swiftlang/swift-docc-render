@@ -14,6 +14,7 @@ import {
   escapeHtml,
   escapeRegExp,
   pluralize,
+  pluralize2,
   deleteSpaces,
   whiteSpaceIgnorantRegex, insertAt,
 } from 'docc-render/utils/strings';
@@ -74,6 +75,48 @@ describe('pluralize', () => {
   });
   it('return technology in correct plural form', () => {
     expect(pluralize('technology', ['A', 'B'])).toBe('technologies');
+  });
+});
+
+describe('pluralize2', () => {
+  it('throws an error when en-US one/other choices are not provided', () => {
+    expect(() => pluralize2({}, 1)).toThrow();
+    expect(() => pluralize2({}, 0)).toThrow();
+    expect(() => pluralize2({}, 42)).toThrow();
+    expect(() => pluralize2({ 'en-US': 'foo' }, 42)).toThrow();
+    expect(() => pluralize2({ sl_SI: { one: 'a', other: 'b' } })).toThrow();
+    expect(() => pluralize2({ 'en-US': { one: 'foo' } }, 42)).toThrow();
+  });
+
+  describe('en-US', () => {
+    const one = 'day';
+    const other = 'days';
+    const choices = { 'en-US': { one, other } };
+
+    it('returns the "one" choice for a count of 1', () => {
+      expect(pluralize2(choices, 1)).toBe(one);
+    });
+
+    it('returns the "other" choice for integers that are not 1', () => {
+      expect(pluralize2(choices, 0)).toBe(other);
+      expect(pluralize2(choices, 2)).toBe(other);
+      expect(pluralize2(choices, 42)).toBe(other);
+    });
+  });
+
+  describe.skip('with other locales', () => {
+    const en = {
+      one: 'day',
+      other: 'days',
+    };
+    const sl = {
+      one: 'ura',
+      two: 'uri',
+      few: 'ure',
+      other: 'ur',
+    };
+    const choices = { 'en-US': en, sl_SI: sl };
+    // TODO: mock locale resolution to test non-en-US locales
   });
 });
 
