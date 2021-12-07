@@ -69,7 +69,7 @@ export const PluralRuleType = {
 // Returns the "pluralized" version of some provided text based on an integer
 // count and the user's resolved locale.
 //
-// Choices _must_ be provided for the en-US locale since that will be used as a
+// Choices _must_ be provided for the en locale since that will be used as a
 // fallback in the scenario where no choices are provided or available for the
 // resolved locale of a given user.
 //
@@ -80,11 +80,11 @@ export const PluralRuleType = {
 // Examples:
 //
 //   const choices = {
-//     'en-US': {
+//     en: {
 //       one: 'day',
 //       other: 'days',
 //     },
-//     'sl_SI': {
+//     sl: {
 //       one: 'ura',
 //       two: 'uri',
 //       few: 'ure',
@@ -92,23 +92,23 @@ export const PluralRuleType = {
 //     },
 //   };
 //
-//   // en-US
+//   // en
 //   pluralize(choices, 2); // 'days'
-//   pluralize({ 'en-US': { one: 'Technology, other: 'Technologies' } }, 1) // 'Technology'
+//   pluralize({ en: { one: 'Technology, other: 'Technologies' } }, 1) // 'Technology'
 //   pluralize({}, 1) // throws error
 //
-//   // sl_SI
+//   // sl
 //   pluralize(choices, 2); // 'uri'
-//   pluralize({ 'sl_SI': choices['sl_SI'] }, 2); // throws error
+//   pluralize({ sl: choices['sl_SI'] }, 2); // throws error
 export function pluralize2(choices, count) {
   const { cardinal } = PluralRuleType;
   const { one, other } = PluralCategory;
 
-  const defaultLocale = 'en-US';
+  const defaultLocale = 'en';
   const defaultCategory = count === 1 ? one : other;
 
   // at minimum, there should at least be a "one" and "other" choice for the
-  // "en-US" locale for use as fallback text in the case that a choice for the
+  // "en" locale for use as fallback text in the case that a choice for the
   // user's resolved locale category is not provided/available
   if (!choices[defaultLocale] || !choices[defaultLocale][defaultCategory]) {
     throw new Error(`No default choices provided to pluralize using default locale ${defaultLocale}`);
@@ -117,8 +117,8 @@ export function pluralize2(choices, count) {
   let locale = defaultLocale;
   let category = defaultCategory;
   if (('Intl' in window) && ('PluralRules' in window.Intl)) {
-    const supportedLocales = Object.keys(choices);
-    const pluralRules = new Intl.PluralRules(supportedLocales, { type: cardinal });
+    const preferredLocales = navigator.languages ? navigator.languages : [navigator.language];
+    const pluralRules = new Intl.PluralRules(preferredLocales, { type: cardinal });
     const resolvedCategory = pluralRules.select(count);
     const resolvedLocale = pluralRules.resolvedOptions().locale;
     if (choices[resolvedLocale] && choices[resolvedLocale][resolvedCategory]) {

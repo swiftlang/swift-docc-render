@@ -83,15 +83,15 @@ describe('pluralize2', () => {
     expect(() => pluralize2({}, 1)).toThrow();
     expect(() => pluralize2({}, 0)).toThrow();
     expect(() => pluralize2({}, 42)).toThrow();
-    expect(() => pluralize2({ 'en-US': 'foo' }, 42)).toThrow();
-    expect(() => pluralize2({ sl_SI: { one: 'a', other: 'b' } })).toThrow();
-    expect(() => pluralize2({ 'en-US': { one: 'foo' } }, 42)).toThrow();
+    expect(() => pluralize2({ en: 'foo' }, 42)).toThrow();
+    expect(() => pluralize2({ sl: { one: 'a', other: 'b' } })).toThrow();
+    expect(() => pluralize2({ en: { one: 'foo' } }, 42)).toThrow();
   });
 
-  describe('en-US', () => {
+  describe('en', () => {
     const one = 'day';
     const other = 'days';
-    const choices = { 'en-US': { one, other } };
+    const choices = { en: { one, other } };
 
     it('returns the "one" choice for a count of 1', () => {
       expect(pluralize2(choices, 1)).toBe(one);
@@ -104,7 +104,9 @@ describe('pluralize2', () => {
     });
   });
 
-  describe.skip('with other locales', () => {
+  describe('with other locales', () => {
+    let languages;
+
     const en = {
       one: 'day',
       other: 'days',
@@ -115,8 +117,38 @@ describe('pluralize2', () => {
       few: 'ure',
       other: 'ur',
     };
-    const choices = { 'en-US': en, sl_SI: sl };
-    // TODO: mock locale resolution to test non-en-US locales
+    const choices = { en, sl };
+
+    beforeEach(() => {
+      languages = navigator.languages;
+      // stub `navigator.languages` to simulate a runtime with an alternate locale
+      // eslint-disable-next-line
+      navigator.__defineGetter__('languages', () => ['sl']);
+    });
+
+    afterEach(() => {
+      // restore original value of `navigator.languages`
+      // eslint-disable-next-line
+      navigator.__defineGetter__('languages', () => languages);
+    });
+
+    it('uses translated text for the appropriate locale and plural rule', () => {
+      expect(pluralize2(choices, 1)).toBe(sl.one);
+      expect(pluralize2(choices, 2)).toBe(sl.two);
+      expect(pluralize2(choices, 3)).toBe(sl.few);
+      expect(pluralize2(choices, 4)).toBe(sl.few);
+      expect(pluralize2(choices, 5)).toBe(sl.other);
+      expect(pluralize2(choices, 0)).toBe(sl.other);
+    });
+
+    it('falls back to "en" if the appropriate translation is not provided', () => {
+      expect(pluralize2({ en }, 1)).toBe(en.one);
+      expect(pluralize2({ en }, 2)).toBe(en.other);
+      expect(pluralize2({ en }, 3)).toBe(en.other);
+      expect(pluralize2({ en }, 4)).toBe(en.other);
+      expect(pluralize2({ en }, 5)).toBe(en.other);
+      expect(pluralize2({ en }, 0)).toBe(en.other);
+    });
   });
 });
 
