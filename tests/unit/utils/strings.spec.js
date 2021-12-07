@@ -14,7 +14,6 @@ import {
   escapeHtml,
   escapeRegExp,
   pluralize,
-  pluralize2,
   deleteSpaces,
   whiteSpaceIgnorantRegex, insertAt,
 } from 'docc-render/utils/strings';
@@ -64,28 +63,13 @@ describe('escapeHtml', () => {
 });
 
 describe('pluralize', () => {
-  it('return word + `s` if value is plural', () => {
-    expect(pluralize('word', ['A', 'B'])).toBe('words');
-  });
-  it('return word + `s` if value is 0', () => {
-    expect(pluralize('word', [])).toBe('words');
-  });
-  it('return word in original form if value is singular', () => {
-    expect(pluralize('word', ['A'])).toBe('word');
-  });
-  it('return technology in correct plural form', () => {
-    expect(pluralize('technology', ['A', 'B'])).toBe('technologies');
-  });
-});
-
-describe('pluralize2', () => {
   it('throws an error when en-US one/other choices are not provided', () => {
-    expect(() => pluralize2({}, 1)).toThrow();
-    expect(() => pluralize2({}, 0)).toThrow();
-    expect(() => pluralize2({}, 42)).toThrow();
-    expect(() => pluralize2({ en: 'foo' }, 42)).toThrow();
-    expect(() => pluralize2({ sl: { one: 'a', other: 'b' } })).toThrow();
-    expect(() => pluralize2({ en: { one: 'foo' } }, 42)).toThrow();
+    expect(() => pluralize({}, 1)).toThrow();
+    expect(() => pluralize({}, 0)).toThrow();
+    expect(() => pluralize({}, 42)).toThrow();
+    expect(() => pluralize({ en: 'foo' }, 42)).toThrow();
+    expect(() => pluralize({ sl: { one: 'a', other: 'b' } })).toThrow();
+    expect(() => pluralize({ en: { one: 'foo' } }, 42)).toThrow();
   });
 
   describe('en', () => {
@@ -94,13 +78,13 @@ describe('pluralize2', () => {
     const choices = { en: { one, other } };
 
     it('returns the "one" choice for a count of 1', () => {
-      expect(pluralize2(choices, 1)).toBe(one);
+      expect(pluralize(choices, 1)).toBe(one);
     });
 
     it('returns the "other" choice for integers that are not 1', () => {
-      expect(pluralize2(choices, 0)).toBe(other);
-      expect(pluralize2(choices, 2)).toBe(other);
-      expect(pluralize2(choices, 42)).toBe(other);
+      expect(pluralize(choices, 0)).toBe(other);
+      expect(pluralize(choices, 2)).toBe(other);
+      expect(pluralize(choices, 42)).toBe(other);
     });
   });
 
@@ -133,21 +117,21 @@ describe('pluralize2', () => {
     });
 
     it('uses translated text for the appropriate locale and plural rule', () => {
-      expect(pluralize2(choices, 1)).toBe(sl.one);
-      expect(pluralize2(choices, 2)).toBe(sl.two);
-      expect(pluralize2(choices, 3)).toBe(sl.few);
-      expect(pluralize2(choices, 4)).toBe(sl.few);
-      expect(pluralize2(choices, 5)).toBe(sl.other);
-      expect(pluralize2(choices, 0)).toBe(sl.other);
+      expect(pluralize(choices, 1)).toBe(sl.one);
+      expect(pluralize(choices, 2)).toBe(sl.two);
+      expect(pluralize(choices, 3)).toBe(sl.few);
+      expect(pluralize(choices, 4)).toBe(sl.few);
+      expect(pluralize(choices, 5)).toBe(sl.other);
+      expect(pluralize(choices, 0)).toBe(sl.other);
     });
 
     it('falls back to "en" if the appropriate translation is not provided', () => {
-      expect(pluralize2({ en }, 1)).toBe(en.one);
-      expect(pluralize2({ en }, 2)).toBe(en.other);
-      expect(pluralize2({ en }, 3)).toBe(en.other);
-      expect(pluralize2({ en }, 4)).toBe(en.other);
-      expect(pluralize2({ en }, 5)).toBe(en.other);
-      expect(pluralize2({ en }, 0)).toBe(en.other);
+      expect(pluralize({ en }, 1)).toBe(en.one);
+      expect(pluralize({ en }, 2)).toBe(en.other);
+      expect(pluralize({ en }, 3)).toBe(en.other);
+      expect(pluralize({ en }, 4)).toBe(en.other);
+      expect(pluralize({ en }, 5)).toBe(en.other);
+      expect(pluralize({ en }, 0)).toBe(en.other);
     });
   });
 });

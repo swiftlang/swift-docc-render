@@ -52,12 +52,17 @@ export default {
       required: true,
     },
     title: {
-      type: String,
-      default: 'Technology',
+      type: Object,
+      default: () => ({
+        en: {
+          one: 'Technology',
+          other: 'Technologies',
+        },
+      }),
     },
   },
   computed: {
-    computedTitle: ({ title, technologies }) => `${pluralize(title, technologies)}`,
+    computedTitle: ({ title, technologies }) => `${pluralize(title, technologies.length)}`,
   },
 };
 </script>

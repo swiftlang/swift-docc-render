@@ -40,18 +40,6 @@ export function escapeHtml(str) {
   return str.replace(HTML_UNSAFE_RE, sanitize);
 }
 
-// Add the correct grammatical number (singular or plural)
-// to a noun depending on the number of items of an array
-export function pluralize(str, array) {
-  let plural;
-  if (str.slice(-1) === 'y') {
-    plural = `${str.slice(0, -1)}ies`;
-  } else {
-    plural = `${str}s`;
-  }
-  return array.length === 1 ? str : plural;
-}
-
 export const PluralCategory = {
   zero: 'zero',
   one: 'one',
@@ -101,7 +89,7 @@ export const PluralRuleType = {
 //   pluralize(choices, 2); // 'uri'
 //   pluralize({ sl }, 2); // throws error
 //   pluralize({ en }, 2); // 'days'
-export function pluralize2(choices, count) {
+export function pluralize(choices, count) {
   const { cardinal } = PluralRuleType;
   const { one, other } = PluralCategory;
 
