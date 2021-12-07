@@ -99,7 +99,8 @@ export const PluralRuleType = {
 //
 //   // sl
 //   pluralize(choices, 2); // 'uri'
-//   pluralize({ sl: choices['sl_SI'] }, 2); // throws error
+//   pluralize({ sl }, 2); // throws error
+//   pluralize({ en }, 2); // 'days'
 export function pluralize2(choices, count) {
   const { cardinal } = PluralRuleType;
   const { one, other } = PluralCategory;
