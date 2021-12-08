@@ -153,63 +153,6 @@
   }
 }
 
-
-@mixin custom-horizontal-scrollbar() {
-  $border-radius: 10px;
-  $scrollbar-vertical-margin: 2px;
-  $scrollbar-horizontal-margin: (10px - $scrollbar-vertical-margin);
-  $scrollbar-height: 7px;
-  $scrollbar-total-height: $scrollbar-height + ($scrollbar-vertical-margin * 2);
-  $element-bottom-padding: 13px;
-
-  overflow-y: hidden;
-
-  -ms-overflow-style: none; /* IE 10+ */
-  scrollbar-color: var(--color-figure-gray-tertiary) transparent; /* Firefox colors */
-  scrollbar-width: thin; /* scrollbar height on Firefox (because it is horizontal) */
-  &::-webkit-scrollbar { /* Chrome & Safari */
-    height: 0;
-  }
-
-  &.scrolling {
-
-    /**
-    * `-webkit-touch-callout` to target Safari on iOS
-    * https://stackoverflow.com/questions/30102792/
-    *`scrollbar-width` to target Firefox
-    * https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
-    *`-ms-overflow-style` to target IE
-    * https://developer.mozilla.org/es/docs/Web/CSS/-ms-overflow-style
-    */
-    @supports not ((-webkit-touch-callout: none) or (scrollbar-width: none) or (-ms-overflow-style: none)) {
-      padding-bottom: $element-bottom-padding - $scrollbar-total-height;
-    }
-
-    /**
-    * Browser compatibility
-    * https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
-    */
-    &::-webkit-scrollbar {
-      height: $scrollbar-total-height;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: $border-radius;
-      background-color: var(--color-figure-gray-tertiary);
-      border: $scrollbar-vertical-margin solid transparent;
-      background-clip: padding-box;
-    }
-
-    &::-webkit-scrollbar-track-piece:end {
-      margin-right: $scrollbar-horizontal-margin;
-    }
-
-    &::-webkit-scrollbar-track-piece:start {
-      margin-left: $scrollbar-horizontal-margin;
-    }
-  }
-}
-
 @mixin backdrop-filter-uiblur($percentage: 100%) {
   $percentage: $percentage / 100%;
 
