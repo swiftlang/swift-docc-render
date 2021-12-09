@@ -404,9 +404,7 @@ describe('DocumentationTopic', () => {
       expect(technologyList.exists()).toBe(true);
       expect(technologyList.props()).toEqual({
         technologies: [{ name: extendsTechnology }],
-        title: {
-          en: { one: 'Extends', other: 'Extends' },
-        },
+        title: 'Extends',
       });
     });
   });

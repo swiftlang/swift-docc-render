@@ -55,7 +55,7 @@
           <TechnologyList
             v-if="extendsTechnology"
             class="extends-technology"
-            :title="{ en: { one: 'Extends', other: 'Extends' } }"
+            title="Extends"
             :technologies="[{ name: extendsTechnology }]"
           />
           <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
