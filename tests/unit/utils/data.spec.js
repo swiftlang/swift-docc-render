@@ -19,6 +19,12 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
+const mockBaseUrl = jest.fn().mockReturnValue('/');
+
+jest.mock('docc-render/utils/theme-settings', () => ({
+  get baseUrl() { return mockBaseUrl(); },
+}));
+
 const badFetchResponse = {
   ok: false,
   status: 500,
@@ -112,7 +118,6 @@ describe('fetchData', () => {
 });
 
 describe('fetchDataForRouteEnter', () => {
-  let originalBaseUrl;
   let originalNodeEnv;
 
   const to = {
@@ -123,17 +128,13 @@ describe('fetchDataForRouteEnter', () => {
   const next = jest.fn();
 
   beforeEach(() => {
-    originalBaseUrl = process.env.BASE_URL;
     originalNodeEnv = process.env.NODE_ENV;
-
-    process.env.BASE_URL = '/';
     process.env.NODE_ENV = 'production';
 
     jest.clearAllMocks();
   });
 
   afterEach(() => {
-    process.env.BASE_URL = originalBaseUrl;
     process.env.NODE_ENV = originalNodeEnv;
   });
 
@@ -144,7 +145,21 @@ describe('fetchDataForRouteEnter', () => {
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
       '/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
-    ));
+    ).href);
+    await expect(data).toEqual(await goodFetchResponse.json());
+
+    window.fetch.mockRestore();
+  });
+
+  it('calls `fetchData` with a configurable base url', async () => {
+    mockBaseUrl.mockReturnValueOnce('/base-prefix/');
+    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+
+    const data = await fetchDataForRouteEnter(to, from, next);
+    await expect(window.fetch).toHaveBeenCalledWith(new URL(
+      '/base-prefix/data/tutorials/augmented-reality/tutorials.json',
+      window.location.href,
+    ).href);
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
@@ -199,6 +214,23 @@ describe('fetchDataForRouteEnter', () => {
       window.fetch.mockRestore();
     }
   });
+
+  it('removes trailing slashes from paths', async () => {
+    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+
+    const data = await fetchDataForRouteEnter({
+      name: 'technology-tutorials',
+      path: '/tutorials/augmented-reality/tutorials/',
+    }, from, next);
+
+    await expect(window.fetch).toHaveBeenLastCalledWith(new URL(
+      '/data/tutorials/augmented-reality/tutorials.json',
+      window.location.href,
+    ).href);
+    await expect(data).toEqual(await goodFetchResponse.json());
+
+    window.fetch.mockRestore();
+  });
 });
 
 // This is testeed in more detail in `url-helper.spec.js`.
@@ -252,21 +284,17 @@ describe('shouldFetchDataForRouteUpdate', () => {
 });
 
 describe('fetchAPIChangesForRoute', () => {
-  let originalBaseUrl;
   let originalNodeEnv;
 
   beforeEach(() => {
-    originalBaseUrl = process.env.BASE_URL;
     originalNodeEnv = process.env.NODE_ENV;
 
-    process.env.BASE_URL = '/';
     process.env.NODE_ENV = 'production';
 
     jest.clearAllMocks();
   });
 
   afterEach(() => {
-    process.env.BASE_URL = originalBaseUrl;
     process.env.NODE_ENV = originalNodeEnv;
   });
 

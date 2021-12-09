@@ -19,6 +19,7 @@ export const themeSettingsState = {
   theme: {},
   features: {},
 };
+export const { baseUrl } = window;
 
 /**
  * Method to fetch the theme settings and store in local module state.
@@ -26,7 +27,7 @@ export const themeSettingsState = {
  * @return {Promise<{}>}
  */
 export async function fetchThemeSettings() {
-  const url = new URL(`${process.env.BASE_URL}theme-settings.json`, window.location.href);
+  const url = new URL(`${baseUrl}theme-settings.json`, window.location.href);
   return fetch(url.href)
     .then(r => r.json())
     .catch(() => ({}));
