@@ -10,7 +10,9 @@
     "test:license": "./bin/check-source",
     "test:unit": "vue-cli-service test:unit",
     "test:unit:watch": "vue-cli-service test:unit --watch",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "docs:preview": "bin/rundocc preview SwiftDocCRender.docc",
+    "docs:build": "bin/rundocc convert SwiftDocCRender.docc"
   },
   "files": [
     "src",

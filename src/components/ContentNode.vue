@@ -236,7 +236,11 @@ function renderNode(createElement, references) {
         node.text
       ));
     case BlockType.orderedList:
-      return createElement('ol', {}, (
+      return createElement('ol', {
+        attrs: {
+          start: node.start,
+        },
+      }, (
         renderListItems(node.items)
       ));
     case BlockType.paragraph:
@@ -313,6 +317,8 @@ function renderNode(createElement, references) {
           kind: reference.kind,
           role: reference.role,
           isActive: node.isActive,
+          ideTitle: reference.ideTitle,
+          titleStyle: reference.titleStyle,
         },
       }, (
         titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText
