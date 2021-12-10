@@ -23,69 +23,78 @@
       :currentTopicTags="tags"
     />
     <main class="main" id="main" role="main" tabindex="0">
-      <slot name="above-title" />
-      <Title :eyebrow="roleHeading">{{ title }}</Title>
-      <div class="container content-grid" :class="{ 'full-width': hideSummary }">
-        <Description :hasOverview="hasOverview">
-          <Abstract v-if="abstract" :content="abstract" />
-          <RequirementMetadata
-            v-if="isRequirement"
-            :defaultImplementationsCount="defaultImplementationsCount"
+      <AdjustableSidebarWidth storage-key="sidebar">
+        <template #aside>
+          <aside class="doc-topic-aside">
+            The sidebar goes here
+          </aside>
+        </template>
+        <template #default>
+          <slot name="above-title" />
+          <Title :eyebrow="roleHeading">{{ title }}</Title>
+          <div class="container content-grid" :class="{ 'full-width': hideSummary }">
+            <Description :hasOverview="hasOverview">
+              <Abstract v-if="abstract" :content="abstract" />
+              <RequirementMetadata
+                v-if="isRequirement"
+                :defaultImplementationsCount="defaultImplementationsCount"
+              />
+              <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+                <ContentNode :content="deprecationSummary" />
+              </Aside>
+              <Aside
+                v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+                kind="note"
+              >
+                <ContentNode :content="downloadNotAvailableSummary" />
+              </Aside>
+              <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
+            </Description>
+            <Summary v-if="!hideSummary">
+              <LanguageSwitcher
+                v-if="shouldShowLanguageSwitcher"
+                :interfaceLanguage="interfaceLanguage"
+                :objcPath="objcPath"
+                :swiftPath="swiftPath"
+              />
+              <Availability v-if="platforms" :platforms="platforms" />
+              <TechnologyList v-if="modules" :technologies="modules" />
+              <TechnologyList
+                v-if="extendsTechnology"
+                class="extends-technology"
+                title="Extends"
+                :technologies="[{ name: extendsTechnology }]"
+              />
+              <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
+            </Summary>
+            <PrimaryContent
+              v-if="primaryContentSections && primaryContentSections.length"
+              :conformance="conformance"
+              :sections="primaryContentSections"
+            />
+          </div>
+          <Topics
+            v-if="topicSections"
+            :sections="topicSections"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
           />
-          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-            <ContentNode :content="deprecationSummary" />
-          </Aside>
-          <Aside
-            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-            kind="note"
-          >
-            <ContentNode :content="downloadNotAvailableSummary" />
-          </Aside>
-          <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
-        </Description>
-        <Summary v-if="!hideSummary">
-          <LanguageSwitcher
-            v-if="shouldShowLanguageSwitcher"
-            :interfaceLanguage="interfaceLanguage"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
+          <DefaultImplementations
+            v-if="defaultImplementationsSections"
+            :sections="defaultImplementationsSections"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
           />
-          <Availability v-if="platforms" :platforms="platforms" />
-          <TechnologyList v-if="modules" :technologies="modules" />
-          <TechnologyList
-            v-if="extendsTechnology"
-            class="extends-technology"
-            title="Extends"
-            :technologies="[{ name: extendsTechnology }]"
+          <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+          <!-- NOTE: see also may contain information about other apis, so we cannot
+          pass deprecation and beta information -->
+          <SeeAlso
+            v-if="seeAlsoSections"
+            :sections="seeAlsoSections"
           />
-          <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
-        </Summary>
-        <PrimaryContent
-          v-if="primaryContentSections && primaryContentSections.length"
-          :conformance="conformance"
-          :sections="primaryContentSections"
-        />
-      </div>
-      <Topics
-        v-if="topicSections"
-        :sections="topicSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <DefaultImplementations
-        v-if="defaultImplementationsSections"
-        :sections="defaultImplementationsSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
-      <!-- NOTE: see also may contain information about other apis, so we cannot
-      pass deprecation and beta information -->
-      <SeeAlso
-        v-if="seeAlsoSections"
-        :sections="seeAlsoSections"
-      />
-      <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
+          <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
+        </template>
+      </AdjustableSidebarWidth>
     </main>
   </div>
 </template>
@@ -99,6 +108,7 @@ import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -134,6 +144,7 @@ export default {
     },
   },
   components: {
+    AdjustableSidebarWidth,
     Abstract,
     Aside,
     BetaLegalText,
@@ -365,6 +376,7 @@ export default {
 .container {
   @include section-content;
   margin-top: $section-spacing-single-side / 2;
+  padding: 0 20px;
 }
 
 .content-grid {
@@ -400,6 +412,13 @@ export default {
 
 .button-cta {
   margin-top: 2em;
+}
+
+.doc-topic-aside {
+  width: 100%;
+  padding: 1rem;
+  border-right: 1px solid var(--color-grid);
+  min-width: 0;
 }
 
 /deep/ {
