@@ -51,12 +51,12 @@
             :swiftPath="swiftPath"
           />
           <Availability v-if="platforms" :platforms="platforms" />
-          <FrameworkList v-if="modules" :frameworks="modules" />
-          <FrameworkList
-            v-if="extendsFramework"
-            class="extends-framework"
+          <TechnologyList v-if="modules" :technologies="modules" />
+          <TechnologyList
+            v-if="extendsTechnology"
+            class="extends-technology"
             title="Extends"
-            :frameworks="[{ name: extendsFramework }]"
+            :technologies="[{ name: extendsTechnology }]"
           />
           <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
         </Summary>
@@ -104,7 +104,7 @@ import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
 import Description from './DocumentationTopic/Description.vue';
-import FrameworkList from './DocumentationTopic/Summary/FrameworkList.vue';
+import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
 import OnThisPageNav from './DocumentationTopic/Summary/OnThisPageNav.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
@@ -141,7 +141,7 @@ export default {
     DefaultImplementations,
     Description,
     DownloadButton: CallToActionButton,
-    FrameworkList,
+    TechnologyList,
     LanguageSwitcher,
     Nav: DocumentationNav,
     OnThisPageNav,
@@ -239,7 +239,7 @@ export default {
       type: Array,
       default: () => ([]),
     },
-    extendsFramework: {
+    extendsTechnology: {
       type: String,
     },
     tags: {

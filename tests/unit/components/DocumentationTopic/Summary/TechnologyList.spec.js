@@ -9,7 +9,7 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import FrameworkList from 'docc-render/components/DocumentationTopic/Summary/FrameworkList.vue';
+import TechnologyList from 'docc-render/components/DocumentationTopic/Summary/TechnologyList.vue';
 
 const {
   Item,
@@ -17,72 +17,70 @@ const {
   Section,
   Title,
   WordBreak,
-} = FrameworkList.components;
+} = TechnologyList.components;
 
-describe('FrameworkList', () => {
+describe('TechnologyList', () => {
   let wrapper;
 
   const propsData = {
-    frameworks: [
+    technologies: [
       { name: 'FooKit' },
       { name: 'BarKit' },
     ],
   };
 
   beforeEach(() => {
-    wrapper = shallowMount(FrameworkList, { propsData });
+    wrapper = shallowMount(TechnologyList, { propsData });
   });
 
   it('renders a `Section', () => {
-    expect(wrapper.is('.frameworks')).toBe(true);
+    expect(wrapper.is('.technologies')).toBe(true);
 
     const section = wrapper.find(Section);
     expect(section.exists()).toBe(true);
-    expect(section.classes('frameworks')).toBe(true);
-    expect(section.attributes('aria-label')).toBe('Frameworks');
+    expect(section.classes('technologies')).toBe(true);
+    expect(section.attributes('aria-label')).toBe('Technologies');
     expect(section.attributes('role')).toBe('complementary');
   });
 
   it('renders a `Title`', () => {
     const title = wrapper.find(Title);
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Frameworks');
+    expect(title.text()).toBe('Technologies');
   });
 
   it('allows overriding the title via a prop', () => {
-    wrapper.setProps({
-      title: 'Foobar',
-    });
+    wrapper.setProps({ title: 'Foobars' });
     const title = wrapper.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('Foobars');
     expect(wrapper.find(Section).attributes('aria-label')).toBe('Foobars');
   });
 
-  it('renders a `List` with an `Item/WordBreak` for each framework', () => {
+  it('renders a `List` with an `Item/WordBreak` for each technology', () => {
     const list = wrapper.find(List);
     expect(list.exists()).toBe(true);
 
     const items = list.findAll(Item);
-    expect(items.length).toBe(propsData.frameworks.length);
+    expect(items.length).toBe(propsData.technologies.length);
 
-    propsData.frameworks.forEach((framework, i) => {
+    propsData.technologies.forEach((technology, i) => {
       const wbreak = items.at(i).find(WordBreak);
       expect(wbreak.exists()).toBe(true);
-      expect(wbreak.text()).toBe(framework.name);
+      expect(wbreak.text()).toBe(technology.name);
     });
   });
 
-  it('uses the singular "Framework" title with only a single framework', () => {
-    wrapper.setProps({ frameworks: [propsData.frameworks[0]] });
-    expect(wrapper.find(Section).attributes('aria-label')).toBe('Framework');
-    expect(wrapper.find(Title).text()).toBe('Framework');
+  it('uses the singular "Technology" title with only a single technology', () => {
+    wrapper.setProps({ technologies: [propsData.technologies[0]] });
+    expect(wrapper.find(Section).attributes('aria-label')).toBe('Technology');
+    expect(wrapper.find(Title).text()).toBe('Technology');
   });
 
   it('renders multiple names of any related modules', () => {
     wrapper.setProps({
-      frameworks: [
-        propsData.frameworks[0],
+      technologies: [
+        propsData.technologies[0],
         {
           name: 'BarKit',
           relatedModules: ['BazKit', 'QuxKit'],
