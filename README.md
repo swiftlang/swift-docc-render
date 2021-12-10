@@ -37,6 +37,14 @@ SPAs are web apps that render dynamically at runtime entirely in the browser, us
 
 Follow [these steps](https://github.com/apple/swift-docc#using-docc-to-build-and-preview-documentation) to generate a documentation archive, set the path to your renderer and render locally your documentation using Swift-DocC-Render.
 
+## Rendering and building docs
+
+You need to have [DocC](https://swift.org/documentation/docc) installed, in order to preview and build documentation. Read [Getting Started with Swift](https://www.swift.org/getting-started/) to learn more.
+
+To preview the docs, run `npm run docs:preview`. This will spawn a preview server on http://localhost:8000/documentation/doccrender.
+
+To build the docs, run `npm run docs:build`.
+
 ## Bug Reports and Feature Requests
 
 ### Submitting a Bug Report

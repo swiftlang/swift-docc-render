@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import '../webpack-asset-path';
 import Vue from 'vue';
 import Router from 'vue-router';
 import App from '@/App.vue';

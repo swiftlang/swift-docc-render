@@ -31,24 +31,25 @@ window.fetch = fetchMock;
 
 describe('theme-settings', () => {
   beforeEach(() => {
-    process.env.BASE_URL = '/';
     importDeps();
     jest.clearAllMocks();
   });
 
   it('fetches the theme settings from a remote path', async () => {
+    window.baseUrl = '/';
+    importDeps();
     await fetchThemeSettings();
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith('http://localhost/theme-settings.json');
     expect(jsonMock).toHaveBeenCalledTimes(1);
   });
 
-  it('uses the BASE_URL for the json path', async () => {
-    process.env.BASE_URL = '/foo/bar/';
+  it('uses the window.baseUrl for the json path', async () => {
+    window.baseUrl = '/bar/foo/';
     importDeps();
     await fetchThemeSettings();
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost/foo/bar/theme-settings.json');
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost/bar/foo/theme-settings.json');
     expect(jsonMock).toHaveBeenCalledTimes(1);
   });
 

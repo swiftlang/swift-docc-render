@@ -236,7 +236,11 @@ function renderNode(createElement, references) {
         node.text
       ));
     case BlockType.orderedList:
-      return createElement('ol', {}, (
+      return createElement('ol', {
+        attrs: {
+          start: node.start,
+        },
+      }, (
         renderListItems(node.items)
       ));
     case BlockType.paragraph:

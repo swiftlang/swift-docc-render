@@ -205,6 +205,51 @@ describe('ContentNode', () => {
 
       const list = wrapper.find('.content ol');
       expect(list.exists()).toBe(true);
+      expect(list.attributes('start')).toBeUndefined();
+
+      const items = list.findAll('li');
+      expect(items.length).toBe(2);
+      expect(items.at(0).find('p').text()).toBe('foo');
+      expect(items.at(1).find('p').text()).toBe('bar');
+    });
+
+    it('renders an <ol> with <li> items and a custom start index', () => {
+      const wrapper = mountWithItem({
+        type: 'orderedList',
+        start: 2,
+        items: [
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      const list = wrapper.find('.content ol');
+      expect(list.exists()).toBe(true);
+      expect(list.attributes('start')).toBe('2');
 
       const items = list.findAll('li');
       expect(items.length).toBe(2);
