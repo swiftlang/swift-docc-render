@@ -83,7 +83,7 @@ export default {
           url: identifier,
         },
         metadata: {
-          extends: extendsFramework,
+          extends: extendsTechnology,
           conformance,
           modules,
           platforms,
@@ -124,7 +124,7 @@ export default {
         seeAlsoSections,
         variantOverrides,
         variants,
-        extendsFramework,
+        extendsTechnology,
         tags: tags.slice(0, 1), // make sure we only show the first tag
       };
     },
