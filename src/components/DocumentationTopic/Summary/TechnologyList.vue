@@ -53,11 +53,17 @@ export default {
     },
     title: {
       type: String,
-      default: 'Technology',
+      required: false,
     },
   },
   computed: {
-    computedTitle: ({ title, technologies }) => `${pluralize(title, technologies)}`,
+    computedTitle: ({ title, defaultTitle }) => title || defaultTitle,
+    defaultTitle: ({ technologies }) => pluralize({
+      en: {
+        one: 'Technology',
+        other: 'Technologies',
+      },
+    }, technologies.length),
   },
 };
 </script>

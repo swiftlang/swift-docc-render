@@ -63,17 +63,76 @@ describe('escapeHtml', () => {
 });
 
 describe('pluralize', () => {
-  it('return word + `s` if value is plural', () => {
-    expect(pluralize('word', ['A', 'B'])).toBe('words');
+  it('throws an error when en-US one/other choices are not provided', () => {
+    expect(() => pluralize({}, 1)).toThrow();
+    expect(() => pluralize({}, 0)).toThrow();
+    expect(() => pluralize({}, 42)).toThrow();
+    expect(() => pluralize({ en: 'foo' }, 42)).toThrow();
+    expect(() => pluralize({ sl: { one: 'a', other: 'b' } })).toThrow();
+    expect(() => pluralize({ en: { one: 'foo' } }, 42)).toThrow();
   });
-  it('return word + `s` if value is 0', () => {
-    expect(pluralize('word', [])).toBe('words');
+
+  describe('en', () => {
+    const one = 'day';
+    const other = 'days';
+    const choices = { en: { one, other } };
+
+    it('returns the "one" choice for a count of 1', () => {
+      expect(pluralize(choices, 1)).toBe(one);
+    });
+
+    it('returns the "other" choice for integers that are not 1', () => {
+      expect(pluralize(choices, 0)).toBe(other);
+      expect(pluralize(choices, 2)).toBe(other);
+      expect(pluralize(choices, 42)).toBe(other);
+    });
   });
-  it('return word in original form if value is singular', () => {
-    expect(pluralize('word', ['A'])).toBe('word');
-  });
-  it('return technology in correct plural form', () => {
-    expect(pluralize('technology', ['A', 'B'])).toBe('technologies');
+
+  describe('with other locales', () => {
+    let languages;
+
+    const en = {
+      one: 'day',
+      other: 'days',
+    };
+    const sl = {
+      one: 'ura',
+      two: 'uri',
+      few: 'ure',
+      other: 'ur',
+    };
+    const choices = { en, sl };
+
+    beforeEach(() => {
+      languages = navigator.languages;
+      // stub `navigator.languages` to simulate a runtime with an alternate locale
+      // eslint-disable-next-line
+      navigator.__defineGetter__('languages', () => ['sl']);
+    });
+
+    afterEach(() => {
+      // restore original value of `navigator.languages`
+      // eslint-disable-next-line
+      navigator.__defineGetter__('languages', () => languages);
+    });
+
+    it('uses translated text for the appropriate locale and plural rule', () => {
+      expect(pluralize(choices, 1)).toBe(sl.one);
+      expect(pluralize(choices, 2)).toBe(sl.two);
+      expect(pluralize(choices, 3)).toBe(sl.few);
+      expect(pluralize(choices, 4)).toBe(sl.few);
+      expect(pluralize(choices, 5)).toBe(sl.other);
+      expect(pluralize(choices, 0)).toBe(sl.other);
+    });
+
+    it('falls back to "en" if the appropriate translation is not provided', () => {
+      expect(pluralize({ en }, 1)).toBe(en.one);
+      expect(pluralize({ en }, 2)).toBe(en.other);
+      expect(pluralize({ en }, 3)).toBe(en.other);
+      expect(pluralize({ en }, 4)).toBe(en.other);
+      expect(pluralize({ en }, 5)).toBe(en.other);
+      expect(pluralize({ en }, 0)).toBe(en.other);
+    });
   });
 });
 

@@ -50,9 +50,7 @@ describe('TechnologyList', () => {
   });
 
   it('allows overriding the title via a prop', () => {
-    wrapper.setProps({
-      title: 'Foobar',
-    });
+    wrapper.setProps({ title: 'Foobars' });
     const title = wrapper.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('Foobars');
