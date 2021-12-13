@@ -10,4 +10,5 @@
 
 // eslint-disable-next-line import/prefer-default-export
 export const baseNavHeight = 52;
+export const baseNavHeightSmallBreakpoint = 48;
 export const baseNavStickyAnchorId = 'nav-sticky-anchor';
