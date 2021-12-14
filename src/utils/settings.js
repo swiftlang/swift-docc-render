@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { SafeLocalStorage } from '@/utils/storage';
+import { SafeLocalStorage } from 'docc-render/utils/storage';
 
 const StorageKey = {
   preferredColorScheme: 'developer.setting.preferredColorScheme',

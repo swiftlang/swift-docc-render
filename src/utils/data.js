@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { pathJoin } from 'docc-render/utils/assets';
 import { queryStringForParams, areEquivalentLocations } from 'docc-render/utils/url-helper';
@@ -107,4 +107,9 @@ export async function fetchAPIChangesForRoute(route, changes) {
 
 export function clone(jsonObject) {
   return JSON.parse(JSON.stringify(jsonObject));
+}
+
+export async function fetchIndexPathsData() {
+  const path = createDataPath('documentation/navigation-index');
+  return fetchData(path);
 }

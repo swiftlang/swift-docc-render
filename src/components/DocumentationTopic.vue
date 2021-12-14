@@ -26,7 +26,7 @@
       <AdjustableSidebarWidth storage-key="sidebar">
         <template #aside>
           <aside class="doc-topic-aside">
-            The sidebar goes here
+            <Navigator :interface-language="interfaceLanguage" />
           </aside>
         </template>
         <template #default>
@@ -109,6 +109,7 @@ import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationN
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
+import Navigator from 'docc-render/components/Navigator.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -144,6 +145,7 @@ export default {
     },
   },
   components: {
+    Navigator,
     AdjustableSidebarWidth,
     Abstract,
     Aside,

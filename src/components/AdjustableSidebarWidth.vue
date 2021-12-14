@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { storage } from '@/utils/storage';
+import { storage } from 'docc-render/utils/storage';
 
 export const STORAGE_KEY = 'sidebar-width';
 
