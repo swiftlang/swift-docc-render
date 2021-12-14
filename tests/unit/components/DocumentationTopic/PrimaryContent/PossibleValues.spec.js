@@ -11,7 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import PossibleValues from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
 
-const { ContentNode } = PossibleValues.components;
+const { ContentNode, WordBreak } = PossibleValues.components;
 
 const propsData = {
   values: [
@@ -35,10 +35,15 @@ const propsData = {
   ],
 };
 describe('PossibleValues', () => {
-  it('renders the passed values', () => {
-    const wrapper = shallowMount(PossibleValues, {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallowMount(PossibleValues, {
       propsData,
     });
+  });
+
+  it('renders the passed values', () => {
     const titles = wrapper.findAll('.param-name');
     expect(titles).toHaveLength(2);
     expect(titles.at(0).text()).toEqual('A');
@@ -49,5 +54,13 @@ describe('PossibleValues', () => {
     const contentNode = wrapper.find(ContentNode);
     expect(contentNode.exists()).toBe(true);
     expect(contentNode.props('content')).toBe(propsData.values[1].content);
+  });
+
+  it('renders <WordBreak> with a <code> tag', () => {
+    const wordBreaks = wrapper.findAll(WordBreak);
+    expect(wordBreaks).toHaveLength(2);
+    expect(wordBreaks.at(0).text()).toBe(propsData.values[0].name);
+    expect(wordBreaks.at(0).attributes('tag')).toBe('code');
+    expect(wordBreaks.at(1).text()).toBe(propsData.values[1].name);
   });
 });
