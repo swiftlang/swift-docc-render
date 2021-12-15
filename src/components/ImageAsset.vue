@@ -41,17 +41,18 @@
 import imageAsset from 'docc-render/mixins/imageAsset';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
+import { normalizeAssetUrl } from 'docc-render/utils/assets';
 
 function constructAttributes(sources) {
   if (!sources.length) {
     return null;
   }
-  const srcSet = sources.map(s => `${s.src} ${s.density}`).join(', ');
+  const srcSet = sources.map(s => `${normalizeAssetUrl(s.src)} ${s.density}`).join(', ');
   const defaultSource = sources[0];
 
   const attrs = {
     srcSet,
-    src: defaultSource.src,
+    src: normalizeAssetUrl(defaultSource.src),
   };
 
   // All the variants should have the same size, so use the size of the first

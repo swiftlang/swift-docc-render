@@ -9,16 +9,18 @@
 */
 
 import Router from 'vue-router';
-import { saveScrollOnReload, restoreScrollOnReload, scrollBehavior } from 'docc-render/utils/router-utils';
+import {
+  saveScrollOnReload,
+  restoreScrollOnReload,
+  scrollBehavior,
+} from 'docc-render/utils/router-utils';
 import routes from 'docc-render/routes';
+import { baseUrl } from 'docc-render/utils/theme-settings';
 
 export default function createRouterInstance(routerConfig = {}) {
   const router = new Router({
     mode: 'history',
-    // This needs to be explicitly set to "/" like this even when the base URL
-    // is `/tutorials/`. Otherwise, the router would be mistakenly routing things
-    // to redundant paths like `/tutorials/tutorials/...` on the website.
-    base: '/',
+    base: baseUrl,
     scrollBehavior,
     ...routerConfig,
     routes: routerConfig.routes || routes,
