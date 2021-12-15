@@ -19,6 +19,9 @@
     class="documentation-nav"
     aria-label="API Reference"
   >
+    <template slot="pre-title">
+      <button @click.prevent="$emit('toggle-sidenav')">Open</button>
+    </template>
     <template slot="default">
       <slot
         name="title"

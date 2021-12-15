@@ -3,9 +3,10 @@
     <div
       ref="aside"
       class="sidebar"
+      :class="{ 'fully-closed': !width, 'fully-open': isMaxWidth }"
     >
       <div
-        :class="{ dragging: isDragging }"
+        :class="{ dragging: isDragging, 'force-open': openExternally }"
         :style="{ width: widthInPx }"
         class="aside"
       >
@@ -34,15 +35,20 @@ export default {
       type: String,
       default: STORAGE_KEY,
     },
+    openExternally: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       isDragging: false,
-      width: storage.get(this.storageKey, null),
+      width: Math.min(storage.get(this.storageKey, null), window.innerWidth),
     };
   },
   computed: {
     widthInPx: ({ width }) => `${width}px`,
+    isMaxWidth: ({ width }) => width === window.innerWidth,
   },
   methods: {
     startDrag() {
@@ -51,20 +57,33 @@ export default {
       document.addEventListener('mousemove', this.handleDrag);
       document.addEventListener('mouseup', this.stopDrag);
     },
+    /**
+     * Handle dragging the resize element
+     * @param {MouseEvent} e
+     */
     handleDrag(e) {
       e.preventDefault();
       // we don't want to do anything if we aren't resizing.
       if (!this.isDragging) return;
       const { aside } = this.$refs;
-      const newWidth = (e.clientX - aside.offsetLeft);
+      let newWidth = (e.clientX - aside.offsetLeft);
       if (this.width > newWidth && newWidth < 200) {
-        // TODO: implement action to close the UI if its too narrow
+        // TODO: implement snapping to close if too narrow
         // this.width = 0;
         // this.stopDrag(e);
         // return;
       }
-      this.width = newWidth;
+      // prevent going outside of the window zone
+      if (newWidth > window.innerWidth) {
+        newWidth = window.innerWidth;
+      }
+      // prevent from shrinking too much
+      this.width = Math.max(newWidth, 0);
     },
+    /**
+     * Stop the dragging upon mouse up
+     * @param {MouseEvent} e
+     */
     stopDrag(e) {
       e.preventDefault();
       if (!this.isDragging) return;
@@ -84,22 +103,36 @@ export default {
   display: flex;
   @include breakpoint(small) {
     display: block;
+    position: relative;
   }
 }
 
 .sidebar {
   position: relative;
+  @include breakpoint(small) {
+    position: static;
+  }
 }
 
 .aside {
   width: 250px;
   position: relative;
-  overflow-x: hidden;
+  height: 100%;
+  max-width: 100vw;
 
   @include breakpoint(small) {
-    width: 100% !important;
+    width: 0 !important;
     min-width: 0;
     max-width: 100%;
+    position: absolute;
+    z-index: 1;
+    transform: translateX(-100px);
+    transition: width 0.15s linear, transform 0.15s ease-in;
+
+    &.force-open {
+      width: 100% !important;
+      transform: translateX(0);
+    }
   }
 }
 
@@ -121,7 +154,11 @@ export default {
   user-select: none;
   z-index: 1;
   transition: background-color .15s;
-  transform: translateX(100%);
+  transform: translateX(50%);
+
+  .fully-closed &, .fully-open & {
+    width: 10px;
+  }
 
   @include breakpoint(small) {
     display: none;

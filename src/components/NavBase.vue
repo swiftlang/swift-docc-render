@@ -19,6 +19,9 @@
       <div class="nav__background" />
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
+        <div class="pre-title" v-if="$slots['pre-title']">
+          <slot name="pre-title" />
+        </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
         </div>
@@ -500,6 +503,14 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   z-index: 1;
 }
 
+.pre-title {
+  display: none;
+  @include breakpoint(small, $scope: nav) {
+    display: flex;
+    padding: 0 10px;
+  }
+}
+
 // Nav content (title and menus)
 .nav-content {
   display: flex;
@@ -522,11 +533,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
   @include nav-in-breakpoint {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     grid-auto-rows: minmax(min-content, max-content);
     grid-template-areas:
-      "title actions"
-      "menu menu";
+      "pre-title title actions"
+      "menu menu menu";
   }
 }
 

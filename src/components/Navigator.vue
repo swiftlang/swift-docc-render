@@ -1,5 +1,5 @@
 <template>
-  <div class="Navigator">
+  <div class="navigator">
     <input type="text" :value="filter" @input="debounceInput">
     <NavigatorCard
       v-for="technology in filteredTree"
@@ -84,4 +84,10 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
+.navigator {
+  overflow: hidden auto;
+  position: sticky;
+  top: $nav-height;
+  max-height: calc(100vh - #{$nav-height});
+}
 </style>

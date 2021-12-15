@@ -21,8 +21,9 @@
       :isSymbolDeprecated="isSymbolDeprecated"
       :isSymbolBeta="isSymbolBeta"
       :currentTopicTags="tags"
+      @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
     />
-    <AdjustableSidebarWidth storage-key="sidebar">
+    <AdjustableSidebarWidth storage-key="sidebar" :open-externally="isSideNavOpen">
       <template #aside>
         <aside class="doc-topic-aside">
           <Navigator
@@ -277,6 +278,7 @@ export default {
   data() {
     return {
       topicState: this.store.state,
+      isSideNavOpen: false,
     };
   },
   computed: {
@@ -426,6 +428,14 @@ export default {
 
 .doc-topic-aside {
   padding: 1rem;
+  height: 100%;
+  box-sizing: border-box;
+  @include breakpoint(small) {
+    position: absolute;
+    width: 100%;
+    background: var(--color-fill);
+    z-index: 1;
+  }
 }
 
 /deep/ {
