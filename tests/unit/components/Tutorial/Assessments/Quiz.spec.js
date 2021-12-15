@@ -198,20 +198,30 @@ describe('Quiz', () => {
       const choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
-
-      const indicator = choice.find('[aria-live="assertive"].visuallyhidden');
-      expect(indicator.exists()).toBe(true);
-      expect(indicator.text()).toBe('Correct Answer');
     });
 
     it('renders visually hidden indicator of incorrect choice', () => {
       const choice = choices.at(1);
       choice.trigger('click');
       submit.trigger('click');
+    });
 
-      const indicator = choice.find('[aria-live="assertive"].visuallyhidden');
-      expect(indicator.exists()).toBe(true);
-      expect(indicator.text()).toBe('Incorrect Answer');
+    it('updates the aria live text telling the user if the answer chosen is correct or incorrect', () => {
+      const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+      expect(ariaLive.exists()).toBe(true);
+      expect(ariaLive.text()).toBe('');
+
+      let choice = choices.at(1);
+      choice.trigger('click');
+      submit.trigger('click');
+
+      expect(ariaLive.text()).toBe('Answer number 2 is incorrect');
+
+      choice = choices.at(0);
+      choice.trigger('click');
+      submit.trigger('click');
+
+      expect(ariaLive.text()).toBe('Answer number 1 is correct');
     });
   });
 });
