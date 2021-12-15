@@ -23,7 +23,7 @@ const {
   Aside,
   Description,
   DownloadButton,
-  FrameworkList,
+  TechnologyList,
   LanguageSwitcher,
   Nav,
   OnThisPageNav,
@@ -352,13 +352,13 @@ describe('DocumentationTopic', () => {
       expect(list.props('platforms')).toEqual(platforms);
     });
 
-    it('renders a `FrameworkList` with frameworks data', () => {
+    it('renders a `TechnologyList` with technologies data', () => {
       const modules = ['FooKit', 'BarKit'];
       wrapper.setProps({ modules });
 
-      const list = summary.find(FrameworkList);
+      const list = summary.find(TechnologyList);
       expect(list.exists()).toBe(true);
-      expect(list.props('frameworks')).toEqual(modules);
+      expect(list.props('technologies')).toEqual(modules);
     });
 
     it('renders an `OnThisPageNav` with more than 1 section', () => {
@@ -392,18 +392,18 @@ describe('DocumentationTopic', () => {
       });
     });
 
-    it('renders an `FrameworkList` component in the sidebar', () => {
-      expect(wrapper.find('.extends-framework').exists()).toBe(false);
-      const extendsFramework = 'FooFramework';
+    it('renders an `TechnologyList` component in the sidebar', () => {
+      expect(wrapper.find('.extends-technology').exists()).toBe(false);
+      const extendsTechnology = 'FooTechnology';
 
       wrapper.setProps({
-        extendsFramework,
+        extendsTechnology,
       });
 
-      const frameworkList = wrapper.find('.extends-framework');
-      expect(frameworkList.exists()).toBe(true);
-      expect(frameworkList.props()).toEqual({
-        frameworks: [{ name: extendsFramework }],
+      const technologyList = wrapper.find('.extends-technology');
+      expect(technologyList.exists()).toBe(true);
+      expect(technologyList.props()).toEqual({
+        technologies: [{ name: extendsTechnology }],
         title: 'Extends',
       });
     });
