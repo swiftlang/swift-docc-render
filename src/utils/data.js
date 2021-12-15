@@ -8,8 +8,10 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { pathJoin } from 'docc-render/utils/assets';
 import { queryStringForParams, areEquivalentLocations } from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
+import { baseUrl } from 'docc-render/utils/theme-settings';
 
 export class FetchError extends Error {
   constructor(route) {
@@ -39,7 +41,7 @@ export async function fetchData(path, params = {}) {
     url.search = queryString;
   }
 
-  const response = await fetch(url);
+  const response = await fetch(url.href);
   if (isBadResponse(response)) {
     throw response;
   }
@@ -51,7 +53,7 @@ export async function fetchData(path, params = {}) {
 
 function createDataPath(path) {
   const dataPath = path.replace(/\/$/, '');
-  return `${process.env.BASE_URL}data${dataPath}.json`;
+  return `${pathJoin([baseUrl, 'data', dataPath])}.json`;
 }
 
 export async function fetchDataForRouteEnter(to, from, next) {

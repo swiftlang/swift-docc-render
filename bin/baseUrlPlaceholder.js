@@ -8,6 +8,4 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-const baseUrl = '';
-const getSetting = jest.fn(() => ({}));
-export { baseUrl, getSetting };
+module.exports = '{{BASE_PATH}}';

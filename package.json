@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && node ./bin/transformIndex.js",
     "test": "npm run test:unit && npm run lint && npm run test:license",
     "test:license": "./bin/check-source",
     "test:unit": "vue-cli-service test:unit",
@@ -17,7 +17,8 @@
   "files": [
     "src",
     "index.js",
-    "test-utils.js"
+    "test-utils.js",
+    "webpack-asset-path.js"
   ],
   "dependencies": {
     "core-js": "^3.8.2",
