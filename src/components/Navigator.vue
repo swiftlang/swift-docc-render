@@ -6,6 +6,7 @@
       :key="technology.path"
       :technology="technology"
       :active-path="activePath"
+      :show-extended-info="showExtraInfo"
       @open="handleOpenOnCard"
     />
   </div>
@@ -28,6 +29,10 @@ export default {
     parentTopicIdentifiers: {
       type: Array,
       required: true,
+    },
+    showExtraInfo: {
+      type: Boolean,
+      default: false,
     },
   },
   inject: ['references'],

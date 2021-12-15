@@ -1,15 +1,22 @@
 <template>
   <div class="navigator-card" :class="{ open: isOpen, highlighted: isCurrentPage }">
-    <div class="head-wrapper">
+    <div class="head-wrapper" :class="{ 'extra-info': showExtendedInfo }">
       <button class="directory-toggle" @click.prevent="toggleCard">
         <InlineChevronRightIcon class="icon-inline chevron" />
       </button>
-      <router-link
-        :to="technology.path"
-        class="card-link"
-      >
-        {{ technology.title }}
-      </router-link>
+      <div>
+        <router-link
+          :to="technology.path"
+          class="card-link"
+        >
+          {{ technology.title }}
+        </router-link>
+        <ContentNode
+          v-show="showExtendedInfo"
+          :content="technology.abstract"
+          class="extended-content"
+        />
+      </div>
     </div>
     <div class="card-body">
       <TransitionExpand>
@@ -18,6 +25,7 @@
           :children="childrenFiltered"
           :nesting-index="3"
           :active-path="activePathMinusFirst"
+          :show-extended-info="showExtendedInfo"
         />
       </TransitionExpand>
     </div>
@@ -25,13 +33,16 @@
 </template>
 
 <script>
-import InlineChevronRightIcon from 'docc-render/components/Icons/InlineChevronRightIcon.vue';
+import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import NavigatorTree from 'docc-render/components/Navigator/NavigatorTree.vue';
+import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 
 export default {
   name: 'NavigatorCard',
-  components: { NavigatorTree, TransitionExpand, InlineChevronRightIcon },
+  components: {
+    ContentNode, NavigatorTree, TransitionExpand, InlineChevronRightIcon,
+  },
   props: {
     technology: {
       type: Object,
@@ -40,6 +51,10 @@ export default {
     activePath: {
       type: Array,
       required: true,
+    },
+    showExtendedInfo: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -80,7 +95,7 @@ export default {
     padding: 10px;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
-    align-items: center;
+    align-items: baseline;
     position: relative;
   }
 
@@ -130,6 +145,11 @@ export default {
   @include font-styles(body-reduced);
   font-weight: $font-weight-semibold;
 
+  .extra-info & {
+    @include font-styles(body-tight);
+    font-weight: $font-weight-semibold;
+  }
+
   &:after {
     content: '';
     position: absolute;
@@ -138,6 +158,11 @@ export default {
     right: 0;
     bottom: 0;
   }
+}
+
+.extended-content {
+  @include font-styles(body-reduced);
+  color: var(--color-figure-gray-secondary);
 }
 
 .chevron {

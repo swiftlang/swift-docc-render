@@ -23,12 +23,17 @@
       :currentTopicTags="tags"
       @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
     />
-    <AdjustableSidebarWidth storage-key="sidebar" :open-externally="isSideNavOpen">
+    <AdjustableSidebarWidth
+      storage-key="sidebar"
+      :open-externally="isSideNavOpen"
+      @width-change="handleWidthChange"
+    >
       <template #aside>
         <aside class="doc-topic-aside">
           <Navigator
             :interface-language="interfaceLanguage"
             :parent-topic-identifiers="navigatorParentTopicIdentifiers"
+            :show-extra-info="showExtraNavigatorInfo"
           />
         </aside>
       </template>
@@ -279,6 +284,7 @@ export default {
     return {
       topicState: this.store.state,
       isSideNavOpen: false,
+      showExtraNavigatorInfo: false,
     };
   },
   computed: {
@@ -335,6 +341,9 @@ export default {
       // Sometimes `paths` data from `variants` are prefixed with a leading
       // slash and sometimes they aren't
       return path.startsWith('/') ? path : `/${path}`;
+    },
+    handleWidthChange(width) {
+      this.showExtraNavigatorInfo = width > 500;
     },
   },
   created() {

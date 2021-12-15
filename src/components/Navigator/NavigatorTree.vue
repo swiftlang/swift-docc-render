@@ -7,6 +7,7 @@
       :expanded-items="expanded"
       :nesting-index="nestingIndex"
       :active-path="activePath"
+      :show-extended-info="showExtendedInfo"
       @toggle="handleToggle"
     />
   </ul>
@@ -30,6 +31,10 @@ export default {
     activePath: {
       type: Array,
       required: true,
+    },
+    showExtendedInfo: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

@@ -1,7 +1,7 @@
 <template>
   <li
     class="navigator-tree-leaf"
-    :class="{ expanded }"
+    :class="{ expanded, 'extra-info': showExtendedInfo }"
     :style="{ '--nesting-index': nestingIndex }"
   >
     <div class="head-wrapper" :class="{ active: isActive }">
@@ -12,10 +12,17 @@
       >
         <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
       </button>
-      <router-link :to="item.path" class="leaf-link">
-        <NavigatorLeafIcon :type="item.kind" />
-        {{ item.title }}
-      </router-link>
+      <NavigatorLeafIcon :type="item.kind" />
+      <div>
+        <router-link :to="item.path" class="leaf-link">
+          {{ item.title }}
+        </router-link>
+        <ContentNode
+          v-show="showExtendedInfo"
+          :content="item.abstract"
+          class="extended-content"
+        />
+      </div>
     </div>
     <TransitionExpand>
       <NavigatorTree
@@ -23,19 +30,22 @@
         :children="childrenFiltered"
         :nesting-index="nestingIndex + 1"
         :active-path="activePathMinusFirst"
+        :show-extended-info="showExtendedInfo"
       />
     </TransitionExpand>
   </li>
 </template>
 
 <script>
-import InlineChevronRightIcon from 'docc-render/components/Icons/InlineChevronRightIcon.vue';
+import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 
 export default {
   name: 'NavigatorTreeLeaf',
   components: {
+    ContentNode,
     NavigatorLeafIcon,
     TransitionExpand,
     InlineChevronRightIcon,
@@ -57,6 +67,10 @@ export default {
     activePath: {
       type: Array,
       required: true,
+    },
+    showExtendedInfo: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -84,8 +98,10 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .head-wrapper {
-  padding: 5px 5px 5px calc(var(--nesting-index) * 10px);
+  padding: 7.5px 5px 7.5px calc(var(--nesting-index) * 10px);
   position: relative;
+  display: flex;
+  align-items: baseline;
 
   &.active {
     background: var(--color-fill-gray-quaternary);
@@ -103,6 +119,7 @@ export default {
     max-width: 100%;
     display: inline-block;
     vertical-align: middle;
+    @include font-styles(body-reduced);
 
     &:after {
       content: '';
@@ -113,6 +130,11 @@ export default {
       bottom: 0;
     }
   }
+}
+
+.extended-content {
+  @include font-styles(body-reduced);
+  color: var(--color-figure-gray-secondary);
 }
 
 .directory-toggle {

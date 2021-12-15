@@ -25,6 +25,7 @@
 
 <script>
 import { storage } from 'docc-render/utils/storage';
+import debounce from 'docc-render/utils/debounce';
 
 export const STORAGE_KEY = 'sidebar-width';
 
@@ -91,6 +92,14 @@ export default {
       storage.set(this.storageKey, this.width);
       document.removeEventListener('mousemove', this.handleDrag);
       document.removeEventListener('mouseup', this.stopDrag);
+    },
+  },
+  watch: {
+    width: {
+      immediate: true,
+      handler: debounce(function widthHandler(value) {
+        this.$emit('width-change', value);
+      }, 250, true, true),
     },
   },
 };
