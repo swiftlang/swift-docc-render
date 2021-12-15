@@ -6,6 +6,7 @@
       :key="technology.path"
       :technology="technology"
       :active-path="activePath"
+      @open="handleOpenOnCard"
     />
   </div>
 </template>
@@ -72,6 +73,10 @@ export default {
     debounceInput: debounce(function debounceInput({ target: { value } }) {
       this.filter = value;
     }, 500),
+    // TODO: Add logic to fetch children async
+    handleOpenOnCard(paths) {
+      console.log(paths);
+    },
   },
 };
 </script>

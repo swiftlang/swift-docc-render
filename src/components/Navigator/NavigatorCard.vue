@@ -17,7 +17,7 @@
           v-if="isOpen"
           :children="childrenFiltered"
           :nesting-index="3"
-          :active-path="activePathRest"
+          :active-path="activePathMinusFirst"
         />
       </TransitionExpand>
     </div>
@@ -48,26 +48,21 @@ export default {
     };
   },
   computed: {
-    activePathRest() {
-      if (this.isCurrentPage) {
-        return this.activePath.slice(1);
-      }
-      return this.activePath;
-    },
+    activePathMinusFirst: ({ activePath }) => activePath.slice(1),
+    // TODO: move this to the backend
     childrenFiltered({ technology }) {
       return technology.children.filter(child => child.kind !== 'groupMarker');
     },
     isCurrentPage({ activePath, technology }) {
-      return activePath[0] === technology.path;
+      return activePath.length === 1 && activePath[0] === technology.path;
     },
   },
   methods: {
     toggleCard() {
       this.isOpen = !this.isOpen;
-      this.emitOpenEvent(this.technology.path);
-    },
-    emitOpenEvent(path) {
-      this.$emit('open', path);
+      if (this.isOpen) {
+        this.$emit('open', this.technology.path);
+      }
     },
   },
 };

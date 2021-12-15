@@ -22,7 +22,7 @@
         v-if="expanded && childrenFiltered.length"
         :children="childrenFiltered"
         :nesting-index="nestingIndex + 1"
-        :active-path="activePathRest"
+        :active-path="activePathMinusFirst"
       />
     </TransitionExpand>
   </li>
@@ -66,9 +66,7 @@ export default {
     isActive({ item, activePath }) {
       return activePath.length === 1 && item.path === activePath[0];
     },
-    activePathRest() {
-      return this.activePath.slice(1);
-    },
+    activePathMinusFirst: ({ activePath }) => activePath.slice(1),
     // TODO: move this to the backend
     childrenFiltered({ item }) {
       return item.children ? item.children.filter(child => child.kind !== 'groupMarker') : [];
