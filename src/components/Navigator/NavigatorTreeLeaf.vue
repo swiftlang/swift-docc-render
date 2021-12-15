@@ -4,7 +4,7 @@
     :class="{ expanded }"
     :style="{ '--nesting-index': nestingIndex }"
   >
-    <div class="head-wrapper" :class="{ active }">
+    <div class="head-wrapper" :class="{ active: isActive }">
       <button
         v-if="childrenFiltered.length"
         class="directory-toggle"
@@ -22,7 +22,7 @@
         v-if="expanded && childrenFiltered.length"
         :children="childrenFiltered"
         :nesting-index="nestingIndex + 1"
-        :active-path="activePath"
+        :active-path="activePathRest"
       />
     </TransitionExpand>
   </li>
@@ -55,7 +55,7 @@ export default {
       default: 1,
     },
     activePath: {
-      type: String,
+      type: Array,
       required: true,
     },
   },
@@ -63,8 +63,11 @@ export default {
     expanded({ expandedItems, item }) {
       return expandedItems.includes(item.path);
     },
-    active({ item, activePath }) {
-      return item.path === activePath;
+    isActive({ item, activePath }) {
+      return activePath.length === 1 && item.path === activePath[0];
+    },
+    activePathRest() {
+      return this.activePath.slice(1);
     },
     // TODO: move this to the backend
     childrenFiltered({ item }) {

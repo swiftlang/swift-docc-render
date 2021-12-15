@@ -5,7 +5,7 @@
       v-for="technology in filteredTree"
       :key="technology.path"
       :technology="technology"
-      :active-path="$route.path"
+      :active-path="activePath"
     />
   </div>
 </template>
@@ -24,7 +24,12 @@ export default {
       type: String,
       default: Language.swift.key.url,
     },
+    parentTopicIdentifiers: {
+      type: Array,
+      required: true,
+    },
   },
+  inject: ['references'],
   data() {
     return {
       navigationIndex: {},
@@ -40,6 +45,12 @@ export default {
         return technologiesTree;
       }
       return technologiesTree.reduce(this.getNodes, []);
+    },
+    parentTopicReferences({ references, parentTopicIdentifiers }) {
+      return parentTopicIdentifiers.map(identifier => references[identifier].url);
+    },
+    activePath({ parentTopicReferences, $route }) {
+      return parentTopicReferences.concat($route.path);
     },
   },
   async created() {

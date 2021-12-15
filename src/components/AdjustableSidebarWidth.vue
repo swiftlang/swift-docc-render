@@ -6,7 +6,7 @@
     >
       <div
         :class="{ dragging: isDragging }"
-        :style="{ width }"
+        :style="{ width: widthInPx }"
         class="aside"
       >
         <slot name="aside" />
@@ -41,9 +41,11 @@ export default {
       width: storage.get(this.storageKey, null),
     };
   },
+  computed: {
+    widthInPx: ({ width }) => `${width}px`,
+  },
   methods: {
     startDrag() {
-      console.log('HERE');
       if (this.isDragging) return;
       this.isDragging = true;
       document.addEventListener('mousemove', this.handleDrag);
@@ -55,7 +57,13 @@ export default {
       if (!this.isDragging) return;
       const { aside } = this.$refs;
       const newWidth = (e.clientX - aside.offsetLeft);
-      this.width = `${newWidth}px`;
+      if (this.width > newWidth && newWidth < 200) {
+        // TODO: implement action to close the UI if its too narrow
+        // this.width = 0;
+        // this.stopDrag(e);
+        // return;
+      }
+      this.width = newWidth;
     },
     stopDrag(e) {
       e.preventDefault();
@@ -81,16 +89,10 @@ export default {
 
 .sidebar {
   position: relative;
-  display: flex;
 }
 
 .aside {
-  box-sizing: border-box;
-  flex: 0 0 auto;
   width: 250px;
-  //min-width: 100px;
-  //max-width: calc(100% - 150px);
-  display: flex;
   position: relative;
   overflow-x: hidden;
 

@@ -28,7 +28,7 @@ export default {
       default: 1,
     },
     activePath: {
-      type: String,
+      type: Array,
       required: true,
     },
   },
@@ -39,7 +39,7 @@ export default {
   },
   mounted() {
     const activeChildren = this.children
-      .filter(child => this.activePath.startsWith(child.path) || child.expanded)
+      .filter(child => this.activePath[0] === child.path || child.expanded)
       .map(({ path }) => path);
 
     if (activeChildren.length) {

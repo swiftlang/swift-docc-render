@@ -17,7 +17,7 @@
           v-if="isOpen"
           :children="childrenFiltered"
           :nesting-index="3"
-          :active-path="activePath"
+          :active-path="activePathRest"
         />
       </TransitionExpand>
     </div>
@@ -38,21 +38,27 @@ export default {
       required: true,
     },
     activePath: {
-      type: String,
+      type: Array,
       required: true,
     },
   },
   data() {
     return {
-      isOpen: this.activePath.startsWith(this.technology.path),
+      isOpen: this.activePath[0] === this.technology.path,
     };
   },
   computed: {
+    activePathRest() {
+      if (this.isCurrentPage) {
+        return this.activePath.slice(1);
+      }
+      return this.activePath;
+    },
     childrenFiltered({ technology }) {
       return technology.children.filter(child => child.kind !== 'groupMarker');
     },
     isCurrentPage({ activePath, technology }) {
-      return activePath === technology.path;
+      return activePath[0] === technology.path;
     },
   },
   methods: {

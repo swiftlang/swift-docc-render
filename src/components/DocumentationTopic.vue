@@ -22,14 +22,18 @@
       :isSymbolBeta="isSymbolBeta"
       :currentTopicTags="tags"
     />
-    <main class="main" id="main" role="main" tabindex="0">
-      <AdjustableSidebarWidth storage-key="sidebar">
-        <template #aside>
-          <aside class="doc-topic-aside">
-            <Navigator :interface-language="interfaceLanguage" />
-          </aside>
-        </template>
-        <template #default>
+    <AdjustableSidebarWidth storage-key="sidebar">
+      <template #aside>
+        <aside class="doc-topic-aside">
+          <Navigator
+            :interface-language="interfaceLanguage"
+            :parent-topic-identifiers="navigatorParentTopicIdentifiers"
+          />
+        </aside>
+      </template>
+      <template #default>
+        <main class="main" id="main" role="main" tabindex="0">
+
           <slot name="above-title" />
           <Title :eyebrow="roleHeading">{{ title }}</Title>
           <div class="container content-grid" :class="{ 'full-width': hideSummary }">
@@ -93,9 +97,9 @@
             :sections="seeAlsoSections"
           />
           <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
-        </template>
-      </AdjustableSidebarWidth>
-    </main>
+        </main>
+      </template>
+    </AdjustableSidebarWidth>
   </div>
 </template>
 
@@ -320,6 +324,7 @@ export default {
     // hierarchy/breadcrumb for a given topic. We choose to render only the
     // first one.
     parentTopicIdentifiers: ({ hierarchy: { paths: [ids = []] = [] } }) => ids,
+    navigatorParentTopicIdentifiers: ({ hierarchy: { paths = [] } }) => paths.slice(-1)[0],
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
   },
@@ -364,10 +369,13 @@ export default {
 
 #main {
   outline-style: none;
+  border-left: 1px solid var(--color-grid);
+
   @include inTargetIde {
     min-height: 100vh;
     display: flex;
     flex-flow: column wrap;
+    border: none;
 
     & > .contenttable:last-of-type {
       flex: 1;
@@ -417,10 +425,7 @@ export default {
 }
 
 .doc-topic-aside {
-  width: 100%;
   padding: 1rem;
-  border-right: 1px solid var(--color-grid);
-  min-width: 0;
 }
 
 /deep/ {
