@@ -281,6 +281,23 @@ describe('success slot for completed assessment', () => {
     );
   });
 
+  it('renders a default "success" message on aria live element for AX', () => {
+    const wrapper = shallowMount(Assessments, {
+      ...options,
+    });
+    const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+    expect(ariaLive.exists()).toBe(true);
+    expect(ariaLive.text()).not.toBe(
+      'Great job, you\'ve answered all the questions for this tutorial.',
+    );
+
+    wrapper.setData({ completed: true });
+
+    expect(ariaLive.text()).toBe(
+      'Great job, you\'ve answered all the questions for this tutorial.',
+    );
+  });
+
   it('renders a "success" slot when provided', () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
@@ -300,5 +317,23 @@ describe('success slot for completed assessment', () => {
     const message = success.find('marquee');
     expect(message.exists()).toBe(true);
     expect(message.text()).toBe('🍺');
+  });
+
+  it('renders a "success" slot message when provided on aria live element for AX', () => {
+    const wrapper = shallowMount(Assessments, {
+      ...options,
+      slots: {
+        success: '<marquee>🍺</marquee>',
+      },
+    });
+    wrapper.setData({ completed: true });
+
+    const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+    expect(ariaLive.exists()).toBe(true);
+    expect(ariaLive.text()).not.toBe(
+      'Great job, you\'ve answered all the questions for this tutorial.',
+    );
+
+    expect(ariaLive.text()).toBe('🍺');
   });
 });
