@@ -31,7 +31,7 @@ export const SafeLocalStorage = {
 export const storage = {
   get: (key, fallback) => {
     const parsed = JSON.parse(SafeLocalStorage.getItem(storageKey + key));
-    if (typeof parsed !== 'undefined') return parsed;
+    if (parsed !== null) return parsed;
     return fallback;
   },
   set: (key, value) => SafeLocalStorage.setItem(storageKey + key, JSON.stringify(value)),

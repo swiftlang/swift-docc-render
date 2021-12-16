@@ -15,6 +15,7 @@
       <div
         class="resize-handle"
         @mousedown.prevent="startDrag"
+        @touchstart.prevent="startDrag"
       />
     </div>
     <div class="content">
@@ -29,6 +30,16 @@ import debounce from 'docc-render/utils/debounce';
 
 export const STORAGE_KEY = 'sidebar-width';
 
+const eventsMap = {
+  touch: {
+    move: 'touchmove',
+    end: 'touchend',
+  },
+  mouse: {
+    move: 'mousemove',
+    end: 'mouseup',
+  },
+};
 export default {
   name: 'AdjustableSidebarWidth',
   props: {
@@ -40,34 +51,42 @@ export default {
       type: Boolean,
       default: false,
     },
+    minWidth: {
+      type: Number,
+      default: () => 0,
+    },
   },
   data() {
     return {
       isDragging: false,
-      width: Math.min(storage.get(this.storageKey, null), window.innerWidth),
+      width: Math.min(storage.get(this.storageKey, this.minWidth), window.innerWidth),
+      isTouch: false,
     };
   },
   computed: {
     widthInPx: ({ width }) => `${width}px`,
     isMaxWidth: ({ width }) => width === window.innerWidth,
+    events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
   },
   methods: {
-    startDrag() {
+    startDrag({ type }) {
+      this.isTouch = type === 'touchstart';
       if (this.isDragging) return;
       this.isDragging = true;
-      document.addEventListener('mousemove', this.handleDrag);
-      document.addEventListener('mouseup', this.stopDrag);
+      document.addEventListener(this.events.move, this.handleDrag);
+      document.addEventListener(this.events.end, this.stopDrag);
     },
     /**
      * Handle dragging the resize element
-     * @param {MouseEvent} e
+     * @param {MouseEvent|TouchEvent} e
      */
     handleDrag(e) {
       e.preventDefault();
       // we don't want to do anything if we aren't resizing.
       if (!this.isDragging) return;
       const { aside } = this.$refs;
-      let newWidth = (e.clientX - aside.offsetLeft);
+      const clientX = this.isTouch ? e.touches[0].clientX : e.clientX;
+      let newWidth = (clientX - aside.offsetLeft);
       if (this.width > newWidth && newWidth < 200) {
         // TODO: implement snapping to close if too narrow
         // this.width = 0;
@@ -79,7 +98,7 @@ export default {
         newWidth = window.innerWidth;
       }
       // prevent from shrinking too much
-      this.width = Math.max(newWidth, 0);
+      this.width = Math.max(newWidth, this.minWidth);
     },
     /**
      * Stop the dragging upon mouse up
@@ -90,15 +109,20 @@ export default {
       if (!this.isDragging) return;
       this.isDragging = false;
       storage.set(this.storageKey, this.width);
-      document.removeEventListener('mousemove', this.handleDrag);
-      document.removeEventListener('mouseup', this.stopDrag);
+      document.removeEventListener(this.events.move, this.handleDrag);
+      document.removeEventListener(this.events.end, this.stopDrag);
+      // emit the width, in case the debounce muted the last change
+      this.emitEventChange(this.width);
+    },
+    emitEventChange(width) {
+      this.$emit('width-change', width);
     },
   },
   watch: {
     width: {
       immediate: true,
       handler: debounce(function widthHandler(value) {
-        this.$emit('width-change', value);
+        this.emitEventChange(value);
       }, 250, true, true),
     },
   },

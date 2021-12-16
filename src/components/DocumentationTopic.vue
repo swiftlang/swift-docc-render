@@ -26,6 +26,7 @@
     <AdjustableSidebarWidth
       storage-key="sidebar"
       :open-externally="isSideNavOpen"
+      :min-width="320"
       @width-change="handleWidthChange"
     >
       <template #aside>

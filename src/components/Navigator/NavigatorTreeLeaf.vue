@@ -18,6 +18,7 @@
           {{ item.title }}
         </router-link>
         <ContentNode
+          v-if="item.abstract"
           v-show="showExtendedInfo"
           :content="item.abstract"
           class="extended-content"
