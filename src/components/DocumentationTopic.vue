@@ -27,6 +27,7 @@
       storage-key="sidebar"
       :open-externally="isSideNavOpen"
       :min-width="320"
+      :hide-sidebar="isTargetIDE"
       @width-change="handleWidthChange"
     >
       <template #aside>
@@ -398,7 +399,6 @@ export default {
 .container {
   @include section-content;
   margin-top: $section-spacing-single-side / 2;
-  padding: 0 20px;
 }
 
 .content-grid {

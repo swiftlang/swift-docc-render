@@ -1,6 +1,7 @@
 <template>
   <div class="adjustable-sidebar-width">
     <div
+      v-if="!hideSidebar"
       ref="aside"
       class="sidebar"
       :class="{ 'fully-closed': !width, 'fully-open': isMaxWidth }"
@@ -54,6 +55,10 @@ export default {
     minWidth: {
       type: Number,
       default: () => 0,
+    },
+    hideSidebar: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

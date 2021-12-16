@@ -36,7 +36,6 @@ export default {
 .topictitle {
   @include breakpoint-content;
   margin-top: 2rem;
-  padding: 0 20px;
 }
 
 .eyebrow {
