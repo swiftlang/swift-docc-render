@@ -8,6 +8,7 @@
       :nesting-index="nestingIndex"
       :active-path="activePath"
       :show-extended-info="showExtendedInfo"
+      :filter-pattern="filterPattern"
       @toggle="handleToggle"
     />
   </ul>
@@ -35,6 +36,10 @@ export default {
     showExtendedInfo: {
       type: Boolean,
       default: false,
+    },
+    filterPattern: {
+      type: RegExp,
+      default: undefined,
     },
   },
   data() {

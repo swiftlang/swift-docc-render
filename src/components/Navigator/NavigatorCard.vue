@@ -9,7 +9,10 @@
           :to="technology.path"
           class="card-link"
         >
-          {{ technology.title }}
+          <HighlightMatch
+            :text="technology.title"
+            :matcher="filterPattern"
+          />
         </router-link>
         <ContentNode
           v-show="showExtendedInfo"
@@ -26,6 +29,7 @@
           :nesting-index="3"
           :active-path="activePathMinusFirst"
           :show-extended-info="showExtendedInfo"
+          :filter-pattern="filterPattern"
         />
       </TransitionExpand>
     </div>
@@ -37,11 +41,16 @@ import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIco
 import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import NavigatorTree from 'docc-render/components/Navigator/NavigatorTree.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import HighlightMatch from 'docc-render/components/Navigator/HighlightMatches.vue';
 
 export default {
   name: 'NavigatorCard',
   components: {
-    ContentNode, NavigatorTree, TransitionExpand, InlineChevronRightIcon,
+    HighlightMatch,
+    ContentNode,
+    NavigatorTree,
+    TransitionExpand,
+    InlineChevronRightIcon,
   },
   props: {
     technology: {
@@ -55,6 +64,10 @@ export default {
     showExtendedInfo: {
       type: Boolean,
       default: false,
+    },
+    filterPattern: {
+      type: RegExp,
+      default: undefined,
     },
   },
   data() {

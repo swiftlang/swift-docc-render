@@ -7,6 +7,7 @@
       :technology="technology"
       :active-path="activePath"
       :show-extended-info="showExtraInfo"
+      :filter-pattern="filterPattern"
       @open="handleOpenOnCard"
     />
   </div>
@@ -17,6 +18,7 @@ import { fetchIndexPathsData } from 'docc-render/utils/data';
 import Language from 'docc-render/constants/Language';
 import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import debounce from 'docc-render/utils/debounce';
+import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 
 export default {
   name: 'Navigator',
@@ -58,6 +60,7 @@ export default {
     activePath({ parentTopicReferences, $route }) {
       return parentTopicReferences.concat($route.path);
     },
+    filterPattern: ({ filter }) => (!filter ? undefined : safeHighlightPattern(filter)),
   },
   async created() {
     const { languages } = await fetchIndexPathsData();

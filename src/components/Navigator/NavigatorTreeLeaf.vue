@@ -13,9 +13,12 @@
         <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
       </button>
       <NavigatorLeafIcon :type="item.kind" />
-      <div>
+      <div class="title-container">
         <router-link :to="item.path" class="leaf-link">
-          {{ item.title }}
+          <HighlightMatch
+            :text="item.title"
+            :matcher="filterPattern"
+          />
         </router-link>
         <ContentNode
           v-if="item.abstract"
@@ -32,6 +35,7 @@
         :nesting-index="nestingIndex + 1"
         :active-path="activePathMinusFirst"
         :show-extended-info="showExtendedInfo"
+        :filter-pattern="filterPattern"
       />
     </TransitionExpand>
   </li>
@@ -42,10 +46,12 @@ import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIco
 import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import HighlightMatch from 'docc-render/components/Navigator/HighlightMatches.vue';
 
 export default {
   name: 'NavigatorTreeLeaf',
   components: {
+    HighlightMatch,
     ContentNode,
     NavigatorLeafIcon,
     TransitionExpand,
@@ -72,6 +78,10 @@ export default {
     showExtendedInfo: {
       type: Boolean,
       default: false,
+    },
+    filterPattern: {
+      type: RegExp,
+      default: undefined,
     },
   },
   computed: {
@@ -144,6 +154,10 @@ export default {
   width: 10px;
   margin-left: -15px;
   margin-right: 5px;
+}
+
+.title-container {
+  min-width: 0;
 }
 
 .chevron {
