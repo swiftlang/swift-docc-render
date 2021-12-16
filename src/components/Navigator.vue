@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     getNodes(result, object) {
-      if (object.title.toLowerCase().includes(this.filter.toLowerCase())) {
+      if (this.filterPattern.test(object.title)) {
         result.push(object);
         return result;
       }
