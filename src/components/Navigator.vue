@@ -55,7 +55,7 @@ export default {
     const anchor = document.getElementById('nav-sticky-anchor');
     if (anchor.offsetTop === 0) return;
     const cb = () => {
-      const y = Math.max(document.getElementById('nav-sticky-anchor').getBoundingClientRect().y, 0);
+      const y = Math.max(anchor.getBoundingClientRect().y, 0);
       this.topOffset = `${y}px`;
     };
     window.addEventListener('scroll', cb);
@@ -111,6 +111,7 @@ export default {
   height: 100%;
   padding-bottom: 50px;
   box-sizing: border-box;
+  transition: max-height 0.3s linear;
 }
 
 .navigator-filter {
