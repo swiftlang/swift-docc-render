@@ -1,6 +1,6 @@
 <script>
-import { fetchIndexPathsData } from '@/utils/data';
-import Language from '@/constants/Language';
+import { fetchIndexPathsData } from 'docc-render/utils/data';
+import Language from 'docc-render/constants/Language';
 
 export default {
   name: 'NavigatorDataProvider',

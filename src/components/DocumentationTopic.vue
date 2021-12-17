@@ -345,7 +345,10 @@ export default {
     // first one.
     parentTopicIdentifiers: ({ hierarchy: { paths: [ids = []] = [] } }) => ids,
     navigatorParentTopicIdentifiers: ({ hierarchy: { paths = [] } }) => paths.slice(-1)[0],
-    technology: ({ references, parentTopicIdentifiers }) => references[parentTopicIdentifiers[0]],
+    technology: ({ references, parentTopicIdentifiers, identifier }) => {
+      if (parentTopicIdentifiers.length) return references[parentTopicIdentifiers[0]];
+      return references[identifier];
+    },
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
   },

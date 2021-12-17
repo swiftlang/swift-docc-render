@@ -123,7 +123,7 @@ export default {
     padding: 10px;
     width: 100%;
     box-sizing: border-box;
-    border-radius: $border-radius;
+    border-radius: $tiny-border-radius;
     padding-left: 35px;
 
     &:focus {
