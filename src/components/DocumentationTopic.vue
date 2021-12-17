@@ -32,11 +32,19 @@
     >
       <template #aside>
         <aside class="doc-topic-aside">
-          <Navigator
+          <NavigatorDataProvider
             :interface-language="interfaceLanguage"
-            :parent-topic-identifiers="navigatorParentTopicIdentifiers"
-            :show-extra-info="showExtraNavigatorInfo"
-          />
+            :technology="technology"
+          >
+            <template #default="{ technology }">
+              <Navigator
+                v-if="technology"
+                :show-extra-info="showExtraNavigatorInfo"
+                :parent-topic-identifiers="navigatorParentTopicIdentifiers"
+                :technology="technology"
+              />
+            </template>
+          </NavigatorDataProvider>
         </aside>
       </template>
       <template #default>
@@ -122,6 +130,7 @@ import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
+import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -157,6 +166,7 @@ export default {
     },
   },
   components: {
+    NavigatorDataProvider,
     Navigator,
     AdjustableSidebarWidth,
     Abstract,
@@ -335,6 +345,7 @@ export default {
     // first one.
     parentTopicIdentifiers: ({ hierarchy: { paths: [ids = []] = [] } }) => ids,
     navigatorParentTopicIdentifiers: ({ hierarchy: { paths = [] } }) => paths.slice(-1)[0],
+    technology: ({ references, parentTopicIdentifiers }) => references[parentTopicIdentifiers[0]],
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
   },

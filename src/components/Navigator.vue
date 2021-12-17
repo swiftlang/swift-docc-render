@@ -2,20 +2,16 @@
   <div class="navigator">
     <input type="text" :value="filter" @input="debounceInput">
     <NavigatorCard
-      v-for="technology in filteredTree"
-      :key="technology.path"
-      :technology="technology"
+      :technology="technology.title"
+      :children="filteredTree"
       :active-path="activePath"
       :show-extended-info="showExtraInfo"
       :filter-pattern="filterPattern"
-      @open="handleOpenOnCard"
     />
   </div>
 </template>
 
 <script>
-import { fetchIndexPathsData } from 'docc-render/utils/data';
-import Language from 'docc-render/constants/Language';
 import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import debounce from 'docc-render/utils/debounce';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
@@ -24,10 +20,6 @@ export default {
   name: 'Navigator',
   components: { NavigatorCard },
   props: {
-    interfaceLanguage: {
-      type: String,
-      default: Language.swift.key.url,
-    },
     parentTopicIdentifiers: {
       type: Array,
       required: true,
@@ -36,35 +28,34 @@ export default {
       type: Boolean,
       default: false,
     },
+    technology: {
+      type: Object,
+      required: true,
+    },
   },
   inject: ['references'],
   data() {
     return {
-      navigationIndex: {},
       filter: '',
     };
   },
   computed: {
-    technologiesTree({ navigationIndex, interfaceLanguage }) {
-      return navigationIndex[interfaceLanguage];
-    },
-    filteredTree({ technologiesTree, filter }) {
+    // filters the children based on the filter input
+    filteredTree({ technology, filter }) {
       if (!filter.length) {
-        return technologiesTree;
+        return technology.children;
       }
-      return technologiesTree.reduce(this.getNodes, []);
+      return technology.children.reduce(this.getNodes, []);
     },
+    // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
       return parentTopicIdentifiers.map(identifier => references[identifier].url);
     },
+    // splits out the top-level technology crumb
     activePath({ parentTopicReferences, $route }) {
-      return parentTopicReferences.concat($route.path);
+      return parentTopicReferences.slice(1).concat($route.path);
     },
     filterPattern: ({ filter }) => (!filter ? undefined : safeHighlightPattern(filter)),
-  },
-  async created() {
-    const { languages } = await fetchIndexPathsData();
-    this.navigationIndex = languages;
   },
   methods: {
     getNodes(result, object) {
@@ -81,10 +72,6 @@ export default {
     debounceInput: debounce(function debounceInput({ target: { value } }) {
       this.filter = value;
     }, 500),
-    // TODO: Add logic to fetch children async
-    handleOpenOnCard(paths) {
-      console.log(paths);
-    },
   },
 };
 </script>
