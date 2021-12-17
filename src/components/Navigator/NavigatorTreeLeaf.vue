@@ -113,6 +113,7 @@ export default {
   position: relative;
   display: flex;
   align-items: baseline;
+  border-radius: $border-radius;
 
   &.active {
     background: var(--color-fill-gray-quaternary);

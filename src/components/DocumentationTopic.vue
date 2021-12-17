@@ -394,6 +394,7 @@ export default {
 #main {
   outline-style: none;
   border-left: 1px solid var(--color-grid);
+  height: 100%;
 
   @include inTargetIde {
     min-height: 100vh;
@@ -448,7 +449,6 @@ export default {
 }
 
 .doc-topic-aside {
-  padding: 1rem;
   height: 100%;
   box-sizing: border-box;
   @include breakpoint(small) {

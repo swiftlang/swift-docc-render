@@ -35,5 +35,6 @@ export default {
   justify-content: center;
   text-transform: uppercase;
   margin-right: 5px;
+  flex: 0 0 auto;
 }
 </style>

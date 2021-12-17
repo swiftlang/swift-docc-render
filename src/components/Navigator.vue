@@ -1,13 +1,23 @@
 <template>
   <div class="navigator">
-    <input type="text" :value="filter" @input="debounceInput">
     <NavigatorCard
       :technology="technology.title"
+      :kind="technology.kind"
       :children="filteredTree"
       :active-path="activePath"
       :show-extended-info="showExtraInfo"
       :filter-pattern="filterPattern"
     />
+    <div class="navigator-filter">
+      <div class="input-wrapper">
+        <FilterIcon class="icon-inline filter-icon" />
+        <input
+          type="text"
+          :value="filter"
+          :placeholder="`Filter in ${technology.title}`"
+          @input="debounceInput">
+      </div>
+    </div>
   </div>
 </template>
 
@@ -15,10 +25,11 @@
 import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import debounce from 'docc-render/utils/debounce';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
+import FilterIcon from 'docc-render/components/Icons/FilterIcon.vue';
 
 export default {
   name: 'Navigator',
-  components: { NavigatorCard },
+  components: { FilterIcon, NavigatorCard },
   props: {
     parentTopicIdentifiers: {
       type: Array,
@@ -84,5 +95,41 @@ export default {
   position: sticky;
   top: $nav-height;
   max-height: calc(100vh - #{$nav-height});
+}
+
+.navigator-filter {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding: 8px 20px;
+  background: var(--color-fill-secondary);
+  border-top: 1px solid var(--color-grid);
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .filter-icon {
+    width: 1em;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(50%, -50%);
+    color: var(--color-link);
+  }
+
+  input {
+    border: 1px solid var(--color-grid);
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: $border-radius;
+    padding-left: 35px;
+
+    &:focus {
+      outline: none;
+      @include focus-shadow-form-element();
+    }
+  }
 }
 </style>

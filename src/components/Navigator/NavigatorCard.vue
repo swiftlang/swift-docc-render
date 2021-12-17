@@ -1,12 +1,15 @@
 <template>
   <div class="navigator-card">
     <div class="head-wrapper" :class="{ 'extra-info': showExtendedInfo }">
-      {{ technology }}
+      <NavigatorLeafIcon :type="kind" />
+      <span class="card-link">
+        {{ technology }}
+      </span>
     </div>
     <div class="card-body">
       <NavigatorTree
         :children="childrenFiltered"
-        :nesting-index="3"
+        :nesting-index="2"
         :active-path="activePath"
         :show-extended-info="showExtendedInfo"
         :filter-pattern="filterPattern"
@@ -17,10 +20,12 @@
 
 <script>
 import NavigatorTree from 'docc-render/components/Navigator/NavigatorTree.vue';
+import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 
 export default {
   name: 'NavigatorCard',
   components: {
+    NavigatorLeafIcon,
     NavigatorTree,
   },
   props: {
@@ -44,6 +49,10 @@ export default {
       type: RegExp,
       default: undefined,
     },
+    kind: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     // TODO: move this to the backend
@@ -61,21 +70,20 @@ export default {
   overflow: hidden;
 
   .head-wrapper {
-    padding: 10px;
+    padding: 10px 20px;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
-    align-items: baseline;
+    align-items: center;
   }
+}
+
+.card-body {
+  padding: 10px 20px;
 }
 
 .card-link {
   color: var(--color-text);
-  @include font-styles(body-reduced);
+  @include font-styles(body-tight);
   font-weight: $font-weight-semibold;
-
-  .extra-info & {
-    @include font-styles(body-tight);
-    font-weight: $font-weight-semibold;
-  }
 }
 </style>
