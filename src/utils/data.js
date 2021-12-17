@@ -110,6 +110,6 @@ export function clone(jsonObject) {
 }
 
 export async function fetchIndexPathsData() {
-  const path = createDataPath('documentation/navigation-index');
+  const path = new URL(`${pathJoin([baseUrl, 'navigation-index.json'])}`, window.location.href);
   return fetchData(path);
 }
