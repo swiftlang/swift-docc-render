@@ -1,5 +1,5 @@
 <template>
-  <div class="navigator">
+  <div class="navigator" :style="{ '--sticky-top-offset': topOffset }">
     <NavigatorCard
       :technology="technology.title"
       :kind="technology.kind"
@@ -48,7 +48,21 @@ export default {
   data() {
     return {
       filter: '',
+      topOffset: '0px',
     };
+  },
+  mounted() {
+    const anchor = document.getElementById('nav-sticky-anchor');
+    if (anchor.offsetTop === 0) return;
+    const cb = () => {
+      const y = Math.max(document.getElementById('nav-sticky-anchor').getBoundingClientRect().y, 0);
+      this.topOffset = `${y}px`;
+    };
+    window.addEventListener('scroll', cb);
+    cb();
+    this.$once('hook:beforeDestroy', () => {
+      window.removeEventListener('scroll', cb);
+    });
   },
   computed: {
     // filters the children based on the filter input
@@ -91,14 +105,18 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
-  overflow: hidden auto;
   position: sticky;
   top: $nav-height;
-  max-height: calc(100vh - #{$nav-height});
+  max-height: calc(100vh - #{$nav-height} - var(--sticky-top-offset));
+  height: 100%;
+  padding-bottom: 50px;
+  box-sizing: border-box;
 }
 
 .navigator-filter {
-  position: sticky;
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
   bottom: 0;
   z-index: 1;
   padding: 8px 20px;

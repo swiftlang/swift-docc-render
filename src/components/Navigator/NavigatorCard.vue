@@ -67,7 +67,8 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator-card {
-  overflow: hidden;
+  overflow: hidden auto;
+  height: 100%;
 
   .head-wrapper {
     padding: 10px 20px;

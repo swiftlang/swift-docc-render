@@ -8,6 +8,9 @@
 /**
  * Component used to mark plain text, based on a provided matcher string.
  */
+
+import { escapeHtml } from 'docc-render/utils/strings';
+
 export default {
   name: 'HighlightMatch',
   props: {
@@ -28,8 +31,8 @@ export default {
      * @return {string}
      */
     parsedText: ({ matcher, text }) => (matcher
-      ? text.replace(matcher, match => `<span class="match">${match}</span>`)
-      : text),
+      ? text.replace(matcher, match => `<span class="match">${escapeHtml(match)}</span>`)
+      : escapeHtml(text)),
   },
 };
 </script>
