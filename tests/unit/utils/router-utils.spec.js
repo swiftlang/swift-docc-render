@@ -8,7 +8,10 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { baseNavHeight } from 'docc-render/constants/nav';
+import {
+  baseNavHeight,
+  baseNavHeightSmallBreakpoint,
+} from 'docc-render/constants/nav';
 import { documentationTopicName } from 'docc-render/constants/router';
 import {
   scrollBehavior as originalScrollBehavior,
@@ -76,6 +79,20 @@ describe('router-utils', () => {
         selector: routeDocsNoChanges.hash,
         offset: { x: 0, y: baseNavHeight },
       });
+    });
+
+    it('resolves with a smaller nav height offset at small breakpoints', async () => {
+      const { innerWidth } = window;
+      window.innerWidth = 400;
+
+      const routeDocsNoChanges = createRoute(documentationTopicName, {}, 'bar');
+      const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
+      expect(resolved).toEqual({
+        selector: routeDocsNoChanges.hash,
+        offset: { x: 0, y: baseNavHeightSmallBreakpoint },
+      });
+
+      window.innerWidth = innerWidth;
     });
 
     it('resolves with a double nav height offset if passed `hash` and has API `changes`.', async () => {

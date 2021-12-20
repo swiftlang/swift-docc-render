@@ -14,6 +14,43 @@ export const BreakpointName = {
   small: 'small',
 };
 
+export const BreakpointScopes = {
+  default: 'default',
+  nav: 'nav',
+};
+
+export const BreakpointAttributes = {
+  [BreakpointScopes.default]: {
+    [BreakpointName.large]: {
+      minWidth: 1069,
+      contentWidth: 980,
+    },
+    [BreakpointName.medium]: {
+      minWidth: 736,
+      maxWidth: 1068,
+      contentWidth: 692,
+    },
+    [BreakpointName.small]: {
+      minWidth: 320,
+      maxWidth: 735,
+      contentWidth: 280,
+    },
+  },
+  [BreakpointScopes.nav]: {
+    [BreakpointName.large]: {
+      minWidth: 1024,
+    },
+    [BreakpointName.medium]: {
+      minWidth: 768,
+      maxWidth: 1023,
+    },
+    [BreakpointName.small]: {
+      minWidth: 320,
+      maxWidth: 767,
+    },
+  },
+};
+
 const breakpointWeights = {
   [BreakpointName.small]: 0,
   [BreakpointName.medium]: 1,
