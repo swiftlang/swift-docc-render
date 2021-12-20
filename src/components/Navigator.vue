@@ -26,6 +26,7 @@ import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import debounce from 'docc-render/utils/debounce';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import FilterIcon from 'docc-render/components/Icons/FilterIcon.vue';
+import throttle from '@/utils/throttle';
 
 export default {
   name: 'Navigator',
@@ -52,12 +53,17 @@ export default {
     };
   },
   mounted() {
+    // get the navigation sticky anchor
     const anchor = document.getElementById('nav-sticky-anchor');
+    // if its at the top already, we dont need to adjust the offset
     if (anchor.offsetTop === 0) return;
-    const cb = () => {
+    // maybe we can throttle this call?
+    const cb = throttle(() => {
+      // get the top position of the anchor, or 0 if its negative
       const y = Math.max(anchor.getBoundingClientRect().y, 0);
+      console.log(y);
       this.topOffset = `${y}px`;
-    };
+    }, 150);
     window.addEventListener('scroll', cb);
     cb();
     this.$once('hook:beforeDestroy', () => {
