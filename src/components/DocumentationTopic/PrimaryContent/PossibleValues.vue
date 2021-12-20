@@ -27,7 +27,7 @@
 <script>
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 import ContentNode from 'docc-render/components/ContentNode.vue';
-import WordBreak from '@/components/WordBreak.vue';
+import WordBreak from 'docc-render/components/WordBreak.vue';
 
 export default {
   name: 'PossibleValues',
