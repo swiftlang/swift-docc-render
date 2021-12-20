@@ -61,6 +61,7 @@ const topicData = {
         name: 'barOS',
       },
     ],
+    symbolKind: 'foo-type',
   },
   primaryContentSections: [],
   references: {
@@ -205,6 +206,13 @@ describe('DocumentationTopic', () => {
 
     const topic = wrapper.find(Topic);
     expect(topic.exists()).toBe(true);
+    expect(topic.props()).toEqual({
+      ...wrapper.vm.topicProps,
+      isSymbolBeta: false,
+      isSymbolDeprecated: false,
+      objcPath: topicData.variants[0].paths[0],
+      swiftPath: topicData.variants[1].paths[0],
+    });
   });
 
   it('computes isSymbolBeta', () => {

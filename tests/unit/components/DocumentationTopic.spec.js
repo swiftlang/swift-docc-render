@@ -12,6 +12,8 @@ import { shallowMount } from '@vue/test-utils';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
+import { TopicKind } from '@/constants/kinds';
+import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 
 jest.mock('docc-render/utils/theme-settings');
 getSetting.mockImplementation((_, fallback) => fallback);
@@ -111,6 +113,7 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
+  symbolKind: TopicKind.module,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
   primaryContentSections: [
@@ -190,11 +193,44 @@ describe('DocumentationTopic', () => {
     expect(main.attributes('tabindex')).toBe('0');
   });
 
+  it('renders a `DocumentationHero`', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.exists()).toBe(true);
+    expect(hero.props()).toEqual({ kind: propsData.symbolKind });
+  });
+
   it('renders a `Title`', () => {
-    const title = wrapper.find(Title);
+    const hero = wrapper.find(DocumentationHero);
+    const title = hero.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
+  });
+
+  it('renders an abstract', () => {
+    const hero = wrapper.find(DocumentationHero);
+    const abstract = hero.find(Abstract);
+    expect(abstract.exists()).toBe(true);
+    expect(abstract.props('content')).toEqual(propsData.abstract);
+  });
+
+  it('renders an abstract, with an empty string inside', () => {
+    const emptyParagraph = [{
+      type: 'paragraph',
+      inlineContent: [
+        {
+          type: 'text',
+          text: '',
+        },
+      ],
+    }];
+    wrapper.setProps({
+      abstract: emptyParagraph,
+    });
+    const hero = wrapper.find(DocumentationHero);
+    const abstract = hero.find(Abstract);
+    expect(abstract.exists()).toBe(true);
+    expect(abstract.props('content')).toEqual(emptyParagraph);
   });
 
   it('renders a `.content-grid` with `Description`/`Summary and PrimaryContent` columns', () => {
@@ -234,12 +270,6 @@ describe('DocumentationTopic', () => {
       description = wrapper.find('main .container').find(Description);
     });
 
-    it('renders an abstract', () => {
-      const abstract = description.find(Abstract);
-      expect(abstract.exists()).toBe(true);
-      expect(abstract.props('content')).toEqual(propsData.abstract);
-    });
-
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
@@ -276,24 +306,6 @@ describe('DocumentationTopic', () => {
       expect(wrapper.contains(RequirementMetadata)).toBe(false);
       wrapper.setProps({ isRequirement: true });
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
-    });
-
-    it('renders an abstract, with an empty string inside', () => {
-      const emptyParagraph = [{
-        type: 'paragraph',
-        inlineContent: [
-          {
-            type: 'text',
-            text: '',
-          },
-        ],
-      }];
-      wrapper.setProps({
-        abstract: emptyParagraph,
-      });
-      const abstract = description.find(Abstract);
-      expect(abstract.exists()).toBe(true);
-      expect(abstract.props('content')).toEqual(emptyParagraph);
     });
   });
 

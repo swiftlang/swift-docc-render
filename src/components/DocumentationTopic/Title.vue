@@ -34,18 +34,19 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .topictitle {
-  @include breakpoint-dynamic-sidebar-content;
-  margin-top: 2rem;
+    margin-top: rem(40px);
 }
 
 .eyebrow {
-  @include font-styles(eyebrow-reduced);
-  color: var(--colors-secondary-label, var(--color-secondary-label));
-  display: block;
-  margin-bottom: rem(20px);
+    @include font-styles(eyebrow-reduced);
+    color: light-color(fill-gray-tertiary);
+    display: block;
+    margin-bottom: rem(20px);
 }
 
 .title {
-  @include font-styles(headline-reduced);
+    @include font-styles(headline-reduced);
+    color: light-color(fill);
+    margin-bottom: rem(12px);
 }
 </style>

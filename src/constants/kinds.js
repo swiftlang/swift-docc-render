@@ -21,6 +21,7 @@ export const TopicKind = {
   extension: 'extension',
   func: 'func',
   funcOp: 'func.op',
+  operator: 'op',
   groupMarker: 'groupMarker',
   httpRequest: 'httpRequest',
   init: 'init',
@@ -47,4 +48,50 @@ export const TopicKind = {
   typealias: 'typealias',
   union: 'union',
   var: 'var',
+};
+
+export const TopicKindAliases = {
+  [TopicKind.init]: TopicKind.method,
+  [TopicKind.typeMethod]: TopicKind.method,
+  [TopicKind.typeProperty]: TopicKind.property,
+  [TopicKind.enumCase]: TopicKind.enum,
+  [TopicKind.operator]: TopicKind.funcOp,
+  [TopicKind.propertyListKeyReference]: TopicKind.propertyListKey,
+};
+
+export const TopicKindColors = {
+  blue: 'blue',
+  teal: 'teal',
+  orange: 'orange',
+  purple: 'purple',
+  green: 'green',
+  sky: 'sky',
+  pink: 'pink',
+};
+
+export const TopicKindColorsMap = {
+  [TopicKind.init]: TopicKindColors.blue,
+  [TopicKind.typeMethod]: TopicKindColors.blue,
+  [TopicKind.typeProperty]: TopicKindColors.teal,
+  [TopicKind.enumCase]: TopicKindColors.orange,
+  [TopicKind.class]: TopicKindColors.purple,
+  [TopicKind.dictionarySymbol]: TopicKindColors.purple,
+  [TopicKind.enum]: TopicKindColors.orange,
+  [TopicKind.extension]: TopicKindColors.orange,
+  [TopicKind.func]: TopicKindColors.green,
+  [TopicKind.funcOp]: TopicKindColors.green,
+  [TopicKind.operator]: TopicKindColors.green,
+  [TopicKind.httpRequest]: TopicKindColors.green,
+  [TopicKind.module]: TopicKindColors.sky,
+  [TopicKind.method]: TopicKindColors.blue,
+  [TopicKind.macro]: TopicKindColors.pink,
+  [TopicKind.protocol]: TopicKindColors.purple,
+  [TopicKind.property]: TopicKindColors.teal,
+  [TopicKind.propertyListKey]: TopicKindColors.green,
+  [TopicKind.propertyListKeyReference]: TopicKindColors.green,
+  [TopicKind.struct]: TopicKindColors.purple,
+  [TopicKind.subscript]: TopicKindColors.blue,
+  [TopicKind.typealias]: TopicKindColors.orange,
+  [TopicKind.union]: TopicKindColors.purple,
+  [TopicKind.var]: TopicKindColors.purple,
 };

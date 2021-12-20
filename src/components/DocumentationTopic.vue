@@ -11,11 +11,13 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <slot name="above-title" />
-      <Title :eyebrow="roleHeading">{{ title }}</Title>
-      <div class="container content-grid" :class="{ 'full-width': hideSummary }">
-        <Description :hasOverview="hasOverview">
-          <Abstract v-if="abstract" :content="abstract" />
+          <slot name="above-title" />
+          <DocumentationHero :kind="symbolKind">
+            <Title :eyebrow="roleHeading">{{ title }}</Title>
+            <Abstract v-if="abstract" :content="abstract" />
+          </DocumentationHero>
+          <div class="container content-grid" :class="{ 'full-width': hideSummary }">
+            <Description :hasOverview="hasOverview">
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -86,6 +88,7 @@ import { getSetting } from 'docc-render/utils/theme-settings';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -121,6 +124,7 @@ export default {
     },
   },
   components: {
+    DocumentationHero,
     Abstract,
     Aside,
     BetaLegalText,
@@ -248,6 +252,10 @@ export default {
       type: Boolean,
       required: false,
     },
+    symbolKind: {
+      type: String,
+      default: '',
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -329,7 +337,6 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .doc-topic {
-  background: var(--colors-text-background, var(--color-text-background));
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -338,6 +345,7 @@ export default {
 #main {
   outline-style: none;
   border-left: 1px solid var(--color-grid);
+  border-right: 1px solid var(--color-grid);
   height: 100%;
 
   @include inTargetIde {

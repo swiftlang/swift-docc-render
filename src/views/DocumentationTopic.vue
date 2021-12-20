@@ -148,10 +148,11 @@ export default {
           conformance,
           modules,
           platforms,
-          required: isRequirement,
+          required: isRequirement = false,
           roleHeading,
           title = '',
           tags = [],
+          symbolKind = '',
         } = {},
         primaryContentSections,
         relationshipsSections,
@@ -186,6 +187,7 @@ export default {
         variantOverrides,
         variants,
         extendsTechnology,
+        symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
       };
     },
@@ -305,6 +307,7 @@ export default {
 .doc-topic-view {
   display: flex;
   flex-flow: column;
+  background: var(--color-fill-secondary);
 }
 
 .doc-topic-aside {
@@ -318,6 +321,7 @@ export default {
 .full-width-container {
   flex: 1 1 auto;
   width: 100%;
+  background: var(--colors-text-background, var(--color-text-background));
 
   @include inTargetWeb {
     @include breakpoint-full-width-container()
