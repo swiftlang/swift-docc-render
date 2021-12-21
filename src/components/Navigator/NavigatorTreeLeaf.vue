@@ -36,6 +36,7 @@
         :active-path="activePathMinusFirst"
         :show-extended-info="showExtendedInfo"
         :filter-pattern="filterPattern"
+        @scroll-to="$emit('scroll-to', $event)"
       />
     </TransitionExpand>
   </li>
@@ -47,6 +48,7 @@ import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import HighlightMatch from 'docc-render/components/Navigator/HighlightMatches.vue';
+import { baseNavHeight } from '@/constants/nav';
 
 export default {
   name: 'NavigatorTreeLeaf',
@@ -96,6 +98,18 @@ export default {
     childrenFiltered({ item }) {
       return item.children ? item.children.filter(child => child.kind !== 'groupMarker') : [];
     },
+  },
+  async mounted() {
+    const { top } = this.$el.getBoundingClientRect();
+    // make sure the leaf is active and it's top position is below the fold + some extra
+    if (this.isActive && (top > window.innerHeight - 100)) {
+      // await for all transitions to end
+      await new Promise((resolve) => {
+        setTimeout(resolve, 500);
+      });
+      // send the offset of the element
+      this.$emit('scroll-to', this.$el.offsetTop - baseNavHeight);
+    }
   },
   methods: {
     toggleTree() {

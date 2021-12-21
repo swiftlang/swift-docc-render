@@ -10,6 +10,7 @@
       :show-extended-info="showExtendedInfo"
       :filter-pattern="filterPattern"
       @toggle="handleToggle"
+      @scroll-to="$emit('scroll-to', $event)"
     />
   </ul>
 </template>

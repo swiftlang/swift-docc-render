@@ -13,6 +13,7 @@
         :active-path="activePath"
         :show-extended-info="showExtendedInfo"
         :filter-pattern="filterPattern"
+        @scroll-to="handleScroll"
       />
     </div>
   </div>
@@ -58,6 +59,11 @@ export default {
     // TODO: move this to the backend
     childrenFiltered({ children }) {
       return children.filter(child => child.kind !== 'groupMarker');
+    },
+  },
+  methods: {
+    handleScroll(scrollTop) {
+      this.$el.scrollTop = scrollTop;
     },
   },
 };
