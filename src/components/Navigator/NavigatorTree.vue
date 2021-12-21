@@ -67,7 +67,7 @@ export default {
       if (index === -1) {
         this.expanded.push(path);
       } else {
-        this.expanded.splice(index);
+        this.expanded.splice(index, 1);
       }
     },
   },

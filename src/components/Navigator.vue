@@ -26,7 +26,7 @@ import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import debounce from 'docc-render/utils/debounce';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import FilterIcon from 'docc-render/components/Icons/FilterIcon.vue';
-import throttle from '@/utils/throttle';
+import throttle from 'docc-render/utils/throttle';
 
 export default {
   name: 'Navigator',
