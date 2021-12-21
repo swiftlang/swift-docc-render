@@ -194,18 +194,6 @@ describe('Quiz', () => {
       expect(choice.find('.choice-icon').html()).toContain('<resetcircleicon');
     });
 
-    it('renders visually hidden indicator of correct choice', () => {
-      const choice = choices.at(0);
-      choice.trigger('click');
-      submit.trigger('click');
-    });
-
-    it('renders visually hidden indicator of incorrect choice', () => {
-      const choice = choices.at(1);
-      choice.trigger('click');
-      submit.trigger('click');
-    });
-
     it('updates the aria live text telling the user if the answer chosen is correct or incorrect', () => {
       const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
       expect(ariaLive.exists()).toBe(true);

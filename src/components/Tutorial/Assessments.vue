@@ -36,12 +36,12 @@
         </div>
         <div v-else class="success">
           <slot name="success">
-          <p>{{ successMessage }}</p>
+            <p>{{ SuccessMessage }}</p>
           </slot>
         </div>
         <div aria-live="assertive" class="visuallyhidden">
           <slot name="success" v-if="completed">
-            {{ successMessage }}
+            {{ SuccessMessage }}
           </slot>
         </div>
       </MainColumn>
@@ -58,10 +58,11 @@ import AssessmentsProgress from './AssessmentsProgress.vue';
 import Quiz from './Assessments/Quiz.vue';
 
 const additionalScrollOffset = 12;
-const successMessage = 'Great job, you\'ve answered all the questions for this tutorial.';
+const SuccessMessage = 'Great job, you\'ve answered all the questions for this tutorial.';
 
 export default {
   name: 'Assessments',
+  constants: { SuccessMessage },
   components: {
     LinkableSection: LinkableElement,
     Quiz,
@@ -117,7 +118,7 @@ export default {
     return {
       activeIndex: 0,
       completed: false,
-      successMessage,
+      SuccessMessage,
     };
   },
   computed: {

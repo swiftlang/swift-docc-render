@@ -12,6 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import Assessments from 'docc-render/components/Tutorial/Assessments.vue';
 
 const { LinkableSection } = Assessments.components;
+const { SuccessMessage } = Assessments.constants;
 
 // Stub scrolling APIs not implemented in Jest.
 window.HTMLElement.prototype.scrollIntoView = () => {};
@@ -276,9 +277,7 @@ describe('success slot for completed assessment', () => {
 
     const message = success.find('p');
     expect(message.exists()).toBe(true);
-    expect(message.text()).toBe(
-      'Great job, you\'ve answered all the questions for this tutorial.',
-    );
+    expect(message.text()).toBe(SuccessMessage);
   });
 
   it('renders a default "success" message on aria live element for AX', () => {
@@ -287,22 +286,19 @@ describe('success slot for completed assessment', () => {
     });
     const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
     expect(ariaLive.exists()).toBe(true);
-    expect(ariaLive.text()).not.toBe(
-      'Great job, you\'ve answered all the questions for this tutorial.',
-    );
+    // assert that aria-live's slot is empty
+    expect(ariaLive.isEmpty()).toBe(true);
 
     wrapper.setData({ completed: true });
-
-    expect(ariaLive.text()).toBe(
-      'Great job, you\'ve answered all the questions for this tutorial.',
-    );
+    // assert that aria-live's slot has been updated
+    expect(ariaLive.text()).toBe(SuccessMessage);
   });
 
-  it('renders a "success" slot when provided', () => {
+  it('renders a "success" slot and slot message when provided', () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
       slots: {
-        success: '<marquee>🍺</marquee>',
+        success: '<marquee>Success Slot</marquee>',
       },
     });
     wrapper.setData({ completed: true });
@@ -310,30 +306,14 @@ describe('success slot for completed assessment', () => {
     const success = wrapper.find('.success');
     expect(success.exists()).toBe(true);
     expect(success.contains('p')).toBe(false);
-    expect(success.text()).not.toBe(
-      'Great job, you\'ve answered all the questions for this tutorial.',
-    );
 
     const message = success.find('marquee');
     expect(message.exists()).toBe(true);
-    expect(message.text()).toBe('🍺');
-  });
-
-  it('renders a "success" slot message when provided on aria live element for AX', () => {
-    const wrapper = shallowMount(Assessments, {
-      ...options,
-      slots: {
-        success: '<marquee>🍺</marquee>',
-      },
-    });
-    wrapper.setData({ completed: true });
+    expect(message.text()).toBe('Success Slot');
 
     const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
     expect(ariaLive.exists()).toBe(true);
-    expect(ariaLive.text()).not.toBe(
-      'Great job, you\'ve answered all the questions for this tutorial.',
-    );
-
-    expect(ariaLive.text()).toBe('🍺');
+    // Aria live is updated
+    expect(ariaLive.text()).toBe('Success Slot');
   });
 });
