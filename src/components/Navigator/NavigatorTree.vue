@@ -2,7 +2,7 @@
   <ul class="navigator-tree">
     <NavigatorTreeLeaf
       v-for="item in children"
-      :key="item.path"
+      :key="item.uid"
       :item="item"
       :expanded-items="expanded"
       :nesting-index="nestingIndex"
@@ -51,7 +51,7 @@ export default {
   mounted() {
     const activeChildren = this.children
       .filter(child => this.activePath[0] === child.path || child.expanded)
-      .map(({ path }) => path);
+      .map(({ uid }) => uid);
 
     if (activeChildren.length) {
       this.expanded = activeChildren;
@@ -59,14 +59,14 @@ export default {
   },
   watch: {
     children() {
-      this.expanded = this.children.filter(child => child.expanded).map(({ path }) => path);
+      this.expanded = this.children.filter(child => child.expanded).map(({ uid }) => uid);
     },
   },
   methods: {
-    handleToggle(path) {
-      const index = this.expanded.indexOf(path);
+    handleToggle(uid) {
+      const index = this.expanded.indexOf(uid);
       if (index === -1) {
-        this.expanded.push(path);
+        this.expanded.push(uid);
       } else {
         this.expanded.splice(index, 1);
       }

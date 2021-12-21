@@ -88,7 +88,7 @@ export default {
   },
   computed: {
     expanded({ expandedItems, item }) {
-      return expandedItems.includes(item.path);
+      return expandedItems.includes(item.uid);
     },
     isActive({ item, activePath }) {
       return activePath.length === 1 && item.path === activePath[0];
@@ -96,7 +96,11 @@ export default {
     activePathMinusFirst: ({ activePath }) => activePath.slice(1),
     // TODO: move this to the backend
     childrenFiltered({ item }) {
-      return item.children ? item.children.filter(child => child.kind !== 'groupMarker') : [];
+      return item.children
+        ? item.children
+          .filter(child => child.kind !== 'groupMarker')
+          .map((child, index) => Object.assign(child, { uid: `${child.path}_${index}` }))
+        : [];
     },
   },
   async mounted() {
@@ -113,7 +117,7 @@ export default {
   },
   methods: {
     toggleTree() {
-      this.$emit('toggle', this.item.path);
+      this.$emit('toggle', this.item.uid);
     },
   },
 };

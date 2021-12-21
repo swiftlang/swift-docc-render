@@ -58,7 +58,9 @@ export default {
   computed: {
     // TODO: move this to the backend
     childrenFiltered({ children }) {
-      return children.filter(child => child.kind !== 'groupMarker');
+      return children
+        .filter(child => child.kind !== 'groupMarker')
+        .map((child, index) => Object.assign(child, { uid: `${child.path}_${index}` }));
     },
   },
   methods: {
