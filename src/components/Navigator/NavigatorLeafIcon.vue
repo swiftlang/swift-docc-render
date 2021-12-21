@@ -1,22 +1,64 @@
 <template>
-  <span class="NavigatorLeafIcon">
-    {{ kindLetter }}
-  </span>
+  <div class="NavigatorLeafIcon">
+    <component :is="icon" v-bind="iconProps" class="icon-inline" />
+  </div>
 </template>
 
 <script>
+import SingleLetterSymbolIcon from 'docc-render/components/Icons/SingleLetterSymbolIcon.vue';
+import CurlyBracketsIcon from 'theme/components/Icons/CurlyBracketsIcon.vue';
+import TwoLetterSymbolIcon from 'docc-render/components/Icons/TwoLetterSymbolIcon.vue';
+import CollectionIcon from 'docc-render/components/Icons/CollectionIcon.vue';
+import { TopicRoleIcons } from 'docc-render/components/DocumentationTopic/TopicLinkBlockIcon.vue';
+import { TopicKind } from 'docc-render/constants/kinds';
+
+const KindAliases = {
+  [TopicKind.init]: TopicKind.method,
+  [TopicKind.typeMethod]: TopicKind.method,
+  [TopicKind.typeProperty]: TopicKind.property,
+  [TopicKind.enumCase]: TopicKind.enum,
+};
+
+const TopicKindIcons = {
+  ...TopicRoleIcons,
+  [TopicKind.subscript]: CurlyBracketsIcon,
+  [TopicKind.struct]: SingleLetterSymbolIcon,
+  [TopicKind.method]: SingleLetterSymbolIcon,
+  [TopicKind.protocol]: TwoLetterSymbolIcon,
+  [TopicKind.property]: SingleLetterSymbolIcon,
+  [TopicKind.enum]: SingleLetterSymbolIcon,
+  [TopicKind.symbol]: CollectionIcon,
+  [TopicKind.class]: SingleLetterSymbolIcon,
+  [TopicKind.typealias]: SingleLetterSymbolIcon,
+  [TopicKind.var]: SingleLetterSymbolIcon,
+  [TopicKind.associatedtype]: CollectionIcon,
+  [TopicKind.buildSetting]: CollectionIcon,
+};
+
+const TopicRoleProps = {
+  [TopicKind.struct]: { word: 'Struct' },
+  [TopicKind.method]: { word: 'Method', color: '#272AD8' },
+  [TopicKind.protocol]: { word: 'Protocol' },
+  [TopicKind.property]: { word: 'Property', color: '#509CA3' },
+  [TopicKind.enum]: { word: 'Enum', color: '#947100' },
+  [TopicKind.typealias]: { word: 'Typealias', color: '#947100' },
+  [TopicKind.class]: { word: 'Class' },
+  [TopicKind.var]: { word: 'Var' },
+};
+
 export default {
   name: 'NavigatorLeafIcon',
+  components: { SingleLetterSymbolIcon },
   props: {
-    type: {
+    kind: {
       type: String,
       required: true,
     },
   },
   computed: {
-    kindLetter({ type }) {
-      return type.slice(0, 1);
-    },
+    normalisedKind: ({ kind }) => KindAliases[kind] || kind,
+    icon: ({ normalisedKind }) => TopicKindIcons[normalisedKind],
+    iconProps: ({ normalisedKind }) => TopicRoleProps[normalisedKind] || {},
   },
 };
 </script>
@@ -25,15 +67,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .NavigatorLeafIcon {
-  border: 2px solid var(--color-figure-gray-tertiary);
-  padding: 2px;
-  border-radius: 4px;
   width: 0.8em;
-  height: 0.8em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
   margin-right: 5px;
   flex: 0 0 auto;
 }

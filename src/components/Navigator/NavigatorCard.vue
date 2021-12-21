@@ -1,7 +1,7 @@
 <template>
   <div class="navigator-card">
     <div class="head-wrapper" :class="{ 'extra-info': showExtendedInfo }">
-      <NavigatorLeafIcon :type="kind" />
+      <NavigatorLeafIcon :kind="kind" />
       <span class="card-link">
         {{ technology }}
       </span>

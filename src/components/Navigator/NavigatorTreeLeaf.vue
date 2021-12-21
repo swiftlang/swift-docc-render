@@ -12,7 +12,7 @@
       >
         <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
       </button>
-      <NavigatorLeafIcon :type="item.kind" />
+      <NavigatorLeafIcon :kind="item.kind" />
       <div class="title-container">
         <router-link :to="item.path" class="leaf-link">
           <HighlightMatch
@@ -48,7 +48,7 @@ import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import HighlightMatch from 'docc-render/components/Navigator/HighlightMatches.vue';
-import { baseNavHeight } from '@/constants/nav';
+import { baseNavHeight } from 'docc-render/constants/nav';
 
 export default {
   name: 'NavigatorTreeLeaf',
