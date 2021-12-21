@@ -254,8 +254,11 @@ export default {
      * @param {EventTarget} event.target
      */
     handleTrayClick({ target }) {
-      // if the target is a link and has a `href` property, close the nav
-      if (target.href) this.closeNav();
+      // If the target is a link and has a `href` property, close the nav.
+      // Targets can opt out of this default behavior with the "noclose" class.
+      if (target.href && !target.classList.contains('noclose')) {
+        this.closeNav();
+      }
     },
     /**
      * Closes the nav, if clicking outside of it.
