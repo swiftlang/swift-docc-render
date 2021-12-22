@@ -15,9 +15,9 @@
   >
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g transform="translate(1.000000, 1.000000)">
-        <rect :stroke="color" x="0.5" y="0.5" width="13" height="13" rx="3"></rect>
-        <text font-family="SFProRounded-Bold, SF Pro Rounded" font-size="11" font-weight="bold" :fill="color">
-          <tspan text-anchor="middle" x="7" y="11">{{ word[0] }}</tspan>
+        <rect stroke="currentColor" x="0.5" y="0.5" width="13" height="13" rx="3"></rect>
+        <text font-family="SFProRounded-Bold, SF Pro Rounded" font-size="11" font-weight="bold" fill="currentColor">
+          <tspan text-anchor="middle" x="7" :y="y">{{ symbol }}</tspan>
         </text>
       </g>
     </g>
@@ -31,13 +31,13 @@ export default {
   name: 'SingleLetterSymbolIcon',
   components: { SVGIcon },
   props: {
-    word: {
+    symbol: {
       type: String,
       required: true,
     },
-    color: {
-      type: String,
-      default: '#BF6AF7',
+    y: {
+      type: [String, Number],
+      default: 11,
     },
   },
 };

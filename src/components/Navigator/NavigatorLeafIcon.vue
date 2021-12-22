@@ -5,11 +5,13 @@
 </template>
 
 <script>
-import SingleLetterSymbolIcon from 'docc-render/components/Icons/SingleLetterSymbolIcon.vue';
+import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIcon.vue';
 import CurlyBracketsIcon from 'theme/components/Icons/CurlyBracketsIcon.vue';
-import TwoLetterSymbolIcon from 'docc-render/components/Icons/TwoLetterSymbolIcon.vue';
-import CollectionIcon from 'docc-render/components/Icons/CollectionIcon.vue';
-import { TopicRoleIcons } from 'docc-render/components/DocumentationTopic/TopicLinkBlockIcon.vue';
+import TwoLetterSymbolIcon from 'theme/components/Icons/TwoLetterSymbolIcon.vue';
+import CollectionIcon from 'theme/components/Icons/CollectionIcon.vue';
+import ArticleIcon from 'theme/components/Icons/ArticleIcon.vue';
+import PathIcon from 'theme/components/Icons/PathIcon.vue';
+import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import { TopicKind } from 'docc-render/constants/kinds';
 
 const KindAliases = {
@@ -20,30 +22,57 @@ const KindAliases = {
 };
 
 const TopicKindIcons = {
-  ...TopicRoleIcons,
-  [TopicKind.subscript]: CurlyBracketsIcon,
-  [TopicKind.struct]: SingleLetterSymbolIcon,
-  [TopicKind.method]: SingleLetterSymbolIcon,
-  [TopicKind.protocol]: TwoLetterSymbolIcon,
-  [TopicKind.property]: SingleLetterSymbolIcon,
-  [TopicKind.enum]: SingleLetterSymbolIcon,
-  [TopicKind.symbol]: CollectionIcon,
-  [TopicKind.class]: SingleLetterSymbolIcon,
-  [TopicKind.typealias]: SingleLetterSymbolIcon,
-  [TopicKind.var]: SingleLetterSymbolIcon,
+  [TopicKind.article]: ArticleIcon,
   [TopicKind.associatedtype]: CollectionIcon,
   [TopicKind.buildSetting]: CollectionIcon,
+  [TopicKind.class]: SingleLetterSymbolIcon,
+  [TopicKind.dictionarySymbol]: SingleLetterSymbolIcon,
+  [TopicKind.container]: CollectionIcon,
+  [TopicKind.enum]: SingleLetterSymbolIcon,
+  [TopicKind.extension]: TwoLetterSymbolIcon,
+  [TopicKind.func]: SingleLetterSymbolIcon,
+  [TopicKind.funcOp]: SingleLetterSymbolIcon,
+  [TopicKind.httpRequest]: SingleLetterSymbolIcon,
+  [TopicKind.languageGroup]: CollectionIcon,
+  [TopicKind.learn]: PathIcon,
+  [TopicKind.method]: SingleLetterSymbolIcon,
+  [TopicKind.macro]: SingleLetterSymbolIcon,
+  // [TopicKind.module]: FourSquareIcon,
+  [TopicKind.overview]: PathIcon,
+  [TopicKind.protocol]: TwoLetterSymbolIcon,
+  [TopicKind.property]: SingleLetterSymbolIcon,
+  [TopicKind.propertyListKey]: SingleLetterSymbolIcon,
+  [TopicKind.propertyListKeyReference]: SingleLetterSymbolIcon,
+  [TopicKind.resources]: PathIcon,
+  [TopicKind.sampleCode]: CurlyBracketsIcon,
+  [TopicKind.struct]: SingleLetterSymbolIcon,
+  [TopicKind.subscript]: SingleLetterSymbolIcon,
+  [TopicKind.symbol]: CollectionIcon,
+  [TopicKind.tutorial]: TutorialIcon,
+  [TopicKind.typealias]: SingleLetterSymbolIcon,
+  [TopicKind.union]: SingleLetterSymbolIcon,
+  [TopicKind.var]: SingleLetterSymbolIcon,
 };
 
 const TopicRoleProps = {
-  [TopicKind.struct]: { word: 'Struct' },
-  [TopicKind.method]: { word: 'Method', color: '#272AD8' },
-  [TopicKind.protocol]: { word: 'Protocol' },
-  [TopicKind.property]: { word: 'Property', color: '#509CA3' },
-  [TopicKind.enum]: { word: 'Enum', color: '#947100' },
-  [TopicKind.typealias]: { word: 'Typealias', color: '#947100' },
-  [TopicKind.class]: { word: 'Class' },
-  [TopicKind.var]: { word: 'Var' },
+  [TopicKind.class]: { symbol: 'C', class: 'purple' },
+  [TopicKind.dictionarySymbol]: { symbol: 'O', class: 'purple' },
+  [TopicKind.enum]: { symbol: 'E', class: 'orange' },
+  [TopicKind.extension]: { symbols: ['E', 'x'], class: 'orange' },
+  [TopicKind.func]: { symbol: 'ƒ', class: 'green' },
+  [TopicKind.funcOp]: { symbol: '⁺⁄₋', class: 'green' },
+  [TopicKind.httpRequest]: { symbol: 'E', class: 'green' },
+  [TopicKind.method]: { symbol: 'M', class: 'blue' },
+  [TopicKind.macro]: { symbol: '#', class: 'pink' },
+  [TopicKind.protocol]: { symbols: ['P', 'r'], class: 'purple' },
+  [TopicKind.property]: { symbol: 'P', class: 'teal' },
+  [TopicKind.propertyListKey]: { symbol: 'K', class: 'green' },
+  [TopicKind.propertyListKeyReference]: { symbol: 'K', class: 'green' },
+  [TopicKind.struct]: { symbol: 'S', class: 'purple' },
+  [TopicKind.subscript]: { symbol: '[ ]', y: 10, class: 'blue' },
+  [TopicKind.typealias]: { symbol: 'T', class: 'orange' },
+  [TopicKind.union]: { symbol: 'U', class: 'purple' },
+  [TopicKind.var]: { symbol: 'V', class: 'purple' },
 };
 
 export default {
@@ -57,7 +86,7 @@ export default {
   },
   computed: {
     normalisedKind: ({ kind }) => KindAliases[kind] || kind,
-    icon: ({ normalisedKind }) => TopicKindIcons[normalisedKind],
+    icon: ({ normalisedKind }) => TopicKindIcons[normalisedKind] || CollectionIcon,
     iconProps: ({ normalisedKind }) => TopicRoleProps[normalisedKind] || {},
   },
 };
@@ -70,5 +99,29 @@ export default {
   width: 0.8em;
   margin-right: 5px;
   flex: 0 0 auto;
+}
+
+.orange {
+  color: var(--color-navigator-orange);
+}
+
+.green {
+  color: var(--color-navigator-green);
+}
+
+.blue {
+  color: var(--color-navigator-blue);
+}
+
+.pink {
+  color: var(--color-navigator-pink)
+}
+
+.teal {
+  color: var(--color-navigator-teal)
+}
+
+.purple {
+  color: var(--color-navigator-purple)
 }
 </style>
