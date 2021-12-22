@@ -54,7 +54,7 @@ const TopicKindIcons = {
   [TopicKind.var]: SingleLetterSymbolIcon,
 };
 
-const TopicRoleProps = {
+const TopicKindProps = {
   [TopicKind.class]: { symbol: 'C', class: 'purple' },
   [TopicKind.dictionarySymbol]: { symbol: 'O', class: 'purple' },
   [TopicKind.enum]: { symbol: 'E', class: 'orange' },
@@ -87,7 +87,7 @@ export default {
   computed: {
     normalisedKind: ({ kind }) => KindAliases[kind] || kind,
     icon: ({ normalisedKind }) => TopicKindIcons[normalisedKind] || CollectionIcon,
-    iconProps: ({ normalisedKind }) => TopicRoleProps[normalisedKind] || {},
+    iconProps: ({ normalisedKind }) => TopicKindProps[normalisedKind] || {},
   },
 };
 </script>
