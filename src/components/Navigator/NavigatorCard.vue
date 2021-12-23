@@ -1,7 +1,7 @@
 <template>
   <div class="navigator-card">
     <div class="head-wrapper" :class="{ 'extra-info': showExtendedInfo }">
-      <NavigatorLeafIcon :kind="kind" />
+      <NavigatorLeafIcon :kind="kind" class="card-icon" />
       <span class="card-link">
         {{ technology }}
       </span>
@@ -83,6 +83,10 @@ export default {
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: center;
+  }
+
+  .card-icon {
+    color: var(--color-figure-blue);
   }
 }
 

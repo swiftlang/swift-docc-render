@@ -12,6 +12,7 @@ import CollectionIcon from 'theme/components/Icons/CollectionIcon.vue';
 import ArticleIcon from 'theme/components/Icons/ArticleIcon.vue';
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
+import ModuleIcon from 'theme/components/Icons/ModuleIcon.vue';
 import { TopicKind } from 'docc-render/constants/kinds';
 
 const KindAliases = {
@@ -37,7 +38,7 @@ const TopicKindIcons = {
   [TopicKind.learn]: PathIcon,
   [TopicKind.method]: SingleLetterSymbolIcon,
   [TopicKind.macro]: SingleLetterSymbolIcon,
-  // [TopicKind.module]: FourSquareIcon,
+  [TopicKind.module]: ModuleIcon,
   [TopicKind.overview]: PathIcon,
   [TopicKind.protocol]: TwoLetterSymbolIcon,
   [TopicKind.property]: SingleLetterSymbolIcon,
