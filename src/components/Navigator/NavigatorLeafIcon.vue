@@ -102,26 +102,26 @@ export default {
 }
 
 .orange {
-  color: var(--color-navigator-orange);
+  color: var(--color-navigator-orange, var(--color-figure-gray-secondary));
 }
 
 .green {
-  color: var(--color-navigator-green);
+  color: var(--color-navigator-green, var(--color-figure-gray-secondary));
 }
 
 .blue {
-  color: var(--color-navigator-blue);
+  color: var(--color-navigator-blue, var(--color-figure-gray-secondary));
 }
 
 .pink {
-  color: var(--color-navigator-pink)
+  color: var(--color-navigator-pink, var(--color-figure-gray-secondary));
 }
 
 .teal {
-  color: var(--color-navigator-teal)
+  color: var(--color-navigator-teal, var(--color-figure-gray-secondary));
 }
 
 .purple {
-  color: var(--color-navigator-purple)
+  color: var(--color-navigator-purple, var(--color-figure-gray-secondary));
 }
 </style>
