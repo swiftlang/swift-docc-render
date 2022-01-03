@@ -9,31 +9,40 @@
 -->
 
 <template>
-  <figcaption class="caption">
+  <component :is="tag" class="caption">
     <strong>{{ title }}</strong>&nbsp;<slot />
-  </figcaption>
+  </component>
 </template>
 
 <script>
 export default {
-  name: 'FigureCaption',
+  name: 'Caption',
   props: {
     title: {
       type: String,
       required: true,
+    },
+    tag: {
+      type: String,
+      required: false,
+      default: () => 'caption',
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
-@import 'docc-render/styles/_core.scss';
+@import '@/styles/_core.scss';
 
 .caption {
-  @include font-styles(documentation-figcaption);
+  @include font-styles(documentation-caption);
 }
 
 /deep/ p {
   display: inline-block;
+}
+
+caption {
+  margin-bottom: 1rem;
 }
 </style>

@@ -9,15 +9,22 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue';
+import Caption from '@/components/ContentNode/Caption.vue';
 
-describe('FigureCaption', () => {
-  it('renders a <figcaption> with the title and slot content', () => {
+describe('Caption', () => {
+  it('renders a <caption> with the title and slot content', () => {
     const propsData = { title: 'Figure 1' };
     const slots = { default: '<p>Blah</p>' };
-    const wrapper = shallowMount(FigureCaption, { propsData, slots });
+    const wrapper = shallowMount(Caption, { propsData, slots });
+
+    expect(wrapper.is('caption')).toBe(true);
+    expect(wrapper.text()).toMatch(/Figure 1\sBlah/);
+  });
+
+  it('renders a <figcaption> if tag is `figcaption`', () => {
+    const propsData = { title: 'Figure 1', tag: 'figcaption' };
+    const wrapper = shallowMount(Caption, { propsData });
 
     expect(wrapper.is('figcaption')).toBe(true);
-    expect(wrapper.text()).toMatch(/Figure 1\sBlah/);
   });
 });

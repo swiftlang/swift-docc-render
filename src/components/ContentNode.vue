@@ -15,7 +15,7 @@ import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
 import Figure from './ContentNode/Figure.vue';
-import FigureCaption from './ContentNode/FigureCaption.vue';
+import Caption from './ContentNode/Caption.vue';
 import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
@@ -192,7 +192,7 @@ function renderNode(createElement, references) {
     ...node
   }) => createElement(Figure, { props: { anchor } }, [
     ...(title && abstract && abstract.length ? [
-      createElement(FigureCaption, { props: { title } }, (
+      createElement(Caption, { props: { title, tag: 'figcaption' } }, (
         renderChildren(abstract)
       )),
     ] : []),
@@ -247,14 +247,22 @@ function renderNode(createElement, references) {
       return createElement('p', {}, (
         renderChildren(node.inlineContent)
       ));
-    case BlockType.table:
-      if (node.metadata && node.metadata.anchor) {
-        return renderFigure(node);
+    case BlockType.table: {
+      const tableChildren = [];
+      if (node.metadata && node.metadata.anchor && node.metadata.title) {
+        tableChildren.push(
+          createElement(Caption,
+            { props: { title: node.metadata.title } },
+            renderChildren(node.metadata.abstract)),
+        );
       }
-
-      return createElement(Table, {}, (
-        renderTableChildren(node.rows, node.header)
-      ));
+      tableChildren.push(renderTableChildren(node.rows, node.header));
+      return createElement(
+        Table,
+        { attrs: { id: node.metadata && node.metadata.anchor } },
+        tableChildren,
+      );
+    }
     case BlockType.termList:
       return createElement('dl', {}, node.items.map(({ term, definition }) => [
         createElement('dt', {}, (
