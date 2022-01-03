@@ -63,6 +63,38 @@ describe('CodeListing', () => {
     expect(codeLine.text()).toBe('hello');
   });
 
+  it('selects only the code if `cmd + a` or `ctrl + a` is triggered', async () => {
+    const selectAllChildren = jest.fn();
+    window.getSelection = () => ({
+      selectAllChildren,
+    });
+
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        fileType: 'swift',
+        content: ['hello ', 'world'],
+      },
+    });
+
+    const listing = wrapper.find('div.code-listing');
+
+    listing.trigger('keydown', {
+      key: 'a',
+      metaKey: true,
+    });
+
+    expect(selectAllChildren).toHaveBeenCalledTimes(1);
+    expect(selectAllChildren).toHaveBeenCalledWith(wrapper.vm.$refs.code);
+
+    listing.trigger('keydown', {
+      key: 'a',
+      ctrlKey: true,
+    });
+
+    expect(selectAllChildren).toHaveBeenCalledTimes(2);
+  });
+
   it('creates a span per line and highlights the correct lines', async () => {
     const content = ['a', 'b', 'c', 'd', 'e'];
     const highlights = [{ line: 1 }, { line: 3 }];

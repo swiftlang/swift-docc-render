@@ -10,9 +10,12 @@
 
 <template>
   <div
+    tabindex="-1"
     class="code-listing"
-    :data-syntax="syntaxNameNormalized"
     :class="{ 'single-line': syntaxHighlightedLines.length === 1 }"
+    :data-syntax="syntaxNameNormalized"
+    @keydown.meta.a.prevent="selectCode"
+    @keydown.ctrl.a.prevent="selectCode"
   >
     <Filename
       v-if="fileName"
@@ -21,7 +24,7 @@
       :fileType="fileType"
     >{{ fileName }}
     </Filename>
-    <div class="container-general">
+    <div class="container-general" ref="code">
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
       <pre><code><span
         v-for="(line, index) in syntaxHighlightedLines"
@@ -97,6 +100,11 @@ export default {
     },
   },
   methods: {
+    selectCode() {
+      window.getSelection().selectAllChildren(
+        this.$refs.code,
+      );
+    },
     isHighlighted(index) {
       return this.highlightedLineNumbers.has(this.lineNumberFor(index));
     },
