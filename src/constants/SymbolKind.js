@@ -7,6 +7,10 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+
+// Note: this is not an exhaustive/complete definition of all the various kinds
+// that may be emitted by DocC in Render JSON at the moment—only the ones that
+// the renderer cares about for the time being.
 export default {
   class: 'class',
   enum: 'enum',
