@@ -110,4 +110,30 @@ describe('DeclarationGroup', () => {
 
     expect(wrapper.classes()).toContain(multipleLinesClass);
   });
+
+  it('does not apply a "smart indent" for Objective-C classes/structs/etc', () => {
+    ['class', 'enum', 'protocol', 'struct'].forEach((symbolKind) => {
+      const source = createWrapper({
+        provide: {
+          interfaceLanguage: 'occ',
+          languages: new Set(['occ']),
+          symbolKind,
+        },
+      }).find(DeclarationSource);
+      expect(source.exists()).toBe(true);
+      expect(source.props('smartIndent')).toBe(false);
+    });
+  });
+
+  it('applies a "smart indent" for other Objective-C symbols', () => {
+    const source = createWrapper({
+      provide: {
+        interfaceLanguage: 'occ',
+        languages: new Set(['occ']),
+        symbolKind: 'instm',
+      },
+    }).find(DeclarationSource);
+    expect(source.exists()).toBe(true);
+    expect(source.props('smartIndent')).toBe(true);
+  });
 });
