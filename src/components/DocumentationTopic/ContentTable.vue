@@ -44,12 +44,14 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .contenttable {
-  background: var(--color-content-table-content-color);
+  @include inTargetIde {
+    background: var(--color-content-table-content-color);
+  }
   padding: $section-spacing-single-side 0;
 }
 
 .container {
-  @include breakpoint-content;
+  @include breakpoint-dynamic-sidebar-content;
 }
 
 .title {

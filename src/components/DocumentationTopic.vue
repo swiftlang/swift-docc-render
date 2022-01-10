@@ -25,6 +25,7 @@
     />
     <AdjustableSidebarWidth
       storage-key="sidebar"
+      class="full-width-container"
       :open-externally="isSideNavOpen"
       :min-width="320"
       :hide-sidebar="isTargetIDE"
@@ -394,6 +395,12 @@ export default {
   background: var(--colors-text-background, var(--color-text-background));
 }
 
+@include inTargetWeb {
+  .full-width-container {
+    @include breakpoint-full-width-container()
+  }
+}
+
 #main {
   outline-style: none;
   border-left: 1px solid var(--color-grid);
@@ -412,7 +419,8 @@ export default {
 }
 
 .container {
-  @include section-content;
+  @include breakpoint-dynamic-sidebar-content;
+  outline-style: none;
   margin-top: $section-spacing-single-side / 2;
 }
 

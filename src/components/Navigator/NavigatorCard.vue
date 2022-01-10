@@ -8,6 +8,7 @@
     </div>
     <div class="card-body">
       <NavigatorTree
+        v-if="childrenFiltered.length"
         :children="childrenFiltered"
         :nesting-index="2"
         :active-path="activePath"
@@ -15,6 +16,14 @@
         :filter-pattern="filterPattern"
         @scroll-to="handleScroll"
       />
+      <div class="no-items-wrapper" v-else>
+        <template v-if="filterPattern">
+          No results matching your filter
+        </template>
+        <template v-else>
+          Technology has no children
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -88,6 +97,11 @@ export default {
   .card-icon {
     color: var(--color-figure-blue);
   }
+}
+
+.no-items-wrapper {
+  color: var(--color-figure-gray-tertiary);
+  @include font-styles(body-reduced);
 }
 
 .card-body {

@@ -118,6 +118,7 @@ export default {
   padding-bottom: 50px;
   box-sizing: border-box;
   transition: max-height 0.3s linear;
+  border-left: 1px solid var(--color-grid);
 }
 
 .navigator-filter {

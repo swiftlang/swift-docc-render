@@ -309,3 +309,20 @@ $breakpoint-attributes: (
     }
   }
 }
+
+@mixin breakpoint-full-width-container {
+  max-width: 1800px;
+  margin: auto;
+}
+
+@mixin breakpoint-dynamic-sidebar-content {
+  @include inTargetWeb {
+    max-width: 860px;
+    min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
+    margin: auto;
+    padding: 0 20px;
+  }
+  @include inTargetIde {
+    @include breakpoint-content()
+  }
+}
