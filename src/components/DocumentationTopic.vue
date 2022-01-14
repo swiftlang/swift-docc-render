@@ -394,10 +394,16 @@ export default {
 
 .doc-topic {
   background: var(--colors-text-background, var(--color-text-background));
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-@include inTargetWeb {
-  .full-width-container {
+.full-width-container {
+  flex: 1 1 auto;
+  width: 100%;
+
+  @include inTargetWeb {
     @include breakpoint-full-width-container()
   }
 }

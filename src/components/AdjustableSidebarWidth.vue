@@ -179,6 +179,7 @@ export default {
   flex-flow: column;
   min-width: 0;
   flex: 1 1 auto;
+  height: 100%;
 }
 
 .resize-handle {
