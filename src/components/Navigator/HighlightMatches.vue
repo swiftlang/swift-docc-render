@@ -1,16 +1,7 @@
-<template>
-  <span
-    class="highlight"
-    v-html="parsedText"
-  />
-</template>
 <script>
 /**
  * Component used to mark plain text, based on a provided matcher string.
  */
-
-import { escapeHtml } from 'docc-render/utils/strings';
-
 export default {
   name: 'HighlightMatch',
   props: {
@@ -23,16 +14,49 @@ export default {
       default: undefined,
     },
   },
-  computed: {
-    /**
-     * Find a matching string in the text, and highlight it by wrapping with a `.match` element.
-     * @param {string} matcher
-     * @param {string} text
-     * @return {string}
-     */
-    parsedText: ({ matcher, text }) => (matcher
-      ? text.replace(matcher, match => `<span class="match">${escapeHtml(match)}</span>`)
-      : escapeHtml(text)),
+  render(createElement) {
+    // Return a simple p no text is being highlighted
+    const { matcher, text } = this;
+    if (!matcher) {
+      return createElement('p', text);
+    }
+
+    const children = [];
+    let lastIndex = 0;
+    let match = null;
+
+    // Loop through each match for the highlighted text (case insensitive),
+    // adding a span text node for the text leading up
+    // to a match, and a `span.match` node for the actual text that
+    // should be highlighted (case insensitive)
+    // eslint-disable-next-line no-cond-assign
+    while ((match = matcher.exec(text)) !== null) {
+      const matchLength = match[0].length;
+
+      const nextIndex = match.index + matchLength;
+
+      // find text from last match upto current one
+      const spanText = text.slice(lastIndex, match.index);
+      if (spanText) {
+        children.push(createElement('span', spanText));
+      }
+
+      // find match text
+      const matchText = text.slice(match.index, nextIndex);
+      if (matchText) {
+        children.push(createElement('span', { class: 'match' }, matchText));
+      }
+
+      lastIndex = nextIndex;
+    }
+    // Add a normal text node for any non-highlighted text
+    // after the last highlighted match (if any)
+    const spanText = text.slice(lastIndex, text.length);
+    if (spanText) {
+      children.push(createElement('span', spanText));
+    }
+
+    return createElement('p', { class: 'highlight' }, children);
   },
 };
 </script>
