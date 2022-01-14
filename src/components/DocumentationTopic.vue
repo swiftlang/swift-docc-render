@@ -37,12 +37,13 @@
             :interface-language="interfaceLanguage"
             :technology="technology"
           >
-            <template #default="{ technology }">
+            <template #default="{ technology, isFetching }">
               <Navigator
                 v-if="technology"
                 :show-extra-info="showExtraNavigatorInfo"
                 :parent-topic-identifiers="navigatorParentTopicIdentifiers"
                 :technology="technology"
+                :is_fetching="isFetching"
               />
             </template>
           </NavigatorDataProvider>

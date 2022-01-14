@@ -1,12 +1,12 @@
 <template>
-  <li
-    class="navigator-tree-leaf"
+  <div
+    class="navigator-card-item"
     :class="{ expanded, 'extra-info': showExtendedInfo }"
-    :style="{ '--nesting-index': nestingIndex }"
+    :style="{ '--nesting-index': item.depth }"
   >
     <div class="head-wrapper" :class="{ active: isActive }">
       <button
-        v-if="childrenFiltered.length"
+        v-if="item.childUIDs.length"
         class="directory-toggle"
         @click.prevent="toggleTree"
       >
@@ -28,54 +28,31 @@
         />
       </div>
     </div>
-    <TransitionExpand>
-      <NavigatorTree
-        v-if="expanded && childrenFiltered.length"
-        :children="childrenFiltered"
-        :nesting-index="nestingIndex + 1"
-        :active-path="activePathMinusFirst"
-        :show-extended-info="showExtendedInfo"
-        :filter-pattern="filterPattern"
-        @scroll-to="$emit('scroll-to', $event)"
-      />
-    </TransitionExpand>
-  </li>
+  </div>
 </template>
 
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
-import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import HighlightMatch from 'docc-render/components/Navigator/HighlightMatches.vue';
-import { baseNavHeight } from 'docc-render/constants/nav';
 
 export default {
-  name: 'NavigatorTreeLeaf',
+  name: 'NavigatorCardItem',
   components: {
     HighlightMatch,
     ContentNode,
     NavigatorLeafIcon,
-    TransitionExpand,
     InlineChevronRightIcon,
-    NavigatorTree: () => import('docc-render/components/Navigator/NavigatorTree.vue'),
   },
   props: {
     item: {
       type: Object,
       required: true,
     },
-    expandedItems: {
-      type: Array,
-      default: () => ([]),
-    },
-    nestingIndex: {
-      type: Number,
-      default: 1,
-    },
-    activePath: {
-      type: Array,
-      required: true,
+    expanded: {
+      type: Boolean,
+      default: false,
     },
     showExtendedInfo: {
       type: Boolean,
@@ -85,39 +62,14 @@ export default {
       type: RegExp,
       default: undefined,
     },
-  },
-  computed: {
-    expanded({ expandedItems, item }) {
-      return expandedItems.includes(item.uid);
+    isActive: {
+      type: Boolean,
+      default: false,
     },
-    isActive({ item, activePath }) {
-      return activePath.length === 1 && item.path === activePath[0];
-    },
-    activePathMinusFirst: ({ activePath }) => activePath.slice(1),
-    // TODO: move this to the backend
-    childrenFiltered({ item }) {
-      return item.children
-        ? item.children
-          .filter(child => child.kind !== 'groupMarker')
-          .map((child, index) => Object.assign(child, { uid: `${child.path}_${index}` }))
-        : [];
-    },
-  },
-  async mounted() {
-    const { top } = this.$el.getBoundingClientRect();
-    // make sure the leaf is active and it's top position is below the fold + some extra
-    if (this.isActive && (top > window.innerHeight - 100)) {
-      // await for all transitions to end
-      await new Promise((resolve) => {
-        setTimeout(resolve, 500);
-      });
-      // send the offset of the element
-      this.$emit('scroll-to', this.$el.offsetTop - baseNavHeight);
-    }
   },
   methods: {
     toggleTree() {
-      this.$emit('toggle', this.item.uid);
+      this.$emit('toggle', this.item);
     },
   },
 };
@@ -126,12 +78,23 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
+.navigator-card-item {
+  height: 40px;
+  display: flex;
+  align-items: center;
+
+  &.extra-info {
+    height: 60px;
+  }
+}
+
 .head-wrapper {
-  padding: 7.5px 5px 7.5px calc(var(--nesting-index) * 10px);
+  padding: 7.5px 5px 7.5px calc(var(--nesting-index) * 10px + 20px);
   position: relative;
   display: flex;
   align-items: baseline;
   border-radius: $border-radius;
+  flex: 1;
 
   &.active {
     background: var(--color-fill-gray-quaternary);
@@ -165,6 +128,9 @@ export default {
 .extended-content {
   @include font-styles(body-reduced);
   color: var(--color-figure-gray-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .directory-toggle {

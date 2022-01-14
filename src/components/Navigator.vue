@@ -1,13 +1,17 @@
 <template>
   <div class="navigator" :style="{ '--sticky-top-offset': topOffset }">
     <NavigatorCard
+      v-if="!isFetching"
       :technology="technology.title"
       :kind="technology.kind"
-      :children="filteredTree"
+      :children="flatChildren"
       :active-path="activePath"
       :show-extended-info="showExtraInfo"
       :filter-pattern="filterPattern"
     />
+    <div v-else>
+      Fetching...
+    </div>
     <div class="navigator-filter">
       <div class="input-wrapper">
         <FilterIcon class="icon-inline filter-icon" />
@@ -27,10 +31,31 @@ import debounce from 'docc-render/utils/debounce';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import FilterIcon from 'docc-render/components/Icons/FilterIcon.vue';
 import throttle from 'docc-render/utils/throttle';
+import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
+import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 
+/**
+ * @typedef NavigatorFlatItem
+ * @property {string} uid - generated UID
+ * @property {string} title - title of symbol
+ * @property {string} kind - symbol kind, used for the icon
+ * @property {array} abstract - symbol abstract
+ * @property {string} path - path to page, used in navigation
+ * @property {string} parent - parent UID
+ * @property {number} depth - depth of symbol in original tree
+ * @property {number} index - index of item in siblings
+ * @property {string[]} childUIDs - array of child UIDs
+ */
+
+/**
+ * Renders a sidebar navigator component.
+ */
 export default {
   name: 'Navigator',
-  components: { FilterIcon, NavigatorCard },
+  components: {
+    FilterIcon,
+    NavigatorCard,
+  },
   props: {
     parentTopicIdentifiers: {
       type: Array,
@@ -44,6 +69,10 @@ export default {
       type: Object,
       required: true,
     },
+    isFetching: {
+      type: Boolean,
+      default: false,
+    },
   },
   inject: ['references'],
   data() {
@@ -53,31 +82,9 @@ export default {
     };
   },
   mounted() {
-    // get the navigation sticky anchor
-    const anchor = document.getElementById('nav-sticky-anchor');
-    // if its at the top already, we dont need to adjust the offset
-    if (anchor.offsetTop === 0) return;
-    // maybe we can throttle this call?
-    const cb = throttle(() => {
-      // get the top position of the anchor, or 0 if its negative
-      const y = Math.max(anchor.getBoundingClientRect().y, 0);
-      console.log(y);
-      this.topOffset = `${y}px`;
-    }, 150);
-    window.addEventListener('scroll', cb);
-    cb();
-    this.$once('hook:beforeDestroy', () => {
-      window.removeEventListener('scroll', cb);
-    });
+    this.setupStickyFilterTrack();
   },
   computed: {
-    // filters the children based on the filter input
-    filteredTree({ technology, filter }) {
-      if (!filter.length) {
-        return technology.children;
-      }
-      return technology.children.reduce(this.getNodes, []);
-    },
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
       return parentTopicIdentifiers.map(identifier => references[identifier].url);
@@ -87,22 +94,83 @@ export default {
       return parentTopicReferences.slice(1).concat($route.path);
     },
     filterPattern: ({ filter }) => (!filter ? undefined : safeHighlightPattern(filter)),
+    /**
+     * Recomputes the list of flat children.
+     * @return NavigatorFlatItem[]
+     */
+    flatChildren: ({ flattenNestedData, technology: { children = [] } = {} }) => (
+      flattenNestedData(children)
+    ),
   },
   methods: {
-    getNodes(result, object) {
-      if (this.filterPattern.test(object.title)) {
-        result.push(object);
-        return result;
-      }
-      if (object.children) {
-        const children = object.children.reduce(this.getNodes, []);
-        if (children.length) result.push({ ...object, children, expanded: true });
-      }
-      return result;
-    },
     debounceInput: debounce(function debounceInput({ target: { value } }) {
       this.filter = value;
     }, 500),
+    /**
+     * @param {{path: string, kind: string, title: string, uid: string}[]} childrenNodes
+     * @param {Object} parent
+     * @param {Number} depth
+     * @return {NavigatorFlatItem[]}
+     */
+    flattenNestedData(childrenNodes, parent = null, depth = 0) {
+      let index = 0;
+      return childrenNodes.reduce((items, item) => {
+        // remove all `groupMaker` items
+        if (item.kind === 'groupMarker') return items;
+        // get the children
+        const { children, ...node } = item;
+        // generate the extra properties
+        const { uid: parentUID = INDEX_ROOT_KEY } = parent || {};
+        // generate a uid to track by
+        node.uid = `${parentUID}+${node.path}_${depth}_${index}`;
+        // store the parent uid
+        node.parent = parentUID;
+        node.depth = depth;
+        node.index = index;
+        // store child UIDs
+        node.childUIDs = [];
+        // push child to parent
+        if (parent) {
+          parent.childUIDs.push(node.uid);
+        }
+        // increment the current branch index. We cant rely on index in `reduce`,
+        // because we remove items like `groupMarker`
+        index += 1;
+        if (children) {
+          // recursively walk the children
+          const iteratedChildren = this.flattenNestedData(children, node, depth + 1);
+          // push the node to the items stack
+          items.push(node);
+          // return the children to the parent
+          return items.concat(iteratedChildren);
+        }
+        // return the node
+        return items.concat(node);
+      }, []);
+    },
+    /**
+     * Moves the sticky filter as you scroll, so it does not get hidden,
+     * when you have extra components above the navigation.
+     */
+    setupStickyFilterTrack() {
+      // get the navigation sticky anchor
+      const anchor = document.getElementById(baseNavStickyAnchorId);
+      // Check if there are more components, above the navigation
+      if (anchor.offsetTop === 0) return;
+      const cb = throttle(() => {
+        // get the top position of the anchor, or 0 if its negative
+        const y = Math.max(anchor.getBoundingClientRect().y, 0);
+        this.topOffset = `${y}px`;
+      }, 150);
+      // start listening to scroll events
+      window.addEventListener('scroll', cb);
+      // fire the callback
+      cb();
+      // unbind on beforeDestroy
+      this.$once('hook:beforeDestroy', () => {
+        window.removeEventListener('scroll', cb);
+      });
+    },
   },
 };
 </script>
