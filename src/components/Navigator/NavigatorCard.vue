@@ -8,11 +8,11 @@
     </div>
     <div class="card-body">
       <RecycleScroller
-        v-if="nodesToRender.length"
+        v-show="nodesToRender.length"
         ref="scroller"
         class="scroller"
         :items="nodesToRender"
-        :item-size="leafSize"
+        :item-size="itemSize"
         key-field="uid"
         v-slot="{ item }"
       >
@@ -25,7 +25,7 @@
           @toggle="toggle"
         />
       </RecycleScroller>
-      <div class="no-items-wrapper" v-else>
+      <div class="no-items-wrapper" v-if="!nodesToRender.length">
         <template v-if="filterPattern">
           No results matching your filter
         </template>
@@ -94,11 +94,11 @@ export default {
   },
   computed: {
     /**
-     * Return the leaf size for the Scroller element
+     * Return the item size for the Scroller element. Its higher when we show extra info.
      */
-    leafSize: ({ showExtendedInfo }) => (showExtendedInfo ? LEAF_SIZES.max : LEAF_SIZES.min),
+    itemSize: ({ showExtendedInfo }) => (showExtendedInfo ? LEAF_SIZES.max : LEAF_SIZES.min),
     /**
-     * Generates an object with the uid as the key.
+     * Generates a map of the children, with the uid as the key.
      * @return {Object.<string, NavigatorFlatItem>}
      */
     childrenMap({ children }) {
@@ -106,20 +106,20 @@ export default {
     },
     /**
      * Returns an array of UIDs, for the current page hierarchy
-     * @return string[]
+     * @return NavigatorFlatItem[]
      */
-    activePathUIDs() {
+    activePathChildren() {
       return this.activePath.map(path => (
         // TODO: Might need to find a better way to find, as the path is not unique per uid
-        (this.children.find(child => path === child.path) || {}).uid
+        this.children.find(child => path === child.path)
       )).filter(Boolean);
     },
     /**
      * Returns the current page uid
      * @return string
      */
-    activeUID({ activePathUIDs }) {
-      return activePathUIDs[activePathUIDs.length - 1];
+    activeUID({ activePathChildren }) {
+      return (activePathChildren[activePathChildren.length - 1] || {}).uid;
     },
     /**
      * Returns a list of the child nodes, that match the filter pattern.
@@ -127,43 +127,53 @@ export default {
      */
     filteredChildren({ children, filterPattern }) {
       if (!filterPattern) return [];
+      // match each child's title, against the `filterPattern`
       const matches = children.filter(({ title }) => filterPattern.test(title));
       // remove duplicate UIDs
-      return [...new Set(matches.flatMap(({ uid }) => this.getParents(uid)))];
+      return [...new Set(
+        // find all the parents
+        matches.flatMap(({ uid }) => this.getParents(uid)),
+      )];
     },
+    /**
+     * Creates a computed for the two items, that the openNodes calc depends on
+     */
+    nodeChangeDeps: ({ filteredChildren, activePathChildren }) => ([
+      filteredChildren,
+      activePathChildren,
+    ]),
   },
-  mounted() {
-    this.initPageChangeWatcher();
+  watch: {
+    nodeChangeDeps: {
+      immediate: true,
+      handler: 'trackOpenNodes',
+    },
   },
   methods: {
     /**
      * Finds which nodes need to be opened.
      * Initiates a watcher, that reacts to filtering and page navigation.
      */
-    initPageChangeWatcher() {
-      // watch as option, does not support watching multiple sources
-      const unwatch = this.$watch(vm => [vm.filteredChildren, vm.activePathUIDs],
-        function mountedWatcher() {
-          let nodes;
-          if (!this.filterPattern) {
-            nodes = Object.fromEntries(this.activePathUIDs
-              .map(uid => [uid, true]));
-          } else {
-            nodes = Object.fromEntries(this.filteredChildren
-              .map(({ uid }) => [uid, true]));
-          }
-          this.openNodes = nodes;
-          this.generateNodesToRender({ scrollToElement: true });
-        }, { immediate: true });
-      this.$once('hook:beforeDestroy', unwatch);
+    trackOpenNodes() {
+      // decide which items to filter
+      const nodes = !this.filterPattern
+        ? this.activePathChildren
+        : this.filteredChildren;
+
+      // create a map to track open items - `{ [UID]: true }`
+      this.openNodes = Object.fromEntries(nodes
+        .map(({ uid }) => [uid, true]));
+      this.generateNodesToRender({ scrollToElement: true });
     },
     /**
      * Toggle a node open/close
      */
     toggle(node) {
+      // check if the item is open
       const isOpen = this.openNodes[node.uid];
+      // if open, we need to close it
       if (isOpen) {
-        // clone the open nodes
+        // clone the open nodes map
         const openNodes = clone(this.openNodes);
         // remove current node and all of it's children, from the open list
         this.getAllChildren(node.uid).forEach(({ uid }) => {
@@ -201,7 +211,7 @@ export default {
       return arr;
     },
     /**
-     * Get all the parents of a node
+     * Get all the parents of a node, up to the root.
      * @param {string} uid
      * @return {NavigatorFlatItem[]}
      */
@@ -216,8 +226,9 @@ export default {
         current = stack.pop();
         // find the object
         const obj = this.childrenMap[current];
-        // add it's uid
+        // push the object to the results
         arr.unshift(obj);
+        // if the current object has a parent and its not the root, add it to the stack
         if (obj.parent && obj.parent !== INDEX_ROOT_KEY) {
           stack.push(obj.parent);
         }
@@ -252,8 +263,9 @@ export default {
         ? 0
         // find the index of the current active UID in the newly added nodes
         : this.nodesToRender.findIndex(child => child.uid === this.activeUID);
-      // if for some reason we cant find the active page, bail
-      if (index !== -1) {
+      // if for some reason we cant find the active page, bail.
+      // make sure the scroller is visible
+      if (index !== -1 && this.$refs.scroller) {
         // call the scroll method on the `scroller` component.
         this.$refs.scroller.scrollToItem(index);
       }
