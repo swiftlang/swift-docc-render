@@ -82,6 +82,7 @@ export default {
   height: 40px;
   display: flex;
   align-items: center;
+  padding-right: 20px;
 
   &.extra-info {
     height: 60px;
@@ -95,6 +96,7 @@ export default {
   align-items: baseline;
   border-radius: $border-radius;
   flex: 1;
+  min-width: 0;
 
   &.active {
     background: var(--color-fill-gray-quaternary);

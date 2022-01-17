@@ -18,7 +18,7 @@ export default {
     // Return a simple p no text is being highlighted
     const { matcher, text } = this;
     if (!matcher) {
-      return createElement('p', text);
+      return createElement('p', { class: 'highlight' }, text);
     }
 
     const children = [];
@@ -63,8 +63,12 @@ export default {
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
 
-.highlight /deep/ .match {
-  font-weight: $font-weight-semibold;
-  background: var(--color-fill-light-blue);
+.highlight {
+  display: inline;
+
+  /deep/ .match {
+    font-weight: $font-weight-semibold;
+    background: var(--color-fill-light-blue);
+  }
 }
 </style>

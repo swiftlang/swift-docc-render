@@ -290,6 +290,8 @@ export default {
 
 .card-body {
   padding: 10px 20px;
+  // right padding is added by the items, so visually the scroller is stuck to the side
+  padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
 }
