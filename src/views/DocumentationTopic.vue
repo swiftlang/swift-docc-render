@@ -9,12 +9,59 @@
 -->
 
 <template>
-  <CodeTheme>
-    <Topic
-      v-if="topicData"
-      v-bind="topicProps"
-      :key="topicKey"
+  <CodeTheme v-if="topicData" class="doc-topic-view">
+    <Nav
+      v-if="!isTargetIDE"
+      :title="topicProps.title"
+      :diffAvailability="topicProps.diffAvailability"
+      :interfaceLanguage="topicProps.interfaceLanguage"
+      :objcPath="objcPath"
+      :swiftPath="swiftPath"
+      :parentTopicIdentifiers="parentTopicIdentifiers"
+      :isSymbolDeprecated="isSymbolDeprecated"
+      :isSymbolBeta="isSymbolBeta"
+      :currentTopicTags="topicProps.tags"
+      :references="topicProps.references"
+      @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
     />
+    <AdjustableSidebarWidth
+      storage-key="sidebar"
+      class="full-width-container"
+      :open-externally="isSideNavOpen"
+      :min-width="320"
+      :hide-sidebar="isTargetIDE"
+      @width-change="handleWidthChange"
+    >
+      <template #aside>
+        <aside class="doc-topic-aside">
+          <NavigatorDataProvider
+            :interface-language="topicProps.interfaceLanguage"
+            :technology="technology"
+          >
+            <template #default="{ technology, isFetching }">
+              <Navigator
+                v-if="technology"
+                :show-extra-info="showExtraNavigatorInfo"
+                :parent-topic-identifiers="navigatorParentTopicIdentifiers"
+                :technology="technology"
+                :is_fetching="isFetching"
+                :references="topicProps.references"
+              />
+            </template>
+          </NavigatorDataProvider>
+        </aside>
+      </template>
+      <template #default>
+        <Topic
+          v-bind="topicProps"
+          :key="topicKey"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+      </template>
+    </AdjustableSidebarWidth>
   </CodeTheme>
 </template>
 
@@ -32,16 +79,29 @@ import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import Language from 'docc-render/constants/Language';
 import performanceMetrics from 'docc-render/mixins/performanceMetrics';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
+import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
+import Navigator from 'docc-render/components/Navigator.vue';
+import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
 export default {
   name: 'DocumentationTopic',
   components: {
+    Navigator,
+    AdjustableSidebarWidth,
+    NavigatorDataProvider,
     Topic: DocumentationTopic,
     CodeTheme,
+    Nav: DocumentationNav,
   },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
-    return { topicDataDefault: null, topicDataObjc: null };
+    return {
+      topicDataDefault: null,
+      topicDataObjc: null,
+      isSideNavOpen: false,
+      showExtraNavigatorInfo: false,
+    };
   },
   computed: {
     store() {
@@ -128,6 +188,42 @@ export default {
         tags: tags.slice(0, 1), // make sure we only show the first tag
       };
     },
+    // The `hierarchy.paths` array will contain zero or more subarrays, each
+    // representing a "path" of parent topic IDs that could be considered the
+    // hierarchy/breadcrumb for a given topic. We choose to render only the
+    // first one.
+    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths: [ids = []] = [] } } }) => ids,
+    navigatorParentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] } } }) => (
+      paths.slice(-1)[0]
+    ),
+    technology: ({ topicProps: { references, identifier }, parentTopicIdentifiers }) => {
+      if (parentTopicIdentifiers.length) return references[parentTopicIdentifiers[0]];
+      return references[identifier];
+    },
+    // Use `variants` data to build a map of paths associated with each unique
+    // `interfaceLanguage` trait.
+    languagePaths: ({ topicProps: { variants } }) => variants.reduce((memo, variant) => (
+      variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
+        ..._memo,
+        [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
+      })), memo)
+    ), {}),
+    // The first path for any variant with an "occ" interface language trait (if any)
+    objcPath: ({ languagePaths: { [Language.objectiveC.key.api]: [path] = [] } = {} }) => path,
+    // The first path for any variant with a "swift" interface language trait (if any)
+    swiftPath: ({ languagePaths: { [Language.swift.key.api]: [path] = [] } = {} }) => path,
+    isSymbolBeta:
+      ({ topicProps: { platforms } }) => platforms
+        && platforms.length
+        && platforms.every(platform => platform.beta),
+    isSymbolDeprecated:
+      ({ topicProps: { platforms, deprecationSummary } }) => (
+        (deprecationSummary && deprecationSummary.length > 0)
+        || (platforms
+          && platforms.length
+          && platforms.every(platform => platform.deprecatedAt)
+        )
+      ),
   },
   methods: {
     applyObjcOverrides() {
@@ -135,6 +231,9 @@ export default {
     },
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
+    },
+    handleWidthChange(width) {
+      this.showExtraNavigatorInfo = width > 500;
     },
   },
   mounted() {
@@ -147,6 +246,13 @@ export default {
   },
   provide() {
     return { store: this.store };
+  },
+  inject: {
+    isTargetIDE: {
+      default() {
+        return false;
+      },
+    },
   },
   beforeDestroy() {
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
@@ -190,3 +296,31 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+@import 'docc-render/styles/_core.scss';
+
+.doc-topic-view {
+  display: flex;
+  flex-flow: column;
+}
+
+.doc-topic-aside {
+  height: 100%;
+  box-sizing: border-box;
+  @include breakpoint(small) {
+    position: absolute;
+    width: 100%;
+    background: var(--color-fill);
+    z-index: 1;
+  }
+}
+
+.full-width-container {
+  flex: 1 1 auto;
+  width: 100%;
+
+  @include inTargetWeb {
+    @include breakpoint-full-width-container()
+  }
+}
+</style>

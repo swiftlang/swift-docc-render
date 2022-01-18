@@ -46,6 +46,7 @@
         :isSymbolBeta="isSymbolBeta"
         :parentTopicIdentifiers="hierarchyItems"
         :currentTopicTags="currentTopicTags"
+        :references="references"
       />
       <slot name="tray-after" v-bind="{ breadcrumbCount }" />
     </template>
@@ -97,9 +98,8 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  inject: {
     references: {
+      type: Object,
       default: () => ({}),
     },
   },
