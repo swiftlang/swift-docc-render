@@ -105,14 +105,29 @@ export default {
       return Object.fromEntries(children.map(child => [child.uid, child]));
     },
     /**
-     * Returns an array of UIDs, for the current page hierarchy
+     * Returns an array of {NavigatorFlatItem}, for the current page hierarchy
      * @return NavigatorFlatItem[]
      */
     activePathChildren() {
-      return this.activePath.map(path => (
-        // TODO: Might need to find a better way to find, as the path is not unique per uid
-        this.children.find(child => path === child.path)
-      )).filter(Boolean);
+      // get the stack to iterate
+      const stack = this.activePath.slice(0).reverse();
+      // the items to loop over. First iteration is over all items
+      let childrenStack = this.children;
+      const result = [];
+      // loop as long as there are items
+      while (stack.length) {
+        // get the last item (first parent, as we reversed it)
+        const currentPath = stack.pop();
+        // find it by path (we dont have the UID yet)
+        const currentNode = childrenStack.find(c => c.path === currentPath);
+        // push the object to the results
+        result.push(currentNode);
+        if (stack.length) {
+          // get the children, so we search in those
+          childrenStack = currentNode.childUIDs.map(c => this.childrenMap[c]);
+        }
+      }
+      return result;
     },
     /**
      * Returns the current page uid
@@ -154,15 +169,22 @@ export default {
      * Finds which nodes need to be opened.
      * Initiates a watcher, that reacts to filtering and page navigation.
      */
-    trackOpenNodes() {
+    trackOpenNodes(
+      [filteredChildren, activePathChildren],
+      [, activePathChildrenBefore] = [],
+    ) {
       // decide which items to filter
       const nodes = !this.filterPattern
-        ? this.activePathChildren
-        : this.filteredChildren;
+        ? activePathChildren
+        : filteredChildren;
+      // if the activePath items change, we navigated to another page
+      const pageChange = activePathChildrenBefore !== activePathChildren;
 
       // create a map to track open items - `{ [UID]: true }`
-      this.openNodes = Object.fromEntries(nodes
+      const newOpenNodes = Object.fromEntries(nodes
         .map(({ uid }) => [uid, true]));
+      // if we navigate across pages, persist the previously open nodes
+      this.openNodes = Object.assign(pageChange ? this.openNodes : {}, newOpenNodes);
       this.generateNodesToRender({ scrollToElement: true });
     },
     /**
