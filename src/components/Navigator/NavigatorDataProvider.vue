@@ -33,7 +33,7 @@ export default {
      */
     technologyWithChildren({ navigationIndex, interfaceLanguage, technology }) {
       // get the technologies for the current language
-      let currentLangTechnologies = navigationIndex[interfaceLanguage];
+      let currentLangTechnologies = navigationIndex[interfaceLanguage] || [];
       // if no such items, we use the default swift one
       if (!currentLangTechnologies.length) {
         currentLangTechnologies = navigationIndex[Language.swift.key.url];

@@ -120,6 +120,7 @@ export default {
         const currentPath = stack.pop();
         // find it by path (we dont have the UID yet)
         const currentNode = childrenStack.find(c => c.path === currentPath);
+        if (!currentNode) break;
         // push the object to the results
         result.push(currentNode);
         if (stack.length) {
