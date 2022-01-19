@@ -14,6 +14,7 @@ import {
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
   fetchAPIChangesForRoute,
+  fetchIndexPathsData,
 } from 'docc-render/utils/data';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 
@@ -313,5 +314,15 @@ describe('fetchAPIChangesForRoute', () => {
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
+  });
+});
+
+describe('fetchIndexPathsData', () => {
+  it('fetches the data for the navigation-index', async () => {
+    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+
+    const data = await fetchIndexPathsData();
+    expect(fetch).toHaveBeenLastCalledWith('http://localhost/navigation-index.json');
+    expect(data).toEqual({ foobar: 'foobar' });
   });
 });

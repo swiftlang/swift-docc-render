@@ -47,7 +47,7 @@ describe('vue-config-utils', () => {
               },
             },
           },
-          devServer: { proxy: { '^/(data|downloads|images|videos)': { target: 'http://localhost:8000' } } },
+          devServer: { proxy: { '^/(data|downloads|images|videos|navigation-index)': { target: 'http://localhost:8000' } } },
           productionSourceMap: false,
           transpileDependencies: ['swift-docc-render'],
         });
@@ -67,7 +67,7 @@ describe('vue-config-utils', () => {
               },
             },
           },
-          devServer: { proxy: { '^/(data|downloads|images|videos)': { target: 'http://localhost:8000' } } },
+          devServer: { proxy: { '^/(data|downloads|images|videos|navigation-index)': { target: 'http://localhost:8000' } } },
           productionSourceMap: false,
           transpileDependencies: ['swift-docc-render'],
         });

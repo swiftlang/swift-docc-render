@@ -59,25 +59,4 @@ describe('Settings', () => {
     Settings.preferredLanguage;
     expect(getItem).toHaveBeenCalledWith('docs.setting.preferredLanguage');
   });
-
-  describe('when localStorage throws exceptions', () => {
-    beforeEach(() => {
-      localStorage.getItem.mockImplementation(() => {
-        throw new Error('fake error for getItem');
-      });
-      localStorage.setItem.mockImplementation(() => {
-        throw new Error('fake error for setItem');
-      });
-    });
-
-    it('returns `null` for getting settings', () => {
-      expect(Settings.preferredLanguage).toBeNull();
-    });
-
-    it('does not throw exceptions for setting settings', () => {
-      expect(() => {
-        Settings.preferredLanguage = 'objc';
-      }).not.toThrow();
-    });
-  });
 });
