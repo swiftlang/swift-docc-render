@@ -2,7 +2,7 @@
   <div class="adjustable-sidebar-width">
     <div
       v-if="!hideSidebar"
-      ref="aside"
+      ref="sidebar"
       class="sidebar"
       :class="{ 'fully-closed': !width, 'fully-open': isMaxWidth }"
     >
@@ -29,9 +29,9 @@
 import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 
-export const STORAGE_KEY = 'sidebar-width';
+export const STORAGE_KEY = 'sidebar';
 
-const eventsMap = {
+export const eventsMap = {
   touch: {
     move: 'touchmove',
     end: 'touchend',
@@ -41,13 +41,10 @@ const eventsMap = {
     end: 'mouseup',
   },
 };
+
 export default {
   name: 'AdjustableSidebarWidth',
   props: {
-    storageKey: {
-      type: String,
-      default: STORAGE_KEY,
-    },
     openExternally: {
       type: Boolean,
       default: false,
@@ -56,21 +53,28 @@ export default {
       type: Number,
       default: () => 0,
     },
+    maxWidth: {
+      type: Number,
+      default: window.innerWidth,
+    },
     hideSidebar: {
       type: Boolean,
       default: false,
     },
   },
   data() {
+    // computed is not ready yet in `data`.
+    const maxWidth = Math.min(this.maxWidth, window.innerWidth);
     return {
       isDragging: false,
-      width: Math.min(storage.get(this.storageKey, this.minWidth), window.innerWidth),
+      width: Math.min(storage.get(STORAGE_KEY, this.minWidth), maxWidth),
       isTouch: false,
     };
   },
   computed: {
+    absoluteMaxWidth: ({ maxWidth }) => Math.min(maxWidth, window.innerWidth),
     widthInPx: ({ width }) => `${width}px`,
-    isMaxWidth: ({ width }) => width === window.innerWidth,
+    isMaxWidth: ({ width, absoluteMaxWidth }) => width === absoluteMaxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
   },
   methods: {
@@ -89,9 +93,9 @@ export default {
       e.preventDefault();
       // we don't want to do anything if we aren't resizing.
       if (!this.isDragging) return;
-      const { aside } = this.$refs;
+      const { sidebar } = this.$refs;
       const clientX = this.isTouch ? e.touches[0].clientX : e.clientX;
-      let newWidth = (clientX - aside.offsetLeft);
+      let newWidth = (clientX - sidebar.offsetLeft);
       if (this.width > newWidth && newWidth < 200) {
         // TODO: implement snapping to close if too narrow
         // this.width = 0;
@@ -99,8 +103,8 @@ export default {
         // return;
       }
       // prevent going outside of the window zone
-      if (newWidth > window.innerWidth) {
-        newWidth = window.innerWidth;
+      if (newWidth > this.absoluteMaxWidth) {
+        newWidth = this.absoluteMaxWidth;
       }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);
@@ -113,7 +117,7 @@ export default {
       e.preventDefault();
       if (!this.isDragging) return;
       this.isDragging = false;
-      storage.set(this.storageKey, this.width);
+      storage.set(STORAGE_KEY, this.width);
       document.removeEventListener(this.events.move, this.handleDrag);
       document.removeEventListener(this.events.end, this.stopDrag);
       // emit the width, in case the debounce muted the last change

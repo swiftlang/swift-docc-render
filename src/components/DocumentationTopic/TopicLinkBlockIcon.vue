@@ -23,7 +23,7 @@ import PathIcon from 'theme/components/Icons/PathIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
 
-export const TopicRoleIcons = {
+const TopicRoleIcons = {
   [TopicRole.article]: ArticleIcon,
   [TopicRole.collectionGroup]: ApiCollectionIcon,
   [TopicRole.learn]: PathIcon,

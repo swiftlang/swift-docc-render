@@ -24,10 +24,10 @@
       @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
     />
     <AdjustableSidebarWidth
-      storage-key="sidebar"
       class="full-width-container"
       :open-externally="isSideNavOpen"
       :min-width="320"
+      :max-width="1800"
       :hide-sidebar="isTargetIDE"
       @width-change="handleWidthChange"
     >
