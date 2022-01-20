@@ -137,7 +137,7 @@ export default {
   },
   mounted() {
     this.focusTrapInstance = new FocusTrap();
-    document.addEventListener('keydown', this.onClick);
+    document.addEventListener('keydown', this.onKeydown);
     // add listeners for dynamic themes
     if (this.isThemeDynamic) {
       const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
@@ -155,7 +155,7 @@ export default {
     if (this.isVisible) {
       scrollLock.unlockScroll(this.$refs.container);
     }
-    document.removeEventListener('keydown', this.onClick);
+    document.removeEventListener('keydown', this.onKeydown);
     this.focusTrapInstance.destroy();
   },
   methods: {
@@ -212,7 +212,7 @@ export default {
      * @param {KeyboardEvent} params
      * @param {String} params.key
      */
-    onClick(event) {
+    onKeydown(event) {
       const {
         metaKey = false, ctrlKey = false, key,
       } = event;
