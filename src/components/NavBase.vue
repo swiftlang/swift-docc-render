@@ -92,6 +92,7 @@ const NavStateClasses = {
   hasSolidBackground: 'nav--solid-background',
   hasNoBorder: 'nav--noborder',
   hasFullWidthBorder: 'nav--fullwidth-border',
+  isWideFormat: 'nav--is-wide-format',
 };
 
 export default {
@@ -136,6 +137,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isWideFormat: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [onIntersect],
   data() {
@@ -151,7 +156,7 @@ export default {
     BreakpointScopes: () => BreakpointScopes,
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
-      hasNoBorder, hasFullWidthBorder, isDark,
+      hasNoBorder, hasFullWidthBorder, isDark, isWideFormat,
     }) => ({
       [NavStateClasses.isDark]: isDark,
       [NavStateClasses.isOpen]: isOpen,
@@ -161,6 +166,7 @@ export default {
       [NavStateClasses.hasSolidBackground]: hasSolidBackground,
       [NavStateClasses.hasNoBorder]: hasNoBorder,
       [NavStateClasses.hasFullWidthBorder]: hasFullWidthBorder,
+      [NavStateClasses.isWideFormat]: isWideFormat,
     }),
   },
   watch: {
@@ -507,24 +513,31 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   display: none;
   @include breakpoint(small, $scope: nav) {
     display: flex;
-    padding: 0 10px;
+    padding: 0;
   }
 }
 
 // Nav content (title and menus)
 .nav-content {
+  --nav-padding: #{$nav-padding};
   display: flex;
-  padding: 0 $nav-padding;
+  padding: 0 var(--nav-padding);
   max-width: $content-max-width;
   margin: 0 auto;
   position: relative;
   z-index: 2;
   justify-content: space-between;
+  box-sizing: border-box;
+
+  @include nav-is-wide-format() {
+    --nav-padding: 30px;
+    @include breakpoint-full-width-container()
+  }
 
   // Fix iPhone Notch issues
   @supports (padding:calc(max(0px))) {
-    padding-left: calc(max(#{$nav-padding}, env(safe-area-inset-left)));
-    padding-right: calc(max(#{$nav-padding}, env(safe-area-inset-right)));
+    padding-left: calc(max(var(--nav-padding), env(safe-area-inset-left)));
+    padding-right: calc(max(var(--nav-padding), env(safe-area-inset-right)));
   }
 
   @include breakpoint(small, $scope: nav) {
@@ -618,6 +631,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-top: 0;
     height: $nav-height-small;
     width: 90%;
+
+    @include nav-is-wide-format() {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   @include nav-in-breakpoint {

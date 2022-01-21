@@ -15,6 +15,7 @@
     hasSolidBackground
     :hasNoBorder="hasNoBorder"
     :isDark="isDark"
+    isWideFormat
     hasFullWidthBorder
     class="documentation-nav"
     aria-label="API Reference"
@@ -175,7 +176,7 @@ export default {
 }
 
 .sidenav-icon {
-  width: 15px;
-  height: 15px;
+  width: 19px;
+  height: 19px;
 }
 </style>

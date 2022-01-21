@@ -192,4 +192,10 @@ export default {
     border-left: none;
   }
 }
+
+.loading-placeholder {
+  color: var(--color-figure-gray-secondary);
+  padding: 12px;
+  @include font-styles(body-reduced);
+}
 </style>

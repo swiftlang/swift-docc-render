@@ -47,6 +47,12 @@ $nav-space-between-elements: rem(10px);
   }
 }
 
+@mixin nav-is-wide-format($nested: false) {
+  @include unify-selector('.nav--is-wide-format', $nested) {
+    @content;
+  }
+}
+
 /// Chevron Helpers
 
 $nav-chevron-angle: 40deg;
