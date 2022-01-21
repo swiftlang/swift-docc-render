@@ -4,7 +4,7 @@
     :class="{ expanded, 'extra-info': showExtendedInfo }"
     :style="{ '--nesting-index': item.depth }"
   >
-    <div class="head-wrapper" :class="{ active: isActive }">
+    <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
       <button
         v-if="item.childUIDs.length"
         class="tree-toggle"
@@ -12,14 +12,14 @@
       >
         <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
       </button>
-      <NavigatorLeafIcon :kind="item.kind" />
+      <NavigatorLeafIcon v-if="!isGroupMarker" :kind="item.kind" class="navigator-icon" />
       <div class="title-container">
-        <router-link :to="item.path" class="leaf-link">
+        <Reference :url="item.path" class="leaf-link" :isActive="!isGroupMarker">
           <HighlightMatches
             :text="item.title"
             :matcher="filterPattern"
           />
-        </router-link>
+        </Reference>
         <ContentNode
           v-if="item.abstract"
           v-show="showExtendedInfo"
@@ -36,6 +36,8 @@ import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIco
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import { TopicKind } from '@/constants/kinds';
 
 export default {
   name: 'NavigatorCardItem',
@@ -44,6 +46,7 @@ export default {
     ContentNode,
     NavigatorLeafIcon,
     InlineChevronRightIcon,
+    Reference,
   },
   props: {
     item: {
@@ -67,6 +70,9 @@ export default {
       default: false,
     },
   },
+  computed: {
+    isGroupMarker: ({ item: { kind } }) => kind === TopicKind.groupMarker,
+  },
   methods: {
     toggleTree() {
       this.$emit('toggle', this.item);
@@ -79,18 +85,18 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator-card-item {
-  height: 40px;
+  height: 32px;
   display: flex;
   align-items: center;
   padding-right: var(--card-horizontal-spacing);
 
   &.extra-info {
-    height: 60px;
+    height: 53px;
   }
 }
 
 .head-wrapper {
-  padding: 7.5px 5px 7.5px calc(var(--nesting-index) * 10px + 24px);
+  padding: 5.5px 5px 5.5px calc(var(--nesting-index) * 10px + 24px);
   position: relative;
   display: flex;
   align-items: baseline;
@@ -102,6 +108,16 @@ export default {
     background: var(--color-fill-gray-quaternary);
   }
 
+  &.is-group {
+    .leaf-link {
+      color: var(--color-figure-gray-secondary);
+    }
+
+    &:hover {
+      background: inherit;
+    }
+  }
+
   &:hover {
     background: var(--color-fill-light-blue);
 
@@ -110,15 +126,20 @@ export default {
     }
   }
 
+  .navigator-icon {
+    display: flex;
+    transform: translateY(3px);
+  }
+
   .leaf-link {
     color: var(--color-figure-gray);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     max-width: 100%;
-    display: inline-block;
+    display: inline;
     vertical-align: middle;
-    @include font-styles(body-reduced);
+    @include font-styles(body-reduced-tight);
 
     &:after {
       content: '';
@@ -145,10 +166,13 @@ export default {
   width: 10px;
   margin-left: -15px;
   margin-right: 5px;
+  display: flex;
 }
 
 .title-container {
   min-width: 0;
+  display: flex;
+  flex-flow: column;
 }
 
 .chevron {
