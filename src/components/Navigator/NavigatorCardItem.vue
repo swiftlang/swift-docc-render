@@ -82,7 +82,7 @@ export default {
   height: 40px;
   display: flex;
   align-items: center;
-  padding-right: 20px;
+  padding-right: var(--card-horizontal-spacing);
 
   &.extra-info {
     height: 60px;
@@ -90,7 +90,7 @@ export default {
 }
 
 .head-wrapper {
-  padding: 7.5px 5px 7.5px calc(var(--nesting-index) * 10px + 20px);
+  padding: 7.5px 5px 7.5px calc(var(--nesting-index) * 10px + 24px);
   position: relative;
   display: flex;
   align-items: baseline;
@@ -104,6 +104,10 @@ export default {
 
   &:hover {
     background: var(--color-fill-light-blue);
+
+    /deep/ .match {
+      background: var(--color-fill);
+    }
   }
 
   .leaf-link {

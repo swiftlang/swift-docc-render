@@ -20,7 +20,9 @@
     aria-label="API Reference"
   >
     <template slot="pre-title">
-      <button @click.prevent="$emit('toggle-sidenav')">Open</button>
+      <button @click.prevent="$emit('toggle-sidenav')">
+        <SidenavIcon class="icon-inline sidenav-icon" />
+      </button>
     </template>
     <template slot="default">
       <slot
@@ -56,11 +58,13 @@
 <script>
 import NavBase from 'docc-render/components/NavBase.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Hierarchy from './DocumentationNav/Hierarchy.vue';
 
 export default {
   name: 'DocumentationNav',
   components: {
+    SidenavIcon,
     NavBase,
     Hierarchy,
   },
@@ -168,5 +172,10 @@ export default {
       }
     }
   }
+}
+
+.sidenav-icon {
+  width: 15px;
+  height: 15px;
 }
 </style>

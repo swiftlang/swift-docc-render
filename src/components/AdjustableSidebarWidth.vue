@@ -166,8 +166,10 @@ export default {
     width: 0 !important;
     min-width: 0;
     max-width: 100%;
-    position: absolute;
-    z-index: 1;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 9999;
     transform: translateX(-100px);
     transition: width 0.15s linear, transform 0.15s ease-in;
 

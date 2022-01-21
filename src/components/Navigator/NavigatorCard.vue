@@ -1,6 +1,9 @@
 <template>
   <div class="navigator-card">
     <div class="head-wrapper" :class="{ 'extra-info': showExtendedInfo }">
+      <button class="close-card-mobile" @click="$emit('close')">
+        <InlineCloseIcon class="icon-inline close-icon" />
+      </button>
       <NavigatorLeafIcon :kind="kind" class="card-icon" />
       <span class="card-link">
         {{ technology }}
@@ -34,6 +37,9 @@
         </template>
       </div>
     </div>
+    <div class="card-slot">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -44,6 +50,7 @@ import { INDEX_ROOT_KEY, LEAF_SIZES } from 'docc-render/constants/sidebar';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import { RecycleScroller } from 'vue-virtual-scroller';
+import InlineCloseIcon from 'theme/components/Icons/InlineCloseIcon.vue';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -53,6 +60,7 @@ import { RecycleScroller } from 'vue-virtual-scroller';
 export default {
   name: 'NavigatorCard',
   components: {
+    InlineCloseIcon,
     NavigatorCardItem,
     NavigatorLeafIcon,
     RecycleScroller,
@@ -307,14 +315,30 @@ export default {
   flex-direction: column;
 
   .head-wrapper {
-    padding: 10px 20px;
+    padding: 10px 36px;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    position: relative;
+
+    @include breakpoint(small) {
+      justify-content: center;
+    }
   }
 
   .card-icon {
+    width: 19px;
+    height: 19px;
     color: var(--color-figure-blue);
+  }
+
+  @include breakpoint(small) {
+    .card-slot {
+      order: 2;
+    }
+    .card-body {
+      order: 3;
+    }
   }
 }
 
@@ -323,17 +347,39 @@ export default {
   @include font-styles(body-reduced);
 }
 
+.close-card-mobile {
+  display: none;
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-link);
+
+  @include breakpoint(small) {
+    display: flex;
+  }
+
+  .close-icon {
+    width: 1em;
+  }
+}
+
 .card-body {
-  padding: 10px 20px;
+  --card-horizontal-spacing: 32px;
+  padding: 18px var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
+  @include breakpoint(small) {
+    --card-horizontal-spacing: 20px;
+    padding-top: 0;
+  }
 }
 
 .card-link {
   color: var(--color-text);
-  @include font-styles(body-tight);
+  @include font-styles(body-reduced);
   font-weight: $font-weight-semibold;
 }
 

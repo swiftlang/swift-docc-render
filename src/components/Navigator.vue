@@ -8,19 +8,28 @@
       :active-path="activePath"
       :show-extended-info="showExtraInfo"
       :filter-pattern="filterPattern"
-    />
+      @close="$emit('close')"
+    >
+      <div class="navigator-filter">
+        <div class="input-wrapper">
+          <FilterIcon class="icon-inline filter-icon" :class="{ colored: filter }" />
+          <input
+            type="text"
+            :value="filter"
+            :placeholder="`Filter in ${technology.title}`"
+            @input="debounceInput">
+          <button
+            class="clear-button"
+            :class="{ hide: !filter }"
+            @click.prevent="filter = ''"
+          >
+            <ClearRoundedIcon class="icon-inline clear-icon" />
+          </button>
+        </div>
+      </div>
+    </NavigatorCard>
     <div v-else>
       Fetching...
-    </div>
-    <div class="navigator-filter">
-      <div class="input-wrapper">
-        <FilterIcon class="icon-inline filter-icon" />
-        <input
-          type="text"
-          :value="filter"
-          :placeholder="`Filter in ${technology.title}`"
-          @input="debounceInput">
-      </div>
     </div>
   </div>
 </template>
@@ -33,6 +42,7 @@ import FilterIcon from 'docc-render/components/Icons/FilterIcon.vue';
 import throttle from 'docc-render/utils/throttle';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 
 /**
  * @typedef NavigatorFlatItem
@@ -53,6 +63,7 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 export default {
   name: 'Navigator',
   components: {
+    ClearRoundedIcon,
     FilterIcon,
     NavigatorCard,
   },
@@ -183,21 +194,26 @@ export default {
   top: $nav-height;
   max-height: calc(100vh - #{$nav-height} - var(--sticky-top-offset));
   height: 100%;
-  padding-bottom: 50px;
   box-sizing: border-box;
   transition: max-height 0.3s linear;
   border-left: 1px solid var(--color-grid);
+
+  @include breakpoint(small) {
+    position: static;
+    max-height: 100%;
+    border-left: none;
+  }
 }
 
 .navigator-filter {
-  position: absolute;
-  width: 100%;
   box-sizing: border-box;
-  bottom: 0;
-  z-index: 1;
-  padding: 8px 20px;
-  background: var(--color-fill-secondary);
+  padding: 14px 30px;
   border-top: 1px solid var(--color-grid);
+
+  @include breakpoint(small) {
+    border: none;
+    padding: 10px 20px;
+  }
 
   .input-wrapper {
     position: relative;
@@ -206,19 +222,44 @@ export default {
   .filter-icon {
     width: 1em;
     position: absolute;
-    left: 0;
+    left: 14px;
     top: 50%;
-    transform: translate(50%, -50%);
-    color: var(--color-link);
+    transform: translate(0%, -50%);
+    color: var(--color-figure-gray-secondary);
+
+    &.colored {
+      color: var(--color-link);
+    }
+  }
+
+  .clear-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    border-radius: 100%;
+
+    &:focus {
+      @include focus-shadow;
+    }
+
+    &.hide {
+      display: none;
+    }
+  }
+
+  .clear-icon {
+    width: 0.8em;
+    color: var(--color-figure-gray-secondary);
   }
 
   input {
     border: 1px solid var(--color-grid);
-    padding: 10px;
+    padding: 10px 25px 10px 40px;
     width: 100%;
     box-sizing: border-box;
     border-radius: $tiny-border-radius;
-    padding-left: 35px;
 
     &:focus {
       outline: none;
