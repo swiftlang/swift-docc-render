@@ -47,6 +47,7 @@
                 :technology="technology"
                 :is_fetching="isFetching"
                 :references="topicProps.references"
+                @close="isSideNavOpen = false"
               />
             </template>
           </NavigatorDataProvider>
@@ -309,10 +310,7 @@ export default {
   height: 100%;
   box-sizing: border-box;
   @include breakpoint(small) {
-    position: absolute;
-    width: 100%;
     background: var(--color-fill);
-    z-index: 1;
   }
 }
 
