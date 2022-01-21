@@ -15,14 +15,14 @@ import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import ModuleIcon from 'theme/components/Icons/ModuleIcon.vue';
 import { TopicKind } from 'docc-render/constants/kinds';
 
-const KindAliases = {
+export const KindAliases = {
   [TopicKind.init]: TopicKind.method,
   [TopicKind.typeMethod]: TopicKind.method,
   [TopicKind.typeProperty]: TopicKind.property,
   [TopicKind.enumCase]: TopicKind.enum,
 };
 
-const TopicKindIcons = {
+export const TopicKindIcons = {
   [TopicKind.article]: ArticleIcon,
   [TopicKind.associatedtype]: CollectionIcon,
   [TopicKind.buildSetting]: CollectionIcon,
@@ -55,7 +55,7 @@ const TopicKindIcons = {
   [TopicKind.var]: SingleLetterSymbolIcon,
 };
 
-const TopicKindProps = {
+export const TopicKindProps = {
   [TopicKind.class]: { symbol: 'C', class: 'purple' },
   [TopicKind.dictionarySymbol]: { symbol: 'O', class: 'purple' },
   [TopicKind.enum]: { symbol: 'E', class: 'orange' },

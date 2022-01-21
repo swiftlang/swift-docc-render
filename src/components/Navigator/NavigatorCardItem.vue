@@ -7,7 +7,7 @@
     <div class="head-wrapper" :class="{ active: isActive }">
       <button
         v-if="item.childUIDs.length"
-        class="directory-toggle"
+        class="tree-toggle"
         @click.prevent="toggleTree"
       >
         <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
@@ -15,7 +15,7 @@
       <NavigatorLeafIcon :kind="item.kind" />
       <div class="title-container">
         <router-link :to="item.path" class="leaf-link">
-          <HighlightMatch
+          <HighlightMatches
             :text="item.title"
             :matcher="filterPattern"
           />
@@ -35,12 +35,12 @@
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import HighlightMatch from 'docc-render/components/Navigator/HighlightMatches.vue';
+import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 
 export default {
   name: 'NavigatorCardItem',
   components: {
-    HighlightMatch,
+    HighlightMatches,
     ContentNode,
     NavigatorLeafIcon,
     InlineChevronRightIcon,
@@ -135,7 +135,7 @@ export default {
   text-overflow: ellipsis;
 }
 
-.directory-toggle {
+.tree-toggle {
   position: relative;
   z-index: 1;
   width: 10px;

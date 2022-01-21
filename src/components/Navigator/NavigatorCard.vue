@@ -44,7 +44,6 @@ import { INDEX_ROOT_KEY, LEAF_SIZES } from 'docc-render/constants/sidebar';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import { RecycleScroller } from 'vue-virtual-scroller';
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -299,6 +298,7 @@ export default {
 
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
+@import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 .navigator-card {
   overflow: hidden auto;
