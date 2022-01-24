@@ -14,7 +14,12 @@
       </button>
       <NavigatorLeafIcon v-if="!isGroupMarker" :kind="item.kind" class="navigator-icon" />
       <div class="title-container">
-        <Reference :url="item.path" class="leaf-link" :isActive="!isGroupMarker">
+        <Reference
+          :url="item.path"
+          :isActive="!isGroupMarker"
+          :class="{ bolded: isBold }"
+          class="leaf-link"
+        >
           <HighlightMatches
             :text="item.title"
             :matcher="filterPattern"
@@ -66,6 +71,10 @@ export default {
       default: undefined,
     },
     isActive: {
+      type: Boolean,
+      default: false,
+    },
+    isBold: {
       type: Boolean,
       default: false,
     },
@@ -140,6 +149,10 @@ export default {
     display: inline;
     vertical-align: middle;
     @include font-styles(body-reduced-tight);
+
+    &.bolded {
+      font-weight: $font-weight-semibold;
+    }
 
     &:after {
       content: '';

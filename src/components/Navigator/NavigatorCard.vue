@@ -24,6 +24,7 @@
           :filter-pattern="filterPattern"
           :show-extended-info="showExtendedInfo"
           :is-active="item.uid === activeUID"
+          :is-bold="activePathMap[item.uid]"
           :expanded="openNodes[item.uid]"
           @toggle="toggle"
         />
@@ -137,6 +138,9 @@ export default {
       }
       return result;
     },
+    activePathMap: ({ activePathChildren }) => (
+      Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
+    ),
     /**
      * Returns the current page uid
      * @return string

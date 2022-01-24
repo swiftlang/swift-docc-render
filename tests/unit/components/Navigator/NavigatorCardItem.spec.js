@@ -38,7 +38,7 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
     expect(wrapper.find(NavigatorLeafIcon).props('kind')).toBe(defaultProps.item.kind);
-    expect(wrapper.find('.leaf-link').props('to')).toEqual(defaultProps.item.path);
+    expect(wrapper.find('.leaf-link').props('url')).toEqual(defaultProps.item.path);
     expect(wrapper.find(HighlightMatches).props()).toEqual({
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
@@ -84,6 +84,15 @@ describe('NavigatorCardItem', () => {
       },
     });
     expect(wrapper.find('.head-wrapper').classes()).toContain('active');
+  });
+
+  it('adds extra classes, when bolded', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        isBold: true,
+      },
+    });
+    expect(wrapper.find('.leaf-link').classes()).toContain('bolded');
   });
 
   it('does not render the ContentNode, if no abstract', () => {
