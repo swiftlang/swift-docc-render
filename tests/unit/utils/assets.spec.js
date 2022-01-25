@@ -8,13 +8,20 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { normalizeAssetUrl, pathJoin } from 'docc-render/utils/assets';
+import { normalizeAssetUrl, pathJoin, absoluteURL } from 'docc-render/utils/assets';
 
 const mockBaseUrl = jest.fn().mockReturnValue('/');
+const absoluteBaseUrl = 'https://foo.com';
 
 jest.mock('@/utils/theme-settings', () => ({
   get baseUrl() { return mockBaseUrl(); },
 }));
+
+Object.defineProperty(window, 'location', {
+  value: {
+    href: absoluteBaseUrl,
+  },
+});
 
 describe('assets', () => {
   describe('pathJoin', () => {
@@ -63,6 +70,12 @@ describe('assets', () => {
       expect(normalizeAssetUrl('')).toBe('');
       expect(normalizeAssetUrl(undefined)).toBe(undefined);
       expect(normalizeAssetUrl(null)).toBe(null);
+    });
+  });
+  describe('absoluteURL', () => {
+    it('it returns an absolute URL from a path', () => {
+      expect(absoluteURL('foo')).toBe(`${absoluteBaseUrl}/foo`);
+      expect(absoluteURL('/foo')).toBe(`${absoluteBaseUrl}/foo`);
     });
   });
 });

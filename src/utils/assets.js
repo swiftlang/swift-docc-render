@@ -75,3 +75,12 @@ export function normalizeAssetUrl(url) {
   }
   return pathJoin([baseUrl, url]);
 }
+
+/**
+ * Creates absolute URLs from paths
+ * @param {String} path
+ * @return {String}
+ */
+export function absoluteURL(path) {
+  return new URL(path, window.location.href).toString();
+}
