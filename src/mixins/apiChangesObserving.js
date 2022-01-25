@@ -32,6 +32,10 @@ export default {
     };
   },
   watch: {
+    '$route.path': function handle() {
+      this.shouldUpdateChangesQueryParameter = !this.$route.query.changes;
+      this.handleSelectedAPIChangesVersion(this.selectedAPIChangesVersion);
+    },
     '$route.query.changes': {
       immediate: true,
       // defaulting to `null`, to be sure `undefined` is cast to `null`
@@ -42,47 +46,42 @@ export default {
     selectedAPIChangesVersion: {
       immediate: true,
       // make sure oldValue defaults to null
-      async handler(newValue, oldValue = null) {
-        // if the we go back, and both the query and selectedAPIChangesVersion are false,
-        // we dont want to update the URL
-        const shouldPushNewUrl = this.shouldUpdateChangesQueryParameter
-          && (this.$route.query.changes || newValue);
+      handler: 'handleSelectedAPIChangesVersion',
+    },
+  },
+  methods: {
+    async handleSelectedAPIChangesVersion(newValue, oldValue = null) {
+      // if the we go back, and both the query and selectedAPIChangesVersion are false,
+      // we dont want to update the URL
+      const shouldPushNewUrl = this.shouldUpdateChangesQueryParameter
+        && (this.$route.query.changes || newValue);
 
-        if (newValue !== oldValue) {
-          if (shouldPushNewUrl) {
-            this.$router.push({
-              query: {
-                ...this.$route.query,
+      if (newValue === oldValue) return;
 
-                // Explicitly pass undefined to remove the query parameter.
-                changes: newValue || undefined,
-              },
-            });
-          }
+      if (shouldPushNewUrl) {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
 
-          // only display changes nav if query has available options
-          this.shouldDisplayChangesNav = !!(newValue && this.availableOptions.has(newValue));
+            // Explicitly pass undefined to remove the query parameter.
+            changes: newValue || undefined,
+          },
+        });
+      }
+      this.shouldDisplayChangesNav = !!(newValue && this.availableOptions.has(newValue));
+      let apiChanges = null;
+      if (this.shouldDisplayChangesNav) {
+        // Update the query parameter when a version has been selected from the changes nav.
+        this.shouldUpdateChangesQueryParameter = true;
 
-          let apiChanges = null;
-          if (newValue && this.availableOptions.has(newValue)) {
-            // Update the query parameter when a version has been selected from the changes nav.
-            this.shouldUpdateChangesQueryParameter = true;
-
-            let response;
-            try {
-              response = await fetchAPIChangesForRoute(this.$route, newValue);
-            } catch (err) {
-              // if the request errors out for some reason, return an empty object
-              response = {};
-            }
-            if (this.shouldDisplayChangesNav) {
-              // Make sure the nav is still visible, when we update the changes.
-              apiChanges = response;
-            }
-          }
-          this.store.setAPIChanges(apiChanges);
+        try {
+          apiChanges = await fetchAPIChangesForRoute(this.$route, newValue);
+        } catch (err) {
+          // if the request errors out for some reason, return an empty object
+          apiChanges = {};
         }
-      },
+      }
+      this.store.setAPIChanges(apiChanges);
     },
   },
 };

@@ -103,12 +103,10 @@ export default {
       topicDataObjc: null,
       isSideNavOpen: false,
       showExtraNavigatorInfo: false,
+      store: DocumentationTopicStore,
     };
   },
   computed: {
-    store() {
-      return DocumentationTopicStore;
-    },
     objcOverrides: ({ topicData }) => {
       const { variantOverrides = [] } = topicData || {};
 
