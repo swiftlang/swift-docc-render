@@ -1062,6 +1062,25 @@ describe('ContentNode', () => {
     });
   });
 
+  describe('extractText', () => {
+    it('extracts and join all the texts using `extractText` method', () => {
+      const text = 'Description';
+      const texts = (nestedContent = {}) => ({
+        inlineContent: [{
+          type: 'text',
+          text,
+        },
+        nestedContent],
+      });
+
+      const coupleOfTexts = mountWithContent([texts(), texts()]).vm;
+      expect(coupleOfTexts.extractText(coupleOfTexts.content)).toEqual(text + text);
+
+      const nestedTexts = mountWithContent([texts(texts()), texts()]).vm;
+      expect(nestedTexts.extractText(nestedTexts.content)).toEqual(text + text + text);
+    });
+  });
+
   describe('.map', () => {
     it('recursively maps the content tree', () => {
       expect(mountWithContent([

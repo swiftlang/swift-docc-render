@@ -371,6 +371,17 @@ export default {
     },
   },
   methods: {
+    /**
+     * Extract and join all the values from key 'text' on every object inside an array of objects,
+     * if there is an inlineContent array, it will extract all its text recursively as well
+     * @param {Array} content - array of objects containing "text" key
+     * @returns {String}
+     */
+    extractText(content) {
+      return content.reduce((acc, { text, inlineContent = [] }) => (
+        acc.concat(text || this.extractText(inlineContent)).filter(Boolean)
+      ), []).join('');
+    },
     // Recursively map a given function over the content node tree. The
     // provided function will be applied to every node in the tree, regardless
     // of depth.

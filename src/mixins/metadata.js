@@ -9,20 +9,11 @@
 */
 
 import { addMetadata } from 'docc-render/utils/metadata';
+import ContentNode from 'docc-render/components/ContentNode.vue';
 
 export default {
   methods: {
-    /**
-     * Extract and join all the values from key 'text' on every object inside an array of objects,
-     * if there is an inlineContent array, it will extract all its text recursively as well
-     * @param {Array} content - array of objects containing "text" key
-     * @returns {String}
-     */
-    extractText(content) {
-      return content.reduce((acc, { text, inlineContent = [] }) => (
-        acc.concat(text || this.extractText(inlineContent)).filter(Boolean)
-      ), []).join('');
-    },
+    extractText: ContentNode.methods.extractText,
   },
   computed: {
     pagePath: ({ $route: { path = '/' } = {} }) => path,
