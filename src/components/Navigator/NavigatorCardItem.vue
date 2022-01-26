@@ -105,7 +105,7 @@ export default {
 }
 
 .head-wrapper {
-  padding: 5.5px 5px 5.5px calc(var(--nesting-index) * 10px + 24px);
+  padding: 5.5px 5px 5.5px calc(var(--nesting-index) * 14px + 26px);
   position: relative;
   display: flex;
   align-items: baseline;
@@ -120,6 +120,7 @@ export default {
   &.is-group {
     .leaf-link {
       color: var(--color-figure-gray-secondary);
+      font-weight: $font-weight-semibold;
     }
 
     &:hover {
