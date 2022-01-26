@@ -9,11 +9,20 @@
 */
 
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { firstParagraph } from 'docc-render/utils/strings';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 
 export default {
   methods: {
-    extractText: ContentNode.methods.extractText,
+    // Extracts the first paragraph of plaintext from the given content tree,
+    // which can be used for metadata purposes.
+    extractText(content = []) {
+      const plaintext = ContentNode.computed.plaintext.bind({
+        ...ContentNode.methods,
+        content,
+      })();
+      return firstParagraph(plaintext);
+    },
   },
   computed: {
     pagePath: ({ $route: { path = '/' } = {} }) => path,

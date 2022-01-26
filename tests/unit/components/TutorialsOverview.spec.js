@@ -35,6 +35,7 @@ describe('TutorialsOverview', () => {
             type: 'text',
             text: 'Hero description',
           }],
+          type: 'paragraph',
         }],
         image: 'foobar.png',
       },

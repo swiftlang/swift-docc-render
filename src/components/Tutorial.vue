@@ -100,7 +100,7 @@ export default {
       );
     },
     pageDescription: ({ heroSection, extractText }) => (
-      heroSection ? extractText(heroSection.content[0].inlineContent) : null
+      heroSection ? extractText(heroSection.content) : null
     ),
   },
   props: {

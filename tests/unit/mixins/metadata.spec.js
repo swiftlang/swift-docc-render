@@ -48,4 +48,53 @@ describe('metadata', () => {
     expect(addOrUpdateMetadata).toHaveBeenCalledTimes(1);
     expect(addOrUpdateMetadata).toHaveBeenCalledWith(pageData);
   });
+
+  describe('.extractText', () => {
+    it('returns the the first paragraph of plaintext for a given content tree', () => {
+      // A content node tree corresponding to the following markdown:
+      // a _*b*_ c
+      const content = [
+        {
+          type: 'paragraph',
+          inlineContent: [
+            {
+              type: 'text',
+              text: 'a ',
+            },
+            {
+              type: 'emphasis',
+              inlineContent: [
+                {
+                  type: 'strong',
+                  inlineContent: [
+                    {
+                      type: 'text',
+                      text: 'b',
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'text',
+              text: ' c',
+            },
+          ],
+        },
+        {
+          type: 'paragraph',
+          inlineContent: [
+            {
+              type: 'text',
+              text: 'blah',
+            },
+          ],
+        },
+      ];
+      const wrapper = createWrapper(pageData);
+      expect(wrapper.vm.extractText(content)).toBe('a b c');
+      expect(wrapper.vm.extractText(content).includes('blah')).toBe(false);
+      expect(wrapper.vm.extractText([])).toBe('');
+    });
+  });
 });

@@ -371,17 +371,6 @@ export default {
     },
   },
   methods: {
-    /**
-     * Extract and join all the values from key 'text' on every object inside an array of objects,
-     * if there is an inlineContent array, it will extract all its text recursively as well
-     * @param {Array} content - array of objects containing "text" key
-     * @returns {String}
-     */
-    extractText(content) {
-      return content.reduce((acc, { text, inlineContent = [] }) => (
-        acc.concat(text || this.extractText(inlineContent)).filter(Boolean)
-      ), []).join('');
-    },
     // Recursively map a given function over the content node tree. The
     // provided function will be applied to every node in the tree, regardless
     // of depth.
@@ -488,6 +477,43 @@ export default {
       }
 
       return $forEach(this.content);
+    },
+    // Recursively walk a given content tree, applying the callback function for
+    // each node encountered (depth first) and returning an accumulated result.
+    //
+    // @param fn {Function} A callback function which will called for each node
+    //   in the tree along with the most recently accumulated result. The last
+    //   result is the first argument passed to this function and the node is
+    //   the second argument.
+    // @param initialValue {Any} Some initial value to start accumulating.
+    //
+    // @return {Any} The final accumulated value based on the initial value and
+    //   the result of applying the function to every node.
+    reduce(fn, initialValue) {
+      let result = initialValue;
+      this.forEach((node) => {
+        result = fn(result, node);
+      });
+      return result;
+    },
+  },
+  computed: {
+    // Computed property that returns a single plaintext string equivalent
+    // of the content tree.
+    //
+    // Paragraphs will be transformed into newlines and text will be presented
+    // without any inline formatting—other block kinds like asides will be
+    // ignored in the resulting plaintext representation.
+    plaintext() {
+      return this.reduce((text, node) => {
+        if (node.type === BlockType.paragraph) {
+          return `${text}\n`;
+        }
+        if (node.type === InlineType.text) {
+          return `${text}${node.text}`;
+        }
+        return text;
+      }, '').trim();
     },
   },
   BlockType,

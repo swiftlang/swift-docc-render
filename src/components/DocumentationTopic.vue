@@ -307,7 +307,9 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         ),
     pageTitle: ({ title }) => title,
-    pageDescription: ({ abstract, extractText }) => extractText(abstract),
+    pageDescription: ({ abstract, extractText }) => (
+      abstract ? extractText(abstract) : null
+    ),
     // The `hierarchy.paths` array will contain zero or more subarrays, each
     // representing a "path" of parent topic IDs that could be considered the
     // hierarchy/breadcrumb for a given topic. We choose to render only the
