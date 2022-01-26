@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { addMetadata } from 'docc-render/utils/metadata';
+import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 
 export default {
@@ -18,8 +18,8 @@ export default {
   computed: {
     pagePath: ({ $route: { path = '/' } = {} }) => path,
   },
-  created() {
-    addMetadata({
+  mounted() {
+    addOrUpdateMetadata({
       title: this.pageTitle,
       description: this.pageDescription,
       path: this.pagePath,

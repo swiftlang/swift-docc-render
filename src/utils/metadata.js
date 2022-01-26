@@ -70,11 +70,11 @@ const addTitle = (title) => {
 };
 
 /**
- * It adds client-side metadata tags to pages
+ * It adds or updates client-side metadata tags to pages
  * @param {Object} pageData
  */
 // eslint-disable-next-line import/prefer-default-export
-export function addMetadata({ title, description = DEFAULT_DESCRIPTION, path }) {
+export function addOrUpdateMetadata({ title, description = DEFAULT_DESCRIPTION, path }) {
   const formattedTitle = formatTitle(title);
   // add title
   addTitle(formattedTitle);

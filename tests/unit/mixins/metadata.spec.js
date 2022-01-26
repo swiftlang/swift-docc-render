@@ -9,11 +9,11 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import { addMetadata } from 'docc-render/utils/metadata';
+import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
 import metadata from 'docc-render/mixins/metadata';
 
 jest.mock('docc-render/utils/metadata', () => ({
-  addMetadata: jest.fn(),
+  addOrUpdateMetadata: jest.fn(),
 }));
 
 const pageData = {
@@ -43,9 +43,9 @@ const createWrapper = ({ title, description, path }) => (
 );
 
 describe('metadata', () => {
-  it('calls addMetadata function when component is created', () => {
+  it('calls addOrUpdateMetadata function when component is created', () => {
     createWrapper(pageData);
-    expect(addMetadata).toHaveBeenCalledTimes(1);
-    expect(addMetadata).toHaveBeenCalledWith(pageData);
+    expect(addOrUpdateMetadata).toHaveBeenCalledTimes(1);
+    expect(addOrUpdateMetadata).toHaveBeenCalledWith(pageData);
   });
 });

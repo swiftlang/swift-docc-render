@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { addMetadata } from 'docc-render/utils/metadata';
+import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
 
 const fs = require('fs');
 const path = require('path');
@@ -42,7 +42,7 @@ const assertMetadata = ({
 }) => {
   describe(name, () => {
     document.documentElement.innerHTML = html.toString();
-    addMetadata({ ...params, path: pagePath });
+    addOrUpdateMetadata({ ...params, path: pagePath });
     const expectedTitle = [...new Set([rawTitle, process.env.VUE_APP_TITLE])].filter(Boolean).join(' | ');
 
     it('adds title', () => {
