@@ -8,7 +8,8 @@
       <button
         v-if="item.childUIDs.length"
         class="tree-toggle"
-        @click.prevent="toggleTree"
+        @click.exact.prevent="toggleTree"
+        @click.alt.prevent="toggleEntireTree"
       >
         <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
       </button>
@@ -85,6 +86,9 @@ export default {
   methods: {
     toggleTree() {
       this.$emit('toggle', this.item);
+    },
+    toggleEntireTree() {
+      this.$emit('toggle-full', this.item);
     },
   },
 };

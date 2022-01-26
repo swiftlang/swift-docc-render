@@ -27,6 +27,7 @@
           :is-bold="activePathMap[item.uid]"
           :expanded="openNodes[item.uid]"
           @toggle="toggle"
+          @toggle-full="toggleFullTree"
         />
       </RecycleScroller>
       <div class="no-items-wrapper" v-if="!nodesToRender.length">
@@ -218,6 +219,23 @@ export default {
       } else {
         this.$set(this.openNodes, node.uid, true);
       }
+      this.generateNodesToRender({ scrollToElement: false });
+    },
+    /**
+     * Handle toggling the entire tree open/close, using alt + click
+     */
+    toggleFullTree(node) {
+      const isOpen = this.openNodes[node.uid];
+      const openNodes = clone(this.openNodes);
+      const allChildren = this.getAllChildren(node.uid);
+      allChildren.forEach(({ uid }) => {
+        if (isOpen) {
+          delete openNodes[uid];
+        } else {
+          openNodes[uid] = true;
+        }
+      });
+      this.openNodes = openNodes;
       this.generateNodesToRender({ scrollToElement: false });
     },
     /**
