@@ -8,8 +8,12 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { baseNavHeight } from 'docc-render/constants/nav';
+import {
+  baseNavHeight,
+  baseNavHeightSmallBreakpoint,
+} from 'docc-render/constants/nav';
 import { documentationTopicName } from 'docc-render/constants/router';
+import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
 import { cssEscapeTopicIdHash } from 'docc-render/utils/strings';
 import { areEquivalentLocations } from 'docc-render/utils/url-helper';
@@ -21,6 +25,16 @@ import { areEquivalentLocations } from 'docc-render/utils/url-helper';
 export function getCurrentLocation() {
   const { location } = window;
   return location.pathname + location.search + location.hash;
+}
+
+function getBaseNavOffset() {
+  const viewportWidth = Math.max(
+    document.documentElement.clientWidth || 0,
+    window.innerWidth || 0,
+  );
+  return viewportWidth < BreakpointAttributes.nav.small.maxWidth
+    ? baseNavHeightSmallBreakpoint
+    : baseNavHeight;
 }
 
 export async function scrollBehavior(to, from, savedPosition) {
@@ -37,10 +51,11 @@ export async function scrollBehavior(to, from, savedPosition) {
     const { name, query, hash } = to;
     const isDocumentation = name.includes(documentationTopicName);
     const hasNavBarOpen = !!query.changes;
+    const baseNavOffset = getBaseNavOffset();
     // if on docs and have API changes enabled
-    const apiChangesNavHeight = (isDocumentation && hasNavBarOpen) ? baseNavHeight : 0;
+    const apiChangesNavHeight = (isDocumentation && hasNavBarOpen) ? baseNavOffset : 0;
     // compensate for the nav sticky height.
-    const offset = baseNavHeight + apiChangesNavHeight;
+    const offset = baseNavOffset + apiChangesNavHeight;
 
     const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
     return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };

@@ -28,7 +28,7 @@
         >
           <CloseIcon />
         </button>
-        <div class="modal-content">
+        <div class="modal-content" ref="content">
           <slot />
         </div>
       </div>
@@ -137,7 +137,7 @@ export default {
   },
   mounted() {
     this.focusTrapInstance = new FocusTrap();
-    document.addEventListener('keydown', this.onEscapeClick);
+    document.addEventListener('keydown', this.onKeydown);
     // add listeners for dynamic themes
     if (this.isThemeDynamic) {
       const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
@@ -155,7 +155,7 @@ export default {
     if (this.isVisible) {
       scrollLock.unlockScroll(this.$refs.container);
     }
-    document.removeEventListener('keydown', this.onEscapeClick);
+    document.removeEventListener('keydown', this.onKeydown);
     this.focusTrapInstance.destroy();
   },
   methods: {
@@ -191,6 +191,14 @@ export default {
       this.isVisible = false;
     },
     /**
+     * Select all modal's content
+     */
+    selectContent() {
+      window.getSelection().selectAllChildren(
+        this.$refs.content,
+      );
+    },
+    /**
      * Closes the modal when clicking on the backdrop
      */
     onClickOutside() {
@@ -198,12 +206,23 @@ export default {
     },
     /**
      * Handle the keydown body event listener.
-     * Used to close the modal on `Escape` click.
+     * Used to:
+     * - Overwrite cmd+a and ctrl+a behaviour to select modal content only
+     * - Close the modal on `Escape` click.
      * @param {KeyboardEvent} params
      * @param {String} params.key
      */
-    onEscapeClick({ key }) {
-      if (!this.isVisible || key !== 'Escape') return;
+    onKeydown(event) {
+      const {
+        metaKey = false, ctrlKey = false, key,
+      } = event;
+
+      if (!this.isVisible) return;
+      if (key === 'a' && (metaKey || ctrlKey)) {
+        event.preventDefault();
+        this.selectContent();
+      }
+      if (key !== 'Escape') return;
       this.closeModal();
     },
     /**

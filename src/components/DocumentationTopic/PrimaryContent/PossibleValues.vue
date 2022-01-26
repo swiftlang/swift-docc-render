@@ -14,7 +14,7 @@
     <dl class="datalist">
       <template v-for="value in values">
         <dt class="param-name" :key="`${value.name}:name`">
-          <code>{{value.name}}</code>
+          <WordBreak tag="code">{{value.name}}</WordBreak>
         </dt>
         <dd v-if="value.content" class="value-content" :key="`${value.name}:content`">
           <ContentNode :content="value.content" />
@@ -27,10 +27,11 @@
 <script>
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 import ContentNode from 'docc-render/components/ContentNode.vue';
+import WordBreak from 'docc-render/components/WordBreak.vue';
 
 export default {
   name: 'PossibleValues',
-  components: { ContentNode, OnThisPageSection },
+  components: { ContentNode, OnThisPageSection, WordBreak },
   props: {
     values: {
       type: Array,
