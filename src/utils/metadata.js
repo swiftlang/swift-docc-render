@@ -11,7 +11,6 @@ import { getSetting } from 'docc-render/utils/theme-settings';
 import { normalizeAssetUrl } from 'docc-render/utils/assets';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
-const DEFAULT_DESCRIPTION = 'There\'s never been a better time to develop for Apple platforms.';
 const createMetaTags = ({ title, description, path }) => [
   {
     name: 'description',
@@ -60,8 +59,17 @@ const createMetaTags = ({ title, description, path }) => [
 ];
 const formatTitle = title => [title, themeTitle].filter(Boolean).join(' | ');
 const addMetaTags = (metadata) => {
+  const keys = Object.keys(metadata);
+
+  if (!metadata.content) {
+    const query = `meta[${keys[0]}="${metadata[keys[0]]}"]`;
+    if (document.querySelector(query)) {
+      document.querySelector(query).remove();
+    }
+    return;
+  }
   const meta = document.createElement('meta');
-  Object.keys(metadata).forEach(ref => meta.setAttribute(ref, metadata[ref]));
+  keys.forEach(ref => meta.setAttribute(ref, metadata[ref]));
   document.getElementsByTagName('head')[0].appendChild(meta);
 };
 const addTitle = (title) => {
@@ -74,7 +82,7 @@ const addTitle = (title) => {
  * @param {Object} pageData
  */
 // eslint-disable-next-line import/prefer-default-export
-export function addOrUpdateMetadata({ title, description = DEFAULT_DESCRIPTION, path }) {
+export function addOrUpdateMetadata({ title, description, path }) {
   const formattedTitle = formatTitle(title);
   // add title
   addTitle(formattedTitle);

@@ -19,7 +19,7 @@ const mockBaseUrl = 'developer.com';
 const title = 'Featured';
 const description = 'Browse the latest developer documentation, including tutorials, sample code, articles, and API reference.';
 const pagePath = '/path';
-const pageWithTitleDescription = {
+const pageWithTitleAndDescription = {
   name: 'Page with title and description',
   title,
   description,
@@ -27,6 +27,12 @@ const pageWithTitleDescription = {
     title,
     description,
   },
+};
+
+const pageWithoutTitleOrDescription = {
+  name: 'Page without title and description',
+  title: process.env.VUE_APP_TITLE,
+  params: {},
 };
 
 jest.mock('docc-render/utils/theme-settings', () => ({
@@ -37,33 +43,46 @@ jest.mock('docc-render/utils/assets', () => ({
   normalizeAssetUrl: jest.fn(name => mockBaseUrl + name),
 }));
 
+document.documentElement.innerHTML = html.toString();
+
 const assertMetadata = ({
   name, title: rawTitle, description: expectedDescription, params,
 }) => {
+  const expectedTitle = [...new Set([rawTitle, process.env.VUE_APP_TITLE])].filter(Boolean).join(' | ');
   describe(name, () => {
-    document.documentElement.innerHTML = html.toString();
-    addOrUpdateMetadata({ ...params, path: pagePath });
-    const expectedTitle = [...new Set([rawTitle, process.env.VUE_APP_TITLE])].filter(Boolean).join(' | ');
+    beforeEach(() => {
+      addOrUpdateMetadata({ ...params, path: pagePath });
+    });
 
     it('adds title', () => {
       expect(document.title).toBe(expectedTitle);
     });
 
-    it('adds a page description', () => {
-      expect(document.querySelector('meta[name="description"]').content).toBe(expectedDescription);
-    });
+    it('adds metadata tags', () => {
+      // it adds a page description if there is a description
+      if (expectedDescription) {
+        expect(document.querySelector('meta[name="description"]').content).toBe(expectedDescription);
+      } else {
+        expect(document.querySelector('meta[name="description"]')).toBeFalsy();
+      }
 
-    it('adds open graph tags', () => {
+      // it adds open graph tags
+      if (expectedDescription) {
+        expect(document.querySelector('meta[property="og:description"]').content).toBe(expectedDescription);
+      } else {
+        expect(document.querySelector('meta[property="og:description"]')).toBeFalsy();
+      }
       expect(document.querySelector('meta[property="og:locale"]').content).toBe('en_US');
       expect(document.querySelector('meta[property="og:site_name"]').content).toBe(process.env.VUE_APP_TITLE);
       expect(document.querySelector('meta[property="og:type"]').content).toBe('website');
-      expect(document.querySelector('meta[property="og:image"]').content).toBe('<%= BASE_URL %>developer-og.jpg');
-      expect(document.querySelector('meta[property="og:description"]').content).toBe(expectedDescription);
-    });
 
-    it('adds twitter metadata tags', () => {
+      // it adds twitter metadata tags
+      if (expectedDescription) {
+        expect(document.querySelector('meta[name="twitter:description"]').content).toBe(expectedDescription);
+      } else {
+        expect(document.querySelector('meta[name="twitter:description"]')).toBeFalsy();
+      }
       expect(document.querySelector('meta[name="twitter:card"]').content).toBe('summary_large_image');
-      expect(document.querySelector('meta[name="twitter:description"]').content).toBe(expectedDescription);
       expect(document.querySelector('meta[name="twitter:image"]').content).toBe('<%= BASE_URL %>developer-og-twitter.jpg');
       expect(document.querySelector('meta[name="twitter:url"]').content).toBe(mockBaseUrl + pagePath);
     });
@@ -71,5 +90,6 @@ const assertMetadata = ({
 };
 
 describe('Metadata', () => {
-  assertMetadata(pageWithTitleDescription);
+  assertMetadata(pageWithTitleAndDescription);
+  assertMetadata(pageWithoutTitleOrDescription);
 });
