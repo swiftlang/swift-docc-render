@@ -124,10 +124,7 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     flattenNestedData(childrenNodes, parent = null, depth = 0) {
-      let index = 0;
-      return childrenNodes.reduce((items, item) => {
-        // remove all `groupMaker` items
-        if (item.kind === 'groupMarker') return items;
+      return childrenNodes.reduce((items, item, index) => {
         // get the children
         const { children, ...node } = item;
         // generate the extra properties
@@ -144,9 +141,6 @@ export default {
         if (parent) {
           parent.childUIDs.push(node.uid);
         }
-        // increment the current branch index. We cant rely on index in `reduce`,
-        // because we remove items like `groupMarker`
-        index += 1;
         if (children) {
           // recursively walk the children
           const iteratedChildren = this.flattenNestedData(children, node, depth + 1);
