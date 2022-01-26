@@ -218,9 +218,13 @@ export default {
      * Initiates a watcher, that reacts to filtering and page navigation.
      */
     trackOpenNodes(
-      [filteredChildren, activePathChildren],
-      [, activePathChildrenBefore] = [],
+      [filteredChildren, activePathChildren, filter],
+      [, activePathChildrenBefore, filterBefore] = [],
     ) {
+      // skip in case this is a first mount and we are syncing the `filter`.
+      if (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter)) {
+        return;
+      }
       // decide which items to filter
       const nodes = !this.filterPattern
         ? activePathChildren
@@ -345,18 +349,7 @@ export default {
       // check if we want to scroll to the element
       if (!scrollToElement) return;
       // wait a frame, so the scroller is ready, `nextTick` is not enough.
-      await waitFrames(1);
-      // if we are filtering, it makes more sense to scroll to top of list
-      const index = filterPattern
-        ? 0
-        // find the index of the current active UID in the newly added nodes
-        : this.nodesToRender.findIndex(child => child.uid === this.activeUID);
-      // if for some reason we cant find the active page, bail.
-      // make sure the scroller is visible
-      if (index !== -1 && this.$refs.scroller) {
-        // call the scroll method on the `scroller` component.
-        this.$refs.scroller.scrollToItem(index);
-      }
+      this.scrollToElement();
     },
     /**
      * Persists the current state, so its not lost if you refresh or navigate away
@@ -380,6 +373,21 @@ export default {
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
       this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
       this.filter = sessionStorage.get(STORAGE_KEYS.filter, '');
+      this.scrollToElement();
+    },
+    async scrollToElement() {
+      await waitFrames(1);
+      // if we are filtering, it makes more sense to scroll to top of list
+      const index = this.filterPattern
+        ? 0
+        // find the index of the current active UID in the newly added nodes
+        : this.nodesToRender.findIndex(child => child.uid === this.activeUID);
+      // if for some reason we cant find the active page, bail.
+      // make sure the scroller is visible
+      if (index !== -1 && this.$refs.scroller) {
+        // call the scroll method on the `scroller` component.
+        this.$refs.scroller.scrollToItem(index);
+      }
     },
   },
 };
