@@ -7,27 +7,8 @@
       :children="flatChildren"
       :active-path="activePath"
       :show-extended-info="showExtraInfo"
-      :filter-pattern="filterPattern"
       @close="$emit('close')"
-    >
-      <div class="navigator-filter">
-        <div class="input-wrapper">
-          <FilterIcon class="icon-inline filter-icon" :class="{ colored: filter }" />
-          <input
-            type="text"
-            :value="filter"
-            :placeholder="`Filter in ${technology.title}`"
-            @input="debounceInput">
-          <button
-            class="clear-button"
-            :class="{ hide: !filter }"
-            @click.prevent="filter = ''"
-          >
-            <ClearRoundedIcon class="icon-inline clear-icon" />
-          </button>
-        </div>
-      </div>
-    </NavigatorCard>
+    />
     <div v-else>
       Fetching...
     </div>
@@ -36,13 +17,9 @@
 
 <script>
 import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
-import debounce from 'docc-render/utils/debounce';
-import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import FilterIcon from 'docc-render/components/Icons/FilterIcon.vue';
 import throttle from 'docc-render/utils/throttle';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
-import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 
 /**
  * @typedef NavigatorFlatItem
@@ -63,8 +40,6 @@ import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 export default {
   name: 'Navigator',
   components: {
-    ClearRoundedIcon,
-    FilterIcon,
     NavigatorCard,
   },
   props: {
@@ -88,7 +63,6 @@ export default {
   inject: ['references'],
   data() {
     return {
-      filter: '',
       topOffset: '0px',
     };
   },
@@ -104,7 +78,6 @@ export default {
     activePath({ parentTopicReferences, $route }) {
       return parentTopicReferences.slice(1).concat($route.path);
     },
-    filterPattern: ({ filter }) => (!filter ? undefined : safeHighlightPattern(filter)),
     /**
      * Recomputes the list of flat children.
      * @return NavigatorFlatItem[]
@@ -114,9 +87,12 @@ export default {
     ),
   },
   methods: {
-    debounceInput: debounce(function debounceInput({ target: { value } }) {
-      this.filter = value;
-    }, 500),
+    hashCode(str) {
+      return str.split('').reduce((prevHash, currVal) => (
+        // eslint-disable-next-line no-bitwise
+        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0
+      ), 0);
+    },
     /**
      * @param {{path: string, kind: string, title: string, uid: string}[]} childrenNodes
      * @param {Object} parent
@@ -130,11 +106,11 @@ export default {
         // generate the extra properties
         const { uid: parentUID = INDEX_ROOT_KEY } = parent || {};
         // generate a uid to track by
-        node.uid = `${parentUID}+${node.path}_${depth}_${index}`;
+        node.uid = this.hashCode(`${parentUID}+${node.path}_${depth}_${index}`);
         // store the parent uid
         node.parent = parentUID;
         node.depth = depth;
-        node.index = index;
+        // node.index = index;
         // store child UIDs
         node.childUIDs = [];
         // push child to parent
@@ -196,69 +172,6 @@ export default {
     position: static;
     max-height: 100%;
     border-left: none;
-  }
-}
-
-.navigator-filter {
-  box-sizing: border-box;
-  padding: 14px 30px;
-  border-top: 1px solid var(--color-grid);
-
-  @include breakpoint(small) {
-    border: none;
-    padding: 10px 20px;
-  }
-
-  .input-wrapper {
-    position: relative;
-  }
-
-  .filter-icon {
-    width: 1em;
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translate(0%, -50%);
-    color: var(--color-figure-gray-secondary);
-
-    &.colored {
-      color: var(--color-link);
-    }
-  }
-
-  .clear-button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    border-radius: 100%;
-
-    &:focus {
-      @include focus-shadow;
-    }
-
-    &.hide {
-      display: none;
-    }
-  }
-
-  .clear-icon {
-    width: 0.8em;
-    color: var(--color-figure-gray-secondary);
-  }
-
-  input {
-    border: 1px solid var(--color-grid);
-    padding: 10px 25px 10px 40px;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: $tiny-border-radius;
-
-    &:focus {
-      outline: none;
-      @include focus-shadow-form-element();
-    }
   }
 }
 </style>
