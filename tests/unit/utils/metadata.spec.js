@@ -10,10 +10,15 @@
 
 import { addMetadata } from 'docc-render/utils/metadata';
 
+const fs = require('fs');
+const path = require('path');
+
+const html = fs.readFileSync(path.resolve(__dirname, '../../../app/index.html'));
+
 const mockBaseUrl = 'developer.com';
 const title = 'Featured';
 const description = 'Browse the latest developer documentation, including tutorials, sample code, articles, and API reference.';
-const path = '/path';
+const pagePath = '/path';
 const pageWithTitleDescription = {
   name: 'Page with title and description',
   title,
@@ -29,14 +34,15 @@ jest.mock('docc-render/utils/theme-settings', () => ({
 }));
 
 jest.mock('docc-render/utils/assets', () => ({
-  absoluteURL: jest.fn(name => mockBaseUrl + name),
+  normalizeAssetUrl: jest.fn(name => mockBaseUrl + name),
 }));
 
 const assertMetadata = ({
   name, title: rawTitle, description: expectedDescription, params,
 }) => {
   describe(name, () => {
-    addMetadata({ ...params, path });
+    document.documentElement.innerHTML = html.toString();
+    addMetadata({ ...params, path: pagePath });
     const expectedTitle = [...new Set([rawTitle, process.env.VUE_APP_TITLE])].filter(Boolean).join(' | ');
 
     it('adds title', () => {
@@ -51,15 +57,15 @@ const assertMetadata = ({
       expect(document.querySelector('meta[property="og:locale"]').content).toBe('en_US');
       expect(document.querySelector('meta[property="og:site_name"]').content).toBe(process.env.VUE_APP_TITLE);
       expect(document.querySelector('meta[property="og:type"]').content).toBe('website');
-      expect(document.querySelector('meta[property="og:image"]').content).toBe(`${mockBaseUrl}/developer-og.jpg`);
+      expect(document.querySelector('meta[property="og:image"]').content).toBe('<%= BASE_URL %>developer-og.jpg');
       expect(document.querySelector('meta[property="og:description"]').content).toBe(expectedDescription);
     });
 
     it('adds twitter metadata tags', () => {
       expect(document.querySelector('meta[name="twitter:card"]').content).toBe('summary_large_image');
-      expect(document.querySelector('meta[name="twitter:image"]').content).toBe(`${mockBaseUrl}/developer-og-twitter.jpg`);
       expect(document.querySelector('meta[name="twitter:description"]').content).toBe(expectedDescription);
-      expect(document.querySelector('meta[name="twitter:url"]').content).toBe(mockBaseUrl + path);
+      expect(document.querySelector('meta[name="twitter:image"]').content).toBe('<%= BASE_URL %>developer-og-twitter.jpg');
+      expect(document.querySelector('meta[name="twitter:url"]').content).toBe(mockBaseUrl + pagePath);
     });
   });
 };
