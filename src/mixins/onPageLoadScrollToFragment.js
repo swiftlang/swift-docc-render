@@ -8,14 +8,12 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { waitFrames } from 'docc-render/utils/loading';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 
 export default {
   mixins: [scrollToElement],
-  async mounted() {
+  mounted() {
     if (this.$route.hash) {
-      await waitFrames(8);
       this.scrollToElement(this.$route.hash);
     }
   },
