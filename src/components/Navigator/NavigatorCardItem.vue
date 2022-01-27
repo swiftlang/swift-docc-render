@@ -43,7 +43,7 @@ import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIco
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
-import { TopicKind } from '@/constants/kinds';
+import { TopicKind } from 'docc-render/constants/kinds';
 
 export default {
   name: 'NavigatorCardItem',
