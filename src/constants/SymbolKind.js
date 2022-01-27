@@ -8,7 +8,13 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-// eslint-disable-next-line import/prefer-default-export
-export const baseNavHeight = 52;
-export const baseNavHeightSmallBreakpoint = 48;
-export const baseNavStickyAnchorId = 'nav-sticky-anchor';
+// Note: this is not an exhaustive/complete definition of all the various kinds
+// that may be emitted by DocC in Render JSON at the moment—only the ones that
+// the renderer cares about for the time being.
+export default {
+  class: 'class',
+  enum: 'enum',
+  protocol: 'protocol',
+  struct: 'struct',
+  uid: 'uid',
+};

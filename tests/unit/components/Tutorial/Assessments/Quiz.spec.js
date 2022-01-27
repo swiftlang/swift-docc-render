@@ -194,24 +194,22 @@ describe('Quiz', () => {
       expect(choice.find('.choice-icon').html()).toContain('<resetcircleicon');
     });
 
-    it('renders visually hidden indicator of correct choice', () => {
-      const choice = choices.at(0);
+    it('updates the aria live text telling the user if the answer chosen is correct or incorrect', () => {
+      const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+      expect(ariaLive.exists()).toBe(true);
+      expect(ariaLive.text()).toBe('');
+
+      let choice = choices.at(1);
       choice.trigger('click');
       submit.trigger('click');
 
-      const indicator = choice.find('[aria-live="assertive"].visuallyhidden');
-      expect(indicator.exists()).toBe(true);
-      expect(indicator.text()).toBe('Correct Answer');
-    });
+      expect(ariaLive.text()).toBe('Answer number 2 is incorrect');
 
-    it('renders visually hidden indicator of incorrect choice', () => {
-      const choice = choices.at(1);
+      choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
 
-      const indicator = choice.find('[aria-live="assertive"].visuallyhidden');
-      expect(indicator.exists()).toBe(true);
-      expect(indicator.text()).toBe('Incorrect Answer');
+      expect(ariaLive.text()).toBe('Answer number 1 is correct');
     });
   });
 });
