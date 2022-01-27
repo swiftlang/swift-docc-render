@@ -288,12 +288,8 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
   &-standard {
     padding: 20px;
 
-    &.modal-with-close .container {
-      padding-top: 80px;
-    }
-
     .container {
-      padding: 50px;
+      padding: 60px;
       border-radius: $big-border-radius;
       @include prefers-dark {
         background: rgb(29, 29, 31);
