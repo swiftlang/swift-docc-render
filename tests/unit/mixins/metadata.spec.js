@@ -50,7 +50,7 @@ describe('metadata', () => {
   });
 
   describe('.extractFirstParagraphText', () => {
-    it('returns the the first paragraph of plaintext for a given content tree', () => {
+    it('returns the first paragraph of plaintext for a given content tree', () => {
       // A content node tree corresponding to the following markdown:
       // a _*b*_ c
       const content = [
