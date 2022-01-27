@@ -93,7 +93,6 @@ describe('metadata', () => {
       ];
       const wrapper = createWrapper(pageData);
       expect(wrapper.vm.extractFirstParagraphText(content)).toBe('a b c');
-      expect(wrapper.vm.extractFirstParagraphText(content).includes('blah')).toBe(false);
       expect(wrapper.vm.extractFirstParagraphText([])).toBe('');
     });
   });
