@@ -49,7 +49,7 @@ describe('metadata', () => {
     expect(addOrUpdateMetadata).toHaveBeenCalledWith(pageData);
   });
 
-  describe('.extractText', () => {
+  describe('.extractFirstParagraphText', () => {
     it('returns the the first paragraph of plaintext for a given content tree', () => {
       // A content node tree corresponding to the following markdown:
       // a _*b*_ c
@@ -92,9 +92,9 @@ describe('metadata', () => {
         },
       ];
       const wrapper = createWrapper(pageData);
-      expect(wrapper.vm.extractText(content)).toBe('a b c');
-      expect(wrapper.vm.extractText(content).includes('blah')).toBe(false);
-      expect(wrapper.vm.extractText([])).toBe('');
+      expect(wrapper.vm.extractFirstParagraphText(content)).toBe('a b c');
+      expect(wrapper.vm.extractFirstParagraphText(content).includes('blah')).toBe(false);
+      expect(wrapper.vm.extractFirstParagraphText([])).toBe('');
     });
   });
 });

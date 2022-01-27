@@ -16,7 +16,7 @@ export default {
   methods: {
     // Extracts the first paragraph of plaintext from the given content tree,
     // which can be used for metadata purposes.
-    extractText(content = []) {
+    extractFirstParagraphText(content = []) {
       const plaintext = ContentNode.computed.plaintext.bind({
         ...ContentNode.methods,
         content,

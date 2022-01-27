@@ -99,8 +99,8 @@ export default {
         undefined
       );
     },
-    pageDescription: ({ heroSection, extractText }) => (
-      heroSection ? extractText(heroSection.content) : null
+    pageDescription: ({ heroSection, extractFirstParagraphText }) => (
+      heroSection ? extractFirstParagraphText(heroSection.content) : null
     ),
   },
   props: {

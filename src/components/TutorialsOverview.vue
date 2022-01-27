@@ -79,8 +79,8 @@ export default {
   },
   computed: {
     pageTitle: ({ title }) => [title, 'Tutorials'].filter(Boolean).join(' '),
-    pageDescription: ({ heroSection, extractText }) => (
-      heroSection ? extractText(heroSection.content) : null
+    pageDescription: ({ heroSection, extractFirstParagraphText }) => (
+      heroSection ? extractFirstParagraphText(heroSection.content) : null
     ),
     partitionedSections: ({ sections }) => sections.reduce(([heroes, others], section) => (
       section.kind === SectionKind.hero ? (
