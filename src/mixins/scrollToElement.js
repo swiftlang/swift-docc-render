@@ -8,21 +8,24 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { waitFrames } from 'docc-render/utils/loading';
+
 export default {
   methods: {
-    scrollToElement(hash) {
+    async scrollToElement(hash) {
+      // wait a few frames, so the app has settled down animating, loading or unlocking scrolls
+      await waitFrames(8);
       const resolvedRoute = this.$router.resolve({ hash });
-      return this.$router.options.scrollBehavior(resolvedRoute.route).then(({
+      const {
         selector,
         offset,
-      }) => {
-        const element = document.querySelector(selector);
-        if (!element) return null;
+      } = await this.$router.options.scrollBehavior(resolvedRoute.route);
+      const element = document.querySelector(selector);
+      if (!element) return null;
 
-        element.scrollIntoView();
-        window.scrollBy(-offset.x, -offset.y);
-        return element;
-      });
+      element.scrollIntoView();
+      window.scrollBy(-offset.x, -offset.y);
+      return element;
     },
   },
 };
