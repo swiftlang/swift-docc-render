@@ -122,6 +122,23 @@ describe('NavigationBar', () => {
     expect(container.exists()).toBe(true);
   });
 
+  it('renders a tray scoped slot', () => {
+    let slotProps = {};
+    wrapper = shallowMount(NavigationBar, {
+      ...mountOptions,
+      scopedSlots: {
+        tray(props) {
+          slotProps = props;
+          return 'Tray Content';
+        },
+      },
+    });
+    expect(wrapper.text()).toContain('Tray Content');
+    expect(slotProps).toEqual({
+      siblings: chapters.length,
+    });
+  });
+
   describe('with a current section', () => {
     beforeEach(() => {
       TopicStore.reset();
@@ -277,6 +294,23 @@ describe('NavigationBar', () => {
       ]);
       expect(secondaryDropdown.props('currentOption'))
         .toBe('Introduction');
+    });
+
+    it('renders a tray scoped slot', () => {
+      let slotProps = {};
+      wrapper = shallowMount(NavigationBar, {
+        ...mountOptions,
+        scopedSlots: {
+          tray(props) {
+            slotProps = props;
+            return 'Tray Content';
+          },
+        },
+      });
+      expect(wrapper.text()).toContain('Tray Content');
+      expect(slotProps).toEqual({
+        siblings: 5, // 1 chapter + 4 sections registered
+      });
     });
   });
 });

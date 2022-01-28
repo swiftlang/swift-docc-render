@@ -53,6 +53,7 @@
           @select-section="onSelectSection"
         />
       </div>
+      <slot name="tray" :siblings="chapters.length + optionsForSections.length" />
     </template>
   </NavBase>
 </template>
@@ -173,10 +174,6 @@ export default {
       display: grid;
       grid-template-columns: auto auto 3fr;
       align-items: center;
-    }
-
-    .nav-menu-tray {
-      width: auto;
     }
 
     .nav-menu {

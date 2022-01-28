@@ -38,9 +38,9 @@
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 
 import pageTitle from 'docc-render/mixins/pageTitle';
+import Nav from 'theme/components/TutorialsOverview/Nav.vue';
 import Hero from './TutorialsOverview/Hero.vue';
 import LearningPath from './TutorialsOverview/LearningPath.vue';
-import Nav from './TutorialsOverview/Nav.vue';
 
 const SectionKind = {
   hero: 'hero',
