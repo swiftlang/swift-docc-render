@@ -12,7 +12,7 @@
   <pre
     ref="declarationGroup"
     class="source"
-    :class="{ indented: simpleIndent, [multipleLinesClass]: hasMultipleLines }"
+    :class="{ [multipleLinesClass]: hasMultipleLines }"
   ><code ref="code"><Token
     v-for="(token, i) in tokens"
     :key="i"
@@ -39,10 +39,6 @@ export default {
       type: Array,
       required: true,
     },
-    smartIndent: {
-      type: Boolean,
-      default: false,
-    },
     simpleIndent: {
       type: Boolean,
       default: false,
@@ -65,7 +61,7 @@ export default {
   async mounted() {
     if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
 
-    if (!this.smartIndent || !this.language) return;
+    if (!this.language) return;
     await this.$nextTick();
     indentDeclaration(this.$refs.code, this.language);
   },
