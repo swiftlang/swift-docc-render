@@ -23,15 +23,15 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 
 /**
  * @typedef NavigatorFlatItem
- * @property {string} uid - generated UID
+ * @property {number} uid - generated UID
  * @property {string} title - title of symbol
  * @property {string} kind - symbol kind, used for the icon
  * @property {array} abstract - symbol abstract
  * @property {string} path - path to page, used in navigation
- * @property {string} parent - parent UID
+ * @property {number} parent - parent UID
  * @property {number} depth - depth of symbol in original tree
  * @property {number} index - index of item in siblings
- * @property {string[]} childUIDs - array of child UIDs
+ * @property {number[]} childUIDs - array of child UIDs
  */
 
 /**
@@ -87,6 +87,10 @@ export default {
     ),
   },
   methods: {
+    /**
+     * Generates a unique hash, from a string, generating a signed number.
+     * @returns Number
+     */
     hashCode(str) {
       return str.split('').reduce((prevHash, currVal) => (
         // eslint-disable-next-line no-bitwise
@@ -94,8 +98,8 @@ export default {
       ), 0);
     },
     /**
-     * @param {{path: string, kind: string, title: string, uid: string}[]} childrenNodes
-     * @param {Object} parent
+     * @param {{path: string, kind: string, title: string, children?: [] }[]} childrenNodes
+     * @param {NavigatorFlatItem | null} parent
      * @param {Number} depth
      * @return {NavigatorFlatItem[]}
      */
@@ -109,12 +113,13 @@ export default {
         node.uid = this.hashCode(`${parentUID}+${node.path}_${depth}_${index}`);
         // store the parent uid
         node.parent = parentUID;
+        // store the depth
         node.depth = depth;
-        // node.index = index;
         // store child UIDs
         node.childUIDs = [];
-        // push child to parent
+        // if the parent is not the root, push to its childUIDs the current node uid
         if (parent) {
+        // push child to parent
           parent.childUIDs.push(node.uid);
         }
         if (children) {

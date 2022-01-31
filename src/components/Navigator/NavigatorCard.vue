@@ -361,6 +361,9 @@ export default {
       // we need only the UIDs
       sessionStorage.set(STORAGE_KEYS.nodesToRender, this.nodesToRender.map(({ uid }) => uid));
     },
+    /**
+     * Restores the persisted state from sessionStorage. Called on `create` hook.
+     */
     restorePersistedState() {
       const technology = sessionStorage.get(STORAGE_KEYS.technology);
       // if the technology does not match, do not use the persisted values
@@ -368,11 +371,17 @@ export default {
         this.trackOpenNodes(this.nodeChangeDeps);
         return;
       }
+      // get all open nodes
       const openNodes = sessionStorage.get(STORAGE_KEYS.openNodes, []);
+      // create the openNodes map
       this.openNodes = Object.fromEntries(openNodes.map(n => [n, true]));
+      // get all the nodes to render
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
+      // generate the array of flat children objects to render
       this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
+      // finally fetch any previously assigned filters
       this.filter = sessionStorage.get(STORAGE_KEYS.filter, '');
+      // scroll to the active element
       this.scrollToElement();
     },
     async scrollToElement() {
