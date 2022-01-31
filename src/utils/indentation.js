@@ -79,8 +79,10 @@ function indentSwiftDeclaration(codeElement) {
 
   // add a break for the closing of the function, starting with its closing paren
   const [begin, end] = [originalHtml.slice(0, closeIndex), originalHtml.slice(closeIndex)];
+  // the .replaceAll call below is used to cleanup the spaces trailing each
+  // comma since they aren't needed now that each param is on its own line
   // eslint-disable-next-line no-param-reassign
-  codeElement.innerHTML = `${begin}\n${end}`;
+  codeElement.innerHTML = `${begin.replaceAll(', ', ',')}\n${end}`;
 }
 
 /**
