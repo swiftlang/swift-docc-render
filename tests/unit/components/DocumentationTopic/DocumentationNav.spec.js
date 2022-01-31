@@ -32,10 +32,6 @@ const references = {
   'topic://bar': {},
 };
 
-const provide = {
-  references,
-};
-
 const mocks = {
   $router: {
     push: jest.fn(),
@@ -57,13 +53,13 @@ describe('DocumentationNav', () => {
     currentTopicTags: [{
       type: 'foo',
     }],
+    references,
   };
 
   beforeEach(() => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
     });
   });
@@ -131,7 +127,6 @@ describe('DocumentationNav', () => {
           ...propsData.parentTopicIdentifiers,
         ],
       },
-      provide,
       mocks: {
         $route: {
           query: {
@@ -156,6 +151,7 @@ describe('DocumentationNav', () => {
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       currentTopicTags: propsData.currentTopicTags,
+      references,
     });
   });
 
@@ -178,7 +174,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       scopedSlots: {
         'tray-after': (props) => {
@@ -198,7 +193,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       slots: {
         'after-content': afterContent,
@@ -213,7 +207,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       scopedSlots: {
         title: (props) => {
@@ -223,7 +216,8 @@ describe('DocumentationNav', () => {
       },
     });
     expect(wrapper.text()).toContain(fooBar);
-    expect(slotProps).toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
+    expect(slotProps)
+      .toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
     expect(wrapper.find('.nav-title-link').exists()).toBe(false);
   });
 });

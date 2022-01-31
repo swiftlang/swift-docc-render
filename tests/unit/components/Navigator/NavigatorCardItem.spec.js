@@ -19,18 +19,16 @@ const defaultProps = {
   isActive: false,
 };
 
-const createWrapper = ({ propsData, ...others } = {}) => {
-  return shallowMount(NavigatorCardItem, {
-    propsData: {
-      ...defaultProps,
-      ...propsData,
-    },
-    stubs: {
-      RouterLink: RouterLinkStub,
-    },
-    ...others,
-  });
-};
+const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCardItem, {
+  propsData: {
+    ...defaultProps,
+    ...propsData,
+  },
+  stubs: {
+    RouterLink: RouterLinkStub,
+  },
+  ...others,
+});
 
 describe('NavigatorCardItem', () => {
   it('renders the NavigatorCardItem', () => {

@@ -9,61 +9,62 @@
 -->
 
 <template>
-  <CodeTheme v-if="topicData" class="doc-topic-view">
-    <Nav
-      v-if="!isTargetIDE"
-      :title="topicProps.title"
-      :diffAvailability="topicProps.diffAvailability"
-      :interfaceLanguage="topicProps.interfaceLanguage"
-      :objcPath="objcPath"
-      :swiftPath="swiftPath"
-      :parentTopicIdentifiers="parentTopicIdentifiers"
-      :isSymbolDeprecated="isSymbolDeprecated"
-      :isSymbolBeta="isSymbolBeta"
-      :currentTopicTags="topicProps.tags"
-      :references="topicProps.references"
-      @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
-    />
-    <AdjustableSidebarWidth
-      storage-key="sidebar"
-      class="full-width-container"
-      :open-externally="isSideNavOpen"
-      :min-width="320"
-      :max-width="1800"
-      :hide-sidebar="isTargetIDE"
-      @width-change="handleWidthChange"
-    >
-      <template #aside>
-        <aside class="doc-topic-aside">
-          <NavigatorDataProvider
-            :interface-language="topicProps.interfaceLanguage"
-            :technology="technology"
-          >
-            <template #default="{ technology, isFetching }">
-              <Navigator
-                v-if="technology"
-                :show-extra-info="showExtraNavigatorInfo"
-                :parent-topic-identifiers="navigatorParentTopicIdentifiers"
-                :technology="technology"
-                :is_fetching="isFetching"
-                :references="topicProps.references"
-                @close="isSideNavOpen = false"
-              />
-            </template>
-          </NavigatorDataProvider>
-        </aside>
-      </template>
-      <template #default>
-        <Topic
-          v-bind="topicProps"
-          :key="topicKey"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-        />
-      </template>
-    </AdjustableSidebarWidth>
+  <CodeTheme class="doc-topic-view">
+    <template v-if="topicData">
+      <Nav
+        v-if="!isTargetIDE"
+        :title="topicProps.title"
+        :diffAvailability="topicProps.diffAvailability"
+        :interfaceLanguage="topicProps.interfaceLanguage"
+        :objcPath="objcPath"
+        :swiftPath="swiftPath"
+        :parentTopicIdentifiers="parentTopicIdentifiers"
+        :isSymbolDeprecated="isSymbolDeprecated"
+        :isSymbolBeta="isSymbolBeta"
+        :currentTopicTags="topicProps.tags"
+        :references="topicProps.references"
+        @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
+      />
+      <AdjustableSidebarWidth
+        class="full-width-container"
+        :open-externally="isSideNavOpen"
+        :min-width="320"
+        :max-width="1800"
+        :hide-sidebar="isTargetIDE"
+        @width-change="handleWidthChange"
+      >
+        <template #aside>
+          <aside class="doc-topic-aside">
+            <NavigatorDataProvider
+              :interface-language="topicProps.interfaceLanguage"
+              :technology="technology"
+            >
+              <template #default="{ technology, isFetching }">
+                <Navigator
+                  v-if="technology"
+                  :show-extra-info="showExtraNavigatorInfo"
+                  :parent-topic-identifiers="navigatorParentTopicIdentifiers"
+                  :technology="technology"
+                  :is-fetching="isFetching"
+                  :references="topicProps.references"
+                  @close="isSideNavOpen = false"
+                />
+              </template>
+            </NavigatorDataProvider>
+          </aside>
+        </template>
+        <template #default>
+          <Topic
+            v-bind="topicProps"
+            :key="topicKey"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+          />
+        </template>
+      </AdjustableSidebarWidth>
+    </template>
   </CodeTheme>
 </template>
 
@@ -86,8 +87,10 @@ import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidt
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
+const EXTRA_INFO_THRESHOLD = 500;
+
 export default {
-  name: 'DocumentationTopic',
+  name: 'DocumentationTopicView',
   components: {
     Navigator,
     AdjustableSidebarWidth,
@@ -96,6 +99,7 @@ export default {
     CodeTheme,
     Nav: DocumentationNav,
   },
+  constants: { EXTRA_INFO_THRESHOLD },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
     return {
@@ -233,7 +237,7 @@ export default {
       CodeThemeStore.updateCodeColors(codeColors);
     },
     handleWidthChange(width) {
-      this.showExtraNavigatorInfo = width > 500;
+      this.showExtraNavigatorInfo = width > EXTRA_INFO_THRESHOLD;
     },
   },
   mounted() {

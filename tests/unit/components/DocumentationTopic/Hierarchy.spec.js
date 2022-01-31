@@ -33,24 +33,25 @@ const baz = {
   title: 'Baz',
   url: '/documentation/foo/bar/baz',
 };
+
 const qux = {
   identifier: 'topic://foo/bar/baz/qux',
   title: 'Qux',
   url: '/documentation/foo/bar/baz/qux',
 };
 
-const provide = {
-  references: {
-    [foo.identifier]: foo,
-    [bar.identifier]: bar,
-    [baz.identifier]: baz,
-    [qux.identifier]: qux,
-  },
+const references = {
+  [foo.identifier]: foo,
+  [bar.identifier]: bar,
+  [baz.identifier]: baz,
+  [qux.identifier]: qux,
 };
 
 const mountWithProps = propsData => shallowMount(Hierarchy, {
-  propsData,
-  provide,
+  propsData: {
+    ...propsData,
+    references,
+  },
   stubs: {
     Badge,
   },
