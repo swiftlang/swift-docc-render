@@ -24,13 +24,15 @@ export default {
     const children = [];
     let lastIndex = 0;
     let match = null;
+    // Make sure matcher has a `global` flag, so finds all matches, one after the other.
+    const RE = new RegExp(matcher, 'gi');
 
     // Loop through each match for the highlighted text (case insensitive),
     // adding a span text node for the text leading up
     // to a match, and a `span.match` node for the actual text that
     // should be highlighted (case insensitive)
     // eslint-disable-next-line no-cond-assign
-    while ((match = matcher.exec(text)) !== null) {
+    while ((match = RE.exec(text)) !== null) {
       const matchLength = match[0].length;
 
       const nextIndex = match.index + matchLength;

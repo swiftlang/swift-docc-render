@@ -129,7 +129,10 @@ export default {
     };
   },
   computed: {
-    filterPattern: ({ filter }) => (!filter ? undefined : safeHighlightPattern(filter)),
+    filterPattern: ({ filter }) => (!filter
+      ? undefined
+      // remove the `g` for global, as that causes bugs when matching
+      : new RegExp(safeHighlightPattern(filter), 'i')),
     /**
      * Return the item size for the Scroller element. Its higher when we show extra info.
      */
