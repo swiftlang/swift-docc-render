@@ -55,7 +55,7 @@ function indentSwiftDeclaration(codeElement) {
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < externalParams.length; i++) {
     const originalHtml = externalParams[i].innerHTML.trim();
-    externalParams[i].innerHTML = `\n  ${originalHtml}`;
+    externalParams[i].innerHTML = `\n    ${originalHtml}`;
   }
 
   // find the position of the closing paren for the symbol (being careful not to
