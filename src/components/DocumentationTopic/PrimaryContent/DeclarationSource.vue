@@ -65,11 +65,18 @@ export default {
     // at certain key points to insert spaces and newlines so that each
     // parameter of a multi-parameter function gets its own line.
     //
+    // Ideally this should be implemented with a tool like SwiftFormat in the
+    // future with the raw text before it gets tokenized for syntax
+    // highlighting—however, this post-tokenization JavaScript logic should be
+    // an improvement until that kind of work can be integrated.
+    //
     // @param {Array} tokens The original syntax tokens.
     //   See `DeclarationToken.props`
     // @return {Array} A formatted version of the original tokens.
     //   See `DeclarationToken.props`
     formattedSwiftTokens: ({ tokens }) => {
+      const numSpacesForIndent = 4; // maybe this could be configurable in the future
+      const indent = ' '.repeat(numSpacesForIndent);
       let indentedParams = false;
       const newTokens = [];
       let i = 0;
@@ -115,7 +122,7 @@ export default {
         // newline followed by 4 spaces
         if (token.text && token.text.endsWith(', ')
           && nextToken && nextToken.kind === TokenKind.externalParam) {
-          newToken.text = `${token.text.trimEnd()}\n    `;
+          newToken.text = `${token.text.trimEnd()}\n${indent}`;
           indentedParams = true;
         }
 
@@ -131,7 +138,7 @@ export default {
         const originalText = newTokens[openParenTokenIndex].text;
         const begin = originalText.slice(0, openParenCharIndex);
         const end = originalText.slice(openParenCharIndex);
-        const newText = `${begin}${end}\n    `;
+        const newText = `${begin}${end}\n${indent}`;
         newTokens[openParenTokenIndex].text = newText;
       }
 
