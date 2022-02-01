@@ -32,31 +32,31 @@ export default {
     };
   },
   watch: {
-    '$route.path': function handle() {
-      this.shouldUpdateChangesQueryParameter = !this.$route.query.changes;
-      this.handleSelectedAPIChangesVersion(this.selectedAPIChangesVersion);
-    },
-    '$route.query.changes': {
+    $route: {
       immediate: true,
-      // defaulting to `null`, to be sure `undefined` is cast to `null`
-      handler(newValue = null) {
-        this.selectedAPIChangesVersion = newValue;
+      handler(current) {
+        const { changes = null } = current.query;
+        this.shouldUpdateChangesQueryParameter = !changes;
+        if (this.selectedAPIChangesVersion === changes) {
+          // there is no change, we still want to re-fetch
+          this.handleSelectedAPIChangesVersion(this.selectedAPIChangesVersion);
+          return;
+        }
+        // store the new value
+        this.selectedAPIChangesVersion = changes;
       },
     },
     selectedAPIChangesVersion: {
       immediate: true,
-      // make sure oldValue defaults to null
       handler: 'handleSelectedAPIChangesVersion',
     },
   },
   methods: {
-    async handleSelectedAPIChangesVersion(newValue, oldValue = null) {
+    async handleSelectedAPIChangesVersion(newValue) {
       // if the we go back, and both the query and selectedAPIChangesVersion are false,
       // we dont want to update the URL
       const shouldPushNewUrl = this.shouldUpdateChangesQueryParameter
         && (this.$route.query.changes || newValue);
-
-      if (newValue === oldValue) return;
 
       if (shouldPushNewUrl) {
         this.$router.push({
@@ -67,6 +67,8 @@ export default {
             changes: newValue || undefined,
           },
         });
+        // it will fetch on the next iteration
+        return;
       }
       this.shouldDisplayChangesNav = !!(newValue && this.availableOptions.has(newValue));
       let apiChanges = null;
