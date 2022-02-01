@@ -20,13 +20,25 @@ describe('NavigatorLeafIcon', () => {
     const wrapper = createWrapper({
       propsData: {
         kind,
+        withColors: true,
       },
     });
-    const { class: className, ...props } = bindings;
+    const { class: classes, ...props } = bindings;
     const iconComponent = wrapper.find(icon);
     expect(iconComponent.props()).toMatchObject(props);
-    if (className) {
-      expect(iconComponent.classes()).toContain(className);
+    if (classes) {
+      expect(iconComponent.classes()).toContain(classes);
     }
+  });
+
+  it('renders an icon, without color class', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        kind: TopicKind.class,
+        withColors: false,
+      },
+    });
+    const iconComponent = wrapper.find('.icon-inline');
+    expect(iconComponent.classes()).not.toContain('purple');
   });
 });

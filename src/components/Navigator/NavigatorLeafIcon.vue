@@ -84,11 +84,19 @@ export default {
       type: String,
       required: true,
     },
+    withColors: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     normalisedKind: ({ kind }) => KindAliases[kind] || kind,
     icon: ({ normalisedKind }) => TopicKindIcons[normalisedKind] || CollectionIcon,
-    iconProps: ({ normalisedKind }) => TopicKindProps[normalisedKind] || {},
+    iconProps: ({ normalisedKind, withColors }) => {
+      const allProps = TopicKindProps[normalisedKind] || {};
+      const { class: classes, ...props } = allProps;
+      return !withColors ? props : allProps;
+    },
   },
 };
 </script>
