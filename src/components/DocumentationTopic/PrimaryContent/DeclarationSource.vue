@@ -14,7 +14,7 @@
     class="source"
     :class="{ [multipleLinesClass]: hasMultipleLines }"
   ><code ref="code"><Token
-    v-for="(token, i) in tokens"
+    v-for="(token, i) in formattedTokens"
     :key="i"
     v-bind="propsFor(token)" /></code></pre>
 </template>
@@ -23,7 +23,10 @@
 import { indentDeclaration } from 'docc-render/utils/indentation';
 import { hasMultipleLines } from 'docc-render/utils/multipleLines';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import Language from 'docc-render/constants/Language';
 import DeclarationToken from './DeclarationToken.vue';
+
+const { TokenKind } = DeclarationToken.constants;
 
 export default {
   name: 'DeclarationSource',
@@ -46,6 +49,80 @@ export default {
     language: {
       type: String,
       required: false,
+    },
+  },
+  computed: {
+    formattedTokens: ({
+      language,
+      formattedSwiftTokens,
+      tokens,
+    }) => (language === Language.swift.api ? formattedSwiftTokens : tokens),
+    formattedSwiftTokens: ({ tokens }) => {
+      let indentedParams = false;
+      const newTokens = [];
+      let i = 0;
+      let j = 1;
+      let openParenTokenIndex = null;
+      let openParenCharIndex = null;
+      let closeParenTokenIndex = null;
+      let closeParenCharIndex = null;
+      let numUnclosedParens = 0;
+
+      while (i < tokens.length) {
+        const token = tokens[i];
+        const nextToken = j < tokens.length ? tokens[j] : undefined;
+
+        // eslint-disable-next-line no-plusplus
+        for (let k = 0; k < token.text.length; k++) {
+          if (token.text.charAt(k) === '(') {
+            numUnclosedParens += 1;
+            if (openParenCharIndex == null) {
+              openParenCharIndex = k;
+              openParenTokenIndex = i;
+            }
+          }
+
+          if (token.text.charAt(k) === ')') {
+            numUnclosedParens -= 1;
+            if (openParenTokenIndex !== null && numUnclosedParens === 0) {
+              closeParenCharIndex = k;
+              closeParenTokenIndex = i;
+            }
+          }
+        }
+
+        if (openParenTokenIndex === null && token.text.indexOf('(') !== -1) {
+          openParenTokenIndex = i;
+          openParenCharIndex = token.text.indexOf('(');
+        }
+
+        if (token.text.endsWith(', ') && nextToken && nextToken.kind === TokenKind.externalParam) {
+          token.text = `${token.text.trimEnd()}\n    `;
+          indentedParams = true;
+        }
+
+        newTokens.push(token);
+        i += 1;
+        j += 1;
+      }
+
+      if (indentedParams && openParenTokenIndex !== null) {
+        const originalText = newTokens[openParenTokenIndex].text;
+        const begin = originalText.slice(0, openParenCharIndex);
+        const end = originalText.slice(openParenCharIndex);
+        const newText = `${begin}${end}\n    `;
+        newTokens[openParenTokenIndex].text = newText;
+      }
+
+      if (indentedParams && closeParenTokenIndex !== null) {
+        const originalText = newTokens[closeParenTokenIndex].text;
+        const begin = originalText.slice(0, closeParenCharIndex);
+        const end = originalText.slice(closeParenCharIndex);
+        const newText = `${begin}\n${end}`;
+        newTokens[closeParenTokenIndex].text = newText;
+      }
+
+      return newTokens;
     },
   },
   methods: {

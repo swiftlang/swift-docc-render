@@ -44,47 +44,6 @@ function indentObjcDeclaration(codeElement) {
   }
 }
 
-function indentSwiftDeclaration(codeElement) {
-  const externalParams = codeElement.getElementsByClassName('token-externalParam');
-  // leave the declaration untouched if there aren't multiple params involved
-  if (externalParams.length < 2) {
-    return;
-  }
-
-  // break each function param onto its own line
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < externalParams.length; i++) {
-    const originalHtml = externalParams[i].innerHTML.trim();
-    externalParams[i].innerHTML = `\n    ${originalHtml}`;
-  }
-
-  // find the position of the closing paren for the symbol (being careful not to
-  // get tripped up by param types that are functions themselves)
-  const originalHtml = codeElement.innerHTML;
-  const openIndex = originalHtml.indexOf('(');
-  let numUnclosedParens = 1;
-  let closeIndex = openIndex + 1;
-  while (numUnclosedParens > 0 && closeIndex < originalHtml.length) {
-    const character = originalHtml.charAt(closeIndex);
-    if (character === '(') {
-      numUnclosedParens += 1;
-    }
-    if (character === ')') {
-      numUnclosedParens -= 1;
-    }
-    if (numUnclosedParens > 0) {
-      closeIndex += 1;
-    }
-  }
-
-  // add a break for the closing of the function, starting with its closing paren
-  const [begin, end] = [originalHtml.slice(0, closeIndex), originalHtml.slice(closeIndex)];
-  // the .replaceAll call below is used to cleanup the spaces trailing each
-  // comma since they aren't needed now that each param is on its own line
-  // eslint-disable-next-line no-param-reassign
-  codeElement.innerHTML = `${begin.replaceAll(', ', ',')}\n${end}`;
-}
-
 /**
  * Indents content declaration tokens
  * Works only for Swift and Objc
@@ -99,9 +58,6 @@ export function indentDeclaration(codeElement, language) {
     switch (language) {
     case Language.objectiveC.key.api:
       indentObjcDeclaration(codeElement);
-      break;
-    case Language.swift.key.api:
-      indentSwiftDeclaration(codeElement);
       break;
       // no default
     }
