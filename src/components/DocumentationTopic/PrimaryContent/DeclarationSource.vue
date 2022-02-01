@@ -88,7 +88,7 @@ export default {
 
         // loop through the token text to look for "(" and ")" characters
         // eslint-disable-next-line no-plusplus
-        for (let k = 0; k < token.text.length; k++) {
+        for (let k = 0; k < (token.text || '').length; k++) {
           if (token.text.charAt(k) === '(') {
             numUnclosedParens += 1;
             // keep track of the token/character position of the first "("
@@ -112,7 +112,8 @@ export default {
         // if we find some text ending with ", " and the next token is the start
         // of a new param, update this token text to replace the space with a
         // newline followed by 4 spaces
-        if (token.text.endsWith(', ') && nextToken && nextToken.kind === TokenKind.externalParam) {
+        if (token.text && token.text.endsWith(', ')
+          && nextToken && nextToken.kind === TokenKind.externalParam) {
           token.text = `${token.text.trimEnd()}\n    `;
           indentedParams = true;
         }
