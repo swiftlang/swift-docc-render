@@ -9,44 +9,12 @@
 -->
 
 <script>
-import { BreakpointName } from 'docc-render/utils/breakpoints';
+import {
+  BreakpointAttributes,
+  BreakpointName,
+  BreakpointScopes,
+} from 'docc-render/utils/breakpoints';
 
-const BreakpointScopes = {
-  default: 'default',
-  nav: 'nav',
-};
-
-const BreakpointAttributes = {
-  [BreakpointScopes.default]: {
-    [BreakpointName.large]: {
-      minWidth: 1069,
-      contentWidth: 980,
-    },
-    [BreakpointName.medium]: {
-      minWidth: 736,
-      maxWidth: 1068,
-      contentWidth: 692,
-    },
-    [BreakpointName.small]: {
-      minWidth: 320,
-      maxWidth: 735,
-      contentWidth: 280,
-    },
-  },
-  [BreakpointScopes.nav]: {
-    [BreakpointName.large]: {
-      minWidth: 1024,
-    },
-    [BreakpointName.medium]: {
-      minWidth: 768,
-      maxWidth: 1023,
-    },
-    [BreakpointName.small]: {
-      minWidth: 320,
-      maxWidth: 767,
-    },
-  },
-};
 const maxQuery = maxWidth => (maxWidth ? `(max-width: ${maxWidth}px)` : '');
 const minQuery = minWidth => (minWidth ? `(min-width: ${minWidth}px)` : '');
 

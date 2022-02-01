@@ -19,8 +19,8 @@
     </p>
     <Source
       :tokens="declaration.tokens"
-      :simple-indent="isSwift && !isCocoaApi"
-      :smart-indent="isCocoaApi"
+      :simple-indent="shouldSimpleIndent"
+      :smart-indent="shouldSmartIndent"
       :language="interfaceLanguage"
     />
   </div>
@@ -30,6 +30,7 @@
 import DeclarationSource from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 import Language from 'docc-render/constants/Language';
 import { APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
+import { isParentSymbolKind } from 'docc-render/utils/symbols';
 
 /**
  * Renders a code source with an optional caption.
@@ -46,6 +47,9 @@ export default {
     },
     interfaceLanguage: {
       default: () => Language.swift.key.api,
+    },
+    symbolKind: {
+      default: () => undefined,
     },
   },
   props: {
@@ -79,7 +83,9 @@ export default {
       return this.declaration.platforms.join(', ');
     },
     isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
-    isCocoaApi: ({ languages }) => languages.has(Language.objectiveC.key.api),
+    shouldSimpleIndent: ({ isSwift, shouldSmartIndent }) => isSwift && !shouldSmartIndent,
+    shouldSmartIndent: ({ languages, symbolKind }) => languages.has(Language.objectiveC.key.api)
+      && !isParentSymbolKind(symbolKind),
   },
 };
 </script>
