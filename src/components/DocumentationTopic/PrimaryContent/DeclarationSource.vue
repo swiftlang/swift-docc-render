@@ -57,6 +57,18 @@ export default {
       formattedSwiftTokens,
       tokens,
     }) => (language === Language.swift.api ? formattedSwiftTokens : tokens),
+    // Return a formatted version of the tokens array, with additional
+    // indentation whitespace to break parameters onto individual lines for
+    // improved readability and scanning of Swift functions/initializers.
+    //
+    // This is implemented in a single pass loop where text tokens are updated
+    // at certain key points to insert spaces and newlines so that each
+    // parameter of a multi-parameter function gets its own line.
+    //
+    // @param {Array} tokens The original syntax tokens.
+    //   See `DeclarationToken.props`
+    // @return {Array} A formatted version of the original tokens.
+    //   See `DeclarationToken.props`
     formattedSwiftTokens: ({ tokens }) => {
       let indentedParams = false;
       const newTokens = [];
@@ -68,14 +80,18 @@ export default {
       let closeParenCharIndex = null;
       let numUnclosedParens = 0;
 
+      // loop through every declaration token
       while (i < tokens.length) {
+        // keep track of the current token and the next one (if any)
         const token = tokens[i];
         const nextToken = j < tokens.length ? tokens[j] : undefined;
 
+        // loop through the token text to look for "(" and ")" characters
         // eslint-disable-next-line no-plusplus
         for (let k = 0; k < token.text.length; k++) {
           if (token.text.charAt(k) === '(') {
             numUnclosedParens += 1;
+            // keep track of the token/character position of the first "("
             if (openParenCharIndex == null) {
               openParenCharIndex = k;
               openParenTokenIndex = i;
@@ -84,6 +100,8 @@ export default {
 
           if (token.text.charAt(k) === ')') {
             numUnclosedParens -= 1;
+            // if this ")" balances out the number of "(" characters that have
+            // been seen, this is the one that pairs up with the first one
             if (openParenTokenIndex !== null && numUnclosedParens === 0) {
               closeParenCharIndex = k;
               closeParenTokenIndex = i;
@@ -91,11 +109,9 @@ export default {
           }
         }
 
-        if (openParenTokenIndex === null && token.text.indexOf('(') !== -1) {
-          openParenTokenIndex = i;
-          openParenCharIndex = token.text.indexOf('(');
-        }
-
+        // if we find some text ending with ", " and the next token is the start
+        // of a new param, update this token text to replace the space with a
+        // newline followed by 4 spaces
         if (token.text.endsWith(', ') && nextToken && nextToken.kind === TokenKind.externalParam) {
           token.text = `${token.text.trimEnd()}\n    `;
           indentedParams = true;
@@ -106,6 +122,9 @@ export default {
         j += 1;
       }
 
+      // if we indented some params, we want to find the opening "(" symbol
+      // and add a newline and 4 spaces to the end of it, breaking the first
+      // param onto its own line
       if (indentedParams && openParenTokenIndex !== null) {
         const originalText = newTokens[openParenTokenIndex].text;
         const begin = originalText.slice(0, openParenCharIndex);
@@ -114,6 +133,9 @@ export default {
         newTokens[openParenTokenIndex].text = newText;
       }
 
+      // if we indented some params, we want to find the closing ")" symbol
+      // to prepend a newline to it so that the return clause is on its own
+      // line and not included with the last param
       if (indentedParams && closeParenTokenIndex !== null) {
         const originalText = newTokens[closeParenTokenIndex].text;
         const begin = originalText.slice(0, closeParenCharIndex);
