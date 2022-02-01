@@ -21,9 +21,8 @@ export default {
     };
   },
   created() {
-    this.$router.onReady(() => {
-      this.loaded = true;
-    });
+    const cb = () => { this.loaded = true; };
+    this.$router.onReady(cb, cb);
   },
 };
 </script>
