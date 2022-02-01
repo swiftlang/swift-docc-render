@@ -56,7 +56,7 @@ export default {
       language,
       formattedSwiftTokens,
       tokens,
-    }) => (language === Language.swift.api ? formattedSwiftTokens : tokens),
+    }) => (language === Language.swift.key.api ? formattedSwiftTokens : tokens),
     // Return a formatted version of the tokens array, with additional
     // indentation whitespace to break parameters onto individual lines for
     // improved readability and scanning of Swift functions/initializers.
@@ -84,6 +84,7 @@ export default {
       while (i < tokens.length) {
         // keep track of the current token and the next one (if any)
         const token = tokens[i];
+        const newToken = { ...token };
         const nextToken = j < tokens.length ? tokens[j] : undefined;
 
         // loop through the token text to look for "(" and ")" characters
@@ -114,11 +115,11 @@ export default {
         // newline followed by 4 spaces
         if (token.text && token.text.endsWith(', ')
           && nextToken && nextToken.kind === TokenKind.externalParam) {
-          token.text = `${token.text.trimEnd()}\n    `;
+          newToken.text = `${token.text.trimEnd()}\n    `;
           indentedParams = true;
         }
 
-        newTokens.push(token);
+        newTokens.push(newToken);
         i += 1;
         j += 1;
       }
