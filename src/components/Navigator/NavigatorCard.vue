@@ -40,19 +40,47 @@
       </div>
     </div>
     <div class="card-slot">
-      <slot />
+      <div class="navigator-filter">
+        <div class="input-wrapper">
+          <FilterIcon class="icon-inline filter-icon" :class="{ colored: filter }" />
+          <input
+            type="text"
+            :value="filter"
+            :placeholder="`Filter in ${technology}`"
+            @input="debounceInput">
+          <button
+            class="clear-button"
+            :class="{ hide: !filter }"
+            @click.prevent="filter = ''"
+          >
+            <ClearRoundedIcon class="icon-inline clear-icon" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { RecycleScroller } from 'vue-virtual-scroller';
 import { clone } from 'docc-render/utils/data';
 import { waitFrames } from 'docc-render/utils/loading';
+import debounce from 'docc-render/utils/debounce';
+import { sessionStorage } from 'docc-render/utils/storage';
 import { INDEX_ROOT_KEY, LEAF_SIZES } from 'docc-render/constants/sidebar';
+import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
-import { RecycleScroller } from 'vue-virtual-scroller';
 import InlineCloseIcon from 'theme/components/Icons/InlineCloseIcon.vue';
+import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
+import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
+
+export const STORAGE_KEYS = {
+  filter: 'navigator.filter',
+  technology: 'navigator.technology',
+  openNodes: 'navigator.openNodes',
+  nodesToRender: 'navigator.nodesToRender',
+};
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -62,6 +90,8 @@ import InlineCloseIcon from 'theme/components/Icons/InlineCloseIcon.vue';
 export default {
   name: 'NavigatorCard',
   components: {
+    ClearRoundedIcon,
+    FilterIcon,
     InlineCloseIcon,
     NavigatorCardItem,
     NavigatorLeafIcon,
@@ -84,10 +114,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    filterPattern: {
-      type: RegExp,
-      default: undefined,
-    },
     kind: {
       type: String,
       required: true,
@@ -95,6 +121,7 @@ export default {
   },
   data() {
     return {
+      filter: '',
       /** @type {Object.<string, boolean>} */
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
@@ -102,6 +129,10 @@ export default {
     };
   },
   computed: {
+    filterPattern: ({ filter }) => (!filter
+      ? undefined
+      // remove the `g` for global, as that causes bugs when matching
+      : new RegExp(safeHighlightPattern(filter), 'i')),
     /**
      * Return the item size for the Scroller element. Its higher when we show extra info.
      */
@@ -166,26 +197,37 @@ export default {
     /**
      * Creates a computed for the two items, that the openNodes calc depends on
      */
-    nodeChangeDeps: ({ filteredChildren, activePathChildren }) => ([
+    nodeChangeDeps: ({ filteredChildren, activePathChildren, filter }) => ([
       filteredChildren,
       activePathChildren,
+      filter,
     ]),
   },
+  created() {
+    this.restorePersistedState();
+  },
   watch: {
-    nodeChangeDeps: {
-      immediate: true,
-      handler: 'trackOpenNodes',
+    nodeChangeDeps: 'trackOpenNodes',
+    filter(value) {
+      sessionStorage.set(STORAGE_KEYS.filter, value);
     },
   },
   methods: {
+    debounceInput: debounce(function debounceInput({ target: { value } }) {
+      this.filter = value;
+    }, 500),
     /**
      * Finds which nodes need to be opened.
      * Initiates a watcher, that reacts to filtering and page navigation.
      */
     trackOpenNodes(
-      [filteredChildren, activePathChildren],
-      [, activePathChildrenBefore] = [],
+      [filteredChildren, activePathChildren, filter],
+      [, activePathChildrenBefore, filterBefore] = [],
     ) {
+      // skip in case this is a first mount and we are syncing the `filter`.
+      if (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter)) {
+        return;
+      }
       // decide which items to filter
       const nodes = !this.filterPattern
         ? activePathChildren
@@ -306,12 +348,49 @@ export default {
           // if the parent is open
           || openNodes[child.parent]
         ));
+      this.persistState();
       // check if we want to scroll to the element
       if (!scrollToElement) return;
       // wait a frame, so the scroller is ready, `nextTick` is not enough.
+      this.scrollToElement();
+    },
+    /**
+     * Persists the current state, so its not lost if you refresh or navigate away
+     */
+    persistState() {
+      sessionStorage.set(STORAGE_KEYS.technology, this.technology);
+      // store the keys of the openNodes map, converting to number, to reduce space
+      sessionStorage.set(STORAGE_KEYS.openNodes, Object.keys(this.openNodes).map(Number));
+      // we need only the UIDs
+      sessionStorage.set(STORAGE_KEYS.nodesToRender, this.nodesToRender.map(({ uid }) => uid));
+    },
+    /**
+     * Restores the persisted state from sessionStorage. Called on `create` hook.
+     */
+    restorePersistedState() {
+      const technology = sessionStorage.get(STORAGE_KEYS.technology);
+      // if the technology does not match, do not use the persisted values
+      if (technology !== this.technology) {
+        this.trackOpenNodes(this.nodeChangeDeps);
+        return;
+      }
+      // get all open nodes
+      const openNodes = sessionStorage.get(STORAGE_KEYS.openNodes, []);
+      // create the openNodes map
+      this.openNodes = Object.fromEntries(openNodes.map(n => [n, true]));
+      // get all the nodes to render
+      const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
+      // generate the array of flat children objects to render
+      this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
+      // finally fetch any previously assigned filters
+      this.filter = sessionStorage.get(STORAGE_KEYS.filter, '');
+      // scroll to the active element
+      this.scrollToElement();
+    },
+    async scrollToElement() {
       await waitFrames(1);
       // if we are filtering, it makes more sense to scroll to top of list
-      const index = filterPattern
+      const index = this.filterPattern
         ? 0
         // find the index of the current active UID in the newly added nodes
         : this.nodesToRender.findIndex(child => child.uid === this.activeUID);
@@ -403,6 +482,69 @@ export default {
   color: var(--color-text);
   @include font-styles(body-reduced);
   font-weight: $font-weight-semibold;
+}
+
+.navigator-filter {
+  box-sizing: border-box;
+  padding: 14px 30px;
+  border-top: 1px solid var(--color-grid);
+
+  @include breakpoint(small) {
+    border: none;
+    padding: 10px 20px;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .filter-icon {
+    width: 1em;
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translate(0%, -50%);
+    color: var(--color-figure-gray-secondary);
+
+    &.colored {
+      color: var(--color-link);
+    }
+  }
+
+  .clear-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    border-radius: 100%;
+
+    &:focus {
+      @include focus-shadow;
+    }
+
+    &.hide {
+      display: none;
+    }
+  }
+
+  .clear-icon {
+    width: 0.8em;
+    color: var(--color-figure-gray-secondary);
+  }
+
+  input {
+    border: 1px solid var(--color-grid);
+    padding: 10px 25px 10px 40px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: $tiny-border-radius;
+
+    &:focus {
+      outline: none;
+      @include focus-shadow-form-element();
+    }
+  }
 }
 
 .scroller {

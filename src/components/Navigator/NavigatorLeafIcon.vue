@@ -97,9 +97,15 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .NavigatorLeafIcon {
-  width: 0.8em;
+  width: 1em;
+  height: 1em;
   margin-right: 5px;
   flex: 0 0 auto;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .orange {
