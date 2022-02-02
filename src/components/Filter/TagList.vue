@@ -1,0 +1,184 @@
+<!--
+  This source file is part of the Swift.org open source project
+
+  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Licensed under Apache License v2.0 with Runtime Library Exception
+
+  See https://swift.org/LICENSE.txt for license information
+  See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+-->
+
+<template>
+  <div class="tags">
+    <ul
+      @keydown.left.capture.prevent="focusPrev"
+      @keydown.right.capture.prevent="focusNext"
+      @keydown.up.capture.prevent="focusPrev"
+      @keydown.down.capture.prevent="focusNext"
+      @keydown.delete.prevent.self="$emit('reset-filters')"
+      @keydown.meta.a.capture.prevent="$emit('select-all')"
+      @keydown.ctrl.a.capture.prevent="$emit('select-all')"
+      @keydown.exact.capture="handleKeydown"
+      @keydown.shift.exact.capture="handleKeydown"
+      @scroll="handleScroll"
+      :aria-label="ariaLabel"
+      :class="{ 'scrolling': isScrolling }"
+      ref="tags"
+      tabindex="0"
+      :id="`${id}-tags`"
+      role="listbox"
+      :aria-multiselectable="areTagsRemovable ? 'true' : 'false'"
+      aria-orientation="horizontal"
+    >
+      <Tag
+        v-for="(tag, index) in tags"
+        :key="tag.id || index"
+        :name="tag.label || tag"
+        :isFocused="focusedIndex === index"
+        :isRemovableTag="areTagsRemovable"
+        :filterText="input"
+        :isActiveTag="activeTags.includes(tag)"
+        :activeTags="activeTags"
+        :keyboardIsVirtual="keyboardIsVirtual"
+        @focus="handleFocus($event, index)"
+        @click="$emit('click-tags', $event)"
+        @delete-tag="$emit('delete-tag', $event)"
+        @prevent-blur="$emit('prevent-blur')"
+        @paste-content="$emit('paste-tags', $event)"
+        @keydown="$emit('keydown', $event)"
+        ref="tag"
+      />
+    </ul>
+  </div>
+</template>
+<script>
+import { isSingleCharacter } from 'docc-render/utils/input-helper';
+import handleScrollbar from 'docc-render/mixins/handleScrollbar';
+import Tag from './Tag.vue';
+
+export default {
+  name: 'Tags',
+  mixins: [handleScrollbar],
+  props: {
+    tags: {
+      type: Array,
+      default: () => [],
+    },
+    activeTags: {
+      type: Array,
+      default: () => [],
+    },
+    ariaLabel: {
+      type: String,
+      required: false,
+    },
+    id: {
+      type: String,
+      required: false,
+    },
+    input: {
+      type: String,
+      default: null,
+      required: false,
+    },
+    areTagsRemovable: {
+      type: Boolean,
+      default: false,
+    },
+    keyboardIsVirtual: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {
+    Tag,
+  },
+  data() {
+    return {
+      focusedIndex: null,
+    };
+  },
+  methods: {
+    focusFirstTag() {
+      this.$refs.tag[0].focusButton();
+    },
+    focusLastTag() {
+      const tags = this.$refs.tag;
+      tags[tags.length - 1].focusButton();
+    },
+    focusTag(name) {
+      this.$refs.tag[this.tags.indexOf(name)].focusButton();
+    },
+    focusIndex(index) {
+      this.focusedIndex = index;
+    },
+
+    focusPrev({ metaKey, ctrlKey, shiftKey }) {
+      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
+      if ((metaKey || ctrlKey) && shiftKey) return;
+
+      if (this.focusedIndex > 0) {
+        this.focusIndex(this.focusedIndex - 1);
+      } else {
+        this.$emit('focus-prev');
+      }
+    },
+
+    handleFocus(event, index) {
+      this.focusedIndex = index;
+      this.isScrolling = false;
+      this.$emit('focus', event);
+    },
+
+    focusNext({ metaKey, ctrlKey, shiftKey }) {
+      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
+      if ((metaKey || ctrlKey) && shiftKey) return;
+
+      if (this.focusedIndex < this.tags.length - 1) {
+        this.focusIndex(this.focusedIndex + 1);
+      } else {
+        this.$emit('focus-next');
+      }
+    },
+    resetScroll() {
+      this.$refs.tags.scrollLeft = 0;
+    },
+
+    /**
+     * Handles typing while focused on tags.
+     * Should delete tag if a character is typed.
+     */
+    handleKeydown(event) {
+      const { key } = event;
+      const tag = this.tags[this.focusedIndex];
+
+      // match if it is an alphanum key or space
+      if (isSingleCharacter(key) && tag) {
+        this.$emit('delete-tag', { tagName: tag.label || tag, event });
+      }
+    },
+  },
+};
+</script>
+
+<style scoped lang="scss">
+
+@import 'docc-render/styles/_core.scss';
+
+.tags {
+  position: relative;
+  margin: 0;
+  list-style: none;
+  box-sizing: border-box;
+  transition: padding-right .8s, padding-bottom .8s, max-height 1s, opacity 1s;
+  padding: 0;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    overflow-x: auto;
+    @include custom-horizontal-scrollbar;
+  }
+}
+</style>
