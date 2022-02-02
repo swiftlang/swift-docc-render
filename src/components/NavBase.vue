@@ -320,6 +320,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   width: 100%;
   height: $nav-height;
   z-index: 9997;
+  --nav-padding: #{$nav-padding};
 
   @include breakpoint(small, $scope: nav) {
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
@@ -331,6 +332,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include nav-dark($nested: true) {
     background: none;
     color: var(--color-nav-dark-color);
+  }
+
+  @include nav-is-wide-format($nested: true) {
+    --nav-padding: #{$nav-padding-wide};
   }
 
   &__wrapper {
@@ -519,7 +524,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
 // Nav content (title and menus)
 .nav-content {
-  --nav-padding: #{$nav-padding};
   display: flex;
   padding: 0 var(--nav-padding);
   max-width: $content-max-width;
@@ -530,7 +534,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   box-sizing: border-box;
 
   @include nav-is-wide-format() {
-    --nav-padding: 30px;
     @include breakpoint-full-width-container()
   }
 
