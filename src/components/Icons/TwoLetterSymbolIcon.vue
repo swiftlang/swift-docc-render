@@ -15,7 +15,7 @@
   >
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g transform="translate(1.000000, 1.000000)">
-        <rect stroke="currentColor" x="0.5" y="0.5" width="13" height="13" rx="3"></rect>
+        <rect stroke="currentColor" x="0.5" y="0.5" width="13" height="13"></rect>
         <text font-size="8" font-weight="bold" fill="currentColor">
           <tspan x="9.08984375" y="11">{{ symbols[1] }}</tspan>
         </text>
