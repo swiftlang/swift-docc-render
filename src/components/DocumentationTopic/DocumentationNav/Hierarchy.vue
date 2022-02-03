@@ -15,15 +15,23 @@
     class="hierarchy"
   >
     <HierarchyItem
+      v-if="root"
+      :key="root.title"
+      class="root-hierarchy"
+      :url="addQueryParamsToUrl(root.url)"
+    >
+      {{ root.title }}
+    </HierarchyItem>
+    <HierarchyItem
       v-for="topic in collapsibleItems"
       :key="topic.title"
-      :isCollapsed="shouldCollapseItems"
+      isCollapsed
       :url="addQueryParamsToUrl(topic.url)"
     >
       {{ topic.title }}
     </HierarchyItem>
     <HierarchyCollapsedItems
-      v-if="shouldCollapseItems"
+      v-if="collapsibleItems.length"
       :topics="collapsibleItems"
     />
     <HierarchyItem
@@ -54,6 +62,7 @@
 import { buildUrl } from 'docc-render/utils/url-helper';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import Badge from 'docc-render/components/Badge.vue';
+import throttle from 'docc-render/utils/throttle';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
@@ -87,6 +96,19 @@ export default {
       default: () => [],
     },
   },
+  data() {
+    return {
+      windowWidth: window.innerWidth,
+    };
+  },
+  mounted() {
+    // start tracking the window size
+    const cb = throttle(() => { this.windowWidth = window.innerWidth; }, 150);
+    window.addEventListener('resize', cb);
+    this.$once('hook:beforeDestroy', () => {
+      window.removeEventListener('resize', cb);
+    });
+  },
   computed: {
     parentTopics() {
       return this.parentTopicIdentifiers.map((id) => {
@@ -94,11 +116,29 @@ export default {
         return { title, url };
       });
     },
-    shouldCollapseItems() {
-      return (this.parentTopics.length + 1) > MaxVisibleItems;
+    /**
+     * Extract the root item from the parentTopics
+     */
+    root: ({ parentTopics }) => parentTopics[0],
+    /**
+     * Figure out how many items we can show, after the collapsed items,
+     * based on the window.innerWidth
+     */
+    linksAfterCollapse: ({ windowWidth }) => {
+      // never show more than the `MaxVisibleItems`
+      if (windowWidth > 1200) return MaxVisibleItems;
+      if (windowWidth > 1000) return MaxVisibleItems - 1;
+      if (windowWidth >= 800) return MaxVisibleItems - 2;
+      return 0;
     },
-    collapsibleItems: ({ parentTopics }) => parentTopics.slice(0, -1),
-    nonCollapsibleItems: ({ parentTopics }) => parentTopics.slice(-1),
+    collapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
+      // if there are links, slice all except those, otherwise get all but the root
+      linksAfterCollapse ? parentTopics.slice(1, -linksAfterCollapse) : parentTopics.slice(1)
+    ),
+    nonCollapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
+      // if there are links to show, slice them out, otherwise return none
+      linksAfterCollapse ? parentTopics.slice(1).slice(-linksAfterCollapse) : []
+    ),
     hasBadge: ({ isSymbolDeprecated, isSymbolBeta, currentTopicTags }) => (
       isSymbolDeprecated || isSymbolBeta || currentTopicTags.length
     ),
@@ -110,9 +150,19 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
+@import 'docc-render/styles/_core.scss';
+
 .hierarchy {
   justify-content: flex-start;
   min-width: 0;
+  margin-right: 80px;
+  @include nav-in-breakpoint() {
+    margin-right: 0;
+  }
+
+  .root-hierarchy {
+    flex: 1 0 auto;
+  }
 }
 </style>

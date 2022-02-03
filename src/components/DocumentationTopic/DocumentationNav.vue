@@ -10,7 +10,6 @@
 
 <template>
   <NavBase
-    :breakpoint="BreakpointName.medium"
     :hasOverlay="false"
     hasSolidBackground
     :hasNoBorder="hasNoBorder"
@@ -149,9 +148,7 @@ export default {
 /deep/ .nav-menu {
   @include font-styles(documentation-nav);
   // vertically align the items
-  @include breakpoint-only-largenav() {
-    padding-top: 0;
-  }
+  padding-top: 0;
 }
 
 .documentation-nav {
