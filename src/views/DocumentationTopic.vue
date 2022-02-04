@@ -39,13 +39,12 @@
               :interface-language="topicProps.interfaceLanguage"
               :technology="technology"
             >
-              <template #default="{ technology, isFetching }">
+              <template #default="slotProps">
                 <Navigator
-                  v-if="technology"
                   :show-extra-info="showExtraNavigatorInfo"
                   :parent-topic-identifiers="navigatorParentTopicIdentifiers"
-                  :technology="technology"
-                  :is-fetching="isFetching"
+                  :technology="slotProps.technology || technology"
+                  :is-fetching="slotProps.isFetching"
                   :references="topicProps.references"
                   @close="isSideNavOpen = false"
                 />
@@ -201,8 +200,10 @@ export default {
       paths.slice(-1)[0]
     ),
     technology: ({ topicProps: { references, identifier }, parentTopicIdentifiers }) => {
-      if (parentTopicIdentifiers.length) return references[parentTopicIdentifiers[0]];
-      return references[identifier];
+      if (!parentTopicIdentifiers.length) return references[identifier];
+      const first = references[parentTopicIdentifiers[0]];
+      if (first.kind !== 'technologies') return first;
+      return references[parentTopicIdentifiers[1]] || references[identifier];
     },
     // Use `variants` data to build a map of paths associated with each unique
     // `interfaceLanguage` trait.

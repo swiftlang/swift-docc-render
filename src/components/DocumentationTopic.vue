@@ -11,7 +11,6 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-
       <slot name="above-title" />
       <Title :eyebrow="roleHeading">{{ title }}</Title>
       <div class="container content-grid" :class="{ 'full-width': hideSummary }">

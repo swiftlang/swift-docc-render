@@ -3,7 +3,7 @@
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
-      :kind="technology.kind"
+      :kind="kind"
       :children="flatChildren"
       :active-path="activePath"
       :show-extended-info="showExtraInfo"
@@ -20,6 +20,7 @@ import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import throttle from 'docc-render/utils/throttle';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { TopicKind } from 'docc-render/constants/kinds';
 
 /**
  * @typedef NavigatorFlatItem
@@ -88,6 +89,10 @@ export default {
     flatChildren: ({ flattenNestedData, technology: { children = [] } = {} }) => (
       flattenNestedData(children)
     ),
+    /**
+     * The root item is always a module
+     */
+    kind: () => TopicKind.module,
   },
   methods: {
     /**
@@ -122,7 +127,7 @@ export default {
         node.childUIDs = [];
         // if the parent is not the root, push to its childUIDs the current node uid
         if (parent) {
-        // push child to parent
+          // push child to parent
           parent.childUIDs.push(node.uid);
         }
         if (children) {
