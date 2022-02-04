@@ -122,7 +122,7 @@ export default {
       if (key === 'Escape') this.closeMobileSidebar();
     },
     async storeWindowSize() {
-      await waitFrames(1);
+      await this.$nextTick();
       this.windowWidth = window.innerWidth;
     },
     closeMobileSidebar() {

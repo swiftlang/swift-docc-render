@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import AdjustableSidebarWidth, {
   eventsMap,
@@ -14,17 +14,19 @@ import AdjustableSidebarWidth, {
 } from '@/components/AdjustableSidebarWidth.vue';
 import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
-import { createEvent } from '../../../test-utils';
+import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/storage');
 
 storage.get.mockImplementation((key, value) => value);
+const maxWidth = 800; // 80% of the innerWidth, as per the default maxWidth prop
 
 const createWrapper = opts => shallowMount(AdjustableSidebarWidth, {
   slots: {
     aside: '<div class="aside-content">Aside Content</div>',
     default: '<div class="default-content">Default Content</div>',
   },
+  mocks: { $route: {} },
   ...opts,
 });
 
@@ -36,6 +38,7 @@ Object.defineProperty(HTMLElement.prototype, 'offsetLeft', { configurable: true,
 
 describe('AdjustableSidebarWidth', () => {
   beforeEach(() => {
+    window.innerWidth = 1000; // 1000 for easy math
     jest.clearAllMocks();
   });
   it('renders the AdjustableSidebarWidth', () => {
@@ -52,45 +55,64 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   describe('on mount', () => {
-    it('sets the `width` to the minWidth, on mount', () => {
+    it('sets the `width` to the minWidthPercent, on mount', () => {
       const wrapper = createWrapper({
         propsData: {
-          minWidth: 320,
+          minWidthPercent: 20,
         },
       });
-      assertWidth(wrapper, 320);
+      assertWidth(wrapper, 200);
     });
 
     it('sets the `width` to the last stored value', () => {
       storage.get.mockReturnValueOnce(450);
       const wrapper = createWrapper({
         propsData: {
-          minWidth: 320,
+          minWidthPercent: 20,
         },
       });
       assertWidth(wrapper, 450);
-      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, 320);
+      // assert the storage was called with the key and the default size
+      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, 200);
     });
 
-    it('sets the `width` to the `window.innerWidth`, if stored value is bigger', () => {
-      storage.get.mockReturnValueOnce(1500);
-      window.innerWidth = 1000;
+    it('sets the `width` to the `max width allowed`, if stored value is bigger', () => {
+      storage.get.mockReturnValueOnce(window.innerWidth + 500);
       const wrapper = createWrapper();
-      assertWidth(wrapper, window.innerWidth);
+      assertWidth(wrapper, maxWidth); // 80% of 1000
     });
   });
 
-  it('allows opening the sidebar externally', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        openExternally: true,
-      },
+  describe('external open', () => {
+    it('allows opening the sidebar externally', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          openExternally: true,
+        },
+      });
+      expect(wrapper.find('.aside').classes()).toContain('force-open');
+      wrapper.setProps({
+        openExternally: false,
+      });
+      expect(wrapper.find('.aside').classes()).not.toContain('force-open');
     });
-    expect(wrapper.find('.aside').classes()).toContain('force-open');
-    wrapper.setProps({
-      openExternally: false,
+
+    it('allows closing the sidebar, with Esc', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          openExternally: true,
+        },
+      });
+      window.dispatchEvent(createEvent('keydown', {
+        key: 'Escape',
+      }));
+      expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
-    expect(wrapper.find('.aside').classes()).not.toContain('force-open');
+
+    it('allows closing the sidebar, when `$route` changes', () => {
+      // cannot mock the entire $route, and trigger watchers
+      expect(AdjustableSidebarWidth.watch.$route).toEqual('closeMobileSidebar');
+    });
   });
 
   it('allows removing the sidebar using `hideSidebar` prop', () => {
@@ -108,17 +130,57 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, 0);
   });
 
+  it('changes the sidebar width, if outside the min/max on orientation change', async () => {
+    // set prev stored value to max beyond max value
+    storage.get.mockReturnValueOnce(window.innerWidth);
+    const wrapper = createWrapper({
+      propsData: {
+        minWidthPercent: 50,
+        maxWidthPercent: 80,
+      },
+    });
+    // simulate window changes width form orientation change
+    window.innerWidth = 500;
+    window.dispatchEvent(createEvent('orientationchange'));
+    await flushPromises();
+    assertWidth(wrapper, 400); // 80% of 500
+    window.innerWidth = 1000;
+    window.dispatchEvent(createEvent('orientationchange'));
+    await flushPromises();
+    assertWidth(wrapper, 500); // 50% out of 1000, as that is the min percentage
+  });
+
+  it('changes the sidebar width, if outside the min/max on resize', async () => {
+    // set prev stored value to max beyond max value
+    storage.get.mockReturnValueOnce(window.innerWidth);
+    const wrapper = createWrapper({
+      propsData: {
+        minWidthPercent: 50,
+        maxWidthPercent: 80,
+      },
+    });
+    // simulate window changes width form orientation change
+    window.innerWidth = 500;
+    window.dispatchEvent(createEvent('resize'));
+    await flushPromises();
+    assertWidth(wrapper, 400); // 80% of 500
+    window.innerWidth = 1000;
+    window.dispatchEvent(createEvent('resize'));
+    await flushPromises();
+    assertWidth(wrapper, 500); // 50% out of 1000, as that is the min percentage
+  });
+
   it('sets helper classes when `fully open`', () => {
     storage.get.mockReturnValueOnce(window.innerWidth);
     const wrapper = createWrapper();
     expect(wrapper.find('.sidebar').classes()).toContain('fully-open');
-    assertWidth(wrapper, window.innerWidth);
+    assertWidth(wrapper, maxWidth);
   });
 
   it('allows dragging the handle to expand/contract the sidebar, with the mouse', () => {
     const wrapper = createWrapper({
       propsData: {
-        minWidth: 320,
+        minWidthPercent: 30,
       },
     });
     const aside = wrapper.find('.aside');
@@ -134,13 +196,13 @@ describe('AdjustableSidebarWidth', () => {
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       clientX: window.innerWidth + 150,
     }));
-    assertWidth(wrapper, window.innerWidth);
+    assertWidth(wrapper, maxWidth);
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.mouse.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toEqual([[window.innerWidth]]);
+    expect(wrapper.emitted('width-change')).toEqual([[maxWidth]]);
     // assert saved storage
-    expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, window.innerWidth);
+    expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
     expect(aside.classes()).not.toContain('dragging');
     // assert dragging no longer works
@@ -149,13 +211,13 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).not.toContain('dragging');
-    assertWidth(wrapper, window.innerWidth);
+    assertWidth(wrapper, maxWidth);
   });
 
   it('allows dragging the handle to expand/contract the sidebar, with the touch device', () => {
     const wrapper = createWrapper({
       propsData: {
-        minWidth: 320,
+        minWidthPercent: 20,
       },
     });
     const aside = wrapper.find('.aside');
@@ -175,13 +237,13 @@ describe('AdjustableSidebarWidth', () => {
         clientX: window.innerWidth + 150,
       }],
     }));
-    assertWidth(wrapper, window.innerWidth);
+    assertWidth(wrapper, maxWidth);
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.touch.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toEqual([[window.innerWidth]]);
+    expect(wrapper.emitted('width-change')).toEqual([[maxWidth]]);
     // assert saved storage
-    expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, window.innerWidth);
+    expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
     expect(aside.classes()).not.toContain('dragging');
     // assert dragging no longer works
@@ -192,11 +254,16 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).not.toContain('dragging');
-    assertWidth(wrapper, window.innerWidth);
+    assertWidth(wrapper, maxWidth);
   });
 
   it('prevents dragging outside of the window', () => {
-    const wrapper = createWrapper();
+    window.innerWidth = 1000;
+    const wrapper = createWrapper({
+      propsData: {
+        maxWidthPercent: 100,
+      },
+    });
     const aside = wrapper.find('.aside');
     // assert dragging
     wrapper.find('.resize-handle').trigger('mousedown', { type: 'mousedown' });
@@ -205,14 +272,13 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, window.innerWidth); // wrapper is no wider than the innerWidth
+    assertWidth(wrapper, 1000); // wrapper is no wider than the innerWidth
   });
 
   it('prevents dragging wider than `maxWidth`', () => {
-    window.innerWidth = 1920;
     const wrapper = createWrapper({
       propsData: {
-        maxWidth: 1800,
+        maxWidthPercent: 70,
       },
     });
     const aside = wrapper.find('.aside');
@@ -223,13 +289,13 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, 1800); // wrapper is no wider than the maxWidth
+    assertWidth(wrapper, 700); // wrapper is no wider than the maxWidth
   });
 
-  it('prevents dragging below the `minWidth`', () => {
+  it('prevents dragging below the `minWidthPercent`', () => {
     const wrapper = createWrapper({
       propsData: {
-        minWidth: 320,
+        minWidthPercent: 15,
       },
     });
     const aside = wrapper.find('.aside');
@@ -240,6 +306,6 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, 320); // wrapper is no thinner, than the minWidth
+    assertWidth(wrapper, 150); // wrapper is no thinner, than the minWidthPercent
   });
 });
