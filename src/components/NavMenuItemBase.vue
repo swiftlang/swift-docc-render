@@ -43,7 +43,7 @@ export default {
   @include nav-in-breakpoint {
     margin-left: 0;
     width: 100%;
-    height: rem(42px);
+    min-height: rem(42px);
     // remove the first border of the first element
     &:first-child {
       /deep/ .nav-menu-link {

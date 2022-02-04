@@ -33,7 +33,7 @@
 <script>
 import { PortalTarget } from 'portal-vue';
 
-import NavigationBar from 'docc-render/components/Tutorial/NavigationBar.vue';
+import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
 import pageTitle from 'docc-render/mixins/pageTitle';
 import Body from './Article/Body.vue';
 import CallToAction from './Article/CallToAction.vue';
