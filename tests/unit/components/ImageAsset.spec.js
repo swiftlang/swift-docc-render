@@ -267,6 +267,6 @@ describe('ImageAsset', () => {
     const fallbackImg = wrapper.find('img');
     expect(fallbackImg.exists()).toBe(true);
     expect(fallbackImg.classes('fallback')).toBe(true);
-    expect(fallbackImg.attributes('alt')).toBe(alt);
+    expect(fallbackImg.attributes('alt')).toBe(`${alt} Image failed to load.`);
   });
 });

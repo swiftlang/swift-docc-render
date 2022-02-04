@@ -9,7 +9,12 @@
 -->
 
 <template>
-  <img v-if="fallbackImageSrcSet" class="fallback" :alt="alt" :srcset="fallbackImageSrcSet" />
+  <img
+    v-if="fallbackImageSrcSet"
+    class="fallback"
+    :alt="`${alt} Image failed to load.`"
+    :srcset="fallbackImageSrcSet"
+  />
   <picture v-else>
     <!--
       if "Auto" is selected, provide an alternate dark variant if available
