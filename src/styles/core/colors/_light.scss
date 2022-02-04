@@ -102,7 +102,7 @@
   --color-nav-color: #{light-color(figure-gray-secondary-alt)};
   --color-nav-current-link: #{change-color(light-color(figure-gray), $alpha: 0.6)};
   --color-nav-expanded: #{light-color(fill)};
-  --color-nav-hierarchy-collapse-background: #{light-color(fill-gray-tertiary)};
+  --color-nav-hierarchy-collapse-background: #{dark-color(fill-gray-tertiary)};
   --color-nav-hierarchy-collapse-borders: #{dark-color(figure-gray-secondary)};
   --color-nav-hierarchy-item-borders: #{dark-color(figure-gray-secondary)};
   --color-nav-keyline: #{change-color(light-color(figure-gray), $alpha: 0.2)};

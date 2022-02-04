@@ -98,7 +98,7 @@ $border-width: 1px;
 // of the nav area, so they are represented as clear overlays here
 $toggle-bg-color: var(--color-nav-hierarchy-collapse-background);
 $toggle-bg-color-dark: var(--color-nav-dark-hierarchy-collapse-background);
-$toggle-border-color: var(--color-figure-gray-secondary);
+$toggle-border-color: var(--color-nav-hierarchy-collapse-borders);
 $hierarchy-toggle-border-width: 0 !default;
 $toggle-height: rem(19px);
 $toggle-width: rem(36px);
