@@ -130,8 +130,6 @@ describe('DocumentationTopic', () => {
     wrapper.setData({ topicData });
     expect(wrapper.find(AdjustableSidebarWidth).props()).toEqual({
       hideSidebar: false,
-      maxWidthPercent: 60,
-      minWidthPercent: 30,
       openExternally: false,
     });
     const technology = topicData.references['topic://foo'];

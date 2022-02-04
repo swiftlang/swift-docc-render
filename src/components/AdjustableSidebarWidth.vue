@@ -14,7 +14,7 @@
       v-if="!hideSidebar"
       ref="sidebar"
       class="sidebar"
-      :class="{ 'fully-closed': !width, 'fully-open': isMaxWidth }"
+      :class="{ 'fully-open': isMaxWidth }"
     >
       <div
         :class="{ dragging: isDragging, 'force-open': openExternally }"
@@ -32,14 +32,20 @@
     <div class="content">
       <slot />
     </div>
+    <BreakpointEmitter @change="breakpoint = $event" />
   </div>
 </template>
 
 <script>
 import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
+import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
+import { BreakpointName } from '@/utils/breakpoints';
 
 export const STORAGE_KEY = 'sidebar';
+
+// the maximum width, after which the full-width content does not grow
+export const MAX_WIDTH = 1800;
 
 export const eventsMap = {
   touch: {
@@ -52,25 +58,30 @@ export const eventsMap = {
   },
 };
 
-const calcWidthPercent = (percent, windowWidth = window.innerWidth) => Math.floor(Math.min(
-  windowWidth * (percent / 100),
-  windowWidth,
-));
+const calcWidthPercent = (percent, windowWidth = window.innerWidth) => {
+  const maxWidth = Math.min(windowWidth, MAX_WIDTH);
+  return Math.floor(Math.min(maxWidth * (percent / 100), maxWidth));
+};
+
+export const minWidthResponsivePercents = {
+  medium: 30,
+  large: 20,
+};
+
+export const maxWidthResponsivePercents = {
+  medium: 50,
+  large: 50,
+};
 
 export default {
   name: 'AdjustableSidebarWidth',
+  components: {
+    BreakpointEmitter,
+  },
   props: {
     openExternally: {
       type: Boolean,
       default: false,
-    },
-    minWidthPercent: {
-      type: Number,
-      default: () => 0,
-    },
-    maxWidthPercent: {
-      type: Number,
-      default: 80,
     },
     hideSidebar: {
       type: Boolean,
@@ -78,24 +89,30 @@ export default {
     },
   },
   data() {
+    // get the min width, in case we dont have a previously saved value
+    const fallback = calcWidthPercent(minWidthResponsivePercents[BreakpointName.large]);
     // computed is not ready yet in `data`.
     return {
       isDragging: false,
       width: Math.min(
-        storage.get(STORAGE_KEY, calcWidthPercent(this.minWidthPercent)),
-        calcWidthPercent(this.maxWidthPercent),
+        storage.get(STORAGE_KEY, fallback),
+        // calc the maximum width
+        calcWidthPercent(maxWidthResponsivePercents[BreakpointName.large]),
       ),
       isTouch: false,
       windowWidth: window.innerWidth,
+      breakpoint: BreakpointName.large,
     };
   },
   computed: {
-    absoluteMaxWidth: ({ maxWidthPercent, windowWidth }) => (
+    minWidthPercent: ({ breakpoint }) => minWidthResponsivePercents[breakpoint] || 0,
+    maxWidthPercent: ({ breakpoint }) => maxWidthResponsivePercents[breakpoint] || 100,
+    maxWidth: ({ maxWidthPercent, windowWidth }) => (
       calcWidthPercent(maxWidthPercent, windowWidth)
     ),
     minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
-    isMaxWidth: ({ width, absoluteMaxWidth }) => width === absoluteMaxWidth,
+    isMaxWidth: ({ width, maxWidth }) => width === maxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
   },
   mounted() {
@@ -117,16 +134,18 @@ export default {
         this.emitEventChange(value);
       }, 250, true, true),
     },
-    windowWidth() {
+    windowWidth: 'getWidthInCheck',
+    breakpoint: 'getWidthInCheck',
+  },
+  methods: {
+    getWidthInCheck: debounce(function getWidthInCheck() {
       // make sure sidebar is never wider than the windowWidth
-      if (this.width > this.absoluteMaxWidth) {
-        this.width = this.absoluteMaxWidth;
+      if (this.width > this.maxWidth) {
+        this.width = this.maxWidth;
       } else if (this.width < this.minWidth) {
         this.width = this.minWidth;
       }
-    },
-  },
-  methods: {
+    }, 50),
     onEscapeClick({ key }) {
       if (key === 'Escape') this.closeMobileSidebar();
     },
@@ -142,7 +161,7 @@ export default {
       this.isTouch = type === 'touchstart';
       if (this.isDragging) return;
       this.isDragging = true;
-      document.addEventListener(this.events.move, this.handleDrag);
+      document.addEventListener(this.events.move, this.handleDrag, { passive: this.isTouch });
       document.addEventListener(this.events.end, this.stopDrag);
     },
     /**
@@ -150,15 +169,15 @@ export default {
      * @param {MouseEvent|TouchEvent} e
      */
     handleDrag(e) {
-      e.preventDefault();
+      if (!this.isTouch) e.preventDefault();
       // we don't want to do anything if we aren't resizing.
       if (!this.isDragging) return;
       const { sidebar } = this.$refs;
       const clientX = this.isTouch ? e.touches[0].clientX : e.clientX;
       let newWidth = (clientX - sidebar.offsetLeft);
       // prevent going outside of the window zone
-      if (newWidth > this.absoluteMaxWidth) {
-        newWidth = this.absoluteMaxWidth;
+      if (newWidth > this.maxWidth) {
+        newWidth = this.maxWidth;
       }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);

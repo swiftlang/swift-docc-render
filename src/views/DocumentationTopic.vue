@@ -28,8 +28,6 @@
       <AdjustableSidebarWidth
         class="full-width-container"
         :open-externally.sync="isSideNavOpen"
-        :min-width-percent="30"
-        :max-width-percent="60"
         :hide-sidebar="isTargetIDE"
         @width-change="handleWidthChange"
       >
