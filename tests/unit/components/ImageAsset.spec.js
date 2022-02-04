@@ -231,4 +231,42 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
   });
+
+  it('renders a fallback image if the specified one does not load', () => {
+    const url = 'https://www.example.com/image.png';
+    const alt = 'This is alt text.';
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits: [
+              '2x',
+              'light',
+            ],
+            url,
+            size: {
+              width: 1202,
+              height: 630,
+            },
+          },
+        ],
+        alt,
+      },
+    });
+
+    const picture = wrapper.find('picture');
+    expect(picture.exists()).toBe(true);
+    const img = picture.find('img');
+    expect(img.exists()).toBe(true);
+    expect(img.classes('fallback')).toBe(false);
+
+    // simulate an error loading the real image
+    img.trigger('error');
+
+    expect(wrapper.find('picture').exists()).toBe(false);
+    const fallbackImg = wrapper.find('img');
+    expect(fallbackImg.exists()).toBe(true);
+    expect(fallbackImg.classes('fallback')).toBe(true);
+    expect(fallbackImg.attributes('alt')).toBe(`${alt} Image failed to load.`);
+  });
 });

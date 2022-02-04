@@ -9,7 +9,13 @@
 -->
 
 <template>
-  <picture>
+  <img
+    v-if="fallbackImageSrcSet"
+    class="fallback"
+    :alt="`${alt} Image failed to load.`"
+    :srcset="fallbackImageSrcSet"
+  />
+  <picture v-else>
     <!--
       if "Auto" is selected, provide an alternate dark variant if available
       using the appropriate media query
@@ -24,6 +30,7 @@
       v-if="prefersDark && darkVariantAttributes"
       v-bind="darkVariantAttributes"
       :alt="alt"
+      @error="handleImageLoadError"
     >
     <!--
       otherwise use the default variant (light preferred over dark if both available)
@@ -32,6 +39,7 @@
       v-else
       v-bind="defaultAttributes"
       :alt="alt"
+      @error="handleImageLoadError"
     >
   </picture>
 </template>
@@ -41,6 +49,7 @@
 import imageAsset from 'docc-render/mixins/imageAsset';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
+import noImage from 'theme/assets/img/no-image@2x.png';
 import { normalizeAssetUrl } from 'docc-render/utils/assets';
 
 function constructAttributes(sources) {
@@ -70,7 +79,10 @@ function constructAttributes(sources) {
 export default {
   name: 'ImageAsset',
   mixins: [imageAsset],
-  data: () => ({ appState: AppStore.state }),
+  data: () => ({
+    appState: AppStore.state,
+    fallbackImageSrcSet: null,
+  }),
   computed: {
     defaultAttributes: ({
       lightVariantAttributes,
@@ -90,6 +102,13 @@ export default {
     variants: {
       type: Array,
       required: true,
+    },
+  },
+  methods: {
+    handleImageLoadError() {
+      // fall back to a default DocC-Render provided image if the specificed
+      // image fails to load for any reason
+      this.fallbackImageSrcSet = `${noImage} 2x`;
     },
   },
 };
