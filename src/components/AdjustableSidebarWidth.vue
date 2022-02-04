@@ -28,6 +28,7 @@
 <script>
 import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
+import { waitFrames } from '@/utils/loading';
 
 export const STORAGE_KEY = 'sidebar';
 
@@ -42,6 +43,11 @@ export const eventsMap = {
   },
 };
 
+const calcWidthPercent = (percent, windowWidth = window.innerWidth) => Math.floor(Math.min(
+  windowWidth * (percent / 100),
+  windowWidth,
+));
+
 export default {
   name: 'AdjustableSidebarWidth',
   props: {
@@ -49,13 +55,13 @@ export default {
       type: Boolean,
       default: false,
     },
-    minWidth: {
+    minWidthPercent: {
       type: Number,
       default: () => 0,
     },
-    maxWidth: {
+    maxWidthPercent: {
       type: Number,
-      default: window.innerWidth,
+      default: 80,
     },
     hideSidebar: {
       type: Boolean,
@@ -64,23 +70,33 @@ export default {
   },
   data() {
     // computed is not ready yet in `data`.
-    const maxWidth = Math.min(this.maxWidth, window.innerWidth);
     return {
       isDragging: false,
-      width: Math.min(storage.get(STORAGE_KEY, this.minWidth), maxWidth),
+      width: Math.min(
+        storage.get(STORAGE_KEY, calcWidthPercent(this.minWidthPercent)),
+        calcWidthPercent(this.maxWidthPercent),
+      ),
       isTouch: false,
+      windowWidth: window.innerWidth,
     };
   },
   computed: {
-    absoluteMaxWidth: ({ maxWidth }) => Math.min(maxWidth, window.innerWidth),
+    absoluteMaxWidth: ({ maxWidthPercent, windowWidth }) => (
+      calcWidthPercent(maxWidthPercent, windowWidth)
+    ),
+    minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
     isMaxWidth: ({ width, absoluteMaxWidth }) => width === absoluteMaxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
   },
   mounted() {
     window.addEventListener('keydown', this.onEscapeClick);
+    window.addEventListener('resize', this.storeWindowSize);
+    window.addEventListener('orientationchange', this.storeWindowSize);
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('keydown', this.onEscapeClick);
+      window.removeEventListener('resize', this.storeWindowSize);
+      window.removeEventListener('orientationchange', this.storeWindowSize);
     });
   },
   watch: {
@@ -92,10 +108,22 @@ export default {
         this.emitEventChange(value);
       }, 250, true, true),
     },
+    windowWidth() {
+      // make sure sidebar is never wider than the windowWidth
+      if (this.width > this.absoluteMaxWidth) {
+        this.width = this.absoluteMaxWidth;
+      } else if (this.width < this.minWidth) {
+        this.width = this.minWidth;
+      }
+    },
   },
   methods: {
     onEscapeClick({ key }) {
       if (key === 'Escape') this.closeMobileSidebar();
+    },
+    async storeWindowSize() {
+      await waitFrames(1);
+      this.windowWidth = window.innerWidth;
     },
     closeMobileSidebar() {
       if (!this.openExternally) return;
@@ -119,12 +147,6 @@ export default {
       const { sidebar } = this.$refs;
       const clientX = this.isTouch ? e.touches[0].clientX : e.clientX;
       let newWidth = (clientX - sidebar.offsetLeft);
-      if (this.width > newWidth && newWidth < 200) {
-        // TODO: implement snapping to close if too narrow
-        // this.width = 0;
-        // this.stopDrag(e);
-        // return;
-      }
       // prevent going outside of the window zone
       if (newWidth > this.absoluteMaxWidth) {
         newWidth = this.absoluteMaxWidth;
