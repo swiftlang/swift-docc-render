@@ -124,11 +124,12 @@ export default {
      * Figure out how many items we can show, after the collapsed items,
      * based on the window.innerWidth
      */
-    linksAfterCollapse: ({ windowWidth }) => {
+    linksAfterCollapse: ({ windowWidth, hasBadge }) => {
+      const extraItemsToRemove = hasBadge ? 1 : 0;
       // never show more than the `MaxVisibleItems`
-      if (windowWidth > 1200) return MaxVisibleItems;
-      if (windowWidth > 1000) return MaxVisibleItems - 1;
-      if (windowWidth >= 800) return MaxVisibleItems - 2;
+      if (windowWidth > 1200) return MaxVisibleItems - extraItemsToRemove;
+      if (windowWidth > 1000) return MaxVisibleItems - 1 - extraItemsToRemove;
+      if (windowWidth >= 800) return MaxVisibleItems - 2 - extraItemsToRemove;
       return 0;
     },
     collapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
