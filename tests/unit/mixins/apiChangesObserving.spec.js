@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import apiChangesObserving from 'docc-render/mixins/apiChangesObserving';

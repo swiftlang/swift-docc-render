@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Settings from 'docc-render/utils/settings';
+let Settings;
 
 describe('Settings', () => {
   const getItem = jest.fn();
@@ -21,6 +21,8 @@ describe('Settings', () => {
         setItem,
       },
     });
+    // eslint-disable-next-line global-require
+    Settings = require('docc-render/utils/settings').default;
   });
 
   it('sets and gets `preferredColorScheme` from localStorage', () => {

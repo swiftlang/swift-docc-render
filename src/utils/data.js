@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import { pathJoin } from 'docc-render/utils/assets';
 import { queryStringForParams, areEquivalentLocations } from 'docc-render/utils/url-helper';

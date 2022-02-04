@@ -130,19 +130,28 @@ describe('DocumentationTopic', () => {
     wrapper.setData({ topicData });
     expect(wrapper.find(AdjustableSidebarWidth).props()).toEqual({
       hideSidebar: false,
-      maxWidth: 1800,
-      minWidth: 320,
+      maxWidthPercent: 60,
+      minWidthPercent: 30,
       openExternally: false,
     });
+    const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
-      technology: topicData.references['topic://foo'],
+      technology,
     });
-    expect(wrapper.find(Navigator).exists()).toBe(false);
-    expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
-    await flushPromises();
+    // its rendered by default
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
+    expect(navigator.props()).toEqual({
+      isFetching: true,
+      parentTopicIdentifiers: topicData.hierarchy.paths[0],
+      references: topicData.references,
+      showExtraInfo: false,
+      // assert we are passing the default technology, if we dont have the children yet
+      technology,
+    });
+    expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
+    await flushPromises();
     expect(navigator.props()).toEqual({
       isFetching: false,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
