@@ -143,6 +143,7 @@ export default {
   .navigator-icon {
     display: flex;
     transform: translateY(3px);
+    flex: 0 0 auto;
   }
 
   .leaf-link {
