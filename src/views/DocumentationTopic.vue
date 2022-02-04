@@ -27,7 +27,7 @@
       />
       <AdjustableSidebarWidth
         class="full-width-container"
-        :open-externally="isSideNavOpen"
+        :open-externally.sync="isSideNavOpen"
         :min-width="320"
         :max-width="1800"
         :hide-sidebar="isTargetIDE"

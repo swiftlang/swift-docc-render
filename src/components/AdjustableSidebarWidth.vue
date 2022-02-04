@@ -77,7 +77,30 @@ export default {
     isMaxWidth: ({ width, absoluteMaxWidth }) => width === absoluteMaxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
   },
+  mounted() {
+    window.addEventListener('keydown', this.onEscapeClick);
+    this.$once('hook:beforeDestroy', () => {
+      window.removeEventListener('keydown', this.onEscapeClick);
+    });
+  },
+  watch: {
+    // make sure a route navigation closes the sidebar
+    $route: 'closeMobileSidebar',
+    width: {
+      immediate: true,
+      handler: debounce(function widthHandler(value) {
+        this.emitEventChange(value);
+      }, 250, true, true),
+    },
+  },
   methods: {
+    onEscapeClick({ key }) {
+      if (key === 'Escape') this.closeMobileSidebar();
+    },
+    closeMobileSidebar() {
+      if (!this.openExternally) return;
+      this.$emit('update:openExternally', false);
+    },
     startDrag({ type }) {
       this.isTouch = type === 'touchstart';
       if (this.isDragging) return;
@@ -125,14 +148,6 @@ export default {
     },
     emitEventChange(width) {
       this.$emit('width-change', width);
-    },
-  },
-  watch: {
-    width: {
-      immediate: true,
-      handler: debounce(function widthHandler(value) {
-        this.emitEventChange(value);
-      }, 250, true, true),
     },
   },
 };
