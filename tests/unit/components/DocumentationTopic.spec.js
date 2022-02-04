@@ -25,7 +25,6 @@ const {
   DownloadButton,
   TechnologyList,
   LanguageSwitcher,
-  Nav,
   OnThisPageNav,
   PrimaryContent,
   Relationships,
@@ -112,6 +111,8 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
+  objcPath: 'documentation/objc',
+  swiftPath: 'documentation/swift',
   primaryContentSections: [
     {
       kind: PrimaryContent.constants.SectionKind.content,
@@ -124,11 +125,11 @@ const propsData = {
   variants: [
     {
       traits: [{ interfaceLanguage: 'occ' }],
-      paths: ['documentation/foo'],
+      paths: ['documentation/objc'],
     },
     {
       traits: [{ interfaceLanguage: 'swift' }],
-      paths: ['documentation/foo'],
+      paths: ['documentation/swift'],
     },
   ],
   tags: [
@@ -178,27 +179,6 @@ describe('DocumentationTopic', () => {
 
   it('renders a root div', () => {
     expect(wrapper.is('div.doc-topic')).toBe(true);
-  });
-
-  it('renders a `Nav` with a `Hierarchy` and `LanguageToggle`', () => {
-    const nav = wrapper.find(Nav);
-    expect(nav.exists()).toBe(true);
-
-    expect(nav.props()).toEqual({
-      parentTopicIdentifiers: [
-        'topic://foo',
-        'topic://bar',
-      ],
-      title: 'FooKit',
-      isDark: false,
-      hasNoBorder: false,
-      currentTopicTags: propsData.tags,
-    });
-    expect(nav.attributes()).toMatchObject({
-      interfacelanguage: 'swift',
-      objcpath: 'documentation/foo',
-      swiftpath: 'documentation/foo',
-    });
   });
 
   it('renders a <main>', () => {
@@ -534,37 +514,14 @@ describe('DocumentationTopic', () => {
 
   it('computes isSymbolBeta', () => {
     const topicSections = [{}];
-    const platforms = [
-      {
-        introducedAt: '1.0',
-        beta: true,
-        name: 'fooOS',
-      },
-      {
-        deprecatedAt: '2.0',
-        introducedAt: '1.0',
-        beta: true,
-        name: 'barOS',
-      },
-    ];
-    wrapper.setProps({ platforms, topicSections });
+    wrapper.setProps({ topicSections, isSymbolBeta: true });
 
     const topics = wrapper.find(Topics);
     expect(topics.props('isSymbolBeta')).toBe(true);
 
     // should not if only one is beta
     wrapper.setProps({
-      platforms: [
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-          beta: true,
-        },
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-      ],
+      isSymbolBeta: false,
     });
     expect(topics.props('isSymbolBeta')).toBe(false);
   });
@@ -587,45 +544,12 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(BetaLegalText).exists()).toBe(true);
   });
 
-  it('computes isSymbolDeprecated if there is a deprecationSummary', () => {
-    wrapper.setProps({ topicSections: [{}] });
+  it('sends isSymbolDeprecated down to the Topic', () => {
+    wrapper.setProps({ topicSections: [{}], isSymbolDeprecated: false });
     const topics = wrapper.find(Topics);
-    expect(topics.props('isSymbolDeprecated')).toBeFalsy();
-    wrapper.setProps({ deprecationSummary });
-    expect(topics.props('isSymbolDeprecated')).toBe(true);
-  });
-
-  it('computes isSymbolDeprecated', () => {
-    const topicSections = [{}];
-    const platforms = [
-      {
-        deprecatedAt: '1',
-        name: 'fooOS',
-      },
-      {
-        deprecatedAt: '1',
-        name: 'barOS',
-      },
-    ];
-    wrapper.setProps({ platforms, topicSections });
-
-    const topics = wrapper.find(Topics);
-    expect(topics.props('isSymbolDeprecated')).toBe(true);
-
-    // should not if only one is deprecated
-    wrapper.setProps({
-      platforms: [
-        {
-          name: 'fooOS',
-          deprecatedAt: '1',
-        },
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-      ],
-    });
     expect(topics.props('isSymbolDeprecated')).toBe(false);
+    wrapper.setProps({ isSymbolDeprecated: true });
+    expect(topics.props('isSymbolDeprecated')).toBe(true);
   });
 
   it('renders content in the `above-title` slot', () => {
@@ -676,19 +600,5 @@ describe('DocumentationTopic', () => {
         query: { language: Language.objectiveC.key.url },
       });
     });
-  });
-});
-
-describe('isTargetIDE', () => {
-  let wrapper;
-
-  const provide = { isTargetIDE: true };
-
-  beforeEach(() => {
-    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
-  });
-
-  it('does not render a `Nav`', () => {
-    expect(wrapper.contains(Nav)).toBe(false);
   });
 });

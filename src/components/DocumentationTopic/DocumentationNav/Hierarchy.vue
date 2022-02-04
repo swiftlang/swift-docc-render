@@ -70,14 +70,10 @@ export default {
     HierarchyCollapsedItems,
     HierarchyItem,
   },
-  inject: {
-    references: {
-      default: () => ({}),
-    },
-  },
   props: {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,
+    references: Object,
     currentTopicTitle: {
       type: String,
       required: true,

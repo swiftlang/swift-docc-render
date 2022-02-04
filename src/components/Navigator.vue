@@ -59,8 +59,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    references: {
+      type: Object,
+      default: () => {},
+    },
   },
-  inject: ['references'],
   data() {
     return {
       topOffset: '0px',

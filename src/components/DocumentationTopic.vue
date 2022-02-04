@@ -10,115 +10,72 @@
 
 <template>
   <div class="doc-topic">
-    <Nav
-      v-if="!isTargetIDE"
-      :title="title"
-      :diffAvailability="diffAvailability"
-      :interfaceLanguage="interfaceLanguage"
-      :objcPath="objcPath"
-      :swiftPath="swiftPath"
-      :parentTopicIdentifiers="parentTopicIdentifiers"
-      :isSymbolDeprecated="isSymbolDeprecated"
-      :isSymbolBeta="isSymbolBeta"
-      :currentTopicTags="tags"
-      @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
-    />
-    <AdjustableSidebarWidth
-      class="full-width-container"
-      :open-externally="isSideNavOpen"
-      :min-width="320"
-      :max-width="1800"
-      :hide-sidebar="isTargetIDE"
-      @width-change="handleWidthChange"
-    >
-      <template #aside>
-        <aside class="doc-topic-aside">
-          <NavigatorDataProvider
-            :interface-language="interfaceLanguage"
-            :technology="technology"
-          >
-            <template #default="{ technology, isFetching }">
-              <Navigator
-                v-if="technology"
-                :show-extra-info="showExtraNavigatorInfo"
-                :parent-topic-identifiers="navigatorParentTopicIdentifiers"
-                :technology="technology"
-                :is_fetching="isFetching"
-                @close="isSideNavOpen = false"
-              />
-            </template>
-          </NavigatorDataProvider>
-        </aside>
-      </template>
-      <template #default>
-        <main class="main" id="main" role="main" tabindex="0">
+    <main class="main" id="main" role="main" tabindex="0">
 
-          <slot name="above-title" />
-          <Title :eyebrow="roleHeading">{{ title }}</Title>
-          <div class="container content-grid" :class="{ 'full-width': hideSummary }">
-            <Description :hasOverview="hasOverview">
-              <Abstract v-if="abstract" :content="abstract" />
-              <RequirementMetadata
-                v-if="isRequirement"
-                :defaultImplementationsCount="defaultImplementationsCount"
-              />
-              <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-                <ContentNode :content="deprecationSummary" />
-              </Aside>
-              <Aside
-                v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-                kind="note"
-              >
-                <ContentNode :content="downloadNotAvailableSummary" />
-              </Aside>
-              <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
-            </Description>
-            <Summary v-if="!hideSummary">
-              <LanguageSwitcher
-                v-if="shouldShowLanguageSwitcher"
-                :interfaceLanguage="interfaceLanguage"
-                :objcPath="objcPath"
-                :swiftPath="swiftPath"
-              />
-              <Availability v-if="platforms" :platforms="platforms" />
-              <TechnologyList v-if="modules" :technologies="modules" />
-              <TechnologyList
-                v-if="extendsTechnology"
-                class="extends-technology"
-                title="Extends"
-                :technologies="[{ name: extendsTechnology }]"
-              />
-              <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
-            </Summary>
-            <PrimaryContent
-              v-if="primaryContentSections && primaryContentSections.length"
-              :conformance="conformance"
-              :sections="primaryContentSections"
-            />
-          </div>
-          <Topics
-            v-if="topicSections"
-            :sections="topicSections"
-            :isSymbolDeprecated="isSymbolDeprecated"
-            :isSymbolBeta="isSymbolBeta"
+      <slot name="above-title" />
+      <Title :eyebrow="roleHeading">{{ title }}</Title>
+      <div class="container content-grid" :class="{ 'full-width': hideSummary }">
+        <Description :hasOverview="hasOverview">
+          <Abstract v-if="abstract" :content="abstract" />
+          <RequirementMetadata
+            v-if="isRequirement"
+            :defaultImplementationsCount="defaultImplementationsCount"
           />
-          <DefaultImplementations
-            v-if="defaultImplementationsSections"
-            :sections="defaultImplementationsSections"
-            :isSymbolDeprecated="isSymbolDeprecated"
-            :isSymbolBeta="isSymbolBeta"
+          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+            <ContentNode :content="deprecationSummary" />
+          </Aside>
+          <Aside
+            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+            kind="note"
+          >
+            <ContentNode :content="downloadNotAvailableSummary" />
+          </Aside>
+          <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
+        </Description>
+        <Summary v-if="!hideSummary">
+          <LanguageSwitcher
+            v-if="shouldShowLanguageSwitcher"
+            :interfaceLanguage="interfaceLanguage"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
           />
-          <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
-          <!-- NOTE: see also may contain information about other apis, so we cannot
-          pass deprecation and beta information -->
-          <SeeAlso
-            v-if="seeAlsoSections"
-            :sections="seeAlsoSections"
+          <Availability v-if="platforms" :platforms="platforms" />
+          <TechnologyList v-if="modules" :technologies="modules" />
+          <TechnologyList
+            v-if="extendsTechnology"
+            class="extends-technology"
+            title="Extends"
+            :technologies="[{ name: extendsTechnology }]"
           />
-          <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
-        </main>
-      </template>
-    </AdjustableSidebarWidth>
+          <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
+        </Summary>
+        <PrimaryContent
+          v-if="primaryContentSections && primaryContentSections.length"
+          :conformance="conformance"
+          :sections="primaryContentSections"
+        />
+      </div>
+      <Topics
+        v-if="topicSections"
+        :sections="topicSections"
+        :isSymbolDeprecated="isSymbolDeprecated"
+        :isSymbolBeta="isSymbolBeta"
+      />
+      <DefaultImplementations
+        v-if="defaultImplementationsSections"
+        :sections="defaultImplementationsSections"
+        :isSymbolDeprecated="isSymbolDeprecated"
+        :isSymbolBeta="isSymbolBeta"
+      />
+      <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+      <!-- NOTE: see also may contain information about other apis, so we cannot
+      pass deprecation and beta information -->
+      <SeeAlso
+        v-if="seeAlsoSections"
+        :sections="seeAlsoSections"
+      />
+      <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
+    </main>
   </div>
 </template>
 
@@ -128,12 +85,8 @@ import pageTitle from 'docc-render/mixins/pageTitle';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
-import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
-import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
-import Navigator from 'docc-render/components/Navigator.vue';
-import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -169,9 +122,6 @@ export default {
     },
   },
   components: {
-    NavigatorDataProvider,
-    Navigator,
-    AdjustableSidebarWidth,
     Abstract,
     Aside,
     BetaLegalText,
@@ -181,7 +131,6 @@ export default {
     DownloadButton: CallToActionButton,
     TechnologyList,
     LanguageSwitcher,
-    Nav: DocumentationNav,
     OnThisPageNav,
     PrimaryContent,
     Relationships,
@@ -284,6 +233,22 @@ export default {
       type: Array,
       required: true,
     },
+    objcPath: {
+      type: String,
+      required: false,
+    },
+    swiftPath: {
+      type: String,
+      required: false,
+    },
+    isSymbolDeprecated: {
+      type: Boolean,
+      required: false,
+    },
+    isSymbolBeta: {
+      type: Boolean,
+      required: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -298,8 +263,6 @@ export default {
   data() {
     return {
       topicState: this.store.state,
-      isSideNavOpen: false,
-      showExtraNavigatorInfo: false,
     };
   },
   computed: {
@@ -320,38 +283,14 @@ export default {
         [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
       })), memo)
     ), {}),
-    // The first path for any variant with an "occ" interface language trait (if any)
-    objcPath: ({ languagePaths: { [Language.objectiveC.key.api]: [path] = [] } = {} }) => path,
-    // The first path for any variant with a "swift" interface language trait (if any)
-    swiftPath: ({ languagePaths: { [Language.swift.key.api]: [path] = [] } = {} }) => path,
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
-    isSymbolBeta:
-      ({ platforms }) => platforms
-        && platforms.length
-        && platforms.every(platform => platform.beta),
     hasBetaContent:
       ({ platforms }) => platforms
         && platforms.length
         && platforms.some(platform => platform.beta),
-    isSymbolDeprecated:
-      ({ platforms, deprecationSummary }) => (deprecationSummary && deprecationSummary.length > 0)
-        || (platforms
-          && platforms.length
-          && platforms.every(platform => platform.deprecatedAt)
-        ),
     pageTitle: ({ title }) => title,
-    // The `hierarchy.paths` array will contain zero or more subarrays, each
-    // representing a "path" of parent topic IDs that could be considered the
-    // hierarchy/breadcrumb for a given topic. We choose to render only the
-    // first one.
-    parentTopicIdentifiers: ({ hierarchy: { paths: [ids = []] = [] } }) => ids,
-    navigatorParentTopicIdentifiers: ({ hierarchy: { paths = [] } }) => paths.slice(-1)[0],
-    technology: ({ references, parentTopicIdentifiers, identifier }) => {
-      if (parentTopicIdentifiers.length) return references[parentTopicIdentifiers[0]];
-      return references[identifier];
-    },
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
   },
@@ -360,9 +299,6 @@ export default {
       // Sometimes `paths` data from `variants` are prefixed with a leading
       // slash and sometimes they aren't
       return path.startsWith('/') ? path : `/${path}`;
-    },
-    handleWidthChange(width) {
-      this.showExtraNavigatorInfo = width > 500;
     },
   },
   created() {
@@ -398,15 +334,6 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.full-width-container {
-  flex: 1 1 auto;
-  width: 100%;
-
-  @include inTargetWeb {
-    @include breakpoint-full-width-container()
-  }
 }
 
 #main {
@@ -465,14 +392,6 @@ export default {
 
 .button-cta {
   margin-top: 2em;
-}
-
-.doc-topic-aside {
-  height: 100%;
-  box-sizing: border-box;
-  @include breakpoint(small) {
-    background: var(--color-fill);
-  }
 }
 
 /deep/ {

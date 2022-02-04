@@ -13,11 +13,25 @@ import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
+import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
+import Language from '@/constants/Language';
+import Navigator from '@/components/Navigator.vue';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
+const TechnologyWithChildren = {
+  path: 'path/to/foo',
+  children: [],
+};
 
-const { CodeTheme } = DocumentationTopic.components;
+jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
+  languages: {
+    [Language.swift.key.url]: [TechnologyWithChildren, { path: 'another/technology' }],
+  },
+});
+
+const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
 
 const mocks = {
   $bridge: {
@@ -39,19 +53,56 @@ const topicData = {
   metadata: {
     roleHeading: 'Thing',
     title: 'FooKit',
+    platforms: [
+      {
+        name: 'fooOS',
+      },
+      {
+        name: 'barOS',
+      },
+    ],
   },
   primaryContentSections: [],
-  references: {},
+  references: {
+    'topic://foo': { title: 'FooTechnology', url: 'path/to/foo' },
+    'topic://bar': { title: 'BarTechnology', url: 'path/to/bar' },
+  },
   sampleCodeDownload: {},
   topicSections: [],
+  hierarchy: {
+    paths: [
+      [
+        'topic://foo',
+        'topic://bar',
+      ],
+    ],
+  },
+  variants: [
+    {
+      traits: [{ interfaceLanguage: 'occ' }],
+      paths: ['documentation/objc'],
+    },
+    {
+      traits: [{ interfaceLanguage: 'swift' }],
+      paths: ['documentation/swift'],
+    },
+  ],
 };
+
+const { EXTRA_INFO_THRESHOLD } = DocumentationTopic.constants;
 
 describe('DocumentationTopic', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(DocumentationTopic, { mocks });
+    wrapper = shallowMount(DocumentationTopic, {
+      mocks,
+      stubs: {
+        AdjustableSidebarWidth,
+        NavigatorDataProvider,
+      },
+    });
   });
 
   afterEach(() => {
@@ -67,7 +118,7 @@ describe('DocumentationTopic', () => {
     expect(onPageLoadScrollToFragment.mounted).toHaveBeenCalled();
   });
 
-  it('renders an empty CodeTheme without `topicData`', () => {
+  it('renders an CodeTheme without `topicData`', () => {
     wrapper.setData({ topicData: null });
 
     const codeTheme = wrapper.find(CodeTheme);
@@ -75,12 +126,198 @@ describe('DocumentationTopic', () => {
     expect(codeTheme.isEmpty()).toBe(true);
   });
 
+  it('renders the Navigator and AdjustableSidebarWidth', async () => {
+    wrapper.setData({ topicData });
+    expect(wrapper.find(AdjustableSidebarWidth).props()).toEqual({
+      hideSidebar: false,
+      maxWidth: 1800,
+      minWidth: 320,
+      openExternally: false,
+    });
+    expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
+      interfaceLanguage: Language.swift.key.url,
+      technology: topicData.references['topic://foo'],
+    });
+    expect(wrapper.find(Navigator).exists()).toBe(false);
+    expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
+    await flushPromises();
+    const navigator = wrapper.find(Navigator);
+    expect(navigator.exists()).toBe(true);
+    expect(navigator.props()).toEqual({
+      isFetching: false,
+      parentTopicIdentifiers: topicData.hierarchy.paths[0],
+      references: topicData.references,
+      showExtraInfo: false,
+      technology: TechnologyWithChildren,
+    });
+  });
+
+  it('handles `@width-change`, on the AdjustableSidebarWidth', async () => {
+    wrapper.setData({ topicData });
+    await flushPromises();
+    wrapper.find(AdjustableSidebarWidth).vm.$emit('width-change', EXTRA_INFO_THRESHOLD + 50);
+    expect(wrapper.find(Navigator).props('showExtraInfo')).toBe(true);
+  });
+
+  it('renders a `Nav` component', () => {
+    wrapper.setData({ topicData });
+
+    const nav = wrapper.find(Nav);
+    expect(nav.exists()).toBe(true);
+
+    expect(nav.props()).toEqual({
+      parentTopicIdentifiers: topicData.hierarchy.paths[0],
+      title: topicData.metadata.title,
+      isDark: false,
+      hasNoBorder: false,
+      currentTopicTags: [],
+      references: topicData.references,
+      isSymbolBeta: false,
+      isSymbolDeprecated: false,
+    });
+    expect(nav.attributes()).toMatchObject({
+      interfacelanguage: 'swift',
+      objcpath: 'documentation/objc',
+      swiftpath: 'documentation/swift',
+    });
+  });
+
+  it('handles the `@close`, on Navigator', async () => {
+    wrapper.setData({ topicData });
+    const nav = wrapper.find(Nav);
+    nav.vm.$emit('toggle-sidenav');
+    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    expect(sidebar.props('openExternally')).toBe(true);
+    await flushPromises();
+    wrapper.find(Navigator).vm.$emit('close');
+    expect(sidebar.props('openExternally')).toBe(false);
+  });
+
   it('renders a `Topic` with `topicData`', () => {
     wrapper.setData({ topicData });
 
-    const { Topic } = DocumentationTopic.components;
     const topic = wrapper.find(Topic);
     expect(topic.exists()).toBe(true);
+  });
+
+  it('computes isSymbolBeta', () => {
+    const platforms = [
+      {
+        introducedAt: '1.0',
+        beta: true,
+        name: 'fooOS',
+      },
+      {
+        deprecatedAt: '2.0',
+        introducedAt: '1.0',
+        beta: true,
+        name: 'barOS',
+      },
+    ];
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        metadata: {
+          ...topicData.metadata,
+          platforms,
+        },
+      },
+    });
+
+    const topic = wrapper.find(Topic);
+    expect(topic.props('isSymbolBeta')).toBe(true);
+
+    // should not if only one is beta
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        metadata: {
+          ...topicData.metadata,
+          platforms: [
+            {
+              introducedAt: '1.0',
+              name: 'fooOS',
+              beta: true,
+            },
+            {
+              introducedAt: '1.0',
+              name: 'fooOS',
+            },
+          ],
+        },
+      },
+    });
+    expect(topic.props('isSymbolBeta')).toBe(false);
+  });
+
+  it('computes isSymbolDeprecated if there is a deprecationSummary', () => {
+    wrapper.setData({ topicData });
+    const topic = wrapper.find(Topic);
+    expect(topic.props('isSymbolDeprecated')).toBeFalsy();
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        deprecationSummary: [{
+          type: 'paragraph',
+          inlineContent: [
+            {
+              type: 'text',
+              text: 'This feature is deprecated and should not be used in modern macOS apps.',
+            },
+          ],
+        }],
+      },
+    });
+    expect(topic.props('isSymbolDeprecated')).toBe(true);
+    // cleanup
+    topicData.deprecationSummary = [];
+  });
+
+  it('computes isSymbolDeprecated', () => {
+    const platforms = [
+      {
+        deprecatedAt: '1',
+        name: 'fooOS',
+      },
+      {
+        deprecatedAt: '1',
+        name: 'barOS',
+      },
+    ];
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        metadata: {
+          ...topicData.metadata,
+          platforms,
+        },
+      },
+    });
+
+    const topic = wrapper.find(Topic);
+    expect(topic.props('isSymbolDeprecated')).toBe(true);
+
+    // should not if only one is deprecated
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        metadata: {
+          ...topicData.metadata,
+          platforms: [
+            {
+              name: 'fooOS',
+              deprecatedAt: '1',
+            },
+            {
+              introducedAt: '1.0',
+              name: 'fooOS',
+              deprecatedAt: null,
+            },
+          ],
+        },
+      },
+    });
+    expect(topic.props('isSymbolDeprecated')).toBe(false);
   });
 
   it('sends a rendered message', async () => {
@@ -219,5 +456,22 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchDataForRouteEnter).toBeCalled();
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(next).toBeCalled();
+  });
+
+  describe('isTargetIDE', () => {
+    const provide = { isTargetIDE: true };
+
+    it('does not render a `Nav`', () => {
+      wrapper = shallowMount(DocumentationTopic, {
+        mocks,
+        stubs: {
+          AdjustableSidebarWidth,
+          NavigatorDataProvider,
+        },
+        provide,
+      });
+      wrapper.setData({ topicData });
+      expect(wrapper.contains(Nav)).toBe(false);
+    });
   });
 });
