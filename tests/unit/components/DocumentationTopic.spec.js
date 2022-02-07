@@ -124,6 +124,7 @@ const propsData = {
   ],
   references: {},
   roleHeading: 'Thing',
+  symbolKind: 'thing',
   title: 'FooKit',
   variants: [
     {
@@ -178,6 +179,11 @@ describe('DocumentationTopic', () => {
   it('provides the interface languages', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
+  });
+
+  it('provides the symbol kind', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    expect(wrapper.vm._provided.symbolKind).toEqual(propsData.symbolKind);
   });
 
   it('renders a root div', () => {

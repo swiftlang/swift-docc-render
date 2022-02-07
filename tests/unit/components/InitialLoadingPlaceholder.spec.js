@@ -11,15 +11,22 @@
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
 
+const onReady = jest.fn();
+
+const mocks = {
+  $router: {
+    onReady,
+  },
+};
+
 describe('InitialLoadingPlaceholder', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the InitialLoadingPlaceholder', () => {
-    const onReady = jest.fn();
     const wrapper = shallowMount(InitialLoadingPlaceholder, {
-      mocks: {
-        $router: {
-          onReady,
-        },
-      },
+      mocks,
     });
     expect(wrapper.attributes()).toEqual({
       id: 'loading-placeholder',
@@ -28,6 +35,17 @@ describe('InitialLoadingPlaceholder', () => {
     expect(onReady).toHaveBeenCalledTimes(1);
     // call the registered callback for `onReady`
     onReady.mock.calls[0][0].call();
+    expect(wrapper.html()).toBeFalsy();
+  });
+
+  it('sets the placeholder as ready, even if the router fails to load', () => {
+    const wrapper = shallowMount(InitialLoadingPlaceholder, {
+      mocks,
+    });
+    expect(wrapper.html()).toBeTruthy();
+    expect(onReady).toHaveBeenCalledTimes(1);
+    // call the registered error callback for `onReady`
+    onReady.mock.calls[0][1].call();
     expect(wrapper.html()).toBeFalsy();
   });
 });

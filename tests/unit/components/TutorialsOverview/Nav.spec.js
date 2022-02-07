@@ -13,6 +13,7 @@ import {
 } from '@vue/test-utils';
 import Nav from 'docc-render/components/TutorialsOverview/Nav.vue';
 import TutorialsNavigation from 'docc-render/components/TutorialsOverview/TutorialsNavigation.vue';
+import NavMenuItemBase from '@/components/NavMenuItemBase.vue';
 
 const { SectionKind } = Nav.constants;
 const {
@@ -67,7 +68,9 @@ describe('nav', () => {
   });
 
   it('renders TutorialsNavigation and passes all sections to it', () => {
-    const navigation = wrapper.find(TutorialsNavigation);
+    const itemBase = wrapper.find(NavMenuItemBase);
+    expect(itemBase.classes()).toContain('in-page-navigation');
+    const navigation = itemBase.find(TutorialsNavigation);
     expect(navigation.props('sections')).toEqual(propsData.sections);
   });
 });

@@ -14,6 +14,12 @@ import {
 } from '@vue/test-utils';
 import NavigationBar from 'docc-render/components/Tutorial/NavigationBar.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
+import scrollToElement from 'docc-render/mixins/scrollToElement';
+import { flushPromises } from '../../../../test-utils';
+
+jest.mock('docc-render/mixins/scrollToElement');
+
+scrollToElement.methods.scrollToElement.mockResolvedValue(true);
 
 const {
   PrimaryDropdown,
@@ -103,6 +109,10 @@ describe('NavigationBar', () => {
     },
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the NavBase', () => {
     wrapper = shallowMount(NavigationBar, mountOptions);
 
@@ -110,6 +120,23 @@ describe('NavigationBar', () => {
     expect(container.attributes()).toHaveProperty('aria-label', technology);
     expect(container.props()).toHaveProperty('hasSolidBackground', true);
     expect(container.exists()).toBe(true);
+  });
+
+  it('renders a tray scoped slot', () => {
+    let slotProps = {};
+    wrapper = shallowMount(NavigationBar, {
+      ...mountOptions,
+      scopedSlots: {
+        tray(props) {
+          slotProps = props;
+          return 'Tray Content';
+        },
+      },
+    });
+    expect(wrapper.text()).toContain('Tray Content');
+    expect(slotProps).toEqual({
+      siblings: chapters.length,
+    });
   });
 
   describe('with a current section', () => {
@@ -198,6 +225,22 @@ describe('NavigationBar', () => {
       });
     });
 
+    it('scrolls to a section, on `@select-section`, on MobileDropdown', async () => {
+      const dropdown = wrapper.find(MobileDropdown);
+      dropdown.vm.$emit('select-section', 'path/to/item#section-foo');
+      await flushPromises();
+      expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledTimes(1);
+      expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledWith('#section-foo');
+    });
+
+    it('scrolls to a section, on `@select-section`, on SecondaryDropdown', async () => {
+      const dropdown = wrapper.find(SecondaryDropdown);
+      dropdown.vm.$emit('select-section', 'path/to/item#section-foo');
+      await flushPromises();
+      expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledTimes(1);
+      expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledWith('#section-foo');
+    });
+
     it('renders a "Primary Dropdown" with chapters', () => {
       const primaryDropdown = wrapper.find('.primary-dropdown');
       expect(primaryDropdown.exists()).toBe(true);
@@ -251,6 +294,23 @@ describe('NavigationBar', () => {
       ]);
       expect(secondaryDropdown.props('currentOption'))
         .toBe('Introduction');
+    });
+
+    it('renders a tray scoped slot', () => {
+      let slotProps = {};
+      wrapper = shallowMount(NavigationBar, {
+        ...mountOptions,
+        scopedSlots: {
+          tray(props) {
+            slotProps = props;
+            return 'Tray Content';
+          },
+        },
+      });
+      expect(wrapper.text()).toContain('Tray Content');
+      expect(slotProps).toEqual({
+        siblings: 5, // 1 chapter + 4 sections registered
+      });
     });
   });
 });

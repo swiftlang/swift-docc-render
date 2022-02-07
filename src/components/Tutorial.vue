@@ -36,7 +36,7 @@ import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import pageTitle from 'docc-render/mixins/pageTitle';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
-import NavigationBar from './Tutorial/NavigationBar.vue';
+import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
 import Assessments from './Tutorial/Assessments.vue';
 import SectionList from './Tutorial/SectionList.vue';
 import CallToAction from './Tutorial/CallToAction.vue';

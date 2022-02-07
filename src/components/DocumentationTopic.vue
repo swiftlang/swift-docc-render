@@ -225,6 +225,10 @@ export default {
       type: Array,
       required: false,
     },
+    symbolKind: {
+      type: String,
+      required: false,
+    },
     variants: {
       type: Array,
       default: () => ([]),
@@ -265,6 +269,7 @@ export default {
       identifier: this.identifier,
       languages: new Set(Object.keys(this.languagePaths)),
       interfaceLanguage: this.interfaceLanguage,
+      symbolKind: this.symbolKind,
     };
   },
   data() {

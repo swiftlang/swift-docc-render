@@ -117,7 +117,7 @@ export default {
     async closeAndFocusToggler() {
       this.closeDropdown();
       await this.$nextTick();
-      this.$refs.dropdownToggle.focus();
+      this.$refs.dropdownToggle.focus({ preventScroll: true });
     },
     closeDropdown() {
       this.isOpen = false;
@@ -151,7 +151,7 @@ export default {
         return;
       }
       // focus the new element
-      nextElement.focus();
+      nextElement.focus({ preventScroll: true });
     },
     /**
      * Focuses the currently active option
@@ -161,7 +161,7 @@ export default {
       const currentOption = this.$el.querySelector(`.${ActiveOptionClass}`);
       if (!currentOption) return;
       await this.$nextTick();
-      currentOption.focus();
+      currentOption.focus({ preventScroll: true });
     },
   },
 };
@@ -237,6 +237,7 @@ $focus-shadow: 0 0 0 2px var(--color-focus-color);
 // the wrapping in `dropdown-custom` is needed to properly apply the /deep/ selector
 .dropdown-custom {
   border-radius: $border-radius;
+
   &.is-open {
     border-radius: $border-radius $border-radius 0 0;
   }
