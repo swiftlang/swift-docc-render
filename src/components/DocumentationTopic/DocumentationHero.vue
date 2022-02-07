@@ -69,7 +69,7 @@ export default {
   // black overlay
   &:after {
     background: dark-color(fill);
-    opacity: 40%;
+    opacity: 0.4;
     width: 100%;
     position: absolute;
     content: '';
@@ -83,7 +83,7 @@ export default {
     display: block;
     width: 250px;
     height: 250px;
-    opacity: 35%;
+    opacity: 0.35;
 
     /deep/ svg {
       width: 100%;
