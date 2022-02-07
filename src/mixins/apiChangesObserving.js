@@ -75,12 +75,16 @@ export default {
       if (this.shouldDisplayChangesNav) {
         // Update the query parameter when a version has been selected from the changes nav.
         this.shouldUpdateChangesQueryParameter = true;
-
+        let response = null;
         try {
-          apiChanges = await fetchAPIChangesForRoute(this.$route, newValue);
+          response = await fetchAPIChangesForRoute(this.$route, newValue);
         } catch (err) {
           // if the request errors out for some reason, return an empty object
-          apiChanges = {};
+          response = {};
+        }
+        if (this.shouldDisplayChangesNav) {
+          // Make sure the nav is still visible, when we update the changes.
+          apiChanges = response;
         }
       }
       this.store.setAPIChanges(apiChanges);
