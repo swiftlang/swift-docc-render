@@ -15,8 +15,8 @@ import AdjustableSidebarWidth, {
 import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
 import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
-import { createEvent, flushPromises } from '../../../test-utils';
 import { waitFrames } from '@/utils/loading';
+import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 jest.mock('docc-render/utils/storage');

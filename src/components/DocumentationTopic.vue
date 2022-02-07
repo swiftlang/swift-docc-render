@@ -225,10 +225,6 @@ export default {
       type: Array,
       required: false,
     },
-    symbolKind: {
-      type: String,
-      required: false,
-    },
     variants: {
       type: Array,
       default: () => ([]),

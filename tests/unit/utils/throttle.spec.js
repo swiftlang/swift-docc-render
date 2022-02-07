@@ -26,7 +26,7 @@ describe('throttle', () => {
     throttled(4);
     // this is the last call before the timeout ends
     throttled(5);
-    await timeout(100);
+    await timeout(time * 2);
     // register new call
     throttled(6);
     // make sure its called after it ends

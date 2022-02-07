@@ -124,7 +124,6 @@ const propsData = {
   ],
   references: {},
   roleHeading: 'Thing',
-  symbolKind: 'thing',
   title: 'FooKit',
   variants: [
     {
