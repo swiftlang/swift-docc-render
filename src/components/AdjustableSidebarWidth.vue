@@ -17,7 +17,7 @@
       :class="{ 'fully-open': isMaxWidth }"
     >
       <div
-        :class="{ dragging: isDragging, 'force-open': openExternally }"
+        :class="asideClasses"
         :style="{ width: widthInPx }"
         class="aside"
       >
@@ -41,6 +41,7 @@ import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import { waitFrames } from 'docc-render/utils/loading';
 
 export const STORAGE_KEY = 'sidebar';
 
@@ -102,6 +103,7 @@ export default {
       isTouch: false,
       windowWidth: window.innerWidth,
       breakpoint: BreakpointName.large,
+      noTransition: false,
     };
   },
   computed: {
@@ -114,6 +116,9 @@ export default {
     widthInPx: ({ width }) => `${width}px`,
     isMaxWidth: ({ width, maxWidth }) => width === maxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
+    asideClasses: ({ isDragging, openExternally, noTransition }) => ({
+      dragging: isDragging, 'force-open': openExternally, 'no-transition': noTransition,
+    }),
   },
   mounted() {
     window.addEventListener('keydown', this.onEscapeClick);
@@ -135,7 +140,18 @@ export default {
       }, 250, true, true),
     },
     windowWidth: 'getWidthInCheck',
-    breakpoint: 'getWidthInCheck',
+    async breakpoint(value, oldValue) {
+      // adjust the width, so it does not go outside of limits
+      this.getWidthInCheck();
+      // if we are not going into the `small` breakpoint, return early
+      if (oldValue !== BreakpointName.small && value !== BreakpointName.small) return;
+      // make sure we dont apply transitions for a few moments, to prevent flashes
+      this.noTransition = true;
+      // await for a few moments
+      await waitFrames(5);
+      // re-apply transitions
+      this.noTransition = false;
+    },
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {
@@ -227,15 +243,20 @@ export default {
   height: 100%;
   max-width: 100vw;
 
+  &.no-transition {
+    transition: none !important;
+  }
+
   @include breakpoint(small) {
     width: 0 !important;
+    overflow: hidden;
     min-width: 0;
     max-width: 100%;
     position: fixed;
     top: 0;
     bottom: 0;
     z-index: 9999;
-    transform: translateX(-100px);
+    transform: translateX(-100%);
     transition: width 0.15s linear, transform 0.15s ease-in;
 
     &.force-open {

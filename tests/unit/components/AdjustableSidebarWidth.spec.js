@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import AdjustableSidebarWidth, {
   eventsMap,
@@ -16,6 +16,7 @@ import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
 import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
 import { createEvent, flushPromises } from '../../../test-utils';
+import { waitFrames } from '@/utils/loading';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 jest.mock('docc-render/utils/storage');
@@ -68,6 +69,16 @@ describe('AdjustableSidebarWidth', () => {
       assertWidth(wrapper, 200); // 20% on large
       wrapper.find(BreakpointEmitter).vm.$emit('change', 'medium');
       assertWidth(wrapper, 300); // 30% on medium
+    });
+
+    it('applies a momentary no-transition class to the aside, if going from a larger breakpoint into `small`', async () => {
+      const wrapper = createWrapper();
+      const aside = wrapper.find('.aside');
+      expect(aside.classes()).not.toContain('no-transition');
+      wrapper.find(BreakpointEmitter).vm.$emit('change', 'small');
+      expect(aside.classes()).toContain('no-transition');
+      await waitFrames(5);
+      expect(aside.classes()).not.toContain('no-transition');
     });
 
     it('sets the `width` to the last stored value', () => {
