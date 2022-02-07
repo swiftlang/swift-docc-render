@@ -40,7 +40,7 @@
 import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 export const STORAGE_KEY = 'sidebar';
 

@@ -264,12 +264,6 @@ describe('DocumentationTopic', () => {
   });
 
   describe('description column', () => {
-    let description;
-
-    beforeEach(() => {
-      description = wrapper.find('main .container').find(Description);
-    });
-
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
