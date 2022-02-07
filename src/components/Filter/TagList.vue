@@ -10,45 +10,50 @@
 
 <template>
   <div class="tags">
-    <ul
-      @keydown.left.capture.prevent="focusPrev"
-      @keydown.right.capture.prevent="focusNext"
-      @keydown.up.capture.prevent="focusPrev"
-      @keydown.down.capture.prevent="focusNext"
-      @keydown.delete.prevent.self="$emit('reset-filters')"
-      @keydown.meta.a.capture.prevent="$emit('select-all')"
-      @keydown.ctrl.a.capture.prevent="$emit('select-all')"
-      @keydown.exact.capture="handleKeydown"
-      @keydown.shift.exact.capture="handleKeydown"
-      @scroll="handleScroll"
-      :aria-label="ariaLabel"
+    <div
+      class="scroll-wrapper"
       :class="{ 'scrolling': isScrolling }"
-      ref="tags"
-      tabindex="0"
-      :id="`${id}-tags`"
-      role="listbox"
-      :aria-multiselectable="areTagsRemovable ? 'true' : 'false'"
-      aria-orientation="horizontal"
+      ref="scroll-wrapper"
+      @scroll="handleScroll"
     >
-      <Tag
-        v-for="(tag, index) in tags"
-        :key="tag.id || index"
-        :name="tag.label || tag"
-        :isFocused="focusedIndex === index"
-        :isRemovableTag="areTagsRemovable"
-        :filterText="input"
-        :isActiveTag="activeTags.includes(tag)"
-        :activeTags="activeTags"
-        :keyboardIsVirtual="keyboardIsVirtual"
-        @focus="handleFocus($event, index)"
-        @click="$emit('click-tags', $event)"
-        @delete-tag="$emit('delete-tag', $event)"
-        @prevent-blur="$emit('prevent-blur')"
-        @paste-content="$emit('paste-tags', $event)"
-        @keydown="$emit('keydown', $event)"
-        ref="tag"
-      />
-    </ul>
+      <ul
+        :id="`${id}-tags`"
+        ref="tags"
+        :aria-label="ariaLabel"
+        tabindex="0"
+        role="listbox"
+        :aria-multiselectable="areTagsRemovable ? 'true' : 'false'"
+        aria-orientation="horizontal"
+        @keydown.left.capture.prevent="focusPrev"
+        @keydown.right.capture.prevent="focusNext"
+        @keydown.up.capture.prevent="focusPrev"
+        @keydown.down.capture.prevent="focusNext"
+        @keydown.delete.prevent.self="$emit('reset-filters')"
+        @keydown.meta.a.capture.prevent="$emit('select-all')"
+        @keydown.ctrl.a.capture.prevent="$emit('select-all')"
+        @keydown.exact.capture="handleKeydown"
+        @keydown.shift.exact.capture="handleKeydown"
+      >
+        <Tag
+          v-for="(tag, index) in tags"
+          ref="tag"
+          :key="tag.id || index"
+          :name="tag.label || tag"
+          :isFocused="focusedIndex === index"
+          :isRemovableTag="areTagsRemovable"
+          :filterText="input"
+          :isActiveTag="activeTags.includes(tag)"
+          :activeTags="activeTags"
+          :keyboardIsVirtual="keyboardIsVirtual"
+          @focus="handleFocus($event, index)"
+          @click="$emit('click-tags', $event)"
+          @delete-tag="$emit('delete-tag', $event)"
+          @prevent-blur="$emit('prevent-blur')"
+          @paste-content="$emit('paste-tags', $event)"
+          @keydown="$emit('keydown', $event)"
+        />
+      </ul>
+    </div>
   </div>
 </template>
 <script>
@@ -79,7 +84,6 @@ export default {
     input: {
       type: String,
       default: null,
-      required: false,
     },
     areTagsRemovable: {
       type: Boolean,
@@ -141,7 +145,7 @@ export default {
       }
     },
     resetScroll() {
-      this.$refs.tags.scrollLeft = 0;
+      this.$refs['scroll-wrapper'].scrollLeft = 0;
     },
 
     /**
@@ -173,12 +177,15 @@ export default {
   transition: padding-right .8s, padding-bottom .8s, max-height 1s, opacity 1s;
   padding: 0;
 
+  .scroll-wrapper {
+    overflow-x: auto;
+    @include custom-horizontal-scrollbar;
+  }
+
   ul {
     margin: 0;
     padding: 0;
     display: flex;
-    overflow-x: auto;
-    @include custom-horizontal-scrollbar;
   }
 }
 </style>

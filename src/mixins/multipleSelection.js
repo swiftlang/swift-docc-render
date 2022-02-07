@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       keyboardIsVirtual: false,
+      // tracks tags that are selected (for copy or delete)
       activeTags: [],
       initTagIndex: null,
       focusedTagIndex: null,
@@ -39,8 +40,7 @@ export default {
     VirtualKeyboardThreshold,
   },
   computed: {
-    virtualKeyboardBind: ({ keyboardIsVirtual }) => ({ keyboardIsVirtual }
-    ),
+    virtualKeyboardBind: ({ keyboardIsVirtual }) => ({ keyboardIsVirtual }),
     allSelectedTagsAreActive: ({ selectedTags, activeTags }) => (
       selectedTags.every(tag => activeTags.includes(tag))
     ),

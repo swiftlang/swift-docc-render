@@ -14,57 +14,61 @@
     role="search"
     tabindex="0"
     :aria-labelledby="searchAriaLabelledBy"
+    :class="{ 'focus': showSuggestedTags }"
     @blur.capture="handleBlur"
     @focus.capture="showSuggestedTags = true"
-    :class="{ 'focus': showSuggestedTags }"
   >
     <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
       <div class="filter__top-wrapper">
         <button
-          @click="focusInput"
-          @mousedown.prevent
           class="filter__filter-button"
           aria-hidden="true"
           tabindex="-1"
+          :class="{ 'blue': inputIsNotEmpty }"
+          @click="focusInput"
+          @mousedown.prevent
         >
-          <div :class="{ 'blue': inputIsNotEmpty }">
-            <slot name="icon" />
-          </div>
+          <slot name="icon" />
         </button>
         <div
           :class="['filter__input-box-wrapper', { 'scrolling': isScrolling }]"
           @scroll="handleScroll"
         >
           <TagList
-            :id="SelectedTagsId"
             v-if="hasSelectedTags"
+            :id="SelectedTagsId"
+            :input="input"
+            :tags="selectedTags"
+            :ariaLabel="selectedTagsLabel"
+            :activeTags="activeTags"
+            v-bind="virtualKeyboardBind"
+            class="filter__selected-tags"
+            ref="selectedTags"
+            areTagsRemovable
+            v-on="selectedTagsMultipleSelectionListeners"
             @focus-prev="positionReversed ? focusFirstTag() : null"
             @focus-next="focusInputFromTags"
             @reset-filters="resetFilters"
             @prevent-blur="$emit('update:preventedBlur', true)"
-            v-on="selectedTagsMultipleSelectionListeners"
-            :input="input"
-            :tags="selectedTags"
-            :ariaLabel="selectedTagsLabel"
-            v-bind="{
-              ...virtualKeyboardBind,
-              ...selectedTagsMultipleSelectionBind
-            }"
-            class="filter__selected-tags"
-            ref="selectedTags"
-            areTagsRemovable
           />
           <label
+            id="filter-label"
             :for="FilterInputId"
             class="visuallyhidden"
-            id="filter-label"
             aria-hidden="true"
           >
             {{ placeholderText }}
           </label>
           <input
             :id="FilterInputId"
+            ref="input"
             v-model="modelValue"
+            :placeholder="hasSelectedTags ? '' : placeholderText"
+            :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
+            v-bind="AXinputProperties"
+            type="text"
+            class="filter__input"
+            v-on="inputMultipleSelectionListeners"
             @keydown.down.prevent="positionReversed ? null : focusFirstTag()"
             @keydown.up.prevent="positionReversed ? focusFirstTag() : null"
             @keydown.left="leftKeyInputHandler"
@@ -78,40 +82,33 @@
             @keydown.shift.meta.exact="inputKeydownHandler"
             @keydown.meta.exact="assignEventValues"
             @keydown.ctrl.exact="assignEventValues"
-            v-on="inputMultipleSelectionListeners"
-            :placeholder="hasSelectedTags ? '' : placeholderText"
-            :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
-            v-bind="AXinputProperties"
-            type="text"
-            class="filter__input"
-            ref="input"
           >
         </div>
         <div class="filter__delete-button-wrapper">
           <button
-            @click="resetFilters(true)"
-            @mousedown.prevent
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
             aria-label="Reset Filter"
             class="filter__delete-button"
+            @click="resetFilters(true)"
+            @mousedown.prevent
           >
             <ClearRoundedIcon />
           </button>
         </div>
       </div>
       <TagList
-        :id="SuggestedTagsId"
         v-if="displaySuggestedTags"
-        @click-tags="selectTag($event.tagName)"
-        @prevent-blur="$emit('update:preventedBlur', true)"
-        @focus-next="positionReversed ? focusInput() : $emit('exit-filter')"
-        @focus-prev="positionReversed ? $emit('exit-filter') : focusInput()"
+        :id="SuggestedTagsId"
+        ref="suggestedTags"
         :ariaLabel="suggestedTagsLabel"
         :input="input"
         :tags="suggestedTags"
         v-bind="virtualKeyboardBind"
         class="filter__suggested-tags"
-        ref="suggestedTags"
+        @click-tags="selectTag($event.tagName)"
+        @prevent-blur="$emit('update:preventedBlur', true)"
+        @focus-next="positionReversed ? focusInput() : $emit('exit-filter')"
+        @focus-prev="positionReversed ? $emit('exit-filter') : focusInput()"
       />
     </div>
   </div>
@@ -124,7 +121,9 @@ import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
 import TagList from './TagList.vue';
 
+// Max number of tags to show
 export const TagLimit = 5;
+
 const FilterInputId = 'filter-input';
 const SelectedTagsId = 'selected-tags';
 const SuggestedTagsId = 'suggested-tags';
@@ -179,6 +178,10 @@ export default {
       type: String,
       default: () => '',
     },
+    shouldTruncateTags: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -189,6 +192,104 @@ export default {
       AXinputProperties,
       showSuggestedTags: false,
     };
+  },
+  computed: {
+    tagsText: ({ suggestedTags }) => pluralize({
+      en: {
+        one: 'tag',
+        other: 'tags',
+      },
+    }, suggestedTags.length),
+    selectedTagsLabel: ({ tagsText }) => `Selected ${tagsText}`,
+    suggestedTagsLabel: ({ tagsText }) => `Suggested ${tagsText}`,
+    hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
+    hasSelectedTags: ({ selectedTags }) => selectedTags.length,
+    inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,
+    searchAriaLabelledBy: ({ hasSelectedTags }) => (
+      hasSelectedTags ? FilterInputId.concat(' ', SelectedTagsId) : FilterInputId
+    ),
+    modelValue: {
+      get: ({ value }) => value,
+      set(v) {
+        this.$emit('input', v);
+      },
+    },
+    input: ({ value }) => value,
+    /**
+     * Filters out the selected tags, from the tags.
+     * Can also truncate the tags, at a certain limit, via the `shouldTruncateTags` prop.
+     * @returns {string[]}
+     */
+    suggestedTags: ({ tags, selectedTags, shouldTruncateTags }) => {
+      const suggestedTags = tags.filter(tag => !selectedTags.includes(tag));
+
+      return shouldTruncateTags
+        ? suggestedTags
+        : suggestedTags.slice(0, TagLimit);
+    },
+    displaySuggestedTags: ({ showSuggestedTags, suggestedTags }) => (
+      showSuggestedTags && suggestedTags.length > 0
+    ),
+    inputMultipleSelectionListeners: ({
+      resetActiveTags,
+      handleCopy,
+      handleCut,
+      handlePaste,
+    }) => (
+      {
+        click: resetActiveTags,
+        copy: handleCopy,
+        cut: handleCut,
+        paste: handlePaste,
+      }
+    ),
+    selectedTagsMultipleSelectionListeners: ({
+      handleSingleTagClick,
+      selectInputAndTags,
+      handleDeleteTag,
+      selectedTagsKeydownHandler,
+      focusTagHandler,
+      handlePaste,
+    }) => (
+      {
+        'click-tags': handleSingleTagClick,
+        'select-all': selectInputAndTags,
+        'delete-tag': handleDeleteTag,
+        keydown: selectedTagsKeydownHandler,
+        focus: focusTagHandler,
+        'paste-tags': handlePaste,
+      }
+    ),
+  },
+  watch: {
+    async selectedTags() {
+      if (!this.resetedTagsViaDeleteButton) {
+        await this.focusInput();
+      } else {
+        this.resetedTagsViaDeleteButton = false;
+      }
+
+      if (this.displaySuggestedTags && this.hasSuggestedTags) {
+        this.$refs.suggestedTags.resetScroll();
+      }
+    },
+
+    suggestedTags(value) {
+      this.$emit('suggested-tags', value);
+    },
+
+    showSuggestedTags(value) {
+      this.$emit('show-suggested-tags', value);
+    },
+
+    // If input value changes from query parameters data, focus on the input
+    async input() {
+      // We know that changes comes from query parameters
+      // when input value changes and input element is not focus.
+      if (document.activeElement !== this.$refs.input && this.inputIsNotEmpty) {
+        this.focusInput();
+      }
+    },
   },
   methods: {
     /**
@@ -224,7 +325,12 @@ export default {
       this.$refs.input.blur();
     },
     focusFirstTag() {
-      if (this.hasSuggestedTags) {
+      // make sure we show the suggestedTags, in case we lost focus
+      if (!this.showSuggestedTags) {
+        this.showSuggestedTags = true;
+      }
+      // make sure that the suggestedTags ref exists
+      if (this.hasSuggestedTags && this.$refs.suggestedTags) {
         this.$refs.suggestedTags.focusFirstTag();
       }
     },
@@ -253,118 +359,18 @@ export default {
       this.showSuggestedTags = false;
     },
   },
-  computed: {
-    tagsText: ({ suggestedTags }) => pluralize({
-      en: {
-        one: 'tag',
-        other: 'tags',
-      },
-    }, suggestedTags.length),
-    selectedTagsLabel: ({ tagsText }) => `Selected ${tagsText}`,
-    suggestedTagsLabel: ({ tagsText }) => `Suggested ${tagsText}`,
-    hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
-    hasSelectedTags: ({ selectedTags }) => selectedTags.length,
-    inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,
-    searchAriaLabelledBy: ({ hasSelectedTags }) => (
-      hasSelectedTags ? FilterInputId.concat(' ', SelectedTagsId) : FilterInputId
-    ),
-    modelValue: {
-      get: ({ value }) => value,
-      set(v) {
-        this.$emit('input', v);
-      },
-    },
-    input: ({ value }) => value,
-    /**
-     * Result of filtering selectedTags out of tags
-     * Cuts off tags at dedicated length, if showing default suggested
-     * or already filtered ones.
-     * @returns {string[]}
-     */
-    suggestedTags: ({ tags, selectedTags, useDefaultSuggestedTags }) => {
-      const suggestedTags = tags.filter(tag => !selectedTags.includes(tag));
-
-      return useDefaultSuggestedTags
-        ? suggestedTags
-        : suggestedTags.slice(0, TagLimit);
-    },
-    displaySuggestedTags: ({ showSuggestedTags, suggestedTags }) => (
-      showSuggestedTags && suggestedTags.length > 0
-    ),
-    inputMultipleSelectionListeners: ({
-      resetActiveTags,
-      handleCopy,
-      handleCut,
-      handlePaste,
-    }) => (
-      {
-        click: () => resetActiveTags(),
-        copy: event => handleCopy(event),
-        cut: event => handleCut(event),
-        paste: event => handlePaste(event),
-      }
-    ),
-    selectedTagsMultipleSelectionListeners: ({
-      handleSingleTagClick,
-      selectInputAndTags,
-      handleDeleteTag,
-      selectedTagsKeydownHandler,
-      focusTagHandler,
-      handlePaste,
-    }) => (
-      {
-        'click-tags': event => handleSingleTagClick(event),
-        'select-all': () => selectInputAndTags(),
-        'delete-tag': event => handleDeleteTag(event),
-        keydown: event => selectedTagsKeydownHandler(event),
-        focus: event => focusTagHandler(event),
-        'paste-tags': event => handlePaste(event),
-      }
-    ),
-    selectedTagsMultipleSelectionBind: ({ activeTags }) => ({ activeTags }
-    ),
-  },
-  watch: {
-    async selectedTags() {
-      if (!this.resetedTagsViaDeleteButton) {
-        await this.focusInput();
-      } else {
-        this.resetedTagsViaDeleteButton = false;
-      }
-
-      if (this.displaySuggestedTags && this.hasSuggestedTags) {
-        this.$refs.suggestedTags.resetScroll();
-      }
-    },
-
-    suggestedTags(value) {
-      this.$emit('suggested-tags', value);
-    },
-
-    showSuggestedTags(value) {
-      this.$emit('show-suggested-tags', value);
-    },
-
-    // If input value changes from query parameters data, focus on the input
-    async input() {
-      // We know that changes comes from query parameters
-      // when input value changes and input element is not focus.
-      if (document.activeElement !== this.$refs.input && this.inputIsNotEmpty) {
-        this.focusInput();
-      }
-    },
-  },
 };
 </script>
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$filter-bar-background-color: rgba(255, 255, 255, .8);
-$tag-outline-padding: 4px;
-$input-vertical-padding: 13px;
+$tag-outline-padding: 4px !default;
+$input-vertical-padding: rem(13px) !default;
 
 .filter {
+  --input-vertical-padding: #{$input-vertical-padding};
+
   position: relative;
   box-sizing: border-box;
   // Remove Gray Highlight When Tapping Links in Mobile Safari =>
@@ -396,8 +402,9 @@ $input-vertical-padding: 13px;
       height: 21px;
     }
 
-    .blue > * {
+    &.blue /deep/ > * {
       fill: var(--color-figure-blue);
+      color: var(--color-figure-blue);
     }
   }
 
@@ -425,7 +432,7 @@ $input-vertical-padding: 13px;
     overflow: hidden;
 
     /deep/ ul {
-      padding: rem($input-vertical-padding) rem(9px);
+      padding: var(--input-vertical-padding) rem(9px);
       border: 1px solid transparent;
       border-bottom-left-radius: $small-border-radius - 1;
       border-bottom-right-radius: $small-border-radius - 1;
@@ -508,7 +515,7 @@ $input-vertical-padding: 13px;
     width: 100%;
     min-width: 130px; // set a min width, so it does not get crushed by tags
     background: transparent;
-    padding: rem($input-vertical-padding) 0;
+    padding: var(--input-vertical-padding) 0;
     z-index: 1;
     // Text indent is needed instead of padding so text inside <input> doesn't get cut off
     text-indent: rem(7px);

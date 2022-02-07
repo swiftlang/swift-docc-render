@@ -11,6 +11,11 @@
 <template>
   <li class="tag" role="presentation">
     <button
+      ref="button"
+      :class="{ 'focus': isActiveTag }"
+      role="option"
+      :aria-selected="ariaSelected"
+      aria-roledescription="tag"
       @focus="$emit('focus', { event: $event, tagName: name })"
       @click.prevent="$emit('click', { event: $event, tagName: name })"
       @dblclick.prevent="!keyboardIsVirtual && deleteTag()"
@@ -22,11 +27,6 @@
       @keydown.delete.prevent="deleteTag"
       @mousedown.prevent="focusButton"
       @copy="handleCopy"
-      :class="{ 'focus': isActiveTag }"
-      ref="button"
-      role="option"
-      :aria-selected="ariaSelected"
-      aria-roledescription="tag"
     >
       <span v-if="!isRemovableTag" class="visuallyhidden">
         Add tag -

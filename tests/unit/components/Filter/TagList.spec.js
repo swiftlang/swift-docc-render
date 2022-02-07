@@ -38,7 +38,7 @@ describe('TagList', () => {
   });
 
   it('renders an `scrolling` class inside the tag list if `isScrolling` is true', () => {
-    const list = wrapper.find({ ref: 'tags' });
+    const list = wrapper.find({ ref: 'scroll-wrapper' });
 
     expect(list.classes('scrolling')).toBe(false);
 

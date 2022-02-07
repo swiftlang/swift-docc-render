@@ -21,6 +21,7 @@ const scrollBarAppearsEvent = {
     scrollTop: 0,
     style: {
       setProperty: jest.fn(),
+      getPropertyValue: jest.fn().mockReturnValue(''),
     },
   },
   preventDefault: jest.fn(),
@@ -59,6 +60,15 @@ describe('handleScrollbar', () => {
     wrapper.vm.handleScroll(scrollBarAppearsEvent);
     expect(scrollBarAppearsEvent.target.style.setProperty)
       .toHaveBeenCalledWith('--scroll-target-height', '150px');
+  });
+
+  it('does not set the height a second time', () => {
+    wrapper.vm.handleScroll(scrollBarAppearsEvent);
+    expect(scrollBarAppearsEvent.target.style.setProperty)
+      .toHaveBeenCalledWith('--scroll-target-height', '150px');
+    scrollBarAppearsEvent.target.style.getPropertyValue.mockReturnValueOnce(150);
+    wrapper.vm.handleScroll(scrollBarAppearsEvent);
+    expect(scrollBarAppearsEvent.target.style.setProperty).toHaveBeenCalledTimes(1);
   });
 
   it('hides the scrollbar after the scrolling debounce delay time has passed', () => {

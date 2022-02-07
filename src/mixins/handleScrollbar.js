@@ -48,8 +48,11 @@ export default {
       const difference = Date.now() - this.scrollRemovedAt;
       if (difference < ScrollingDebounceDelay / 10) return;
       this.isScrolling = true;
-      // expose the current height as a css var, so we can limit it's height
-      target.style.setProperty('--scroll-target-height', `${target.offsetHeight}px`);
+      // make sure we do this only once
+      if (!target.style.getPropertyValue('--scroll-target-height')) {
+        // expose the current height as a css var, so we can limit it's height
+        target.style.setProperty('--scroll-target-height', `${target.offsetHeight}px`);
+      }
       this.deleteScroll();
     },
   },
