@@ -1,6 +1,9 @@
 {
   "meta": {},
   "theme": {
+    "code": {
+      "indentationWidth": 4
+    },
     "colors": {
       "text": "",
       "text-background": "",

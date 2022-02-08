@@ -13,6 +13,7 @@ import DeclarationSource
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { hasMultipleLines } from 'docc-render/utils/multipleLines';
+import { themeSettingsState } from 'docc-render/utils/theme-settings';
 
 const { Token } = DeclarationSource.components;
 const { TokenKind } = Token.constants;
@@ -441,5 +442,107 @@ describe('Swift function/initializer formatting', () => {
     expect(tokenComponents.at(5).props('text')).toBe('(\n    ');
     expect(tokenComponents.at(9).props('text')).toBe(',\n    ');
     expect(tokenComponents.at(13).props('text')).toBe('\n) ');
+  });
+
+  it('indents parameters using provided/customizable indentation width', () => {
+    const originalTheme = themeSettingsState.theme;
+    themeSettingsState.theme = {
+      ...originalTheme,
+      code: {
+        indentationWidth: 2,
+      },
+    };
+
+    // Before:
+    // func foo(_ a: A, _ b: B) -> Bar
+    //
+    // After:
+    // func foo(
+    //   _ a: A,
+    //   _ b: B,
+    // ) -> Bar
+    const tokens = [
+      {
+        kind: TokenKind.keyword,
+        text: 'func',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.identifier,
+        text: 'foo',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: '_',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.internalParam,
+        text: 'a',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        identifier: 'doc://com.example/documentation/blah/a',
+        text: 'A',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: '_',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.internalParam,
+        text: 'b',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        identifier: 'doc://com.example/documentation/blah/b',
+        text: 'B',
+      },
+      {
+        kind: TokenKind.text,
+        text: ') -> ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        identifier: 'doc://com.example/documentation/blah/bar',
+        text: 'Bar',
+      },
+    ];
+    const wrapper = mountWithTokens(tokens);
+
+    const tokenComponents = wrapper.findAll(Token);
+    expect(tokenComponents.length).toBe(tokens.length);
+    // should be indented with 2 spaces now instead of the default of 4 spaces
+    expect(tokenComponents.at(3).props('text')).toBe('(\n  ');
+    expect(tokenComponents.at(9).props('text')).toBe(',\n  ');
+    expect(tokenComponents.at(15).props('text')).toBe('\n) -> ');
+
+    themeSettingsState.theme = originalTheme;
   });
 });

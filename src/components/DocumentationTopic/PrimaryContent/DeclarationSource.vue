@@ -23,10 +23,13 @@
 import { indentDeclaration } from 'docc-render/utils/indentation';
 import { hasMultipleLines } from 'docc-render/utils/multipleLines';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import Language from 'docc-render/constants/Language';
 import DeclarationToken from './DeclarationToken.vue';
 
 const { TokenKind } = DeclarationToken.constants;
+
+const DEFAULT_INDENTATION_WIDTH = 4;
 
 export default {
   name: 'DeclarationSource',
@@ -48,6 +51,11 @@ export default {
     },
   },
   computed: {
+    indentationWidth: () => getSetting([
+      'theme',
+      'code',
+      'indentationWidth',
+    ], DEFAULT_INDENTATION_WIDTH),
     formattedTokens: ({
       language,
       formattedSwiftTokens,
@@ -70,9 +78,8 @@ export default {
     //   See `DeclarationToken.props`
     // @return {Array} A formatted version of the original tokens.
     //   See `DeclarationToken.props`
-    formattedSwiftTokens: ({ tokens }) => {
-      const numSpacesForIndent = 4; // maybe this could be configurable in the future
-      const indent = ' '.repeat(numSpacesForIndent);
+    formattedSwiftTokens: ({ indentationWidth, tokens }) => {
+      const indent = ' '.repeat(indentationWidth);
       let indentedParams = false;
       const newTokens = [];
       let i = 0;
