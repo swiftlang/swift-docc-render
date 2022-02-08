@@ -42,10 +42,6 @@ export default {
       type: Array,
       required: true,
     },
-    simpleIndent: {
-      type: Boolean,
-      default: false,
-    },
     language: {
       type: String,
       required: false,
@@ -166,9 +162,10 @@ export default {
   async mounted() {
     if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
 
-    if (!this.language) return;
-    await this.$nextTick();
-    indentDeclaration(this.$refs.code, this.language);
+    if (this.language === Language.objectiveC.key.api) {
+      await this.$nextTick();
+      indentDeclaration(this.$refs.code, this.language);
+    }
   },
 };
 </script>
@@ -194,13 +191,6 @@ $docs-declaration-source-border-width: 1px !default;
 
   &.has-multiple-lines {
     border-radius: $border-radius;
-  }
-
-  // simple indent
-  &.indented {
-    padding-left: $indent-spacing + $horizontal-padding;
-    text-indent: -$indent-spacing;
-    white-space: normal;
   }
 
   > code {
