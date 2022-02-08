@@ -46,7 +46,7 @@ function indentObjcDeclaration(codeElement) {
 
 /**
  * Indents content declaration tokens
- * Works only for Swift and Objc
+ * Works only for Objc
  * @param {HTMLElement} codeElement
  * @param {('occ'|'swift')} language
  */
