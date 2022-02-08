@@ -136,10 +136,7 @@ export default {
       // param onto its own line
       if (indentedParams && openParenTokenIndex !== null) {
         const originalText = newTokens[openParenTokenIndex].text;
-        const begin = originalText.slice(0, openParenCharIndex);
-        const end = originalText.slice(openParenCharIndex);
-        const newText = `${begin}${end}\n${indent}`;
-        newTokens[openParenTokenIndex].text = newText;
+        newTokens[openParenTokenIndex].text = `${originalText}\n${indent}`;
       }
 
       // if we indented some params, we want to find the closing ")" symbol
