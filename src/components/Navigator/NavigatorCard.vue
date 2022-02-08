@@ -49,7 +49,7 @@
         </template>
       </div>
     </div>
-    <div class="card-slot">
+    <div class="filter-wrapper">
       <div class="navigator-filter">
         <div class="input-wrapper">
           <FilterIcon class="icon-inline filter-icon" :class="{ colored: filter }" />
@@ -444,7 +444,7 @@ export default {
   }
 
   @include breakpoint(small) {
-    .card-slot {
+    .filter-wrapper {
       order: 2;
     }
     .card-body {

@@ -20,7 +20,7 @@
     aria-label="API Reference"
   >
     <template slot="pre-title">
-      <button @click.prevent="$emit('toggle-sidenav')">
+      <button class="sidenav-toggle" @click.prevent="$emit('toggle-sidenav')">
         <SidenavIcon class="icon-inline sidenav-icon" />
       </button>
     </template>

@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import {
   shallowMount,
@@ -219,5 +219,10 @@ describe('DocumentationNav', () => {
     expect(slotProps)
       .toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
     expect(wrapper.find('.nav-title-link').exists()).toBe(false);
+  });
+
+  it('renders a sidenav toggle', () => {
+    wrapper.find('.sidenav-toggle').trigger('click');
+    expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });
 });

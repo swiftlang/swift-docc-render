@@ -160,6 +160,22 @@ describe('NavBase', () => {
     expect(wrapper.find('.after-title').exists()).toBe(true);
   });
 
+  it('does not render a pre-title, if not provided via slot', async () => {
+    wrapper = await createWrapper({});
+    expect(wrapper.find('.pre-title').exists()).toBe(false);
+  });
+
+  it('renders a pre-title slot', async () => {
+    wrapper = await createWrapper({
+      slots: {
+        'pre-title': '<div class="pre-title-slot">Pre Title</div>',
+      },
+    });
+    const preTitle = wrapper.find('.pre-title');
+    expect(preTitle.exists()).toBe(true);
+    expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
+  });
+
   it('renders a dedicated AX toggle', async () => {
     wrapper = await createWrapper();
     const menu = wrapper.find('.nav-menu');
