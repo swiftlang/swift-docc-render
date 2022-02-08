@@ -15,14 +15,17 @@
 </template>
 
 <script>
-import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIcon.vue';
-import CurlyBracketsIcon from 'theme/components/Icons/CurlyBracketsIcon.vue';
-import TwoLetterSymbolIcon from 'theme/components/Icons/TwoLetterSymbolIcon.vue';
-import CollectionIcon from 'theme/components/Icons/CollectionIcon.vue';
-import ArticleIcon from 'theme/components/Icons/ArticleIcon.vue';
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
-import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import ModuleIcon from 'theme/components/Icons/ModuleIcon.vue';
+import ArticleIcon from 'theme/components/Icons/ArticleIcon.vue';
+import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
+import TopicFuncIcon from 'theme/components/Icons/TopicFuncIcon.vue';
+import CollectionIcon from 'theme/components/Icons/CollectionIcon.vue';
+import TopicFuncOpIcon from 'theme/components/Icons/TopicFuncOpIcon.vue';
+import CurlyBracketsIcon from 'theme/components/Icons/CurlyBracketsIcon.vue';
+import TopicSubscriptIcon from 'theme/components/Icons/TopicSubscriptIcon.vue';
+import TwoLetterSymbolIcon from 'theme/components/Icons/TwoLetterSymbolIcon.vue';
+import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIcon.vue';
 import { TopicKind, TopicKindAliases, TopicKindColorsMap } from 'docc-render/constants/kinds';
 
 export const TopicKindIcons = {
@@ -34,8 +37,8 @@ export const TopicKindIcons = {
   [TopicKind.container]: CollectionIcon,
   [TopicKind.enum]: SingleLetterSymbolIcon,
   [TopicKind.extension]: TwoLetterSymbolIcon,
-  [TopicKind.func]: SingleLetterSymbolIcon,
-  [TopicKind.funcOp]: SingleLetterSymbolIcon,
+  [TopicKind.func]: TopicFuncIcon,
+  [TopicKind.funcOp]: TopicFuncOpIcon,
   [TopicKind.httpRequest]: SingleLetterSymbolIcon,
   [TopicKind.languageGroup]: CollectionIcon,
   [TopicKind.learn]: PathIcon,
@@ -49,7 +52,7 @@ export const TopicKindIcons = {
   [TopicKind.resources]: PathIcon,
   [TopicKind.sampleCode]: CurlyBracketsIcon,
   [TopicKind.struct]: SingleLetterSymbolIcon,
-  [TopicKind.subscript]: SingleLetterSymbolIcon,
+  [TopicKind.subscript]: TopicSubscriptIcon,
   [TopicKind.symbol]: CollectionIcon,
   [TopicKind.tutorial]: TutorialIcon,
   [TopicKind.typealias]: SingleLetterSymbolIcon,
@@ -62,8 +65,6 @@ export const TopicKindProps = {
   [TopicKind.dictionarySymbol]: { symbol: 'O' },
   [TopicKind.enum]: { symbol: 'E' },
   [TopicKind.extension]: { symbols: ['E', 'x'] },
-  [TopicKind.func]: { symbol: 'ƒ' },
-  [TopicKind.funcOp]: { symbol: '⁺⁄₋' },
   [TopicKind.httpRequest]: { symbol: 'E' },
   [TopicKind.method]: { symbol: 'M' },
   [TopicKind.macro]: { symbol: '#' },
@@ -71,7 +72,6 @@ export const TopicKindProps = {
   [TopicKind.property]: { symbol: 'P' },
   [TopicKind.propertyListKey]: { symbol: 'K' },
   [TopicKind.struct]: { symbol: 'S' },
-  [TopicKind.subscript]: { symbol: '[ ]', y: 10 },
   [TopicKind.typealias]: { symbol: 'T' },
   [TopicKind.union]: { symbol: 'U' },
   [TopicKind.var]: { symbol: 'V' },

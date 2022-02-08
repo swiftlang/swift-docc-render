@@ -17,7 +17,7 @@
       <g transform="translate(1.000000, 1.000000)">
         <rect stroke="currentColor" x="0.5" y="0.5" width="13" height="13"></rect>
         <text font-size="11" font-weight="bold" fill="currentColor">
-          <tspan text-anchor="middle" x="7" :y="y">{{ symbol }}</tspan>
+          <tspan text-anchor="middle" x="7" y="11">{{ symbol }}</tspan>
         </text>
       </g>
     </g>
@@ -34,10 +34,6 @@ export default {
     symbol: {
       type: String,
       required: true,
-    },
-    y: {
-      type: [String, Number],
-      default: 11,
     },
   },
 };
