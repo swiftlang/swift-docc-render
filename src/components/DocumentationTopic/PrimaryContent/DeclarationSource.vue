@@ -91,8 +91,9 @@ export default {
         const nextToken = j < tokens.length ? tokens[j] : undefined;
 
         // loop through the token text to look for "(" and ")" characters
+        const tokenLength = (token.text || '').length;
         // eslint-disable-next-line no-plusplus
-        for (let k = 0; k < (token.text || '').length; k++) {
+        for (let k = 0; k < tokenLength; k++) {
           if (token.text.charAt(k) === '(') {
             numUnclosedParens += 1;
             // keep track of the token/character position of the first "("
