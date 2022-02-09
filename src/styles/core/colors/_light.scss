@@ -189,5 +189,5 @@
   --color-tutorials-overview-navigation-link-hover: #{dark-color(figure-gray)};
   --color-tutorial-hero-text: #{dark-color(figure-gray)};
   --color-tutorial-hero-background: #{dark-color(fill)};
-  --color-fill-light-blue: rgb(229, 242, 255);
+  --color-fill-light-blue: #{change-color(light-color(fill-blue), $alpha: 0.05)};
 }

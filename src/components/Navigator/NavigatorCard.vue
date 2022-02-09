@@ -419,6 +419,8 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
+$navigator-card-horizontal-spacing: 20px !default;
+
 .navigator-card {
   overflow: hidden auto;
   height: 100%;
@@ -426,7 +428,7 @@ export default {
   flex-direction: column;
 
   .head-wrapper {
-    padding: 10px 36px;
+    padding: 10px $navigator-card-horizontal-spacing;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
@@ -476,7 +478,8 @@ export default {
 }
 
 .card-body {
-  --card-horizontal-spacing: 32px;
+  --card-horizontal-spacing: #{$navigator-card-horizontal-spacing};
+
   padding: 18px var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
