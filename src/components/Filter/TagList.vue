@@ -104,14 +104,19 @@ export default {
   },
   methods: {
     focusFirstTag() {
-      this.$refs.tag[0].focusButton();
+      this.focusTagByIndex(0);
     },
     focusLastTag() {
       const tags = this.$refs.tag;
-      tags[tags.length - 1].focusButton();
+      this.focusTagByIndex(tags.length - 1);
     },
     focusTag(name) {
-      this.$refs.tag[this.tags.indexOf(name)].focusButton();
+      this.focusTagByIndex(this.tags.indexOf(name));
+    },
+    focusTagByIndex(index) {
+      const tag = this.$refs.tag[index];
+      if (!tag || !tag.focusButton) return;
+      tag.focusButton();
     },
     focusIndex(index) {
       this.focusedIndex = index;

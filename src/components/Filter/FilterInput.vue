@@ -57,13 +57,13 @@
             class="visuallyhidden"
             aria-hidden="true"
           >
-            {{ placeholderText }}
+            {{ placeholder }}
           </label>
           <input
             :id="FilterInputId"
             ref="input"
             v-model="modelValue"
-            :placeholder="hasSelectedTags ? '' : placeholderText"
+            :placeholder="hasSelectedTags ? '' : placeholder"
             :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
             v-bind="AXinputProperties"
             type="text"
@@ -170,7 +170,7 @@ export default {
       type: Boolean,
       default: () => false,
     },
-    placeholderText: {
+    placeholder: {
       type: String,
       default: () => 'Filter',
     },
@@ -179,6 +179,10 @@ export default {
       default: () => '',
     },
     shouldTruncateTags: {
+      type: Boolean,
+      default: false,
+    },
+    focusInputOnValueChange: {
       type: Boolean,
       default: false,
     },
@@ -282,11 +286,14 @@ export default {
       this.$emit('show-suggested-tags', value);
     },
 
-    // If input value changes from query parameters data, focus on the input
     async input() {
-      // We know that changes comes from query parameters
-      // when input value changes and input element is not focus.
-      if (document.activeElement !== this.$refs.input && this.inputIsNotEmpty) {
+      // if the `value` changes, but we are not focused on the input, we can make sure the input
+      // is focused, by setting `focusOnValueChange`
+      if (
+        this.focusInputOnValueChange
+        && document.activeElement !== this.$refs.input
+        && this.inputIsNotEmpty
+      ) {
         this.focusInput();
       }
     },

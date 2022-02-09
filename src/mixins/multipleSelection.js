@@ -68,7 +68,7 @@ export default {
       if (this.activeTags.length > 0) {
         this.setSelectedTags(this.selectedTags.filter(tag => !this.activeTags.includes(tag)));
       }
-      if (this.inputIsSelected() && this.focusesSelectedTags) {
+      if (this.inputIsSelected() && this.allSelectedTagsAreActive) {
         // stop the default event, so it doesnt trigger the `@input` handler
         e.preventDefault();
         // reset the filters
@@ -80,7 +80,7 @@ export default {
           // Because mobile and tablet users don't usually have a displayed virtual keyboard
           // all the time, behaviour has been changed to allow a safer approach:
           // delete the last tag directly when the user clicks on the delete key
-          this.setSelectedTags([...this.selectedTags].pop());
+          this.setSelectedTags(this.selectedTags.slice(0, -1));
         } else {
           // Default behaviour for desktop users is to focus on the last tag and then
           // delete it when they click on the delete key while focused on the tag
@@ -235,11 +235,11 @@ export default {
       // If user clicks on a tag after being focus on the input
       if (
         target
-          && target.matches('input')
-          && this.shiftKey
-          && !this.metaKey
-          && !this.tabbing
-          && this.$refs.input.selectionEnd !== 0
+        && target.matches('input')
+        && this.shiftKey
+        && !this.metaKey
+        && !this.tabbing
+        && this.$refs.input.selectionEnd !== 0
       ) {
         // We select from the exact input text to the tags
         this.selectInputTextToTags();
