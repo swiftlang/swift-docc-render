@@ -16,7 +16,7 @@
 
 <script>
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
-import ModuleIcon from 'theme/components/Icons/ModuleIcon.vue';
+import TopicModuleIcon from 'theme/components/Icons/TopicModuleIcon.vue';
 import ArticleIcon from 'theme/components/Icons/ArticleIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import TopicFuncIcon from 'theme/components/Icons/TopicFuncIcon.vue';
@@ -44,7 +44,7 @@ export const TopicKindIcons = {
   [TopicKind.learn]: PathIcon,
   [TopicKind.method]: SingleLetterSymbolIcon,
   [TopicKind.macro]: SingleLetterSymbolIcon,
-  [TopicKind.module]: ModuleIcon,
+  [TopicKind.module]: TopicModuleIcon,
   [TopicKind.overview]: PathIcon,
   [TopicKind.protocol]: TwoLetterSymbolIcon,
   [TopicKind.property]: SingleLetterSymbolIcon,

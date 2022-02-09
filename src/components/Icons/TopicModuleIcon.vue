@@ -9,11 +9,13 @@
 -->
 
 <template>
-  <SVGIcon viewBox="0 0 14 14" height="14">
-    <path d="M13 13h-12v-12h12zM1.923 12.077h10.154v-10.154h-10.154z"></path>
-    <path d="M5.098 4.968v-1.477h-0.738v1.477h-1.477v0.738h1.477v1.477h0.738v-1.477h1.477v-0.738z"></path>
-    <path d="M8.030 4.807l-2.031 5.538h0.831l2.031-5.538z"></path>
-    <path d="M8.894 8.805v0.923h2.215v-0.923z"></path>
+  <SVGIcon
+    class="module-icon"
+    viewBox="0 0 14 14"
+  >
+    <path
+      d="M13.484 8.695v-3.389l-6.484-5.305-6.484 5.305v3.389l6.484 5.305zM7 9.726l-5.379-4.421 5.379-4.421 5.379 4.421zM12.674 8.474l-1.768 1.474-3.905 3.168-5.379-4.421-0.295-0.295v-2.505l5.674 4.716 5.674-4.716z"></path>
+    <path d="M8.105 4.789l0.368-1.768-1.4 1.326-1.768-0.811 0.958 1.547-1.474 1.179 1.989-0.295 0.884 1.547 0.221-1.695 2.063-0.295z"></path>
   </SVGIcon>
 </template>
 
@@ -21,7 +23,7 @@
 import SVGIcon from 'docc-render/components/SVGIcon.vue';
 
 export default {
-  name: 'TopicFuncOpIcon',
+  name: 'TopicModuleIcon',
   components: { SVGIcon },
 };
 </script>
