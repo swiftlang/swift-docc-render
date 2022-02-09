@@ -46,6 +46,11 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
+$doc-hero-gradient-background: dark-color(fill-tertiary) !default;
+$doc-hero-overlay-background: transparent !default;
+$doc-hero-icon-opacity: 1 !default;
+$doc-hero-icon-color: dark-color(fill-secondary) !default;
+
 .documentation-hero {
   background: dark-color(fill);
   color: light-color(fill);
@@ -57,7 +62,7 @@ export default {
   // gradient
   &:before {
     content: '';
-    background: radial-gradient(circle at top, var(--accent-color) 10%, transparent 100%);
+    background: $doc-hero-gradient-background;
     position: absolute;
     width: 100%;
     left: 0;
@@ -68,7 +73,7 @@ export default {
 
   // black overlay
   &:after {
-    background: dark-color(fill);
+    background: $doc-hero-overlay-background;
     opacity: 0.4;
     width: 100%;
     position: absolute;
@@ -79,11 +84,12 @@ export default {
   }
 
   .background-icon {
+    color: $doc-hero-icon-color;
     position: absolute;
     display: block;
     width: 250px;
     height: 250px;
-    opacity: 0.35;
+    opacity: $doc-hero-icon-opacity;
 
     /deep/ svg {
       width: 100%;
