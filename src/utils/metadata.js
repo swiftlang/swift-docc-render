@@ -60,14 +60,21 @@ const createMetaTags = ({ title, description, path }) => [
 const formatTitle = title => [title, themeTitle].filter(Boolean).join(' | ');
 const addMetaTags = (metadata) => {
   const keys = Object.keys(metadata);
-
-  if (!metadata.content) {
-    const query = `meta[${keys[0]}="${metadata[keys[0]]}"]`;
-    if (document.querySelector(query)) {
-      document.querySelector(query).remove();
+  // check current metadata
+  const metaQuery = `meta[${keys[0]}="${metadata[keys[0]]}"]`;
+  if (document.querySelector(metaQuery)) {
+    if (document.querySelector(metaQuery).content === metadata.content) {
+      // if current metadata, do nothing
+      return;
     }
+    // remove current metadata if found
+    document.querySelector(metaQuery).remove();
+  }
+  // if content is empty, don't add meta tag
+  if (!metadata.content) {
     return;
   }
+  // create new metadata tag
   const meta = document.createElement('meta');
   keys.forEach(ref => meta.setAttribute(ref, metadata[ref]));
   document.getElementsByTagName('head')[0].appendChild(meta);

@@ -18,6 +18,7 @@ const html = fs.readFileSync(path.resolve(__dirname, '../../../app/index.html'))
 const mockBaseUrl = 'developer.com';
 const title = 'Featured';
 const description = 'Browse the latest developer documentation, including tutorials, sample code, articles, and API reference.';
+const differentDescription = 'Some different description.';
 const pagePath = '/path';
 const pageWithTitleAndDescription = {
   name: 'Page with title and description',
@@ -92,4 +93,11 @@ const assertMetadata = ({
 describe('Metadata', () => {
   assertMetadata(pageWithTitleAndDescription);
   assertMetadata(pageWithoutTitleOrDescription);
+
+  it('does not inherit metadata from previous pages', () => {
+    addOrUpdateMetadata({ description });
+    addOrUpdateMetadata({ description: differentDescription });
+    expect(document.querySelector('meta[name="description"]').content).toBe(differentDescription);
+    expect(document.querySelectorAll('meta[name="description"]')).toHaveLength(1);
+  });
 });
