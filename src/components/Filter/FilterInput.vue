@@ -398,9 +398,13 @@ export default {
 
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
+$input-height: rem(28px);
 
 .filter {
   --input-vertical-padding: #{$input-vertical-padding};
+  --input-height: #{$input-height};
+  --input-border-color: var(--color-fill-gray-secondary);
+  --input-text: var(--color-fill-gray-secondary);
 
   position: relative;
   box-sizing: border-box;
@@ -428,7 +432,7 @@ $input-vertical-padding: rem(13px) !default;
     }
 
     .svg-icon {
-      fill: var(--color-fill-gray-secondary);
+      fill: var(--input-text);
       display: block;
       height: 21px;
     }
@@ -442,12 +446,12 @@ $input-vertical-padding: rem(13px) !default;
   &.focus {
     .filter__wrapper {
       box-shadow: 0 0 0 3pt var(--color-focus-color);
-      border-color: var(--color-fill-blue);
+      --input-border-color: var(--color-fill-blue);
     }
   }
 
   &__wrapper {
-    border: 1px solid var(--color-fill-gray-secondary);
+    border: 1px solid var(--input-border-color);
     background: var(--color-fill);
     border-radius: $small-border-radius;
 
@@ -516,7 +520,7 @@ $input-vertical-padding: rem(13px) !default;
     .clear-rounded-icon {
       height: rem(16px);
       width: rem(16px);
-      fill: var(--color-fill-gray-secondary);
+      fill: var(--input-text);
       display: block;
     }
   }
@@ -541,7 +545,7 @@ $input-vertical-padding: rem(13px) !default;
   &__input {
     @include font-styles(body-large);
     color: var(--color-text);
-    height: rem(28px);
+    height: var(--input-height);
     border: none;
     width: 100%;
     min-width: 130px; // set a min width, so it does not get crushed by tags
@@ -560,7 +564,7 @@ $input-vertical-padding: rem(13px) !default;
     }
 
     &[placeholder] {
-      @include placeholder(var(--color-fill-gray-secondary))
+      @include placeholder(var(--input-text))
     }
   }
 }
