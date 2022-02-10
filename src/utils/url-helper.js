@@ -69,20 +69,24 @@ export function areEquivalentLocations(routeA, routeB) {
   }));
 }
 
-// Resolve a given relative path into a full, absolute URL.
+// Resolve a given path into a full, absolute URL.
 //
-// @param {String} relativePath A relative path.
-// @return {String} The absolute URL corresponding to the given path.
-//
+// @param {String} path A URL path.
+// @param {String} baseUrl An optional base URL to resolve against. The default
+//   value will be the origin of the current website.
+// @return {String} The absolute URL resulting from resolving the given path
+//   with the current website origin.
 //
 // Note that the same call may result in different output for the same input
 // depending on where/how this instance of DocC-Render is being hosted.
 //
-// Example:
+// Examples:
 //
 // resolveAbsoluteUrl('/foo/bar') // http://localhost:8080/foo/bar
+// OR
 // resolveAbsoluteUrl('/foo/bar') // https://mportiz08.github.io/example/foo/bar
 //
-export function resolveAbsoluteUrl(relativePath) {
-  return new URL(normalizePath(relativePath), window.location.origin).href;
+// resolveAbsoluteUrl('/foo/bar', 'http://example.com') // http://example.com/foo/bar
+export function resolveAbsoluteUrl(path, baseUrl = window.location.origin) {
+  return new URL(normalizePath(path), baseUrl).href;
 }

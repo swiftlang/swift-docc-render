@@ -138,11 +138,12 @@ describe('buildUrl', () => {
 });
 
 describe('resolveAbsoluteUrl', () => {
-  it('returns an absolute URL for a relative path', () => {
+  it('returns an absolute URL for a given path', () => {
     expect(resolveAbsoluteUrl('/foo/bar')).toBe('http://localhost/foo/bar');
+    expect(resolveAbsoluteUrl('foo/bar')).toBe('http://localhost/foo/bar');
   });
 
-  it('includes the host and base path of the current environment', () => {
+  it('resolves against the host and base path of the current environment', () => {
     const { location } = window;
 
     mockBaseUrl.mockReturnValue('/foo');
@@ -150,8 +151,18 @@ describe('resolveAbsoluteUrl', () => {
       value: new URL('https://example.com'),
     });
     expect(resolveAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
+    expect(resolveAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
 
     mockBaseUrl.mockReturnValue('/');
     Object.defineProperty(window, 'location', { value: location });
+  });
+
+  it('can resolve against a provided base URL', () => {
+    expect(resolveAbsoluteUrl('/foo/bar', 'https://swift.org'))
+      .toBe('https://swift.org/foo/bar');
+    expect(resolveAbsoluteUrl('foobar', 'https://swift.org'))
+      .toBe('https://swift.org/foobar');
+    expect(resolveAbsoluteUrl('foo/bar', 'https://swift.org/blah'))
+      .toBe('https://swift.org/foo/bar');
   });
 });
