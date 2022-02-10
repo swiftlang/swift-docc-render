@@ -21,7 +21,7 @@
         :style="{ width: widthInPx }"
         class="aside"
       >
-        <slot name="aside" />
+        <slot name="aside" animation-class="aside-animated-child" />
       </div>
       <div
         class="resize-handle"
@@ -259,9 +259,20 @@ export default {
     transform: translateX(-100%);
     transition: width 0.15s linear, transform 0.15s ease-in;
 
+    /deep/ .aside-animated-child {
+      opacity: 0;
+    }
+
     &.force-open {
       width: 100% !important;
       transform: translateX(0);
+
+      /deep/ .aside-animated-child {
+        --index: 0;
+        opacity: 1;
+        transition: opacity 0.15s linear;
+        transition-delay: calc(var(--index) * 0.15s + 0.15s);
+      }
     }
   }
 }
