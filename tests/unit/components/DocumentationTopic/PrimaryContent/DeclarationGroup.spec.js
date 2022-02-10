@@ -74,25 +74,10 @@ describe('DeclarationGroup', () => {
     expect(source.props('tokens')).toEqual(propsData.declaration.tokens);
   });
 
-  it('renders the `Source` with smart indentation', () => {
+  it('renders the `Source`', () => {
     const wrapper = createWrapper();
     const srcComponent = wrapper.find(DeclarationSource);
     expect(srcComponent.props('language')).toEqual('swift');
-    expect(srcComponent.props('smartIndent')).toEqual(true);
-    expect(srcComponent.props('simpleIndent')).toEqual(false);
-  });
-
-  it('renders the `Source` with simple indentation', () => {
-    const wrapper = createWrapper({
-      provide: {
-        interfaceLanguage: 'swift',
-        languages: new Set(['swift']),
-      },
-    });
-    const srcComponent = wrapper.find(DeclarationSource);
-    expect(srcComponent.props('language')).toEqual('swift');
-    expect(srcComponent.props('smartIndent')).toEqual(false);
-    expect(srcComponent.props('simpleIndent')).toEqual(true);
   });
 
   it('applies the `multipleLinesClass` class if `hasMultipleLinesAfterAPIChanges` is true', () => {
@@ -109,31 +94,5 @@ describe('DeclarationGroup', () => {
     });
 
     expect(wrapper.classes()).toContain(multipleLinesClass);
-  });
-
-  it('does not apply a "smart indent" for Objective-C classes/structs/etc', () => {
-    ['class', 'enum', 'protocol', 'struct'].forEach((symbolKind) => {
-      const source = createWrapper({
-        provide: {
-          interfaceLanguage: 'occ',
-          languages: new Set(['occ']),
-          symbolKind,
-        },
-      }).find(DeclarationSource);
-      expect(source.exists()).toBe(true);
-      expect(source.props('smartIndent')).toBe(false);
-    });
-  });
-
-  it('applies a "smart indent" for other Objective-C symbols', () => {
-    const source = createWrapper({
-      provide: {
-        interfaceLanguage: 'occ',
-        languages: new Set(['occ']),
-        symbolKind: 'instm',
-      },
-    }).find(DeclarationSource);
-    expect(source.exists()).toBe(true);
-    expect(source.props('smartIndent')).toBe(true);
   });
 });
