@@ -33,10 +33,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.topictitle {
-    margin-top: rem(40px);
-}
-
 .eyebrow {
     @include font-styles(eyebrow-reduced);
     color: light-color(fill-gray-tertiary);

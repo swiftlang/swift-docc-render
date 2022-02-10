@@ -56,7 +56,8 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
   color: light-color(fill);
   overflow: hidden;
   text-align: center;
-  padding-bottom: 20px;
+  padding-top: rem(40px);
+  padding-bottom: 40px;
   position: relative;
 
   // gradient
