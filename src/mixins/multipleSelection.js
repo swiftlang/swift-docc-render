@@ -235,6 +235,7 @@ export default {
       // If user clicks on a tag after being focus on the input
       if (
         target
+        // TODO: Might need to make it match the exact input, not any generic input
         && target.matches('input')
         && this.shiftKey
         && !this.metaKey

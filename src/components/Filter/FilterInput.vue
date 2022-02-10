@@ -46,7 +46,7 @@
             ref="selectedTags"
             areTagsRemovable
             v-on="selectedTagsMultipleSelectionListeners"
-            @focus-prev="positionReversed ? focusFirstTag() : null"
+            @focus-prev="handleFocusPrevOnSelectedTags"
             @focus-next="focusInputFromTags"
             @reset-filters="resetFilters"
             @prevent-blur="$emit('update:preventedBlur', true)"
@@ -69,8 +69,8 @@
             type="text"
             class="filter__input"
             v-on="inputMultipleSelectionListeners"
-            @keydown.down.prevent="positionReversed ? null : focusFirstTag()"
-            @keydown.up.prevent="positionReversed ? focusFirstTag() : null"
+            @keydown.down.prevent="downHandler"
+            @keydown.up.prevent="upHandler"
             @keydown.left="leftKeyInputHandler"
             @keydown.right="rightKeyInputHandler"
             @keydown.delete="deleteHandler"
@@ -107,8 +107,8 @@
         class="filter__suggested-tags"
         @click-tags="selectTag($event.tagName)"
         @prevent-blur="$emit('update:preventedBlur', true)"
-        @focus-next="positionReversed ? focusInput() : $emit('exit-filter')"
-        @focus-prev="positionReversed ? $emit('exit-filter') : focusInput()"
+        @focus-next="positionReversed ? focusInput() : $emit('focus-next')"
+        @focus-prev="positionReversed ? $emit('focus-prev') : focusInput()"
       />
     </div>
   </div>
@@ -308,7 +308,6 @@ export default {
       await this.$nextTick();
       // focus the input
       this.$refs.input.focus();
-
       if (!this.input && this.resetActiveTags) {
         this.resetActiveTags();
       }
@@ -331,7 +330,7 @@ export default {
       this.showSuggestedTags = false;
       this.$refs.input.blur();
     },
-    focusFirstTag() {
+    focusFirstTag(cb = () => {}) {
       // make sure we show the suggestedTags, in case we lost focus
       if (!this.showSuggestedTags) {
         this.showSuggestedTags = true;
@@ -339,6 +338,8 @@ export default {
       // make sure that the suggestedTags ref exists
       if (this.hasSuggestedTags && this.$refs.suggestedTags) {
         this.$refs.suggestedTags.focusFirstTag();
+      } else {
+        cb();
       }
     },
     setFilterInput(value) {
@@ -364,6 +365,29 @@ export default {
         return;
       }
       this.showSuggestedTags = false;
+    },
+    downHandler($event) {
+      const cb = () => this.$emit('focus-next', $event);
+      if (this.positionReversed) {
+        cb();
+      } else {
+        this.focusFirstTag(cb);
+      }
+    },
+    upHandler($event) {
+      const cb = () => this.$emit('focus-prev', $event);
+      if (this.positionReversed) {
+        this.focusFirstTag(cb);
+      } else {
+        cb();
+      }
+    },
+    handleFocusPrevOnSelectedTags() {
+      if (this.positionReversed) {
+        this.focusFirstTag(() => this.$emit('focus-prev'));
+      } else {
+        this.$emit('focus-prev');
+      }
     },
   },
 };
