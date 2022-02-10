@@ -420,6 +420,7 @@ export default {
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 $navigator-card-horizontal-spacing: 20px !default;
+$navigator-card-vertical-spacing: 18px !default;
 
 .navigator-card {
   overflow: hidden auto;
@@ -458,6 +459,7 @@ $navigator-card-horizontal-spacing: 20px !default;
 .no-items-wrapper {
   color: var(--color-figure-gray-tertiary);
   @include font-styles(body-reduced);
+  padding: var(--card-vertical-spacing) 0;
 }
 
 .close-card-mobile {
@@ -479,15 +481,16 @@ $navigator-card-horizontal-spacing: 20px !default;
 
 .card-body {
   --card-horizontal-spacing: #{$navigator-card-horizontal-spacing};
+  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
 
-  padding: 18px var(--card-horizontal-spacing);
+  padding: 0 var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
   @include breakpoint(small) {
     --card-horizontal-spacing: 20px;
-    padding-top: 0;
+    --card-vertical-spacing: 0px;
   }
 }
 
@@ -562,5 +565,7 @@ $navigator-card-horizontal-spacing: 20px !default;
 
 .scroller {
   height: 100%;
+  box-sizing: border-box;
+  padding: var(--card-vertical-spacing) 0;
 }
 </style>
