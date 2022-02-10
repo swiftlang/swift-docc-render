@@ -14,10 +14,12 @@
       <button class="close-card-mobile" @click="$emit('close')">
         <InlineCloseIcon class="icon-inline close-icon" />
       </button>
-      <NavigatorLeafIcon :kind="kind" class="card-icon" />
-      <span class="card-link">
-        {{ technology }}
-      </span>
+      <Reference :url="technologyPath" class="navigator-head">
+        <NavigatorLeafIcon :kind="kind" with-colors class="card-icon" />
+        <div class="card-link">
+          {{ technology }}
+        </div>
+      </Reference>
     </div>
     <div class="card-body">
       <RecycleScroller
@@ -84,6 +86,7 @@ import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardIte
 import InlineCloseIcon from 'theme/components/Icons/InlineCloseIcon.vue';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
 import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 export const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -106,6 +109,7 @@ export default {
     NavigatorCardItem,
     NavigatorLeafIcon,
     RecycleScroller,
+    Reference,
   },
   props: {
     technology: {
@@ -127,6 +131,10 @@ export default {
     kind: {
       type: String,
       required: true,
+    },
+    technologyPath: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -429,11 +437,18 @@ $navigator-card-vertical-spacing: 18px !default;
   flex-direction: column;
 
   .head-wrapper {
+    position: relative;
+  }
+
+  .navigator-head {
     padding: 10px $navigator-card-horizontal-spacing;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
-    position: relative;
+
+    &.router-link-exact-active {
+      background: var(--color-fill-gray-quaternary);
+    }
 
     @include breakpoint(small) {
       justify-content: center;
@@ -443,7 +458,6 @@ $navigator-card-vertical-spacing: 18px !default;
   .card-icon {
     width: 19px;
     height: 19px;
-    color: var(--color-figure-blue);
   }
 
   @include breakpoint(small) {
@@ -467,6 +481,7 @@ $navigator-card-vertical-spacing: 18px !default;
   position: absolute;
   left: 20px;
   top: 50%;
+  z-index: 1;
   transform: translateY(-50%);
   color: var(--color-link);
 

@@ -16,6 +16,7 @@ import 'intersection-observer';
 import { LEAF_SIZES } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
+import Reference from '@/components/ContentNode/Reference.vue';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -102,6 +103,7 @@ const activePath = [root0.path, root0Child0.path];
 
 const defaultProps = {
   technology: 'TestKit',
+  technologyPath: '/path/to/technology',
   children,
   activePath,
   showExtendedInfo: false,
@@ -128,6 +130,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('.card-icon').props('kind')).toEqual(defaultProps.kind);
     // assert link
+    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
     // assert scroller
     expect(wrapper.find(RecycleScroller).props()).toMatchObject({
