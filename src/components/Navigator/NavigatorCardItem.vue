@@ -190,12 +190,17 @@ export default {
 }
 
 .tree-toggle {
+  $size: 15px;
+  $margin: 5px;
   position: relative;
   z-index: 1;
-  width: 10px;
-  margin-left: -15px;
-  margin-right: 5px;
+  width: $size;
+  height: $size;
+  margin-left: -$size - $margin;
+  margin-right: $margin;
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title-container {
