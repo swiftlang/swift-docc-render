@@ -14,6 +14,7 @@
   --color-fill-tertiary: #{light-color(fill-tertiary)};
   --color-fill-quaternary: #{base-color(fill-quaternary)};
   --color-fill-blue: #{light-color(fill-blue)};
+  --color-fill-light-blue-secondary: #{light-color(fill-light-blue-secondary)};
   --color-fill-gray: #{light-color(fill-gray)};
   --color-fill-gray-secondary: #{light-color(fill-gray-secondary)};
   --color-fill-gray-tertiary: #{light-color(fill-gray-tertiary)};
@@ -189,5 +190,5 @@
   --color-tutorials-overview-navigation-link-hover: #{dark-color(figure-gray)};
   --color-tutorial-hero-text: #{dark-color(figure-gray)};
   --color-tutorial-hero-background: #{dark-color(fill)};
-  --color-fill-light-blue: #{change-color(light-color(fill-blue), $alpha: 0.05)};
+  --color-navigator-item-hover: #{change-color(light-color(fill-blue), $alpha: 0.05)};
 }

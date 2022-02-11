@@ -142,12 +142,8 @@ export default {
     }
   }
 
-  &:hover {
-    background: var(--color-fill-light-blue);
-
-    /deep/ .match {
-      background: var(--color-fill);
-    }
+  .hover & {
+    background: var(--color-navigator-item-hover);
   }
 
   .navigator-icon {

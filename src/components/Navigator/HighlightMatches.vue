@@ -80,7 +80,7 @@ export default {
 
   /deep/ .match {
     font-weight: $font-weight-semibold;
-    background: var(--color-fill-light-blue);
+    background: var(--color-fill-light-blue-secondary);
   }
 }
 </style>
