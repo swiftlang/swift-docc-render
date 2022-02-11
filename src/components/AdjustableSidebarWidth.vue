@@ -20,6 +20,7 @@
         :class="asideClasses"
         :style="{ width: widthInPx }"
         class="aside"
+        ref="aside"
       >
         <slot name="aside" animation-class="aside-animated-child" />
       </div>
@@ -42,6 +43,9 @@ import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
+import scrollLock from 'docc-render/utils/scroll-lock';
+import FocusTrap from 'docc-render/utils/FocusTrap';
+import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 
 export const STORAGE_KEY = 'sidebar';
 
@@ -104,6 +108,7 @@ export default {
       windowWidth: window.innerWidth,
       breakpoint: BreakpointName.large,
       noTransition: false,
+      focusTrapInstance: null,
     };
   },
   computed: {
@@ -120,15 +125,23 @@ export default {
       dragging: isDragging, 'force-open': openExternally, 'no-transition': noTransition,
     }),
   },
-  mounted() {
+  async mounted() {
     window.addEventListener('keydown', this.onEscapeClick);
     window.addEventListener('resize', this.storeWindowSize);
     window.addEventListener('orientationchange', this.storeWindowSize);
+
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('keydown', this.onEscapeClick);
       window.removeEventListener('resize', this.storeWindowSize);
       window.removeEventListener('orientationchange', this.storeWindowSize);
+      if (this.openExternally) {
+        this.toggleScrollLock(false);
+      }
+      if (this.focusTrapInstance) this.focusTrapInstance.destroy();
     });
+
+    await this.$nextTick();
+    this.focusTrapInstance = new FocusTrap(this.$refs.aside);
   },
   watch: {
     // make sure a route navigation closes the sidebar
@@ -143,6 +156,10 @@ export default {
     async breakpoint(value, oldValue) {
       // adjust the width, so it does not go outside of limits
       this.getWidthInCheck();
+      // make sure we close the nav
+      if (oldValue === BreakpointName.small) {
+        this.closeMobileSidebar();
+      }
       // if we are not going into the `small` breakpoint, return early
       if (oldValue !== BreakpointName.small && value !== BreakpointName.small) return;
       // make sure we dont apply transitions for a few moments, to prevent flashes
@@ -152,6 +169,7 @@ export default {
       // re-apply transitions
       this.noTransition = false;
     },
+    openExternally: 'handleExternalOpen',
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {
@@ -214,6 +232,25 @@ export default {
     },
     emitEventChange(width) {
       this.$emit('width-change', width);
+    },
+    handleExternalOpen(isOpen) {
+      this.toggleScrollLock(isOpen);
+    },
+    /**
+     * Toggles the scroll lock on/off
+     */
+    toggleScrollLock(lock) {
+      if (lock) {
+        scrollLock.lockScroll(this.$refs.aside);
+        // lock focus
+        this.focusTrapInstance.start();
+        // hide sibling elements from VO
+        changeElementVOVisibility.hide(this.$refs.aside);
+      } else {
+        scrollLock.unlockScroll(this.$refs.aside);
+        this.focusTrapInstance.stop();
+        changeElementVOVisibility.show(this.$refs.aside);
+      }
     },
   },
 };

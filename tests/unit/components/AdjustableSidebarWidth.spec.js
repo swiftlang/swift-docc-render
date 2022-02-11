@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import AdjustableSidebarWidth, {
   eventsMap,
@@ -16,10 +16,18 @@ import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
 import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
 import { waitFrames } from '@/utils/loading';
+import FocusTrap from '@/utils/FocusTrap';
+import scrollLock from 'docc-render/utils/scroll-lock';
+import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import { createEvent, flushPromises } from '../../../test-utils';
+import { BreakpointName } from '@/utils/breakpoints';
 
-jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
+jest.mock('docc-render/utils/debounce');
 jest.mock('docc-render/utils/storage');
+
+jest.mock('docc-render/utils/changeElementVOVisibility');
+jest.mock('docc-render/utils/scroll-lock');
+jest.mock('docc-render/utils/FocusTrap');
 
 storage.get.mockImplementation((key, value) => value);
 
@@ -97,17 +105,35 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   describe('external open', () => {
-    it('allows opening the sidebar externally', () => {
-      const wrapper = createWrapper({
-        propsData: {
-          openExternally: true,
-        },
-      });
-      expect(wrapper.find('.aside').classes()).toContain('force-open');
-      wrapper.setProps({
-        openExternally: false,
-      });
-      expect(wrapper.find('.aside').classes()).not.toContain('force-open');
+    it('allows opening the sidebar externally', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // assert not open
+      const aside = wrapper.find('.aside');
+      expect(aside.classes()).not.toContain('force-open');
+      expect(FocusTrap).toHaveBeenCalledTimes(1);
+      expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(0);
+      expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
+      // trigger opening externally
+      wrapper.setProps({ openExternally: true });
+      await flushPromises();
+      // assert open class attached
+      expect(aside.classes()).toContain('force-open');
+      // assert scroll lock and other helpers initiated
+      expect(scrollLock.lockScroll).toHaveBeenCalledWith(aside.element);
+      expect(changeElementVOVisibility.hide).toHaveBeenCalledWith(aside.element);
+      expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
+      expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
+      // close again
+      wrapper.setProps({ openExternally: false });
+      await flushPromises();
+      // assert class
+      expect(aside.classes()).not.toContain('force-open');
+      // assert helper status
+      expect(scrollLock.unlockScroll).toHaveBeenCalledWith(aside.element);
+      expect(changeElementVOVisibility.show).toHaveBeenCalledWith(aside.element);
+      expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
+      expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
     });
 
     it('allows closing the sidebar, with Esc', () => {
@@ -125,6 +151,21 @@ describe('AdjustableSidebarWidth', () => {
     it('allows closing the sidebar, when `$route` changes', () => {
       // cannot mock the entire $route, and trigger watchers
       expect(AdjustableSidebarWidth.watch.$route).toEqual('closeMobileSidebar');
+    });
+
+    it('closes the nav, on breakpoint change from small to medium', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          openExternally: true,
+        },
+      });
+      // setup
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.small);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('update:openExternally')).toBeFalsy();
+      // true test
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+      expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
   });
 
@@ -289,5 +330,17 @@ describe('AdjustableSidebarWidth', () => {
     // assert class
     expect(aside.classes()).toContain('dragging');
     assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
+  });
+
+  it('removes any locks upon destruction', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    wrapper.setProps({ openExternally: true });
+    await flushPromises();
+    wrapper.destroy();
+    expect(FocusTrap.mock.results[0].value.destroy).toHaveBeenCalledTimes(1);
+    expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
+    expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
+    expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
   });
 });

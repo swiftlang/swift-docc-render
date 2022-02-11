@@ -18,24 +18,9 @@ import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibili
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { createEvent } from '../../../test-utils';
 
-const mockFocusTrap = {
-  stop: jest.fn(),
-  start: jest.fn(),
-  destroy: jest.fn(),
-};
-
-jest.mock('docc-render/utils/changeElementVOVisibility', () => ({
-  hide: jest.fn(),
-  show: jest.fn(),
-}));
-
-jest.mock('docc-render/utils/FocusTrap', () => jest.fn().mockImplementation(() => mockFocusTrap));
-
-jest.mock('docc-render/utils/scroll-lock', () => ({
-  lockScroll: jest.fn(),
-  unlockScroll: jest.fn(),
-  isLocked: false,
-}));
+jest.mock('docc-render/utils/changeElementVOVisibility');
+jest.mock('docc-render/utils/scroll-lock');
+jest.mock('docc-render/utils/FocusTrap');
 
 const { BreakpointScopes, BreakpointName } = BreakpointEmitter.constants;
 const { NavStateClasses } = NavBase.constants;
@@ -399,7 +384,6 @@ describe('NavBase', () => {
     wrapper = await createWrapper();
     const link = wrapper.find({ ref: 'axToggle' });
     link.trigger('click');
-    scrollLock.isLocked = true;
     // simulate end of transitions
     emitEndOfTrayTransition(wrapper);
     // assert the lock is called once
@@ -413,7 +397,6 @@ describe('NavBase', () => {
     wrapper = await createWrapper();
     const link = wrapper.find({ ref: 'axToggle' });
     link.trigger('click');
-    scrollLock.isLocked = true;
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(0);
     wrapper.destroy();
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
@@ -425,24 +408,24 @@ describe('NavBase', () => {
     expect(FocusTrap).toHaveBeenCalledWith(wrapper.vm.$refs.wrapper);
     wrapper.find({ ref: 'axToggle' }).trigger('click');
     await wrapper.vm.$nextTick();
-    expect(mockFocusTrap.start).toHaveBeenCalledTimes(1);
+    expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
   });
 
   it('unlocks the focus on close', async () => {
     wrapper = await createWrapper();
     wrapper.find({ ref: 'axToggle' }).trigger('click');
     await wrapper.vm.$nextTick();
-    expect(mockFocusTrap.start).toHaveBeenCalledTimes(1);
-    expect(mockFocusTrap.stop).toHaveBeenCalledTimes(0);
+    expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
+    expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
     wrapper.find({ ref: 'axToggle' }).trigger('click');
-    expect(mockFocusTrap.stop).toHaveBeenCalledTimes(1);
+    expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
   });
 
   it('destroys the focus instance on component destroy', async () => {
     wrapper = await createWrapper();
-    expect(mockFocusTrap.destroy).toHaveBeenCalledTimes(0);
+    expect(FocusTrap.mock.results[0].value.destroy).toHaveBeenCalledTimes(0);
     wrapper.destroy();
-    expect(mockFocusTrap.destroy).toHaveBeenCalledTimes(1);
+    expect(FocusTrap.mock.results[0].value.destroy).toHaveBeenCalledTimes(1);
   });
 
   it('changes the sibling visibility to `hidden` on expand', async () => {
