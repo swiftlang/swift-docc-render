@@ -10,8 +10,8 @@
 
 <template>
   <div class="documentation-hero" :style="styles">
-    <NavigatorLeafIcon :kind="kind" key="first" class="background-icon first-icon" with-colors />
-    <NavigatorLeafIcon :kind="kind" key="second" class="background-icon second-icon" with-colors />
+    <NavigatorLeafIcon :type="type" key="first" class="background-icon first-icon" with-colors />
+    <NavigatorLeafIcon :type="type" key="second" class="background-icon second-icon" with-colors />
     <div class="documentation-hero__content">
       <slot />
     </div>
@@ -21,23 +21,23 @@
 <script>
 
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
-import { TopicKindColorsMap, TopicKindAliases, TopicKindColors } from 'docc-render/constants/kinds';
+import { TopicTypeColorsMap, TopicTypeAliases, TopicTypeColors } from 'docc-render/constants/TopicTypes';
 
 export default {
   name: 'DocumentationHero',
   components: { NavigatorLeafIcon },
   props: {
-    kind: {
+    type: {
       type: String,
       required: true,
     },
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
-    color: ({ kind }) => TopicKindColorsMap[TopicKindAliases[kind] || kind] || TopicKindColors.teal,
+    color: ({ type }) => TopicTypeColorsMap[TopicTypeAliases[type] || type] || TopicTypeColors.teal,
     styles: ({ color }) => ({
       // use the color or fallback to the gray secondary, if not defined.
-      '--accent-color': `var(--color-kind-icon-${color}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
     }),
   },
 };

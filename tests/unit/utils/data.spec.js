@@ -318,11 +318,11 @@ describe('fetchAPIChangesForRoute', () => {
 });
 
 describe('fetchIndexPathsData', () => {
-  it('fetches the data for the navigation-index', async () => {
+  it('fetches the data for the index/index.json', async () => {
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchIndexPathsData();
-    expect(fetch).toHaveBeenLastCalledWith('http://localhost/navigation-index.json');
+    expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json');
     expect(data).toEqual({ foobar: 'foobar' });
   });
 });

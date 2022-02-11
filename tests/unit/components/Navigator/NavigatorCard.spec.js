@@ -6,11 +6,11 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import NavigatorCard, { STORAGE_KEYS } from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
-import { TopicKind } from '@/constants/kinds';
+import { TopicTypes } from '@/constants/TopicTypes';
 import { RecycleScroller } from 'vue-virtual-scroller';
 import 'intersection-observer';
 import { LEAF_SIZES } from '@/constants/sidebar';
@@ -31,7 +31,7 @@ const RecycleScrollerStub = {
   },
 };
 const root0 = {
-  kind: 'overview',
+  type: 'overview',
   path: '/tutorials/fookit',
   title: 'TopLevel',
   uid: 0,
@@ -45,7 +45,7 @@ const root0 = {
 };
 
 const root0Child0 = {
-  kind: 'tutorial',
+  type: 'tutorial',
   path: '/tutorials/fookit/first-child-depth-1',
   title: 'First Child, Depth 1',
   uid: 1,
@@ -55,7 +55,7 @@ const root0Child0 = {
   childUIDs: [],
 };
 const root0Child1 = {
-  kind: 'tutorial',
+  type: 'tutorial',
   path: '/tutorials/fookit/second-child-depth-1',
   title: 'Second Child, Depth 1',
   uid: 2,
@@ -67,7 +67,7 @@ const root0Child1 = {
   ],
 };
 const root0Child1GrandChild0 = {
-  kind: 'tutorial',
+  type: 'tutorial',
   path: '/tutorials/fookit/second-child-depth-1/first-child-depth-2',
   title: 'First Child, Depth 2',
   uid: 3,
@@ -81,7 +81,7 @@ const root1 = {
     text: 'Create a tutorial.',
     type: 'text',
   }],
-  kind: 'article',
+  type: 'article',
   path: '/documentation/fookit/gettingstarted',
   title: 'Getting Started',
   uid: 4,
@@ -106,7 +106,7 @@ const defaultProps = {
   technologyPath: '/path/to/technology',
   children,
   activePath,
-  kind: TopicKind.module,
+  type: TopicTypes.module,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -127,7 +127,7 @@ describe('NavigatorCard', () => {
   });
   it('renders the NavigatorCard', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.card-icon').props('kind')).toEqual(defaultProps.kind);
+    expect(wrapper.find('.card-icon').props('type')).toEqual(defaultProps.type);
     // assert link
     expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);

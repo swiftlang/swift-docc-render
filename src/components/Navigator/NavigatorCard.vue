@@ -15,7 +15,7 @@
         <InlineCloseIcon class="icon-inline close-icon" />
       </button>
       <Reference :url="technologyPath" class="navigator-head">
-        <NavigatorLeafIcon :kind="kind" with-colors class="card-icon" />
+        <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
         <div class="card-link">
           {{ technology }}
         </div>
@@ -124,7 +124,7 @@ export default {
       type: Array,
       required: true,
     },
-    kind: {
+    type: {
       type: String,
       required: true,
     },

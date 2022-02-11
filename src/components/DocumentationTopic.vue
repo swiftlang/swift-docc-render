@@ -12,7 +12,7 @@
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
           <slot name="above-title" />
-          <DocumentationHero :kind="symbolKind || role">
+          <DocumentationHero :type="symbolKind || role">
             <Title :eyebrow="roleHeading">{{ title }}</Title>
             <Abstract v-if="abstract" :content="abstract" />
           </DocumentationHero>

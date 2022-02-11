@@ -10,14 +10,14 @@
 
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
-import { TopicKind } from '@/constants/kinds';
+import { TopicTypes } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
 
 const defaultProps = {
   item: {
     depth: 2,
-    kind: TopicKind.func,
+    type: TopicTypes.func,
     childUIDs: [1, 2, 3],
     path: '/path/to/foo',
     title: 'Foo Item',
@@ -44,7 +44,7 @@ describe('NavigatorCardItem', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
-    expect(wrapper.find(NavigatorLeafIcon).props('kind')).toBe(defaultProps.item.kind);
+    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(defaultProps.item.type);
     expect(wrapper.find('.leaf-link').props('url')).toEqual(defaultProps.item.path);
     expect(wrapper.find(HighlightMatches).props()).toEqual({
       text: defaultProps.item.title,

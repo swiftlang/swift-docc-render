@@ -11,15 +11,15 @@
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 import { shallowMount } from '@vue/test-utils';
 import {
-  TopicKind,
-  TopicKindAliases,
-  TopicKindColors,
-  TopicKindColorsMap,
-} from '@/constants/kinds';
+  TopicTypes,
+  TopicTypeAliases,
+  TopicTypeColors,
+  TopicTypeColorsMap,
+} from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 
 const defaultProps = {
-  kind: TopicKind.class,
+  type: TopicTypes.class,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -40,37 +40,37 @@ describe('DocumentationHero', () => {
     expect(allIcons).toHaveLength(2);
     expect(allIcons.at(0).props()).toEqual({
       withColors: true,
-      kind: defaultProps.kind,
+      type: defaultProps.type,
     });
     expect(allIcons.at(0).classes()).toEqual(['background-icon', 'first-icon']);
     expect(allIcons.at(1).classes()).toEqual(['background-icon', 'second-icon']);
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-kind-icon-${TopicKindColorsMap[defaultProps.kind]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${TopicTypeColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
     });
   });
 
   it('finds aliases, for the color', () => {
     const wrapper = createWrapper({
       propsData: {
-        kind: TopicKind.init,
+        type: TopicTypes.init,
       },
     });
-    const color = TopicKindColorsMap[TopicKindAliases[TopicKind.init]];
+    const color = TopicTypeColorsMap[TopicTypeAliases[TopicTypes.init]];
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-kind-icon-${color}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
     });
   });
 
-  it('falls back to the teal color for kinds without a color', () => {
+  it('falls back to the teal color for types without a color', () => {
     const wrapper = createWrapper({
       propsData: {
-        kind: TopicKind.section,
+        type: TopicTypes.section,
       },
     });
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-kind-icon-${TopicKindColors.teal}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${TopicTypeColors.teal}, var(--color-figure-gray-secondary))`,
     });
   });
 });

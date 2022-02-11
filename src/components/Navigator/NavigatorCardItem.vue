@@ -23,10 +23,10 @@
       >
         <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
       </button>
-      <NavigatorLeafIcon v-if="!isGroupMarker" :kind="item.kind" class="navigator-icon" />
+      <NavigatorLeafIcon v-if="!isGroupMarker" :type="item.type" class="navigator-icon" />
       <div class="title-container">
         <Reference
-          :url="item.path"
+          :url="item.path || ''"
           :isActive="!isGroupMarker"
           :class="{ bolded: isBold }"
           class="leaf-link"
@@ -46,7 +46,7 @@ import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIco
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
-import { TopicKind } from 'docc-render/constants/kinds';
+import { TopicTypes } from 'docc-render/constants/TopicTypes';
 
 export default {
   name: 'NavigatorCardItem',
@@ -79,7 +79,7 @@ export default {
     },
   },
   computed: {
-    isGroupMarker: ({ item: { kind } }) => kind === TopicKind.groupMarker,
+    isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
   },
   methods: {
     toggleTree() {
