@@ -124,10 +124,6 @@ export default {
       type: Array,
       required: true,
     },
-    showExtendedInfo: {
-      type: Boolean,
-      default: false,
-    },
     kind: {
       type: String,
       required: true,

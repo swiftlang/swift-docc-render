@@ -19,7 +19,7 @@
       :active-path="activePath"
       @close="$emit('close')"
     />
-    <div v-else>
+    <div v-else class="loading-placeholder">
       Fetching...
     </div>
   </div>
