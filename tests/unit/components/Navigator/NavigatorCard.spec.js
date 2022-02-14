@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard, { STORAGE_KEYS } from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -273,6 +273,31 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+  });
+
+  it('allows opening an item, that has a filter match', async () => {
+    const wrapper = createWrapper();
+    const filter = wrapper.find('input');
+    await flushPromises();
+    filter.setValue(root0Child1.title);
+    await flushPromises();
+    // assert match and all if it's parents are visible
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(2);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child1);
+    // open the last match
+    all.at(1).vm.$emit('toggle', root0Child1);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    // assert the last match child is visible
+    expect(all).toHaveLength(3);
+    expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    // close the match
+    all.at(1).vm.$emit('toggle', root0Child1);
+    await flushPromises();
+    // assert there are again only 2 matches
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
   });
 
   it('removes duplicate items, when multiple items with the same parent match the filter', async () => {
