@@ -10,7 +10,7 @@
 
 <template>
   <div class="navigator-card">
-    <div class="head-wrapper" :class="{ 'extra-info': showExtendedInfo }">
+    <div class="head-wrapper">
       <button class="close-card-mobile" @click="$emit('close')">
         <InlineCloseIcon class="icon-inline close-icon" />
       </button>
@@ -34,7 +34,6 @@
         <NavigatorCardItem
           :item="item"
           :filter-pattern="filterPattern"
-          :show-extended-info="showExtendedInfo"
           :is-active="item.uid === activeUID"
           :is-bold="activePathMap[item.uid]"
           :expanded="openNodes[item.uid]"
@@ -152,9 +151,9 @@ export default {
       // remove the `g` for global, as that causes bugs when matching
       : new RegExp(safeHighlightPattern(filter), 'i')),
     /**
-     * Return the item size for the Scroller element. Its higher when we show extra info.
+     * Return the item size for the Scroller element.
      */
-    itemSize: ({ showExtendedInfo }) => (showExtendedInfo ? LEAF_SIZES.max : LEAF_SIZES.min),
+    itemSize: () => LEAF_SIZES.min,
     /**
      * Generates a map of the children, with the uid as the key.
      * @return {Object.<string, NavigatorFlatItem>}

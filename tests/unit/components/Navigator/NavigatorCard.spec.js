@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import NavigatorCard, { STORAGE_KEYS } from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -106,7 +106,6 @@ const defaultProps = {
   technologyPath: '/path/to/technology',
   children,
   activePath,
-  showExtendedInfo: false,
   kind: TopicKind.module,
 };
 
@@ -151,19 +150,9 @@ describe('NavigatorCard', () => {
       isActive: false,
       isBold: true,
       item: root0,
-      showExtendedInfo: false,
     });
     // assert no-items-wrapper
     expect(wrapper.find('.no-items-wrapper').exists()).toBe(false);
-  });
-
-  it('determines the itemSize', async () => {
-    const wrapper = createWrapper();
-    const scroller = wrapper.find(RecycleScroller);
-    expect(scroller.props('itemSize')).toBe(LEAF_SIZES.min);
-    wrapper.setProps({ showExtendedInfo: true });
-    await wrapper.vm.$nextTick();
-    expect(scroller.props('itemSize')).toBe(LEAF_SIZES.max);
   });
 
   it('hides the RecycleScroller, if no items to show', async () => {
@@ -207,7 +196,6 @@ describe('NavigatorCard', () => {
       isActive: false,
       isBold: false,
       item,
-      showExtendedInfo: false,
     });
     unopenedItem.vm.$emit('toggle', item);
     await wrapper.vm.$nextTick();
@@ -407,16 +395,6 @@ describe('NavigatorCard', () => {
     wrapper.find('.close-card-mobile').trigger('click');
     await flushPromises();
     expect(wrapper.emitted('close')).toHaveLength(1);
-  });
-
-  it('applies a class and passes the `showExtendedInfo` prop', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        showExtendedInfo: true,
-      },
-    });
-    expect(wrapper.find('.head-wrapper').classes()).toContain('extra-info');
-    expect(wrapper.find(NavigatorCardItem).props('showExtendedInfo')).toBe(true);
   });
 
   it('persists the filtered state', async () => {

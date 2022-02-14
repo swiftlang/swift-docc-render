@@ -29,7 +29,6 @@
         class="full-width-container"
         :open-externally.sync="isSideNavOpen"
         :hide-sidebar="isTargetIDE"
-        @width-change="handleWidthChange"
       >
         <template #aside>
           <aside class="doc-topic-aside">
@@ -39,7 +38,6 @@
             >
               <template #default="slotProps">
                 <Navigator
-                  :show-extra-info="showExtraNavigatorInfo"
                   :parent-topic-identifiers="navigatorParentTopicIdentifiers"
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
@@ -84,8 +82,6 @@ import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidt
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
-const EXTRA_INFO_THRESHOLD = 500;
-
 export default {
   name: 'DocumentationTopicView',
   components: {
@@ -96,14 +92,12 @@ export default {
     CodeTheme,
     Nav: DocumentationNav,
   },
-  constants: { EXTRA_INFO_THRESHOLD },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
     return {
       topicDataDefault: null,
       topicDataObjc: null,
       isSideNavOpen: false,
-      showExtraNavigatorInfo: false,
       store: DocumentationTopicStore,
     };
   },
@@ -238,9 +232,6 @@ export default {
     },
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
-    },
-    handleWidthChange(width) {
-      this.showExtraNavigatorInfo = width > EXTRA_INFO_THRESHOLD;
     },
   },
   mounted() {

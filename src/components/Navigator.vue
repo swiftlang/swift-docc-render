@@ -17,7 +17,6 @@
       :kind="kind"
       :children="flatChildren"
       :active-path="activePath"
-      :show-extended-info="showExtraInfo"
       @close="$emit('close')"
     />
     <div v-else>
@@ -58,10 +57,6 @@ export default {
     parentTopicIdentifiers: {
       type: Array,
       required: true,
-    },
-    showExtraInfo: {
-      type: Boolean,
-      default: false,
     },
     technology: {
       type: Object,

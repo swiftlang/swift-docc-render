@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import AdjustableSidebarWidth, {
   eventsMap,
@@ -19,8 +19,8 @@ import { waitFrames } from '@/utils/loading';
 import FocusTrap from '@/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
-import { createEvent, flushPromises } from '../../../test-utils';
 import { BreakpointName } from '@/utils/breakpoints';
+import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/debounce');
 jest.mock('docc-render/utils/storage');

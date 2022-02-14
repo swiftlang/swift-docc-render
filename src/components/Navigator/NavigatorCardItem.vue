@@ -11,7 +11,7 @@
 <template>
   <div
     class="navigator-card-item"
-    :class="{ expanded, 'extra-info': showExtendedInfo }"
+    :class="{ expanded }"
     :style="{ '--nesting-index': item.depth }"
   >
     <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
@@ -36,12 +36,6 @@
             :matcher="filterPattern"
           />
         </Reference>
-        <ContentNode
-          v-if="item.abstract"
-          v-show="showExtendedInfo"
-          :content="item.abstract"
-          class="extended-content"
-        />
       </div>
     </div>
   </div>
@@ -50,7 +44,6 @@
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
-import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicKind } from 'docc-render/constants/kinds';
@@ -59,7 +52,6 @@ export default {
   name: 'NavigatorCardItem',
   components: {
     HighlightMatches,
-    ContentNode,
     NavigatorLeafIcon,
     InlineChevronRightIcon,
     Reference,
@@ -70,10 +62,6 @@ export default {
       required: true,
     },
     expanded: {
-      type: Boolean,
-      default: false,
-    },
-    showExtendedInfo: {
       type: Boolean,
       default: false,
     },
@@ -112,10 +100,6 @@ export default {
   display: flex;
   align-items: center;
   padding-right: var(--card-horizontal-spacing);
-
-  &.extra-info {
-    height: 53px;
-  }
 }
 
 .head-wrapper {
