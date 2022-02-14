@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
 import { getSetting } from 'docc-render/utils/theme-settings';
@@ -202,6 +202,15 @@ describe('DocumentationTopic', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
     expect(hero.props()).toEqual({ kind: propsData.symbolKind });
+  });
+
+  it('renders a `DocumentationHero`, with a the `role`, if no symbolKind', () => {
+    wrapper.setProps({
+      role: TopicKind.article,
+      symbolKind: '',
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props()).toEqual({ kind: TopicKind.article });
   });
 
   it('renders a `Title`', () => {

@@ -12,7 +12,7 @@
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
           <slot name="above-title" />
-          <DocumentationHero :kind="symbolKind">
+          <DocumentationHero :kind="symbolKind || role">
             <Title :eyebrow="roleHeading">{{ title }}</Title>
             <Abstract v-if="abstract" :content="abstract" />
           </DocumentationHero>
@@ -253,6 +253,10 @@ export default {
       required: false,
     },
     symbolKind: {
+      type: String,
+      default: '',
+    },
+    role: {
       type: String,
       default: '',
     },

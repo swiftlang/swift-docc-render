@@ -70,6 +70,7 @@ export const TopicKindColors = {
 };
 
 export const TopicKindColorsMap = {
+  [TopicKind.article]: TopicKindColors.teal,
   [TopicKind.init]: TopicKindColors.blue,
   [TopicKind.typeMethod]: TopicKindColors.blue,
   [TopicKind.typeProperty]: TopicKindColors.teal,
