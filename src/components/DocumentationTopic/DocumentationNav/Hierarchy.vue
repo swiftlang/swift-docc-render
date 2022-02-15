@@ -66,10 +66,10 @@ import throttle from 'docc-render/utils/throttle';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
-// The max number of items that will initially be visible and uncollapsed w/o
+// The max number of link items that will initially be visible and uncollapsed w/o
 // any user interaction. If there are more items, they will be collapsed into a
 // menu that users need to interact with to see.
-const MaxVisibleItems = 3;
+const MaxVisibleLinks = 3;
 
 export default {
   name: 'Hierarchy',
@@ -78,6 +78,9 @@ export default {
     NavMenuItems,
     HierarchyCollapsedItems,
     HierarchyItem,
+  },
+  constants: {
+    MaxVisibleLinks,
   },
   props: {
     isSymbolDeprecated: Boolean,
@@ -117,28 +120,32 @@ export default {
       });
     },
     /**
-     * Extract the root item from the parentTopics
+     * Extract the root item from the parentTopics.
+     * Works only if above 1000px windowWidth
      */
-    root: ({ parentTopics }) => parentTopics[0],
+    root: ({ parentTopics, windowWidth }) => (windowWidth <= 1000 ? null : parentTopics[0]),
+    firstItemSlice: ({ root }) => (root ? 1 : 0),
     /**
      * Figure out how many items we can show, after the collapsed items,
      * based on the window.innerWidth
      */
     linksAfterCollapse: ({ windowWidth, hasBadge }) => {
       const extraItemsToRemove = hasBadge ? 1 : 0;
-      // never show more than the `MaxVisibleItems`
-      if (windowWidth > 1200) return MaxVisibleItems - extraItemsToRemove;
-      if (windowWidth > 1000) return MaxVisibleItems - 1 - extraItemsToRemove;
-      if (windowWidth >= 800) return MaxVisibleItems - 2 - extraItemsToRemove;
+      // never show more than the `MaxVisibleLinks`
+      if (windowWidth > 1200) return MaxVisibleLinks - extraItemsToRemove;
+      if (windowWidth > 1000) return MaxVisibleLinks - 1 - extraItemsToRemove;
+      if (windowWidth >= 800) return MaxVisibleLinks - 2 - extraItemsToRemove;
       return 0;
     },
-    collapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
+    collapsibleItems: ({ parentTopics, linksAfterCollapse, firstItemSlice }) => (
       // if there are links, slice all except those, otherwise get all but the root
-      linksAfterCollapse ? parentTopics.slice(1, -linksAfterCollapse) : parentTopics.slice(1)
+      linksAfterCollapse
+        ? parentTopics.slice(firstItemSlice, -linksAfterCollapse)
+        : parentTopics.slice(firstItemSlice)
     ),
-    nonCollapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
+    nonCollapsibleItems: ({ parentTopics, linksAfterCollapse, firstItemSlice }) => (
       // if there are links to show, slice them out, otherwise return none
-      linksAfterCollapse ? parentTopics.slice(1).slice(-linksAfterCollapse) : []
+      linksAfterCollapse ? parentTopics.slice(firstItemSlice).slice(-linksAfterCollapse) : []
     ),
     hasBadge: ({ isSymbolDeprecated, isSymbolBeta, currentTopicTags }) => (
       isSymbolDeprecated || isSymbolBeta || currentTopicTags.length
@@ -162,8 +169,9 @@ export default {
     margin-right: 0;
   }
 
-  .root-hierarchy {
-    flex: 1 0 auto;
+  // make sure the root-hierarchy has a limit as well
+  .root-hierarchy .item {
+    @include truncate(10rem);
   }
 }
 </style>

@@ -11,7 +11,6 @@
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import HierarchyItem
   from 'docc-render/components/DocumentationTopic/DocumentationNav/HierarchyItem.vue';
-import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 
 const mountWithProps = props => shallowMount(HierarchyItem, {
@@ -34,10 +33,10 @@ describe('HierarchyItem', () => {
     expect(wrapper.classes('collapsed')).toBe(true);
   });
 
-  it('renders a right chevron icon', () => {
+  it('renders a slash instead of an icon', () => {
     const wrapper = mountWithProps({ url: 'foo.bar' });
 
-    expect(wrapper.find('.hierarchy-item-icon').is(InlineChevronRightIcon)).toBe(true);
+    expect(wrapper.find('.hierarchy-item-icon').text()).toBe('/');
   });
 
   it('renders a .parent.item link if the URL exists', () => {
@@ -64,6 +63,6 @@ describe('HierarchyItem', () => {
       },
       stubs: { 'router-link': RouterLinkStub },
     });
-    expect(wrapper.text()).toEqual('Post Current Item Content');
+    expect(wrapper.text()).toContain('Post Current Item Content');
   });
 });
