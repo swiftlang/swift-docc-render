@@ -55,8 +55,8 @@ export default {
   async created() {
     try {
       this.isFetching = true;
-      const { languages } = await fetchIndexPathsData();
-      this.navigationIndex = languages;
+      const { interfaceLanguages } = await fetchIndexPathsData();
+      this.navigationIndex = interfaceLanguages;
     } catch (e) {
       console.log(e);
     } finally {

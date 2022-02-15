@@ -38,7 +38,7 @@ const objectiveCIndexOne = {
 };
 
 const response = {
-  languages: {
+  interfaceLanguages: {
     [Language.swift.key.url]: [
       swiftIndexOne,
       swiftIndexTwo,
@@ -107,8 +107,8 @@ describe('NavigatorDataProvider', () => {
   it('falls back to swift items, if no objc items', async () => {
     expect(fetchIndexPathsData).toHaveBeenCalledTimes(0);
     fetchIndexPathsData.mockResolvedValueOnce({
-      languages: {
-        [Language.swift.key.url]: response.languages[Language.swift.key.url],
+      interfaceLanguages: {
+        [Language.swift.key.url]: response.interfaceLanguages[Language.swift.key.url],
       },
     });
     createWrapper({

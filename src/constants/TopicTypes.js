@@ -69,6 +69,7 @@ export const TopicTypeColors = {
 };
 
 export const TopicTypeColorsMap = {
+  [TopicTypes.article]: TopicTypeColors.teal,
   [TopicTypes.init]: TopicTypeColors.blue,
   [TopicTypes.typeMethod]: TopicTypeColors.blue,
   [TopicTypes.typeProperty]: TopicTypeColors.teal,

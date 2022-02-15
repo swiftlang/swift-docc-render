@@ -214,11 +214,11 @@ export default {
     // The first path for any variant with a "swift" interface language trait (if any)
     swiftPath: ({ languagePaths: { [Language.swift.key.api]: [path] = [] } = {} }) => path,
     isSymbolBeta:
-      ({ topicProps: { platforms } }) => platforms
+      ({ topicProps: { platforms } }) => !!(platforms
         && platforms.length
-        && platforms.every(platform => platform.beta),
+        && platforms.every(platform => platform.beta)),
     isSymbolDeprecated:
-      ({ topicProps: { platforms, deprecationSummary } }) => (
+      ({ topicProps: { platforms, deprecationSummary } }) => !!(
         (deprecationSummary && deprecationSummary.length > 0)
         || (platforms
           && platforms.length

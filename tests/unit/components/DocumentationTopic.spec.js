@@ -206,11 +206,11 @@ describe('DocumentationTopic', () => {
 
   it('renders a `DocumentationHero`, with a the `role`, if no symbolKind', () => {
     wrapper.setProps({
-      role: TopicKind.article,
+      role: TopicTypes.article,
       symbolKind: '',
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ kind: TopicKind.article });
+    expect(hero.props()).toEqual({ type: TopicTypes.article });
   });
 
   it('renders a `Title`', () => {

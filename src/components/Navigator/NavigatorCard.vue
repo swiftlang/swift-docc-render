@@ -86,7 +86,7 @@ import InlineCloseIcon from 'theme/components/Icons/InlineCloseIcon.vue';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
 import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
-import { TopicKind } from 'docc-render/constants/kinds';
+import { TopicTypes } from 'docc-render/constants/TopicTypes';
 
 export const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -203,7 +203,7 @@ export default {
       // match each child's title, against the `filterPattern`
       return children.filter(({ title, kind }) => (
         // make sure groupMarker's dont match
-        filterPattern.test(title) && kind !== TopicKind.groupMarker
+        filterPattern.test(title) && kind !== TopicTypes.groupMarker
       ));
     },
     /**

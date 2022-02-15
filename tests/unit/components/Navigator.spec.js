@@ -2,8 +2,8 @@ import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
-import { TopicKind } from '@/constants/kinds';
 import throttle from '@/utils/throttle';
+import { TopicTypes } from '@/constants/TopicTypes';
 import { createEvent } from '../../../test-utils';
 
 jest.mock('@/utils/throttle', () => jest.fn(v => v));
@@ -14,38 +14,38 @@ const technology = {
     {
       title: 'Child0',
       path: '/foo/child0',
-      kind: 'article',
+      type: 'article',
       children: [
         {
           title: 'Child0_GrandChild0',
           path: '/foo/child0/grandchild0',
-          kind: 'tutorial',
+          type: 'tutorial',
         },
         {
           title: 'Child0_GrandChild1',
           path: '/foo/child0/grandchild1',
-          kind: 'tutorial',
+          type: 'tutorial',
           children: [{
             title: 'Child0_GrandChild0_GreatGrandChild0',
             path: '/foo/child0/grandchild0/greatgrandchild0',
-            kind: 'tutorial',
+            type: 'tutorial',
           }],
         },
         {
           title: 'Child0_GrandChild2',
           path: '/foo/child0/grandchild2',
-          kind: 'tutorial',
+          type: 'tutorial',
         },
       ],
     },
     {
       title: 'Child1',
       path: '/foo/child1/',
-      kind: 'tutorial',
+      type: 'tutorial',
       children: [{
         title: 'Child1_GrandChild0',
         path: '/foo/child1/grandchild0',
-        kind: 'method',
+        type: 'method',
       }],
     },
   ],
@@ -102,7 +102,7 @@ describe('Navigator', () => {
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
       children: expect.any(Array),
-      kind: TopicKind.module,
+      type: TopicTypes.module,
       technology: technology.title,
       technologyPath: technology.path,
     });
@@ -130,7 +130,7 @@ describe('Navigator', () => {
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
       children: [],
-      kind: TopicKind.module,
+      type: TopicTypes.module,
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
     });
@@ -189,7 +189,7 @@ describe('Navigator', () => {
           746971241,
         ],
         depth: 0,
-        kind: 'article',
+        type: 'article',
         parent: '<root>',
         path: '/foo/child0',
         title: 'Child0',
@@ -198,7 +198,7 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
-        kind: 'tutorial',
+        type: 'tutorial',
         parent: 551503843,
         path: '/foo/child0/grandchild0',
         title: 'Child0_GrandChild0',
@@ -209,7 +209,7 @@ describe('Navigator', () => {
           1489150959,
         ],
         depth: 1,
-        kind: 'tutorial',
+        type: 'tutorial',
         parent: 551503843,
         path: '/foo/child0/grandchild1',
         title: 'Child0_GrandChild1',
@@ -218,7 +218,7 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 2,
-        kind: 'tutorial',
+        type: 'tutorial',
         parent: 746047719,
         path: '/foo/child0/grandchild0/greatgrandchild0',
         title: 'Child0_GrandChild0_GreatGrandChild0',
@@ -227,7 +227,7 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
-        kind: 'tutorial',
+        type: 'tutorial',
         parent: 551503843,
         path: '/foo/child0/grandchild2',
         title: 'Child0_GrandChild2',
@@ -238,7 +238,7 @@ describe('Navigator', () => {
           -134251586,
         ],
         depth: 0,
-        kind: 'tutorial',
+        type: 'tutorial',
         parent: '<root>',
         path: '/foo/child1/',
         title: 'Child1',
@@ -247,7 +247,7 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
-        kind: 'method',
+        type: 'method',
         parent: -97593392,
         path: '/foo/child1/grandchild0',
         title: 'Child1_GrandChild0',

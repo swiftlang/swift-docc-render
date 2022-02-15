@@ -30,7 +30,7 @@ const TechnologyWithChildren = {
 };
 
 jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
-  languages: {
+  interfaceLanguages: {
     [Language.swift.key.url]: [TechnologyWithChildren, { path: 'another/technology' }],
   },
 });
