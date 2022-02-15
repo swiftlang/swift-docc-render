@@ -181,10 +181,9 @@ export default {
 .navigator {
   position: sticky;
   top: $nav-height;
-  max-height: calc(100vh - #{$nav-height} - var(--sticky-top-offset));
-  height: 100%;
+  height: calc(100vh - #{$nav-height} - var(--sticky-top-offset));
   box-sizing: border-box;
-  transition: max-height 0.3s linear;
+  transition: height 0.3s linear;
   border-left: 1px solid var(--color-grid);
 
   @include breakpoint(small) {
