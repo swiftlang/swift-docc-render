@@ -30,7 +30,7 @@ import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import throttle from 'docc-render/utils/throttle';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
-import { TopicTypes } from '@/constants/TopicTypes';
+import { TopicTypes } from 'docc-render/constants/TopicTypes';
 
 /**
  * @typedef NavigatorFlatItem
