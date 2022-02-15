@@ -467,7 +467,7 @@ export default {
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 $navigator-card-horizontal-spacing: 20px !default;
-$navigator-card-vertical-spacing: 18px !default;
+$navigator-card-vertical-spacing: 8px !default;
 
 .navigator-card {
   overflow: hidden auto;
