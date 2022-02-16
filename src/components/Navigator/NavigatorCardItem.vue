@@ -119,13 +119,9 @@ export default {
       color: var(--color-figure-gray-secondary);
       font-weight: $font-weight-semibold;
     }
-
-    &:hover {
-      background: inherit;
-    }
   }
 
-  .hover & {
+  .hover &:not(.is-group) {
     background: var(--color-navigator-item-hover);
   }
 
@@ -169,7 +165,7 @@ export default {
 }
 
 .tree-toggle {
-  $size: 15px;
+  $size: 20px;
   $margin: 5px;
   position: relative;
   z-index: 1;
