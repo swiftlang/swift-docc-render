@@ -621,5 +621,6 @@ $navigator-card-vertical-spacing: 8px !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
+  padding-right: var(--card-horizontal-spacing);
 }
 </style>

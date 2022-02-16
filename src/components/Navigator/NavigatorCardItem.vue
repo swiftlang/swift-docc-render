@@ -99,7 +99,6 @@ export default {
   height: 32px;
   display: flex;
   align-items: center;
-  padding-right: var(--card-horizontal-spacing);
 }
 
 .head-wrapper {
