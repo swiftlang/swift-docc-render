@@ -28,6 +28,7 @@ jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/FocusTrap');
+jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
 storage.get.mockImplementation((key, value) => value);
 
@@ -167,15 +168,6 @@ describe('AdjustableSidebarWidth', () => {
       wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
       expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
-  });
-
-  it('allows removing the sidebar using `hideSidebar` prop', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        hideSidebar: true,
-      },
-    });
-    expect(wrapper.find('.sidebar').exists()).toBe(false);
   });
 
   it('changes the sidebar width, if outside the min/max on orientation change', async () => {

@@ -25,10 +25,10 @@
         :references="topicProps.references"
         @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
       />
-      <AdjustableSidebarWidth
-        class="full-width-container"
-        :open-externally.sync="isSideNavOpen"
-        :hide-sidebar="isTargetIDE"
+      <component
+        :is="isTargetIDE ? 'div': 'AdjustableSidebarWidth'"
+        v-bind="sidebarProps"
+        v-on="sidebarListeners"
       >
         <template #aside>
           <aside class="doc-topic-aside">
@@ -48,17 +48,15 @@
             </NavigatorDataProvider>
           </aside>
         </template>
-        <template #default>
-          <Topic
-            v-bind="topicProps"
-            :key="topicKey"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-            :isSymbolDeprecated="isSymbolDeprecated"
-            :isSymbolBeta="isSymbolBeta"
-          />
-        </template>
-      </AdjustableSidebarWidth>
+        <Topic
+          v-bind="topicProps"
+          :key="topicKey"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+      </component>
     </template>
   </CodeTheme>
 </template>
@@ -225,6 +223,12 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         )
       ),
+    sidebarProps: ({ isSideNavOpen, isTargetIDE }) => (isTargetIDE ? {} : { class: 'full-width-container', openExternally: isSideNavOpen }),
+    sidebarListeners() {
+      return this.isTargetIDE ? {} : {
+        'update:OpenExternally': (v) => { this.isSideNavOpen = v; },
+      };
+    },
   },
   methods: {
     applyObjcOverrides() {

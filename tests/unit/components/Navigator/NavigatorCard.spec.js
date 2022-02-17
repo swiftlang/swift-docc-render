@@ -13,7 +13,7 @@ import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { RecycleScroller } from 'vue-virtual-scroller';
 import 'intersection-observer';
-import { LEAF_SIZES } from '@/constants/sidebar';
+import { SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import Reference from '@/components/ContentNode/Reference.vue';
@@ -139,7 +139,7 @@ describe('NavigatorCard', () => {
         root0Child1, // we skip the grandchild, its parent is not open
         root1,
       ],
-      itemSize: LEAF_SIZES.min,
+      itemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
     });
     // assert CardItem

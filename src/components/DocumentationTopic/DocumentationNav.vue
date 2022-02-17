@@ -144,6 +144,8 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+$sidenav-icon-size: 19px;
+
 // overwrite the typography of menu items outside of breakpoint only
 /deep/ .nav-menu {
   @include font-styles(documentation-nav);
@@ -173,7 +175,7 @@ export default {
 }
 
 .sidenav-icon {
-  width: 19px;
-  height: 19px;
+  width: $sidenav-icon-size;
+  height: $sidenav-icon-size;
 }
 </style>

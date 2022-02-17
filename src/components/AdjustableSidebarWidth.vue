@@ -11,7 +11,6 @@
 <template>
   <div class="adjustable-sidebar-width">
     <div
-      v-if="!hideSidebar"
       ref="sidebar"
       class="sidebar"
       :class="{ 'fully-open': isMaxWidth }"
@@ -46,6 +45,7 @@ import { waitFrames } from 'docc-render/utils/loading';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
+import throttle from '@/utils/throttle';
 
 export const STORAGE_KEY = 'sidebar';
 
@@ -88,10 +88,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    hideSidebar: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     // get the min width, in case we dont have a previously saved value
@@ -126,12 +122,12 @@ export default {
     }),
   },
   async mounted() {
-    window.addEventListener('keydown', this.onEscapeClick);
+    window.addEventListener('keydown', this.onEscapeKeydown);
     window.addEventListener('resize', this.storeWindowSize);
     window.addEventListener('orientationchange', this.storeWindowSize);
 
     this.$once('hook:beforeDestroy', () => {
-      window.removeEventListener('keydown', this.onEscapeClick);
+      window.removeEventListener('keydown', this.onEscapeKeydown);
       window.removeEventListener('resize', this.storeWindowSize);
       window.removeEventListener('orientationchange', this.storeWindowSize);
       if (this.openExternally) {
@@ -180,13 +176,13 @@ export default {
         this.width = this.minWidth;
       }
     }, 50),
-    onEscapeClick({ key }) {
+    onEscapeKeydown({ key }) {
       if (key === 'Escape') this.closeMobileSidebar();
     },
-    async storeWindowSize() {
+    storeWindowSize: throttle(async function storeWindowSize() {
       await this.$nextTick();
       this.windowWidth = window.innerWidth;
-    },
+    }, 100),
     closeMobileSidebar() {
       if (!this.openExternally) return;
       this.$emit('update:openExternally', false);

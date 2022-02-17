@@ -34,15 +34,15 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .eyebrow {
-    @include font-styles(eyebrow-reduced);
-    color: light-color(fill-gray-tertiary);
-    display: block;
-    margin-bottom: rem(20px);
+  @include font-styles(eyebrow-reduced);
+  color: light-color(fill-gray-tertiary);
+  display: block;
+  margin-bottom: rem(20px);
 }
 
 .title {
-    @include font-styles(headline-reduced);
-    color: light-color(fill);
-    margin-bottom: rem(12px);
+  @include font-styles(headline-reduced);
+  color: light-color(fill);
+  margin-bottom: rem(12px);
 }
 </style>

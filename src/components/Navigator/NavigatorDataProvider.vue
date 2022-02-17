@@ -58,7 +58,7 @@ export default {
       const { interfaceLanguages } = await fetchIndexPathsData();
       this.navigationIndex = interfaceLanguages;
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       this.isFetching = false;
     }

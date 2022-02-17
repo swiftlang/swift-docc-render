@@ -78,7 +78,7 @@ import { clone } from 'docc-render/utils/data';
 import { waitFrames } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
-import { INDEX_ROOT_KEY, LEAF_SIZES } from 'docc-render/constants/sidebar';
+import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
@@ -150,7 +150,7 @@ export default {
     /**
      * Return the item size for the Scroller element.
      */
-    itemSize: () => LEAF_SIZES.min,
+    itemSize: () => SIDEBAR_ITEM_SIZE,
     /**
      * Generates a map of the children, with the uid as the key.
      * @return {Object.<string, NavigatorFlatItem>}

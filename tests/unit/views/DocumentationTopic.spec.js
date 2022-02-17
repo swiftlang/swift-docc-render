@@ -133,7 +133,6 @@ describe('DocumentationTopic', () => {
   it('renders the Navigator and AdjustableSidebarWidth', async () => {
     wrapper.setData({ topicData });
     expect(wrapper.find(AdjustableSidebarWidth).props()).toEqual({
-      hideSidebar: false,
       openExternally: false,
     });
     const technology = topicData.references['topic://foo'];
@@ -482,6 +481,20 @@ describe('DocumentationTopic', () => {
       });
       wrapper.setData({ topicData });
       expect(wrapper.contains(Nav)).toBe(false);
+    });
+
+    it('does not render an AdjustableSidebarWidth', () => {
+      wrapper = shallowMount(DocumentationTopic, {
+        mocks,
+        stubs: {
+          AdjustableSidebarWidth,
+          NavigatorDataProvider,
+        },
+        provide,
+      });
+      wrapper.setData({ topicData });
+      expect(wrapper.find(AdjustableSidebarWidth).exists()).toBe(false);
+      expect(wrapper.find(Topic).exists()).toBe(true);
     });
   });
 });
