@@ -11,6 +11,7 @@ import { getSetting } from 'docc-render/utils/theme-settings';
 import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
+
 const createMetaTags = ({ title, description, path }) => [
   {
     name: 'description',
@@ -65,28 +66,32 @@ const createMetaTags = ({ title, description, path }) => [
     content: resolveAbsoluteUrl(path),
   },
 ];
+
 const formatTitle = title => [title, themeTitle].filter(Boolean).join(' | ');
-const addMetaTags = (metadata) => {
-  const keys = Object.keys(metadata);
-  // check current metadata
-  const metaQuery = `meta[${keys[0]}="${metadata[keys[0]]}"]`;
-  if (document.querySelector(metaQuery)) {
-    if (document.querySelector(metaQuery).content === metadata.content) {
-      // if current metadata, do nothing
-      return;
+
+const addOrUpdateMetaTag = (metadata) => {
+  const { content } = metadata;
+  const key = metadata.property ? 'property' : 'name';
+  const ref = metadata[key];
+
+  const existingMetaElement = document.querySelector(`meta[${key}="${ref}"]`);
+  if (existingMetaElement) {
+    if (content) {
+      existingMetaElement.setAttribute('content', content);
+    } else {
+      existingMetaElement.remove();
     }
-    // remove current metadata if found
-    document.querySelector(metaQuery).remove();
+  } else {
+    // eslint-disable-next-line no-lonely-if
+    if (content) {
+      const newMetaElement = document.createElement('meta');
+      newMetaElement.setAttribute(key, metadata[key]);
+      newMetaElement.setAttribute('content', metadata.content);
+      document.getElementsByTagName('head')[0].appendChild(newMetaElement);
+    }
   }
-  // if content is empty, don't add meta tag
-  if (!metadata.content) {
-    return;
-  }
-  // create new metadata tag
-  const meta = document.createElement('meta');
-  keys.forEach(ref => meta.setAttribute(ref, metadata[ref]));
-  document.getElementsByTagName('head')[0].appendChild(meta);
 };
+
 const addTitle = (title) => {
   // eslint-disable-next-line no-param-reassign
   document.title = title;
@@ -103,6 +108,6 @@ export function addOrUpdateMetadata({ title, description, path }) {
   addTitle(formattedTitle);
   // create and add metadata tags
   createMetaTags({ title: formattedTitle, description, path }).forEach(
-    metadata => addMetaTags(metadata),
+    metadata => addOrUpdateMetaTag(metadata),
   );
 }
