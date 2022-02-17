@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 import { getSetting } from 'docc-render/utils/theme-settings';
-import { normalizeAssetUrl } from 'docc-render/utils/assets';
+import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
 const createMetaTags = ({ title, description, path }) => [
@@ -38,7 +38,15 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     property: 'og:url',
-    content: normalizeAssetUrl(path),
+    content: resolveAbsoluteUrl(path),
+  },
+  {
+    property: 'og:image',
+    content: resolveAbsoluteUrl('/developer-og.jpg'),
+  },
+  {
+    name: 'twitter:image',
+    content: resolveAbsoluteUrl('/developer-og-twitter.jpg'),
   },
   {
     name: 'twitter:card',
@@ -54,7 +62,7 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     name: 'twitter:url',
-    content: normalizeAssetUrl(path),
+    content: resolveAbsoluteUrl(path),
   },
 ];
 const formatTitle = title => [title, themeTitle].filter(Boolean).join(' | ');
