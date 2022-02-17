@@ -431,8 +431,12 @@ export default {
      */
     restorePersistedState() {
       const technology = sessionStorage.get(STORAGE_KEYS.technology);
+      const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
+
+      // make sure all nodes exist in the childrenMap
+      const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
       // if the technology does not match, do not use the persisted values
-      if (technology !== this.technology) {
+      if (technology !== this.technology || !allNodesMatch) {
         this.trackOpenNodes(this.nodeChangeDeps);
         return;
       }
@@ -441,7 +445,6 @@ export default {
       // create the openNodes map
       this.openNodes = Object.fromEntries(openNodes.map(n => [n, true]));
       // get all the nodes to render
-      const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
       // generate the array of flat children objects to render
       this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
       // finally fetch any previously assigned filters

@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard, { STORAGE_KEYS } from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -22,6 +22,8 @@ import { flushPromises } from '../../../../test-utils';
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/loading');
+
+sessionStorage.get.mockImplementation((key, fallback) => fallback);
 
 const RecycleScrollerStub = {
   props: RecycleScroller.props,
@@ -464,6 +466,17 @@ describe('NavigatorCard', () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.technology) return 'some-other';
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
+      return '';
+    });
+    const wrapper = createWrapper();
+    // assert we are render more than just the single item in the store
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+  });
+
+  it('does not restore the state, if the nodesToRender do not match what we have', () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, 'something-different'];
       return '';
     });
     const wrapper = createWrapper();
