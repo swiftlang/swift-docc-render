@@ -25,7 +25,7 @@ export default {
     },
   },
   render(createElement) {
-    // Return a simple p no text is being highlighted
+    // Return a simple p when no text is being highlighted
     const { matcher, text } = this;
     if (!matcher) {
       return createElement('p', { class: 'highlight' }, text);
