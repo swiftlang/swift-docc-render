@@ -66,9 +66,31 @@ import throttle from 'docc-render/utils/throttle';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
+/**
+ * Generates a list of links, that collapse into a dropdown,
+ * if under specific screen sizes or reach a limit.
+ *
+ * The first link is the Technology link, which is not counted towards the max limit.
+ * The last item is not a link, it only shows the current page you are on.
+ *
+ * @example
+ * technology / link_1 / link_2 / link_3 / current_item - beyond 1200
+ * technology / [...] / link_1 / link_2 / link_3 / current_item - beyond 1200 + more than 3 links
+ * technology / [...] / link_2 / link_3 / current_item - 1000-1200, 3 or more links
+ * technology / [...] / link_3 / current_item - 800-1000, 3 or more links
+ * [...] / current_item - <= 800 - technology is also pushed to collapsable items
+ *
+ * In cases where we have tags, like Deprecated or Beta, the max-items is reduced by 1
+ * technology / link_2 / link_3 / current_item [Beta] - beyond 1200 with 2 links
+ * technology / [...] / link_2 / link_3 / current_item [Beta] - beyond 1200 + more than 2 links
+ * technology / [...] / link_2 / current_item [Beta] - 1000-1200, 2 or more links
+ * technology / [...] / current_item [Beta] - 800-1000, 2 or more links
+ * [...] / current_item - <= 800 - technology is also pushed to collapsable items
+ */
+
 // The max number of link items that will initially be visible and uncollapsed w/o
-// any user interaction. If there are more items, they will be collapsed into a
-// menu that users need to interact with to see.
+// any user interaction, after the first technology link. If there are more items,
+// they will be collapsed into a menu that users need to interact with to see.
 const MaxVisibleLinks = 3;
 
 export default {
