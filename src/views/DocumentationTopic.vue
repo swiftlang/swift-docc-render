@@ -64,6 +64,7 @@
 
 <script>
 import { apply } from 'docc-render/utils/json-patch';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import {
   clone,
   fetchDataForRouteEnter,
@@ -224,7 +225,12 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         )
       ),
-    enableNavigator: () => false,
+    // Always disable the navigator for IDE targets. For other targets, allow
+    // this feature to be enabled through the `features.docs.navigator.enable`
+    // setting in `theme-settings.json`
+    enableNavigator: ({ isTargetIDE }) => !isTargetIDE && (
+      getSetting(['features', 'docs', 'navigator', 'enable'], false)
+    ),
     sidebarProps: ({ isSideNavOpen, enableNavigator }) => (enableNavigator ? { class: 'full-width-container', openExternally: isSideNavOpen } : {}),
     sidebarListeners() {
       return this.enableNavigator ? ({
