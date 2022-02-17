@@ -21,7 +21,11 @@
         class="aside"
         ref="aside"
       >
-        <slot name="aside" animation-class="aside-animated-child" />
+        <slot
+          name="aside"
+          animationClass="aside-animated-child"
+          :scrollLockID="scrollLockID"
+        />
       </div>
       <div
         class="resize-handle"
@@ -78,8 +82,13 @@ export const maxWidthResponsivePercents = {
   large: 50,
 };
 
+const SCROLL_LOCK_ID = 'sidebar-scroll-lock';
+
 export default {
   name: 'AdjustableSidebarWidth',
+  constants: {
+    SCROLL_LOCK_ID,
+  },
   components: {
     BreakpointEmitter,
   },
@@ -120,6 +129,7 @@ export default {
     asideClasses: ({ isDragging, openExternally, noTransition }) => ({
       dragging: isDragging, 'force-open': openExternally, 'no-transition': noTransition,
     }),
+    scrollLockID: () => SCROLL_LOCK_ID,
   },
   async mounted() {
     window.addEventListener('keydown', this.onEscapeKeydown);
@@ -236,14 +246,16 @@ export default {
      * Toggles the scroll lock on/off
      */
     toggleScrollLock(lock) {
+      const scrollLockContainer = document.getElementById(this.scrollLockID);
+      if (!scrollLockContainer) return;
       if (lock) {
-        scrollLock.lockScroll(this.$refs.aside);
+        scrollLock.lockScroll(scrollLockContainer);
         // lock focus
         this.focusTrapInstance.start();
         // hide sibling elements from VO
         changeElementVOVisibility.hide(this.$refs.aside);
       } else {
-        scrollLock.unlockScroll(this.$refs.aside);
+        scrollLock.unlockScroll(scrollLockContainer);
         this.focusTrapInstance.stop();
         changeElementVOVisibility.show(this.$refs.aside);
       }
@@ -285,6 +297,7 @@ export default {
     overflow: hidden;
     min-width: 0;
     max-width: 100%;
+    height: 100vh;
     position: fixed;
     top: 0;
     bottom: 0;

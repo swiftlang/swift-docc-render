@@ -24,6 +24,7 @@
     <div class="card-body">
       <RecycleScroller
         v-show="nodesToRender.length"
+        :id="scrollLockID"
         ref="scroller"
         class="scroller"
         :items="nodesToRender"
@@ -129,6 +130,10 @@ export default {
       required: true,
     },
     technologyPath: {
+      type: String,
+      default: '',
+    },
+    scrollLockID: {
       type: String,
       default: '',
     },

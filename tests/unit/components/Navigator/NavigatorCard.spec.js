@@ -107,6 +107,7 @@ const defaultProps = {
   children,
   activePath,
   type: TopicTypes.module,
+  scrollLockID: 'foo',
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -132,7 +133,8 @@ describe('NavigatorCard', () => {
     expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
     // assert scroller
-    expect(wrapper.find(RecycleScroller).props()).toMatchObject({
+    const scroller = wrapper.find(RecycleScroller);
+    expect(scroller.props()).toMatchObject({
       items: [
         root0,
         root0Child0,
@@ -142,6 +144,7 @@ describe('NavigatorCard', () => {
       itemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
     });
+    expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
     // assert CardItem
     const items = wrapper.findAll(NavigatorCardItem);
     expect(items).toHaveLength(4);

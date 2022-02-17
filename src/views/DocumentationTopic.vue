@@ -30,7 +30,7 @@
         v-bind="sidebarProps"
         v-on="sidebarListeners"
       >
-        <template #aside>
+        <template #aside="{ scrollLockID }">
           <aside class="doc-topic-aside">
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
@@ -42,6 +42,7 @@
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
                   :references="topicProps.references"
+                  :scrollLockID="scrollLockID"
                   @close="isSideNavOpen = false"
                 />
               </template>
@@ -226,7 +227,7 @@ export default {
     sidebarProps: ({ isSideNavOpen, isTargetIDE }) => (isTargetIDE ? {} : { class: 'full-width-container', openExternally: isSideNavOpen }),
     sidebarListeners() {
       return this.isTargetIDE ? {} : {
-        'update:OpenExternally': (v) => { this.isSideNavOpen = v; },
+        'update:openExternally': (v) => { this.isSideNavOpen = v; },
       };
     },
   },

@@ -32,12 +32,24 @@ jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
 storage.get.mockImplementation((key, value) => value);
 
+const { SCROLL_LOCK_ID } = AdjustableSidebarWidth.constants;
+
+const scrollLockTarget = document.createElement('DIV');
+scrollLockTarget.id = SCROLL_LOCK_ID;
+document.body.appendChild(scrollLockTarget);
+
 const maxWidth = 500; // 50% of the innerWidth, as per the default maxWidth on large
+let slotProps = {};
 
 const createWrapper = opts => shallowMount(AdjustableSidebarWidth, {
   slots: {
-    aside: '<div class="aside-content">Aside Content</div>',
     default: '<div class="default-content">Default Content</div>',
+  },
+  scopedSlots: {
+    aside(props) {
+      slotProps = props;
+      return this.$createElement('div', { class: 'aside-content' }, 'Aside Content');
+    },
   },
   mocks: { $route: {} },
   ...opts,
@@ -65,6 +77,14 @@ describe('AdjustableSidebarWidth', () => {
     expect(wrapper.find('.aside-content').text()).toBe('Aside Content');
     // content and default slot
     expect(wrapper.find('.default-content').text()).toBe('Default Content');
+  });
+
+  it('provides props from the aside scoped slot', () => {
+    createWrapper();
+    expect(slotProps).toEqual({
+      animationClass: 'aside-animated-child',
+      scrollLockID: 'sidebar-scroll-lock',
+    });
   });
 
   describe('on mount', () => {
@@ -121,7 +141,7 @@ describe('AdjustableSidebarWidth', () => {
       // assert open class attached
       expect(aside.classes()).toContain('force-open');
       // assert scroll lock and other helpers initiated
-      expect(scrollLock.lockScroll).toHaveBeenCalledWith(aside.element);
+      expect(scrollLock.lockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.hide).toHaveBeenCalledWith(aside.element);
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
       expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
@@ -131,7 +151,7 @@ describe('AdjustableSidebarWidth', () => {
       // assert class
       expect(aside.classes()).not.toContain('force-open');
       // assert helper status
-      expect(scrollLock.unlockScroll).toHaveBeenCalledWith(aside.element);
+      expect(scrollLock.unlockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.show).toHaveBeenCalledWith(aside.element);
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
       expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);

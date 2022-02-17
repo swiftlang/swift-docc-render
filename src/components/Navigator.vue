@@ -17,6 +17,7 @@
       :type="type"
       :children="flatChildren"
       :active-path="activePath"
+      :scrollLockID="scrollLockID"
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
@@ -69,6 +70,10 @@ export default {
     references: {
       type: Object,
       default: () => {},
+    },
+    scrollLockID: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -188,8 +193,9 @@ export default {
 
   @include breakpoint(small) {
     position: static;
-    max-height: 100%;
+    height: 100%;
     border-left: none;
+    transition: none;
   }
 }
 

@@ -88,6 +88,7 @@ const defaultProps = {
   parentTopicIdentifiers,
   technology,
   references,
+  scrollLockID: 'foo',
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -115,6 +116,7 @@ describe('Navigator', () => {
       type: TopicTypes.module,
       technology: technology.title,
       technologyPath: technology.path,
+      scrollLockID: defaultProps.scrollLockID,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
@@ -143,6 +145,7 @@ describe('Navigator', () => {
       type: TopicTypes.module,
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
+      scrollLockID: defaultProps.scrollLockID,
     });
   });
 
