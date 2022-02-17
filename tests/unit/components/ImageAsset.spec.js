@@ -268,6 +268,6 @@ describe('ImageAsset', () => {
     expect(fallbackImg.exists()).toBe(true);
     expect(fallbackImg.classes('fallback')).toBe(true);
     expect(fallbackImg.attributes('alt')).toBe(alt);
-    expect(fallbackImg.attributes('title')).toBe('Image failed to load.');
+    expect(fallbackImg.attributes('title')).toBe('Image failed to load');
   });
 });
