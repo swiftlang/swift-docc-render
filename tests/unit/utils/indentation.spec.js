@@ -19,48 +19,6 @@ const prepare = (originalCode) => {
 };
 
 describe('indentDeclaration', () => {
-  describe('swift', () => {
-    describe('with a function', () => {
-      it('should align the param names', () => {
-        const originalCode = '<span class="token-keyword">func</span> <span class="token-identifier">components</span>(<span class="token-externalParam">_</span> <span class="token-internalParam">unitFlags</span>: NSCalendarUnit, <span class="token-externalParam">fromDate</span> <span class="token-internalParam">date</span>: NSDate) -&gt; NSDateComponents';
-        const expectedCode = '<span class="token-keyword">func</span> <span class="token-identifier">components</span>(<span class="token-externalParam">_</span> <span class="token-internalParam">unitFlags</span>: NSCalendarUnit, <span class="token-externalParam">\n       fromDate</span> <span class="token-internalParam">date</span>: NSDate) -&gt; NSDateComponents\n';
-
-        const code = prepare(originalCode);
-
-        indentDeclaration(code, 'swift');
-
-        expect(code.innerHTML).not.toEqual(originalCode);
-        expect(code.innerHTML).toEqual(expectedCode);
-      });
-    });
-
-    describe('with an initializer', () => {
-      it('should add newlines for param names', () => {
-        const originalCode = '<span class="token-keyword">init</span>(<span class="token-externalParam">foo</span> <span class="token-internalParam">foo</span>: Foo, <span class="token-externalParam">bar</span> <span class="internalParam">bar</span>: Bar)';
-        const expectedCode = '<span class="token-keyword">init</span>(<span class="token-externalParam">foo</span> <span class="token-internalParam">foo</span>: Foo, <span class="token-externalParam">\n bar</span> <span class="internalParam">bar</span>: Bar)\n';
-
-        const code = prepare(originalCode);
-
-        indentDeclaration(code, 'swift');
-
-        expect(code.innerHTML).not.toEqual(originalCode);
-        expect(code.innerHTML).toEqual(expectedCode);
-      });
-    });
-
-    describe('with a property', () => {
-      it('should not add indentation', () => {
-        const originalCode = '<span class="token-keyword">var</span> <span class="token-identifier">description</span>: <span class="token-type">String</span> { <span class="token-keyword">get</span>';
-
-        const code = prepare(originalCode);
-
-        indentDeclaration(code, 'swift');
-
-        expect(code.innerHTML).toEqual(originalCode);
-      });
-    });
-  });
-
   describe('occ', () => {
     describe('with a function', () => {
       it('should align the param names', () => {
