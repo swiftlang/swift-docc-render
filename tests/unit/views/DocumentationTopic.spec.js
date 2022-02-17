@@ -10,6 +10,7 @@
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
@@ -23,6 +24,14 @@ jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
+jest.mock('docc-render/utils/theme-settings');
+
+const defaultGetSetting = (_, fallback) => fallback;
+const getSettingWithNavigatorEnabled = (settingKeyPath, fallback) => (
+  (settingKeyPath.join('.') === 'features.docs.navigator.enable') || fallback
+);
+
+getSetting.mockImplementation(defaultGetSetting);
 
 const TechnologyWithChildren = {
   path: 'path/to/foo',
@@ -130,7 +139,9 @@ describe('DocumentationTopic', () => {
     expect(codeTheme.isEmpty()).toBe(true);
   });
 
-  it('renders the Navigator and AdjustableSidebarWidth', async () => {
+  it('renders the Navigator and AdjustableSidebarWidth when enabled', async () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+
     wrapper.setData({ topicData });
     expect(wrapper.find(AdjustableSidebarWidth).props()).toEqual({
       openExternally: false,
@@ -160,6 +171,8 @@ describe('DocumentationTopic', () => {
       references: topicData.references,
       technology: TechnologyWithChildren,
     });
+
+    getSetting.mockReset();
   });
 
   it('renders a `Nav` component', () => {
@@ -186,6 +199,8 @@ describe('DocumentationTopic', () => {
   });
 
   it('handles the `@close`, on Navigator', async () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+
     wrapper.setData({ topicData });
     await flushPromises();
     const nav = wrapper.find(Nav);
@@ -195,6 +210,8 @@ describe('DocumentationTopic', () => {
     await flushPromises();
     wrapper.find(Navigator).vm.$emit('close');
     expect(sidebar.props('openExternally')).toBe(false);
+
+    getSetting.mockReset();
   });
 
   it('renders a `Topic` with `topicData`', () => {
