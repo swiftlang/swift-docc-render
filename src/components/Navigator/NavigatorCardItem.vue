@@ -15,14 +15,16 @@
     :style="{ '--nesting-index': item.depth }"
   >
     <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
-      <button
-        v-if="item.childUIDs.length"
-        class="tree-toggle"
-        @click.exact.prevent="toggleTree"
-        @click.alt.prevent="toggleEntireTree"
-      >
-        <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
-      </button>
+      <div class="depth-spacer">
+        <button
+          v-if="item.childUIDs.length"
+          class="tree-toggle"
+          @click.exact.prevent="toggleTree"
+          @click.alt.prevent="toggleEntireTree"
+        >
+          <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
+        </button>
+      </div>
       <NavigatorLeafIcon v-if="!isGroupMarker" :type="item.type" class="navigator-icon" />
       <div class="title-container">
         <Reference
@@ -95,20 +97,30 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
+$item-height: 32px;
+
 .navigator-card-item {
-  height: 32px;
+  height: $item-height;
   display: flex;
   align-items: center;
 }
 
+.depth-spacer {
+  width: calc(var(--nesting-index) * 14px + 26px);
+  height: $item-height;
+  position: relative;
+  flex: 0 0 auto;
+}
+
 .head-wrapper {
-  padding: 5.5px 5px 5.5px calc(var(--nesting-index) * 14px + 26px);
+  padding: 0 5px 0 0;
   position: relative;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   border-radius: $border-radius;
   flex: 1;
   min-width: 0;
+  height: 100%;
 
   &.active {
     background: var(--color-fill-gray-quaternary);
@@ -127,7 +139,6 @@ export default {
 
   .navigator-icon {
     display: flex;
-    transform: translateY(3px);
     flex: 0 0 auto;
   }
 
@@ -165,18 +176,15 @@ export default {
 }
 
 .tree-toggle {
-  $size: 20px;
-  $margin: 5px;
-  position: relative;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding-right: 5px;
+  box-sizing: border-box;
   z-index: 1;
-  width: $size;
-  height: $size;
-  margin-left: -$size - $margin;
-  margin-right: $margin;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
+  justify-content: flex-end;
 }
 
 .title-container {
