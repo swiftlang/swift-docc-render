@@ -26,7 +26,7 @@
         @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
       />
       <component
-        :is="isTargetIDE ? 'div': 'AdjustableSidebarWidth'"
+        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'div'"
         v-bind="sidebarProps"
         v-on="sidebarListeners"
       >
@@ -224,11 +224,12 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         )
       ),
-    sidebarProps: ({ isSideNavOpen, isTargetIDE }) => (isTargetIDE ? {} : { class: 'full-width-container', openExternally: isSideNavOpen }),
+    enableNavigator: () => false,
+    sidebarProps: ({ isSideNavOpen, enableNavigator }) => (enableNavigator ? { class: 'full-width-container', openExternally: isSideNavOpen } : {}),
     sidebarListeners() {
-      return this.isTargetIDE ? {} : {
+      return this.enableNavigator ? ({
         'update:openExternally': (v) => { this.isSideNavOpen = v; },
-      };
+      }) : {};
     },
   },
   methods: {
