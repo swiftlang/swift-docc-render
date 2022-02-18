@@ -55,6 +55,7 @@ export const STORAGE_KEY = 'sidebar';
 
 // the maximum width, after which the full-width content does not grow
 export const MAX_WIDTH = 1800;
+export const ULTRA_WIDE_DEFAULT = 500;
 
 export const eventsMap = {
   touch: {
@@ -99,19 +100,25 @@ export default {
     },
   },
   data() {
+    const windowWidth = window.innerWidth;
+    const breakpoint = BreakpointName.large;
     // get the min width, in case we dont have a previously saved value
-    const fallback = calcWidthPercent(minWidthResponsivePercents[BreakpointName.large]);
-    // computed is not ready yet in `data`.
+    const minWidth = calcWidthPercent(minWidthResponsivePercents[breakpoint]);
+    // calc the maximum width
+    const maxWidth = calcWidthPercent(maxWidthResponsivePercents[breakpoint]);
+    // have a default width for very large screens, or use half of the min and max
+    const defaultWidth = windowWidth >= MAX_WIDTH
+      ? ULTRA_WIDE_DEFAULT
+      : Math.round((minWidth + maxWidth) / 2);
+    // get the already stored data, fallback to a default one.
+    const storedWidth = storage.get(STORAGE_KEY, defaultWidth);
     return {
       isDragging: false,
-      width: Math.min(
-        storage.get(STORAGE_KEY, fallback),
-        // calc the maximum width
-        calcWidthPercent(maxWidthResponsivePercents[BreakpointName.large]),
-      ),
+      // limit the width to a range
+      width: Math.min(Math.max(storedWidth, minWidth), maxWidth),
       isTouch: false,
-      windowWidth: window.innerWidth,
-      breakpoint: BreakpointName.large,
+      windowWidth,
+      breakpoint,
       noTransition: false,
       focusTrapInstance: null,
     };

@@ -6,11 +6,13 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import AdjustableSidebarWidth, {
   eventsMap,
   STORAGE_KEY,
+  MAX_WIDTH,
+  ULTRA_WIDE_DEFAULT,
 } from '@/components/AdjustableSidebarWidth.vue';
 import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
@@ -88,16 +90,20 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   describe('on mount', () => {
-    it('sets the `width` to the min percent for `large`, on mount', () => {
+    it('sets the `width` to the middle between min and max for `large`, on mount', () => {
       const wrapper = createWrapper();
-      assertWidth(wrapper, 200); // 20% on large
+      assertWidth(wrapper, 350); // 35% on large
     });
 
-    it('changes the `width`, to the minWidthPercent, on mount, as soon as the breakpoint gets changed', () => {
-      const wrapper = createWrapper();
-      assertWidth(wrapper, 200); // 20% on large
+    it('changes the `width`, to the next closest max or min, on mount, as soon as the breakpoint gets changed', () => {
+      const wrapper = createWrapper({
+        data: () => ({
+          width: 650,
+        }),
+      });
+      assertWidth(wrapper, 650);
       wrapper.find(BreakpointEmitter).vm.$emit('change', 'medium');
-      assertWidth(wrapper, 300); // 30% on medium
+      assertWidth(wrapper, 500); // 50% on medium
     });
 
     it('applies a momentary no-transition class to the aside, if going from a larger breakpoint into `small`', async () => {
@@ -115,13 +121,27 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       assertWidth(wrapper, 450);
       // assert the storage was called with the key and the default size
-      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, 200);
+      // 350 is half of min and max on Large
+      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, 350);
     });
 
     it('sets the `width` to the `max width allowed`, if stored value is bigger', () => {
       storage.get.mockReturnValueOnce(window.innerWidth + 500);
       const wrapper = createWrapper();
       assertWidth(wrapper, maxWidth); // 80% of 1000
+    });
+
+    it('sets the `width` to the `min` width allowed, if stored value is smaller', () => {
+      storage.get.mockReturnValueOnce(100);
+      const wrapper = createWrapper();
+      assertWidth(wrapper, 200); // 20% of 1000
+    });
+
+    it('sets the `width` to the `ULTRA_WIDE_DEFAULT`, if no stored value, and on a very large monitor', () => {
+      window.innerWidth = MAX_WIDTH;
+      storage.get.mockImplementationOnce((key, value) => value);
+      const wrapper = createWrapper();
+      assertWidth(wrapper, ULTRA_WIDE_DEFAULT);
     });
   });
 
@@ -318,7 +338,7 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   it('prevents dragging outside of the max container', () => {
-    window.innerWidth = 2000; // very wide screen
+    window.innerWidth = MAX_WIDTH + 200; // very wide screen
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
     // assert dragging
