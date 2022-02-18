@@ -238,9 +238,9 @@ describe('DocumentationTopic', () => {
       abstract: emptyParagraph,
     });
     const descr = wrapper.find(Description);
-    const abstract = descr.find(Abstract);
-    expect(abstract.exists()).toBe(true);
-    expect(abstract.props('content')).toEqual(emptyParagraph);
+    const abstractComponent = descr.find(Abstract);
+    expect(abstractComponent.exists()).toBe(true);
+    expect(abstractComponent.props('content')).toEqual(emptyParagraph);
   });
 
   it('renders a `.content-grid` with `Description`/`Summary and PrimaryContent` columns', () => {
