@@ -49,7 +49,7 @@ import { waitFrames } from 'docc-render/utils/loading';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
-import throttle from '@/utils/throttle';
+import throttle from 'docc-render/utils/throttle';
 
 export const STORAGE_KEY = 'sidebar';
 
