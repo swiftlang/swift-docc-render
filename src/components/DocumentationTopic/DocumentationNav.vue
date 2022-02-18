@@ -10,16 +10,17 @@
 
 <template>
   <NavBase
+    :breakpoint="isWideFormat ? BreakpointName.small: BreakpointName.medium"
     :hasOverlay="false"
     hasSolidBackground
     :hasNoBorder="hasNoBorder"
     :isDark="isDark"
-    isWideFormat
+    :isWideFormat="isWideFormat"
     hasFullWidthBorder
     class="documentation-nav"
     aria-label="API Reference"
   >
-    <template slot="pre-title">
+    <template slot="pre-title" v-if="isWideFormat">
       <button class="sidenav-toggle" @click.prevent="$emit('toggle-sidenav')">
         <SidenavIcon class="icon-inline sidenav-icon" />
       </button>
@@ -101,6 +102,10 @@ export default {
     references: {
       type: Object,
       default: () => ({}),
+    },
+    isWideFormat: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

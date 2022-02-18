@@ -310,21 +310,50 @@ $breakpoint-attributes: (
   }
 }
 
+/// Applies a max-width container, in order to limit the adjustable sidebar content from
+/// growing too much on ultra-widescreens
 @mixin breakpoint-full-width-container {
   max-width: 1800px;
   margin-left: auto;
   margin-right: auto;
 }
 
+/// Applies a content container, for cases with dynamic adjustable sidebars. In IDE mode uses the
+/// default breakpoint-content mixin.
 @mixin breakpoint-dynamic-sidebar-content {
   @include inTargetWeb {
     max-width: 900px;
     min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
     padding: 0 20px;
     box-sizing: border-box;
   }
   @include inTargetIde {
     @include breakpoint-content()
+  }
+}
+
+/// Renders content only when we have the adjustable sidebar ENABLED
+@mixin with-adjustable-sidebar {
+  .full-width-container & {
+    @content
+  }
+}
+/// Renders content only when we have the adjustable sidebar DISABLED
+@mixin without-adjustable-sidebar {
+  .static-width-container & {
+    @content
+  }
+}
+
+/// Applies the correct breakpoint mixin, based on presence of a dynamic sidebar
+@mixin dynamic-content-container {
+  @include with-adjustable-sidebar {
+    @include breakpoint-dynamic-sidebar-content;
+  }
+
+  @include without-adjustable-sidebar {
+    @include breakpoint-content;
   }
 }

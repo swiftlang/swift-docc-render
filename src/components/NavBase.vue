@@ -531,9 +531,9 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   position: relative;
   z-index: 2;
   justify-content: space-between;
-  box-sizing: border-box;
 
   @include nav-is-wide-format() {
+    box-sizing: border-box;
     @include breakpoint-full-width-container()
   }
 

@@ -23,6 +23,7 @@
         :isSymbolBeta="isSymbolBeta"
         :currentTopicTags="topicProps.tags"
         :references="topicProps.references"
+        :isWideFormat="enableNavigator"
         @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
       />
       <component
@@ -231,7 +232,11 @@ export default {
     enableNavigator: ({ isTargetIDE }) => !isTargetIDE && (
       getSetting(['features', 'docs', 'navigator', 'enable'], false)
     ),
-    sidebarProps: ({ isSideNavOpen, enableNavigator }) => (enableNavigator ? { class: 'full-width-container', openExternally: isSideNavOpen } : {}),
+    sidebarProps: ({ isSideNavOpen, enableNavigator }) => (
+      enableNavigator
+        ? { class: 'full-width-container topic-wrapper', openExternally: isSideNavOpen }
+        : { class: 'static-width-container topic-wrapper' }
+    ),
     sidebarListeners() {
       return this.enableNavigator ? ({
         'update:openExternally': (v) => { this.isSideNavOpen = v; },
@@ -323,11 +328,13 @@ export default {
   }
 }
 
-.full-width-container {
+.topic-wrapper {
   flex: 1 1 auto;
   width: 100%;
   background: var(--colors-text-background, var(--color-text-background));
+}
 
+.full-width-container {
   @include inTargetWeb {
     @include breakpoint-full-width-container()
   }

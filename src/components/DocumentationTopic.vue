@@ -345,9 +345,12 @@ export default {
 
 #main {
   outline-style: none;
-  border-left: 1px solid var(--color-grid);
-  border-right: 1px solid var(--color-grid);
   height: 100%;
+
+  @include with-adjustable-sidebar {
+    border-left: 1px solid var(--color-grid);
+    border-right: 1px solid var(--color-grid);
+  }
 
   @include inTargetIde {
     min-height: 100vh;
@@ -362,9 +365,9 @@ export default {
 }
 
 .container {
-  @include breakpoint-dynamic-sidebar-content;
-  outline-style: none;
   margin-top: $section-spacing-single-side / 2;
+  outline-style: none;
+  @include dynamic-content-container;
 }
 
 .content-grid {

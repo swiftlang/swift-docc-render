@@ -6,13 +6,14 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import {
   shallowMount,
   RouterLinkStub,
 } from '@vue/test-utils';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
+import { BreakpointName } from '@/utils/breakpoints';
 
 const {
   Hierarchy,
@@ -75,6 +76,8 @@ describe('DocumentationNav', () => {
     expect(nav.props()).toHaveProperty('hasNoBorder', false);
     expect(nav.props()).toHaveProperty('hasFullWidthBorder', true);
     expect(nav.props()).toHaveProperty('hasOverlay', false);
+    expect(nav.props()).toHaveProperty('breakpoint', BreakpointName.small);
+    expect(nav.props()).toHaveProperty('isWideFormat', true);
   });
 
   it('accepts an isDark prop', () => {
@@ -224,5 +227,16 @@ describe('DocumentationNav', () => {
   it('renders a sidenav toggle', () => {
     wrapper.find('.sidenav-toggle').trigger('click');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+  });
+
+  it('renders the nav, with `isWideFormat` to `false`', () => {
+    wrapper.setProps({
+      isWideFormat: false,
+    });
+    expect(wrapper.find(NavBase).props()).toMatchObject({
+      isWideFormat: false,
+      breakpoint: BreakpointName.medium,
+    });
+    expect(wrapper.find('.sidenav-toggle').exists()).toBe(false);
   });
 });

@@ -51,7 +51,7 @@ export default {
 }
 
 .container {
-  @include breakpoint-dynamic-sidebar-content;
+  @include dynamic-content-container;
 }
 
 .title {
