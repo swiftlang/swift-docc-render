@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import NavigatorCard, { STORAGE_KEYS } from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
