@@ -92,7 +92,7 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import pageTitle from 'docc-render/mixins/pageTitle';
+import metadata from 'docc-render/mixins/metadata';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
@@ -117,7 +117,7 @@ import Topics from './DocumentationTopic/Topics.vue';
 
 export default {
   name: 'DocumentationTopic',
-  mixins: [pageTitle],
+  mixins: [metadata],
   inject: {
     isTargetIDE: {
       default() {
@@ -307,6 +307,9 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         ),
     pageTitle: ({ title }) => title,
+    pageDescription: ({ abstract, extractFirstParagraphText }) => (
+      abstract ? extractFirstParagraphText(abstract) : null
+    ),
     // The `hierarchy.paths` array will contain zero or more subarrays, each
     // representing a "path" of parent topic IDs that could be considered the
     // hierarchy/breadcrumb for a given topic. We choose to render only the

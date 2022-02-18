@@ -34,7 +34,7 @@
 import { PortalTarget } from 'portal-vue';
 
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
-import pageTitle from 'docc-render/mixins/pageTitle';
+import metadata from 'docc-render/mixins/metadata';
 import Body from './Article/Body.vue';
 import CallToAction from './Article/CallToAction.vue';
 import Hero from './Article/Hero.vue';
@@ -50,7 +50,7 @@ const SectionKind = {
 export default {
   name: 'Article',
   components: { NavigationBar, PortalTarget },
-  mixins: [pageTitle],
+  mixins: [metadata],
   inject: {
     isTargetIDE: {
       default: false,
@@ -98,6 +98,9 @@ export default {
         undefined
       );
     },
+    pageDescription: ({ heroSection, extractFirstParagraphText }) => (
+      heroSection ? extractFirstParagraphText(heroSection.content) : null
+    ),
   },
   methods: {
     componentFor(section) {

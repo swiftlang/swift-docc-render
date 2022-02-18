@@ -210,3 +210,17 @@ export function whiteSpaceIgnorantRegex(stringToSanitize) {
 export function insertAt(str, sub, pos = 0) {
   return `${str.slice(0, pos)}${sub}${str.slice(pos)}`;
 }
+
+// Returns the first paragraph of the given text.
+//
+// @param {string} text - The full text.
+// @return {string} The first paragraph.
+//
+// Examples:
+//
+// firstParagraph("abcdefghi") // "abcdefghi"
+// firstParagraph("abc\ndef\nghi") // "abc"
+export function firstParagraph(text) {
+  const paragraphs = text.split(/(?:\r?\n)+/);
+  return paragraphs[0];
+}
