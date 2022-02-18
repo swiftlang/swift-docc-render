@@ -75,20 +75,15 @@ const addOrUpdateMetaTag = (metadata) => {
   const ref = metadata[key];
 
   const existingMetaElement = document.querySelector(`meta[${key}="${ref}"]`);
-  if (existingMetaElement) {
-    if (content) {
-      existingMetaElement.setAttribute('content', content);
-    } else {
-      existingMetaElement.remove();
-    }
-  } else {
-    // eslint-disable-next-line no-lonely-if
-    if (content) {
-      const newMetaElement = document.createElement('meta');
-      newMetaElement.setAttribute(key, metadata[key]);
-      newMetaElement.setAttribute('content', metadata.content);
-      document.getElementsByTagName('head')[0].appendChild(newMetaElement);
-    }
+  if (existingMetaElement && content) {
+    existingMetaElement.setAttribute('content', content);
+  } else if (existingMetaElement && !content) {
+    existingMetaElement.remove();
+  } else if (content) {
+    const newMetaElement = document.createElement('meta');
+    newMetaElement.setAttribute(key, metadata[key]);
+    newMetaElement.setAttribute('content', metadata.content);
+    document.getElementsByTagName('head')[0].appendChild(newMetaElement);
   }
 };
 
