@@ -12,7 +12,8 @@
   <img
     v-if="fallbackImageSrcSet"
     class="fallback"
-    :alt="`${alt} Image failed to load.`"
+    title="Image failed to load"
+    :alt="alt"
     :srcset="fallbackImageSrcSet"
   />
   <picture v-else>

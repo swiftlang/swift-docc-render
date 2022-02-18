@@ -33,7 +33,7 @@
 import { PortalTarget } from 'portal-vue';
 
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
-import pageTitle from 'docc-render/mixins/pageTitle';
+import metadata from 'docc-render/mixins/metadata';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
@@ -74,7 +74,7 @@ const TutorialSection = {
 
 export default {
   name: 'Tutorial',
-  mixins: [pageTitle, isClientMobile],
+  mixins: [metadata, isClientMobile],
   components: {
     NavigationBar,
     Section: TutorialSection,
@@ -99,6 +99,9 @@ export default {
         undefined
       );
     },
+    pageDescription: ({ heroSection, extractFirstParagraphText }) => (
+      heroSection ? extractFirstParagraphText(heroSection.content) : null
+    ),
   },
   props: {
     sections: {

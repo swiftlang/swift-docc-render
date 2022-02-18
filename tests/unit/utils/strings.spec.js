@@ -15,7 +15,9 @@ import {
   escapeRegExp,
   pluralize,
   deleteSpaces,
-  whiteSpaceIgnorantRegex, insertAt,
+  whiteSpaceIgnorantRegex,
+  insertAt,
+  firstParagraph,
 } from 'docc-render/utils/strings';
 
 describe('anchorize', () => {
@@ -230,5 +232,24 @@ describe('insertAt', () => {
   });
   it('inserts a string at an index', () => {
     expect(insertAt(base, insert, 2)).toBe('bafoose');
+  });
+});
+
+describe('firstParagraph', () => {
+  it('returns a string without paragraphs unchanged', () => {
+    expect(firstParagraph('')).toBe('');
+    expect(firstParagraph('abc')).toBe('abc');
+  });
+
+  it('handles Unix system newlines', () => {
+    expect(firstParagraph('abc\ndef\nghi')).toBe('abc');
+  });
+
+  it('handles Windows system newlines', () => {
+    expect(firstParagraph('abc\r\ndef\r\nghi')).toBe('abc');
+  });
+
+  it('returns an empty string if the character is a newline', () => {
+    expect(firstParagraph('\n')).toBe('');
   });
 });

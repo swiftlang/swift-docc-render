@@ -25,6 +25,17 @@ const sections = [
     estimatedTimeInMinutes: 42,
     backgroundImage: 'foo.jpg',
     projectFiles: 'download.zip',
+    content: [
+      {
+        type: 'paragraph',
+        inlineContent: [
+          {
+            type: 'text',
+            text: 'Property wrappers...',
+          },
+        ],
+      },
+    ],
   },
   {
     kind: 'tasks',
@@ -207,9 +218,15 @@ describe('Tutorial', () => {
   });
 
   it('provides a page title using the hero section title', () => {
-    expect(wrapper.vm.pageTitle).toBe('Fooing the Bar — Blah Tutorials');
-    expect(document.title)
-      .toBe('Fooing the Bar — Blah Tutorials | Documentation');
+    const titleText = `${sections[0].title} — ${propsData.metadata.category} Tutorials | Documentation`;
+
+    expect(document.title).toBe(titleText);
+  });
+
+  it('provides a page description based on the hero content text', () => {
+    const { text: heroContentText } = propsData.sections[0].content[0].inlineContent[0];
+
+    expect(document.querySelector('meta[name="description"]').content).toBe(heroContentText);
   });
 
   it('renders a BreakpointEmitter and updates the breakpoint in the store', () => {
