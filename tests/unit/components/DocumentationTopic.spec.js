@@ -12,6 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
+import { TopicTypes } from '@/constants/TopicTypes';
 
 jest.mock('docc-render/utils/theme-settings', () => ({
   getSetting: jest.fn((_, fallback) => fallback),
@@ -26,7 +27,6 @@ const {
   DownloadButton,
   TechnologyList,
   LanguageSwitcher,
-  Nav,
   OnThisPageNav,
   PrimaryContent,
   Relationships,
@@ -118,6 +118,9 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
+  symbolKind: TopicTypes.module,
+  objcPath: 'documentation/objc',
+  swiftPath: 'documentation/swift',
   primaryContentSections: [
     {
       kind: PrimaryContent.constants.SectionKind.content,
@@ -126,16 +129,15 @@ const propsData = {
   ],
   references: {},
   roleHeading: 'Thing',
-  symbolKind: 'thing',
   title: 'FooKit',
   variants: [
     {
       traits: [{ interfaceLanguage: 'occ' }],
-      paths: ['documentation/foo'],
+      paths: ['documentation/objc'],
     },
     {
       traits: [{ interfaceLanguage: 'swift' }],
-      paths: ['documentation/foo'],
+      paths: ['documentation/swift'],
     },
   ],
   tags: [
@@ -199,27 +201,6 @@ describe('DocumentationTopic', () => {
     expect(wrapper.is('div.doc-topic')).toBe(true);
   });
 
-  it('renders a `Nav` with a `Hierarchy` and `LanguageToggle`', () => {
-    const nav = wrapper.find(Nav);
-    expect(nav.exists()).toBe(true);
-
-    expect(nav.props()).toEqual({
-      parentTopicIdentifiers: [
-        'topic://foo',
-        'topic://bar',
-      ],
-      title: 'FooKit',
-      isDark: false,
-      hasNoBorder: false,
-      currentTopicTags: propsData.tags,
-    });
-    expect(nav.attributes()).toMatchObject({
-      interfacelanguage: 'swift',
-      objcpath: 'documentation/foo',
-      swiftpath: 'documentation/foo',
-    });
-  });
-
   it('renders a <main>', () => {
     const main = wrapper.find('main');
     expect(main.exists()).toBe(true);
@@ -234,6 +215,32 @@ describe('DocumentationTopic', () => {
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
+  });
+
+  it('renders an abstract', () => {
+    const descr = wrapper.find(Description);
+    const abstractComponent = descr.find(Abstract);
+    expect(abstractComponent.exists()).toBe(true);
+    expect(abstractComponent.props('content')).toEqual(propsData.abstract);
+  });
+
+  it('renders an abstract, with an empty string inside', () => {
+    const emptyParagraph = [{
+      type: 'paragraph',
+      inlineContent: [
+        {
+          type: 'text',
+          text: '',
+        },
+      ],
+    }];
+    wrapper.setProps({
+      abstract: emptyParagraph,
+    });
+    const descr = wrapper.find(Description);
+    const abstractComponent = descr.find(Abstract);
+    expect(abstractComponent.exists()).toBe(true);
+    expect(abstractComponent.props('content')).toEqual(emptyParagraph);
   });
 
   it('renders a `.content-grid` with `Description`/`Summary and PrimaryContent` columns', () => {
@@ -267,18 +274,6 @@ describe('DocumentationTopic', () => {
   });
 
   describe('description column', () => {
-    let description;
-
-    beforeEach(() => {
-      description = wrapper.find('main .container').find(Description);
-    });
-
-    it('renders an abstract', () => {
-      const abstractComponent = description.find(Abstract);
-      expect(abstractComponent.exists()).toBe(true);
-      expect(abstractComponent.props('content')).toEqual(propsData.abstract);
-    });
-
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
@@ -315,24 +310,6 @@ describe('DocumentationTopic', () => {
       expect(wrapper.contains(RequirementMetadata)).toBe(false);
       wrapper.setProps({ isRequirement: true });
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
-    });
-
-    it('renders an abstract, with an empty string inside', () => {
-      const emptyParagraph = [{
-        type: 'paragraph',
-        inlineContent: [
-          {
-            type: 'text',
-            text: '',
-          },
-        ],
-      }];
-      wrapper.setProps({
-        abstract: emptyParagraph,
-      });
-      const abstractComponent = description.find(Abstract);
-      expect(abstractComponent.exists()).toBe(true);
-      expect(abstractComponent.props('content')).toEqual(emptyParagraph);
     });
   });
 
@@ -552,37 +529,14 @@ describe('DocumentationTopic', () => {
 
   it('computes isSymbolBeta', () => {
     const topicSections = [{}];
-    const platforms = [
-      {
-        introducedAt: '1.0',
-        beta: true,
-        name: 'fooOS',
-      },
-      {
-        deprecatedAt: '2.0',
-        introducedAt: '1.0',
-        beta: true,
-        name: 'barOS',
-      },
-    ];
-    wrapper.setProps({ platforms, topicSections });
+    wrapper.setProps({ topicSections, isSymbolBeta: true });
 
     const topics = wrapper.find(Topics);
     expect(topics.props('isSymbolBeta')).toBe(true);
 
     // should not if only one is beta
     wrapper.setProps({
-      platforms: [
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-          beta: true,
-        },
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-      ],
+      isSymbolBeta: false,
     });
     expect(topics.props('isSymbolBeta')).toBe(false);
   });
@@ -605,45 +559,12 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(BetaLegalText).exists()).toBe(true);
   });
 
-  it('computes isSymbolDeprecated if there is a deprecationSummary', () => {
-    wrapper.setProps({ topicSections: [{}] });
+  it('sends isSymbolDeprecated down to the Topic', () => {
+    wrapper.setProps({ topicSections: [{}], isSymbolDeprecated: false });
     const topics = wrapper.find(Topics);
-    expect(topics.props('isSymbolDeprecated')).toBeFalsy();
-    wrapper.setProps({ deprecationSummary });
-    expect(topics.props('isSymbolDeprecated')).toBe(true);
-  });
-
-  it('computes isSymbolDeprecated', () => {
-    const topicSections = [{}];
-    const platforms = [
-      {
-        deprecatedAt: '1',
-        name: 'fooOS',
-      },
-      {
-        deprecatedAt: '1',
-        name: 'barOS',
-      },
-    ];
-    wrapper.setProps({ platforms, topicSections });
-
-    const topics = wrapper.find(Topics);
-    expect(topics.props('isSymbolDeprecated')).toBe(true);
-
-    // should not if only one is deprecated
-    wrapper.setProps({
-      platforms: [
-        {
-          name: 'fooOS',
-          deprecatedAt: '1',
-        },
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-      ],
-    });
     expect(topics.props('isSymbolDeprecated')).toBe(false);
+    wrapper.setProps({ isSymbolDeprecated: true });
+    expect(topics.props('isSymbolDeprecated')).toBe(true);
   });
 
   it('renders content in the `above-title` slot', () => {
@@ -694,19 +615,5 @@ describe('DocumentationTopic', () => {
         query: { language: Language.objectiveC.key.url },
       });
     });
-  });
-});
-
-describe('isTargetIDE', () => {
-  let wrapper;
-
-  const provide = { isTargetIDE: true };
-
-  beforeEach(() => {
-    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
-  });
-
-  it('does not render a `Nav`', () => {
-    expect(wrapper.contains(Nav)).toBe(false);
   });
 });

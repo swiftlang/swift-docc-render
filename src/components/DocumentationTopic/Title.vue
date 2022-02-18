@@ -34,7 +34,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .topictitle {
-  @include breakpoint-content;
+  @include dynamic-content-container;
   margin-top: 2rem;
 }
 

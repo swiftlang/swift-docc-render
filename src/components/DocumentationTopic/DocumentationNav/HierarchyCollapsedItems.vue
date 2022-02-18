@@ -10,7 +10,7 @@
 
 <template>
   <li class="hierarchy-collapsed-items">
-    <InlineChevronRightIcon class="hierarchy-item-icon icon-inline" />
+    <span class="hierarchy-item-icon icon-inline">/</span>
     <button
       class="toggle"
       ref="btn"
@@ -29,12 +29,11 @@
 
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
-import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import EllipsisIcon from 'theme/components/Icons/EllipsisIcon.vue';
 
 export default {
   name: 'HierarchyCollapsedItems',
-  components: { EllipsisIcon, InlineChevronRightIcon },
+  components: { EllipsisIcon },
   data: () => ({ collapsed: true }),
   props: {
     topics: {
@@ -99,7 +98,7 @@ $border-width: 1px;
 // of the nav area, so they are represented as clear overlays here
 $toggle-bg-color: var(--color-nav-hierarchy-collapse-background);
 $toggle-bg-color-dark: var(--color-nav-dark-hierarchy-collapse-background);
-$toggle-border-color: var(--color-figure-gray-secondary);
+$toggle-border-color: var(--color-nav-hierarchy-collapse-borders);
 $hierarchy-toggle-border-width: 0 !default;
 $toggle-height: rem(19px);
 $toggle-width: rem(36px);
@@ -116,7 +115,7 @@ $hierarchy-dropdown-box-shadow: 0 1px 4px -1px var(--color-figure-gray-secondary
 
 $tail-width: 1rem;
 $tail-offset: rem($nav-menu-item-left-margin)
-  + rem($nav-space-between-elements)
+  + rem($nav-space-hierarchy-elements)
   - ($toggle-width / 2)
   + ($tail-width / 2) + rem(4px);
 
@@ -126,12 +125,16 @@ $dropdown-vertical-offset: rem(7px);
   position: relative;
   display: inline-flex;
   align-items: center;
-  margin-left: $nav-space-between-elements;
+  margin-left: $nav-space-hierarchy-elements;
 
   .hierarchy-item-icon {
     width: 9px;
     height: 15px;
-    margin-right: $nav-space-between-elements;
+    margin-right: $nav-space-hierarchy-elements;
+    display: flex;
+    justify-content: center;
+    font-size: 1em;
+    align-self: baseline;
   }
 
   @include nav-in-breakpoint() {

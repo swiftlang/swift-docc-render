@@ -13,6 +13,7 @@ import {
   RouterLinkStub,
 } from '@vue/test-utils';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
+import { BreakpointName } from '@/utils/breakpoints';
 
 const {
   Hierarchy,
@@ -30,10 +31,6 @@ const references = {
   [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
   'topic://foo': {},
   'topic://bar': {},
-};
-
-const provide = {
-  references,
 };
 
 const mocks = {
@@ -57,13 +54,13 @@ describe('DocumentationNav', () => {
     currentTopicTags: [{
       type: 'foo',
     }],
+    references,
   };
 
   beforeEach(() => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
     });
   });
@@ -79,6 +76,8 @@ describe('DocumentationNav', () => {
     expect(nav.props()).toHaveProperty('hasNoBorder', false);
     expect(nav.props()).toHaveProperty('hasFullWidthBorder', true);
     expect(nav.props()).toHaveProperty('hasOverlay', false);
+    expect(nav.props()).toHaveProperty('breakpoint', BreakpointName.small);
+    expect(nav.props()).toHaveProperty('isWideFormat', true);
   });
 
   it('accepts an isDark prop', () => {
@@ -131,7 +130,6 @@ describe('DocumentationNav', () => {
           ...propsData.parentTopicIdentifiers,
         ],
       },
-      provide,
       mocks: {
         $route: {
           query: {
@@ -156,6 +154,7 @@ describe('DocumentationNav', () => {
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       currentTopicTags: propsData.currentTopicTags,
+      references,
     });
   });
 
@@ -178,7 +177,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       scopedSlots: {
         'tray-after': (props) => {
@@ -198,7 +196,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       slots: {
         'after-content': afterContent,
@@ -213,7 +210,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       scopedSlots: {
         title: (props) => {
@@ -223,7 +219,24 @@ describe('DocumentationNav', () => {
       },
     });
     expect(wrapper.text()).toContain(fooBar);
-    expect(slotProps).toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
+    expect(slotProps)
+      .toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
     expect(wrapper.find('.nav-title-link').exists()).toBe(false);
+  });
+
+  it('renders a sidenav toggle', () => {
+    wrapper.find('.sidenav-toggle').trigger('click');
+    expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+  });
+
+  it('renders the nav, with `isWideFormat` to `false`', () => {
+    wrapper.setProps({
+      isWideFormat: false,
+    });
+    expect(wrapper.find(NavBase).props()).toMatchObject({
+      isWideFormat: false,
+      breakpoint: BreakpointName.medium,
+    });
+    expect(wrapper.find('.sidenav-toggle').exists()).toBe(false);
   });
 });

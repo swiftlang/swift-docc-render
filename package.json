@@ -25,6 +25,7 @@
     "highlight.js": "^11.3.1",
     "intersection-observer": "0.12.0",
     "portal-vue": "2.1.7",
+    "vue-virtual-scroller": "^1.0.10",
     "webpack-theme-resolver-plugin": "3.0.0"
   },
   "devDependencies": {

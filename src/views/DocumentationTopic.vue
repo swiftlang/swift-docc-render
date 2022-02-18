@@ -9,17 +9,63 @@
 -->
 
 <template>
-  <CodeTheme>
-    <Topic
-      v-if="topicData"
-      v-bind="topicProps"
-      :key="topicKey"
-    />
+  <CodeTheme class="doc-topic-view">
+    <template v-if="topicData">
+      <Nav
+        v-if="!isTargetIDE"
+        :title="topicProps.title"
+        :diffAvailability="topicProps.diffAvailability"
+        :interfaceLanguage="topicProps.interfaceLanguage"
+        :objcPath="objcPath"
+        :swiftPath="swiftPath"
+        :parentTopicIdentifiers="parentTopicIdentifiers"
+        :isSymbolDeprecated="isSymbolDeprecated"
+        :isSymbolBeta="isSymbolBeta"
+        :currentTopicTags="topicProps.tags"
+        :references="topicProps.references"
+        :isWideFormat="enableNavigator"
+        @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
+      />
+      <component
+        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'div'"
+        v-bind="sidebarProps"
+        v-on="sidebarListeners"
+      >
+        <template #aside="{ scrollLockID }">
+          <aside class="doc-topic-aside">
+            <NavigatorDataProvider
+              :interface-language="topicProps.interfaceLanguage"
+              :technology="technology"
+            >
+              <template #default="slotProps">
+                <Navigator
+                  :parent-topic-identifiers="navigatorParentTopicIdentifiers"
+                  :technology="slotProps.technology || technology"
+                  :is-fetching="slotProps.isFetching"
+                  :references="topicProps.references"
+                  :scrollLockID="scrollLockID"
+                  @close="isSideNavOpen = false"
+                />
+              </template>
+            </NavigatorDataProvider>
+          </aside>
+        </template>
+        <Topic
+          v-bind="topicProps"
+          :key="topicKey"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+      </component>
+    </template>
   </CodeTheme>
 </template>
 
 <script>
 import { apply } from 'docc-render/utils/json-patch';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import {
   clone,
   fetchDataForRouteEnter,
@@ -32,21 +78,31 @@ import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import Language from 'docc-render/constants/Language';
 import performanceMetrics from 'docc-render/mixins/performanceMetrics';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
+import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
+import Navigator from 'docc-render/components/Navigator.vue';
+import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
 export default {
-  name: 'DocumentationTopic',
+  name: 'DocumentationTopicView',
   components: {
+    Navigator,
+    AdjustableSidebarWidth,
+    NavigatorDataProvider,
     Topic: DocumentationTopic,
     CodeTheme,
+    Nav: DocumentationNav,
   },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
-    return { topicDataDefault: null, topicDataObjc: null };
+    return {
+      topicDataDefault: null,
+      topicDataObjc: null,
+      isSideNavOpen: false,
+      store: DocumentationTopicStore,
+    };
   },
   computed: {
-    store() {
-      return DocumentationTopicStore;
-    },
     objcOverrides: ({ topicData }) => {
       const { variantOverrides = [] } = topicData || {};
 
@@ -87,11 +143,12 @@ export default {
           conformance,
           modules,
           platforms,
-          required: isRequirement,
+          required: isRequirement = false,
           roleHeading,
-          symbolKind,
           title = '',
           tags = [],
+          role,
+          symbolKind = '',
         } = {},
         primaryContentSections,
         relationshipsSections,
@@ -110,6 +167,7 @@ export default {
         downloadNotAvailableSummary,
         diffAvailability,
         hierarchy,
+        role,
         identifier,
         interfaceLanguage,
         isRequirement,
@@ -123,12 +181,66 @@ export default {
         title,
         topicSections,
         seeAlsoSections,
-        symbolKind,
         variantOverrides,
         variants,
         extendsTechnology,
+        symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
       };
+    },
+    // The `hierarchy.paths` array will contain zero or more subarrays, each
+    // representing a "path" of parent topic IDs that could be considered the
+    // hierarchy/breadcrumb for a given topic. We choose to render only the
+    // first one.
+    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths: [ids = []] = [] } } }) => ids,
+    navigatorParentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] } } }) => (
+      paths.slice(-1)[0]
+    ),
+    technology: ({ topicProps: { references, identifier }, parentTopicIdentifiers }) => {
+      if (!parentTopicIdentifiers.length) return references[identifier];
+      const first = references[parentTopicIdentifiers[0]];
+      if (first.kind !== 'technologies') return first;
+      return references[parentTopicIdentifiers[1]] || references[identifier];
+    },
+    // Use `variants` data to build a map of paths associated with each unique
+    // `interfaceLanguage` trait.
+    languagePaths: ({ topicProps: { variants } }) => variants.reduce((memo, variant) => (
+      variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
+        ..._memo,
+        [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
+      })), memo)
+    ), {}),
+    // The first path for any variant with an "occ" interface language trait (if any)
+    objcPath: ({ languagePaths: { [Language.objectiveC.key.api]: [path] = [] } = {} }) => path,
+    // The first path for any variant with a "swift" interface language trait (if any)
+    swiftPath: ({ languagePaths: { [Language.swift.key.api]: [path] = [] } = {} }) => path,
+    isSymbolBeta:
+      ({ topicProps: { platforms } }) => !!(platforms
+        && platforms.length
+        && platforms.every(platform => platform.beta)),
+    isSymbolDeprecated:
+      ({ topicProps: { platforms, deprecationSummary } }) => !!(
+        (deprecationSummary && deprecationSummary.length > 0)
+        || (platforms
+          && platforms.length
+          && platforms.every(platform => platform.deprecatedAt)
+        )
+      ),
+    // Always disable the navigator for IDE targets. For other targets, allow
+    // this feature to be enabled through the `features.docs.navigator.enable`
+    // setting in `theme-settings.json`
+    enableNavigator: ({ isTargetIDE }) => !isTargetIDE && (
+      getSetting(['features', 'docs', 'navigator', 'enable'], false)
+    ),
+    sidebarProps: ({ isSideNavOpen, enableNavigator }) => (
+      enableNavigator
+        ? { class: 'full-width-container topic-wrapper', openExternally: isSideNavOpen }
+        : { class: 'static-width-container topic-wrapper' }
+    ),
+    sidebarListeners() {
+      return this.enableNavigator ? ({
+        'update:openExternally': (v) => { this.isSideNavOpen = v; },
+      }) : {};
     },
   },
   methods: {
@@ -149,6 +261,13 @@ export default {
   },
   provide() {
     return { store: this.store };
+  },
+  inject: {
+    isTargetIDE: {
+      default() {
+        return false;
+      },
+    },
   },
   beforeDestroy() {
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
@@ -192,3 +311,31 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+@import 'docc-render/styles/_core.scss';
+
+.doc-topic-view {
+  display: flex;
+  flex-flow: column;
+  background: var(--colors-text-background, var(--color-text-background));
+}
+
+.doc-topic-aside {
+  height: 100%;
+  box-sizing: border-box;
+  @include breakpoint(small) {
+    background: var(--color-fill);
+  }
+}
+
+.topic-wrapper {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.full-width-container {
+  @include inTargetWeb {
+    @include breakpoint-full-width-container()
+  }
+}
+</style>

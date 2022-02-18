@@ -10,18 +10,6 @@
 
 <template>
   <div class="doc-topic">
-    <Nav
-      v-if="!isTargetIDE"
-      :title="title"
-      :diffAvailability="diffAvailability"
-      :interfaceLanguage="interfaceLanguage"
-      :objcPath="objcPath"
-      :swiftPath="swiftPath"
-      :parentTopicIdentifiers="parentTopicIdentifiers"
-      :isSymbolDeprecated="isSymbolDeprecated"
-      :isSymbolBeta="isSymbolBeta"
-      :currentTopicTags="tags"
-    />
     <main class="main" id="main" role="main" tabindex="0">
       <slot name="above-title" />
       <Title :eyebrow="roleHeading">{{ title }}</Title>
@@ -96,7 +84,6 @@ import metadata from 'docc-render/mixins/metadata';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
-import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
@@ -143,7 +130,6 @@ export default {
     DownloadButton: CallToActionButton,
     TechnologyList,
     LanguageSwitcher,
-    Nav: DocumentationNav,
     OnThisPageNav,
     PrimaryContent,
     Relationships,
@@ -235,10 +221,6 @@ export default {
       type: Array,
       required: false,
     },
-    symbolKind: {
-      type: String,
-      required: false,
-    },
     variants: {
       type: Array,
       default: () => ([]),
@@ -249,6 +231,30 @@ export default {
     tags: {
       type: Array,
       required: true,
+    },
+    objcPath: {
+      type: String,
+      required: false,
+    },
+    swiftPath: {
+      type: String,
+      required: false,
+    },
+    isSymbolDeprecated: {
+      type: Boolean,
+      required: false,
+    },
+    isSymbolBeta: {
+      type: Boolean,
+      required: false,
+    },
+    symbolKind: {
+      type: String,
+      default: '',
+    },
+    role: {
+      type: String,
+      default: '',
     },
   },
   provide() {
@@ -285,36 +291,17 @@ export default {
         [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
       })), memo)
     ), {}),
-    // The first path for any variant with an "occ" interface language trait (if any)
-    objcPath: ({ languagePaths: { [Language.objectiveC.key.api]: [path] = [] } = {} }) => path,
-    // The first path for any variant with a "swift" interface language trait (if any)
-    swiftPath: ({ languagePaths: { [Language.swift.key.api]: [path] = [] } = {} }) => path,
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
-    isSymbolBeta:
-      ({ platforms }) => platforms
-        && platforms.length
-        && platforms.every(platform => platform.beta),
     hasBetaContent:
       ({ platforms }) => platforms
         && platforms.length
         && platforms.some(platform => platform.beta),
-    isSymbolDeprecated:
-      ({ platforms, deprecationSummary }) => (deprecationSummary && deprecationSummary.length > 0)
-        || (platforms
-          && platforms.length
-          && platforms.every(platform => platform.deprecatedAt)
-        ),
     pageTitle: ({ title }) => title,
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
-    // The `hierarchy.paths` array will contain zero or more subarrays, each
-    // representing a "path" of parent topic IDs that could be considered the
-    // hierarchy/breadcrumb for a given topic. We choose to render only the
-    // first one.
-    parentTopicIdentifiers: ({ hierarchy: { paths: [ids = []] = [] } }) => ids,
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
   },
@@ -354,15 +341,25 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .doc-topic {
-  background: var(--colors-text-background, var(--color-text-background));
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 #main {
   outline-style: none;
+  height: 100%;
+
+  @include with-adjustable-sidebar {
+    border-left: 1px solid var(--color-grid);
+    border-right: 1px solid var(--color-grid);
+  }
+
   @include inTargetIde {
     min-height: 100vh;
     display: flex;
     flex-flow: column wrap;
+    border: none;
 
     & > .contenttable:last-of-type {
       flex: 1;
@@ -371,8 +368,9 @@ export default {
 }
 
 .container {
-  @include section-content;
   margin-top: $section-spacing-single-side / 2;
+  outline-style: none;
+  @include dynamic-content-container;
 }
 
 .content-grid {
