@@ -63,6 +63,7 @@ const technology = {
 };
 
 const references = {
+  technologies: { kind: 'technologies' },
   root: { url: 'root' },
   first: { url: 'first' },
   second: { url: 'second' },
@@ -147,6 +148,17 @@ describe('Navigator', () => {
       technologyPath: fallbackTechnology.url,
       scrollLockID: defaultProps.scrollLockID,
     });
+  });
+
+  it('strips out possible technology URLs from the activePath', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        parentTopicIdentifiers: ['technologies'].concat(parentTopicIdentifiers),
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+      references.first.url, references.second.url, mocks.$route.path,
+    ]);
   });
 
   it('re-emits the `@close` event', () => {

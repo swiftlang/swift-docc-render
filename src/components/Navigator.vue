@@ -87,11 +87,16 @@ export default {
   computed: {
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
-      return parentTopicIdentifiers.map(identifier => references[identifier].url);
+      return parentTopicIdentifiers.map(identifier => references[identifier]);
     },
     // splits out the top-level technology crumb
     activePath({ parentTopicReferences, $route }) {
-      return parentTopicReferences.slice(1).concat($route.path);
+      let itemsToSlice = 1;
+      // if the first item is a `technology`, slice off it and the technology itself
+      if (parentTopicReferences[0].kind === 'technologies') {
+        itemsToSlice = 2;
+      }
+      return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat($route.path);
     },
     /**
      * Recomputes the list of flat children.

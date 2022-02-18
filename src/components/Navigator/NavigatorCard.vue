@@ -432,7 +432,13 @@ export default {
     restorePersistedState() {
       const technology = sessionStorage.get(STORAGE_KEYS.technology);
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
+      const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
 
+      // if for some reason there are no nodes and no filter, we can assume its bad cache
+      if (!nodesToRender.length && !filter) {
+        this.trackOpenNodes(this.nodeChangeDeps);
+        return;
+      }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
       // if the technology does not match, do not use the persisted values
@@ -448,7 +454,7 @@ export default {
       // generate the array of flat children objects to render
       this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
       // finally fetch any previously assigned filters
-      this.filter = sessionStorage.get(STORAGE_KEYS.filter, '');
+      this.filter = filter;
       // scroll to the active element
       this.scrollToElement();
     },
