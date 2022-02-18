@@ -10,9 +10,12 @@
 
 // A map used to associate scoped breakpoint names with a map of attributes.
 // These attributes will be used to define the appropriate media queries for
-// the "large", "medium", and "small" breakpoints.
+// the "xlarge", "large", "medium", and "small" breakpoints.
 $breakpoint-attributes: (
   default: (
+    xlarge: (
+      min-width: 1800px
+    ),
     large: (
       min-width: 1069px,
       content-width: 980px,
@@ -313,7 +316,7 @@ $breakpoint-attributes: (
 /// Applies a max-width container, in order to limit the adjustable sidebar content from
 /// growing too much on ultra-widescreens
 @mixin breakpoint-full-width-container {
-  max-width: 1800px;
+  max-width: map-deep-get($breakpoint-attributes, (default, xlarge, min-width));
   margin-left: auto;
   margin-right: auto;
 }
@@ -322,12 +325,19 @@ $breakpoint-attributes: (
 /// default breakpoint-content mixin.
 @mixin breakpoint-dynamic-sidebar-content {
   @include inTargetWeb {
-    max-width: 900px;
+    max-width: 920px;
     min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
     margin-left: auto;
     margin-right: auto;
     padding: 0 20px;
     box-sizing: border-box;
+
+    // make sure there is 120px space around the content on xlarge
+    @include breakpoints-from(xlarge) {
+      box-sizing: unset;
+      padding-right: 120px;
+      padding-left: 120px;
+    }
   }
   @include inTargetIde {
     @include breakpoint-content()
@@ -340,6 +350,7 @@ $breakpoint-attributes: (
     @content
   }
 }
+
 /// Renders content only when we have the adjustable sidebar DISABLED
 @mixin without-adjustable-sidebar {
   .static-width-container & {

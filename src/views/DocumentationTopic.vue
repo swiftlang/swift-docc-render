@@ -317,7 +317,7 @@ export default {
 .doc-topic-view {
   display: flex;
   flex-flow: column;
-  background: var(--color-fill-secondary);
+  background: var(--colors-text-background, var(--color-text-background));
 }
 
 .doc-topic-aside {
@@ -331,7 +331,6 @@ export default {
 .topic-wrapper {
   flex: 1 1 auto;
   width: 100%;
-  background: var(--colors-text-background, var(--color-text-background));
 }
 
 .full-width-container {

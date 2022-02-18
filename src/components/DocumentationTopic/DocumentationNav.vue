@@ -183,4 +183,12 @@ $sidenav-icon-size: 19px;
   width: $sidenav-icon-size;
   height: $sidenav-icon-size;
 }
+
+// make sure toggle is not visible, from medium up, in default scope.
+// Sidenav is only toggle-able at small, in default scope.
+.sidenav-toggle {
+  @include breakpoints-from(medium) {
+    display: none;
+  }
+}
 </style>
