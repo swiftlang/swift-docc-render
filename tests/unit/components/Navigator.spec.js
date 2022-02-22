@@ -161,6 +161,15 @@ describe('Navigator', () => {
     ]);
   });
 
+  it('renders the root path as activePath when there is no parentTopicIdentifiers', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        parentTopicIdentifiers: [],
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
+  });
+
   it('re-emits the `@close` event', () => {
     const wrapper = createWrapper();
     wrapper.find(NavigatorCard).vm.$emit('close');

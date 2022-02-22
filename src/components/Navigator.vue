@@ -90,13 +90,15 @@ export default {
       return parentTopicIdentifiers.map(identifier => references[identifier]);
     },
     // splits out the top-level technology crumb
-    activePath({ parentTopicReferences, $route }) {
+    activePath({ parentTopicReferences, $route: { path } }) {
+      // route's path is activePath on root
+      if (!parentTopicReferences.length) return [path];
       let itemsToSlice = 1;
       // if the first item is a `technology`, slice off it and the technology itself
       if (parentTopicReferences[0].kind === 'technologies') {
         itemsToSlice = 2;
       }
-      return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat($route.path);
+      return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat(path);
     },
     /**
      * Recomputes the list of flat children.
