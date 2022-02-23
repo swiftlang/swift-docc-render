@@ -270,6 +270,7 @@ input[type="radio"] {
 
 /deep/ .question  > .code-listing {
   padding: unset;
+  border-radius: 0;
 }
 
 /deep/ pre {
