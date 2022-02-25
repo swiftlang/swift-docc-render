@@ -45,6 +45,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
  * @property {number} index - index of item in siblings
  * @property {number} siblingsCount - number of siblings
  * @property {number[]} childUIDs - array of child UIDs
+ * @property {boolean} deprecated - symbol is deprecated or is not
  */
 
 /**
