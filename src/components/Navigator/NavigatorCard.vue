@@ -14,7 +14,7 @@
       <button class="close-card-mobile" @click="$emit('close')">
         <InlineCloseIcon class="icon-inline close-icon" />
       </button>
-      <Reference :url="technologyPath" class="navigator-head">
+      <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
         <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
         <div class="card-link">
           {{ technology }}
@@ -27,13 +27,16 @@
         :id="scrollLockID"
         ref="scroller"
         class="scroller"
+        aria-label="Sidebar Tree Navigator"
         :items="nodesToRender"
         :item-size="itemSize"
         key-field="uid"
-        v-slot="{ item }"
+        v-slot="{ item, active }"
+        @blur.capture.native="handleBlur"
       >
         <NavigatorCardItem
           :item="item"
+          :isRendered="active"
           :filter-pattern="filterPattern"
           :is-active="item.uid === activeUID"
           :is-bold="activePathMap[item.uid]"
@@ -148,8 +151,9 @@ export default {
     };
   },
   computed: {
+    INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
     filterPattern: ({ filter }) => (!filter
-      ? undefined
+      ? null
       // remove the `g` for global, as that causes bugs when matching
       : new RegExp(safeHighlightPattern(filter), 'i')),
     /**
@@ -471,6 +475,18 @@ export default {
         // call the scroll method on the `scroller` component.
         this.$refs.scroller.scrollToItem(index);
       }
+    },
+    handleBlur(event) {
+      // if there is a related target, do nothing
+      if (event.relatedTarget !== null) return;
+      // if there is no related target re-focus the item
+      const { y } = event.target.getBoundingClientRect();
+      if (y < 0) {
+        return;
+      }
+      event.target.focus({
+        preventScroll: true,
+      });
     },
   },
 };

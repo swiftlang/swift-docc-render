@@ -22,10 +22,14 @@ const defaultProps = {
     path: '/path/to/foo',
     title: 'Foo Item',
     abstract: [{ type: 'text', text: 'abstract' }],
+    uid: 1,
+    siblingsCount: 5,
+    parent: 'Foo',
   },
   expanded: false,
   filterPattern: /foo/gi,
   isActive: false,
+  isRendered: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCardItem, {
@@ -46,10 +50,12 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
     expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(defaultProps.item.type);
     expect(wrapper.find('.leaf-link').props('url')).toEqual(defaultProps.item.path);
+    expect(wrapper.find('.leaf-link').attributes('id')).toBe(`${defaultProps.item.uid}`);
     expect(wrapper.find(HighlightMatches).props()).toEqual({
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
     });
+    expect(wrapper.find('.navigator-card-item').attributes('id')).toBe(`container-${defaultProps.item.uid}`);
   });
 
   it('does not render the expand button, if has no children', () => {
@@ -108,5 +114,98 @@ describe('NavigatorCardItem', () => {
     const wrapper = createWrapper();
     wrapper.find('.tree-toggle').trigger('click');
     expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+  });
+
+  describe('AX', () => {
+    it('applies aria-hidden to NavigatorCardItem if isRendered is false', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          isRendered: false,
+        },
+      });
+      expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBe('true');
+    });
+
+    it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {
+      const wrapper = createWrapper();
+      expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBeFalsy();
+    });
+
+    it('renders a hidden span telling the number of symbols to be expanded', () => {
+      const wrapper = createWrapper();
+      const label = wrapper.find(`#button-parent-${defaultProps.item.uid}`);
+      expect(label.attributes('hidden')).toBe('hidden');
+      expect(label.text()).toBe(`${defaultProps.item.childUIDs.length} symbols to be expanded`);
+    });
+
+    it('renders a hidden span telling the number of symbols to be collapsed', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          expanded: true,
+        },
+      });
+      const label = wrapper.find(`#button-parent-${defaultProps.item.uid}`);
+      expect(label.attributes('hidden')).toBe('hidden');
+      expect(label.text()).toBe(`${defaultProps.item.childUIDs.length} symbols to be collapsed`);
+    });
+
+    it('renders aria tags to describe button', () => {
+      const wrapper = createWrapper();
+      const button = wrapper.find('.tree-toggle');
+      expect(button.attributes('aria-label')).toBe(`Toggle ${defaultProps.item.title}`);
+      expect(button.attributes('aria-controls')).toBe(`container-${defaultProps.item.uid}`);
+      expect(button.attributes('aria-expanded')).toBe('false');
+      expect(button.attributes('tabindex')).toBeFalsy();
+      expect(button.attributes('aria-describedby')).toBe(`button-parent-${defaultProps.item.uid}`);
+    });
+
+    it('renders tabindex -1 in button when component is not rendered', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          isRendered: false,
+        },
+      });
+      expect(wrapper.find('.tree-toggle').attributes('tabindex')).toBe('-1');
+    });
+
+    it('renders aria-expanded true in button when component is expanded', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          expanded: true,
+        },
+      });
+      expect(wrapper.find('.tree-toggle').attributes('aria-expanded')).toBe('true');
+    });
+
+    it('renders a hidden span telling the user the position of a symbol', () => {
+      const wrapper = createWrapper();
+      const label = wrapper.find(`#label-${defaultProps.item.uid}`);
+      expect(label.attributes('hidden')).toBe('hidden');
+      expect(label.text()).toBe(`${defaultProps.item.index + 1} of ${defaultProps.item.siblingsCount} symbols inside`);
+    });
+
+    it('renders a hidden span telling the containing number of symbols', () => {
+      const wrapper = createWrapper();
+      const label = wrapper.find(`#label-parent-${defaultProps.item.uid}`);
+      expect(label.attributes('hidden')).toBe('hidden');
+      expect(label.text()).toBe(`, containing ${defaultProps.item.childUIDs.length} symbols`);
+    });
+
+    it('renders a aria-describedby in the leaf-link', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            childUIDs: [],
+          },
+        },
+      });
+      expect(wrapper.find('.leaf-link').attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent}`);
+    });
+
+    it('renders a aria-describedby in the leaf-link including the parent label if is parent', () => {
+      const wrapper = createWrapper();
+      expect(wrapper.find('.leaf-link').attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent} label-parent-${defaultProps.item.uid}`);
+    });
   });
 });
