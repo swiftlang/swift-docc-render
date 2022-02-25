@@ -13,12 +13,26 @@
     class="navigator-card-item"
     :class="{ expanded }"
     :style="{ '--nesting-index': item.depth }"
+    :aria-hidden="isRendered ? null : 'true'"
+    :id="`container-${item.uid}`"
   >
     <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
+      <span
+        v-if="isParent"
+        hidden
+        :id="buttonParentLabel"
+      >
+        {{ item.childUIDs.length }} symbols to be {{ expanded ? 'collapsed' : 'expanded'}}
+      </span>
       <div class="depth-spacer">
         <button
-          v-if="item.childUIDs.length"
+          v-if="isParent"
+          :aria-describedby="buttonParentLabel"
           class="tree-toggle"
+          :tabindex="isRendered ? null : '-1'"
+          :aria-label="`Toggle ${item.title}`"
+          :aria-controls="`container-${item.uid}`"
+          :aria-expanded="expanded ? 'true': 'false'"
           @click.exact.prevent="toggleTree"
           @click.alt.prevent="toggleEntireTree"
         >
@@ -27,11 +41,25 @@
       </div>
       <NavigatorLeafIcon v-if="!isGroupMarker" :type="item.type" class="navigator-icon" />
       <div class="title-container">
+        <span
+          v-if="isParent"
+          hidden
+          :id="parentLabel"
+        >, containing {{ item.childUIDs.length }} symbols</span>
+        <span
+          :id="siblingsLabel"
+          hidden
+        >
+          {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
+        </span>
         <Reference
+          :id="item.uid"
           :url="item.path || ''"
           :isActive="!isGroupMarker"
           :class="{ bolded: isBold }"
           class="leaf-link"
+          :aria-describedby="ariaDescribedBy"
+          :tabindex="isRendered ? null : '-1'"
         >
           <HighlightMatches
             :text="item.title"
@@ -59,6 +87,10 @@ export default {
     Reference,
   },
   props: {
+    isRendered: {
+      type: Boolean,
+      default: false,
+    },
     item: {
       type: Object,
       required: true,
@@ -82,6 +114,17 @@ export default {
   },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
+    isParent: ({ item }) => !!item.childUIDs.length,
+    parentLabel: ({ item }) => `label-parent-${item.uid}`,
+    siblingsLabel: ({ item }) => `label-${item.uid}`,
+    buttonParentLabel: ({ item }) => `button-parent-${item.uid}`,
+    ariaDescribedBy({
+      item, siblingsLabel, parentLabel, isParent,
+    }) {
+      const baseLabel = `${siblingsLabel} ${item.parent}`;
+      if (!isParent) return baseLabel;
+      return `${baseLabel} ${parentLabel}`;
+    },
   },
   methods: {
     toggleTree() {

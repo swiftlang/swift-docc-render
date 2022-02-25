@@ -43,6 +43,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
  * @property {number} parent - parent UID
  * @property {number} depth - depth of symbol in original tree
  * @property {number} index - index of item in siblings
+ * @property {number} siblingsCount - number of siblings
  * @property {number[]} childUIDs - array of child UIDs
  */
 
@@ -139,6 +140,10 @@ export default {
         node.uid = this.hashCode(`${parentUID}+${node.path}_${depth}_${index}`);
         // store the parent uid
         node.parent = parentUID;
+        // store which item it is
+        node.index = index;
+        // store how many siblings it has
+        node.siblingsCount = childrenNodes.length;
         // store the depth
         node.depth = depth;
         // store child UIDs

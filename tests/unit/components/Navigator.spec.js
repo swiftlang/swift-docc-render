@@ -14,6 +14,7 @@ import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import throttle from '@/utils/throttle';
 import { TopicTypes } from '@/constants/TopicTypes';
+import { INDEX_ROOT_KEY } from '@/constants/sidebar';
 import { createEvent } from '../../../test-utils';
 
 jest.mock('@/utils/throttle', () => jest.fn(v => v));
@@ -223,8 +224,10 @@ describe('Navigator', () => {
           746971241,
         ],
         depth: 0,
+        index: 0,
         type: 'article',
-        parent: '<root>',
+        siblingsCount: 2,
+        parent: INDEX_ROOT_KEY,
         path: '/foo/child0',
         title: 'Child0',
         uid: 551503843,
@@ -232,8 +235,10 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
+        index: 0,
         type: 'tutorial',
         parent: 551503843,
+        siblingsCount: 3,
         path: '/foo/child0/grandchild0',
         title: 'Child0_GrandChild0',
         uid: 745124197,
@@ -243,8 +248,10 @@ describe('Navigator', () => {
           1489150959,
         ],
         depth: 1,
+        index: 1,
         type: 'tutorial',
         parent: 551503843,
+        siblingsCount: 3,
         path: '/foo/child0/grandchild1',
         title: 'Child0_GrandChild1',
         uid: 746047719,
@@ -252,8 +259,10 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 2,
+        index: 0,
         type: 'tutorial',
         parent: 746047719,
+        siblingsCount: 1,
         path: '/foo/child0/grandchild0/greatgrandchild0',
         title: 'Child0_GrandChild0_GreatGrandChild0',
         uid: 1489150959,
@@ -261,8 +270,10 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
+        index: 2,
         type: 'tutorial',
         parent: 551503843,
+        siblingsCount: 3,
         path: '/foo/child0/grandchild2',
         title: 'Child0_GrandChild2',
         uid: 746971241,
@@ -272,8 +283,10 @@ describe('Navigator', () => {
           -134251586,
         ],
         depth: 0,
+        index: 1,
         type: 'tutorial',
-        parent: '<root>',
+        parent: INDEX_ROOT_KEY,
+        siblingsCount: 2,
         path: '/foo/child1/',
         title: 'Child1',
         uid: -97593392,
@@ -281,8 +294,10 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
+        index: 0,
         type: 'method',
         parent: -97593392,
+        siblingsCount: 1,
         path: '/foo/child1/grandchild0',
         title: 'Child1_GrandChild0',
         uid: -134251586,
