@@ -66,6 +66,7 @@
             :matcher="filterPattern"
           />
         </Reference>
+        <Badge v-if="isDeprecated" variant="deprecated" />
       </div>
     </div>
   </div>
@@ -76,6 +77,7 @@ import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIco
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import Badge from 'docc-render/components/Badge.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 
 export default {
@@ -85,6 +87,7 @@ export default {
     NavigatorLeafIcon,
     InlineChevronRightIcon,
     Reference,
+    Badge,
   },
   props: {
     isRendered: {
@@ -125,6 +128,7 @@ export default {
       if (!isParent) return baseLabel;
       return `${baseLabel} ${parentLabel}`;
     },
+    isDeprecated: ({ item: { deprecated } }) => !!deprecated,
   },
   methods: {
     toggleTree() {
@@ -233,7 +237,7 @@ $item-height: 32px;
 .title-container {
   min-width: 0;
   display: flex;
-  flex-flow: column;
+  align-items: center;
 }
 
 .chevron {

@@ -14,6 +14,10 @@ import { TopicTypes } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
 
+const {
+  Badge,
+} = NavigatorCardItem.components;
+
 const defaultProps = {
   item: {
     depth: 2,
@@ -25,6 +29,7 @@ const defaultProps = {
     uid: 1,
     siblingsCount: 5,
     parent: 'Foo',
+    deprecated: false,
   },
   expanded: false,
   filterPattern: /foo/gi,
@@ -56,6 +61,21 @@ describe('NavigatorCardItem', () => {
       matcher: defaultProps.filterPattern,
     });
     expect(wrapper.find('.navigator-card-item').attributes('id')).toBe(`container-${defaultProps.item.uid}`);
+  });
+
+  it('renders a deprecated badge when item is deprecated', () => {
+    let wrapper;
+    wrapper = createWrapper();
+    expect(wrapper.contains(Badge)).toBe(false);
+    wrapper = createWrapper({
+      propsData: {
+        item: {
+          ...defaultProps.item,
+          deprecated: true,
+        },
+      },
+    });
+    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
   });
 
   it('does not render the expand button, if has no children', () => {
