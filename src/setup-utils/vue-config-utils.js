@@ -102,6 +102,9 @@ function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {})
 
         res.sendFile(path.join(devServerProxy, directory, `${baseName}-${changes}${extension}`));
       });
+      app.get(/^\/(data\/index)/, (req, res) => {
+        res.sendFile(path.join(devServerProxy, 'index/index.json'));
+      });
       app.get(/^\/(data|downloads|images|videos|index)/, (req, res) => {
         res.sendFile(path.join(devServerProxy, req.path));
       });
