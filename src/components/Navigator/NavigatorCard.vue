@@ -57,19 +57,19 @@
     <div class="filter-wrapper">
       <div class="navigator-filter">
         <div class="input-wrapper">
-          <FilterIcon class="icon-inline filter-icon" :class="{ colored: hasFilter }" />
-          <input
-            type="text"
-            :value="filter"
+          <FilterInput
+            v-model="filter"
+            :tags="availableTags"
+            :selected-tags.sync="selectedTagsModelValue"
             :placeholder="`Filter in ${technology}`"
-            @input="debounceInput">
-          <button
-            class="clear-button"
-            :class="{ hide: !hasFilter }"
-            @click.prevent="clearFilters"
+            position-reversed
+            class="filter-component"
+            @clear="clearFilters"
           >
-            <ClearRoundedIcon class="icon-inline clear-icon" />
-          </button>
+            <template #icon>
+              <FilterIcon class="icon-inline filter-icon" />
+            </template>
+          </FilterInput>
         </div>
       </div>
     </div>
@@ -88,9 +88,9 @@ import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIco
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
-import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
+import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -101,12 +101,24 @@ const STORAGE_KEYS = {
 };
 
 const FILTER_TAGS = {
-  sampleCode: 'Sample Code',
-  tutorials: 'Tutorials',
-  articles: 'Articles',
+  sampleCode: 'sampleCode',
+  tutorials: 'tutorials',
+  articles: 'articles',
 };
 
-const TOPIC_KIND_TO_TAG = {
+const FILTER_TAGS_TO_LABELS = {
+  [FILTER_TAGS.sampleCode]: 'Sample Code',
+  [FILTER_TAGS.tutorials]: 'Tutorials',
+  [FILTER_TAGS.articles]: 'Articles',
+};
+
+const FILTER_LABELS_TO_TAGS = Object.fromEntries(
+  Object
+    .entries(FILTER_TAGS_TO_LABELS)
+    .map(([key, value]) => [value, key]),
+);
+
+const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.article]: FILTER_TAGS.articles,
   [TopicTypes.learn]: FILTER_TAGS.tutorials,
   [TopicTypes.overview]: FILTER_TAGS.tutorials,
@@ -114,6 +126,7 @@ const TOPIC_KIND_TO_TAG = {
   [TopicTypes.sampleCode]: FILTER_TAGS.sampleCode,
   [TopicTypes.section]: FILTER_TAGS.tutorials,
   [TopicTypes.tutorial]: FILTER_TAGS.tutorials,
+  [TopicTypes.project]: FILTER_TAGS.tutorials,
 };
 
 /**
@@ -126,10 +139,12 @@ export default {
   constants: {
     STORAGE_KEYS,
     FILTER_TAGS,
-    TOPIC_KIND_TO_TAG,
+    FILTER_TAGS_TO_LABELS,
+    FILTER_LABELS_TO_TAGS,
+    TOPIC_TYPE_TO_TAG,
   },
   components: {
-    ClearRoundedIcon,
+    FilterInput,
     FilterIcon,
     SidenavIcon,
     NavigatorCardItem,
@@ -165,9 +180,12 @@ export default {
   },
   data() {
     return {
+      // value to v-model the filter to
       filter: '',
+      // debounced filter value, to reduce the computed property computations. Used in filter logic.
+      debouncedFilter: '',
       selectedTags: [],
-      availableTags: Object.keys(FILTER_TAGS),
+      availableTags: Object.values(FILTER_TAGS_TO_LABELS),
       /** @type {Object.<string, boolean>} */
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
@@ -176,10 +194,16 @@ export default {
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
-    filterPattern: ({ filter }) => (!filter
+    selectedTagsModelValue: {
+      get: ({ selectedTags }) => selectedTags.map(tag => FILTER_TAGS_TO_LABELS[tag]),
+      set(values) {
+        this.selectedTags = values.map(label => FILTER_LABELS_TO_TAGS[label]);
+      },
+    },
+    filterPattern: ({ debouncedFilter }) => (!debouncedFilter
       ? null
       // remove the `g` for global, as that causes bugs when matching
-      : new RegExp(safeHighlightPattern(filter), 'i')),
+      : new RegExp(safeHighlightPattern(debouncedFilter), 'i')),
     /**
      * Return the item size for the Scroller element.
      */
@@ -242,19 +266,20 @@ export default {
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
         const tagMatch = selectedTags.length
-          ? tagsSet.has(TOPIC_KIND_TO_TAG[type]) : true;
-        return titleMatch && tagMatch;
+          ? tagsSet.has(TOPIC_TYPE_TO_TAG[type]) : true;
+        // make sure groupMarker's dont get matched
+        return titleMatch && tagMatch && type !== TopicTypes.groupMarker;
       });
     },
     /**
      * Creates a computed for the two items, that the openNodes calc depends on
      */
     nodeChangeDeps: ({
-      filteredChildren, activePathChildren, filter, selectedTags,
+      filteredChildren, activePathChildren, debouncedFilter, selectedTags,
     }) => ([
       filteredChildren,
       activePathChildren,
-      filter,
+      debouncedFilter,
       selectedTags,
     ]),
     hasFilter({ debouncedFilter, selectedTags }) {
@@ -265,8 +290,9 @@ export default {
     this.restorePersistedState();
   },
   watch: {
+    filter: 'debounceInput',
     nodeChangeDeps: 'trackOpenNodes',
-    filter(value) {
+    debouncedFilter(value) {
       sessionStorage.set(STORAGE_KEYS.filter, value);
     },
     selectedTags(value) {
@@ -276,10 +302,11 @@ export default {
   methods: {
     clearFilters() {
       this.filter = '';
+      this.debouncedFilter = '';
       this.selectedTags = [];
     },
-    debounceInput: debounce(function debounceInput({ target: { value } }) {
-      this.filter = value;
+    debounceInput: debounce(function debounceInput(value) {
+      this.debouncedFilter = value;
     }, 500),
     /**
      * Finds which nodes need to be opened.
@@ -295,7 +322,7 @@ export default {
         || (
           selectedTags.join() !== selectedTagsBefore.join()
           && !selectedTagsBefore.length
-          && sessionStorage.get(STORAGE_KEYS.tags, []).length
+          && sessionStorage.get(STORAGE_KEYS.selectedTags, []).length
         )
       ) {
         return;
@@ -512,6 +539,7 @@ export default {
       // finally fetch any previously assigned filters or tags
       this.selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
       this.filter = filter;
+      this.debouncedFilter = this.filter;
       // scroll to the active element
       this.scrollToElement();
     },
@@ -651,6 +679,9 @@ $navigator-card-vertical-spacing: 8px !default;
   box-sizing: border-box;
   padding: 14px 30px;
   border-top: 1px solid var(--color-grid);
+  height: 71px;
+  display: flex;
+  align-items: flex-end;
 
   @include breakpoint(medium, nav) {
     border: none;
@@ -659,54 +690,29 @@ $navigator-card-vertical-spacing: 8px !default;
 
   .input-wrapper {
     position: relative;
+    flex: 1;
+    min-width: 0;
   }
 
   .filter-icon {
     width: 1em;
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translate(0%, -50%);
-    color: var(--color-figure-gray-secondary);
-
-    &.colored {
-      color: var(--color-link);
-    }
   }
 
-  .clear-button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    border-radius: 100%;
+  .filter-component {
+    --input-vertical-padding: 10px;
+    --input-height: 20px;
+    --input-border-color: var(--color-grid);
+    --input-text: var(--color-figure-gray-secondary);
 
-    &:focus {
-      @include focus-shadow;
+    /deep/ .filter__input {
+      @include font-styles(body);
     }
 
-    &.hide {
-      display: none;
-    }
-  }
-
-  .clear-icon {
-    width: 0.8em;
-    color: var(--color-figure-gray-secondary);
-  }
-
-  input {
-    border: 1px solid var(--color-grid);
-    padding: 10px 25px 10px 40px;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: $tiny-border-radius;
-
-    &:focus {
-      outline: none;
-      @include focus-shadow-form-element();
-    }
+    //border: 1px solid var(--color-grid);
+    //padding: 10px 25px 10px 40px;
+    //width: 100%;
+    //box-sizing: border-box;
+    //border-radius: $tiny-border-radius;
   }
 }
 
