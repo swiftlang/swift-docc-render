@@ -11,11 +11,13 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <slot name="above-title" />
-      <Title :eyebrow="roleHeading">{{ title }}</Title>
+      <DocumentationHero :type="symbolKind || role">
+        <slot name="above-title" />
+        <Title :eyebrow="roleHeading">{{ title }}</Title>
+        <Abstract v-if="abstract" :content="abstract" />
+      </DocumentationHero>
       <div class="container content-grid" :class="{ 'full-width': hideSummary }">
         <Description :hasOverview="hasOverview">
-          <Abstract v-if="abstract" :content="abstract" />
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -86,6 +88,7 @@ import { getSetting } from 'docc-render/utils/theme-settings';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -121,6 +124,7 @@ export default {
     },
   },
   components: {
+    DocumentationHero,
     Abstract,
     Aside,
     BetaLegalText,
