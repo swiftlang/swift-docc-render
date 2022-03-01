@@ -14,7 +14,7 @@ import {
   moveCursorToStart,
   moveCursorToEnd,
 } from 'docc-render/utils/input-helper';
-import { parseDataFromClipboard, prepareDataForHTMLClipboard } from '@/utils/clipboard';
+import { parseDataFromClipboard, prepareDataForHTMLClipboard } from 'docc-render/utils/clipboard';
 import { insertAt } from 'docc-render/utils/strings';
 import debounce from 'docc-render/utils/debounce';
 
