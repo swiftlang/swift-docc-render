@@ -619,4 +619,15 @@ describe('NavigatorCard', () => {
     // so the filter does not trigger re-calculations
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
   });
+
+  it('removes other tag suggestions, when picking one', async () => {
+    sessionStorage.get.mockImplementation((key, def) => def);
+    const wrapper = createWrapper();
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props('tags')).toHaveLength(3);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    await flushPromises();
+    expect(filter.props('tags')).toEqual([]);
+  });
 });

@@ -185,7 +185,6 @@ export default {
       // debounced filter value, to reduce the computed property computations. Used in filter logic.
       debouncedFilter: '',
       selectedTags: [],
-      availableTags: Object.values(FILTER_TAGS_TO_LABELS),
       /** @type {Object.<string, boolean>} */
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
@@ -194,6 +193,11 @@ export default {
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
+    availableTags: ({ selectedTags }) => (
+      selectedTags.length
+        ? []
+        : Object.values(FILTER_TAGS_TO_LABELS)
+    ),
     selectedTagsModelValue: {
       get: ({ selectedTags }) => selectedTags.map(tag => FILTER_TAGS_TO_LABELS[tag]),
       set(values) {
