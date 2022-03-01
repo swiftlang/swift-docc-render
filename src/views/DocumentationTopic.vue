@@ -198,10 +198,10 @@ export default {
       paths.slice(-1)[0]
     ),
     technology: ({
+      $route,
       topicProps: {
         identifier, references, role, title,
       },
-      swiftPath,
       parentTopicIdentifiers,
     }) => {
       if (!parentTopicIdentifiers.length) return references[identifier];
@@ -211,8 +211,7 @@ export default {
       // if there is a top level collection that does not have a reference to
       // itself, manufacture a minimal one using other available data
       if (role === TopicRole.collection && !references[identifier]) {
-        const url = swiftPath.startsWith('/') ? swiftPath : `/${swiftPath}`;
-        return { title, url };
+        return { title, url: $route.path };
       }
 
       return references[parentTopicIdentifiers[1]] || references[identifier];

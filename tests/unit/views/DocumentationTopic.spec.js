@@ -52,7 +52,9 @@ const mocks = {
     off: jest.fn(),
     send: jest.fn(),
   },
-  $route: {},
+  $route: {
+    path: '/documentation/somepath',
+  },
 };
 
 const topicData = {
@@ -211,8 +213,8 @@ describe('DocumentationTopic', () => {
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
     expect(navigator.props('technology')).toEqual({
-      title: 'FooKit',
-      url: '/documentation/swift',
+      title: topicData.metadata.title,
+      url: mocks.$route.path,
     });
   });
 
@@ -482,10 +484,11 @@ describe('DocumentationTopic', () => {
     });
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(oldInterfaceLang);
 
+    const from = mocks.$route;
     const to = {
+      ...from,
       query: { language: 'objc' },
     };
-    const from = mocks.$route;
     const next = jest.fn();
     // there is probably a more realistic way to simulate this
     DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
