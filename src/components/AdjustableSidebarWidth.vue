@@ -36,7 +36,7 @@
     <div class="content">
       <slot />
     </div>
-    <BreakpointEmitter @change="breakpoint = $event" />
+    <BreakpointEmitter :scope="BreakpointScopes.nav" @change="breakpoint = $event" />
   </div>
 </template>
 
@@ -44,7 +44,7 @@
 import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
+import { BreakpointName, BreakpointScopes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
@@ -137,6 +137,7 @@ export default {
       dragging: isDragging, 'force-open': openExternally, 'no-transition': noTransition,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
+    BreakpointScopes: () => BreakpointScopes,
   },
   async mounted() {
     window.addEventListener('keydown', this.onEscapeKeydown);

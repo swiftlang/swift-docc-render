@@ -21,7 +21,7 @@ import { waitFrames } from '@/utils/loading';
 import FocusTrap from '@/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName, BreakpointScopes } from '@/utils/breakpoints';
 import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/debounce');
@@ -110,12 +110,14 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       const aside = wrapper.find('.aside');
       expect(aside.classes()).not.toContain('no-transition');
-      wrapper.find(BreakpointEmitter).vm.$emit('change', 'small');
+      const emitter = wrapper.find(BreakpointEmitter);
+      expect(emitter.props('scope')).toEqual(BreakpointScopes.nav);
+      emitter.vm.$emit('change', 'small');
       expect(aside.classes()).toContain('no-transition');
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
       // try going back to large now
-      wrapper.find(BreakpointEmitter).vm.$emit('change', 'large');
+      emitter.vm.$emit('change', 'large');
       expect(aside.classes()).toContain('no-transition');
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
