@@ -79,9 +79,6 @@ describe('FilterInput', () => {
     wrapper = shallowMount(FilterInput, {
       propsData,
       stubs: { TagList },
-      slots: {
-        icon: FilterIcon,
-      },
     });
 
     input = wrapper.find({ ref: 'input' });

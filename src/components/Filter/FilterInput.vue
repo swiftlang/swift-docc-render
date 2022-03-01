@@ -28,7 +28,9 @@
           @click="focusInput"
           @mousedown.prevent
         >
-          <slot name="icon" />
+          <slot name="icon">
+            <FilterIcon />
+          </slot>
         </button>
         <div
           :class="['filter__input-box-wrapper', { 'scrolling': isScrolling }]"
@@ -120,6 +122,7 @@ import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import { pluralize } from 'docc-render/utils/strings';
 import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
+import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
 import TagList from './TagList.vue';
 
 // Max number of tags to show
@@ -153,6 +156,7 @@ export default {
   components: {
     TagList,
     ClearRoundedIcon,
+    FilterIcon,
   },
   props: {
     positionReversed: {
