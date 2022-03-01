@@ -180,6 +180,42 @@ describe('DocumentationTopic', () => {
     getSetting.mockReset();
   });
 
+  it('renders the Navigator with data when no reference is found for a top-level collection', () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+
+    const technologies = {
+      id: 'topic://technologies',
+      title: 'Technologies',
+      url: '/technologies',
+      kind: 'technologies',
+    };
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        metadata: {
+          ...topicData.metadata,
+          role: 'collection',
+        },
+        references: {
+          ...topicData.references,
+          [technologies.id]: technologies,
+        },
+        hierarchy: {
+          paths: [
+            [technologies.id, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+      },
+    });
+
+    const navigator = wrapper.find(Navigator);
+    expect(navigator.exists()).toBe(true);
+    expect(navigator.props('technology')).toEqual({
+      title: 'FooKit',
+      url: '/documentation/swift',
+    });
+  });
+
   it('renders without a sidebar', () => {
     getSetting.mockImplementation(defaultGetSetting);
 
