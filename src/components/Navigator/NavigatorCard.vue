@@ -519,7 +519,7 @@ $navigator-card-vertical-spacing: 8px !default;
       background: var(--color-fill-gray-quaternary);
     }
 
-    @include breakpoint(small) {
+    @include breakpoint(medium, nav) {
       justify-content: center;
     }
   }
@@ -529,7 +529,7 @@ $navigator-card-vertical-spacing: 8px !default;
     height: 19px;
   }
 
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     .filter-wrapper {
       order: 2;
     }
@@ -554,7 +554,7 @@ $navigator-card-vertical-spacing: 8px !default;
   transform: translateY(-50%);
   color: var(--color-link);
 
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     display: flex;
   }
 
@@ -572,7 +572,7 @@ $navigator-card-vertical-spacing: 8px !default;
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     --card-horizontal-spacing: 20px;
     --card-vertical-spacing: 0px;
   }
@@ -589,7 +589,7 @@ $navigator-card-vertical-spacing: 8px !default;
   padding: 14px 30px;
   border-top: 1px solid var(--color-grid);
 
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
   }

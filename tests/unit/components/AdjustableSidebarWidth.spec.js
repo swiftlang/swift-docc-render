@@ -114,6 +114,11 @@ describe('AdjustableSidebarWidth', () => {
       expect(aside.classes()).toContain('no-transition');
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
+      // try going back to large now
+      wrapper.find(BreakpointEmitter).vm.$emit('change', 'large');
+      expect(aside.classes()).toContain('no-transition');
+      await waitFrames(5);
+      expect(aside.classes()).not.toContain('no-transition');
     });
 
     it('sets the `width` to the last stored value', () => {
@@ -194,18 +199,18 @@ describe('AdjustableSidebarWidth', () => {
       expect(AdjustableSidebarWidth.watch.$route).toEqual('closeMobileSidebar');
     });
 
-    it('closes the nav, on breakpoint change from small to medium', async () => {
+    it('closes the nav, on breakpoint change from medium to large', async () => {
       const wrapper = createWrapper({
         propsData: {
           openExternally: true,
         },
       });
       // setup
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.small);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('update:openExternally')).toBeFalsy();
       // true test
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
       expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
   });

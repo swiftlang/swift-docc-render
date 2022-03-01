@@ -10,7 +10,7 @@
 
 <template>
   <NavBase
-    :breakpoint="isWideFormat ? BreakpointName.small: BreakpointName.medium"
+    :breakpoint="BreakpointName.medium"
     :hasOverlay="false"
     hasSolidBackground
     :hasNoBorder="hasNoBorder"
@@ -164,7 +164,7 @@ $sidenav-icon-size: 19px;
     .nav-title {
       @include font-styles(documentation-nav);
 
-      @include breakpoint(small, $scope: nav) {
+      @include breakpoint(medium, $scope: nav) {
         padding-top: 0;
       }
 
@@ -182,13 +182,5 @@ $sidenav-icon-size: 19px;
 .sidenav-icon {
   width: $sidenav-icon-size;
   height: $sidenav-icon-size;
-}
-
-// make sure toggle is not visible, from medium up, in default scope.
-// Sidenav is only toggle-able at small, in default scope.
-.sidenav-toggle {
-  @include breakpoints-from(medium) {
-    display: none;
-  }
 }
 </style>

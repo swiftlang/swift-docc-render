@@ -76,7 +76,7 @@ describe('DocumentationNav', () => {
     expect(nav.props()).toHaveProperty('hasNoBorder', false);
     expect(nav.props()).toHaveProperty('hasFullWidthBorder', true);
     expect(nav.props()).toHaveProperty('hasOverlay', false);
-    expect(nav.props()).toHaveProperty('breakpoint', BreakpointName.small);
+    expect(nav.props()).toHaveProperty('breakpoint', BreakpointName.medium);
     expect(nav.props()).toHaveProperty('isWideFormat', true);
   });
 
