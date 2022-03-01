@@ -66,6 +66,7 @@
 <script>
 import { apply } from 'docc-render/utils/json-patch';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import { TopicRole } from 'docc-render/constants/roles';
 import {
   clone,
   fetchDataForRouteEnter,
@@ -196,10 +197,22 @@ export default {
     navigatorParentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] } } }) => (
       paths.slice(-1)[0]
     ),
-    technology: ({ topicProps: { references, identifier }, parentTopicIdentifiers }) => {
+    technology: ({
+      topicProps: { identifier, references, role },
+      swiftPath,
+      parentTopicIdentifiers,
+    }) => {
       if (!parentTopicIdentifiers.length) return references[identifier];
       const first = references[parentTopicIdentifiers[0]];
       if (first.kind !== 'technologies') return first;
+
+      // if there is a top level collection that does not have a reference to
+      // itself, manufacture a minimal one using other available data
+      if (role === TopicRole.collection && !references[identifier]) {
+        const url = swiftPath.startsWith('/') ? swiftPath : `/${swiftPath}`;
+        return { url };
+      }
+
       return references[parentTopicIdentifiers[1]] || references[identifier];
     },
     // Use `variants` data to build a map of paths associated with each unique
