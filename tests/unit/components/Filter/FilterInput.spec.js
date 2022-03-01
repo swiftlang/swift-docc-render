@@ -49,6 +49,7 @@ describe('FilterInput', () => {
     value: '',
     selectedTags: [],
     tags,
+    disabled: false,
     placeholder: 'Placeholder Text',
   };
 
@@ -130,6 +131,15 @@ describe('FilterInput', () => {
     wrapper.setData({ isScrolling: true });
 
     expect(inputBoxWrapper.classes('scrolling')).toBe(true);
+  });
+
+  it('renders a disabled attr on input if it is disabled', () => {
+    // input is not disabled
+    expect(input.attributes('disabled')).toBeFalsy();
+    // set disabled prop to true
+    wrapper.setProps({ disabled: true });
+    // input is disabled
+    expect(input.attributes('disabled')).toBe('disabled');
   });
 
   it('emits `show-suggested-tags` if filter button is clicked', async () => {

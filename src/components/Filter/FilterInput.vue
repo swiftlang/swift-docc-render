@@ -65,6 +65,7 @@
             v-model="modelValue"
             :placeholder="hasSelectedTags ? '' : placeholder"
             :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
+            :disabled="disabled"
             v-bind="AXinputProperties"
             type="text"
             class="filter__input"
@@ -173,6 +174,10 @@ export default {
     placeholder: {
       type: String,
       default: () => 'Filter',
+    },
+    disabled: {
+      type: Boolean,
+      default: () => false,
     },
     value: {
       type: String,
