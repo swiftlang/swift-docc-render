@@ -198,7 +198,9 @@ export default {
       paths.slice(-1)[0]
     ),
     technology: ({
-      topicProps: { identifier, references, role },
+      topicProps: {
+        identifier, references, role, title,
+      },
       swiftPath,
       parentTopicIdentifiers,
     }) => {
@@ -210,7 +212,7 @@ export default {
       // itself, manufacture a minimal one using other available data
       if (role === TopicRole.collection && !references[identifier]) {
         const url = swiftPath.startsWith('/') ? swiftPath : `/${swiftPath}`;
-        return { url };
+        return { title, url };
       }
 
       return references[parentTopicIdentifiers[1]] || references[identifier];

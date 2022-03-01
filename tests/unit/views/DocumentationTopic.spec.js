@@ -210,7 +210,10 @@ describe('DocumentationTopic', () => {
 
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
-    expect(navigator.props('technology')).toEqual({ url: '/documentation/swift' });
+    expect(navigator.props('technology')).toEqual({
+      title: 'FooKit',
+      url: '/documentation/swift',
+    });
   });
 
   it('renders without a sidebar', () => {
