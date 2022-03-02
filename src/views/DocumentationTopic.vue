@@ -337,8 +337,15 @@ export default {
 .doc-topic-aside {
   height: 100%;
   box-sizing: border-box;
+  border-right: 1px solid var(--color-grid);
+
   @include breakpoint(medium, nav) {
     background: var(--color-fill);
+    border-right: none;
+
+    .animating & {
+      border-right: 1px solid var(--color-grid);
+    }
   }
 }
 

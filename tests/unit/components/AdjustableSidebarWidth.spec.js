@@ -382,4 +382,14 @@ describe('AdjustableSidebarWidth', () => {
     expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
   });
+
+  it('adds a transition detection', () => {
+    const wrapper = createWrapper();
+    const aside = wrapper.find('.aside');
+    expect(aside.classes()).not.toContain('animating');
+    aside.trigger('transitionstart');
+    expect(aside.classes()).toContain('animating');
+    aside.trigger('transitionend');
+    expect(aside.classes()).not.toContain('animating');
+  });
 });

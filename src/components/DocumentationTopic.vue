@@ -351,8 +351,9 @@ export default {
   height: 100%;
 
   @include with-adjustable-sidebar {
-    border-left: 1px solid var(--color-grid);
-    border-right: 1px solid var(--color-grid);
+    @include breakpoints-from(xlarge) {
+      border-right: 1px solid var(--color-grid);
+    }
   }
 
   @include inTargetIde {
