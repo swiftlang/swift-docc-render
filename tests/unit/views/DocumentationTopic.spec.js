@@ -52,7 +52,9 @@ const mocks = {
     off: jest.fn(),
     send: jest.fn(),
   },
-  $route: {},
+  $route: {
+    path: '/documentation/somepath',
+  },
 };
 
 const topicData = {
@@ -178,6 +180,42 @@ describe('DocumentationTopic', () => {
     const nav = wrapper.find(Nav);
     expect(nav.props('isWideFormat')).toBe(true);
     getSetting.mockReset();
+  });
+
+  it('renders the Navigator with data when no reference is found for a top-level collection', () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+
+    const technologies = {
+      id: 'topic://technologies',
+      title: 'Technologies',
+      url: '/technologies',
+      kind: 'technologies',
+    };
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        metadata: {
+          ...topicData.metadata,
+          role: 'collection',
+        },
+        references: {
+          ...topicData.references,
+          [technologies.id]: technologies,
+        },
+        hierarchy: {
+          paths: [
+            [technologies.id, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+      },
+    });
+
+    const navigator = wrapper.find(Navigator);
+    expect(navigator.exists()).toBe(true);
+    expect(navigator.props('technology')).toEqual({
+      title: topicData.metadata.title,
+      url: mocks.$route.path,
+    });
   });
 
   it('renders without a sidebar', () => {
@@ -446,10 +484,11 @@ describe('DocumentationTopic', () => {
     });
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(oldInterfaceLang);
 
+    const from = mocks.$route;
     const to = {
+      ...from,
       query: { language: 'objc' },
     };
-    const from = mocks.$route;
     const next = jest.fn();
     // there is probably a more realistic way to simulate this
     DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
