@@ -516,7 +516,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
 .pre-title {
   display: none;
-  @include breakpoint(small, $scope: nav) {
+  @include nav-in-breakpoint() {
     display: flex;
     padding: 0;
   }
@@ -613,11 +613,13 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   display: flex;
   align-items: center;
   max-height: $nav-height-small;
-  padding-right: $nav-padding-small;
 
   @include nav-in-breakpoint {
     grid-area: actions;
     justify-content: flex-end;
+  }
+  @include breakpoint(small, nav) {
+    padding-right: $nav-padding-small;
   }
 }
 
@@ -634,15 +636,15 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-top: 0;
     height: $nav-height-small;
     width: 90%;
-
-    @include nav-is-wide-format() {
-      width: 100%;
-      justify-content: center;
-    }
   }
 
   @include nav-in-breakpoint {
     grid-area: title;
+
+    @include nav-is-wide-format(true) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   /deep/ span {

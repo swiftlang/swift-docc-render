@@ -209,7 +209,7 @@ export default {
   transition: height 0.3s linear;
   border-left: 1px solid var(--color-grid);
 
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     position: static;
     height: 100%;
     border-left: none;
