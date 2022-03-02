@@ -337,7 +337,7 @@ export default {
 .doc-topic-aside {
   height: 100%;
   box-sizing: border-box;
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     background: var(--color-fill);
   }
 }

@@ -36,7 +36,7 @@
     <div class="content">
       <slot />
     </div>
-    <BreakpointEmitter @change="breakpoint = $event" />
+    <BreakpointEmitter :scope="BreakpointScopes.nav" @change="breakpoint = $event" />
   </div>
 </template>
 
@@ -44,7 +44,7 @@
 import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
+import { BreakpointName, BreakpointScopes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
@@ -137,6 +137,7 @@ export default {
       dragging: isDragging, 'force-open': openExternally, 'no-transition': noTransition,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
+    BreakpointScopes: () => BreakpointScopes,
   },
   async mounted() {
     window.addEventListener('keydown', this.onEscapeKeydown);
@@ -166,15 +167,13 @@ export default {
       }, 250, true, true),
     },
     windowWidth: 'getWidthInCheck',
-    async breakpoint(value, oldValue) {
+    async breakpoint(value) {
       // adjust the width, so it does not go outside of limits
       this.getWidthInCheck();
       // make sure we close the nav
-      if (oldValue === BreakpointName.small) {
+      if (value === BreakpointName.large) {
         this.closeMobileSidebar();
       }
-      // if we are not going into the `small` breakpoint, return early
-      if (oldValue !== BreakpointName.small && value !== BreakpointName.small) return;
       // make sure we dont apply transitions for a few moments, to prevent flashes
       this.noTransition = true;
       // await for a few moments
@@ -276,7 +275,7 @@ export default {
 
 .adjustable-sidebar-width {
   display: flex;
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     display: block;
     position: relative;
   }
@@ -284,7 +283,7 @@ export default {
 
 .sidebar {
   position: relative;
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     position: static;
   }
 }
@@ -299,7 +298,7 @@ export default {
     transition: none !important;
   }
 
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     width: 0 !important;
     overflow: hidden;
     min-width: 0;
@@ -355,7 +354,7 @@ export default {
     width: 10px;
   }
 
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     display: none;
   }
 
