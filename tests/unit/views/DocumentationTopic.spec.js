@@ -160,6 +160,7 @@ describe('DocumentationTopic', () => {
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
     expect(navigator.props()).toEqual({
+      errorFetching: false,
       isFetching: true,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
@@ -170,6 +171,7 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(navigator.props()).toEqual({
+      errorFetching: false,
       isFetching: false,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],

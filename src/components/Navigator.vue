@@ -18,6 +18,7 @@
       :children="flatChildren"
       :active-path="activePath"
       :scrollLockID="scrollLockID"
+      :error-fetching="errorFetching"
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
@@ -76,6 +77,10 @@ export default {
     scrollLockID: {
       type: String,
       default: '',
+    },
+    errorFetching: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
