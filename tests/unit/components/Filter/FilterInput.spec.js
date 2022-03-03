@@ -174,17 +174,23 @@ describe('FilterInput', () => {
     expect(document.activeElement).not.toBe(input.element);
   });
 
-  it('focuses the input, on external `value` change', async () => {
+  it('focuses the input if `focusInputWhenCreated` is on and input has content when component is created', async () => {
     wrapper.setProps({ value: 'It changes' });
     // Wait for the nextTick inside the input watcher
     await wrapper.vm.$nextTick();
     expect(document.activeElement).not.toBe(input.element);
-    wrapper.setProps({
-      value: 'Change',
-      focusInputOnValueChange: true,
+    // create component with input value
+    wrapper = shallowMount(FilterInput, {
+      propsData: {
+        ...propsData,
+        value: 'Change',
+        focusInputWhenCreated: true,
+      },
+      stubs: { TagList },
     });
     await wrapper.vm.$nextTick();
-    expect(document.activeElement).not.toBe(input.element);
+    input = wrapper.find({ ref: 'input' });
+    expect(document.activeElement).toBe(input.element);
   });
 
   describe('copy/paste', () => {

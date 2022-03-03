@@ -191,7 +191,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    focusInputOnValueChange: {
+    focusInputWhenCreated: {
       type: Boolean,
       default: false,
     },
@@ -294,18 +294,6 @@ export default {
     showSuggestedTags(value) {
       this.$emit('show-suggested-tags', value);
     },
-
-    async input() {
-      // if the `value` changes, but we are not focused on the input, we can make sure the input
-      // is focused, by setting `focusOnValueChange`
-      if (
-        this.focusInputOnValueChange
-        && document.activeElement !== this.$refs.input
-        && this.inputIsNotEmpty
-      ) {
-        this.focusInput();
-      }
-    },
   },
   methods: {
     /**
@@ -398,6 +386,15 @@ export default {
         this.$emit('focus-prev');
       }
     },
+  },
+  created() {
+    if (
+      this.focusInputWhenCreated
+      && document.activeElement !== this.$refs.input
+      && this.inputIsNotEmpty
+    ) {
+      this.focusInput();
+    }
   },
 };
 </script>
