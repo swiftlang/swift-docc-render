@@ -22,7 +22,7 @@
         hidden
         :id="buttonParentLabel"
       >
-        {{ item.childUIDs.length }} symbols to be {{ expanded ? 'collapsed' : 'expanded'}}
+        {{ item.childUIDs.length }} symbols to be {{ expanded ? 'collapsed' : 'expanded' }}
       </span>
       <div class="depth-spacer">
         <button
@@ -39,7 +39,16 @@
           <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
         </button>
       </div>
-      <NavigatorLeafIcon v-if="!isGroupMarker" :type="item.type" class="navigator-icon" />
+      <NavigatorLeafIcon
+        v-if="!isGroupMarker && !apiChange"
+        :type="item.type"
+        class="navigator-icon"
+      />
+      <span
+        v-else-if="apiChange"
+        class="navigator-icon"
+        :class="{ [`changed changed-${apiChange}`]: apiChange }"
+      />
       <div class="title-container">
         <span
           v-if="isParent"
@@ -114,6 +123,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    apiChange: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
@@ -187,6 +200,40 @@ $item-height: 32px;
   .navigator-icon {
     display: flex;
     flex: 0 0 auto;
+
+    &.changed {
+      border: none;
+      width: rem(16px);
+      height: rem(16px);
+      margin-right: 6px;
+
+      &:after {
+        width: 100%;
+        height: 100%;
+        background-image: $modified-rounded-svg;
+
+        @include prefers-dark {
+          background-image: $modified-dark-rounded-svg;
+        }
+        margin: 0;
+      }
+
+      &-added::after {
+        background-image: $added-rounded-svg;
+
+        @include prefers-dark {
+          background-image: $added-dark-rounded-svg;
+        }
+      }
+
+      &-deprecated::after {
+        background-image: $deprecated-rounded-svg;
+
+        @include prefers-dark {
+          background-image: $deprecated-dark-rounded-svg;
+        }
+      }
+    }
   }
 
   .leaf-link {

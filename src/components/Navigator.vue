@@ -18,6 +18,7 @@
       :children="flatChildren"
       :active-path="activePath"
       :scrollLockID="scrollLockID"
+      :api-changes="apiChanges"
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
@@ -27,7 +28,7 @@
 </template>
 
 <script>
-import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
+import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import throttle from 'docc-render/utils/throttle';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
@@ -63,7 +64,7 @@ export default {
     },
     technology: {
       type: Object,
-      required: true,
+      default: null,
     },
     isFetching: {
       type: Boolean,
@@ -76,6 +77,10 @@ export default {
     scrollLockID: {
       type: String,
       default: '',
+    },
+    apiChanges: {
+      type: Object,
+      default: null,
     },
   },
   data() {

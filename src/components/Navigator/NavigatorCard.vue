@@ -21,6 +21,7 @@
         </div>
       </Reference>
     </div>
+    <slot name="post-head" />
     <div class="card-body">
       <RecycleScroller
         v-show="nodesToRender.length"
@@ -41,6 +42,7 @@
           :is-active="item.uid === activeUID"
           :is-bold="activePathMap[item.uid]"
           :expanded="openNodes[item.uid]"
+          :api-change="apiChangesMap[item.uid]"
           @toggle="toggle"
           @toggle-full="toggleFullTree"
         />
@@ -97,6 +99,7 @@ export const STORAGE_KEYS = {
   technology: 'navigator.technology',
   openNodes: 'navigator.openNodes',
   nodesToRender: 'navigator.nodesToRender',
+  apiChanges: 'navigator.apiChanges',
 };
 
 /**
@@ -139,6 +142,10 @@ export default {
     scrollLockID: {
       type: String,
       default: '',
+    },
+    apiChanges: {
+      type: Object,
+      default: null,
     },
   },
   data() {
@@ -207,13 +214,19 @@ export default {
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
      */
-    filteredChildren({ children, filterPattern }) {
-      if (!filterPattern) return [];
-      // match each child's title, against the `filterPattern`
-      return children.filter(({ title, kind }) => (
-        // make sure groupMarker's dont match
-        filterPattern.test(title) && kind !== TopicTypes.groupMarker
-      ));
+    filteredChildren({
+      children, filterPattern, apiChangesMap, apiChanges,
+    }) {
+      // if no filter pattern and no api changes, return empty array
+      if (!filterPattern && !apiChanges) return [];
+      // filter all the children
+      return children.filter(({ title, uid, type }) => {
+        // match each child's title, against the `filterPattern`
+        const titleMatch = filterPattern ? filterPattern.test(title) : true;
+        // find items, that have API changes
+        const hasAPIChanges = apiChanges ? apiChangesMap[uid] : true;
+        return titleMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
+      });
     },
     /**
      * Creates a computed for the two items, that the openNodes calc depends on
@@ -223,6 +236,18 @@ export default {
       activePathChildren,
       filter,
     ]),
+    apiChangesMap() {
+      if (!this.apiChanges) return {};
+      return this.children.reduce((all, child) => {
+        const apiChange = this.apiChanges[child.path];
+        if (!apiChange) return all;
+        return Object.assign(all, { [child.uid]: apiChange });
+      }, {});
+    },
+    // determine if we should use the filtered items for rendering nodes
+    shouldUseFilteredResults() {
+      return Boolean(this.filter || this.apiChanges);
+    },
   },
   created() {
     this.restorePersistedState();
@@ -250,7 +275,7 @@ export default {
         return;
       }
       // decide which items are open
-      const nodes = !this.filterPattern
+      const nodes = !this.shouldUseFilteredResults
         ? activePathChildren
         // get all parents of the current match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
@@ -375,7 +400,7 @@ export default {
      */
     generateNodesToRender() {
       const {
-        children, filteredChildren, filterPattern, openNodes,
+        children, filteredChildren, shouldUseFilteredResults, openNodes,
       } = this;
       // create a set of all matches and their parents
       const allChildMatchesSet = new Set(filteredChildren
@@ -387,7 +412,7 @@ export default {
       this.nodesToRender = children
         .filter((child) => {
           // if we have no filter pattern, just show open nodes and root nodes
-          if (!filterPattern) {
+          if (!shouldUseFilteredResults) {
             // if parent is the root or parent is open
             return child.parent === INDEX_ROOT_KEY || openNodes[child.parent];
           }
@@ -425,6 +450,7 @@ export default {
      */
     persistState() {
       sessionStorage.set(STORAGE_KEYS.technology, this.technology);
+      sessionStorage.set(STORAGE_KEYS.apiChanges, !!this.apiChanges);
       // store the keys of the openNodes map, converting to number, to reduce space
       sessionStorage.set(STORAGE_KEYS.openNodes, Object.keys(this.openNodes).map(Number));
       // we need only the UIDs
@@ -437,6 +463,7 @@ export default {
       const technology = sessionStorage.get(STORAGE_KEYS.technology);
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
+      const apiChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
 
       // if for some reason there are no nodes and no filter, we can assume its bad cache
       if (!nodesToRender.length && !filter) {
@@ -445,8 +472,13 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      // if the technology does not match, do not use the persisted values
-      if (technology !== this.technology || !allNodesMatch) {
+      // if the technology does not match, or we dont have API changes yet,
+      // do not use the persisted values
+      if (
+        technology !== this.technology
+        || !allNodesMatch
+        || (apiChanges !== Boolean(this.apiChanges))
+      ) {
         this.trackOpenNodes(this.nodeChangeDeps);
         return;
       }

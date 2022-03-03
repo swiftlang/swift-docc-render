@@ -27,13 +27,19 @@ export default {
       type: Object,
       required: true,
     },
+    withAPIChanges: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       isFetching: false,
+      isFetchingAPIChanges: false,
       navigationIndex: {
         [Language.swift.key.url]: [],
       },
+      apiChanges: null,
     };
   },
   computed: {
@@ -52,21 +58,28 @@ export default {
       return currentLangTechnologies.find(t => t.path === technology.url);
     },
   },
-  async created() {
-    try {
-      this.isFetching = true;
-      const { interfaceLanguages } = await fetchIndexPathsData();
-      this.navigationIndex = interfaceLanguages;
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.isFetching = false;
-    }
+  created() {
+    this.fetchIndexData();
+  },
+  methods: {
+    async fetchIndexData() {
+      try {
+        this.isFetching = true;
+        const { interfaceLanguages } = await fetchIndexPathsData();
+        this.navigationIndex = interfaceLanguages;
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.isFetching = false;
+      }
+    },
   },
   render() {
     return this.$scopedSlots.default({
       technology: this.technologyWithChildren,
       isFetching: this.isFetching,
+      isFetchingAPIChanges: this.isFetchingAPIChanges,
+      apiChanges: this.apiChanges,
     });
   },
 };

@@ -36,12 +36,14 @@
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
               :technology="technology"
+              :withAPIChanges="!!$route.query.changes"
             >
               <template #default="slotProps">
                 <Navigator
                   :parent-topic-identifiers="navigatorParentTopicIdentifiers"
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
+                  :api-changes="slotProps.apiChanges"
                   :references="topicProps.references"
                   :scrollLockID="scrollLockID"
                   @close="isSideNavOpen = false"
