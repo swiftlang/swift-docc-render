@@ -10,7 +10,6 @@
 
 <template>
   <Section class="availability" role="complementary" aria-label="Availability">
-    <Title>Availability</Title>
     <List class="platform-list">
       <Item
         v-for="platform in platforms"
@@ -19,11 +18,13 @@
         class="platform"
         :change="!!changeFor(platform.name)"
       >
-        <AvailabilityRange
-          :deprecatedAt="platform.deprecatedAt"
-          :introducedAt="platform.introducedAt"
-          :platformName="platform.name"
-        />
+        <Badge>
+          <AvailabilityRange
+            :deprecatedAt="platform.deprecatedAt"
+            :introducedAt="platform.introducedAt"
+            :platformName="platform.name"
+          />
+        </Badge>
         <Badge v-if="platform.deprecatedAt" variant="deprecated" />
         <Badge v-else-if="platform.beta" variant="beta" />
       </Item>
@@ -39,7 +40,6 @@ import AvailabilityRange from './AvailabilityRange.vue';
 import List from './List.vue';
 import ListItem from './ListItem.vue';
 import Section from './Section.vue';
-import Title from './Title.vue';
 
 export default {
   name: 'Availability',
@@ -51,7 +51,6 @@ export default {
     Item: ListItem,
     List,
     Section,
-    Title,
   },
   props: {
     platforms: {
@@ -93,12 +92,21 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.availability, .platform-list, .platform {
+ .platform-list {
+   margin-top: 20px;
+ }
+
+.availability, .platform {
   box-sizing: inherit;
+  display: inline-block;
+
+  @include breakpoint(small) {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .platform {
-  padding-right: 2rem;
   box-sizing: border-box;
 
   &::after {
@@ -108,17 +116,10 @@ export default {
     margin-top: 6px;
   }
 
-  &-badge {
-    margin-left: rem(8px);
-  }
-
   @include change-highlight-horizontal-spacing();
   padding-left: 0;
-
+  padding-right: 0;
   margin-bottom: 0.25rem;
-  &:last-child {
-    margin-bottom: 0;
-  }
 
   @include change-highlight-vertical-spacing();
 
@@ -136,5 +137,10 @@ export default {
 
     @include change-highlight-horizontal-text-alignment();
   }
+}
+
+.badge {
+  border-radius: 11px;
+  margin-left: 0;
 }
 </style>

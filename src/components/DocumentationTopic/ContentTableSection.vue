@@ -9,50 +9,27 @@
 -->
 
 <template>
-  <Row class="contenttable-section">
-    <Column class="section-title" :span="span.title">
+  <div class="contenttable-section">
+    <div class="section-title">
       <slot name="title">
         <h3 class="title">{{ title }}</h3>
       </slot>
-    </Column>
-    <Column class="section-content" :span="span.content">
+    </div>
+    <div class="section-content">
       <slot name="abstract" />
       <slot name="discussion" />
       <slot />
-    </Column>
-  </Row>
+    </div>
+  </div>
 </template>
 
 <script>
-import GridColumn from 'docc-render/components/GridColumn.vue';
-import GridRow from 'docc-render/components/GridRow.vue';
-
 export default {
   name: 'ContentTableSection',
-  components: {
-    Column: GridColumn,
-    Row: GridRow,
-  },
   props: {
     title: {
       type: String,
       required: true,
-    },
-  },
-  computed: {
-    span() {
-      return {
-        title: {
-          large: 3,
-          medium: 3,
-          small: 12,
-        },
-        content: {
-          large: 9,
-          medium: 9,
-          small: 12,
-        },
-      };
     },
   },
 };
@@ -61,27 +38,16 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-@mixin section-border($position) {
-  border-#{$position}-color: var(--color-grid);
-  border-#{$position}-style: solid;
-  border-#{$position}-width: 1px;
+.title + .contenttable-section {
+  margin-top: 0;
 }
 
 .contenttable-section {
-  @include section-border(top);
   align-items: baseline;
-  display: flex;
-  margin: $contenttable-spacing-single-side 0;
   padding-top: $contenttable-spacing-single-side;
 
   &:last-child {
     margin-bottom: 0;
-  }
-}
-
-.section {
-  &-content {
-    padding-left: rem(17px)
   }
 }
 
@@ -105,7 +71,6 @@ export default {
   }
 
   /deep/ .title {
-    @include section-border(bottom);
     margin: 0 0 $contenttable-spacing-single-side 0;
     padding-bottom: 0.5rem;
   }

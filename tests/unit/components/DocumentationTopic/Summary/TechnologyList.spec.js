@@ -46,14 +46,14 @@ describe('TechnologyList', () => {
   it('renders a `Title`', () => {
     const title = wrapper.find(Title);
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Technologies');
+    expect(title.text()).toBe('Technologies:');
   });
 
   it('allows overriding the title via a prop', () => {
     wrapper.setProps({ title: 'Foobars' });
     const title = wrapper.find(Title);
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Foobars');
+    expect(title.text()).toBe('Foobars:');
     expect(wrapper.find(Section).attributes('aria-label')).toBe('Foobars');
   });
 
@@ -74,7 +74,7 @@ describe('TechnologyList', () => {
   it('uses the singular "Technology" title with only a single technology', () => {
     wrapper.setProps({ technologies: [propsData.technologies[0]] });
     expect(wrapper.find(Section).attributes('aria-label')).toBe('Technology');
-    expect(wrapper.find(Title).text()).toBe('Technology');
+    expect(wrapper.find(Title).text()).toBe('Technology:');
   });
 
   it('renders multiple names of any related modules', () => {

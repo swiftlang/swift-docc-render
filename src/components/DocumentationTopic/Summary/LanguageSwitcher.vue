@@ -10,19 +10,21 @@
 
 <template>
   <Section class="language" role="complementary" aria-label="Language">
-    <Title>Language</Title>
-    <LanguageSwitcherLink
-      class="language-option swift"
-      :class="{ active: swift.active }"
-      :url="swift.active ? null : swift.url"
-      @click="chooseLanguage(swift)"
-    >{{swift.name}}</LanguageSwitcherLink>
-    <LanguageSwitcherLink
-      class="language-option objc"
-      :class="{ active: objc.active }"
-      :url="objc.active ? null : objc.url"
-      @click="chooseLanguage(objc)"
-    >{{objc.name}}</LanguageSwitcherLink>
+    <Title>Language: </Title>
+    <div class="language-list">
+      <LanguageSwitcherLink
+        class="language-option swift"
+        :class="{ active: swift.active }"
+        :url="swift.active ? null : swift.url"
+        @click="chooseLanguage(swift)"
+      >{{swift.name}}</LanguageSwitcherLink>
+      <LanguageSwitcherLink
+        class="language-option objc"
+        :class="{ active: objc.active }"
+        :url="objc.active ? null : objc.url"
+        @click="chooseLanguage(objc)"
+      >{{objc.name}}</LanguageSwitcherLink>
+    </div>
   </Section>
 </template>
 
@@ -120,15 +122,17 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.language {
-  font-size: 14px;
+.language, .language-list {
+  margin-top: 0;
+  display: flex;
 }
 
 .language-option {
-  display: inline;
+  &.swift {
+    margin-right: 10px;
+  }
 
   @include breakpoint(small) {
-    display: block;
     margin-bottom: 0.25rem;
   }
 
@@ -140,8 +144,6 @@ export default {
   @include breakpoints-from(medium) {
     &.swift {
       border-right: 1px solid var(--color-fill-gray-tertiary);
-      margin-right: 10px;
-      padding-right: 10px;
     }
   }
 }

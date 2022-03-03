@@ -14,9 +14,9 @@
     role="complementary"
     :aria-label="computedTitle"
   >
-    <Title>{{ computedTitle }}</Title>
-    <List>
-      <Item v-for="technology in technologies" :key="technology.name">
+    <Title>{{ computedTitle }}: </Title>
+    <List class="technology-list">
+      <Item v-for="technology in technologies" :key="technology.name" class="technology">
         <WordBreak class="name">{{ technology.name }}</WordBreak>
         <WordBreak
           v-for="module in (technology.relatedModules || [])"
@@ -69,7 +69,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import 'docc-render/styles/_core.scss';
+
+.technologies, .technology-list {
+  display: flex;
+}
+
 .name {
+  text-rendering: optimizeLegibility;
+
   &::after {
     content: ', ';
   }

@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import throttle from '@/utils/throttle';
+import throttle from 'docc-render/utils/throttle';
 
 const func = jest.fn();
 const time = 100;

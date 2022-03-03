@@ -128,20 +128,16 @@ export default {
 .relationships-list {
   list-style: none;
 
-  &.column {
-    margin: 0;
-  }
-
   // The "inline" style displays items on a single line as a
   // comma-separated list with a maximum number of 3 items. This style should
   // not be used for a list that contains any items with availability
   // constraints information.
   &.inline {
-    columns: 1;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 0;
+    margin-top: 15px;
+    margin-left: 0;
 
     li:not(:last-child)::after {
       content: ",\00a0"
@@ -154,11 +150,6 @@ export default {
 
     &:after {
       margin-top: $change-coin-y-offset-reduced;
-    }
-
-    // ensure that column layout stays a block content
-    &.column {
-      display: block;
     }
   }
 }

@@ -11,8 +11,6 @@
 import { shallowMount } from '@vue/test-utils';
 import ContentTableSection from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
 
-const { Column, Row } = ContentTableSection.components;
-
 describe('ContentTableSection', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
@@ -25,21 +23,10 @@ describe('ContentTableSection', () => {
     wrapper = shallowMount(ContentTableSection, { propsData, slots });
   });
 
-  it('renders a `Row` with two `Column`s', () => {
-    const row = wrapper.find(Row);
-    expect(row.exists()).toBe(true);
-    expect(row.classes('contenttable-section')).toBe(true);
+  it('renders the title as `h3.title` by default', () => {
+    const div = wrapper.findAll('.section-title').at(0);
 
-    const cols = row.findAll(Column);
-    expect(cols.length).toBe(2);
-  });
-
-  it('renders the title as `h3.title` the first column by default', () => {
-    const col = wrapper.findAll(Column).at(0);
-    expect(col.classes('section-title')).toBe(true);
-    expect(col.exists()).toBe(true);
-
-    const title = col.find('h3');
+    const title = div.find('h3');
     expect(title.exists()).toBe(true);
     expect(title.classes('title')).toBe(true);
     expect(title.text()).toBe(propsData.title);
@@ -52,17 +39,16 @@ describe('ContentTableSection', () => {
         title: '<div class="title">Title Text</div>',
       },
     });
-    const col = wrapper.findAll(Column).at(0);
-    const title = col.find('.title');
+    const div = wrapper.find('.section-title');
+    const title = div.find('.title');
     expect(title.text()).toEqual('Title Text');
   });
 
-  it('renders slot content in the last column', () => {
-    const col = wrapper.findAll(Column).at(1);
-    expect(col.classes('section-content')).toBe(true);
-    expect(col.exists()).toBe(true);
+  it('renders slot content', () => {
+    const div = wrapper.find('.section-content');
+    expect(div.exists()).toBe(true);
 
-    const p = col.find('p');
+    const p = div.find('p');
     expect(p.exists()).toBe(true);
     expect(p.html()).toBe(slots.default);
   });

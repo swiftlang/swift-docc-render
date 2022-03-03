@@ -329,7 +329,8 @@ $breakpoint-attributes: (
     min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
     margin-left: auto;
     margin-right: auto;
-    padding: 0 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     box-sizing: border-box;
 
     // make sure there is 120px space around the content on xlarge

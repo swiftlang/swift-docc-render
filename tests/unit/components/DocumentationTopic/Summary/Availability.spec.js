@@ -16,7 +16,6 @@ const {
   Item,
   List,
   Section,
-  Title,
   Badge,
 } = Availability.components;
 
@@ -77,9 +76,12 @@ describe('Availability', () => {
   });
 
   it('renders a deprecated badge', () => {
-    const badge = wrapper.find(Badge);
+    const badge = wrapper.findAll(Badge);
     expect(badge.exists()).toBe(true);
-    expect(badge.props('variant')).toBe('deprecated');
+    expect(badge.length).toBe(7);
+    expect(badge.at(2).props('variant')).toBe('deprecated');
+    expect(badge.at(4).props('variant')).toBe('deprecated');
+    expect(badge.at(6).props('variant')).toBe('deprecated');
   });
 
   it('renders a beta badge', () => {
@@ -92,9 +94,9 @@ describe('Availability', () => {
         },
       ],
     });
-    const badge = wrapper.find(Badge);
+    const badge = wrapper.findAll(Badge);
     expect(badge.exists()).toBe(true);
-    expect(badge.props('variant')).toBe('beta');
+    expect(badge.at(1).props('variant')).toBe('beta');
   });
 
   it('renders deprecated over beta badges', () => {
@@ -109,8 +111,8 @@ describe('Availability', () => {
       ],
     });
     const badges = wrapper.findAll(Badge);
-    expect(badges.length).toBe(1);
-    expect(badges.at(0).props('variant')).toBe('deprecated');
+    expect(badges.length).toBe(2);
+    expect(badges.at(1).props('variant')).toBe('deprecated');
   });
 
   it('renders no badge if no deprecated or beta', () => {
@@ -122,14 +124,8 @@ describe('Availability', () => {
         },
       ],
     });
-    const badge = wrapper.find(Badge);
-    expect(badge.exists()).toBe(false);
-  });
-
-  it('renders a `Title`', () => {
-    const title = wrapper.find(Title);
-    expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Availability');
+    const badge = wrapper.findAll(Badge);
+    expect(badge.length).toBe(1);
   });
 
   it('renders a `List` with an `Item/AvailabilityRange` for each platform', () => {

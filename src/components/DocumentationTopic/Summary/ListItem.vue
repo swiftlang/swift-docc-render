@@ -35,11 +35,11 @@ export default {
 
 <style scoped lang="scss">
 .summary-list-item {
-  margin-bottom: 0.25rem;
+  margin-right: 9px;
   padding-left: 0; // override default li style
 
   &:last-child {
-    margin-bottom: 0;
+    margin-right: 0;
   }
 }
 </style>

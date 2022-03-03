@@ -15,32 +15,9 @@
         <slot name="above-title" />
         <Title :eyebrow="roleHeading">{{ title }}</Title>
         <Abstract v-if="abstract" :content="abstract" />
+        <Availability v-if="platforms" :platforms="platforms" />
       </DocumentationHero>
-      <div class="container content-grid" :class="{ 'full-width': hideSummary }">
-        <Description :hasOverview="hasOverview">
-          <RequirementMetadata
-            v-if="isRequirement"
-            :defaultImplementationsCount="defaultImplementationsCount"
-          />
-          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-            <ContentNode :content="deprecationSummary" />
-          </Aside>
-          <Aside
-            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-            kind="note"
-          >
-            <ContentNode :content="downloadNotAvailableSummary" />
-          </Aside>
-          <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
-        </Description>
         <Summary v-if="!hideSummary">
-          <LanguageSwitcher
-            v-if="shouldShowLanguageSwitcher"
-            :interfaceLanguage="interfaceLanguage"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-          />
-          <Availability v-if="platforms" :platforms="platforms" />
           <TechnologyList v-if="modules" :technologies="modules" />
           <TechnologyList
             v-if="extendsTechnology"
@@ -48,14 +25,36 @@
             title="Extends"
             :technologies="[{ name: extendsTechnology }]"
           />
-          <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
+          <LanguageSwitcher
+            v-if="shouldShowLanguageSwitcher"
+            :interfaceLanguage="interfaceLanguage"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
+          />
         </Summary>
-        <PrimaryContent
-          v-if="primaryContentSections && primaryContentSections.length"
-          :conformance="conformance"
-          :sections="primaryContentSections"
-        />
-      </div>
+        <div class="container">
+          <Description :hasOverview="hasOverview">
+            <RequirementMetadata
+              v-if="isRequirement"
+              :defaultImplementationsCount="defaultImplementationsCount"
+            />
+            <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+              <ContentNode :content="deprecationSummary" />
+            </Aside>
+            <Aside
+              v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+              kind="note"
+            >
+              <ContentNode :content="downloadNotAvailableSummary" />
+            </Aside>
+            <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
+          </Description>
+          <PrimaryContent
+            v-if="primaryContentSections && primaryContentSections.length"
+            :conformance="conformance"
+            :sections="primaryContentSections"
+          />
+        </div>
       <Topics
         v-if="topicSections"
         :sections="topicSections"
@@ -95,7 +94,6 @@ import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
 import Description from './DocumentationTopic/Description.vue';
 import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
-import OnThisPageNav from './DocumentationTopic/Summary/OnThisPageNav.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
@@ -134,7 +132,6 @@ export default {
     DownloadButton: CallToActionButton,
     TechnologyList,
     LanguageSwitcher,
-    OnThisPageNav,
     PrimaryContent,
     Relationships,
     RequirementMetadata,
@@ -284,9 +281,18 @@ export default {
         0,
       );
     },
-    hasOverview: ({ primaryContentSections = [] }) => primaryContentSections.filter(section => (
-      section.kind === PrimaryContent.constants.SectionKind.content
-    )).length > 0,
+    hasOverview:
+      ({ primaryContentSections = [], abstract = [] }) => primaryContentSections.filter(section => (
+        section.kind === PrimaryContent.constants.SectionKind.content
+      )).length > 0 || abstract.length > 0,
+    // Use `variants` data to build a map of paths associated with each unique
+    // `interfaceLanguage` trait.
+    languagePaths: ({ variants }) => variants.reduce((memo, variant) => (
+      variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
+        ..._memo,
+        [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
+      })), memo)
+    ), {}),
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
@@ -368,37 +374,6 @@ export default {
   margin-top: $section-spacing-single-side / 2;
   outline-style: none;
   @include dynamic-content-container;
-}
-
-.content-grid {
-  display: grid;
-  grid-template-columns: 75% 25%;
-  grid-template-rows: auto minmax(0, 1fr);
-
-  @include breakpoint(small) {
-    display: block;
-  }
-
-  &:before, &:after {
-    display: none;
-  }
-
-  &.full-width {
-    grid-template-columns: 100%;
-  }
-}
-
-.description {
-  grid-column: 1;
-}
-
-.summary {
-  grid-column: 2;
-  grid-row: 1 / -1;
-}
-
-.primary-content {
-  grid-column: 1;
 }
 
 .button-cta {

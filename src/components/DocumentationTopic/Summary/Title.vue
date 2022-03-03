@@ -21,9 +21,8 @@ export default { name: 'Title' };
 
 .title {
   color: var(--colors-text, var(--color-text));
-  @include font-styles(label-reduced);
   font-size: rem(14px);
-  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
   text-rendering: optimizeLegibility;
 }
 </style>

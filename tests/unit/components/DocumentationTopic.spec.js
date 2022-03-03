@@ -28,7 +28,6 @@ const {
   DownloadButton,
   TechnologyList,
   LanguageSwitcher,
-  OnThisPageNav,
   PrimaryContent,
   Relationships,
   RequirementMetadata,
@@ -254,17 +253,14 @@ describe('DocumentationTopic', () => {
     expect(abstractComponent.props('content')).toEqual(emptyParagraph);
   });
 
-  it('renders a `.content-grid` with `Description`/`Summary and PrimaryContent` columns', () => {
-    const grid = wrapper.find('.content-grid.container');
-    expect(grid.exists()).toBe(true);
-
-    const description = grid.find(Description);
+  it('renders a `Description`/`Summary and PrimaryContent`', () => {
+    const description = wrapper.find(Description);
     expect(description.exists()).toBe(true);
 
-    const summary = grid.find(Summary);
+    const summary = wrapper.find(Summary);
     expect(summary.exists()).toBe(true);
 
-    expect(grid.find(PrimaryContent).exists()).toBe(true);
+    expect(wrapper.find(PrimaryContent).exists()).toBe(true);
   });
 
   it('renders a `PrimaryContent`', () => {
@@ -322,14 +318,6 @@ describe('DocumentationTopic', () => {
       wrapper.setProps({ isRequirement: true });
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
     });
-  });
-
-  describe('summary column', () => {
-    let summary;
-
-    beforeEach(() => {
-      summary = wrapper.find('main .container').find(Summary);
-    });
 
     it('hides the Summary, if the global settings say so', () => {
       // this should really only mock the resolved value for the specific flag,
@@ -353,7 +341,7 @@ describe('DocumentationTopic', () => {
       ];
       wrapper.setProps({ platforms });
 
-      const list = summary.find(Availability);
+      const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
       expect(list.props('platforms')).toEqual(platforms);
     });
@@ -362,34 +350,13 @@ describe('DocumentationTopic', () => {
       const modules = ['FooKit', 'BarKit'];
       wrapper.setProps({ modules });
 
-      const list = summary.find(TechnologyList);
+      const list = wrapper.find(TechnologyList);
       expect(list.exists()).toBe(true);
       expect(list.props('technologies')).toEqual(modules);
     });
 
-    it('renders an `OnThisPageNav` with more than 1 section', () => {
-      const onThisPageSections = [
-        { anchor: 'foo', title: 'Foo' },
-        { anchor: 'bar', title: 'Bar' },
-      ];
-      wrapper.setData({ topicState: { onThisPageSections } });
-
-      const nav = summary.find(OnThisPageNav);
-      expect(nav.exists()).toBe(true);
-      expect(nav.props('sections')).toEqual(onThisPageSections);
-    });
-
-    it('does not render `OnThisPage` with 1 or fewer sections', () => {
-      const onThisPageSections = [{ anchor: 'foo', title: 'Foo' }];
-      wrapper.setData({ topicState: { onThisPageSections } });
-      expect(summary.contains(OnThisPageNav)).toBe(false);
-
-      wrapper.setData({ topicState: { onThisPageSections: [] } });
-      expect(summary.contains(OnThisPageNav)).toBe(false);
-    });
-
     it('renders a `LanguageSwitcher`', () => {
-      const switcher = summary.find(LanguageSwitcher);
+      const switcher = wrapper.find(LanguageSwitcher);
       expect(switcher.exists()).toBe(true);
       expect(switcher.props()).toEqual({
         interfaceLanguage: propsData.interfaceLanguage,
@@ -398,7 +365,7 @@ describe('DocumentationTopic', () => {
       });
     });
 
-    it('renders an `TechnologyList` component in the sidebar', () => {
+    it('renders an `TechnologyList` component', () => {
       expect(wrapper.find('.extends-technology').exists()).toBe(false);
       const extendsTechnology = 'FooTechnology';
 

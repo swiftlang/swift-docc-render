@@ -25,19 +25,22 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .summary {
+  @include font-styles(body-reduced);
   color: var(--colors-secondary-label, var(--color-secondary-label));
-  font-size: rem(16px);
-  margin-bottom: $section-spacing-single-side;
-  padding: 5px 0 0 4em;
+  padding: 11px 0;
+  background-color: var(--color-fill-gray-quaternary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @include breakpoint(medium) {
     padding-left: 2em;
   }
 
   @include breakpoint(small) {
+    flex-direction: column;
     padding-left: 0;
     margin-bottom: rem(40px);
-    display: grid;
     grid-gap: rem(16px);
     grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
   }

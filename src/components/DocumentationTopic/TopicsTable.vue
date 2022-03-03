@@ -104,8 +104,8 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.topic:not(:last-child),
+.topic,
 .section-content > .content {
-  margin-bottom: $section-spacing-single-side / 2;
+  margin-top: 15px;
 }
 </style>

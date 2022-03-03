@@ -12,12 +12,12 @@ import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
-import throttle from '@/utils/throttle';
+import throttle from 'docc-render/utils/throttle';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
 import { createEvent } from '../../../test-utils';
 
-jest.mock('@/utils/throttle', () => jest.fn(v => v));
+jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
 const technology = {
   title: 'FooTechnology',
