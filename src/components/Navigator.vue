@@ -202,12 +202,14 @@ export default {
   height: calc(100vh - #{$nav-height} - var(--sticky-top-offset));
   box-sizing: border-box;
   transition: height 0.3s linear;
-  border-left: 1px solid var(--color-grid);
 
-  @include breakpoint(small) {
+  @include breakpoints-from(xlarge) {
+    border-left: 1px solid var(--color-grid);
+  }
+
+  @include breakpoint(medium, nav) {
     position: static;
     height: 100%;
-    border-left: none;
     transition: none;
   }
 }
