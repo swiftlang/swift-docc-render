@@ -287,8 +287,11 @@ export default {
       }
     },
 
-    suggestedTags(value) {
-      this.$emit('suggested-tags', value);
+    suggestedTags: {
+      immediate: true,
+      handler(value) {
+        this.$emit('suggested-tags', value);
+      },
     },
 
     showSuggestedTags(value) {
