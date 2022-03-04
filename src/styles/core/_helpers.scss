@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -199,4 +199,70 @@
 //
 @function calculate-column-width($column-count: 1) {
   @return ($column-count / $total-columns) * 100%;
+}
+
+@mixin custom-horizontal-scrollbar() {
+  $border-radius: 10px;
+  $scrollbar-vertical-margin: 2px;
+  $scrollbar-horizontal-margin: (10px - $scrollbar-vertical-margin);
+  $scrollbar-height: 7px;
+  $scrollbar-total-height: $scrollbar-height + ($scrollbar-vertical-margin * 2);
+  $element-bottom-padding: 13px;
+
+  overflow-y: hidden;
+
+  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-color: var(--color-figure-gray-tertiary) transparent; /* Firefox colors */
+  scrollbar-width: thin; /* scrollbar height on Firefox (because it is horizontal) */
+  &::-webkit-scrollbar { /* Chrome & Safari */
+    height: 0;
+  }
+
+  &.scrolling {
+
+    /**
+    * `-webkit-touch-callout` to target Safari on iOS
+    * https://stackoverflow.com/questions/30102792/
+    *`scrollbar-width` to target Firefox
+    * https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
+    *`-ms-overflow-style` to target IE
+    * https://developer.mozilla.org/es/docs/Web/CSS/-ms-overflow-style
+    */
+    @supports not ((-webkit-touch-callout: none) or (scrollbar-width: none) or (-ms-overflow-style: none)) {
+      --scrollbar-height: #{$scrollbar-total-height};
+      padding-top: var(--scrollbar-height);
+      /**
+      * Hard set the height - the padding, which should allow for the scrollbar to stay offset,
+      * without the entire element shifting.
+      * --scroll-target-height is set in `handleScrollbar.js`
+      */
+      height: calc(var(--scroll-target-height) - var(--scrollbar-height));
+      // make sure the item's content is centered
+      display: flex;
+      align-items: center;
+    }
+
+    /**
+    * Browser compatibility
+    * https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+    */
+    &::-webkit-scrollbar {
+      height: $scrollbar-total-height;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: $border-radius;
+      background-color: var(--color-figure-gray-tertiary);
+      border: $scrollbar-vertical-margin solid transparent;
+      background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-track-piece:end {
+      margin-right: $scrollbar-horizontal-margin;
+    }
+
+    &::-webkit-scrollbar-track-piece:start {
+      margin-left: $scrollbar-horizontal-margin;
+    }
+  }
 }

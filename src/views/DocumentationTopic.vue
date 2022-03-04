@@ -57,6 +57,7 @@
           :swiftPath="swiftPath"
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"
+          :languagePaths="languagePaths"
         />
       </component>
     </template>
@@ -66,6 +67,7 @@
 <script>
 import { apply } from 'docc-render/utils/json-patch';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import { TopicRole } from 'docc-render/constants/roles';
 import {
   clone,
   fetchDataForRouteEnter,
@@ -157,7 +159,6 @@ export default {
         topicSections,
         seeAlsoSections,
         variantOverrides,
-        variants,
       } = this.topicData;
       return {
         abstract,
@@ -182,7 +183,6 @@ export default {
         topicSections,
         seeAlsoSections,
         variantOverrides,
-        variants,
         extendsTechnology,
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
@@ -196,15 +196,28 @@ export default {
     navigatorParentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] } } }) => (
       paths.slice(-1)[0]
     ),
-    technology: ({ topicProps: { references, identifier }, parentTopicIdentifiers }) => {
+    technology: ({
+      $route,
+      topicProps: {
+        identifier, references, role, title,
+      },
+      parentTopicIdentifiers,
+    }) => {
       if (!parentTopicIdentifiers.length) return references[identifier];
       const first = references[parentTopicIdentifiers[0]];
       if (first.kind !== 'technologies') return first;
+
+      // if there is a top level collection that does not have a reference to
+      // itself, manufacture a minimal one using other available data
+      if (role === TopicRole.collection && !references[identifier]) {
+        return { title, url: $route.path };
+      }
+
       return references[parentTopicIdentifiers[1]] || references[identifier];
     },
     // Use `variants` data to build a map of paths associated with each unique
     // `interfaceLanguage` trait.
-    languagePaths: ({ topicProps: { variants } }) => variants.reduce((memo, variant) => (
+    languagePaths: ({ topicData: { variants = [] } }) => variants.reduce((memo, variant) => (
       variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
         ..._memo,
         [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
@@ -323,8 +336,15 @@ export default {
 .doc-topic-aside {
   height: 100%;
   box-sizing: border-box;
-  @include breakpoint(small) {
+  border-right: 1px solid var(--color-grid);
+
+  @include breakpoint(medium, nav) {
     background: var(--color-fill);
+    border-right: none;
+
+    .animating & {
+      border-right: 1px solid var(--color-grid);
+    }
   }
 }
 

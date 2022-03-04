@@ -21,7 +21,7 @@ import { waitFrames } from '@/utils/loading';
 import FocusTrap from '@/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName, BreakpointScopes } from '@/utils/breakpoints';
 import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/debounce');
@@ -110,7 +110,14 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       const aside = wrapper.find('.aside');
       expect(aside.classes()).not.toContain('no-transition');
-      wrapper.find(BreakpointEmitter).vm.$emit('change', 'small');
+      const emitter = wrapper.find(BreakpointEmitter);
+      expect(emitter.props('scope')).toEqual(BreakpointScopes.nav);
+      emitter.vm.$emit('change', 'small');
+      expect(aside.classes()).toContain('no-transition');
+      await waitFrames(5);
+      expect(aside.classes()).not.toContain('no-transition');
+      // try going back to large now
+      emitter.vm.$emit('change', 'large');
       expect(aside.classes()).toContain('no-transition');
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
@@ -194,18 +201,18 @@ describe('AdjustableSidebarWidth', () => {
       expect(AdjustableSidebarWidth.watch.$route).toEqual('closeMobileSidebar');
     });
 
-    it('closes the nav, on breakpoint change from small to medium', async () => {
+    it('closes the nav, on breakpoint change from medium to large', async () => {
       const wrapper = createWrapper({
         propsData: {
           openExternally: true,
         },
       });
       // setup
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.small);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('update:openExternally')).toBeFalsy();
       // true test
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
       expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
   });
@@ -374,5 +381,15 @@ describe('AdjustableSidebarWidth', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
     expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
+  });
+
+  it('adds a transition detection', () => {
+    const wrapper = createWrapper();
+    const aside = wrapper.find('.aside');
+    expect(aside.classes()).not.toContain('animating');
+    aside.trigger('transitionstart');
+    expect(aside.classes()).toContain('animating');
+    aside.trigger('transitionend');
+    expect(aside.classes()).not.toContain('animating');
   });
 });
