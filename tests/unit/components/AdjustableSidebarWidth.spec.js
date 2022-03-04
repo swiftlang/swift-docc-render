@@ -406,4 +406,14 @@ describe('AdjustableSidebarWidth', () => {
     }));
     assertWidth(wrapper, maxWidth);
   });
+
+  it('adds a transition detection', () => {
+    const wrapper = createWrapper();
+    const aside = wrapper.find('.aside');
+    expect(aside.classes()).not.toContain('animating');
+    aside.trigger('transitionstart');
+    expect(aside.classes()).toContain('animating');
+    aside.trigger('transitionend');
+    expect(aside.classes()).not.toContain('animating');
+  });
 });

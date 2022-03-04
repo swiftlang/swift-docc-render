@@ -20,6 +20,8 @@
         :style="{ width: widthInPx }"
         class="aside"
         ref="aside"
+        @transitionstart="isTransitioning = true"
+        @transitionend="isTransitioning = false"
       >
         <slot
           name="aside"
@@ -120,6 +122,7 @@ export default {
       windowWidth,
       breakpoint,
       noTransition: false,
+      isTransitioning: false,
       focusTrapInstance: null,
     };
   },
@@ -133,8 +136,13 @@ export default {
     widthInPx: ({ width }) => `${width}px`,
     isMaxWidth: ({ width, maxWidth }) => width === maxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
-    asideClasses: ({ isDragging, openExternally, noTransition }) => ({
-      dragging: isDragging, 'force-open': openExternally, 'no-transition': noTransition,
+    asideClasses: ({
+      isDragging, openExternally, noTransition, isTransitioning,
+    }) => ({
+      dragging: isDragging,
+      'force-open': openExternally,
+      'no-transition': noTransition,
+      animating: isTransitioning,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
     BreakpointScopes: () => BreakpointScopes,
@@ -300,7 +308,7 @@ export default {
   }
 
   @include breakpoint(medium, nav) {
-    width: 0 !important;
+    width: 100% !important;
     overflow: hidden;
     min-width: 0;
     max-width: 100%;
@@ -310,14 +318,13 @@ export default {
     bottom: 0;
     z-index: 9999;
     transform: translateX(-100%);
-    transition: width 0.15s linear, transform 0.15s ease-in;
+    transition: transform 0.15s ease-in;
 
     /deep/ .aside-animated-child {
       opacity: 0;
     }
 
     &.force-open {
-      width: 100% !important;
       transform: translateX(0);
 
       /deep/ .aside-animated-child {
