@@ -222,9 +222,9 @@ export default {
       type: Array,
       required: false,
     },
-    languagePaths: {
-      type: Object,
-      default: () => ({}),
+    variants: {
+      type: Array,
+      default: () => ([]),
     },
     extendsTechnology: {
       type: String,
@@ -353,9 +353,8 @@ export default {
   height: 100%;
 
   @include with-adjustable-sidebar {
-    @include breakpoints-from(xlarge) {
-      border-right: 1px solid var(--color-grid);
-    }
+    border-left: 1px solid var(--color-grid);
+    border-right: 1px solid var(--color-grid);
   }
 
   @include inTargetIde {
