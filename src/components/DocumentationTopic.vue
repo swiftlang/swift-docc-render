@@ -351,7 +351,7 @@ export default {
   @include inTargetIde {
     min-height: 100vh;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
     border: none;
 
     & > .contenttable:last-of-type {
