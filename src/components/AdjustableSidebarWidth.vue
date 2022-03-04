@@ -228,7 +228,8 @@ export default {
       if (!this.isDragging) return;
       const { sidebar } = this.$refs;
       const clientX = this.isTouch ? e.touches[0].clientX : e.clientX;
-      let newWidth = (clientX - sidebar.offsetLeft);
+      // make sure we add the window horizontal scroll to the touch position, fixes zoomed in iOS
+      let newWidth = ((clientX + window.scrollX) - sidebar.offsetLeft);
       // prevent going outside of the window zone
       if (newWidth > this.maxWidth) {
         newWidth = this.maxWidth;
