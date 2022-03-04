@@ -711,12 +711,6 @@ $navigator-card-vertical-spacing: 8px !default;
     /deep/ .filter__input {
       @include font-styles(body);
     }
-
-    //border: 1px solid var(--color-grid);
-    //padding: 10px 25px 10px 40px;
-    //width: 100%;
-    //box-sizing: border-box;
-    //border-radius: $tiny-border-radius;
   }
 }
 

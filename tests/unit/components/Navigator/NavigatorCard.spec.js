@@ -167,7 +167,8 @@ describe('NavigatorCard', () => {
     // assert filter
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
-      focusInputOnValueChange: false,
+      disabled: false,
+      focusInputWhenCreated: false,
       placeholder: 'Filter in TestKit',
       positionReversed: true,
       preventedBlur: false,
