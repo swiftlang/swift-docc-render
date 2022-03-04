@@ -15,6 +15,9 @@
         <slot name="above-title" />
         <Title :eyebrow="roleHeading">{{ title }}</Title>
         <Abstract v-if="abstract" :content="abstract" />
+        <div v-if="sampleCodeDownload">
+          <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
+        </div>
         <Availability v-if="platforms" :platforms="platforms" />
       </DocumentationHero>
         <Summary v-if="!hideSummary">
@@ -47,7 +50,6 @@
             >
               <ContentNode :content="downloadNotAvailableSummary" />
             </Aside>
-            <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
           </Description>
           <PrimaryContent
             v-if="primaryContentSections && primaryContentSections.length"
@@ -375,8 +377,8 @@ export default {
   @include dynamic-content-container;
 }
 
-.button-cta {
-  margin-top: 2em;
+.sample-download {
+  margin-top: 20px;
 }
 
 /deep/ {
