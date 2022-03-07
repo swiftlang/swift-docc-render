@@ -383,6 +383,30 @@ describe('AdjustableSidebarWidth', () => {
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
   });
 
+  it('accounts for zoomed in devices', () => {
+    window.scrollX = 55;
+    const wrapper = createWrapper();
+    const aside = wrapper.find('.aside');
+    // assert dragging
+    wrapper.find('.resize-handle').trigger('touchstart', { type: 'touchstart' });
+    document.dispatchEvent(createEvent(eventsMap.touch.move, {
+      touches: [{
+        clientX: 300,
+      }],
+    }));
+    // assert class
+    expect(aside.classes()).toContain('dragging');
+    // offset is 100, so we remove it from the clientX, but we add the scrollX.
+    assertWidth(wrapper, 255);
+    // assert maxWidth
+    document.dispatchEvent(createEvent(eventsMap.touch.move, {
+      touches: [{
+        clientX: window.innerWidth + 150,
+      }],
+    }));
+    assertWidth(wrapper, maxWidth);
+  });
+
   it('adds a transition detection', () => {
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
