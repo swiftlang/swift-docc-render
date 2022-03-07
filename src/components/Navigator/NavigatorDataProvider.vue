@@ -27,7 +27,7 @@ export default {
       type: Object,
       required: true,
     },
-    withAPIChanges: {
+    apiChanges: {
       type: Boolean,
       default: false,
     },
@@ -39,7 +39,7 @@ export default {
       navigationIndex: {
         [Language.swift.key.url]: [],
       },
-      apiChanges: null,
+      diffs: {},
     };
   },
   computed: {
@@ -79,7 +79,7 @@ export default {
       technology: this.technologyWithChildren,
       isFetching: this.isFetching,
       isFetchingAPIChanges: this.isFetchingAPIChanges,
-      apiChanges: this.apiChanges,
+      apiChanges: this.diffs,
     });
   },
 };

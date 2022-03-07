@@ -243,7 +243,7 @@ export default {
     apiChangesMap() {
       if (!this.apiChanges) return {};
       return this.children.reduce((all, child) => {
-        const apiChange = this.apiChanges[child.path];
+        const apiChange = this.apiChanges[(child.path || '').replace(/^\//, '')];
         if (!apiChange) return all;
         return Object.assign(all, { [child.uid]: apiChange });
       }, {});
@@ -404,7 +404,7 @@ export default {
      */
     generateNodesToRender() {
       const {
-        children, filteredChildren, shouldUseFilteredResults, openNodes,
+        children, filteredChildren, shouldUseFilteredResults, openNodes, apiChanges,
       } = this;
       // create a set of all matches and their parents
       const allChildMatchesSet = new Set(filteredChildren
@@ -420,10 +420,13 @@ export default {
             // if parent is the root or parent is open
             return child.parent === INDEX_ROOT_KEY || openNodes[child.parent];
           }
+          const isParentDirectMatch = apiChanges
+            ? false
+            : (openNodes[child.parent] && filteredChildrenSet.has(this.childrenMap[child.parent]));
           // if parent is the root and is in the child match set
           return (child.parent === INDEX_ROOT_KEY && allChildMatchesSet.has(child))
             // if the parent is open and is a direct filter match
-            || (openNodes[child.parent] && filteredChildrenSet.has(this.childrenMap[child.parent]))
+            || (isParentDirectMatch)
             // if the item itself is a direct match
             || allChildMatchesSet.has(child);
         });
