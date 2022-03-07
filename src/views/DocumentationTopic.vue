@@ -42,6 +42,7 @@
                   :parent-topic-identifiers="navigatorParentTopicIdentifiers"
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
+                  :error-fetching="slotProps.errorFetching"
                   :references="topicProps.references"
                   :scrollLockID="scrollLockID"
                   @close="isSideNavOpen = false"

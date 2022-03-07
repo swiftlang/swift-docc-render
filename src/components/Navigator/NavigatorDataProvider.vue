@@ -31,6 +31,7 @@ export default {
   data() {
     return {
       isFetching: false,
+      errorFetching: false,
       navigationIndex: {
         [Language.swift.key.url]: [],
       },
@@ -58,7 +59,7 @@ export default {
       const { interfaceLanguages } = await fetchIndexPathsData();
       this.navigationIndex = interfaceLanguages;
     } catch (e) {
-      console.error(e);
+      this.errorFetching = true;
     } finally {
       this.isFetching = false;
     }
@@ -67,6 +68,7 @@ export default {
     return this.$scopedSlots.default({
       technology: this.technologyWithChildren,
       isFetching: this.isFetching,
+      errorFetching: this.errorFetching,
     });
   },
 };
