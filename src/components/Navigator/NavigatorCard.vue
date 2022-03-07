@@ -10,51 +10,55 @@
 
 <template>
   <div class="navigator-card">
-    <div class="head-wrapper">
-      <button class="close-card-mobile" @click="$emit('close')">
-        <SidenavIcon class="icon-inline close-icon" />
-      </button>
-      <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-        <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
-        <div class="card-link">
-          {{ technology }}
+    <div class="navigator-card-full-height">
+      <div class="navigator-card-inner">
+        <div class="head-wrapper">
+          <button class="close-card-mobile" @click="$emit('close')">
+            <SidenavIcon class="icon-inline close-icon" />
+          </button>
+          <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
+            <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
+            <div class="card-link">
+              {{ technology }}
+            </div>
+          </Reference>
         </div>
-      </Reference>
-    </div>
-    <div class="card-body">
-      <RecycleScroller
-        v-show="nodesToRender.length"
-        :id="scrollLockID"
-        ref="scroller"
-        class="scroller"
-        aria-label="Sidebar Tree Navigator"
-        :items="nodesToRender"
-        :item-size="itemSize"
-        key-field="uid"
-        v-slot="{ item, active }"
-        @blur.capture.native="handleBlur"
-      >
-        <NavigatorCardItem
-          :item="item"
-          :isRendered="active"
-          :filter-pattern="filterPattern"
-          :is-active="item.uid === activeUID"
-          :is-bold="activePathMap[item.uid]"
-          :expanded="openNodes[item.uid]"
-          @toggle="toggle"
-          @toggle-full="toggleFullTree"
-        />
-      </RecycleScroller>
-      <div class="no-items-wrapper" v-if="!nodesToRender.length">
-        <template v-if="filterPattern">
-          No results matching your filter
-        </template>
-        <template v-else-if="errorFetching">
-          There was an error fetching the data
-        </template>
-        <template v-else>
-          Technology has no children
-        </template>
+        <div class="card-body">
+          <RecycleScroller
+            v-show="nodesToRender.length"
+            :id="scrollLockID"
+            ref="scroller"
+            class="scroller"
+            aria-label="Sidebar Tree Navigator"
+            :items="nodesToRender"
+            :item-size="itemSize"
+            key-field="uid"
+            v-slot="{ item, active }"
+            @blur.capture.native="handleBlur"
+          >
+            <NavigatorCardItem
+              :item="item"
+              :isRendered="active"
+              :filter-pattern="filterPattern"
+              :is-active="item.uid === activeUID"
+              :is-bold="activePathMap[item.uid]"
+              :expanded="openNodes[item.uid]"
+              @toggle="toggle"
+              @toggle-full="toggleFullTree"
+            />
+          </RecycleScroller>
+          <div class="no-items-wrapper" v-if="!nodesToRender.length">
+            <template v-if="filterPattern">
+              No results matching your filter
+            </template>
+            <template v-else-if="errorFetching">
+              There was an error fetching the data
+            </template>
+            <template v-else>
+              Technology has no children
+            </template>
+          </div>
+        </div>
       </div>
     </div>
     <div class="filter-wrapper" v-if="!errorFetching">
@@ -205,7 +209,7 @@ export default {
     ),
     /**
      * Returns the current page uid
-     * @return string
+     * @return number
      */
     activeUID({ activePathChildren }) {
       return (activePathChildren[activePathChildren.length - 1] || {}).uid;
@@ -505,12 +509,29 @@ export default {
 
 $navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
+$filter-height: 64px;
 
 .navigator-card {
-  overflow: hidden auto;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+
+  .navigator-card-full-height {
+    height: 100%;
+  }
+
+  .navigator-card-inner {
+    position: sticky;
+    top: $nav-height;
+    height: calc(100vh - #{$nav-height} - #{$filter-height});
+    display: flex;
+    flex-flow: column;
+    @include breakpoint(medium, nav) {
+      position: static;
+      height: 100%;
+    }
+  }
 
   .head-wrapper {
     position: relative;
@@ -539,15 +560,6 @@ $navigator-card-vertical-spacing: 8px !default;
   .card-icon {
     width: 19px;
     height: 19px;
-  }
-
-  @include breakpoint(medium, nav) {
-    .filter-wrapper {
-      order: 2;
-    }
-    .card-body {
-      order: 3;
-    }
   }
 }
 
@@ -592,6 +604,7 @@ $navigator-card-vertical-spacing: 8px !default;
   @include breakpoint(medium, nav) {
     --card-horizontal-spacing: 20px;
     --card-vertical-spacing: 0px;
+    padding-top: $filter-height;
   }
 }
 
@@ -670,4 +683,20 @@ $navigator-card-vertical-spacing: 8px !default;
   padding: var(--card-vertical-spacing) 0;
   padding-right: var(--card-horizontal-spacing);
 }
+
+.filter-wrapper {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-fill);
+  @include breakpoint(medium, nav) {
+    position: absolute;
+    top: $nav-height;
+    bottom: auto;
+    width: 100%;
+  }
+  @include breakpoint(small, nav) {
+    top: $nav-height-small;
+  }
+}
+
 </style>

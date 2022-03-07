@@ -58,6 +58,7 @@
           :swiftPath="swiftPath"
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"
+          :languagePaths="languagePaths"
         />
       </component>
     </template>
@@ -159,7 +160,6 @@ export default {
         topicSections,
         seeAlsoSections,
         variantOverrides,
-        variants,
       } = this.topicData;
       return {
         abstract,
@@ -184,7 +184,6 @@ export default {
         topicSections,
         seeAlsoSections,
         variantOverrides,
-        variants,
         extendsTechnology,
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
@@ -219,7 +218,7 @@ export default {
     },
     // Use `variants` data to build a map of paths associated with each unique
     // `interfaceLanguage` trait.
-    languagePaths: ({ topicProps: { variants } }) => variants.reduce((memo, variant) => (
+    languagePaths: ({ topicData: { variants = [] } }) => variants.reduce((memo, variant) => (
       variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
         ..._memo,
         [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
@@ -338,8 +337,15 @@ export default {
 .doc-topic-aside {
   height: 100%;
   box-sizing: border-box;
+  border-right: 1px solid var(--color-grid);
+
   @include breakpoint(medium, nav) {
     background: var(--color-fill);
+    border-right: none;
+
+    .animating & {
+      border-right: 1px solid var(--color-grid);
+    }
   }
 }
 

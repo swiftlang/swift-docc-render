@@ -130,16 +130,10 @@ const propsData = {
   references: {},
   roleHeading: 'Thing',
   title: 'FooKit',
-  variants: [
-    {
-      traits: [{ interfaceLanguage: 'occ' }],
-      paths: ['documentation/objc'],
-    },
-    {
-      traits: [{ interfaceLanguage: 'swift' }],
-      paths: ['documentation/swift'],
-    },
-  ],
+  languagePaths: {
+    occ: ['documentation/objc'],
+    swift: ['documentation/swift'],
+  },
   tags: [
     {
       type: 'foo',
@@ -382,8 +376,8 @@ describe('DocumentationTopic', () => {
       expect(switcher.exists()).toBe(true);
       expect(switcher.props()).toEqual({
         interfaceLanguage: propsData.interfaceLanguage,
-        objcPath: propsData.variants[0].paths[0],
-        swiftPath: propsData.variants[1].paths[0],
+        objcPath: propsData.languagePaths.occ[0],
+        swiftPath: propsData.languagePaths.swift[0],
       });
     });
 
@@ -611,7 +605,7 @@ describe('DocumentationTopic', () => {
       });
       await wrapper.vm.$nextTick();
       expect($router.replace).toBeCalledWith({
-        path: `/${propsData.variants[0].paths[0]}`,
+        path: `/${propsData.languagePaths.occ[0]}`,
         query: { language: Language.objectiveC.key.url },
       });
     });

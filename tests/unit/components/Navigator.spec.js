@@ -12,10 +12,8 @@ import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
-import throttle from '@/utils/throttle';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
-import { createEvent } from '../../../test-utils';
 
 jest.mock('@/utils/throttle', () => jest.fn(v => v));
 
@@ -186,30 +184,6 @@ describe('Navigator', () => {
     const wrapper = createWrapper();
     wrapper.find(NavigatorCard).vm.$emit('close');
     expect(wrapper.emitted('close')).toHaveLength(1);
-  });
-
-  it('does not add scroll listeners, if the anchor is at the top already', () => {
-    const wrapper = createWrapper();
-    expect(throttle).toHaveBeenCalledTimes(0);
-    expect(wrapper.vm.topOffset).toBe('0px');
-  });
-
-  it('adds a scroll listener and stores the `y` offset of the anchor, if offsetTop is above 0', () => {
-    Object.defineProperty(fauxAnchor, 'offsetTop', { value: 50, writable: true });
-    const getBoundingClientRect = jest.fn().mockReturnValue({ y: 33 });
-    Object.defineProperty(fauxAnchor, 'getBoundingClientRect', { value: getBoundingClientRect });
-    const wrapper = createWrapper();
-    expect(throttle).toHaveBeenCalledTimes(1);
-    expect(wrapper.vm.topOffset).toBe('33px');
-    // simulate a scroll and sticky element
-    getBoundingClientRect.mockReturnValueOnce({ y: 44 });
-    window.dispatchEvent(createEvent('scroll'));
-    expect(wrapper.vm.topOffset).toBe('44px');
-    // assert destroy removes event listener
-    wrapper.destroy();
-    window.dispatchEvent(createEvent('scroll'));
-    // not called again
-    expect(getBoundingClientRect).toHaveBeenCalledTimes(2);
   });
 
   it('generates a unique hash', () => {

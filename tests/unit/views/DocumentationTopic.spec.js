@@ -278,7 +278,24 @@ describe('DocumentationTopic', () => {
       isSymbolDeprecated: false,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
+      languagePaths: {
+        occ: ['documentation/objc'],
+        swift: ['documentation/swift'],
+      },
     });
+  });
+
+  it('provides an empty languagePaths, even if no variants', () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        variants: undefined,
+      },
+    });
+
+    const topic = wrapper.find(Topic);
+    expect(topic.exists()).toBe(true);
+    expect(topic.props('languagePaths')).toEqual({});
   });
 
   it('computes isSymbolBeta', () => {
