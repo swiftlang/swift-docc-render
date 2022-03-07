@@ -69,11 +69,7 @@
             position-reversed
             class="filter-component"
             @clear="clearFilters"
-          >
-            <template #icon>
-              <FilterIcon class="icon-inline filter-icon" />
-            </template>
-          </FilterInput>
+          />
         </div>
       </div>
     </div>
@@ -91,7 +87,6 @@ import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
-import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
@@ -149,7 +144,6 @@ export default {
   },
   components: {
     FilterInput,
-    FilterIcon,
     SidenavIcon,
     NavigatorCardItem,
     NavigatorLeafIcon,
@@ -708,10 +702,6 @@ $filter-height: 64px;
     position: relative;
     flex: 1;
     min-width: 0;
-  }
-
-  .filter-icon {
-    width: 1em;
   }
 
   .filter-component {
