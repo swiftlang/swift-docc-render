@@ -343,10 +343,9 @@ export default {
       // if the activePath items change, we navigated to another page
       const pageChange = activePathChildrenBefore !== activePathChildren;
 
-      const filteredNodes = nodes
-        .map(({ uid }) => [uid, true]);
       // create a map to track open items - `{ [UID]: true }`
-      const newOpenNodes = Object.fromEntries(filteredNodes);
+      const newOpenNodes = Object.fromEntries(nodes
+        .map(({ uid }) => [uid, true]));
       // if we navigate across pages, persist the previously open nodes
       this.openNodes = Object.assign(pageChange ? this.openNodes : {}, newOpenNodes);
       this.generateNodesToRender();
