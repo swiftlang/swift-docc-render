@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavBase from 'docc-render/components/NavBase.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -145,20 +145,22 @@ describe('NavBase', () => {
     expect(wrapper.find('.after-title').exists()).toBe(true);
   });
 
-  it('does not render a pre-title, if not provided via slot', async () => {
-    wrapper = await createWrapper({});
-    expect(wrapper.find('.pre-title').exists()).toBe(false);
-  });
-
   it('renders a pre-title slot', async () => {
+    let preTitleProps;
     wrapper = await createWrapper({
-      slots: {
-        'pre-title': '<div class="pre-title-slot">Pre Title</div>',
+      scopedSlots: {
+        'pre-title': function (props) {
+          preTitleProps = props;
+          return this.$createElement('div', { class: 'pre-title-slot' }, 'Pre Title');
+        },
       },
     });
     const preTitle = wrapper.find('.pre-title');
     expect(preTitle.exists()).toBe(true);
     expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
+    expect(preTitleProps).toEqual({
+      closeNav: expect.any(Function),
+    });
   });
 
   it('renders a dedicated AX toggle', async () => {
