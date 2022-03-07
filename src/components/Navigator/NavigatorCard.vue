@@ -51,6 +51,9 @@
             <template v-if="hasFilter">
               No results matching your filter
             </template>
+            <template v-else-if="errorFetching">
+              There was an error fetching the data
+            </template>
             <template v-else>
               Technology has no children
             </template>
@@ -58,7 +61,7 @@
         </div>
       </div>
     </div>
-    <div class="filter-wrapper">
+    <div class="filter-wrapper" v-if="!errorFetching">
       <div class="navigator-filter">
         <div class="input-wrapper">
           <FilterInput
@@ -174,6 +177,10 @@ export default {
     scrollLockID: {
       type: String,
       default: '',
+    },
+    errorFetching: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

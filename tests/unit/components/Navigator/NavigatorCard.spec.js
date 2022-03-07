@@ -214,6 +214,17 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.no-items-wrapper').text()).toBe('Technology has no children');
   });
 
+  it('adds an error message, when there is an error in fetching', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        children: [],
+        errorFetching: true,
+      },
+    });
+    expect(wrapper.find('.no-items-wrapper').text()).toBe('There was an error fetching the data');
+    expect(wrapper.find('.filter-wrapper').exists()).toBe(false);
+  });
+
   it('opens an item, on @toggle', async () => {
     const wrapper = createWrapper();
     const item = root0Child1;
