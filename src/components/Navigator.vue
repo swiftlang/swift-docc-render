@@ -19,6 +19,7 @@
       :active-path="activePath"
       :scrollLockID="scrollLockID"
       :error-fetching="errorFetching"
+      :breakpoint="breakpoint"
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
@@ -79,6 +80,10 @@ export default {
     errorFetching: {
       type: Boolean,
       default: false,
+    },
+    breakpoint: {
+      type: String,
+      default: '',
     },
   },
   computed: {

@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -19,6 +19,7 @@ import { sessionStorage } from 'docc-render/utils/storage';
 import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { flushPromises } from '../../../../test-utils';
+import { BreakpointName } from '@/utils/breakpoints';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 jest.mock('docc-render/utils/storage');
@@ -113,6 +114,7 @@ const defaultProps = {
   activePath,
   type: TopicTypes.module,
   scrollLockID: 'foo',
+  breakpoint: 'large',
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -181,6 +183,15 @@ describe('NavigatorCard', () => {
       ],
       value: '',
     });
+  });
+
+  it('reverses the FilterInput, on mobile', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        breakpoint: BreakpointName.medium,
+      },
+    });
+    expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
   });
 
   it('hides the RecycleScroller, if no items to show', async () => {
