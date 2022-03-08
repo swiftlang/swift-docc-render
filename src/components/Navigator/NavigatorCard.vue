@@ -308,7 +308,7 @@ export default {
     apiChangesMap() {
       if (!this.apiChanges) return {};
       return this.children.reduce((all, child) => {
-        const apiChange = this.apiChanges[(child.path || '').replace(/^\//, '')];
+        const apiChange = this.apiChanges[child.path];
         if (!apiChange) return all;
         return Object.assign(all, { [child.uid]: apiChange });
       }, {});
@@ -732,6 +732,7 @@ $filter-height: 64px;
   @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
+    height: 62px;
   }
 
   .input-wrapper {

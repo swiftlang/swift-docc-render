@@ -28,8 +28,8 @@ export default {
       required: true,
     },
     apiChanges: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -40,7 +40,7 @@ export default {
       navigationIndex: {
         [Language.swift.key.url]: [],
       },
-      diffs: {},
+      diffs: null,
     };
   },
   computed: {

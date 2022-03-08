@@ -36,7 +36,7 @@
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
               :technology="technology"
-              :api-changes="$route.query.changes"
+              :api-changes="store.state.selectedAPIChangesVersion"
             >
               <template #default="slotProps">
                 <Navigator

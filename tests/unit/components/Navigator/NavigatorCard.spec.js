@@ -161,6 +161,7 @@ describe('NavigatorCard', () => {
       filterPattern: null,
       isBold: true,
       item: root0,
+      apiChange: null,
     });
     // assert no-items-wrapper
     expect(wrapper.find('.no-items-wrapper').exists()).toBe(false);
@@ -237,6 +238,7 @@ describe('NavigatorCard', () => {
       item,
       filterPattern: null,
       isRendered: false,
+      apiChange: null,
     });
     unopenedItem.vm.$emit('toggle', item);
     await wrapper.vm.$nextTick();
@@ -314,6 +316,34 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+  });
+
+  it('renders all the children of a directly matched parent', async () => {
+    const wrapper = createWrapper();
+    const filter = wrapper.find(FilterInput);
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    filter.vm.$emit('input', root0.title);
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    // assert only the parens of the match are visible
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(1);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    // open the item
+    all.at(0).vm.$emit('toggle', root0);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+    // open last child
+    all.at(2).vm.$emit('toggle', root0Child1);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+    expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
   });
 
   it('allows filtering the items using Tags, opening all items, that have matches in children', async () => {
@@ -413,6 +443,49 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child0);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
+  });
+
+  it('renders only direct matches or parents, when apiChanges are provided', async () => {
+    const apiChanges = {
+      [root0Child0.path]: 'modified',
+      [root0Child1.path]: 'modified',
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges,
+      },
+    });
+    await flushPromises();
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+  });
+
+  it('allows filtering while API changes are ON', async () => {
+    const apiChanges = {
+      [root0Child0.path]: 'modified',
+      [root0Child1.path]: 'modified',
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges,
+      },
+    });
+    await flushPromises();
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+    // filter
+    wrapper.find(FilterInput).vm.$emit('input', root0Child0.title);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(2);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
   });
 
   it('changes the open item, when navigating across pages, keeping the previously open items', async () => {
@@ -524,26 +597,33 @@ describe('NavigatorCard', () => {
   it('persists the filtered state', async () => {
     const wrapper = createWrapper();
     // called for the initial 3 things
-    expect(sessionStorage.set).toHaveBeenCalledTimes(3);
+    expect(sessionStorage.set).toHaveBeenCalledTimes(4);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.technology, defaultProps.technology);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.openNodes, [0, 1]);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.nodesToRender, [0, 1, 2, 4]);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.apiChanges, false);
     await flushPromises();
+    sessionStorage.set.mockClear();
     wrapper.find(FilterInput).vm.$emit('input', root0Child1GrandChild0.title);
     wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
     await flushPromises();
-    expect(sessionStorage.set).toHaveBeenCalledTimes(8);
+    expect(sessionStorage.set).toHaveBeenCalledTimes(6);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.filter, root0Child1GrandChild0.title);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.selectedTags, [FILTER_TAGS.tutorials]);
     expect(sessionStorage.set)
-      .toHaveBeenCalledWith(STORAGE_KEYS.openNodes, [0, 1]);
+      .toHaveBeenCalledWith(STORAGE_KEYS.openNodes, [0, 2]);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.nodesToRender, [0, 2, 3]);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.apiChanges, false);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.technology, defaultProps.technology);
   });
 
   it('restores the persisted state, from sessionStorage', () => {
@@ -553,6 +633,7 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
+      if (key === STORAGE_KEYS.apiChanges) return false;
       return '';
     });
 
@@ -598,6 +679,43 @@ describe('NavigatorCard', () => {
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
   });
 
+  it('does not restore the state, if the API changes mismatch', () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      // simulate we have collapses all, but the top item
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return true;
+      return '';
+    });
+    const wrapper = createWrapper();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+  });
+
+  it('keeps the open state, if there are API changes', () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      // simulate we have collapses all, but the top item
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return true;
+      return '';
+    });
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges: {
+          [root0Child0.path]: 'modified',
+          [root0Child1.path]: 'modified',
+        },
+      },
+    });
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(3);
+  });
+
   it('keeps the open state, even if there is a title filter', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.filter) return root0Child1GrandChild0.title;
@@ -606,6 +724,7 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child1.uid];
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return false;
       return '';
     });
     const wrapper = createWrapper();
@@ -623,6 +742,7 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child1.uid];
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
+      if (key === STORAGE_KEYS.apiChanges) return false;
       return '';
     });
     const wrapper = createWrapper();
