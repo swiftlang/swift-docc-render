@@ -650,18 +650,22 @@ $filter-height: 64px;
 .close-card-mobile {
   display: none;
   position: absolute;
-  top: 50%;
   z-index: 1;
-  transform: translateY(-50%);
   color: var(--color-link);
+  align-items: center;
+  justify-content: center;
 
   @include breakpoint(medium, nav) {
     display: flex;
-    left: $nav-padding-wide;
+    left: 0;
+    height: 100%;
+    padding-left: $nav-padding-wide;
+    padding-right: $nav-padding-wide;
   }
 
   @include breakpoint(small, nav) {
-    left: $nav-padding-small;
+    padding-left: $nav-padding-small;
+    padding-right: $nav-padding-small;
   }
 
   .close-icon {

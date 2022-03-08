@@ -187,6 +187,14 @@ $sidenav-icon-size: 19px;
   }
 }
 
+.sidenav-toggle {
+  $space: 14px;
+  margin-left: -$space;
+  margin-right: -$space;
+  padding-left: $space;
+  padding-right: $space;
+}
+
 .sidenav-icon {
   width: $sidenav-icon-size;
   height: $sidenav-icon-size;
