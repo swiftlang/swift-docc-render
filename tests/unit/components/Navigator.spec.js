@@ -117,6 +117,7 @@ describe('Navigator', () => {
       technology: technology.title,
       technologyPath: technology.path,
       scrollLockID: defaultProps.scrollLockID,
+      errorFetching: false,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
@@ -146,7 +147,17 @@ describe('Navigator', () => {
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
       scrollLockID: defaultProps.scrollLockID,
+      errorFetching: false,
     });
+  });
+
+  it('passes the errorFetching prop', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        errorFetching: true,
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('errorFetching')).toBe(true);
   });
 
   it('strips out possible technology URLs from the activePath', () => {
