@@ -18,6 +18,7 @@
       :children="flatChildren"
       :active-path="activePath"
       :scrollLockID="scrollLockID"
+      :error-fetching="errorFetching"
       :api-changes="apiChanges"
       @close="$emit('close')"
     />
@@ -75,6 +76,10 @@ export default {
     scrollLockID: {
       type: String,
       default: '',
+    },
+    errorFetching: {
+      type: Boolean,
+      default: false,
     },
     apiChanges: {
       type: Object,

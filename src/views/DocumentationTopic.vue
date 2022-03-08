@@ -43,6 +43,7 @@
                   :parent-topic-identifiers="navigatorParentTopicIdentifiers"
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
+                  :error-fetching="slotProps.errorFetching"
                   :api-changes="slotProps.apiChanges"
                   :references="topicProps.references"
                   :scrollLockID="scrollLockID"

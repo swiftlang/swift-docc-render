@@ -563,6 +563,7 @@ $input-height: rem(28px);
     z-index: 1;
     // Text indent is needed instead of padding so text inside <input> doesn't get cut off
     text-indent: rem(7px);
+    text-overflow: ellipsis;
 
     @include breakpoint(small) {
       text-indent: rem(3px);

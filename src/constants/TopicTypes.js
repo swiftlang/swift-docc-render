@@ -52,6 +52,7 @@ export const TopicTypeAliases = {
   [TopicTypes.init]: TopicTypes.method,
   [TopicTypes.case]: TopicTypes.enum,
   [TopicTypes.propertyListKeyReference]: TopicTypes.propertyListKey,
+  [TopicTypes.project]: TopicTypes.tutorial,
 };
 
 export const TopicTypeColors = {
