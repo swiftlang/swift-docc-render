@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import NavBase from 'docc-render/components/NavBase.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -149,7 +149,7 @@ describe('NavBase', () => {
     let preTitleProps;
     wrapper = await createWrapper({
       scopedSlots: {
-        'pre-title': function (props) {
+        'pre-title': function preTitle(props) {
           preTitleProps = props;
           return this.$createElement('div', { class: 'pre-title-slot' }, 'Pre Title');
         },
