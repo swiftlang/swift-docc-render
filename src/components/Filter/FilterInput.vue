@@ -195,6 +195,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    shouldKeepOpenOnBlur: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -354,7 +358,7 @@ export default {
     async handleBlur(event) {
       // if the blur came from clicking a link
       const target = event.relatedTarget;
-      if (target && target.matches && target.matches('button, input, ul')) return;
+      if (this.shouldKeepOpenOnBlur && target && target.matches && target.matches('button, input, ul')) return;
       // Wait for mousedown to send event listeners
       await this.$nextTick();
 

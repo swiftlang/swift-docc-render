@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { prepareDataForHTMLClipboard } from '@/utils/clipboard';
 import { shallowMount } from '@vue/test-utils';
@@ -505,6 +505,22 @@ describe('FilterInput', () => {
 
       expect(suggestedTags.exists()).toBe(true);
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true]]);
+    });
+
+    it('hides the tags, if new focus matches button or input, if shouldKeepOpenOnBlur=false', async () => {
+      wrapper.setProps({
+        shouldKeepOpenOnBlur: false,
+      });
+      const inputTarget = document.createElement('input');
+
+      input.trigger('blur', {
+        relatedTarget: inputTarget,
+      });
+
+      await flushPromises();
+
+      expect(suggestedTags.exists()).toBe(false);
+      expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
     });
 
     it('hides the tags, if the new focus target is a link, outside the FilterInput', async () => {
