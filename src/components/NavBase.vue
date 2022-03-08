@@ -19,8 +19,8 @@
       <div class="nav__background" />
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
-        <div class="pre-title" v-if="$slots['pre-title']">
-          <slot name="pre-title" />
+        <div class="pre-title">
+          <slot name="pre-title" :close-nav="closeNav" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
@@ -516,6 +516,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
 .pre-title {
   display: none;
+
+  &:empty {
+    display: none;
+  }
+
   @include nav-in-breakpoint() {
     display: flex;
     padding: 0;
