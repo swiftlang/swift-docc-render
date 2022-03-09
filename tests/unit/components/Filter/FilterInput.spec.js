@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import { prepareDataForHTMLClipboard } from '@/utils/clipboard';
 import { shallowMount } from '@vue/test-utils';
@@ -584,6 +584,10 @@ describe('FilterInput', () => {
       const selectedTag = 'Tag1';
 
       beforeEach(async () => {
+        // make sure focus is inside the wrapper
+        wrapper.find('button').element.focus();
+        await wrapper.vm.$nextTick();
+
         wrapper.setProps({ selectedTags: [selectedTag] });
         await wrapper.vm.$nextTick();
         selectedTagsComponent = wrapper.find({ ref: 'selectedTags' });
@@ -610,13 +614,22 @@ describe('FilterInput', () => {
         expect(filterButton.classes('blue')).toBe(true);
       });
 
-      it('focuses input, when selectedTags changes', async () => {
+      it('focuses input, when selectedTags changes, if focus is inside', async () => {
         expect(document.activeElement).toBe(input.element);
         input.element.blur();
         expect(document.activeElement).not.toBe(input.element);
+        wrapper.find('button').element.focus();
         wrapper.setProps({ selectedTags: [] });
         await flushPromises();
         expect(document.activeElement).toBe(input.element);
+      });
+
+      it('does not focus the input, if the initial focus is NOT inside', async () => {
+        document.activeElement.blur();
+        await wrapper.vm.$nextTick();
+        wrapper.setProps({ selectedTags: [] });
+        await wrapper.vm.$nextTick();
+        expect(document.activeElement).not.toEqual(input.element);
       });
 
       it('changes the input placeholder to empty', () => {
@@ -624,17 +637,14 @@ describe('FilterInput', () => {
       });
 
       it('resets scroll on `suggestedTags` when selectedTags changes if there is suggested tags', async () => {
-        const spy = jest.spyOn(TagList.methods, 'resetScroll');
-        wrapper = shallowMount(FilterInput, {
-          propsData,
-          stubs: { TagList },
-        });
-
+        const spy = jest.spyOn(wrapper.find({ ref: 'suggestedTags' }).vm, 'resetScroll');
         wrapper.setProps({
           selectedTags: [selectedTag],
         });
-        // wait for the watcher to kick in
-        await flushPromises();
+        // once for the watcher to kick in
+        await wrapper.vm.$nextTick();
+        // once for the `focusInput` to pass
+        await wrapper.vm.$nextTick();
         expect(spy).toHaveBeenCalledTimes(1);
         spy.mockRestore();
       });

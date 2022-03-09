@@ -281,7 +281,10 @@ export default {
   watch: {
     async selectedTags() {
       if (!this.resetedTagsViaDeleteButton) {
-        await this.focusInput();
+        // make sure we are inside the component, if we are moving the focus
+        if (this.$el.contains(document.activeElement)) {
+          await this.focusInput();
+        }
       } else {
         this.resetedTagsViaDeleteButton = false;
       }
