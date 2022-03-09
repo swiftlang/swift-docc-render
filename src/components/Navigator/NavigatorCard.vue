@@ -70,7 +70,7 @@
             :selected-tags.sync="selectedTagsModelValue"
             :placeholder="`Filter in ${technology}`"
             :should-keep-open-on-blur="false"
-            position-reversed
+            :position-reversed="isLargeBreakpoint"
             class="filter-component"
             @clear="clearFilters"
           />
@@ -94,6 +94,7 @@ import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
+import { BreakpointName } from '@/utils/breakpoints';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -182,6 +183,10 @@ export default {
     errorFetching: {
       type: Boolean,
       default: false,
+    },
+    breakpoint: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -295,6 +300,7 @@ export default {
     hasFilter({ debouncedFilter, selectedTags }) {
       return Boolean(debouncedFilter.length || selectedTags.length);
     },
+    isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
   },
   created() {
     this.restorePersistedState();
@@ -704,6 +710,7 @@ $filter-height: 64px;
   @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
+    align-items: flex-start;
   }
 
   .input-wrapper {

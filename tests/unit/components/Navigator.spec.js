@@ -89,6 +89,7 @@ const defaultProps = {
   technology,
   references,
   scrollLockID: 'foo',
+  breakpoint: 'large',
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -117,6 +118,7 @@ describe('Navigator', () => {
       technology: technology.title,
       technologyPath: technology.path,
       scrollLockID: defaultProps.scrollLockID,
+      breakpoint: defaultProps.breakpoint,
       errorFetching: false,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
@@ -147,6 +149,7 @@ describe('Navigator', () => {
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
       scrollLockID: defaultProps.scrollLockID,
+      breakpoint: defaultProps.breakpoint,
       errorFetching: false,
     });
   });
