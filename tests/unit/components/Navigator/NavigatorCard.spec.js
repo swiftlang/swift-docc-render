@@ -253,10 +253,13 @@ describe('NavigatorCard', () => {
 
   it('renders an hidden message updating aria-live, notifying how many items were found', async () => {
     const wrapper = createWrapper();
+    const unopenedItem = wrapper.findAll(NavigatorCardItem).at(2);
+    unopenedItem.vm.$emit('toggle', root0Child1);
+    await wrapper.vm.$nextTick();
     let message = [children.length, ITEMS_FOUND].join(' ');
     expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
 
-    wrapper.find(FilterInput).vm.$emit('input', root0Child1.title);
+    wrapper.find(FilterInput).vm.$emit('input', root0.title);
     await wrapper.vm.$nextTick();
     message = [1, ITEMS_FOUND].join(' ');
     expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);

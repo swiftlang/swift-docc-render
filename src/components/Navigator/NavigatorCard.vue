@@ -115,7 +115,7 @@ const STORAGE_KEYS = {
 const NO_RESULTS = 'No results matching your filter';
 const NO_CHILDREN = 'Technology has no children';
 const ERROR_FETCHING = 'There was an error fetching the data';
-const ITEMS_FOUND = 'items were found. Tab back to navigate to them.';
+const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
@@ -225,10 +225,7 @@ export default {
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
-    itemsFoundNotification: ({ filteredChildren, children }) => {
-      const childrenLength = filteredChildren.length || children.length;
-      return [childrenLength, ITEMS_FOUND].join(' ');
-    },
+    itemsFoundNotification: ({ nodesToRender }) => ([nodesToRender.length, ITEMS_FOUND].join(' ')),
     availableTags: ({ selectedTags }) => (
       selectedTags.length
         ? []
