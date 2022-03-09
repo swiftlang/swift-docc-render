@@ -69,7 +69,7 @@
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
             :placeholder="`Filter in ${technology}`"
-            :position-reversed="isDesktop"
+            :position-reversed="isLargeBreakpoint"
             class="filter-component"
             @clear="clearFilters"
           />
@@ -299,7 +299,7 @@ export default {
     hasFilter({ debouncedFilter, selectedTags }) {
       return Boolean(debouncedFilter.length || selectedTags.length);
     },
-    isDesktop: ({ breakpoint }) => breakpoint === BreakpointName.large,
+    isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
   },
   created() {
     this.restorePersistedState();

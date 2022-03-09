@@ -32,6 +32,7 @@
 import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
+import { BreakpointName } from '@/utils/breakpoints';
 
 /**
  * @typedef NavigatorFlatItem
@@ -83,7 +84,7 @@ export default {
     },
     breakpoint: {
       type: String,
-      default: '',
+      default: BreakpointName.large,
     },
   },
   computed: {
