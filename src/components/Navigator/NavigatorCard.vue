@@ -69,6 +69,7 @@
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
             :placeholder="`Filter in ${technology}`"
+            :should-keep-open-on-blur="false"
             position-reversed
             class="filter-component"
             @clear="clearFilters"
