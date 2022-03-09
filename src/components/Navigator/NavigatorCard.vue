@@ -47,15 +47,25 @@
               @toggle-full="toggleFullTree"
             />
           </RecycleScroller>
-          <div class="no-items-wrapper" v-if="!nodesToRender.length">
-            <template v-if="hasFilter">
-              No results matching your filter
-            </template>
-            <template v-else-if="errorFetching">
-              There was an error fetching the data
+          <div
+            aria-live="polite"
+            :class="!nodesToRender.length ? 'no-items-wrapper' : 'visuallyhidden'"
+          >
+            <template
+              v-if="!nodesToRender.length"
+            >
+              <template v-if="hasFilter">
+                {{ NO_RESULTS }}
+              </template>
+              <template v-else-if="errorFetching">
+                {{ ERROR_FETCHING }}
+              </template>
+              <template v-else>
+                {{ NO_CHILDREN }}
+              </template>
             </template>
             <template v-else>
-              Technology has no children
+              {{ itemsFoundNotification }}
             </template>
           </div>
         </div>
@@ -104,6 +114,11 @@ const STORAGE_KEYS = {
   selectedTags: 'navigator.selectedTags',
 };
 
+const NO_RESULTS = 'No results matching your filter';
+const NO_CHILDREN = 'Technology has no children';
+const ERROR_FETCHING = 'There was an error fetching the data';
+const ITEMS_FOUND = 'items were found. Tab back to navigate to them.';
+
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
   tutorials: 'tutorials',
@@ -146,6 +161,10 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
+    NO_RESULTS,
+    NO_CHILDREN,
+    ERROR_FETCHING,
+    ITEMS_FOUND,
   },
   components: {
     FilterInput,
@@ -200,10 +219,18 @@ export default {
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
+      NO_RESULTS,
+      NO_CHILDREN,
+      ERROR_FETCHING,
+      ITEMS_FOUND,
     };
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
+    itemsFoundNotification: ({ filteredChildren, children }) => {
+      const childrenLength = filteredChildren.length || children.length;
+      return [childrenLength, ITEMS_FOUND].join(' ');
+    },
     availableTags: ({ selectedTags }) => (
       selectedTags.length
         ? []
