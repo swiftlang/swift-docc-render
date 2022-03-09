@@ -24,9 +24,9 @@
             :introducedAt="platform.introducedAt"
             :platformName="platform.name"
           />
+          <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
+          <span v-else-if="platform.beta" class="beta">Beta</span>
         </Badge>
-        <Badge v-if="platform.deprecatedAt" variant="deprecated" />
-        <Badge v-else-if="platform.beta" variant="beta" />
       </Item>
     </List>
   </Section>
@@ -140,7 +140,14 @@ export default {
 }
 
 .badge {
-  border-radius: 11px;
   margin-left: 0;
+
+  & > .beta {
+    color: var(--color-badge-text-beta);
+  }
+
+  & > .deprecated {
+    color: var(--color-badge-text-deprecated);
+  }
 }
 </style>
