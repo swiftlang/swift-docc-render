@@ -25,7 +25,7 @@
         </div>
         <div class="card-body">
           <RecycleScroller
-            v-show="nodesToRender.length"
+            v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
@@ -49,11 +49,12 @@
           </RecycleScroller>
           <div
             aria-live="polite"
-            :class="!nodesToRender.length ? 'no-items-wrapper' : 'visuallyhidden'"
+            :class="hasNodes ? 'visuallyhidden' : 'no-items-wrapper'"
           >
-            <template
-              v-if="!nodesToRender.length"
-            >
+            <template v-if="hasNodes">
+              {{ itemsFoundNotification }}
+            </template>
+            <template v-else>
               <template v-if="hasFilter">
                 {{ NO_RESULTS }}
               </template>
@@ -63,9 +64,6 @@
               <template v-else>
                 {{ NO_CHILDREN }}
               </template>
-            </template>
-            <template v-else>
-              {{ itemsFoundNotification }}
             </template>
           </div>
         </div>
@@ -328,6 +326,7 @@ export default {
       return Boolean(debouncedFilter.length || selectedTags.length);
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
+    hasNodes: ({ nodesToRender }) => nodesToRender.length,
   },
   created() {
     this.restorePersistedState();
