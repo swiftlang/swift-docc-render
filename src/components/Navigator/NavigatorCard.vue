@@ -25,7 +25,7 @@
         </div>
         <div class="card-body">
           <RecycleScroller
-            v-show="nodesToRender.length"
+            v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
@@ -47,16 +47,11 @@
               @toggle-full="toggleFullTree"
             />
           </RecycleScroller>
-          <div class="no-items-wrapper" v-if="!nodesToRender.length">
-            <template v-if="hasFilter">
-              No results matching your filter
-            </template>
-            <template v-else-if="errorFetching">
-              There was an error fetching the data
-            </template>
-            <template v-else>
-              Technology has no children
-            </template>
+          <div aria-live="polite" class="visuallyhidden">
+            {{ politeAriaLive }}
+          </div>
+          <div aria-live="assertive" class="no-items-wrapper">
+            {{ assertiveAriaLive }}
           </div>
         </div>
       </div>
@@ -104,6 +99,11 @@ const STORAGE_KEYS = {
   selectedTags: 'navigator.selectedTags',
 };
 
+const NO_RESULTS = 'No results matching your filter';
+const NO_CHILDREN = 'Technology has no children';
+const ERROR_FETCHING = 'There was an error fetching the data';
+const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
+
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
   tutorials: 'tutorials',
@@ -146,6 +146,10 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
+    NO_RESULTS,
+    NO_CHILDREN,
+    ERROR_FETCHING,
+    ITEMS_FOUND,
   },
   components: {
     FilterInput,
@@ -200,10 +204,24 @@ export default {
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
+      NO_RESULTS,
+      NO_CHILDREN,
+      ERROR_FETCHING,
+      ITEMS_FOUND,
     };
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
+    politeAriaLive: ({ hasNodes, nodesToRender }) => {
+      if (!hasNodes) return '';
+      return [nodesToRender.length, ITEMS_FOUND].join(' ');
+    },
+    assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
+      if (hasNodes) return '';
+      if (hasFilter) return NO_RESULTS;
+      if (errorFetching) return ERROR_FETCHING;
+      return NO_CHILDREN;
+    },
     availableTags: ({ selectedTags }) => (
       selectedTags.length
         ? []
@@ -301,6 +319,7 @@ export default {
       return Boolean(debouncedFilter.length || selectedTags.length);
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
+    hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
   },
   created() {
     this.restorePersistedState();

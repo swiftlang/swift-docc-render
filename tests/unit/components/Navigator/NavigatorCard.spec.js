@@ -27,7 +27,15 @@ jest.mock('docc-render/utils/loading');
 
 sessionStorage.get.mockImplementation((key, def) => def);
 
-const { STORAGE_KEYS, FILTER_TAGS, FILTER_TAGS_TO_LABELS } = NavigatorCard.constants;
+const {
+  STORAGE_KEYS,
+  FILTER_TAGS,
+  FILTER_TAGS_TO_LABELS,
+  NO_CHILDREN,
+  NO_RESULTS,
+  ERROR_FETCHING,
+  ITEMS_FOUND,
+} = NavigatorCard.constants;
 
 const RecycleScrollerStub = {
   props: RecycleScroller.props,
@@ -165,7 +173,7 @@ describe('NavigatorCard', () => {
       item: root0,
     });
     // assert no-items-wrapper
-    expect(wrapper.find('.no-items-wrapper').exists()).toBe(false);
+    expect(wrapper.find('.no-items-wrapper').exists()).toBe(true);
     // assert filter
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
@@ -195,6 +203,12 @@ describe('NavigatorCard', () => {
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
   });
 
+  it('renders aria-live regions for polite and assertive notifications', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="assertive"]').exists()).toBe(true);
+  });
+
   it('hides the RecycleScroller, if no items to show', async () => {
     const wrapper = createWrapper();
     const scroller = wrapper.find(RecycleScroller);
@@ -204,7 +218,7 @@ describe('NavigatorCard', () => {
     expect(scroller.isVisible()).toBe(false);
   });
 
-  it('renders a message, if no items found when filtering', async () => {
+  it('renders a message updating aria-live, if no items found when filtering', async () => {
     const wrapper = createWrapper();
     const scroller = wrapper.find(RecycleScroller);
     expect(scroller.isVisible()).toBe(true);
@@ -212,10 +226,10 @@ describe('NavigatorCard', () => {
     await wrapper.vm.$nextTick();
     expect(scroller.props('items')).toEqual([]);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('.no-items-wrapper').text()).toBe('No results matching your filter');
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_RESULTS);
   });
 
-  it('renders a message, if no children', () => {
+  it('renders a message updating aria-live, if no children', () => {
     const wrapper = createWrapper({
       propsData: {
         children: [],
@@ -223,18 +237,32 @@ describe('NavigatorCard', () => {
     });
     const scroller = wrapper.find(RecycleScroller);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('.no-items-wrapper').text()).toBe('Technology has no children');
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_CHILDREN);
   });
 
-  it('adds an error message, when there is an error in fetching', () => {
+  it('renders an error message updating aria-live, when there is an error in fetching', () => {
     const wrapper = createWrapper({
       propsData: {
         children: [],
         errorFetching: true,
       },
     });
-    expect(wrapper.find('.no-items-wrapper').text()).toBe('There was an error fetching the data');
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(ERROR_FETCHING);
     expect(wrapper.find('.filter-wrapper').exists()).toBe(false);
+  });
+
+  it('renders an hidden message updating aria-live, notifying how many items were found', async () => {
+    const wrapper = createWrapper();
+    const unopenedItem = wrapper.findAll(NavigatorCardItem).at(2);
+    unopenedItem.vm.$emit('toggle', root0Child1);
+    await wrapper.vm.$nextTick();
+    let message = [children.length, ITEMS_FOUND].join(' ');
+    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
+
+    wrapper.find(FilterInput).vm.$emit('input', root0.title);
+    await wrapper.vm.$nextTick();
+    message = [1, ITEMS_FOUND].join(' ');
+    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
   });
 
   it('opens an item, on @toggle', async () => {
