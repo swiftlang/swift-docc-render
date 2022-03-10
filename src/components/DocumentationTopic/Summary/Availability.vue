@@ -13,6 +13,7 @@
     <Badge
       v-for="platform in platforms"
       class="platform"
+      :class="changesClassesFor(platform.name)"
       :key="platform.name"
     >
       <AvailabilityRange
@@ -29,7 +30,6 @@
 <script>
 import Badge from 'docc-render/components/Badge.vue';
 import { getAPIChanges } from 'docc-render/mixins/apiChangesHelpers';
-import { ChangeTypes } from 'docc-render/constants/Changes';
 import AvailabilityRange from './AvailabilityRange.vue';
 import Section from './Section.vue';
 
@@ -52,29 +52,6 @@ export default {
     return {
       state: this.store.state,
     };
-  },
-  methods: {
-    changeFor(platform) {
-      const { identifier, state: { apiChanges } } = this;
-      const { availability = {} } = (apiChanges || {})[identifier] || {};
-      const changeData = availability[platform];
-
-      if (!changeData) {
-        return undefined;
-      }
-
-      if (changeData.deprecated) {
-        return ChangeTypes.deprecated;
-      }
-
-      if (changeData.introduced) {
-        if (!changeData.introduced.previous) {
-          return ChangeTypes.added;
-        }
-      }
-
-      return ChangeTypes.modified;
-    },
   },
 };
 </script>
