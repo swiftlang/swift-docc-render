@@ -35,13 +35,14 @@ export default {
 
 .eyebrow {
   @include font-styles(eyebrow-reduced);
+  color: var(--hero-eyebrow);
   display: block;
   margin-bottom: rem(20px);
 }
 
 .title {
   @include font-styles(headline-reduced);
-  color: light-color(fill);
+  color: var(--hero-title);
   margin-bottom: rem(12px);
 }
 </style>

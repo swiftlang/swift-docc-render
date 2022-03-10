@@ -153,7 +153,7 @@ export default {
   &::before {
     border-top-color: var(--colors-grid, var(--color-grid));
     border-top-style: solid;
-    border-top-width: 1px;
+    border-top-width: var(--border-width);
     content: '';
     display: block;
   }

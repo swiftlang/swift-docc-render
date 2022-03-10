@@ -11,9 +11,9 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="symbolKind || role">
+      <DocumentationHero :type="symbolKind || role" :enableHero="enableHero">
         <slot name="above-title" />
-        <Title :eyebrow="roleHeading">{{ title }}</Title>
+        <Title :eyebrow="roleHeading" :style=heroTitleStyle>{{ title }}</Title>
         <Abstract v-if="abstract" :content="abstract" />
       </DocumentationHero>
       <div class="container content-grid" :class="{ 'full-width': hideSummary }">
@@ -54,6 +54,7 @@
           v-if="primaryContentSections && primaryContentSections.length"
           :conformance="conformance"
           :sections="primaryContentSections"
+          :style="borderWidth"
         />
       </div>
       <Topics
@@ -300,6 +301,22 @@ export default {
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
+    enableHero: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    heroTitleStyle({ enableHero }) {
+      return enableHero ? {
+        '--hero-eyebrow': 'light-color(figure-gray-secondary)',
+        '--hero-title': 'light-color(fill)',
+      } : {
+        '--hero-eyebrow': 'var(--colors-secondary-label,var(--color-secondary-label))',
+      };
+    },
+    borderWidth({ enableHero }) {
+      return enableHero ? {
+        '--border-width': '0px',
+      } : {
+        '--border-width': '1px',
+      };
+    },
   },
   methods: {
     normalizePath(path) {

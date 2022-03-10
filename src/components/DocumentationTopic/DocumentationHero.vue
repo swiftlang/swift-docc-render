@@ -37,6 +37,10 @@ export default {
       type: String,
       required: true,
     },
+    enableHero: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
@@ -45,7 +49,6 @@ export default {
       // use the color or fallback to the gray secondary, if not defined.
       '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
     }),
-    enableHero: ({ type }) => (!(type === 'symbol' || type === 'protocol')),
     heroClass: ({ enableHero }) => (enableHero ? 'documentation-hero' : 'documentation-hero-disabled'),
   },
 };
@@ -60,12 +63,15 @@ $doc-hero-icon-opacity: 1 !default;
 $doc-hero-icon-color: dark-color(fill-secondary) !default;
 
 .documentation-hero-disabled {
-  color: var(--colors-secondary-label, var(--color-secondary-label));
   overflow: hidden;
-  text-align: center;
+  text-align: left;
   padding-top: rem(40px);
   padding-bottom: 40px;
   position: relative;
+
+  @include breakpoint(small) {
+    text-align: center;
+  }
 }
 
 .documentation-hero {
