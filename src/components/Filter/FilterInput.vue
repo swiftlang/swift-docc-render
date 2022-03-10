@@ -195,6 +195,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    shouldKeepOpenOnBlur: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -277,7 +281,10 @@ export default {
   watch: {
     async selectedTags() {
       if (!this.resetedTagsViaDeleteButton) {
-        await this.focusInput();
+        // make sure we are inside the component, if we are moving the focus
+        if (this.$el.contains(document.activeElement)) {
+          await this.focusInput();
+        }
       } else {
         this.resetedTagsViaDeleteButton = false;
       }
@@ -354,7 +361,7 @@ export default {
     async handleBlur(event) {
       // if the blur came from clicking a link
       const target = event.relatedTarget;
-      if (target && target.matches && target.matches('button, input, ul')) return;
+      if (this.shouldKeepOpenOnBlur && target && target.matches && target.matches('button, input, ul')) return;
       // Wait for mousedown to send event listeners
       await this.$nextTick();
 
@@ -563,6 +570,7 @@ $input-height: rem(28px);
     z-index: 1;
     // Text indent is needed instead of padding so text inside <input> doesn't get cut off
     text-indent: rem(7px);
+    text-overflow: ellipsis;
 
     @include breakpoint(small) {
       text-indent: rem(3px);
