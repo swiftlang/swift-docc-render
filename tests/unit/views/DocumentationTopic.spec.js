@@ -155,7 +155,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technology,
-      apiChanges: null,
+      apiChangesVersion: null,
     });
     // its rendered by default
     const navigator = wrapper.find(Navigator);
@@ -194,7 +194,7 @@ describe('DocumentationTopic', () => {
     wrapper.vm.store.state.selectedAPIChangesVersion = 'latest_major';
     wrapper.setData({ topicData });
     const dataProvider = wrapper.find(NavigatorDataProvider);
-    expect(dataProvider.props('apiChanges')).toEqual('latest_major');
+    expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
   });
 
   it('renders the Navigator with data when no reference is found for a top-level collection', () => {

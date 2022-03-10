@@ -44,7 +44,7 @@
               :is-active="item.uid === activeUID"
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
-              :api-change="apiChangesMap[item.uid]"
+              :api-change="apiChangesObject[item.path]"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
             />
@@ -96,7 +96,7 @@ import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -279,19 +279,19 @@ export default {
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
-      apiChangesMap, apiChanges,
+      apiChangesObject, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
-      return children.filter(({ title, uid, type }) => {
+      return children.filter(({ title, path, type }) => {
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
         const tagMatch = selectedTags.length
           ? tagsSet.has(TOPIC_TYPE_TO_TAG[type]) : true;
         // find items, that have API changes
-        const hasAPIChanges = apiChanges ? apiChangesMap[uid] : true;
+        const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
         // make sure groupMarker's dont get matched
         return titleMatch && tagMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
       });
@@ -311,13 +311,8 @@ export default {
     hasFilter({ debouncedFilter, selectedTags, apiChanges }) {
       return Boolean(debouncedFilter.length || selectedTags.length || apiChanges);
     },
-    apiChangesMap() {
-      if (!this.apiChanges) return {};
-      return this.children.reduce((all, child) => {
-        const apiChange = this.apiChanges[child.path];
-        if (!apiChange) return all;
-        return Object.assign(all, { [child.uid]: apiChange });
-      }, {});
+    apiChangesObject() {
+      return this.apiChanges || {};
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
   },
@@ -554,7 +549,7 @@ export default {
       const technology = sessionStorage.get(STORAGE_KEYS.technology);
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
-      const apiChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
+      const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
 
       // if for some reason there are no nodes and no filter, we can assume its bad cache
       if (!nodesToRender.length && !filter) {
@@ -568,7 +563,7 @@ export default {
       if (
         technology !== this.technology
         || !allNodesMatch
-        || (apiChanges !== Boolean(this.apiChanges))
+        || (hasAPIChanges !== Boolean(this.apiChanges))
       ) {
         this.trackOpenNodes(this.nodeChangeDeps);
         return;

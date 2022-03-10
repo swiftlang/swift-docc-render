@@ -27,7 +27,7 @@ export default {
       type: Object,
       required: true,
     },
-    apiChanges: {
+    apiChangesVersion: {
       type: String,
       default: '',
     },

@@ -88,6 +88,7 @@ import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
+import { ChangeTypesOrder } from 'docc-render/constants/Changes';
 
 export default {
   name: 'NavigatorCardItem',
@@ -126,6 +127,7 @@ export default {
     apiChange: {
       type: String,
       default: null,
+      validator: v => ChangeTypesOrder.includes(v),
     },
   },
   computed: {

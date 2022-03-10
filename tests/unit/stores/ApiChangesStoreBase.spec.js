@@ -23,8 +23,8 @@ describe('ApiChangesStoreBase', () => {
   });
 
   it('sets the selected API changes version', () => {
-    ApiChangesStoreBase.setSelectedAPIChangesVersion('next_major');
-    expect(ApiChangesStoreBase.state.selectedAPIChangesVersion).toEqual('next_major');
+    ApiChangesStoreBase.setSelectedAPIChangesVersion('latest_major');
+    expect(ApiChangesStoreBase.state.selectedAPIChangesVersion).toEqual('latest_major');
   });
 
   it('updates `apiChangesCounts`', async () => {
@@ -46,7 +46,7 @@ describe('ApiChangesStoreBase', () => {
   it('resets API Changes', () => {
     const defaultCounts = apiChangesCountsFactory();
     ApiChangesStoreBase.state.apiChangesCounts.modified = 5;
-    ApiChangesStoreBase.state.selectedAPIChangesVersion = 'next_major';
+    ApiChangesStoreBase.state.selectedAPIChangesVersion = 'latest_major';
     expect(ApiChangesStoreBase.state.apiChangesCounts).toHaveProperty('modified', 5);
     ApiChangesStoreBase.resetApiChanges();
     expect(ApiChangesStoreBase.state.apiChangesCounts).toEqual(defaultCounts);

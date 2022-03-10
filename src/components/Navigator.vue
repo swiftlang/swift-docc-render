@@ -33,7 +33,7 @@
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 /**
  * @typedef NavigatorFlatItem
@@ -65,7 +65,7 @@ export default {
     },
     technology: {
       type: Object,
-      default: null,
+      required: true,
     },
     isFetching: {
       type: Boolean,
