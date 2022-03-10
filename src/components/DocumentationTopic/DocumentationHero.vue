@@ -72,10 +72,14 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
   background: dark-color(fill);
   color: light-color(fill);
   overflow: hidden;
-  text-align: center;
+  text-align: left;
   padding-top: rem(40px);
   padding-bottom: 40px;
   position: relative;
+
+  @include breakpoint(small) {
+    text-align: center;
+  }
 
   // gradient
   &:before {

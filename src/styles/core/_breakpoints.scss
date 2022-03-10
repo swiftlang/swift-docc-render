@@ -332,11 +332,17 @@ $breakpoint-attributes: (
     padding: 0 20px;
     box-sizing: border-box;
 
-    // make sure there is 120px space around the content on xlarge
-    @include breakpoints-from(xlarge) {
+    // make sure there is 120px space between the content and nav bar on xl and l
+    @include breakpoints-from(large) {
       box-sizing: unset;
       padding-right: 120px;
       padding-left: 120px;
+      margin-left: 0px;
+    }
+
+    @include breakpoint(medium) {
+      padding-right: 80px;
+      padding-left: 80px;
     }
   }
   @include inTargetIde {
