@@ -71,7 +71,8 @@
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
             :placeholder="`Filter in ${technology}`"
-            position-reversed
+            :should-keep-open-on-blur="false"
+            :position-reversed="isLargeBreakpoint"
             class="filter-component"
             @clear="clearFilters"
           />
@@ -95,6 +96,7 @@ import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
+import { BreakpointName } from '@/utils/breakpoints';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -184,6 +186,10 @@ export default {
     errorFetching: {
       type: Boolean,
       default: false,
+    },
+    breakpoint: {
+      type: String,
+      default: '',
     },
     apiChanges: {
       type: Object,
@@ -313,6 +319,7 @@ export default {
         return Object.assign(all, { [child.uid]: apiChange });
       }, {});
     },
+    isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
   },
   created() {
     this.restorePersistedState();
@@ -679,18 +686,22 @@ $filter-height: 64px;
 .close-card-mobile {
   display: none;
   position: absolute;
-  top: 50%;
   z-index: 1;
-  transform: translateY(-50%);
   color: var(--color-link);
+  align-items: center;
+  justify-content: center;
 
   @include breakpoint(medium, nav) {
     display: flex;
-    left: $nav-padding-wide;
+    left: 0;
+    height: 100%;
+    padding-left: $nav-padding-wide;
+    padding-right: $nav-padding-wide;
   }
 
   @include breakpoint(small, nav) {
-    left: $nav-padding-small;
+    padding-left: $nav-padding-small;
+    padding-right: $nav-padding-small;
   }
 
   .close-icon {
@@ -732,6 +743,7 @@ $filter-height: 64px;
   @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
+    align-items: flex-start;
     height: 62px;
   }
 

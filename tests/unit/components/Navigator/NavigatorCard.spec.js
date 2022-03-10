@@ -18,6 +18,7 @@ import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
+import { BreakpointName } from '@/utils/breakpoints';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -113,6 +114,7 @@ const defaultProps = {
   activePath,
   type: TopicTypes.module,
   scrollLockID: 'foo',
+  breakpoint: 'large',
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -173,6 +175,7 @@ describe('NavigatorCard', () => {
       placeholder: 'Filter in TestKit',
       positionReversed: true,
       preventedBlur: false,
+      shouldKeepOpenOnBlur: false,
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [
@@ -182,6 +185,15 @@ describe('NavigatorCard', () => {
       ],
       value: '',
     });
+  });
+
+  it('reverses the FilterInput, on mobile', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        breakpoint: BreakpointName.medium,
+      },
+    });
+    expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
   });
 
   it('hides the RecycleScroller, if no items to show', async () => {

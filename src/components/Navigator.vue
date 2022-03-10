@@ -19,6 +19,7 @@
       :active-path="activePath"
       :scrollLockID="scrollLockID"
       :error-fetching="errorFetching"
+      :breakpoint="breakpoint"
       :api-changes="apiChanges"
       @close="$emit('close')"
     />
@@ -32,6 +33,7 @@
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
+import { BreakpointName } from '@/utils/breakpoints';
 
 /**
  * @typedef NavigatorFlatItem
@@ -80,6 +82,10 @@ export default {
     errorFetching: {
       type: Boolean,
       default: false,
+    },
+    breakpoint: {
+      type: String,
+      default: BreakpointName.large,
     },
     apiChanges: {
       type: Object,
