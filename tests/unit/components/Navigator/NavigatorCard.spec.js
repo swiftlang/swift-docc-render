@@ -173,7 +173,7 @@ describe('NavigatorCard', () => {
       item: root0,
     });
     // assert no-items-wrapper
-    expect(wrapper.find('.no-items-wrapper').exists()).toBe(false);
+    expect(wrapper.find('.no-items-wrapper').exists()).toBe(true);
     // assert filter
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
@@ -203,10 +203,10 @@ describe('NavigatorCard', () => {
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
   });
 
-  it('renders aria-live', async () => {
+  it('renders aria-live regions for polite and assertive notifications', () => {
     const wrapper = createWrapper();
-    const ariaLive = wrapper.find('[aria-live="polite"]');
-    expect(ariaLive.exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="assertive"]').exists()).toBe(true);
   });
 
   it('hides the RecycleScroller, if no items to show', async () => {
@@ -226,7 +226,7 @@ describe('NavigatorCard', () => {
     await wrapper.vm.$nextTick();
     expect(scroller.props('items')).toEqual([]);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('[aria-live="polite"].no-items-wrapper').text()).toBe(NO_RESULTS);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_RESULTS);
   });
 
   it('renders a message updating aria-live, if no children', () => {
@@ -237,7 +237,7 @@ describe('NavigatorCard', () => {
     });
     const scroller = wrapper.find(RecycleScroller);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('[aria-live="polite"].no-items-wrapper').text()).toBe(NO_CHILDREN);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_CHILDREN);
   });
 
   it('renders an error message updating aria-live, when there is an error in fetching', () => {
@@ -247,7 +247,7 @@ describe('NavigatorCard', () => {
         errorFetching: true,
       },
     });
-    expect(wrapper.find('[aria-live="polite"].no-items-wrapper').text()).toBe(ERROR_FETCHING);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(ERROR_FETCHING);
     expect(wrapper.find('.filter-wrapper').exists()).toBe(false);
   });
 

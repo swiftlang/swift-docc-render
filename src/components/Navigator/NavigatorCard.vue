@@ -47,24 +47,11 @@
               @toggle-full="toggleFullTree"
             />
           </RecycleScroller>
-          <div
-            aria-live="polite"
-            :class="hasNodes ? 'visuallyhidden' : 'no-items-wrapper'"
-          >
-            <template v-if="hasNodes">
-              {{ itemsFoundNotification }}
-            </template>
-            <template v-else>
-              <template v-if="hasFilter">
-                {{ NO_RESULTS }}
-              </template>
-              <template v-else-if="errorFetching">
-                {{ ERROR_FETCHING }}
-              </template>
-              <template v-else>
-                {{ NO_CHILDREN }}
-              </template>
-            </template>
+          <div aria-live="polite" class="visuallyhidden">
+            {{ politeAriaLive }}
+          </div>
+          <div aria-live="assertive" class="no-items-wrapper">
+            {{ assertiveAriaLive }}
           </div>
         </div>
       </div>
@@ -225,7 +212,16 @@ export default {
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
-    itemsFoundNotification: ({ nodesToRender }) => ([nodesToRender.length, ITEMS_FOUND].join(' ')),
+    politeAriaLive: ({ hasNodes, nodesToRender }) => {
+      if (!hasNodes) return '';
+      return [nodesToRender.length, ITEMS_FOUND].join(' ');
+    },
+    assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
+      if (hasNodes) return '';
+      if (hasFilter) return NO_RESULTS;
+      if (errorFetching) return ERROR_FETCHING;
+      return NO_CHILDREN;
+    },
     availableTags: ({ selectedTags }) => (
       selectedTags.length
         ? []
@@ -323,7 +319,7 @@ export default {
       return Boolean(debouncedFilter.length || selectedTags.length);
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
-    hasNodes: ({ nodesToRender }) => nodesToRender.length,
+    hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
   },
   created() {
     this.restorePersistedState();
