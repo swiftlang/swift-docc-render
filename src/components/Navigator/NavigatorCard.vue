@@ -24,7 +24,13 @@
           </Reference>
         </div>
         <slot name="post-head" />
-        <div class="card-body">
+        <div
+          class="card-body"
+          @keydown.meta.up.capture.prevent="focusFirst"
+          @keydown.meta.down.capture.prevent="focusLast"
+          @keydown.up.exact.capture.prevent="focusPrev"
+          @keydown.down.exact.capture.prevent="focusNext"
+        >
           <RecycleScroller
             v-show="hasNodes"
             :id="scrollLockID"
@@ -34,7 +40,7 @@
             :items="nodesToRender"
             :item-size="itemSize"
             key-field="uid"
-            v-slot="{ item, active }"
+            v-slot="{ item, active, index }"
             @blur.capture.native="handleBlur"
           >
             <NavigatorCardItem
@@ -45,8 +51,10 @@
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
+              :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
+              @focus="handleFocus(index)"
             />
           </RecycleScroller>
           <div aria-live="polite" class="visuallyhidden">
@@ -215,6 +223,7 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
+      focusedIndex: 0,
     };
   },
   computed: {
@@ -347,6 +356,12 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
+    focusedIndex() {
+      if (this.focusedIndex !== -1 && this.$refs.scroller) {
+        // call the scroll method on the `scroller` component.
+        this.$refs.scroller.scrollToItem(this.focusedIndex);
+      }
+    },
   },
   methods: {
     clearFilters() {
@@ -390,6 +405,29 @@ export default {
       // if we navigate across pages, persist the previously open nodes
       this.openNodes = Object.assign(pageChange ? this.openNodes : {}, newOpenNodes);
       this.generateNodesToRender();
+    },
+    handleFocus(index) {
+      this.focusedIndex = index;
+    },
+    focusPrev({ metaKey, ctrlKey, shiftKey }) {
+      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
+      if ((metaKey || ctrlKey) && shiftKey) return;
+      if (this.focusedIndex > 0) {
+        this.handleFocus(this.focusedIndex - 1);
+      }
+    },
+    focusNext({ metaKey, ctrlKey, shiftKey }) {
+      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
+      if ((metaKey || ctrlKey) && shiftKey) return;
+      if (this.focusedIndex < this.nodesToRender.length - 1) {
+        this.handleFocus(this.focusedIndex + 1);
+      }
+    },
+    focusFirst() {
+      this.handleFocus(0);
+    },
+    focusLast() {
+      this.handleFocus(this.nodesToRender.length - 1);
     },
     /**
      * Toggle a node open/close
