@@ -35,7 +35,6 @@ export default {
 
 .eyebrow {
   @include font-styles(eyebrow-reduced);
-  color: light-color(fill-gray-tertiary);
   display: block;
   margin-bottom: rem(20px);
 }

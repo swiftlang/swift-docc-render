@@ -9,9 +9,15 @@
 -->
 
 <template>
-  <div class="documentation-hero" :style="styles">
-    <NavigatorLeafIcon :type="type" key="first" class="background-icon first-icon" with-colors />
-    <NavigatorLeafIcon :type="type" key="second" class="background-icon second-icon" with-colors />
+  <div :class=heroClass :style="styles">
+    <NavigatorLeafIcon
+      v-if="enableHero" :type="type"
+      key="first" class="background-icon first-icon" with-colors
+    />
+    <NavigatorLeafIcon
+      v-if="enableHero" :type="type"
+      key="second" class="background-icon second-icon" with-colors
+    />
     <div class="documentation-hero__content">
       <slot />
     </div>
@@ -39,6 +45,8 @@ export default {
       // use the color or fallback to the gray secondary, if not defined.
       '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
     }),
+    enableHero: ({ type }) => (!(type === 'symbol' || type === 'protocol')),
+    heroClass: ({ enableHero }) => (enableHero ? 'documentation-hero' : 'documentation-hero-disabled'),
   },
 };
 </script>
@@ -50,6 +58,15 @@ $doc-hero-gradient-background: dark-color(fill-tertiary) !default;
 $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
 $doc-hero-icon-color: dark-color(fill-secondary) !default;
+
+.documentation-hero-disabled {
+  color: var(--colors-secondary-label, var(--color-secondary-label));
+  overflow: hidden;
+  text-align: center;
+  padding-top: rem(40px);
+  padding-bottom: 40px;
+  position: relative;
+}
 
 .documentation-hero {
   background: dark-color(fill);
