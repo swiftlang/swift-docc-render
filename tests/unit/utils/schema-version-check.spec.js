@@ -6,9 +6,13 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
-import emitWarningForSchemaVersionMismatch, { CURRENT_SUPPORTED_SCHEMA, combineVersions, CURRENT_SCHEMA_STRING } from 'docc-render/utils/schema-version-check';
+import emitWarningForSchemaVersionMismatch, {
+  CURRENT_SUPPORTED_SCHEMA,
+  combineVersions,
+  CURRENT_SCHEMA_STRING, compareVersions,
+} from 'docc-render/utils/schema-version-check';
 
 const warnSpy = jest.spyOn(console, 'warn').mockReturnValue('');
 
@@ -74,5 +78,28 @@ describe('schema-version-check', () => {
   it('does not do anything, if no version is provided', () => {
     emitWarningForSchemaVersionMismatch();
     expect(warnSpy).toHaveBeenCalledTimes(0);
+  });
+
+  describe('compareVersions', () => {
+    it.each([
+      ['1.1.1', '1.1.10', -1],
+      ['1.1.1', '1.2.10', -1],
+      ['1.1.20', '1.2.10', -1],
+      ['1.1.1', '2.1.1', -1],
+      ['1.1', '1.1.0', -1],
+      ['1.1', '1.2.0', -1],
+
+      ['1.1.10', '1.1.1', 1],
+      ['1.1.10', '1.0.1', 1],
+      ['1.1.10', '1.0.20', 1],
+      ['2.1.0', '1.1.0', 1],
+      ['1.1.0', '1.1', 1],
+      ['1.2.0', '1.1', 1],
+
+      ['1.1.1', '1.1.1', 0],
+      ['1.1', '1.1', 0],
+    ])('compares %s to %s and gets %s', (one, two, result) => {
+      expect(compareVersions(one, two)).toBe(result);
+    });
   });
 });

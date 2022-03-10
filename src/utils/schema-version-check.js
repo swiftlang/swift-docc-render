@@ -10,12 +10,43 @@
 
 export const CURRENT_SUPPORTED_SCHEMA = {
   major: 0,
-  minor: 2,
+  minor: 3,
   patch: 0,
 };
 
 export function combineVersions({ major, minor, patch }) {
   return [major, minor, patch].join('.');
+}
+
+/**
+ * Compares two version strings
+ * @param {string} v1 - first version to compare
+ * @param {string} v2 - second version to compare
+ * @returns {Number<-1|0|1>}
+ */
+export function compareVersions(v1, v2) {
+  const v1parts = v1.split('.');
+  const v2parts = v2.split('.');
+
+  // iterate over each item
+  for (let i = 0; i < v1parts.length; i += 1) {
+    if (v2parts.length === i) {
+      return 1;
+    }
+    if (v1parts[i] > v2parts[i]) {
+      return 1;
+    }
+    if (v1parts[i] < v2parts[i]) {
+      return -1;
+    }
+  }
+  // the two versions have different lengths, return early
+  if (v1parts.length !== v2parts.length) {
+    return -1;
+  }
+
+  // they are identical
+  return 0;
 }
 
 export const CURRENT_SCHEMA_STRING = combineVersions(CURRENT_SUPPORTED_SCHEMA);
