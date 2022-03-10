@@ -13,8 +13,6 @@ import Availability from 'docc-render/components/DocumentationTopic/Summary/Avai
 
 const {
   AvailabilityRange,
-  Item,
-  List,
   Section,
   Badge,
 } = Availability.components;
@@ -75,12 +73,29 @@ describe('Availability', () => {
     expect(section.attributes('role')).toBe('complementary');
   });
 
+  it('renders a `Badge` and `AvailabilityRange` for each platform', () => {
+    const { platforms } = propsData;
+    const badges = wrapper.findAll(Badge);
+    expect(badges.length).toBe(platforms.length);
+
+    for (let i = 0; i < platforms.length; i += 1) {
+      const badge = badges.at(i);
+      const range = badge.find(AvailabilityRange);
+      expect(range.exists()).toBe(true);
+      expect(range.props()).toEqual({
+        deprecatedAt: platforms[i].deprecatedAt,
+        introducedAt: platforms[i].introducedAt,
+        platformName: platforms[i].name,
+      });
+    }
+  });
+
   it('renders deprecated text', () => {
-    const items = wrapper.findAll(Item);
-    expect(items.at(0).contains('.deprecated')).toBe(false);
-    expect(items.at(1).contains('.deprecated')).toBe(true);
-    expect(items.at(2).contains('.deprecated')).toBe(true);
-    expect(items.at(3).contains('.deprecated')).toBe(true);
+    const badges = wrapper.findAll(Badge);
+    expect(badges.at(0).contains('.deprecated')).toBe(false);
+    expect(badges.at(1).contains('.deprecated')).toBe(true);
+    expect(badges.at(2).contains('.deprecated')).toBe(true);
+    expect(badges.at(3).contains('.deprecated')).toBe(true);
 
     const deprecated = wrapper.find('.deprecated');
     expect(deprecated.text()).toBe('Deprecated');
@@ -133,60 +148,9 @@ describe('Availability', () => {
     expect(deprecated.exists()).toBe(false);
   });
 
-  it('renders a `List` with an `Item/AvailabilityRange` for each platform', () => {
-    const list = wrapper.find(List);
-    expect(list.exists()).toBe(true);
-
-    const items = list.findAll(Item);
-    expect(items.length).toBe(propsData.platforms.length);
-
-    propsData.platforms.forEach((platform, i) => {
-      const item = items.at(i);
-      expect(item.exists()).toBe(true);
-
-      const range = item.find(AvailabilityRange);
-      expect(range.exists()).toBe(true);
-      expect(range.props()).toEqual({
-        deprecatedAt: platform.deprecatedAt,
-        introducedAt: platform.introducedAt,
-        platformName: platform.name,
-      });
-    });
-  });
-
   describe('with API Changes', () => {
     it('sets changes classes for platforms that have changed', () => {
-      store.state.apiChanges = {
-        [provide.identifier]: {
-          availability: {
-            fooOS: {
-              deprecated: {
-                new: '13.4',
-                previous: null,
-              },
-            },
-            barOS: {
-              introduced: {
-                new: '13.4',
-                previous: null,
-              },
-            },
-            bazOS: {
-              introduced: {
-                new: '12.6',
-                previous: '13.0',
-              },
-            },
-          },
-        },
-      };
-
-      const items = wrapper.findAll(Item);
-
-      expect(items.at(0).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
-      expect(items.at(1).classes()).toEqual(['platform', 'changed', 'changed-added']);
-      expect(items.at(2).classes()).toEqual(['platform', 'changed', 'changed-modified']);
-      expect(items.at(3).classes()).toEqual(['platform']);
+      // TODO
     });
   });
 });

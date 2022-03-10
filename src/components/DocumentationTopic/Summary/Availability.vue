@@ -10,25 +10,19 @@
 
 <template>
   <Section class="availability" role="complementary" aria-label="Availability">
-    <List class="platform-list">
-      <Item
-        v-for="platform in platforms"
-        :key="platform.name"
-        :class="changesClassesFor(platform.name)"
-        class="platform"
-        :change="!!changeFor(platform.name)"
-      >
-        <Badge>
-          <AvailabilityRange
-            :deprecatedAt="platform.deprecatedAt"
-            :introducedAt="platform.introducedAt"
-            :platformName="platform.name"
-          />
-          <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
-          <span v-else-if="platform.beta" class="beta">Beta</span>
-        </Badge>
-      </Item>
-    </List>
+    <Badge
+      v-for="platform in platforms"
+      class="platform"
+      :key="platform.name"
+    >
+      <AvailabilityRange
+        :deprecatedAt="platform.deprecatedAt"
+        :introducedAt="platform.introducedAt"
+        :platformName="platform.name"
+      />
+        <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
+        <span v-else-if="platform.beta" class="beta">Beta</span>
+    </Badge>
   </Section>
 </template>
 
@@ -37,8 +31,6 @@ import Badge from 'docc-render/components/Badge.vue';
 import { getAPIChanges } from 'docc-render/mixins/apiChangesHelpers';
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import AvailabilityRange from './AvailabilityRange.vue';
-import List from './List.vue';
-import ListItem from './ListItem.vue';
 import Section from './Section.vue';
 
 export default {
@@ -48,8 +40,6 @@ export default {
   components: {
     Badge,
     AvailabilityRange,
-    Item: ListItem,
-    List,
     Section,
   },
   props: {
@@ -92,55 +82,15 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
- .platform-list {
-   margin-top: 20px;
- }
-
-.availability, .platform {
-  box-sizing: inherit;
-  display: inline-block;
-
-  @include breakpoint(small) {
-    display: flex;
-    justify-content: center;
-  }
-}
-
-.platform {
-  box-sizing: border-box;
-
-  &::after {
-    width: $change-total-icon-width;
-    height: $change-total-icon-width;
-    // Baseline align with first line of text
-    margin-top: 6px;
-  }
-
-  @include change-highlight-horizontal-spacing();
-  padding-left: 0;
-  padding-right: 0;
-  margin-bottom: 0.25rem;
-
-  @include change-highlight-vertical-spacing();
-
-  &-badge {
-    margin-left: rem(8px);
-  }
-
-  &.changed {
-    &::after {
-      width: $change-total-icon-width;
-      height: $change-total-icon-width;
-      // Baseline align with first line of text
-      margin-top: 6px;
-    }
-
-    @include change-highlight-horizontal-text-alignment();
-  }
+.availability {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .badge {
-  margin-left: 0;
+  margin: 0;
 
   & > .beta {
     color: var(--color-badge-text-beta);
