@@ -91,13 +91,12 @@ export default {
 
 .badge {
   margin: 0;
+}
 
-  & > .beta {
-    color: var(--color-badge-text-beta);
-  }
-
-  & > .deprecated {
-    color: var(--color-badge-text-deprecated);
-  }
+.beta {
+  color: var(--color-badge-text-beta);
+}
+.deprecated {
+  color: var(--color-badge-text-deprecated);
 }
 </style>
