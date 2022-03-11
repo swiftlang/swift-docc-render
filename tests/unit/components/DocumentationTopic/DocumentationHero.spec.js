@@ -20,7 +20,7 @@ import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 
 const defaultProps = {
   type: TopicTypes.class,
-  enableHero: true,
+  enhanceBackground: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -78,7 +78,7 @@ describe('DocumentationHero', () => {
   it('renders the DocumentationHero, disabled', () => {
     const wrapper = createWrapper();
     wrapper.setProps({
-      enableHero: false,
+      enhanceBackground: false,
     });
     // assert no icon
     const allIcons = wrapper.findAll(NavigatorLeafIcon);

@@ -208,7 +208,7 @@ describe('DocumentationTopic', () => {
   it('renders a `DocumentationHero`, enabled', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
-    expect(hero.props()).toEqual({ type: propsData.symbolKind, enableHero: true });
+    expect(hero.props()).toEqual({ type: propsData.symbolKind, enhanceBackground: true });
   });
 
   it('renders a `DocumentationHero`, enabled, with a the `role`, if no symbolKind', () => {
@@ -217,7 +217,7 @@ describe('DocumentationTopic', () => {
       symbolKind: '',
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.article, enableHero: true });
+    expect(hero.props()).toEqual({ type: TopicTypes.article, enhanceBackground: true });
   });
 
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
@@ -226,7 +226,7 @@ describe('DocumentationTopic', () => {
       symbolKind: 'module',
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.module, enableHero: true });
+    expect(hero.props()).toEqual({ type: TopicTypes.module, enhanceBackground: true });
   });
 
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
@@ -234,7 +234,7 @@ describe('DocumentationTopic', () => {
       symbolKind: 'protocol',
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.protocol, enableHero: false });
+    expect(hero.props()).toEqual({ type: TopicTypes.protocol, enhanceBackground: false });
   });
 
   it('renders a `Title`', () => {
