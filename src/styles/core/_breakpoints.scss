@@ -147,6 +147,7 @@ $breakpoint-attributes: (
   // Center the content using auto left/right margins
   margin-left: auto;
   margin-right: auto;
+  margin-top: 0;
 
   @each $breakpoint, $attributes in $breakpoints {
     $min-width: map-deep-get($breakpoints, ($breakpoint, min-width));
@@ -329,6 +330,7 @@ $breakpoint-attributes: (
     min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
     margin-left: auto;
     margin-right: auto;
+    margin-top: 0;
     padding-left: 80px;
     padding-right: 80px;
     box-sizing: border-box;
