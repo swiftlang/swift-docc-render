@@ -9,13 +9,16 @@
 -->
 
 <template>
-  <div :class=heroClass :style="styles">
+  <div
+    :class="['documentation-hero', { 'documentation-hero--disabled': !enhanceBackground }]"
+    :style="styles"
+  >
     <NavigatorLeafIcon
-      v-if="enableHero" :type="type"
+      v-if="enhanceBackground" :type="type"
       key="first" class="background-icon first-icon" with-colors
     />
     <NavigatorLeafIcon
-      v-if="enableHero" :type="type"
+      v-if="enhanceBackground" :type="type"
       key="second" class="background-icon second-icon" with-colors
     />
     <div class="documentation-hero__content">
@@ -37,7 +40,7 @@ export default {
       type: String,
       required: true,
     },
-    enableHero: {
+    enhanceBackground: {
       type: Boolean,
       required: true,
     },
@@ -49,7 +52,6 @@ export default {
       // use the color or fallback to the gray secondary, if not defined.
       '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
     }),
-    heroClass: ({ enableHero }) => (enableHero ? 'documentation-hero' : 'documentation-hero-disabled'),
   },
 };
 </script>
@@ -61,18 +63,6 @@ $doc-hero-gradient-background: dark-color(fill-tertiary) !default;
 $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
 $doc-hero-icon-color: dark-color(fill-secondary) !default;
-
-.documentation-hero-disabled {
-  overflow: hidden;
-  text-align: left;
-  padding-top: rem(40px);
-  padding-bottom: 40px;
-  position: relative;
-
-  @include breakpoint(small) {
-    text-align: center;
-  }
-}
 
 .documentation-hero {
   background: dark-color(fill);
@@ -148,6 +138,19 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
+  }
+}
+
+.documentation-hero--disabled {
+  background: none;
+  color: initial;
+
+  &:before {
+    background: none;
+  }
+
+  &:after {
+    background: none;
   }
 }
 </style>

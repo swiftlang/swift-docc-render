@@ -11,7 +11,7 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="symbolKind || role" :enableHero="enableHero">
+      <DocumentationHero :type="symbolKind || role" :enhanceBackground="enhanceBackground">
         <slot name="above-title" />
         <Title :eyebrow="roleHeading" :style=heroTitleStyle>{{ title }}</Title>
         <Abstract v-if="abstract" :content="abstract" />
@@ -301,17 +301,17 @@ export default {
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
-    enableHero: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    heroTitleStyle({ enableHero }) {
-      return enableHero ? {
-        '--hero-eyebrow': 'light-color(figure-gray-secondary)',
-        '--hero-title': 'light-color(fill)',
+    enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    heroTitleStyle({ enhanceBackground }) {
+      return enhanceBackground ? {
+        '--hero-eyebrow-color': 'light-color(figure-gray-secondary)',
+        '--hero-title-color': 'light-color(fill)',
       } : {
-        '--hero-eyebrow': 'var(--colors-secondary-label,var(--color-secondary-label))',
+        '--hero-eyebrow-color': 'var(--colors-secondary-label,var(--color-secondary-label))',
       };
     },
-    borderWidth({ enableHero }) {
-      return enableHero ? {
+    borderWidth({ enhanceBackground }) {
+      return enhanceBackground ? {
         '--border-width': '0px',
       } : {
         '--border-width': '1px',
