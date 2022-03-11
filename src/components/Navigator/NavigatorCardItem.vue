@@ -60,6 +60,7 @@
           class="leaf-link"
           :aria-describedby="ariaDescribedBy"
           :tabindex="isRendered ? null : '-1'"
+          @click.native="$emit('navigate', item.uid)"
         >
           <HighlightMatches
             :text="item.title"

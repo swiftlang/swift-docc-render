@@ -45,6 +45,7 @@
               :expanded="openNodes[item.uid]"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
+              @navigate="setActiveUID"
             />
           </RecycleScroller>
           <div class="no-items-wrapper" v-if="!nodesToRender.length">
@@ -200,6 +201,8 @@ export default {
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
+      activeUID: null,
+      resetScroll: false,
     };
   },
   computed: {
@@ -213,6 +216,7 @@ export default {
       get: ({ selectedTags }) => selectedTags.map(tag => FILTER_TAGS_TO_LABELS[tag]),
       set(values) {
         this.selectedTags = values.map(label => FILTER_LABELS_TO_TAGS[label]);
+        this.resetScroll = true;
       },
     },
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
@@ -231,41 +235,15 @@ export default {
       return Object.fromEntries(children.map(child => [child.uid, child]));
     },
     /**
-     * Returns an array of {NavigatorFlatItem}, for the current page hierarchy
+     * Returns an array of {NavigatorFlatItem}, from the current active UUID
      * @return NavigatorFlatItem[]
      */
-    activePathChildren() {
-      // get the stack to iterate
-      const stack = this.activePath.slice(0).reverse();
-      // the items to loop over. First iteration is over all items
-      let childrenStack = this.children;
-      const result = [];
-      // loop as long as there are items
-      while (stack.length) {
-        // get the last item (first parent, as we reversed it)
-        const currentPath = stack.pop();
-        // find it by path (we dont have the UID yet)
-        const currentNode = childrenStack.find(c => c.path === currentPath);
-        if (!currentNode) break;
-        // push the object to the results
-        result.push(currentNode);
-        if (stack.length) {
-          // get the children, so we search in those
-          childrenStack = currentNode.childUIDs.map(c => this.childrenMap[c]);
-        }
-      }
-      return result;
+    activePathChildren({ activeUID }) {
+      return activeUID ? this.getParents(activeUID) : [];
     },
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
     ),
-    /**
-     * Returns the current page uid
-     * @return number
-     */
-    activeUID({ activePathChildren }) {
-      return (activePathChildren[activePathChildren.length - 1] || {}).uid;
-    },
     /**
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
@@ -314,6 +292,7 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
+    activePath: 'handleActivePathChange',
   },
   methods: {
     clearFilters() {
@@ -322,7 +301,10 @@ export default {
       this.selectedTags = [];
     },
     debounceInput: debounce(function debounceInput(value) {
+      // store the new filter value
       this.debouncedFilter = value;
+      // note to the component, that we want to reset the scroll
+      this.resetScroll = true;
     }, 500),
     /**
      * Finds which nodes need to be opened.
@@ -462,6 +444,24 @@ export default {
       return arr;
     },
     /**
+     * Get all sibling nodes of a node
+     * @return {NavigatorFlatItem[]}
+     */
+    getSiblings(uid) {
+      const item = this.childrenMap[uid];
+      if (!item) return [];
+      return this.getChildren(item.parent);
+    },
+    /**
+     * Get the direct child nodes of a node.
+     * @return {NavigatorFlatItem[]}
+     */
+    getChildren(uid) {
+      const item = this.childrenMap[uid];
+      if (!item) return [];
+      return (item.childUIDs || []).map(child => this.childrenMap[child]);
+    },
+    /**
      * Stores all the nodes we should render at this point.
      * This gets called everytime you open/close a node,
      * or when you start filtering.
@@ -534,14 +534,14 @@ export default {
 
       // if for some reason there are no nodes and no filter, we can assume its bad cache
       if (!nodesToRender.length && !filter) {
-        this.trackOpenNodes(this.nodeChangeDeps);
+        this.handleActivePathChange(this.activePath);
         return;
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
       // if the technology does not match, do not use the persisted values
       if (technology !== this.technology || !allNodesMatch) {
-        this.trackOpenNodes(this.nodeChangeDeps);
+        this.handleActivePathChange(this.activePath);
         return;
       }
       // get all open nodes
@@ -560,17 +560,29 @@ export default {
     },
     async scrollToElement() {
       await waitFrames(1);
+      if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      const index = this.hasFilter
-        ? 0
-        // find the index of the current active UID in the newly added nodes
-        : this.nodesToRender.findIndex(child => child.uid === this.activeUID);
-      // if for some reason we cant find the active page, bail.
-      // make sure the scroller is visible
-      if (index !== -1 && this.$refs.scroller) {
-        // call the scroll method on the `scroller` component.
-        this.$refs.scroller.scrollToItem(index);
+      if (this.resetScroll) {
+        this.$refs.scroller.scrollToItem(0);
+        return;
       }
+      // check if the current element is visible and needs scrolling into
+      const element = document.getElementById(this.activeUID);
+      if (element) {
+        // get the position of the scroller in the screen
+        const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
+        // get the position of the active element
+        const { y } = element.getBoundingClientRect();
+        // calculate where it starts from
+        const calculatedY = y - areaY;
+        // if the element is within the scroll area, we dont need to scroll to it.
+        if (calculatedY > 0 && calculatedY < areaHeight) return;
+      }
+      // find the index of the current active UID in the newly added nodes
+      const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
+      // check if the element is visible
+      // call the scroll method on the `scroller` component.
+      this.$refs.scroller.scrollToItem(index);
     },
     handleBlur(event) {
       // if there is a related target, do nothing
@@ -583,6 +595,67 @@ export default {
       event.target.focus({
         preventScroll: true,
       });
+    },
+    /**
+     * Stores the newly clicked item's UID, so we can highlight it
+     */
+    setActiveUID(uid) {
+      this.activeUID = uid;
+      this.resetScroll = false;
+    },
+    /**
+     * Returns an array of {NavigatorFlatItem}, from a breadcrumbs list
+     * @return NavigatorFlatItem[]
+     */
+    pathsToFlatChildren(paths) {
+      // get the stack to iterate
+      const stack = paths.slice(0).reverse();
+      // the items to loop over. First iteration is over all items
+      let childrenStack = this.children;
+      const result = [];
+      // loop as long as there are items
+      while (stack.length) {
+        // get the last item (first parent, as we reversed it)
+        const currentPath = stack.pop();
+        // find it by path (we dont have the UID yet)
+        const currentNode = childrenStack.find(c => c.path === currentPath);
+        if (!currentNode) break;
+        // push the object to the results
+        result.push(currentNode);
+        if (stack.length) {
+          // get the children, so we search in those
+          childrenStack = currentNode.childUIDs.map(c => this.childrenMap[c]);
+        }
+      }
+      return result;
+    },
+    handleActivePathChange(activePath) {
+      const currentActiveItem = this.childrenMap[this.activeUID];
+      const lastActivePathItem = activePath[activePath.length - 1];
+      // check if there is an active item to start looking from
+      if (currentActiveItem) {
+        // check if we navigated to the same page
+        if (lastActivePathItem === currentActiveItem.path) {
+          return;
+        }
+        // try to figure out the new UID
+        const siblings = this.getSiblings(this.activeUID);
+        const children = this.getChildren(this.activeUID);
+        const parents = this.getParents(this.activeUID);
+        // try to match if any of the `siblings` or `children` match the current open item
+        const openItem = [...children, ...siblings, ...parents]
+          .find(child => child.path === lastActivePathItem);
+        if (openItem) {
+          this.setActiveUID(openItem.uid);
+          return;
+        }
+      }
+      // there is no item to base upon, so we need to search from the activePath
+      const activePathChildren = this.pathsToFlatChildren(activePath);
+      const newActiveUID = activePathChildren.length
+        ? activePathChildren[activePathChildren.length - 1].uid
+        : null;
+      this.setActiveUID(newActiveUID);
     },
   },
 };
