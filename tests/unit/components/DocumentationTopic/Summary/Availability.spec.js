@@ -150,7 +150,37 @@ describe('Availability', () => {
 
   describe('with API Changes', () => {
     it('sets changes classes for platforms that have changed', () => {
-      // TODO
+      store.state.apiChanges = {
+        [provide.identifier]: {
+          availability: {
+            fooOS: {
+              deprecated: {
+                new: '13.4',
+                previous: null,
+              },
+            },
+            barOS: {
+              introduced: {
+                new: '13.4',
+                previous: null,
+              },
+            },
+            bazOS: {
+              introduced: {
+                new: '12.6',
+                previous: '13.0',
+              },
+            },
+          },
+        },
+      };
+
+      const badges = wrapper.findAll(Badge);
+
+      expect(badges.at(0).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
+      expect(badges.at(1).classes()).toEqual(['platform', 'changed', 'changed-added']);
+      expect(badges.at(2).classes()).toEqual(['platform', 'changed', 'changed-modified']);
+      expect(badges.at(3).classes()).toEqual(['platform']);
     });
   });
 });
