@@ -18,6 +18,11 @@ export function combineVersions({ major, minor, patch }) {
   return [major, minor, patch].join('.');
 }
 
+function versionNumberToArray(versionString) {
+  const [major = 0, minor = 0, patch = 0] = versionString.split('.');
+  return [Number(major), Number(minor), Number(patch)];
+}
+
 /**
  * Compares two version strings
  * @param {string} v1 - first version to compare
@@ -25,24 +30,17 @@ export function combineVersions({ major, minor, patch }) {
  * @returns {Number<-1|0|1>}
  */
 export function compareVersions(v1, v2) {
-  const v1parts = v1.split('.');
-  const v2parts = v2.split('.');
+  const v1parts = versionNumberToArray(v1);
+  const v2parts = versionNumberToArray(v2);
 
   // iterate over each item
   for (let i = 0; i < v1parts.length; i += 1) {
-    if (v2parts.length === i) {
-      return 1;
-    }
     if (v1parts[i] > v2parts[i]) {
       return 1;
     }
     if (v1parts[i] < v2parts[i]) {
       return -1;
     }
-  }
-  // the two versions have different lengths, return early
-  if (v1parts.length !== v2parts.length) {
-    return -1;
   }
 
   // they are identical
