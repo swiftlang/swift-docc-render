@@ -88,6 +88,10 @@ export default {
   flex-flow: row wrap;
   gap: 10px;
   margin-top: 20px;
+
+  @include breakpoint(small) {
+    justify-content: center;
+  }
 }
 
 .badge {
