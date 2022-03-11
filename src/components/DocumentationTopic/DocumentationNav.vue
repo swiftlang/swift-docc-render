@@ -20,8 +20,8 @@
     class="documentation-nav"
     aria-label="API Reference"
   >
-    <template slot="pre-title" v-if="isWideFormat">
-      <button class="sidenav-toggle" @click.prevent="$emit('toggle-sidenav')">
+    <template #pre-title="{ closeNav }" v-if="isWideFormat">
+      <button class="sidenav-toggle" @click.prevent="handleSidenavToggle(closeNav)">
         <SidenavIcon class="icon-inline sidenav-icon" />
       </button>
     </template>
@@ -143,6 +143,14 @@ export default {
       isRootTechnologyLink ? parentTopicIdentifiers.slice(1) : parentTopicIdentifiers
     ),
   },
+  methods: {
+    async handleSidenavToggle(closeNav) {
+      // close the navigation
+      await closeNav();
+      // toggle the sidenav
+      this.$emit('toggle-sidenav');
+    },
+  },
 };
 </script>
 
@@ -177,6 +185,14 @@ $sidenav-icon-size: 19px;
       }
     }
   }
+}
+
+.sidenav-toggle {
+  $space: 14px;
+  margin-left: -$space;
+  margin-right: -$space;
+  padding-left: $space;
+  padding-right: $space;
 }
 
 .sidenav-icon {
