@@ -52,9 +52,9 @@
         </Summary>
         <PrimaryContent
           v-if="primaryContentSections && primaryContentSections.length"
+          :class="{ 'with-border': !enhanceBackground }"
           :conformance="conformance"
           :sections="primaryContentSections"
-          :style="borderWidth"
         />
       </div>
       <Topics
@@ -302,13 +302,6 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    borderWidth({ enhanceBackground }) {
-      return enhanceBackground ? {
-        '--border-width': '0px',
-      } : {
-        '--border-width': '1px',
-      };
-    },
   },
   methods: {
     normalizePath(path) {
