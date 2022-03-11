@@ -120,6 +120,7 @@ describe('Navigator', () => {
       scrollLockID: defaultProps.scrollLockID,
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
+      apiChanges: null,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
@@ -151,6 +152,7 @@ describe('Navigator', () => {
       scrollLockID: defaultProps.scrollLockID,
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
+      apiChanges: null,
     });
   });
 

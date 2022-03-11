@@ -60,7 +60,8 @@ describe('NavigatorCardItem', () => {
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
     });
-    expect(wrapper.find('.navigator-card-item').attributes('id')).toBe(`container-${defaultProps.item.uid}`);
+    expect(wrapper.find('.navigator-card-item').attributes('id'))
+      .toBe(`container-${defaultProps.item.uid}`);
   });
 
   it('renders a deprecated badge when item is deprecated', () => {
@@ -136,6 +137,18 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
   });
 
+  it('renders the API change icon instead of the leaf icon', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        apiChange: 'modified',
+      },
+    });
+
+    expect(wrapper.find(NavigatorLeafIcon).exists()).toBe(false);
+    expect(wrapper.find('.navigator-icon').classes())
+      .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
+  });
+
   describe('AX', () => {
     it('applies aria-hidden to NavigatorCardItem if isRendered is false', () => {
       const wrapper = createWrapper({
@@ -201,7 +214,8 @@ describe('NavigatorCardItem', () => {
       const wrapper = createWrapper();
       const label = wrapper.find(`#label-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe(`${defaultProps.item.index + 1} of ${defaultProps.item.siblingsCount} symbols inside`);
+      expect(label.text())
+        .toBe(`${defaultProps.item.index + 1} of ${defaultProps.item.siblingsCount} symbols inside`);
     });
 
     it('renders a hidden span telling the containing number of symbols', () => {
@@ -220,12 +234,14 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.find('.leaf-link').attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent}`);
+      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
+        .toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent}`);
     });
 
     it('renders a aria-describedby in the leaf-link including the parent label if is parent', () => {
       const wrapper = createWrapper();
-      expect(wrapper.find('.leaf-link').attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent} label-parent-${defaultProps.item.uid}`);
+      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
+        .toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent} label-parent-${defaultProps.item.uid}`);
     });
   });
 });
