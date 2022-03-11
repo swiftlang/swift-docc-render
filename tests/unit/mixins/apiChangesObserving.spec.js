@@ -36,6 +36,7 @@ const router = new VueRouter({
 
 const store = {
   setAPIChanges: jest.fn(),
+  setSelectedAPIChangesVersion: jest.fn(),
 };
 
 const createWrapperWithQuery = (changeQuery) => {
@@ -83,6 +84,7 @@ describe('apiChangesObserving', () => {
 
     wrapper = createWrapperWithQuery(notValidChangeQuery);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(false);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(null);
     wrapper.destroy();
 
     wrapper = createWrapperWithQuery(validChangeQuery);
@@ -99,11 +101,14 @@ describe('apiChangesObserving', () => {
     });
     await flushPromises();
     await flushPromises();
+    // called with null, because the API change version is invalid
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(null);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(false);
     // make sure that if null is passed, the result is Boolean
     wrapper.vm.selectedAPIChangesVersion = null;
     await flushPromises();
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(false);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(null);
   });
 
   it('re-fetches, when navigating and turns `shouldDisplayChangesNav` true, on `$route` change, if there is a selected version', async () => {
@@ -114,6 +119,9 @@ describe('apiChangesObserving', () => {
     expect(pushSpy).toHaveBeenCalledTimes(0);
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(1);
     expect(fetchAPIChangesForRoute).toHaveBeenLastCalledWith(router.currentRoute, validChangeQuery);
+    await flushPromises();
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(1);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledWith(validChangeQuery);
     // navigate to another route, with the same changes
     await router.push({
       path: '/foo/foo',
@@ -128,6 +136,8 @@ describe('apiChangesObserving', () => {
     expect(fetchAPIChangesForRoute).toHaveBeenLastCalledWith(router.currentRoute, validChangeQuery);
     expect(store.setAPIChanges).toHaveBeenCalledTimes(2);
     expect(store.setAPIChanges).toHaveBeenLastCalledWith(response);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(2);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(validChangeQuery);
   });
 
   it('does not re-fetch, on `$route` change, if there is no version', async () => {
@@ -135,7 +145,11 @@ describe('apiChangesObserving', () => {
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(false);
     expect(pushSpy).toHaveBeenCalledTimes(0);
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(0);
+    // its called twice, because of the way we handle watching of the state
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(2);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(null);
     await flushPromises();
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(2);
     await router.push('/foo/baz');
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(false);
     // push is not called, because we have changes already
@@ -143,16 +157,22 @@ describe('apiChangesObserving', () => {
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(0);
     // its called 3 times. One on mount, one on change
     expect(store.setAPIChanges).toHaveBeenCalledTimes(3);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(3);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(null);
   });
 
   it('updates the route, if only the query changed', async () => {
-    wrapper = createWrapperWithQuery('latest_major');
+    const change = 'latest_major';
+    wrapper = createWrapperWithQuery(change);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(true);
     expect(pushSpy).toHaveBeenCalledTimes(0);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(0);
     await flushPromises();
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(1);
     expect(pushSpy).toHaveBeenCalledTimes(0);
     expect(store.setAPIChanges).toHaveBeenCalledTimes(1);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(1);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(change);
     await router.push({
       query: {
         changes: 'latest_minor',
@@ -162,5 +182,7 @@ describe('apiChangesObserving', () => {
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(2);
     expect(pushSpy).toHaveBeenCalledTimes(1);
     expect(store.setAPIChanges).toHaveBeenCalledTimes(2);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(2);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith('latest_minor');
   });
 });

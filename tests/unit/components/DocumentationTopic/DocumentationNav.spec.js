@@ -14,6 +14,11 @@ import {
 } from '@vue/test-utils';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import { BreakpointName } from '@/utils/breakpoints';
+import { flushPromises } from '../../../../test-utils';
+
+jest.mock('docc-render/utils/changeElementVOVisibility');
+jest.mock('docc-render/utils/scroll-lock');
+jest.mock('docc-render/utils/FocusTrap');
 
 const {
   Hierarchy,
@@ -224,8 +229,19 @@ describe('DocumentationNav', () => {
     expect(wrapper.find('.nav-title-link').exists()).toBe(false);
   });
 
-  it('renders a sidenav toggle', () => {
+  it('renders a sidenav toggle', async () => {
     wrapper.find('.sidenav-toggle').trigger('click');
+    await flushPromises();
+    expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+  });
+
+  it('closes the nav, if open and clicking on the sidenavtoggle', async () => {
+    wrapper.find('.nav-menucta').trigger('click');
+    expect(wrapper.classes()).toContain('nav--is-open');
+    wrapper.find('.sidenav-toggle').trigger('click');
+    expect(wrapper.classes()).not.toContain('nav--is-open');
+    expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
+    await flushPromises();
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });
 

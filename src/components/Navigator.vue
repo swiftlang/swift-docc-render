@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="navigator" :style="{ '--sticky-top-offset': topOffset }">
+  <div class="navigator">
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
@@ -18,6 +18,9 @@
       :children="flatChildren"
       :active-path="activePath"
       :scrollLockID="scrollLockID"
+      :error-fetching="errorFetching"
+      :breakpoint="breakpoint"
+      :api-changes="apiChanges"
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
@@ -27,11 +30,10 @@
 </template>
 
 <script>
-import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
-import throttle from 'docc-render/utils/throttle';
+import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
-import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 /**
  * @typedef NavigatorFlatItem
@@ -77,14 +79,18 @@ export default {
       type: String,
       default: '',
     },
-  },
-  data() {
-    return {
-      topOffset: '0px',
-    };
-  },
-  mounted() {
-    this.setupStickyFilterTrack();
+    errorFetching: {
+      type: Boolean,
+      default: false,
+    },
+    breakpoint: {
+      type: String,
+      default: BreakpointName.large,
+    },
+    apiChanges: {
+      type: Object,
+      default: null,
+    },
   },
   computed: {
     // gets the paths for each parent in the breadcrumbs
@@ -166,29 +172,6 @@ export default {
         return items.concat(node);
       }, []);
     },
-    /**
-     * Moves the sticky filter as you scroll, so it does not get hidden,
-     * when you have extra components above the navigation.
-     */
-    setupStickyFilterTrack() {
-      // get the navigation sticky anchor
-      const anchor = document.getElementById(baseNavStickyAnchorId);
-      // Check if there are more components, above the navigation
-      if (anchor.offsetTop === 0) return;
-      const cb = throttle(() => {
-        // get the top position of the anchor, or 0 if its negative
-        const y = Math.max(anchor.getBoundingClientRect().y, 0);
-        this.topOffset = `${y}px`;
-      }, 150);
-      // start listening to scroll events
-      window.addEventListener('scroll', cb);
-      // fire the callback
-      cb();
-      // unbind on beforeDestroy
-      this.$once('hook:beforeDestroy', () => {
-        window.removeEventListener('scroll', cb);
-      });
-    },
   },
 };
 </script>
@@ -197,11 +180,10 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
-  position: sticky;
-  top: $nav-height;
-  height: calc(100vh - #{$nav-height} - var(--sticky-top-offset));
-  box-sizing: border-box;
-  transition: height 0.3s linear;
+  height: 100%;
+  border-left: 1px solid var(--color-grid);
+  display: flex;
+  flex-flow: column;
 
   @include breakpoints-from(xlarge) {
     border-left: 1px solid var(--color-grid);
@@ -209,7 +191,7 @@ export default {
 
   @include breakpoint(medium, nav) {
     position: static;
-    height: 100%;
+    border-left: none;
     transition: none;
   }
 }
