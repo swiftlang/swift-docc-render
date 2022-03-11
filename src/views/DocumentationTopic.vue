@@ -31,19 +31,23 @@
         v-bind="sidebarProps"
         v-on="sidebarListeners"
       >
-        <template #aside="{ scrollLockID }">
+        <template #aside="{ scrollLockID, breakpoint }">
           <aside class="doc-topic-aside">
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
               :technology="technology"
+              :api-changes-version="store.state.selectedAPIChangesVersion"
             >
               <template #default="slotProps">
                 <Navigator
                   :parent-topic-identifiers="navigatorParentTopicIdentifiers"
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
+                  :error-fetching="slotProps.errorFetching"
+                  :api-changes="slotProps.apiChanges"
                   :references="topicProps.references"
                   :scrollLockID="scrollLockID"
+                  :breakpoint="breakpoint"
                   @close="isSideNavOpen = false"
                 />
               </template>

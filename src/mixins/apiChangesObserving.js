@@ -87,6 +87,9 @@ export default {
           apiChanges = response;
         }
       }
+      // store the selected version, only if we should show the changes nav. Otherwise the value
+      // might be none-existent value
+      this.store.setSelectedAPIChangesVersion(this.shouldDisplayChangesNav ? newValue : null);
       this.store.setAPIChanges(apiChanges);
     },
   },

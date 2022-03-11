@@ -23,10 +23,16 @@ $change-coin-y-offset-reduced: 7px;
 // Paths to the changes icons
 $modified-svg: url('~theme/assets/img/icons/modified-icon.svg') !default;
 $modified-dark-svg: $modified-svg !default;
+$modified-rounded-svg: $modified-svg !default;
+$modified-dark-rounded-svg: $modified-svg !default;
 $added-svg: url('~theme/assets/img/icons/added-icon.svg') !default;
 $added-dark-svg: $added-svg !default;
+$added-rounded-svg: $added-svg !default;
+$added-dark-rounded-svg: $added-svg !default;
 $deprecated-svg: url('~theme/assets/img/icons/deprecated-icon.svg') !default;
 $deprecated-dark-svg: $deprecated-svg !default;
+$deprecated-rounded-svg: $deprecated-svg !default;
+$deprecated-dark-rounded-svg: $deprecated-svg !default;
 
 ////
 /// Displays a circular coin at specific dimensions

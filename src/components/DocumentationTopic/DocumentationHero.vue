@@ -9,9 +9,18 @@
 -->
 
 <template>
-  <div class="documentation-hero" :style="styles">
-    <NavigatorLeafIcon :type="type" key="first" class="background-icon first-icon" with-colors />
-    <NavigatorLeafIcon :type="type" key="second" class="background-icon second-icon" with-colors />
+  <div
+    :class="['documentation-hero', { 'documentation-hero--disabled': !enhanceBackground }]"
+    :style="styles"
+  >
+    <NavigatorLeafIcon
+      v-if="enhanceBackground" :type="type"
+      key="first" class="background-icon first-icon" with-colors
+    />
+    <NavigatorLeafIcon
+      v-if="enhanceBackground" :type="type"
+      key="second" class="background-icon second-icon" with-colors
+    />
     <div class="documentation-hero__content">
       <slot />
     </div>
@@ -29,6 +38,10 @@ export default {
   props: {
     type: {
       type: String,
+      required: true,
+    },
+    enhanceBackground: {
+      type: Boolean,
       required: true,
     },
   },
@@ -53,12 +66,16 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
 
 .documentation-hero {
   background: dark-color(fill);
-  color: light-color(fill);
+  color: dark-color(figure-gray);
   overflow: hidden;
-  text-align: center;
+  text-align: left;
   padding-top: rem(40px);
   padding-bottom: 40px;
   position: relative;
+
+  @include breakpoint(small) {
+    text-align: center;
+  }
 
   // gradient
   &:before {
@@ -121,6 +138,19 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
+  }
+}
+
+.documentation-hero--disabled {
+  background: none;
+  color: var(--colors-text, var(--color-text));
+
+  &:before {
+    content: none;
+  }
+
+  &:after {
+    content: none;
   }
 }
 </style>

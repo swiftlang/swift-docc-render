@@ -150,6 +150,14 @@ export default {
 }
 
 .primary-content {
+  &.with-border::before {
+    border-top-color: var(--colors-grid, var(--color-grid));
+    border-top-style: solid;
+    border-top-width: 1px;
+    content: '';
+    display: block;
+  }
+
   /deep/ {
     & > * {
       margin-bottom: $section-spacing-single-side;
