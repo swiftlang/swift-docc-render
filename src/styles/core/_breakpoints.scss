@@ -330,7 +330,6 @@ $breakpoint-attributes: (
     min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
     margin-left: auto;
     margin-right: auto;
-    margin-top: 0;
     padding-left: 80px;
     padding-right: 80px;
     box-sizing: border-box;
