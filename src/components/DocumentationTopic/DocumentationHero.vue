@@ -66,7 +66,7 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
 
 .documentation-hero {
   background: dark-color(fill);
-  color: light-color(fill);
+  color: dark-color(figure-gray);
   overflow: hidden;
   text-align: left;
   padding-top: rem(40px);
@@ -143,8 +143,7 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
 
 .documentation-hero--disabled {
   background: none;
-  color: dark-color(fill);
-  --hero-eyebrow-color: var(--colors-secondary-label,var(--color-secondary-label));
+  color: var(--colors-text, var(--color-text));
 
   &:before {
     background: none;
