@@ -146,11 +146,11 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
   color: var(--colors-text, var(--color-text));
 
   &:before {
-    background: none;
+    content: none;
   }
 
   &:after {
-    background: none;
+    content: none;
   }
 }
 </style>
