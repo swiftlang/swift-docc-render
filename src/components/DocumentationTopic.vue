@@ -225,9 +225,9 @@ export default {
       type: Array,
       required: false,
     },
-    variants: {
-      type: Array,
-      default: () => ([]),
+    languagePaths: {
+      type: Object,
+      default: () => ({}),
     },
     extendsTechnology: {
       type: String,
@@ -288,14 +288,6 @@ export default {
       ({ primaryContentSections = [], abstract = [] }) => primaryContentSections.filter(section => (
         section.kind === PrimaryContent.constants.SectionKind.content
       )).length > 0 || abstract.length > 0,
-    // Use `variants` data to build a map of paths associated with each unique
-    // `interfaceLanguage` trait.
-    languagePaths: ({ variants }) => variants.reduce((memo, variant) => (
-      variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
-        ..._memo,
-        [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
-      })), memo)
-    ), {}),
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
