@@ -13,7 +13,7 @@
     <main class="main" id="main" role="main" tabindex="0">
       <DocumentationHero :type="symbolKind || role" :enhanceBackground="enhanceBackground">
         <slot name="above-title" />
-        <Title :eyebrow="roleHeading" :style=heroTitleStyle>{{ title }}</Title>
+        <Title :eyebrow="roleHeading">{{ title }}</Title>
         <Abstract v-if="abstract" :content="abstract" />
       </DocumentationHero>
       <div class="container content-grid" :class="{ 'full-width': hideSummary }">
@@ -302,14 +302,6 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    heroTitleStyle({ enhanceBackground }) {
-      return enhanceBackground ? {
-        '--hero-eyebrow-color': 'light-color(figure-gray-secondary)',
-        '--hero-title-color': 'light-color(fill)',
-      } : {
-        '--hero-eyebrow-color': 'var(--colors-secondary-label,var(--color-secondary-label))',
-      };
-    },
     borderWidth({ enhanceBackground }) {
       return enhanceBackground ? {
         '--border-width': '0px',

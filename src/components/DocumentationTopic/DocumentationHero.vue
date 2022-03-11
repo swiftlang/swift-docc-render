@@ -143,7 +143,8 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
 
 .documentation-hero--disabled {
   background: none;
-  color: initial;
+  color: dark-color(fill);
+  --hero-eyebrow-color: var(--colors-secondary-label,var(--color-secondary-label));
 
   &:before {
     background: none;
