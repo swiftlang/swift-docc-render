@@ -183,7 +183,6 @@ describe('NavigatorCard', () => {
       placeholder: 'Filter in TestKit',
       positionReversed: true,
       preventedBlur: false,
-      shouldKeepOpenOnBlur: false,
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [
