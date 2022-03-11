@@ -20,6 +20,7 @@ import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 
 const defaultProps = {
   type: TopicTypes.class,
+  enableHero: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -34,7 +35,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(Documentat
 });
 
 describe('DocumentationHero', () => {
-  it('renders the DocumentationHero', () => {
+  it('renders the DocumentationHero, enabled', () => {
     const wrapper = createWrapper();
     const allIcons = wrapper.findAll(NavigatorLeafIcon);
     expect(allIcons).toHaveLength(2);
@@ -71,6 +72,21 @@ describe('DocumentationHero', () => {
     });
     expect(wrapper.vm.styles).toEqual({
       '--accent-color': `var(--color-type-icon-${TopicTypeColors.teal}, var(--color-figure-gray-secondary))`,
+    });
+  });
+
+  it('renders the DocumentationHero, disabled', () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      enableHero: false,
+    });
+    // assert no icon
+    const allIcons = wrapper.findAll(NavigatorLeafIcon);
+    expect(allIcons).toHaveLength(0);
+    // assert slot
+    expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
+    expect(wrapper.vm.styles).toEqual({
+      '--accent-color': `var(--color-type-icon-${TopicTypeColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
     });
   });
 });
