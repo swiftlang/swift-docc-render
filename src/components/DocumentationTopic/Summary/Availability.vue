@@ -53,6 +53,29 @@ export default {
       state: this.store.state,
     };
   },
+  methods: {
+    changeFor(platform) {
+      const { identifier, state: { apiChanges } } = this;
+      const { availability = {} } = (apiChanges || {})[identifier] || {};
+      const changeData = availability[platform];
+
+      if (!changeData) {
+        return undefined;
+      }
+
+      if (changeData.deprecated) {
+        return ChangeTypes.deprecated;
+      }
+
+      if (changeData.introduced) {
+        if (!changeData.introduced.previous) {
+          return ChangeTypes.added;
+        }
+      }
+
+      return ChangeTypes.modified;
+    },
+  },
 };
 </script>
 
