@@ -83,6 +83,8 @@ describe('NavigatorDataProvider', () => {
     expect(props).toHaveProperty('isFetching', true);
     await flushPromises();
     expect(props).toEqual({
+      apiChanges: null,
+      isFetchingAPIChanges: false,
       isFetching: false,
       technology: swiftIndexOne,
       errorFetching: false,
@@ -97,6 +99,8 @@ describe('NavigatorDataProvider', () => {
     expect(props).toHaveProperty('isFetching', true);
     await flushPromises();
     expect(props).toEqual({
+      apiChanges: null,
+      isFetchingAPIChanges: false,
       isFetching: false,
       technology: undefined,
       errorFetching: true,
@@ -114,6 +118,8 @@ describe('NavigatorDataProvider', () => {
     expect(props).toHaveProperty('isFetching', true);
     await flushPromises();
     expect(props).toEqual({
+      apiChanges: null,
+      isFetchingAPIChanges: false,
       errorFetching: false,
       isFetching: false,
       technology: objectiveCIndexOne,
@@ -136,6 +142,8 @@ describe('NavigatorDataProvider', () => {
     expect(props).toHaveProperty('isFetching', true);
     await flushPromises();
     expect(props).toEqual({
+      apiChanges: null,
+      isFetchingAPIChanges: false,
       errorFetching: false,
       isFetching: false,
       technology: swiftIndexOne,
@@ -152,6 +160,8 @@ describe('NavigatorDataProvider', () => {
     });
     await flushPromises();
     expect(props).toEqual({
+      apiChanges: null,
+      isFetchingAPIChanges: false,
       errorFetching: false,
       isFetching: false,
       technology: undefined,

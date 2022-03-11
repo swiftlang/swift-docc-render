@@ -23,9 +23,10 @@
             </div>
           </Reference>
         </div>
+        <slot name="post-head" />
         <div class="card-body">
           <RecycleScroller
-            v-show="nodesToRender.length"
+            v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
@@ -43,20 +44,16 @@
               :is-active="item.uid === activeUID"
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
+              :api-change="apiChangesObject[item.path]"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
             />
           </RecycleScroller>
-          <div class="no-items-wrapper" v-if="!nodesToRender.length">
-            <template v-if="hasFilter">
-              No results matching your filter
-            </template>
-            <template v-else-if="errorFetching">
-              There was an error fetching the data
-            </template>
-            <template v-else>
-              Technology has no children
-            </template>
+          <div aria-live="polite" class="visuallyhidden">
+            {{ politeAriaLive }}
+          </div>
+          <div aria-live="assertive" class="no-items-wrapper">
+            {{ assertiveAriaLive }}
           </div>
         </div>
       </div>
@@ -94,7 +91,7 @@ import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -102,7 +99,13 @@ const STORAGE_KEYS = {
   openNodes: 'navigator.openNodes',
   nodesToRender: 'navigator.nodesToRender',
   selectedTags: 'navigator.selectedTags',
+  apiChanges: 'navigator.apiChanges',
 };
+
+const NO_RESULTS = 'No results matching your filter';
+const NO_CHILDREN = 'Technology has no children';
+const ERROR_FETCHING = 'There was an error fetching the data';
+const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
@@ -146,6 +149,10 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
+    NO_RESULTS,
+    NO_CHILDREN,
+    ERROR_FETCHING,
+    ITEMS_FOUND,
   },
   components: {
     FilterInput,
@@ -188,6 +195,10 @@ export default {
       type: String,
       default: '',
     },
+    apiChanges: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -200,10 +211,24 @@ export default {
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
+      NO_RESULTS,
+      NO_CHILDREN,
+      ERROR_FETCHING,
+      ITEMS_FOUND,
     };
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
+    politeAriaLive: ({ hasNodes, nodesToRender }) => {
+      if (!hasNodes) return '';
+      return [nodesToRender.length, ITEMS_FOUND].join(' ');
+    },
+    assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
+      if (hasNodes) return '';
+      if (hasFilter) return NO_RESULTS;
+      if (errorFetching) return ERROR_FETCHING;
+      return NO_CHILDREN;
+    },
     availableTags: ({ selectedTags }) => (
       selectedTags.length
         ? []
@@ -272,18 +297,21 @@ export default {
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
+      apiChangesObject, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
-      return children.filter(({ title, type }) => {
+      return children.filter(({ title, path, type }) => {
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
         const tagMatch = selectedTags.length
           ? tagsSet.has(TOPIC_TYPE_TO_TAG[type]) : true;
+        // find items, that have API changes
+        const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && type !== TopicTypes.groupMarker;
+        return titleMatch && tagMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
       });
     },
     /**
@@ -297,10 +325,15 @@ export default {
       debouncedFilter,
       selectedTags,
     ]),
-    hasFilter({ debouncedFilter, selectedTags }) {
-      return Boolean(debouncedFilter.length || selectedTags.length);
+    // determine if we should use the filtered items for rendering nodes
+    hasFilter({ debouncedFilter, selectedTags, apiChanges }) {
+      return Boolean(debouncedFilter.length || selectedTags.length || apiChanges);
+    },
+    apiChangesObject() {
+      return this.apiChanges || {};
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
+    hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
   },
   created() {
     this.restorePersistedState();
@@ -469,7 +502,7 @@ export default {
      */
     generateNodesToRender() {
       const {
-        children, filteredChildren, hasFilter, openNodes,
+        children, filteredChildren, hasFilter, openNodes, apiChanges,
       } = this;
       // create a set of all matches and their parents
       const allChildMatchesSet = new Set(filteredChildren
@@ -485,10 +518,13 @@ export default {
             // if parent is the root or parent is open
             return child.parent === INDEX_ROOT_KEY || openNodes[child.parent];
           }
+          const isParentDirectMatch = apiChanges
+            ? false
+            : (openNodes[child.parent] && filteredChildrenSet.has(this.childrenMap[child.parent]));
           // if parent is the root and is in the child match set
           return (child.parent === INDEX_ROOT_KEY && allChildMatchesSet.has(child))
             // if the parent is open and is a direct filter match
-            || (openNodes[child.parent] && filteredChildrenSet.has(this.childrenMap[child.parent]))
+            || (isParentDirectMatch)
             // if the item itself is a direct match
             || allChildMatchesSet.has(child);
         });
@@ -519,6 +555,7 @@ export default {
      */
     persistState() {
       sessionStorage.set(STORAGE_KEYS.technology, this.technology);
+      sessionStorage.set(STORAGE_KEYS.apiChanges, !!this.apiChanges);
       // store the keys of the openNodes map, converting to number, to reduce space
       sessionStorage.set(STORAGE_KEYS.openNodes, Object.keys(this.openNodes).map(Number));
       // we need only the UIDs
@@ -531,6 +568,7 @@ export default {
       const technology = sessionStorage.get(STORAGE_KEYS.technology);
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
+      const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
 
       // if for some reason there are no nodes and no filter, we can assume its bad cache
       if (!nodesToRender.length && !filter) {
@@ -539,8 +577,13 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      // if the technology does not match, do not use the persisted values
-      if (technology !== this.technology || !allNodesMatch) {
+      // if the technology does not match, or we dont have API changes yet,
+      // do not use the persisted values
+      if (
+        technology !== this.technology
+        || !allNodesMatch
+        || (hasAPIChanges !== Boolean(this.apiChanges))
+      ) {
         this.trackOpenNodes(this.nodeChangeDeps);
         return;
       }
@@ -715,6 +758,7 @@ $filter-height: 64px;
     border: none;
     padding: 10px 20px;
     align-items: flex-start;
+    height: 62px;
   }
 
   .input-wrapper {

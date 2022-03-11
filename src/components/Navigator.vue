@@ -20,6 +20,7 @@
       :scrollLockID="scrollLockID"
       :error-fetching="errorFetching"
       :breakpoint="breakpoint"
+      :api-changes="apiChanges"
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
@@ -29,10 +30,10 @@
 </template>
 
 <script>
-import NavigatorCard from 'docc-render/components/Navigator/NavigatorCard.vue';
+import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 /**
  * @typedef NavigatorFlatItem
@@ -85,6 +86,10 @@ export default {
     breakpoint: {
       type: String,
       default: BreakpointName.large,
+    },
+    apiChanges: {
+      type: Object,
+      default: null,
     },
   },
   computed: {
