@@ -11,7 +11,7 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="symbolKind || role">
+      <DocumentationHero :type="symbolKind || role" :enhanceBackground="enhanceBackground">
         <slot name="above-title" />
         <Title :eyebrow="roleHeading">{{ title }}</Title>
         <Abstract v-if="abstract" :content="abstract" />
@@ -52,6 +52,7 @@
         </Summary>
         <PrimaryContent
           v-if="primaryContentSections && primaryContentSections.length"
+          :class="{ 'with-border': !enhanceBackground }"
           :conformance="conformance"
           :sections="primaryContentSections"
         />
@@ -300,6 +301,7 @@ export default {
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
+    enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
   },
   methods: {
     normalizePath(path) {
