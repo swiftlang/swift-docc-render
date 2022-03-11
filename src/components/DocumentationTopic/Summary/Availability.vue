@@ -70,10 +70,35 @@ export default {
   margin: 0;
 }
 
-.beta {
-  color: var(--color-badge-text-beta);
-}
-.deprecated {
-  color: var(--color-badge-text-deprecated);
+.beta { color: var(--color-badge-text-beta); }
+.deprecated { color: var(--color-badge-text-deprecated); }
+
+.changed {
+  $-coin-spacer: 5px;
+  $-coin-size: 16px;
+  padding-left: $-coin-size + ($-coin-spacer * 2);
+
+  &::after {
+    content: none;
+  }
+
+  &::before {
+    @include coin($modified-dark-svg, $-coin-size);
+    left: $-coin-spacer;
+  }
+
+  &-added {
+    --badge-color: var(--color-changes-added);
+    &::before { background-image: $added-dark-svg; }
+  }
+
+  &-deprecated {
+    --badge-color: var(--color-changes-deprecated);
+    &::before { background-image: $deprecated-dark-svg; }
+  }
+
+  &-modified {
+    --badge-color: var(--color-changes-modified);
+  }
 }
 </style>
