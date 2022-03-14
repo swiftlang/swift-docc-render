@@ -15,7 +15,6 @@ const {
   Item,
   List,
   Section,
-  Title,
   WordBreak,
 } = TechnologyList.components;
 
@@ -41,12 +40,6 @@ describe('TechnologyList', () => {
     expect(section.classes('technologies')).toBe(true);
     expect(section.attributes('aria-label')).toBe('Technologies');
     expect(section.attributes('role')).toBe('complementary');
-  });
-
-  it('renders a `Title`', () => {
-    const title = wrapper.find(Title);
-    expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Technologies:');
   });
 
   it('allows overriding the title via a prop', () => {

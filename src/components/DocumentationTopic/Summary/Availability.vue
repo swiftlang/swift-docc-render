@@ -10,9 +10,9 @@
 
 <template>
   <Section class="availability" role="complementary" aria-label="Availability">
-    <TechnologyList v-if="modules" :technologies="modules" />
+    <TechnologyList v-if="modules && showModules" :technologies="modules" />
     <TechnologyList
-      v-if="extendsTechnology"
+      v-if="extendsTechnology && showModules"
       class="extends-technology"
       title="Extends"
       :technologies="[{ name: extendsTechnology }]"
@@ -63,6 +63,10 @@ export default {
     },
     extendsTechnology: {
       type: String,
+    },
+    showModules: {
+      type: Boolean,
+      required: true,
     },
   },
   data() {
@@ -116,6 +120,7 @@ export default {
 
 .beta {
   color: var(--color-badge-beta);
+  padding-left: 5px;
 
   .theme-dark & {
     color: var(--color-badge-dark-beta);
@@ -124,6 +129,7 @@ export default {
 
 .deprecated {
   color: var(--color-badge-deprecated);
+  padding-left: 5px;
 
   .theme-dark & {
     color: var(--color-badge-dark-deprecated);

@@ -19,19 +19,12 @@
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="!hideSummary && (platforms || modules || extendsTechnolgy)"
+          v-if="!hideSummary" :showModules="showModules"
           :platforms="platforms" :modules="modules"
           :extendsTechnology="extendsTechnolgy"
         />
       </DocumentationHero>
         <Summary v-if="shouldShowLanguageSwitcher">
-          <!-- <TechnologyList v-if="modules" :technologies="modules" />
-          <TechnologyList
-            v-if="extendsTechnology"
-            class="extends-technology"
-            title="Extends"
-            :technologies="[{ name: extendsTechnology }]"
-          /> -->
           <LanguageSwitcher
             v-if="shouldShowLanguageSwitcher"
             :interfaceLanguage="interfaceLanguage"
@@ -264,6 +257,10 @@ export default {
       type: String,
       default: '',
     },
+    rootTitle: {
+      type: String,
+      required: true,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -306,6 +303,12 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    showModules({ modules, rootTitle }) {
+      // show modules if page belongs to/require multiple technologies
+      // or if name doesn't match root of page
+      if (!modules) return false;
+      return rootTitle !== modules[0].name || modules[0].relatedModules || modules.length > 1;
+    },
   },
   methods: {
     normalizePath(path) {

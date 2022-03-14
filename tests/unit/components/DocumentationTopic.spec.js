@@ -107,7 +107,7 @@ const sampleCodeDownload = {
 
 const propsData = {
   abstract: [abstract],
-  conformance: { constraints: [], availabilityPrefx: [] },
+  conformance: { constraints: [], availabilityPrefix: [] },
   hierarchy: {
     paths: [
       [
@@ -118,6 +118,7 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
+  rootTitle: 'fookit',
   symbolKind: TopicTypes.module,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
@@ -336,14 +337,6 @@ describe('DocumentationTopic', () => {
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
     });
 
-    it('hides the Summary, if the global settings say so', () => {
-      // this should really only mock the resolved value for the specific flag,
-      // but this is fine for now
-      getSetting.mockResolvedValueOnce(true);
-      wrapper = shallowMount(DocumentationTopic, { propsData });
-      expect(wrapper.find(Summary).exists()).toBe(false);
-    });
-
     it('renders a `Availability` with platforms data', () => {
       const platforms = [
         {
@@ -361,6 +354,20 @@ describe('DocumentationTopic', () => {
       const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
       expect(list.props('platforms')).toEqual(platforms);
+    });
+
+    it('hides the Availability, if the global settings say so', () => {
+      // this should really only mock the resolved value for the specific flag,
+      // but this is fine for now
+      getSetting.mockResolvedValueOnce(true);
+      wrapper = shallowMount(DocumentationTopic, { propsData });
+      expect(wrapper.find(Availability).exists()).toBe(false);
+    });
+
+    it('renders the Availability, if more than 1 module', () => {
+      const modules = ['FooKit', 'BarKit'];
+      wrapper.setProps({ modules });
+      expect(wrapper.find(Summary).exists()).toBe(true);
     });
 
     it('renders a `TechnologyList` with technologies data', () => {

@@ -68,7 +68,7 @@ $badge-border-radius: $border-radius - 1px !default;
   }
 
   .tech-icon {
-    fill: var(--badge-text-color)
+    fill: var(--badge-color)
   }
 
   /* nav bar badge */
