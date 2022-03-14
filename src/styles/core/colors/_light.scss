@@ -53,13 +53,10 @@
   --color-aside-warning: var(--color-figure-gray);
   --color-aside-warning-background: var(--color-fill-red-secondary);
   --color-aside-warning-border: var(--color-figure-red);
-  --color-badge-text-default: white;
-  --color-badge-text-beta: var(--color-badge-beta);
-  --color-badge-text-deprecated: var(--color-badge-deprecated);
   --color-badge-default: var(--color-figure-light-gray);
   --color-badge-beta: var(--color-figure-gray-tertiary);
   --color-badge-deprecated: var(--color-figure-orange);
-  --color-badge-dark-default: #{dark-color(figure-light-gray)};
+  --color-badge-dark-default: #{dark-color(figure-gray)};
   --color-badge-dark-beta: #{dark-color(figure-gray-tertiary)};
   --color-badge-dark-deprecated: #{dark-color(figure-orange)};
   --color-button-background: var(--color-fill-blue);
