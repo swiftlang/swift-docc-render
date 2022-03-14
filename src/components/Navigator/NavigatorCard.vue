@@ -101,6 +101,7 @@ const STORAGE_KEYS = {
   nodesToRender: 'navigator.nodesToRender',
   selectedTags: 'navigator.selectedTags',
   apiChanges: 'navigator.apiChanges',
+  activeUID: 'navigator.activeUID',
 };
 
 const NO_RESULTS = 'No results matching your filter';
@@ -358,6 +359,7 @@ export default {
       ) {
         return;
       }
+
       // decide which items are open
       const nodes = !this.hasFilter
         ? activePathChildren
@@ -569,6 +571,7 @@ export default {
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
       const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
+      const activeUID = sessionStorage.get(STORAGE_KEYS.activeUID, null);
 
       // if for some reason there are no nodes and no filter, we can assume its bad cache
       if (!nodesToRender.length && !filter) {
@@ -583,6 +586,7 @@ export default {
         technology !== this.technology
         || !allNodesMatch
         || (hasAPIChanges !== Boolean(this.apiChanges))
+        || !nodesToRender.includes(activeUID)
       ) {
         this.handleActivePathChange(this.activePath);
         return;
@@ -598,6 +602,7 @@ export default {
       this.selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
       this.filter = filter;
       this.debouncedFilter = this.filter;
+      this.activeUID = activeUID;
       // scroll to the active element
       this.scrollToElement();
     },
@@ -645,6 +650,7 @@ export default {
     setActiveUID(uid) {
       this.activeUID = uid;
       this.resetScroll = false;
+      sessionStorage.set(STORAGE_KEYS.activeUID, uid);
     },
     /**
      * Returns an array of {NavigatorFlatItem}, from a breadcrumbs list
@@ -703,12 +709,18 @@ export default {
       // There is no match to base upon, so we need to search
       // across the activePath for the active item.
       const activePathChildren = this.pathsToFlatChildren(activePath);
-      const newActiveUID = activePathChildren.length
-        // get the last item
-        ? activePathChildren[activePathChildren.length - 1].uid
-        // fallback to `null` if no matches at all
-        : null;
-      this.setActiveUID(newActiveUID);
+      // if there are items, set the new active UID
+      if (activePathChildren.length) {
+        this.setActiveUID(activePathChildren[activePathChildren.length - 1].uid);
+        return;
+      }
+      // if there is an activeUID, unset it, as we probably navigated back to the root
+      if (this.activeUID) {
+        this.setActiveUID(null);
+        return;
+      }
+      // Just track the open nodes, as setting the activeUID as null wont do anything.
+      this.trackOpenNodes(this.nodeChangeDeps);
     },
   },
 };

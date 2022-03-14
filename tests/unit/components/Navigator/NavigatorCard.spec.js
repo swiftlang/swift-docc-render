@@ -566,8 +566,8 @@ describe('NavigatorCard', () => {
   it('persists the filtered state', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    // called for the initial 3 things
-    expect(sessionStorage.set).toHaveBeenCalledTimes(4);
+    // called for the initial 5 things
+    expect(sessionStorage.set).toHaveBeenCalledTimes(5);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.technology, defaultProps.technology);
     expect(sessionStorage.set)
@@ -576,6 +576,8 @@ describe('NavigatorCard', () => {
       .toHaveBeenCalledWith(STORAGE_KEYS.nodesToRender, [0, 1, 2, 4]);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.apiChanges, false);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.activeUID, 1);
     await flushPromises();
     sessionStorage.set.mockClear();
     wrapper.find(FilterInput).vm.$emit('input', root0Child1GrandChild0.title);
@@ -604,6 +606,7 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
       if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
 
@@ -626,6 +629,26 @@ describe('NavigatorCard', () => {
     await flushPromises();
     // assert we are render more than just the single item in the store
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+  });
+
+  it('does not restore the state, if the activeUID is not in the rendered items', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      // simulate we have collapses all, but the top item
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return true;
+      if (key === STORAGE_KEYS.activeUID) return root0Child1GrandChild0.uid;
+      return '';
+    });
+    const wrapper = createWrapper();
+    await flushPromises();
+    // assert we are render more than just the single item in the store
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+    expect(all.at(3).props('item')).not.toEqual(root0Child1GrandChild0);
   });
 
   it('does not restore the state, if the nodesToRender do not match what we have', async () => {
@@ -701,6 +724,7 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [];
       if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
     const wrapper = createWrapper();
@@ -719,6 +743,7 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
       if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
     const wrapper = createWrapper();
@@ -831,6 +856,8 @@ describe('NavigatorCard', () => {
       // trigger a navigation
       targetChild.vm.$emit('navigate', root0Child1.uid);
       await wrapper.vm.$nextTick();
+      expect(sessionStorage.set)
+        .toHaveBeenCalledWith(STORAGE_KEYS.activeUID, root0Child1.uid);
       // assert all items are still there, even the new one is open
       expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
       // assert the target child is active
