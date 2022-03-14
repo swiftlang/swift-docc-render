@@ -19,7 +19,7 @@
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="platforms || modules || extendsTechnolgy"
+          v-if="!hideSummary && (platforms || modules || extendsTechnolgy)"
           :platforms="platforms" :modules="modules"
           :extendsTechnology="extendsTechnolgy"
         />
