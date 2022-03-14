@@ -10,7 +10,10 @@
 
 <template>
   <div
-    :class="['documentation-hero', { 'documentation-hero--disabled': !enhanceBackground }]"
+    :class="['documentation-hero', {
+      'documentation-hero--disabled': !enhanceBackground,
+      'theme-dark': enhanceBackground,
+    }]"
     :style="styles"
   >
     <NavigatorLeafIcon

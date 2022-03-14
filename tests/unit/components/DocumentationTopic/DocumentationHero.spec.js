@@ -35,6 +35,20 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(Documentat
 });
 
 describe('DocumentationHero', () => {
+  it('renders the right classes based on the presence of the background', () => {
+    const withBackground = createWrapper();
+    expect(withBackground.classes('documentation-hero')).toBe(true);
+    expect(withBackground.classes('documentation-hero--disabled')).toBe(false);
+    expect(withBackground.classes('theme-dark')).toBe(true);
+
+    const withoutBackground = createWrapper({
+      propsData: { enhanceBackground: false },
+    });
+    expect(withoutBackground.classes('documentation-hero')).toBe(true);
+    expect(withoutBackground.classes('documentation-hero--disabled')).toBe(true);
+    expect(withoutBackground.classes('theme-dark')).toBe(false);
+  });
+
   it('renders the DocumentationHero, enabled', () => {
     const wrapper = createWrapper();
     const allIcons = wrapper.findAll(NavigatorLeafIcon);

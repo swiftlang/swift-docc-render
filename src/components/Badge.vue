@@ -48,7 +48,6 @@ $badge-border-radius: $border-radius - 1px !default;
 @mixin badge-variation($color) {
   --badge-color: var(--color-badge-#{$color});
   --badge-dark-color: var(--color-badge-dark-#{$color});
-  --badge-text-color: var(--color-badge-text-#{$color});
 }
 
 .badge {
@@ -62,7 +61,7 @@ $badge-border-radius: $border-radius - 1px !default;
   background: none;
   border-radius: $badge-border-radius;
   border: 1px solid var(--badge-color);
-  color: var(--badge-text-color);
+  color: var(--badge-color);
 
   .theme-dark & {
     --badge-color: var(--badge-dark-color);

@@ -114,8 +114,21 @@ export default {
   margin: 0;
 }
 
-.beta { color: var(--color-badge-text-beta); }
-.deprecated { color: var(--color-badge-text-deprecated); }
+.beta {
+  color: var(--color-badge-beta);
+
+  .theme-dark & {
+    color: var(--color-badge-dark-beta);
+  }
+}
+
+.deprecated {
+  color: var(--color-badge-deprecated);
+
+  .theme-dark & {
+    color: var(--color-badge-dark-deprecated);
+  }
+}
 
 .changed {
   $-coin-spacer: 5px;
@@ -132,17 +145,17 @@ export default {
   }
 
   &-added {
-    --badge-color: var(--color-changes-added);
+    border-color: var(--color-changes-added);
     &::before { background-image: $added-dark-svg; }
   }
 
   &-deprecated {
-    --badge-color: var(--color-changes-deprecated);
+    border-color: var(--color-changes-deprecated);
     &::before { background-image: $deprecated-dark-svg; }
   }
 
   &-modified {
-    --badge-color: var(--color-changes-modified);
+    border-color: var(--color-changes-modified);
   }
 }
 </style>
