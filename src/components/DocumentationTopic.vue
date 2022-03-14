@@ -19,9 +19,8 @@
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="!hideSummary" :showModules="showModules"
-          :platforms="platforms" :modules="modules"
-          :extendsTechnology="extendsTechnolgy"
+          v-if="!hideSummary"
+          :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
         <Summary v-if="shouldShowLanguageSwitcher">
@@ -93,7 +92,6 @@ import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
 import Description from './DocumentationTopic/Description.vue';
-// import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
@@ -130,7 +128,6 @@ export default {
     DefaultImplementations,
     Description,
     DownloadButton: CallToActionButton,
-    // TechnologyList,
     LanguageSwitcher,
     PrimaryContent,
     Relationships,
@@ -226,9 +223,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    extendsTechnology: {
-      type: String,
-    },
     tags: {
       type: Array,
       required: true,
@@ -257,8 +251,8 @@ export default {
       type: String,
       default: '',
     },
-    rootTitle: {
-      type: String,
+    technology: {
+      type: Object,
       required: true,
     },
   },
@@ -303,11 +297,16 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    showModules({ modules, rootTitle }) {
+    technologies({ modules, technology }) {
+      if (!modules) return [];
+      const technologyList = modules.reduce((list, module) => {
+        list.push(module.name);
+        return list.concat(module.relatedModules || []);
+      }, []);
       // show modules if page belongs to/require multiple technologies
       // or if name doesn't match root of page
-      if (!modules) return false;
-      return rootTitle !== modules[0].name || modules[0].relatedModules || modules.length > 1;
+      return technologyList.length === 1
+        && technologyList[0] === technology.title ? [] : technologyList;
     },
   },
   methods: {

@@ -26,7 +26,6 @@ const {
   Aside,
   Description,
   DownloadButton,
-  TechnologyList,
   LanguageSwitcher,
   PrimaryContent,
   Relationships,
@@ -118,10 +117,21 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
-  rootTitle: 'fookit',
   symbolKind: TopicTypes.module,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
+  technology: { title: 'fookit' },
+  platforms: [
+    {
+      introducedAt: '1.0',
+      name: 'fooOS',
+    },
+    {
+      deprecatedAt: '2.0',
+      introducedAt: '1.0',
+      name: 'barOS',
+    },
+  ],
   primaryContentSections: [
     {
       kind: PrimaryContent.constants.SectionKind.content,
@@ -338,22 +348,9 @@ describe('DocumentationTopic', () => {
     });
 
     it('renders a `Availability` with platforms data', () => {
-      const platforms = [
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-        {
-          deprecatedAt: '2.0',
-          introducedAt: '1.0',
-          name: 'barOS',
-        },
-      ];
-      wrapper.setProps({ platforms });
-
       const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
-      expect(list.props('platforms')).toEqual(platforms);
+      expect(list.props('platforms')).toEqual(propsData.platforms);
     });
 
     it('hides the Availability, if the global settings say so', () => {
@@ -364,21 +361,6 @@ describe('DocumentationTopic', () => {
       expect(wrapper.find(Availability).exists()).toBe(false);
     });
 
-    it('renders the Availability, if more than 1 module', () => {
-      const modules = ['FooKit', 'BarKit'];
-      wrapper.setProps({ modules });
-      expect(wrapper.find(Summary).exists()).toBe(true);
-    });
-
-    it('renders a `TechnologyList` with technologies data', () => {
-      const modules = ['FooKit', 'BarKit'];
-      wrapper.setProps({ modules });
-
-      const list = wrapper.find(TechnologyList);
-      expect(list.exists()).toBe(true);
-      expect(list.props('technologies')).toEqual(modules);
-    });
-
     it('renders a `LanguageSwitcher`', () => {
       const switcher = wrapper.find(LanguageSwitcher);
       expect(switcher.exists()).toBe(true);
@@ -386,22 +368,6 @@ describe('DocumentationTopic', () => {
         interfaceLanguage: propsData.interfaceLanguage,
         objcPath: propsData.languagePaths.occ[0],
         swiftPath: propsData.languagePaths.swift[0],
-      });
-    });
-
-    it('renders an `TechnologyList` component', () => {
-      expect(wrapper.find('.extends-technology').exists()).toBe(false);
-      const extendsTechnology = 'FooTechnology';
-
-      wrapper.setProps({
-        extendsTechnology,
-      });
-
-      const technologyList = wrapper.find('.extends-technology');
-      expect(technologyList.exists()).toBe(true);
-      expect(technologyList.props()).toEqual({
-        technologies: [{ name: extendsTechnology }],
-        title: 'Extends',
       });
     });
   });

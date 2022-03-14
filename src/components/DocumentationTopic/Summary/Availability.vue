@@ -10,13 +10,15 @@
 
 <template>
   <Section class="availability" role="complementary" aria-label="Availability">
-    <TechnologyList v-if="modules && showModules" :technologies="modules" />
-    <TechnologyList
-      v-if="extendsTechnology && showModules"
-      class="extends-technology"
-      title="Extends"
-      :technologies="[{ name: extendsTechnology }]"
-    />
+    <Badge
+      v-for="technology in technologies"
+      class="technology"
+      :key="technology"
+    >
+      <TechnologyIcon class="tech-icon" />
+      {{ technology }}
+    </Badge>
+
     <Badge
       v-for="platform in platforms"
       class="platform"
@@ -38,9 +40,9 @@
 import Badge from 'docc-render/components/Badge.vue';
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { getAPIChanges } from 'docc-render/mixins/apiChangesHelpers';
+import TechnologyIcon from 'theme/components/Icons/TechnologyIcon.vue';
 import AvailabilityRange from './AvailabilityRange.vue';
 import Section from './Section.vue';
-import TechnologyList from './TechnologyList.vue';
 
 export default {
   name: 'Availability',
@@ -49,24 +51,17 @@ export default {
   components: {
     Badge,
     AvailabilityRange,
-    TechnologyList,
     Section,
+    TechnologyIcon,
   },
   props: {
     platforms: {
       type: Array,
       required: true,
     },
-    modules: {
+    technologies: {
       type: Array,
       required: false,
-    },
-    extendsTechnology: {
-      type: String,
-    },
-    showModules: {
-      type: Boolean,
-      required: true,
     },
   },
   data() {
@@ -116,6 +111,13 @@ export default {
 
 .badge {
   margin: 0;
+}
+
+.tech-icon {
+  height: 12px;
+  position: relative;
+  align-items: center;
+  padding-right: 5px;
 }
 
 .beta {

@@ -43,6 +43,7 @@ describe('Availability', () => {
         name: 'myOS',
       },
     ],
+    technologies: ['fooTechnolog', 'booTechnology'],
   };
 
   const store = {
@@ -73,29 +74,34 @@ describe('Availability', () => {
     expect(section.attributes('role')).toBe('complementary');
   });
 
-  it('renders a `Badge` and `AvailabilityRange` for each platform', () => {
-    const { platforms } = propsData;
+  it('renders a `Badge` for technologies, a `Badge` and `AvailabilityRange` for each platform', () => {
+    const { platforms, technologies } = propsData;
     const badges = wrapper.findAll(Badge);
-    expect(badges.length).toBe(platforms.length);
+    expect(badges.length).toBe(technologies.length + platforms.length);
 
-    for (let i = 0; i < platforms.length; i += 1) {
+    for (let i = 0; i < technologies.length; i += 1) {
+      const badge = badges.at(i);
+      expect(badge.exists()).toBe(true);
+    }
+
+    for (let i = technologies.length; i < platforms.length; i += 1) {
       const badge = badges.at(i);
       const range = badge.find(AvailabilityRange);
       expect(range.exists()).toBe(true);
       expect(range.props()).toEqual({
-        deprecatedAt: platforms[i].deprecatedAt,
-        introducedAt: platforms[i].introducedAt,
-        platformName: platforms[i].name,
+        deprecatedAt: platforms[i - technologies.length].deprecatedAt,
+        introducedAt: platforms[i - technologies.length].introducedAt,
+        platformName: platforms[i - technologies.length].name,
       });
     }
   });
 
   it('renders deprecated text', () => {
     const badges = wrapper.findAll(Badge);
-    expect(badges.at(0).contains('.deprecated')).toBe(false);
-    expect(badges.at(1).contains('.deprecated')).toBe(true);
-    expect(badges.at(2).contains('.deprecated')).toBe(true);
+    expect(badges.at(2).contains('.deprecated')).toBe(false);
     expect(badges.at(3).contains('.deprecated')).toBe(true);
+    expect(badges.at(4).contains('.deprecated')).toBe(true);
+    expect(badges.at(5).contains('.deprecated')).toBe(true);
 
     const deprecated = wrapper.find('.deprecated');
     expect(deprecated.text()).toBe('Deprecated');
@@ -177,10 +183,10 @@ describe('Availability', () => {
 
       const badges = wrapper.findAll(Badge);
 
-      expect(badges.at(0).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
-      expect(badges.at(1).classes()).toEqual(['platform', 'changed', 'changed-added']);
-      expect(badges.at(2).classes()).toEqual(['platform', 'changed', 'changed-modified']);
-      expect(badges.at(3).classes()).toEqual(['platform']);
+      expect(badges.at(2).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
+      expect(badges.at(3).classes()).toEqual(['platform', 'changed', 'changed-added']);
+      expect(badges.at(4).classes()).toEqual(['platform', 'changed', 'changed-modified']);
+      expect(badges.at(5).classes()).toEqual(['platform']);
     });
   });
 });

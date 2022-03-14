@@ -62,7 +62,7 @@
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"
           :languagePaths="languagePaths"
-          :rootTitle="technology.title"
+          :technology="technology"
         />
       </component>
     </template>
@@ -146,7 +146,6 @@ export default {
           url: identifier,
         },
         metadata: {
-          extends: extendsTechnology,
           conformance,
           modules,
           platforms,
@@ -188,7 +187,6 @@ export default {
         topicSections,
         seeAlsoSections,
         variantOverrides,
-        extendsTechnology,
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
       };
