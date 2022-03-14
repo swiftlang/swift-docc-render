@@ -115,8 +115,6 @@ export default {
 
 .tech-icon {
   height: 12px;
-  position: relative;
-  align-items: center;
   padding-right: 5px;
 }
 
