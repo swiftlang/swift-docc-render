@@ -619,7 +619,7 @@ export default {
         // calculate where it starts from
         const calculatedY = y - areaY;
         // if the element is within the scroll area, we dont need to scroll to it.
-        if (calculatedY > 0 && calculatedY < areaHeight) return;
+        if (calculatedY >= 0 && calculatedY < areaHeight) return;
       }
       // find the index of the current active UID in the newly added nodes
       const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
@@ -673,30 +673,40 @@ export default {
       return result;
     },
     handleActivePathChange(activePath) {
+      // get current active item's node, if any
       const currentActiveItem = this.childrenMap[this.activeUID];
+      // get the current path
       const lastActivePathItem = activePath[activePath.length - 1];
       // check if there is an active item to start looking from
       if (currentActiveItem) {
-        // check if we navigated to the same page
+        // Return early, if the current path matches the current active node.
+        // This will happen on each navigator item click, as the activePath gets updated after
+        // the navigation ends and RenderJSON is updated.
         if (lastActivePathItem === currentActiveItem.path) {
           return;
         }
-        // try to figure out the new UID
+        // Get the surrounding items
         const siblings = this.getSiblings(this.activeUID);
         const children = this.getChildren(this.activeUID);
         const parents = this.getParents(this.activeUID);
-        // try to match if any of the `siblings` or `children` match the current open item
-        const openItem = [...children, ...siblings, ...parents]
+        // try to match if any of the `siblings`,`children` or any of the `parents`,
+        // match the current open item
+        const matchingItem = [...children, ...siblings, ...parents]
           .find(child => child.path === lastActivePathItem);
-        if (openItem) {
-          this.setActiveUID(openItem.uid);
+
+        // set the match as an active item
+        if (matchingItem) {
+          this.setActiveUID(matchingItem.uid);
           return;
         }
       }
-      // there is no item to base upon, so we need to search from the activePath
+      // There is no match to base upon, so we need to search
+      // across the activePath for the active item.
       const activePathChildren = this.pathsToFlatChildren(activePath);
       const newActiveUID = activePathChildren.length
+        // get the last item
         ? activePathChildren[activePathChildren.length - 1].uid
+        // fallback to `null` if no matches at all
         : null;
       this.setActiveUID(newActiveUID);
     },

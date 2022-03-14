@@ -259,6 +259,7 @@ describe('NavigatorCard', () => {
 
   it('renders an hidden message updating aria-live, notifying how many items were found', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     const unopenedItem = wrapper.findAll(NavigatorCardItem).at(2);
     unopenedItem.vm.$emit('toggle', root0Child1);
     await wrapper.vm.$nextTick();
@@ -652,7 +653,7 @@ describe('NavigatorCard', () => {
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
   });
 
-  it('does not restore the state, if the API changes mismatch', () => {
+  it('does not restore the state, if the API changes mismatch', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.filter) return '';
       if (key === STORAGE_KEYS.technology) return defaultProps.technology;
@@ -664,10 +665,11 @@ describe('NavigatorCard', () => {
       return '';
     });
     const wrapper = createWrapper();
+    await flushPromises();
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
   });
 
-  it('keeps the open state, if there are API changes', () => {
+  it('keeps the open state, if there are API changes', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.filter) return '';
       if (key === STORAGE_KEYS.technology) return defaultProps.technology;
@@ -686,6 +688,7 @@ describe('NavigatorCard', () => {
         },
       },
     });
+    await flushPromises();
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(3);
   });
 
@@ -819,7 +822,7 @@ describe('NavigatorCard', () => {
       });
     });
 
-    it('tracks current open item, from clicking items, handling duplicate router changes', async () => {
+    it('tracks current open item, from clicking child items, handling duplicate router changes on the way', async () => {
       const wrapper = createWrapper();
       await flushPromises();
       let allItems = wrapper.findAll(NavigatorCardItem);
@@ -832,6 +835,7 @@ describe('NavigatorCard', () => {
       expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
       // assert the target child is active
       expect(targetChild.props()).toEqual({
+        apiChange: null,
         expanded: true,
         filterPattern: null,
         isActive: true,
@@ -851,6 +855,7 @@ describe('NavigatorCard', () => {
       allItems = wrapper.findAll(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       expect(allItems.at(2).props()).toEqual({
+        apiChange: null,
         expanded: true,
         filterPattern: null,
         isActive: true,
@@ -860,22 +865,166 @@ describe('NavigatorCard', () => {
       });
     });
 
-    it('allows going back/forward, relative to last opened item', () => {
-
+    it('allows going back/forward, relative to last opened item, ignoring foreign trees', async () => {
+      const duplicatedTree = {
+        type: 'article',
+        path: '/documentation/duplicated',
+        title: 'Duplicated Tree',
+        uid: 5,
+        parent: INDEX_ROOT_KEY,
+        depth: 0,
+        index: 2,
+        // this makes sure we have a duplicate tree segment
+        childUIDs: [root0Child1],
+      };
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            ...children,
+            duplicatedTree,
+          ],
+        },
+      });
+      await flushPromises();
+      let allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems).toHaveLength(5);
+      expect(allItems.at(1).props('item')).toEqual(root0Child0);
+      expect(allItems.at(1).props('isActive')).toEqual(true);
+      // navigate to the second child
+      wrapper.setProps({
+        activePath: [
+          root0.path,
+          root0Child1.path,
+        ],
+      });
+      await wrapper.vm.$nextTick();
+      // re-fetch the items
+      allItems = wrapper.findAll(NavigatorCardItem);
+      // assert old item is no longer active
+      expect(allItems.at(1).props('item')).toEqual(root0Child0);
+      expect(allItems.at(1).props('isActive')).toEqual(false);
+      // assert new active item
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(2).props('isActive')).toEqual(true);
+      // navigate to the grand child
+      wrapper.setProps({
+        activePath: [
+          root0.path,
+          root0Child1.path,
+          root0Child1GrandChild0.path,
+        ],
+      });
+      await wrapper.vm.$nextTick();
+      // re-fetch the items
+      allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(2).props('isActive')).toEqual(false);
+      // assert grandchild is active
+      expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(3).props('isActive')).toEqual(true);
+      // navigate to the second child
+      wrapper.setProps({
+        activePath: [
+          root0.path,
+          root0Child1.path,
+        ],
+      });
+      await wrapper.vm.$nextTick();
+      // re-fetch the items
+      allItems = wrapper.findAll(NavigatorCardItem);
+      // assert old item is no longer active
+      expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(3).props('isActive')).toEqual(false);
+      // assert new active item
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(2).props('isActive')).toEqual(true);
     });
   });
 
   describe('scroll to item', () => {
-    it('resets the scroll position, if initiating a filter', () => {
-
+    const itemRect = jest.fn(() => ({ y: 12 }));
+    jest.spyOn(document, 'getElementById').mockReturnValue({
+      getBoundingClientRect: itemRect,
     });
 
-    it('keeps the scroll position, if the item is already in the viewport, on navigation', () => {
-
+    it('resets the scroll position, if initiating a filter', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
+      // initiate a filter
+      wrapper.find(FilterInput).vm.$emit('input', root0Child1.title);
+      await wrapper.vm.$nextTick();
+      // assert filter is applied
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+      // assert scroller has been reset
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
     });
 
-    it('scrolls to item, if outside of visible viewport, on page navigation', () => {
+    it('keeps the scroll position, if the item is already in the viewport, on navigation', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const scroller = wrapper.find({ ref: 'scroller' });
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      // mock the bounding rects
+      const scrollerRect = jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
+        y: 10,
+        height: 200,
+      });
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      // make sure scrollToItem is not called, because active item is already in the viewport
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      wrapper.findAll(NavigatorCardItem).at(3).vm.$emit('navigate', root0Child1GrandChild0.uid);
+      itemRect.mockReturnValue({
+        y: 200, // near the end
+      });
+      await flushPromises();
+      // make sure scrollToItem is not called, because active item is already in the viewport
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      // simulate header scroll
+      scrollerRect.mockReturnValue({
+        y: 0,
+        height: 210,
+      });
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      // make sure scrollToItem is not called, because active item is already in the viewport
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    });
 
+    it('scrolls to item, if outside of visible viewport, on page navigation', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const scroller = wrapper.find({ ref: 'scroller' });
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      // mock the bounding rects
+      const scrollerRect = jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
+        y: 10,
+        height: 200,
+      });
+      itemRect.mockReturnValue({
+        y: -20,
+      });
+      // scroll to the item
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      // make sure scrollToItem is called
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      // assert it was called for the 3-rd item
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2);
+      // assert scrolling beyond
+      itemRect.mockReturnValue({
+        y: 250,
+      });
+      // scroll to the item
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
+      await flushPromises();
+      // make sure scrollToItem is called
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(3);
+      // assert it was called for the 3-rd item
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
     });
   });
 });
