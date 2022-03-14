@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
@@ -138,6 +138,18 @@ describe('NavigatorCardItem', () => {
     const wrapper = createWrapper();
     wrapper.find('.tree-toggle').trigger('click');
     expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+  });
+
+  it('renders the API change icon instead of the leaf icon', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        apiChange: 'modified',
+      },
+    });
+
+    expect(wrapper.find(NavigatorLeafIcon).exists()).toBe(false);
+    expect(wrapper.find('.navigator-icon').classes())
+      .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
   });
 
   it('emits an event, when clicking on the leaf-link', () => {
