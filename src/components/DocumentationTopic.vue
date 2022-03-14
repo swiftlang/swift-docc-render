@@ -18,16 +18,20 @@
         <div v-if="sampleCodeDownload">
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
-        <Availability v-if="platforms" :platforms="platforms" />
+        <Availability
+          v-if="platforms || modules || extendsTechnolgy"
+          :platforms="platforms" :modules="modules"
+          :extendsTechnology="extendsTechnolgy"
+        />
       </DocumentationHero>
-        <Summary v-if="!hideSummary">
-          <TechnologyList v-if="modules" :technologies="modules" />
+        <Summary v-if="shouldShowLanguageSwitcher">
+          <!-- <TechnologyList v-if="modules" :technologies="modules" />
           <TechnologyList
             v-if="extendsTechnology"
             class="extends-technology"
             title="Extends"
             :technologies="[{ name: extendsTechnology }]"
-          />
+          /> -->
           <LanguageSwitcher
             v-if="shouldShowLanguageSwitcher"
             :interfaceLanguage="interfaceLanguage"
@@ -96,7 +100,7 @@ import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
 import Description from './DocumentationTopic/Description.vue';
-import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
+// import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
@@ -133,7 +137,7 @@ export default {
     DefaultImplementations,
     Description,
     DownloadButton: CallToActionButton,
-    TechnologyList,
+    // TechnologyList,
     LanguageSwitcher,
     PrimaryContent,
     Relationships,

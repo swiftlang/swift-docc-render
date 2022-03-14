@@ -14,36 +14,36 @@
     role="complementary"
     :aria-label="computedTitle"
   >
-    <Title>{{ computedTitle }}: </Title>
-    <List class="technology-list">
-      <Item v-for="technology in technologies" :key="technology.name" class="technology">
-        <WordBreak class="name">{{ technology.name }}</WordBreak>
-        <WordBreak
-          v-for="module in (technology.relatedModules || [])"
-          class="name"
-          :key="module"
-        >{{ module }}
-        </WordBreak>
-      </Item>
-    </List>
+    <Badge
+      v-for="technology in technologies"
+      class="technology"
+      :key="technology.name"
+    >
+      <TechnologyIcon class="tech-icon" />
+      <WordBreak class="name">{{ technology.name }}</WordBreak>
+      <WordBreak
+        v-for="module in (technology.relatedModules || [])"
+        class="name"
+        :key="module"
+      >{{ module }}
+      </WordBreak>
+    </Badge>
   </Section>
 </template>
 
 <script>
+import Badge from 'docc-render/components/Badge.vue';
+import TechnologyIcon from 'docc-render/components/Icons/TechnologyIcon.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { pluralize } from 'docc-render/utils/strings';
-import List from './List.vue';
-import ListItem from './ListItem.vue';
 import Section from './Section.vue';
-import Title from './Title.vue';
 
 export default {
   name: 'TechnologyList',
   components: {
-    Item: ListItem,
-    List,
+    Badge,
+    TechnologyIcon,
     Section,
-    Title,
     WordBreak,
   },
   props: {
@@ -73,6 +73,13 @@ export default {
 
 .technologies, .technology-list {
   display: flex;
+}
+
+.tech-icon {
+  height: 12px;
+  position: relative;
+  align-items: center;
+  padding-right: 5px;
 }
 
 .name {

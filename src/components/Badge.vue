@@ -55,12 +55,12 @@ $badge-border-radius: $border-radius - 1px !default;
   @include badge-variation(default);
 
   @include font-styles(badge);
-  display: inline-block;
+  display: flex;
+  align-items: center;
   padding: 2px 10px;
   white-space: nowrap;
   background: none;
   border-radius: $badge-border-radius;
-  margin-left: 10px;
   border: 1px solid var(--badge-color);
   color: var(--badge-text-color);
 

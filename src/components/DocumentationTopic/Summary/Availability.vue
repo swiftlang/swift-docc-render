@@ -10,6 +10,13 @@
 
 <template>
   <Section class="availability" role="complementary" aria-label="Availability">
+    <TechnologyList v-if="modules" :technologies="modules" />
+    <TechnologyList
+      v-if="extendsTechnology"
+      class="extends-technology"
+      title="Extends"
+      :technologies="[{ name: extendsTechnology }]"
+    />
     <Badge
       v-for="platform in platforms"
       class="platform"
@@ -21,8 +28,8 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-        <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
-        <span v-else-if="platform.beta" class="beta">Beta</span>
+      <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
+      <span v-else-if="platform.beta" class="beta">Beta</span>
     </Badge>
   </Section>
 </template>
@@ -33,6 +40,7 @@ import { ChangeTypes } from 'docc-render/constants/Changes';
 import { getAPIChanges } from 'docc-render/mixins/apiChangesHelpers';
 import AvailabilityRange from './AvailabilityRange.vue';
 import Section from './Section.vue';
+import TechnologyList from './TechnologyList.vue';
 
 export default {
   name: 'Availability',
@@ -41,12 +49,20 @@ export default {
   components: {
     Badge,
     AvailabilityRange,
+    TechnologyList,
     Section,
   },
   props: {
     platforms: {
       type: Array,
       required: true,
+    },
+    modules: {
+      type: Array,
+      required: false,
+    },
+    extendsTechnology: {
+      type: String,
     },
   },
   data() {
