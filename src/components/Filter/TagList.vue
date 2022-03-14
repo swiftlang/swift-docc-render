@@ -59,11 +59,15 @@
 <script>
 import { isSingleCharacter } from 'docc-render/utils/input-helper';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
+import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import Tag from './Tag.vue';
 
 export default {
   name: 'Tags',
-  mixins: [handleScrollbar],
+  mixins: [
+    handleScrollbar,
+    keyboardNavigation,
+  ],
   props: {
     tags: {
       type: Array,
@@ -103,51 +107,19 @@ export default {
     };
   },
   methods: {
-    focusFirstTag() {
-      this.focusTagByIndex(0);
-    },
-    focusLastTag() {
-      const tags = this.$refs.tag;
-      this.focusTagByIndex(tags.length - 1);
-    },
     focusTag(name) {
-      this.focusTagByIndex(this.tags.indexOf(name));
+      this.focusIndex(this.tags.indexOf(name));
     },
-    focusTagByIndex(index) {
-      const tag = this.$refs.tag[index];
-      if (!tag || !tag.focusButton) return;
-      tag.focusButton();
+    startingPointHook() {
+      this.$emit('focus-prev');
     },
-    focusIndex(index) {
-      this.focusedIndex = index;
-    },
-
-    focusPrev({ metaKey, ctrlKey, shiftKey }) {
-      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
-      if ((metaKey || ctrlKey) && shiftKey) return;
-
-      if (this.focusedIndex > 0) {
-        this.focusIndex(this.focusedIndex - 1);
-      } else {
-        this.$emit('focus-prev');
-      }
-    },
-
     handleFocus(event, index) {
-      this.focusedIndex = index;
+      this.focusIndex(index);
       this.isScrolling = false;
       this.$emit('focus', event);
     },
-
-    focusNext({ metaKey, ctrlKey, shiftKey }) {
-      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
-      if ((metaKey || ctrlKey) && shiftKey) return;
-
-      if (this.focusedIndex < this.tags.length - 1) {
-        this.focusIndex(this.focusedIndex + 1);
-      } else {
-        this.$emit('focus-next');
-      }
+    endingPointHook() {
+      this.$emit('focus-next');
     },
     resetScroll() {
       this.$refs['scroll-wrapper'].scrollLeft = 0;
@@ -166,6 +138,9 @@ export default {
         this.$emit('delete-tag', { tagName: tag.label || tag, event });
       }
     },
+  },
+  computed: {
+    totalItemsToNavigate: ({ tags }) => tags.length,
   },
 };
 </script>

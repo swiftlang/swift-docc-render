@@ -54,7 +54,7 @@
               :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
-              @focus="handleFocus(index)"
+              @focus.native="focusIndex(index)"
             />
           </RecycleScroller>
           <div aria-live="polite" class="visuallyhidden">
@@ -100,6 +100,7 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -208,6 +209,9 @@ export default {
       default: null,
     },
   },
+  mixins: [
+    keyboardNavigation,
+  ],
   data() {
     return {
       // value to v-model the filter to
@@ -223,7 +227,6 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
-      focusedIndex: 0,
     };
   },
   computed: {
@@ -343,6 +346,7 @@ export default {
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
+    totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
   },
   created() {
     this.restorePersistedState();
@@ -357,10 +361,7 @@ export default {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
     focusedIndex() {
-      if (this.focusedIndex !== -1 && this.$refs.scroller) {
-        // call the scroll method on the `scroller` component.
-        this.$refs.scroller.scrollToItem(this.focusedIndex);
-      }
+      this.$refs.scroller.scrollToItem(this.focusedIndex);
     },
   },
   methods: {
@@ -405,29 +406,6 @@ export default {
       // if we navigate across pages, persist the previously open nodes
       this.openNodes = Object.assign(pageChange ? this.openNodes : {}, newOpenNodes);
       this.generateNodesToRender();
-    },
-    handleFocus(index) {
-      this.focusedIndex = index;
-    },
-    focusPrev({ metaKey, ctrlKey, shiftKey }) {
-      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
-      if ((metaKey || ctrlKey) && shiftKey) return;
-      if (this.focusedIndex > 0) {
-        this.handleFocus(this.focusedIndex - 1);
-      }
-    },
-    focusNext({ metaKey, ctrlKey, shiftKey }) {
-      // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
-      if ((metaKey || ctrlKey) && shiftKey) return;
-      if (this.focusedIndex < this.nodesToRender.length - 1) {
-        this.handleFocus(this.focusedIndex + 1);
-      }
-    },
-    focusFirst() {
-      this.handleFocus(0);
-    },
-    focusLast() {
-      this.handleFocus(this.nodesToRender.length - 1);
     },
     /**
      * Toggle a node open/close

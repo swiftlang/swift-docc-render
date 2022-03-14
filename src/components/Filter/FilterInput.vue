@@ -340,7 +340,7 @@ export default {
       }
       // make sure that the suggestedTags ref exists
       if (this.hasSuggestedTags && this.$refs.suggestedTags) {
-        this.$refs.suggestedTags.focusFirstTag();
+        this.$refs.suggestedTags.focusFirst();
       } else {
         cb();
       }

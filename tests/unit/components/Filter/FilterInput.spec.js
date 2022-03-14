@@ -642,7 +642,7 @@ describe('FilterInput', () => {
       });
 
       it('select latest selected tag, if delete key is pressed on keyboard, and there is no input text', () => {
-        const spy = jest.spyOn(TagList.methods, 'focusLastTag').mockReturnValueOnce();
+        const spy = jest.spyOn(TagList.methods, 'focusLast').mockReturnValueOnce();
 
         wrapper = shallowMount(FilterInput, {
           propsData: { selectedTags: [selectedTag] },
@@ -1074,7 +1074,7 @@ describe('FilterInput', () => {
     it('focus on the last tag when the left key is triggered, on a selected input, and but tags are not highlighted', () => {
       wrapper.setProps({ selectedTags: tags });
 
-      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLastTag')
+      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLast')
         .mockReturnValueOnce();
 
       input.element.select();
@@ -1086,7 +1086,7 @@ describe('FilterInput', () => {
     it('focus on the last tag when the left key is triggered on input, with no highlighted tags', () => {
       wrapper.setProps({ selectedTags: tags });
 
-      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLastTag')
+      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLast')
         .mockReturnValueOnce();
 
       // input is is not selected, but the cursor is at the first item
