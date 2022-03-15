@@ -195,6 +195,33 @@ describe('NavigatorCard', () => {
     });
   });
 
+  it('allows the user to navigate through arrow keys', () => {
+    const wrapper = createWrapper();
+    wrapper.findAll(NavigatorCardItem).at(0).trigger('keydown.down');
+    expect(wrapper.vm.focusedIndex).toBe(1);
+
+    wrapper.findAll(NavigatorCardItem).at(1).trigger('keydown.up');
+    expect(wrapper.vm.focusedIndex).toBe(0);
+  });
+
+  it('allows the user to navigate to the last item on the list when pressing cmd + down key', () => {
+    const wrapper = createWrapper();
+    wrapper.findAll(NavigatorCardItem).at(0).trigger('keydown', {
+      key: 'ArrowDown',
+      metaKey: true,
+    });
+    expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
+  });
+
+  it('allows the user to navigate to the first item on the list when pressing cmd + up key', () => {
+    const wrapper = createWrapper();
+    wrapper.findAll(NavigatorCardItem).at(3).trigger('keydown', {
+      key: 'ArrowUp',
+      metaKey: true,
+    });
+    expect(wrapper.vm.focusedIndex).toBe(0);
+  });
+
   it('reverses the FilterInput, on mobile', () => {
     const wrapper = createWrapper({
       propsData: {
