@@ -184,7 +184,6 @@ describe('NavigatorCard', () => {
       placeholder: 'Filter in TestKit',
       positionReversed: true,
       preventedBlur: false,
-      shouldKeepOpenOnBlur: false,
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [
@@ -365,6 +364,39 @@ describe('NavigatorCard', () => {
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+  });
+
+  it('filters items, keeping only direct matches, removing siblings, even if parent is a direct match', async () => {
+    const root0Updated = {
+      ...root0,
+      title: `Second ${root0}`,
+    };
+    const newChildren = [
+      root0Updated,
+      root0Child0,
+      root0Child1,
+      root0Child1GrandChild0,
+      root1,
+    ];
+
+    const wrapper = createWrapper({
+      propsData: {
+        children: newChildren,
+      },
+    });
+    const filter = wrapper.find(FilterInput);
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    // make sure we match at both the top item as well as one of its children
+    filter.vm.$emit('input', 'Second');
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    // assert only the parens of the match are visible
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(2);
+    expect(all.at(0).props('item')).toEqual(root0Updated);
+    expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
   });
 

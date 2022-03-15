@@ -492,29 +492,21 @@ describe('FilterInput', () => {
       expect(suggestedTags.exists()).toBe(false);
     });
 
-    it('does not hide the tags, if the new focus target matches `input, button`', () => {
-      const buttonTarget = document.createElement('button');
-      const inputTarget = document.createElement('input');
-
+    it('does not hide the tags, if the new focus target matches `input, button`, inside the main component', async () => {
+      const buttonTarget = wrapper.find('button'); // find a button component
       input.trigger('blur', {
-        relatedTarget: buttonTarget,
+        relatedTarget: buttonTarget.element,
       });
-      input.trigger('blur', {
-        relatedTarget: inputTarget,
-      });
-
+      await flushPromises();
       expect(suggestedTags.exists()).toBe(true);
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true]]);
     });
 
-    it('hides the tags, if new focus matches button or input, if shouldKeepOpenOnBlur=false', async () => {
-      wrapper.setProps({
-        shouldKeepOpenOnBlur: false,
-      });
+    it('hides the tags, if new focus outside component', async () => {
       const inputTarget = document.createElement('input');
 
       input.trigger('blur', {
-        relatedTarget: inputTarget,
+        relatedTarget: inputTarget.element,
       });
 
       await flushPromises();

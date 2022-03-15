@@ -504,13 +504,11 @@ export default {
      */
     generateNodesToRender() {
       const {
-        children, filteredChildren, hasFilter, openNodes, apiChanges,
+        children, filteredChildren, hasFilter, openNodes,
       } = this;
       // create a set of all matches and their parents
       const allChildMatchesSet = new Set(filteredChildren
         .flatMap(({ uid }) => this.getParents(uid)));
-      // create a set of direct matches
-      const filteredChildrenSet = new Set(filteredChildren);
 
       // generate the list of nodes to render
       this.nodesToRender = children
@@ -520,13 +518,8 @@ export default {
             // if parent is the root or parent is open
             return child.parent === INDEX_ROOT_KEY || openNodes[child.parent];
           }
-          const isParentDirectMatch = apiChanges
-            ? false
-            : (openNodes[child.parent] && filteredChildrenSet.has(this.childrenMap[child.parent]));
           // if parent is the root and is in the child match set
           return (child.parent === INDEX_ROOT_KEY && allChildMatchesSet.has(child))
-            // if the parent is open and is a direct filter match
-            || (isParentDirectMatch)
             // if the item itself is a direct match
             || allChildMatchesSet.has(child);
         });
