@@ -19,7 +19,7 @@
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="platforms.length || (technologies || []).length"
+          v-if="(platforms || []).length || (technologies || []).length"
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
