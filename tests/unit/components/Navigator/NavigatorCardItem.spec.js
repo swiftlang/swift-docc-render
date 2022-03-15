@@ -13,7 +13,7 @@ import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
-import Reference from '@/components/ContentNode/Reference';
+import Reference from '@/components/ContentNode/Reference.vue';
 
 const {
   Badge,

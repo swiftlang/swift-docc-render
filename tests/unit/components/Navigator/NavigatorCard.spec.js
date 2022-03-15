@@ -1059,7 +1059,7 @@ describe('NavigatorCard', () => {
       const scroller = wrapper.find({ ref: 'scroller' });
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       // mock the bounding rects
-      const scrollerRect = jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
+      jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
         y: 10,
         height: 200,
       });
