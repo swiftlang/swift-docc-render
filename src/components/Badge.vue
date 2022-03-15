@@ -67,6 +67,7 @@ $badge-border-radius: $border-radius - 1px !default;
     --badge-color: var(--badge-dark-color);
   }
 
+  /* nav bar badge */
   &-deprecated {
     @include badge-variation(deprecated);
   }

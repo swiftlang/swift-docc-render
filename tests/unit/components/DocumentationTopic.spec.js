@@ -26,7 +26,6 @@ const {
   Aside,
   Description,
   DownloadButton,
-  TechnologyList,
   LanguageSwitcher,
   PrimaryContent,
   Relationships,
@@ -107,7 +106,7 @@ const sampleCodeDownload = {
 
 const propsData = {
   abstract: [abstract],
-  conformance: { constraints: [], availabilityPrefx: [] },
+  conformance: { constraints: [], availabilityPrefix: [] },
   hierarchy: {
     paths: [
       [
@@ -121,6 +120,18 @@ const propsData = {
   symbolKind: TopicTypes.module,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
+  technology: { title: 'fookit' },
+  platforms: [
+    {
+      introducedAt: '1.0',
+      name: 'fooOS',
+    },
+    {
+      deprecatedAt: '2.0',
+      introducedAt: '1.0',
+      name: 'barOS',
+    },
+  ],
   primaryContentSections: [
     {
       kind: PrimaryContent.constants.SectionKind.content,
@@ -345,31 +356,9 @@ describe('DocumentationTopic', () => {
     });
 
     it('renders a `Availability` with platforms data', () => {
-      const platforms = [
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-        {
-          deprecatedAt: '2.0',
-          introducedAt: '1.0',
-          name: 'barOS',
-        },
-      ];
-      wrapper.setProps({ platforms });
-
       const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
-      expect(list.props('platforms')).toEqual(platforms);
-    });
-
-    it('renders a `TechnologyList` with technologies data', () => {
-      const modules = ['FooKit', 'BarKit'];
-      wrapper.setProps({ modules });
-
-      const list = wrapper.find(TechnologyList);
-      expect(list.exists()).toBe(true);
-      expect(list.props('technologies')).toEqual(modules);
+      expect(list.props('platforms')).toEqual(propsData.platforms);
     });
 
     it('renders a `LanguageSwitcher`', () => {
@@ -379,22 +368,6 @@ describe('DocumentationTopic', () => {
         interfaceLanguage: propsData.interfaceLanguage,
         objcPath: propsData.languagePaths.occ[0],
         swiftPath: propsData.languagePaths.swift[0],
-      });
-    });
-
-    it('renders an `TechnologyList` component', () => {
-      expect(wrapper.find('.extends-technology').exists()).toBe(false);
-      const extendsTechnology = 'FooTechnology';
-
-      wrapper.setProps({
-        extendsTechnology,
-      });
-
-      const technologyList = wrapper.find('.extends-technology');
-      expect(technologyList.exists()).toBe(true);
-      expect(technologyList.props()).toEqual({
-        technologies: [{ name: extendsTechnology }],
-        title: 'Extends',
       });
     });
   });

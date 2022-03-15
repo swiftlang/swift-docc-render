@@ -18,16 +18,12 @@
         <div v-if="sampleCodeDownload">
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
-        <Availability v-if="platforms" :platforms="platforms" />
+        <Availability
+          v-if="(platforms || []).length || (technologies || []).length"
+          :platforms="platforms" :technologies="technologies"
+        />
       </DocumentationHero>
-        <Summary v-if="!hideSummary">
-          <TechnologyList v-if="modules" :technologies="modules" />
-          <TechnologyList
-            v-if="extendsTechnology"
-            class="extends-technology"
-            title="Extends"
-            :technologies="[{ name: extendsTechnology }]"
-          />
+        <Summary v-if="!hideSummary && shouldShowLanguageSwitcher">
           <LanguageSwitcher
             v-if="shouldShowLanguageSwitcher"
             :interfaceLanguage="interfaceLanguage"
@@ -96,7 +92,6 @@ import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
 import Description from './DocumentationTopic/Description.vue';
-import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
@@ -133,7 +128,6 @@ export default {
     DefaultImplementations,
     Description,
     DownloadButton: CallToActionButton,
-    TechnologyList,
     LanguageSwitcher,
     PrimaryContent,
     Relationships,
@@ -229,9 +223,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    extendsTechnology: {
-      type: String,
-    },
     tags: {
       type: Array,
       required: true,
@@ -259,6 +250,10 @@ export default {
     role: {
       type: String,
       default: '',
+    },
+    technology: {
+      type: Object,
+      required: true,
     },
   },
   provide() {
@@ -302,6 +297,16 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    technologies({ modules = [], technology }) {
+      const technologyList = modules.reduce((list, module) => {
+        list.push(module.name);
+        return list.concat(module.relatedModules || []);
+      }, []);
+      // show modules if page belongs to/require multiple technologies
+      // or if name doesn't match root of page
+      return technologyList.length === 1
+        && technologyList[0] === technology.title ? [] : technologyList;
+    },
   },
   methods: {
     normalizePath(path) {

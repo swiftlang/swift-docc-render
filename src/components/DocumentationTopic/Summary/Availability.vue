@@ -11,6 +11,15 @@
 <template>
   <Section class="availability" role="complementary" aria-label="Availability">
     <Badge
+      v-for="technology in technologies"
+      class="technology"
+      :key="technology"
+    >
+      <TechnologyIcon class="tech-icon" />
+      {{ technology }}
+    </Badge>
+
+    <Badge
       v-for="platform in platforms"
       class="platform"
       :class="changesClassesFor(platform.name)"
@@ -21,8 +30,8 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-        <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
-        <span v-else-if="platform.beta" class="beta">Beta</span>
+      <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
+      <span v-else-if="platform.beta" class="beta">Beta</span>
     </Badge>
   </Section>
 </template>
@@ -31,6 +40,7 @@
 import Badge from 'docc-render/components/Badge.vue';
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { getAPIChanges } from 'docc-render/mixins/apiChangesHelpers';
+import TechnologyIcon from 'theme/components/Icons/TechnologyIcon.vue';
 import AvailabilityRange from './AvailabilityRange.vue';
 import Section from './Section.vue';
 
@@ -42,11 +52,16 @@ export default {
     Badge,
     AvailabilityRange,
     Section,
+    TechnologyIcon,
   },
   props: {
     platforms: {
       type: Array,
       required: true,
+    },
+    technologies: {
+      type: Array,
+      required: false,
     },
   },
   data() {
@@ -96,6 +111,21 @@ export default {
 
 .badge {
   margin: 0;
+}
+
+.technology {
+  display: inline-flex;
+  align-items: center;
+}
+
+.tech-icon {
+  height: 12px;
+  padding-right: 5px;
+  fill: var(--badge-color);
+
+  .theme-dark & {
+    fill: var(--badge-color);
+  }
 }
 
 .beta {
