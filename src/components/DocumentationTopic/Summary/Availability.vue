@@ -113,6 +113,11 @@ export default {
   margin: 0;
 }
 
+.technology {
+  display: inline-flex;
+  align-items: center;
+}
+
 .tech-icon {
   height: 12px;
   padding-right: 5px;
@@ -120,7 +125,6 @@ export default {
 
 .beta {
   color: var(--color-badge-beta);
-  padding-left: 5px;
 
   .theme-dark & {
     color: var(--color-badge-dark-beta);
@@ -129,7 +133,6 @@ export default {
 
 .deprecated {
   color: var(--color-badge-deprecated);
-  padding-left: 5px;
 
   .theme-dark & {
     color: var(--color-badge-dark-deprecated);

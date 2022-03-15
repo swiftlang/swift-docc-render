@@ -54,12 +54,12 @@ $badge-border-radius: $border-radius - 1px !default;
   @include badge-variation(default);
 
   @include font-styles(badge);
-  display: flex;
-  align-items: center;
+  display: inline-block;
   padding: 2px 10px;
   white-space: nowrap;
   background: none;
   border-radius: $badge-border-radius;
+  margin-left: 10px;
   border: 1px solid var(--badge-color);
   color: var(--badge-color);
 
@@ -74,12 +74,10 @@ $badge-border-radius: $border-radius - 1px !default;
   /* nav bar badge */
   &-deprecated {
     @include badge-variation(deprecated);
-    margin-left: 10px;
   }
 
   &-beta {
     @include badge-variation(beta);
-    margin-left: 10px;
   }
 }
 </style>

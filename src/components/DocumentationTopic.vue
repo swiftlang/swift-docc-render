@@ -19,11 +19,11 @@
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="!hideSummary"
+          v-if="platforms.length || (technologies || [].length)"
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-        <Summary v-if="shouldShowLanguageSwitcher">
+        <Summary v-if="!hideSummary && shouldShowLanguageSwitcher">
           <LanguageSwitcher
             v-if="shouldShowLanguageSwitcher"
             :interfaceLanguage="interfaceLanguage"
@@ -297,8 +297,7 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
     hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    technologies({ modules, technology }) {
-      if (!modules) return [];
+    technologies({ modules = [], technology }) {
       const technologyList = modules.reduce((list, module) => {
         list.push(module.name);
         return list.concat(module.relatedModules || []);

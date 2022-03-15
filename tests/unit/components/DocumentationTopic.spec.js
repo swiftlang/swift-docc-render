@@ -347,18 +347,18 @@ describe('DocumentationTopic', () => {
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
     });
 
-    it('renders a `Availability` with platforms data', () => {
-      const list = wrapper.find(Availability);
-      expect(list.exists()).toBe(true);
-      expect(list.props('platforms')).toEqual(propsData.platforms);
-    });
-
-    it('hides the Availability, if the global settings say so', () => {
+    it('hides the Summary, if the global settings say so', () => {
       // this should really only mock the resolved value for the specific flag,
       // but this is fine for now
       getSetting.mockResolvedValueOnce(true);
       wrapper = shallowMount(DocumentationTopic, { propsData });
-      expect(wrapper.find(Availability).exists()).toBe(false);
+      expect(wrapper.find(Summary).exists()).toBe(false);
+    });
+
+    it('renders a `Availability` with platforms data', () => {
+      const list = wrapper.find(Availability);
+      expect(list.exists()).toBe(true);
+      expect(list.props('platforms')).toEqual(propsData.platforms);
     });
 
     it('renders a `LanguageSwitcher`', () => {
