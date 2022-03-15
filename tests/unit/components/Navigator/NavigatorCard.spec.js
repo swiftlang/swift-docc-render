@@ -191,6 +191,7 @@ describe('NavigatorCard', () => {
         'Articles',
       ],
       value: '',
+      clearFilterOnTagSelect: false,
     });
   });
 

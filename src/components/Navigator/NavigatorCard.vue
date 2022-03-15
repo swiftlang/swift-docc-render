@@ -68,6 +68,7 @@
             :placeholder="`Filter in ${technology}`"
             :should-keep-open-on-blur="false"
             :position-reversed="isLargeBreakpoint"
+            :clear-filter-on-tag-select="false"
             class="filter-component"
             @clear="clearFilters"
           />

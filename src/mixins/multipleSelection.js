@@ -55,6 +55,7 @@ export default {
 
     selectTag(tag) {
       this.updateSelectedTags([tag]);
+      if (!this.clearFilterOnTagSelect) return;
       this.setFilterInput('');
     },
 

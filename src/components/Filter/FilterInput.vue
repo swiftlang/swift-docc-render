@@ -195,6 +195,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    clearFilterOnTagSelect: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
