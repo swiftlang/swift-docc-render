@@ -360,15 +360,15 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
-    focusedIndex() {
-      this.$refs.scroller.scrollToItem(this.focusedIndex);
-    },
   },
   methods: {
     clearFilters() {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
+    },
+    scrollToFocus() {
+      this.$refs.scroller.scrollToItem(this.focusedIndex);
     },
     debounceInput: debounce(function debounceInput(value) {
       this.debouncedFilter = value;

@@ -160,11 +160,14 @@ export default {
     clickReference() {
       this.$refs.reference.$el.click();
     },
+    selfFocus() {
+      this.$el.focus();
+    },
   },
   watch: {
     isFocused(newVal) {
       if (newVal) {
-        this.$el.focus();
+        this.selfFocus();
       }
     },
   },

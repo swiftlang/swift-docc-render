@@ -38,12 +38,15 @@ export default {
     },
     focusFirst() {
       this.focusIndex(0);
+      this.scrollToFocus();
     },
     focusLast() {
       this.focusIndex(this.totalItemsToNavigate - 1);
+      this.scrollToFocus();
     },
     startingPointHook() {},
     endingPointHook() {},
+    scrollToFocus() {},
   },
   computed: {
     totalItemsToNavigate: () => 0,
