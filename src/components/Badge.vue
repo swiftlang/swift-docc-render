@@ -67,10 +67,6 @@ $badge-border-radius: $border-radius - 1px !default;
     --badge-color: var(--badge-dark-color);
   }
 
-  .tech-icon {
-    fill: var(--badge-color)
-  }
-
   /* nav bar badge */
   &-deprecated {
     @include badge-variation(deprecated);

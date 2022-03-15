@@ -121,6 +121,7 @@ export default {
 .tech-icon {
   height: 12px;
   padding-right: 5px;
+  fill: var(--badge-color);
 }
 
 .beta {
