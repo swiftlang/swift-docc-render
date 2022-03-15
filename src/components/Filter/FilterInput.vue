@@ -195,10 +195,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    shouldKeepOpenOnBlur: {
-      type: Boolean,
-      default: true,
-    },
   },
   data() {
     return {
@@ -359,9 +355,9 @@ export default {
       this.setSelectedTags(this.selectedTags.filter(tag => !array.includes(tag)));
     },
     async handleBlur(event) {
-      // if the blur came from clicking a link
+      // if the blur came from clicking a button or the input
       const target = event.relatedTarget;
-      if (this.shouldKeepOpenOnBlur && target && target.matches && target.matches('button, input, ul')) return;
+      if (target && target.matches && target.matches('button, input, ul') && this.$el.contains(target)) return;
       // Wait for mousedown to send event listeners
       await this.$nextTick();
 
