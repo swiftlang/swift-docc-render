@@ -122,6 +122,10 @@ export default {
   height: 12px;
   padding-right: 5px;
   fill: var(--badge-color);
+
+  .theme-dark & {
+    fill: var(--badge-color);
+  }
 }
 
 .beta {
