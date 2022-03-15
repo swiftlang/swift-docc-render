@@ -137,9 +137,11 @@ export default {
   computed: {
     parentTopics() {
       return this.parentTopicIdentifiers.map((id) => {
-        const { title, url } = this.references[id];
+        const { title, url } = this.references[id] || {};
         return { title, url };
-      });
+      })
+        // filter out any items, that are missing url or title
+        .filter(({ title, url }) => title && url);
     },
     /**
      * Extract the root item from the parentTopics.

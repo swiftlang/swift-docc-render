@@ -95,7 +95,10 @@ export default {
   computed: {
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
-      return parentTopicIdentifiers.map(identifier => references[identifier]);
+      return parentTopicIdentifiers
+        .map(identifier => references[identifier])
+        // remove falsy items, that may break further the component
+        .filter(Boolean);
     },
     // splits out the top-level technology crumb
     activePath({ parentTopicReferences, $route: { path } }) {

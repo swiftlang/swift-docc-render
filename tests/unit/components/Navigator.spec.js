@@ -185,6 +185,31 @@ describe('Navigator', () => {
     expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
   });
 
+  it('renders the root path as activePath when there are no valid parentTopicIdentifiers', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        parentTopicIdentifiers: ['ref://invalid'],
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
+  });
+
+  it('removes any parent topic identifiers, which dont have a reference', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        references: {
+          root: { url: 'root' },
+          first: { url: 'first' },
+          // skip the `second` reference
+        },
+      },
+    });
+    // assert `second` is missing from the activePath
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+      references.first.url, mocks.$route.path,
+    ]);
+  });
+
   it('re-emits the `@close` event', () => {
     const wrapper = createWrapper();
     wrapper.find(NavigatorCard).vm.$emit('close');
