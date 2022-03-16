@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,6 +13,12 @@
     <main class="main" id="main" role="main" tabindex="0">
       <DocumentationHero :type="symbolKind || role" :enhanceBackground="enhanceBackground">
         <slot name="above-title" />
+        <LanguageSwitcher
+          v-if="shouldShowLanguageSwitcher && isTargetIDE"
+          :interfaceLanguage="interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+        />
         <Title :eyebrow="roleHeading">{{ title }}</Title>
         <Abstract v-if="abstract" :content="abstract" />
         <div v-if="sampleCodeDownload">
@@ -23,14 +29,6 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-        <Summary v-if="!hideSummary && shouldShowLanguageSwitcher">
-          <LanguageSwitcher
-            v-if="shouldShowLanguageSwitcher"
-            :interfaceLanguage="interfaceLanguage"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-          />
-        </Summary>
         <div class="container">
           <Description :hasOverview="hasOverview">
             <RequirementMetadata
@@ -81,7 +79,6 @@
 <script>
 import Language from 'docc-render/constants/Language';
 import metadata from 'docc-render/mixins/metadata';
-import { getSetting } from 'docc-render/utils/theme-settings';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
@@ -97,7 +94,6 @@ import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
 import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
-import Summary from './DocumentationTopic/Summary.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 
@@ -134,7 +130,6 @@ export default {
     RequirementMetadata,
     Availability,
     SeeAlso,
-    Summary,
     Title,
     Topics,
   },
@@ -295,7 +290,6 @@ export default {
       abstract ? extractFirstParagraphText(abstract) : null
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
-    hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
     technologies({ modules = [], technology }) {
       const technologyList = modules.reduce((list, module) => {
