@@ -33,9 +33,12 @@
             aria-label="Sidebar Tree Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
+            emit-update
             key-field="uid"
             v-slot="{ item, active }"
-            @blur.capture.native="handleBlur"
+            @focusin.native="handleFocusIn"
+            @focusout.native="handleFocusOut"
+            @update="handleScrollerUpdate"
           >
             <NavigatorCardItem
               :item="item"
@@ -80,7 +83,7 @@
 <script>
 import { RecycleScroller } from 'vue-virtual-scroller';
 import { clone } from 'docc-render/utils/data';
-import { waitFrames } from 'docc-render/utils/loading';
+import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
@@ -211,6 +214,7 @@ export default {
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
+      lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
       ERROR_FETCHING,
@@ -365,6 +369,8 @@ export default {
       [filteredChildren, activePathChildren, filter, selectedTags],
       [, activePathChildrenBefore, filterBefore, selectedTagsBefore = []] = [],
     ) {
+      // reset the last focus target
+      this.lastFocusTarget = null;
       // skip in case this is a first mount and we are syncing the `filter` and `selectedTags`.
       if (
         (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter))
@@ -608,18 +614,32 @@ export default {
         this.$refs.scroller.scrollToItem(index);
       }
     },
-    handleBlur(event) {
-      // if there is a related target, do nothing
-      if (event.relatedTarget !== null) return;
-      // if there is no related target re-focus the item
-      const { y } = event.target.getBoundingClientRect();
-      if (y < 0) {
+    handleFocusIn(event) {
+      this.lastFocusTarget = event.target;
+    },
+    handleFocusOut(event) {
+      if (!event.relatedTarget) return;
+      // reset the `lastFocusTarget`, if the focsOut target is not in the scroller
+      if (!this.$refs.scroller.$el.contains(event.relatedTarget)) {
+        this.lastFocusTarget = null;
+      }
+    },
+    handleScrollerUpdate: debounce(async function handleScrollerUpdate() {
+      // wait is long, because the focus change is coming in very late
+      await waitFor(300);
+      if (
+        !this.lastFocusTarget
+        // check if the lastFocusTarget is inside the scroller. (can happen if we scroll to fast)
+        || !this.$refs.scroller.$el.contains(this.lastFocusTarget)
+        // check if the activeElement is identical to the lastFocusTarget
+        || document.activeElement === this.lastFocusTarget
+      ) {
         return;
       }
-      event.target.focus({
+      this.lastFocusTarget.focus({
         preventScroll: true,
       });
-    },
+    }, 50),
   },
 };
 </script>
