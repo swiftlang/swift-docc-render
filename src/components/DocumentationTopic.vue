@@ -298,7 +298,7 @@ export default {
         list.push(module.name);
         return list.concat(module.relatedModules || []);
       }, []);
-      // only badges for technologies when there are multiple
+      // only show badges for technologies when there are multiple
       return technologyList.length > 1
         ? technologyList
         : [];
