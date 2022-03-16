@@ -614,13 +614,16 @@ export default {
         this.$refs.scroller.scrollToItem(index);
       }
     },
+    isInsideScroller(element) {
+      return this.$refs.scroller.$el.contains(element);
+    },
     handleFocusIn(event) {
       this.lastFocusTarget = event.target;
     },
     handleFocusOut(event) {
       if (!event.relatedTarget) return;
       // reset the `lastFocusTarget`, if the focsOut target is not in the scroller
-      if (!this.$refs.scroller.$el.contains(event.relatedTarget)) {
+      if (!this.isInsideScroller(event.relatedTarget)) {
         this.lastFocusTarget = null;
       }
     },
@@ -630,7 +633,7 @@ export default {
       if (
         !this.lastFocusTarget
         // check if the lastFocusTarget is inside the scroller. (can happen if we scroll to fast)
-        || !this.$refs.scroller.$el.contains(this.lastFocusTarget)
+        || !this.isInsideScroller(this.lastFocusTarget)
         // check if the activeElement is identical to the lastFocusTarget
         || document.activeElement === this.lastFocusTarget
       ) {
