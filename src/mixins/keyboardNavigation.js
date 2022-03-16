@@ -16,6 +16,7 @@ export default {
   },
   methods: {
     focusIndex(index) {
+      if (index < 0) return;
       this.focusedIndex = index;
     },
     focusPrev({ metaKey, ctrlKey, shiftKey }) {

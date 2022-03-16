@@ -54,7 +54,6 @@
               :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
-              @focus.native="focusIndex(index)"
             />
           </RecycleScroller>
           <div aria-live="polite" class="visuallyhidden">
@@ -303,6 +302,9 @@ export default {
     activeUID({ activePathChildren }) {
       return (activePathChildren[activePathChildren.length - 1] || {}).uid;
     },
+    activeIndex: ({ activeUID, nodesToRender }) => (
+      nodesToRender.findIndex(node => node.uid === activeUID)
+    ),
     /**
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
@@ -359,6 +361,14 @@ export default {
     },
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
+    },
+    activeIndex(value) {
+      if (value > 0) {
+        this.focusIndex(value);
+      } else {
+        // if there is no active item, return the index to 0
+        this.focusIndex(0);
+      }
     },
   },
   methods: {
@@ -616,7 +626,7 @@ export default {
       const index = this.hasFilter
         ? 0
         // find the index of the current active UID in the newly added nodes
-        : this.nodesToRender.findIndex(child => child.uid === this.activeUID);
+        : this.activeIndex;
       // if for some reason we cant find the active page, bail.
       // make sure the scroller is visible
       if (index !== -1 && this.$refs.scroller) {

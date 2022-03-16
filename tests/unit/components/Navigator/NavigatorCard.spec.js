@@ -369,6 +369,24 @@ describe('NavigatorCard', () => {
     });
   });
 
+  it('focuses the current page', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(1);
+  });
+
+  it('focus the first item if there is no active item', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(1);
+
+    wrapper.setProps({
+      activePath: [],
+    });
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(0);
+  });
+
   it('allows filtering the items, opening all items, that have matches in children', async () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
