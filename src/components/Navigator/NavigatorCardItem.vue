@@ -11,6 +11,7 @@
 <template>
   <div
     class="navigator-card-item"
+    :role="isGroupMarker ? null : 'link'"
     :tabindex="isFocused ? '0' : '-1'"
     :class="{ expanded }"
     :style="{ '--nesting-index': item.depth }"

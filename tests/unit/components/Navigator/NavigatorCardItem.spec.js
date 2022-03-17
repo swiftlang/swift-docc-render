@@ -168,6 +168,23 @@ describe('NavigatorCardItem', () => {
       expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBe('true');
     });
 
+    it('applies role link to NavigatorCardItem if item type is not groupMarker', () => {
+      const wrapper = createWrapper();
+      expect(wrapper.find('.navigator-card-item').attributes('role')).toBe('link');
+    });
+
+    it('does not apply role link to NavigatorCardItem if item type is groupMarker', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            type: TopicTypes.groupMarker,
+          },
+        },
+      });
+      expect(wrapper.find('.navigator-card-item').attributes('role')).toBeFalsy();
+    });
+
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {
       const wrapper = createWrapper();
       expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBeFalsy();
