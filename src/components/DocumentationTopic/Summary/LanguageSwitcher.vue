@@ -124,7 +124,7 @@ export default {
 
 .language {
   padding-bottom: 10px;
-  justify-content: right;
+  justify-content: flex-end;
 }
 
 .language, .language-list {

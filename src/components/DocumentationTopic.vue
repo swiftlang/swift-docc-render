@@ -14,7 +14,7 @@
       <DocumentationHero :type="symbolKind || role" :enhanceBackground="enhanceBackground">
         <slot name="above-title" />
         <LanguageSwitcher
-          v-if="shouldShowLanguageSwitcher && isTargetIDE"
+          v-if="shouldShowLanguageSwitcher"
           :interfaceLanguage="interfaceLanguage"
           :objcPath="objcPath"
           :swiftPath="swiftPath"
@@ -289,7 +289,8 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
-    shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
+    shouldShowLanguageSwitcher:
+      ({ objcPath, swiftPath, isTargetIDE }) => objcPath && swiftPath && isTargetIDE,
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
     technologies({ modules = [], technology }) {
       const technologyList = modules.reduce((list, module) => {

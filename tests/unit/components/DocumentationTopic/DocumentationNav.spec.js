@@ -63,7 +63,7 @@ describe('DocumentationNav', () => {
     }],
     interfaceLanguage: 'swift',
     swiftPath: 'documentation/foo',
-    objcPath: 'documentation/foo',
+    objcPath: 'documentation/bar',
     references,
   };
 
@@ -208,8 +208,8 @@ describe('DocumentationNav', () => {
     expect(toggle.exists()).toBe(true);
     expect(toggle.props()).toEqual({
       interfaceLanguage: propsData.interfaceLanguage,
-      objcPath: propsData.swiftPath,
-      swiftPath: propsData.objcPath,
+      swiftPath: propsData.swiftPath,
+      objcPath: propsData.objcPath,
     });
   });
 

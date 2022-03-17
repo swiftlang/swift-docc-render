@@ -41,7 +41,6 @@ $vertical-padding: $nav-height-small - $nav-padding-small;
 .nav-menu-items {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
 
   // adds a subtle fade-in animation effect on mobile
   @include nav-in-breakpoint {

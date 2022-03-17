@@ -59,6 +59,7 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
+        <slot name="menu-items" />
       </NavMenuItems>
       <slot name="tray-after" v-bind="{ breadcrumbCount }" />
     </template>

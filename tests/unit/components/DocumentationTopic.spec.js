@@ -345,17 +345,15 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  describe('isTargetIDE', () => {
+  it('renders a `LanguageSwitcher` if TargetIDE', () => {
     const provide = { isTargetIDE: true };
-    it('renders a `LanguageSwitcher`', () => {
-      wrapper = shallowMount(DocumentationTopic, { propsData, provide });
-      const switcher = wrapper.find(LanguageSwitcher);
-      expect(switcher.exists()).toBe(true);
-      expect(switcher.props()).toEqual({
-        interfaceLanguage: propsData.interfaceLanguage,
-        objcPath: propsData.languagePaths.occ[0],
-        swiftPath: propsData.languagePaths.swift[0],
-      });
+    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
+    const switcher = wrapper.find(LanguageSwitcher);
+    expect(switcher.exists()).toBe(true);
+    expect(switcher.props()).toEqual({
+      interfaceLanguage: propsData.interfaceLanguage,
+      objcPath: propsData.languagePaths.occ[0],
+      swiftPath: propsData.languagePaths.swift[0],
     });
   });
 
