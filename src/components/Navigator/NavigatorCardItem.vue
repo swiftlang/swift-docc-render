@@ -70,6 +70,7 @@
           class="leaf-link"
           tabindex="-1"
           ref="reference"
+          @click.native="$emit('navigate', item.uid)"
         >
           <HighlightMatches
             :text="item.title"
