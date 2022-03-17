@@ -1092,6 +1092,7 @@ describe('NavigatorCard', () => {
   describe('handles focus/blur state issues with the RecycleScroller', () => {
     it('keeps track of the currently focused item', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
       button.trigger('focusin');
@@ -1101,6 +1102,7 @@ describe('NavigatorCard', () => {
 
     it('resets the `lastFocusTarget`, if the related target is outside the scroller', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
       button.trigger('focusin');
@@ -1113,6 +1115,7 @@ describe('NavigatorCard', () => {
 
     it('does not do anything, if there is no `relatedTarget`, if no relatedTarget', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
       button.trigger('focusin');
@@ -1126,6 +1129,7 @@ describe('NavigatorCard', () => {
 
     it('on RecycleScroller@update, does nothing, if there is no focusTarget', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       wrapper.find(RecycleScroller).vm.$emit('update');
       await flushPromises();
       expect(waitFor).toHaveBeenLastCalledWith(300);
@@ -1134,6 +1138,7 @@ describe('NavigatorCard', () => {
 
     it('on RecycleScroller@update, does nothing, if focusTarget is outside scroller', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       // Set the focus item to be something outside the scroller.
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
@@ -1158,6 +1163,7 @@ describe('NavigatorCard', () => {
 
     it('on RecycleScroller@update, does nothing, if `lastFocusTarget === activeElement`', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       // Set the focus item to be something outside the scroller.
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
@@ -1177,6 +1183,7 @@ describe('NavigatorCard', () => {
 
     it('on RecycleScroller@update, re-focuses the `lastFocusTarget` if not the current focus item', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       // Set the focus item to be something outside the scroller.
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
@@ -1192,6 +1199,7 @@ describe('NavigatorCard', () => {
 
     it('clears the focusTarget on filter', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       // Set the focus item to be something outside the scroller.
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
@@ -1211,6 +1219,7 @@ describe('NavigatorCard', () => {
 
     it('clears the focusTarget on page nav', async () => {
       const wrapper = createWrapper();
+      await flushPromises();
       // Set the focus item to be something outside the scroller.
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
