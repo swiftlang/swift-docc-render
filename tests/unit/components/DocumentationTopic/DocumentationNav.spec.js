@@ -219,6 +219,19 @@ describe('DocumentationNav', () => {
     expect(wrapper.contains(LanguageToggle)).toBe(false);
   });
 
+  it('exposes a `menu-items` slot ', () => {
+    const menuItems = 'Menu Items';
+    wrapper = shallowMount(DocumentationNav, {
+      stubs,
+      propsData,
+      mocks,
+      slots: {
+        'menu-items': menuItems,
+      },
+    });
+    expect(wrapper.text()).toContain(menuItems);
+  });
+
   it('exposes a `after-content` slot ', () => {
     const afterContent = 'After Content';
     wrapper = shallowMount(DocumentationNav, {
