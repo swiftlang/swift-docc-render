@@ -246,10 +246,6 @@ export default {
       type: String,
       default: '',
     },
-    technology: {
-      type: Object,
-      required: true,
-    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -292,15 +288,15 @@ export default {
     shouldShowLanguageSwitcher:
       ({ objcPath, swiftPath, isTargetIDE }) => objcPath && swiftPath && isTargetIDE,
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    technologies({ modules = [], technology }) {
+    technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
         list.push(module.name);
         return list.concat(module.relatedModules || []);
       }, []);
-      // show modules if page belongs to/require multiple technologies
-      // or if name doesn't match root of page
-      return technologyList.length === 1
-        && technologyList[0] === technology.title ? [] : technologyList;
+      // only show badges for technologies when there are multiple
+      return technologyList.length > 1
+        ? technologyList
+        : [];
     },
   },
   methods: {

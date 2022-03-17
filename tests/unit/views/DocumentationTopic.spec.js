@@ -298,7 +298,6 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
-      technology: topicData.references['topic://foo'],
     });
   });
 
