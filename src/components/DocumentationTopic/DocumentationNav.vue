@@ -200,6 +200,8 @@ $sidenav-icon-size: 19px;
     }
 
     @include nav-in-breakpoint {
+      padding-top: 0;
+
       &:not([data-previous-menu-children-count="0"]) {
         .nav-menu-setting:first-child {
           border-top: 1px solid dark-color(figure-gray-tertiary);
