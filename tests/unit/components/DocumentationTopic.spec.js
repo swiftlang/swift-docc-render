@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,15 +9,10 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
-
-jest.mock('docc-render/utils/theme-settings', () => ({
-  getSetting: jest.fn((_, fallback) => fallback),
-}));
 
 const {
   Abstract,
@@ -32,7 +27,6 @@ const {
   RequirementMetadata,
   Availability,
   SeeAlso,
-  Summary,
   Topics,
   Title,
   BetaLegalText,
@@ -285,9 +279,6 @@ describe('DocumentationTopic', () => {
     const description = wrapper.find(Description);
     expect(description.exists()).toBe(true);
 
-    const summary = wrapper.find(Summary);
-    expect(summary.exists()).toBe(true);
-
     expect(wrapper.find(PrimaryContent).exists()).toBe(true);
   });
 
@@ -347,28 +338,22 @@ describe('DocumentationTopic', () => {
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
     });
 
-    it('hides the Summary, if the global settings say so', () => {
-      // this should really only mock the resolved value for the specific flag,
-      // but this is fine for now
-      getSetting.mockResolvedValueOnce(true);
-      wrapper = shallowMount(DocumentationTopic, { propsData });
-      expect(wrapper.find(Summary).exists()).toBe(false);
-    });
-
     it('renders a `Availability` with platforms data', () => {
       const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
       expect(list.props('platforms')).toEqual(propsData.platforms);
     });
+  });
 
-    it('renders a `LanguageSwitcher`', () => {
-      const switcher = wrapper.find(LanguageSwitcher);
-      expect(switcher.exists()).toBe(true);
-      expect(switcher.props()).toEqual({
-        interfaceLanguage: propsData.interfaceLanguage,
-        objcPath: propsData.languagePaths.occ[0],
-        swiftPath: propsData.languagePaths.swift[0],
-      });
+  it('renders a `LanguageSwitcher` if TargetIDE', () => {
+    const provide = { isTargetIDE: true };
+    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
+    const switcher = wrapper.find(LanguageSwitcher);
+    expect(switcher.exists()).toBe(true);
+    expect(switcher.props()).toEqual({
+      interfaceLanguage: propsData.interfaceLanguage,
+      objcPath: propsData.languagePaths.occ[0],
+      swiftPath: propsData.languagePaths.swift[0],
     });
   });
 

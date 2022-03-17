@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -122,28 +122,34 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+.language {
+  padding-bottom: 10px;
+  justify-content: flex-end;
+}
+
 .language, .language-list {
+  @include font-styles(body-reduced);
   margin-top: 0;
   display: flex;
+  align-items: center;
 }
 
 .language-option {
   &.swift {
-    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid var(--color-fill-gray-tertiary);
   }
 
-  @include breakpoint(small) {
-    margin-bottom: 0.25rem;
+  &.objc {
+    padding-left: 10px;
   }
 
   &.router-link-exact-active,
   &.active {
-    color: var(--colors-secondary-label, var(--color-secondary-label));
-  }
+    color: dark-color(figure-gray-secondary);
 
-  @include breakpoints-from(medium) {
-    &.swift {
-      border-right: 1px solid var(--color-fill-gray-tertiary);
+    .documentation-hero--disabled & {
+      color: var(--colors-secondary-label, var(--color-secondary-label));
     }
   }
 }
