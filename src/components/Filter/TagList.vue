@@ -101,11 +101,6 @@ export default {
   components: {
     Tag,
   },
-  data() {
-    return {
-      focusedIndex: null,
-    };
-  },
   methods: {
     focusTag(name) {
       this.focusIndex(this.tags.indexOf(name));

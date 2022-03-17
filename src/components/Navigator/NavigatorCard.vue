@@ -27,7 +27,9 @@
         <div
           class="card-body"
           @keydown.meta.up.capture.prevent="focusFirst"
+          @keydown.ctrl.up.capture.prevent="focusFirst"
           @keydown.meta.down.capture.prevent="focusLast"
+          @keydown.ctrl.down.capture.prevent="focusLast"
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
