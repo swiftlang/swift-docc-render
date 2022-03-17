@@ -232,6 +232,9 @@ describe('NavigatorCard', () => {
       key: 'ArrowDown',
       metaKey: true,
     });
+    // assert that focusedIndex is restore
+    expect(wrapper.vm.focusedIndex).toBe(null);
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
   });
 

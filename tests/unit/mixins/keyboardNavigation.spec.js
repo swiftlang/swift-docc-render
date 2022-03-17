@@ -36,12 +36,15 @@ describe('keyboardNavigation', () => {
     expect(wrapper.vm.focusedIndex).toBe(0);
   });
 
-  it('allows the user to navigate to the last item on the list when pressing cmd + down key', () => {
+  it('allows the user to navigate to the last item on the list when pressing cmd + down key', async () => {
     const wrapper = createWrapper();
     wrapper.trigger('keydown', {
       key: 'ArrowDown',
       metaKey: true,
     });
+    // assert that focusedIndex is restore
+    expect(wrapper.vm.focusedIndex).toBe(null);
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.focusedIndex).toBe(totalItemsToNavigate - 1);
   });
 

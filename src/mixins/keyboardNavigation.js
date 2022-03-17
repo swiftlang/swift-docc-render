@@ -41,7 +41,10 @@ export default {
       this.focusIndex(0);
       this.scrollToFocus();
     },
-    focusLast() {
+    async focusLast() {
+      // reset focus index so we can focus on value 0 too
+      this.focusIndex(null);
+      await this.$nextTick();
       this.focusIndex(this.totalItemsToNavigate - 1);
       this.scrollToFocus();
     },
