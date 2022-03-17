@@ -13,6 +13,7 @@ import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
+import Reference from '@/components/ContentNode/Reference.vue';
 
 const {
   Badge,
@@ -54,8 +55,10 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
     expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(defaultProps.item.type);
-    expect(wrapper.find('.leaf-link').props('url')).toEqual(defaultProps.item.path);
-    expect(wrapper.find('.leaf-link').attributes('id')).toBe(`${defaultProps.item.uid}`);
+    const leafLink = wrapper.find('.leaf-link');
+    expect(leafLink.is(Reference)).toBe(true);
+    expect(leafLink.props('url')).toEqual(defaultProps.item.path);
+    expect(leafLink.attributes('id')).toBe(`${defaultProps.item.uid}`);
     expect(wrapper.find(HighlightMatches).props()).toEqual({
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
@@ -147,6 +150,12 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find(NavigatorLeafIcon).exists()).toBe(false);
     expect(wrapper.find('.navigator-icon').classes())
       .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
+  });
+
+  it('emits an event, when clicking on the leaf-link', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.leaf-link').trigger('click');
+    expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
   });
 
   describe('AX', () => {
