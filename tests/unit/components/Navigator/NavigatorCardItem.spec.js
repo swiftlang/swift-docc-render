@@ -13,6 +13,7 @@ import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
+import Reference from '@/components/ContentNode/Reference.vue';
 
 const {
   Badge,
@@ -54,13 +55,16 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
     expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(defaultProps.item.type);
-    expect(wrapper.find('.leaf-link').props('url')).toEqual(defaultProps.item.path);
-    expect(wrapper.find('.leaf-link').attributes('id')).toBe(`${defaultProps.item.uid}`);
+    const leafLink = wrapper.find('.leaf-link');
+    expect(leafLink.is(Reference)).toBe(true);
+    expect(leafLink.props('url')).toEqual(defaultProps.item.path);
+    expect(leafLink.attributes('id')).toBe(`${defaultProps.item.uid}`);
     expect(wrapper.find(HighlightMatches).props()).toEqual({
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
     });
-    expect(wrapper.find('.navigator-card-item').attributes('id')).toBe(`container-${defaultProps.item.uid}`);
+    expect(wrapper.find('.navigator-card-item').attributes('id'))
+      .toBe(`container-${defaultProps.item.uid}`);
   });
 
   it('renders a deprecated badge when item is deprecated', () => {
@@ -136,6 +140,24 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
   });
 
+  it('renders the API change icon instead of the leaf icon', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        apiChange: 'modified',
+      },
+    });
+
+    expect(wrapper.find(NavigatorLeafIcon).exists()).toBe(false);
+    expect(wrapper.find('.navigator-icon').classes())
+      .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
+  });
+
+  it('emits an event, when clicking on the leaf-link', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.leaf-link').trigger('click');
+    expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
+  });
+
   describe('AX', () => {
     it('applies aria-hidden to NavigatorCardItem if isRendered is false', () => {
       const wrapper = createWrapper({
@@ -201,7 +223,8 @@ describe('NavigatorCardItem', () => {
       const wrapper = createWrapper();
       const label = wrapper.find(`#label-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe(`${defaultProps.item.index + 1} of ${defaultProps.item.siblingsCount} symbols inside`);
+      expect(label.text())
+        .toBe(`${defaultProps.item.index + 1} of ${defaultProps.item.siblingsCount} symbols inside`);
     });
 
     it('renders a hidden span telling the containing number of symbols', () => {
@@ -220,12 +243,14 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.find('.leaf-link').attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent}`);
+      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
+        .toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent}`);
     });
 
     it('renders a aria-describedby in the leaf-link including the parent label if is parent', () => {
       const wrapper = createWrapper();
-      expect(wrapper.find('.leaf-link').attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent} label-parent-${defaultProps.item.uid}`);
+      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
+        .toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent} label-parent-${defaultProps.item.uid}`);
     });
   });
 });

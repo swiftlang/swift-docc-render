@@ -26,13 +26,18 @@ export default {
   state: {
     apiChanges: null,
     apiChangesCounts: apiChangesCountsFactory(),
+    selectedAPIChangesVersion: null,
   },
   setAPIChanges(changes) {
     this.state.apiChanges = changes;
   },
+  setSelectedAPIChangesVersion(value) {
+    this.state.selectedAPIChangesVersion = value;
+  },
   resetApiChanges() {
     this.state.apiChanges = null;
     this.state.apiChangesCounts = apiChangesCountsFactory();
+    this.state.selectedAPIChangesVersion = null;
   },
   async updateApiChangesCounts() {
     await Vue.nextTick();

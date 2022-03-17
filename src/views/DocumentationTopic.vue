@@ -36,6 +36,7 @@
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
               :technology="technology"
+              :api-changes-version="store.state.selectedAPIChangesVersion"
             >
               <template #default="slotProps">
                 <Navigator
@@ -43,6 +44,7 @@
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
                   :error-fetching="slotProps.errorFetching"
+                  :api-changes="slotProps.apiChanges"
                   :references="topicProps.references"
                   :scrollLockID="scrollLockID"
                   :breakpoint="breakpoint"
