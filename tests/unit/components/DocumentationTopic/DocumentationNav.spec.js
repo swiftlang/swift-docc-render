@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -23,6 +23,8 @@ jest.mock('docc-render/utils/FocusTrap');
 const {
   Hierarchy,
   NavBase,
+  LanguageToggle,
+  NavMenuItems,
 } = DocumentationNav.components;
 
 const stubs = {
@@ -59,6 +61,9 @@ describe('DocumentationNav', () => {
     currentTopicTags: [{
       type: 'foo',
     }],
+    interfaceLanguage: 'swift',
+    swiftPath: 'documentation/foo',
+    objcPath: 'documentation/foo',
     references,
   };
 
@@ -194,6 +199,24 @@ describe('DocumentationNav', () => {
     expect(slotProps).toEqual({
       breadcrumbCount: 3,
     });
+  });
+
+  it('renders a LanguageToggle', () => {
+    // make sure the LanguageToggle is inside the NavMenuItems
+    const menuItems = wrapper.find(NavMenuItems);
+    const toggle = menuItems.find(LanguageToggle);
+    expect(toggle.exists()).toBe(true);
+    expect(toggle.props()).toEqual({
+      interfaceLanguage: propsData.interfaceLanguage,
+      objcPath: propsData.swiftPath,
+      swiftPath: propsData.objcPath,
+    });
+  });
+
+  it('does not render a `LanguageToggle` when there is no swift nor objc path', () => {
+    expect(wrapper.contains(LanguageToggle)).toBe(true);
+    wrapper.setProps({ swiftPath: null, objcPath: null });
+    expect(wrapper.contains(LanguageToggle)).toBe(false);
   });
 
   it('exposes a `after-content` slot ', () => {
