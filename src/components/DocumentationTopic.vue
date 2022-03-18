@@ -362,7 +362,6 @@ export default {
 }
 
 .container {
-  margin-top: $section-spacing-single-side / 2;
   outline-style: none;
   @include dynamic-content-container;
 }
