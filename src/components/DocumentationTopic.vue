@@ -29,49 +29,51 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-        <div class="container">
-          <Description v-if="hasOverview">
-            <RequirementMetadata
-              v-if="isRequirement"
-              :defaultImplementationsCount="defaultImplementationsCount"
-            />
-            <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-              <ContentNode :content="deprecationSummary" />
-            </Aside>
-            <Aside
-              v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-              kind="note"
-            >
-              <ContentNode :content="downloadNotAvailableSummary" />
-            </Aside>
-          </Description>
-          <PrimaryContent
-            v-if="primaryContentSections && primaryContentSections.length"
-            :class="{ 'with-border': !enhanceBackground }"
-            :conformance="conformance"
-            :sections="primaryContentSections"
+      <div class="container">
+        <Description v-if="hasOverview">
+          <RequirementMetadata
+            v-if="isRequirement"
+            :defaultImplementationsCount="defaultImplementationsCount"
           />
-        </div>
-      <Topics
-        v-if="topicSections"
-        :sections="topicSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <DefaultImplementations
-        v-if="defaultImplementationsSections"
-        :sections="defaultImplementationsSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
-      <!-- NOTE: see also may contain information about other apis, so we cannot
-      pass deprecation and beta information -->
-      <SeeAlso
-        v-if="seeAlsoSections"
-        :sections="seeAlsoSections"
-      />
-      <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
+          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+            <ContentNode :content="deprecationSummary" />
+          </Aside>
+          <Aside
+            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+            kind="note"
+          >
+            <ContentNode :content="downloadNotAvailableSummary" />
+          </Aside>
+        </Description>
+        <PrimaryContent
+          v-if="primaryContentSections && primaryContentSections.length"
+          :class="{ 'with-border': !enhanceBackground }"
+          :conformance="conformance"
+          :sections="primaryContentSections"
+        />
+      </div>
+      <div :class="['supplemental', {'first-section': !hasOverview,}]">
+        <Topics
+          v-if="topicSections"
+          :sections="topicSections"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+        <DefaultImplementations
+          v-if="defaultImplementationsSections"
+          :sections="defaultImplementationsSections"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+        <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+        <!-- NOTE: see also may contain information about other apis, so we cannot
+        pass deprecation and beta information -->
+        <SeeAlso
+          v-if="seeAlsoSections"
+          :sections="seeAlsoSections"
+        />
+        <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
+      </div>
     </main>
   </div>
 </template>
@@ -364,6 +366,13 @@ export default {
 .container {
   outline-style: none;
   @include dynamic-content-container;
+}
+
+// remove border-top for first item of the supplement section if no overview
+.first-section .contenttable:first-child {
+  /deep/ .title {
+    border-top-width: 0px;
+  }
 }
 
 .sample-download {
