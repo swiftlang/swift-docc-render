@@ -29,7 +29,7 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-      <div class="container">
+      <div class="container" v-if='showContainer'>
         <div class="description">
           <RequirementMetadata
             v-if="isRequirement"
@@ -52,7 +52,7 @@
           :sections="primaryContentSections"
         />
       </div>
-      <div :class="['supplemental', {'first-section': !hasOverview,}]">
+      <div class="secondary-content">
         <Topics
           v-if="topicSections"
           :sections="topicSections"
@@ -294,6 +294,14 @@ export default {
         ? technologyList
         : [];
     },
+    showContainer: ({
+      isRequirement, deprecationSummary, downloadNotAvailableSummary,
+      primaryContentSections,
+    }) => (
+      isRequirement || (deprecationSummary && deprecationSummary)
+      || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
+      || (primaryContentSections && primaryContentSections.length)
+    ),
   },
   methods: {
     normalizePath(path) {
@@ -362,11 +370,6 @@ export default {
   @include dynamic-content-container;
 }
 
-// remove border-top for first item of the supplement section if no overview
-.first-section .contenttable:first-child {
-  /deep/ .title {
-    border-top-width: 0px;
-
 .description {
   &:empty { display: none; }
 
@@ -376,6 +379,15 @@ export default {
 
   /deep/ .content + * {
   margin-top: $stacked-margin-large;
+  }
+}
+
+// remove border-top for first section of the page
+.documentation-hero + .secondary-content {
+  .contenttable:first-child {
+    /deep/ .title {
+      border-top: none;
+    }
   }
 }
 
