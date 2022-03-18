@@ -225,12 +225,12 @@ describe('NavigatorCard', () => {
     expect(wrapper.vm.focusedIndex).toBe(1);
   });
 
-  it('allows the user to navigate to the last item on the list when pressing cmd + down key', async () => {
+  it('allows the user to navigate to the last item on the list when pressing alt + down key', async () => {
     const wrapper = createWrapper();
     await flushPromises();
     wrapper.findAll(NavigatorCardItem).at(0).trigger('keydown', {
       key: 'ArrowDown',
-      metaKey: true,
+      altKey: true,
     });
     // assert that focusedIndex is restore
     expect(wrapper.vm.focusedIndex).toBe(null);
@@ -238,12 +238,12 @@ describe('NavigatorCard', () => {
     expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
   });
 
-  it('allows the user to navigate to the first item on the list when pressing cmd + up key', async () => {
+  it('allows the user to navigate to the first item on the list when pressing alt + up key', async () => {
     const wrapper = createWrapper();
     await flushPromises();
     wrapper.findAll(NavigatorCardItem).at(3).trigger('keydown', {
       key: 'ArrowUp',
-      metaKey: true,
+      altKey: true,
     });
     expect(wrapper.vm.focusedIndex).toBe(0);
   });
