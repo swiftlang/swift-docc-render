@@ -19,7 +19,6 @@ const {
   ContentNode,
   DefaultImplementations,
   Aside,
-  Description,
   DownloadButton,
   LanguageSwitcher,
   PrimaryContent,
@@ -273,25 +272,6 @@ describe('DocumentationTopic', () => {
     const abstractComponent = hero.find(Abstract);
     expect(abstractComponent.exists()).toBe(true);
     expect(abstractComponent.props('content')).toEqual(emptyParagraph);
-  });
-
-  it('does not render a `Description` if no description', () => {
-    const description = wrapper.find(Description);
-    expect(description.exists()).toBe(false);
-  });
-
-  it('renders a `Description` if has description', () => {
-    // Description includes:
-    // RequirementMetaData, DeprecationSummary, downloadNotAvailableSummary
-    wrapper.setProps({ isRequirement: true });
-    expect(wrapper.contains(Description)).toBe(true);
-
-    wrapper.setProps({
-      isRequirement: false,
-      downloadNotAvailableSummary,
-      deprecationSummary,
-    });
-    expect(wrapper.contains(Description)).toBe(true);
   });
 
   it('renders a `PrimaryContent`', () => {
