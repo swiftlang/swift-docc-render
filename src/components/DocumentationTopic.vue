@@ -361,7 +361,17 @@ export default {
   @include dynamic-content-container;
 }
 
-.description:empty { display: none; }
+.description {
+  &:empty { display: none; }
+
+  &:not(:empty) {
+    margin-bottom: $contenttable-spacing-single-side;
+  }
+
+  /deep/ .content + * {
+  margin-top: $stacked-margin-large;
+  }
+}
 
 .sample-download {
   margin-top: 20px;
