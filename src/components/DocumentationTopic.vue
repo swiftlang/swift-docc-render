@@ -30,7 +30,7 @@
         />
       </DocumentationHero>
         <div class="container">
-          <Description :hasOverview="hasOverview">
+          <Description v-if="hasOverview">
             <RequirementMetadata
               v-if="isRequirement"
               :defaultImplementationsCount="defaultImplementationsCount"
@@ -271,9 +271,9 @@ export default {
       );
     },
     hasOverview:
-      ({ primaryContentSections = [], abstract = [] }) => primaryContentSections.filter(section => (
+      ({ primaryContentSections = [] }) => primaryContentSections.filter(section => (
         section.kind === PrimaryContent.constants.SectionKind.content
-      )).length > 0 || abstract.length > 0,
+      )).length > 0,
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
