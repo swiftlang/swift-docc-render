@@ -29,7 +29,7 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-      <div class="container">
+      <div v-if="showContainer" class="container">
         <div class="description">
           <RequirementMetadata
             v-if="isRequirement"
@@ -292,6 +292,17 @@ export default {
         ? technologyList
         : [];
     },
+    showContainer: ({
+      isRequirement,
+      deprecationSummary,
+      downloadNotAvailableSummary,
+      primaryContentSections,
+    }) => (
+      isRequirement
+      || (deprecationSummary && deprecationSummary.length)
+      || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
+      || (primaryContentSections && primaryContentSections.length)
+    ),
   },
   methods: {
     normalizePath(path) {
@@ -356,7 +367,6 @@ export default {
 }
 
 .container {
-  margin-top: $section-spacing-single-side / 2;
   outline-style: none;
   @include dynamic-content-container;
 }
@@ -370,6 +380,15 @@ export default {
 
   /deep/ .content + * {
     margin-top: $stacked-margin-large;
+  }
+}
+
+// remove border-top for first section of the page
+/deep/ {
+  .documentation-hero + .contenttable {
+    .container > .title {
+      border-top: none;
+    }
   }
 }
 
