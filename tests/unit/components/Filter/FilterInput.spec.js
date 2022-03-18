@@ -36,6 +36,7 @@ jest.mock('@/utils/input-helper', () => ({
 const {
   SuggestedTagsId,
   FilterInputId,
+  TagLimit,
 } = FilterInput.constants;
 
 describe('FilterInput', () => {
@@ -435,6 +436,18 @@ describe('FilterInput', () => {
 
       suggestedTags = wrapper.find({ ref: 'suggestedTags' });
       deleteButton = wrapper.find('.filter__delete-button');
+    });
+
+    it('limits the amount of rendered, if `shouldTruncateTags` is `true`', () => {
+      const newTags = ['a', 'b', 'c', 'd', 'e', 'f'];
+      wrapper.setProps({
+        tags: newTags,
+      });
+      expect(suggestedTags.props('tags')).toEqual(newTags);
+      wrapper.setProps({
+        shouldTruncateTags: true,
+      });
+      expect(suggestedTags.props('tags')).toEqual(newTags.slice(0, TagLimit));
     });
 
     it('renders `deleteButton` when there are tags and they are shown', () => {

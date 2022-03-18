@@ -237,8 +237,8 @@ export default {
       const suggestedTags = tags.filter(tag => !selectedTags.includes(tag));
 
       return shouldTruncateTags
-        ? suggestedTags
-        : suggestedTags.slice(0, TagLimit);
+        ? suggestedTags.slice(0, TagLimit)
+        : suggestedTags;
     },
     displaySuggestedTags: ({ showSuggestedTags, suggestedTags }) => (
       showSuggestedTags && suggestedTags.length > 0
