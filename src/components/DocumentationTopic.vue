@@ -29,7 +29,7 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-      <div class="container" v-if='showContainer'>
+      <div class="container" v-if="showContainer">
         <div class="description">
           <RequirementMetadata
             v-if="isRequirement"
@@ -52,28 +52,26 @@
           :sections="primaryContentSections"
         />
       </div>
-      <div class="secondary-content">
-        <Topics
-          v-if="topicSections"
-          :sections="topicSections"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-        />
-        <DefaultImplementations
-          v-if="defaultImplementationsSections"
-          :sections="defaultImplementationsSections"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-        />
-        <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
-        <!-- NOTE: see also may contain information about other apis, so we cannot
-        pass deprecation and beta information -->
-        <SeeAlso
-          v-if="seeAlsoSections"
-          :sections="seeAlsoSections"
-        />
-        <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
-      </div>
+      <Topics
+        v-if="topicSections"
+        :sections="topicSections"
+        :isSymbolDeprecated="isSymbolDeprecated"
+        :isSymbolBeta="isSymbolBeta"
+      />
+      <DefaultImplementations
+        v-if="defaultImplementationsSections"
+        :sections="defaultImplementationsSections"
+        :isSymbolDeprecated="isSymbolDeprecated"
+        :isSymbolBeta="isSymbolBeta"
+      />
+      <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+      <!-- NOTE: see also may contain information about other apis, so we cannot
+      pass deprecation and beta information -->
+      <SeeAlso
+        v-if="seeAlsoSections"
+        :sections="seeAlsoSections"
+      />
+      <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
   </div>
 </template>
@@ -383,10 +381,11 @@ export default {
 }
 
 // remove border-top for first section of the page
-.documentation-hero + .secondary-content {
-  .contenttable:first-child {
-    /deep/ .title {
+/deep/ {
+  .documentation-hero + .contenttable {
+    .container > .title {
       border-top: none;
+      // background: red;
     }
   }
 }
