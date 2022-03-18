@@ -168,37 +168,57 @@ describe('NavigatorCardItem', () => {
       expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBe('true');
     });
 
+    it('applies role link to NavigatorCardItem if item type is not groupMarker', () => {
+      const wrapper = createWrapper();
+      expect(wrapper.find('.navigator-card-item').attributes('role')).toBe('link');
+    });
+
+    it('does not apply role link to NavigatorCardItem if item type is groupMarker', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            type: TopicTypes.groupMarker,
+          },
+        },
+      });
+      expect(wrapper.find('.navigator-card-item').attributes('role')).toBeFalsy();
+    });
+
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {
       const wrapper = createWrapper();
       expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBeFalsy();
     });
 
-    it('renders a hidden span telling the number of symbols to be expanded', () => {
+    it('renders a hidden span telling how to use the key arrows', () => {
       const wrapper = createWrapper();
-      const label = wrapper.find(`#button-parent-${defaultProps.item.uid}`);
+      const label = wrapper.find(`#usage-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe(`${defaultProps.item.childUIDs.length} symbols to be expanded`);
+      expect(label.text()).toBe('To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow');
     });
 
-    it('renders a hidden span telling the number of symbols to be collapsed', () => {
+    it('renders aria tags to describe item', () => {
+      const wrapper = createWrapper();
+      expect(wrapper.attributes('aria-expanded')).toBe('false');
+      expect(wrapper.attributes('tabindex')).toBe('-1');
+      expect(wrapper.attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} Foo label-parent-${defaultProps.item.uid} usage-${defaultProps.item.uid}`);
+    });
+
+    it('renders tabindex 0 when element is focused', () => {
       const wrapper = createWrapper({
         propsData: {
-          expanded: true,
+          isFocused: true,
         },
       });
-      const label = wrapper.find(`#button-parent-${defaultProps.item.uid}`);
-      expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe(`${defaultProps.item.childUIDs.length} symbols to be collapsed`);
+      expect(wrapper.attributes('tabindex')).toBe('0');
     });
 
-    it('renders aria tags to describe button', () => {
+    it('renders tabindex -1 in button and reference', () => {
       const wrapper = createWrapper();
       const button = wrapper.find('.tree-toggle');
-      expect(button.attributes('aria-label')).toBe(`Toggle ${defaultProps.item.title}`);
-      expect(button.attributes('aria-controls')).toBe(`container-${defaultProps.item.uid}`);
-      expect(button.attributes('aria-expanded')).toBe('false');
-      expect(button.attributes('tabindex')).toBeFalsy();
-      expect(button.attributes('aria-describedby')).toBe(`button-parent-${defaultProps.item.uid}`);
+      expect(button.attributes('tabindex')).toBe('-1');
+      const link = wrapper.find('.leaf-link');
+      expect(link.attributes('tabindex')).toBe('-1');
     });
 
     it('renders tabindex -1 in button when component is not rendered', () => {
@@ -210,13 +230,13 @@ describe('NavigatorCardItem', () => {
       expect(wrapper.find('.tree-toggle').attributes('tabindex')).toBe('-1');
     });
 
-    it('renders aria-expanded true in button when component is expanded', () => {
+    it('renders aria-expanded true in wrapper when component is expanded', () => {
       const wrapper = createWrapper({
         propsData: {
           expanded: true,
         },
       });
-      expect(wrapper.find('.tree-toggle').attributes('aria-expanded')).toBe('true');
+      expect(wrapper.attributes('aria-expanded')).toBe('true');
     });
 
     it('renders a hidden span telling the user the position of a symbol', () => {
@@ -234,7 +254,7 @@ describe('NavigatorCardItem', () => {
       expect(label.text()).toBe(`, containing ${defaultProps.item.childUIDs.length} symbols`);
     });
 
-    it('renders a aria-describedby in the leaf-link', () => {
+    it('renders a aria-describedby without parent label if it is not a parent', () => {
       const wrapper = createWrapper({
         propsData: {
           item: {
@@ -243,14 +263,8 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
-        .toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent}`);
-    });
-
-    it('renders a aria-describedby in the leaf-link including the parent label if is parent', () => {
-      const wrapper = createWrapper();
-      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
-        .toBe(`label-${defaultProps.item.uid} ${defaultProps.item.parent} label-parent-${defaultProps.item.uid}`);
+      expect(wrapper.attributes('aria-describedby'))
+        .toBe(`label-${defaultProps.item.uid} Foo usage-${defaultProps.item.uid}`);
     });
   });
 });

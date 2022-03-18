@@ -172,6 +172,7 @@ describe('NavigatorCard', () => {
       isActive: false,
       isRendered: false,
       filterPattern: null,
+      isFocused: false,
       isBold: true,
       item: root0,
       apiChange: null,
@@ -195,6 +196,58 @@ describe('NavigatorCard', () => {
       ],
       value: '',
     });
+  });
+
+  it('focuses the current page', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(1);
+  });
+
+  it('focus the first item if there is no active item', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(1);
+
+    wrapper.setProps({
+      activePath: [],
+    });
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(0);
+  });
+
+  it('allows the user to navigate through arrow keys', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(1);
+    wrapper.findAll(NavigatorCardItem).at(0).trigger('keydown.down');
+    expect(wrapper.vm.focusedIndex).toBe(2);
+
+    wrapper.findAll(NavigatorCardItem).at(1).trigger('keydown.up');
+    expect(wrapper.vm.focusedIndex).toBe(1);
+  });
+
+  it('allows the user to navigate to the last item on the list when pressing alt + down key', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    wrapper.findAll(NavigatorCardItem).at(0).trigger('keydown', {
+      key: 'ArrowDown',
+      altKey: true,
+    });
+    // assert that focusedIndex is restore
+    expect(wrapper.vm.focusedIndex).toBe(null);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
+  });
+
+  it('allows the user to navigate to the first item on the list when pressing alt + up key', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    wrapper.findAll(NavigatorCardItem).at(3).trigger('keydown', {
+      key: 'ArrowUp',
+      altKey: true,
+    });
+    expect(wrapper.vm.focusedIndex).toBe(0);
   });
 
   it('reverses the FilterInput, on mobile', () => {
@@ -283,6 +336,7 @@ describe('NavigatorCard', () => {
       expanded: false,
       isActive: false,
       isBold: false,
+      isFocused: false,
       item,
       filterPattern: null,
       isRendered: false,
@@ -901,6 +955,7 @@ describe('NavigatorCard', () => {
         filterPattern: null,
         isActive: true,
         isBold: true,
+        isFocused: false,
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
       });
@@ -921,6 +976,7 @@ describe('NavigatorCard', () => {
         filterPattern: null,
         isActive: true,
         isBold: true,
+        isFocused: false,
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
       });

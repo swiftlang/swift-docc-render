@@ -47,10 +47,6 @@ describe('TagList', () => {
     expect(list.classes('scrolling')).toBe(true);
   });
 
-  it('sets `focusedIndex` to `null` if user is not focusing on any tag', () => {
-    expect(wrapper.vm.focusedIndex).toBe(null);
-  });
-
   it('re-emits `prevent-blur` when tag emitted `prevent-blur`', () => {
     tag1.vm.$emit('prevent-blur');
 

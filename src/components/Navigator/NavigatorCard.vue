@@ -24,7 +24,13 @@
           </Reference>
         </div>
         <slot name="post-head" />
-        <div class="card-body">
+        <div
+          class="card-body"
+          @keydown.alt.up.capture.prevent="focusFirst"
+          @keydown.alt.down.capture.prevent="focusLast"
+          @keydown.up.exact.capture.prevent="focusPrev"
+          @keydown.down.exact.capture.prevent="focusNext"
+        >
           <RecycleScroller
             v-show="hasNodes"
             :id="scrollLockID"
@@ -35,7 +41,7 @@
             :item-size="itemSize"
             emit-update
             key-field="uid"
-            v-slot="{ item, active }"
+            v-slot="{ item, active, index }"
             @focusin.native="handleFocusIn"
             @focusout.native="handleFocusOut"
             @update="handleScrollerUpdate"
@@ -48,6 +54,7 @@
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
+              :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @navigate="setActiveUID"
@@ -96,6 +103,7 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -205,6 +213,9 @@ export default {
       default: null,
     },
   },
+  mixins: [
+    keyboardNavigation,
+  ],
   data() {
     return {
       // value to v-model the filter to
@@ -274,6 +285,9 @@ export default {
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
     ),
+    activeIndex: ({ activeUID, nodesToRender }) => (
+      nodesToRender.findIndex(node => node.uid === activeUID)
+    ),
     /**
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
@@ -317,6 +331,7 @@ export default {
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
+    totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
   },
   created() {
     this.restorePersistedState();
@@ -330,6 +345,14 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
+    activeIndex(value) {
+      if (value > 0) {
+        this.focusIndex(value);
+      } else {
+        // if there is no active item, return the index to 0
+        this.focusIndex(0);
+      }
+    },
     activePath: 'handleActivePathChange',
   },
   methods: {
@@ -337,6 +360,9 @@ export default {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
+    },
+    scrollToFocus() {
+      this.$refs.scroller.scrollToItem(this.focusedIndex);
     },
     debounceInput: debounce(function debounceInput(value) {
       // store the new filter value
