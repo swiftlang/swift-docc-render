@@ -194,9 +194,13 @@ describe('DocumentationTopic', () => {
   });
 
   it('provides the selected api changes, to the NavigatorDataProvider', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
     wrapper.vm.store.state.selectedAPIChangesVersion = 'latest_major';
-    wrapper.setData({ topicData });
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
     const dataProvider = wrapper.find(NavigatorDataProvider);
     expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
   });
