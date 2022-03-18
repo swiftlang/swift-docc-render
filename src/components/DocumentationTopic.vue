@@ -29,7 +29,7 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-      <div class="container" v-if="showContainer">
+      <div v-if="showContainer" class="container">
         <div class="description">
           <RequirementMetadata
             v-if="isRequirement"
@@ -293,10 +293,13 @@ export default {
         : [];
     },
     showContainer: ({
-      isRequirement, deprecationSummary, downloadNotAvailableSummary,
+      isRequirement,
+      deprecationSummary,
+      downloadNotAvailableSummary,
       primaryContentSections,
     }) => (
-      isRequirement || (deprecationSummary && deprecationSummary)
+      isRequirement
+      || (deprecationSummary && deprecationSummary)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
     ),
