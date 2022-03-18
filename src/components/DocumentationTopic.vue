@@ -385,7 +385,6 @@ export default {
   .documentation-hero + .contenttable {
     .container > .title {
       border-top: none;
-      // background: red;
     }
   }
 }
