@@ -30,7 +30,7 @@
         />
       </DocumentationHero>
       <div class="container">
-        <Description v-if="hasOverview">
+        <div class="description">
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -44,7 +44,7 @@
           >
             <ContentNode :content="downloadNotAvailableSummary" />
           </Aside>
-        </Description>
+        </div>
         <PrimaryContent
           v-if="primaryContentSections && primaryContentSections.length"
           :class="{ 'with-border': !enhanceBackground }"
@@ -90,7 +90,6 @@ import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
-import Description from './DocumentationTopic/Description.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
@@ -124,7 +123,6 @@ export default {
     BetaLegalText,
     ContentNode,
     DefaultImplementations,
-    Description,
     DownloadButton: CallToActionButton,
     LanguageSwitcher,
     PrimaryContent,
@@ -272,10 +270,6 @@ export default {
         0,
       );
     },
-    hasOverview:
-      ({ primaryContentSections = [] }) => primaryContentSections.filter(section => (
-        section.kind === PrimaryContent.constants.SectionKind.content
-      )).length > 0,
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
@@ -372,6 +366,16 @@ export default {
 .first-section .contenttable:first-child {
   /deep/ .title {
     border-top-width: 0px;
+
+.description {
+  &:empty { display: none; }
+
+  &:not(:empty) {
+    margin-bottom: $contenttable-spacing-single-side;
+  }
+
+  /deep/ .content + * {
+  margin-top: $stacked-margin-large;
   }
 }
 

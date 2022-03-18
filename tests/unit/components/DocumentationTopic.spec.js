@@ -19,7 +19,6 @@ const {
   ContentNode,
   DefaultImplementations,
   Aside,
-  Description,
   DownloadButton,
   LanguageSwitcher,
   PrimaryContent,
@@ -273,32 +272,6 @@ describe('DocumentationTopic', () => {
     const abstractComponent = hero.find(Abstract);
     expect(abstractComponent.exists()).toBe(true);
     expect(abstractComponent.props('content')).toEqual(emptyParagraph);
-  });
-
-  it('renders a `Description` if has overview', () => {
-    const description = wrapper.find(Description);
-    expect(description.exists()).toBe(true);
-
-    expect(wrapper.find(PrimaryContent).exists()).toBe(true);
-  });
-
-  it('does not render a `Description` if no overview', () => {
-    // no overview if SectionKind is not content
-    wrapper.setProps({
-      primaryContentSections: [
-        {
-          kind: PrimaryContent.constants.SectionKind.declarations,
-          content: [foo],
-        },
-      ],
-    });
-    const description = wrapper.find(Description);
-    expect(description.exists()).toBe(false);
-
-    wrapper.setProps({
-      primaryContentSections: [],
-    });
-    expect(wrapper.contains(Description)).toBe(false);
   });
 
   it('renders a `PrimaryContent`', () => {
