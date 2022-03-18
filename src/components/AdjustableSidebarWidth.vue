@@ -26,6 +26,7 @@
           name="aside"
           animationClass="aside-animated-child"
           :scrollLockID="scrollLockID"
+          :breakpoint="breakpoint"
         />
       </div>
       <div

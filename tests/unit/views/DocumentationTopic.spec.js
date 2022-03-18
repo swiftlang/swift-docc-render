@@ -155,6 +155,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technology,
+      apiChangesVersion: null,
     });
     // its rendered by default
     const navigator = wrapper.find(Navigator);
@@ -165,8 +166,10 @@ describe('DocumentationTopic', () => {
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
+      breakpoint: 'large',
       // assert we are passing the default technology, if we dont have the children yet
       technology,
+      apiChanges: null,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -174,14 +177,24 @@ describe('DocumentationTopic', () => {
       errorFetching: false,
       isFetching: false,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
+      breakpoint: 'large',
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       technology: TechnologyWithChildren,
+      apiChanges: null,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
     expect(nav.props('isWideFormat')).toBe(true);
     getSetting.mockReset();
+  });
+
+  it('provides the selected api changes, to the NavigatorDataProvider', () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+    wrapper.vm.store.state.selectedAPIChangesVersion = 'latest_major';
+    wrapper.setData({ topicData });
+    const dataProvider = wrapper.find(NavigatorDataProvider);
+    expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
   });
 
   it('renders the Navigator with data when no reference is found for a top-level collection', () => {

@@ -277,7 +277,10 @@ export default {
   watch: {
     async selectedTags() {
       if (!this.resetedTagsViaDeleteButton) {
-        await this.focusInput();
+        // make sure we are inside the component, if we are moving the focus
+        if (this.$el.contains(document.activeElement)) {
+          await this.focusInput();
+        }
       } else {
         this.resetedTagsViaDeleteButton = false;
       }
@@ -352,9 +355,9 @@ export default {
       this.setSelectedTags(this.selectedTags.filter(tag => !array.includes(tag)));
     },
     async handleBlur(event) {
-      // if the blur came from clicking a link
+      // if the blur came from clicking a button or the input
       const target = event.relatedTarget;
-      if (target && target.matches && target.matches('button, input, ul')) return;
+      if (target && target.matches && target.matches('button, input, ul') && this.$el.contains(target)) return;
       // Wait for mousedown to send event listeners
       await this.$nextTick();
 

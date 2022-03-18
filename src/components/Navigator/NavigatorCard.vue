@@ -23,9 +23,10 @@
             </div>
           </Reference>
         </div>
+        <slot name="post-head" />
         <div class="card-body">
           <RecycleScroller
-            v-show="nodesToRender.length"
+            v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
@@ -43,20 +44,17 @@
               :is-active="item.uid === activeUID"
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
+              :api-change="apiChangesObject[item.path]"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
+              @navigate="setActiveUID"
             />
           </RecycleScroller>
-          <div class="no-items-wrapper" v-if="!nodesToRender.length">
-            <template v-if="hasFilter">
-              No results matching your filter
-            </template>
-            <template v-else-if="errorFetching">
-              There was an error fetching the data
-            </template>
-            <template v-else>
-              Technology has no children
-            </template>
+          <div aria-live="polite" class="visuallyhidden">
+            {{ politeAriaLive }}
+          </div>
+          <div aria-live="assertive" class="no-items-wrapper">
+            {{ assertiveAriaLive }}
           </div>
         </div>
       </div>
@@ -69,7 +67,8 @@
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
             :placeholder="`Filter in ${technology}`"
-            position-reversed
+            :should-keep-open-on-blur="false"
+            :position-reversed="isLargeBreakpoint"
             class="filter-component"
             @clear="clearFilters"
           />
@@ -93,6 +92,7 @@ import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -100,7 +100,14 @@ const STORAGE_KEYS = {
   openNodes: 'navigator.openNodes',
   nodesToRender: 'navigator.nodesToRender',
   selectedTags: 'navigator.selectedTags',
+  apiChanges: 'navigator.apiChanges',
+  activeUID: 'navigator.activeUID',
 };
+
+const NO_RESULTS = 'No results matching your filter';
+const NO_CHILDREN = 'Technology has no children';
+const ERROR_FETCHING = 'There was an error fetching the data';
+const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
@@ -144,6 +151,10 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
+    NO_RESULTS,
+    NO_CHILDREN,
+    ERROR_FETCHING,
+    ITEMS_FOUND,
   },
   components: {
     FilterInput,
@@ -182,6 +193,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    breakpoint: {
+      type: String,
+      default: '',
+    },
+    apiChanges: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -194,10 +213,26 @@ export default {
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
+      activeUID: null,
+      resetScroll: false,
+      NO_RESULTS,
+      NO_CHILDREN,
+      ERROR_FETCHING,
+      ITEMS_FOUND,
     };
   },
   computed: {
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
+    politeAriaLive: ({ hasNodes, nodesToRender }) => {
+      if (!hasNodes) return '';
+      return [nodesToRender.length, ITEMS_FOUND].join(' ');
+    },
+    assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
+      if (hasNodes) return '';
+      if (hasFilter) return NO_RESULTS;
+      if (errorFetching) return ERROR_FETCHING;
+      return NO_CHILDREN;
+    },
     availableTags: ({ selectedTags }) => (
       selectedTags.length
         ? []
@@ -207,6 +242,7 @@ export default {
       get: ({ selectedTags }) => selectedTags.map(tag => FILTER_TAGS_TO_LABELS[tag]),
       set(values) {
         this.selectedTags = values.map(label => FILTER_LABELS_TO_TAGS[label]);
+        this.resetScroll = true;
       },
     },
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
@@ -225,59 +261,36 @@ export default {
       return Object.fromEntries(children.map(child => [child.uid, child]));
     },
     /**
-     * Returns an array of {NavigatorFlatItem}, for the current page hierarchy
+     * Returns an array of {NavigatorFlatItem}, from the current active UUID
      * @return NavigatorFlatItem[]
      */
-    activePathChildren() {
-      // get the stack to iterate
-      const stack = this.activePath.slice(0).reverse();
-      // the items to loop over. First iteration is over all items
-      let childrenStack = this.children;
-      const result = [];
-      // loop as long as there are items
-      while (stack.length) {
-        // get the last item (first parent, as we reversed it)
-        const currentPath = stack.pop();
-        // find it by path (we dont have the UID yet)
-        const currentNode = childrenStack.find(c => c.path === currentPath);
-        if (!currentNode) break;
-        // push the object to the results
-        result.push(currentNode);
-        if (stack.length) {
-          // get the children, so we search in those
-          childrenStack = currentNode.childUIDs.map(c => this.childrenMap[c]);
-        }
-      }
-      return result;
+    activePathChildren({ activeUID }) {
+      return activeUID ? this.getParents(activeUID) : [];
     },
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
     ),
-    /**
-     * Returns the current page uid
-     * @return number
-     */
-    activeUID({ activePathChildren }) {
-      return (activePathChildren[activePathChildren.length - 1] || {}).uid;
-    },
     /**
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
+      apiChangesObject, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
-      return children.filter(({ title, type }) => {
+      return children.filter(({ title, path, type }) => {
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
         const tagMatch = selectedTags.length
           ? tagsSet.has(TOPIC_TYPE_TO_TAG[type]) : true;
+        // find items, that have API changes
+        const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && type !== TopicTypes.groupMarker;
+        return titleMatch && tagMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
       });
     },
     /**
@@ -291,9 +304,15 @@ export default {
       debouncedFilter,
       selectedTags,
     ]),
-    hasFilter({ debouncedFilter, selectedTags }) {
-      return Boolean(debouncedFilter.length || selectedTags.length);
+    // determine if we should use the filtered items for rendering nodes
+    hasFilter({ debouncedFilter, selectedTags, apiChanges }) {
+      return Boolean(debouncedFilter.length || selectedTags.length || apiChanges);
     },
+    apiChangesObject() {
+      return this.apiChanges || {};
+    },
+    isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
+    hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
   },
   created() {
     this.restorePersistedState();
@@ -307,6 +326,7 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
+    activePath: 'handleActivePathChange',
   },
   methods: {
     clearFilters() {
@@ -315,7 +335,10 @@ export default {
       this.selectedTags = [];
     },
     debounceInput: debounce(function debounceInput(value) {
+      // store the new filter value
       this.debouncedFilter = value;
+      // note to the component, that we want to reset the scroll
+      this.resetScroll = true;
     }, 500),
     /**
      * Finds which nodes need to be opened.
@@ -336,6 +359,7 @@ export default {
       ) {
         return;
       }
+
       // decide which items are open
       const nodes = !this.hasFilter
         ? activePathChildren
@@ -455,6 +479,24 @@ export default {
       return arr;
     },
     /**
+     * Get all sibling nodes of a node
+     * @return {NavigatorFlatItem[]}
+     */
+    getSiblings(uid) {
+      const item = this.childrenMap[uid];
+      if (!item) return [];
+      return this.getChildren(item.parent);
+    },
+    /**
+     * Get the direct child nodes of a node.
+     * @return {NavigatorFlatItem[]}
+     */
+    getChildren(uid) {
+      const item = this.childrenMap[uid];
+      if (!item) return [];
+      return (item.childUIDs || []).map(child => this.childrenMap[child]);
+    },
+    /**
      * Stores all the nodes we should render at this point.
      * This gets called everytime you open/close a node,
      * or when you start filtering.
@@ -467,8 +509,6 @@ export default {
       // create a set of all matches and their parents
       const allChildMatchesSet = new Set(filteredChildren
         .flatMap(({ uid }) => this.getParents(uid)));
-      // create a set of direct matches
-      const filteredChildrenSet = new Set(filteredChildren);
 
       // generate the list of nodes to render
       this.nodesToRender = children
@@ -480,8 +520,6 @@ export default {
           }
           // if parent is the root and is in the child match set
           return (child.parent === INDEX_ROOT_KEY && allChildMatchesSet.has(child))
-            // if the parent is open and is a direct filter match
-            || (openNodes[child.parent] && filteredChildrenSet.has(this.childrenMap[child.parent]))
             // if the item itself is a direct match
             || allChildMatchesSet.has(child);
         });
@@ -512,6 +550,7 @@ export default {
      */
     persistState() {
       sessionStorage.set(STORAGE_KEYS.technology, this.technology);
+      sessionStorage.set(STORAGE_KEYS.apiChanges, !!this.apiChanges);
       // store the keys of the openNodes map, converting to number, to reduce space
       sessionStorage.set(STORAGE_KEYS.openNodes, Object.keys(this.openNodes).map(Number));
       // we need only the UIDs
@@ -524,17 +563,25 @@ export default {
       const technology = sessionStorage.get(STORAGE_KEYS.technology);
       const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
+      const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
+      const activeUID = sessionStorage.get(STORAGE_KEYS.activeUID, null);
 
       // if for some reason there are no nodes and no filter, we can assume its bad cache
       if (!nodesToRender.length && !filter) {
-        this.trackOpenNodes(this.nodeChangeDeps);
+        this.handleActivePathChange(this.activePath);
         return;
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      // if the technology does not match, do not use the persisted values
-      if (technology !== this.technology || !allNodesMatch) {
-        this.trackOpenNodes(this.nodeChangeDeps);
+      // if the technology does not match, or we dont have API changes yet,
+      // do not use the persisted values
+      if (
+        technology !== this.technology
+        || !allNodesMatch
+        || (hasAPIChanges !== Boolean(this.apiChanges))
+        || !nodesToRender.includes(activeUID)
+      ) {
+        this.handleActivePathChange(this.activePath);
         return;
       }
       // get all open nodes
@@ -548,22 +595,35 @@ export default {
       this.selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
       this.filter = filter;
       this.debouncedFilter = this.filter;
+      this.activeUID = activeUID;
       // scroll to the active element
       this.scrollToElement();
     },
     async scrollToElement() {
       await waitFrames(1);
+      if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      const index = this.hasFilter
-        ? 0
-        // find the index of the current active UID in the newly added nodes
-        : this.nodesToRender.findIndex(child => child.uid === this.activeUID);
-      // if for some reason we cant find the active page, bail.
-      // make sure the scroller is visible
-      if (index !== -1 && this.$refs.scroller) {
-        // call the scroll method on the `scroller` component.
-        this.$refs.scroller.scrollToItem(index);
+      if (this.resetScroll) {
+        this.$refs.scroller.scrollToItem(0);
+        return;
       }
+      // check if the current element is visible and needs scrolling into
+      const element = document.getElementById(this.activeUID);
+      if (element) {
+        // get the position of the scroller in the screen
+        const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
+        // get the position of the active element
+        const { y } = element.getBoundingClientRect();
+        // calculate where it starts from
+        const calculatedY = y - areaY;
+        // if the element is within the scroll area, we dont need to scroll to it.
+        if (calculatedY >= 0 && calculatedY < areaHeight) return;
+      }
+      // find the index of the current active UID in the newly added nodes
+      const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
+      // check if the element is visible
+      // call the scroll method on the `scroller` component.
+      this.$refs.scroller.scrollToItem(index);
     },
     handleBlur(event) {
       // if there is a related target, do nothing
@@ -576,6 +636,84 @@ export default {
       event.target.focus({
         preventScroll: true,
       });
+    },
+    /**
+     * Stores the newly clicked item's UID, so we can highlight it
+     */
+    setActiveUID(uid) {
+      this.activeUID = uid;
+      this.resetScroll = false;
+      sessionStorage.set(STORAGE_KEYS.activeUID, uid);
+    },
+    /**
+     * Returns an array of {NavigatorFlatItem}, from a breadcrumbs list
+     * @return NavigatorFlatItem[]
+     */
+    pathsToFlatChildren(paths) {
+      // get the stack to iterate
+      const stack = paths.slice(0).reverse();
+      // the items to loop over. First iteration is over all items
+      let childrenStack = this.children;
+      const result = [];
+      // loop as long as there are items
+      while (stack.length) {
+        // get the last item (first parent, as we reversed it)
+        const currentPath = stack.pop();
+        // find it by path (we dont have the UID yet)
+        const currentNode = childrenStack.find(c => c.path === currentPath);
+        if (!currentNode) break;
+        // push the object to the results
+        result.push(currentNode);
+        if (stack.length) {
+          // get the children, so we search in those
+          childrenStack = currentNode.childUIDs.map(c => this.childrenMap[c]);
+        }
+      }
+      return result;
+    },
+    handleActivePathChange(activePath) {
+      // get current active item's node, if any
+      const currentActiveItem = this.childrenMap[this.activeUID];
+      // get the current path
+      const lastActivePathItem = activePath[activePath.length - 1];
+      // check if there is an active item to start looking from
+      if (currentActiveItem) {
+        // Return early, if the current path matches the current active node.
+        // This will happen on each navigator item click, as the activePath gets updated after
+        // the navigation ends and RenderJSON is updated.
+        if (lastActivePathItem === currentActiveItem.path) {
+          return;
+        }
+        // Get the surrounding items
+        const siblings = this.getSiblings(this.activeUID);
+        const children = this.getChildren(this.activeUID);
+        const parents = this.getParents(this.activeUID);
+        // try to match if any of the `siblings`,`children` or any of the `parents`,
+        // match the current open item
+        const matchingItem = [...children, ...siblings, ...parents]
+          .find(child => child.path === lastActivePathItem);
+
+        // set the match as an active item
+        if (matchingItem) {
+          this.setActiveUID(matchingItem.uid);
+          return;
+        }
+      }
+      // There is no match to base upon, so we need to search
+      // across the activePath for the active item.
+      const activePathChildren = this.pathsToFlatChildren(activePath);
+      // if there are items, set the new active UID
+      if (activePathChildren.length) {
+        this.setActiveUID(activePathChildren[activePathChildren.length - 1].uid);
+        return;
+      }
+      // if there is an activeUID, unset it, as we probably navigated back to the root
+      if (this.activeUID) {
+        this.setActiveUID(null);
+        return;
+      }
+      // Just track the open nodes, as setting the activeUID as null wont do anything.
+      this.trackOpenNodes(this.nodeChangeDeps);
     },
   },
 };
@@ -650,18 +788,22 @@ $filter-height: 64px;
 .close-card-mobile {
   display: none;
   position: absolute;
-  top: 50%;
   z-index: 1;
-  transform: translateY(-50%);
   color: var(--color-link);
+  align-items: center;
+  justify-content: center;
 
   @include breakpoint(medium, nav) {
     display: flex;
-    left: $nav-padding-wide;
+    left: 0;
+    height: 100%;
+    padding-left: $nav-padding-wide;
+    padding-right: $nav-padding-wide;
   }
 
   @include breakpoint(small, nav) {
-    left: $nav-padding-small;
+    padding-left: $nav-padding-small;
+    padding-right: $nav-padding-small;
   }
 
   .close-icon {
@@ -703,6 +845,8 @@ $filter-height: 64px;
   @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
+    align-items: flex-start;
+    height: 62px;
   }
 
   .input-wrapper {

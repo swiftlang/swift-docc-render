@@ -18,6 +18,7 @@ import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
+import { BreakpointName } from '@/utils/breakpoints';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -26,7 +27,15 @@ jest.mock('docc-render/utils/loading');
 
 sessionStorage.get.mockImplementation((key, def) => def);
 
-const { STORAGE_KEYS, FILTER_TAGS, FILTER_TAGS_TO_LABELS } = NavigatorCard.constants;
+const {
+  STORAGE_KEYS,
+  FILTER_TAGS,
+  FILTER_TAGS_TO_LABELS,
+  NO_CHILDREN,
+  NO_RESULTS,
+  ERROR_FETCHING,
+  ITEMS_FOUND,
+} = NavigatorCard.constants;
 
 const RecycleScrollerStub = {
   props: RecycleScroller.props,
@@ -113,6 +122,7 @@ const defaultProps = {
   activePath,
   type: TopicTypes.module,
   scrollLockID: 'foo',
+  breakpoint: 'large',
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -131,8 +141,9 @@ describe('NavigatorCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it('renders the NavigatorCard', () => {
+  it('renders the NavigatorCard', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     expect(wrapper.find('.card-icon').props('type')).toEqual(defaultProps.type);
     // assert link
     expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
@@ -161,9 +172,10 @@ describe('NavigatorCard', () => {
       filterPattern: null,
       isBold: true,
       item: root0,
+      apiChange: null,
     });
     // assert no-items-wrapper
-    expect(wrapper.find('.no-items-wrapper').exists()).toBe(false);
+    expect(wrapper.find('.no-items-wrapper').exists()).toBe(true);
     // assert filter
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
@@ -183,8 +195,24 @@ describe('NavigatorCard', () => {
     });
   });
 
+  it('reverses the FilterInput, on mobile', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        breakpoint: BreakpointName.medium,
+      },
+    });
+    expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
+  });
+
+  it('renders aria-live regions for polite and assertive notifications', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="assertive"]').exists()).toBe(true);
+  });
+
   it('hides the RecycleScroller, if no items to show', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     const scroller = wrapper.find(RecycleScroller);
     expect(scroller.isVisible()).toBe(true);
     wrapper.find(FilterInput).vm.$emit('input', 'bad-query');
@@ -192,41 +220,60 @@ describe('NavigatorCard', () => {
     expect(scroller.isVisible()).toBe(false);
   });
 
-  it('renders a message, if no items found when filtering', async () => {
+  it('renders a message updating aria-live, if no items found when filtering', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     const scroller = wrapper.find(RecycleScroller);
     expect(scroller.isVisible()).toBe(true);
     wrapper.find(FilterInput).vm.$emit('input', 'bad-query');
     await wrapper.vm.$nextTick();
     expect(scroller.props('items')).toEqual([]);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('.no-items-wrapper').text()).toBe('No results matching your filter');
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_RESULTS);
   });
 
-  it('renders a message, if no children', () => {
+  it('renders a message updating aria-live, if no children', async () => {
     const wrapper = createWrapper({
       propsData: {
         children: [],
       },
     });
+    await flushPromises();
     const scroller = wrapper.find(RecycleScroller);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('.no-items-wrapper').text()).toBe('Technology has no children');
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_CHILDREN);
   });
 
-  it('adds an error message, when there is an error in fetching', () => {
+  it('renders an error message updating aria-live, when there is an error in fetching', async () => {
     const wrapper = createWrapper({
       propsData: {
         children: [],
         errorFetching: true,
       },
     });
-    expect(wrapper.find('.no-items-wrapper').text()).toBe('There was an error fetching the data');
+    await flushPromises();
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(ERROR_FETCHING);
     expect(wrapper.find('.filter-wrapper').exists()).toBe(false);
+  });
+
+  it('renders an hidden message updating aria-live, notifying how many items were found', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    const unopenedItem = wrapper.findAll(NavigatorCardItem).at(2);
+    unopenedItem.vm.$emit('toggle', root0Child1);
+    await wrapper.vm.$nextTick();
+    let message = [children.length, ITEMS_FOUND].join(' ');
+    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
+
+    wrapper.find(FilterInput).vm.$emit('input', root0.title);
+    await wrapper.vm.$nextTick();
+    message = [1, ITEMS_FOUND].join(' ');
+    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
   });
 
   it('opens an item, on @toggle', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     const item = root0Child1;
     let all = wrapper.findAll(NavigatorCardItem);
     const unopenedItem = all.at(2);
@@ -237,6 +284,7 @@ describe('NavigatorCard', () => {
       item,
       filterPattern: null,
       isRendered: false,
+      apiChange: null,
     });
     unopenedItem.vm.$emit('toggle', item);
     await wrapper.vm.$nextTick();
@@ -250,6 +298,7 @@ describe('NavigatorCard', () => {
 
   it('closes an item and all of its children, on @toggle', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     const item = root0;
     let all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(4);
@@ -265,9 +314,10 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper({
       propsData: {
         // make sure no items are open
-        activePath: [],
+        activePath: [root0.path],
       },
     });
+    await flushPromises();
     const item = root0;
     let all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -282,8 +332,9 @@ describe('NavigatorCard', () => {
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
   });
 
-  it('highlights the current page, and expands all of its parents', () => {
+  it('highlights the current page, and expands all of its parents', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(4); // assert all are rendered, except the grandchild
     expect(all.at(0).props()).toMatchObject({
@@ -301,9 +352,9 @@ describe('NavigatorCard', () => {
 
   it('allows filtering the items, opening all items, that have matches in children', async () => {
     const wrapper = createWrapper();
-    const filter = wrapper.find(FilterInput);
     await flushPromises();
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    const filter = wrapper.find(FilterInput);
     filter.vm.$emit('input', root0Child1GrandChild0.title);
     await flushPromises();
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
@@ -316,10 +367,71 @@ describe('NavigatorCard', () => {
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
   });
 
-  it('allows filtering the items using Tags, opening all items, that have matches in children', async () => {
+  it('filters items, keeping only direct matches, removing siblings, even if parent is a direct match', async () => {
+    const root0Updated = {
+      ...root0,
+      title: `Second ${root0}`,
+    };
+    const newChildren = [
+      root0Updated,
+      root0Child0,
+      root0Child1,
+      root0Child1GrandChild0,
+      root1,
+    ];
+
+    const wrapper = createWrapper({
+      propsData: {
+        children: newChildren,
+      },
+    });
+    const filter = wrapper.find(FilterInput);
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    // make sure we match at both the top item as well as one of its children
+    filter.vm.$emit('input', 'Second');
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    // assert only the parens of the match are visible
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(2);
+    expect(all.at(0).props('item')).toEqual(root0Updated);
+    expect(all.at(1).props('item')).toEqual(root0Child1);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+  });
+
+  it('renders all the children of a directly matched parent', async () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    filter.vm.$emit('input', root0.title);
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    // assert only the parens of the match are visible
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(1);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    // open the item
+    all.at(0).vm.$emit('toggle', root0);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+    // open last child
+    all.at(2).vm.$emit('toggle', root0Child1);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+    expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
+  });
+
+  it('allows filtering the items using Tags, opening all items, that have matches in children', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
     await flushPromises();
@@ -328,7 +440,8 @@ describe('NavigatorCard', () => {
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    // assert we reset the scroll to the top
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
   });
 
   it('aliases `project` to `tutorial`, when filtering using tags', async () => {
@@ -415,86 +528,47 @@ describe('NavigatorCard', () => {
     expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
   });
 
-  it('changes the open item, when navigating across pages, keeping the previously open items', async () => {
-    // simulate navigating to the bottom most item
-    const wrapper = createWrapper();
-    wrapper.setProps({
-      activePath: [
-        root0.path,
-        root0Child1.path,
-        root0Child1GrandChild0.path,
-      ],
+  it('renders only direct matches or parents, when apiChanges are provided', async () => {
+    const apiChanges = {
+      [root0Child0.path]: 'modified',
+      [root0Child1.path]: 'modified',
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges,
+      },
     });
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(3);
-    // assert all are open
     const all = wrapper.findAll(NavigatorCardItem);
-    expect(all).toHaveLength(5);
-    // assert it auto opens
-    expect(all.at(0).props()).toMatchObject({
-      expanded: true,
-      isActive: false,
-      isBold: true,
-      item: root0,
-    });
-    expect(all.at(1).props()).toMatchObject({
-      expanded: true,
-      isActive: false,
-      isBold: false,
-      item: root0Child0,
-    });
-    expect(all.at(2).props()).toMatchObject({
-      expanded: true,
-      isActive: false,
-      isBold: true,
-      item: root0Child1,
-    });
-    expect(all.at(3).props()).toMatchObject({
-      expanded: true,
-      isActive: true,
-      isBold: true,
-      item: root0Child1GrandChild0,
-    });
-    // navigate to the top level sibling
-    wrapper.setProps({
-      activePath: [
-        root1.path,
-      ],
+    expect(all).toHaveLength(3);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+  });
+
+  it('allows filtering while API changes are ON', async () => {
+    const apiChanges = {
+      [root0Child0.path]: 'modified',
+      [root0Child1.path]: 'modified',
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges,
+      },
     });
     await flushPromises();
-    // assert it scrolls to the item
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(4);
-    // assert items are still open
-    expect(all.at(0).props()).toMatchObject({
-      expanded: true,
-      isActive: false,
-      isBold: false,
-      item: root0,
-    });
-    expect(all.at(1).props()).toMatchObject({
-      expanded: true,
-      isActive: false,
-      isBold: false,
-      item: root0Child0,
-    });
-    expect(all.at(2).props()).toMatchObject({
-      expanded: true,
-      isActive: false,
-      isBold: false,
-      item: root0Child1,
-    });
-    expect(all.at(3).props()).toMatchObject({
-      expanded: true,
-      isActive: false,
-      isBold: false,
-      item: root0Child1GrandChild0,
-    });
-    expect(all.at(4).props()).toMatchObject({
-      expanded: true,
-      isActive: true,
-      isBold: true,
-      item: root1,
-    });
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+    // filter
+    wrapper.find(FilterInput).vm.$emit('input', root0Child0.title);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(2);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
   });
 
   it('clears previously open items, when filtering and clearing the filter', async () => {
@@ -523,40 +597,53 @@ describe('NavigatorCard', () => {
 
   it('persists the filtered state', async () => {
     const wrapper = createWrapper();
-    // called for the initial 3 things
-    expect(sessionStorage.set).toHaveBeenCalledTimes(3);
+    await flushPromises();
+    // called for the initial 5 things
+    expect(sessionStorage.set).toHaveBeenCalledTimes(5);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.technology, defaultProps.technology);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.openNodes, [0, 1]);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.nodesToRender, [0, 1, 2, 4]);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.apiChanges, false);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.activeUID, 1);
     await flushPromises();
+    sessionStorage.set.mockClear();
     wrapper.find(FilterInput).vm.$emit('input', root0Child1GrandChild0.title);
     wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
     await flushPromises();
-    expect(sessionStorage.set).toHaveBeenCalledTimes(8);
+    expect(sessionStorage.set).toHaveBeenCalledTimes(6);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.filter, root0Child1GrandChild0.title);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.selectedTags, [FILTER_TAGS.tutorials]);
     expect(sessionStorage.set)
-      .toHaveBeenCalledWith(STORAGE_KEYS.openNodes, [0, 1]);
+      .toHaveBeenCalledWith(STORAGE_KEYS.openNodes, [0, 2]);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.nodesToRender, [0, 2, 3]);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.apiChanges, false);
+    expect(sessionStorage.set)
+      .toHaveBeenCalledWith(STORAGE_KEYS.technology, defaultProps.technology);
   });
 
-  it('restores the persisted state, from sessionStorage', () => {
+  it('restores the persisted state, from sessionStorage', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.filter) return root0.title;
       if (key === STORAGE_KEYS.technology) return defaultProps.technology;
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
+      if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
 
     const wrapper = createWrapper();
+    await flushPromises();
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root0);
@@ -564,29 +651,51 @@ describe('NavigatorCard', () => {
       .toEqual([FILTER_TAGS_TO_LABELS.tutorials]);
   });
 
-  it('does not restore the state, if the technology is different', () => {
+  it('does not restore the state, if the technology is different', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.technology) return 'some-other';
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
       return '';
     });
     const wrapper = createWrapper();
+    await flushPromises();
     // assert we are render more than just the single item in the store
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
   });
 
-  it('does not restore the state, if the nodesToRender do not match what we have', () => {
+  it('does not restore the state, if the activeUID is not in the rendered items', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      // simulate we have collapses all, but the top item
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return true;
+      if (key === STORAGE_KEYS.activeUID) return root0Child1GrandChild0.uid;
+      return '';
+    });
+    const wrapper = createWrapper();
+    await flushPromises();
+    // assert we are render more than just the single item in the store
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+    expect(all.at(3).props('item')).not.toEqual(root0Child1GrandChild0);
+  });
+
+  it('does not restore the state, if the nodesToRender do not match what we have', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.technology) return defaultProps.technology;
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, 'something-different'];
       return '';
     });
     const wrapper = createWrapper();
+    await flushPromises();
     // assert we are render more than just the single item in the store
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
   });
 
-  it('does not restore the state, if the nodesToRender and filter are empty', () => {
+  it('does not restore the state, if the nodesToRender and filter are empty', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.technology) return defaultProps.technology;
       if (key === STORAGE_KEYS.nodesToRender) return [];
@@ -594,8 +703,48 @@ describe('NavigatorCard', () => {
       return '';
     });
     const wrapper = createWrapper();
+    await flushPromises();
     // assert we are render more than just the single item in the store
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+  });
+
+  it('does not restore the state, if the API changes mismatch', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      // simulate we have collapses all, but the top item
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return true;
+      return '';
+    });
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+  });
+
+  it('keeps the open state, if there are API changes', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      // simulate we have collapses all, but the top item
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return true;
+      return '';
+    });
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges: {
+          [root0Child0.path]: 'modified',
+          [root0Child1.path]: 'modified',
+        },
+      },
+    });
+    await flushPromises();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(3);
   });
 
   it('keeps the open state, even if there is a title filter', async () => {
@@ -606,6 +755,8 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child1.uid];
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
     const wrapper = createWrapper();
@@ -623,6 +774,8 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child1.uid];
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
+      if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
     const wrapper = createWrapper();
@@ -641,5 +794,296 @@ describe('NavigatorCard', () => {
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
     await flushPromises();
     expect(filter.props('tags')).toEqual([]);
+  });
+
+  describe('navigating', () => {
+    it('changes the open item, when navigating across pages, keeping the previously open items', async () => {
+      // simulate navigating to the bottom most item
+      const wrapper = createWrapper();
+      wrapper.setProps({
+        activePath: [
+          root0.path,
+          root0Child1.path,
+          root0Child1GrandChild0.path,
+        ],
+      });
+      await flushPromises();
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(3);
+      // assert all are open
+      const all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(5);
+      // assert it auto opens
+      expect(all.at(0).props()).toMatchObject({
+        expanded: true,
+        isActive: false,
+        isBold: true,
+        item: root0,
+      });
+      expect(all.at(1).props()).toMatchObject({
+        expanded: true,
+        isActive: false,
+        isBold: false,
+        item: root0Child0,
+      });
+      expect(all.at(2).props()).toMatchObject({
+        expanded: true,
+        isActive: false,
+        isBold: true,
+        item: root0Child1,
+      });
+      expect(all.at(3).props()).toMatchObject({
+        expanded: true,
+        isActive: true,
+        isBold: true,
+        item: root0Child1GrandChild0,
+      });
+      // navigate to the top level sibling
+      wrapper.setProps({
+        activePath: [
+          root1.path,
+        ],
+      });
+      await flushPromises();
+      // assert it scrolls to the item
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(4);
+      // assert items are still open
+      expect(all.at(0).props()).toMatchObject({
+        expanded: true,
+        isActive: false,
+        isBold: false,
+        item: root0,
+      });
+      expect(all.at(1).props()).toMatchObject({
+        expanded: true,
+        isActive: false,
+        isBold: false,
+        item: root0Child0,
+      });
+      expect(all.at(2).props()).toMatchObject({
+        expanded: true,
+        isActive: false,
+        isBold: false,
+        item: root0Child1,
+      });
+      expect(all.at(3).props()).toMatchObject({
+        expanded: true,
+        isActive: false,
+        isBold: false,
+        item: root0Child1GrandChild0,
+      });
+      expect(all.at(4).props()).toMatchObject({
+        expanded: true,
+        isActive: true,
+        isBold: true,
+        item: root1,
+      });
+    });
+
+    it('tracks current open item, from clicking child items, handling duplicate router changes on the way', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      let allItems = wrapper.findAll(NavigatorCardItem);
+      const targetChild = allItems.at(2);
+      expect(targetChild.props('item')).toEqual(root0Child1);
+      // trigger a navigation
+      targetChild.vm.$emit('navigate', root0Child1.uid);
+      await wrapper.vm.$nextTick();
+      expect(sessionStorage.set)
+        .toHaveBeenCalledWith(STORAGE_KEYS.activeUID, root0Child1.uid);
+      // assert all items are still there, even the new one is open
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
+      // assert the target child is active
+      expect(targetChild.props()).toEqual({
+        apiChange: null,
+        expanded: true,
+        filterPattern: null,
+        isActive: true,
+        isBold: true,
+        isRendered: false, // this is not passed in the mock
+        item: root0Child1,
+      });
+      // assert item is scrolled to
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      // now simulate the router change
+      wrapper.setProps({ activePath: [root0.path, root0Child1.path] });
+      await flushPromises();
+      // assert its not called again
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      // assert items have not changed
+      allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems).toHaveLength(5);
+      expect(allItems.at(2).props()).toEqual({
+        apiChange: null,
+        expanded: true,
+        filterPattern: null,
+        isActive: true,
+        isBold: true,
+        isRendered: false, // this is not passed in the mock
+        item: root0Child1,
+      });
+    });
+
+    it('allows going back/forward, relative to last opened item, ignoring foreign trees', async () => {
+      const duplicatedTree = {
+        type: 'article',
+        path: '/documentation/duplicated',
+        title: 'Duplicated Tree',
+        uid: 5,
+        parent: INDEX_ROOT_KEY,
+        depth: 0,
+        index: 2,
+        // this makes sure we have a duplicate tree segment
+        childUIDs: [root0Child1],
+      };
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            ...children,
+            duplicatedTree,
+          ],
+        },
+      });
+      await flushPromises();
+      let allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems).toHaveLength(5);
+      expect(allItems.at(1).props('item')).toEqual(root0Child0);
+      expect(allItems.at(1).props('isActive')).toEqual(true);
+      // navigate to the second child
+      wrapper.setProps({
+        activePath: [
+          root0.path,
+          root0Child1.path,
+        ],
+      });
+      await wrapper.vm.$nextTick();
+      // re-fetch the items
+      allItems = wrapper.findAll(NavigatorCardItem);
+      // assert old item is no longer active
+      expect(allItems.at(1).props('item')).toEqual(root0Child0);
+      expect(allItems.at(1).props('isActive')).toEqual(false);
+      // assert new active item
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(2).props('isActive')).toEqual(true);
+      // navigate to the grand child
+      wrapper.setProps({
+        activePath: [
+          root0.path,
+          root0Child1.path,
+          root0Child1GrandChild0.path,
+        ],
+      });
+      await wrapper.vm.$nextTick();
+      // re-fetch the items
+      allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(2).props('isActive')).toEqual(false);
+      // assert grandchild is active
+      expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(3).props('isActive')).toEqual(true);
+      // navigate to the second child
+      wrapper.setProps({
+        activePath: [
+          root0.path,
+          root0Child1.path,
+        ],
+      });
+      await wrapper.vm.$nextTick();
+      // re-fetch the items
+      allItems = wrapper.findAll(NavigatorCardItem);
+      // assert old item is no longer active
+      expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(3).props('isActive')).toEqual(false);
+      // assert new active item
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(2).props('isActive')).toEqual(true);
+    });
+  });
+
+  describe('scroll to item', () => {
+    const itemRect = jest.fn(() => ({ y: 12 }));
+    jest.spyOn(document, 'getElementById').mockReturnValue({
+      getBoundingClientRect: itemRect,
+    });
+
+    it('resets the scroll position, if initiating a filter', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
+      // initiate a filter
+      wrapper.find(FilterInput).vm.$emit('input', root0Child1.title);
+      await wrapper.vm.$nextTick();
+      // assert filter is applied
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+      // assert scroller has been reset
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
+    });
+
+    it('keeps the scroll position, if the item is already in the viewport, on navigation', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const scroller = wrapper.find({ ref: 'scroller' });
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      // mock the bounding rects
+      const scrollerRect = jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
+        y: 10,
+        height: 200,
+      });
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      // make sure scrollToItem is not called, because active item is already in the viewport
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      wrapper.findAll(NavigatorCardItem).at(3).vm.$emit('navigate', root0Child1GrandChild0.uid);
+      itemRect.mockReturnValue({
+        y: 200, // near the end
+      });
+      await flushPromises();
+      // make sure scrollToItem is not called, because active item is already in the viewport
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      // simulate header scroll
+      scrollerRect.mockReturnValue({
+        y: 0,
+        height: 210,
+      });
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      // make sure scrollToItem is not called, because active item is already in the viewport
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    });
+
+    it('scrolls to item, if outside of visible viewport, on page navigation', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const scroller = wrapper.find({ ref: 'scroller' });
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      // mock the bounding rects
+      jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
+        y: 10,
+        height: 200,
+      });
+      itemRect.mockReturnValue({
+        y: -20,
+      });
+      // scroll to the item
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      // make sure scrollToItem is called
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      // assert it was called for the 3-rd item
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2);
+      // assert scrolling beyond
+      itemRect.mockReturnValue({
+        y: 250,
+      });
+      // scroll to the item
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
+      await flushPromises();
+      // make sure scrollToItem is called
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(3);
+      // assert it was called for the 3-rd item
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
+    });
   });
 });

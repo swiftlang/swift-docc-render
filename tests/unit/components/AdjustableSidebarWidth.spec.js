@@ -86,6 +86,7 @@ describe('AdjustableSidebarWidth', () => {
     expect(slotProps).toEqual({
       animationClass: 'aside-animated-child',
       scrollLockID: 'sidebar-scroll-lock',
+      breakpoint: 'large',
     });
   });
 
