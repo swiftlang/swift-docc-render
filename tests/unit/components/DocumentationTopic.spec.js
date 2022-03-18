@@ -275,30 +275,23 @@ describe('DocumentationTopic', () => {
     expect(abstractComponent.props('content')).toEqual(emptyParagraph);
   });
 
-  it('renders a `Description` if has overview', () => {
-    const description = wrapper.find(Description);
-    expect(description.exists()).toBe(true);
-
-    expect(wrapper.find(PrimaryContent).exists()).toBe(true);
-  });
-
-  it('does not render a `Description` if no overview', () => {
-    // no overview if SectionKind is not content
-    wrapper.setProps({
-      primaryContentSections: [
-        {
-          kind: PrimaryContent.constants.SectionKind.declarations,
-          content: [foo],
-        },
-      ],
-    });
+  it('does not render a `Description` if no description', () => {
     const description = wrapper.find(Description);
     expect(description.exists()).toBe(false);
+  });
+
+  it('renders a `Description` if has description', () => {
+    // Description includes:
+    // RequirementMetaData, DeprecationSummary, downloadNotAvailableSummary
+    wrapper.setProps({ isRequirement: true });
+    expect(wrapper.contains(Description)).toBe(true);
 
     wrapper.setProps({
-      primaryContentSections: [],
+      isRequirement: false,
+      downloadNotAvailableSummary,
+      deprecationSummary,
     });
-    expect(wrapper.contains(Description)).toBe(false);
+    expect(wrapper.contains(Description)).toBe(true);
   });
 
   it('renders a `PrimaryContent`', () => {

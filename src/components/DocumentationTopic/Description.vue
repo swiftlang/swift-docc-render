@@ -27,12 +27,6 @@ export default {
   margin-bottom: $contenttable-spacing-single-side;
 }
 
-.nodocumentation {
-  @include font-styles(body-large);
-  color: var(--colors-secondary-label, var(--color-secondary-label));
-  margin-bottom: 0;
-}
-
 /deep/ .content + * {
   margin-top: $stacked-margin-large;
 }

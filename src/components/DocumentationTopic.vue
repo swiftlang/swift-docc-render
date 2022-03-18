@@ -29,28 +29,28 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-        <div class="container">
-          <Description v-if="hasOverview">
-            <RequirementMetadata
-              v-if="isRequirement"
-              :defaultImplementationsCount="defaultImplementationsCount"
-            />
-            <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-              <ContentNode :content="deprecationSummary" />
-            </Aside>
-            <Aside
-              v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-              kind="note"
-            >
-              <ContentNode :content="downloadNotAvailableSummary" />
-            </Aside>
-          </Description>
-          <PrimaryContent
-            v-if="primaryContentSections && primaryContentSections.length"
-            :class="{ 'with-border': !enhanceBackground }"
-            :conformance="conformance"
-            :sections="primaryContentSections"
+      <div class="container">
+        <Description v-if="hasDescription">
+          <RequirementMetadata
+            v-if="isRequirement"
+            :defaultImplementationsCount="defaultImplementationsCount"
           />
+          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+            <ContentNode :content="deprecationSummary" />
+          </Aside>
+          <Aside
+            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+            kind="note"
+          >
+            <ContentNode :content="downloadNotAvailableSummary" />
+          </Aside>
+        </Description>
+        <PrimaryContent
+          v-if="primaryContentSections && primaryContentSections.length"
+          :class="{ 'with-border': !enhanceBackground }"
+          :conformance="conformance"
+          :sections="primaryContentSections"
+        />
         </div>
       <Topics
         v-if="topicSections"
@@ -270,10 +270,11 @@ export default {
         0,
       );
     },
-    hasOverview:
-      ({ primaryContentSections = [] }) => primaryContentSections.filter(section => (
-        section.kind === PrimaryContent.constants.SectionKind.content
-      )).length > 0,
+    hasDescription:
+      ({ isRequirement, deprecationSummary, downloadNotAvailableSummary }) => (
+        isRequirement || (deprecationSummary && deprecationSummary.length)
+        || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
+      ),
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
