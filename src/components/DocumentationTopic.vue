@@ -369,7 +369,7 @@ export default {
   }
 
   /deep/ .content + * {
-  margin-top: $stacked-margin-large;
+    margin-top: $stacked-margin-large;
   }
 }
 
