@@ -19,6 +19,7 @@ import { sessionStorage } from 'docc-render/utils/storage';
 import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { BreakpointName } from '@/utils/breakpoints';
+import { waitFor } from '@/utils/loading';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -132,6 +133,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     RecycleScroller: RecycleScrollerStub,
+    NavigatorCardItem,
   },
   sync: false,
   ...others,
@@ -1084,6 +1086,157 @@ describe('NavigatorCard', () => {
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(3);
       // assert it was called for the 3-rd item
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
+    });
+  });
+
+  describe('handles focus/blur state issues with the RecycleScroller', () => {
+    it('keeps track of the currently focused item', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      // should be focus, but jsdom does not propagate that
+      button.trigger('focusin');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+    });
+
+    it('resets the `lastFocusTarget`, if the related target is outside the scroller', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      // should be focus, but jsdom does not propagate that
+      button.trigger('focusin');
+      await wrapper.vm.$nextTick();
+      button.trigger('focusout', {
+        relatedTarget: document.body,
+      });
+      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+    });
+
+    it('does not do anything, if there is no `relatedTarget`, if no relatedTarget', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      // should be focus, but jsdom does not propagate that
+      button.trigger('focusin');
+      await wrapper.vm.$nextTick();
+      button.trigger('focusout', {
+        relatedTarget: null,
+      });
+      // assert we are still focusing the button
+      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+    });
+
+    it('on RecycleScroller@update, does nothing, if there is no focusTarget', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      wrapper.find(RecycleScroller).vm.$emit('update');
+      await flushPromises();
+      expect(waitFor).toHaveBeenLastCalledWith(300);
+      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+    });
+
+    it('on RecycleScroller@update, does nothing, if focusTarget is outside scroller', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // Set the focus item to be something outside the scroller.
+      // This might happen if it deletes an item, that was in focus
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      // should be focus, but jsdom does not propagate that
+      button.trigger('focusin');
+      const focusSpy = jest.spyOn(button.element, 'focus');
+      await flushPromises();
+      // now make the component go away
+      wrapper.setData({
+        nodesToRender: [],
+      });
+      await flushPromises();
+      // trigger an update
+      wrapper.find(RecycleScroller).vm.$emit('update');
+      await flushPromises();
+      expect(waitFor).toHaveBeenLastCalledWith(300);
+      // we may still have the lastFocusTarget, as it did not emit a focusOut
+      expect(wrapper.vm.lastFocusTarget).not.toEqual(null);
+      // but the spy will not be called, because its no longer in the DOM
+      expect(focusSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('on RecycleScroller@update, does nothing, if `lastFocusTarget === activeElement`', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // Set the focus item to be something outside the scroller.
+      // This might happen if it deletes an item, that was in focus
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      // should be focus, but jsdom does not propagate that
+      button.trigger('focusin');
+      button.element.focus();
+      // move the spy below the manual focus, so we dont count it
+      const focusSpy = jest.spyOn(button.element, 'focus');
+      await flushPromises();
+      expect(document.activeElement).toEqual(button.element);
+      // trigger an update
+      wrapper.find(RecycleScroller).vm.$emit('update');
+      await flushPromises();
+      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(focusSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('on RecycleScroller@update, re-focuses the `lastFocusTarget` if not the current focus item', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // Set the focus item to be something outside the scroller.
+      // This might happen if it deletes an item, that was in focus
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      const focusSpy = jest.spyOn(button.element, 'focus');
+      button.trigger('focusin');
+      await flushPromises();
+      // trigger an update
+      wrapper.find(RecycleScroller).vm.$emit('update');
+      await flushPromises();
+      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(focusSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('clears the focusTarget on filter', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // Set the focus item to be something outside the scroller.
+      // This might happen if it deletes an item, that was in focus
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      // should be focus, but jsdom does not propagate that
+      button.trigger('focusin');
+      const focusSpy = jest.spyOn(button.element, 'focus');
+      await flushPromises();
+      // initiate a filter
+      wrapper.find(FilterInput).vm.$emit('input', 'Child');
+      await flushPromises();
+      // trigger an update
+      wrapper.find(RecycleScroller).vm.$emit('update');
+      await flushPromises();
+      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(focusSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('clears the focusTarget on page nav', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // Set the focus item to be something outside the scroller.
+      // This might happen if it deletes an item, that was in focus
+      const button = wrapper.find(NavigatorCardItem).find('button');
+      // should be focus, but jsdom does not propagate that
+      button.trigger('focusin');
+      const focusSpy = jest.spyOn(button.element, 'focus');
+      await flushPromises();
+      // simulate a page nav
+      wrapper.setProps({
+        activePath: [root1.path],
+      });
+      await flushPromises();
+      // trigger an update
+      wrapper.find(RecycleScroller).vm.$emit('update');
+      await flushPromises();
+      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(focusSpy).toHaveBeenCalledTimes(0);
     });
   });
 });
