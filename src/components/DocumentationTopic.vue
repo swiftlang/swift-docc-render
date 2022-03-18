@@ -299,7 +299,7 @@ export default {
       primaryContentSections,
     }) => (
       isRequirement
-      || (deprecationSummary && deprecationSummary)
+      || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
     ),
