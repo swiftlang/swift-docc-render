@@ -51,7 +51,7 @@
           :conformance="conformance"
           :sections="primaryContentSections"
         />
-        </div>
+      </div>
       <Topics
         v-if="topicSections"
         :sections="topicSections"
