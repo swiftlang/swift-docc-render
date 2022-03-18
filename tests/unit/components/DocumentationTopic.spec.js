@@ -19,7 +19,6 @@ const {
   ContentNode,
   DefaultImplementations,
   Aside,
-  Description,
   DownloadButton,
   LanguageSwitcher,
   PrimaryContent,
@@ -273,13 +272,6 @@ describe('DocumentationTopic', () => {
     const abstractComponent = hero.find(Abstract);
     expect(abstractComponent.exists()).toBe(true);
     expect(abstractComponent.props('content')).toEqual(emptyParagraph);
-  });
-
-  it('renders a `Description`/`Summary and PrimaryContent`', () => {
-    const description = wrapper.find(Description);
-    expect(description.exists()).toBe(true);
-
-    expect(wrapper.find(PrimaryContent).exists()).toBe(true);
   });
 
   it('renders a `PrimaryContent`', () => {

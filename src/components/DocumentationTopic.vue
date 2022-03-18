@@ -29,29 +29,29 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-        <div class="container">
-          <Description :hasOverview="hasOverview">
-            <RequirementMetadata
-              v-if="isRequirement"
-              :defaultImplementationsCount="defaultImplementationsCount"
-            />
-            <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-              <ContentNode :content="deprecationSummary" />
-            </Aside>
-            <Aside
-              v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-              kind="note"
-            >
-              <ContentNode :content="downloadNotAvailableSummary" />
-            </Aside>
-          </Description>
-          <PrimaryContent
-            v-if="primaryContentSections && primaryContentSections.length"
-            :class="{ 'with-border': !enhanceBackground }"
-            :conformance="conformance"
-            :sections="primaryContentSections"
+      <div class="container">
+        <div class="description">
+          <RequirementMetadata
+            v-if="isRequirement"
+            :defaultImplementationsCount="defaultImplementationsCount"
           />
+          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+            <ContentNode :content="deprecationSummary" />
+          </Aside>
+          <Aside
+            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+            kind="note"
+          >
+            <ContentNode :content="downloadNotAvailableSummary" />
+          </Aside>
         </div>
+        <PrimaryContent
+          v-if="primaryContentSections && primaryContentSections.length"
+          :class="{ 'with-border': !enhanceBackground }"
+          :conformance="conformance"
+          :sections="primaryContentSections"
+        />
+      </div>
       <Topics
         v-if="topicSections"
         :sections="topicSections"
@@ -88,7 +88,6 @@ import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
-import Description from './DocumentationTopic/Description.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
@@ -122,7 +121,6 @@ export default {
     BetaLegalText,
     ContentNode,
     DefaultImplementations,
-    Description,
     DownloadButton: CallToActionButton,
     LanguageSwitcher,
     PrimaryContent,
@@ -270,10 +268,6 @@ export default {
         0,
       );
     },
-    hasOverview:
-      ({ primaryContentSections = [], abstract = [] }) => primaryContentSections.filter(section => (
-        section.kind === PrimaryContent.constants.SectionKind.content
-      )).length > 0 || abstract.length > 0,
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
@@ -365,6 +359,18 @@ export default {
   margin-top: $section-spacing-single-side / 2;
   outline-style: none;
   @include dynamic-content-container;
+}
+
+.description {
+  &:empty { display: none; }
+
+  &:not(:empty) {
+    margin-bottom: $contenttable-spacing-single-side;
+  }
+
+  /deep/ .content + * {
+    margin-top: $stacked-margin-large;
+  }
 }
 
 .sample-download {
