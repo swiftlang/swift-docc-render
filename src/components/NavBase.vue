@@ -336,6 +336,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
   @include nav-is-wide-format($nested: true) {
     --nav-padding: #{$nav-padding-wide};
+
+    @include breakpoint-exact(medium, nav) {
+      --nav-padding: #{$nav-padding};
+    }
   }
 
   &__wrapper {
