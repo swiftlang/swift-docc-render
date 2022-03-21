@@ -360,6 +360,7 @@ export default {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
+      this.resetScroll = true;
     },
     scrollToFocus() {
       this.$refs.scroller.scrollToItem(this.focusedIndex);
@@ -376,7 +377,7 @@ export default {
      */
     trackOpenNodes(
       [filteredChildren, activePathChildren, filter, selectedTags],
-      [, activePathChildrenBefore, filterBefore, selectedTagsBefore = []] = [],
+      [, activePathChildrenBefore = [], filterBefore = '', selectedTagsBefore = []] = [],
     ) {
       // reset the last focus target
       this.lastFocusTarget = null;
@@ -398,7 +399,7 @@ export default {
         // get all parents of the current match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
       // if the activePath items change, we navigated to another page
-      const pageChange = activePathChildrenBefore !== activePathChildren;
+      const pageChange = activePathChildrenBefore.join() !== activePathChildren.join();
 
       // create a map to track open items - `{ [UID]: true }`
       const newOpenNodes = Object.fromEntries(nodes
@@ -588,6 +589,15 @@ export default {
       // we need only the UIDs
       sessionStorage.set(STORAGE_KEYS.nodesToRender, this.nodesToRender.map(({ uid }) => uid));
     },
+    clearPersistedState() {
+      sessionStorage.set(STORAGE_KEYS.technology, '');
+      sessionStorage.set(STORAGE_KEYS.apiChanges, false);
+      sessionStorage.set(STORAGE_KEYS.openNodes, []);
+      sessionStorage.set(STORAGE_KEYS.nodesToRender, []);
+      sessionStorage.set(STORAGE_KEYS.activeUID, null);
+      sessionStorage.set(STORAGE_KEYS.filter, '');
+      sessionStorage.set(STORAGE_KEYS.selectedTags, []);
+    },
     /**
      * Restores the persisted state from sessionStorage. Called on `create` hook.
      */
@@ -597,22 +607,29 @@ export default {
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
       const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
       const activeUID = sessionStorage.get(STORAGE_KEYS.activeUID, null);
-
+      const selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
       // if for some reason there are no nodes and no filter, we can assume its bad cache
-      if (!nodesToRender.length && !filter) {
+      if (!nodesToRender.length && !filter && !selectedTags.length) {
+        // clear the sessionStorage before continuing
+        this.clearPersistedState();
         this.handleActivePathChange(this.activePath);
         return;
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      // if the technology does not match, or we dont have API changes yet,
-      // do not use the persisted values
+      // take a second pass at validating data
       if (
+        // if the technology is different
         technology !== this.technology
+        // if not all nodes to render match the ones we have
         || !allNodesMatch
+        // if API the existence of apiChanges differs
         || (hasAPIChanges !== Boolean(this.apiChanges))
-        || !nodesToRender.includes(activeUID)
+        // if there is an activeUID and its not in the nodesToRender
+        || (activeUID && !filter && !selectedTags.length && !nodesToRender.includes(activeUID))
       ) {
+        // clear the sessionStorage before continuing
+        this.clearPersistedState();
         this.handleActivePathChange(this.activePath);
         return;
       }
@@ -624,7 +641,7 @@ export default {
       // generate the array of flat children objects to render
       this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
       // finally fetch any previously assigned filters or tags
-      this.selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
+      this.selectedTags = selectedTags;
       this.filter = filter;
       this.debouncedFilter = this.filter;
       this.activeUID = activeUID;
