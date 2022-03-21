@@ -176,6 +176,7 @@ describe('NavigatorCard', () => {
       isBold: true,
       item: root0,
       apiChange: null,
+      lastFocusWasInside: false,
     });
     // assert no-items-wrapper
     expect(wrapper.find('.no-items-wrapper').exists()).toBe(true);
@@ -196,6 +197,14 @@ describe('NavigatorCard', () => {
       ],
       value: '',
     });
+  });
+
+  it('renders lastFocusWasInside as true when last focus was inside the component', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    const scroller = wrapper.find(RecycleScroller);
+    scroller.trigger('focusin');
+    expect(wrapper.vm.lastFocusWasInside).toBe(true);
   });
 
   it('focuses the current page', async () => {
@@ -341,6 +350,7 @@ describe('NavigatorCard', () => {
       filterPattern: null,
       isRendered: false,
       apiChange: null,
+      lastFocusWasInside: false,
     });
     unopenedItem.vm.$emit('toggle', item);
     await wrapper.vm.$nextTick();
@@ -958,6 +968,7 @@ describe('NavigatorCard', () => {
         isFocused: false,
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
+        lastFocusWasInside: false,
       });
       // assert item is scrolled to
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
@@ -979,6 +990,7 @@ describe('NavigatorCard', () => {
         isFocused: false,
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
+        lastFocusWasInside: false,
       });
     });
 

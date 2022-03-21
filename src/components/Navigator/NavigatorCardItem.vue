@@ -136,6 +136,10 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    lastFocusWasInside: {
+      type: Boolean,
+      default: () => false,
+    },
   },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
@@ -168,7 +172,7 @@ export default {
   },
   watch: {
     isFocused(newVal) {
-      if (newVal) {
+      if (newVal && this.lastFocusWasInside) {
         this.selfFocus();
       }
     },

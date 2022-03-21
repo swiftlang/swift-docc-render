@@ -213,6 +213,23 @@ describe('NavigatorCardItem', () => {
       expect(wrapper.attributes('tabindex')).toBe('0');
     });
 
+    it('does not focus component if last focus was not inside the component', () => {
+      const wrapper = createWrapper();
+      wrapper.setProps({
+        isFocused: true,
+      });
+      expect(document.activeElement).not.toEqual(wrapper.element);
+    });
+
+    it('focus component if last focus was inside the component', () => {
+      const wrapper = createWrapper();
+      wrapper.setProps({
+        lastFocusWasInside: true,
+        isFocused: true,
+      });
+      expect(document.activeElement).toEqual(wrapper.element);
+    });
+
     it('renders tabindex -1 in button and reference', () => {
       const wrapper = createWrapper();
       const button = wrapper.find('.tree-toggle');

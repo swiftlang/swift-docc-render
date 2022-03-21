@@ -55,6 +55,7 @@
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
               :isFocused="focusedIndex === index"
+              :lastFocusWasInside="lastFocusWasInside"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @navigate="setActiveUID"
@@ -332,6 +333,9 @@ export default {
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
+    lastFocusWasInside: ({ isInsideScroller, lastFocusTarget }) => (
+      isInsideScroller(lastFocusTarget)
+    ),
   },
   created() {
     this.restorePersistedState();
@@ -658,7 +662,7 @@ export default {
       this.$refs.scroller.scrollToItem(index);
     },
     isInsideScroller(element) {
-      return this.$refs.scroller.$el.contains(element);
+      return this.$refs.scroller ? this.$refs.scroller.$el.contains(element) : false;
     },
     handleFocusIn(event) {
       this.lastFocusTarget = event.target;
