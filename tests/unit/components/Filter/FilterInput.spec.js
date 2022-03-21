@@ -18,6 +18,7 @@ import {
 import debounce from 'docc-render/utils/debounce';
 import FilterIcon from 'docc-render/components/Icons/FilterIcon.vue';
 import multipleSelection from '@/mixins/multipleSelection';
+import keyboardNavigation from '@/mixins/keyboardNavigation';
 import { flushPromises } from '../../../../test-utils';
 
 // TODO: Remove this Event caching, once we update VTU, as there is a bug now,
@@ -36,6 +37,7 @@ jest.mock('@/utils/input-helper', () => ({
 const {
   SuggestedTagsId,
   FilterInputId,
+  TagLimit,
 } = FilterInput.constants;
 
 describe('FilterInput', () => {
@@ -301,7 +303,7 @@ describe('FilterInput', () => {
     });
 
     it('selects all tags, and focuses the first one, input is empty', () => {
-      const spy = jest.spyOn(TagList.methods, 'focusTagByIndex');
+      const spy = jest.spyOn(keyboardNavigation.methods, 'focusIndex');
       wrapper.setProps({
         selectedTags: tags,
         value: '',
@@ -435,6 +437,18 @@ describe('FilterInput', () => {
 
       suggestedTags = wrapper.find({ ref: 'suggestedTags' });
       deleteButton = wrapper.find('.filter__delete-button');
+    });
+
+    it('limits the amount of rendered, if `shouldTruncateTags` is `true`', () => {
+      const newTags = ['a', 'b', 'c', 'd', 'e', 'f'];
+      wrapper.setProps({
+        tags: newTags,
+      });
+      expect(suggestedTags.props('tags')).toEqual(newTags);
+      wrapper.setProps({
+        shouldTruncateTags: true,
+      });
+      expect(suggestedTags.props('tags')).toEqual(newTags.slice(0, TagLimit));
     });
 
     it('renders `deleteButton` when there are tags and they are shown', () => {
@@ -642,7 +656,7 @@ describe('FilterInput', () => {
       });
 
       it('select latest selected tag, if delete key is pressed on keyboard, and there is no input text', () => {
-        const spy = jest.spyOn(TagList.methods, 'focusLastTag').mockReturnValueOnce();
+        const spy = jest.spyOn(keyboardNavigation.methods, 'focusLast').mockReturnValueOnce();
 
         wrapper = shallowMount(FilterInput, {
           propsData: { selectedTags: [selectedTag] },
@@ -838,7 +852,7 @@ describe('FilterInput', () => {
     });
 
     it('focuses the first tag, if the down key is pressed on input', () => {
-      const spy = jest.spyOn(suggestedTags.vm, 'focusFirstTag');
+      const spy = jest.spyOn(suggestedTags.vm, 'focusFirst');
       input.trigger('keydown.down');
 
       expect(wrapper.emitted('keydown:down')).toBeFalsy();
@@ -873,7 +887,7 @@ describe('FilterInput', () => {
 
     it('focuses the first tag, if the up key is pressed on input, and `positionReversed` is true', () => {
       wrapper.setProps({ positionReversed: true });
-      const spy = jest.spyOn(suggestedTags.vm, 'focusFirstTag');
+      const spy = jest.spyOn(suggestedTags.vm, 'focusFirst');
       input.trigger('keydown.up');
 
       expect(wrapper.emitted('keydown:up')).toBeFalsy();
@@ -1029,7 +1043,7 @@ describe('FilterInput', () => {
       wrapper.setProps({ selectedTags: tags.slice(1), positionReversed: true });
       await flushPromises();
       const selectedTagsComponent = wrapper.find({ ref: 'selectedTags' });
-      const spy = jest.spyOn(suggestedTags.vm, 'focusFirstTag').mockReturnValueOnce();
+      const spy = jest.spyOn(suggestedTags.vm, 'focusFirst').mockReturnValueOnce();
       selectedTagsComponent.vm.$emit('focus-prev');
       await flushPromises();
       expect(spy).toHaveBeenCalledTimes(1);
@@ -1039,7 +1053,7 @@ describe('FilterInput', () => {
       wrapper.setProps({ selectedTags: tags.slice(1) });
       await flushPromises();
       const selectedTagsComponent = wrapper.find({ ref: 'selectedTags' });
-      const spy = jest.spyOn(suggestedTags.vm, 'focusFirstTag').mockReturnValueOnce();
+      const spy = jest.spyOn(suggestedTags.vm, 'focusFirst').mockReturnValueOnce();
       selectedTagsComponent.vm.$emit('focus-prev');
       await flushPromises();
       expect(spy).toHaveBeenCalledTimes(0);
@@ -1074,7 +1088,7 @@ describe('FilterInput', () => {
     it('focus on the last tag when the left key is triggered, on a selected input, and but tags are not highlighted', () => {
       wrapper.setProps({ selectedTags: tags });
 
-      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLastTag')
+      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLast')
         .mockReturnValueOnce();
 
       input.element.select();
@@ -1086,7 +1100,7 @@ describe('FilterInput', () => {
     it('focus on the last tag when the left key is triggered on input, with no highlighted tags', () => {
       wrapper.setProps({ selectedTags: tags });
 
-      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLastTag')
+      const spy = jest.spyOn(wrapper.find({ ref: 'selectedTags' }).vm, 'focusLast')
         .mockReturnValueOnce();
 
       // input is is not selected, but the cursor is at the first item
