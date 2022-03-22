@@ -37,6 +37,7 @@
           tabindex="-1"
           @click.exact.prevent="toggleTree"
           @click.alt.prevent="toggleEntireTree"
+          @click.meta.prevent="toggleSiblings"
         >
           <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
         </button>
@@ -158,6 +159,9 @@ export default {
     },
     toggleEntireTree() {
       this.$emit('toggle-full', this.item);
+    },
+    toggleSiblings() {
+      this.$emit('toggle-siblings', this.item);
     },
     clickReference() {
       this.$refs.reference.$el.click();
