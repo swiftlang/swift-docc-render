@@ -211,7 +211,7 @@ $item-height: 32px;
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: $border-radius;
+  padding-left: calc(var(--card-horizontal-spacing) / 2);
   flex: 1;
   min-width: 0;
   height: 100%;

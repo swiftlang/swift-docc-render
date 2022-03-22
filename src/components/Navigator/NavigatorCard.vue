@@ -865,7 +865,6 @@ $filter-height: 64px;
   --card-horizontal-spacing: #{$navigator-card-horizontal-spacing};
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
 
-  padding: 0 var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
   flex: 1 1 auto;
@@ -920,7 +919,6 @@ $filter-height: 64px;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
-  padding-right: var(--card-horizontal-spacing);
 }
 
 .filter-wrapper {
