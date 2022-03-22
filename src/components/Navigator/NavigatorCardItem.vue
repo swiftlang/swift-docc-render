@@ -307,7 +307,7 @@ $item-height: 32px;
   position: absolute;
   width: 100%;
   height: 100%;
-  padding-right: 5px;
+  padding-right: var(--toggle-horizontal-spacing);
   box-sizing: border-box;
   z-index: 1;
   display: flex;

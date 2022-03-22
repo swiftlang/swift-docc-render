@@ -774,9 +774,11 @@ export default {
 
 $navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
+$toggle-horizontal-spacing: 7px;
 $filter-height: 64px;
 
 .navigator-card {
+  --toggle-horizontal-spacing: #{$toggle-horizontal-spacing};
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -804,12 +806,17 @@ $filter-height: 64px;
 
   .navigator-head {
     padding: 10px $navigator-card-horizontal-spacing;
+    background: var(--color-fill-secondary);
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
 
     &.router-link-exact-active {
-      background: var(--color-fill-gray-quaternary);
+      background: var(--color-fill-tertiary);
+
+      .card-link {
+        font-weight: $font-weight-bold;
+      }
     }
 
     @include breakpoint(medium, nav) {
@@ -885,9 +892,9 @@ $filter-height: 64px;
 
 .navigator-filter {
   box-sizing: border-box;
-  padding: 14px 30px;
+  padding: 15px 30px;
   border-top: 1px solid var(--color-grid);
-  height: 71px;
+  height: 73px;
   display: flex;
   align-items: flex-end;
 
