@@ -196,6 +196,14 @@ $sidenav-icon-size: 19px;
   &-settings {
     @include font-styles(nav-toggles);
 
+    .nav-menu-setting:first-child:not(:only-child) {
+      margin-right: $nav-space-between-elements;
+
+      @include nav-in-breakpoint() {
+        margin-right: 0;
+      }
+    }
+
     @include breakpoint-only-largenav() {
       margin-left: $nav-space-between-elements;
     }
