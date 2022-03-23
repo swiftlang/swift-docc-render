@@ -775,7 +775,8 @@ export default {
 
 $navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
-$filter-height: 64px;
+// unfortunately we need to hard-code the filter height
+$filter-height: 71px;
 
 .navigator-card {
   display: flex;
@@ -888,7 +889,7 @@ $filter-height: 64px;
   box-sizing: border-box;
   padding: 14px 30px;
   border-top: 1px solid var(--color-grid);
-  height: 71px;
+  height: $filter-height;
   display: flex;
   align-items: flex-end;
 
