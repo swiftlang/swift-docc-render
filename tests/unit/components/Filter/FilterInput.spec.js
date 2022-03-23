@@ -579,10 +579,21 @@ describe('FilterInput', () => {
       });
     });
 
-    it('adds tag to `selectedTags` when it is clicked', () => {
+    it('adds tag to `selectedTags` when it is clicked, clearing the filter', () => {
       const selectedTag = 'Tag1';
       suggestedTags.vm.$emit('click-tags', { tagName: selectedTag });
       expect(wrapper.emitted('update:selectedTags')).toEqual([[[selectedTag]]]);
+      expect(wrapper.emitted('input')).toEqual([['']]);
+    });
+
+    it('adds tag to `selectedTags` when it is clicked, without clearing the filter', () => {
+      wrapper.setProps({
+        clearFilterOnTagSelect: false,
+      });
+      const selectedTag = 'Tag1';
+      suggestedTags.vm.$emit('click-tags', { tagName: selectedTag });
+      expect(wrapper.emitted('update:selectedTags')).toEqual([[[selectedTag]]]);
+      expect(wrapper.emitted('input')).toBeFalsy();
     });
 
     describe('when a tag is selected', () => {
