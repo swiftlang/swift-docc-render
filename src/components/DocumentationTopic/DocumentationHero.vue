@@ -153,7 +153,7 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
   }
 }
 
-/deep/ a {
+.theme-dark /deep/ a {
   color: dark-color(figure-blue);
 }
 </style>
