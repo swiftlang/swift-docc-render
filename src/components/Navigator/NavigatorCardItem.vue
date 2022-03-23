@@ -182,36 +182,43 @@ export default {
 $item-height: 32px;
 
 .navigator-card-item {
+  --tree-toggle-padding: var(--card-horizontal-spacing-small);
+  --chevron-width: var(--card-horizontal-spacing);
+  --nesting-spacing: var(--card-horizontal-spacing) + var(--card-horizontal-spacing-small);
+  --depth-spacer-base-spacing: calc(
+    var(--card-horizontal-spacing) + var(--chevron-width) + var(--tree-toggle-padding)
+  );
+
   height: $item-height;
   display: flex;
   align-items: center;
 
   @include on-keyboard-focus {
-    margin: 5px;
+    margin: var(--card-horizontal-spacing-small);
     height: $item-height - 10px;
 
     .depth-spacer {
-      margin-left: -5px;
+      margin-left: calc(-1 * var(--card-horizontal-spacing-small));
     }
   }
 }
 
 .depth-spacer {
-  width: calc(var(--nesting-index) * 14px + 26px);
+  width: calc(var(--nesting-index) * var(--nesting-spacing) + var(--depth-spacer-base-spacing));
   height: $item-height;
   position: relative;
   flex: 0 0 auto;
   @include on-keyboard-focus {
-    margin: 0 -5px;
+    margin: 0 calc(-1 * var(--card-horizontal-spacing-small));
   }
 }
 
 .head-wrapper {
-  padding: 0 5px 0 0;
+  padding: 0 var(--card-horizontal-spacing-small) 0 0;
   position: relative;
   display: flex;
   align-items: center;
-  padding-left: calc(var(--card-horizontal-spacing) / 2);
+  padding-left: var(--card-horizontal-spacing-small);
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -307,7 +314,7 @@ $item-height: 32px;
   position: absolute;
   width: 100%;
   height: 100%;
-  padding-right: 5px;
+  padding-right: var(--tree-toggle-padding);
   box-sizing: border-box;
   z-index: 1;
   display: flex;
@@ -322,7 +329,7 @@ $item-height: 32px;
 }
 
 .chevron {
-  width: 0.6em;
+  width: var(--chevron-width);
   transition: transform 0.15s ease-in;
 
   &.rotate {
