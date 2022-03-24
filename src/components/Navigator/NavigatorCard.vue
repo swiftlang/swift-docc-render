@@ -774,11 +774,13 @@ export default {
 
 $navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
-$toggle-horizontal-spacing: 7px;
 $filter-height: 64px;
+$navigator-head-background: var(--color-fill-secondary) !default;
+$navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .navigator-card {
-  --toggle-horizontal-spacing: #{$toggle-horizontal-spacing};
+  --toggle-horizontal-spacing: 7px;
+
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -806,13 +808,13 @@ $filter-height: 64px;
 
   .navigator-head {
     padding: 10px $navigator-card-horizontal-spacing;
-    background: var(--color-fill-secondary);
+    background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
 
     &.router-link-exact-active {
-      background: var(--color-fill-tertiary);
+      background: $navigator-head-background-active;
 
       .card-link {
         font-weight: $font-weight-bold;
