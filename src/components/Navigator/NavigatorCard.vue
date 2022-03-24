@@ -17,7 +17,6 @@
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
             <div class="card-link">
               {{ technology }}
             </div>
@@ -96,7 +95,6 @@ import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -171,7 +169,6 @@ export default {
     FilterInput,
     SidenavIcon,
     NavigatorCardItem,
-    NavigatorLeafIcon,
     RecycleScroller,
     Reference,
   },

@@ -146,7 +146,6 @@ describe('NavigatorCard', () => {
   it('renders the NavigatorCard', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    expect(wrapper.find('.card-icon').props('type')).toEqual(defaultProps.type);
     // assert link
     expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
