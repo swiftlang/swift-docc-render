@@ -59,3 +59,9 @@ $aside-width-left-border: 6px !default;
 
 // total number of Grid columns
 $total-columns: 12 !default;
+
+// Navigator
+$card-horizontal-spacing: 10px;
+$card-horizontal-spacing-large: $card-horizontal-spacing * 2;
+$card-horizontal-spacing-small: $card-horizontal-spacing / 2;
+$tree-toggle-padding: 7px;

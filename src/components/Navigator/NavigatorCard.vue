@@ -776,9 +776,6 @@ $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .navigator-card {
-  --card-horizontal-spacing: 10px;
-  --card-horizontal-spacing-large: calc(var(--card-horizontal-spacing) * 2);
-  --card-horizontal-spacing-small: calc(var(--card-horizontal-spacing) / 2);
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   display: flex;
   flex-direction: column;
@@ -806,7 +803,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
 
   .navigator-head {
-    padding: 10px var(--card-horizontal-spacing-large);
+    padding: 10px $card-horizontal-spacing-large;
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
@@ -822,11 +819,11 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
     @include breakpoint(medium, nav) {
       justify-content: center;
-      padding: 14px var(--card-horizontal-spacing-large);
+      padding: 14px $card-horizontal-spacing-large;
     }
 
     @include breakpoint(small, nav) {
-      padding: 12px var(--card-horizontal-spacing-large);
+      padding: 12px $card-horizontal-spacing-large;
     }
   }
 

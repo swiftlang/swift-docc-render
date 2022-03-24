@@ -180,45 +180,41 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $item-height: 32px;
+$chevron-width: $card-horizontal-spacing;
+$depth-spacer-base-spacing: $card-horizontal-spacing + $chevron-width + $tree-toggle-padding;
+$nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
 .navigator-card-item {
-  --tree-toggle-padding: 7px;
-  --chevron-width: var(--card-horizontal-spacing);
-  --nesting-spacing: var(--card-horizontal-spacing) + var(--card-horizontal-spacing-small);
-  --depth-spacer-base-spacing: calc(
-    var(--card-horizontal-spacing) + var(--chevron-width) + var(--tree-toggle-padding)
-  );
-
   height: $item-height;
   display: flex;
   align-items: center;
 
   @include on-keyboard-focus {
-    margin: var(--card-horizontal-spacing-small);
+    margin: $card-horizontal-spacing-small;
     height: $item-height - 10px;
 
     .depth-spacer {
-      margin-left: calc(-1 * var(--card-horizontal-spacing-small));
+      margin-left: -$card-horizontal-spacing-small;
     }
   }
 }
 
 .depth-spacer {
-  width: calc(var(--nesting-index) * var(--nesting-spacing) + var(--depth-spacer-base-spacing));
+  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
   height: $item-height;
   position: relative;
   flex: 0 0 auto;
   @include on-keyboard-focus {
-    margin: 0 calc(-1 * var(--card-horizontal-spacing-small));
+    margin: 0 -$card-horizontal-spacing-small;
   }
 }
 
 .head-wrapper {
-  padding: 0 var(--card-horizontal-spacing-small) 0 0;
+  padding: 0 $card-horizontal-spacing-small 0 0;
   position: relative;
   display: flex;
   align-items: center;
-  padding-left: var(--card-horizontal-spacing-small);
+  padding-left: $card-horizontal-spacing-small;
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -314,7 +310,7 @@ $item-height: 32px;
   position: absolute;
   width: 100%;
   height: 100%;
-  padding-right: var(--tree-toggle-padding);
+  padding-right: $tree-toggle-padding;
   box-sizing: border-box;
   z-index: 1;
   display: flex;
@@ -329,7 +325,7 @@ $item-height: 32px;
 }
 
 .chevron {
-  width: var(--chevron-width);
+  width: $chevron-width;
   transition: transform 0.15s ease-in;
 
   &.rotate {
