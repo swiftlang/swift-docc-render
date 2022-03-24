@@ -770,15 +770,16 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-$navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
 $filter-height: 64px;
 $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .navigator-card {
-  --toggle-horizontal-spacing: 7px;
-
+  --card-horizontal-spacing: 10px;
+  --card-horizontal-spacing-large: calc(var(--card-horizontal-spacing) * 2);
+  --card-horizontal-spacing-small: calc(var(--card-horizontal-spacing) / 2);
+  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -805,7 +806,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
 
   .navigator-head {
-    padding: 10px $navigator-card-horizontal-spacing;
+    padding: 10px var(--card-horizontal-spacing-large);
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
@@ -821,11 +822,11 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
     @include breakpoint(medium, nav) {
       justify-content: center;
-      padding: 14px $navigator-card-horizontal-spacing;
+      padding: 14px var(--card-horizontal-spacing-large);
     }
 
     @include breakpoint(small, nav) {
-      padding: 12px $navigator-card-horizontal-spacing;
+      padding: 12px var(--card-horizontal-spacing-large);
     }
   }
 
@@ -853,8 +854,6 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     display: flex;
     left: 0;
     height: 100%;
-    padding-left: $nav-padding-wide;
-    padding-right: $nav-padding-wide;
   }
 
   @include breakpoint(small, nav) {
@@ -869,16 +868,11 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 }
 
 .card-body {
-  --card-horizontal-spacing: #{$navigator-card-horizontal-spacing};
-  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
-
-  padding: 0 var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
   @include breakpoint(medium, nav) {
-    --card-horizontal-spacing: 20px;
     --card-vertical-spacing: 0px;
     padding-top: $filter-height;
   }
@@ -927,7 +921,6 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
-  padding-right: var(--card-horizontal-spacing);
 }
 
 .filter-wrapper {
