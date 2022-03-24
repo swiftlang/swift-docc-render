@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
@@ -92,6 +92,10 @@ const topicData = {
         'topic://foo',
         'topic://bar',
       ],
+      [
+        'topic://baz',
+        'topic://baq',
+      ],
     ],
   },
   variants: [
@@ -163,6 +167,7 @@ describe('DocumentationTopic', () => {
     expect(navigator.props()).toEqual({
       errorFetching: false,
       isFetching: true,
+      // assert we are passing the first set of paths always
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
