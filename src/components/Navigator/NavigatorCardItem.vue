@@ -210,11 +210,10 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 }
 
 .head-wrapper {
-  padding: 0 $card-horizontal-spacing-small 0 0;
+  padding: 0 $card-horizontal-spacing;
   position: relative;
   display: flex;
   align-items: center;
-  padding-left: $card-horizontal-spacing-small;
   flex: 1;
   min-width: 0;
   height: 100%;
