@@ -922,6 +922,7 @@ $filter-height: 64px;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
   padding-right: var(--card-horizontal-spacing);
+  scroll-behavior: smooth;
 }
 
 .filter-wrapper {
