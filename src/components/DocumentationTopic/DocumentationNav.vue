@@ -196,26 +196,39 @@ $sidenav-icon-size: 19px;
   &-settings {
     @include font-styles(nav-toggles);
 
-    .nav-menu-setting:first-child:not(:only-child) {
-      margin-right: $nav-space-between-elements;
-
-      @include nav-in-breakpoint() {
-        margin-right: 0;
-      }
-    }
-
     @include breakpoint-only-largenav() {
       margin-left: $nav-space-between-elements;
     }
 
-    @include nav-in-breakpoint {
-      padding-top: 0;
+    .nav-menu-setting {
+      display: flex;
+      align-items: center;
+      color: var(--color-nav-current-link);
+      margin-left: 0;
 
-      &:not([data-previous-menu-children-count="0"]) {
-        .nav-menu-setting:first-child {
-          border-top: 1px solid dark-color(figure-gray-tertiary);
-          display: flex;
-          align-items: center;
+      &:first-child:not(:only-child) {
+        margin-right: $nav-space-between-elements;
+
+        @include nav-in-breakpoint() {
+          margin-right: 0;
+        }
+      }
+
+      @include nav-dark() {
+        color: var(--color-nav-dark-current-link);
+      }
+
+      @include nav-in-breakpoint() {
+        &:not([data-previous-menu-children-count="0"]) {
+          &:first-child {
+            border-top: 1px solid dark-color(figure-gray-tertiary);
+            display: flex;
+            align-items: center;
+          }
+        }
+
+        &:not(:first-child) {
+          border-top: 1px solid dark-color(fill-gray-tertiary);
         }
       }
     }
