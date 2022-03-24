@@ -128,6 +128,7 @@ describe('Hierarchy', () => {
   });
 
   it('continues working, if a reference is missing', () => {
+    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
     const wrapper = mountWithProps({
       propsData: {
         currentTopicTitle: baz.title,
@@ -150,6 +151,8 @@ describe('Hierarchy', () => {
     expect(items.length).toBe(2);
     expect(items.at(0).text()).toBe(foo.title);
     expect(items.at(1).text()).toBe(baz.title);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith(`Reference for "${foo.identifier}" is missing`);
   });
 
   describe('with more than 3 hierarchy items', () => {

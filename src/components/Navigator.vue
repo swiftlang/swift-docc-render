@@ -96,9 +96,12 @@ export default {
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
       return parentTopicIdentifiers
-        .map(identifier => references[identifier])
-        // remove falsy items, that may break further the component
-        .filter(Boolean);
+        .reduce((all, identifier) => {
+          const reference = references[identifier];
+          if (reference) return all.concat(reference);
+          console.error(`Reference for "${identifier}" is missing`);
+          return all;
+        }, []);
     },
     // splits out the top-level technology crumb
     activePath({ parentTopicReferences, $route: { path } }) {

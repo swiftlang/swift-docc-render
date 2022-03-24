@@ -106,7 +106,12 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(Navigator,
   ...others,
 });
 
+const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+
 describe('Navigator', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
     // assert Navigator card is rendered
@@ -186,12 +191,15 @@ describe('Navigator', () => {
   });
 
   it('renders the root path as activePath when there are no valid parentTopicIdentifiers', () => {
+    const identifier = 'ref://invalid';
     const wrapper = createWrapper({
       propsData: {
-        parentTopicIdentifiers: ['ref://invalid'],
+        parentTopicIdentifiers: [identifier],
       },
     });
     expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith(`Reference for "${identifier}" is missing`);
   });
 
   it('removes any parent topic identifiers, which dont have a reference', () => {
@@ -208,6 +216,8 @@ describe('Navigator', () => {
     expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
       references.first.url, mocks.$route.path,
     ]);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith('Reference for "second" is missing');
   });
 
   it('re-emits the `@close` event', () => {
