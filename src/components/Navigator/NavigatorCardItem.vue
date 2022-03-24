@@ -282,6 +282,10 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
     vertical-align: middle;
     @include font-styles(body-reduced-tight);
 
+    &:hover {
+      text-decoration: none;
+    }
+
     &.bolded {
       font-weight: $font-weight-semibold;
     }

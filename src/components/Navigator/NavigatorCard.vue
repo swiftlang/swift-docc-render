@@ -817,6 +817,11 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
       }
     }
 
+    &:hover {
+      background: var(--color-navigator-item-hover);
+      text-decoration: none;
+    }
+
     @include breakpoint(medium, nav) {
       justify-content: center;
       padding: 14px $card-horizontal-spacing-large;
