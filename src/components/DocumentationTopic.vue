@@ -19,7 +19,11 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <Title :eyebrow="roleHeading">{{ title }}</Title>
+        <Title :eyebrow="roleHeading">
+          {{ title }}
+          <small v-if="isSymbolDeprecated" slot="after" class="deprecated">Deprecated</small>
+          <small v-else-if="isSymbolBeta" slot="after" class="beta">Beta</small>
+        </Title>
         <Abstract v-if="abstract" :content="abstract" />
         <div v-if="sampleCodeDownload">
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />

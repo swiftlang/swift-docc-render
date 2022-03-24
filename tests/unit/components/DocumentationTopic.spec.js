@@ -248,6 +248,46 @@ describe('DocumentationTopic', () => {
     expect(title.text()).toBe(propsData.title);
   });
 
+  it('renders smaller "Beta" and "Deprecated" text in title when relevant', () => {
+    const title = wrapper.find(Title);
+    expect(title.exists()).toBe(true);
+    let smalls = title.findAll('small');
+    expect(smalls.length).toBe(0);
+
+    // both beta _and_ deprecated — deprecated has priority
+    wrapper.setProps({
+      isSymbolDeprecated: true,
+      isSymbolBeta: true,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).is('.beta')).toBe(false);
+    expect(smalls.at(0).is('.deprecated')).toBe(true);
+    expect(smalls.at(0).text()).toBe('Deprecated');
+
+    // only beta
+    wrapper.setProps({
+      isSymbolDeprecated: false,
+      isSymbolBeta: true,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).is('.beta')).toBe(true);
+    expect(smalls.at(0).is('.deprecated')).toBe(false);
+    expect(smalls.at(0).text()).toBe('Beta');
+
+    // both beta _and_ deprecated — deprecated has priority
+    wrapper.setProps({
+      isSymbolDeprecated: true,
+      isSymbolBeta: false,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).is('.beta')).toBe(false);
+    expect(smalls.at(0).is('.deprecated')).toBe(true);
+    expect(smalls.at(0).text()).toBe('Deprecated');
+  });
+
   it('renders an abstract', () => {
     const hero = wrapper.find(DocumentationHero);
     const abstractComponent = hero.find(Abstract);
