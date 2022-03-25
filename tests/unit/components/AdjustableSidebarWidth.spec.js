@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import AdjustableSidebarWidth, {
   eventsMap,
@@ -408,6 +408,31 @@ describe('AdjustableSidebarWidth', () => {
     // assert class
     expect(aside.classes()).toContain('dragging');
     assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
+  });
+
+  it('force closes the nav, if dragging below the forceClose threshold', () => {
+    const wrapper = createWrapper();
+    const aside = wrapper.find('.aside');
+    // assert dragging
+    expect(wrapper.emitted('update:closedExternally')).toBeFalsy();
+    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mousedown' });
+    document.dispatchEvent(createEvent(eventsMap.mouse.move, {
+      // minimum is 200, so 100px wide is the forceClose cutoff point, so we drag 50px beyond it
+      clientX: 150,
+    }));
+    // assert class
+    expect(aside.classes()).toContain('dragging');
+    assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
+    expect(wrapper.emitted('update:closedExternally')).toEqual([[true]]);
+    wrapper.setProps({
+      closedExternally: true,
+    });
+    // drag open now
+    document.dispatchEvent(createEvent(eventsMap.mouse.move, {
+      clientX: 350,
+    }));
+    assertWidth(wrapper, 250);
+    expect(wrapper.emitted('update:closedExternally')).toEqual([[true], [false]]);
   });
 
   it('removes any locks upon destruction', async () => {

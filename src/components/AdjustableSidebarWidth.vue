@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <div class="adjustable-sidebar-width">
+  <div
+    class="adjustable-sidebar-width"
+    :class="{ dragging: isDragging, 'closed-externally': closedExternally }"
+  >
     <div
       ref="sidebar"
       class="sidebar"
@@ -242,8 +245,18 @@ export default {
       if (newWidth > this.maxWidth) {
         newWidth = this.maxWidth;
       }
+      // calculate the forceClose cutoff point
+      const forceCloseCutoff = this.minWidth / 2;
+      // if we are going beyond the cutoff point and we are closed, open the navigator
+      if (this.closedExternally && newWidth >= forceCloseCutoff) {
+        this.$emit('update:closedExternally', false);
+      }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);
+      // if the new width is smaller than the cutoff point, force close the nav
+      if (newWidth <= forceCloseCutoff) {
+        this.$emit('update:closedExternally', true);
+      }
     },
     /**
      * Stop the dragging upon mouse up
@@ -302,6 +315,14 @@ export default {
   @include breakpoint(medium, nav) {
     display: block;
     position: relative;
+  }
+
+  &.dragging /deep/ * {
+    cursor: col-resize !important;
+  }
+
+  &.closed-externally.dragging /deep/ * {
+    cursor: e-resize !important;
   }
 }
 

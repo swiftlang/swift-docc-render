@@ -306,6 +306,10 @@ describe('DocumentationTopic', () => {
     nav.vm.$emit('toggle-sidenav');
     expect(sidebar.props('closedExternally')).toBe(true);
     expect(storage.set).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, true);
+    sidebar.vm.$emit('update:closedExternally', false);
+    // assert we are storing the updated values
+    expect(sidebar.props('closedExternally')).toBe(false);
+    expect(storage.set).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, false);
 
     getSetting.mockReset();
   });

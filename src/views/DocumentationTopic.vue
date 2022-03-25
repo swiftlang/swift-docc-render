@@ -260,6 +260,7 @@ export default {
     sidebarListeners() {
       return this.enableNavigator ? ({
         'update:openExternally': (v) => { this.isMobileSideNavOpen = v; },
+        'update:closedExternally': this.handleToggleSidenav,
       }) : {};
     },
   },
@@ -270,8 +271,8 @@ export default {
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
     },
-    handleToggleSidenav() {
-      this.isLargeSideNavClosed = !this.isLargeSideNavClosed;
+    handleToggleSidenav(value = !this.isLargeSideNavClosed) {
+      this.isLargeSideNavClosed = value;
       storage.set(NAVIGATOR_CLOSED_KEY, this.isLargeSideNavClosed);
     },
   },
