@@ -11,7 +11,10 @@
 <template>
   <div class="topictitle">
     <span v-if="eyebrow" class="eyebrow">{{eyebrow}}</span>
-    <WordBreak class="title" tag="h1"><slot /></WordBreak>
+    <WordBreak class="title" tag="h1">
+      <slot />
+      <slot name="after" />
+    </WordBreak>
   </div>
 </template>
 
@@ -51,6 +54,26 @@ export default {
 
   .documentation-hero--disabled & {
     color: var(--colors-header-text, var(--color-header-text));
+  }
+}
+
+small {
+  @include font-styles(eyebrow);
+
+  &.beta {
+    color: var(--color-badge-beta);
+
+    .theme-dark & {
+      color: var(--color-badge-dark-beta);
+    }
+  }
+
+  &.deprecated {
+    color: var(--color-badge-deprecated);
+
+    .theme-dark & {
+      color: var(--color-badge-dark-deprecated);
+    }
   }
 }
 </style>
