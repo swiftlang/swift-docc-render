@@ -14,8 +14,8 @@ import {
 } from '@vue/test-utils';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import { BreakpointName } from '@/utils/breakpoints';
+import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
 import { flushPromises } from '../../../../test-utils';
-import BreakpointEmitter from '@/components/BreakpointEmitter';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
