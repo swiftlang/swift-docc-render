@@ -276,7 +276,7 @@ describe('DocumentationTopic', () => {
     expect(smalls.at(0).is('.deprecated')).toBe(false);
     expect(smalls.at(0).text()).toBe('Beta');
 
-    // both beta _and_ deprecated — deprecated has priority
+    // only deprecated
     wrapper.setProps({
       isSymbolDeprecated: true,
       isSymbolBeta: false,
