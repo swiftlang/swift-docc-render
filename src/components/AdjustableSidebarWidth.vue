@@ -23,6 +23,7 @@
         :style="{ width: widthInPx, '--top-offset': `${mobileTopOffset}px` }"
         class="aside"
         ref="aside"
+        :aria-hidden="closedExternally ? 'true': null"
         @transitionstart="isTransitioning = true"
         @transitionend="isTransitioning = false"
       >
@@ -345,11 +346,13 @@ export default {
 
   @include breakpoints-from(large, nav) {
     &:not(.dragging) {
-      transition: width 0.15s ease-in;
+      transition: width 0.15s ease-in, visibility 0s linear 0s;
     }
 
     &.force-close {
       width: 0 !important;
+      visibility: hidden;
+      transition: width 0.15s ease-in, visibility 0s linear 0.2s;
     }
   }
 

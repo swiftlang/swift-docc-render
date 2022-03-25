@@ -251,7 +251,11 @@ describe('AdjustableSidebarWidth', () => {
         closedExternally: true,
       },
     });
-    expect(wrapper.find({ ref: 'aside' }).classes()).toContain('force-close');
+    const aside = wrapper.find({ ref: 'aside' });
+    expect(aside.classes()).toContain('force-close');
+    expect(aside.attributes()).toMatchObject({
+      'aria-hidden': 'true',
+    });
     wrapper.setProps({ closedExternally: false });
     expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('force-close');
   });
