@@ -201,13 +201,37 @@ $sidenav-icon-size: 19px;
     }
 
     @include nav-in-breakpoint {
-      padding-top: 0;
-
+      // do not apply border if no item are above setting links
       &:not([data-previous-menu-children-count="0"]) {
         .nav-menu-setting:first-child {
           border-top: 1px solid dark-color(figure-gray-tertiary);
           display: flex;
           align-items: center;
+        }
+      }
+    }
+
+    .nav-menu-setting {
+      display: flex;
+      align-items: center;
+      color: var(--color-nav-current-link);
+      margin-left: 0;
+
+      &:first-child:not(:only-child) {
+        margin-right: $nav-space-between-elements;
+
+        @include nav-in-breakpoint() {
+          margin-right: 0;
+        }
+      }
+
+      @include nav-dark() {
+        color: var(--color-nav-dark-current-link);
+      }
+
+      @include nav-in-breakpoint() {
+        &:not(:first-child) {
+          border-top: 1px solid dark-color(fill-gray-tertiary);
         }
       }
     }
