@@ -139,6 +139,8 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   ...others,
 });
 
+const clearPersistedStateSpy = jest.spyOn(NavigatorCard.methods, 'clearPersistedState');
+
 describe('NavigatorCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -146,7 +148,6 @@ describe('NavigatorCard', () => {
   it('renders the NavigatorCard', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    expect(wrapper.find('.card-icon').props('type')).toEqual(defaultProps.type);
     // assert link
     expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
@@ -655,8 +656,9 @@ describe('NavigatorCard', () => {
   it('persists the filtered state', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    // called for the initial 5 things
-    expect(sessionStorage.set).toHaveBeenCalledTimes(5);
+    // called to reset the state initially, then called to store the changed state
+    expect(sessionStorage.set).toHaveBeenCalledTimes(7 + 5);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEYS.technology, defaultProps.technology);
     expect(sessionStorage.set)
@@ -706,6 +708,7 @@ describe('NavigatorCard', () => {
     expect(all.at(0).props('item')).toEqual(root0);
     expect(wrapper.find(FilterInput).props('selectedTags'))
       .toEqual([FILTER_TAGS_TO_LABELS.tutorials]);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
   });
 
   it('does not restore the state, if the technology is different', async () => {
@@ -718,6 +721,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     // assert we are render more than just the single item in the store
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
   });
 
   it('does not restore the state, if the activeUID is not in the rendered items', async () => {
@@ -738,6 +742,27 @@ describe('NavigatorCard', () => {
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(4);
     expect(all.at(3).props('item')).not.toEqual(root0Child1GrandChild0);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('restores the state, if the activeUID is not in the rendered items, but there is a filter', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return root0Child1.title;
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid, root0Child0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid, root0Child1.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0Child1GrandChild0.uid;
+      return '';
+    });
+    const wrapper = createWrapper();
+    await flushPromises();
+    // assert we are render more than just the single item in the store
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
   });
 
   it('does not restore the state, if the nodesToRender do not match what we have', async () => {
@@ -763,6 +788,25 @@ describe('NavigatorCard', () => {
     await flushPromises();
     // assert we are render more than just the single item in the store
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('restores the state, if the nodesToRender and filter are empty, but there are selectedTags', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      if (key === STORAGE_KEYS.nodesToRender) return [];
+      if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.openNodes) return [];
+      if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return null;
+      return '';
+    });
+    const wrapper = createWrapper();
+    await flushPromises();
+    // assert we are render more than just the single item in the store
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(0);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
   });
 
   it('does not restore the state, if the API changes mismatch', async () => {

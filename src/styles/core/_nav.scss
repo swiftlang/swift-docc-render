@@ -13,7 +13,6 @@ $nav-height: rem(52px);
 $nav-height-small: rem(48px);
 $nav-padding: rem(22px);
 $nav-padding-small: rem(16px);
-$nav-padding-wide: rem(30px);
 $nav-menu-item-left-margin: rem(24px);
 $nav-timingfunction: ease-in !default;
 $nav-menu-tray-transition: max-height 0.4s $nav-timingfunction 0s, visibility 0s linear 1s !default;
@@ -24,6 +23,7 @@ $nav-menu-item-stagger-delay: 0s !default;
 $nav-bg-color-transition: 0.5s $nav-timingfunction !default;
 $nav-space-between-elements: rem(10px);
 $nav-space-hierarchy-elements: rem(3px);
+$nav-z-index: 9997;
 
 @mixin nav-in-breakpoint($nested: false) {
   @include unify-selector('.nav--in-breakpoint-range', $nested) {
