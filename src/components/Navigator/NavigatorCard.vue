@@ -17,7 +17,6 @@
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
             <div class="card-link">
               {{ technology }}
             </div>
@@ -97,7 +96,6 @@ import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -172,7 +170,6 @@ export default {
     FilterInput,
     SidenavIcon,
     NavigatorCardItem,
-    NavigatorLeafIcon,
     RecycleScroller,
     Reference,
   },
@@ -773,11 +770,13 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-$navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
 $filter-height: 64px;
+$navigator-head-background: var(--color-fill-secondary) !default;
+$navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .navigator-card {
+  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -804,22 +803,32 @@ $filter-height: 64px;
   }
 
   .navigator-head {
-    padding: 10px $navigator-card-horizontal-spacing;
+    padding: 10px $card-horizontal-spacing-large;
+    background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
 
     &.router-link-exact-active {
-      background: var(--color-fill-gray-quaternary);
+      background: $navigator-head-background-active;
+
+      .card-link {
+        font-weight: $font-weight-bold;
+      }
+    }
+
+    &:hover {
+      background: var(--color-navigator-item-hover);
+      text-decoration: none;
     }
 
     @include breakpoint(medium, nav) {
       justify-content: center;
-      padding: 14px $navigator-card-horizontal-spacing;
+      padding: 14px $card-horizontal-spacing-large;
     }
 
     @include breakpoint(small, nav) {
-      padding: 12px $navigator-card-horizontal-spacing;
+      padding: 12px $card-horizontal-spacing-large;
     }
   }
 
@@ -832,7 +841,7 @@ $filter-height: 64px;
 .no-items-wrapper {
   color: var(--color-figure-gray-tertiary);
   @include font-styles(body-reduced);
-  padding: var(--card-vertical-spacing) 0;
+  padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
 }
 
 .close-card-mobile {
@@ -847,8 +856,6 @@ $filter-height: 64px;
     display: flex;
     left: 0;
     height: 100%;
-    padding-left: $nav-padding-wide;
-    padding-right: $nav-padding-wide;
   }
 
   @include breakpoint(small, nav) {
@@ -863,16 +870,11 @@ $filter-height: 64px;
 }
 
 .card-body {
-  --card-horizontal-spacing: #{$navigator-card-horizontal-spacing};
-  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
-
-  padding: 0 var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
   @include breakpoint(medium, nav) {
-    --card-horizontal-spacing: 20px;
     --card-vertical-spacing: 0px;
     padding-top: $filter-height;
   }
@@ -886,9 +888,9 @@ $filter-height: 64px;
 
 .navigator-filter {
   box-sizing: border-box;
-  padding: 14px 30px;
+  padding: 15px 30px;
   border-top: 1px solid var(--color-grid);
-  height: 71px;
+  height: 73px;
   display: flex;
   align-items: flex-end;
 
@@ -921,7 +923,6 @@ $filter-height: 64px;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
-  padding-right: var(--card-horizontal-spacing);
 }
 
 .filter-wrapper {
