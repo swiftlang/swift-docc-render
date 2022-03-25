@@ -181,7 +181,10 @@ export default {
 
 $item-height: 32px;
 $chevron-width: $card-horizontal-spacing;
-$depth-spacer-base-spacing: $card-horizontal-spacing + $chevron-width + $tree-toggle-padding;
+$tree-toggle-padding: $card-horizontal-spacing-small;
+$depth-spacer-base-spacing: (
+  $card-horizontal-spacing + $chevron-width + $tree-toggle-padding
+);
 $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
 .navigator-card-item {
