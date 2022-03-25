@@ -319,7 +319,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   top: 0;
   width: 100%;
   height: $nav-height;
-  z-index: 9997;
+  z-index: $nav-z-index;
   --nav-padding: #{$nav-padding};
 
   @include breakpoint(small, $scope: nav) {
