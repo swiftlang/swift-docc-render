@@ -200,6 +200,17 @@ $sidenav-icon-size: 19px;
       margin-left: $nav-space-between-elements;
     }
 
+    @include nav-in-breakpoint {
+      // do not apply border if no item are above setting links
+      &:not([data-previous-menu-children-count="0"]) {
+        .nav-menu-setting:first-child {
+          border-top: 1px solid dark-color(figure-gray-tertiary);
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
     .nav-menu-setting {
       display: flex;
       align-items: center;
@@ -219,14 +230,6 @@ $sidenav-icon-size: 19px;
       }
 
       @include nav-in-breakpoint() {
-        &:not([data-previous-menu-children-count="0"]) {
-          &:first-child {
-            border-top: 1px solid dark-color(figure-gray-tertiary);
-            display: flex;
-            align-items: center;
-          }
-        }
-
         &:not(:first-child) {
           border-top: 1px solid dark-color(fill-gray-tertiary);
         }
