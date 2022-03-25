@@ -24,7 +24,9 @@
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
-      Fetching...
+      <div class="loading-placeholder-content">
+        Fetching...
+      </div>
     </div>
   </div>
 </template>
@@ -197,8 +199,12 @@ export default {
 }
 
 .loading-placeholder {
-  color: var(--color-figure-gray-secondary);
-  padding: 12px;
   @include font-styles(body-reduced);
+  color: var(--color-figure-gray-secondary);
+  overflow: hidden;
+
+  &-content {
+    padding: 12px;
+  }
 }
 </style>

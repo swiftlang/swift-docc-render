@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import {
   shallowMount,
@@ -15,6 +15,7 @@ import {
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import { BreakpointName } from '@/utils/breakpoints';
 import { flushPromises } from '../../../../test-utils';
+import BreakpointEmitter from '@/components/BreakpointEmitter';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
@@ -229,20 +230,31 @@ describe('DocumentationNav', () => {
     expect(wrapper.find('.nav-title-link').exists()).toBe(false);
   });
 
-  it('renders a sidenav toggle', async () => {
+  it('renders a sidenav toggle, emitting `@toggle-sidenav` event', async () => {
     wrapper.find('.sidenav-toggle').trigger('click');
     await flushPromises();
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });
 
-  it('closes the nav, if open and clicking on the sidenavtoggle', async () => {
+  it('renders a sidenav toggle, emitting `@toggle-sidenav-mobile` if inBreakpoint', async () => {
+    wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+    await flushPromises();
+    wrapper.find('.sidenav-toggle').trigger('click');
+    await flushPromises();
+    expect(wrapper.emitted('toggle-sidenav-mobile')).toBeTruthy();
+    expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
+  });
+
+  it('closes the nav, if open and clicking on the sidenavtoggle, while in breakpoint', async () => {
+    wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+    await flushPromises();
     wrapper.find('.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain('nav--is-open');
     wrapper.find('.sidenav-toggle').trigger('click');
     expect(wrapper.classes()).not.toContain('nav--is-open');
-    expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
+    expect(wrapper.emitted('toggle-sidenav-mobile')).toBeFalsy();
     await flushPromises();
-    expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+    expect(wrapper.emitted('toggle-sidenav-mobile')).toBeTruthy();
   });
 
   it('renders the nav, with `isWideFormat` to `false`', () => {

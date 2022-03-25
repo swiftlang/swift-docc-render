@@ -24,7 +24,8 @@
         :currentTopicTags="topicProps.tags"
         :references="topicProps.references"
         :isWideFormat="enableNavigator"
-        @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
+        @toggle-sidenav-mobile="isMobileSideNavOpen = !isMobileSideNavOpen"
+        @toggle-sidenav="handleToggleSidenav"
       />
       <component
         :is="enableNavigator ? 'AdjustableSidebarWidth' : 'div'"
@@ -48,7 +49,7 @@
                   :references="topicProps.references"
                   :scrollLockID="scrollLockID"
                   :breakpoint="breakpoint"
-                  @close="isSideNavOpen = false"
+                  @close="isMobileSideNavOpen = false"
                 />
               </template>
             </NavigatorDataProvider>
@@ -88,6 +89,9 @@ import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvi
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
+import { storage } from 'docc-render/utils/storage';
+
+const NAVIGATOR_CLOSED_KEY = 'navigator-closed';
 
 export default {
   name: 'DocumentationTopicView',
@@ -99,12 +103,14 @@ export default {
     CodeTheme,
     Nav: DocumentationNav,
   },
+  constants: { NAVIGATOR_CLOSED_KEY },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
     return {
       topicDataDefault: null,
       topicDataObjc: null,
-      isSideNavOpen: false,
+      isMobileSideNavOpen: false,
+      isLargeSideNavClosed: storage.get(NAVIGATOR_CLOSED_KEY, false),
       store: DocumentationTopicStore,
     };
   },
@@ -246,14 +252,14 @@ export default {
     enableNavigator: ({ isTargetIDE }) => !isTargetIDE && (
       getSetting(['features', 'docs', 'navigator', 'enable'], false)
     ),
-    sidebarProps: ({ isSideNavOpen, enableNavigator }) => (
+    sidebarProps: ({ isMobileSideNavOpen, enableNavigator, isLargeSideNavClosed }) => (
       enableNavigator
-        ? { class: 'full-width-container topic-wrapper', openExternally: isSideNavOpen }
+        ? { class: 'full-width-container topic-wrapper', openExternally: isMobileSideNavOpen, closedExternally: isLargeSideNavClosed }
         : { class: 'static-width-container topic-wrapper' }
     ),
     sidebarListeners() {
       return this.enableNavigator ? ({
-        'update:openExternally': (v) => { this.isSideNavOpen = v; },
+        'update:openExternally': (v) => { this.isMobileSideNavOpen = v; },
       }) : {};
     },
   },
@@ -263,6 +269,10 @@ export default {
     },
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
+    },
+    handleToggleSidenav() {
+      this.isLargeSideNavClosed = !this.isLargeSideNavClosed;
+      storage.set(NAVIGATOR_CLOSED_KEY, this.isLargeSideNavClosed);
     },
   },
   mounted() {

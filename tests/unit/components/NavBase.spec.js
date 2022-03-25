@@ -160,6 +160,7 @@ describe('NavBase', () => {
     expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
     expect(preTitleProps).toEqual({
       closeNav: expect.any(Function),
+      inBreakpoint: false,
     });
   });
 

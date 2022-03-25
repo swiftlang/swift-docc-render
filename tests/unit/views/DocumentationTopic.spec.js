@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
@@ -18,6 +18,7 @@ import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
+import { storage } from '@/utils/storage';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
@@ -25,6 +26,7 @@ jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/theme-settings');
+jest.mock('docc-render/utils/storage');
 
 const defaultGetSetting = (_, fallback) => fallback;
 const getSettingWithNavigatorEnabled = (settingKeyPath, fallback) => (
@@ -45,6 +47,7 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
 });
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
+const { NAVIGATOR_CLOSED_KEY } = DocumentationTopic.constants;
 
 const mocks = {
   $bridge: {
@@ -115,6 +118,7 @@ describe('DocumentationTopic', () => {
   let wrapper;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     wrapper = shallowMount(DocumentationTopic, {
       mocks,
       stubs: {
@@ -154,6 +158,7 @@ describe('DocumentationTopic', () => {
       .toEqual(expect.arrayContaining(['full-width-container', 'topic-wrapper']));
     expect(adjustableWidth.props()).toEqual({
       openExternally: false,
+      closedExternally: false,
     });
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
@@ -275,12 +280,32 @@ describe('DocumentationTopic', () => {
     wrapper.setData({ topicData });
     await flushPromises();
     const nav = wrapper.find(Nav);
-    nav.vm.$emit('toggle-sidenav');
+    nav.vm.$emit('toggle-sidenav-mobile');
     const sidebar = wrapper.find(AdjustableSidebarWidth);
     expect(sidebar.props('openExternally')).toBe(true);
     await flushPromises();
     wrapper.find(Navigator).vm.$emit('close');
     expect(sidebar.props('openExternally')).toBe(false);
+
+    getSetting.mockReset();
+  });
+
+  it('handles `@toggle-sidenav` on Nav', async () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+    // assert that the storage was called to get the navigator closed state from LS
+    expect(storage.get).toHaveBeenCalledTimes(1);
+    expect(storage.get).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, false);
+
+    wrapper.setData({ topicData });
+    await flushPromises();
+    const nav = wrapper.find(Nav);
+    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    // assert the prop is false
+    expect(sidebar.props('closedExternally')).toBe(false);
+    // trigger the `@toggle-sidenav` handler
+    nav.vm.$emit('toggle-sidenav');
+    expect(sidebar.props('closedExternally')).toBe(true);
+    expect(storage.set).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, true);
 
     getSetting.mockReset();
   });

@@ -102,6 +102,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    closedExternally: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     const windowWidth = window.innerWidth;
@@ -140,10 +144,11 @@ export default {
     isMaxWidth: ({ width, maxWidth }) => width === maxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideClasses: ({
-      isDragging, openExternally, noTransition, isTransitioning,
+      isDragging, openExternally, noTransition, isTransitioning, closedExternally,
     }) => ({
       dragging: isDragging,
       'force-open': openExternally,
+      'force-close': closedExternally,
       'no-transition': noTransition,
       animating: isTransitioning,
     }),
@@ -315,6 +320,16 @@ export default {
 
   &.no-transition {
     transition: none !important;
+  }
+
+  @include breakpoints-from(large, nav) {
+    &:not(.dragging) {
+      transition: width 0.15s ease-in;
+    }
+
+    &.force-close {
+      width: 0 !important;
+    }
   }
 
   @include breakpoint(medium, nav) {

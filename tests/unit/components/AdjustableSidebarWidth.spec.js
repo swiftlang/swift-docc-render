@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import AdjustableSidebarWidth, {
   eventsMap,
@@ -243,6 +243,17 @@ describe('AdjustableSidebarWidth', () => {
       wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
       expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
+  });
+
+  it('adds a `force-close` class, when `closedExternally: true`', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        closedExternally: true,
+      },
+    });
+    expect(wrapper.find({ ref: 'aside' }).classes()).toContain('force-close');
+    wrapper.setProps({ closedExternally: false });
+    expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('force-close');
   });
 
   it('changes the sidebar width, if outside the min/max on orientation change', async () => {

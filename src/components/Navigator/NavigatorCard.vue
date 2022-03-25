@@ -793,6 +793,7 @@ $filter-height: 64px;
     height: calc(100vh - #{$nav-height} - #{$filter-height});
     display: flex;
     flex-flow: column;
+    overflow: hidden;
     @include breakpoint(medium, nav) {
       position: static;
       height: 100%;
@@ -928,6 +929,7 @@ $filter-height: 64px;
   position: sticky;
   bottom: 0;
   background: var(--color-fill);
+  overflow: hidden;
   @include breakpoint(medium, nav) {
     position: absolute;
     top: $nav-height;
