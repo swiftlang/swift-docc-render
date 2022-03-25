@@ -83,6 +83,10 @@ const topicData = {
         'topic://foo',
         'topic://bar',
       ],
+      [
+        'topic://baz',
+        'topic://baq',
+      ],
     ],
   },
   variants: [
@@ -168,6 +172,7 @@ describe('DocumentationTopic', () => {
     expect(navigator.props()).toEqual({
       errorFetching: false,
       isFetching: true,
+      // assert we are passing the first set of paths always
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,

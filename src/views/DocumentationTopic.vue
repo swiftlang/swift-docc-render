@@ -40,7 +40,7 @@
             >
               <template #default="slotProps">
                 <Navigator
-                  :parent-topic-identifiers="navigatorParentTopicIdentifiers"
+                  :parent-topic-identifiers="parentTopicIdentifiers"
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
                   :error-fetching="slotProps.errorFetching"
@@ -200,9 +200,6 @@ export default {
     // hierarchy/breadcrumb for a given topic. We choose to render only the
     // first one.
     parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths: [ids = []] = [] } } }) => ids,
-    navigatorParentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] } } }) => (
-      paths.slice(-1)[0]
-    ),
     technology: ({
       $route,
       topicProps: {
