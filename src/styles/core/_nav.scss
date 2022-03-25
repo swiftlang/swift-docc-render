@@ -23,6 +23,7 @@ $nav-menu-item-stagger-delay: 0s !default;
 $nav-bg-color-transition: 0.5s $nav-timingfunction !default;
 $nav-space-between-elements: rem(10px);
 $nav-space-hierarchy-elements: rem(3px);
+$nav-z-index: 9997;
 
 @mixin nav-in-breakpoint($nested: false) {
   @include unify-selector('.nav--in-breakpoint-range', $nested) {
