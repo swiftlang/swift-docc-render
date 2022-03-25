@@ -788,7 +788,8 @@ export default {
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 $navigator-card-vertical-spacing: 8px !default;
-$filter-height: 64px;
+// unfortunately we need to hard-code the filter height
+$filter-height: 71px;
 $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
@@ -907,7 +908,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   box-sizing: border-box;
   padding: 15px 30px;
   border-top: 1px solid var(--color-grid);
-  height: 73px;
+  height: $filter-height;
   display: flex;
   align-items: flex-end;
 
