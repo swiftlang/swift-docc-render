@@ -841,7 +841,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 .no-items-wrapper {
   color: var(--color-figure-gray-tertiary);
   @include font-styles(body-reduced);
-  padding: var(--card-vertical-spacing) 0;
+  padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
 }
 
 .close-card-mobile {
