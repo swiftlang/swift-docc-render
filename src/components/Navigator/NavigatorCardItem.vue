@@ -38,7 +38,10 @@
           @click.exact.prevent="toggleTree"
           @click.alt.prevent="toggleEntireTree"
         >
-          <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
+          <InlineChevronRightIcon
+            class="icon-inline chevron"
+            :class="{ rotate: expanded, animating: idState.isOpening }"
+          />
         </button>
       </div>
       <NavigatorLeafIcon
@@ -92,9 +95,16 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { ChangeTypesOrder } from 'docc-render/constants/Changes';
+import { IdState } from 'vue-virtual-scroller';
+import { waitFrames } from 'docc-render/utils/loading';
 
 export default {
   name: 'NavigatorCardItem',
+  mixins: [
+    IdState({
+      idProp: vm => vm.item.uid,
+    }),
+  ],
   components: {
     HighlightMatches,
     NavigatorLeafIcon,
@@ -137,6 +147,12 @@ export default {
       default: () => false,
     },
   },
+  idState() {
+    return {
+      // special state to track opening animations for a few seconds, after toggling on/off
+      isOpening: false,
+    };
+  },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
     isParent: ({ item }) => !!item.childUIDs.length,
@@ -154,9 +170,11 @@ export default {
   },
   methods: {
     toggleTree() {
+      this.idState.isOpening = true;
       this.$emit('toggle', this.item);
     },
     toggleEntireTree() {
+      this.idState.isOpening = true;
       this.$emit('toggle-full', this.item);
     },
     clickReference() {
@@ -171,6 +189,12 @@ export default {
       if (newVal) {
         this.selfFocus();
       }
+    },
+    async expanded() {
+      // wait a few frames for animations queues to finish
+      await waitFrames(8);
+      // set the opening animation as ended
+      this.idState.isOpening = false;
     },
   },
 };
@@ -323,7 +347,10 @@ $item-height: 32px;
 
 .chevron {
   width: 0.6em;
-  transition: transform 0.15s ease-in;
+
+  &.animating {
+    transition: transform 0.15s ease-in;
+  }
 
   &.rotate {
     transform: rotate(90deg);
