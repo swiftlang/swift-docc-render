@@ -16,7 +16,6 @@
     <div
       ref="sidebar"
       class="sidebar"
-      :class="{ 'fully-open': isMaxWidth }"
     >
       <div
         :class="asideClasses"
@@ -145,7 +144,6 @@ export default {
     ),
     minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
-    isMaxWidth: ({ width, maxWidth }) => width === maxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideClasses: ({
       isDragging, openExternally, noTransition, isTransitioning, closedExternally,
@@ -406,10 +404,6 @@ export default {
   z-index: 1;
   transition: background-color .15s;
   transform: translateX(50%);
-
-  .fully-closed &, .fully-open & {
-    width: 10px;
-  }
 
   @include breakpoint(medium, nav) {
     display: none;
