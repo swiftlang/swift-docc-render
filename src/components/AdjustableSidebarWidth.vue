@@ -13,11 +13,10 @@
     <div
       ref="sidebar"
       class="sidebar"
-      :class="{ 'fully-open': isMaxWidth }"
     >
       <div
         :class="asideClasses"
-        :style="{ width: widthInPx }"
+        :style="{ width: widthInPx, '--top-offset': `${mobileTopOffset}px` }"
         class="aside"
         ref="aside"
         @transitionstart="isTransitioning = true"
@@ -53,6 +52,7 @@ import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import throttle from 'docc-render/utils/throttle';
+import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 
 export const STORAGE_KEY = 'sidebar';
 
@@ -125,6 +125,7 @@ export default {
       noTransition: false,
       isTransitioning: false,
       focusTrapInstance: null,
+      mobileTopOffset: 0,
     };
   },
   computed: {
@@ -135,7 +136,6 @@ export default {
     ),
     minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
-    isMaxWidth: ({ width, maxWidth }) => width === maxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideClasses: ({
       isDragging, openExternally, noTransition, isTransitioning,
@@ -256,6 +256,13 @@ export default {
       this.$emit('width-change', width);
     },
     handleExternalOpen(isOpen) {
+      if (isOpen) {
+        const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
+        if (stickyNavAnchor) {
+          const { y } = stickyNavAnchor.getBoundingClientRect();
+          this.mobileTopOffset = Math.max(y, 0);
+        }
+      }
       this.toggleScrollLock(isOpen);
     },
     /**
@@ -313,11 +320,11 @@ export default {
     overflow: hidden;
     min-width: 0;
     max-width: 100%;
-    height: 100vh;
+    height: calc(100vh - var(--top-offset));
     position: fixed;
-    top: 0;
+    top: var(--top-offset);
     bottom: 0;
-    z-index: 9999;
+    z-index: $nav-z-index;
     transform: translateX(-100%);
     transition: transform 0.15s ease-in;
 
@@ -358,10 +365,6 @@ export default {
   z-index: 1;
   transition: background-color .15s;
   transform: translateX(50%);
-
-  .fully-closed &, .fully-open & {
-    width: 10px;
-  }
 
   @include breakpoint(medium, nav) {
     display: none;
