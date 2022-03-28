@@ -38,6 +38,7 @@
             aria-label="Sidebar Tree Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
+            :buffer="1000"
             emit-update
             key-field="uid"
             v-slot="{ item, active, index }"
