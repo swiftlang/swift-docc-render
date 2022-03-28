@@ -292,13 +292,6 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, 250); // 20% out of 1000, as that is the min percentage
   });
 
-  it('sets helper classes when `fully open`', () => {
-    storage.get.mockReturnValueOnce(window.innerWidth);
-    const wrapper = createWrapper();
-    expect(wrapper.find('.sidebar').classes()).toContain('fully-open');
-    assertWidth(wrapper, maxWidth);
-  });
-
   it('allows dragging the handle to expand/contract the sidebar, with the mouse', () => {
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
