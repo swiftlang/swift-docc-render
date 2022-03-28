@@ -20,7 +20,7 @@
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
         <div class="pre-title">
-          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint }" />
+          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint, currentBreakpoint }" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
@@ -146,14 +146,17 @@ export default {
   data() {
     return {
       isOpen: false,
-      inBreakpoint: false,
       isTransitioning: false,
       isSticking: false,
       focusTrapInstance: null,
+      currentBreakpoint: BreakpointName.large,
     };
   },
   computed: {
     BreakpointScopes: () => BreakpointScopes,
+    inBreakpoint: ({ currentBreakpoint, breakpoint }) => (
+      !isBreakpointAbove(currentBreakpoint, breakpoint)
+    ),
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
       hasNoBorder, hasFullWidthBorder, isDark, isWideFormat,
@@ -229,10 +232,9 @@ export default {
      * @param breakpoint
      */
     onBreakpointChange(breakpoint) {
-      const isOutsideBreakpoint = isBreakpointAbove(breakpoint, this.breakpoint);
-      this.inBreakpoint = !isOutsideBreakpoint;
+      this.currentBreakpoint = breakpoint;
       // close the nav if outside of the breakpoint
-      if (isOutsideBreakpoint) this.closeNav();
+      if (!this.inBreakpoint) this.closeNav();
     },
     /**
      * On every intersection change

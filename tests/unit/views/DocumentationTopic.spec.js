@@ -20,6 +20,7 @@ import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
 import { storage } from '@/utils/storage';
 import { flushPromises } from '../../../test-utils';
+import { BreakpointName } from '@/utils/breakpoints';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/utils/FocusTrap');
@@ -280,7 +281,7 @@ describe('DocumentationTopic', () => {
     wrapper.setData({ topicData });
     await flushPromises();
     const nav = wrapper.find(Nav);
-    nav.vm.$emit('toggle-sidenav-mobile');
+    nav.vm.$emit('toggle-sidenav', BreakpointName.small);
     const sidebar = wrapper.find(AdjustableSidebarWidth);
     expect(sidebar.props('openExternally')).toBe(true);
     await flushPromises();
@@ -290,7 +291,7 @@ describe('DocumentationTopic', () => {
     getSetting.mockReset();
   });
 
-  it('handles `@toggle-sidenav` on Nav', async () => {
+  it('handles `@toggle-sidenav` on Nav, for `Large` and `Medium` breakpoints', async () => {
     getSetting.mockImplementation(getSettingWithNavigatorEnabled);
     // assert that the storage was called to get the navigator closed state from LS
     expect(storage.get).toHaveBeenCalledTimes(1);
@@ -303,13 +304,17 @@ describe('DocumentationTopic', () => {
     // assert the prop is false
     expect(sidebar.props('closedExternally')).toBe(false);
     // trigger the `@toggle-sidenav` handler
-    nav.vm.$emit('toggle-sidenav');
+    nav.vm.$emit('toggle-sidenav', BreakpointName.medium);
     expect(sidebar.props('closedExternally')).toBe(true);
     expect(storage.set).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, true);
     sidebar.vm.$emit('update:closedExternally', false);
     // assert we are storing the updated values
     expect(sidebar.props('closedExternally')).toBe(false);
     expect(storage.set).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, false);
+
+    nav.vm.$emit('toggle-sidenav', BreakpointName.large);
+    expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_CLOSED_KEY, true);
+    sidebar.vm.$emit('update:closedExternally', false);
 
     getSetting.mockReset();
   });

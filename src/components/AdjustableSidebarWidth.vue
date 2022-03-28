@@ -185,13 +185,15 @@ export default {
       }, 250, true, true),
     },
     windowWidth: 'getWidthInCheck',
-    async breakpoint(value) {
+    async breakpoint(value, oldValue) {
       // adjust the width, so it does not go outside of limits
       this.getWidthInCheck();
       // make sure we close the nav
-      if (value === BreakpointName.large) {
+      if (oldValue === BreakpointName.small) {
         this.closeMobileSidebar();
       }
+      // if we are not going into the `small` breakpoint, return early
+      if (oldValue !== BreakpointName.small && value !== BreakpointName.small) return;
       // make sure we dont apply transitions for a few moments, to prevent flashes
       this.noTransition = true;
       // await for a few moments
@@ -311,7 +313,7 @@ export default {
 
 .adjustable-sidebar-width {
   display: flex;
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     display: block;
     position: relative;
   }
@@ -327,7 +329,7 @@ export default {
 
 .sidebar {
   position: relative;
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     position: static;
   }
 }
@@ -342,7 +344,7 @@ export default {
     transition: none !important;
   }
 
-  @include breakpoints-from(large, nav) {
+  @include breakpoints-from(medium, nav) {
     &:not(.dragging) {
       transition: width 0.15s ease-in, visibility 0s linear 0s;
     }
@@ -350,11 +352,12 @@ export default {
     &.force-close {
       width: 0 !important;
       visibility: hidden;
+      pointer-events: none;
       transition: width 0.15s ease-in, visibility 0s linear 0.2s;
     }
   }
 
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     width: 100% !important;
     overflow: hidden;
     min-width: 0;
@@ -405,7 +408,7 @@ export default {
   transition: background-color .15s;
   transform: translateX(50%);
 
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     display: none;
   }
 

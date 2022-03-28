@@ -236,25 +236,16 @@ describe('DocumentationNav', () => {
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });
 
-  it('renders a sidenav toggle, emitting `@toggle-sidenav-mobile` if inBreakpoint', async () => {
-    wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
-    await flushPromises();
-    wrapper.find('.sidenav-toggle').trigger('click');
-    await flushPromises();
-    expect(wrapper.emitted('toggle-sidenav-mobile')).toBeTruthy();
-    expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
-  });
-
-  it('closes the nav, if open and clicking on the sidenavtoggle, while in breakpoint', async () => {
+  it('closes the nav, if open and clicking on the sidenav-toggle', async () => {
     wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
     await flushPromises();
     wrapper.find('.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain('nav--is-open');
     wrapper.find('.sidenav-toggle').trigger('click');
     expect(wrapper.classes()).not.toContain('nav--is-open');
-    expect(wrapper.emitted('toggle-sidenav-mobile')).toBeFalsy();
+    expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
     await flushPromises();
-    expect(wrapper.emitted('toggle-sidenav-mobile')).toBeTruthy();
+    expect(wrapper.emitted('toggle-sidenav')).toEqual([[BreakpointName.medium]]);
   });
 
   it('renders the nav, with `isWideFormat` to `false`', () => {

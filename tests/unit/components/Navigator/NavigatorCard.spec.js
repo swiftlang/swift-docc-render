@@ -252,13 +252,16 @@ describe('NavigatorCard', () => {
     expect(wrapper.vm.focusedIndex).toBe(0);
   });
 
-  it('reverses the FilterInput, on mobile', () => {
+  it('reverses the FilterInput, on mobile', async () => {
     const wrapper = createWrapper({
       propsData: {
-        breakpoint: BreakpointName.medium,
+        breakpoint: BreakpointName.small,
       },
     });
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
+    wrapper.setProps({ breakpoint: BreakpointName.medium });
+    await flushPromises();
+    expect(wrapper.find(FilterInput).props('positionReversed')).toBe(true);
   });
 
   it('renders aria-live regions for polite and assertive notifications', () => {

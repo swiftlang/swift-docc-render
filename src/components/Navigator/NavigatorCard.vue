@@ -77,7 +77,7 @@
             :selected-tags.sync="selectedTagsModelValue"
             :placeholder="`Filter in ${technology}`"
             :should-keep-open-on-blur="false"
-            :position-reversed="isLargeBreakpoint"
+            :position-reversed="isFilterReversed"
             :clear-filter-on-tag-select="false"
             class="filter-component"
             @clear="clearFilters"
@@ -327,7 +327,7 @@ export default {
     apiChangesObject() {
       return this.apiChanges || {};
     },
-    isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
+    isFilterReversed: ({ breakpoint }) => breakpoint !== BreakpointName.small,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
   },
@@ -789,7 +789,7 @@ export default {
 
 $navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
-$filter-height: 71px;
+$filter-height: 73px;
 $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
@@ -811,7 +811,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     display: flex;
     flex-flow: column;
     overflow: hidden;
-    @include breakpoint(medium, nav) {
+    @include breakpoint(small, nav) {
       position: static;
       height: 100%;
     }
@@ -842,11 +842,11 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     }
 
     @include breakpoint(medium, nav) {
-      justify-content: center;
       padding: 14px $card-horizontal-spacing-large;
     }
 
     @include breakpoint(small, nav) {
+      justify-content: center;
       padding: 12px $card-horizontal-spacing-large;
     }
   }
@@ -871,13 +871,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   align-items: center;
   justify-content: center;
 
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     display: flex;
     left: 0;
     height: 100%;
-  }
-
-  @include breakpoint(small, nav) {
     padding-left: $nav-padding-small;
     padding-right: $nav-padding-small;
   }
@@ -893,7 +890,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     --card-vertical-spacing: 0px;
     padding-top: $filter-height;
   }
@@ -913,7 +910,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   display: flex;
   align-items: flex-end;
 
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     border: none;
     padding: 10px 20px;
     align-items: flex-start;
@@ -948,14 +945,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   position: sticky;
   bottom: 0;
   background: var(--color-fill);
-  overflow: hidden;
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     position: absolute;
-    top: $nav-height;
     bottom: auto;
     width: 100%;
-  }
-  @include breakpoint(small, nav) {
     top: $nav-height-small;
   }
 }

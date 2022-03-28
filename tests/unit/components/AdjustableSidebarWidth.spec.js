@@ -114,13 +114,18 @@ describe('AdjustableSidebarWidth', () => {
       expect(aside.classes()).not.toContain('no-transition');
       const emitter = wrapper.find(BreakpointEmitter);
       expect(emitter.props('scope')).toEqual(BreakpointScopes.nav);
-      emitter.vm.$emit('change', 'small');
+      emitter.vm.$emit('change', BreakpointName.small);
       expect(aside.classes()).toContain('no-transition');
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
       // try going back to large now
-      emitter.vm.$emit('change', 'large');
+      emitter.vm.$emit('change', BreakpointName.medium);
       expect(aside.classes()).toContain('no-transition');
+      await waitFrames(5);
+      expect(aside.classes()).not.toContain('no-transition');
+      // assert that going into Large does not add `no-transition`
+      emitter.vm.$emit('change', BreakpointName.large);
+      expect(aside.classes()).not.toContain('no-transition');
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
     });
@@ -229,18 +234,18 @@ describe('AdjustableSidebarWidth', () => {
       expect(AdjustableSidebarWidth.watch.$route).toEqual('closeMobileSidebar');
     });
 
-    it('closes the nav, on breakpoint change from medium to large', async () => {
+    it('closes the nav, on breakpoint change from small to medium/large', async () => {
       const wrapper = createWrapper({
         propsData: {
           openExternally: true,
         },
       });
       // setup
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.small);
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('update:openExternally')).toBeFalsy();
       // true test
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
       expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
   });

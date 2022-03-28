@@ -24,7 +24,6 @@
         :currentTopicTags="topicProps.tags"
         :references="topicProps.references"
         :isWideFormat="enableNavigator"
-        @toggle-sidenav-mobile="isMobileSideNavOpen = !isMobileSideNavOpen"
         @toggle-sidenav="handleToggleSidenav"
       />
       <component
@@ -90,6 +89,7 @@ import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidt
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import { storage } from 'docc-render/utils/storage';
+import { BreakpointName } from '@/utils/breakpoints';
 
 const NAVIGATOR_CLOSED_KEY = 'navigator-closed';
 
@@ -259,8 +259,8 @@ export default {
     ),
     sidebarListeners() {
       return this.enableNavigator ? ({
-        'update:openExternally': (v) => { this.isMobileSideNavOpen = v; },
-        'update:closedExternally': this.handleToggleSidenav,
+        'update:openExternally': this.toggleMobileSidenav,
+        'update:closedExternally': this.toggleLargeSidenav,
       }) : {};
     },
   },
@@ -271,9 +271,19 @@ export default {
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
     },
-    handleToggleSidenav(value = !this.isLargeSideNavClosed) {
+    handleToggleSidenav(breakpoint) {
+      if (breakpoint === BreakpointName.small) {
+        this.toggleMobileSidenav();
+      } else {
+        this.toggleLargeSidenav();
+      }
+    },
+    toggleLargeSidenav(value = !this.isLargeSideNavClosed) {
       this.isLargeSideNavClosed = value;
-      storage.set(NAVIGATOR_CLOSED_KEY, this.isLargeSideNavClosed);
+      storage.set(NAVIGATOR_CLOSED_KEY, value);
+    },
+    toggleMobileSidenav(value = !this.isMobileSideNavOpen) {
+      this.isMobileSideNavOpen = value;
     },
   },
   mounted() {
@@ -350,7 +360,7 @@ export default {
   box-sizing: border-box;
   border-right: 1px solid var(--color-grid);
 
-  @include breakpoint(medium, nav) {
+  @include breakpoint(small, nav) {
     background: var(--color-fill);
     border-right: none;
 

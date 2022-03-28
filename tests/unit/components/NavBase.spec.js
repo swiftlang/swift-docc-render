@@ -161,6 +161,7 @@ describe('NavBase', () => {
     expect(preTitleProps).toEqual({
       closeNav: expect.any(Function),
       inBreakpoint: false,
+      currentBreakpoint: BreakpointName.large,
     });
   });
 
@@ -356,7 +357,7 @@ describe('NavBase', () => {
 
   it('adds the breakpoint range class, when the breakpoint fits the breakpoint query', async () => {
     wrapper = await createWrapper({
-      data: () => ({ inBreakpoint: true, isOpen: true }),
+      data: () => ({ isOpen: true }),
       propsData: {
         breakpoint: BreakpointName.medium,
       },
@@ -502,7 +503,7 @@ describe('NavBase', () => {
 
     it('upon changing into a breakpoint outside of the breakpoint', async () => {
       wrapper = await createWrapper({
-        data: () => ({ inBreakpoint: true, isOpen: true }),
+        data: () => ({ isOpen: true }),
         propsData: {
           breakpoint: BreakpointName.medium,
         },

@@ -20,8 +20,11 @@
     class="documentation-nav"
     aria-label="API Reference"
   >
-    <template #pre-title="{ closeNav, inBreakpoint }" v-if="isWideFormat">
-      <button class="sidenav-toggle" @click.prevent="handleSidenavToggle(closeNav, inBreakpoint)">
+    <template #pre-title="{ closeNav, currentBreakpoint }" v-if="isWideFormat">
+      <button
+        class="sidenav-toggle"
+        @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
+      >
         <span class="sidenav-icon-wrapper">
           <SidenavIcon class="icon-inline sidenav-icon" />
         </span>
@@ -146,14 +149,11 @@ export default {
     ),
   },
   methods: {
-    async handleSidenavToggle(closeNav, inBreakpoint) {
-      if (inBreakpoint) {
-        // close the navigation
-        await closeNav();
-      }
-      const event = inBreakpoint ? 'toggle-sidenav-mobile' : 'toggle-sidenav';
+    async handleSidenavToggle(closeNav, currentBreakpoint) {
+      // close the navigation
+      await closeNav();
       // toggle the sidenav
-      this.$emit(event);
+      this.$emit('toggle-sidenav', currentBreakpoint);
     },
   },
 };
@@ -197,13 +197,15 @@ $sidenav-icon-size: 19px;
   color: var(--color-nav-link-color);
   position: relative;
   padding-right: $nav-pre-title-item-margin;
+  padding-left: $nav-pre-title-item-margin;
+  margin-left: -$nav-pre-title-item-margin;
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);
   }
 
   &:hover .sidenav-icon-wrapper {
-    background: light-color(fill-gray-quaternary);
+    background: var(--color-fill-gray-quaternary);
 
     .theme-dark & {
       background: dark-color(fill-gray-quaternary);
@@ -231,10 +233,6 @@ $sidenav-icon-size: 19px;
 
     &:after {
       display: none;
-    }
-
-    .sidenav-icon-wrapper {
-      padding: 0;
     }
   }
 }
