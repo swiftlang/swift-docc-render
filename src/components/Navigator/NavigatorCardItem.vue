@@ -11,28 +11,30 @@
 <template>
   <div
     class="navigator-card-item"
+    :role="isGroupMarker ? null : 'link'"
+    :tabindex="isFocused ? '0' : '-1'"
     :class="{ expanded }"
     :style="{ '--nesting-index': item.depth }"
     :aria-hidden="isRendered ? null : 'true'"
+    :aria-expanded="expanded ? 'true': 'false'"
+    :aria-describedby="ariaDescribedBy"
     :id="`container-${item.uid}`"
+    @keydown.left.prevent="toggleTree"
+    @keydown.right.prevent="toggleTree"
+    @keydown.enter.prevent="clickReference"
   >
     <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
       <span
-        v-if="isParent"
         hidden
-        :id="buttonParentLabel"
+        :id="usageLabel"
       >
-        {{ item.childUIDs.length }} symbols to be {{ expanded ? 'collapsed' : 'expanded' }}
+        To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow
       </span>
       <div class="depth-spacer">
         <button
           v-if="isParent"
-          :aria-describedby="buttonParentLabel"
           class="tree-toggle"
-          :tabindex="isRendered ? null : '-1'"
-          :aria-label="`Toggle ${item.title}`"
-          :aria-controls="`container-${item.uid}`"
-          :aria-expanded="expanded ? 'true': 'false'"
+          tabindex="-1"
           @click.exact.prevent="toggleTree"
           @click.alt.prevent="toggleEntireTree"
         >
@@ -67,8 +69,8 @@
           :isActive="!isGroupMarker"
           :class="{ bolded: isBold }"
           class="leaf-link"
-          :aria-describedby="ariaDescribedBy"
-          :tabindex="isRendered ? null : '-1'"
+          tabindex="-1"
+          ref="reference"
           @click.native="$emit('navigate', item.uid)"
         >
           <HighlightMatches
@@ -130,19 +132,23 @@ export default {
       default: null,
       validator: v => ChangeTypesOrder.includes(v),
     },
+    isFocused: {
+      type: Boolean,
+      default: () => false,
+    },
   },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
     isParent: ({ item }) => !!item.childUIDs.length,
     parentLabel: ({ item }) => `label-parent-${item.uid}`,
     siblingsLabel: ({ item }) => `label-${item.uid}`,
-    buttonParentLabel: ({ item }) => `button-parent-${item.uid}`,
+    usageLabel: ({ item }) => `usage-${item.uid}`,
     ariaDescribedBy({
-      item, siblingsLabel, parentLabel, isParent,
+      item, siblingsLabel, parentLabel, isParent, usageLabel,
     }) {
       const baseLabel = `${siblingsLabel} ${item.parent}`;
-      if (!isParent) return baseLabel;
-      return `${baseLabel} ${parentLabel}`;
+      if (!isParent) return `${baseLabel} ${usageLabel}`;
+      return `${baseLabel} ${parentLabel} ${usageLabel}`;
     },
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
   },
@@ -153,6 +159,19 @@ export default {
     toggleEntireTree() {
       this.$emit('toggle-full', this.item);
     },
+    clickReference() {
+      this.$refs.reference.$el.click();
+    },
+    selfFocus() {
+      this.$el.focus();
+    },
+  },
+  watch: {
+    isFocused(newVal) {
+      if (newVal) {
+        this.selfFocus();
+      }
+    },
   },
 };
 </script>
@@ -161,26 +180,43 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $item-height: 32px;
+$chevron-width: $card-horizontal-spacing;
+$tree-toggle-padding: $card-horizontal-spacing-small;
+$depth-spacer-base-spacing: (
+  $card-horizontal-spacing + $chevron-width + $tree-toggle-padding
+);
+$nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
 .navigator-card-item {
   height: $item-height;
   display: flex;
   align-items: center;
+
+  @include on-keyboard-focus {
+    margin: $card-horizontal-spacing-small;
+    height: $item-height - 10px;
+
+    .depth-spacer {
+      margin-left: -$card-horizontal-spacing-small;
+    }
+  }
 }
 
 .depth-spacer {
-  width: calc(var(--nesting-index) * 14px + 26px);
+  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
   height: $item-height;
   position: relative;
   flex: 0 0 auto;
+  @include on-keyboard-focus {
+    margin: 0 -$card-horizontal-spacing-small;
+  }
 }
 
 .head-wrapper {
-  padding: 0 5px 0 0;
+  padding: 0 $card-horizontal-spacing;
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: $border-radius;
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -249,6 +285,10 @@ $item-height: 32px;
     vertical-align: middle;
     @include font-styles(body-reduced-tight);
 
+    &:hover {
+      text-decoration: none;
+    }
+
     &.bolded {
       font-weight: $font-weight-semibold;
     }
@@ -276,7 +316,7 @@ $item-height: 32px;
   position: absolute;
   width: 100%;
   height: 100%;
-  padding-right: 5px;
+  padding-right: $tree-toggle-padding;
   box-sizing: border-box;
   z-index: 1;
   display: flex;
@@ -291,7 +331,7 @@ $item-height: 32px;
 }
 
 .chevron {
-  width: 0.6em;
+  width: $chevron-width;
   transition: transform 0.15s ease-in;
 
   &.rotate {

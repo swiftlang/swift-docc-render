@@ -195,6 +195,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    clearFilterOnTagSelect: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -237,8 +241,8 @@ export default {
       const suggestedTags = tags.filter(tag => !selectedTags.includes(tag));
 
       return shouldTruncateTags
-        ? suggestedTags
-        : suggestedTags.slice(0, TagLimit);
+        ? suggestedTags.slice(0, TagLimit)
+        : suggestedTags;
     },
     displaySuggestedTags: ({ showSuggestedTags, suggestedTags }) => (
       showSuggestedTags && suggestedTags.length > 0
@@ -340,7 +344,7 @@ export default {
       }
       // make sure that the suggestedTags ref exists
       if (this.hasSuggestedTags && this.$refs.suggestedTags) {
-        this.$refs.suggestedTags.focusFirstTag();
+        this.$refs.suggestedTags.focusFirst();
       } else {
         cb();
       }

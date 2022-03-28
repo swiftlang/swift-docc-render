@@ -55,6 +55,7 @@ export default {
 
     selectTag(tag) {
       this.updateSelectedTags([tag]);
+      if (!this.clearFilterOnTagSelect) return;
       this.setFilterInput('');
     },
 
@@ -84,7 +85,7 @@ export default {
         } else {
           // Default behaviour for desktop users is to focus on the last tag and then
           // delete it when they click on the delete key while focused on the tag
-          this.$refs.selectedTags.focusLastTag();
+          this.$refs.selectedTags.focusLast();
         }
       }
 
@@ -128,7 +129,7 @@ export default {
         if (this.$refs.input.selectionEnd === 0 || this.inputIsSelected()) {
           // go to the last tag when the cursor is on the beginning of the input
           // or the whole input is selected
-          this.$refs.selectedTags.focusLastTag();
+          this.$refs.selectedTags.focusLast();
         }
       }
     },

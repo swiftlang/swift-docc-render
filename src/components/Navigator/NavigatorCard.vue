@@ -17,14 +17,19 @@
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
             <div class="card-link">
               {{ technology }}
             </div>
           </Reference>
         </div>
         <slot name="post-head" />
-        <div class="card-body">
+        <div
+          class="card-body"
+          @keydown.alt.up.capture.prevent="focusFirst"
+          @keydown.alt.down.capture.prevent="focusLast"
+          @keydown.up.exact.capture.prevent="focusPrev"
+          @keydown.down.exact.capture.prevent="focusNext"
+        >
           <RecycleScroller
             v-show="hasNodes"
             :id="scrollLockID"
@@ -33,9 +38,12 @@
             aria-label="Sidebar Tree Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
+            emit-update
             key-field="uid"
-            v-slot="{ item, active }"
-            @blur.capture.native="handleBlur"
+            v-slot="{ item, active, index }"
+            @focusin.native="handleFocusIn"
+            @focusout.native="handleFocusOut"
+            @update="handleScrollerUpdate"
           >
             <NavigatorCardItem
               :item="item"
@@ -45,6 +53,7 @@
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
+              :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @navigate="setActiveUID"
@@ -69,6 +78,7 @@
             :placeholder="`Filter in ${technology}`"
             :should-keep-open-on-blur="false"
             :position-reversed="isLargeBreakpoint"
+            :clear-filter-on-tag-select="false"
             class="filter-component"
             @clear="clearFilters"
           />
@@ -81,18 +91,18 @@
 <script>
 import { RecycleScroller } from 'vue-virtual-scroller';
 import { clone } from 'docc-render/utils/data';
-import { waitFrames } from 'docc-render/utils/loading';
+import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -160,7 +170,6 @@ export default {
     FilterInput,
     SidenavIcon,
     NavigatorCardItem,
-    NavigatorLeafIcon,
     RecycleScroller,
     Reference,
   },
@@ -202,6 +211,9 @@ export default {
       default: null,
     },
   },
+  mixins: [
+    keyboardNavigation,
+  ],
   data() {
     return {
       // value to v-model the filter to
@@ -215,6 +227,7 @@ export default {
       nodesToRender: [],
       activeUID: null,
       resetScroll: false,
+      lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
       ERROR_FETCHING,
@@ -270,6 +283,9 @@ export default {
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
     ),
+    activeIndex: ({ activeUID, nodesToRender }) => (
+      nodesToRender.findIndex(node => node.uid === activeUID)
+    ),
     /**
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
@@ -313,6 +329,7 @@ export default {
     },
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
+    totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
   },
   created() {
     this.restorePersistedState();
@@ -326,6 +343,14 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
+    activeIndex(value) {
+      if (value > 0) {
+        this.focusIndex(value);
+      } else {
+        // if there is no active item, return the index to 0
+        this.focusIndex(0);
+      }
+    },
     activePath: 'handleActivePathChange',
   },
   methods: {
@@ -333,6 +358,10 @@ export default {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
+      this.resetScroll = true;
+    },
+    scrollToFocus() {
+      this.$refs.scroller.scrollToItem(this.focusedIndex);
     },
     debounceInput: debounce(function debounceInput(value) {
       // store the new filter value
@@ -346,8 +375,10 @@ export default {
      */
     trackOpenNodes(
       [filteredChildren, activePathChildren, filter, selectedTags],
-      [, activePathChildrenBefore, filterBefore, selectedTagsBefore = []] = [],
+      [, activePathChildrenBefore = [], filterBefore = '', selectedTagsBefore = []] = [],
     ) {
+      // reset the last focus target
+      this.lastFocusTarget = null;
       // skip in case this is a first mount and we are syncing the `filter` and `selectedTags`.
       if (
         (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter))
@@ -366,7 +397,7 @@ export default {
         // get all parents of the current match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
       // if the activePath items change, we navigated to another page
-      const pageChange = activePathChildrenBefore !== activePathChildren;
+      const pageChange = activePathChildrenBefore.join() !== activePathChildren.join();
 
       // create a map to track open items - `{ [UID]: true }`
       const newOpenNodes = Object.fromEntries(nodes
@@ -556,6 +587,15 @@ export default {
       // we need only the UIDs
       sessionStorage.set(STORAGE_KEYS.nodesToRender, this.nodesToRender.map(({ uid }) => uid));
     },
+    clearPersistedState() {
+      sessionStorage.set(STORAGE_KEYS.technology, '');
+      sessionStorage.set(STORAGE_KEYS.apiChanges, false);
+      sessionStorage.set(STORAGE_KEYS.openNodes, []);
+      sessionStorage.set(STORAGE_KEYS.nodesToRender, []);
+      sessionStorage.set(STORAGE_KEYS.activeUID, null);
+      sessionStorage.set(STORAGE_KEYS.filter, '');
+      sessionStorage.set(STORAGE_KEYS.selectedTags, []);
+    },
     /**
      * Restores the persisted state from sessionStorage. Called on `create` hook.
      */
@@ -565,22 +605,29 @@ export default {
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
       const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
       const activeUID = sessionStorage.get(STORAGE_KEYS.activeUID, null);
-
+      const selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
       // if for some reason there are no nodes and no filter, we can assume its bad cache
-      if (!nodesToRender.length && !filter) {
+      if (!nodesToRender.length && !filter && !selectedTags.length) {
+        // clear the sessionStorage before continuing
+        this.clearPersistedState();
         this.handleActivePathChange(this.activePath);
         return;
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      // if the technology does not match, or we dont have API changes yet,
-      // do not use the persisted values
+      // take a second pass at validating data
       if (
+        // if the technology is different
         technology !== this.technology
+        // if not all nodes to render match the ones we have
         || !allNodesMatch
+        // if API the existence of apiChanges differs
         || (hasAPIChanges !== Boolean(this.apiChanges))
-        || !nodesToRender.includes(activeUID)
+        // if there is an activeUID and its not in the nodesToRender
+        || (activeUID && !filter && !selectedTags.length && !nodesToRender.includes(activeUID))
       ) {
+        // clear the sessionStorage before continuing
+        this.clearPersistedState();
         this.handleActivePathChange(this.activePath);
         return;
       }
@@ -592,7 +639,7 @@ export default {
       // generate the array of flat children objects to render
       this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
       // finally fetch any previously assigned filters or tags
-      this.selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
+      this.selectedTags = selectedTags;
       this.filter = filter;
       this.debouncedFilter = this.filter;
       this.activeUID = activeUID;
@@ -625,18 +672,35 @@ export default {
       // call the scroll method on the `scroller` component.
       this.$refs.scroller.scrollToItem(index);
     },
-    handleBlur(event) {
-      // if there is a related target, do nothing
-      if (event.relatedTarget !== null) return;
-      // if there is no related target re-focus the item
-      const { y } = event.target.getBoundingClientRect();
-      if (y < 0) {
+    isInsideScroller(element) {
+      return this.$refs.scroller.$el.contains(element);
+    },
+    handleFocusIn(event) {
+      this.lastFocusTarget = event.target;
+    },
+    handleFocusOut(event) {
+      if (!event.relatedTarget) return;
+      // reset the `lastFocusTarget`, if the focsOut target is not in the scroller
+      if (!this.isInsideScroller(event.relatedTarget)) {
+        this.lastFocusTarget = null;
+      }
+    },
+    handleScrollerUpdate: debounce(async function handleScrollerUpdate() {
+      // wait is long, because the focus change is coming in very late
+      await waitFor(300);
+      if (
+        !this.lastFocusTarget
+        // check if the lastFocusTarget is inside the scroller. (can happen if we scroll to fast)
+        || !this.isInsideScroller(this.lastFocusTarget)
+        // check if the activeElement is identical to the lastFocusTarget
+        || document.activeElement === this.lastFocusTarget
+      ) {
         return;
       }
-      event.target.focus({
+      this.lastFocusTarget.focus({
         preventScroll: true,
       });
-    },
+    }, 50),
     /**
      * Stores the newly clicked item's UID, so we can highlight it
      */
@@ -723,11 +787,14 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-$navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
-$filter-height: 64px;
+// unfortunately we need to hard-code the filter height
+$filter-height: 71px;
+$navigator-head-background: var(--color-fill-secondary) !default;
+$navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .navigator-card {
+  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -754,22 +821,32 @@ $filter-height: 64px;
   }
 
   .navigator-head {
-    padding: 10px $navigator-card-horizontal-spacing;
+    padding: 10px $card-horizontal-spacing-large;
+    background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
 
     &.router-link-exact-active {
-      background: var(--color-fill-gray-quaternary);
+      background: $navigator-head-background-active;
+
+      .card-link {
+        font-weight: $font-weight-bold;
+      }
+    }
+
+    &:hover {
+      background: var(--color-navigator-item-hover);
+      text-decoration: none;
     }
 
     @include breakpoint(medium, nav) {
       justify-content: center;
-      padding: 14px $navigator-card-horizontal-spacing;
+      padding: 14px $card-horizontal-spacing-large;
     }
 
     @include breakpoint(small, nav) {
-      padding: 12px $navigator-card-horizontal-spacing;
+      padding: 12px $card-horizontal-spacing-large;
     }
   }
 
@@ -782,7 +859,7 @@ $filter-height: 64px;
 .no-items-wrapper {
   color: var(--color-figure-gray-tertiary);
   @include font-styles(body-reduced);
-  padding: var(--card-vertical-spacing) 0;
+  padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
 }
 
 .close-card-mobile {
@@ -797,8 +874,6 @@ $filter-height: 64px;
     display: flex;
     left: 0;
     height: 100%;
-    padding-left: $nav-padding-wide;
-    padding-right: $nav-padding-wide;
   }
 
   @include breakpoint(small, nav) {
@@ -813,16 +888,11 @@ $filter-height: 64px;
 }
 
 .card-body {
-  --card-horizontal-spacing: #{$navigator-card-horizontal-spacing};
-  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
-
-  padding: 0 var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
   @include breakpoint(medium, nav) {
-    --card-horizontal-spacing: 20px;
     --card-vertical-spacing: 0px;
     padding-top: $filter-height;
   }
@@ -836,9 +906,9 @@ $filter-height: 64px;
 
 .navigator-filter {
   box-sizing: border-box;
-  padding: 14px 30px;
+  padding: 15px 30px;
   border-top: 1px solid var(--color-grid);
-  height: 71px;
+  height: $filter-height;
   display: flex;
   align-items: flex-end;
 
@@ -871,7 +941,6 @@ $filter-height: 64px;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
-  padding-right: var(--card-horizontal-spacing);
 }
 
 .filter-wrapper {
