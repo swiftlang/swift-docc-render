@@ -194,18 +194,12 @@ $sidenav-icon-size: 19px;
 
 .sidenav-toggle {
   align-self: center;
+  color: var(--color-nav-link-color);
+  position: relative;
+  padding-right: $nav-pre-title-item-margin;
 
-  @include nav-in-breakpoint() {
-    $space: 14px;
-    margin-left: -$space;
-    margin-right: -$space;
-    padding-left: $space;
-    padding-right: $space;
-    align-self: stretch;
-
-    .sidenav-icon-wrapper {
-      padding: 0;
-    }
+  @include nav-dark {
+    color: var(--color-nav-dark-link-color);
   }
 
   &:hover .sidenav-icon-wrapper {
@@ -215,10 +209,40 @@ $sidenav-icon-size: 19px;
       background: dark-color(fill-gray-quaternary);
     }
   }
+
+  &:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    height: .8em;
+    top: 50%;
+    width: 1px;
+    background: var(--color-nav-color);
+    transform: translateY(-50%);
+  }
+
+  @include nav-in-breakpoint() {
+    $space: 14px;
+    margin-left: -$space;
+    margin-right: -$space;
+    padding-left: $space;
+    padding-right: $space;
+    align-self: stretch;
+
+    &:after {
+      display: none;
+    }
+
+    .sidenav-icon-wrapper {
+      padding: 0;
+    }
+  }
 }
 
 .sidenav-icon-wrapper {
   padding: 5px;
+  margin-left: -5px;
+  margin-right: -5px;
   display: flex;
   align-items: center;
   justify-content: center;
