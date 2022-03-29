@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -17,13 +17,17 @@
         :class="{ active: swift.active }"
         :url="swift.active ? null : swift.url"
         @click="chooseLanguage(swift)"
-      >{{swift.name}}</LanguageSwitcherLink>
+      >
+        {{swift.name}}
+      </LanguageSwitcherLink>
       <LanguageSwitcherLink
         class="language-option objc"
         :class="{ active: objc.active }"
         :url="objc.active ? null : objc.url"
         @click="chooseLanguage(objc)"
-      >{{objc.name}}</LanguageSwitcherLink>
+      >
+        {{objc.name}}
+      </LanguageSwitcherLink>
     </div>
   </Section>
 </template>

@@ -42,7 +42,9 @@ describe('DocumentationHero', () => {
     expect(withBackground.classes('theme-dark')).toBe(true);
 
     const withoutBackground = createWrapper({
-      propsData: { enhanceBackground: false },
+      propsData: {
+        enhanceBackground: false,
+      },
     });
     expect(withoutBackground.classes('documentation-hero')).toBe(true);
     expect(withoutBackground.classes('documentation-hero--disabled')).toBe(true);

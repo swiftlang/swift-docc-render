@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -29,7 +29,7 @@
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="(platforms || []).length || (technologies || []).length"
+          v-if="hasAvailability"
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
@@ -275,6 +275,9 @@ export default {
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
+    hasAvailability: ({ platforms, technologies }) => (
+      (platforms || []).length || (technologies || []).length
+    ),
     hasBetaContent:
       ({ platforms }) => platforms
         && platforms.length
@@ -283,8 +286,9 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
-    shouldShowLanguageSwitcher:
-      ({ objcPath, swiftPath, isTargetIDE }) => objcPath && swiftPath && isTargetIDE,
+    shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
+      objcPath && swiftPath && isTargetIDE
+    ),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
@@ -377,7 +381,9 @@ export default {
 }
 
 .description {
-  &:empty { display: none; }
+  &:empty {
+    display: none;
+  }
 
   &:not(:empty) {
     margin-bottom: $contenttable-spacing-single-side;
