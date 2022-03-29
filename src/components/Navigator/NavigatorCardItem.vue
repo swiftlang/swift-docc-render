@@ -179,6 +179,7 @@ export default {
       this.$emit('toggle-full', this.item);
     },
     toggleSiblings() {
+      this.idState.isOpening = true;
       this.$emit('toggle-siblings', this.item);
     },
     clickReference() {

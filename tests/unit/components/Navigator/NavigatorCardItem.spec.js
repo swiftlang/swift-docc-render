@@ -197,6 +197,19 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
   });
 
+  it('adds a temporary `animating` class, on `@toggle-siblings`', async () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('click', { metaKey: true });
+    expect(wrapper.emitted('toggle-siblings')).toEqual([[defaultProps.item]]);
+    // assert it adds the animating class
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    wrapper.setProps({ expanded: true });
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    await flushPromises();
+    // assert we have waited a few frames
+    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+  });
+
   it('renders the API change icon instead of the leaf icon', () => {
     const wrapper = createWrapper({
       propsData: {
