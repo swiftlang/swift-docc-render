@@ -941,6 +941,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
+
+  @include breakpoint(medium, nav) {
+    padding-bottom: $nav-menu-items-ios-bottom-spacing;
+  }
 }
 
 .filter-wrapper {
