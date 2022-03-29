@@ -22,6 +22,7 @@ import FocusTrap from '@/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import { BreakpointName, BreakpointScopes } from '@/utils/breakpoints';
+import { baseNavStickyAnchorId } from '@/constants/nav';
 import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/debounce');
@@ -154,6 +155,13 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   describe('external open', () => {
+    const navStickyElement = document.createElement('DIV');
+    navStickyElement.id = baseNavStickyAnchorId;
+    const boundingClientSpy = jest.spyOn(navStickyElement, 'getBoundingClientRect')
+      .mockReturnValue({ y: 22 });
+
+    document.body.appendChild(navStickyElement);
+
     it('allows opening the sidebar externally', async () => {
       const wrapper = createWrapper();
       await flushPromises();
@@ -168,6 +176,9 @@ describe('AdjustableSidebarWidth', () => {
       await flushPromises();
       // assert open class attached
       expect(aside.classes()).toContain('force-open');
+      // assert `mobileTopOffset` is the same as the `navStickyElement` `y` offset.
+      expect(wrapper.vm.mobileTopOffset).toBe(22);
+      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
       // assert scroll lock and other helpers initiated
       expect(scrollLock.lockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.hide).toHaveBeenCalledWith(aside.element);
@@ -183,6 +194,22 @@ describe('AdjustableSidebarWidth', () => {
       expect(changeElementVOVisibility.show).toHaveBeenCalledWith(aside.element);
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
       expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not set a negative `mobileTopOffset`, if scrolled passed the nav', async () => {
+      boundingClientSpy.mockReturnValue({ y: -50 });
+      const wrapper = createWrapper();
+      await flushPromises();
+      // assert not open
+      const aside = wrapper.find('.aside');
+      // trigger opening externally
+      wrapper.setProps({ openExternally: true });
+      await flushPromises();
+      // assert open class attached
+      expect(aside.classes()).toContain('force-open');
+      // assert `mobileTopOffset` is 0, if `navStickyElement.y` is negative
+      expect(wrapper.vm.mobileTopOffset).toBe(0);
+      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
     });
 
     it('allows closing the sidebar, with Esc', () => {
@@ -248,13 +275,6 @@ describe('AdjustableSidebarWidth', () => {
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
     assertWidth(wrapper, 250); // 20% out of 1000, as that is the min percentage
-  });
-
-  it('sets helper classes when `fully open`', () => {
-    storage.get.mockReturnValueOnce(window.innerWidth);
-    const wrapper = createWrapper();
-    expect(wrapper.find('.sidebar').classes()).toContain('fully-open');
-    assertWidth(wrapper, maxWidth);
   });
 
   it('allows dragging the handle to expand/contract the sidebar, with the mouse', () => {

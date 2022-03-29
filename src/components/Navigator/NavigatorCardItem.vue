@@ -184,6 +184,12 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $item-height: 32px;
+$chevron-width: $card-horizontal-spacing;
+$tree-toggle-padding: $card-horizontal-spacing-small;
+$depth-spacer-base-spacing: (
+  $card-horizontal-spacing + $chevron-width + $tree-toggle-padding
+);
+$nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
 .navigator-card-item {
   height: $item-height;
@@ -191,31 +197,30 @@ $item-height: 32px;
   align-items: center;
 
   @include on-keyboard-focus {
-    margin: 5px;
+    margin: $card-horizontal-spacing-small;
     height: $item-height - 10px;
 
     .depth-spacer {
-      margin-left: -5px;
+      margin-left: -$card-horizontal-spacing-small;
     }
   }
 }
 
 .depth-spacer {
-  width: calc(var(--nesting-index) * 14px + 26px);
+  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
   height: $item-height;
   position: relative;
   flex: 0 0 auto;
   @include on-keyboard-focus {
-    margin: 0 -5px;
+    margin: 0 -$card-horizontal-spacing-small;
   }
 }
 
 .head-wrapper {
-  padding: 0 5px 0 0;
+  padding: 0 $card-horizontal-spacing;
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: $border-radius;
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -284,6 +289,10 @@ $item-height: 32px;
     vertical-align: middle;
     @include font-styles(body-reduced-tight);
 
+    &:hover {
+      text-decoration: none;
+    }
+
     &.bolded {
       font-weight: $font-weight-semibold;
     }
@@ -311,7 +320,7 @@ $item-height: 32px;
   position: absolute;
   width: 100%;
   height: 100%;
-  padding-right: 5px;
+  padding-right: $tree-toggle-padding;
   box-sizing: border-box;
   z-index: 1;
   display: flex;
@@ -326,7 +335,7 @@ $item-height: 32px;
 }
 
 .chevron {
-  width: 0.6em;
+  width: $chevron-width;
   transition: transform 0.15s ease-in;
 
   &.rotate {
