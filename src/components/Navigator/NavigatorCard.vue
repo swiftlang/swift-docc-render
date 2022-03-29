@@ -57,6 +57,7 @@
               :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
+              @toggle-siblings="toggleSiblings"
               @navigate="setActiveUID"
             />
           </RecycleScroller>
@@ -461,9 +462,37 @@ export default {
       this.openNodes = openNodes;
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
     },
+    toggleSiblings(node) {
+      const isOpen = this.openNodes[node.uid];
+      const openNodes = clone(this.openNodes);
+      const siblings = this.getSiblings(node.uid);
+      siblings.forEach(({ uid, childUIDs }) => {
+        if (!childUIDs.length) return;
+        if (isOpen) {
+          const children = this.getAllChildren(uid);
+          // remove all children
+          children.forEach((child) => {
+            delete openNodes[child.uid];
+          });
+          // remove the sibling as well
+          delete openNodes[uid];
+          // augment the nodesToRender
+          this.augmentRenderNodes({ uid, exclude: children.slice(1), include: [] });
+        } else {
+          // add it
+          openNodes[uid] = true;
+          const children = this.getChildren(uid);
+          // augment the nodesToRender
+          this.augmentRenderNodes({ uid, exclude: [], include: children });
+        }
+      });
+      this.openNodes = openNodes;
+      // persist all the open nodes, as we change the openNodes after the node augment runs
+      this.persistState();
+    },
     /**
      * Get all children of a node recursively
-     * @param {string} uid - the UID of the node
+     * @param {number} uid - the UID of the node
      * @return {NavigatorFlatItem[]}
      */
     getAllChildren(uid) {
@@ -524,9 +553,13 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     getChildren(uid) {
+      if (uid === INDEX_ROOT_KEY) {
+        return this.children.filter(node => node.parent === INDEX_ROOT_KEY);
+      }
       const item = this.childrenMap[uid];
       if (!item) return [];
-      return (item.childUIDs || []).map(child => this.childrenMap[child]);
+      return (item.childUIDs || [])
+        .map(child => this.childrenMap[child]);
     },
     /**
      * Stores all the nodes we should render at this point.
@@ -568,8 +601,10 @@ export default {
       const index = this.nodesToRender.findIndex(n => n.uid === uid);
       // decide if should remove or add
       if (include.length) {
+        // remove duplicates
+        const duplicatesRemoved = include.filter(i => !this.nodesToRender.includes(i));
         // if add, find where to inject items
-        this.nodesToRender.splice(index + 1, 0, ...include);
+        this.nodesToRender.splice(index + 1, 0, ...duplicatesRemoved);
       } else if (exclude.length) {
         // if remove, filter out those items
         const excludeSet = new Set(exclude);
