@@ -62,6 +62,13 @@ export default {
     transform: $nav-menu-item-displacement;
     transition: 0.5s ease;
     transition-property: transform, opacity;
+
+    // add expanded styles
+    @include nav-is-open($nested: true) {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition-delay: $nav-menu-item-stagger-delay;
+    }
   }
   // create a staggered effect, only each settings element (language toggle, API changes)
   @for $i from 0 to 8 {
@@ -80,8 +87,6 @@ export default {
       @include nav-in-breakpoint {
         // and expanded
         @include nav-is-open($nested: true) {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
           @for $k from 1 to 8 {
             // each child should delay its reveal
             &:nth-child(#{$k}) {
