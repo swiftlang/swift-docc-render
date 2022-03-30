@@ -17,7 +17,6 @@
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <NavigatorLeafIcon :type="type" with-colors class="card-icon" />
             <div class="card-link">
               {{ technology }}
             </div>
@@ -57,6 +56,7 @@
               :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
+              @toggle-siblings="toggleSiblings"
               @navigate="setActiveUID"
             />
           </RecycleScroller>
@@ -97,7 +97,6 @@ import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -172,7 +171,6 @@ export default {
     FilterInput,
     SidenavIcon,
     NavigatorCardItem,
-    NavigatorLeafIcon,
     RecycleScroller,
     Reference,
   },
@@ -280,8 +278,11 @@ export default {
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
      * @return NavigatorFlatItem[]
      */
-    activePathChildren({ activeUID }) {
-      return activeUID ? this.getParents(activeUID) : [];
+    activePathChildren({ activeUID, childrenMap }) {
+      // if we have an activeUID and its not stale by any chance, fetch its parents
+      return activeUID && childrenMap[activeUID]
+        ? this.getParents(activeUID)
+        : [];
     },
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
@@ -361,6 +362,7 @@ export default {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
+      this.resetScroll = true;
     },
     scrollToFocus() {
       this.$refs.scroller.scrollToItem(this.focusedIndex);
@@ -377,7 +379,7 @@ export default {
      */
     trackOpenNodes(
       [filteredChildren, activePathChildren, filter, selectedTags],
-      [, activePathChildrenBefore, filterBefore, selectedTagsBefore = []] = [],
+      [, activePathChildrenBefore = [], filterBefore = '', selectedTagsBefore = []] = [],
     ) {
       // reset the last focus target
       this.lastFocusTarget = null;
@@ -399,7 +401,7 @@ export default {
         // get all parents of the current match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
       // if the activePath items change, we navigated to another page
-      const pageChange = activePathChildrenBefore !== activePathChildren;
+      const pageChange = activePathChildrenBefore.join() !== activePathChildren.join();
 
       // create a map to track open items - `{ [UID]: true }`
       const newOpenNodes = Object.fromEntries(nodes
@@ -462,9 +464,37 @@ export default {
       this.openNodes = openNodes;
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
     },
+    toggleSiblings(node) {
+      const isOpen = this.openNodes[node.uid];
+      const openNodes = clone(this.openNodes);
+      const siblings = this.getSiblings(node.uid);
+      siblings.forEach(({ uid, childUIDs }) => {
+        if (!childUIDs.length) return;
+        if (isOpen) {
+          const children = this.getAllChildren(uid);
+          // remove all children
+          children.forEach((child) => {
+            delete openNodes[child.uid];
+          });
+          // remove the sibling as well
+          delete openNodes[uid];
+          // augment the nodesToRender
+          this.augmentRenderNodes({ uid, exclude: children.slice(1), include: [] });
+        } else {
+          // add it
+          openNodes[uid] = true;
+          const children = this.getChildren(uid);
+          // augment the nodesToRender
+          this.augmentRenderNodes({ uid, exclude: [], include: children });
+        }
+      });
+      this.openNodes = openNodes;
+      // persist all the open nodes, as we change the openNodes after the node augment runs
+      this.persistState();
+    },
     /**
      * Get all children of a node recursively
-     * @param {string} uid - the UID of the node
+     * @param {number} uid - the UID of the node
      * @return {NavigatorFlatItem[]}
      */
     getAllChildren(uid) {
@@ -502,6 +532,9 @@ export default {
         current = stack.pop();
         // find the object
         const obj = this.childrenMap[current];
+        if (!obj) {
+          return [];
+        }
         // push the object to the results
         arr.unshift(obj);
         // if the current object has a parent and its not the root, add it to the stack
@@ -525,9 +558,13 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     getChildren(uid) {
+      if (uid === INDEX_ROOT_KEY) {
+        return this.children.filter(node => node.parent === INDEX_ROOT_KEY);
+      }
       const item = this.childrenMap[uid];
       if (!item) return [];
-      return (item.childUIDs || []).map(child => this.childrenMap[child]);
+      return (item.childUIDs || [])
+        .map(child => this.childrenMap[child]);
     },
     /**
      * Stores all the nodes we should render at this point.
@@ -569,8 +606,10 @@ export default {
       const index = this.nodesToRender.findIndex(n => n.uid === uid);
       // decide if should remove or add
       if (include.length) {
+        // remove duplicates
+        const duplicatesRemoved = include.filter(i => !this.nodesToRender.includes(i));
         // if add, find where to inject items
-        this.nodesToRender.splice(index + 1, 0, ...include);
+        this.nodesToRender.splice(index + 1, 0, ...duplicatesRemoved);
       } else if (exclude.length) {
         // if remove, filter out those items
         const excludeSet = new Set(exclude);
@@ -589,6 +628,15 @@ export default {
       // we need only the UIDs
       sessionStorage.set(STORAGE_KEYS.nodesToRender, this.nodesToRender.map(({ uid }) => uid));
     },
+    clearPersistedState() {
+      sessionStorage.set(STORAGE_KEYS.technology, '');
+      sessionStorage.set(STORAGE_KEYS.apiChanges, false);
+      sessionStorage.set(STORAGE_KEYS.openNodes, []);
+      sessionStorage.set(STORAGE_KEYS.nodesToRender, []);
+      sessionStorage.set(STORAGE_KEYS.activeUID, null);
+      sessionStorage.set(STORAGE_KEYS.filter, '');
+      sessionStorage.set(STORAGE_KEYS.selectedTags, []);
+    },
     /**
      * Restores the persisted state from sessionStorage. Called on `create` hook.
      */
@@ -598,22 +646,29 @@ export default {
       const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
       const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
       const activeUID = sessionStorage.get(STORAGE_KEYS.activeUID, null);
-
+      const selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
       // if for some reason there are no nodes and no filter, we can assume its bad cache
-      if (!nodesToRender.length && !filter) {
+      if (!nodesToRender.length && !filter && !selectedTags.length) {
+        // clear the sessionStorage before continuing
+        this.clearPersistedState();
         this.handleActivePathChange(this.activePath);
         return;
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      // if the technology does not match, or we dont have API changes yet,
-      // do not use the persisted values
+      // take a second pass at validating data
       if (
+        // if the technology is different
         technology !== this.technology
+        // if not all nodes to render match the ones we have
         || !allNodesMatch
+        // if API the existence of apiChanges differs
         || (hasAPIChanges !== Boolean(this.apiChanges))
-        || !nodesToRender.includes(activeUID)
+        // if there is an activeUID and its not in the nodesToRender
+        || (activeUID && !filter && !selectedTags.length && !nodesToRender.includes(activeUID))
       ) {
+        // clear the sessionStorage before continuing
+        this.clearPersistedState();
         this.handleActivePathChange(this.activePath);
         return;
       }
@@ -625,7 +680,7 @@ export default {
       // generate the array of flat children objects to render
       this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
       // finally fetch any previously assigned filters or tags
-      this.selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
+      this.selectedTags = selectedTags;
       this.filter = filter;
       this.debouncedFilter = this.filter;
       this.activeUID = activeUID;
@@ -773,11 +828,14 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-$navigator-card-horizontal-spacing: 20px !default;
 $navigator-card-vertical-spacing: 8px !default;
-$filter-height: 64px;
+// unfortunately we need to hard-code the filter height
+$filter-height: 71px;
+$navigator-head-background: var(--color-fill-secondary) !default;
+$navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .navigator-card {
+  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -804,22 +862,32 @@ $filter-height: 64px;
   }
 
   .navigator-head {
-    padding: 10px $navigator-card-horizontal-spacing;
+    padding: 10px $card-horizontal-spacing-large;
+    background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
 
     &.router-link-exact-active {
-      background: var(--color-fill-gray-quaternary);
+      background: $navigator-head-background-active;
+
+      .card-link {
+        font-weight: $font-weight-bold;
+      }
+    }
+
+    &:hover {
+      background: var(--color-navigator-item-hover);
+      text-decoration: none;
     }
 
     @include breakpoint(medium, nav) {
       justify-content: center;
-      padding: 14px $navigator-card-horizontal-spacing;
+      padding: 14px $card-horizontal-spacing-large;
     }
 
     @include breakpoint(small, nav) {
-      padding: 12px $navigator-card-horizontal-spacing;
+      padding: 12px $card-horizontal-spacing-large;
     }
   }
 
@@ -832,7 +900,7 @@ $filter-height: 64px;
 .no-items-wrapper {
   color: var(--color-figure-gray-tertiary);
   @include font-styles(body-reduced);
-  padding: var(--card-vertical-spacing) 0;
+  padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
 }
 
 .close-card-mobile {
@@ -847,8 +915,6 @@ $filter-height: 64px;
     display: flex;
     left: 0;
     height: 100%;
-    padding-left: $nav-padding-wide;
-    padding-right: $nav-padding-wide;
   }
 
   @include breakpoint(small, nav) {
@@ -863,16 +929,11 @@ $filter-height: 64px;
 }
 
 .card-body {
-  --card-horizontal-spacing: #{$navigator-card-horizontal-spacing};
-  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
-
-  padding: 0 var(--card-horizontal-spacing);
   // right padding is added by the items, so visually the scroller is stuck to the side
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
   @include breakpoint(medium, nav) {
-    --card-horizontal-spacing: 20px;
     --card-vertical-spacing: 0px;
     padding-top: $filter-height;
   }
@@ -886,9 +947,9 @@ $filter-height: 64px;
 
 .navigator-filter {
   box-sizing: border-box;
-  padding: 14px 30px;
+  padding: 15px 30px;
   border-top: 1px solid var(--color-grid);
-  height: 71px;
+  height: $filter-height;
   display: flex;
   align-items: flex-end;
 
@@ -921,7 +982,6 @@ $filter-height: 64px;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
-  padding-right: var(--card-horizontal-spacing);
 }
 
 .filter-wrapper {
