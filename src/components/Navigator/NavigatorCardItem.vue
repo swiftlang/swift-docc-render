@@ -196,8 +196,8 @@ export default {
       }
     },
     async expanded() {
-      // wait a few frames for animations queues to finish
-      await waitFrames(8);
+      // wait for 9 frames (60hz * 0.15ms = 9), for animations queues to finish.
+      await waitFrames(9);
       // set the opening animation as ended
       this.idState.isOpening = false;
     },

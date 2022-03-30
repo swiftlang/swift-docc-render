@@ -176,7 +176,7 @@ describe('NavigatorCardItem', () => {
     await flushPromises();
     // assert we have waited a few frames
     expect(waitFrames).toHaveBeenCalledTimes(1);
-    expect(waitFrames).toHaveBeenCalledWith(8);
+    expect(waitFrames).toHaveBeenCalledWith(9);
     expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
   });
 
@@ -193,7 +193,7 @@ describe('NavigatorCardItem', () => {
     await flushPromises();
     // assert we have waited a few frames
     expect(waitFrames).toHaveBeenCalledTimes(1);
-    expect(waitFrames).toHaveBeenCalledWith(8);
+    expect(waitFrames).toHaveBeenCalledWith(9);
     expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
   });
 
