@@ -147,6 +147,10 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    enableSelfFocus: {
+      type: Boolean,
+      default: true,
+    },
   },
   idState() {
     return {
@@ -190,8 +194,9 @@ export default {
     },
   },
   watch: {
-    isFocused(newVal) {
-      if (newVal) {
+    async isFocused(newVal) {
+      await waitFrames(8);
+      if (newVal && this.isRendered && this.enableSelfFocus) {
         this.selfFocus();
       }
     },

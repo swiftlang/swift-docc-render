@@ -56,6 +56,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
 describe('NavigatorCardItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    if (document.activeElement) document.activeElement.blur();
   });
   it('renders the NavigatorCardItem', () => {
     const wrapper = createWrapper();
@@ -264,14 +265,16 @@ describe('NavigatorCardItem', () => {
       const wrapper = createWrapper();
       const label = wrapper.find(`#usage-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe('To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow');
+      expect(label.text())
+        .toBe('To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow');
     });
 
     it('renders aria tags to describe item', () => {
       const wrapper = createWrapper();
       expect(wrapper.attributes('aria-expanded')).toBe('false');
       expect(wrapper.attributes('tabindex')).toBe('-1');
-      expect(wrapper.attributes('aria-describedby')).toBe(`label-${defaultProps.item.uid} Foo label-parent-${defaultProps.item.uid} usage-${defaultProps.item.uid}`);
+      expect(wrapper.attributes('aria-describedby'))
+        .toBe(`label-${defaultProps.item.uid} Foo label-parent-${defaultProps.item.uid} usage-${defaultProps.item.uid}`);
     });
 
     it('renders tabindex 0 when element is focused', () => {
@@ -335,6 +338,43 @@ describe('NavigatorCardItem', () => {
       });
       expect(wrapper.attributes('aria-describedby'))
         .toBe(`label-${defaultProps.item.uid} Foo usage-${defaultProps.item.uid}`);
+    });
+
+    it('focuses itself, if `isFocused`, `isRendered` and `enableFocusUpdate` is `true`', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          isFocused: false,
+          isRendered: true,
+          enableFocusUpdate: false,
+        },
+      });
+      await flushPromises();
+      expect(document.activeElement).not.toEqual(wrapper.element);
+      wrapper.setProps({
+        isFocused: true,
+        enableFocusUpdate: true,
+      });
+      await flushPromises();
+      expect(waitFrames).toHaveBeenCalledTimes(1);
+      expect(waitFrames).toHaveBeenCalledWith(8);
+      expect(document.activeElement).toEqual(wrapper.element);
+    });
+
+    it('does not focus itself, if `isRendered` or `enableFocusUpdate` are `false`', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          isFocused: false,
+          isRendered: true,
+          enableFocusUpdate: false,
+        },
+      });
+      await flushPromises();
+      expect(document.activeElement).not.toEqual(wrapper.element);
+      wrapper.setProps({ isFocused: true });
+      await flushPromises();
+      expect(waitFrames).toHaveBeenCalledTimes(1);
+      expect(waitFrames).toHaveBeenCalledWith(8);
+      expect(document.activeElement).not.toEqual(wrapper.element);
     });
   });
 });

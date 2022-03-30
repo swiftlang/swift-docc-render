@@ -66,6 +66,26 @@ describe('keyboardNavigation', () => {
     expect(wrapper.vm.focusedIndex).toBe(0);
   });
 
+  it('resets the `externalFocusChange` property', () => {
+    const wrapper = createWrapper();
+    wrapper.setData({ externalFocusChange: true });
+    wrapper.trigger('keydown.down');
+    expect(wrapper.vm.focusedIndex).toBe(1);
+    expect(wrapper.vm.externalFocusChange).toBe(false);
+
+    wrapper.setData({ externalFocusChange: true });
+    wrapper.trigger('keydown.up');
+    expect(wrapper.vm.focusedIndex).toBe(0);
+    expect(wrapper.vm.externalFocusChange).toBe(false);
+
+    wrapper.setData({ externalFocusChange: true });
+    wrapper.trigger('keydown', {
+      key: 'ArrowUp',
+      metaKey: true,
+    });
+    expect(wrapper.vm.externalFocusChange).toBe(false);
+  });
+
   it('prevents the user to navigate when meta, ctrl or shift keys are pressed', () => {
     const wrapper = createWrapper();
     wrapper.trigger('keydown', {

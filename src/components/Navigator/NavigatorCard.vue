@@ -55,6 +55,7 @@
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
               :isFocused="focusedIndex === index"
+              :enableSelfFocus="!externalFocusChange"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
@@ -349,7 +350,10 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
-    activeIndex(value) {
+    activeIndex(value, oldValue) {
+      // specify we changed the focus externally, not by using tabbing or up/down
+      this.externalFocusChange = true;
+      console.log(value, oldValue);
       if (value > 0) {
         this.focusIndex(value);
       } else {
