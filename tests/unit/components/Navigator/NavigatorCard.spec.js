@@ -1374,6 +1374,67 @@ describe('NavigatorCard', () => {
       expect(allItems.at(2).props('item')).toEqual(root0Child1);
       expect(allItems.at(2).props('isActive')).toEqual(true);
     });
+
+    it('does not break, if the children change, while we already have an activeUID', async () => {
+      const root0Dupe = {
+        ...root0,
+        uid: root0.uid + 10,
+        childUIDs: [
+          root0Child0.uid + 10,
+          root0Child1.uid + 10,
+        ],
+      };
+      const root0Child0Dupe = {
+        ...root0Child0,
+        uid: root0Child0.uid + 10,
+        parent: root0Dupe.uid,
+      };
+      const root0Child1Dupe = {
+        ...root0Child1,
+        uid: root0Child1.uid + 10,
+        parent: root0Dupe.uid,
+        childUIDs: [],
+      };
+      // mount with the root item being active
+      const wrapper = createWrapper({
+        propsData: {
+          children: [root1],
+          activePath: [
+            root1.path,
+          ],
+        },
+      });
+      await flushPromises();
+      expect(wrapper.findAll(NavigatorCardItem).at(0).props()).toMatchObject({
+        item: root1,
+        isActive: true,
+        isBold: true,
+      });
+      // change children
+      wrapper.setProps({
+        children: [
+          root0Dupe,
+          root0Child0Dupe,
+          root0Child1Dupe,
+        ],
+      });
+
+      // simulate its taking time to fetch the items
+      await flushPromises();
+      // change the activePath later
+      wrapper.setProps({
+        activePath: [
+          root0Dupe.path,
+          root0Child0Dupe.path,
+        ],
+      });
+      await flushPromises();
+      // assert no errors
+      const all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(3);
+      expect(all.at(0).props('item')).toEqual(root0Dupe);
+      expect(all.at(1).props('item')).toEqual(root0Child0Dupe);
+    });
   });
 
   describe('scroll to item', () => {

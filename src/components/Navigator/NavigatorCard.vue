@@ -279,8 +279,11 @@ export default {
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
      * @return NavigatorFlatItem[]
      */
-    activePathChildren({ activeUID }) {
-      return activeUID ? this.getParents(activeUID) : [];
+    activePathChildren({ activeUID, childrenMap }) {
+      // if we have an activeUID and its not stale by any chance, fetch its parents
+      return activeUID && childrenMap[activeUID]
+        ? this.getParents(activeUID)
+        : [];
     },
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
@@ -530,6 +533,9 @@ export default {
         current = stack.pop();
         // find the object
         const obj = this.childrenMap[current];
+        if (!obj) {
+          return [];
+        }
         // push the object to the results
         arr.unshift(obj);
         // if the current object has a parent and its not the root, add it to the stack
