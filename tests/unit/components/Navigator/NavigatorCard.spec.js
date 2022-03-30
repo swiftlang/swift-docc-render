@@ -167,6 +167,7 @@ describe('NavigatorCard', () => {
       ],
       itemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
+      buffer: 1000,
     });
     expect(wrapper.find(RecycleScroller).attributes('aria-label')).toBe('Sidebar Tree Navigator');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
