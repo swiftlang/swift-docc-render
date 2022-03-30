@@ -8,5 +8,14 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-// eslint-disable-next-line import/prefer-default-export
-export const last = array => array[array.length - 1];
+import { last } from '@/utils/arrays';
+
+describe('arrays', () => {
+  describe('last', () => {
+    it('returns the last item in an array', () => {
+      expect(last([1, 2, 3])).toEqual(3);
+      expect(last([1])).toEqual(1);
+      expect(last([])).toEqual(undefined);
+    });
+  });
+});

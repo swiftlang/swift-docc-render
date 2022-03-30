@@ -104,7 +104,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
-import { last } from '@/utils/arrays';
+import { last } from 'docc-render/utils/arrays';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
