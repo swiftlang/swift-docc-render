@@ -128,6 +128,11 @@ export default {
 .relationships-list {
   list-style: none;
 
+  &.column {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+
   // The "inline" style displays items on a single line as a
   // comma-separated list with a maximum number of 3 items. This style should
   // not be used for a list that contains any items with availability
