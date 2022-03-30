@@ -58,7 +58,7 @@
         "hide": false
       },
       "navigator": {
-        "enable": true
+        "enable": false
       }
     }
   }
