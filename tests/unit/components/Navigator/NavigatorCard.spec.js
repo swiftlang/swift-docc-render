@@ -190,7 +190,7 @@ describe('NavigatorCard', () => {
     expect(filter.props()).toEqual({
       disabled: false,
       focusInputWhenCreated: false,
-      placeholder: 'Filter in TestKit',
+      placeholder: 'Filter',
       positionReversed: true,
       preventedBlur: false,
       selectedTags: [],

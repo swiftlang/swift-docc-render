@@ -76,7 +76,7 @@
             v-model="filter"
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
-            :placeholder="`Filter in ${technology}`"
+            :placeholder="Filter"
             :should-keep-open-on-blur="false"
             :position-reversed="isLargeBreakpoint"
             :clear-filter-on-tag-select="false"
