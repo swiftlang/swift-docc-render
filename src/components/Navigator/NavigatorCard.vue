@@ -38,6 +38,7 @@
             aria-label="Sidebar Tree Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
+            :buffer="1000"
             emit-update
             key-field="uid"
             v-slot="{ item, active, index }"
@@ -117,7 +118,7 @@ const STORAGE_KEYS = {
 };
 
 const NO_RESULTS = 'No results matching your filter';
-const NO_CHILDREN = 'Technology has no children';
+const NO_CHILDREN = 'No data available';
 const ERROR_FETCHING = 'There was an error fetching the data';
 const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
