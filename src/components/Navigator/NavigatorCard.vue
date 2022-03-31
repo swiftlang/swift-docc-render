@@ -859,7 +859,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     height: calc(100vh - #{$nav-height} - #{$filter-height});
     display: flex;
     flex-flow: column;
-    overflow: hidden;
+
     @include breakpoint(small, nav) {
       position: static;
       height: 100%;
@@ -876,6 +876,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
+    overflow: hidden;
 
     &.router-link-exact-active {
       background: $navigator-head-background-active;
@@ -959,6 +960,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   display: flex;
   align-items: flex-end;
 
+  .animating &, .force-close & {
+    overflow: hidden;
+  }
+
   @include breakpoint(small, nav) {
     border: none;
     padding: 10px 20px;
@@ -998,6 +1003,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   position: sticky;
   bottom: 0;
   background: var(--color-fill);
+
   @include breakpoint(small, nav) {
     position: absolute;
     bottom: auto;
