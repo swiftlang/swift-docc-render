@@ -167,6 +167,7 @@ describe('NavigatorCard', () => {
       ],
       itemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
+      buffer: 1000,
     });
     expect(wrapper.find(RecycleScroller).attributes('aria-label')).toBe('Sidebar Tree Navigator');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
@@ -936,7 +937,11 @@ describe('NavigatorCard', () => {
       return '';
     });
 
-    const wrapper = createWrapper();
+    const wrapper = createWrapper({
+      propsData: {
+        activePath: [root0.path],
+      },
+    });
     await flushPromises();
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
@@ -980,6 +985,31 @@ describe('NavigatorCard', () => {
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('does not restore the state, if the activeUID path does not match the current last path', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return root0.title;
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [FILTER_TAGS.tutorials];
+      if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return root0.uid;
+      return '';
+    });
+
+    const wrapper = createWrapper({
+      propsData: {
+        activePath: [root0.path, root0Child0.path],
+      },
+    });
+    await flushPromises();
+    // assert we are render more than just the single item in the store
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+    expect(all.at(3).props('item')).not.toEqual(root0Child1GrandChild0);
+    expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('restores the state, if the activeUID is not in the rendered items, but there is a filter', async () => {
     sessionStorage.get.mockImplementation((key) => {
       if (key === STORAGE_KEYS.filter) return root0Child1.title;
@@ -991,7 +1021,11 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.activeUID) return root0Child1GrandChild0.uid;
       return '';
     });
-    const wrapper = createWrapper();
+    const wrapper = createWrapper({
+      propsData: {
+        activePath: [root0.path, root0Child1.path, root0Child1GrandChild0.path],
+      },
+    });
     await flushPromises();
     // assert we are render more than just the single item in the store
     const all = wrapper.findAll(NavigatorCardItem);
@@ -1095,7 +1129,11 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
-    const wrapper = createWrapper();
+    const wrapper = createWrapper({
+      propsData: {
+        activePath: [root0.path],
+      },
+    });
     await flushPromises();
     // assert we are render more than just whats in the store,
     // so the filter does not trigger re-calculations
@@ -1114,7 +1152,11 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.activeUID) return root0.uid;
       return '';
     });
-    const wrapper = createWrapper();
+    const wrapper = createWrapper({
+      propsData: {
+        activePath: [root0.path],
+      },
+    });
     await flushPromises();
     // assert we are render more than just whats in the store,
     // so the filter does not trigger re-calculations
@@ -1335,6 +1377,67 @@ describe('NavigatorCard', () => {
       // assert new active item
       expect(allItems.at(2).props('item')).toEqual(root0Child1);
       expect(allItems.at(2).props('isActive')).toEqual(true);
+    });
+
+    it('does not break, if the children change, while we already have an activeUID', async () => {
+      const root0Dupe = {
+        ...root0,
+        uid: root0.uid + 10,
+        childUIDs: [
+          root0Child0.uid + 10,
+          root0Child1.uid + 10,
+        ],
+      };
+      const root0Child0Dupe = {
+        ...root0Child0,
+        uid: root0Child0.uid + 10,
+        parent: root0Dupe.uid,
+      };
+      const root0Child1Dupe = {
+        ...root0Child1,
+        uid: root0Child1.uid + 10,
+        parent: root0Dupe.uid,
+        childUIDs: [],
+      };
+      // mount with the root item being active
+      const wrapper = createWrapper({
+        propsData: {
+          children: [root1],
+          activePath: [
+            root1.path,
+          ],
+        },
+      });
+      await flushPromises();
+      expect(wrapper.findAll(NavigatorCardItem).at(0).props()).toMatchObject({
+        item: root1,
+        isActive: true,
+        isBold: true,
+      });
+      // change children
+      wrapper.setProps({
+        children: [
+          root0Dupe,
+          root0Child0Dupe,
+          root0Child1Dupe,
+        ],
+      });
+
+      // simulate its taking time to fetch the items
+      await flushPromises();
+      // change the activePath later
+      wrapper.setProps({
+        activePath: [
+          root0Dupe.path,
+          root0Child0Dupe.path,
+        ],
+      });
+      await flushPromises();
+      // assert no errors
+      const all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(3);
+      expect(all.at(0).props('item')).toEqual(root0Dupe);
+      expect(all.at(1).props('item')).toEqual(root0Child0Dupe);
     });
   });
 
