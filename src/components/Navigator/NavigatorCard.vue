@@ -38,6 +38,7 @@
             aria-label="Sidebar Tree Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
+            :buffer="1000"
             emit-update
             key-field="uid"
             v-slot="{ item, active, index }"
@@ -104,6 +105,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
+import { last } from 'docc-render/utils/arrays';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -116,7 +118,7 @@ const STORAGE_KEYS = {
 };
 
 const NO_RESULTS = 'No results matching your filter';
-const NO_CHILDREN = 'Technology has no children';
+const NO_CHILDREN = 'No data available';
 const ERROR_FETCHING = 'There was an error fetching the data';
 const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
@@ -278,8 +280,11 @@ export default {
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
      * @return NavigatorFlatItem[]
      */
-    activePathChildren({ activeUID }) {
-      return activeUID ? this.getParents(activeUID) : [];
+    activePathChildren({ activeUID, childrenMap }) {
+      // if we have an activeUID and its not stale by any chance, fetch its parents
+      return activeUID && childrenMap[activeUID]
+        ? this.getParents(activeUID)
+        : [];
     },
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
@@ -529,6 +534,9 @@ export default {
         current = stack.pop();
         // find the object
         const obj = this.childrenMap[current];
+        if (!obj) {
+          return [];
+        }
         // push the object to the results
         arr.unshift(obj);
         // if the current object has a parent and its not the root, add it to the stack
@@ -650,6 +658,11 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
+      // check if activeUID node matches the current page path
+      const activeUIDMatchesCurrentPath = (activeUID && this.activePath.length)
+        ? (this.childrenMap[activeUID] || {}).path === last(this.activePath)
+        // if there is no activeUID this check is not relevant
+        : true;
       // take a second pass at validating data
       if (
         // if the technology is different
@@ -658,6 +671,7 @@ export default {
         || !allNodesMatch
         // if API the existence of apiChanges differs
         || (hasAPIChanges !== Boolean(this.apiChanges))
+        || !activeUIDMatchesCurrentPath
         // if there is an activeUID and its not in the nodesToRender
         || (activeUID && !filter && !selectedTags.length && !nodesToRender.includes(activeUID))
       ) {
@@ -774,7 +788,7 @@ export default {
       // get current active item's node, if any
       const currentActiveItem = this.childrenMap[this.activeUID];
       // get the current path
-      const lastActivePathItem = activePath[activePath.length - 1];
+      const lastActivePathItem = last(activePath);
       // check if there is an active item to start looking from
       if (currentActiveItem) {
         // Return early, if the current path matches the current active node.
@@ -976,6 +990,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
+
+  @include breakpoint(medium, nav) {
+    padding-bottom: $nav-menu-items-ios-bottom-spacing;
+  }
 }
 
 .filter-wrapper {
