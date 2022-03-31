@@ -34,7 +34,7 @@ const getSettingWithNavigatorEnabled = (settingKeyPath, fallback) => (
 getSetting.mockImplementation(defaultGetSetting);
 
 const TechnologyWithChildren = {
-  path: 'path/to/foo',
+  path: '/documentation/foo',
   children: [],
 };
 
@@ -81,8 +81,8 @@ const topicData = {
   },
   primaryContentSections: [],
   references: {
-    'topic://foo': { title: 'FooTechnology', url: 'path/to/foo' },
-    'topic://bar': { title: 'BarTechnology', url: 'path/to/bar' },
+    'topic://foo': { title: 'FooTechnology', url: '/documentation/foo' },
+    'topic://bar': { title: 'BarTechnology', url: '/documentation/bar' },
   },
   sampleCodeDownload: {},
   topicSections: [],
