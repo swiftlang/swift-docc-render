@@ -14,6 +14,10 @@ import { TopicTypes } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
+import { waitFrames } from 'docc-render/utils/loading';
+import { flushPromises } from '../../../../test-utils';
+
+jest.mock('docc-render/utils/loading');
 
 const {
   Badge,
@@ -50,6 +54,9 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
 });
 
 describe('NavigatorCardItem', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('renders the NavigatorCardItem', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
@@ -154,6 +161,53 @@ describe('NavigatorCardItem', () => {
       metaKey: true,
     });
     expect(wrapper.emitted()).toEqual({ 'toggle-siblings': [[defaultProps.item]] });
+  });
+
+  it('adds a temporary `animating` class, on `@toggle`', async () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('click');
+    expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+    // assert it adds the animating class
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    wrapper.setProps({
+      expanded: true,
+    });
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    await flushPromises();
+    // assert we have waited a few frames
+    expect(waitFrames).toHaveBeenCalledTimes(1);
+    expect(waitFrames).toHaveBeenCalledWith(9);
+    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+  });
+
+  it('adds a temporary `animating` class, on `@toggle-full`', async () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('click', { altKey: true });
+    expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
+    // assert it adds the animating class
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    wrapper.setProps({
+      expanded: true,
+    });
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    await flushPromises();
+    // assert we have waited a few frames
+    expect(waitFrames).toHaveBeenCalledTimes(1);
+    expect(waitFrames).toHaveBeenCalledWith(9);
+    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+  });
+
+  it('adds a temporary `animating` class, on `@toggle-siblings`', async () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('click', { metaKey: true });
+    expect(wrapper.emitted('toggle-siblings')).toEqual([[defaultProps.item]]);
+    // assert it adds the animating class
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    wrapper.setProps({ expanded: true });
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    await flushPromises();
+    // assert we have waited a few frames
+    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
   });
 
   it('renders the API change icon instead of the leaf icon', () => {

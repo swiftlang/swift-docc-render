@@ -163,7 +163,7 @@ export default {
 // Add spacing below the last section in the dropdown, so that it can
 // be selected on iOS Safari.
 .chapter-list:last-child .tutorial-list:last-child {
-  padding-bottom: 10em;
+  padding-bottom: $nav-menu-items-ios-bottom-spacing;
 }
 
 .chapter-list {
