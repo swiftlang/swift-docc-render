@@ -196,12 +196,16 @@ $sidenav-icon-size: 19px;
   align-self: center;
   color: var(--color-nav-link-color);
   position: relative;
-  padding-right: $nav-pre-title-item-margin;
-  padding-left: $nav-pre-title-item-margin;
-  margin-left: -$nav-pre-title-item-margin;
+  margin-right: $nav-pre-title-item-margin;
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);
+  }
+
+  @include nav-in-breakpoint() {
+    padding-right: $nav-pre-title-item-margin;
+    padding-left: $nav-pre-title-item-margin;
+    margin-left: -$nav-pre-title-item-margin;
   }
 
   &:hover .sidenav-icon-wrapper {
@@ -215,7 +219,7 @@ $sidenav-icon-size: 19px;
   &:after {
     content: '';
     position: absolute;
-    right: 0;
+    right: -$nav-pre-title-item-margin;
     height: .8em;
     top: 50%;
     width: 1px;
