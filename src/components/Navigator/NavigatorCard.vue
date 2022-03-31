@@ -38,6 +38,7 @@
             aria-label="Sidebar Tree Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
+            :buffer="1000"
             emit-update
             key-field="uid"
             v-slot="{ item, active, index }"
@@ -56,6 +57,7 @@
               :isFocused="focusedIndex === index"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
+              @toggle-siblings="toggleSiblings"
               @navigate="setActiveUID"
             />
           </RecycleScroller>
@@ -75,7 +77,7 @@
             v-model="filter"
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
-            :placeholder="`Filter in ${technology}`"
+            :placeholder="Filter"
             :should-keep-open-on-blur="false"
             :position-reversed="isLargeBreakpoint"
             :clear-filter-on-tag-select="false"
@@ -103,6 +105,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
+import { last } from 'docc-render/utils/arrays';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -115,7 +118,7 @@ const STORAGE_KEYS = {
 };
 
 const NO_RESULTS = 'No results matching your filter';
-const NO_CHILDREN = 'Technology has no children';
+const NO_CHILDREN = 'No data available';
 const ERROR_FETCHING = 'There was an error fetching the data';
 const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
@@ -277,8 +280,11 @@ export default {
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
      * @return NavigatorFlatItem[]
      */
-    activePathChildren({ activeUID }) {
-      return activeUID ? this.getParents(activeUID) : [];
+    activePathChildren({ activeUID, childrenMap }) {
+      // if we have an activeUID and its not stale by any chance, fetch its parents
+      return activeUID && childrenMap[activeUID]
+        ? this.getParents(activeUID)
+        : [];
     },
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
@@ -460,9 +466,37 @@ export default {
       this.openNodes = openNodes;
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
     },
+    toggleSiblings(node) {
+      const isOpen = this.openNodes[node.uid];
+      const openNodes = clone(this.openNodes);
+      const siblings = this.getSiblings(node.uid);
+      siblings.forEach(({ uid, childUIDs }) => {
+        if (!childUIDs.length) return;
+        if (isOpen) {
+          const children = this.getAllChildren(uid);
+          // remove all children
+          children.forEach((child) => {
+            delete openNodes[child.uid];
+          });
+          // remove the sibling as well
+          delete openNodes[uid];
+          // augment the nodesToRender
+          this.augmentRenderNodes({ uid, exclude: children.slice(1), include: [] });
+        } else {
+          // add it
+          openNodes[uid] = true;
+          const children = this.getChildren(uid);
+          // augment the nodesToRender
+          this.augmentRenderNodes({ uid, exclude: [], include: children });
+        }
+      });
+      this.openNodes = openNodes;
+      // persist all the open nodes, as we change the openNodes after the node augment runs
+      this.persistState();
+    },
     /**
      * Get all children of a node recursively
-     * @param {string} uid - the UID of the node
+     * @param {number} uid - the UID of the node
      * @return {NavigatorFlatItem[]}
      */
     getAllChildren(uid) {
@@ -500,6 +534,9 @@ export default {
         current = stack.pop();
         // find the object
         const obj = this.childrenMap[current];
+        if (!obj) {
+          return [];
+        }
         // push the object to the results
         arr.unshift(obj);
         // if the current object has a parent and its not the root, add it to the stack
@@ -523,9 +560,13 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     getChildren(uid) {
+      if (uid === INDEX_ROOT_KEY) {
+        return this.children.filter(node => node.parent === INDEX_ROOT_KEY);
+      }
       const item = this.childrenMap[uid];
       if (!item) return [];
-      return (item.childUIDs || []).map(child => this.childrenMap[child]);
+      return (item.childUIDs || [])
+        .map(child => this.childrenMap[child]);
     },
     /**
      * Stores all the nodes we should render at this point.
@@ -567,8 +608,10 @@ export default {
       const index = this.nodesToRender.findIndex(n => n.uid === uid);
       // decide if should remove or add
       if (include.length) {
+        // remove duplicates
+        const duplicatesRemoved = include.filter(i => !this.nodesToRender.includes(i));
         // if add, find where to inject items
-        this.nodesToRender.splice(index + 1, 0, ...include);
+        this.nodesToRender.splice(index + 1, 0, ...duplicatesRemoved);
       } else if (exclude.length) {
         // if remove, filter out those items
         const excludeSet = new Set(exclude);
@@ -615,6 +658,11 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
+      // check if activeUID node matches the current page path
+      const activeUIDMatchesCurrentPath = (activeUID && this.activePath.length)
+        ? (this.childrenMap[activeUID] || {}).path === last(this.activePath)
+        // if there is no activeUID this check is not relevant
+        : true;
       // take a second pass at validating data
       if (
         // if the technology is different
@@ -623,6 +671,7 @@ export default {
         || !allNodesMatch
         // if API the existence of apiChanges differs
         || (hasAPIChanges !== Boolean(this.apiChanges))
+        || !activeUIDMatchesCurrentPath
         // if there is an activeUID and its not in the nodesToRender
         || (activeUID && !filter && !selectedTags.length && !nodesToRender.includes(activeUID))
       ) {
@@ -739,7 +788,7 @@ export default {
       // get current active item's node, if any
       const currentActiveItem = this.childrenMap[this.activeUID];
       // get the current path
-      const lastActivePathItem = activePath[activePath.length - 1];
+      const lastActivePathItem = last(activePath);
       // check if there is an active item to start looking from
       if (currentActiveItem) {
         // Return early, if the current path matches the current active node.
@@ -941,6 +990,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
+
+  @include breakpoint(medium, nav) {
+    padding-bottom: $nav-menu-items-ios-bottom-spacing;
+  }
 }
 
 .filter-wrapper {

@@ -68,8 +68,8 @@ function changeSize(size) {
 
 const mountWithProps = ({ propsData, ...others } = {}) => shallowMount(Hierarchy, {
   propsData: {
-    ...propsData,
     references,
+    ...propsData,
   },
   stubs: {
     Badge,
@@ -125,6 +125,34 @@ describe('Hierarchy', () => {
     expect(currentItem.text()).toBe(baz.title);
 
     expect(wrapper.contains(HierarchyCollapsedItems)).toBe(false);
+  });
+
+  it('continues working, if a reference is missing', () => {
+    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+    const wrapper = mountWithProps({
+      propsData: {
+        currentTopicTitle: baz.title,
+        parentTopicIdentifiers: [
+          foo.identifier,
+          bar.identifier,
+        ],
+        references: {
+          // include only one ref
+          [bar.identifier]: foo,
+        },
+      },
+    });
+
+    const list = wrapper.find(NavMenuItems);
+    expect(list.exists()).toBe(true);
+
+    const items = list.findAll(HierarchyItem);
+    // assert that the invalid item is not rendered
+    expect(items.length).toBe(2);
+    expect(items.at(0).text()).toBe(foo.title);
+    expect(items.at(1).text()).toBe(baz.title);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith(`Reference for "${foo.identifier}" is missing`);
   });
 
   describe('with more than 3 hierarchy items', () => {
