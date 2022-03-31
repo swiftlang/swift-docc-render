@@ -138,12 +138,13 @@ export default {
     widthInPx: ({ width }) => `${width}px`,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideClasses: ({
-      isDragging, openExternally, noTransition, isTransitioning,
+      isDragging, openExternally, noTransition, isTransitioning, mobileTopOffset,
     }) => ({
       dragging: isDragging,
       'force-open': openExternally,
       'no-transition': noTransition,
       animating: isTransitioning,
+      'has-top-offset': mobileTopOffset,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
     BreakpointScopes: () => BreakpointScopes,
@@ -341,6 +342,10 @@ export default {
         transition: opacity 0.15s linear;
         transition-delay: calc(var(--index) * 0.15s + 0.15s);
       }
+    }
+
+    &.has-top-offset {
+      border-top: 1px solid var(--color-fill-gray-tertiary);
     }
   }
 }

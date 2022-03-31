@@ -202,17 +202,25 @@ export default {
       },
       parentTopicIdentifiers,
     }) => {
-      if (!parentTopicIdentifiers.length) return references[identifier];
+      // create an end-case fallback technology
+      const fallback = { title, url: $route.path };
+      // get the reference to the current page
+      const currentPageReference = references[identifier];
+      // if there are no parent topics at all, use the current reference or a fallback one
+      if (!parentTopicIdentifiers.length) return currentPageReference || fallback;
+      // try to use the first parent topic reference, if not a technology kind
       const first = references[parentTopicIdentifiers[0]];
-      if (first.kind !== 'technologies') return first;
+      if (first && first.kind !== 'technologies') return first;
 
       // if there is a top level collection that does not have a reference to
-      // itself, manufacture a minimal one using other available data
-      if (role === TopicRole.collection && !references[identifier]) {
-        return { title, url: $route.path };
+      // itself, manufacture a minimal one using other available data.
+      // This is to guard against bad data or missing references.
+      if (role === TopicRole.collection && !currentPageReference) {
+        return fallback;
       }
-
-      return references[parentTopicIdentifiers[1]] || references[identifier];
+      // use the second parent topic identifier, if there was a first,
+      // otherwise fallback the current page reference or the final fallback
+      return (first && references[parentTopicIdentifiers[1]]) || currentPageReference || fallback;
     },
     // Use `variants` data to build a map of paths associated with each unique
     // `interfaceLanguage` trait.
