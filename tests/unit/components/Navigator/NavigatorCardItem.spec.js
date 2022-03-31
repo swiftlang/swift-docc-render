@@ -134,10 +134,26 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.extended-content').exists()).toBe(false);
   });
 
-  it('emits an even, when clicking the tree-toggle button', () => {
+  it('emits a `toggle` event, when clicking the tree-toggle button', () => {
     const wrapper = createWrapper();
     wrapper.find('.tree-toggle').trigger('click');
-    expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+    expect(wrapper.emitted()).toEqual({ toggle: [[defaultProps.item]] });
+  });
+
+  it('emits a `toggle-full` event, when alt + clicking the tree-toggle button', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('click', {
+      altKey: true,
+    });
+    expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
+  });
+
+  it('emits a `toggle-siblings` event, when cmd + clicking the tree-toggle button', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('click', {
+      metaKey: true,
+    });
+    expect(wrapper.emitted()).toEqual({ 'toggle-siblings': [[defaultProps.item]] });
   });
 
   it('renders the API change icon instead of the leaf icon', () => {
