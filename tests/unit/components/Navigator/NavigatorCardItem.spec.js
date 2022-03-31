@@ -340,19 +340,19 @@ describe('NavigatorCardItem', () => {
         .toBe(`label-${defaultProps.item.uid} Foo usage-${defaultProps.item.uid}`);
     });
 
-    it('focuses itself, if `isFocused`, `isRendered` and `enableFocusUpdate` is `true`', async () => {
+    it('focuses itself, if `isFocused`, `isRendered` and `enableSelfFocus` is `true`', async () => {
       const wrapper = createWrapper({
         propsData: {
           isFocused: false,
           isRendered: true,
-          enableFocusUpdate: false,
+          enableSelfFocus: false,
         },
       });
       await flushPromises();
       expect(document.activeElement).not.toEqual(wrapper.element);
       wrapper.setProps({
         isFocused: true,
-        enableFocusUpdate: true,
+        enableSelfFocus: true,
       });
       await flushPromises();
       expect(waitFrames).toHaveBeenCalledTimes(1);
@@ -360,12 +360,12 @@ describe('NavigatorCardItem', () => {
       expect(document.activeElement).toEqual(wrapper.element);
     });
 
-    it('does not focus itself, if `isRendered` or `enableFocusUpdate` are `false`', async () => {
+    it('does not focus itself, if `isRendered` or `enableSelfFocus` are `false`', async () => {
       const wrapper = createWrapper({
         propsData: {
           isFocused: false,
           isRendered: true,
-          enableFocusUpdate: false,
+          enableSelfFocus: false,
         },
       });
       await flushPromises();

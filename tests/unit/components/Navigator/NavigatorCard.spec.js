@@ -269,6 +269,13 @@ describe('NavigatorCard', () => {
       enableSelfFocus: false, // self focus is disabled now
       isFocused: true, // isFocused is true, because it changed to the first item
     });
+    // assert that the focusIndex was set to the first item
+    expect(wrapper.vm.focusedIndex).toBe(0);
+    // remove any filters
+    wrapper.find(FilterInput).vm.$emit('input', '');
+    await flushPromises();
+    // assert that the focusIndex was set to the activeUID
+    expect(wrapper.vm.focusedIndex).toBe(1);
   });
 
   it('allows the user to navigate to the last item on the list when pressing alt + down key', async () => {
