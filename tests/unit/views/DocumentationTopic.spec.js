@@ -34,7 +34,7 @@ const getSettingWithNavigatorEnabled = (settingKeyPath, fallback) => (
 getSetting.mockImplementation(defaultGetSetting);
 
 const TechnologyWithChildren = {
-  path: 'path/to/foo',
+  path: '/documentation/foo',
   children: [],
 };
 
@@ -81,8 +81,8 @@ const topicData = {
   },
   primaryContentSections: [],
   references: {
-    'topic://foo': { title: 'FooTechnology', url: 'path/to/foo' },
-    'topic://bar': { title: 'BarTechnology', url: 'path/to/bar' },
+    'topic://foo': { title: 'FooTechnology', url: '/documentation/foo' },
+    'topic://bar': { title: 'BarTechnology', url: '/documentation/bar' },
   },
   sampleCodeDownload: {},
   topicSections: [],
@@ -232,6 +232,89 @@ describe('DocumentationTopic', () => {
 
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
+    // assert the technology is the last fallback
+    expect(navigator.props('technology')).toEqual({
+      title: topicData.metadata.title,
+      url: mocks.$route.path,
+    });
+  });
+
+  it('renders the Navigator with data when no reference is found for a top-level item', () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+
+    const technologies = {
+      id: 'topic://not-existing',
+      title: 'Technologies',
+      url: '/technologies',
+      kind: 'technologies',
+    };
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        hierarchy: {
+          paths: [
+            [technologies.id, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+      },
+    });
+
+    const navigator = wrapper.find(Navigator);
+    expect(navigator.exists()).toBe(true);
+    // assert the technology is the last fallback
+    expect(navigator.props('technology')).toEqual({
+      title: topicData.metadata.title,
+      url: mocks.$route.path,
+    });
+  });
+
+  it('renders the Navigator with data when no reference is found, for any if if the breadcrumbs', () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+
+    const technologies = {
+      id: 'topic://not-existing',
+      title: 'Technologies',
+      url: '/technologies',
+      kind: 'technologies',
+    };
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        hierarchy: {
+          paths: [
+            [technologies.id, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+        // simulate reference data error
+        references: {},
+      },
+    });
+
+    const navigator = wrapper.find(Navigator);
+    expect(navigator.exists()).toBe(true);
+    // assert the technology is the last fallback
+    expect(navigator.props('technology')).toEqual({
+      title: topicData.metadata.title,
+      url: mocks.$route.path,
+    });
+  });
+
+  it('renders the Navigator with data when no hierarchy and reference is found for the current page', () => {
+    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        // remove the hierarchy items
+        hierarchy: {},
+        // remove the references as well, so it falls back to the last fallback
+        references: {},
+      },
+    });
+
+    const navigator = wrapper.find(Navigator);
+    expect(navigator.exists()).toBe(true);
+    // assert the technology is the last fallback
     expect(navigator.props('technology')).toEqual({
       title: topicData.metadata.title,
       url: mocks.$route.path,
