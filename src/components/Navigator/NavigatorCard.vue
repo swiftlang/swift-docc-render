@@ -38,6 +38,7 @@
             aria-label="Sidebar Tree Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
+            :buffer="1000"
             emit-update
             key-field="uid"
             v-slot="{ item, active, index }"
@@ -104,6 +105,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
+import { last } from 'docc-render/utils/arrays';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -656,6 +658,11 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
+      // check if activeUID node matches the current page path
+      const activeUIDMatchesCurrentPath = (activeUID && this.activePath.length)
+        ? (this.childrenMap[activeUID] || {}).path === last(this.activePath)
+        // if there is no activeUID this check is not relevant
+        : true;
       // take a second pass at validating data
       if (
         // if the technology is different
@@ -664,6 +671,7 @@ export default {
         || !allNodesMatch
         // if API the existence of apiChanges differs
         || (hasAPIChanges !== Boolean(this.apiChanges))
+        || !activeUIDMatchesCurrentPath
         // if there is an activeUID and its not in the nodesToRender
         || (activeUID && !filter && !selectedTags.length && !nodesToRender.includes(activeUID))
       ) {
@@ -780,7 +788,7 @@ export default {
       // get current active item's node, if any
       const currentActiveItem = this.childrenMap[this.activeUID];
       // get the current path
-      const lastActivePathItem = activePath[activePath.length - 1];
+      const lastActivePathItem = last(activePath);
       // check if there is an active item to start looking from
       if (currentActiveItem) {
         // Return early, if the current path matches the current active node.
@@ -982,6 +990,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
+
+  @include breakpoint(medium, nav) {
+    padding-bottom: $nav-menu-items-ios-bottom-spacing;
+  }
 }
 
 .filter-wrapper {
