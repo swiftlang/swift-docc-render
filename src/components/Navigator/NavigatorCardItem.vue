@@ -242,7 +242,7 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 }
 
 .head-wrapper {
-  padding: 0 $card-horizontal-spacing;
+  padding: 0 $card-horizontal-spacing-large 0 $card-horizontal-spacing;
   position: relative;
   display: flex;
   align-items: center;
