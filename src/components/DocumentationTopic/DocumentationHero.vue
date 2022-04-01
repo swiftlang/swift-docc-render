@@ -153,7 +153,7 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
   }
 }
 
-.theme-dark /deep/ a {
+.theme-dark /deep/ a:not(.button-cta) {
   color: dark-color(figure-blue);
 }
 </style>
