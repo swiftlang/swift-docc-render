@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,31 +9,23 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
-
-jest.mock('docc-render/utils/theme-settings', () => ({
-  getSetting: jest.fn((_, fallback) => fallback),
-}));
+import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 
 const {
   Abstract,
   ContentNode,
   DefaultImplementations,
   Aside,
-  Description,
   DownloadButton,
-  TechnologyList,
   LanguageSwitcher,
-  OnThisPageNav,
   PrimaryContent,
   Relationships,
   RequirementMetadata,
   Availability,
   SeeAlso,
-  Summary,
   Topics,
   Title,
   BetaLegalText,
@@ -107,7 +99,7 @@ const sampleCodeDownload = {
 
 const propsData = {
   abstract: [abstract],
-  conformance: { constraints: [], availabilityPrefx: [] },
+  conformance: { constraints: [], availabilityPrefix: [] },
   hierarchy: {
     paths: [
       [
@@ -121,6 +113,18 @@ const propsData = {
   symbolKind: TopicTypes.module,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
+  technology: { title: 'fookit' },
+  platforms: [
+    {
+      introducedAt: '1.0',
+      name: 'fooOS',
+    },
+    {
+      deprecatedAt: '2.0',
+      introducedAt: '1.0',
+      name: 'barOS',
+    },
+  ],
   primaryContentSections: [
     {
       kind: PrimaryContent.constants.SectionKind.content,
@@ -204,16 +208,89 @@ describe('DocumentationTopic', () => {
     expect(main.attributes('tabindex')).toBe('0');
   });
 
+  it('renders a `DocumentationHero`, enabled', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.exists()).toBe(true);
+    expect(hero.props()).toEqual({ type: propsData.symbolKind, enhanceBackground: true });
+  });
+
+  it('renders a `DocumentationHero`, enabled, with a the `role`, if no symbolKind', () => {
+    wrapper.setProps({
+      role: TopicTypes.article,
+      symbolKind: '',
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props()).toEqual({ type: TopicTypes.article, enhanceBackground: true });
+  });
+
+  it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
+    wrapper.setProps({
+      role: TopicTypes.collection,
+      symbolKind: 'module',
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props()).toEqual({ type: TopicTypes.module, enhanceBackground: true });
+  });
+
+  it('render a `DocumentationHero`, disabled, if symbol page', () => {
+    wrapper.setProps({
+      symbolKind: 'protocol',
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props()).toEqual({ type: TopicTypes.protocol, enhanceBackground: false });
+  });
+
   it('renders a `Title`', () => {
-    const title = wrapper.find(Title);
+    const hero = wrapper.find(DocumentationHero);
+    const title = hero.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
   });
 
+  it('renders smaller "Beta" and "Deprecated" text in title when relevant', () => {
+    const title = wrapper.find(Title);
+    expect(title.exists()).toBe(true);
+    let smalls = title.findAll('small');
+    expect(smalls.length).toBe(0);
+
+    // both beta _and_ deprecated — deprecated has priority
+    wrapper.setProps({
+      isSymbolDeprecated: true,
+      isSymbolBeta: true,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).is('.beta')).toBe(false);
+    expect(smalls.at(0).is('.deprecated')).toBe(true);
+    expect(smalls.at(0).text()).toBe('Deprecated');
+
+    // only beta
+    wrapper.setProps({
+      isSymbolDeprecated: false,
+      isSymbolBeta: true,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).is('.beta')).toBe(true);
+    expect(smalls.at(0).is('.deprecated')).toBe(false);
+    expect(smalls.at(0).text()).toBe('Beta');
+
+    // only deprecated
+    wrapper.setProps({
+      isSymbolDeprecated: true,
+      isSymbolBeta: false,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).is('.beta')).toBe(false);
+    expect(smalls.at(0).is('.deprecated')).toBe(true);
+    expect(smalls.at(0).text()).toBe('Deprecated');
+  });
+
   it('renders an abstract', () => {
-    const descr = wrapper.find(Description);
-    const abstractComponent = descr.find(Abstract);
+    const hero = wrapper.find(DocumentationHero);
+    const abstractComponent = hero.find(Abstract);
     expect(abstractComponent.exists()).toBe(true);
     expect(abstractComponent.props('content')).toEqual(propsData.abstract);
   });
@@ -231,23 +308,10 @@ describe('DocumentationTopic', () => {
     wrapper.setProps({
       abstract: emptyParagraph,
     });
-    const descr = wrapper.find(Description);
-    const abstractComponent = descr.find(Abstract);
+    const hero = wrapper.find(DocumentationHero);
+    const abstractComponent = hero.find(Abstract);
     expect(abstractComponent.exists()).toBe(true);
     expect(abstractComponent.props('content')).toEqual(emptyParagraph);
-  });
-
-  it('renders a `.content-grid` with `Description`/`Summary and PrimaryContent` columns', () => {
-    const grid = wrapper.find('.content-grid.container');
-    expect(grid.exists()).toBe(true);
-
-    const description = grid.find(Description);
-    expect(description.exists()).toBe(true);
-
-    const summary = grid.find(Summary);
-    expect(summary.exists()).toBe(true);
-
-    expect(grid.find(PrimaryContent).exists()).toBe(true);
   });
 
   it('renders a `PrimaryContent`', () => {
@@ -305,96 +369,23 @@ describe('DocumentationTopic', () => {
       wrapper.setProps({ isRequirement: true });
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
     });
-  });
-
-  describe('summary column', () => {
-    let summary;
-
-    beforeEach(() => {
-      summary = wrapper.find('main .container').find(Summary);
-    });
-
-    it('hides the Summary, if the global settings say so', () => {
-      // this should really only mock the resolved value for the specific flag,
-      // but this is fine for now
-      getSetting.mockResolvedValueOnce(true);
-      wrapper = shallowMount(DocumentationTopic, { propsData });
-      expect(wrapper.find(Summary).exists()).toBe(false);
-    });
 
     it('renders a `Availability` with platforms data', () => {
-      const platforms = [
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-        {
-          deprecatedAt: '2.0',
-          introducedAt: '1.0',
-          name: 'barOS',
-        },
-      ];
-      wrapper.setProps({ platforms });
-
-      const list = summary.find(Availability);
+      const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
-      expect(list.props('platforms')).toEqual(platforms);
+      expect(list.props('platforms')).toEqual(propsData.platforms);
     });
+  });
 
-    it('renders a `TechnologyList` with technologies data', () => {
-      const modules = ['FooKit', 'BarKit'];
-      wrapper.setProps({ modules });
-
-      const list = summary.find(TechnologyList);
-      expect(list.exists()).toBe(true);
-      expect(list.props('technologies')).toEqual(modules);
-    });
-
-    it('renders an `OnThisPageNav` with more than 1 section', () => {
-      const onThisPageSections = [
-        { anchor: 'foo', title: 'Foo' },
-        { anchor: 'bar', title: 'Bar' },
-      ];
-      wrapper.setData({ topicState: { onThisPageSections } });
-
-      const nav = summary.find(OnThisPageNav);
-      expect(nav.exists()).toBe(true);
-      expect(nav.props('sections')).toEqual(onThisPageSections);
-    });
-
-    it('does not render `OnThisPage` with 1 or fewer sections', () => {
-      const onThisPageSections = [{ anchor: 'foo', title: 'Foo' }];
-      wrapper.setData({ topicState: { onThisPageSections } });
-      expect(summary.contains(OnThisPageNav)).toBe(false);
-
-      wrapper.setData({ topicState: { onThisPageSections: [] } });
-      expect(summary.contains(OnThisPageNav)).toBe(false);
-    });
-
-    it('renders a `LanguageSwitcher`', () => {
-      const switcher = summary.find(LanguageSwitcher);
-      expect(switcher.exists()).toBe(true);
-      expect(switcher.props()).toEqual({
-        interfaceLanguage: propsData.interfaceLanguage,
-        objcPath: propsData.languagePaths.occ[0],
-        swiftPath: propsData.languagePaths.swift[0],
-      });
-    });
-
-    it('renders an `TechnologyList` component in the sidebar', () => {
-      expect(wrapper.find('.extends-technology').exists()).toBe(false);
-      const extendsTechnology = 'FooTechnology';
-
-      wrapper.setProps({
-        extendsTechnology,
-      });
-
-      const technologyList = wrapper.find('.extends-technology');
-      expect(technologyList.exists()).toBe(true);
-      expect(technologyList.props()).toEqual({
-        technologies: [{ name: extendsTechnology }],
-        title: 'Extends',
-      });
+  it('renders a `LanguageSwitcher` if TargetIDE', () => {
+    const provide = { isTargetIDE: true };
+    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
+    const switcher = wrapper.find(LanguageSwitcher);
+    expect(switcher.exists()).toBe(true);
+    expect(switcher.props()).toEqual({
+      interfaceLanguage: propsData.interfaceLanguage,
+      objcPath: propsData.languagePaths.occ[0],
+      swiftPath: propsData.languagePaths.swift[0],
     });
   });
 
@@ -565,10 +556,10 @@ describe('DocumentationTopic', () => {
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
       slots: {
-        'above-title': 'Above Title Content',
+        'above-title': '<div class="above-title">Above Title Content</div>',
       },
     });
-    expect(wrapper.text()).toContain('Above Title Content');
+    expect(wrapper.find(DocumentationHero).contains('.above-title')).toBe(true);
   });
 
   describe('lifecycle hooks', () => {

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -47,14 +47,18 @@ export default {
   @include inTargetIde {
     background: var(--color-content-table-content-color);
   }
-  padding: $section-spacing-single-side 0;
 }
 
 .container {
   @include dynamic-content-container;
+  padding-bottom: $section-spacing-single-side;
 }
 
 .title {
   @include font-styles(heading-2-reduced);
+  padding-top: $section-spacing-single-side;
+  border-top-color: var(--color-grid);
+  border-top-style: solid;
+  border-top-width: 1px;
 }
 </style>

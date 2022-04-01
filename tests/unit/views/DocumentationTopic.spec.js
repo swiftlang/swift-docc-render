@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -338,6 +338,9 @@ describe('DocumentationTopic', () => {
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       isWideFormat: false,
+      interfaceLanguage: topicData.identifier.interfaceLanguage,
+      objcPath: topicData.variants[0].paths[0],
+      swiftPath: topicData.variants[1].paths[0],
     });
     expect(nav.attributes()).toMatchObject({
       interfacelanguage: 'swift',
