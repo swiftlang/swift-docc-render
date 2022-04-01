@@ -44,11 +44,16 @@ export default {
     };
   },
   computed: {
+    technologyPath: ({ technology }) => {
+      // regex should match only the first section, no slash - `/documentation/:technology`
+      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technology.url);
+      return matches ? matches[1] : '';
+    },
     /**
      * Extracts the technology data, for the currently chosen language
      * @return {Object}
      */
-    technologyWithChildren({ navigationIndex, interfaceLanguage, technology }) {
+    technologyWithChildren({ navigationIndex, interfaceLanguage, technologyPath }) {
       // get the technologies for the current language
       let currentLangTechnologies = navigationIndex[interfaceLanguage] || [];
       // if no such items, we use the default swift one
@@ -56,7 +61,9 @@ export default {
         currentLangTechnologies = navigationIndex[Language.swift.key.url];
       }
       // find the current technology
-      return currentLangTechnologies.find(t => t.path === technology.url);
+      return currentLangTechnologies.find(t => (
+        technologyPath.toLowerCase() === t.path.toLowerCase()
+      ));
     },
   },
   created() {

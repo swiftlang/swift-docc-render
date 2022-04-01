@@ -18,7 +18,7 @@ jest.mock('docc-render/utils/data');
 
 const technology = {
   title: 'Technology Name',
-  url: '/technology/path',
+  url: '/documentation/foo',
 };
 
 const swiftIndexOne = {
@@ -79,6 +79,28 @@ describe('NavigatorDataProvider', () => {
   it('fetches data when mounting NavigatorDataProvider', async () => {
     expect(fetchIndexPathsData).toHaveBeenCalledTimes(0);
     createWrapper();
+    expect(fetchIndexPathsData).toHaveBeenCalledTimes(1);
+    expect(props).toHaveProperty('isFetching', true);
+    await flushPromises();
+    expect(props).toEqual({
+      apiChanges: null,
+      isFetchingAPIChanges: false,
+      isFetching: false,
+      technology: swiftIndexOne,
+      errorFetching: false,
+    });
+  });
+
+  it('fetches data, even if being passed a none-root technology url', async () => {
+    expect(fetchIndexPathsData).toHaveBeenCalledTimes(0);
+    createWrapper({
+      propsData: {
+        technology: {
+          ...technology,
+          url: `${technology.url}/bar/baz`,
+        },
+      },
+    });
     expect(fetchIndexPathsData).toHaveBeenCalledTimes(1);
     expect(props).toHaveProperty('isFetching', true);
     await flushPromises();
@@ -154,7 +176,7 @@ describe('NavigatorDataProvider', () => {
     createWrapper({
       propsData: {
         technology: {
-          path: '/foo',
+          url: '/documentation/bar',
         },
       },
     });
