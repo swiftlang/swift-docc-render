@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -54,6 +54,18 @@
         :currentTopicTags="currentTopicTags"
         :references="references"
       />
+      <NavMenuItems
+        class="nav-menu-settings"
+        :previousSiblingChildren="breadcrumbCount"
+      >
+        <LanguageToggle
+          v-if="interfaceLanguage && (swiftPath || objcPath)"
+          :interfaceLanguage="interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+        />
+        <slot name="menu-items" />
+      </NavMenuItems>
       <slot name="tray-after" v-bind="{ breadcrumbCount }" />
     </template>
     <template slot="after-content">
@@ -64,16 +76,20 @@
 
 <script>
 import NavBase from 'docc-render/components/NavBase.vue';
+import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Hierarchy from './DocumentationNav/Hierarchy.vue';
+import LanguageToggle from './DocumentationNav/LanguageToggle.vue';
 
 export default {
   name: 'DocumentationNav',
   components: {
     SidenavIcon,
     NavBase,
+    NavMenuItems,
     Hierarchy,
+    LanguageToggle,
   },
   props: {
     title: {
@@ -111,6 +127,18 @@ export default {
     isWideFormat: {
       type: Boolean,
       default: true,
+    },
+    interfaceLanguage: {
+      type: String,
+      required: false,
+    },
+    objcPath: {
+      type: String,
+      required: false,
+    },
+    swiftPath: {
+      type: String,
+      required: false,
     },
   },
   computed: {
@@ -169,6 +197,50 @@ $sidenav-icon-size: 19px;
   @include font-styles(documentation-nav);
   // vertically align the items
   padding-top: 0;
+
+  &-settings {
+    @include font-styles(nav-toggles);
+
+    @include breakpoint-only-largenav() {
+      margin-left: $nav-space-between-elements;
+    }
+
+    @include nav-in-breakpoint {
+      // do not apply border if no item are above setting links
+      &:not([data-previous-menu-children-count="0"]) {
+        .nav-menu-setting:first-child {
+          border-top: 1px solid dark-color(figure-gray-tertiary);
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    .nav-menu-setting {
+      display: flex;
+      align-items: center;
+      color: var(--color-nav-current-link);
+      margin-left: 0;
+
+      &:first-child:not(:only-child) {
+        margin-right: $nav-space-between-elements;
+
+        @include nav-in-breakpoint() {
+          margin-right: 0;
+        }
+      }
+
+      @include nav-dark() {
+        color: var(--color-nav-dark-current-link);
+      }
+
+      @include nav-in-breakpoint() {
+        &:not(:first-child) {
+          border-top: 1px solid dark-color(fill-gray-tertiary);
+        }
+      }
+    }
+  }
 }
 
 .documentation-nav {

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -15,7 +15,7 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
 
-jest.mock('@/utils/throttle', () => jest.fn(v => v));
+jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
 const technology = {
   title: 'FooTechnology',

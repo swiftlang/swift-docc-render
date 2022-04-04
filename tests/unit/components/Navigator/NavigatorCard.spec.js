@@ -40,7 +40,7 @@ const {
 
 const RecycleScrollerStub = {
   props: RecycleScroller.props,
-  template: '<div class="vue-recycle-scroller-stub"><template v-for="item in items"><slot :item="item" /></template></div>',
+  template: '<div class="vue-recycle-scroller-stub"><template v-for="(item, index) in items"><slot v-bind="{ item, index }" /></template></div>',
   methods: {
     scrollToItem: jest.fn(),
   },
@@ -183,6 +183,7 @@ describe('NavigatorCard', () => {
       isBold: true,
       item: root0,
       apiChange: null,
+      enableSelfFocus: false,
     });
     // assert no-items-wrapper
     expect(wrapper.find('.no-items-wrapper').exists()).toBe(true);
@@ -228,10 +229,52 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(1);
-    wrapper.findAll(NavigatorCardItem).at(0).trigger('keydown.down');
+    const items = wrapper.findAll(NavigatorCardItem);
+    expect(items.at(0).props('enableSelfFocus')).toBe(false);
+    items.at(0).trigger('keydown.down');
+    await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(2);
+    expect(items.at(0).props('enableSelfFocus')).toBe(true);
 
-    wrapper.findAll(NavigatorCardItem).at(1).trigger('keydown.up');
+    items.at(1).trigger('keydown.up');
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(1);
+    expect(items.at(0).props('enableSelfFocus')).toBe(true);
+  });
+
+  it('sets the `enableSelfFocus` back to false, upon filtering', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    let items = wrapper.findAll(NavigatorCardItem);
+    expect(wrapper.vm.focusedIndex).toBe(1);
+    expect(items.at(1).props()).toMatchObject({
+      enableSelfFocus: false,
+      isFocused: true,
+    });
+    items.at(1).trigger('keydown.down');
+    await flushPromises();
+    expect(wrapper.vm.focusedIndex).toBe(2);
+    expect(items.at(2).props()).toMatchObject({
+      enableSelfFocus: true,
+      isFocused: true,
+    });
+
+    // now to do a search, so the position of the focused item changes.
+    wrapper.find(FilterInput).vm.$emit('input', root0.title);
+    await flushPromises();
+    // re-fetch the items
+    items = wrapper.findAll(NavigatorCardItem);
+    expect(items.at(0).props()).toMatchObject({
+      item: root0,
+      enableSelfFocus: false, // self focus is disabled now
+      isFocused: true, // isFocused is true, because it changed to the first item
+    });
+    // assert that the focusIndex was set to the first item
+    expect(wrapper.vm.focusedIndex).toBe(0);
+    // remove any filters
+    wrapper.find(FilterInput).vm.$emit('input', '');
+    await flushPromises();
+    // assert that the focusIndex was set to the activeUID
     expect(wrapper.vm.focusedIndex).toBe(1);
   });
 
@@ -352,6 +395,7 @@ describe('NavigatorCard', () => {
       filterPattern: null,
       isRendered: false,
       apiChange: null,
+      enableSelfFocus: false,
     });
     unopenedItem.vm.$emit('toggle', item);
     await wrapper.vm.$nextTick();
@@ -1277,9 +1321,10 @@ describe('NavigatorCard', () => {
         filterPattern: null,
         isActive: true,
         isBold: true,
-        isFocused: false,
+        isFocused: true,
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
+        enableSelfFocus: false,
       });
       // assert item is scrolled to
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
@@ -1298,9 +1343,10 @@ describe('NavigatorCard', () => {
         filterPattern: null,
         isActive: true,
         isBold: true,
-        isFocused: false,
+        isFocused: true,
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
+        enableSelfFocus: false,
       });
     });
 

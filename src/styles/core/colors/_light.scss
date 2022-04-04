@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -56,7 +56,7 @@
   --color-badge-default: var(--color-figure-light-gray);
   --color-badge-beta: var(--color-figure-gray-tertiary);
   --color-badge-deprecated: var(--color-figure-orange);
-  --color-badge-dark-default: #{dark-color(figure-light-gray)};
+  --color-badge-dark-default: #{dark-color(figure-gray)};
   --color-badge-dark-beta: #{dark-color(figure-gray-tertiary)};
   --color-badge-dark-deprecated: #{dark-color(figure-orange)};
   --color-button-background: var(--color-fill-blue);
