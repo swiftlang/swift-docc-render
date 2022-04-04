@@ -247,8 +247,6 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders the Navigator with data when no reference is found for a top-level item', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
     const technologies = {
       id: 'topic://not-existing',
       title: 'Technologies',
@@ -258,6 +256,7 @@ describe('DocumentationTopic', () => {
     wrapper.setData({
       topicData: {
         ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
         hierarchy: {
           paths: [
             [technologies.id, ...topicData.hierarchy.paths[0]],
@@ -276,8 +275,6 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders the Navigator with data when no reference is found, for any if if the breadcrumbs', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
     const technologies = {
       id: 'topic://not-existing',
       title: 'Technologies',
@@ -287,6 +284,7 @@ describe('DocumentationTopic', () => {
     wrapper.setData({
       topicData: {
         ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
         hierarchy: {
           paths: [
             [technologies.id, ...topicData.hierarchy.paths[0]],
@@ -307,11 +305,10 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders the Navigator with data when no hierarchy and reference is found for the current page', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
     wrapper.setData({
       topicData: {
         ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
         // remove the hierarchy items
         hierarchy: {},
         // remove the references as well, so it falls back to the last fallback
