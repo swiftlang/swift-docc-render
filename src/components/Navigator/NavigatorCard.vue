@@ -297,11 +297,10 @@ export default {
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
      */
-    filteredChildren({ children }) {
-      const {
-        hasFilter, filterPattern, selectedTags,
-        apiChangesObject, apiChanges,
-      } = this;
+    filteredChildren({
+      hasFilter, children, filterPattern, selectedTags,
+      apiChangesObject, apiChanges,
+    }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
@@ -318,14 +317,15 @@ export default {
       });
     },
     /**
-     * Returns a list of all nodes that match a filter
+     * Returns a Set of all nodes that match a filter, along with their parents.
      * @returns NavigatorFlatItem[]
      */
     filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
       filteredChildren.flatMap(({ uid }) => getParents(uid)),
     ),
     /**
-     * Map of nodes we are allowed to render when toggling
+     * This generates a map of all the nodes we are allowed to render at a certain time.
+     * This is used on both toggling, as well as on navigation and filtering.
      * @return {Object.<string, NavigatorFlatItem>}
      */
     renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
