@@ -13,7 +13,6 @@
     <div
       ref="sidebar"
       class="sidebar"
-      :class="{ 'fully-open': isMaxWidth }"
     >
       <div
         :class="asideClasses"
@@ -137,15 +136,15 @@ export default {
     ),
     minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
-    isMaxWidth: ({ width, maxWidth }) => width === maxWidth,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideClasses: ({
-      isDragging, openExternally, noTransition, isTransitioning,
+      isDragging, openExternally, noTransition, isTransitioning, mobileTopOffset,
     }) => ({
       dragging: isDragging,
       'force-open': openExternally,
       'no-transition': noTransition,
       animating: isTransitioning,
+      'has-top-offset': mobileTopOffset,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
     BreakpointScopes: () => BreakpointScopes,
@@ -344,6 +343,10 @@ export default {
         transition-delay: calc(var(--index) * 0.15s + 0.15s);
       }
     }
+
+    &.has-top-offset {
+      border-top: 1px solid var(--color-fill-gray-tertiary);
+    }
   }
 }
 
@@ -367,10 +370,6 @@ export default {
   z-index: 1;
   transition: background-color .15s;
   transform: translateX(50%);
-
-  .fully-closed &, .fully-open & {
-    width: 10px;
-  }
 
   @include breakpoint(medium, nav) {
     display: none;

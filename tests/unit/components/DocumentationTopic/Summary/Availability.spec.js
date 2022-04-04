@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,10 +13,7 @@ import Availability from 'docc-render/components/DocumentationTopic/Summary/Avai
 
 const {
   AvailabilityRange,
-  Item,
-  List,
   Section,
-  Title,
   Badge,
 } = Availability.components;
 
@@ -46,6 +43,7 @@ describe('Availability', () => {
         name: 'myOS',
       },
     ],
+    technologies: ['fooTechnolog', 'booTechnology'],
   };
 
   const store = {
@@ -76,13 +74,40 @@ describe('Availability', () => {
     expect(section.attributes('role')).toBe('complementary');
   });
 
-  it('renders a deprecated badge', () => {
-    const badge = wrapper.find(Badge);
-    expect(badge.exists()).toBe(true);
-    expect(badge.props('variant')).toBe('deprecated');
+  it('renders a `Badge` for technologies, a `Badge` and `AvailabilityRange` for each platform', () => {
+    const { platforms, technologies } = propsData;
+    const badges = wrapper.findAll(Badge);
+    expect(badges.length).toBe(technologies.length + platforms.length);
+
+    for (let i = 0; i < technologies.length; i += 1) {
+      const badge = badges.at(i);
+      expect(badge.exists()).toBe(true);
+    }
+
+    for (let i = technologies.length; i < platforms.length; i += 1) {
+      const badge = badges.at(i);
+      const range = badge.find(AvailabilityRange);
+      expect(range.exists()).toBe(true);
+      expect(range.props()).toEqual({
+        deprecatedAt: platforms[i - technologies.length].deprecatedAt,
+        introducedAt: platforms[i - technologies.length].introducedAt,
+        platformName: platforms[i - technologies.length].name,
+      });
+    }
   });
 
-  it('renders a beta badge', () => {
+  it('renders deprecated text', () => {
+    const badges = wrapper.findAll(Badge);
+    expect(badges.at(2).contains('.deprecated')).toBe(false);
+    expect(badges.at(3).contains('.deprecated')).toBe(true);
+    expect(badges.at(4).contains('.deprecated')).toBe(true);
+    expect(badges.at(5).contains('.deprecated')).toBe(true);
+
+    const deprecated = wrapper.find('.deprecated');
+    expect(deprecated.text()).toBe('Deprecated');
+  });
+
+  it('renders beta text', () => {
     wrapper.setProps({
       platforms: [
         {
@@ -92,9 +117,9 @@ describe('Availability', () => {
         },
       ],
     });
-    const badge = wrapper.find(Badge);
-    expect(badge.exists()).toBe(true);
-    expect(badge.props('variant')).toBe('beta');
+    const beta = wrapper.find('.beta');
+    expect(beta.exists()).toBe(true);
+    expect(beta.text()).toBe('Beta');
   });
 
   it('renders deprecated over beta badges', () => {
@@ -108,12 +133,13 @@ describe('Availability', () => {
         },
       ],
     });
-    const badges = wrapper.findAll(Badge);
-    expect(badges.length).toBe(1);
-    expect(badges.at(0).props('variant')).toBe('deprecated');
+    const beta = wrapper.find('.beta');
+    const deprecated = wrapper.find('.deprecated');
+    expect(beta.exists()).toBe(false);
+    expect(deprecated.exists()).toBe(true);
   });
 
-  it('renders no badge if no deprecated or beta', () => {
+  it('renders no beta/deprecated text if not relevant', () => {
     wrapper.setProps({
       platforms: [
         {
@@ -122,35 +148,10 @@ describe('Availability', () => {
         },
       ],
     });
-    const badge = wrapper.find(Badge);
-    expect(badge.exists()).toBe(false);
-  });
-
-  it('renders a `Title`', () => {
-    const title = wrapper.find(Title);
-    expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Availability');
-  });
-
-  it('renders a `List` with an `Item/AvailabilityRange` for each platform', () => {
-    const list = wrapper.find(List);
-    expect(list.exists()).toBe(true);
-
-    const items = list.findAll(Item);
-    expect(items.length).toBe(propsData.platforms.length);
-
-    propsData.platforms.forEach((platform, i) => {
-      const item = items.at(i);
-      expect(item.exists()).toBe(true);
-
-      const range = item.find(AvailabilityRange);
-      expect(range.exists()).toBe(true);
-      expect(range.props()).toEqual({
-        deprecatedAt: platform.deprecatedAt,
-        introducedAt: platform.introducedAt,
-        platformName: platform.name,
-      });
-    });
+    const beta = wrapper.find('.beta');
+    const deprecated = wrapper.find('.deprecated');
+    expect(beta.exists()).toBe(false);
+    expect(deprecated.exists()).toBe(false);
   });
 
   describe('with API Changes', () => {
@@ -180,12 +181,12 @@ describe('Availability', () => {
         },
       };
 
-      const items = wrapper.findAll(Item);
+      const badges = wrapper.findAll(Badge);
 
-      expect(items.at(0).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
-      expect(items.at(1).classes()).toEqual(['platform', 'changed', 'changed-added']);
-      expect(items.at(2).classes()).toEqual(['platform', 'changed', 'changed-modified']);
-      expect(items.at(3).classes()).toEqual(['platform']);
+      expect(badges.at(2).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
+      expect(badges.at(3).classes()).toEqual(['platform', 'changed', 'changed-added']);
+      expect(badges.at(4).classes()).toEqual(['platform', 'changed', 'changed-modified']);
+      expect(badges.at(5).classes()).toEqual(['platform']);
     });
   });
 });

@@ -37,8 +37,12 @@
           tabindex="-1"
           @click.exact.prevent="toggleTree"
           @click.alt.prevent="toggleEntireTree"
+          @click.meta.prevent="toggleSiblings"
         >
-          <InlineChevronRightIcon class="icon-inline chevron" :class="{ rotate: expanded }" />
+          <InlineChevronRightIcon
+            class="icon-inline chevron"
+            :class="{ rotate: expanded, animating: idState.isOpening }"
+          />
         </button>
       </div>
       <NavigatorLeafIcon
@@ -92,9 +96,16 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { ChangeTypesOrder } from 'docc-render/constants/Changes';
+import { IdState } from 'vue-virtual-scroller';
+import { waitFrames } from 'docc-render/utils/loading';
 
 export default {
   name: 'NavigatorCardItem',
+  mixins: [
+    IdState({
+      idProp: vm => vm.item.uid,
+    }),
+  ],
   components: {
     HighlightMatches,
     NavigatorLeafIcon,
@@ -136,6 +147,16 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    enableSelfFocus: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  idState() {
+    return {
+      // special state to track opening animations for a few seconds, after toggling on/off
+      isOpening: false,
+    };
   },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
@@ -154,10 +175,16 @@ export default {
   },
   methods: {
     toggleTree() {
+      this.idState.isOpening = true;
       this.$emit('toggle', this.item);
     },
     toggleEntireTree() {
+      this.idState.isOpening = true;
       this.$emit('toggle-full', this.item);
+    },
+    toggleSiblings() {
+      this.idState.isOpening = true;
+      this.$emit('toggle-siblings', this.item);
     },
     clickReference() {
       this.$refs.reference.$el.click();
@@ -167,10 +194,17 @@ export default {
     },
   },
   watch: {
-    isFocused(newVal) {
-      if (newVal) {
+    async isFocused(newVal) {
+      await waitFrames(8);
+      if (newVal && this.isRendered && this.enableSelfFocus) {
         this.selfFocus();
       }
+    },
+    async expanded() {
+      // wait for 9 frames (60hz * 0.15ms = 9), for animations queues to finish.
+      await waitFrames(9);
+      // set the opening animation as ended
+      this.idState.isOpening = false;
     },
   },
 };
@@ -180,6 +214,12 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $item-height: 32px;
+$chevron-width: $card-horizontal-spacing;
+$tree-toggle-padding: $card-horizontal-spacing-small;
+$depth-spacer-base-spacing: (
+  $card-horizontal-spacing + $chevron-width + $tree-toggle-padding
+);
+$nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
 .navigator-card-item {
   height: $item-height;
@@ -187,31 +227,30 @@ $item-height: 32px;
   align-items: center;
 
   @include on-keyboard-focus {
-    margin: 5px;
+    margin: $card-horizontal-spacing-small;
     height: $item-height - 10px;
 
     .depth-spacer {
-      margin-left: -5px;
+      margin-left: -$card-horizontal-spacing-small;
     }
   }
 }
 
 .depth-spacer {
-  width: calc(var(--nesting-index) * 14px + 26px);
+  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
   height: $item-height;
   position: relative;
   flex: 0 0 auto;
   @include on-keyboard-focus {
-    margin: 0 -5px;
+    margin: 0 -$card-horizontal-spacing-small;
   }
 }
 
 .head-wrapper {
-  padding: 0 5px 0 0;
+  padding: 0 $card-horizontal-spacing-large 0 $card-horizontal-spacing;
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: $border-radius;
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -280,6 +319,10 @@ $item-height: 32px;
     vertical-align: middle;
     @include font-styles(body-reduced-tight);
 
+    &:hover {
+      text-decoration: none;
+    }
+
     &.bolded {
       font-weight: $font-weight-semibold;
     }
@@ -307,7 +350,7 @@ $item-height: 32px;
   position: absolute;
   width: 100%;
   height: 100%;
-  padding-right: 5px;
+  padding-right: $tree-toggle-padding;
   box-sizing: border-box;
   z-index: 1;
   display: flex;
@@ -322,8 +365,11 @@ $item-height: 32px;
 }
 
 .chevron {
-  width: 0.6em;
-  transition: transform 0.15s ease-in;
+  width: $chevron-width;
+
+  &.animating {
+    transition: transform 0.15s ease-in;
+  }
 
   &.rotate {
     transform: rotate(90deg);

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -47,7 +47,7 @@ $badge-border-radius: $border-radius - 1px !default;
 
 @mixin badge-variation($color) {
   --badge-color: var(--color-badge-#{$color});
-  --badge-dark-color: var(--color-badge-dark-#{$color})
+  --badge-dark-color: var(--color-badge-dark-#{$color});
 }
 
 .badge {
@@ -67,6 +67,7 @@ $badge-border-radius: $border-radius - 1px !default;
     --badge-color: var(--badge-dark-color);
   }
 
+  /* nav bar badge */
   &-deprecated {
     @include badge-variation(deprecated);
   }

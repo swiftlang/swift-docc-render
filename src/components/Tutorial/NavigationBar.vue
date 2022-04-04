@@ -218,6 +218,13 @@ export default {
     .mobile-dropdown-container {
       display: block;
     }
+    /deep/ .nav-title {
+      grid-area: title;
+    }
+
+    /deep/ .pre-title {
+      display: none;
+    }
   }
 }
 
