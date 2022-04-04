@@ -297,26 +297,52 @@ export default {
      * Returns a list of the child nodes, that match the filter pattern.
      * @returns NavigatorFlatItem[]
      */
-    filteredChildren: ({ children, filterItems }) => filterItems(children),
+    filteredChildren({ children }) {
+      const {
+        hasFilter, filterPattern, selectedTags,
+        apiChangesObject, apiChanges,
+      } = this;
+      if (!hasFilter) return [];
+      const tagsSet = new Set(selectedTags);
+      // find children that match current filters
+      return children.filter(({ title, path, type }) => {
+        // check if `title` matches the pattern, if provided
+        const titleMatch = filterPattern ? filterPattern.test(title) : true;
+        // check if `type` matches any of the selected tags
+        const tagMatch = selectedTags.length
+          ? tagsSet.has(TOPIC_TYPE_TO_TAG[type]) : true;
+        // find items, that have API changes
+        const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
+        // make sure groupMarker's dont get matched
+        return titleMatch && tagMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
+      });
+    },
     /**
      * Returns a list of all nodes that match a filter
+     * @returns NavigatorFlatItem[]
      */
-    filteredChildrenUpToParent: ({ filteredChildren, getParents }) => new Set(filteredChildren
-      .flatMap(({ uid }) => getParents(uid))),
+    filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
+      filteredChildren.flatMap(({ uid }) => getParents(uid)),
+    ),
     /**
      * Map of nodes we are allowed to render when toggling
+     * @return {Object.<string, NavigatorFlatItem>}
      */
-    allowedUIDsToRender({ filteredChildrenUpToParent, childrenMap, hasFilter }) {
+    renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
       if (!hasFilter) return childrenMap;
+      const all = [];
       // create a set of all matches and their parents
-      const iteratedChildren = [...filteredChildrenUpToParent].reduce((all, current) => {
-        if (!current.childUIDs.length) return all.concat(current);
-        if (!current.childUIDs.some(uid => filteredChildrenUpToParent.has(childrenMap[uid]))) {
-          return all.concat(this.getAllChildren(current.uid));
+      filteredChildrenUpToRootSet.forEach((current) => {
+        // if it has no children, just add it
+        if (!current.childUIDs.length) return all.push(current);
+        // if none of its children are matching, ensure all of them can be rendered
+        if (!current.childUIDs.some(uid => filteredChildrenUpToRootSet.has(childrenMap[uid]))) {
+          return all.push(...this.getAllChildren(current.uid));
         }
-        return all.concat(current);
-      }, []);
-      return this.convertChildrenArrayToObject(iteratedChildren);
+        return all.push(current);
+      });
+
+      return this.convertChildrenArrayToObject(all);
     },
     /**
      * Creates a computed for the two items, that the openNodes calc depends on
@@ -392,13 +418,14 @@ export default {
         return;
       }
 
-      // decide which items are open
-      const nodes = !this.hasFilter
-        ? activePathChildren
-        // get all parents of the current match, excluding it in the process
-        : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
       // if the activePath items change, we navigated to another page
       const pageChange = !isEqual(activePathChildrenBefore, activePathChildren);
+      // decide which items are open
+      // if there is no filter or navigate to page while filtering, ensure activeUID is visible
+      const nodes = (pageChange && this.hasFilter) || !this.hasFilter
+        ? activePathChildren
+        // get all parents of the current filter match, excluding it in the process
+        : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
       // create a map to track open items - `{ [UID]: true }`
       const newOpenNodes = Object.fromEntries(nodes
         .map(({ uid }) => [uid, true]));
@@ -433,7 +460,8 @@ export default {
       } else {
         this.$set(this.openNodes, node.uid, true);
         // include all childUIDs to get opened
-        include = this.getChildren(node.uid).filter(child => this.allowedUIDsToRender[child.uid]);
+        include = this.getChildren(node.uid)
+          .filter(child => this.renderableChildNodesMap[child.uid]);
       }
       this.augmentRenderNodes({ uid: node.uid, include, exclude });
     },
@@ -458,7 +486,7 @@ export default {
       if (isOpen) {
         exclude = allChildren.slice(1);
       } else {
-        include = allChildren.slice(1).filter(child => this.allowedUIDsToRender[child.uid]);
+        include = allChildren.slice(1).filter(child => this.renderableChildNodesMap[child.uid]);
       }
       this.openNodes = openNodes;
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
@@ -483,7 +511,7 @@ export default {
           // add it
           openNodes[uid] = true;
           const children = this.getChildren(uid)
-            .filter(child => this.allowedUIDsToRender[child.uid]);
+            .filter(child => this.renderableChildNodesMap[child.uid]);
           // augment the nodesToRender
           this.augmentRenderNodes({ uid, exclude: [], include: children });
         }
@@ -573,25 +601,17 @@ export default {
      * @return void
      */
     generateNodesToRender() {
-      const {
-        children, hasFilter, openNodes, filteredChildrenUpToParent, allowedUIDsToRender,
-      } = this;
+      const { children, openNodes, renderableChildNodesMap } = this;
 
       // create a set of all matches and their parents
       // generate the list of nodes to render
       this.nodesToRender = children
-        .filter((child) => {
-          // if we have no filter pattern, just show open nodes and root nodes
-          if (!hasFilter) {
-            // if parent is the root or parent is open
-            return child.parent === INDEX_ROOT_KEY || openNodes[child.parent];
-          }
-          // if parent is the root and is in the child match set
-          return (child.parent === INDEX_ROOT_KEY && filteredChildrenUpToParent.has(child))
-            // if the item itself is a direct match
-            || filteredChildrenUpToParent.has(child)
-            || (openNodes[child.parent] && allowedUIDsToRender[child.uid]);
-        });
+        .filter(child => (
+          // make sure the item can be rendered
+          renderableChildNodesMap[child.uid]
+          // and either its parent is open, or its a root item
+          && (child.parent === INDEX_ROOT_KEY || openNodes[child.parent])
+        ));
       // persist all the open nodes
       this.persistState();
       // wait a frame, so the scroller is ready, `nextTick` is not enough.
@@ -839,31 +859,6 @@ export default {
         // if there is no active item, or we cant see it, return the index to 0
         this.focusIndex(0);
       }
-    },
-    /**
-     * Filters passed array of nodes by the applied criteria
-     * @param {NavigatorFlatItem[]} items
-     * @returns {NavigatorFlatItem[]}
-     */
-    filterItems(items) {
-      const {
-        hasFilter, filterPattern, selectedTags,
-        apiChangesObject, apiChanges,
-      } = this;
-      if (!hasFilter) return [];
-      const tagsSet = new Set(selectedTags);
-      // find children that match current filters
-      return items.filter(({ title, path, type }) => {
-        // check if `title` matches the pattern, if provided
-        const titleMatch = filterPattern ? filterPattern.test(title) : true;
-        // check if `type` matches any of the selected tags
-        const tagMatch = selectedTags.length
-          ? tagsSet.has(TOPIC_TYPE_TO_TAG[type]) : true;
-        // find items, that have API changes
-        const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
-        // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
-      });
     },
     convertChildrenArrayToObject(children) {
       return Object.fromEntries(children.map(child => [child.uid, child]));
