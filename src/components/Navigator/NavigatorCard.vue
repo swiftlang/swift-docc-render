@@ -405,7 +405,7 @@ export default {
       this.openNodes = Object.assign(pageChange ? this.openNodes : {}, newOpenNodes);
       this.generateNodesToRender();
       // update the focus index, based on the activeUID
-      this.updateFocusIndex();
+      this.updateFocusIndexExternally();
     },
     /**
      * Toggle a node open/close
@@ -823,7 +823,11 @@ export default {
       // Just track the open nodes, as setting the activeUID as null wont do anything.
       this.trackOpenNodes(this.nodeChangeDeps);
     },
-    updateFocusIndex() {
+    /**
+     * Updates the current focusIndex, based on where the activeUID is.
+     * If not in the rendered items, we set it to 0.
+     */
+    updateFocusIndexExternally() {
       // specify we changed the focus externally, not by using tabbing or up/down
       this.externalFocusChange = true;
       // if the activeUID is rendered, store it's index
