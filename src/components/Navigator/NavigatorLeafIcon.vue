@@ -34,6 +34,7 @@ const TopicTypeIcons = {
   [TopicTypes.buildSetting]: CollectionIcon,
   [TopicTypes.collection]: CollectionIcon,
   [TopicTypes.class]: SingleLetterSymbolIcon,
+  [TopicTypes.collection]: TopicModuleIcon,
   [TopicTypes.dictionarySymbol]: SingleLetterSymbolIcon,
   [TopicTypes.container]: CollectionIcon,
   [TopicTypes.enum]: SingleLetterSymbolIcon,
