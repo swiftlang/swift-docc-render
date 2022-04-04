@@ -12,6 +12,7 @@ export default {
   data() {
     return {
       focusedIndex: 0,
+      externalFocusChange: false,
     };
   },
   methods: {
@@ -22,6 +23,7 @@ export default {
     focusPrev({ metaKey, ctrlKey, shiftKey }) {
       // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
       if ((metaKey || ctrlKey) && shiftKey) return;
+      this.externalFocusChange = false;
       if (this.focusedIndex > 0) {
         this.focusIndex(this.focusedIndex - 1);
       } else {
@@ -31,6 +33,7 @@ export default {
     focusNext({ metaKey, ctrlKey, shiftKey }) {
       // Prevent user from moving when pressing metaKey or ctrlKey + shiftKey
       if ((metaKey || ctrlKey) && shiftKey) return;
+      this.externalFocusChange = false;
       if (this.focusedIndex < this.totalItemsToNavigate - 1) {
         this.focusIndex(this.focusedIndex + 1);
       } else {
@@ -38,10 +41,12 @@ export default {
       }
     },
     focusFirst() {
+      this.externalFocusChange = false;
       this.focusIndex(0);
       this.scrollToFocus();
     },
     async focusLast() {
+      this.externalFocusChange = false;
       // reset focus index so we can focus on value 0 too
       this.focusIndex(null);
       await this.$nextTick();

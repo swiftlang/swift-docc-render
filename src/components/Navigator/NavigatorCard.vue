@@ -55,6 +55,7 @@
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
               :isFocused="focusedIndex === index"
+              :enableSelfFocus="!externalFocusChange"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
@@ -349,14 +350,6 @@ export default {
     selectedTags(value) {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
-    activeIndex(value) {
-      if (value > 0) {
-        this.focusIndex(value);
-      } else {
-        // if there is no active item, return the index to 0
-        this.focusIndex(0);
-      }
-    },
     activePath: 'handleActivePathChange',
   },
   methods: {
@@ -411,6 +404,8 @@ export default {
       // if we navigate across pages, persist the previously open nodes
       this.openNodes = Object.assign(pageChange ? this.openNodes : {}, newOpenNodes);
       this.generateNodesToRender();
+      // update the focus index, based on the activeUID
+      this.updateFocusIndexExternally();
     },
     /**
      * Toggle a node open/close
@@ -827,6 +822,21 @@ export default {
       }
       // Just track the open nodes, as setting the activeUID as null wont do anything.
       this.trackOpenNodes(this.nodeChangeDeps);
+    },
+    /**
+     * Updates the current focusIndex, based on where the activeUID is.
+     * If not in the rendered items, we set it to 0.
+     */
+    updateFocusIndexExternally() {
+      // specify we changed the focus externally, not by using tabbing or up/down
+      this.externalFocusChange = true;
+      // if the activeUID is rendered, store it's index
+      if (this.activeIndex > 0) {
+        this.focusIndex(this.activeIndex);
+      } else {
+        // if there is no active item, or we cant see it, return the index to 0
+        this.focusIndex(0);
+      }
     },
   },
 };
