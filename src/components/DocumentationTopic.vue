@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -11,11 +11,30 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <slot name="above-title" />
-      <Title :eyebrow="roleHeading">{{ title }}</Title>
-      <div class="container content-grid" :class="{ 'full-width': hideSummary }">
-        <Description :hasOverview="hasOverview">
-          <Abstract v-if="abstract" :content="abstract" />
+      <DocumentationHero :type="symbolKind || role" :enhanceBackground="enhanceBackground">
+        <slot name="above-title" />
+        <LanguageSwitcher
+          v-if="shouldShowLanguageSwitcher"
+          :interfaceLanguage="interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+        />
+        <Title :eyebrow="roleHeading">
+          {{ title }}
+          <small v-if="isSymbolDeprecated" slot="after" class="deprecated">Deprecated</small>
+          <small v-else-if="isSymbolBeta" slot="after" class="beta">Beta</small>
+        </Title>
+        <Abstract v-if="abstract" :content="abstract" />
+        <div v-if="sampleCodeDownload">
+          <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
+        </div>
+        <Availability
+          v-if="hasAvailability"
+          :platforms="platforms" :technologies="technologies"
+        />
+      </DocumentationHero>
+      <div v-if="showContainer" class="container">
+        <div class="description">
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -29,27 +48,10 @@
           >
             <ContentNode :content="downloadNotAvailableSummary" />
           </Aside>
-          <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
-        </Description>
-        <Summary v-if="!hideSummary">
-          <LanguageSwitcher
-            v-if="shouldShowLanguageSwitcher"
-            :interfaceLanguage="interfaceLanguage"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-          />
-          <Availability v-if="platforms" :platforms="platforms" />
-          <TechnologyList v-if="modules" :technologies="modules" />
-          <TechnologyList
-            v-if="extendsTechnology"
-            class="extends-technology"
-            title="Extends"
-            :technologies="[{ name: extendsTechnology }]"
-          />
-          <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
-        </Summary>
+        </div>
         <PrimaryContent
           v-if="primaryContentSections && primaryContentSections.length"
+          :class="{ 'with-border': !enhanceBackground }"
           :conformance="conformance"
           :sections="primaryContentSections"
         />
@@ -81,24 +83,20 @@
 <script>
 import Language from 'docc-render/constants/Language';
 import metadata from 'docc-render/mixins/metadata';
-import { getSetting } from 'docc-render/utils/theme-settings';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
-import Description from './DocumentationTopic/Description.vue';
-import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
-import OnThisPageNav from './DocumentationTopic/Summary/OnThisPageNav.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
 import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
-import Summary from './DocumentationTopic/Summary.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 
@@ -121,22 +119,19 @@ export default {
     },
   },
   components: {
+    DocumentationHero,
     Abstract,
     Aside,
     BetaLegalText,
     ContentNode,
     DefaultImplementations,
-    Description,
     DownloadButton: CallToActionButton,
-    TechnologyList,
     LanguageSwitcher,
-    OnThisPageNav,
     PrimaryContent,
     Relationships,
     RequirementMetadata,
     Availability,
     SeeAlso,
-    Summary,
     Title,
     Topics,
   },
@@ -225,9 +220,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    extendsTechnology: {
-      type: String,
-    },
     tags: {
       type: Array,
       required: true,
@@ -280,12 +272,12 @@ export default {
         0,
       );
     },
-    hasOverview: ({ primaryContentSections = [] }) => primaryContentSections.filter(section => (
-      section.kind === PrimaryContent.constants.SectionKind.content
-    )).length > 0,
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
+    hasAvailability: ({ platforms, technologies }) => (
+      (platforms || []).length || (technologies || []).length
+    ),
     hasBetaContent:
       ({ platforms }) => platforms
         && platforms.length
@@ -294,8 +286,31 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
-    shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
-    hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
+    shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
+      objcPath && swiftPath && isTargetIDE
+    ),
+    enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    technologies({ modules = [] }) {
+      const technologyList = modules.reduce((list, module) => {
+        list.push(module.name);
+        return list.concat(module.relatedModules || []);
+      }, []);
+      // only show badges for technologies when there are multiple
+      return technologyList.length > 1
+        ? technologyList
+        : [];
+    },
+    showContainer: ({
+      isRequirement,
+      deprecationSummary,
+      downloadNotAvailableSummary,
+      primaryContentSections,
+    }) => (
+      isRequirement
+      || (deprecationSummary && deprecationSummary.length)
+      || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
+      || (primaryContentSections && primaryContentSections.length)
+    ),
   },
   methods: {
     normalizePath(path) {
@@ -361,44 +376,35 @@ export default {
 }
 
 .container {
-  margin-top: $section-spacing-single-side / 2;
   outline-style: none;
   @include dynamic-content-container;
 }
 
-.content-grid {
-  display: grid;
-  grid-template-columns: 75% 25%;
-  grid-template-rows: auto minmax(0, 1fr);
-
-  @include breakpoint(small) {
-    display: block;
-  }
-
-  &:before, &:after {
+.description {
+  &:empty {
     display: none;
   }
 
-  &.full-width {
-    grid-template-columns: 100%;
+  &:not(:empty) {
+    margin-bottom: $contenttable-spacing-single-side;
+  }
+
+  /deep/ .content + * {
+    margin-top: $stacked-margin-large;
   }
 }
 
-.description {
-  grid-column: 1;
+// remove border-top for first section of the page
+/deep/ {
+  .documentation-hero + .contenttable {
+    .container > .title {
+      border-top: none;
+    }
+  }
 }
 
-.summary {
-  grid-column: 2;
-  grid-row: 1 / -1;
-}
-
-.primary-content {
-  grid-column: 1;
-}
-
-.button-cta {
-  margin-top: 2em;
+.sample-download {
+  margin-top: 20px;
 }
 
 /deep/ {

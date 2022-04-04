@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -145,7 +145,6 @@ export default {
           url: identifier,
         },
         metadata: {
-          extends: extendsTechnology,
           conformance,
           modules,
           platforms,
@@ -187,7 +186,6 @@ export default {
         topicSections,
         seeAlsoSections,
         variantOverrides,
-        extendsTechnology,
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
       };
@@ -204,17 +202,25 @@ export default {
       },
       parentTopicIdentifiers,
     }) => {
-      if (!parentTopicIdentifiers.length) return references[identifier];
+      // create an end-case fallback technology
+      const fallback = { title, url: $route.path };
+      // get the reference to the current page
+      const currentPageReference = references[identifier];
+      // if there are no parent topics at all, use the current reference or a fallback one
+      if (!parentTopicIdentifiers.length) return currentPageReference || fallback;
+      // try to use the first parent topic reference, if not a technology kind
       const first = references[parentTopicIdentifiers[0]];
-      if (first.kind !== 'technologies') return first;
+      if (first && first.kind !== 'technologies') return first;
 
       // if there is a top level collection that does not have a reference to
-      // itself, manufacture a minimal one using other available data
-      if (role === TopicRole.collection && !references[identifier]) {
-        return { title, url: $route.path };
+      // itself, manufacture a minimal one using other available data.
+      // This is to guard against bad data or missing references.
+      if (role === TopicRole.collection && !currentPageReference) {
+        return fallback;
       }
-
-      return references[parentTopicIdentifiers[1]] || references[identifier];
+      // use the second parent topic identifier, if there was a first,
+      // otherwise fallback the current page reference or the final fallback
+      return (first && references[parentTopicIdentifiers[1]]) || currentPageReference || fallback;
     },
     // Use `variants` data to build a map of paths associated with each unique
     // `interfaceLanguage` trait.

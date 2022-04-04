@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -15,7 +15,7 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
 
-jest.mock('@/utils/throttle', () => jest.fn(v => v));
+jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
 const technology = {
   title: 'FooTechnology',
@@ -106,7 +106,12 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(Navigator,
   ...others,
 });
 
+const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+
 describe('Navigator', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
     // assert Navigator card is rendered
@@ -183,6 +188,36 @@ describe('Navigator', () => {
       },
     });
     expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
+  });
+
+  it('renders the root path as activePath when there are no valid parentTopicIdentifiers', () => {
+    const identifier = 'ref://invalid';
+    const wrapper = createWrapper({
+      propsData: {
+        parentTopicIdentifiers: [identifier],
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith(`Reference for "${identifier}" is missing`);
+  });
+
+  it('removes any parent topic identifiers, which dont have a reference', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        references: {
+          root: { url: 'root' },
+          first: { url: 'first' },
+          // skip the `second` reference
+        },
+      },
+    });
+    // assert `second` is missing from the activePath
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+      references.first.url, mocks.$route.path,
+    ]);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith('Reference for "second" is missing');
   });
 
   it('re-emits the `@close` event', () => {

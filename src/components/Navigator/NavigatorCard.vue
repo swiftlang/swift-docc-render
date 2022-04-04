@@ -78,7 +78,7 @@
             v-model="filter"
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
-            :placeholder="`Filter in ${technology}`"
+            :placeholder="Filter"
             :should-keep-open-on-blur="false"
             :position-reversed="isLargeBreakpoint"
             :clear-filter-on-tag-select="false"
@@ -118,9 +118,9 @@ const STORAGE_KEYS = {
   activeUID: 'navigator.activeUID',
 };
 
-const NO_RESULTS = 'No results matching your filter';
-const NO_CHILDREN = 'No data available';
-const ERROR_FETCHING = 'There was an error fetching the data';
+const NO_RESULTS = 'No results found. Try changing or removing text and tags.';
+const NO_CHILDREN = 'No data available.';
+const ERROR_FETCHING = 'There was an error fetching the data.';
 const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
 const FILTER_TAGS = {

@@ -136,10 +136,15 @@ export default {
   },
   computed: {
     parentTopics() {
-      return this.parentTopicIdentifiers.map((id) => {
-        const { title, url } = this.references[id];
-        return { title, url };
-      });
+      return this.parentTopicIdentifiers.reduce((all, id) => {
+        const reference = this.references[id];
+        if (reference) {
+          const { title, url } = reference;
+          return all.concat({ title, url });
+        }
+        console.error(`Reference for "${id}" is missing`);
+        return all;
+      }, []);
     },
     /**
      * Extract the root item from the parentTopics.
