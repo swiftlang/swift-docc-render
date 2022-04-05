@@ -24,6 +24,9 @@
       v-if="enhanceBackground" :type="type"
       key="second" class="background-icon second-icon" with-colors
     />
+    <div class="documentation-hero__above-content">
+      <slot name="above-content" />
+    </div>
     <div class="documentation-hero__content">
       <slot />
     </div>
@@ -72,8 +75,6 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
   color: dark-color(figure-gray);
   overflow: hidden;
   text-align: left;
-  padding-top: rem(40px);
-  padding-bottom: 40px;
   position: relative;
 
   // gradient
@@ -136,7 +137,14 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
   &__content {
     position: relative;
     z-index: 1;
+    padding-top: rem(40px);
+    padding-bottom: 40px;
     @include dynamic-content-container;
+  }
+
+  &__above-content {
+    position: relative;
+    z-index: 1;
   }
 }
 
