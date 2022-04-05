@@ -75,7 +75,7 @@
           class="leaf-link"
           tabindex="-1"
           ref="reference"
-          @click.native="$emit('navigate', item.uid)"
+          @click.native="handleClick"
         >
           <HighlightMatches
             :text="item.title"
@@ -191,6 +191,10 @@ export default {
     },
     selfFocus() {
       this.$el.focus();
+    },
+    handleClick() {
+      if (this.isGroupMarker) return;
+      this.$emit('navigate', this.item.uid);
     },
   },
   watch: {
