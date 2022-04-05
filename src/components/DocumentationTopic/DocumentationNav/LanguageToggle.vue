@@ -120,19 +120,17 @@ export default {
   },
   mounted() {
     // on resize, re-calculate the width of the select.
-    const cb = debounce(() => {
-      this.calculateSelectWidth();
-    }, 150, true);
-    const orientationChangeCallback = async () => {
-      // we wait for 3 frames, as that is the minimum it takes for the transitions to finish
+    const cb = debounce(async () => {
+      // we wait for 3 frames, as that is the minimum it takes
+      // for the browser orientation-change transitions to finish
       await waitFrames(3);
       this.calculateSelectWidth();
-    };
+    }, 150, true);
     window.addEventListener('resize', cb);
-    window.addEventListener('orientationchange', orientationChangeCallback);
+    window.addEventListener('orientationchange', cb);
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('resize', cb);
-      window.removeEventListener('orientationchange', orientationChangeCallback);
+      window.removeEventListener('orientationchange', cb);
     });
   },
   watch: {
