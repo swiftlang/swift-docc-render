@@ -114,6 +114,7 @@ describe('LanguageToggle', () => {
     const resizeEvent = createEvent('resize');
     window.dispatchEvent(resizeEvent);
     await wrapper.vm.$nextTick();
+    await waitFrames(3);
     expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
   });
 
