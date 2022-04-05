@@ -907,6 +907,13 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     @include breakpoint(small, nav) {
       padding: 12px $card-horizontal-spacing-large;
     }
+
+    // The uppercase `Max` is purposefully used here to avoid using the builtin
+    // `max` Sass function
+    @supports(padding: Max(0px)) {
+      padding-left: Max(#{$card-horizontal-spacing-large}, env(safe-area-inset-left));
+      padding-right: Max(#{$card-horizontal-spacing-large}, env(safe-area-inset-right));
+    }
   }
 
   .card-icon {
@@ -931,7 +938,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
   @include breakpoint(medium, nav) {
     display: flex;
-    left: 0;
+    left: env(safe-area-inset-left);
     height: 100%;
   }
 
@@ -948,7 +955,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .card-body {
   // right padding is added by the items, so visually the scroller is stuck to the side
-  padding-right: 0;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
   flex: 1 1 auto;
   min-height: 0;
   @include breakpoint(medium, nav) {
