@@ -908,12 +908,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
       padding: 12px $card-horizontal-spacing-large;
     }
 
-    // The uppercase `Max` is purposefully used here to avoid using the builtin
-    // `max` Sass function
-    @supports(padding: Max(0px)) {
-      padding-left: Max(#{$card-horizontal-spacing-large}, env(safe-area-inset-left));
-      padding-right: Max(#{$card-horizontal-spacing-large}, env(safe-area-inset-right));
-    }
+    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
+    @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
   }
 
   .card-icon {
@@ -938,8 +934,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
   @include breakpoint(medium, nav) {
     display: flex;
-    left: env(safe-area-inset-left);
+    left: 0;
     height: 100%;
+
+    @include safe-area-left-set(left, 0px);
   }
 
   @include breakpoint(small, nav) {
@@ -978,12 +976,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   display: flex;
   align-items: flex-end;
 
-  // The uppercase `Max` is purposefully used here to avoid using the builtin
-  // `max` Sass function
-  @supports(padding: Max(0px)) {
-    padding-left: Max(30px, env(safe-area-inset-left));
-    padding-right: Max(30px, env(safe-area-inset-right));
-  }
+  @include safe-area-left-set(padding-left, 30px);
+  @include safe-area-right-set(padding-right, 30px);
 
   @include breakpoint(medium, nav) {
     border: none;
@@ -991,12 +985,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     align-items: flex-start;
     height: 62px;
 
-    // The uppercase `Max` is purposefully used here to avoid using the builtin
-    // `max` Sass function
-    @supports(padding: Max(0px)) {
-      padding-left: Max(20px, env(safe-area-inset-left));
-      padding-right: Max(20px, env(safe-area-inset-right));
-    }
+    @include safe-area-left-set(padding-left, 20px);
+    @include safe-area-right-set(padding-right, 20px);
   }
 
   .input-wrapper {

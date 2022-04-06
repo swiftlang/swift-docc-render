@@ -256,12 +256,8 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
   min-width: 0;
   height: 100%;
 
-  // The uppercase `Max` is purposefully used here to avoid using the builtin
-  // `max` Sass function
-  @supports(padding: Max(0px)) {
-    padding-left: Max(#{$card-horizontal-spacing}, env(safe-area-inset-left));
-    padding-right: Max(#{$card-horizontal-spacing-large}, env(safe-area-inset-right));
-  }
+  @include safe-area-left-set(padding-left, $card-horizontal-spacing);
+  @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
 
   &.active {
     background: var(--color-fill-gray-quaternary);
