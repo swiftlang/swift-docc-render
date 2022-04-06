@@ -70,7 +70,6 @@
 
 <script>
 import { apply } from 'docc-render/utils/json-patch';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import { TopicRole } from 'docc-render/constants/roles';
 import {
   clone,
@@ -88,9 +87,13 @@ import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvi
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
+import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
+
+const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 
 export default {
   name: 'DocumentationTopicView',
+  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX },
   components: {
     Navigator,
     AdjustableSidebarWidth,
@@ -246,11 +249,12 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         )
       ),
-    // Always disable the navigator for IDE targets. For other targets, allow
-    // this feature to be enabled through the `features.docs.navigator.enable`
-    // setting in `theme-settings.json`
-    enableNavigator: ({ isTargetIDE }) => !isTargetIDE && (
-      getSetting(['features', 'docs', 'navigator', 'enable'], false)
+    // Always disable the navigator for IDE targets. For other targets, detect whether the
+    // RenderJSON version is in the required range.
+    enableNavigator: ({ isTargetIDE, topicDataDefault }) => !isTargetIDE && (
+      compareVersions(
+        combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
+      ) >= 0
     ),
     sidebarProps: ({ isSideNavOpen, enableNavigator }) => (
       enableNavigator
