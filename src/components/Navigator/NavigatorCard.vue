@@ -955,8 +955,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
 .card-body {
   // right padding is added by the items, so visually the scroller is stuck to the side
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
+  padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
   @include breakpoint(medium, nav) {
@@ -979,11 +978,25 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   display: flex;
   align-items: flex-end;
 
+  // The uppercase `Max` is purposefully used here to avoid using the builtin
+  // `max` Sass function
+  @supports(padding: Max(0px)) {
+    padding-left: Max(30px, env(safe-area-inset-left));
+    padding-right: Max(30px, env(safe-area-inset-right));
+  }
+
   @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
     align-items: flex-start;
     height: 62px;
+
+    // The uppercase `Max` is purposefully used here to avoid using the builtin
+    // `max` Sass function
+    @supports(padding: Max(0px)) {
+      padding-left: Max(20px, env(safe-area-inset-left));
+      padding-right: Max(20px, env(safe-area-inset-right));
+    }
   }
 
   .input-wrapper {
