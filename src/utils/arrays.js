@@ -10,6 +10,6 @@
 
 export const last = array => array[array.length - 1];
 
-export const isEqual = (first = [], second = []) => (
+export const isEqual = (first, second) => (
   JSON.stringify(first) === JSON.stringify(second)
 );

@@ -330,16 +330,18 @@ export default {
      */
     renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
       if (!hasFilter) return childrenMap;
-      const all = [];
+      let all = [];
       // create a set of all matches and their parents
       filteredChildrenUpToRootSet.forEach((current) => {
         // if it has no children, just add it
-        if (!current.childUIDs.length) return all.push(current);
-        // if none of its children are matching, ensure all of them can be rendered
-        if (!current.childUIDs.some(uid => filteredChildrenUpToRootSet.has(childrenMap[uid]))) {
-          return all.push(...this.getAllChildren(current.uid));
+        if (!current.childUIDs.length) {
+          all.push(current);
+          return;
         }
-        return all.push(current);
+        const noChildrenMatch = !current.childUIDs.some(uid => (
+          filteredChildrenUpToRootSet.has(childrenMap[uid])
+        ));
+        all = all.concat(noChildrenMatch ? this.getAllChildren(current.uid) : current);
       });
 
       return this.convertChildrenArrayToObject(all);
@@ -861,7 +863,11 @@ export default {
       }
     },
     convertChildrenArrayToObject(children) {
-      return Object.fromEntries(children.map(child => [child.uid, child]));
+      return children.reduce((all, current) => {
+        // eslint-disable-next-line no-param-reassign
+        all[current.uid] = current;
+        return all;
+      }, {});
     },
   },
 };

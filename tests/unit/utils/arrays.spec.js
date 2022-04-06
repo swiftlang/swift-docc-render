@@ -40,10 +40,6 @@ describe('arrays', () => {
       expect(isEqual(first, firstStrings)).toBe(false);
     });
 
-    it('does not error out, if passed undefined', () => {
-      expect(isEqual(first)).toBe(false);
-    });
-
     it('compares arrays of objects', () => {
       expect(isEqual(
         [{ foo: 'foo' }],
