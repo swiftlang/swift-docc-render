@@ -226,6 +226,7 @@ $depth-spacer-base-spacing: (
 $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
 .navigator-card-item {
+  overflow: hidden;
   height: $item-height;
   display: flex;
   align-items: center;
