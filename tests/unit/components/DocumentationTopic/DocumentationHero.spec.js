@@ -91,6 +91,14 @@ describe('DocumentationHero', () => {
     });
   });
 
+  it('utilizes the "sky" color for top level collection pages', () => {
+    const wrapper = createWrapper({
+      propsData: { type: TopicTypes.collection },
+    });
+    expect(wrapper.vm.styles['--accent-color'])
+      .toBe('var(--color-type-icon-sky, var(--color-figure-gray-secondary))');
+  });
+
   it('renders the DocumentationHero, disabled', () => {
     const wrapper = createWrapper();
     wrapper.setProps({
