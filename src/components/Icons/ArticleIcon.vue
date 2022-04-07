@@ -11,11 +11,9 @@
 <template>
   <SVGIcon
     class="article-icon"
-    viewBox="0 0 14 14"
+    viewBox="0 0 11.7 14"
   >
-    <path d="M8.033 1l3.967 4.015v7.985h-10v-12zM7.615 2h-4.615v10h8v-6.574z"></path>
-    <path d="M7 1h1v4h-1z"></path>
-    <path d="M7 5h5v1h-5z"></path>
+    <path d="M11.7,4.8L7.1,0.1L7,0H5.8H0v14h11.7V6V4.8z M7.1,1.8l2.7,2.9H7.1V1.8z M10.4,12.8H1.1V1.2h4.7v3.4V6h4.7V12.8z"/>
   </SVGIcon>
 </template>
 
