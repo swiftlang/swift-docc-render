@@ -103,16 +103,9 @@ $doc-hero-icon-dimension: 250px;
     margin-top: 10px;
     margin-right: $doc-hero-icon-spacing;
     right: 0;
-    // center icon vertically (minus margin) in the hero section
-    top: 50%;
-    transform: translateY(-50%);
 
     @include breakpoint(small) {
-      margin-right: 0;
-      // show half of icon pinned to the right
-      right: - $doc-hero-icon-dimension / 2;
-      // center icon vertically
-      transform: translateY(calc(-50% - 10px));
+      display: none;
     }
   }
 
