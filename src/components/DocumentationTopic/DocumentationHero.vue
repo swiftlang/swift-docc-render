@@ -16,14 +16,12 @@
     }]"
     :style="styles"
   >
-    <NavigatorLeafIcon
-      v-if="enhanceBackground" :type="type"
-      key="first" class="background-icon first-icon" with-colors
-    />
-    <NavigatorLeafIcon
-      v-if="enhanceBackground" :type="type"
-      key="second" class="background-icon second-icon" with-colors
-    />
+    <div class="icon">
+      <NavigatorLeafIcon
+        v-if="enhanceBackground" :type="type"
+        key="first" class="background-icon first-icon" with-colors
+      />
+    </div>
     <div class="documentation-hero__content">
       <slot />
     </div>
@@ -66,14 +64,14 @@ $doc-hero-gradient-background: dark-color(fill-tertiary) !default;
 $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
 $doc-hero-icon-color: dark-color(fill-secondary) !default;
+$doc-hero-icon-spacing: 25px;
+$doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
   background: dark-color(fill);
   color: dark-color(figure-gray);
   overflow: hidden;
   text-align: left;
-  padding-top: rem(40px);
-  padding-bottom: 40px;
   position: relative;
 
   // gradient
@@ -100,40 +98,38 @@ $doc-hero-icon-color: dark-color(fill-secondary) !default;
     top: 0;
   }
 
+  .icon {
+    position: absolute;
+    margin-top: 10px;
+    margin-right: $doc-hero-icon-spacing;
+    right: 0;
+
+    @include breakpoint(small) {
+      margin-right: 0;
+      // show half of icon pinned to the right
+      right: - $doc-hero-icon-dimension / 2;
+      // center icon vertically in the hero section
+      top: 50%;
+      transform: translateY(calc(-50% - 10px));
+    }
+  }
+
   .background-icon {
     color: $doc-hero-icon-color;
-    position: absolute;
     display: block;
-    width: 250px;
-    height: 250px;
+    width: $doc-hero-icon-dimension;
+    height: auto;
     opacity: $doc-hero-icon-opacity;
 
     /deep/ svg {
       width: 100%;
       height: 100%;
     }
-
-    &.first-icon {
-      left: 0;
-      top: 100%;
-      transform: translateY(-50%);
-      @include breakpoint(small) {
-        left: -15%;
-        top: 80%;
-      }
-    }
-
-    &.second-icon {
-      right: 0;
-      top: -10%;
-      transform: translateY(-50%);
-      @include breakpoint(small) {
-        display: none;
-      }
-    }
   }
 
   &__content {
+    padding-top: rem(40px);
+    padding-bottom: 40px;
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
