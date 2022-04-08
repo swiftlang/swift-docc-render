@@ -1044,6 +1044,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
+  padding-bottom: calc(var(--top-offset, 0px) + var(--card-vertical-spacing));
 
   @include breakpoint(medium, nav) {
     padding-bottom: $nav-menu-items-ios-bottom-spacing;
