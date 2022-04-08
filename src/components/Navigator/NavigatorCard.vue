@@ -962,6 +962,9 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     @include breakpoint(small, nav) {
       padding: 12px $card-horizontal-spacing-large;
     }
+
+    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
+    @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
   }
 
   .card-icon {
@@ -990,6 +993,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     height: 100%;
     padding-left: $nav-padding;
     padding-right: $nav-padding;
+
+    @include safe-area-left-set(left, 0px);
   }
 
   @include breakpoint(small, nav) {
@@ -1028,11 +1033,17 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   display: flex;
   align-items: flex-end;
 
+  @include safe-area-left-set(padding-left, 30px);
+  @include safe-area-right-set(padding-right, 30px);
+
   @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
     align-items: flex-start;
     height: 62px;
+
+    @include safe-area-left-set(padding-left, 20px);
+    @include safe-area-right-set(padding-right, 20px);
   }
 
   .input-wrapper {
