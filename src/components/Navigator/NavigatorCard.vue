@@ -964,6 +964,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     display: flex;
     left: 0;
     height: 100%;
+    padding-left: $nav-padding;
+    padding-right: $nav-padding;
   }
 
   @include breakpoint(small, nav) {
