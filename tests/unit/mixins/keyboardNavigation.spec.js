@@ -48,12 +48,23 @@ describe('keyboardNavigation', () => {
     expect(wrapper.vm.focusedIndex).toBe(totalItemsToNavigate - 1);
   });
 
-  it('allows the user to navigate to the first item on the list when pressing cmd + up key', () => {
+  it('allows the user to navigate to the first item on the list when pressing cmd + up key', async () => {
     const wrapper = createWrapper();
+    // simulate going down a few times
+    wrapper.trigger('keydown', {
+      key: 'ArrowDown',
+    });
+    wrapper.trigger('keydown', {
+      key: 'ArrowDown',
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.focusedIndex).toBe(2);
+    // now go to the top
     wrapper.trigger('keydown', {
       key: 'ArrowUp',
       metaKey: true,
     });
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.focusedIndex).toBe(0);
   });
 

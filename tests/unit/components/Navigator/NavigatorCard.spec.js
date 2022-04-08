@@ -298,6 +298,7 @@ describe('NavigatorCard', () => {
       key: 'ArrowUp',
       altKey: true,
     });
+    await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(0);
   });
 
