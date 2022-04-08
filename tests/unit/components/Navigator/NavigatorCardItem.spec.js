@@ -256,6 +256,19 @@ describe('NavigatorCardItem', () => {
       expect(wrapper.find('.navigator-card-item').attributes('role')).toBeFalsy();
     });
 
+    it('does not emit a `navigate` event, if is a groupMarker', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            type: TopicTypes.groupMarker,
+          },
+        },
+      });
+      wrapper.find('.leaf-link').trigger('click');
+      expect(wrapper.emitted('navigate')).toBeFalsy();
+    });
+
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {
       const wrapper = createWrapper();
       expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBeFalsy();
