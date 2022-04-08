@@ -64,7 +64,7 @@
             <PossiblyChangedTextAttribute
               :changes="changes.readOnly"
               :value="readOnly"
-            >(Readonly) </PossiblyChangedTextAttribute>
+            >(Read only) </PossiblyChangedTextAttribute>
             <ContentNode v-if="content" :content="content" />
             <PossiblyChangedMimetype
               v-if="mimeType"

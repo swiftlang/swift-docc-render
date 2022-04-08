@@ -42,7 +42,7 @@
           <PossiblyChangedTextAttribute
             :changes="changes.readOnly"
             :value="readOnly"
-          >(Readonly) </PossiblyChangedTextAttribute>
+          >(Read only) </PossiblyChangedTextAttribute>
           <ContentNode v-if="content" :content="content" />
           <ParameterAttributes :attributes="attributes" :changes="changes" />
         </div>

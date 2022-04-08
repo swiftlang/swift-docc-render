@@ -79,9 +79,9 @@ describe('PossiblyChangedTextAttribute', () => {
   it('renders slot content', () => {
     const wrapper = createWrapper({
       slots: {
-        default: '(Readonly) ',
+        default: '(Read only) ',
       },
     });
-    expect(wrapper.find('.property-text').element.textContent).toEqual('(Readonly) ');
+    expect(wrapper.find('.property-text').element.textContent).toEqual('(Read only) ');
   });
 });
