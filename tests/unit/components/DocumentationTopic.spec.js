@@ -110,6 +110,7 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
+  role: TopicTypes.collection,
   symbolKind: TopicTypes.module,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
@@ -211,33 +212,29 @@ describe('DocumentationTopic', () => {
   it('renders a `DocumentationHero`, enabled', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
-    expect(hero.props()).toEqual({ type: propsData.symbolKind, enhanceBackground: true });
-  });
-
-  it('renders a `DocumentationHero`, enabled, with a the `role`, if no symbolKind', () => {
-    wrapper.setProps({
-      role: TopicTypes.article,
-      symbolKind: '',
-    });
-    const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.article, enhanceBackground: true });
+    expect(hero.props()).toEqual({ type: propsData.role, enhanceBackground: true });
   });
 
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
-    wrapper.setProps({
-      role: TopicTypes.collection,
-      symbolKind: 'module',
-    });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.module, enhanceBackground: true });
+    expect(hero.props()).toEqual({ type: TopicTypes.collection, enhanceBackground: true });
   });
 
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
-    wrapper.setProps({
+    /* wrapper.setProps({
       symbolKind: 'protocol',
+    }); */
+
+    // setProps isn't working for some reason...
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData: {
+        ...propsData,
+        role: 'symbol',
+        symbolKind: 'protocol',
+      },
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.protocol, enhanceBackground: false });
+    expect(hero.props()).toEqual({ type: 'symbol', enhanceBackground: false });
   });
 
   it('renders a `Title`', () => {

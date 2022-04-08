@@ -70,6 +70,7 @@ export const TopicTypeColorsMap = {
   [TopicTypes.init]: TopicTypeColors.blue,
   [TopicTypes.case]: TopicTypeColors.orange,
   [TopicTypes.class]: TopicTypeColors.purple,
+  [TopicTypes.collection]: TopicTypeColors.sky,
   [TopicTypes.dictionarySymbol]: TopicTypeColors.purple,
   [TopicTypes.enum]: TopicTypeColors.orange,
   [TopicTypes.extension]: TopicTypeColors.orange,
