@@ -8,11 +8,11 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import PossiblyChangedRequiredAttribute
-  from 'docc-render/components/DocumentationTopic/PrimaryContent/PossiblyChangedRequiredAttribute.vue';
+import PossiblyChangedTextAttribute
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/PossiblyChangedTextAttribute.vue';
 import { shallowMount } from '@vue/test-utils';
 
-const { RenderChanged } = PossiblyChangedRequiredAttribute.components;
+const { RenderChanged } = PossiblyChangedTextAttribute.components;
 
 const changes = {
   new: false,
@@ -20,20 +20,24 @@ const changes = {
 };
 
 const defaultProps = {
-  required: true,
+  value: true,
 };
 
-const createWrapper = ({ propsData } = {}) => (shallowMount(PossiblyChangedRequiredAttribute, {
+const createWrapper = ({ propsData, slots } = {}) => (shallowMount(PossiblyChangedTextAttribute, {
   propsData: {
     ...defaultProps,
     ...propsData,
+  },
+  slots: {
+    default: '(Required) ',
+    ...slots,
   },
   stubs: {
     RenderChanged,
   },
 }));
 
-describe('PossiblyChangedRequiredAttribute', () => {
+describe('PossiblyChangedTextAttribute', () => {
   it('renders a `RenderChanged`', () => {
     const wrapper = createWrapper({
       propsData: {
@@ -43,32 +47,41 @@ describe('PossiblyChangedRequiredAttribute', () => {
     expect(wrapper.find(RenderChanged).props()).toEqual(expect.objectContaining({
       changes,
       renderSingleChange: true,
-      value: defaultProps.required,
+      value: defaultProps.value,
     }));
-    expect(wrapper.find('.property-required').exists()).toBe(true);
+    expect(wrapper.find('.property-text').exists()).toBe(true);
   });
 
   it('renders a text node, if value is false but has changes', () => {
     const wrapper = createWrapper({
       propsData: {
-        required: false,
+        value: false,
         changes,
       },
     });
-    expect(wrapper.find('.property-required').exists()).toBe(true);
+    expect(wrapper.find('.property-text').exists()).toBe(true);
   });
 
   it('does not render a text node, if value is false and no changes', () => {
     const wrapper = createWrapper({
       propsData: {
-        required: false,
+        value: false,
       },
     });
-    expect(wrapper.find('.property-required').exists()).toBe(false);
+    expect(wrapper.find('.property-text').exists()).toBe(false);
   });
 
   it('renders a `Required` text', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.property-required').element.textContent).toEqual('(Required) ');
+    expect(wrapper.find('.property-text').element.textContent).toEqual('(Required) ');
+  });
+
+  it('renders slot content', () => {
+    const wrapper = createWrapper({
+      slots: {
+        default: '(Readonly) ',
+      },
+    });
+    expect(wrapper.find('.property-text').element.textContent).toEqual('(Readonly) ');
   });
 });
