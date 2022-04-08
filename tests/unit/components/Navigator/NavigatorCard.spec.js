@@ -378,67 +378,139 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
   });
 
-  it('opens an item, on @toggle', async () => {
-    const wrapper = createWrapper();
-    await flushPromises();
-    const item = root0Child1;
-    let all = wrapper.findAll(NavigatorCardItem);
-    const unopenedItem = all.at(2);
-    expect(unopenedItem.props()).toEqual({
-      expanded: false,
-      isActive: false,
-      isBold: false,
-      isFocused: false,
-      item,
-      filterPattern: null,
-      isRendered: false,
-      apiChange: null,
-      enableSelfFocus: false,
+  describe('toggles a child, on @toggle', () => {
+    it('opens an item, on @toggle', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const item = root0Child1;
+      let all = wrapper.findAll(NavigatorCardItem);
+      const unopenedItem = all.at(2);
+      expect(unopenedItem.props()).toEqual({
+        expanded: false,
+        isActive: false,
+        isBold: false,
+        isFocused: false,
+        item,
+        filterPattern: null,
+        isRendered: false,
+        apiChange: null,
+        enableSelfFocus: false,
+      });
+      unopenedItem.vm.$emit('toggle', item);
+      await wrapper.vm.$nextTick();
+      expect(unopenedItem.props('expanded')).toBe(true);
+      all = wrapper.findAll(NavigatorCardItem);
+      // assert all items are now visible
+      expect(all).toHaveLength(children.length);
+      // assert the grandchild item is now visible
+      expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
     });
-    unopenedItem.vm.$emit('toggle', item);
-    await wrapper.vm.$nextTick();
-    expect(unopenedItem.props('expanded')).toBe(true);
-    all = wrapper.findAll(NavigatorCardItem);
-    // assert all items are now visible
-    expect(all).toHaveLength(children.length);
-    // assert the grandchild item is now visible
-    expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
+
+    it('closes an item and all of its children, on @toggle', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const item = root0;
+      let all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(4);
+      const openItem = all.at(0);
+      openItem.vm.$emit('toggle', item);
+      await wrapper.vm.$nextTick();
+      all = wrapper.findAll(NavigatorCardItem);
+      // only the two top items are visible
+      expect(all).toHaveLength(2);
+    });
+
+    it('keeps filtered items, when toggling items', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // assert initial items are rendered
+      let all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(4);
+      // do a filter
+      wrapper.find(FilterInput).vm.$emit('input', root0Child1.title);
+      await flushPromises();
+
+      // assert filtered items
+      all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(2);
+
+      // close all items
+      all.at(0).vm.$emit('toggle', root0);
+      await wrapper.vm.$nextTick();
+      all = wrapper.findAll(NavigatorCardItem);
+      // assert only the top level item is visible
+      expect(all).toHaveLength(1);
+      // now toggle it back open
+      all.at(0).vm.$emit('toggle', root0);
+      await flushPromises();
+      // re-fetch items
+      all = wrapper.findAll(NavigatorCardItem);
+      // assert only filtered children are visible
+      expect(all).toHaveLength(2);
+      expect(all.at(1).props('item')).toEqual(root0Child1);
+      // open the child now
+      all.at(1).vm.$emit('toggle', root0Child1);
+      await flushPromises();
+      all = wrapper.findAll(NavigatorCardItem);
+      // assert grandchild is visible, even though its not fitting the filter
+      expect(all).toHaveLength(3);
+      expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    });
   });
 
-  it('closes an item and all of its children, on @toggle', async () => {
-    const wrapper = createWrapper();
-    await flushPromises();
-    const item = root0;
-    let all = wrapper.findAll(NavigatorCardItem);
-    expect(all).toHaveLength(4);
-    const openItem = all.at(0);
-    openItem.vm.$emit('toggle', item);
-    await wrapper.vm.$nextTick();
-    all = wrapper.findAll(NavigatorCardItem);
-    // only the two top items are visible
-    expect(all).toHaveLength(2);
-  });
-
-  it('opens an item, and all of its children, on @toggle-full', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        // make sure no items are open
-        activePath: [],
-      },
+  describe('toggles all children items on @toggle-full', () => {
+    it('opens an item, and all of its children, on @toggle-full', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          // make sure no items are open
+          activePath: [],
+        },
+      });
+      await flushPromises();
+      const item = root0;
+      let all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(2);
+      const openItem = all.at(0);
+      openItem.vm.$emit('toggle-full', item);
+      await flushPromises();
+      all = wrapper.findAll(NavigatorCardItem);
+      // only the two top items are visible
+      expect(all).toHaveLength(children.length);
+      openItem.vm.$emit('toggle-full', item);
+      await flushPromises();
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
     });
-    await flushPromises();
-    const item = root0;
-    let all = wrapper.findAll(NavigatorCardItem);
-    expect(all).toHaveLength(2);
-    const openItem = all.at(0);
-    openItem.vm.$emit('toggle-full', item);
-    await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
-    // only the two top items are visible
-    expect(all).toHaveLength(children.length);
-    openItem.vm.$emit('toggle-full', item);
-    await flushPromises();
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+
+    it('opens an item, and all of its children, obeying applied filters', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      // assert initial items are rendered
+      let all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(4);
+      // do a filter
+      wrapper.find(FilterInput).vm.$emit('input', root0Child1.title);
+      await flushPromises();
+
+      // assert filtered items
+      all = wrapper.findAll(NavigatorCardItem);
+      expect(all).toHaveLength(2);
+
+      // close all items
+      all.at(0).vm.$emit('toggle-full', root0);
+      await wrapper.vm.$nextTick();
+      all = wrapper.findAll(NavigatorCardItem);
+      // assert only the top level item is visible
+      expect(all).toHaveLength(1);
+      // now toggle it back open
+      all.at(0).vm.$emit('toggle-full', root0);
+      await flushPromises();
+      // re-fetch items
+      all = wrapper.findAll(NavigatorCardItem);
+      // assert only filtered children are visible
+      expect(all).toHaveLength(3);
+      expect(all.at(1).props('item')).toEqual(root0Child1);
+      expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    });
   });
 
   describe('toggles all siblings on @toggle-siblings', () => {
@@ -662,6 +734,51 @@ describe('NavigatorCard', () => {
       allItems = wrapper.findAll(NavigatorCardItem);
       expect(allItems).toHaveLength(2);
     });
+
+    it('obeying applied filters', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          children: complexChildren,
+          activePath: [],
+        },
+      });
+      await flushPromises();
+      let allItems = wrapper.findAll(NavigatorCardItem);
+      // assert all items are as we expect them to be
+      expect(allItems).toHaveLength(2);
+      // apply a broad filter across items
+      wrapper.find(FilterInput).vm.$emit('input', 'First Child');
+      await flushPromises();
+      allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems).toHaveLength(6);
+      expect(allItems.at(0).props('item')).toEqual(root0);
+      expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(4).props('item')).toEqual(root1WithChildren);
+      expect(allItems.at(5).props('item')).toEqual(root1Child0);
+
+      // toggle the items
+      allItems.at(0).vm.$emit('toggle-siblings', root0);
+      await flushPromises();
+      // toggle the items closed
+      allItems = wrapper.findAll(NavigatorCardItem);
+      // assert items
+      expect(allItems).toHaveLength(2);
+      expect(allItems.at(0).props('item')).toEqual(root0);
+      expect(allItems.at(1).props('item')).toEqual(root1WithChildren);
+      // toggle the items open again
+      allItems.at(0).vm.$emit('toggle-siblings', root0);
+      await flushPromises();
+      // assert the items are filtered
+      allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems).toHaveLength(5);
+      expect(allItems.at(0).props('item')).toEqual(root0);
+      expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(3).props('item')).toEqual(root1WithChildren);
+      expect(allItems.at(4).props('item')).toEqual(root1Child0);
+    });
   });
 
   it('highlights the current page, and expands all of its parents', async () => {
@@ -679,6 +796,76 @@ describe('NavigatorCard', () => {
       item: root0Child0,
       isBold: true,
       isActive: true,
+    });
+  });
+
+  it('keeps the open/closed state when navigating while filtering, except when the current page not visible, in which case we open those items', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    // apply a generic filter with lots of hits
+    wrapper.find(FilterInput).vm.$emit('input', 'Child');
+    await flushPromises();
+    // assert the items rendered
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+    // assert the inner most child is rendered
+    expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
+    // toggle to close a few items
+    all.at(1).vm.$emit('toggle', root0Child1);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    // assert only 3 items are now visible
+    expect(all).toHaveLength(3);
+    // simulate we go to the root
+    wrapper.setProps({
+      activePath: [root0.path],
+    });
+    await flushPromises();
+    // assert there is no change to the open/closed state
+    all = wrapper.findAll(NavigatorCardItem);
+    // assert only 3 items are now visible
+    expect(all).toHaveLength(3);
+    expect(all.at(0).props()).toMatchObject({
+      item: root0,
+      isActive: true,
+      isBold: true,
+    });
+    // simulate we go to a visible sibling
+    wrapper.setProps({
+      activePath: [root0.path, root0Child0.path],
+    });
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    // assert only 3 items are still visible
+    expect(all).toHaveLength(3);
+    expect(all.at(1).props()).toMatchObject({
+      item: root0Child0,
+      isActive: true,
+      isBold: true,
+    });
+    // now navigate to the grandChild, and assert it's parent auto opens
+    wrapper.setProps({
+      activePath: [root0.path, root0Child1.path, root0Child1GrandChild0.path],
+    });
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    // assert only 3 items are still visible
+    expect(all).toHaveLength(4);
+    expect(all.at(1).props()).toMatchObject({
+      item: root0Child0,
+      isActive: false,
+      isBold: false,
+    });
+    expect(all.at(2).props()).toMatchObject({
+      item: root0Child1,
+      isActive: false,
+      isBold: true,
+      expanded: true,
+    });
+    expect(all.at(3).props()).toMatchObject({
+      item: root0Child1GrandChild0,
+      isActive: true,
+      isBold: true,
     });
   });
 
@@ -846,6 +1033,7 @@ describe('NavigatorCard', () => {
 
   it('removes duplicate items, when multiple items with the same parent match the filter', async () => {
     const wrapper = createWrapper();
+    await flushPromises();
     const filter = wrapper.find(FilterInput);
     // make sure both child elements match
     filter.vm.$emit('input', 'Child');
