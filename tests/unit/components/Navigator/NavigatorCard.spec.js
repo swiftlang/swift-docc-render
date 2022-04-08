@@ -198,7 +198,7 @@ describe('NavigatorCard', () => {
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [
-        'Sample Code',
+        // Sample Code is missing, because no sample code in test data
         'Tutorials',
         'Articles',
       ],
@@ -1397,10 +1397,34 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     const filter = wrapper.find(FilterInput);
-    expect(filter.props('tags')).toHaveLength(3);
+    expect(filter.props('tags')).toHaveLength(2);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
     await flushPromises();
     expect(filter.props('tags')).toEqual([]);
+  });
+
+  it('shows only tags, that have matching children', async () => {
+    sessionStorage.get.mockImplementation((key, def) => def);
+    const sampleCode = {
+      type: 'sampleCode',
+      path: '/documentation/fookit/sample-code',
+      title: 'Sample Code',
+      uid: 5,
+      parent: INDEX_ROOT_KEY,
+      depth: 0,
+      index: 1,
+      childUIDs: [],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        children: [root0, root0Child0, sampleCode],
+        activePath: [root0.path],
+      },
+    });
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    // assert there are no Articles for example
+    expect(filter.props('tags')).toEqual(['Tutorials', 'Sample Code']);
   });
 
   describe('navigating', () => {
