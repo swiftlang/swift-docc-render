@@ -75,7 +75,7 @@
           class="leaf-link"
           tabindex="-1"
           ref="reference"
-          @click.native="$emit('navigate', item.uid)"
+          @click.native="handleClick"
         >
           <HighlightMatches
             :text="item.title"
@@ -192,6 +192,10 @@ export default {
     selfFocus() {
       this.$el.focus();
     },
+    handleClick() {
+      if (this.isGroupMarker) return;
+      this.$emit('navigate', this.item.uid);
+    },
   },
   watch: {
     async isFocused(newVal) {
@@ -255,6 +259,9 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
   flex: 1;
   min-width: 0;
   height: 100%;
+
+  @include safe-area-left-set(padding-left, $card-horizontal-spacing);
+  @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
 
   &.active {
     background: var(--color-fill-gray-quaternary);

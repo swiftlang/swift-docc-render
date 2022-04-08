@@ -8,5 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-// eslint-disable-next-line import/prefer-default-export
 export const last = array => array[array.length - 1];
+
+export const isEqual = (first, second) => (
+  JSON.stringify(first) === JSON.stringify(second)
+);
