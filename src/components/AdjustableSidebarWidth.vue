@@ -16,7 +16,7 @@
     >
       <div
         :class="asideClasses"
-        :style="{ width: widthInPx, '--top-offset': `${mobileTopOffset}px` }"
+        :style="asideStyles"
         class="aside"
         ref="aside"
         @transitionstart="isTransitioning = true"
@@ -126,6 +126,7 @@ export default {
       isTransitioning: false,
       focusTrapInstance: null,
       mobileTopOffset: 0,
+      topOffset: 0,
     };
   },
   computed: {
@@ -137,6 +138,11 @@ export default {
     minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
+    asideStyles: ({ widthInPx, mobileTopOffset, topOffset }) => ({
+      width: widthInPx,
+      '--top-offset': topOffset ? `${topOffset}px` : null,
+      '--top-offset-mobile': `${mobileTopOffset}px`,
+    }),
     asideClasses: ({
       isDragging, openExternally, noTransition, isTransitioning, mobileTopOffset,
     }) => ({
@@ -144,7 +150,7 @@ export default {
       'force-open': openExternally,
       'no-transition': noTransition,
       animating: isTransitioning,
-      'has-top-offset': mobileTopOffset,
+      'has-mobile-top-offset': mobileTopOffset,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
     BreakpointScopes: () => BreakpointScopes,
@@ -166,6 +172,7 @@ export default {
 
     await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.aside);
+    this.topOffset = this.getTopOffset();
   },
   watch: {
     // make sure a route navigation closes the sidebar
@@ -256,13 +263,15 @@ export default {
     emitEventChange(width) {
       this.$emit('width-change', width);
     },
+    getTopOffset() {
+      const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
+      if (!stickyNavAnchor) return 0;
+      const { y } = stickyNavAnchor.getBoundingClientRect();
+      return Math.max(y, 0);
+    },
     handleExternalOpen(isOpen) {
       if (isOpen) {
-        const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
-        if (stickyNavAnchor) {
-          const { y } = stickyNavAnchor.getBoundingClientRect();
-          this.mobileTopOffset = Math.max(y, 0);
-        }
+        this.mobileTopOffset = this.getTopOffset();
       }
       this.toggleScrollLock(isOpen);
     },
@@ -321,9 +330,9 @@ export default {
     overflow: hidden;
     min-width: 0;
     max-width: 100%;
-    height: calc(100vh - var(--top-offset));
+    height: calc(100vh - var(--top-offset-mobile));
     position: fixed;
-    top: var(--top-offset);
+    top: var(--top-offset-mobile);
     bottom: 0;
     z-index: $nav-z-index;
     transform: translateX(-100%);
@@ -344,7 +353,7 @@ export default {
       }
     }
 
-    &.has-top-offset {
+    &.has-mobile-top-offset {
       border-top: 1px solid var(--color-fill-gray-tertiary);
     }
   }
