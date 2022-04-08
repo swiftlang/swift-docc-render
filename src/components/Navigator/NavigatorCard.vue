@@ -78,7 +78,7 @@
             v-model="filter"
             :tags="availableTags"
             :selected-tags.sync="selectedTagsModelValue"
-            :placeholder="Filter"
+            placeholder="Filter"
             :should-keep-open-on-blur="false"
             :position-reversed="isLargeBreakpoint"
             :clear-filter-on-tag-select="false"
@@ -106,7 +106,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
-import { last } from 'docc-render/utils/arrays';
+import { isEqual, last } from 'docc-render/utils/arrays';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -250,11 +250,35 @@ export default {
       if (errorFetching) return ERROR_FETCHING;
       return NO_CHILDREN;
     },
-    availableTags: ({ selectedTags }) => (
-      selectedTags.length
-        ? []
-        : Object.values(FILTER_TAGS_TO_LABELS)
-    ),
+    /**
+     * Generates an array of tag labels for filtering.
+     * Shows only tags, that have children matches.
+     */
+    availableTags: ({ selectedTags, children }) => {
+      const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
+      if (!tagLabels.length) return tagLabels;
+      const tagLabelsSet = new Set(tagLabels);
+      const availableTags = [];
+      const len = children.length;
+      let i;
+      // iterate over the nodes to render
+      for (i = 0; i < len; i += 1) {
+        // if there are no more tags to iterate over, end early
+        if (!tagLabelsSet.size) return availableTags;
+        // extract the type
+        const { type } = children[i];
+        // grab the tagLabel
+        const tagLabel = FILTER_TAGS_TO_LABELS[TOPIC_TYPE_TO_TAG[type]];
+        // try to match a tag
+        if (tagLabelsSet.has(tagLabel)) {
+          // if we have a match, store it
+          availableTags.push(tagLabel);
+          // remove the match, so we can end the filter early
+          tagLabelsSet.delete(tagLabel);
+        }
+      }
+      return availableTags;
+    },
     selectedTagsModelValue: {
       get: ({ selectedTags }) => selectedTags.map(tag => FILTER_TAGS_TO_LABELS[tag]),
       set(values) {
@@ -275,7 +299,7 @@ export default {
      * @return {Object.<string, NavigatorFlatItem>}
      */
     childrenMap({ children }) {
-      return Object.fromEntries(children.map(child => [child.uid, child]));
+      return this.convertChildrenArrayToObject(children);
     },
     /**
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
@@ -315,6 +339,36 @@ export default {
         // make sure groupMarker's dont get matched
         return titleMatch && tagMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
       });
+    },
+    /**
+     * Returns a Set of all nodes that match a filter, along with their parents.
+     * @returns NavigatorFlatItem[]
+     */
+    filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
+      filteredChildren.flatMap(({ uid }) => getParents(uid)),
+    ),
+    /**
+     * This generates a map of all the nodes we are allowed to render at a certain time.
+     * This is used on both toggling, as well as on navigation and filtering.
+     * @return {Object.<string, NavigatorFlatItem>}
+     */
+    renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
+      if (!hasFilter) return childrenMap;
+      let all = [];
+      // create a set of all matches and their parents
+      filteredChildrenUpToRootSet.forEach((current) => {
+        // if it has no children, just add it
+        if (!current.childUIDs.length) {
+          all.push(current);
+          return;
+        }
+        const noChildrenMatch = !current.childUIDs.some(uid => (
+          filteredChildrenUpToRootSet.has(childrenMap[uid])
+        ));
+        all = all.concat(noChildrenMatch ? this.getAllChildren(current.uid) : current);
+      });
+
+      return this.convertChildrenArrayToObject(all);
     },
     /**
      * Creates a computed for the two items, that the openNodes calc depends on
@@ -382,7 +436,7 @@ export default {
       if (
         (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter))
         || (
-          selectedTags.join() !== selectedTagsBefore.join()
+          !isEqual(selectedTags, selectedTagsBefore)
           && !selectedTagsBefore.length
           && sessionStorage.get(STORAGE_KEYS.selectedTags, []).length
         )
@@ -390,14 +444,14 @@ export default {
         return;
       }
 
-      // decide which items are open
-      const nodes = !this.hasFilter
-        ? activePathChildren
-        // get all parents of the current match, excluding it in the process
-        : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
       // if the activePath items change, we navigated to another page
-      const pageChange = activePathChildrenBefore.join() !== activePathChildren.join();
-
+      const pageChange = !isEqual(activePathChildrenBefore, activePathChildren);
+      // decide which items are open
+      // if there is no filter or navigate to page while filtering, ensure activeUID is visible
+      const nodes = (pageChange && this.hasFilter) || !this.hasFilter
+        ? activePathChildren
+        // get all parents of the current filter match, excluding it in the process
+        : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
       // create a map to track open items - `{ [UID]: true }`
       const newOpenNodes = Object.fromEntries(nodes
         .map(({ uid }) => [uid, true]));
@@ -409,6 +463,7 @@ export default {
     },
     /**
      * Toggle a node open/close
+     * @param {NavigatorFlatItem} node
      */
     toggle(node) {
       // check if the item is open
@@ -431,7 +486,8 @@ export default {
       } else {
         this.$set(this.openNodes, node.uid, true);
         // include all childUIDs to get opened
-        include = node.childUIDs.map(id => this.childrenMap[id]);
+        include = this.getChildren(node.uid)
+          .filter(child => this.renderableChildNodesMap[child.uid]);
       }
       this.augmentRenderNodes({ uid: node.uid, include, exclude });
     },
@@ -456,7 +512,7 @@ export default {
       if (isOpen) {
         exclude = allChildren.slice(1);
       } else {
-        include = allChildren.slice(1);
+        include = allChildren.slice(1).filter(child => this.renderableChildNodesMap[child.uid]);
       }
       this.openNodes = openNodes;
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
@@ -480,7 +536,8 @@ export default {
         } else {
           // add it
           openNodes[uid] = true;
-          const children = this.getChildren(uid);
+          const children = this.getChildren(uid)
+            .filter(child => this.renderableChildNodesMap[child.uid]);
           // augment the nodesToRender
           this.augmentRenderNodes({ uid, exclude: [], include: children });
         }
@@ -515,7 +572,7 @@ export default {
     },
     /**
      * Get all the parents of a node, up to the root.
-     * @param {string} uid
+     * @param {number} uid
      * @return {NavigatorFlatItem[]}
      */
     getParents(uid) {
@@ -570,26 +627,17 @@ export default {
      * @return void
      */
     generateNodesToRender() {
-      const {
-        children, filteredChildren, hasFilter, openNodes,
-      } = this;
-      // create a set of all matches and their parents
-      const allChildMatchesSet = new Set(filteredChildren
-        .flatMap(({ uid }) => this.getParents(uid)));
+      const { children, openNodes, renderableChildNodesMap } = this;
 
+      // create a set of all matches and their parents
       // generate the list of nodes to render
       this.nodesToRender = children
-        .filter((child) => {
-          // if we have no filter pattern, just show open nodes and root nodes
-          if (!hasFilter) {
-            // if parent is the root or parent is open
-            return child.parent === INDEX_ROOT_KEY || openNodes[child.parent];
-          }
-          // if parent is the root and is in the child match set
-          return (child.parent === INDEX_ROOT_KEY && allChildMatchesSet.has(child))
-            // if the item itself is a direct match
-            || allChildMatchesSet.has(child);
-        });
+        .filter(child => (
+          // make sure the item can be rendered
+          renderableChildNodesMap[child.uid]
+          // and either its parent is open, or its a root item
+          && (child.parent === INDEX_ROOT_KEY || openNodes[child.parent])
+        ));
       // persist all the open nodes
       this.persistState();
       // wait a frame, so the scroller is ready, `nextTick` is not enough.
@@ -838,6 +886,13 @@ export default {
         this.focusIndex(0);
       }
     },
+    convertChildrenArrayToObject(children) {
+      return children.reduce((all, current) => {
+        // eslint-disable-next-line no-param-reassign
+        all[current.uid] = current;
+        return all;
+      }, {});
+    },
   },
 };
 </script>
@@ -936,6 +991,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     display: flex;
     left: 0;
     height: 100%;
+    padding-left: $nav-padding;
+    padding-right: $nav-padding;
 
     @include safe-area-left-set(left, 0px);
   }
@@ -1011,6 +1068,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   height: 100%;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
+  padding-bottom: calc(var(--top-offset, 0px) + var(--card-vertical-spacing));
 
   @include breakpoint(medium, nav) {
     padding-bottom: $nav-menu-items-ios-bottom-spacing;

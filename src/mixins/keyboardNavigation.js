@@ -40,8 +40,11 @@ export default {
         this.endingPointHook();
       }
     },
-    focusFirst() {
+    async focusFirst() {
       this.externalFocusChange = false;
+      // reset focus index so we can focus on value 0 too
+      this.focusIndex(null);
+      await this.$nextTick();
       this.focusIndex(0);
       this.scrollToFocus();
     },
