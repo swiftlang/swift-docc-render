@@ -250,11 +250,35 @@ export default {
       if (errorFetching) return ERROR_FETCHING;
       return NO_CHILDREN;
     },
-    availableTags: ({ selectedTags }) => (
-      selectedTags.length
-        ? []
-        : Object.values(FILTER_TAGS_TO_LABELS)
-    ),
+    /**
+     * Generates an array of tag labels for filtering.
+     * Shows only tags, that have children matches.
+     */
+    availableTags: ({ selectedTags, children }) => {
+      const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
+      if (!tagLabels.length) return tagLabels;
+      const tagLabelsSet = new Set(tagLabels);
+      const availableTags = [];
+      const len = children.length;
+      let i;
+      // iterate over the nodes to render
+      for (i = 0; i < len; i += 1) {
+        // if there are no more tags to iterate over, end early
+        if (!tagLabelsSet.size) return availableTags;
+        // extract the type
+        const { type } = children[i];
+        // grab the tagLabel
+        const tagLabel = FILTER_TAGS_TO_LABELS[TOPIC_TYPE_TO_TAG[type]];
+        // try to match a tag
+        if (tagLabelsSet.has(tagLabel)) {
+          // if we have a match, store it
+          availableTags.push(tagLabel);
+          // remove the match, so we can end the filter early
+          tagLabelsSet.delete(tagLabel);
+        }
+      }
+      return availableTags;
+    },
     selectedTagsModelValue: {
       get: ({ selectedTags }) => selectedTags.map(tag => FILTER_TAGS_TO_LABELS[tag]),
       set(values) {
@@ -938,6 +962,9 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     @include breakpoint(small, nav) {
       padding: 12px $card-horizontal-spacing-large;
     }
+
+    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
+    @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
   }
 
   .card-icon {
@@ -964,6 +991,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     display: flex;
     left: 0;
     height: 100%;
+    padding-left: $nav-padding;
+    padding-right: $nav-padding;
+
+    @include safe-area-left-set(left, 0px);
   }
 
   @include breakpoint(small, nav) {
@@ -1002,11 +1033,17 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   display: flex;
   align-items: flex-end;
 
+  @include safe-area-left-set(padding-left, 30px);
+  @include safe-area-right-set(padding-right, 30px);
+
   @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
     align-items: flex-start;
     height: 62px;
+
+    @include safe-area-left-set(padding-left, 20px);
+    @include safe-area-right-set(padding-right, 20px);
   }
 
   .input-wrapper {
