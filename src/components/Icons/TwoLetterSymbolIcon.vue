@@ -10,7 +10,7 @@
 
 <template>
   <SVGIcon
-    class="reset-circle-icon"
+    class="two-letter-icon"
     width="16px" height="16px" viewBox="0 0 16 16"
   >
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
