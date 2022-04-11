@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -178,6 +178,21 @@ describe('Navigator', () => {
     });
     expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
       references.first.url, references.second.url, mocks.$route.path,
+    ]);
+  });
+
+  it('strips out trailing slashes from the last activePath item', () => {
+    const wrapper = createWrapper({
+      mocks: {
+        ...mocks,
+        $route: {
+          ...mocks.$route,
+          path: '/documentation/foo/bar/',
+        },
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+      references.first.url, references.second.url, '/documentation/foo/bar',
     ]);
   });
 
