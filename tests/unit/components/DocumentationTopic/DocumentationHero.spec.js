@@ -30,6 +30,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(Documentat
   },
   slots: {
     default: '<div class="default-slot">Default Slot</div>',
+    'above-content': '<div class="above-content-slot">Above Content Slot</div>',
   },
   ...others,
 });
@@ -62,6 +63,7 @@ describe('DocumentationHero', () => {
     expect(allIcons.at(0).classes()).toEqual(['background-icon', 'first-icon']);
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
+    expect(wrapper.find('.above-content-slot').text()).toBe('Above Content Slot');
     expect(wrapper.vm.styles).toEqual({
       '--accent-color': `var(--color-type-icon-${TopicTypeColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
     });

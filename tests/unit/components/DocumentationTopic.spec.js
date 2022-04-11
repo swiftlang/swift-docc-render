@@ -559,6 +559,19 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(DocumentationHero).contains('.above-title')).toBe(true);
   });
 
+  it('renders content in the `above-hero-content` slot', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      slots: {
+        'above-hero-content': '<div class="above-hero-content">Above Hero Content</div>',
+      },
+      stubs: {
+        DocumentationHero,
+      },
+    });
+    expect(wrapper.contains('.above-hero-content')).toBe(true);
+  });
+
   describe('lifecycle hooks', () => {
     it('calls `store.reset()`', () => {
       const store = {
