@@ -134,7 +134,6 @@ const SuggestedTagsId = 'suggested-tags';
 const AXinputProperties = {
   autocorrect: 'off',
   autocapitalize: 'off',
-  autocomplete: 'off',
   spellcheck: 'false',
   role: 'combobox',
   'aria-haspopup': 'true',
