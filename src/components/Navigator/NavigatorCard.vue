@@ -14,7 +14,7 @@
       <div class="navigator-card-inner">
         <div class="head-wrapper">
           <button
-            aria-label="Close documentation navigation"
+            aria-label="Close documentation navigator"
             class="close-card-mobile"
             @click="$emit('close')"
           >
@@ -39,7 +39,7 @@
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
-            aria-label="Sidebar Tree Navigator"
+            aria-label="Documentation Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
             :buffer="1000"
