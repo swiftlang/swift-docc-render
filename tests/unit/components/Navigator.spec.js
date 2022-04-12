@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
