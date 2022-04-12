@@ -18,7 +18,7 @@ const {
   OnThisPageSection,
   WordBreak,
   ParameterAttributes,
-  PossiblyChangedRequiredAttribute,
+  PossiblyChangedTextAttribute,
 } = RestParameters.components;
 
 const { AttributeKind } = RestParameters.components.ParameterAttributes.constants;
@@ -165,7 +165,7 @@ describe('RestParameters', () => {
       },
     });
     expect(wrapper.find('.param-name').text()).toBe('lastname');
-    expect(wrapper.find(PossiblyChangedRequiredAttribute).exists()).toBe(true);
+    expect(wrapper.find(PossiblyChangedTextAttribute).exists()).toBe(true);
     expect(wrapper.find(PossiblyChangedType).text()).toBe('string');
     expect(wrapper.find({ name: 'ContentNode' }).props('content')).toEqual(
       parameters[0].content,
@@ -222,7 +222,7 @@ describe('RestParameters', () => {
     });
 
     expect(wrapper.find(PossiblyChangedType).props()).toHaveProperty('changes', changes.name.type);
-    expect(wrapper.find(PossiblyChangedRequiredAttribute).props())
+    expect(wrapper.find(PossiblyChangedTextAttribute).props())
       .toHaveProperty('changes', changes.name.required);
     expect(wrapper.find(ParameterAttributes).props()).toHaveProperty('changes', changes.name);
   });
