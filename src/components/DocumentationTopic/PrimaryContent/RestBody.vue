@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -49,7 +49,7 @@
         </template>
         <template
           slot="description"
-          slot-scope="{ content, mimeType, required, type, attributes, changes }"
+          slot-scope="{ content, mimeType, required, type, attributes, changes, readOnly }"
         >
           <div>
             <PossiblyChangedType
@@ -57,10 +57,14 @@
               :type="type"
               :changes="changes.type"
             />
-            <PossiblyChangedRequiredAttribute
-              :required="required"
+            <PossiblyChangedTextAttribute
               :changes="changes.required"
-            />
+              :value="required"
+            >(Required) </PossiblyChangedTextAttribute>
+            <PossiblyChangedTextAttribute
+              :changes="changes.readOnly"
+              :value="readOnly"
+            >(Read only) </PossiblyChangedTextAttribute>
             <ContentNode v-if="content" :content="content" />
             <PossiblyChangedMimetype
               v-if="mimeType"
@@ -87,7 +91,7 @@ import ParametersTable from './ParametersTable.vue';
 import ParameterAttributes from './ParameterAttributes.vue';
 import PossiblyChangedType from './PossiblyChangedType.vue';
 import PossiblyChangedMimetype from './PossiblyChangedMimetype.vue';
-import PossiblyChangedRequiredAttribute from './PossiblyChangedRequiredAttribute.vue';
+import PossiblyChangedTextAttribute from './PossiblyChangedTextAttribute.vue';
 
 const ChangesKey = 'restRequestBody';
 
@@ -96,7 +100,7 @@ export default {
   mixins: [apiChangesProvider],
   components: {
     PossiblyChangedMimetype,
-    PossiblyChangedRequiredAttribute,
+    PossiblyChangedTextAttribute,
     PossiblyChangedType,
     WordBreak,
     ParameterAttributes,

@@ -12,6 +12,9 @@
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
       <DocumentationHero :type="role" :enhanceBackground="enhanceBackground">
+        <template #above-content>
+          <slot name="above-hero-content" />
+        </template>
         <slot name="above-title" />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
