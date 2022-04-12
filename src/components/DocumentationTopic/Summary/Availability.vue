@@ -150,18 +150,48 @@ export default {
   }
 
   &::before {
-    @include coin($modified-dark-svg, $-coin-size);
+    @include coin($modified-svg, $-coin-size);
     left: $-coin-spacer;
+
+    @include prefers-dark {
+      background-image: $modified-dark-svg;
+    }
+
+    .theme-dark & {
+      background-image: $modified-dark-svg;
+    }
   }
 
   &-added {
     border-color: var(--color-changes-added);
-    &::before { background-image: $added-dark-svg; }
+
+    &::before {
+      background-image: $added-svg;
+
+      @include prefers-dark {
+        background-image: $added-dark-svg;
+      }
+
+      .theme-dark & {
+        background-image: $added-dark-svg;
+      }
+    }
   }
 
   &-deprecated {
     border-color: var(--color-changes-deprecated);
-    &::before { background-image: $deprecated-dark-svg; }
+
+    &::before {
+      background-image: $deprecated-svg;
+
+      @include prefers-dark {
+        background-image: $deprecated-dark-svg;
+      }
+
+      .theme-dark & {
+        background-image: $deprecated-dark-svg;
+      }
+    }
   }
 
   &-modified {
