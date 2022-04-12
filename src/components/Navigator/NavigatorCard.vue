@@ -13,7 +13,11 @@
     <div class="navigator-card-full-height">
       <div class="navigator-card-inner">
         <div class="head-wrapper">
-          <button class="close-card-mobile" @click="$emit('close')">
+          <button
+            aria-label="Close documentation navigation"
+            class="close-card-mobile"
+            @click="$emit('close')"
+          >
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">

@@ -21,7 +21,11 @@
     aria-label="API Reference"
   >
     <template #pre-title="{ closeNav }" v-if="isWideFormat">
-      <button class="sidenav-toggle" @click.prevent="handleSidenavToggle(closeNav)">
+      <button
+        aria-label="Toggle documentation navigation"
+        class="sidenav-toggle"
+        @click.prevent="handleSidenavToggle(closeNav)"
+      >
         <SidenavIcon class="icon-inline sidenav-icon" />
       </button>
     </template>

@@ -1110,8 +1110,10 @@ describe('NavigatorCard', () => {
 
   it('emits a `close` event', async () => {
     const wrapper = createWrapper();
-    wrapper.find('.close-card-mobile').trigger('click');
+    const button = wrapper.find('.close-card-mobile');
+    button.trigger('click');
     await flushPromises();
+    expect(button.attributes('aria-label')).toBe('Close documentation navigation');
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
 
