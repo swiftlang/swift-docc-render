@@ -10,16 +10,14 @@
 
 <template>
   <SVGIcon
-    class="reset-circle-icon"
+    class="single-letter-icon"
     width="16px" height="16px" viewBox="0 0 16 16"
   >
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <g transform="translate(1.000000, 1.000000)">
-        <rect stroke="currentColor" x="0.5" y="0.5" width="13" height="13"></rect>
-        <text font-size="11" font-weight="bold" fill="currentColor">
-          <tspan text-anchor="middle" x="7" y="11">{{ symbol }}</tspan>
-        </text>
-      </g>
+      <rect stroke="currentColor" x="1" y="1" width="14" height="14"></rect>
+      <text font-size="11" font-weight="bold" fill="currentColor" x="49%" y="12" text-anchor="middle">
+        <tspan>{{ symbol }}</tspan>
+      </text>
     </g>
   </SVGIcon>
 </template>
