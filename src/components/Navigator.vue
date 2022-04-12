@@ -187,7 +187,6 @@ export default {
 
 .navigator {
   height: 100%;
-  border-left: 1px solid var(--color-grid);
   display: flex;
   flex-flow: column;
 
@@ -197,7 +196,6 @@ export default {
 
   @include breakpoint(medium, nav) {
     position: static;
-    border-left: none;
     transition: none;
   }
 }
