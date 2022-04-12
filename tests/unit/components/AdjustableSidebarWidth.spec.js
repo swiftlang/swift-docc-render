@@ -41,6 +41,13 @@ const scrollLockTarget = document.createElement('DIV');
 scrollLockTarget.id = SCROLL_LOCK_ID;
 document.body.appendChild(scrollLockTarget);
 
+const navStickyElement = document.createElement('DIV');
+navStickyElement.id = baseNavStickyAnchorId;
+const boundingClientSpy = jest.spyOn(navStickyElement, 'getBoundingClientRect')
+  .mockReturnValue({ y: 0 });
+
+document.body.appendChild(navStickyElement);
+
 const maxWidth = 500; // 50% of the innerWidth, as per the default maxWidth on large
 let slotProps = {};
 
@@ -152,16 +159,20 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       assertWidth(wrapper, ULTRA_WIDE_DEFAULT);
     });
+
+    it('stores the topOffset, if any', async () => {
+      boundingClientSpy.mockReturnValue({ y: 22 });
+      const wrapper = createWrapper();
+      await flushPromises();
+      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      expect(wrapper.vm.topOffset).toBe(22);
+      // cannot assert css vars in JSDOM
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', '22px');
+    });
   });
 
   describe('external open', () => {
-    const navStickyElement = document.createElement('DIV');
-    navStickyElement.id = baseNavStickyAnchorId;
-    const boundingClientSpy = jest.spyOn(navStickyElement, 'getBoundingClientRect')
-      .mockReturnValue({ y: 22 });
-
-    document.body.appendChild(navStickyElement);
-
+    boundingClientSpy.mockReturnValue({ y: 22 });
     it('allows opening the sidebar externally', async () => {
       const wrapper = createWrapper();
       await flushPromises();
@@ -178,7 +189,8 @@ describe('AdjustableSidebarWidth', () => {
       expect(aside.classes()).toContain('force-open');
       // assert `mobileTopOffset` is the same as the `navStickyElement` `y` offset.
       expect(wrapper.vm.mobileTopOffset).toBe(22);
-      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      // called once on mount, once now
+      expect(boundingClientSpy).toHaveBeenCalledTimes(2);
       // assert scroll lock and other helpers initiated
       expect(scrollLock.lockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.hide).toHaveBeenCalledWith(aside.element);
@@ -209,7 +221,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(aside.classes()).toContain('force-open');
       // assert `mobileTopOffset` is 0, if `navStickyElement.y` is negative
       expect(wrapper.vm.mobileTopOffset).toBe(0);
-      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      expect(boundingClientSpy).toHaveBeenCalledTimes(2);
     });
 
     it('allows closing the sidebar, with Esc', () => {
