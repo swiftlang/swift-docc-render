@@ -105,6 +105,9 @@ export default {
     },
     // splits out the top-level technology crumb
     activePath({ parentTopicReferences, $route: { path } }) {
+      // Ensure the path does not have a trailing slash
+      // eslint-disable-next-line no-param-reassign
+      path = path.replace(/\/$/, '');
       // route's path is activePath on root
       if (!parentTopicReferences.length) return [path];
       let itemsToSlice = 1;
@@ -187,7 +190,6 @@ export default {
 
 .navigator {
   height: 100%;
-  border-left: 1px solid var(--color-grid);
   display: flex;
   flex-flow: column;
 
@@ -197,7 +199,6 @@ export default {
 
   @include breakpoint(medium, nav) {
     position: static;
-    border-left: none;
     transition: none;
   }
 }
