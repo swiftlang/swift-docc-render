@@ -22,7 +22,7 @@
   >
     <template #pre-title="{ closeNav }" v-if="isWideFormat">
       <button
-        aria-label="Toggle documentation navigator"
+        aria-label="Open documentation navigator"
         class="sidenav-toggle"
         @click.prevent="handleSidenavToggle(closeNav)"
       >

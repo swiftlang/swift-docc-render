@@ -269,7 +269,7 @@ describe('DocumentationNav', () => {
     const button = wrapper.find('.sidenav-toggle');
     button.trigger('click');
     await flushPromises();
-    expect(button.attributes('aria-label')).toBe('Toggle documentation navigator');
+    expect(button.attributes('aria-label')).toBe('Open documentation navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });
 
