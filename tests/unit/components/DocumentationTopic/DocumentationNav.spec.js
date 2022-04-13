@@ -266,8 +266,10 @@ describe('DocumentationNav', () => {
   });
 
   it('renders a sidenav toggle', async () => {
-    wrapper.find('.sidenav-toggle').trigger('click');
+    const button = wrapper.find('.sidenav-toggle');
+    button.trigger('click');
     await flushPromises();
+    expect(button.attributes('aria-label')).toBe('Open documentation navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });
 
