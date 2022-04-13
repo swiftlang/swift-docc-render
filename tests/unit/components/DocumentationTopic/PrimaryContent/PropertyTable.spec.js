@@ -190,7 +190,7 @@ describe('PropertyTable', () => {
     const wrapper = mountComponent();
     expect(
       wrapper
-        .findAll('.property-required')
+        .findAll('.property-text')
         .at(0)
         .text(),
     ).toBe('(Required)');
