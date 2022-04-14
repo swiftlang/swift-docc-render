@@ -50,7 +50,8 @@ describe('ApiChangesStoreBase', () => {
     expect(ApiChangesStoreBase.state.apiChangesCounts).toHaveProperty('modified', 5);
     ApiChangesStoreBase.resetApiChanges();
     expect(ApiChangesStoreBase.state.apiChangesCounts).toEqual(defaultCounts);
-    expect(ApiChangesStoreBase.state.selectedAPIChangesVersion).toEqual(null);
+    // assert `selectedAPIChangesVersion` not changed
+    expect(ApiChangesStoreBase.state.selectedAPIChangesVersion).toEqual('latest_major');
     expect(ApiChangesStoreBase.state.apiChanges).toEqual(null);
   });
 });
