@@ -147,9 +147,12 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     flattenNestedData(childrenNodes, parent = null, depth = 0) {
-      return childrenNodes.reduce((items, item, index) => {
+      let items = [];
+      const len = childrenNodes.length;
+      let index;
+      for (index = 0; index < len; index += 1) {
         // get the children
-        const { children, ...node } = item;
+        const { children, ...node } = childrenNodes[index];
         // generate the extra properties
         const { uid: parentUID = INDEX_ROOT_KEY } = parent || {};
         // generate a uid to track by
@@ -159,7 +162,7 @@ export default {
         // store which item it is
         node.index = index;
         // store how many siblings it has
-        node.siblingsCount = childrenNodes.length;
+        node.siblingsCount = len;
         // store the depth
         node.depth = depth;
         // store child UIDs
@@ -169,17 +172,13 @@ export default {
           // push child to parent
           parent.childUIDs.push(node.uid);
         }
+        items.push(node);
         if (children) {
-          // recursively walk the children
-          const iteratedChildren = this.flattenNestedData(children, node, depth + 1);
-          // push the node to the items stack
-          items.push(node);
           // return the children to the parent
-          return items.concat(iteratedChildren);
+          items = items.concat(this.flattenNestedData(children, node, depth + 1));
         }
-        // return the node
-        return items.concat(node);
-      }, []);
+      }
+      return items;
     },
   },
 };
@@ -190,7 +189,6 @@ export default {
 
 .navigator {
   height: 100%;
-  border-left: 1px solid var(--color-grid);
   display: flex;
   flex-flow: column;
 
@@ -200,7 +198,6 @@ export default {
 
   @include breakpoint(medium, nav) {
     position: static;
-    border-left: none;
     transition: none;
   }
 }
