@@ -22,6 +22,9 @@
         key="first" class="background-icon first-icon" with-colors
       />
     </div>
+    <div class="documentation-hero__above-content">
+      <slot name="above-content" />
+    </div>
     <div class="documentation-hero__content">
       <slot />
     </div>
@@ -128,6 +131,11 @@ $doc-hero-icon-dimension: 250px;
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
+  }
+
+  &__above-content {
+    position: relative;
+    z-index: 1;
   }
 }
 

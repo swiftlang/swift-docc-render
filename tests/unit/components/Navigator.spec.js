@@ -181,6 +181,21 @@ describe('Navigator', () => {
     ]);
   });
 
+  it('strips out trailing slashes from the last activePath item', () => {
+    const wrapper = createWrapper({
+      mocks: {
+        ...mocks,
+        $route: {
+          ...mocks.$route,
+          path: '/documentation/foo/bar/',
+        },
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+      references.first.url, references.second.url, '/documentation/foo/bar',
+    ]);
+  });
+
   it('renders the root path as activePath when there is no parentTopicIdentifiers', () => {
     const wrapper = createWrapper({
       propsData: {
