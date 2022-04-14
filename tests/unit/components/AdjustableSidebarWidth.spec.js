@@ -388,7 +388,7 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, 900); // wrapper is no wider than 50% of the widest possible, which is 1800
+    assertWidth(wrapper, 960); // wrapper is no wider than 50% of the widest possible, which is 1920
   });
 
   it('prevents dragging below the `minWidth`', () => {
