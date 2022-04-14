@@ -74,7 +74,7 @@ export default {
       try {
         this.isFetching = true;
         const { interfaceLanguages } = await fetchIndexPathsData();
-        this.navigationIndex = interfaceLanguages;
+        this.navigationIndex = Object.freeze(interfaceLanguages);
       } catch (e) {
         this.errorFetching = true;
       } finally {
