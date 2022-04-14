@@ -26,7 +26,8 @@ import CurlyBracketsIcon from 'theme/components/Icons/CurlyBracketsIcon.vue';
 import TopicSubscriptIcon from 'theme/components/Icons/TopicSubscriptIcon.vue';
 import TwoLetterSymbolIcon from 'theme/components/Icons/TwoLetterSymbolIcon.vue';
 import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIcon.vue';
-import { TopicTypes, TopicTypeAliases, TopicTypeColorsMap } from 'docc-render/constants/TopicTypes';
+import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
+import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 
 const TopicTypeIcons = {
   [TopicTypes.article]: ArticleIcon,
@@ -96,7 +97,7 @@ export default {
     normalisedType: ({ type }) => TopicTypeAliases[type] || type,
     icon: ({ normalisedType }) => TopicTypeIcons[normalisedType] || CollectionIcon,
     iconProps: ({ normalisedType }) => TopicTypeProps[normalisedType] || {},
-    color: ({ normalisedType }) => TopicTypeColorsMap[normalisedType],
+    color: ({ normalisedType }) => HeroColorsMap[normalisedType],
     styles: ({ color, withColors }) => (withColors && color ? { color: `var(--color-type-icon-${color})` } : {}),
   },
 };

@@ -10,13 +10,9 @@
 
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 import { shallowMount } from '@vue/test-utils';
-import {
-  TopicTypes,
-  TopicTypeAliases,
-  TopicTypeColors,
-  TopicTypeColorsMap,
-} from '@/constants/TopicTypes';
+import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import { HeroColors, HeroColorsMap } from '../../../../src/constants/HeroColors';
 
 const defaultProps = {
   type: TopicTypes.class,
@@ -65,7 +61,7 @@ describe('DocumentationHero', () => {
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.find('.above-content-slot').text()).toBe('Above Content Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${TopicTypeColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
     });
   });
 
@@ -75,7 +71,7 @@ describe('DocumentationHero', () => {
         type: TopicTypes.init,
       },
     });
-    const color = TopicTypeColorsMap[TopicTypeAliases[TopicTypes.init]];
+    const color = HeroColorsMap[TopicTypeAliases[TopicTypes.init]];
     expect(wrapper.vm.styles).toEqual({
       '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
     });
@@ -88,7 +84,7 @@ describe('DocumentationHero', () => {
       },
     });
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${TopicTypeColors.teal}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${HeroColors.teal}, var(--color-figure-gray-secondary))`,
     });
   });
 
@@ -111,7 +107,7 @@ describe('DocumentationHero', () => {
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${TopicTypeColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
     });
   });
 });
