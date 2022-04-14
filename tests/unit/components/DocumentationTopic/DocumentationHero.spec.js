@@ -12,7 +12,7 @@ import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
-import { HeroColors, HeroColorsMap } from '../../../../src/constants/HeroColors';
+import { HeroColors, HeroColorsMap } from '@/constants/HeroColors';
 
 const defaultProps = {
   type: TopicTypes.class,
