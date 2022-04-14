@@ -781,6 +781,34 @@ describe('NavigatorCard', () => {
     });
   });
 
+  describe('on @focus-parent', () => {
+    it('focuses parent', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const items = wrapper.findAll(NavigatorCardItem);
+      expect(items.at(0).props('isFocused')).toBe(false);
+      expect(items.at(1).props('isFocused')).toBe(true);
+      items.at(1).vm.$emit('focus-parent', root0Child0);
+      await flushPromises();
+      expect(items.at(0).props('isFocused')).toBe(true);
+      expect(items.at(1).props('isFocused')).toBe(false);
+    });
+
+    it('does nothing, if parent is root', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          activePath: [root1.path],
+        },
+      });
+      await flushPromises();
+      const items = wrapper.findAll(NavigatorCardItem);
+      expect(items.at(1).props('isFocused')).toBe(true);
+      items.at(1).vm.$emit('focus-parent', root1);
+      await flushPromises();
+      expect(items.at(1).props('isFocused')).toBe(true);
+    });
+  });
+
   it('highlights the current page, and expands all of its parents', async () => {
     const wrapper = createWrapper();
     await flushPromises();

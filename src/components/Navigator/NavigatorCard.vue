@@ -60,6 +60,7 @@
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
               @navigate="setActiveUID"
+              @focus-parent="focusNodeParent"
             />
           </RecycleScroller>
           <div aria-live="polite" class="visuallyhidden">
@@ -892,6 +893,18 @@ export default {
         all[current.uid] = current;
         return all;
       }, {});
+    },
+    /**
+     * Focuses the parent of a child node.
+     * @param {NavigatorFlatItem} item
+     */
+    focusNodeParent(item) {
+      const parent = this.childrenMap[item.parent];
+      if (!parent) return;
+      const parentIndex = this.nodesToRender.findIndex(c => c.uid === parent.uid);
+      if (parentIndex === -1) return;
+      // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
+      this.focusIndex(parentIndex);
     },
   },
 };
