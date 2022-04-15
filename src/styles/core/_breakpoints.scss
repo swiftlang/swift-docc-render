@@ -342,8 +342,9 @@ $breakpoint-attributes: (
     }
 
     @include breakpoint(small) {
-      padding-left: 20px;
-      padding-right: 20px;
+      width: $small-viewport-content-width;
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
     }
   }
 
