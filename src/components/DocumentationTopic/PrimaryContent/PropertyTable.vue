@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -31,7 +31,8 @@
           content,
           required,
           changes,
-          deprecated
+          deprecated,
+          readOnly,
         }"
       >
         <PossiblyChangedType
@@ -42,10 +43,14 @@
         <template v-if="deprecated">
           <Badge variant="deprecated" class="property-deprecated" />&nbsp;
         </template>
-        <PossiblyChangedRequiredAttribute
-          :required="required"
+        <PossiblyChangedTextAttribute
           :changes="changes.required"
-        />
+          :value="required"
+        >(Required) </PossiblyChangedTextAttribute>
+        <PossiblyChangedTextAttribute
+          :changes="changes.readOnly"
+          :value="readOnly"
+        >(Read only) </PossiblyChangedTextAttribute>
         <ContentNode v-if="content" :content="content" />
         <ParameterAttributes :attributes="attributes" :changes="changes.attributes" />
       </template>
@@ -63,7 +68,7 @@ import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
 import Badge from 'docc-render/components/Badge.vue';
 import ParametersTable from './ParametersTable.vue';
 import ParameterAttributes from './ParameterAttributes.vue';
-import PossiblyChangedRequiredAttribute from './PossiblyChangedRequiredAttribute.vue';
+import PossiblyChangedTextAttribute from './PossiblyChangedTextAttribute.vue';
 import PossiblyChangedType from './PossiblyChangedType.vue';
 
 export default {
@@ -72,7 +77,7 @@ export default {
   components: {
     Badge,
     WordBreak,
-    PossiblyChangedRequiredAttribute,
+    PossiblyChangedTextAttribute,
     PossiblyChangedType,
     ParameterAttributes,
     ContentNode,

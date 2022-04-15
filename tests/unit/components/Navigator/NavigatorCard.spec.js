@@ -169,7 +169,7 @@ describe('NavigatorCard', () => {
       keyField: 'uid',
       buffer: 1000,
     });
-    expect(wrapper.find(RecycleScroller).attributes('aria-label')).toBe('Sidebar Tree Navigator');
+    expect(wrapper.find(RecycleScroller).attributes('aria-label')).toBe('Documentation Navigator');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
     // assert CardItem
     const items = wrapper.findAll(NavigatorCardItem);
@@ -1138,8 +1138,10 @@ describe('NavigatorCard', () => {
 
   it('emits a `close` event', async () => {
     const wrapper = createWrapper();
-    wrapper.find('.close-card-mobile').trigger('click');
+    const button = wrapper.find('.close-card-mobile');
+    button.trigger('click');
     await flushPromises();
+    expect(button.attributes('aria-label')).toBe('Close documentation navigator');
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
 

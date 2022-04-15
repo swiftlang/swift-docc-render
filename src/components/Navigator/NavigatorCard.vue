@@ -13,7 +13,11 @@
     <div class="navigator-card-full-height">
       <div class="navigator-card-inner">
         <div class="head-wrapper">
-          <button class="close-card-mobile" @click="$emit('close')">
+          <button
+            aria-label="Close documentation navigator"
+            class="close-card-mobile"
+            @click="$emit('close')"
+          >
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
@@ -35,7 +39,7 @@
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
-            aria-label="Sidebar Tree Navigator"
+            aria-label="Documentation Navigator"
             :items="nodesToRender"
             :item-size="itemSize"
             :buffer="1000"
