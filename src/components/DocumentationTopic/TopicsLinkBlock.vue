@@ -221,15 +221,6 @@ export default {
   margin-left: 1rem;
 }
 
-.link-block, .link {
-  box-sizing: inherit;
-
-  &.changed {
-    @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment();
-  }
-}
-
 .link {
   display: flex;
 }
@@ -254,6 +245,15 @@ export default {
     padding-top: 5px;
     padding-bottom: 5px;
     display: inline-flex;
+  }
+}
+
+.link-block, .link {
+  box-sizing: inherit;
+
+  &.changed {
+    @include change-highlight-target();
+    @include change-highlight-horizontal-text-alignment();
   }
 }
 
