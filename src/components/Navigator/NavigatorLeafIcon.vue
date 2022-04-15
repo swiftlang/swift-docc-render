@@ -16,7 +16,7 @@
 
 <script>
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
-import TopicModuleIcon from 'theme/components/Icons/TopicModuleIcon.vue';
+import TechnologyIcon from 'theme/components/Icons/TechnologyIcon.vue';
 import ArticleIcon from 'theme/components/Icons/ArticleIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import TopicFuncIcon from 'theme/components/Icons/TopicFuncIcon.vue';
@@ -34,7 +34,7 @@ const TopicTypeIcons = {
   [TopicTypes.associatedtype]: CollectionIcon,
   [TopicTypes.buildSetting]: CollectionIcon,
   [TopicTypes.class]: SingleLetterSymbolIcon,
-  [TopicTypes.collection]: TopicModuleIcon,
+  [TopicTypes.collection]: TechnologyIcon,
   [TopicTypes.dictionarySymbol]: SingleLetterSymbolIcon,
   [TopicTypes.container]: CollectionIcon,
   [TopicTypes.enum]: SingleLetterSymbolIcon,
@@ -46,7 +46,7 @@ const TopicTypeIcons = {
   [TopicTypes.learn]: PathIcon,
   [TopicTypes.method]: SingleLetterSymbolIcon,
   [TopicTypes.macro]: SingleLetterSymbolIcon,
-  [TopicTypes.module]: TopicModuleIcon,
+  [TopicTypes.module]: TechnologyIcon,
   [TopicTypes.overview]: PathIcon,
   [TopicTypes.protocol]: TwoLetterSymbolIcon,
   [TopicTypes.property]: SingleLetterSymbolIcon,

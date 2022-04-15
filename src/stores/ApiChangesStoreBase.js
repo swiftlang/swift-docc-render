@@ -34,10 +34,11 @@ export default {
   setSelectedAPIChangesVersion(value) {
     this.state.selectedAPIChangesVersion = value;
   },
+  // Reset the API changes data, except for the `selectedAPIChangesVersion`.
+  // This method is called primarily on page navigation, to clear old changes data.
   resetApiChanges() {
     this.state.apiChanges = null;
     this.state.apiChangesCounts = apiChangesCountsFactory();
-    this.state.selectedAPIChangesVersion = null;
   },
   async updateApiChangesCounts() {
     await Vue.nextTick();
