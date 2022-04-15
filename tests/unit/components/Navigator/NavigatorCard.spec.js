@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -1428,6 +1428,10 @@ describe('NavigatorCard', () => {
     const filter = wrapper.find(FilterInput);
     // assert there are no Articles for example
     expect(filter.props('tags')).toEqual(['Tutorials', 'Sample Code']);
+    // apply a filter
+    filter.vm.$emit('input', sampleCode.title);
+    await flushPromises();
+    expect(filter.props('tags')).toEqual(['Sample Code']);
   });
 
   describe('navigating', () => {
