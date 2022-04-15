@@ -78,7 +78,7 @@ $deprecated-dark-rounded-svg: $deprecated-svg !default;
 }
 
 @mixin change-highlight-end-spacing() {
-  padding-right: $change-icon-width + $change-highlight-horizontal-space-rem;
+  padding-right: $change-highlight-horizontal-space;
 }
 
 @mixin change-highlight-horizontal-spacing() {
@@ -130,7 +130,7 @@ $deprecated-dark-rounded-svg: $deprecated-svg !default;
 
     &.changed {
       margin-left: rem(-$change-highlight-horizontal-space);
-      width: calc(100% + #{$change-highlight-horizontal-space * 2});
+      width: 100%;
     }
   }
 }
