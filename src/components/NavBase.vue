@@ -731,7 +731,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     width: 100%;
     height: rem(12px);
     transition: $nav-chevron-transition;
-    margin-top: 2px;
+    margin: auto 0 auto 0;
 
     &::before,
     &::after {
