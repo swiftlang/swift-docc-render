@@ -212,12 +212,20 @@ describe('DocumentationTopic', () => {
   it('renders a `DocumentationHero`, enabled', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
-    expect(hero.props()).toEqual({ type: propsData.role, enhanceBackground: true });
+    expect(hero.props()).toEqual({
+      type: propsData.role,
+      enhanceBackground: true,
+      extraPadding: false,
+    });
   });
 
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.collection, enhanceBackground: true });
+    expect(hero.props()).toEqual({
+      type: TopicTypes.collection,
+      enhanceBackground: true,
+      extraPadding: false,
+    });
   });
 
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
@@ -234,7 +242,11 @@ describe('DocumentationTopic', () => {
       },
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: 'symbol', enhanceBackground: false });
+    expect(hero.props()).toEqual({
+      type: 'symbol',
+      enhanceBackground: false,
+      extraPadding: false,
+    });
   });
 
   it('renders a `Title`', () => {
