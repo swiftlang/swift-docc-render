@@ -111,6 +111,7 @@ import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
+import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 
 const STORAGE_KEYS = {
   filter: 'navigator.filter',
@@ -258,10 +259,15 @@ export default {
      * Generates an array of tag labels for filtering.
      * Shows only tags, that have children matches.
      */
-    availableTags: ({ selectedTags, renderableChildNodesMap }) => {
+    availableTags: ({
+      selectedTags, renderableChildNodesMap, apiChangesObject,
+    }) => {
       const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
       if (!tagLabels.length) return tagLabels;
+      const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
+
       const tagLabelsSet = new Set(tagLabels);
+
       const availableTags = [];
       const children = Object.values(renderableChildNodesMap);
       const len = children.length;
@@ -269,11 +275,12 @@ export default {
       // iterate over the nodes to render
       for (i = 0; i < len; i += 1) {
         // if there are no more tags to iterate over, end early
-        if (!tagLabelsSet.size) return availableTags;
+        if (!tagLabelsSet.size && !apiChangesTypesSet.size) return availableTags;
         // extract the type
-        const { type } = children[i];
+        const { type, path } = children[i];
         // grab the tagLabel
         const tagLabel = FILTER_TAGS_TO_LABELS[TOPIC_TYPE_TO_TAG[type]];
+        const changeType = apiChangesObject[path];
         // try to match a tag
         if (tagLabelsSet.has(tagLabel)) {
           // if we have a match, store it
@@ -281,13 +288,21 @@ export default {
           // remove the match, so we can end the filter early
           tagLabelsSet.delete(tagLabel);
         }
+        if (changeType && apiChangesTypesSet.has(changeType)) {
+          availableTags.push(ChangeNames[changeType]);
+          apiChangesTypesSet.delete(changeType);
+        }
       }
       return availableTags;
     },
     selectedTagsModelValue: {
-      get: ({ selectedTags }) => selectedTags.map(tag => FILTER_TAGS_TO_LABELS[tag]),
+      get: ({ selectedTags }) => selectedTags.map(tag => (
+        FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag]
+      )),
       set(values) {
-        this.selectedTags = values.map(label => FILTER_LABELS_TO_TAGS[label]);
+        this.selectedTags = values.map(label => (
+          FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label]
+        ));
         this.resetScroll = true;
       },
     },
@@ -337,8 +352,14 @@ export default {
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
-        const tagMatch = selectedTags.length
-          ? tagsSet.has(TOPIC_TYPE_TO_TAG[type]) : true;
+        let tagMatch = true;
+        if (selectedTags.length) {
+          tagMatch = tagsSet.has(TOPIC_TYPE_TO_TAG[type]);
+          // if there are API changes and there is no tag match, try to match change types
+          if (apiChanges && !tagMatch) {
+            tagMatch = tagsSet.has(apiChangesObject[path]);
+          }
+        }
         // find items, that have API changes
         const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
         // make sure groupMarker's dont get matched
@@ -410,6 +431,11 @@ export default {
       sessionStorage.set(STORAGE_KEYS.selectedTags, value);
     },
     activePath: 'handleActivePathChange',
+    apiChanges(value) {
+      if (value) return;
+      // if we remove APIChanges, remove all related tags as well
+      this.selectedTags = this.selectedTags.filter(t => !ChangeNames[t]);
+    },
   },
   methods: {
     clearFilters() {
