@@ -11,7 +11,11 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="role" :enhanceBackground="enhanceBackground">
+      <DocumentationHero
+        :type="role"
+        :enhanceBackground="enhanceBackground"
+        :extraPadding="extraPadding"
+      >
         <template #above-content>
           <slot name="above-hero-content" />
         </template>
@@ -293,6 +297,14 @@ export default {
       objcPath && swiftPath && isTargetIDE
     ),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    extraPadding: ({
+      roleHeading,
+      abstract,
+      sampleCodeDownload,
+      hasAvailability,
+    }) => (
+      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!hasAvailability) <= 1
+    ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
         list.push(module.name);
