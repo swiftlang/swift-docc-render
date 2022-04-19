@@ -65,6 +65,22 @@ $breakpoint-attributes: (
   @return map-keys($attributes);
 }
 
+/// Returns the width for the dynamic-sidebar-content.
+/// This function allows overriding the small width in third party themes.
+///
+/// @param {Number} $content-width
+///   The width of the content
+///
+/// @param {Number} $min-width
+///   The min-width of the content
+///
+/// @returns {String | Number}
+///   Returns a width value
+///
+@function -calculate-small-dynamic-sidebar-content-width($content-width, $min-width) {
+  @return auto;
+}
+
 /// Injects the provided style block within a max-width media query so that the
 /// styles only apply to the given breakpoint size.
 ///
@@ -342,7 +358,9 @@ $breakpoint-attributes: (
     }
 
     @include breakpoint(small) {
-      width: $small-viewport-content-width;
+      $content-width: map-deep-get($breakpoint-attributes, (default, small, content-width));
+      $min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
+      width: -calculate-small-dynamic-sidebar-content-width($content-width, $min-width);
       padding-left: $small-viewport-content-padding;
       padding-right: $small-viewport-content-padding;
     }
