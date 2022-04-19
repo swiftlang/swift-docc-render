@@ -90,7 +90,7 @@ export default {
     padding-top: 5px;
     padding-bottom: $change-highlight-vertical-space-total;
     background-color: var(--color-changes-modified-previous-background);
-    border-radius: 0 0 $big-border-radius $big-border-radius;
+    border-radius: 0 0 $large-border-radius $large-border-radius;
     position: relative;
   }
 }
