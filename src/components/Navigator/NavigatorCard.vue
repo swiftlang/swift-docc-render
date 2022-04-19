@@ -64,6 +64,7 @@
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
               @navigate="setActiveUID"
+              @focus-parent="focusNodeParent"
             />
           </RecycleScroller>
           <div aria-live="polite" class="visuallyhidden">
@@ -258,11 +259,12 @@ export default {
      * Generates an array of tag labels for filtering.
      * Shows only tags, that have children matches.
      */
-    availableTags: ({ selectedTags, children }) => {
+    availableTags: ({ selectedTags, renderableChildNodesMap }) => {
       const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
       if (!tagLabels.length) return tagLabels;
       const tagLabelsSet = new Set(tagLabels);
       const availableTags = [];
+      const children = Object.values(renderableChildNodesMap);
       const len = children.length;
       let i;
       // iterate over the nodes to render
@@ -901,6 +903,18 @@ export default {
         return all;
       }, {});
     },
+    /**
+     * Focuses the parent of a child node.
+     * @param {NavigatorFlatItem} item
+     */
+    focusNodeParent(item) {
+      const parent = this.childrenMap[item.parent];
+      if (!parent) return;
+      const parentIndex = this.nodesToRender.findIndex(c => c.uid === parent.uid);
+      if (parentIndex === -1) return;
+      // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
+      this.focusIndex(parentIndex);
+    },
   },
 };
 </script>
@@ -1002,7 +1016,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     padding-left: $nav-padding;
     padding-right: $nav-padding;
 
-    @include safe-area-left-set(left, 0px);
+    @include safe-area-left-set(padding-left, $nav-padding);
   }
 
   @include breakpoint(small, nav) {
