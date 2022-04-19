@@ -613,7 +613,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 .nav-actions {
   display: flex;
   align-items: center;
-  max-height: $nav-height-small;
 
   @include nav-in-breakpoint {
     grid-area: actions;
@@ -731,7 +730,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     width: 100%;
     height: rem(12px);
     transition: $nav-chevron-transition;
-    margin: auto 0 auto 0;
+    margin-top: 2px;
 
     &::before,
     &::after {
