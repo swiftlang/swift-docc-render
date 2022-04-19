@@ -19,8 +19,8 @@
     :aria-expanded="expanded ? 'true': 'false'"
     :aria-describedby="ariaDescribedBy"
     :id="`container-${item.uid}`"
-    @keydown.left.prevent="toggleTree"
-    @keydown.right.prevent="toggleTree"
+    @keydown.left.prevent="handleLeftKeydown"
+    @keydown.right.prevent="handleRightKeydown"
     @keydown.enter.prevent="clickReference"
   >
     <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
@@ -185,6 +185,21 @@ export default {
     toggleSiblings() {
       this.idState.isOpening = true;
       this.$emit('toggle-siblings', this.item);
+    },
+    handleLeftKeydown() {
+      // if not expanded, go to the nearest parent
+      if (!this.expanded) {
+        this.$emit('focus-parent', this.item);
+        return;
+      }
+      // close the tree otherwise
+      this.toggleTree();
+    },
+    handleRightKeydown() {
+      // if we are already expanded, dont do anything
+      if (this.expanded || !this.isParent) return;
+      // otherwise expand
+      this.toggleTree();
     },
     clickReference() {
       this.$refs.reference.$el.click();
