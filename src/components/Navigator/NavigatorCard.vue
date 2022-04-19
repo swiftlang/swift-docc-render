@@ -705,11 +705,15 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
+      let activeUIDMatchesCurrentPath = true;
       // check if activeUID node matches the current page path
-      const activeUIDMatchesCurrentPath = (activeUID && this.activePath.length)
-        ? (this.childrenMap[activeUID] || {}).path === last(this.activePath)
-        // if there is no activeUID this check is not relevant
-        : true;
+      if (activeUID && this.activePath.length) {
+        activeUIDMatchesCurrentPath = (this.childrenMap[activeUID] || {}).path
+          === last(this.activePath);
+        // set ot `false`, if there is no `activeUID`, but there are `activePath` items
+      } else if (!activeUID && this.activePath.length) {
+        activeUIDMatchesCurrentPath = false;
+      }
       // take a second pass at validating data
       if (
         // if the technology is different
