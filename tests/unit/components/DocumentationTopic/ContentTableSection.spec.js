@@ -32,6 +32,15 @@ describe('ContentTableSection', () => {
     expect(title.text()).toBe(propsData.title);
   });
 
+  it('renders an `id` if `anchor` is provided', () => {
+    const title = wrapper.find('.title');
+    expect(title.attributes('id')).toBe(undefined);
+    wrapper.setProps({
+      anchor: 'foo-bar',
+    });
+    expect(title.attributes('id')).toBe('foo-bar');
+  });
+
   it('renders a slot for a title', () => {
     wrapper = shallowMount(ContentTableSection, {
       propsData,

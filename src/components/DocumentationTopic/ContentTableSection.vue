@@ -12,7 +12,7 @@
   <div class="contenttable-section">
     <div class="section-title">
       <slot name="title">
-        <h3 class="title">{{ title }}</h3>
+        <h3 class="title" :id="anchor">{{ title }}</h3>
       </slot>
     </div>
     <div class="section-content">
@@ -30,6 +30,10 @@ export default {
     title: {
       type: String,
       required: true,
+    },
+    anchor: {
+      type: String,
+      default: null,
     },
   },
 };

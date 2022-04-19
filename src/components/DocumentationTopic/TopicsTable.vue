@@ -14,6 +14,7 @@
       v-for="section in sectionsWithTopics"
       :key="section.title"
       :title="section.title"
+      :anchor="section.anchor"
     >
       <template v-if="wrapTitle" slot="title">
         <WordBreak tag="h3" class="title">

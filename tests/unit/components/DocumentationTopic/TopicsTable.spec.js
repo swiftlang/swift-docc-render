@@ -44,6 +44,7 @@ describe('TopicsTable', () => {
         abstract: [{ type: 'text', text: 'foo abstract' }],
         discussion: { type: 'content', content: [{ type: 'text', text: 'foo discussion' }] },
         identifiers: [foo.identifier, 'bar'],
+        anchor: 'foobar',
       },
       {
         title: 'Baz',
@@ -77,7 +78,9 @@ describe('TopicsTable', () => {
     const sections = wrapper.findAll(ContentTableSection);
     expect(sections.length).toBe(propsData.sections.length);
     expect(sections.at(0).props('title')).toBe(propsData.sections[0].title);
+    expect(sections.at(0).props('anchor')).toBe(propsData.sections[0].anchor);
     expect(sections.at(1).props('title')).toBe(propsData.sections[1].title);
+    expect(sections.at(1).props('anchor')).toBe(null);
   });
 
   it('renders a `TopicsLinkBlock` for each topic with reference data in a section', () => {
