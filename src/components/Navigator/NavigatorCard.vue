@@ -259,11 +259,12 @@ export default {
      * Generates an array of tag labels for filtering.
      * Shows only tags, that have children matches.
      */
-    availableTags: ({ selectedTags, children }) => {
+    availableTags: ({ selectedTags, renderableChildNodesMap }) => {
       const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
       if (!tagLabels.length) return tagLabels;
       const tagLabelsSet = new Set(tagLabels);
       const availableTags = [];
+      const children = Object.values(renderableChildNodesMap);
       const len = children.length;
       let i;
       // iterate over the nodes to render
