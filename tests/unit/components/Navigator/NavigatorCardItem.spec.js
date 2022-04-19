@@ -229,6 +229,61 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
   });
 
+  describe('keyboard navigation', () => {
+    it('clicks the reference link on `@keydown.enter`', () => {
+      const wrapper = createWrapper();
+      const spy = jest.spyOn(wrapper.find(Reference).vm.$el, 'click');
+      wrapper.trigger('keydown.enter');
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens children on `@keydown.right`', () => {
+      const wrapper = createWrapper();
+      wrapper.trigger('keydown.right');
+      expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+    });
+
+    it('does nothing if already open on `@keydown.right`', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          expanded: true,
+        },
+      });
+      wrapper.trigger('keydown.right');
+      expect(wrapper.emitted('toggle')).toBeFalsy();
+    });
+
+    it('does nothing if has no children, on `@keydown.right`', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            childUIDs: [],
+          },
+        },
+      });
+      wrapper.trigger('keydown.right');
+      expect(wrapper.emitted('toggle')).toBeFalsy();
+    });
+
+    it('closes, on `@keydown.left`, if open', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          expanded: true,
+        },
+      });
+      wrapper.trigger('keydown.left');
+      expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+    });
+
+    it('focuses its parent, on `@keydown.left` if not open', () => {
+      const wrapper = createWrapper();
+      wrapper.trigger('keydown.left');
+      expect(wrapper.emitted('toggle')).toBeFalsy();
+      expect(wrapper.emitted('focus-parent')).toEqual([[defaultProps.item]]);
+    });
+  });
+
   describe('AX', () => {
     it('applies aria-hidden to NavigatorCardItem if isRendered is false', () => {
       const wrapper = createWrapper({
