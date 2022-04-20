@@ -11,7 +11,7 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="role" :enhanceBackground="enhanceBackground">
+      <DocumentationHero :role="role" :enhanceBackground="enhanceBackground">
         <template #above-content>
           <slot name="above-hero-content" />
         </template>
