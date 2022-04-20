@@ -57,8 +57,8 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 export const STORAGE_KEY = 'sidebar';
 
 // the maximum width, after which the full-width content does not grow
-export const MAX_WIDTH = 1800;
-export const ULTRA_WIDE_DEFAULT = 500;
+export const MAX_WIDTH = 1920;
+export const ULTRA_WIDE_DEFAULT = 543;
 
 export const eventsMap = {
   touch: {
