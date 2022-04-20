@@ -65,6 +65,20 @@ describe('DocumentationHero', () => {
     });
   });
 
+  it('renders the right classes based on `extraPadding` prop', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        extraPadding: true,
+      },
+    });
+    expect(wrapper.find('.extra-padding').exists()).toBe(true);
+
+    wrapper.setProps({
+      extraPadding: false,
+    });
+    expect(wrapper.find('.extra-padding').exists()).toBe(false);
+  });
+
   it('finds aliases, for the color', () => {
     const wrapper = createWrapper({
       propsData: {
