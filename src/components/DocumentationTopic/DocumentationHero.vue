@@ -27,7 +27,7 @@
     </div>
     <div
     class="documentation-hero__content"
-    :class = "{ 'extra-padding': extraPadding }"
+    :class="{ 'extra-padding': extraPadding }"
     >
       <slot />
     </div>

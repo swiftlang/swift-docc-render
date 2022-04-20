@@ -303,6 +303,7 @@ export default {
       sampleCodeDownload,
       hasAvailability,
     }) => (
+      // apply extra padding when there are less than 2 items in the Hero section other than `title`
       (!!roleHeading + !!abstract + !!sampleCodeDownload + !!hasAvailability) <= 1
     ),
     technologies({ modules = [] }) {
