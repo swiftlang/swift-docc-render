@@ -10,7 +10,8 @@
 
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import { shallowMount } from '@vue/test-utils';
-import { TopicTypes, TopicTypeAliases, TopicTypeColorsMap } from '@/constants/TopicTypes';
+import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
+import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 import CollectionIcon from '@/components/Icons/CollectionIcon.vue';
 
 const createWrapper = opts => shallowMount(NavigatorLeafIcon, opts);
@@ -22,7 +23,7 @@ const {
 const cases = Object.keys(TopicTypes).map((type) => {
   const k = TopicTypeAliases[type] || type;
   const icon = TopicTypeIcons[k] || CollectionIcon;
-  const color = TopicTypeColorsMap[k];
+  const color = HeroColorsMap[k];
   return [type, icon.name, TopicTypeProps[type] || {}, color, icon];
 });
 
