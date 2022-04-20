@@ -65,7 +65,7 @@ $breakpoint-attributes: (
   @return map-keys($attributes);
 }
 
-/// Returns the width for the dynamic-sidebar-content.
+/// Returns the width for the dynamic-sidebar-content in small viewport.
 /// This function allows overriding the small width in third party themes.
 ///
 /// @param {Number} $content-width
