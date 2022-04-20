@@ -107,7 +107,7 @@ export default {
     activePath({ parentTopicReferences, $route: { path } }) {
       // Ensure the path does not have a trailing slash
       // eslint-disable-next-line no-param-reassign
-      path = path.replace(/\/$/, '');
+      path = path.replace(/\/$/, '').toLowerCase();
       // route's path is activePath on root
       if (!parentTopicReferences.length) return [path];
       let itemsToSlice = 1;
