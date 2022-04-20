@@ -34,7 +34,8 @@
 <script>
 
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
-import { TopicTypeColorsMap, TopicTypeAliases, TopicTypeColors } from 'docc-render/constants/TopicTypes';
+import { TopicTypeAliases } from 'docc-render/constants/TopicTypes';
+import { HeroColorsMap, HeroColors } from 'docc-render/constants/HeroColors';
 
 export default {
   name: 'DocumentationHero',
@@ -51,7 +52,7 @@ export default {
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
-    color: ({ type }) => TopicTypeColorsMap[TopicTypeAliases[type] || type] || TopicTypeColors.teal,
+    color: ({ type }) => HeroColorsMap[TopicTypeAliases[type] || type] || HeroColors.teal,
     styles: ({ color }) => ({
       // use the color or fallback to the gray secondary, if not defined.
       '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,

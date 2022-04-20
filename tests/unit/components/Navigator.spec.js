@@ -181,13 +181,13 @@ describe('Navigator', () => {
     ]);
   });
 
-  it('strips out trailing slashes from the last activePath item', () => {
+  it('casts to lowercase and strips out trailing slashes from the last activePath item', () => {
     const wrapper = createWrapper({
       mocks: {
         ...mocks,
         $route: {
           ...mocks.$route,
-          path: '/documentation/foo/bar/',
+          path: '/documentation/Foo/Bar/',
         },
       },
     });
