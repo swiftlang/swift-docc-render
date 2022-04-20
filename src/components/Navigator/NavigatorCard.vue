@@ -1016,7 +1016,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     padding-left: $nav-padding;
     padding-right: $nav-padding;
 
-    @include safe-area-left-set(left, 0px);
+    @include safe-area-left-set(padding-left, $nav-padding);
   }
 
   @include breakpoint(small, nav) {
