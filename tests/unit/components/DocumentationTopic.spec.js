@@ -329,6 +329,16 @@ describe('DocumentationTopic', () => {
   });
 
   describe('description column', () => {
+    it('renders the description section', () => {
+      const description = wrapper.find('.description');
+      expect(description.exists()).toBe(true);
+      expect(description.classes()).toContain('after-enhanced-hero');
+      wrapper.setProps({
+        symbolKind: 'something-else',
+      });
+      expect(description.classes()).not.toContain('after-enhanced-hero');
+    });
+
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
