@@ -11,7 +11,11 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="role" :enhanceBackground="enhanceBackground">
+      <DocumentationHero
+        :role="role"
+        :enhanceBackground="enhanceBackground"
+        :extraPadding="extraPadding"
+      >
         <template #above-content>
           <slot name="above-hero-content" />
         </template>
@@ -37,7 +41,7 @@
         />
       </DocumentationHero>
       <div v-if="showContainer" class="container">
-        <div class="description">
+        <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -293,6 +297,15 @@ export default {
       objcPath && swiftPath && isTargetIDE
     ),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    extraPadding: ({
+      roleHeading,
+      abstract,
+      sampleCodeDownload,
+      hasAvailability,
+    }) => (
+      // apply extra padding when there are less than 2 items in the Hero section other than `title`
+      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!hasAvailability) <= 1
+    ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
         list.push(module.name);
@@ -384,12 +397,14 @@ export default {
 }
 
 .description {
+  margin-bottom: $contenttable-spacing-single-side;
+
   &:empty {
     display: none;
   }
 
-  &:not(:empty) {
-    margin-bottom: $contenttable-spacing-single-side;
+  &.after-enhanced-hero {
+    margin-top: $contenttable-spacing-single-side;
   }
 
   /deep/ .content + * {
