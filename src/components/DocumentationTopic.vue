@@ -12,7 +12,7 @@
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
       <DocumentationHero
-        :type="role"
+        :role="role"
         :enhanceBackground="enhanceBackground"
         :extraPadding="extraPadding"
       >

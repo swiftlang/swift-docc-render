@@ -213,7 +213,7 @@ describe('DocumentationTopic', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
     expect(hero.props()).toEqual({
-      type: propsData.role,
+      role: propsData.role,
       enhanceBackground: true,
       extraPadding: false,
     });
@@ -222,7 +222,7 @@ describe('DocumentationTopic', () => {
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.props()).toEqual({
-      type: TopicTypes.collection,
+      role: TopicTypes.collection,
       enhanceBackground: true,
       extraPadding: false,
     });
@@ -251,7 +251,7 @@ describe('DocumentationTopic', () => {
     });
     const hero = wrapper.find(DocumentationHero);
     expect(hero.props()).toEqual({
-      type: 'symbol',
+      role: 'symbol',
       enhanceBackground: false,
       extraPadding: false,
     });
