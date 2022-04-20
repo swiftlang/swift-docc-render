@@ -25,7 +25,10 @@
     <div class="documentation-hero__above-content">
       <slot name="above-content" />
     </div>
-    <div class="documentation-hero__content">
+    <div
+    class="documentation-hero__content"
+    :class="{ 'extra-padding': extraPadding }"
+    >
       <slot />
     </div>
   </div>
@@ -47,6 +50,10 @@ export default {
       required: true,
     },
     enhanceBackground: {
+      type: Boolean,
+      required: true,
+    },
+    extraPadding: {
       type: Boolean,
       required: true,
     },
@@ -168,6 +175,11 @@ $doc-hero-icon-dimension: 250px;
   &:after {
     content: none;
   }
+}
+
+.extra-padding {
+  padding-top: rem(60px);
+  padding-bottom: rem(60px);
 }
 
 .theme-dark /deep/ a:not(.button-cta) {

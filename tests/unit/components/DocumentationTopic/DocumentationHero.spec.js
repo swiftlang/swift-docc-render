@@ -18,6 +18,7 @@ import { TopicRole } from '@/constants/roles';
 const defaultProps = {
   role: TopicTypes.class,
   enhanceBackground: true,
+  extraPadding: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -64,6 +65,16 @@ describe('DocumentationHero', () => {
     expect(wrapper.vm.styles).toEqual({
       '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary))`,
     });
+  });
+
+  it('renders the right classes based on `extraPadding` prop', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('.extra-padding').exists()).toBe(true);
+
+    wrapper.setProps({
+      extraPadding: false,
+    });
+    expect(wrapper.find('.extra-padding').exists()).toBe(false);
   });
 
   it('finds aliases, for the color', () => {
