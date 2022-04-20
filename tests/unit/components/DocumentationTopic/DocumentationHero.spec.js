@@ -13,9 +13,10 @@ import { shallowMount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import { HeroColors, HeroColorsMap } from '@/constants/HeroColors';
+import { TopicRole } from '@/constants/roles';
 
 const defaultProps = {
-  type: TopicTypes.class,
+  role: TopicTypes.class,
   enhanceBackground: true,
   extraPadding: true,
 };
@@ -55,14 +56,14 @@ describe('DocumentationHero', () => {
     expect(allIcons).toHaveLength(1);
     expect(allIcons.at(0).props()).toEqual({
       withColors: true,
-      type: defaultProps.type,
+      type: defaultProps.role,
     });
     expect(allIcons.at(0).classes()).toEqual(['background-icon', 'first-icon']);
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.find('.above-content-slot').text()).toBe('Above Content Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary))`,
     });
   });
 
@@ -79,7 +80,7 @@ describe('DocumentationHero', () => {
   it('finds aliases, for the color', () => {
     const wrapper = createWrapper({
       propsData: {
-        type: TopicTypes.init,
+        role: TopicTypes.init,
       },
     });
     const color = HeroColorsMap[TopicTypeAliases[TopicTypes.init]];
@@ -91,7 +92,7 @@ describe('DocumentationHero', () => {
   it('falls back to the teal color for types without a color', () => {
     const wrapper = createWrapper({
       propsData: {
-        type: TopicTypes.section,
+        role: TopicTypes.section,
       },
     });
     expect(wrapper.vm.styles).toEqual({
@@ -101,7 +102,7 @@ describe('DocumentationHero', () => {
 
   it('utilizes the "sky" color for top level collection pages', () => {
     const wrapper = createWrapper({
-      propsData: { type: TopicTypes.collection },
+      propsData: { role: TopicTypes.collection },
     });
     expect(wrapper.vm.styles['--accent-color'])
       .toBe('var(--color-type-icon-sky, var(--color-figure-gray-secondary))');
@@ -118,7 +119,27 @@ describe('DocumentationHero', () => {
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.type]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary))`,
     });
+  });
+
+  it('maps the "collection" role to the "module" type', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        enhanceBackground: true,
+        role: TopicRole.collection,
+      },
+    });
+    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(TopicTypes.module);
+  });
+
+  it('maps the "collectionGroup" role to the "collection" type', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        enhanceBackground: true,
+        role: TopicRole.collectionGroup,
+      },
+    });
+    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(TopicTypes.collection);
   });
 });
