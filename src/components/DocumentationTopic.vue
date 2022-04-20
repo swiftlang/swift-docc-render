@@ -11,7 +11,7 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="role" :enhanceBackground="enhanceBackground">
+      <DocumentationHero :role="role" :enhanceBackground="enhanceBackground">
         <template #above-content>
           <slot name="above-hero-content" />
         </template>
@@ -37,7 +37,7 @@
         />
       </DocumentationHero>
       <div v-if="showContainer" class="container">
-        <div class="description">
+        <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -384,12 +384,14 @@ export default {
 }
 
 .description {
+  margin-bottom: $contenttable-spacing-single-side;
+
   &:empty {
     display: none;
   }
 
-  &:not(:empty) {
-    margin-bottom: $contenttable-spacing-single-side;
+  &.after-enhanced-hero {
+    margin-top: $contenttable-spacing-single-side;
   }
 
   /deep/ .content + * {

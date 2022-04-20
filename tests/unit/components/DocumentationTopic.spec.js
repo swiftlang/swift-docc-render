@@ -212,12 +212,12 @@ describe('DocumentationTopic', () => {
   it('renders a `DocumentationHero`, enabled', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
-    expect(hero.props()).toEqual({ type: propsData.role, enhanceBackground: true });
+    expect(hero.props()).toEqual({ role: propsData.role, enhanceBackground: true });
   });
 
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.collection, enhanceBackground: true });
+    expect(hero.props()).toEqual({ role: TopicTypes.collection, enhanceBackground: true });
   });
 
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
@@ -234,7 +234,7 @@ describe('DocumentationTopic', () => {
       },
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: 'symbol', enhanceBackground: false });
+    expect(hero.props()).toEqual({ role: 'symbol', enhanceBackground: false });
   });
 
   it('renders a `Title`', () => {
@@ -329,6 +329,16 @@ describe('DocumentationTopic', () => {
   });
 
   describe('description column', () => {
+    it('renders the description section', () => {
+      const description = wrapper.find('.description');
+      expect(description.exists()).toBe(true);
+      expect(description.classes()).toContain('after-enhanced-hero');
+      wrapper.setProps({
+        symbolKind: 'something-else',
+      });
+      expect(description.classes()).not.toContain('after-enhanced-hero');
+    });
+
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });

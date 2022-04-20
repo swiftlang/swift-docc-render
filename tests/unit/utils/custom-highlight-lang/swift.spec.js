@@ -18,6 +18,10 @@ describe('swift', () => {
     language = swift(hljs);
   });
 
+  it('recognizes the `distributed` keyword', () => {
+    expect(language.keywords.keyword.includes('distributed')).toBe(true);
+  });
+
   describe('class mode', () => {
     let mode;
 
