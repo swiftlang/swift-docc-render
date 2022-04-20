@@ -17,6 +17,7 @@ import { HeroColors, HeroColorsMap } from '@/constants/HeroColors';
 const defaultProps = {
   type: TopicTypes.class,
   enhanceBackground: true,
+  extraPadding: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -66,11 +67,7 @@ describe('DocumentationHero', () => {
   });
 
   it('renders the right classes based on `extraPadding` prop', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        extraPadding: true,
-      },
-    });
+    const wrapper = createWrapper();
     expect(wrapper.find('.extra-padding').exists()).toBe(true);
 
     wrapper.setProps({

@@ -228,6 +228,14 @@ describe('DocumentationTopic', () => {
     });
   });
 
+  it('computes `extraPadding correctly', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props('extraPadding')).toBe(false);
+
+    wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
+    expect(hero.props('extraPadding')).toBe(true);
+  });
+
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
     /* wrapper.setProps({
       symbolKind: 'protocol',
