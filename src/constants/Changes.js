@@ -21,3 +21,9 @@ export const ChangeNames = {
   [ChangeTypes.added]: 'Added',
   [ChangeTypes.deprecated]: 'Deprecated',
 };
+
+export const ChangeNameToType = {
+  Modified: ChangeTypes.modified,
+  Added: ChangeTypes.added,
+  Deprecated: ChangeTypes.deprecated,
+};
