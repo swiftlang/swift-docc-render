@@ -25,7 +25,10 @@
     <div class="documentation-hero__above-content">
       <slot name="above-content" />
     </div>
-    <div class="documentation-hero__content">
+    <div
+    class="documentation-hero__content"
+    :class="{ 'extra-padding': extraPadding }"
+    >
       <slot />
     </div>
   </div>
@@ -34,18 +37,23 @@
 <script>
 
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
-import { TopicTypeAliases } from 'docc-render/constants/TopicTypes';
+import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap, HeroColors } from 'docc-render/constants/HeroColors';
+import { TopicRole } from 'docc-render/constants/roles';
 
 export default {
   name: 'DocumentationHero',
   components: { NavigatorLeafIcon },
   props: {
-    type: {
+    role: {
       type: String,
       required: true,
     },
     enhanceBackground: {
+      type: Boolean,
+      required: true,
+    },
+    extraPadding: {
       type: Boolean,
       required: true,
     },
@@ -57,6 +65,22 @@ export default {
       // use the color or fallback to the gray secondary, if not defined.
       '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
     }),
+    // This mapping is necessary to help create a consistent mapping for the
+    // following kinds of things, which are represented as different strings
+    // depending on if the data comes from RenderJSON for a page or the
+    // navigator.
+    type: ({ role }) => {
+      switch (role) {
+      case TopicRole.collection:
+        // map role: "collection" to type: "module"
+        return TopicTypes.module;
+      case TopicRole.collectionGroup:
+        // map role: "collectionGroup" to type: "collection"
+        return TopicTypes.collection;
+      default:
+        return role;
+      }
+    },
   },
 };
 </script>
@@ -151,6 +175,11 @@ $doc-hero-icon-dimension: 250px;
   &:after {
     content: none;
   }
+}
+
+.extra-padding {
+  padding-top: rem(60px);
+  padding-bottom: rem(60px);
 }
 
 .theme-dark /deep/ a:not(.button-cta) {
