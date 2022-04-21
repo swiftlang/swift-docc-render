@@ -13,6 +13,6 @@ import { safeHighlightPattern } from '@/utils/search-utils';
 describe('search-utils', () => {
   it('returns a safe pattern for highlighting', () => {
     expect(safeHighlightPattern('text $ % ( * .'))
-      .toEqual(/\s*t\s*e\s*x\s*t\s*\$\s*%\s*\(\s*\*\s*\./gi);
+      .toEqual(/t\s*e\s*x\s*t\s*\$\s*%\s*\(\s*\*\s*\./gi);
   });
 });
