@@ -782,6 +782,34 @@ describe('NavigatorCard', () => {
     });
   });
 
+  describe('on @focus-parent', () => {
+    it('focuses parent', async () => {
+      const wrapper = createWrapper();
+      await flushPromises();
+      const items = wrapper.findAll(NavigatorCardItem);
+      expect(items.at(0).props('isFocused')).toBe(false);
+      expect(items.at(1).props('isFocused')).toBe(true);
+      items.at(1).vm.$emit('focus-parent', root0Child0);
+      await flushPromises();
+      expect(items.at(0).props('isFocused')).toBe(true);
+      expect(items.at(1).props('isFocused')).toBe(false);
+    });
+
+    it('does nothing, if parent is root', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          activePath: [root1.path],
+        },
+      });
+      await flushPromises();
+      const items = wrapper.findAll(NavigatorCardItem);
+      expect(items.at(1).props('isFocused')).toBe(true);
+      items.at(1).vm.$emit('focus-parent', root1);
+      await flushPromises();
+      expect(items.at(1).props('isFocused')).toBe(true);
+    });
+  });
+
   it('highlights the current page, and expands all of its parents', async () => {
     const wrapper = createWrapper();
     await flushPromises();
@@ -1354,7 +1382,7 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.filter) return '';
       if (key === STORAGE_KEYS.openNodes) return [];
       if (key === STORAGE_KEYS.apiChanges) return false;
-      if (key === STORAGE_KEYS.activeUID) return null;
+      if (key === STORAGE_KEYS.activeUID) return root0Child0.uid;
       return '';
     });
     const wrapper = createWrapper();
@@ -1373,6 +1401,23 @@ describe('NavigatorCard', () => {
       if (key === STORAGE_KEYS.openNodes) return [root0.uid];
       if (key === STORAGE_KEYS.selectedTags) return [];
       if (key === STORAGE_KEYS.apiChanges) return true;
+      return '';
+    });
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+  });
+
+  it('does not restore the state, if `activeUID` is null, but there are activePath items', async () => {
+    sessionStorage.get.mockImplementation((key) => {
+      if (key === STORAGE_KEYS.filter) return '';
+      if (key === STORAGE_KEYS.technology) return defaultProps.technology;
+      // simulate we have collapses all, but the top item
+      if (key === STORAGE_KEYS.nodesToRender) return [root0.uid];
+      if (key === STORAGE_KEYS.openNodes) return [root0.uid];
+      if (key === STORAGE_KEYS.selectedTags) return [];
+      if (key === STORAGE_KEYS.apiChanges) return false;
+      if (key === STORAGE_KEYS.activeUID) return null;
       return '';
     });
     const wrapper = createWrapper();
