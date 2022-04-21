@@ -186,11 +186,14 @@ export function whiteSpaceIgnorantRegex(stringToSanitize) {
     char = trimmedString[i];
     // if the character is an escape char, pass it and the next character
     if (char === '\\') {
+      // pass both escape char and char, with an empty space match before, only if not first char
+      collector.push(`${i === 0 ? '' : spaceMatch}${char}`);
+      collector.push(trimmedString[i + 1]);
       // skip one character in next iteration
       i += 1;
-      // pass both escape char and char, with an empty space match before
-      collector.push(`${spaceMatch}${char}`);
-      collector.push(trimmedString[i]);
+    } else if (i === 0) {
+      // skip the first character, if its not a `\`
+      collector.push(char);
       // add anything else, but empty spaces
     } else if (char !== singleSpace) {
       collector.push(`${spaceMatch}${char}`);

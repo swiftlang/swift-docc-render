@@ -20,7 +20,7 @@ $large-border-radius: $border-radius !default;
 $big-border-radius: $border-radius !default;
 $small-border-radius: $border-radius !default;
 
-$contenttable-spacing-single-side: 2rem;
+$contenttable-spacing-single-side: 2.353rem;
 
 // Shared variables for tutorials-overview page components
 $tutorials-overview-tile-margin-single-side: 2px;
@@ -65,3 +65,6 @@ $total-columns: 12 !default;
 $card-horizontal-spacing: 10px;
 $card-horizontal-spacing-large: $card-horizontal-spacing * 2;
 $card-horizontal-spacing-small: $card-horizontal-spacing / 2;
+
+// Small vp padding and width
+$small-viewport-content-padding: 20px !default;
