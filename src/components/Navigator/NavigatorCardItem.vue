@@ -83,6 +83,7 @@
           />
         </Reference>
         <Badge v-if="isDeprecated" variant="deprecated" />
+        <Badge v-else-if="isBeta" variant="beta" />
       </div>
     </div>
   </div>
@@ -171,6 +172,7 @@ export default {
       if (!isParent) return `${baseLabel} ${usageLabel}`;
       return `${baseLabel} ${parentLabel} ${usageLabel}`;
     },
+    isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
   },
   methods: {
