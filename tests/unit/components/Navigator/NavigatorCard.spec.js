@@ -20,6 +20,7 @@ import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { BreakpointName } from '@/utils/breakpoints';
 import { waitFor } from '@/utils/loading';
+import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -1096,8 +1097,8 @@ describe('NavigatorCard', () => {
 
   it('allows filtering while API changes are ON', async () => {
     const apiChanges = {
-      [root0Child0.path]: 'modified',
-      [root0Child1.path]: 'modified',
+      [root0Child0.path]: ChangeTypes.modified,
+      [root0Child1.path]: ChangeTypes.modified,
     };
     const wrapper = createWrapper({
       propsData: {
@@ -1117,6 +1118,59 @@ describe('NavigatorCard', () => {
     expect(all).toHaveLength(2);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child0);
+  });
+
+  it('allows filtering by change type via tags, while API changes are ON', async () => {
+    const apiChanges = {
+      [root0Child0.path]: ChangeTypes.modified,
+      [root0Child1.path]: ChangeTypes.added,
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges,
+      },
+    });
+    await flushPromises();
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child0);
+    expect(all.at(2).props('item')).toEqual(root0Child1);
+    // filter
+    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [ChangeNames.added]);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(2);
+    expect(all.at(0).props('item')).toEqual(root0);
+    expect(all.at(1).props('item')).toEqual(root0Child1);
+  });
+
+  it('removes any previously selected API changes tags, if API changes goes OFF', async () => {
+    const apiChanges = {
+      [root0Child0.path]: ChangeTypes.modified,
+      [root0Child1.path]: ChangeTypes.added,
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        apiChanges,
+      },
+    });
+    await flushPromises();
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3);
+    // filter
+    const filter = wrapper.find(FilterInput);
+    filter.vm.$emit('update:selectedTags', [ChangeNames.added]);
+    await flushPromises();
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(2);
+    wrapper.setProps({ apiChanges: null });
+    await flushPromises();
+
+    // assert all items are again visible
+    all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+    expect(filter.props()).toHaveProperty('selectedTags', []);
   });
 
   it('clears previously open items, when filtering and clearing the filter', async () => {
@@ -1385,8 +1439,8 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper({
       propsData: {
         apiChanges: {
-          [root0Child0.path]: 'modified',
-          [root0Child1.path]: 'modified',
+          [root0Child0.path]: ChangeTypes.modified,
+          [root0Child1.path]: ChangeTypes.modified,
         },
       },
     });
@@ -1463,6 +1517,10 @@ describe('NavigatorCard', () => {
       index: 1,
       childUIDs: [],
     };
+    const apiChanges = {
+      [sampleCode.path]: ChangeTypes.modified,
+      [root0Child0.path]: ChangeTypes.added,
+    };
     const wrapper = createWrapper({
       propsData: {
         children: [root0, root0Child0, sampleCode],
@@ -1477,6 +1535,9 @@ describe('NavigatorCard', () => {
     filter.vm.$emit('input', sampleCode.title);
     await flushPromises();
     expect(filter.props('tags')).toEqual(['Sample Code']);
+    wrapper.setProps({ apiChanges });
+    await flushPromises();
+    expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
   });
 
   describe('navigating', () => {
