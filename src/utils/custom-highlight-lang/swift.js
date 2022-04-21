@@ -13,6 +13,16 @@ import swift from 'highlight.js/lib/languages/swift';
 export default function (hljs) {
   const language = swift(hljs);
 
+  // Temporarily patch the Swift language syntax to recognize `distributed` as
+  // a keyword until the next version of highlight.js (v11.6) is released, which
+  // will have built-in support for this [1]
+  //
+  // [1]: https://github.com/highlightjs/highlight.js/pull/3523
+  language.keywords.keyword = [
+    ...language.keywords.keyword,
+    'distributed',
+  ];
+
   const isClassMode = ({ beginKeywords = '' }) => beginKeywords
     .split(' ')
     .includes('class');
