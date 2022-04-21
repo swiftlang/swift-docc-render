@@ -66,6 +66,7 @@ describe('NavigatorCardItem', () => {
     const leafLink = wrapper.find('.leaf-link');
     expect(leafLink.is(Reference)).toBe(true);
     expect(leafLink.props('url')).toEqual(defaultProps.item.path);
+    expect(leafLink.props('ariaRole')).toBe(null);
     expect(leafLink.attributes('id')).toBe(`${defaultProps.item.uid}`);
     expect(wrapper.find(HighlightMatches).props()).toEqual({
       text: defaultProps.item.title,
@@ -354,6 +355,18 @@ describe('NavigatorCardItem', () => {
       });
       wrapper.find('.leaf-link').trigger('click');
       expect(wrapper.emitted('navigate')).toBeFalsy();
+    });
+
+    it('applies an aria-role to the link if `groupMarker`', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            type: TopicTypes.groupMarker,
+          },
+        },
+      });
+      expect(wrapper.find('.leaf-link').props('ariaRole')).toBe('presentation');
     });
 
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {

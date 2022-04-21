@@ -75,6 +75,7 @@
           class="leaf-link"
           tabindex="-1"
           ref="reference"
+          :aria-role="isGroupMarker ? 'presentation': null"
           @click.native="handleClick"
         >
           <HighlightMatches
