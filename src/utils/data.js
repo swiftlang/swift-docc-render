@@ -20,7 +20,7 @@ export class FetchError extends Error {
   }
 }
 
-export async function fetchData(path, params = {}) {
+export async function fetchData(path, params = {}, options) {
   function isBadResponse(response) {
     // When this is running in an IDE target, the `fetch` API will be used with
     // custom URL schemes. Right now, WebKit will return successful responses
@@ -41,7 +41,7 @@ export async function fetchData(path, params = {}) {
     url.search = queryString;
   }
 
-  const response = await fetch(url.href);
+  const response = await fetch(url.href, options);
   if (isBadResponse(response)) {
     throw response;
   }
