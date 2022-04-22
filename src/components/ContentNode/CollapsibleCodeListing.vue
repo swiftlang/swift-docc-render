@@ -115,7 +115,7 @@ pre {
   font-size: 15px;
 
   &.single-line {
-    border-radius: $big-border-radius;
+    border-radius: $large-border-radius;
   }
 }
 
