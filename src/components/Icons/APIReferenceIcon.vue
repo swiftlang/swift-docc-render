@@ -11,10 +11,11 @@
 <template>
   <SVGIcon viewBox="0 0 14 14" class="api-reference-icon">
     <title>API Reference</title>
-    <path d="M13 1v12h-12v-12zM12 2h-10v10h10z"></path>
-    <path d="M3 4h8v1h-8z"></path>
-    <path d="M3 6.5h8v1h-8z"></path>
-    <path d="M3 9h8v1h-8z"></path>
+    <path d="m1 1v12h12v-12zm11 11h-10v-10h10z"/>
+    <path d="m3 4h8v1h-8zm0 2.5h8v1h-8zm0 2.5h8v1h-8z"/>
+    <path d="m3 4h8v1h-8z"/>
+    <path d="m3 6.5h8v1h-8z"/>
+    <path d="m3 9h8v1h-8z"/>
   </SVGIcon>
 </template>
 
