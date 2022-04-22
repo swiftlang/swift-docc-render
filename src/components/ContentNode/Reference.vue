@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <component :is="refComponent" :url="urlWithParams" :is-active="isActiveComputed" :role="ariaRole">
+  <component :is="refComponent" :url="urlWithParams" :is-active="isActiveComputed">
     <slot />
   </component>
 </template>
@@ -88,10 +88,6 @@ export default {
       required: false,
     },
     titleStyle: {
-      type: String,
-      required: false,
-    },
-    ariaRole: {
       type: String,
       required: false,
     },

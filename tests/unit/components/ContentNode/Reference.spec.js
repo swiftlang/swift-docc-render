@@ -228,14 +228,4 @@ describe('Reference', () => {
     // add query params to url
     expect(wrapper.find(ReferenceExternal).props('url')).toBe('http://website.com');
   });
-
-  it('applies an aria role attribute', () => {
-    const wrapper = shallowMount(Reference, {
-      localVue,
-      router,
-      propsData: { url: 'https://foo.bar', ariaRole: 'presentation' },
-      slots: { default: 'Foobar' },
-    });
-    expect(wrapper.attributes('role')).toEqual('presentation');
-  });
 });
