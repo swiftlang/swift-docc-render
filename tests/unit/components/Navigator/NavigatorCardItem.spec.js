@@ -90,6 +90,38 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
   });
 
+  it('renders a beta badge when item is beta', () => {
+    let wrapper;
+    wrapper = createWrapper();
+    expect(wrapper.contains(Badge)).toBe(false);
+    wrapper = createWrapper({
+      propsData: {
+        item: {
+          ...defaultProps.item,
+          beta: true,
+        },
+      },
+    });
+    expect(wrapper.find(Badge).attributes('variant')).toBe('beta');
+  });
+
+  it('only renders a deprecated badge when item is both deprecated and beta', () => {
+    let wrapper;
+    wrapper = createWrapper();
+    expect(wrapper.contains(Badge)).toBe(false);
+    wrapper = createWrapper({
+      propsData: {
+        item: {
+          ...defaultProps.item,
+          beta: true,
+          deprecated: true,
+        },
+      },
+    });
+    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
+    expect(wrapper.findAll(Badge).length).toBe(1);
+  });
+
   it('does not render the expand button, if has no children', () => {
     const wrapper = createWrapper({
       propsData: {
