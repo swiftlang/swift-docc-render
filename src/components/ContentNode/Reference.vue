@@ -93,7 +93,7 @@ export default {
     },
     ariaRole: {
       type: String,
-      default: null,
+      required: false,
     },
   },
 };
