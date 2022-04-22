@@ -70,6 +70,8 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .declaration-diff {
+  background: var(--background, var(--color-code-background));
+
   &-version {
     padding-left: $code-source-spacing;
     @include change-highlight-end-spacing();
@@ -79,14 +81,16 @@ export default {
     margin: 0;
   }
 
-  &-current,
-  &-previous {
-    padding-top: 5px;
+  &-current {
+    padding-top: $change-highlight-vertical-space-total;
+    padding-bottom: 5px;
   }
 
   &-previous {
+    padding-top: 5px;
+    padding-bottom: $change-highlight-vertical-space-total;
     background-color: var(--color-changes-modified-previous-background);
-    border-radius: 0 0 $big-border-radius $big-border-radius;
+    border-radius: 0 0 $border-radius $border-radius;
     position: relative;
   }
 }

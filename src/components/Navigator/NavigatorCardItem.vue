@@ -301,34 +301,38 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
     &.changed {
       border: none;
-      width: rem(16px);
-      height: rem(16px);
-      margin-right: 6px;
+      width: 1em;
+      height: 1em;
+      margin-right: 7px;
+      z-index: 0;
 
       &:after {
-        width: 100%;
-        height: 100%;
-        background-image: $modified-rounded-svg;
+        top: 50%;
+        left: 50%;
+        right: auto;
+        bottom: auto;
+        transform: translate(-50%, -50%);
+        background-image: $modified-svg;
 
         @include prefers-dark {
-          background-image: $modified-dark-rounded-svg;
+          background-image: $modified-dark-svg;
         }
         margin: 0;
       }
 
       &-added::after {
-        background-image: $added-rounded-svg;
+        background-image: $added-svg;
 
         @include prefers-dark {
-          background-image: $added-dark-rounded-svg;
+          background-image: $added-dark-svg;
         }
       }
 
       &-deprecated::after {
-        background-image: $deprecated-rounded-svg;
+        background-image: $deprecated-svg;
 
         @include prefers-dark {
-          background-image: $deprecated-dark-rounded-svg;
+          background-image: $deprecated-dark-svg;
         }
       }
     }
