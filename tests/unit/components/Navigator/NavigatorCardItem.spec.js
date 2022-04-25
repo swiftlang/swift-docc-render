@@ -317,13 +317,13 @@ describe('NavigatorCardItem', () => {
   });
 
   describe('AX', () => {
-    it('applies aria-hidden to link if isRendered is false', () => {
+    it('applies aria-hidden if isRendered is false', () => {
       const wrapper = createWrapper({
         propsData: {
           isRendered: false,
         },
       });
-      expect(wrapper.find('.leaf-link').attributes('aria-hidden')).toBe('true');
+      expect(wrapper.attributes('aria-hidden')).toBe('true');
     });
 
     it('does not emit a `navigate` event, if is a groupMarker', () => {
