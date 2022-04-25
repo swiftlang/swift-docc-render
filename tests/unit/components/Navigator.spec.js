@@ -112,6 +112,12 @@ describe('Navigator', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  it('renders a nav', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('.navigator').is('nav')).toBe(true);
+  });
+
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
     // assert Navigator card is rendered
