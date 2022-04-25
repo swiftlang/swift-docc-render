@@ -117,7 +117,7 @@ $doc-hero-icon-dimension: 250px;
   // black overlay
   &:after {
     background: $doc-hero-overlay-background;
-    opacity: 0.4;
+    opacity: 0.7;
     width: 100%;
     position: absolute;
     content: '';
