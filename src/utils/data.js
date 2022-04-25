@@ -61,7 +61,10 @@ export async function fetchDataForRouteEnter(to, from, next) {
 
   let data;
   try {
-    data = await fetchData(path, to.query);
+    data = await fetchData(path, to.query, {
+      credentials: 'include',
+      mode: 'no-cors',
+    });
   } catch (error) {
     if (process.env.VUE_APP_TARGET === 'ide') {
       console.error(error);
