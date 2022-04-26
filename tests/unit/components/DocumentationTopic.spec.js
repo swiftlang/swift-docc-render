@@ -29,6 +29,7 @@ const {
   Topics,
   Title,
   BetaLegalText,
+  WordBreak,
 } = DocumentationTopic.components;
 
 const foo = {
@@ -259,10 +260,14 @@ describe('DocumentationTopic', () => {
 
   it('renders a `Title`', () => {
     const hero = wrapper.find(DocumentationHero);
+
     const title = hero.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
-    expect(title.text()).toBe(propsData.title);
+
+    const wb = title.find(WordBreak);
+    expect(wb.exists()).toBe(true);
+    expect(wb.text()).toBe(propsData.title);
   });
 
   it('renders smaller "Beta" and "Deprecated" text in title when relevant', () => {
@@ -276,6 +281,7 @@ describe('DocumentationTopic', () => {
       isSymbolDeprecated: true,
       isSymbolBeta: true,
     });
+    expect(title.text()).toEqual(expect.stringMatching(/FooKit\s+Deprecated/));
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
     expect(smalls.at(0).is('.beta')).toBe(false);
@@ -287,6 +293,7 @@ describe('DocumentationTopic', () => {
       isSymbolDeprecated: false,
       isSymbolBeta: true,
     });
+    expect(title.text()).toEqual(expect.stringMatching(/FooKit\s+Beta/));
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
     expect(smalls.at(0).is('.beta')).toBe(true);
@@ -298,6 +305,7 @@ describe('DocumentationTopic', () => {
       isSymbolDeprecated: true,
       isSymbolBeta: false,
     });
+    expect(title.text()).toEqual(expect.stringMatching(/FooKit\s+Deprecated/));
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
     expect(smalls.at(0).is('.beta')).toBe(false);
