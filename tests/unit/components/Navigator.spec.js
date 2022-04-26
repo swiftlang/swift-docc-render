@@ -113,13 +113,10 @@ describe('Navigator', () => {
     jest.clearAllMocks();
   });
 
-  it('renders a nav', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('.navigator').is('nav')).toBe(true);
-  });
-
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
+    // assert navigator is a `nav`
+    expect(wrapper.find('.navigator').is('nav')).toBe(true);
     // assert Navigator card is rendered
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
