@@ -13,6 +13,7 @@ export default {
     return {
       focusedIndex: 0,
       externalFocusChange: false,
+      latestKeyboardMovement: null,
     };
   },
   methods: {
@@ -26,6 +27,7 @@ export default {
       this.externalFocusChange = false;
       if (this.focusedIndex > 0) {
         this.focusIndex(this.focusedIndex - 1);
+        this.latestKeyboardMovement = 'prev';
       } else {
         this.startingPointHook();
       }
@@ -36,6 +38,7 @@ export default {
       this.externalFocusChange = false;
       if (this.focusedIndex < this.totalItemsToNavigate - 1) {
         this.focusIndex(this.focusedIndex + 1);
+        this.latestKeyboardMovement = 'next';
       } else {
         this.endingPointHook();
       }

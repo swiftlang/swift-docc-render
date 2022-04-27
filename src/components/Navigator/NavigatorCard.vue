@@ -49,6 +49,7 @@
             @focusin.native="handleFocusIn"
             @focusout.native="handleFocusOut"
             @update="handleScrollerUpdate"
+            @scroll.native="handleScroll"
           >
             <NavigatorCardItem
               :item="item"
@@ -812,6 +813,26 @@ export default {
       if (!this.isInsideScroller(event.relatedTarget)) {
         this.lastFocusTarget = null;
       }
+    },
+    handleScroll(event) {
+      if (!this.latestKeyboardMovement) return;
+      // prevent default scroll
+      event.preventDefault();
+      // if the lastest keyboard movement as been next
+      // scroll down the scroller
+      if (this.latestKeyboardMovement === 'next') {
+        this.$refs.scroller.$el.scrollBy({
+          top: 12,
+          left: 0,
+        });
+      }
+      // if the lastest keyboard movement as been prev
+      // scroll to current focus item
+      if (this.latestKeyboardMovement === 'prev') {
+        this.scrollToFocus();
+      }
+      // reset latest keyboard movement
+      this.latestKeyboardMovement = null;
     },
     handleScrollerUpdate: debounce(async function handleScrollerUpdate() {
       // wait is long, because the focus change is coming in very late
