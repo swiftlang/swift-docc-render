@@ -1121,6 +1121,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   @include breakpoint(medium, nav) {
     padding-bottom: $nav-menu-items-ios-bottom-spacing;
   }
+  // hack to allow scrolling on Safari
+  /deep/ .vue-recycle-scroller__item-wrapper {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .filter-wrapper {
