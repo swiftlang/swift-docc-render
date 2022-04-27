@@ -24,7 +24,7 @@
     <slot :isTargetIDE="isTargetIDE">
       <router-view />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
-      <Footer v-else />
+      <Footer v-else-if="!isTargetIDE" />
     </slot>
     <slot name="footer" :isTargetIDE="isTargetIDE" />
   </div>
