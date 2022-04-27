@@ -356,6 +356,18 @@ describe('NavigatorCardItem', () => {
       expect(wrapper.emitted('navigate')).toBeFalsy();
     });
 
+    it('renders a h3 if it is a groupMaker', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            type: TopicTypes.groupMarker,
+          },
+        },
+      });
+      expect(wrapper.find('.leaf-link').is('h3')).toBe(true);
+    });
+
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {
       const wrapper = createWrapper();
       expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBeFalsy();
