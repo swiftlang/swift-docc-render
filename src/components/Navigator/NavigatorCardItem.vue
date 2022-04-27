@@ -67,11 +67,11 @@
         >
           {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
         </span>
-        <Reference
+        <component
+          :is="refComponent"
           :id="item.uid"
-          :url="item.path || ''"
-          :isActive="!isGroupMarker"
           :class="{ bolded: isBold }"
+          :url="isGroupMarker ? null : (item.path || '')"
           class="leaf-link"
           tabindex="-1"
           ref="reference"
@@ -81,7 +81,7 @@
             :text="item.title"
             :matcher="filterPattern"
           />
-        </Reference>
+        </component>
         <Badge v-if="isDeprecated" variant="deprecated" />
         <Badge v-else-if="isBeta" variant="beta" />
       </div>
@@ -174,6 +174,7 @@ export default {
     },
     isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
+    refComponent: ({ isGroupMarker }) => (isGroupMarker ? 'h3' : Reference),
   },
   methods: {
     toggleTree() {
