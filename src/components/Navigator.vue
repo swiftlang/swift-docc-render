@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="navigator">
+  <nav class="navigator">
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
@@ -26,7 +26,7 @@
     <div v-else class="loading-placeholder">
       Fetching...
     </div>
-  </div>
+  </nav>
 </template>
 
 <script>
