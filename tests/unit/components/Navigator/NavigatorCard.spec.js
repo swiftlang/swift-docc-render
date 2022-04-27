@@ -156,6 +156,7 @@ describe('NavigatorCard', () => {
     // assert link
     expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
+    expect(wrapper.find('.card-link').is('h2')).toBe(true);
     // assert scroller
     const scroller = wrapper.find(RecycleScroller);
     expect(wrapper.vm.activePathChildren).toHaveLength(2);
