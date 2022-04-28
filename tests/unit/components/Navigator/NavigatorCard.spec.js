@@ -915,6 +915,36 @@ describe('NavigatorCard', () => {
     expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
   });
 
+  it('scrolls down one item if the lastest keyboard movement as been `next`', async () => {
+    const wrapper = createWrapper();
+    const scrollByMock = jest.fn();
+    await flushPromises();
+    Object.defineProperty(wrapper.find({ ref: 'scroller' }).element, 'scrollBy', {
+      value: scrollByMock,
+    });
+    expect(scrollByMock).toHaveBeenCalledTimes(0);
+    expect(wrapper.vm.focusedIndex).toBe(1);
+    const items = wrapper.findAll(NavigatorCardItem);
+    expect(items.at(0).props('enableSelfFocus')).toBe(false);
+    expect(items.at(0).exists()).toBe(true);
+    items.at(0).trigger('keydown.down');
+    wrapper.find(RecycleScroller).trigger('scroll');
+    expect(scrollByMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('scrolls up one item if the lastest keyboard movement as been `prev`', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(wrapper.vm.focusedIndex).toBe(1);
+    const items = wrapper.findAll(NavigatorCardItem);
+    expect(items.at(0).props('enableSelfFocus')).toBe(false);
+    expect(items.at(0).exists()).toBe(true);
+    items.at(0).trigger('keydown.up');
+    wrapper.find(RecycleScroller).trigger('scroll');
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+  });
+
   it('filters items, keeping only direct matches, removing siblings, even if parent is a direct match', async () => {
     const root0Updated = {
       ...root0,
