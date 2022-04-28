@@ -279,6 +279,14 @@ describe("syntax-highlight", () => {
     }
   );
 
+  describe('custom aliases', () => {
+    it('does not throw an error when the language is "objective-c"', async () => {
+      const language = 'objective-c';
+      await registerHighlightLanguage(language);
+      expect(tryHighlight("foo", language)).not.toThrow();
+    });
+  });
+
   it("throws an error for unsupported languages", () => {
     expect(tryHighlight("foo", "bash")).toThrowError(
       /Unsupported language for syntax highlighting: bash/
