@@ -53,6 +53,10 @@
   @return $line-height / $size;
 }
 
+@function -transform-letter-spacing($letter-spacing) {
+  @return $letter-spacing * 0;
+}
+
 // Create a CSS map for a given Font Attributes
 //
 // @param {Map} $attributes
@@ -89,7 +93,7 @@
   $letter-spacing: map-get($attributes, letter-spacing);
 
   @if $letter-spacing {
-    $style: map-merge($style, (letter-spacing: $letter-spacing));
+    $style: map-merge($style, (letter-spacing: -transform-letter-spacing($letter-spacing)));
   }
 
   // generate font family
