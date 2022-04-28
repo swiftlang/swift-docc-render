@@ -27,7 +27,8 @@
           :swiftPath="swiftPath"
         />
         <Title :eyebrow="roleHeading">
-          {{ title }}
+          <WordBreak>{{ title }}</WordBreak>
+          <template v-if="isSymbolBeta || isSymbolDeprecated">&nbsp;</template>
           <small v-if="isSymbolDeprecated" slot="after" class="deprecated">Deprecated</small>
           <small v-else-if="isSymbolBeta" slot="after" class="beta">Beta</small>
         </Title>
@@ -95,6 +96,7 @@ import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
+import WordBreak from 'docc-render/components/WordBreak.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -141,6 +143,7 @@ export default {
     SeeAlso,
     Title,
     Topics,
+    WordBreak,
   },
   props: {
     abstract: {

@@ -21,9 +21,9 @@
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <div class="card-link">
+            <h2 class="card-link">
               {{ technology }}
-            </div>
+            </h2>
           </Reference>
         </div>
         <slot name="post-head" />
