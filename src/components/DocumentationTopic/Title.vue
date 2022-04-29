@@ -54,6 +54,13 @@ export default {
   }
 }
 
+.beta, .deprecated {
+  user-select: none; /* standard syntax */
+  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+  -moz-user-select: none; /* mozilla browsers */
+  -ms-user-select: none; /* IE10+ */
+}
+
 small {
   @include font-styles(eyebrow);
 
