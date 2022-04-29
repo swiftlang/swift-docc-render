@@ -24,13 +24,14 @@
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
-      Fetching...
+      <SpinnerIcon class="loading-spinner" />
     </div>
   </nav>
 </template>
 
 <script>
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
+import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
@@ -57,6 +58,7 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
+    SpinnerIcon,
   },
   props: {
     parentTopicIdentifiers: {
@@ -204,7 +206,17 @@ export default {
 
 .loading-placeholder {
   color: var(--color-figure-gray-secondary);
-  padding: 12px;
-  @include font-styles(body-reduced);
+  height: 100%;
+  text-align: center;
+  width: 100%;
+}
+
+.loading-spinner {
+  --spinner-size: 40px;
+
+  height: var(--spinner-size);
+  position: sticky;
+  top: calc(50% - var(--spinner-size));
+  width: var(--spinner-size);
 }
 </style>
