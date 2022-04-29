@@ -453,6 +453,8 @@ export default {
       this.debouncedFilter = value;
       // note to the component, that we want to reset the scroll
       this.resetScroll = true;
+      // reset the last focus target
+      this.lastFocusTarget = null;
     }, 500),
     /**
      * Finds which nodes need to be opened.
@@ -462,8 +464,6 @@ export default {
       [filteredChildren, activePathChildren, filter, selectedTags],
       [, activePathChildrenBefore = [], filterBefore = '', selectedTagsBefore = []] = [],
     ) {
-      // reset the last focus target
-      this.lastFocusTarget = null;
       // skip in case this is a first mount and we are syncing the `filter` and `selectedTags`.
       if (
         (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter))
