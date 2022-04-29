@@ -31,7 +31,30 @@ export default {
 </script>
 
 <style scoped>
-rect {
-  fill: currentColor;
+@keyframes fadeout {
+  from: {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
+
+rect {
+  animation-duration: 1000ms;
+  animation-name: fadeout;
+  animation-iteration-count: infinite;
+  fill: currentColor;
+
+}
+
+rect:nth-of-type(1) { animation-delay: 0ms; }
+rect:nth-of-type(2) { animation-delay: -125ms; }
+rect:nth-of-type(3) { animation-delay: -250ms; }
+rect:nth-of-type(4) { animation-delay: -375ms; }
+rect:nth-of-type(5) { animation-delay: -500ms; }
+rect:nth-of-type(6) { animation-delay: -625ms; }
+rect:nth-of-type(7) { animation-delay: -750ms; }
+rect:nth-of-type(8) { animation-delay: -875ms; }
 </style>
