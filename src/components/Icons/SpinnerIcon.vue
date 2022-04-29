@@ -30,9 +30,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @keyframes fadeout {
-  from: {
+  from {
     opacity: 1;
   }
 
@@ -42,19 +42,20 @@ export default {
 }
 
 rect {
-  animation-duration: 1000ms;
-  animation-name: fadeout;
+  $num-rects: 8;
+  $animation-duration: 1000ms;
+  $animation-offset: $animation-duration / $num-rects;
+
+  animation-duration: $animation-duration;
   animation-iteration-count: infinite;
+  animation-name: fadeout;
   fill: currentColor;
 
+  @for $i from 1 through $num-rects {
+    &:nth-of-type(#{$i}) {
+      $animation-delay: ($i - 1) * $animation-offset * -1;
+      animation-delay: $animation-delay;
+    }
+  }
 }
-
-rect:nth-of-type(1) { animation-delay: 0ms; }
-rect:nth-of-type(2) { animation-delay: -125ms; }
-rect:nth-of-type(3) { animation-delay: -250ms; }
-rect:nth-of-type(4) { animation-delay: -375ms; }
-rect:nth-of-type(5) { animation-delay: -500ms; }
-rect:nth-of-type(6) { animation-delay: -625ms; }
-rect:nth-of-type(7) { animation-delay: -750ms; }
-rect:nth-of-type(8) { animation-delay: -875ms; }
 </style>
