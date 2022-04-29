@@ -156,6 +156,7 @@ describe('NavigatorCard', () => {
     // assert link
     expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
+    expect(wrapper.find('.card-link').is('h2')).toBe(true);
     // assert scroller
     const scroller = wrapper.find(RecycleScroller);
     expect(wrapper.vm.activePathChildren).toHaveLength(2);
@@ -2016,28 +2017,6 @@ describe('NavigatorCard', () => {
       await flushPromises();
       // initiate a filter
       wrapper.find(FilterInput).vm.$emit('input', 'Child');
-      await flushPromises();
-      // trigger an update
-      wrapper.find(RecycleScroller).vm.$emit('update');
-      await flushPromises();
-      expect(wrapper.vm.lastFocusTarget).toEqual(null);
-      expect(focusSpy).toHaveBeenCalledTimes(0);
-    });
-
-    it('clears the focusTarget on page nav', async () => {
-      const wrapper = createWrapper();
-      await flushPromises();
-      // Set the focus item to be something outside the scroller.
-      // This might happen if it deletes an item, that was in focus
-      const button = wrapper.find(NavigatorCardItem).find('button');
-      // should be focus, but jsdom does not propagate that
-      button.trigger('focusin');
-      const focusSpy = jest.spyOn(button.element, 'focus');
-      await flushPromises();
-      // simulate a page nav
-      wrapper.setProps({
-        activePath: [root1.path],
-      });
       await flushPromises();
       // trigger an update
       wrapper.find(RecycleScroller).vm.$emit('update');

@@ -21,9 +21,9 @@
             <SidenavIcon class="icon-inline close-icon" />
           </button>
           <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <div class="card-link">
+            <h2 class="card-link">
               {{ technology }}
-            </div>
+            </h2>
           </Reference>
         </div>
         <slot name="post-head" />
@@ -453,6 +453,8 @@ export default {
       this.debouncedFilter = value;
       // note to the component, that we want to reset the scroll
       this.resetScroll = true;
+      // reset the last focus target
+      this.lastFocusTarget = null;
     }, 500),
     /**
      * Finds which nodes need to be opened.
@@ -462,8 +464,6 @@ export default {
       [filteredChildren, activePathChildren, filter, selectedTags],
       [, activePathChildrenBefore = [], filterBefore = '', selectedTagsBefore = []] = [],
     ) {
-      // reset the last focus target
-      this.lastFocusTarget = null;
       // skip in case this is a first mount and we are syncing the `filter` and `selectedTags`.
       if (
         (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter))
@@ -1120,6 +1120,13 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
   @include breakpoint(medium, nav) {
     padding-bottom: $nav-menu-items-ios-bottom-spacing;
+  }
+
+  // The VueVirtualScroller scrollbar is not selectable and draggable in Safari,
+  // which is most probably caused by the complicated styling of the component.
+  // Adding translate3D causes the browser to use hardware acceleration and fixes the issue.
+  /deep/ .vue-recycle-scroller__item-wrapper {
+    transform: translate3d(0, 0, 0);
   }
 }
 
