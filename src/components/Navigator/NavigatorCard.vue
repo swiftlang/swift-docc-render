@@ -784,27 +784,44 @@ export default {
       }
       // check if the current element is visible and needs scrolling into
       const element = document.getElementById(this.activeUID);
-      if (element) {
-        // get the position of the scroller in the screen
-        const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
-        // get the position of the active element
-        const { y } = element.getBoundingClientRect();
-        // calculate where it starts from
-        const calculatedY = y - areaY;
-        // if the element is within the scroll area, we dont need to scroll to it.
-        if (calculatedY >= 0 && calculatedY < areaHeight) return;
-      }
+      // check if item is inside scroller
+      if (this.getChildPositionInScroller(element) === 0) return;
       // find the index of the current active UID in the newly added nodes
       const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
       // check if the element is visible
       // call the scroll method on the `scroller` component.
       this.$refs.scroller.scrollToItem(index);
     },
+    getChildPositionInScroller(element) {
+      const offset = { top: 10, bottom: 10 };
+      // get the position of the scroller in the screen
+      const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
+      // get the position of the active element
+      const { y, height: elHeight } = element.getBoundingClientRect();
+      // calculate where it starts from
+      const calculatedY = y - areaY - offset.top;
+      // if the element is within the scroll area, we dont need to scroll to it.
+      if (calculatedY < 0) {
+        return -1;
+      }
+      if ((calculatedY + elHeight) >= (areaHeight - offset.bottom)) {
+        return 1;
+      }
+      return 0;
+    },
     isInsideScroller(element) {
       return this.$refs.scroller.$el.contains(element);
     },
     handleFocusIn(event) {
-      this.lastFocusTarget = event.target;
+      const element = event.target;
+      this.lastFocusTarget = element;
+      const multiplier = this.getChildPositionInScroller(element);
+      if (multiplier) {
+        this.$refs.scroller.$el.scrollBy({
+          top: 32 * multiplier,
+          left: 0,
+        });
+      }
     },
     handleFocusOut(event) {
       if (!event.relatedTarget) return;
