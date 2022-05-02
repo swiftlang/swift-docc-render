@@ -216,7 +216,7 @@ export default {
 
   height: var(--spinner-size);
   position: sticky;
-  top: calc(50% - var(--spinner-size));
+  top: calc(50% - (var(--spinner-size) / 2));
   width: var(--spinner-size);
 }
 </style>

@@ -43,17 +43,17 @@ export default {
 
 rect {
   $num-rects: 8;
-  $animation-duration: 1000ms;
-  $animation-offset: $animation-duration / $num-rects;
+  $animation-duration-full: 1000ms;
+  $animation-duration-per-rect: $animation-duration-full / $num-rects;
 
-  animation-duration: $animation-duration;
+  animation-duration: $animation-duration-full;
   animation-iteration-count: infinite;
   animation-name: fadeout;
   fill: currentColor;
 
   @for $i from 1 through $num-rects {
     &:nth-of-type(#{$i}) {
-      $animation-delay: ($i - 1) * $animation-offset * -1;
+      $animation-delay: ($i - 1) * $animation-duration-per-rect * -1;
       animation-delay: $animation-delay;
     }
   }
