@@ -9,15 +9,15 @@
 -->
 
 <template>
-  <SVGIcon class="spinner-icon" viewBox="0 0 39.0197 39.0197">
-    <rect x="7.2258" y="4.0997" width="5.0472" height="11.2995" transform="translate(23.5372 9.7494) rotate(135)"/>
-    <rect x="3.135" y="13.8757" width="5.0615" height="11.3314" transform="translate(-13.8757 25.2071) rotate(-90)"/>
-    <rect x="7.2258" y="23.6676" width="5.0472" height="11.2995" transform="translate(-4.0871 56.9416) rotate(-135)"/>
-    <rect x="17.0098" y="27.7202" width="5.0472" height="11.2995" transform="translate(39.0667 66.7399) rotate(-180)"/>
-    <rect x="26.7937" y="23.6676" width="5.0472" height="11.2995" transform="translate(70.7782 29.3173) rotate(135)"/>
-    <rect x="30.8463" y="13.8836" width="5.0472" height="11.2995" transform="translate(52.9033 -13.8366) rotate(90)"/>
-    <rect x="26.7937" y="4.0997" width="5.0472" height="11.2995" transform="translate(15.4807 -17.8749) rotate(45)"/>
-    <rect x="17.0106" width="5.0615" height="11.3314"/>
+  <SVGIcon class="spinner-icon" viewBox="0 0 39.02 39.02">
+    <path d="m15.529 11.96-3.57 3.569-7.99-7.99 3.57-3.57z"/>
+    <path d="M0 22.072v-5.06h11.331v5.06z"/>
+    <path d="m7.54 35.096-3.57-3.569 7.99-7.99 3.57 3.569z"/>
+    <path d="M22.057 39.02H17.01v-11.3h5.047z"/>
+    <path d="m35.096 31.528-3.569 3.568-7.99-7.99 3.569-3.569z"/>
+    <path d="M39.02 17.01v5.046h-11.3V17.01z"/>
+    <path d="m31.528 3.97 3.569 3.57-7.99 7.99-3.57-3.57z"/>
+    <path d="M17.011 0h5.061v11.331h-5.061z"/>
   </SVGIcon>
 </template>
 
@@ -41,7 +41,7 @@ export default {
   }
 }
 
-rect {
+path {
   $num-rects: 8;
   $animation-duration-full: 1000ms;
   $animation-duration-per-rect: $animation-duration-full / $num-rects;
