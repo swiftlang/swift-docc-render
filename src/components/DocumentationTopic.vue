@@ -29,8 +29,11 @@
         <Title :eyebrow="roleHeading">
           <WordBreak>{{ title }}</WordBreak>
           <template v-if="isSymbolBeta || isSymbolDeprecated">&nbsp;</template>
-          <small v-if="isSymbolDeprecated" slot="after" class="deprecated">Deprecated</small>
-          <small v-else-if="isSymbolBeta" slot="after" class="beta">Beta</small>
+          <small
+            v-if="isSymbolDeprecated || isSymbolBeta"
+            slot="after"
+            :class="tagName"
+            :tag-name="tagName"></small>
         </Title>
         <Abstract v-if="abstract" :content="abstract" />
         <div v-if="sampleCodeDownload">
@@ -330,6 +333,7 @@ export default {
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
     ),
+    tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
   },
   methods: {
     normalizePath(path) {
