@@ -207,6 +207,7 @@ export default {
 .loading-placeholder {
   color: var(--color-figure-gray-secondary);
   height: 100%;
+  padding: $section-spacing-single-side 0;
   text-align: center;
   width: 100%;
 }
