@@ -189,4 +189,18 @@ describe('NavigatorDataProvider', () => {
       technology: undefined,
     });
   });
+
+  it('returns undefined technology when index response is empty', async () => {
+    const emptyResponse = { interfaceLanguages: {} };
+    fetchIndexPathsData.mockResolvedValue(emptyResponse);
+    createWrapper();
+    await flushPromises();
+    expect(props).toEqual({
+      apiChanges: null,
+      isFetchingAPIChanges: false,
+      isFetching: false,
+      technology: undefined,
+      errorFetching: false,
+    });
+  });
 });

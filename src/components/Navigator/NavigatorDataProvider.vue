@@ -58,7 +58,7 @@ export default {
       let currentLangTechnologies = navigationIndex[interfaceLanguage] || [];
       // if no such items, we use the default swift one
       if (!currentLangTechnologies.length) {
-        currentLangTechnologies = navigationIndex[Language.swift.key.url];
+        currentLangTechnologies = navigationIndex[Language.swift.key.url] || [];
       }
       // find the current technology
       return currentLangTechnologies.find(t => (
