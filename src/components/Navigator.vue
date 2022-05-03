@@ -24,7 +24,9 @@
       @close="$emit('close')"
     />
     <div v-else class="loading-placeholder">
-      <SpinnerIcon class="loading-spinner" />
+      <transition name="delay-visibility" appear>
+        <SpinnerIcon class="loading-spinner" />
+      </transition>
     </div>
   </nav>
 </template>
@@ -213,11 +215,18 @@ export default {
 }
 
 .loading-spinner {
-  --spinner-size: 40px;
+  --spinner-size: 40px; // used for both width and height
+  --spinner-delay: 1s; // don't show spinner until this much time has passed
 
   height: var(--spinner-size);
   position: sticky;
   top: calc(50% - (var(--spinner-size) / 2));
+  visibility: visible;
   width: var(--spinner-size);
+
+  &.delay-visibility-enter-active {
+    transition: visibility var(--spinner-delay);
+    visibility: hidden;
+  }
 }
 </style>
