@@ -36,11 +36,9 @@ describe('Title', () => {
     expect(eyebrow.text()).toBe('Thing');
   });
 
-  it('renders a `WordBreak` with an <h1> tag for the default slot', () => {
-    const { WordBreak } = Title.components;
-    const wb = wrapper.find(WordBreak);
-    expect(wb.classes('title')).toBe(true);
-    expect(wb.attributes('tag')).toBe('h1');
-    expect(wb.text()).toBe('FooKit');
+  it('renders <h1> tag for the default slot', () => {
+    const h1 = wrapper.find('h1');
+    expect(h1.classes('title')).toBe(true);
+    expect(h1.text()).toBe('FooKit');
   });
 });
