@@ -792,36 +792,48 @@ export default {
       // call the scroll method on the `scroller` component.
       this.$refs.scroller.scrollToItem(index);
     },
+    /**
+     * Determine where a child element is positioned, inside the scroller container.
+     * returns -1, if above the viewport
+     * returns 0, if inside the viewport
+     * returns 1, if below the viewport
+     *
+     * @param {Element} element - child element
+     * @return Number
+     */
     getChildPositionInScroller(element) {
+      // offset for better visibility
       const offset = { top: 10, bottom: 10 };
       // get the position of the scroller in the screen
       const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
       // get the position of the active element
-      const { y, height: elHeight } = element.getBoundingClientRect();
-      // calculate where it starts from
-      const calculatedY = y - areaY - offset.top;
-      // if the element is within the scroll area, we dont need to scroll to it.
-      if (calculatedY < 0) {
+      const { y: elY, height: elHeight } = element.getBoundingClientRect();
+      // calculate where element starts from
+      const elementStart = elY - areaY - offset.top;
+      // element is above the scrollarea
+      if (elementStart < 0) {
         return -1;
       }
-      if ((calculatedY + elHeight) >= (areaHeight - offset.bottom)) {
+      // element ends below the scrollarea
+      if ((elementStart + elHeight) >= (areaHeight - offset.bottom)) {
         return 1;
       }
+      // element is inside the scrollarea
       return 0;
     },
     isInsideScroller(element) {
       return this.$refs.scroller.$el.contains(element);
     },
     handleFocusIn(event) {
-      const element = event.target;
-      this.lastFocusTarget = element;
-      const multiplier = this.getChildPositionInScroller(element);
-      if (multiplier) {
-        this.$refs.scroller.$el.scrollBy({
-          top: 32 * multiplier,
-          left: 0,
-        });
-      }
+      this.lastFocusTarget = event.target;
+      const multiplier = this.getChildPositionInScroller(event.target);
+      // multiplier is 0  the item is in scrollarea
+      if (multiplier === 0) return;
+      // scroll the area, up/down, based on position of child item
+      this.$refs.scroller.$el.scrollBy({
+        top: SIDEBAR_ITEM_SIZE * multiplier,
+        left: 0,
+      });
     },
     handleFocusOut(event) {
       if (!event.relatedTarget) return;
