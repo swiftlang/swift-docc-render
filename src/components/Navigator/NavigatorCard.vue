@@ -701,8 +701,12 @@ export default {
      * Persists the current state, so its not lost if you refresh or navigate away
      */
     persistState() {
-      const currentItem = this.childrenMap[this.activeUID] || {};
-      const path = currentItem.path || null;
+      // fallback to using the activePath items
+      const fallback = { path: this.lastActivePathItem };
+      // try to get the `path` for the current activeUID
+      const { path } = this.activeUID
+        ? (this.childrenMap[this.activeUID] || fallback)
+        : fallback;
       const technologyState = {
         technology: this.technology,
         // find the path buy the activeUID, because the lastActivePath wont be updated at this point
@@ -759,15 +763,10 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      let activeUIDMatchesCurrentPath = true;
       // check if activeUID node matches the current page path
-      if (activeUID && this.activePath.length) {
-        activeUIDMatchesCurrentPath = (this.childrenMap[activeUID] || {}).path
-          === this.lastActivePathItem;
-        // set ot `false`, if there is no `activeUID`, but there are `activePath` items
-      } else if (!activeUID && this.activePath.length) {
-        activeUIDMatchesCurrentPath = false;
-      }
+      const activeUIDMatchesCurrentPath = activeUID
+        ? ((this.childrenMap[activeUID] || {}).path === this.lastActivePathItem)
+        : this.activePath.length === 1;
       // take a second pass at validating data
       if (
         // if the technology is different
