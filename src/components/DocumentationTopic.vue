@@ -28,12 +28,11 @@
         />
         <Title :eyebrow="roleHeading">
           <WordBreak>{{ title }}</WordBreak>
-          <template v-if="isSymbolBeta || isSymbolDeprecated">&nbsp;</template>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
             slot="after"
             :class="tagName"
-            :tag-name="tagName"></small>
+            :data-tag-name="tagName"></small>
         </Title>
         <Abstract v-if="abstract" :content="abstract" />
         <div v-if="sampleCodeDownload">

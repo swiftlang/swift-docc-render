@@ -56,9 +56,10 @@ export default {
 
 small {
   @include font-styles(eyebrow);
+  padding-left: 10px;
 
   &::before {
-    content: attr(tag-name);
+    content: attr(data-tag-name);
   }
 
   &.Beta {
