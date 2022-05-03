@@ -803,12 +803,17 @@ export default {
      */
     getChildPositionInScroller(element) {
       if (!element) return 0;
+      const { paddingTop, paddingBottom } = getComputedStyle(this.$refs.scroller.$el);
       // offset for better visibility
-      const offset = { top: 10, bottom: 10 };
+      const offset = {
+        top: parseInt(paddingTop, 10) || 0,
+        bottom: parseInt(paddingBottom, 10) || 0,
+      };
       // get the position of the scroller in the screen
       const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
       // get the position of the active element
-      const { y: elY, height: elHeight } = element.getBoundingClientRect();
+      const { y: elY } = element.getBoundingClientRect();
+      const elHeight = SIDEBAR_ITEM_SIZE;
       // calculate where element starts from
       const elementStart = elY - areaY - offset.top;
       // element is above the scrollarea

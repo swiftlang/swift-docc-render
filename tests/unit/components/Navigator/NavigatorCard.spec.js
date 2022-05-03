@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -2090,6 +2090,30 @@ describe('NavigatorCard', () => {
         }),
       };
       expect(wrapper.vm.getChildPositionInScroller(element)).toBe(1);
+    });
+
+    it('takes into consideration the padding offsets', () => {
+      getChildPositionInScroller.mockRestore();
+      const wrapper = createWrapper();
+      jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+        paddingTop: '10px',
+        paddingBottom: '20px',
+      });
+      jest.spyOn(wrapper.find({ ref: 'scroller' }).element, 'getBoundingClientRect')
+        .mockReturnValue({
+          y: 50,
+          height: 1000,
+        });
+      expect(wrapper.vm.getChildPositionInScroller({
+        getBoundingClientRect: () => ({
+          y: 55, // visible, but not, when considering the offset
+        }),
+      })).toBe(-1);
+      expect(wrapper.vm.getChildPositionInScroller({
+        getBoundingClientRect: () => ({
+          y: 1010, // visible, but not, when considering the offset
+        }),
+      })).toBe(1);
     });
 
     it('returns 0 if the item is in the scrollarea', () => {
