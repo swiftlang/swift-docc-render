@@ -74,6 +74,7 @@ $deprecated-dark-rounded-svg: $deprecated-svg !default;
   // to click the space in between lines
   display: inline-flex;
   width: 100%;
+  box-sizing: border-box;
 
   @include breakpoint(small) {
     padding-left: 0;

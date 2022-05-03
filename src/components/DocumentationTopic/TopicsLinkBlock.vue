@@ -253,7 +253,6 @@ export default {
 
   &.changed {
     @include change-highlight-target();
-    box-sizing: border-box;
   }
 }
 
