@@ -144,10 +144,14 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
 });
 
 const clearPersistedStateSpy = jest.spyOn(NavigatorCard.methods, 'clearPersistedState');
+let getChildPositionInScroller;
 
 describe('NavigatorCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // mock the position helper function, as its too difficult to mock the boundingClientRects
+    getChildPositionInScroller = jest.spyOn(NavigatorCard.methods, 'getChildPositionInScroller')
+      .mockReturnValue(0);
   });
 
   it('renders the NavigatorCard', async () => {
@@ -902,18 +906,20 @@ describe('NavigatorCard', () => {
   it('allows filtering the items, opening all items, that have matches in children', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    // item is not scrolled to
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     const filter = wrapper.find(FilterInput);
     filter.vm.$emit('input', root0Child1GrandChild0.title);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    // assert list is scrolled to the top
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
   });
 
   it('filters items, keeping only direct matches, removing siblings, even if parent is a direct match', async () => {
@@ -936,32 +942,30 @@ describe('NavigatorCard', () => {
     });
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     // make sure we match at both the top item as well as one of its children
     filter.vm.$emit('input', 'Second');
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
     expect(all.at(0).props('item')).toEqual(root0Updated);
     expect(all.at(1).props('item')).toEqual(root0Child1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
   });
 
   it('renders all the children of a directly matched parent', async () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     filter.vm.$emit('input', root0.title);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     let all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root0);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // open the item
     all.at(0).vm.$emit('toggle', root0);
     await flushPromises();
@@ -981,26 +985,25 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     const filter = wrapper.find(FilterInput);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root1);
     // assert we reset the scroll to the top
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
   });
 
   it('aliases `project` to `tutorial`, when filtering using tags', async () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(4);
@@ -1008,17 +1011,16 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child0);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
   });
 
   it('allows filtering the items with filter and Tags, opening all items, that have matches in children', async () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     let all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(4);
@@ -1033,7 +1035,6 @@ describe('NavigatorCard', () => {
     expect(all).toHaveLength(2);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child0);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
   });
 
   it('allows opening an item, that has a filter match', async () => {
@@ -1543,8 +1544,11 @@ describe('NavigatorCard', () => {
 
   describe('navigating', () => {
     it('changes the open item, when navigating across pages, keeping the previously open items', async () => {
-      // simulate navigating to the bottom most item
+      // simulate navigating to the bottom most item.
       const wrapper = createWrapper();
+      await flushPromises();
+      // simulate the new item is below the fold
+      getChildPositionInScroller.mockReturnValueOnce(1);
       wrapper.setProps({
         activePath: [
           root0.path,
@@ -1582,6 +1586,8 @@ describe('NavigatorCard', () => {
         isBold: true,
         item: root0Child1GrandChild0,
       });
+      // simulate the new item is above the scrollarea
+      getChildPositionInScroller.mockReturnValueOnce(-1);
       // navigate to the top level sibling
       wrapper.setProps({
         activePath: [
@@ -1630,6 +1636,8 @@ describe('NavigatorCard', () => {
       let allItems = wrapper.findAll(NavigatorCardItem);
       const targetChild = allItems.at(2);
       expect(targetChild.props('item')).toEqual(root0Child1);
+      // simulate the new item is below the fold
+      getChildPositionInScroller.mockReturnValueOnce(1);
       // trigger a navigation
       targetChild.vm.$emit('navigate', root0Child1.uid);
       await wrapper.vm.$nextTick();
@@ -1649,14 +1657,16 @@ describe('NavigatorCard', () => {
         item: root0Child1,
         enableSelfFocus: false,
       });
-      // assert item is scrolled to
+      // assert item is scrolled to once
+      expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
       // now simulate the router change
       wrapper.setProps({ activePath: [root0.path, root0Child1.path] });
       await flushPromises();
       // assert its not called again
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       // assert items have not changed
       allItems = wrapper.findAll(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
@@ -1811,13 +1821,10 @@ describe('NavigatorCard', () => {
   });
 
   describe('scroll to item', () => {
-    const itemRect = jest.fn(() => ({ y: 12 }));
-    jest.spyOn(document, 'getElementById').mockReturnValue({
-      getBoundingClientRect: itemRect,
-    });
-
     it('resets the scroll position, if initiating a filter', async () => {
       const wrapper = createWrapper();
+      // simulate item is above the scrollarea
+      getChildPositionInScroller.mockReturnValueOnce(1);
       await flushPromises();
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
@@ -1834,30 +1841,14 @@ describe('NavigatorCard', () => {
     it('keeps the scroll position, if the item is already in the viewport, on navigation', async () => {
       const wrapper = createWrapper();
       await flushPromises();
-      const scroller = wrapper.find({ ref: 'scroller' });
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-      // mock the bounding rects
-      const scrollerRect = jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
-        y: 10,
-        height: 200,
-      });
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
       wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
       await flushPromises();
       // make sure scrollToItem is not called, because active item is already in the viewport
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-      wrapper.findAll(NavigatorCardItem).at(3).vm.$emit('navigate', root0Child1GrandChild0.uid);
-      itemRect.mockReturnValue({
-        y: 200, // near the end
-      });
-      await flushPromises();
-      // make sure scrollToItem is not called, because active item is already in the viewport
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
       // simulate header scroll
-      scrollerRect.mockReturnValue({
-        y: 0,
-        height: 210,
-      });
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      getChildPositionInScroller.mockReturnValueOnce(1);
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
       await flushPromises();
       // make sure scrollToItem is not called, because active item is already in the viewport
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
@@ -1866,34 +1857,52 @@ describe('NavigatorCard', () => {
     it('scrolls to item, if outside of visible viewport, on page navigation', async () => {
       const wrapper = createWrapper();
       await flushPromises();
-      const scroller = wrapper.find({ ref: 'scroller' });
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-      // mock the bounding rects
-      jest.spyOn(scroller.element, 'getBoundingClientRect').mockReturnValue({
-        y: 10,
-        height: 200,
-      });
-      itemRect.mockReturnValue({
-        y: -20,
-      });
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
+      getChildPositionInScroller.mockReturnValueOnce(-1);
       // scroll to the item
       wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
       await flushPromises();
       // make sure scrollToItem is called
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       // assert it was called for the 3-rd item
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2);
       // assert scrolling beyond
-      itemRect.mockReturnValue({
-        y: 250,
-      });
+      getChildPositionInScroller.mockReturnValueOnce(1);
       // scroll to the item
       wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
       await flushPromises();
       // make sure scrollToItem is called
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(3);
+      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
       // assert it was called for the 3-rd item
       expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
+    });
+
+    it('scrolls to the focused item, if not visible', async () => {
+      const wrapper = createWrapper();
+      const scrollBySpy = jest.fn();
+      wrapper.find({ ref: 'scroller' }).element.scrollBy = scrollBySpy;
+      await flushPromises();
+      expect(scrollBySpy).toHaveBeenCalledTimes(0);
+      // simulate item is not visible
+      getChildPositionInScroller.mockReturnValueOnce(1);
+      const items = wrapper.findAll(NavigatorCardItem);
+
+      items.at(3).trigger('focusin');
+      await flushPromises();
+      expect(scrollBySpy).toHaveBeenCalledTimes(1);
+      expect(scrollBySpy).toHaveBeenCalledWith({
+        top: SIDEBAR_ITEM_SIZE,
+        left: 0,
+      });
+      // simulate item is not visible
+      getChildPositionInScroller.mockReturnValueOnce(-1);
+      items.at(0).trigger('focusin');
+      await flushPromises();
+      expect(scrollBySpy).toHaveBeenCalledTimes(2);
+      expect(scrollBySpy).toHaveBeenCalledWith({
+        top: -1 * SIDEBAR_ITEM_SIZE,
+        left: 0,
+      });
     });
   });
 
@@ -2045,6 +2054,59 @@ describe('NavigatorCard', () => {
       await flushPromises();
       expect(wrapper.vm.lastFocusTarget).toEqual(null);
       expect(focusSpy).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('getChildPositionInScroller', () => {
+    it('returns -1 if item is above the scrollarea', () => {
+      getChildPositionInScroller.mockRestore();
+      const wrapper = createWrapper();
+      jest.spyOn(wrapper.find({ ref: 'scroller' }).element, 'getBoundingClientRect')
+        .mockReturnValueOnce({
+          y: 50,
+          height: 1000,
+        });
+      const element = {
+        getBoundingClientRect: () => ({
+          y: 25,
+          height: SIDEBAR_ITEM_SIZE,
+        }),
+      };
+      expect(wrapper.vm.getChildPositionInScroller(element)).toBe(-1);
+    });
+
+    it('returns 1 if items is below the scrollarea', () => {
+      getChildPositionInScroller.mockRestore();
+      const wrapper = createWrapper();
+      jest.spyOn(wrapper.find({ ref: 'scroller' }).element, 'getBoundingClientRect')
+        .mockReturnValueOnce({
+          y: 50,
+          height: 1000,
+        });
+      const element = {
+        getBoundingClientRect: () => ({
+          y: 1050,
+          height: SIDEBAR_ITEM_SIZE,
+        }),
+      };
+      expect(wrapper.vm.getChildPositionInScroller(element)).toBe(1);
+    });
+
+    it('returns 0 if the item is in the scrollarea', () => {
+      getChildPositionInScroller.mockRestore();
+      const wrapper = createWrapper();
+      jest.spyOn(wrapper.find({ ref: 'scroller' }).element, 'getBoundingClientRect')
+        .mockReturnValueOnce({
+          y: 50,
+          height: 1000,
+        });
+      const element = {
+        getBoundingClientRect: () => ({
+          y: 250,
+          height: SIDEBAR_ITEM_SIZE,
+        }),
+      };
+      expect(wrapper.vm.getChildPositionInScroller(element)).toBe(0);
     });
   });
 });

@@ -802,6 +802,7 @@ export default {
      * @return Number
      */
     getChildPositionInScroller(element) {
+      if (!element) return 0;
       // offset for better visibility
       const offset = { top: 10, bottom: 10 };
       // get the position of the scroller in the screen
