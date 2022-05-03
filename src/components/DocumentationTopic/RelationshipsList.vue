@@ -151,7 +151,6 @@ export default {
 
   &.changed {
     @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment();
 
     &:after {
       margin-top: $change-coin-y-offset-reduced;

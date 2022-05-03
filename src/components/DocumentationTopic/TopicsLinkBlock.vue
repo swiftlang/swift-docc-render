@@ -253,7 +253,6 @@ export default {
 
   &.changed {
     @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment();
     box-sizing: border-box;
   }
 }
