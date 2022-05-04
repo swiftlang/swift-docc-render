@@ -32,7 +32,8 @@
             v-if="isSymbolDeprecated || isSymbolBeta"
             slot="after"
             :class="tagName"
-            :data-tag-name="tagName"></small>
+            :data-tag-name="tagName"
+          />
         </Title>
         <Abstract v-if="abstract" :content="abstract" />
         <div v-if="sampleCodeDownload">
