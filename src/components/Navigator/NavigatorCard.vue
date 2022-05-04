@@ -272,7 +272,11 @@ export default {
 
       const tagLabelsSet = new Set(tagLabels);
       const generalTags = new Set([HIDE_DEPRECATED_TAG]);
-      const availableTags = [];
+      const availableTags = {
+        type: [],
+        changes: [],
+        other: [],
+      };
       const children = Object.values(renderableChildNodesMap);
       const len = children.length;
       let i;
@@ -280,7 +284,7 @@ export default {
       for (i = 0; i < len; i += 1) {
         // if there are no more tags to iterate over, end early
         if (!tagLabelsSet.size && !apiChangesTypesSet.size && !generalTags.size) {
-          return availableTags;
+          break;
         }
         // extract the type
         const { type, path, deprecated } = children[i];
@@ -290,20 +294,20 @@ export default {
         // try to match a tag
         if (tagLabelsSet.has(tagLabel)) {
           // if we have a match, store it
-          availableTags.push(tagLabel);
+          availableTags.type.push(tagLabel);
           // remove the match, so we can end the filter early
           tagLabelsSet.delete(tagLabel);
         }
         if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.push(ChangeNames[changeType]);
+          availableTags.changes.push(ChangeNames[changeType]);
           apiChangesTypesSet.delete(changeType);
         }
         if (deprecated && generalTags.has(HIDE_DEPRECATED_TAG)) {
-          availableTags.push(HIDE_DEPRECATED_TAG);
+          availableTags.other.push(HIDE_DEPRECATED_TAG);
           generalTags.delete(HIDE_DEPRECATED_TAG);
         }
       }
-      return availableTags;
+      return availableTags.type.concat(availableTags.changes, availableTags.other);
     },
     selectedTagsModelValue: {
       get: ({ selectedTags }) => selectedTags.map(tag => (

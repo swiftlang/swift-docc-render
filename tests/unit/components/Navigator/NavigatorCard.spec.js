@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -1556,7 +1556,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there are no Articles for example
-    expect(filter.props('tags')).toEqual(['Tutorials', HIDE_DEPRECATED_TAG, 'Articles']);
+    expect(filter.props('tags')).toEqual(['Tutorials', 'Articles', HIDE_DEPRECATED_TAG]);
     // apply a filter
     filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
     await flushPromises();
