@@ -169,9 +169,12 @@ describe('App', () => {
     expect(wrapper.find(InitialLoadingPlaceholder).exists()).toBe(true);
   });
 
-  it('renders a `Footer`', () => {
+  it('renders a default `Footer` for non-IDE targets', () => {
     const wrapper = createWrapper();
     expect(wrapper.contains(Footer)).toBe(true);
+
+    wrapper.setData({ isTargetIDE: true });
+    expect(wrapper.contains(Footer)).toBe(false);
   });
 
   describe('Custom CSS Properties', () => {
