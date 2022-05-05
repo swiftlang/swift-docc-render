@@ -46,7 +46,7 @@ export default {
   background-color: var(--color-fill-secondary);
 
   &-container {
-    @include breakpoint-content;
+    @include breakpoint-dynamic-sidebar-content;
   }
 
   &-label {
