@@ -156,6 +156,11 @@ export default {
     &:after {
       margin-top: $change-coin-y-offset-reduced;
     }
+
+     // ensure that column layout stays a block content
+    &.column {
+      display: block;
+    }
   }
 }
 
