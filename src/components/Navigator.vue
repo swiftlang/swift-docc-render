@@ -23,17 +23,18 @@
       :api-changes="apiChanges"
       @close="$emit('close')"
     />
-    <div v-else class="loading-placeholder">
+    <NavigatorCardInner v-else class="loading-placeholder">
       <transition name="delay-visibility" appear>
         <SpinnerIcon class="loading-spinner" />
       </transition>
-    </div>
+    </NavigatorCardInner>
   </nav>
 </template>
 
 <script>
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
+import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
@@ -60,6 +61,7 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
+    NavigatorCardInner,
     SpinnerIcon,
   },
   props: {
@@ -207,11 +209,9 @@ export default {
 }
 
 .loading-placeholder {
+  align-items: center;
   color: var(--color-figure-gray-secondary);
-  height: 100%;
-  padding: $section-spacing-single-side 0;
-  text-align: center;
-  width: 100%;
+  justify-content: center;
 }
 
 .loading-spinner {
@@ -219,8 +219,6 @@ export default {
   --spinner-delay: 1s; // don't show spinner until this much time has passed
 
   height: var(--spinner-size);
-  position: sticky;
-  top: calc(50% - (var(--spinner-size) / 2));
   visibility: visible;
   width: var(--spinner-size);
 
