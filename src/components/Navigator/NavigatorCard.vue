@@ -150,6 +150,8 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.project]: FILTER_TAGS.tutorials,
 };
 
+const HIDE_DEPRECATED_TAG = 'Hide Deprecated';
+
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
  * For performance reasons, the component uses watchers over computed, so we can more precisely
@@ -167,6 +169,7 @@ export default {
     NO_CHILDREN,
     ERROR_FETCHING,
     ITEMS_FOUND,
+    HIDE_DEPRECATED_TAG,
   },
   components: {
     FilterInput,
@@ -260,41 +263,51 @@ export default {
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
 
       const tagLabelsSet = new Set(tagLabels);
-
-      const availableTags = [];
+      const generalTags = new Set([HIDE_DEPRECATED_TAG]);
+      const availableTags = {
+        type: [],
+        changes: [],
+        other: [],
+      };
       const children = Object.values(renderableChildNodesMap);
       const len = children.length;
       let i;
       // iterate over the nodes to render
       for (i = 0; i < len; i += 1) {
         // if there are no more tags to iterate over, end early
-        if (!tagLabelsSet.size && !apiChangesTypesSet.size) return availableTags;
+        if (!tagLabelsSet.size && !apiChangesTypesSet.size && !generalTags.size) {
+          break;
+        }
         // extract the type
-        const { type, path } = children[i];
+        const { type, path, deprecated } = children[i];
         // grab the tagLabel
         const tagLabel = FILTER_TAGS_TO_LABELS[TOPIC_TYPE_TO_TAG[type]];
         const changeType = apiChangesObject[path];
         // try to match a tag
         if (tagLabelsSet.has(tagLabel)) {
           // if we have a match, store it
-          availableTags.push(tagLabel);
+          availableTags.type.push(tagLabel);
           // remove the match, so we can end the filter early
           tagLabelsSet.delete(tagLabel);
         }
         if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.push(ChangeNames[changeType]);
+          availableTags.changes.push(ChangeNames[changeType]);
           apiChangesTypesSet.delete(changeType);
         }
+        if (deprecated && generalTags.has(HIDE_DEPRECATED_TAG)) {
+          availableTags.other.push(HIDE_DEPRECATED_TAG);
+          generalTags.delete(HIDE_DEPRECATED_TAG);
+        }
       }
-      return availableTags;
+      return availableTags.type.concat(availableTags.changes, availableTags.other);
     },
     selectedTagsModelValue: {
       get: ({ selectedTags }) => selectedTags.map(tag => (
-        FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag]
+        FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
       )),
       set(values) {
         this.selectedTags = values.map(label => (
-          FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label]
+          FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label] || label
         ));
         this.resetScroll = true;
       },
@@ -341,7 +354,9 @@ export default {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
-      return children.filter(({ title, path, type }) => {
+      return children.filter(({
+        title, path, type, deprecated,
+      }) => {
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
@@ -351,6 +366,9 @@ export default {
           // if there are API changes and there is no tag match, try to match change types
           if (apiChanges && !tagMatch) {
             tagMatch = tagsSet.has(apiChangesObject[path]);
+          }
+          if (!deprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
+            tagMatch = true;
           }
         }
         // find items, that have API changes
