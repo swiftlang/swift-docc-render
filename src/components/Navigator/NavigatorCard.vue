@@ -807,27 +807,62 @@ export default {
       }
       // check if the current element is visible and needs scrolling into
       const element = document.getElementById(this.activeUID);
-      if (element) {
-        // get the position of the scroller in the screen
-        const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
-        // get the position of the active element
-        const { y } = element.getBoundingClientRect();
-        // calculate where it starts from
-        const calculatedY = y - areaY;
-        // if the element is within the scroll area, we dont need to scroll to it.
-        if (calculatedY >= 0 && calculatedY < areaHeight) return;
-      }
+      // check if item is inside scroller
+      if (this.getChildPositionInScroller(element) === 0) return;
       // find the index of the current active UID in the newly added nodes
       const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
       // check if the element is visible
       // call the scroll method on the `scroller` component.
       this.$refs.scroller.scrollToItem(index);
     },
+    /**
+     * Determine where a child element is positioned, inside the scroller container.
+     * returns -1, if above the viewport
+     * returns 0, if inside the viewport
+     * returns 1, if below the viewport
+     *
+     * @param {Element} element - child element
+     * @return Number
+     */
+    getChildPositionInScroller(element) {
+      if (!element) return 0;
+      const { paddingTop, paddingBottom } = getComputedStyle(this.$refs.scroller.$el);
+      // offset for better visibility
+      const offset = {
+        top: parseInt(paddingTop, 10) || 0,
+        bottom: parseInt(paddingBottom, 10) || 0,
+      };
+      // get the position of the scroller in the screen
+      const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
+      // get the position of the active element
+      const { y: elY } = element.getBoundingClientRect();
+      const elHeight = SIDEBAR_ITEM_SIZE;
+      // calculate where element starts from
+      const elementStart = elY - areaY - offset.top;
+      // element is above the scrollarea
+      if (elementStart < 0) {
+        return -1;
+      }
+      // element ends below the scrollarea
+      if ((elementStart + elHeight) >= (areaHeight - offset.bottom)) {
+        return 1;
+      }
+      // element is inside the scrollarea
+      return 0;
+    },
     isInsideScroller(element) {
       return this.$refs.scroller.$el.contains(element);
     },
     handleFocusIn(event) {
       this.lastFocusTarget = event.target;
+      const multiplier = this.getChildPositionInScroller(event.target);
+      // multiplier is 0  the item is in scrollarea
+      if (multiplier === 0) return;
+      // scroll the area, up/down, based on position of child item
+      this.$refs.scroller.$el.scrollBy({
+        top: SIDEBAR_ITEM_SIZE * multiplier,
+        left: 0,
+      });
     },
     handleFocusOut(event) {
       if (!event.relatedTarget) return;
