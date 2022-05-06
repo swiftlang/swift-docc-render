@@ -357,6 +357,25 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find('.topic-wrapper').classes()).toContain('static-width-container');
   });
 
+  it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        references: {
+          ...topicData.references,
+          // add pages that match with the `mocks.$route.path`
+          'topic://baz': { url: '/documentation/somepath' },
+          'topic://baq': { url: '/documentation/somepath/page' },
+        },
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+    expect(wrapper.find(Navigator).props('parentTopicIdentifiers'))
+      .toEqual(topicData.hierarchy.paths[1]);
+    expect(wrapper.find(Nav).props('parentTopicIdentifiers'))
+      .toEqual(topicData.hierarchy.paths[1]);
+  });
+
   it('handles the `@close`, on Navigator', async () => {
     wrapper.setData({
       topicData: {
