@@ -219,7 +219,6 @@ export default {
   --spinner-delay: 1s; // don't show spinner until this much time has passed
 
   height: var(--spinner-size);
-  visibility: visible;
   width: var(--spinner-size);
 
   &.delay-visibility-enter-active {
