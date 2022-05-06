@@ -199,15 +199,13 @@ export default {
     // one, that has the same path as the current URL.
     parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] }, references }, $route }) => {
       if (!paths.length) return [];
-      return paths.find((iteratedPaths) => {
-        // ge the first item
-        let pathToUse = references[iteratedPaths[0]];
-        // if its a technology, get the next one
-        if (pathToUse && pathToUse.kind === 'technologies') {
-          pathToUse = references[iteratedPaths[1]];
-        }
+      return paths.find((identifiers) => {
+        const rootIdentifier = identifiers.find(id => references[id] && references[id].kind !== 'technologies');
+        const rootReference = rootIdentifier && references[rootIdentifier];
         // if there is an item, check if the current url starts with it
-        return pathToUse && $route.path.toLowerCase().startsWith(pathToUse.url.toLowerCase());
+        return rootReference && $route.path.toLowerCase().startsWith(
+          rootReference.url.toLowerCase(),
+        );
       }) || paths[0];
     },
     technology: ({
