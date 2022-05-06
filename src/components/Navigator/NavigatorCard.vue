@@ -63,7 +63,7 @@
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
-              @navigate="setActiveUID"
+              @navigate="handleNavigationChange"
               @focus-parent="focusNodeParent"
             />
           </RecycleScroller>
@@ -114,15 +114,7 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 
-const STORAGE_KEYS = {
-  filter: 'navigator.filter',
-  technology: 'navigator.technology',
-  openNodes: 'navigator.openNodes',
-  nodesToRender: 'navigator.nodesToRender',
-  selectedTags: 'navigator.selectedTags',
-  apiChanges: 'navigator.apiChanges',
-  activeUID: 'navigator.activeUID',
-};
+const STORAGE_KEY = 'navigator.state';
 
 const NO_RESULTS = 'No results found.';
 const NO_CHILDREN = 'No data available.';
@@ -166,7 +158,7 @@ const TOPIC_TYPE_TO_TAG = {
 export default {
   name: 'NavigatorCard',
   constants: {
-    STORAGE_KEYS,
+    STORAGE_KEY,
     FILTER_TAGS,
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
@@ -418,6 +410,7 @@ export default {
     isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
+    lastActivePathItem: ({ activePath }) => last(activePath),
   },
   created() {
     this.restorePersistedState();
@@ -425,12 +418,6 @@ export default {
   watch: {
     filter: 'debounceInput',
     nodeChangeDeps: 'trackOpenNodes',
-    debouncedFilter(value) {
-      sessionStorage.set(STORAGE_KEYS.filter, value);
-    },
-    selectedTags(value) {
-      sessionStorage.set(STORAGE_KEYS.selectedTags, value);
-    },
     activePath: 'handleActivePathChange',
     apiChanges(value) {
       if (value) return;
@@ -466,11 +453,11 @@ export default {
     ) {
       // skip in case this is a first mount and we are syncing the `filter` and `selectedTags`.
       if (
-        (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter))
+        (filter !== filterBefore && !filterBefore && this.getFromStorage('filter'))
         || (
           !isEqual(selectedTags, selectedTagsBefore)
           && !selectedTagsBefore.length
-          && sessionStorage.get(STORAGE_KEYS.selectedTags, []).length
+          && this.getFromStorage('selectedTags', []).length
         )
       ) {
         return;
@@ -695,35 +682,78 @@ export default {
       this.persistState();
     },
     /**
+     * Get items from PersistedStorage, for the current technology.
+     * Can fetch a specific `key` or the entire state.
+     * @param {string} [key] - key to fetch
+     * @param {*} [fallback] - fallback property, if `key is not found`
+     * @return *
+     */
+    getFromStorage(key, fallback = null) {
+      const state = sessionStorage.get(STORAGE_KEY, {});
+      const technologyState = state[this.technologyPath];
+      if (!technologyState) return fallback;
+      if (key) {
+        return technologyState[key] || fallback;
+      }
+      return technologyState;
+    },
+    /**
      * Persists the current state, so its not lost if you refresh or navigate away
      */
     persistState() {
-      sessionStorage.set(STORAGE_KEYS.technology, this.technology);
-      sessionStorage.set(STORAGE_KEYS.apiChanges, !!this.apiChanges);
-      // store the keys of the openNodes map, converting to number, to reduce space
-      sessionStorage.set(STORAGE_KEYS.openNodes, Object.keys(this.openNodes).map(Number));
-      // we need only the UIDs
-      sessionStorage.set(STORAGE_KEYS.nodesToRender, this.nodesToRender.map(({ uid }) => uid));
+      // fallback to using the activePath items
+      const fallback = { path: this.lastActivePathItem };
+      // try to get the `path` for the current activeUID
+      const { path } = this.activeUID
+        ? (this.childrenMap[this.activeUID] || fallback)
+        : fallback;
+      const technologyState = {
+        technology: this.technology,
+        // find the path buy the activeUID, because the lastActivePath wont be updated at this point
+        path,
+        hasApiChanges: !!this.apiChanges,
+        // store the keys of the openNodes map, converting to number, to reduce space
+        openNodes: Object.keys(this.openNodes).map(Number),
+        // we need only the UIDs
+        nodesToRender: this.nodesToRender.map(({ uid }) => uid),
+        activeUID: this.activeUID,
+        filter: this.filter,
+        selectedTags: this.selectedTags,
+      };
+      const state = {
+        ...sessionStorage.get(STORAGE_KEY, {}),
+        [this.technologyPath]: technologyState,
+      };
+      sessionStorage.set(STORAGE_KEY, state);
     },
     clearPersistedState() {
-      sessionStorage.set(STORAGE_KEYS.technology, '');
-      sessionStorage.set(STORAGE_KEYS.apiChanges, false);
-      sessionStorage.set(STORAGE_KEYS.openNodes, []);
-      sessionStorage.set(STORAGE_KEYS.nodesToRender, []);
-      sessionStorage.set(STORAGE_KEYS.activeUID, null);
-      sessionStorage.set(STORAGE_KEYS.filter, '');
-      sessionStorage.set(STORAGE_KEYS.selectedTags, []);
+      const state = {
+        ...sessionStorage.get(STORAGE_KEY, {}),
+        [this.technologyPath]: {},
+      };
+      sessionStorage.set(STORAGE_KEY, state);
     },
     /**
      * Restores the persisted state from sessionStorage. Called on `create` hook.
      */
     restorePersistedState() {
-      const technology = sessionStorage.get(STORAGE_KEYS.technology);
-      const nodesToRender = sessionStorage.get(STORAGE_KEYS.nodesToRender, []);
-      const filter = sessionStorage.get(STORAGE_KEYS.filter, '');
-      const hasAPIChanges = sessionStorage.get(STORAGE_KEYS.apiChanges);
-      const activeUID = sessionStorage.get(STORAGE_KEYS.activeUID, null);
-      const selectedTags = sessionStorage.get(STORAGE_KEYS.selectedTags, []);
+      // get the entire state for the technology
+      const persistedState = this.getFromStorage();
+      // if there is no state or it's last path is not the same, clear the storage
+      if (!persistedState || persistedState.path !== this.lastActivePathItem) {
+        this.clearPersistedState();
+        this.handleActivePathChange(this.activePath);
+        return;
+      }
+      const {
+        technology,
+        nodesToRender = [],
+        filter = '',
+        hasAPIChanges = false,
+        activeUID = null,
+        selectedTags = [],
+        openNodes,
+      } = persistedState;
       // if for some reason there are no nodes and no filter, we can assume its bad cache
       if (!nodesToRender.length && !filter && !selectedTags.length) {
         // clear the sessionStorage before continuing
@@ -733,15 +763,10 @@ export default {
       }
       // make sure all nodes exist in the childrenMap
       const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
-      let activeUIDMatchesCurrentPath = true;
       // check if activeUID node matches the current page path
-      if (activeUID && this.activePath.length) {
-        activeUIDMatchesCurrentPath = (this.childrenMap[activeUID] || {}).path
-          === last(this.activePath);
-        // set ot `false`, if there is no `activeUID`, but there are `activePath` items
-      } else if (!activeUID && this.activePath.length) {
-        activeUIDMatchesCurrentPath = false;
-      }
+      const activeUIDMatchesCurrentPath = activeUID
+        ? ((this.childrenMap[activeUID] || {}).path === this.lastActivePathItem)
+        : this.activePath.length === 1;
       // take a second pass at validating data
       if (
         // if the technology is different
@@ -759,8 +784,6 @@ export default {
         this.handleActivePathChange(this.activePath);
         return;
       }
-      // get all open nodes
-      const openNodes = sessionStorage.get(STORAGE_KEYS.openNodes, []);
       // create the openNodes map
       this.openNodes = Object.fromEntries(openNodes.map(n => [n, true]));
       // get all the nodes to render
@@ -870,7 +893,16 @@ export default {
     setActiveUID(uid) {
       this.activeUID = uid;
       this.resetScroll = false;
-      sessionStorage.set(STORAGE_KEYS.activeUID, uid);
+    },
+    /**
+     * Handles the `navigate` event from NavigatorCardItem, guarding from selecting an item,
+     * that points to another technology.
+     */
+    handleNavigationChange(uid) {
+      // if the path is outside of this technology tree, dont store the uid
+      if (this.childrenMap[uid].path.startsWith(this.technologyPath)) {
+        this.setActiveUID(uid);
+      }
     },
     /**
      * Returns an array of {NavigatorFlatItem}, from a breadcrumbs list
