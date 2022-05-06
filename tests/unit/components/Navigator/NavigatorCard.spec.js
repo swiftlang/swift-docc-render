@@ -37,6 +37,7 @@ const {
   NO_RESULTS,
   ERROR_FETCHING,
   ITEMS_FOUND,
+  HIDE_DEPRECATED_TAG,
 } = NavigatorCard.constants;
 
 const RecycleScrollerStub = {
@@ -1538,6 +1539,35 @@ describe('NavigatorCard', () => {
     wrapper.setProps({ apiChanges });
     await flushPromises();
     expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
+  });
+
+  it('shows "Hide Deprecated" tag, if there are deprecated items', async () => {
+    const updatedChild = {
+      ...root0Child0,
+      deprecated: true,
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        children: [root0, updatedChild, root0Child1, root0Child1GrandChild0, root1],
+        activePath: [root0.path],
+      },
+    });
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    // assert there are no Articles for example
+    expect(filter.props('tags')).toEqual(['Tutorials', 'Articles', HIDE_DEPRECATED_TAG]);
+    // apply a filter
+    filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+    await flushPromises();
+    // assert no other tags are shown now
+    expect(filter.props('tags')).toEqual([]);
+    const allItems = wrapper.findAll(NavigatorCardItem);
+    // assert the deprecated item is filtered out
+    expect(allItems).toHaveLength(4);
+    expect(allItems.at(0).props('item')).toEqual(root0);
+    expect(allItems.at(1).props('item')).toEqual(root0Child1);
+    expect(allItems.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    expect(allItems.at(3).props('item')).toEqual(root1);
   });
 
   describe('navigating', () => {
