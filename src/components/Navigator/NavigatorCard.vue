@@ -11,7 +11,7 @@
 <template>
   <div class="navigator-card">
     <div class="navigator-card-full-height">
-      <div class="navigator-card-inner">
+      <NavigatorCardInner>
         <div class="head-wrapper">
           <button
             aria-label="Close documentation navigator"
@@ -74,7 +74,7 @@
             {{ assertiveAriaLive }}
           </div>
         </div>
-      </div>
+      </NavigatorCardInner>
     </div>
     <div class="filter-wrapper" v-if="!errorFetching">
       <div class="navigator-filter">
@@ -104,6 +104,7 @@ import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
+import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -182,6 +183,7 @@ export default {
   components: {
     FilterInput,
     SidenavIcon,
+    NavigatorCardInner,
     NavigatorCardItem,
     RecycleScroller,
     Reference,
@@ -985,15 +987,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
 
   .navigator-card-inner {
-    position: sticky;
-    top: $nav-height;
     height: calc(100vh - #{$nav-height} - #{$filter-height});
-    display: flex;
-    flex-flow: column;
-    @include breakpoint(medium, nav) {
-      position: static;
-      height: 100%;
-    }
   }
 
   .head-wrapper {
