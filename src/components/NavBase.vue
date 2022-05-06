@@ -80,8 +80,11 @@ import scrollLock from 'docc-render/utils/scroll-lock';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
+import { waitFrames } from 'docc-render/utils/loading';
 
 const { BreakpointName, BreakpointScopes } = BreakpointEmitter.constants;
+
+const NoBGTransitionFrames = 8;
 
 const NavStateClasses = {
   isDark: 'theme-dark',
@@ -93,12 +96,13 @@ const NavStateClasses = {
   hasNoBorder: 'nav--noborder',
   hasFullWidthBorder: 'nav--fullwidth-border',
   isWideFormat: 'nav--is-wide-format',
+  noBackgroundTransition: 'nav--no-bg-transition',
 };
 
 export default {
   name: 'NavBase',
   components: { NavMenuItems, BreakpointEmitter },
-  constants: { NavStateClasses },
+  constants: { NavStateClasses, NoBGTransitionFrames },
   props: {
     /**
      * At which breakpoint size should the nav transform to a mobile friendly navigation.
@@ -149,6 +153,7 @@ export default {
       inBreakpoint: false,
       isTransitioning: false,
       isSticking: false,
+      noBackgroundTransition: true,
       focusTrapInstance: null,
     };
   },
@@ -156,7 +161,7 @@ export default {
     BreakpointScopes: () => BreakpointScopes,
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
-      hasNoBorder, hasFullWidthBorder, isDark, isWideFormat,
+      hasNoBorder, hasFullWidthBorder, isDark, isWideFormat, noBackgroundTransition,
     }) => ({
       [NavStateClasses.isDark]: isDark,
       [NavStateClasses.isOpen]: isOpen,
@@ -167,6 +172,7 @@ export default {
       [NavStateClasses.hasNoBorder]: hasNoBorder,
       [NavStateClasses.hasFullWidthBorder]: hasFullWidthBorder,
       [NavStateClasses.isWideFormat]: isWideFormat,
+      [NavStateClasses.noBackgroundTransition]: noBackgroundTransition,
     }),
   },
   watch: {
@@ -184,6 +190,7 @@ export default {
     window.addEventListener('popstate', this.closeNav);
     window.addEventListener('orientationchange', this.closeNav);
     document.addEventListener('click', this.handleClickOutside);
+    this.handleFlashOnMount();
     await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.wrapper);
   },
@@ -299,6 +306,10 @@ export default {
       this.focusTrapInstance.stop();
       changeElementVOVisibility.show(this.$refs.wrapper);
     },
+    async handleFlashOnMount() {
+      await waitFrames(NoBGTransitionFrames);
+      this.noBackgroundTransition = false;
+    },
   },
 };
 </script>
@@ -353,6 +364,12 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     height: 100%;
     z-index: 1;
     transition: background-color $nav-bg-color-transition;
+
+    // apply a no-transition, for cases where the nav is sticked at page load,
+    // removes a nasty flash in the background.
+    .nav--no-bg-transition & {
+      transition: none !important;
+    }
 
     // nav has a solid fill background
     @include unify-selector('.nav--solid-background') {
