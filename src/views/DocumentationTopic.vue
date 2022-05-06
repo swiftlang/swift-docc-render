@@ -196,8 +196,18 @@ export default {
     // The `hierarchy.paths` array will contain zero or more subarrays, each
     // representing a "path" of parent topic IDs that could be considered the
     // hierarchy/breadcrumb for a given topic. We choose to render only the
-    // first one.
-    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths: [ids = []] = [] } } }) => ids,
+    // one, that has the same path as the current URL.
+    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] }, references }, $route }) => {
+      if (!paths.length) return [];
+      return paths.find((identifiers) => {
+        const rootIdentifier = identifiers.find(id => references[id] && references[id].kind !== 'technologies');
+        const rootReference = rootIdentifier && references[rootIdentifier];
+        // if there is an item, check if the current url starts with it
+        return rootReference && $route.path.toLowerCase().startsWith(
+          rootReference.url.toLowerCase(),
+        );
+      }) || paths[0];
+    },
     technology: ({
       $route,
       topicProps: {
