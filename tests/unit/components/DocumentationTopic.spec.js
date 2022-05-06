@@ -281,36 +281,27 @@ describe('DocumentationTopic', () => {
       isSymbolDeprecated: true,
       isSymbolBeta: true,
     });
-    expect(title.text()).toEqual(expect.stringMatching(/FooKit\s+Deprecated/));
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).is('.beta')).toBe(false);
-    expect(smalls.at(0).is('.deprecated')).toBe(true);
-    expect(smalls.at(0).text()).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
 
     // only beta
     wrapper.setProps({
       isSymbolDeprecated: false,
       isSymbolBeta: true,
     });
-    expect(title.text()).toEqual(expect.stringMatching(/FooKit\s+Beta/));
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).is('.beta')).toBe(true);
-    expect(smalls.at(0).is('.deprecated')).toBe(false);
-    expect(smalls.at(0).text()).toBe('Beta');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('Beta');
 
     // only deprecated
     wrapper.setProps({
       isSymbolDeprecated: true,
       isSymbolBeta: false,
     });
-    expect(title.text()).toEqual(expect.stringMatching(/FooKit\s+Deprecated/));
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).is('.beta')).toBe(false);
-    expect(smalls.at(0).is('.deprecated')).toBe(true);
-    expect(smalls.at(0).text()).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
   });
 
   it('renders an abstract', () => {

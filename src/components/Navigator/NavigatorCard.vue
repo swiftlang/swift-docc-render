@@ -124,7 +124,7 @@ const STORAGE_KEYS = {
   activeUID: 'navigator.activeUID',
 };
 
-const NO_RESULTS = 'No results found. Try changing or removing text and tags.';
+const NO_RESULTS = 'No results found.';
 const NO_CHILDREN = 'No data available.';
 const ERROR_FETCHING = 'There was an error fetching the data.';
 const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
@@ -453,6 +453,8 @@ export default {
       this.debouncedFilter = value;
       // note to the component, that we want to reset the scroll
       this.resetScroll = true;
+      // reset the last focus target
+      this.lastFocusTarget = null;
     }, 500),
     /**
      * Finds which nodes need to be opened.
@@ -462,8 +464,6 @@ export default {
       [filteredChildren, activePathChildren, filter, selectedTags],
       [, activePathChildrenBefore = [], filterBefore = '', selectedTagsBefore = []] = [],
     ) {
-      // reset the last focus target
-      this.lastFocusTarget = null;
       // skip in case this is a first mount and we are syncing the `filter` and `selectedTags`.
       if (
         (filter !== filterBefore && !filterBefore && sessionStorage.get(STORAGE_KEYS.filter))
@@ -1155,6 +1155,13 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
   @include breakpoint(medium, nav) {
     padding-bottom: $nav-menu-items-ios-bottom-spacing;
+  }
+
+  // The VueVirtualScroller scrollbar is not selectable and draggable in Safari,
+  // which is most probably caused by the complicated styling of the component.
+  // Adding translate3D causes the browser to use hardware acceleration and fixes the issue.
+  /deep/ .vue-recycle-scroller__item-wrapper {
+    transform: translate3d(0, 0, 0);
   }
 }
 

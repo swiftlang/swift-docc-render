@@ -56,8 +56,13 @@ export default {
 
 small {
   @include font-styles(eyebrow);
+  padding-left: 10px;
 
-  &.beta {
+  &::before {
+    content: attr(data-tag-name);
+  }
+
+  &.Beta {
     color: var(--color-badge-beta);
 
     .theme-dark & {
@@ -65,7 +70,7 @@ small {
     }
   }
 
-  &.deprecated {
+  &.Deprecated {
     color: var(--color-badge-deprecated);
 
     .theme-dark & {
