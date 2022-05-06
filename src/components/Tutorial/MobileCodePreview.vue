@@ -132,7 +132,9 @@ $-preview-padding: 60px;
   /deep/ img:not(.file-icon) {
     border-radius: $border-radius;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
-    min-height: 320px;
+    // Min-height matches the lowest height to support
+    // WatchOS' screen ratio on the narrowest client: 320px width
+    min-height: 243px;
     max-height: 80vh;
     width: auto;
     display: block;
