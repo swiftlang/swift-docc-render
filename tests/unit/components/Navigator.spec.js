@@ -11,6 +11,7 @@
 import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
+import SpinnerIcon from '@/components/Icons/SpinnerIcon.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
@@ -138,7 +139,10 @@ describe('Navigator', () => {
     });
     // assert Navigator card is rendered
     expect(wrapper.find(NavigatorCard).exists()).toBe(false);
-    expect(wrapper.find('.loading-placeholder').text()).toBe('Fetching...');
+
+    const placeholder = wrapper.find('.loading-placeholder');
+    expect(placeholder.exists()).toBe(true);
+    expect(placeholder.contains(SpinnerIcon)).toBe(true);
   });
 
   it('falls back to using the `technology.url` for the `technology-path`', () => {
