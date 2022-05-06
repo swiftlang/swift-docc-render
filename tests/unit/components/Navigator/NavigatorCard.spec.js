@@ -1616,7 +1616,7 @@ describe('NavigatorCard', () => {
           activeUID: root0Child1.uid,
           openNodes: [root0.uid, root0Child0.uid, root0Child1.uid],
           nodesToRender: [
-            root0.uid, root0Child0.uid, root0Child1.uid, root0Child1GrandChild0.uid, root1.uid
+            root0.uid, root0Child0.uid, root0Child1.uid, root0Child1GrandChild0.uid, root1.uid,
           ],
           path: root0Child1.path,
         }));
