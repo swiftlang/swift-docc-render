@@ -968,6 +968,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     height: 100%;
   }
 
+  .navigator-card-inner {
+    height: calc(100vh - #{$nav-height} - #{$filter-height});
+  }
+
   .head-wrapper {
     position: relative;
   }

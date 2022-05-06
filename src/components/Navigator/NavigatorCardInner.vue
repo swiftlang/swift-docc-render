@@ -19,12 +19,10 @@ export default { name: 'NavigatorCardInner' };
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$filter-height: 71px;
-
 .navigator-card-inner {
   position: sticky;
   top: $nav-height;
-  height: calc(100vh - #{$nav-height} - #{$filter-height});
+  height: calc(100vh - #{$nav-height});
   display: flex;
   flex-flow: column;
   @include breakpoint(medium, nav) {
