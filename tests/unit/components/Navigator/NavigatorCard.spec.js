@@ -1527,7 +1527,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there are no Articles for example
-    expect(filter.props('tags')).toEqual(['Tutorials', 'Articles', HIDE_DEPRECATED_TAG]);
+    expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED_TAG]);
     // apply a filter
     filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
     await flushPromises();
