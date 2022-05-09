@@ -17,7 +17,7 @@
       class="link"
       ref="apiChangesDiff"
     >
-      <TopicLinkBlockIcon v-if="topic.role" :role="topic.role" />
+      <TopicLinkBlockIcon v-if="topic.role && !change" :role="topic.role" />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
       <span v-if="change" class="visuallyhidden">- {{ changeName }}</span>

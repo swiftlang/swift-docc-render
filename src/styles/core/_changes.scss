@@ -12,7 +12,7 @@ $change-border-stroke-width: 1px;
 $change-total-icon-width: rem(17px);
 $change-highlight-vertical-space: 7px;
 $change-icon-width: rem(20px);
-$change-highlight-horizontal-space: 14px;
+$change-highlight-horizontal-space: 17px;
 $change-highlight-horizontal-space-rem: rem($change-highlight-horizontal-space);
 $change-highlight-vertical-space-total: $change-highlight-vertical-space + $change-border-stroke-width;
 
@@ -20,7 +20,7 @@ $change-highlight-vertical-space-total: $change-highlight-vertical-space + $chan
 $change-total-coin-space: rem(5px);
 $change-coin-y-offset: 10px;
 $change-coin-y-offset-reduced: rem($change-highlight-vertical-space-total) + $change-total-coin-space/2;
-$change-coin-x-offset: $change-highlight-horizontal-space - 5;
+$change-coin-x-offset: $change-highlight-horizontal-space - 9px;
 // the space needed for the change icon + it's margin
 $change-icon-occupied-space: $change-icon-width + $change-highlight-horizontal-space-rem;
 // Paths to the changes icons
@@ -116,10 +116,10 @@ $deprecated-dark-rounded-svg: $deprecated-svg !default;
 /// The 1 value represents the border width.
 ///
 @mixin change-highlight-horizontal-text-alignment() {
-  margin-left: -$change-icon-occupied-space - rem(1px);
-  width: calc(100% + #{$change-icon-occupied-space} + 1px);
+  margin-left: -8px;
+  width: calc(100% + 8px);
 
-  @include change-highlight-horizontal-text-alignment-small();
+  //@include change-highlight-horizontal-text-alignment-small();
 }
 
 ///
