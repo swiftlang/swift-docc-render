@@ -104,6 +104,7 @@ $param-spacing: rem(28px);
     flex-flow: row wrap;
     width: 100%;
     @include change-highlight-target();
+    @include change-highlight-horizontal-text-alignment-small();
 
     & + & {
       margin-top: $param-spacing/2;
