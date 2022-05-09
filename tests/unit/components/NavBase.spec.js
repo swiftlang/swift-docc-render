@@ -16,6 +16,7 @@ import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { waitFrames } from 'docc-render/utils/loading';
 import { createEvent } from '../../../test-utils';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
@@ -23,7 +24,7 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/FocusTrap');
 
 const { BreakpointScopes, BreakpointName } = BreakpointEmitter.constants;
-const { NavStateClasses } = NavBase.constants;
+const { NoBGTransitionFrames, NavStateClasses } = NavBase.constants;
 
 const emitEndOfTrayTransition = (wrapper, propertyName = 'max-height') => {
   wrapper.find({ ref: 'tray' }).trigger('transitionend', { propertyName });
@@ -393,6 +394,14 @@ describe('NavBase', () => {
     link.trigger('click');
     await wrapper.vm.$nextTick();
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders with a no-transition class and removes it after a few frames', async () => {
+    jest.useFakeTimers();
+    wrapper = await createWrapper();
+    expect(wrapper.classes()).toContain(NavStateClasses.noBackgroundTransition);
+    await waitFrames(NoBGTransitionFrames);
+    expect(wrapper.classes()).not.toContain(NavStateClasses.noBackgroundTransition);
   });
 
   it('unlocks the scrolling, if still open before destroying', async () => {
