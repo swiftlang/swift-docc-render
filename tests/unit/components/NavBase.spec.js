@@ -227,6 +227,20 @@ describe('NavBase', () => {
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
   });
 
+  it('does not close the navigation if clicked on a .noclose link inside the tray', async () => {
+    wrapper = await createWrapper({
+      data: () => ({ isOpen: true }),
+      slots: {
+        'menu-items': `
+          <li class="with-anchor"><a class="noclose" href="#">Somewhere</a></li>
+          <li class="without-anchor"><div class="foo">Foo</div></li>`,
+      },
+    });
+    const tray = wrapper.find(NavMenuItems);
+    tray.find('.with-anchor a').trigger('click');
+    expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
+  });
+
   it('adds extra classes to stop scrolling while animating the tray up/down', async () => {
     wrapper = await createWrapper();
     wrapper.find({ ref: 'axToggle' }).trigger('click');
