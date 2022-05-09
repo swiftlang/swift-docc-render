@@ -10,6 +10,11 @@
 
 import hljs from 'highlight.js/lib/core';
 
+/** A map of custom aliases for supported languages (additions to default hljs aliases) */
+const CustomLanguageAliases = {
+  objectivec: ['objective-c'],
+};
+
 /** A map of supported languages and their aliases */
 const Languages = {
   bash: ['sh', 'zsh'],
@@ -23,7 +28,7 @@ const Languages = {
   json: [],
   llvm: [],
   markdown: ['md', 'mkdown', 'mkd'],
-  objectivec: ['mm', 'objc', 'obj-c'],
+  objectivec: ['mm', 'objc', 'obj-c'].concat(CustomLanguageAliases.objectivec),
   perl: ['pl', 'pm'],
   php: [],
   python: ['py', 'gyp', 'ipython'],
@@ -223,11 +228,14 @@ export function sanitizeMultilineNodes(element) {
  * @returns {string}
  */
 export function highlight(code, language) {
-  if (!hljs.getLanguage(language)) {
+  // normalize the language name in case it is a custom alias that highlight.js
+  // doesn't know about
+  const normalizedLang = getLanguageByAlias(language);
+  if (!hljs.getLanguage(normalizedLang)) {
     throw new Error(`Unsupported language for syntax highlighting: ${language}`);
   }
 
-  return hljs.highlight(code, { language, ignoreIllegals: true }).value;
+  return hljs.highlight(code, { language: normalizedLang, ignoreIllegals: true }).value;
 }
 
 /**
