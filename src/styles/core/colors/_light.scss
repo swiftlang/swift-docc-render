@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -14,9 +14,11 @@
   --color-fill-tertiary: #{light-color(fill-tertiary)};
   --color-fill-quaternary: #{base-color(fill-quaternary)};
   --color-fill-blue: #{light-color(fill-blue)};
+  --color-fill-light-blue-secondary: #{light-color(fill-light-blue-secondary)};
   --color-fill-gray: #{light-color(fill-gray)};
   --color-fill-gray-secondary: #{light-color(fill-gray-secondary)};
   --color-fill-gray-tertiary: #{light-color(fill-gray-tertiary)};
+  --color-fill-gray-quaternary: #{light-color(fill-gray-quaternary)};
   --color-fill-green-secondary: #{light-color(fill-green-secondary)};
   --color-fill-orange-secondary: #{light-color(fill-orange-secondary)};
   --color-fill-red-secondary: #{light-color(fill-red-secondary)};
@@ -54,7 +56,7 @@
   --color-badge-default: var(--color-figure-light-gray);
   --color-badge-beta: var(--color-figure-gray-tertiary);
   --color-badge-deprecated: var(--color-figure-orange);
-  --color-badge-dark-default: #{dark-color(figure-light-gray)};
+  --color-badge-dark-default: #{dark-color(figure-gray)};
   --color-badge-dark-beta: #{dark-color(figure-gray-tertiary)};
   --color-badge-dark-deprecated: #{dark-color(figure-orange)};
   --color-button-background: var(--color-fill-blue);
@@ -68,7 +70,7 @@
   --color-changes-deprecated-hover: var(--color-figure-light-gray);
   --color-changes-modified: var(--color-figure-light-gray);
   --color-changes-modified-hover: var(--color-figure-light-gray);
-  --color-changes-modified-previous-background: var(--color-fill-gray-secondary);
+  --color-changes-modified-previous-background: var(--color-fill);
   --color-code-background: var(--color-fill-secondary);
   --color-code-collapsible-background: var(--color-fill-tertiary);
   --color-code-collapsible-text: var(--color-figure-gray-secondary-alt);
@@ -188,4 +190,5 @@
   --color-tutorials-overview-navigation-link-hover: #{dark-color(figure-gray)};
   --color-tutorial-hero-text: #{dark-color(figure-gray)};
   --color-tutorial-hero-background: #{dark-color(fill)};
+  --color-navigator-item-hover: #{change-color(light-color(fill-blue), $alpha: 0.05)};
 }

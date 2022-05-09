@@ -74,25 +74,10 @@ describe('DeclarationGroup', () => {
     expect(source.props('tokens')).toEqual(propsData.declaration.tokens);
   });
 
-  it('renders the `Source` with smart indentation', () => {
+  it('renders the `Source`', () => {
     const wrapper = createWrapper();
     const srcComponent = wrapper.find(DeclarationSource);
     expect(srcComponent.props('language')).toEqual('swift');
-    expect(srcComponent.props('smartIndent')).toEqual(true);
-    expect(srcComponent.props('simpleIndent')).toEqual(false);
-  });
-
-  it('renders the `Source` with simple indentation', () => {
-    const wrapper = createWrapper({
-      provide: {
-        interfaceLanguage: 'swift',
-        languages: new Set(['swift']),
-      },
-    });
-    const srcComponent = wrapper.find(DeclarationSource);
-    expect(srcComponent.props('language')).toEqual('swift');
-    expect(srcComponent.props('smartIndent')).toEqual(false);
-    expect(srcComponent.props('simpleIndent')).toEqual(true);
   });
 
   it('applies the `multipleLinesClass` class if `hasMultipleLinesAfterAPIChanges` is true', () => {

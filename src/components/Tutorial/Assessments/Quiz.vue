@@ -13,22 +13,22 @@
     <ContentNode class="title" :content="title" />
     <ContentNode class="question-content" v-if="content" :content="content" />
     <div class="choices">
-    <label
-      v-for="(choice, index) in choices"
-      :key="index"
-      :class="choiceClasses[index]"
-      >
-        <component :is="getIconComponent(index)" class="choice-icon" />
-        <input type="radio" :value="index" v-model="selectedIndex" name="assessment">
-        <ContentNode class="question" :content="choice.content" />
-        <template v-if="userChoices[index].checked">
-          <ContentNode class="answer" :content="choice.justification" />
-          <p class="answer" v-if="choice.reaction">{{ choice.reaction }}</p>
-          <div aria-live="assertive" class="visuallyhidden">
-          {{ choice.isCorrect ? "Correct Answer" : "Incorrect Answer" }}
-          </div>
-        </template>
-    </label>
+      <label
+        v-for="(choice, index) in choices"
+        :key="index"
+        :class="choiceClasses[index]"
+        >
+          <component :is="getIconComponent(index)" class="choice-icon" />
+          <input type="radio" :value="index" v-model="selectedIndex" name="assessment">
+          <ContentNode class="question" :content="choice.content" />
+          <template v-if="userChoices[index].checked">
+            <ContentNode class="answer" :content="choice.justification" />
+            <p class="answer" v-if="choice.reaction">{{ choice.reaction }}</p>
+          </template>
+      </label>
+      <div aria-live="assertive" class="visuallyhidden">
+        {{ ariaLiveText }}
+      </div>
     </div>
     <div class="controls">
       <ButtonLink
@@ -91,6 +91,7 @@ export default {
     return {
       userChoices: this.choices.map(() => ({ checked: false })),
       selectedIndex: null,
+      checkedIndex: null,
     };
   },
   computed: {
@@ -113,6 +114,11 @@ export default {
         this.userChoices[correctChoice].checked
       ));
     },
+    ariaLiveText: ({ checkedIndex, choices }) => {
+      if (checkedIndex === null) return '';
+      const { isCorrect } = choices[checkedIndex];
+      return `Answer number ${checkedIndex + 1} is ${isCorrect ? 'correct' : 'incorrect'}`;
+    },
   },
   methods: {
     getIconComponent(index) {
@@ -124,6 +130,7 @@ export default {
     },
     submit() {
       this.$set(this.userChoices, this.selectedIndex, { checked: true });
+      this.checkedIndex = this.selectedIndex;
       this.$emit('submit');
     },
     advance() {
@@ -263,6 +270,7 @@ input[type="radio"] {
 
 /deep/ .question  > .code-listing {
   padding: unset;
+  border-radius: 0;
 }
 
 /deep/ pre {

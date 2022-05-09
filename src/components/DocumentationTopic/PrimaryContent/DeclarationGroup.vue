@@ -19,8 +19,6 @@
     </p>
     <Source
       :tokens="declaration.tokens"
-      :simple-indent="isSwift && !isCocoaApi"
-      :smart-indent="isCocoaApi"
       :language="interfaceLanguage"
     />
   </div>
@@ -46,6 +44,9 @@ export default {
     },
     interfaceLanguage: {
       default: () => Language.swift.key.api,
+    },
+    symbolKind: {
+      default: () => undefined,
     },
   },
   props: {
@@ -79,7 +80,6 @@ export default {
       return this.declaration.platforms.join(', ');
     },
     isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
-    isCocoaApi: ({ languages }) => languages.has(Language.objectiveC.key.api),
   },
 };
 </script>
@@ -111,6 +111,9 @@ export default {
 }
 
 @include changedStyles {
+  &.declaration-group {
+    background: var(--background, var(--color-code-background));
+  }
   .source {
     background: none;
     border: none;

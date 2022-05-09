@@ -30,7 +30,13 @@ describe('TutorialsOverview', () => {
       {
         kind: SectionKind.hero,
         title: 'Foo Bar',
-        content: [],
+        content: [{
+          inlineContent: [{
+            type: 'text',
+            text: 'Hero description',
+          }],
+          type: 'paragraph',
+        }],
         image: 'foobar.png',
       },
       {
@@ -49,28 +55,29 @@ describe('TutorialsOverview', () => {
     wrapper = shallowMount(TutorialsOverview, { propsData });
   });
 
-  it('provides a page title using the nav title', () => {
-    expect(wrapper.vm.pageTitle).toBe('SwiftUI Tutorials');
-
-    expect(document.title).toBe(
-      'SwiftUI Tutorials | Documentation',
-    );
+  it('provides a page title based on the category', () => {
+    expect(document.title).toBe(`${propsData.metadata.category} Tutorials | Documentation`);
   });
 
-  it('provides a page title when title is provided', () => {
+  it('provides a page title with `Tutorials` even when category is empty', () => {
     wrapper = shallowMount(TutorialsOverview, {
       propsData: {
         ...propsData,
         metadata: {
           category: '',
-          estimatedTime: '3hr 55min',
         },
       },
     });
 
-    expect(document.title).toBe(
-      'Tutorials | Documentation',
-    );
+    const titleText = 'Tutorials | Documentation';
+
+    expect(document.title).toBe(titleText);
+  });
+
+  it('provides a page description based on the hero content text', () => {
+    const { text: heroContentText } = propsData.sections[0].content[0].inlineContent[0];
+
+    expect(document.querySelector('meta[name="description"]').content).toBe(heroContentText);
   });
 
   it('renders a `nav` with the category name as the title', () => {

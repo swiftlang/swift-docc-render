@@ -60,6 +60,7 @@ export default {
   white-space: nowrap;
 
   @include nav-in-breakpoint {
+    line-height: 42px;
     border-top: 1px solid;
     border-color: var(--color-nav-rule);
     display: flex;

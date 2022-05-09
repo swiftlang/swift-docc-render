@@ -11,10 +11,17 @@
 import { normalizeAssetUrl, pathJoin } from 'docc-render/utils/assets';
 
 const mockBaseUrl = jest.fn().mockReturnValue('/');
+const absoluteBaseUrl = 'https://foo.com';
 
 jest.mock('@/utils/theme-settings', () => ({
   get baseUrl() { return mockBaseUrl(); },
 }));
+
+Object.defineProperty(window, 'location', {
+  value: {
+    href: absoluteBaseUrl,
+  },
+});
 
 describe('assets', () => {
   describe('pathJoin', () => {

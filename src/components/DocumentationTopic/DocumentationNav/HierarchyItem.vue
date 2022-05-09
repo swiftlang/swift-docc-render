@@ -11,13 +11,10 @@
 <template functional>
   <component
     :is="$options.components.NavMenuItemBase"
-    :class="{ collapsed: props.isCollapsed }"
+    :class="[{ collapsed: props.isCollapsed }, data.staticClass]"
     class="hierarchy-item"
   >
-    <component
-      :is="$options.components.InlineChevronRightIcon"
-      class="hierarchy-item-icon icon-inline"
-    />
+    <span class="hierarchy-item-icon icon-inline">/</span>
     <router-link v-if="props.url" class="parent item nav-menu-link" :to="props.url">
       <slot />
     </router-link>
@@ -25,7 +22,7 @@
       <span class="current item">
         <slot />
       </span>
-      <slot name="tags"/>
+      <slot name="tags" />
     </template>
   </component>
 </template>
@@ -55,19 +52,20 @@ export default {
   /deep/ .hierarchy-item-icon {
     width: 9px;
     height: 15px;
-    margin-right: $nav-space-between-elements;
-
+    margin-right: $nav-space-hierarchy-elements;
+    display: flex;
+    justify-content: center;
+    font-size: 1em;
+    align-self: baseline;
     // hide on when collapsed
     @include nav-in-breakpoint() {
       display: none;
     }
   }
 
-  @include breakpoint-only-largenav() {
-    display: flex;
-    align-items: center;
-    margin-left: $nav-space-between-elements;
-  }
+  display: flex;
+  align-items: center;
+  margin-left: $nav-space-hierarchy-elements;
 
   @include nav-in-breakpoint() {
     border-top: 1px solid var(--color-nav-hierarchy-item-borders);
@@ -103,11 +101,11 @@ export default {
   }
 }
 
-$-max-uncollapsed-breadcrumbs: 3;
+$-max-uncollapsed-breadcrumbs: 5;
 $-max-breadcrumb-width: 9rem;
 $-max-breadcrumb-width-with-badge: 7.2rem;
 
-@include breakpoint-only-largenav() {
+@include breakpoints-from(medium, nav) {
   @for $i from 1 through $-max-uncollapsed-breadcrumbs {
     $-multiplier: $-max-uncollapsed-breadcrumbs + 1 - $i;
 
@@ -147,6 +145,12 @@ $-max-breadcrumb-width-with-badge: 7.2rem;
   .hierarchy-collapsed-items ~ .hierarchy-item {
     .item {
       @include truncate($-max-breadcrumb-width * $-multiplier-truncated);
+    }
+
+    &:last-child {
+      .item {
+        max-width: none;
+      }
     }
   }
 

@@ -11,8 +11,14 @@
 import {
   areEquivalentLocations,
   buildUrl,
+  resolveAbsoluteUrl,
 } from 'docc-render/utils/url-helper';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
+
+const mockBaseUrl = jest.fn().mockReturnValue('/');
+jest.mock('@/utils/theme-settings', () => ({
+  get baseUrl() { return mockBaseUrl(); },
+}));
 
 describe('areEquivalentLocations', () => {
   it('returns false for the same route with a different path', () => {
@@ -128,5 +134,35 @@ describe('buildUrl', () => {
 
   it('appends query params to urls with hash tags and existing queries', () => {
     expect(buildUrl('/docs?foo=bar#hash', { changes: 'abc' })).toEqual('/docs?foo=bar&changes=abc#hash');
+  });
+});
+
+describe('resolveAbsoluteUrl', () => {
+  it('returns an absolute URL for a given path', () => {
+    expect(resolveAbsoluteUrl('/foo/bar')).toBe('http://localhost/foo/bar');
+    expect(resolveAbsoluteUrl('foo/bar')).toBe('http://localhost/foo/bar');
+  });
+
+  it('resolves against the host and base path of the current environment', () => {
+    const { location } = window;
+
+    mockBaseUrl.mockReturnValue('/foo');
+    Object.defineProperty(window, 'location', {
+      value: new URL('https://example.com'),
+    });
+    expect(resolveAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
+    expect(resolveAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
+
+    mockBaseUrl.mockReturnValue('/');
+    Object.defineProperty(window, 'location', { value: location });
+  });
+
+  it('can resolve against a provided base URL', () => {
+    expect(resolveAbsoluteUrl('/foo/bar', 'https://swift.org'))
+      .toBe('https://swift.org/foo/bar');
+    expect(resolveAbsoluteUrl('foobar', 'https://swift.org'))
+      .toBe('https://swift.org/foobar');
+    expect(resolveAbsoluteUrl('foo/bar', 'https://swift.org/blah'))
+      .toBe('https://swift.org/foo/bar');
   });
 });

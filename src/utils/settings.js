@@ -8,25 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-const SafeLocalStorage = {
-  getItem: (key) => {
-    try {
-      return localStorage.getItem(key);
-    } catch (_) {
-      // referencing `localStorage` in Safari with "Block all cookies" enabled
-      // will throw a `SecurityError`
-      return null;
-    }
-  },
-  setItem: (key, value) => {
-    try {
-      localStorage.setItem(key, value);
-    } catch (_) {
-      // referencing `localStorage` in Safari with "Block all cookies" enabled
-      // will throw a `SecurityError`
-    }
-  },
-};
+import { SafeLocalStorage } from 'docc-render/utils/storage';
 
 const StorageKey = {
   preferredColorScheme: 'developer.setting.preferredColorScheme',

@@ -8,6 +8,9 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+// we should consider moving `normalizeAssetUrl` here and renaming it since it
+// is more generic than its name implies (no asset-specific logic)
+import { normalizeAssetUrl as normalizePath } from 'docc-render/utils/assets';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
 
 export function queryStringForParams(params = {}) {
@@ -64,4 +67,26 @@ export function areEquivalentLocations(routeA, routeB) {
     path: routeB.path,
     query: routeBQuery,
   }));
+}
+
+// Resolve a given path into a full, absolute URL.
+//
+// @param {String} path A URL path.
+// @param {String} baseUrl An optional base URL to resolve against. The default
+//   value will be the origin of the current website.
+// @return {String} The absolute URL resulting from resolving the given path
+//   with the current website origin.
+//
+// Note that the same call may result in different output for the same input
+// depending on where/how this instance of DocC-Render is being hosted.
+//
+// Examples:
+//
+// resolveAbsoluteUrl('/foo/bar') // http://localhost:8080/foo/bar
+// OR
+// resolveAbsoluteUrl('/foo/bar') // https://mportiz08.github.io/example/foo/bar
+//
+// resolveAbsoluteUrl('/foo/bar', 'http://example.com') // http://example.com/foo/bar
+export function resolveAbsoluteUrl(path, baseUrl = window.location.origin) {
+  return new URL(normalizePath(path), baseUrl).href;
 }

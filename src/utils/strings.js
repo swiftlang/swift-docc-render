@@ -186,11 +186,14 @@ export function whiteSpaceIgnorantRegex(stringToSanitize) {
     char = trimmedString[i];
     // if the character is an escape char, pass it and the next character
     if (char === '\\') {
+      // pass both escape char and char, with an empty space match before, only if not first char
+      collector.push(`${i === 0 ? '' : spaceMatch}${char}`);
+      collector.push(trimmedString[i + 1]);
       // skip one character in next iteration
       i += 1;
-      // pass both escape char and char, with an empty space match before
-      collector.push(`${spaceMatch}${char}`);
-      collector.push(trimmedString[i]);
+    } else if (i === 0) {
+      // skip the first character, if its not a `\`
+      collector.push(char);
       // add anything else, but empty spaces
     } else if (char !== singleSpace) {
       collector.push(`${spaceMatch}${char}`);
@@ -209,4 +212,18 @@ export function whiteSpaceIgnorantRegex(stringToSanitize) {
  */
 export function insertAt(str, sub, pos = 0) {
   return `${str.slice(0, pos)}${sub}${str.slice(pos)}`;
+}
+
+// Returns the first paragraph of the given text.
+//
+// @param {string} text - The full text.
+// @return {string} The first paragraph.
+//
+// Examples:
+//
+// firstParagraph("abcdefghi") // "abcdefghi"
+// firstParagraph("abc\ndef\nghi") // "abc"
+export function firstParagraph(text) {
+  const paragraphs = text.split(/(?:\r?\n)+/);
+  return paragraphs[0];
 }

@@ -22,6 +22,11 @@ describe('ApiChangesStoreBase', () => {
     expect(ApiChangesStoreBase.state.apiChanges).toEqual(changes);
   });
 
+  it('sets the selected API changes version', () => {
+    ApiChangesStoreBase.setSelectedAPIChangesVersion('latest_major');
+    expect(ApiChangesStoreBase.state.selectedAPIChangesVersion).toEqual('latest_major');
+  });
+
   it('updates `apiChangesCounts`', async () => {
     const querySpy = jest.spyOn(document, 'querySelectorAll');
 
@@ -41,9 +46,12 @@ describe('ApiChangesStoreBase', () => {
   it('resets API Changes', () => {
     const defaultCounts = apiChangesCountsFactory();
     ApiChangesStoreBase.state.apiChangesCounts.modified = 5;
+    ApiChangesStoreBase.state.selectedAPIChangesVersion = 'latest_major';
     expect(ApiChangesStoreBase.state.apiChangesCounts).toHaveProperty('modified', 5);
     ApiChangesStoreBase.resetApiChanges();
     expect(ApiChangesStoreBase.state.apiChangesCounts).toEqual(defaultCounts);
+    // assert `selectedAPIChangesVersion` not changed
+    expect(ApiChangesStoreBase.state.selectedAPIChangesVersion).toEqual('latest_major');
     expect(ApiChangesStoreBase.state.apiChanges).toEqual(null);
   });
 });

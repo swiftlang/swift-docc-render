@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,36 +10,39 @@
 
 <template>
   <Section class="availability" role="complementary" aria-label="Availability">
-    <Title>Availability</Title>
-    <List class="platform-list">
-      <Item
-        v-for="platform in platforms"
-        :key="platform.name"
-        :class="changesClassesFor(platform.name)"
-        class="platform"
-        :change="!!changeFor(platform.name)"
-      >
-        <AvailabilityRange
-          :deprecatedAt="platform.deprecatedAt"
-          :introducedAt="platform.introducedAt"
-          :platformName="platform.name"
-        />
-        <Badge v-if="platform.deprecatedAt" variant="deprecated" />
-        <Badge v-else-if="platform.beta" variant="beta" />
-      </Item>
-    </List>
+    <Badge
+      v-for="technology in technologies"
+      class="technology"
+      :key="technology"
+    >
+      <TechnologyIcon class="tech-icon" />
+      {{ technology }}
+    </Badge>
+
+    <Badge
+      v-for="platform in platforms"
+      class="platform"
+      :class="changesClassesFor(platform.name)"
+      :key="platform.name"
+    >
+      <AvailabilityRange
+        :deprecatedAt="platform.deprecatedAt"
+        :introducedAt="platform.introducedAt"
+        :platformName="platform.name"
+      />
+      <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
+      <span v-else-if="platform.beta" class="beta">Beta</span>
+    </Badge>
   </Section>
 </template>
 
 <script>
 import Badge from 'docc-render/components/Badge.vue';
-import { getAPIChanges } from 'docc-render/mixins/apiChangesHelpers';
 import { ChangeTypes } from 'docc-render/constants/Changes';
+import { getAPIChanges } from 'docc-render/mixins/apiChangesHelpers';
+import TechnologyIcon from 'theme/components/Icons/TechnologyIcon.vue';
 import AvailabilityRange from './AvailabilityRange.vue';
-import List from './List.vue';
-import ListItem from './ListItem.vue';
 import Section from './Section.vue';
-import Title from './Title.vue';
 
 export default {
   name: 'Availability',
@@ -48,15 +51,17 @@ export default {
   components: {
     Badge,
     AvailabilityRange,
-    Item: ListItem,
-    List,
     Section,
-    Title,
+    TechnologyIcon,
   },
   props: {
     platforms: {
       type: Array,
       required: true,
+    },
+    technologies: {
+      type: Array,
+      required: false,
     },
   },
   data() {
@@ -93,48 +98,104 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.availability, .platform-list, .platform {
-  box-sizing: inherit;
+.availability {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.platform {
-  padding-right: 2rem;
-  box-sizing: border-box;
+.badge {
+  margin: 0;
+}
+
+.technology {
+  display: inline-flex;
+  align-items: center;
+}
+
+.tech-icon {
+  height: 12px;
+  padding-right: 5px;
+  fill: var(--badge-color);
+
+  .theme-dark & {
+    fill: var(--badge-color);
+  }
+}
+
+.beta {
+  color: var(--color-badge-beta);
+
+  .theme-dark & {
+    color: var(--color-badge-dark-beta);
+  }
+}
+
+.deprecated {
+  color: var(--color-badge-deprecated);
+
+  .theme-dark & {
+    color: var(--color-badge-dark-deprecated);
+  }
+}
+
+.changed {
+  $-coin-spacer: 5px;
+  $-coin-size: 16px;
+  padding-left: $-coin-size + ($-coin-spacer * 2);
 
   &::after {
-    width: $change-total-icon-width;
-    height: $change-total-icon-width;
-    // Baseline align with first line of text
-    margin-top: 6px;
+    content: none;
   }
 
-  &-badge {
-    margin-left: rem(8px);
-  }
+  &::before {
+    @include coin($modified-svg, $-coin-size);
+    left: $-coin-spacer;
 
-  @include change-highlight-horizontal-spacing();
-  padding-left: 0;
-
-  margin-bottom: 0.25rem;
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  @include change-highlight-vertical-spacing();
-
-  &-badge {
-    margin-left: rem(8px);
-  }
-
-  &.changed {
-    &::after {
-      width: $change-total-icon-width;
-      height: $change-total-icon-width;
-      // Baseline align with first line of text
-      margin-top: 6px;
+    @include prefers-dark {
+      background-image: $modified-dark-svg;
     }
 
-    @include change-highlight-horizontal-text-alignment();
+    .theme-dark & {
+      background-image: $modified-dark-svg;
+    }
+  }
+
+  &-added {
+    border-color: var(--color-changes-added);
+
+    &::before {
+      background-image: $added-svg;
+
+      @include prefers-dark {
+        background-image: $added-dark-svg;
+      }
+
+      .theme-dark & {
+        background-image: $added-dark-svg;
+      }
+    }
+  }
+
+  &-deprecated {
+    border-color: var(--color-changes-deprecated);
+
+    &::before {
+      background-image: $deprecated-svg;
+
+      @include prefers-dark {
+        background-image: $deprecated-dark-svg;
+      }
+
+      .theme-dark & {
+        background-image: $deprecated-dark-svg;
+      }
+    }
+  }
+
+  &-modified {
+    border-color: var(--color-changes-modified);
   }
 }
 </style>

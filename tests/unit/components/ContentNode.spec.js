@@ -1559,4 +1559,106 @@ describe('ContentNode', () => {
       ]);
     });
   });
+
+  describe('.reduce', () => {
+    it('recursively reduces a function over each tree node', () => {
+      // A content node tree corresponding to the following markdown:
+      // a _*b*_ c
+      const wrapper = shallowMount(ContentNode, {
+        propsData: {
+          content: [
+            {
+              type: ContentNode.BlockType.paragraph,
+              inlineContent: [
+                {
+                  type: ContentNode.InlineType.text,
+                  text: 'a ',
+                },
+                {
+                  type: ContentNode.InlineType.emphasis,
+                  inlineContent: [
+                    {
+                      type: ContentNode.InlineType.strong,
+                      inlineContent: [
+                        {
+                          type: ContentNode.InlineType.text,
+                          text: 'b',
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  type: ContentNode.InlineType.text,
+                  text: ' c',
+                },
+              ],
+            },
+          ],
+        },
+      });
+
+      // use reduce to combine all text from text nodes in the tree
+      const text = wrapper.vm.reduce((str, node) => (
+        node.type === ContentNode.InlineType.text ? `${str}${node.text}` : str
+      ), '');
+      expect(text).toBe('a b c');
+
+      // use reduce to count all the nodes in the tree
+      const count = wrapper.vm.reduce(num => num + 1, 0);
+      expect(count).toBe(6);
+
+      // use reduce to find all the unique node types in the tree
+      const types = wrapper.vm.reduce((set, node) => {
+        set.add(node.type);
+        return set;
+      }, new Set());
+      expect(types).toEqual(new Set([
+        ContentNode.BlockType.paragraph,
+        ContentNode.InlineType.text,
+        ContentNode.InlineType.emphasis,
+        ContentNode.InlineType.strong,
+      ]));
+    });
+  });
+
+  describe('.plaintext', () => {
+    it('returns the text equivalent of the content tree without inline formatting', () => {
+      const wrapper = shallowMount(ContentNode, {
+        propsData: {
+          content: [
+            {
+              type: ContentNode.BlockType.paragraph,
+              inlineContent: [
+                {
+                  type: ContentNode.InlineType.text,
+                  text: 'A',
+                },
+              ],
+            },
+            {
+              type: ContentNode.BlockType.paragraph,
+              inlineContent: [
+                {
+                  type: ContentNode.InlineType.strong,
+                  inlineContent: [
+                    {
+                      type: ContentNode.InlineType.emphasis,
+                      inlineContent: [
+                        {
+                          type: ContentNode.InlineType.text,
+                          text: 'B',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      });
+      expect(wrapper.vm.plaintext).toBe('A\nB');
+    });
+  });
 });

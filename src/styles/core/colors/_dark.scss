@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,9 +13,11 @@
   --color-fill-secondary: #{dark-color(fill-secondary)};
   --color-fill-tertiary: #{dark-color(fill-tertiary)};
   --color-fill-blue: #{dark-color(fill-blue)};
+  --color-fill-light-blue-secondary: #{dark-color(fill-light-blue-secondary)};
   --color-fill-gray: #{dark-color(fill-gray)};
   --color-fill-gray-secondary: #{dark-color(fill-gray-secondary)};
   --color-fill-gray-tertiary: #{dark-color(fill-gray-tertiary)};
+  --color-fill-gray-quaternary: #{dark-color(fill-gray-quaternary)};
   --color-fill-green-secondary: #{dark-color(fill-green-secondary)};
   --color-fill-orange-secondary: #{dark-color(fill-orange-secondary)};
   --color-fill-red-secondary: #{dark-color(fill-red-secondary)};
@@ -31,6 +33,7 @@
   --color-tutorials-teal: #{dark-color(tutorials-teal)};
 
   --color-article-body-background: rgb(17, 17, 17);
+  --color-badge-default: var(--color-badge-dark-default);
   --color-button-background-active: #{dark-color(fill-blue)};
   --color-code-line-highlight: #{change-color(dark-color(figure-blue), $alpha: 0.08)};
   --color-dropdown-background: var(--color-dropdown-dark-background);
@@ -82,4 +85,5 @@
   --color-syntax-type-declarations: rgb(107, 223, 255);
   --color-syntax-urls: rgb(102, 153, 255);
   --color-tutorial-background: var(--color-fill-tertiary);
+  --color-navigator-item-hover: #{change-color(dark-color(fill-blue), $alpha: 0.5)};
 }

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,10 +13,18 @@ import {
   RouterLinkStub,
 } from '@vue/test-utils';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
+import { BreakpointName } from '@/utils/breakpoints';
+import { flushPromises } from '../../../../test-utils';
+
+jest.mock('docc-render/utils/changeElementVOVisibility');
+jest.mock('docc-render/utils/scroll-lock');
+jest.mock('docc-render/utils/FocusTrap');
 
 const {
   Hierarchy,
   NavBase,
+  LanguageToggle,
+  NavMenuItems,
 } = DocumentationNav.components;
 
 const stubs = {
@@ -30,10 +38,6 @@ const references = {
   [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
   'topic://foo': {},
   'topic://bar': {},
-};
-
-const provide = {
-  references,
 };
 
 const mocks = {
@@ -57,13 +61,16 @@ describe('DocumentationNav', () => {
     currentTopicTags: [{
       type: 'foo',
     }],
+    interfaceLanguage: 'swift',
+    swiftPath: 'documentation/foo',
+    objcPath: 'documentation/bar',
+    references,
   };
 
   beforeEach(() => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
     });
   });
@@ -79,6 +86,8 @@ describe('DocumentationNav', () => {
     expect(nav.props()).toHaveProperty('hasNoBorder', false);
     expect(nav.props()).toHaveProperty('hasFullWidthBorder', true);
     expect(nav.props()).toHaveProperty('hasOverlay', false);
+    expect(nav.props()).toHaveProperty('breakpoint', BreakpointName.medium);
+    expect(nav.props()).toHaveProperty('isWideFormat', true);
   });
 
   it('accepts an isDark prop', () => {
@@ -131,7 +140,6 @@ describe('DocumentationNav', () => {
           ...propsData.parentTopicIdentifiers,
         ],
       },
-      provide,
       mocks: {
         $route: {
           query: {
@@ -156,6 +164,7 @@ describe('DocumentationNav', () => {
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       currentTopicTags: propsData.currentTopicTags,
+      references,
     });
   });
 
@@ -178,7 +187,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       scopedSlots: {
         'tray-after': (props) => {
@@ -193,12 +201,42 @@ describe('DocumentationNav', () => {
     });
   });
 
+  it('renders a LanguageToggle', () => {
+    // make sure the LanguageToggle is inside the NavMenuItems
+    const menuItems = wrapper.find(NavMenuItems);
+    const toggle = menuItems.find(LanguageToggle);
+    expect(toggle.exists()).toBe(true);
+    expect(toggle.props()).toEqual({
+      interfaceLanguage: propsData.interfaceLanguage,
+      swiftPath: propsData.swiftPath,
+      objcPath: propsData.objcPath,
+    });
+  });
+
+  it('does not render a `LanguageToggle` when there is no swift nor objc path', () => {
+    expect(wrapper.contains(LanguageToggle)).toBe(true);
+    wrapper.setProps({ swiftPath: null, objcPath: null });
+    expect(wrapper.contains(LanguageToggle)).toBe(false);
+  });
+
+  it('exposes a `menu-items` slot ', () => {
+    const menuItems = 'Menu Items';
+    wrapper = shallowMount(DocumentationNav, {
+      stubs,
+      propsData,
+      mocks,
+      slots: {
+        'menu-items': menuItems,
+      },
+    });
+    expect(wrapper.text()).toContain(menuItems);
+  });
+
   it('exposes a `after-content` slot ', () => {
     const afterContent = 'After Content';
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       slots: {
         'after-content': afterContent,
@@ -213,7 +251,6 @@ describe('DocumentationNav', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
-      provide,
       mocks,
       scopedSlots: {
         title: (props) => {
@@ -223,7 +260,37 @@ describe('DocumentationNav', () => {
       },
     });
     expect(wrapper.text()).toContain(fooBar);
-    expect(slotProps).toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
+    expect(slotProps)
+      .toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
     expect(wrapper.find('.nav-title-link').exists()).toBe(false);
+  });
+
+  it('renders a sidenav toggle', async () => {
+    const button = wrapper.find('.sidenav-toggle');
+    button.trigger('click');
+    await flushPromises();
+    expect(button.attributes('aria-label')).toBe('Open documentation navigator');
+    expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+  });
+
+  it('closes the nav, if open and clicking on the sidenavtoggle', async () => {
+    wrapper.find('.nav-menucta').trigger('click');
+    expect(wrapper.classes()).toContain('nav--is-open');
+    wrapper.find('.sidenav-toggle').trigger('click');
+    expect(wrapper.classes()).not.toContain('nav--is-open');
+    expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
+    await flushPromises();
+    expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+  });
+
+  it('renders the nav, with `isWideFormat` to `false`', () => {
+    wrapper.setProps({
+      isWideFormat: false,
+    });
+    expect(wrapper.find(NavBase).props()).toMatchObject({
+      isWideFormat: false,
+      breakpoint: BreakpointName.medium,
+    });
+    expect(wrapper.find('.sidenav-toggle').exists()).toBe(false);
   });
 });

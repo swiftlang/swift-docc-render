@@ -227,6 +227,37 @@ describe('GenericModal', () => {
     expect(wrapper.emitted(VisibleChangeEvent)).toBeTruthy();
   });
 
+  it('selects content when cmd+a or ctrl+a are typed', () => {
+    const selectAllChildren = jest.fn();
+    const preventDefault = jest.fn();
+    window.getSelection = () => ({
+      selectAllChildren,
+    });
+    const wrapper = createWrapper({ propsData: { visible: true } });
+    const type = (options) => {
+      const event = createBaseEvent('keydown', options);
+      event.preventDefault = preventDefault;
+      document.dispatchEvent(event);
+    };
+    // type cmd+a
+    type({ key: 'a', metaKey: true });
+    // assert that content is selected
+    expect(selectAllChildren).toHaveBeenCalledWith(wrapper.vm.$refs.content);
+    expect(preventDefault).toHaveBeenCalled();
+    jest.clearAllMocks();
+    // type a
+    type({ key: 'a' });
+    // assert that content is not selected
+    expect(selectAllChildren).not.toHaveBeenCalledWith(wrapper.vm.$refs.content);
+    expect(preventDefault).not.toHaveBeenCalled();
+    jest.clearAllMocks();
+    // type ctrl+a
+    type({ key: 'a', ctrlKey: true });
+    // assert that content is selected
+    expect(selectAllChildren).toHaveBeenCalledWith(wrapper.vm.$refs.content);
+    expect(preventDefault).toHaveBeenCalled();
+  });
+
   it('locks scrolling on `show`, and unlocks scrolling on `hide`', async () => {
     const wrapper = createWrapper();
     expect(scrollLock.lockScroll).not.toHaveBeenCalled();

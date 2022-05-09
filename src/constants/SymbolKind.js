@@ -8,14 +8,13 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { getSetting } from 'docc-render/utils/theme-settings';
-
+// Note: this is not an exhaustive/complete definition of all the various kinds
+// that may be emitted by DocC in Render JSON at the moment—only the ones that
+// the renderer cares about for the time being.
 export default {
-  created() {
-    if (this.pageTitle) {
-      const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
-      const title = [this.pageTitle, themeTitle].filter(Boolean);
-      document.title = title.join(' | ');
-    }
-  },
+  class: 'class',
+  enum: 'enum',
+  protocol: 'protocol',
+  struct: 'struct',
+  uid: 'uid',
 };

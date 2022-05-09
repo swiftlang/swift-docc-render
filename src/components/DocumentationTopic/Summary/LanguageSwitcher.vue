@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,19 +10,25 @@
 
 <template>
   <Section class="language" role="complementary" aria-label="Language">
-    <Title>Language</Title>
-    <LanguageSwitcherLink
-      class="language-option swift"
-      :class="{ active: swift.active }"
-      :url="swift.active ? null : swift.url"
-      @click="chooseLanguage(swift)"
-    >{{swift.name}}</LanguageSwitcherLink>
-    <LanguageSwitcherLink
-      class="language-option objc"
-      :class="{ active: objc.active }"
-      :url="objc.active ? null : objc.url"
-      @click="chooseLanguage(objc)"
-    >{{objc.name}}</LanguageSwitcherLink>
+    <Title>Language: </Title>
+    <div class="language-list">
+      <LanguageSwitcherLink
+        class="language-option swift"
+        :class="{ active: swift.active }"
+        :url="swift.active ? null : swift.url"
+        @click="chooseLanguage(swift)"
+      >
+        {{swift.name}}
+      </LanguageSwitcherLink>
+      <LanguageSwitcherLink
+        class="language-option objc"
+        :class="{ active: objc.active }"
+        :url="objc.active ? null : objc.url"
+        @click="chooseLanguage(objc)"
+      >
+        {{objc.name}}
+      </LanguageSwitcherLink>
+    </div>
   </Section>
 </template>
 
@@ -121,27 +127,33 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .language {
-  font-size: 14px;
+  padding-bottom: 10px;
+  justify-content: flex-end;
+}
+
+.language, .language-list {
+  @include font-styles(body-reduced);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
 }
 
 .language-option {
-  display: inline;
+  &.swift {
+    padding-right: 10px;
+    border-right: 1px solid var(--color-fill-gray-tertiary);
+  }
 
-  @include breakpoint(small) {
-    display: block;
-    margin-bottom: 0.25rem;
+  &.objc {
+    padding-left: 10px;
   }
 
   &.router-link-exact-active,
   &.active {
-    color: var(--colors-secondary-label, var(--color-secondary-label));
-  }
+    color: dark-color(figure-gray-secondary);
 
-  @include breakpoints-from(medium) {
-    &.swift {
-      border-right: 1px solid var(--color-fill-gray-tertiary);
-      margin-right: 10px;
-      padding-right: 10px;
+    .documentation-hero--disabled & {
+      color: var(--colors-secondary-label, var(--color-secondary-label));
     }
   }
 }

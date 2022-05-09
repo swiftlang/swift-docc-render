@@ -53,6 +53,7 @@
           @select-section="onSelectSection"
         />
       </div>
+      <slot name="tray" :siblings="chapters.length + optionsForSections.length" />
     </template>
   </NavBase>
 </template>
@@ -175,10 +176,6 @@ export default {
       align-items: center;
     }
 
-    .nav-menu-tray {
-      width: auto;
-    }
-
     .nav-menu {
       padding: 0;
       grid-column: 3/5;
@@ -220,6 +217,13 @@ export default {
     }
     .mobile-dropdown-container {
       display: block;
+    }
+    /deep/ .nav-title {
+      grid-area: title;
+    }
+
+    /deep/ .pre-title {
+      display: none;
     }
   }
 }

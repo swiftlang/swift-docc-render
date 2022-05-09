@@ -19,7 +19,7 @@ const {
   ParameterAttributes,
   PossiblyChangedMimetype,
   WordBreak,
-  PossiblyChangedRequiredAttribute,
+  PossiblyChangedTextAttribute,
 } = RestBody.components;
 
 const { ChangesKey } = RestBody.constants;
@@ -361,7 +361,7 @@ describe('RestBody', () => {
       expect(table.find(PossiblyChangedMimetype).props())
         .toMatchObject({ changes: partsChange.mimetype, change: partsChange.change });
 
-      expect(table.find(PossiblyChangedRequiredAttribute).props())
+      expect(table.find(PossiblyChangedTextAttribute).props())
         .toHaveProperty('changes', partsChange.required);
 
       expect(table.find(ParameterAttributes).props())

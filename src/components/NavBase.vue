@@ -19,6 +19,9 @@
       <div class="nav__background" />
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
+        <div class="pre-title">
+          <slot name="pre-title" :close-nav="closeNav" />
+        </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
         </div>
@@ -77,8 +80,11 @@ import scrollLock from 'docc-render/utils/scroll-lock';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
+import { waitFrames } from 'docc-render/utils/loading';
 
 const { BreakpointName, BreakpointScopes } = BreakpointEmitter.constants;
+
+const NoBGTransitionFrames = 8;
 
 const NavStateClasses = {
   isDark: 'theme-dark',
@@ -89,12 +95,14 @@ const NavStateClasses = {
   hasSolidBackground: 'nav--solid-background',
   hasNoBorder: 'nav--noborder',
   hasFullWidthBorder: 'nav--fullwidth-border',
+  isWideFormat: 'nav--is-wide-format',
+  noBackgroundTransition: 'nav--no-bg-transition',
 };
 
 export default {
   name: 'NavBase',
   components: { NavMenuItems, BreakpointEmitter },
-  constants: { NavStateClasses },
+  constants: { NavStateClasses, NoBGTransitionFrames },
   props: {
     /**
      * At which breakpoint size should the nav transform to a mobile friendly navigation.
@@ -133,6 +141,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isWideFormat: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [onIntersect],
   data() {
@@ -141,6 +153,7 @@ export default {
       inBreakpoint: false,
       isTransitioning: false,
       isSticking: false,
+      noBackgroundTransition: true,
       focusTrapInstance: null,
     };
   },
@@ -148,7 +161,7 @@ export default {
     BreakpointScopes: () => BreakpointScopes,
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
-      hasNoBorder, hasFullWidthBorder, isDark,
+      hasNoBorder, hasFullWidthBorder, isDark, isWideFormat, noBackgroundTransition,
     }) => ({
       [NavStateClasses.isDark]: isDark,
       [NavStateClasses.isOpen]: isOpen,
@@ -158,6 +171,8 @@ export default {
       [NavStateClasses.hasSolidBackground]: hasSolidBackground,
       [NavStateClasses.hasNoBorder]: hasNoBorder,
       [NavStateClasses.hasFullWidthBorder]: hasFullWidthBorder,
+      [NavStateClasses.isWideFormat]: isWideFormat,
+      [NavStateClasses.noBackgroundTransition]: noBackgroundTransition,
     }),
   },
   watch: {
@@ -175,6 +190,7 @@ export default {
     window.addEventListener('popstate', this.closeNav);
     window.addEventListener('orientationchange', this.closeNav);
     document.addEventListener('click', this.handleClickOutside);
+    this.handleFlashOnMount();
     await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.wrapper);
   },
@@ -293,6 +309,10 @@ export default {
       this.focusTrapInstance.stop();
       changeElementVOVisibility.show(this.$refs.wrapper);
     },
+    async handleFlashOnMount() {
+      await waitFrames(NoBGTransitionFrames);
+      this.noBackgroundTransition = false;
+    },
   },
 };
 </script>
@@ -313,7 +333,8 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   top: 0;
   width: 100%;
   height: $nav-height;
-  z-index: 9997;
+  z-index: $nav-z-index;
+  --nav-padding: #{$nav-padding};
 
   @include breakpoint(small, $scope: nav) {
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
@@ -346,6 +367,12 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     height: 100%;
     z-index: 1;
     transition: background-color $nav-bg-color-transition;
+
+    // apply a no-transition, for cases where the nav is sticked at page load,
+    // removes a nasty flash in the background.
+    .nav--no-bg-transition & {
+      transition: none !important;
+    }
 
     // nav has a solid fill background
     @include unify-selector('.nav--solid-background') {
@@ -503,20 +530,38 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   z-index: 1;
 }
 
+.pre-title {
+  display: none;
+
+  &:empty {
+    display: none;
+  }
+
+  @include nav-in-breakpoint() {
+    display: flex;
+    padding: 0;
+  }
+}
+
 // Nav content (title and menus)
 .nav-content {
   display: flex;
-  padding: 0 $nav-padding;
+  padding: 0 var(--nav-padding);
   max-width: $content-max-width;
   margin: 0 auto;
   position: relative;
   z-index: 2;
   justify-content: space-between;
 
+  @include nav-is-wide-format() {
+    box-sizing: border-box;
+    @include breakpoint-full-width-container()
+  }
+
   // Fix iPhone Notch issues
   @supports (padding:calc(max(0px))) {
-    padding-left: calc(max(#{$nav-padding}, env(safe-area-inset-left)));
-    padding-right: calc(max(#{$nav-padding}, env(safe-area-inset-right)));
+    padding-left: calc(max(var(--nav-padding), env(safe-area-inset-left)));
+    padding-right: calc(max(var(--nav-padding), env(safe-area-inset-right)));
   }
 
   @include breakpoint(small, $scope: nav) {
@@ -525,11 +570,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
   @include nav-in-breakpoint {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     grid-auto-rows: minmax(min-content, max-content);
     grid-template-areas:
-      "title actions"
-      "menu menu";
+      "pre-title title actions"
+      "menu menu menu";
   }
 }
 
@@ -588,12 +633,13 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 .nav-actions {
   display: flex;
   align-items: center;
-  max-height: $nav-height-small;
-  padding-right: $nav-padding-small;
 
   @include nav-in-breakpoint {
     grid-area: actions;
     justify-content: flex-end;
+  }
+  @include breakpoint(small, nav) {
+    padding-right: $nav-padding-small;
   }
 }
 
@@ -614,6 +660,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
   @include nav-in-breakpoint {
     grid-area: title;
+
+    @include nav-is-wide-format(true) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   /deep/ span {
@@ -699,7 +750,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     width: 100%;
     height: rem(12px);
     transition: $nav-chevron-transition;
-    margin-top: 2px;
 
     &::before,
     &::after {

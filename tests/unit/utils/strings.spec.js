@@ -15,7 +15,9 @@ import {
   escapeRegExp,
   pluralize,
   deleteSpaces,
-  whiteSpaceIgnorantRegex, insertAt,
+  whiteSpaceIgnorantRegex,
+  insertAt,
+  firstParagraph,
 } from 'docc-render/utils/strings';
 
 describe('anchorize', () => {
@@ -179,13 +181,13 @@ describe('escapeRegExp', () => {
 
 describe('whiteSpaceIgnorantRegex', () => {
   it('adds white space matches before each character', () => {
-    expect(whiteSpaceIgnorantRegex('abc')).toBe('\\s*a\\s*b\\s*c');
+    expect(whiteSpaceIgnorantRegex('abc')).toBe('a\\s*b\\s*c');
   });
 
   it('takes into consideration escaped characters', () => {
     expect(whiteSpaceIgnorantRegex('a\\[\\.\\')).toBe(
       /* eslint-disable no-useless-concat */
-      '\\s*' + 'a'
+      'a'
       + '\\s*' + '\\['
       + '\\s*' + '\\.'
       + '\\s*' + '\\',
@@ -194,13 +196,22 @@ describe('whiteSpaceIgnorantRegex', () => {
 
   it('skips white spaces between characters', () => {
     expect(whiteSpaceIgnorantRegex('  a     b   ')).toBe(
-      '\\s*' + 'a'
+      'a'
       + '\\s*' + 'b',
     );
   });
 
   it('reduces multiple empty spaces to a single one, so no infinite matchers are returned', () => {
     expect(whiteSpaceIgnorantRegex('  ')).toBe(' ');
+  });
+
+  it('skips the first char, even if its an escape character', () => {
+    expect(whiteSpaceIgnorantRegex('\\[\\.\\')).toBe(
+      /* eslint-disable no-useless-concat */
+      '\\['
+      + '\\s*' + '\\.'
+      + '\\s*' + '\\',
+    );
   });
 });
 
@@ -230,5 +241,24 @@ describe('insertAt', () => {
   });
   it('inserts a string at an index', () => {
     expect(insertAt(base, insert, 2)).toBe('bafoose');
+  });
+});
+
+describe('firstParagraph', () => {
+  it('returns a string without paragraphs unchanged', () => {
+    expect(firstParagraph('')).toBe('');
+    expect(firstParagraph('abc')).toBe('abc');
+  });
+
+  it('handles Unix system newlines', () => {
+    expect(firstParagraph('abc\ndef\nghi')).toBe('abc');
+  });
+
+  it('handles Windows system newlines', () => {
+    expect(firstParagraph('abc\r\ndef\r\nghi')).toBe('abc');
+  });
+
+  it('returns an empty string if the character is a newline', () => {
+    expect(firstParagraph('\n')).toBe('');
   });
 });

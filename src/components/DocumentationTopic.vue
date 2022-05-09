@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,24 +10,42 @@
 
 <template>
   <div class="doc-topic">
-    <Nav
-      v-if="!isTargetIDE"
-      :title="title"
-      :diffAvailability="diffAvailability"
-      :interfaceLanguage="interfaceLanguage"
-      :objcPath="objcPath"
-      :swiftPath="swiftPath"
-      :parentTopicIdentifiers="parentTopicIdentifiers"
-      :isSymbolDeprecated="isSymbolDeprecated"
-      :isSymbolBeta="isSymbolBeta"
-      :currentTopicTags="tags"
-    />
     <main class="main" id="main" role="main" tabindex="0">
-      <slot name="above-title" />
-      <Title :eyebrow="roleHeading">{{ title }}</Title>
-      <div class="container content-grid" :class="{ 'full-width': hideSummary }">
-        <Description :hasOverview="hasOverview">
-          <Abstract v-if="abstract" :content="abstract" />
+      <DocumentationHero
+        :role="role"
+        :enhanceBackground="enhanceBackground"
+        :extraPadding="extraPadding"
+      >
+        <template #above-content>
+          <slot name="above-hero-content" />
+        </template>
+        <slot name="above-title" />
+        <LanguageSwitcher
+          v-if="shouldShowLanguageSwitcher"
+          :interfaceLanguage="interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+        />
+        <Title :eyebrow="roleHeading">
+          <WordBreak>{{ title }}</WordBreak>
+          <small
+            v-if="isSymbolDeprecated || isSymbolBeta"
+            slot="after"
+            :class="tagName"
+            :data-tag-name="tagName"
+          />
+        </Title>
+        <Abstract v-if="abstract" :content="abstract" />
+        <div v-if="sampleCodeDownload">
+          <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
+        </div>
+        <Availability
+          v-if="hasAvailability"
+          :platforms="platforms" :technologies="technologies"
+        />
+      </DocumentationHero>
+      <div v-if="showContainer" class="container">
+        <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -41,27 +59,10 @@
           >
             <ContentNode :content="downloadNotAvailableSummary" />
           </Aside>
-          <DownloadButton v-if="sampleCodeDownload" :action="sampleCodeDownload.action" />
-        </Description>
-        <Summary v-if="!hideSummary">
-          <LanguageSwitcher
-            v-if="shouldShowLanguageSwitcher"
-            :interfaceLanguage="interfaceLanguage"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-          />
-          <Availability v-if="platforms" :platforms="platforms" />
-          <TechnologyList v-if="modules" :technologies="modules" />
-          <TechnologyList
-            v-if="extendsTechnology"
-            class="extends-technology"
-            title="Extends"
-            :technologies="[{ name: extendsTechnology }]"
-          />
-          <OnThisPageNav v-if="onThisPageSections.length > 1" :sections="onThisPageSections" />
-        </Summary>
+        </div>
         <PrimaryContent
           v-if="primaryContentSections && primaryContentSections.length"
+          :class="{ 'with-border': !enhanceBackground }"
           :conformance="conformance"
           :sections="primaryContentSections"
         />
@@ -92,32 +93,28 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import pageTitle from 'docc-render/mixins/pageTitle';
-import { getSetting } from 'docc-render/utils/theme-settings';
+import metadata from 'docc-render/mixins/metadata';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
-import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
+import WordBreak from 'docc-render/components/WordBreak.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
 import DefaultImplementations from './DocumentationTopic/DefaultImplementations.vue';
-import Description from './DocumentationTopic/Description.vue';
-import TechnologyList from './DocumentationTopic/Summary/TechnologyList.vue';
-import OnThisPageNav from './DocumentationTopic/Summary/OnThisPageNav.vue';
 import PrimaryContent from './DocumentationTopic/PrimaryContent.vue';
 import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
 import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
-import Summary from './DocumentationTopic/Summary.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 
 export default {
   name: 'DocumentationTopic',
-  mixins: [pageTitle],
+  mixins: [metadata],
   inject: {
     isTargetIDE: {
       default() {
@@ -134,25 +131,22 @@ export default {
     },
   },
   components: {
+    DocumentationHero,
     Abstract,
     Aside,
     BetaLegalText,
     ContentNode,
     DefaultImplementations,
-    Description,
     DownloadButton: CallToActionButton,
-    TechnologyList,
     LanguageSwitcher,
-    Nav: DocumentationNav,
-    OnThisPageNav,
     PrimaryContent,
     Relationships,
     RequirementMetadata,
     Availability,
     SeeAlso,
-    Summary,
     Title,
     Topics,
+    WordBreak,
   },
   props: {
     abstract: {
@@ -235,16 +229,37 @@ export default {
       type: Array,
       required: false,
     },
-    variants: {
-      type: Array,
-      default: () => ([]),
-    },
-    extendsTechnology: {
-      type: String,
+    languagePaths: {
+      type: Object,
+      default: () => ({}),
     },
     tags: {
       type: Array,
       required: true,
+    },
+    objcPath: {
+      type: String,
+      required: false,
+    },
+    swiftPath: {
+      type: String,
+      required: false,
+    },
+    isSymbolDeprecated: {
+      type: Boolean,
+      required: false,
+    },
+    isSymbolBeta: {
+      type: Boolean,
+      required: false,
+    },
+    symbolKind: {
+      type: String,
+      default: '',
+    },
+    role: {
+      type: String,
+      default: '',
     },
   },
   provide() {
@@ -255,6 +270,7 @@ export default {
       identifier: this.identifier,
       languages: new Set(Object.keys(this.languagePaths)),
       interfaceLanguage: this.interfaceLanguage,
+      symbolKind: this.symbolKind,
     };
   },
   data() {
@@ -269,46 +285,55 @@ export default {
         0,
       );
     },
-    hasOverview: ({ primaryContentSections = [] }) => primaryContentSections.filter(section => (
-      section.kind === PrimaryContent.constants.SectionKind.content
-    )).length > 0,
-    // Use `variants` data to build a map of paths associated with each unique
-    // `interfaceLanguage` trait.
-    languagePaths: ({ variants }) => variants.reduce((memo, variant) => (
-      variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
-        ..._memo,
-        [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
-      })), memo)
-    ), {}),
-    // The first path for any variant with an "occ" interface language trait (if any)
-    objcPath: ({ languagePaths: { [Language.objectiveC.key.api]: [path] = [] } = {} }) => path,
-    // The first path for any variant with a "swift" interface language trait (if any)
-    swiftPath: ({ languagePaths: { [Language.swift.key.api]: [path] = [] } = {} }) => path,
     onThisPageSections() {
       return this.topicState.onThisPageSections;
     },
-    isSymbolBeta:
-      ({ platforms }) => platforms
-        && platforms.length
-        && platforms.every(platform => platform.beta),
+    hasAvailability: ({ platforms, technologies }) => (
+      (platforms || []).length || (technologies || []).length
+    ),
     hasBetaContent:
       ({ platforms }) => platforms
         && platforms.length
         && platforms.some(platform => platform.beta),
-    isSymbolDeprecated:
-      ({ platforms, deprecationSummary }) => (deprecationSummary && deprecationSummary.length > 0)
-        || (platforms
-          && platforms.length
-          && platforms.every(platform => platform.deprecatedAt)
-        ),
     pageTitle: ({ title }) => title,
-    // The `hierarchy.paths` array will contain zero or more subarrays, each
-    // representing a "path" of parent topic IDs that could be considered the
-    // hierarchy/breadcrumb for a given topic. We choose to render only the
-    // first one.
-    parentTopicIdentifiers: ({ hierarchy: { paths: [ids = []] = [] } }) => ids,
-    shouldShowLanguageSwitcher: ({ objcPath, swiftPath }) => objcPath && swiftPath,
-    hideSummary: () => getSetting(['features', 'docs', 'summary', 'hide'], false),
+    pageDescription: ({ abstract, extractFirstParagraphText }) => (
+      abstract ? extractFirstParagraphText(abstract) : null
+    ),
+    shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
+      objcPath && swiftPath && isTargetIDE
+    ),
+    enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    extraPadding: ({
+      roleHeading,
+      abstract,
+      sampleCodeDownload,
+      hasAvailability,
+    }) => (
+      // apply extra padding when there are less than 2 items in the Hero section other than `title`
+      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!hasAvailability) <= 1
+    ),
+    technologies({ modules = [] }) {
+      const technologyList = modules.reduce((list, module) => {
+        list.push(module.name);
+        return list.concat(module.relatedModules || []);
+      }, []);
+      // only show badges for technologies when there are multiple
+      return technologyList.length > 1
+        ? technologyList
+        : [];
+    },
+    showContainer: ({
+      isRequirement,
+      deprecationSummary,
+      downloadNotAvailableSummary,
+      primaryContentSections,
+    }) => (
+      isRequirement
+      || (deprecationSummary && deprecationSummary.length)
+      || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
+      || (primaryContentSections && primaryContentSections.length)
+    ),
+    tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
   },
   methods: {
     normalizePath(path) {
@@ -346,15 +371,26 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .doc-topic {
-  background: var(--colors-text-background, var(--color-text-background));
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 #main {
   outline-style: none;
+  height: 100%;
+
+  @include with-adjustable-sidebar {
+    @include breakpoints-from(xlarge) {
+      border-right: 1px solid var(--color-grid);
+    }
+  }
+
   @include inTargetIde {
     min-height: 100vh;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
+    border: none;
 
     & > .contenttable:last-of-type {
       flex: 1;
@@ -363,43 +399,37 @@ export default {
 }
 
 .container {
-  @include section-content;
-  margin-top: $section-spacing-single-side / 2;
-}
-
-.content-grid {
-  display: grid;
-  grid-template-columns: 75% 25%;
-  grid-template-rows: auto minmax(0, 1fr);
-
-  @include breakpoint(small) {
-    display: block;
-  }
-
-  &:before, &:after {
-    display: none;
-  }
-
-  &.full-width {
-    grid-template-columns: 100%;
-  }
+  outline-style: none;
+  @include dynamic-content-container;
 }
 
 .description {
-  grid-column: 1;
+  margin-bottom: $contenttable-spacing-single-side;
+
+  &:empty {
+    display: none;
+  }
+
+  &.after-enhanced-hero {
+    margin-top: $contenttable-spacing-single-side;
+  }
+
+  /deep/ .content + * {
+    margin-top: $stacked-margin-large;
+  }
 }
 
-.summary {
-  grid-column: 2;
-  grid-row: 1 / -1;
+// remove border-top for first section of the page
+/deep/ {
+  .documentation-hero + .contenttable {
+    .container > .title {
+      border-top: none;
+    }
+  }
 }
 
-.primary-content {
-  grid-column: 1;
-}
-
-.button-cta {
-  margin-top: 2em;
+.sample-download {
+  margin-top: 20px;
 }
 
 /deep/ {
