@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -12,10 +12,7 @@
   <div class="betainfo">
     <div class="betainfo-container">
       <GridRow>
-        <GridColumn
-          :span="{ large: 8, medium: 8, small: 12 }"
-          :isCentered="{ large: true, medium: true, small: true }"
-        >
+        <GridColumn :span="{ large: 12 }">
           <p class="betainfo-label">Beta Software</p>
           <div class="betainfo-content">
             <slot name="content">
