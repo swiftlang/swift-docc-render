@@ -153,7 +153,10 @@ describe('fetchDataForRouteEnter', () => {
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
       '/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
-    ).href, undefined);
+    ).href, {
+      credentials: 'include',
+      mode: 'no-cors',
+    });
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
@@ -167,7 +170,10 @@ describe('fetchDataForRouteEnter', () => {
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
       '/base-prefix/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
-    ).href, undefined);
+    ).href, {
+      credentials: 'include',
+      mode: 'no-cors',
+    });
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
@@ -234,7 +240,10 @@ describe('fetchDataForRouteEnter', () => {
     await expect(window.fetch).toHaveBeenLastCalledWith(new URL(
       '/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
-    ).href, undefined);
+    ).href, {
+      credentials: 'include',
+      mode: 'no-cors',
+    });
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
