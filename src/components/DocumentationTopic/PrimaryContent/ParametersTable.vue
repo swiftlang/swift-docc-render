@@ -86,6 +86,7 @@ $param-spacing: rem(28px);
     .change-added,
     .change-removed {
       display: inline-block;
+      max-width: 100%;
     }
 
     .change-removed,
