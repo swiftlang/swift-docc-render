@@ -125,7 +125,7 @@ describe('FilterInput', () => {
     wrapper.setProps({ value: inputValue });
     const filterLabel = wrapper.find('#filter-label');
     // check input-value attrib for filter label contains the input value
-    expect(filterLabel.attributes('input-value')).toBe(inputValue);
+    expect(filterLabel.attributes('data-value')).toBe(inputValue);
     // check class for filter label
     expect(filterLabel.classes('filter__input-label')).toBe(true);
   });

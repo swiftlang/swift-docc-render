@@ -56,7 +56,7 @@
           <label
             id="filter-label"
             :for="FilterInputId"
-            :input-value="modelValue"
+            :data-value="modelValue"
             :aria-label="placeholder"
             class="filter__input-label"
           >
@@ -555,7 +555,7 @@ $input-height: rem(28px);
     padding: var(--input-vertical-padding) 0;
 
     &::after {
-      content: attr(input-value);
+      content: attr(data-value);
       visibility: hidden;
       width: auto;
       white-space: nowrap;
