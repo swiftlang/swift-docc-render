@@ -553,6 +553,7 @@ $input-height: rem(28px);
     width: 100%;
     height: var(--input-height);
     padding: var(--input-vertical-padding) 0;
+    min-width: 130px; // set a min width, so user can select the area
 
     &::after {
       content: attr(data-value);
@@ -577,7 +578,6 @@ $input-height: rem(28px);
     height: var(--input-height);
     border: none;
     width: 100%;
-    min-width: 130px; // set a min width, so user can select the area
     position: absolute;
     background: transparent;
     z-index: 1;
