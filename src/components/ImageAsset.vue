@@ -32,6 +32,8 @@
       v-bind="darkVariantAttributes"
       ref="img"
       :alt="alt"
+      :width="optimalWidth"
+      :height="optimalWidth ? 'auto' : null"
       @error="handleImageLoadError"
     >
     <!--
@@ -42,6 +44,8 @@
       v-bind="defaultAttributes"
       ref="img"
       :alt="alt"
+      :width="optimalWidth"
+      :height="optimalWidth ? 'auto' : null"
       @error="handleImageLoadError"
     >
   </picture>
@@ -87,6 +91,7 @@ export default {
   data: () => ({
     appState: AppStore.state,
     fallbackImageSrcSet: null,
+    optimalWidth: null,
   }),
   computed: {
     allVariants: ({
@@ -171,8 +176,7 @@ export default {
       }
 
       try {
-        const optimalWidth = this.calculateOptimalWidth();
-        console.log('optimalWidth', optimalWidth); // FIXME
+        this.optimalWidth = this.calculateOptimalWidth();
       } catch {
         console.error('Unable to calulate optimal image width');
       }
