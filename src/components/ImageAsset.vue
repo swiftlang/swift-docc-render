@@ -32,8 +32,8 @@
       v-bind="darkVariantAttributes"
       ref="img"
       :alt="alt"
-      :width="optimalWidth"
-      :height="optimalWidth ? 'auto' : null"
+      :width="darkVariantAttributes.width || optimalWidth"
+      :height="(darkVariantAttributes.width || optimalWidth) ? 'auto' : null"
       @error="handleImageLoadError"
     >
     <!--
@@ -44,8 +44,8 @@
       v-bind="defaultAttributes"
       ref="img"
       :alt="alt"
-      :width="optimalWidth"
-      :height="optimalWidth ? 'auto' : null"
+      :width="defaultAttributes.width || optimalWidth"
+      :height="(defaultAttributes.width || optimalWidth) ? 'auto' : null"
       @error="handleImageLoadError"
     >
   </picture>
