@@ -270,4 +270,39 @@ describe('ImageAsset', () => {
     expect(fallbackImg.attributes('alt')).toBe(alt);
     expect(fallbackImg.attributes('title')).toBe('Image failed to load');
   });
+
+  it('calculates an optimal width after image loads when no size is provided', () => {
+    const url = 'https://www.example.com/image.png';
+
+    // simulate a 1x display with an 84 pixel wide source image that is
+    // described with a 2x trait (should be displayed as 42 pixels wide)
+    Object.defineProperty(window, 'devicePixelRatio', { get: () => 1 });
+    Object.defineProperty(HTMLImageElement.prototype, 'currentSrc', {
+      get: () => url,
+    });
+    Object.defineProperty(HTMLImageElement.prototype, 'naturalWidth', {
+      get: () => 84,
+    });
+
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits: ['2x'],
+            url,
+          },
+        ],
+      },
+    });
+
+    const img = wrapper.find('img');
+    expect(img.attributes('src')).toBe(url);
+    expect(img.attributes('srcset')).toBe(`${url} 2x`);
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+
+    img.trigger('load');
+    expect(img.attributes('width')).toBe('42');
+    expect(img.attributes('height')).toBe('auto');
+  });
 });
