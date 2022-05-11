@@ -93,6 +93,7 @@ $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
 $doc-hero-icon-color: dark-color(fill-secondary) !default;
 $doc-hero-icon-spacing: 25px;
+$doc-hero-icon-vertical-spacing: 10px;
 $doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
@@ -128,9 +129,12 @@ $doc-hero-icon-dimension: 250px;
 
   .icon {
     position: absolute;
-    margin-top: 10px;
+    margin-top: $doc-hero-icon-vertical-spacing;
     margin-right: $doc-hero-icon-spacing;
     right: 0;
+    width: $doc-hero-icon-dimension;
+    height: calc(100% - #{$doc-hero-icon-vertical-spacing * 2});
+    box-sizing: border-box;
 
     @include breakpoint(small) {
       display: none;
@@ -143,6 +147,11 @@ $doc-hero-icon-dimension: 250px;
     width: $doc-hero-icon-dimension;
     height: auto;
     opacity: $doc-hero-icon-opacity;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    max-height: 100%;
 
     /deep/ svg {
       width: 100%;
