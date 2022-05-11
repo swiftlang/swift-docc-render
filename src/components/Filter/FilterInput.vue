@@ -550,7 +550,7 @@ $input-height: rem(28px);
 
   &__input-label {
     position: relative;
-    width: 100%;
+    flex-grow: 1;
     height: var(--input-height);
     padding: var(--input-vertical-padding) 0;
 
@@ -561,6 +561,11 @@ $input-height: rem(28px);
       white-space: nowrap;
       min-width: 130px; // set a min width, so user can select the area
       display: block;
+      text-indent: rem(7px);
+
+      @include breakpoint(small) {
+        text-indent: rem(3px);
+      }
     }
   }
 
