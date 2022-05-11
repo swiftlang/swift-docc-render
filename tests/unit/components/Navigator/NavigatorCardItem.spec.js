@@ -437,7 +437,6 @@ describe('NavigatorCardItem', () => {
           enableFocus: false,
         },
       });
-      const leafLink = wrapper.find('.leaf-link');
       await flushPromises();
       expect(document.activeElement).not.toEqual(wrapper.element);
       wrapper.setProps({
@@ -447,6 +446,7 @@ describe('NavigatorCardItem', () => {
       await flushPromises();
       expect(waitFrames).toHaveBeenCalledTimes(1);
       expect(waitFrames).toHaveBeenCalledWith(8);
+      const leafLink = wrapper.find('.leaf-link');
       expect(document.activeElement).toEqual(leafLink.element);
     });
 
