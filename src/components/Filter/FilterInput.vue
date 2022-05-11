@@ -553,13 +553,14 @@ $input-height: rem(28px);
     width: 100%;
     height: var(--input-height);
     padding: var(--input-vertical-padding) 0;
-    min-width: 130px; // set a min width, so user can select the area
 
     &::after {
       content: attr(data-value);
       visibility: hidden;
       width: auto;
       white-space: nowrap;
+      min-width: 130px; // set a min width, so user can select the area
+      display: block;
     }
   }
 
