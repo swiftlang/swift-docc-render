@@ -95,8 +95,8 @@ describe('FilterInput', () => {
     expect(attrs).toHaveProperty('tabindex', '0');
     // labelled by these components
     expect(attrs).toHaveProperty('aria-labelledby', FilterInputId);
-    // check filter label text
-    expect(filterLabel.text()).toBe(propsData.placeholder);
+    // check aria-label for filter label
+    expect(filterLabel.attributes('aria-label')).toBe(propsData.placeholder);
     // check filter label is a label tag
     expect(filterLabel.is('label')).toBe(true);
     // check that label is associated to filter input
@@ -119,6 +119,15 @@ describe('FilterInput', () => {
     });
     await wrapper.vm.$nextTick();
     expect(input.element.value).toEqual('new-value');
+  });
+
+  it('renders an filter label element that has a input-value attrib to resize the input', () => {
+    wrapper.setProps({ value: inputValue });
+    const filterLabel = wrapper.find('#filter-label');
+    // check input-value attrib for filter label contains the input value
+    expect(filterLabel.attributes('input-value')).toBe(inputValue);
+    // check class for filter label
+    expect(filterLabel.classes('filter__input-label')).toBe(true);
   });
 
   it('renders a `scrolling` class inside the input box wrapper if `isScrolling` is true', () => {
