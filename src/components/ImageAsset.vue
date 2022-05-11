@@ -30,6 +30,7 @@
     <img
       v-if="prefersDark && darkVariantAttributes"
       v-bind="darkVariantAttributes"
+      ref="img"
       :alt="alt"
       @error="handleImageLoadError"
     >
@@ -39,6 +40,7 @@
     <img
       v-else
       v-bind="defaultAttributes"
+      ref="img"
       :alt="alt"
       @error="handleImageLoadError"
     >
@@ -52,6 +54,8 @@ import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
 import { normalizeAssetUrl } from 'docc-render/utils/assets';
+
+const RADIX_DECIMAL = 10;
 
 function constructAttributes(sources) {
   if (!sources.length) {
@@ -85,6 +89,10 @@ export default {
     fallbackImageSrcSet: null,
   }),
   computed: {
+    allVariants: ({
+      lightVariants = [],
+      darkVariants = [],
+    }) => lightVariants.concat(darkVariants),
     defaultAttributes: ({
       lightVariantAttributes,
       darkVariantAttributes,
@@ -111,6 +119,67 @@ export default {
       // image fails to load for any reason
       this.fallbackImageSrcSet = `${noImage} 2x`;
     },
+    calculateOptimalWidth() {
+      // Find the URL for the image currently being displayed, which may vary
+      // depending on the color scheme and pixel density of the display device.
+      // The `naturalWidth` will also return a dynamic size based on the actual
+      // display device.
+      const { devicePixelRatio } = window;
+      const {
+        $refs: {
+          img: {
+            currentSrc,
+            naturalWidth,
+          },
+        },
+        allVariants,
+      } = this;
+
+      // Find the intended density ratio for the image currently being
+      // displayed, which might differ from the density of the actual display
+      const { density } = allVariants.find(({ src }) => currentSrc.endsWith(src));
+      const currentVariantDensity = parseInt(density.match(/\d+/)[0], RADIX_DECIMAL);
+
+      // Find the source width of the image currently being displayed.
+      // Since `naturalWidth` already takes into account the pixel density of
+      // the current display, we need to multiply it by the pixel density of
+      // the display to get back the actual pixel width of the source image
+      const sourceWidth = naturalWidth * devicePixelRatio;
+
+      // Divide the source width of the currently displayed image by the pixel
+      // density of that image to obtain the optimal width in CSS pixels for
+      // display purposes so that a `width` can be assigned to the `img` tag to
+      // ensure that the image looks the same size for all devices
+      const optimalWidth = sourceWidth / currentVariantDensity;
+
+      return optimalWidth;
+    },
+    // If the JSON data vended by the server already contains an optimal display
+    // size for this image, no additional work needs to be done.
+    //
+    // Otherwise, since we don't know the intended display size for the image,
+    // we need to calculate that once the image has first loaded.
+    //
+    // This is especially important if a 2x image is being used on a 1x device
+    // with no 1x version of the same image so that we can size the 2x image
+    // using the same dimensions for both 1x and 2x devices.
+    optimizeImageSize() {
+      // Exit early if image size data already exists—nothing further needs to
+      // be calculated in that scenario.
+      if (this.defaultAttributes.width) {
+        return;
+      }
+
+      try {
+        const optimalWidth = this.calculateOptimalWidth();
+        console.log('optimalWidth', optimalWidth); // FIXME
+      } catch {
+        console.error('Unable to calulate optimal image width');
+      }
+    },
+  },
+  mounted() {
+    this.$refs.img.addEventListener('load', this.optimizeImageSize);
   },
 };
 </script>
