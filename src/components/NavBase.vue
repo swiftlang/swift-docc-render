@@ -77,11 +77,12 @@ import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
-import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import { waitFrames } from 'docc-render/utils/loading';
 
+const { noClose } = MenuLinkModifierClasses;
 const { BreakpointName, BreakpointScopes } = BreakpointEmitter.constants;
 
 const NoBGTransitionFrames = 8;
@@ -270,8 +271,11 @@ export default {
      * @param {EventTarget} event.target
      */
     handleTrayClick({ target }) {
-      // if the target is a link and has a `href` property, close the nav
-      if (target.href) this.closeNav();
+      // If the target is a link and has a `href` property, close the nav.
+      // Targets can opt out of this default behavior with the "noclose" class.
+      if (target.href && !target.classList.contains(noClose)) {
+        this.closeNav();
+      }
     },
     /**
      * Closes the nav, if clicking outside of it.

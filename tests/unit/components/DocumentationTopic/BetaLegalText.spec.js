@@ -21,12 +21,7 @@ describe('BetaLegalText', () => {
   it('renders the BetaLegalText inside a grid', () => {
     expect(wrapper.find(GridRow).exists()).toBe(true);
     expect(wrapper.find(GridColumn).exists()).toBe(true);
-    expect(wrapper.find(GridColumn).props('span')).toEqual({ large: 8, medium: 8, small: 12 });
-    expect(wrapper.find(GridColumn).props('isCentered')).toEqual({
-      large: true,
-      medium: true,
-      small: true,
-    });
+    expect(wrapper.find(GridColumn).props('span')).toEqual({ large: 12 });
   });
 
   it('renders a title', () => {
