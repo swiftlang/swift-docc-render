@@ -59,7 +59,7 @@
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
               :isFocused="focusedIndex === index"
-              :enableSelfFocus="!externalFocusChange"
+              :enableFocus="!externalFocusChange"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
