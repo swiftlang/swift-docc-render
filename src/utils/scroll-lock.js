@@ -131,7 +131,7 @@ export default {
     if (!isIosDevice()) {
       simpleLock();
     } else {
-      advancedLock(targetElement);
+      advancedLock(targetElement || {});
     }
     isLocked = true;
   },
@@ -144,7 +144,7 @@ export default {
 
     if (isIosDevice()) {
       // revert the old scroll position
-      advancedUnlock(targetElement);
+      advancedUnlock(targetElement || {});
     } else {
       // remove all inline styles
       document.body.style.cssText = '';
