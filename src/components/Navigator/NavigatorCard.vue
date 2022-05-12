@@ -1054,7 +1054,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
 
   .navigator-card-inner {
-    height: calc(100vh - #{$nav-height} - #{$filter-height});
+    --nav-card-inner-vertical-offset: #{$filter-height};
   }
 
   .head-wrapper {
