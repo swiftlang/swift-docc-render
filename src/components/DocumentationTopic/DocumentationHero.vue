@@ -133,6 +133,7 @@ $doc-hero-icon-dimension: 250px;
     margin-right: $doc-hero-icon-spacing;
     right: 0;
     width: $doc-hero-icon-dimension;
+    // create icon box with spacing in hero section
     height: calc(100% - #{$doc-hero-icon-vertical-spacing * 2});
     box-sizing: border-box;
 
@@ -148,6 +149,7 @@ $doc-hero-icon-dimension: 250px;
     height: auto;
     opacity: $doc-hero-icon-opacity;
     position: absolute;
+    // center in icon box
     top: 50%;
     left: 0;
     transform: translateY(-50%);
