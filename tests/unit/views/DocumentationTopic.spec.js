@@ -172,6 +172,7 @@ describe('DocumentationTopic', () => {
     expect(navigator.props()).toEqual({
       errorFetching: false,
       isFetching: true,
+      isOpen: false,
       // assert we are passing the first set of paths always
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
@@ -186,6 +187,7 @@ describe('DocumentationTopic', () => {
     expect(navigator.props()).toEqual({
       errorFetching: false,
       isFetching: false,
+      isOpen: false,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
       breakpoint: 'large',
       parentTopicIdentifiers: topicData.hierarchy.paths[0],

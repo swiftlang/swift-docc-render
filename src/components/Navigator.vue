@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <nav class="navigator">
+  <nav
+    v-if="displayNavigator"
+    class="navigator"
+  >
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
@@ -92,6 +95,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
     breakpoint: {
       type: String,
       default: BreakpointName.large,
@@ -137,6 +144,7 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
+    displayNavigator: ({ isOpen, breakpoint }) => isOpen || breakpoint === BreakpointName.large,
   },
   methods: {
     /**

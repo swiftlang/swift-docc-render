@@ -27,6 +27,7 @@
           animationClass="aside-animated-child"
           :scrollLockID="scrollLockID"
           :breakpoint="breakpoint"
+          :openExternally="openExternally"
         />
       </div>
       <div
