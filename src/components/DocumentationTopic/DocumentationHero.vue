@@ -26,8 +26,8 @@
       <slot name="above-content" />
     </div>
     <div
-    class="documentation-hero__content"
-    :class="{ 'extra-padding': extraPadding }"
+      class="documentation-hero__content"
+      :class="{ 'short-hero': shortHero, 'extra-bottom-padding': shouldShowLanguageSwitcher }"
     >
       <slot />
     </div>
@@ -53,7 +53,11 @@ export default {
       type: Boolean,
       required: true,
     },
-    extraPadding: {
+    shortHero: {
+      type: Boolean,
+      required: true,
+    },
+    shouldShowLanguageSwitcher: {
       type: Boolean,
       required: true,
     },
@@ -188,9 +192,15 @@ $doc-hero-icon-dimension: 250px;
   }
 }
 
-.extra-padding {
+.short-hero {
+  // apply extra top and bottom padding for pages with short hero section
   padding-top: rem(60px);
   padding-bottom: rem(60px);
+}
+
+.extra-bottom-padding {
+  // apply extra bottom padding when shouldShowLanguageSwitcher
+  padding-bottom: rem(65px);
 }
 
 .theme-dark /deep/ a:not(.button-cta) {
