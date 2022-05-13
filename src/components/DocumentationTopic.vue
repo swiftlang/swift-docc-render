@@ -301,7 +301,7 @@ export default {
       abstract ? extractFirstParagraphText(abstract) : null
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
-      objcPath && swiftPath && isTargetIDE
+      !!(objcPath && swiftPath && isTargetIDE)
     ),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
     shortHero: ({
@@ -313,7 +313,7 @@ export default {
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
       (!!roleHeading + !!abstract + !!sampleCodeDownload
-        + !!hasAvailability + !!shouldShowLanguageSwitcher) <= 1
+        + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
