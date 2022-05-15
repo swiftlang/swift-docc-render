@@ -37,6 +37,11 @@
       :constraints="conformance.constraints"
       :prefix="conformance.availabilityPrefix"
     />
+    <DeclarationSourceLink
+      v-if="source"
+      :url="source.url"
+      :fileName="source.fileName"
+    />
   </OnThisPageSection>
 </template>
 
@@ -47,6 +52,7 @@ import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisP
 import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import DeclarationDiff
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
+import DeclarationSourceLink from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
@@ -56,6 +62,7 @@ export default {
   components: {
     DeclarationDiff,
     DeclarationGroup,
+    DeclarationSourceLink,
     ConditionalConstraints,
     OnThisPageSection,
   },
@@ -67,6 +74,10 @@ export default {
   }),
   props: {
     conformance: {
+      type: Object,
+      required: false,
+    },
+    source: {
       type: Object,
       required: false,
     },
