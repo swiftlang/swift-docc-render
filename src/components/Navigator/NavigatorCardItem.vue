@@ -205,10 +205,10 @@ export default {
       this.toggleTree();
     },
     clickReference() {
-      this.$refs.reference.$el.click();
+      (this.$refs.reference.$el || this.$refs.reference).click();
     },
     focusReference() {
-      this.$refs.reference.$el.focus();
+      (this.$refs.reference.$el || this.$refs.reference).focus();
     },
     handleClick() {
       if (this.isGroupMarker) return;
