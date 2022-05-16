@@ -18,7 +18,7 @@ import { TopicRole } from '@/constants/roles';
 const defaultProps = {
   role: TopicTypes.class,
   enhanceBackground: true,
-  extraPadding: true,
+  shortHero: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -67,14 +67,14 @@ describe('DocumentationHero', () => {
     });
   });
 
-  it('renders the right classes based on `extraPadding` prop', () => {
+  it('renders the right classes based on `shortHero` prop', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.extra-padding').exists()).toBe(true);
+    expect(wrapper.find('.short-hero').exists()).toBe(true);
 
     wrapper.setProps({
-      extraPadding: false,
+      shortHero: false,
     });
-    expect(wrapper.find('.extra-padding').exists()).toBe(false);
+    expect(wrapper.find('.short-hero').exists()).toBe(false);
   });
 
   it('finds aliases, for the color', () => {
