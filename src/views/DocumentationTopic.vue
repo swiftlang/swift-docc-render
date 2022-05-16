@@ -31,7 +31,7 @@
         v-bind="sidebarProps"
         v-on="sidebarListeners"
       >
-        <template #aside="{ scrollLockID, breakpoint, openExternally }">
+        <template #aside="{ scrollLockID, breakpoint }">
           <aside class="doc-topic-aside">
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
@@ -43,7 +43,7 @@
                   :parent-topic-identifiers="parentTopicIdentifiers"
                   :technology="slotProps.technology || technology"
                   :is-fetching="slotProps.isFetching"
-                  :is-open="openExternally"
+                  :is-open="isSideNavOpen"
                   :error-fetching="slotProps.errorFetching"
                   :api-changes="slotProps.apiChanges"
                   :references="topicProps.references"
@@ -90,7 +90,7 @@ import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 
-const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
+const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.0.0';
 
 export default {
   name: 'DocumentationTopicView',

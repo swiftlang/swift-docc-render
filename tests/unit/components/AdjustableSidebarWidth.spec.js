@@ -95,7 +95,6 @@ describe('AdjustableSidebarWidth', () => {
       animationClass: 'aside-animated-child',
       scrollLockID: 'sidebar-scroll-lock',
       breakpoint: 'large',
-      openExternally: false,
     });
   });
 
