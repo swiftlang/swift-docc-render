@@ -14,7 +14,8 @@
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
-        :extraPadding="extraPadding"
+        :shortHero="shortHero"
+        :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
       >
         <template #above-content>
           <slot name="above-hero-content" />
@@ -300,17 +301,19 @@ export default {
       abstract ? extractFirstParagraphText(abstract) : null
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
-      objcPath && swiftPath && isTargetIDE
+      !!(objcPath && swiftPath && isTargetIDE)
     ),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    extraPadding: ({
+    shortHero: ({
       roleHeading,
       abstract,
       sampleCodeDownload,
       hasAvailability,
+      shouldShowLanguageSwitcher,
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
-      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!hasAvailability) <= 1
+      (!!roleHeading + !!abstract + !!sampleCodeDownload
+        + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
