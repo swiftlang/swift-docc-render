@@ -112,6 +112,17 @@ describe('scroll-lock', () => {
       expect(preventDefault).toHaveBeenCalledTimes(1);
     });
 
+    it('does not throw, if not passed an element', () => {
+      expect(() => scrollLock.lockScroll(null)).not.toThrow();
+      // assert body scroll is getting prevented when swiping up/down
+      document.dispatchEvent(createEvent('touchmove', {
+        preventDefault,
+        touches: [1],
+      }));
+      expect(preventDefault).toHaveBeenCalledTimes(1);
+      expect(() => scrollLock.unlockScroll(null)).not.toThrow();
+    });
+
     it('attaches only once event listeners', () => {
       // enable scroll locking
       scrollLock.lockScroll(container);
