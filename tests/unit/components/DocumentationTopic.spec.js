@@ -210,7 +210,7 @@ describe('DocumentationTopic', () => {
     expect(main.attributes('tabindex')).toBe('0');
   });
 
-  it('renders an aria live that tells which it is the current page content', () => {
+  it('renders an aria live that tells VO users which it is the current page content', () => {
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
     expect(wrapper.find('[aria-live="polite"]').text()).toBe(`Current page is ${propsData.title}`);
   });

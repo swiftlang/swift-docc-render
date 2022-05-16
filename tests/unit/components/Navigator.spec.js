@@ -148,6 +148,22 @@ describe('Navigator', () => {
     expect(placeholder.contains(SpinnerIcon)).toBe(true);
   });
 
+  it('renders an aria live that tells VO users when navigator is loading', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        isFetching: true,
+      },
+    });
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is loading');
+  });
+
+  it('renders an aria live that tells VO users when navigator is ready', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is ready');
+  });
+
   it('falls back to using the `technology.url` for the `technology-path`', () => {
     const wrapper = createWrapper({
       propsData: {
