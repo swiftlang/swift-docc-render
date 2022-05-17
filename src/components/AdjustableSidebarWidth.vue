@@ -280,7 +280,6 @@ export default {
      */
     toggleScrollLock(lock) {
       const scrollLockContainer = document.getElementById(this.scrollLockID);
-      if (!scrollLockContainer) return;
       if (lock) {
         scrollLock.lockScroll(scrollLockContainer);
         // lock focus
