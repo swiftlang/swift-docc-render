@@ -90,7 +90,7 @@ import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 
-const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.0.0';
+const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 
 export default {
   name: 'DocumentationTopicView',
