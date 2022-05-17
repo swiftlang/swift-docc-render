@@ -136,25 +136,25 @@ describe('Navigator', () => {
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
 
-  it('renders the Navigator if is open', () => {
+  it('applies display none to Navigator if is closed and breakpoint is other than large', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        breakpoint: BreakpointName.small,
+      },
+    });
+    // assert navigator have display: none
+    expect(wrapper.find('.navigator').attributes('style')).toContain('display: none');
+  });
+
+  it('does not apply display none to Navigator if is open', () => {
     const wrapper = createWrapper({
       propsData: {
         breakpoint: BreakpointName.small,
         isOpen: true,
       },
     });
-    // assert navigator exists
-    expect(wrapper.find('.navigator').exists()).toBe(true);
-  });
-
-  it('does not render the Navigator if is closed and breakpoint is other than large', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        breakpoint: BreakpointName.small,
-      },
-    });
-    // assert navigator does not exist
-    expect(wrapper.find('.navigator').exists()).toBe(false);
+    // assert navigator doesn't have display: none
+    expect(wrapper.find('.navigator').attributes('style')).toBeFalsy();
   });
 
   it('renders a loading placeholder, if is fetching', () => {

@@ -9,32 +9,34 @@
 -->
 
 <template>
-  <nav
-    v-if="displayNavigator"
-    class="navigator"
-  >
-    <NavigatorCard
-      v-if="!isFetching"
-      :technology="technology.title"
-      :technology-path="technology.path || technology.url"
-      :type="type"
-      :children="flatChildren"
-      :active-path="activePath"
-      :scrollLockID="scrollLockID"
-      :error-fetching="errorFetching"
-      :breakpoint="breakpoint"
-      :api-changes="apiChanges"
-      @close="$emit('close')"
-    />
-    <NavigatorCardInner v-else class="loading-placeholder">
-      <transition name="delay-visibility" appear>
-        <SpinnerIcon class="loading-spinner" />
-      </transition>
-    </NavigatorCardInner>
-    <div aria-live="polite" class="visuallyhidden">
-      Navigator is {{ isFetching ? 'loading' : 'ready' }}
-    </div>
-  </nav>
+  <transition name="delay-hiding">
+    <nav
+      v-show="showNavigator"
+      class="navigator"
+    >
+      <NavigatorCard
+        v-if="!isFetching"
+        :technology="technology.title"
+        :technology-path="technology.path || technology.url"
+        :type="type"
+        :children="flatChildren"
+        :active-path="activePath"
+        :scrollLockID="scrollLockID"
+        :error-fetching="errorFetching"
+        :breakpoint="breakpoint"
+        :api-changes="apiChanges"
+        @close="$emit('close')"
+      />
+      <NavigatorCardInner v-else class="loading-placeholder">
+        <transition name="delay-showing" appear>
+          <SpinnerIcon class="loading-spinner" />
+        </transition>
+      </NavigatorCardInner>
+      <div aria-live="polite" class="visuallyhidden">
+        Navigator is {{ isFetching ? 'loading' : 'ready' }}
+      </div>
+    </nav>
+  </transition>
 </template>
 
 <script>
@@ -144,7 +146,7 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
-    displayNavigator: ({ isOpen, breakpoint }) => isOpen || breakpoint === BreakpointName.large,
+    showNavigator: ({ isOpen, breakpoint }) => isOpen || breakpoint === BreakpointName.large,
   },
   methods: {
     /**
@@ -206,6 +208,7 @@ export default {
 
 .navigator {
   --nav-height: #{$nav-height};
+  --delay: 1s;
   height: 100%;
   display: flex;
   flex-flow: column;
@@ -218,6 +221,11 @@ export default {
     position: static;
     transition: none;
   }
+
+  &.delay-hiding-leave-active {
+    // don't hide navigator until delay time has passed
+    transition: visibility var(--delay);
+  }
 }
 
 .loading-placeholder {
@@ -228,13 +236,13 @@ export default {
 
 .loading-spinner {
   --spinner-size: 40px; // used for both width and height
-  --spinner-delay: 1s; // don't show spinner until this much time has passed
 
   height: var(--spinner-size);
   width: var(--spinner-size);
 
-  &.delay-visibility-enter-active {
-    transition: visibility var(--spinner-delay);
+  &.delay-showing-enter-active {
+    // don't show spinner until delay time has passed
+    transition: visibility var(--delay);
     visibility: hidden;
   }
 }
