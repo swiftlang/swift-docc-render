@@ -89,6 +89,9 @@
       />
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
+    <div aria-live="polite" class="visuallyhidden">
+      Current page is {{ pageTitle }}
+    </div>
   </div>
 </template>
 
