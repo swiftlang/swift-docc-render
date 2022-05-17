@@ -14,7 +14,7 @@ $globalnav-height: 44px;
 $form-focus-size: 4px;
 
 // Border radius
-$border-radius: 4px !default;
+$border-radius: var(--border-radius, 4px) !default;
 $tiny-border-radius: $border-radius !default;
 $large-border-radius: $border-radius !default;
 $big-border-radius: $border-radius !default;

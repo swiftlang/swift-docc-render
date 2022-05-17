@@ -15,6 +15,7 @@
     width="14"
     viewBox="0 0 14 14"
     fill="currentColor"
+    themeId="filter"
   >
     <path d="m2 6.5h10v1h-10z"/>
     <path d="m1 3h12v1h-12z"/>

@@ -67,7 +67,7 @@ export default {
     color: ({ type }) => HeroColorsMap[TopicTypeAliases[type] || type] || HeroColors.teal,
     styles: ({ color }) => ({
       // use the color or fallback to the gray secondary, if not defined.
-      '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${color}, var(--color-figure-gray-secondary)))`,
     }),
     // This mapping is necessary to help create a consistent mapping for the
     // following kinds of things, which are represented as different strings
@@ -102,7 +102,7 @@ $doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
   background: dark-color(fill);
-  color: dark-color(figure-gray);
+  color: var(--color-documentation-intro-figure, dark-color(figure-gray));
   overflow: hidden;
   text-align: left;
   position: relative;
@@ -110,7 +110,7 @@ $doc-hero-icon-dimension: 250px;
   // gradient
   &:before {
     content: '';
-    background: $doc-hero-gradient-background;
+    background: var(--color-documentation-intro-fill, $doc-hero-gradient-background);
     position: absolute;
     width: 100%;
     left: 0;
@@ -147,7 +147,7 @@ $doc-hero-icon-dimension: 250px;
   }
 
   .background-icon {
-    color: $doc-hero-icon-color;
+    color: var(--color-documentation-intro-accent, $doc-hero-icon-color);
     display: block;
     width: $doc-hero-icon-dimension;
     height: auto;
