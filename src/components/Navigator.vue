@@ -28,6 +28,9 @@
         <SpinnerIcon class="loading-spinner" />
       </transition>
     </NavigatorCardInner>
+    <div aria-live="polite" class="visuallyhidden">
+      Navigator is {{ isFetching ? 'loading' : 'ready' }}
+    </div>
   </nav>
 </template>
 
@@ -194,6 +197,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
+  --nav-height: #{$nav-height};
   height: 100%;
   display: flex;
   flex-flow: column;

@@ -77,7 +77,6 @@
   --color-code-line-highlight: #{change-color(light-color(figure-blue), $alpha: 0.08)};
   --color-code-line-highlight-border: var(--color-figure-blue);
   --color-code-plain: var(--color-figure-gray);
-  --color-content-table-content-color: var(--color-fill-secondary);
   --color-dropdown-background: #{transparentize(light-color(fill), 0.2)};
   --color-dropdown-border: #{light-color(fill-gray)};
   --color-dropdown-option-text: #{light-color(figure-gray-secondary)};

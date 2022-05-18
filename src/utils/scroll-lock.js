@@ -63,8 +63,10 @@ function simpleLock() {
 function advancedUnlock(targetElement) {
   /* eslint-disable no-param-reassign */
   // remove the touch listeners on the target
-  targetElement.ontouchstart = null;
-  targetElement.ontouchmove = null;
+  if (targetElement) {
+    targetElement.ontouchstart = null;
+    targetElement.ontouchmove = null;
+  }
   // remove the body event listener
   document.removeEventListener('touchmove', preventDefault);
 }
@@ -97,6 +99,9 @@ function handleScroll(event, targetElement) {
  * @param targetElement
  */
 function advancedLock(targetElement) {
+  // add a scroll listener to the body
+  document.addEventListener('touchmove', preventDefault, { passive: false });
+  if (!targetElement) return;
   /* eslint-disable no-param-reassign */
   // add inline listeners to the target, for easier removal later.
   targetElement.ontouchstart = (event) => {
@@ -111,8 +116,6 @@ function advancedLock(targetElement) {
       handleScroll(event, targetElement);
     }
   };
-  // add a scroll listener to the body
-  document.addEventListener('touchmove', preventDefault, { passive: false });
 }
 
 /**
