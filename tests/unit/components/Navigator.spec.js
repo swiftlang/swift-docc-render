@@ -114,7 +114,7 @@ describe('Navigator', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the Navigator if breakpoint is large', () => {
+  it('renders the Navigator', () => {
     const wrapper = createWrapper();
     // assert navigator is a `nav`
     expect(wrapper.find('.navigator').is('nav')).toBe(true);

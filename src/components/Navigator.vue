@@ -24,7 +24,7 @@
       @close="$emit('close')"
     />
     <NavigatorCardInner v-else class="loading-placeholder">
-      <transition name="delay-showing" appear>
+      <transition name="delay-visibility" appear>
         <SpinnerIcon class="loading-spinner" />
       </transition>
     </NavigatorCardInner>
@@ -137,7 +137,6 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
-    showNavigator: ({ isOpen, breakpoint }) => isOpen || breakpoint === BreakpointName.large,
   },
   methods: {
     /**
@@ -199,7 +198,6 @@ export default {
 
 .navigator {
   --nav-height: #{$nav-height};
-  --delay: 1s;
   height: 100%;
   display: flex;
   flex-flow: column;
@@ -222,13 +220,13 @@ export default {
 
 .loading-spinner {
   --spinner-size: 40px; // used for both width and height
+  --spinner-delay: 1s; // don't show spinner until this much time has passed
 
   height: var(--spinner-size);
   width: var(--spinner-size);
 
-  &.delay-showing-enter-active {
-    // don't show spinner until delay time has passed
-    transition: visibility var(--delay);
+  &.delay-visibility-enter-active {
+    transition: visibility var(--spinner-delay);
     visibility: hidden;
   }
 }
