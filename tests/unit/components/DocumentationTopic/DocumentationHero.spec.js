@@ -80,12 +80,14 @@ describe('DocumentationHero', () => {
 
   it('renders the right classes based on `shouldShowLanguageSwitcher` prop', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.extra-bottom-padding').exists()).toBe(true);
+    const content = wrapper.find('.documentation-hero__content');
+    
+    expect(content.classes()).toContain('extra-bottom-padding');
 
     wrapper.setProps({
       shouldShowLanguageSwitcher: false,
     });
-    expect(wrapper.find('.extra-bottom-padding').exists()).toBe(false);
+    expect(content.classes()).not.toContain('extra-bottom-padding');
   });
 
   it('finds aliases, for the color', () => {
