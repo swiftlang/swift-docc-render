@@ -19,6 +19,7 @@ const defaultProps = {
   role: TopicTypes.class,
   enhanceBackground: true,
   shortHero: true,
+  shouldShowLanguageSwitcher: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -75,6 +76,18 @@ describe('DocumentationHero', () => {
       shortHero: false,
     });
     expect(wrapper.find('.short-hero').exists()).toBe(false);
+  });
+
+  it('renders the right classes based on `shouldShowLanguageSwitcher` prop', () => {
+    const wrapper = createWrapper();
+    const content = wrapper.find('.documentation-hero__content');
+    
+    expect(content.classes()).toContain('extra-bottom-padding');
+
+    wrapper.setProps({
+      shouldShowLanguageSwitcher: false,
+    });
+    expect(content.classes()).not.toContain('extra-bottom-padding');
   });
 
   it('finds aliases, for the color', () => {
