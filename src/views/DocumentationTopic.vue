@@ -39,31 +39,36 @@
               :api-changes-version="store.state.selectedAPIChangesVersion"
             >
               <template #default="slotProps">
-                <Navigator
-                  :parent-topic-identifiers="parentTopicIdentifiers"
-                  :technology="slotProps.technology || technology"
-                  :is-fetching="slotProps.isFetching"
-                  :is-open="isSideNavOpen"
-                  :error-fetching="slotProps.errorFetching"
-                  :api-changes="slotProps.apiChanges"
-                  :references="topicProps.references"
-                  :scrollLockID="scrollLockID"
-                  :breakpoint="breakpoint"
-                  @close="isSideNavOpen = false"
-                />
+                <transition name="delay-hiding">
+                  <Navigator
+                    v-show="isSideNavOpen || breakpoint === BreakpointName.large"
+                    :parent-topic-identifiers="parentTopicIdentifiers"
+                    :technology="slotProps.technology || technology"
+                    :is-fetching="slotProps.isFetching"
+                    :error-fetching="slotProps.errorFetching"
+                    :api-changes="slotProps.apiChanges"
+                    :references="topicProps.references"
+                    :scrollLockID="scrollLockID"
+                    :breakpoint="breakpoint"
+                    @close="isSideNavOpen = false"
+                  />
+                </transition>
               </template>
             </NavigatorDataProvider>
           </aside>
         </template>
-        <Topic
-          v-bind="topicProps"
-          :key="topicKey"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :languagePaths="languagePaths"
-        />
+        <transition name="delay-hiding">
+          <Topic
+            v-show="!isSideNavOpen"
+            v-bind="topicProps"
+            :key="topicKey"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+            :languagePaths="languagePaths"
+          />
+        </transition>
       </component>
     </template>
   </CodeTheme>
@@ -89,6 +94,7 @@ import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidt
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 
@@ -110,6 +116,7 @@ export default {
       topicDataObjc: null,
       isSideNavOpen: false,
       store: DocumentationTopicStore,
+      BreakpointName,
     };
   },
   computed: {
@@ -350,9 +357,15 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .doc-topic-view {
+  --delay: 1s;
   display: flex;
   flex-flow: column;
   background: var(--colors-text-background, var(--color-text-background));
+
+  .delay-hiding-leave-active {
+    // don't hide navigator until delay time has passed
+    transition: display var(--delay);
+  }
 }
 
 .doc-topic-aside {

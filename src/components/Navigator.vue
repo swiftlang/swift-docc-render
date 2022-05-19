@@ -9,34 +9,29 @@
 -->
 
 <template>
-  <transition name="delay-hiding">
-    <nav
-      v-show="showNavigator"
-      class="navigator"
-    >
-      <NavigatorCard
-        v-if="!isFetching"
-        :technology="technology.title"
-        :technology-path="technology.path || technology.url"
-        :type="type"
-        :children="flatChildren"
-        :active-path="activePath"
-        :scrollLockID="scrollLockID"
-        :error-fetching="errorFetching"
-        :breakpoint="breakpoint"
-        :api-changes="apiChanges"
-        @close="$emit('close')"
-      />
-      <NavigatorCardInner v-else class="loading-placeholder">
-        <transition name="delay-showing" appear>
-          <SpinnerIcon class="loading-spinner" />
-        </transition>
-      </NavigatorCardInner>
-      <div aria-live="polite" class="visuallyhidden">
-        Navigator is {{ isFetching ? 'loading' : 'ready' }}
-      </div>
-    </nav>
-  </transition>
+  <nav class="navigator">
+    <NavigatorCard
+      v-if="!isFetching"
+      :technology="technology.title"
+      :technology-path="technology.path || technology.url"
+      :type="type"
+      :children="flatChildren"
+      :active-path="activePath"
+      :scrollLockID="scrollLockID"
+      :error-fetching="errorFetching"
+      :breakpoint="breakpoint"
+      :api-changes="apiChanges"
+      @close="$emit('close')"
+    />
+    <NavigatorCardInner v-else class="loading-placeholder">
+      <transition name="delay-showing" appear>
+        <SpinnerIcon class="loading-spinner" />
+      </transition>
+    </NavigatorCardInner>
+    <div aria-live="polite" class="visuallyhidden">
+      Navigator is {{ isFetching ? 'loading' : 'ready' }}
+    </div>
+  </nav>
 </template>
 
 <script>
@@ -94,10 +89,6 @@ export default {
       default: '',
     },
     errorFetching: {
-      type: Boolean,
-      default: false,
-    },
-    isOpen: {
       type: Boolean,
       default: false,
     },
@@ -220,11 +211,6 @@ export default {
   @include breakpoint(medium, nav) {
     position: static;
     transition: none;
-  }
-
-  &.delay-hiding-leave-active {
-    // don't hide navigator until delay time has passed
-    transition: visibility var(--delay);
   }
 }
 

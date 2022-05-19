@@ -15,7 +15,6 @@ import SpinnerIcon from '@/components/Icons/SpinnerIcon.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
@@ -92,7 +91,6 @@ const defaultProps = {
   references,
   scrollLockID: 'foo',
   breakpoint: 'large',
-  isOpen: false,
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -134,27 +132,6 @@ describe('Navigator', () => {
       apiChanges: null,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
-  });
-
-  it('applies display none to Navigator if is closed and breakpoint is other than large', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        breakpoint: BreakpointName.small,
-      },
-    });
-    // assert navigator have display: none
-    expect(wrapper.find('.navigator').attributes('style')).toContain('display: none');
-  });
-
-  it('does not apply display none to Navigator if is open', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        breakpoint: BreakpointName.small,
-        isOpen: true,
-      },
-    });
-    // assert navigator doesn't have display: none
-    expect(wrapper.find('.navigator').attributes('style')).toBeFalsy();
   });
 
   it('renders a loading placeholder, if is fetching', () => {
