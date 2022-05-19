@@ -134,7 +134,7 @@ describe("syntax-highlight", () => {
     );
   });
 
-  it("does not tokenizes swift keywords inside words", async () => {
+  it("does not tokenize swift keywords inside words", async () => {
     const content = [
       "var protocolMock = true  // 'protocol' is not highlighted",
       "var myenum = true  // 'enum' is not highlighted",
