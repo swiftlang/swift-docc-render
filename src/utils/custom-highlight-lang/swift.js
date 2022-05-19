@@ -37,7 +37,7 @@ export default function (hljs) {
     // recognize class function declarations as class declarations
     language.contains[classModeIndex] = {
       ...classMode,
-      begin: /(struct|protocol|extension|enum|actor|class\b(?!.*\bfunc\b))/,
+      begin: /\b(struct|protocol|extension|enum|actor|class\b(?!.*\bfunc))\b/,
     };
   }
 
