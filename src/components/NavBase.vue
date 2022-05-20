@@ -20,7 +20,7 @@
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
         <div class="pre-title">
-          <slot name="pre-title" :close-nav="closeNav" />
+          <slot name="pre-title" :close-nav="closeNav" :is-open="isOpen" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />

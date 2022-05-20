@@ -20,10 +20,11 @@
     class="documentation-nav"
     aria-label="API Reference"
   >
-    <template #pre-title="{ closeNav }" v-if="isWideFormat">
+    <template #pre-title="{ closeNav, isOpen }" v-if="isWideFormat">
       <button
         aria-label="Open documentation navigator"
         class="sidenav-toggle"
+        :tabindex="isOpen ? -1: null"
         @click.prevent="handleSidenavToggle(closeNav)"
       >
         <SidenavIcon class="icon-inline sidenav-icon" />
