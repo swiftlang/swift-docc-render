@@ -43,12 +43,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.contenttable {
-  @include inTargetIde {
-    background: var(--color-content-table-content-color);
-  }
-}
-
 .container {
   @include dynamic-content-container;
   padding-bottom: $section-spacing-single-side;
