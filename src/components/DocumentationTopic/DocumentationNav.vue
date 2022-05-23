@@ -24,7 +24,7 @@
       <button
         aria-label="Open documentation navigator"
         class="sidenav-toggle"
-        :tabindex="isOpen ? -1: null"
+        :tabindex="isOpen ? -1 : null"
         @click.prevent="handleSidenavToggle(closeNav)"
       >
         <SidenavIcon class="icon-inline sidenav-icon" />
