@@ -462,18 +462,6 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('applies display none to `Topic` if `isSideNavOpen` is true', async () => {
-    // renders a closed navigator
-    wrapper.setData({
-      topicData,
-      isSideNavOpen: true,
-    });
-    await wrapper.vm.$nextTick();
-    const topic = wrapper.find(Topic);
-    // assert navigator has display: none
-    expect(topic.attributes('style')).toContain('display: none');
-  });
-
   it('provides an empty languagePaths, even if no variants', () => {
     wrapper.setData({
       topicData: {

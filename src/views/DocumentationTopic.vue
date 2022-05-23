@@ -57,18 +57,15 @@
             </NavigatorDataProvider>
           </aside>
         </template>
-        <transition name="delay-hiding">
-          <Topic
-            v-show="!isSideNavOpen"
-            v-bind="topicProps"
-            :key="topicKey"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-            :isSymbolDeprecated="isSymbolDeprecated"
-            :isSymbolBeta="isSymbolBeta"
-            :languagePaths="languagePaths"
-          />
-        </transition>
+        <Topic
+          v-bind="topicProps"
+          :key="topicKey"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :languagePaths="languagePaths"
+        />
       </component>
     </template>
   </CodeTheme>
