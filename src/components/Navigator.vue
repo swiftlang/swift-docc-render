@@ -28,6 +28,9 @@
         <SpinnerIcon class="loading-spinner" />
       </transition>
     </NavigatorCardInner>
+    <div aria-live="polite" class="visuallyhidden">
+      Navigator is {{ isFetching ? 'loading' : 'ready' }}
+    </div>
   </nav>
 </template>
 
