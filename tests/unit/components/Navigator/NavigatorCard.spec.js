@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -1518,9 +1518,24 @@ describe('NavigatorCard', () => {
       ...root0Child0,
       deprecated: true,
     };
+    const groupMarker = {
+      type: TopicTypes.groupMarker,
+      title: 'First Child Group Marker',
+      uid: 22,
+      parent: root0.uid,
+      depth: 1,
+      index: 4,
+      childUIDs: [],
+    };
+    const root0Updated = {
+      ...root0,
+      childUIDs: root0.childUIDs.concat(groupMarker.uid),
+    };
     const wrapper = createWrapper({
       propsData: {
-        children: [root0, updatedChild, root0Child1, root0Child1GrandChild0, root1],
+        children: [
+          root0Updated, updatedChild, groupMarker, root0Child1, root0Child1GrandChild0, root1,
+        ],
         activePath: [root0.path],
       },
     });
@@ -1536,9 +1551,15 @@ describe('NavigatorCard', () => {
     const allItems = wrapper.findAll(NavigatorCardItem);
     // assert the deprecated item is filtered out
     expect(allItems).toHaveLength(4);
-    expect(allItems.at(0).props('item')).toEqual(root0);
-    expect(allItems.at(1).props('item')).toEqual(root0Child1);
-    expect(allItems.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    // assert root is rendered
+    expect(allItems.at(0).props('item')).toEqual(root0Updated);
+    // assert the group marker is rendered
+    expect(allItems.at(1).props('item')).toEqual(groupMarker);
+    // assert the none-deprecated child is rendered, but its not expanded
+    expect(allItems.at(2).props()).toMatchObject({
+      item: root0Child1,
+      expanded: false,
+    });
     expect(allItems.at(3).props('item')).toEqual(root1);
   });
 
