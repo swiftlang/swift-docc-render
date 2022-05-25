@@ -11,6 +11,8 @@
 import { shallowMount } from '@vue/test-utils';
 import ImageAsset from 'docc-render/components/ImageAsset.vue';
 
+import { flushPromises } from '../../../test-utils';
+
 jest.mock('docc-render/stores/AppStore', () => ({
   state: {
     preferredColorScheme: 'auto',
@@ -271,24 +273,40 @@ describe('ImageAsset', () => {
     expect(fallbackImg.attributes('title')).toBe('Image failed to load');
   });
 
-  it('calculates an optimal width after image loads when no size is provided', () => {
+  it('calculates an optimal width after image loads when no size is provided', async () => {
     const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+    const intrinsicWidth = 84;
+    const intrinsicHeight = intrinsicWidth;
+    const optimalDisplayWidth = intrinsicWidth / 2;
 
-    // simulate a 1x display with an 84 pixel wide source image that is
-    // described with a 2x trait (should be displayed as 42 pixels wide)
-    Object.defineProperty(window, 'devicePixelRatio', { get: () => 1 });
     Object.defineProperty(HTMLImageElement.prototype, 'currentSrc', {
       get: () => url,
     });
-    Object.defineProperty(HTMLImageElement.prototype, 'naturalWidth', {
-      get: () => 84,
+
+    Object.defineProperty(Image.prototype, 'width', {
+      get: () => intrinsicWidth,
+    });
+    Object.defineProperty(Image.prototype, 'height', {
+      get: () => intrinsicHeight,
+    });
+    Object.defineProperty(Image.prototype, 'onload', {
+      get() {
+        return this.$onload;
+      },
+      set(fn) {
+        this.$onload = fn;
+        this.$onload(); // call immediately for unit test performance purposes
+      },
     });
 
+    // describe the image with a 2x trait (since it has an intrinsic width of 84
+    // pixels wide, it should be displayed as 42 pixels wide)
     const wrapper = shallowMount(ImageAsset, {
       propsData: {
         variants: [
           {
-            traits: ['2x'],
+            traits,
             url,
           },
         ],
@@ -302,7 +320,56 @@ describe('ImageAsset', () => {
     expect(img.attributes('height')).toBeFalsy();
 
     img.trigger('load');
-    expect(img.attributes('width')).toBe('42');
+    await flushPromises();
+    expect(img.attributes('width')).toBe(`${optimalDisplayWidth}`);
     expect(img.attributes('height')).toBe('auto');
+  });
+
+  it('logs an error when unable to calculate the optimal width for an image', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+
+    Object.defineProperty(HTMLImageElement.prototype, 'currentSrc', {
+      get: () => url,
+    });
+
+    Object.defineProperty(Image.prototype, 'onerror', {
+      get() {
+        return this.$onerror;
+      },
+      set(fn) {
+        this.$onerror = fn;
+        this.$onerror(); // simulate an immediate error
+      },
+    });
+
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+      },
+    });
+
+    const img = wrapper.find('img');
+    expect(img.attributes('src')).toBe(url);
+    expect(img.attributes('srcset')).toBe(`${url} 2x`);
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+    expect(console.error).toHaveBeenCalledWith('Unable to calculate optimal image width');
+
+    consoleSpy.mockRestore();
   });
 });

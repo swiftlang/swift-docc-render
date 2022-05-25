@@ -189,7 +189,7 @@ export default {
       try {
         this.optimalWidth = await this.calculateOptimalWidth();
       } catch {
-        console.error('Unable to calulate optimal image width');
+        console.error('Unable to calculate optimal image width');
       }
     },
   },
