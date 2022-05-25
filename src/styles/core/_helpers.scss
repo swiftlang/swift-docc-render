@@ -80,6 +80,18 @@
   }
 }
 
+
+////
+/// Apply styling only when focused within, via the keyboard.
+////
+@mixin on-keyboard-focus-within() {
+  .fromkeyboard & {
+    &:focus-within {
+      @content
+    }
+  }
+}
+
 ////
 /// Replaces the outline effect when an element is in focus, with a box shadow effect.
 /// Applies only when using the keyboard, via `.fromkeyboard` parent class.
