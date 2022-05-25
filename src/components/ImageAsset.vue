@@ -143,7 +143,8 @@ export default {
       // The `naturalWidth` property could be used for this ideally, but there
       // is an issue with Chrome trying to optimize this value depending on
       // whether or not the filename contains "2x". Instead, the image is
-      // loaded in the background to retrieve its intrinsic dimensions.
+      // loaded in the background to retrieve its intrinsic dimensions and the
+      // intrinsic width is adjusted by its pixel density trait.
       const {
         $refs: {
           img: { currentSrc },
