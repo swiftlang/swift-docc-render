@@ -205,10 +205,10 @@ export default {
       this.toggleTree();
     },
     clickReference() {
-      this.$refs.reference.$el.click();
+      (this.$refs.reference.$el || this.$refs.reference).click();
     },
     focusReference() {
-      this.$refs.reference.$el.focus();
+      (this.$refs.reference.$el || this.$refs.reference).focus();
     },
     handleClick() {
       if (this.isGroupMarker) return;
@@ -248,13 +248,15 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
   display: flex;
   align-items: center;
 
-  &:focus-within {
-    margin: $card-horizontal-spacing-small;
-    height: $item-height - 10px;
-    @include focus-outline();
+  .fromkeyboard & {
+    &:focus-within {
+      margin: $card-horizontal-spacing-small;
+      height: $item-height - 10px;
+      @include focus-outline();
 
-    .depth-spacer {
-      margin-left: -$card-horizontal-spacing-small;
+      .depth-spacer {
+        margin-left: -$card-horizontal-spacing-small;
+      }
     }
   }
 }
