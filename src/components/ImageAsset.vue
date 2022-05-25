@@ -139,14 +139,13 @@ export default {
     async calculateOptimalWidth() {
       // Find the URL for the image currently being displayed, which may vary
       // depending on the color scheme and pixel density of the display device.
-      // The `naturalWidth` will also return a dynamic size based on the actual
-      // display device.
+      // The `naturalWidth` property could be used for this ideally, but there
+      // is an issue with Chrome trying to optimize this value depending on
+      // whether or not the filename contains "2x". Instead, the image is
+      // loaded in the background to retrieve its intrinsic dimensions.
       const {
         $refs: {
-          img: {
-            currentSrc,
-            // naturalWidth,
-          },
+          img: { currentSrc },
         },
         allVariants,
       } = this;
@@ -156,10 +155,9 @@ export default {
       const { density } = allVariants.find(({ src }) => currentSrc.endsWith(src));
       const currentVariantDensity = parseInt(density.match(/\d+/)[0], RADIX_DECIMAL);
 
-      // Find the source width of the image currently being displayed.
-      // Since `naturalWidth` already takes into account the pixel density of
-      // the current display, we need to multiply it by the pixel density of
-      // the display to get back the actual pixel width of the source image
+      // Find the intrinsic dimensions of the image currently being displayed.
+      // For a 2x image, the actual image size would be twice as large as how
+      // it will be displayed in CSS pixels.
       const intrinsicDimensions = await getIntrinsicDimensions(currentSrc);
 
       // Divide the source width of the currently displayed image by the pixel
