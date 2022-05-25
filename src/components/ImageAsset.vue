@@ -61,6 +61,18 @@ import { normalizeAssetUrl } from 'docc-render/utils/assets';
 
 const RADIX_DECIMAL = 10;
 
+function getIntrinsicDimensions(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.onerror = reject;
+    img.onload = () => resolve({
+      width: img.width,
+      height: img.height,
+    });
+  });
+}
+
 function constructAttributes(sources) {
   if (!sources.length) {
     return null;
@@ -124,17 +136,16 @@ export default {
       // image fails to load for any reason
       this.fallbackImageSrcSet = `${noImage} 2x`;
     },
-    calculateOptimalWidth() {
+    async calculateOptimalWidth() {
       // Find the URL for the image currently being displayed, which may vary
       // depending on the color scheme and pixel density of the display device.
       // The `naturalWidth` will also return a dynamic size based on the actual
       // display device.
-      const { devicePixelRatio } = window;
       const {
         $refs: {
           img: {
             currentSrc,
-            naturalWidth,
+            // naturalWidth,
           },
         },
         allVariants,
@@ -149,13 +160,13 @@ export default {
       // Since `naturalWidth` already takes into account the pixel density of
       // the current display, we need to multiply it by the pixel density of
       // the display to get back the actual pixel width of the source image
-      const sourceWidth = naturalWidth * devicePixelRatio;
+      const intrinsicDimensions = await getIntrinsicDimensions(currentSrc);
 
       // Divide the source width of the currently displayed image by the pixel
       // density of that image to obtain the optimal width in CSS pixels for
       // display purposes so that a `width` can be assigned to the `img` tag to
       // ensure that the image looks the same size for all devices
-      const optimalWidth = sourceWidth / currentVariantDensity;
+      const optimalWidth = intrinsicDimensions.width / currentVariantDensity;
 
       return optimalWidth;
     },
@@ -168,7 +179,7 @@ export default {
     // This is especially important if a 2x image is being used on a 1x device
     // with no 1x version of the same image so that we can size the 2x image
     // using the same dimensions for both 1x and 2x devices.
-    optimizeImageSize() {
+    async optimizeImageSize() {
       // Exit early if image size data already exists—nothing further needs to
       // be calculated in that scenario.
       if (this.defaultAttributes.width) {
@@ -176,7 +187,7 @@ export default {
       }
 
       try {
-        this.optimalWidth = this.calculateOptimalWidth();
+        this.optimalWidth = await this.calculateOptimalWidth();
       } catch {
         console.error('Unable to calulate optimal image width');
       }
