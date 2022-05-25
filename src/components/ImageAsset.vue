@@ -138,7 +138,8 @@ export default {
     },
     async calculateOptimalWidth() {
       // Find the URL for the image currently being displayed, which may vary
-      // depending on the color scheme and pixel density of the display device.
+      // depending on the color scheme and pixel density of the display device,
+      // and calculate its optimal width for HTML/CSS rendering purposes.
       // The `naturalWidth` property could be used for this ideally, but there
       // is an issue with Chrome trying to optimize this value depending on
       // whether or not the filename contains "2x". Instead, the image is
