@@ -157,13 +157,19 @@ export default {
   },
   async mounted() {
     window.addEventListener('keydown', this.onEscapeKeydown);
-    window.addEventListener('resize', this.storeWindowSize);
-    window.addEventListener('orientationchange', this.storeWindowSize);
+    window.addEventListener('resize', this.storeWindowSize, { passive: true });
+    window.addEventListener('orientationchange', this.storeWindowSize, { passive: true });
+
+    this.storeTopOffset();
+    if (!(this.topOffset === 0 && window.scrollY === 0)) {
+      window.addEventListener('scroll', this.storeTopOffset, { passive: true });
+    }
 
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('keydown', this.onEscapeKeydown);
       window.removeEventListener('resize', this.storeWindowSize);
       window.removeEventListener('orientationchange', this.storeWindowSize);
+      window.removeEventListener('scroll', this.storeTopOffset);
       if (this.openExternally) {
         this.toggleScrollLock(false);
       }
@@ -172,7 +178,6 @@ export default {
 
     await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.aside);
-    this.topOffset = this.getTopOffset();
   },
   watch: {
     // make sure a route navigation closes the sidebar
@@ -292,6 +297,9 @@ export default {
         changeElementVOVisibility.show(this.$refs.aside);
       }
     },
+    storeTopOffset: throttle(function storeTopOffset() {
+      this.topOffset = this.getTopOffset();
+    }, 60),
   },
 };
 </script>
