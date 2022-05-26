@@ -104,6 +104,7 @@ export default {
   },
   data() {
     const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
     const breakpoint = BreakpointName.large;
     // get the min width, in case we dont have a previously saved value
     const minWidth = calcWidthPercent(minWidthResponsivePercents[breakpoint]);
@@ -121,6 +122,7 @@ export default {
       width: Math.min(Math.max(storedWidth, minWidth), maxWidth),
       isTouch: false,
       windowWidth,
+      windowHeight,
       breakpoint,
       noTransition: false,
       isTransitioning: false,
@@ -138,10 +140,13 @@ export default {
     minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
-    asideStyles: ({ widthInPx, mobileTopOffset, topOffset }) => ({
+    asideStyles: ({
+      widthInPx, mobileTopOffset, topOffset, windowHeight,
+    }) => ({
       width: widthInPx,
       '--top-offset': topOffset ? `${topOffset}px` : null,
       '--top-offset-mobile': `${mobileTopOffset}px`,
+      '--app-height': `${windowHeight}px`,
     }),
     asideClasses: ({
       isDragging, openExternally, noTransition, isTransitioning, mobileTopOffset,
@@ -220,6 +225,7 @@ export default {
     storeWindowSize: throttle(async function storeWindowSize() {
       await this.$nextTick();
       this.windowWidth = window.innerWidth;
+      this.windowHeight = window.innerHeight;
     }, 100),
     closeMobileSidebar() {
       if (!this.openExternally) return;
@@ -337,7 +343,7 @@ export default {
     overflow: hidden;
     min-width: 0;
     max-width: 100%;
-    height: calc(100vh - var(--top-offset-mobile));
+    height: calc(var(--app-height) - var(--top-offset-mobile));
     position: fixed;
     top: var(--top-offset-mobile);
     bottom: 0;
