@@ -1054,7 +1054,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
 
   .navigator-card-inner {
-    height: calc(100vh - #{$nav-height} - #{$filter-height});
+    --nav-card-inner-vertical-offset: #{$filter-height};
   }
 
   .head-wrapper {
@@ -1196,6 +1196,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
   padding-bottom: calc(var(--top-offset, 0px) + var(--card-vertical-spacing));
+  transition: padding-bottom ease-in 0.15s;
 
   @include breakpoint(medium, nav) {
     padding-bottom: $nav-menu-items-ios-bottom-spacing;
