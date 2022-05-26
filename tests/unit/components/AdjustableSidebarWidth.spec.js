@@ -168,11 +168,30 @@ describe('AdjustableSidebarWidth', () => {
       expect(wrapper.vm.topOffset).toBe(22);
       // cannot assert css vars in JSDOM
       expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', '22px');
+      // assert scroll watcher is initiated
+      boundingClientSpy.mockReturnValue({ y: 11 });
+      window.dispatchEvent(createEvent('scroll'));
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', '11px');
+    });
+
+    it('does not initiate a scroll listener, if topOffset is 0 and there is no scrollY', async () => {
+      boundingClientSpy.mockReturnValue({ y: 0 });
+      const wrapper = createWrapper();
+      await flushPromises();
+      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      expect(wrapper.vm.topOffset).toBe(0);
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', null);
+      // assert scroll watcher is initiated
+      boundingClientSpy.mockReturnValue({ y: 11 });
+      window.dispatchEvent(createEvent('scroll'));
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', null);
     });
   });
 
   describe('external open', () => {
-    boundingClientSpy.mockReturnValue({ y: 22 });
+    beforeEach(() => {
+      boundingClientSpy.mockReturnValue({ y: 22 });
+    });
     it('allows opening the sidebar externally', async () => {
       const wrapper = createWrapper();
       await flushPromises();
@@ -404,7 +423,7 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
   });
 
-  it('removes any locks upon destruction', async () => {
+  it('removes any locks or listeners upon destruction', async () => {
     const wrapper = createWrapper();
     await flushPromises();
     wrapper.setProps({ openExternally: true });
@@ -414,6 +433,10 @@ describe('AdjustableSidebarWidth', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
     expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
+    // assert scroll watcher is not called
+    boundingClientSpy.mockReturnValue({ y: 11 });
+    window.dispatchEvent(createEvent('scroll'));
+    expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', '22px');
   });
 
   it('accounts for zoomed in devices', () => {
