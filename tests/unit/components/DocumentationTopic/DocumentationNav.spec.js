@@ -276,11 +276,14 @@ describe('DocumentationNav', () => {
   it('closes the nav, if open and clicking on the sidenavtoggle', async () => {
     wrapper.find('.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain('nav--is-open');
-    wrapper.find('.sidenav-toggle').trigger('click');
+    const toggle = wrapper.find('.sidenav-toggle');
+    expect(toggle.attributes()).toHaveProperty('tabindex', '-1');
+    toggle.trigger('click');
     expect(wrapper.classes()).not.toContain('nav--is-open');
     expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
     await flushPromises();
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+    expect(toggle.attributes()).not.toHaveProperty('tabindex');
   });
 
   it('renders the nav, with `isWideFormat` to `false`', () => {
