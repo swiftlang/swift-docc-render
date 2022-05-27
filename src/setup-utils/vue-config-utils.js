@@ -13,7 +13,7 @@ const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const ThemeResolverPlugin = require('webpack-theme-resolver-plugin');
 const themeUtils = require('./theme-build-utils');
-const { BannerPlugin, HTMLBannerPlugin, LICENSE_HEADER } = require('./license-header-built-files');
+const { BannerPlugin, LICENSE_HEADER } = require('./license-header-built-files');
 
 function addENVDefaults() {
   if (typeof process.env.VUE_APP_TITLE === 'undefined') {
@@ -70,13 +70,6 @@ function baseChainWebpack(config) {
     .use(BannerPlugin, [{
       banner: LICENSE_HEADER,
     }]);
-
-  // Add license header to HTML built files
-  if (process.env.NODE_ENV === 'production') {
-    config
-      .plugin('HTMLBannerPlugin')
-      .use(HTMLBannerPlugin, [LICENSE_HEADER]);
-  }
 }
 
 function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {}) {
