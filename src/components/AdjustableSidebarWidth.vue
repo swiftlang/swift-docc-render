@@ -283,9 +283,10 @@ export default {
     /**
      * Toggles the scroll lock on/off
      */
-    toggleScrollLock(lock) {
+    async toggleScrollLock(lock) {
       const scrollLockContainer = document.getElementById(this.scrollLockID);
       if (lock) {
+        await this.$nextTick();
         scrollLock.lockScroll(scrollLockContainer);
         // lock focus
         this.focusTrapInstance.start();
