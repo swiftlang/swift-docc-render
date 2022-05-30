@@ -8,6 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import 'css.escape';
+
 // characters that we want to replace by a dash to make them valid in the hash section
 // https://url.spec.whatwg.org/#fragment-percent-encode-set
 const NON_URL_CHARS_RE = /(?:\s+|[`"<>])/g;
@@ -132,18 +134,7 @@ export function pluralize(choices, count) {
 //
 // Example: cssEscapeTopicIdHash('#42') => '#\34 2'
 export function cssEscapeTopicIdHash(hash) {
-  const match = /#(\d)(.*)/.exec(hash);
-  if (match === null) {
-    return hash;
-  }
-
-  const [leadingDigit, rest] = match.slice(1);
-  // Escape the leading digit by converting it to its unicode point escape
-  // character with a trailing space ("123" => "\000031 23 " => "\31 23 ").
-  // (The leading double slash is needed to encode the leading slash character)
-  const escapedLeadingDigit = `\\3${leadingDigit} `;
-
-  return `#${escapedLeadingDigit}${rest}`;
+  return hash.replace(/#(.*)/, (str, match) => `#${CSS.escape(match)}`);
 }
 
 // Escape a string for use in a `RegExp`, which will escape any special regular
