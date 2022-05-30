@@ -17,6 +17,7 @@ import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
@@ -112,6 +113,15 @@ const schemaVersionWithSidebar = {
   patch: 0,
 };
 
+const AdjustableSidebarWidthSmallStub = {
+  render() {
+    return this.$scopedSlots.aside({
+      scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
+      breakpoint: BreakpointName.small,
+    });
+  },
+};
+
 describe('DocumentationTopic', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
@@ -196,6 +206,46 @@ describe('DocumentationTopic', () => {
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
     expect(nav.props('isWideFormat')).toBe(true);
+  });
+
+  describe('if breakpoint is small', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(DocumentationTopic, {
+        mocks,
+        stubs: {
+          // renders sidebar on a small device
+          AdjustableSidebarWidth: AdjustableSidebarWidthSmallStub,
+          NavigatorDataProvider,
+        },
+      });
+    });
+
+    it('applies display none to Navigator if is closed', async () => {
+      // renders a closed navigator
+      wrapper.setData({
+        topicData: {
+          ...topicData,
+          schemaVersion: schemaVersionWithSidebar,
+        },
+      });
+      await wrapper.vm.$nextTick();
+      // assert navigator has display: none
+      expect(wrapper.find(Navigator).attributes('style')).toContain('display: none');
+    });
+
+    it('does not apply display none to Navigator if is open', async () => {
+      // renders an open navigator
+      wrapper.setData({
+        topicData: {
+          ...topicData,
+          schemaVersion: schemaVersionWithSidebar,
+        },
+        isSideNavOpen: true,
+      });
+      await wrapper.vm.$nextTick();
+      // assert navigator doesn't have display: none
+      expect(wrapper.find(Navigator).attributes('style')).toBeFalsy();
+    });
   });
 
   it('provides the selected api changes, to the NavigatorDataProvider', () => {
@@ -398,6 +448,7 @@ describe('DocumentationTopic', () => {
 
     const topic = wrapper.find(Topic);
     expect(topic.exists()).toBe(true);
+    expect(topic.attributes('style')).toBeFalsy();
     expect(topic.props()).toEqual({
       ...wrapper.vm.topicProps,
       isSymbolBeta: false,
@@ -424,7 +475,7 @@ describe('DocumentationTopic', () => {
     expect(topic.props('languagePaths')).toEqual({});
   });
 
-  it('computes isSymbolBeta', () => {
+  it('computes isSymbolBeta', async () => {
     const platforms = [
       {
         introducedAt: '1.0',
@@ -448,6 +499,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
+    await wrapper.vm.$nextTick();
     const topic = wrapper.find(Topic);
     expect(topic.props('isSymbolBeta')).toBe(true);
 
@@ -471,10 +523,11 @@ describe('DocumentationTopic', () => {
         },
       },
     });
+    await wrapper.vm.$nextTick();
     expect(topic.props('isSymbolBeta')).toBe(false);
   });
 
-  it('computes isSymbolDeprecated if there is a deprecationSummary', () => {
+  it('computes isSymbolDeprecated if there is a deprecationSummary', async () => {
     wrapper.setData({ topicData });
     const topic = wrapper.find(Topic);
     expect(topic.props('isSymbolDeprecated')).toBeFalsy();
@@ -492,12 +545,13 @@ describe('DocumentationTopic', () => {
         }],
       },
     });
-    expect(topic.props('isSymbolDeprecated')).toBe(true);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(Topic).props('isSymbolDeprecated')).toBe(true);
     // cleanup
     topicData.deprecationSummary = [];
   });
 
-  it('computes isSymbolDeprecated', () => {
+  it('computes isSymbolDeprecated', async () => {
     const platforms = [
       {
         deprecatedAt: '1',
@@ -517,7 +571,7 @@ describe('DocumentationTopic', () => {
         },
       },
     });
-
+    await wrapper.vm.$nextTick();
     const topic = wrapper.find(Topic);
     expect(topic.props('isSymbolDeprecated')).toBe(true);
 
@@ -541,6 +595,7 @@ describe('DocumentationTopic', () => {
         },
       },
     });
+    await wrapper.vm.$nextTick();
     expect(topic.props('isSymbolDeprecated')).toBe(false);
   });
 

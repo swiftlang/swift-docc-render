@@ -81,7 +81,7 @@ describe('DocumentationHero', () => {
   it('renders the right classes based on `shouldShowLanguageSwitcher` prop', () => {
     const wrapper = createWrapper();
     const content = wrapper.find('.documentation-hero__content');
-    
+
     expect(content.classes()).toContain('extra-bottom-padding');
 
     wrapper.setProps({

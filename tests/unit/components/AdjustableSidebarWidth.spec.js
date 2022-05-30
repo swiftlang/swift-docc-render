@@ -308,6 +308,23 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, 250); // 20% out of 1000, as that is the min percentage
   });
 
+  it('stores the height of screen on orientationchange and resize', async () => {
+    const wrapper = createWrapper();
+
+    window.innerHeight = 500;
+    window.dispatchEvent(createEvent('resize'));
+    await flushPromises();
+    expect(wrapper.vm.asideStyles).toHaveProperty('--app-height', '500px');
+    window.innerHeight = 1000;
+    window.dispatchEvent(createEvent('resize'));
+    await flushPromises();
+    expect(wrapper.vm.asideStyles).toHaveProperty('--app-height', '1000px');
+    window.innerHeight = 700;
+    window.dispatchEvent(createEvent('orientationchange'));
+    await flushPromises();
+    expect(wrapper.vm.asideStyles).toHaveProperty('--app-height', '700px');
+  });
+
   it('allows dragging the handle to expand/contract the sidebar, with the mouse', () => {
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
