@@ -12,6 +12,7 @@
   <NavBase
     :breakpoint="BreakpointName.medium"
     :hasOverlay="false"
+    preventFocusTrap
     hasSolidBackground
     :hasNoBorder="hasNoBorder"
     :isDark="isDark"

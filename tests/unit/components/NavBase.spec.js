@@ -450,6 +450,15 @@ describe('NavBase', () => {
     expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
   });
 
+  it('does not locks the focus on expand if preventFocusTrap is true', async () => {
+    wrapper = await createWrapper({
+      propsData: {
+        preventFocusTrap: true,
+      },
+    });
+    expect(FocusTrap).toHaveBeenCalledTimes(0);
+  });
+
   it('unlocks the focus on close', async () => {
     wrapper = await createWrapper();
     wrapper.find({ ref: 'axToggle' }).trigger('click');
