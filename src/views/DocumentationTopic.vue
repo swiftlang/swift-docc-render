@@ -32,7 +32,7 @@
         v-on="sidebarListeners"
       >
         <template #aside="{ scrollLockID, breakpoint }">
-          <aside class="doc-topic-aside">
+          <div class="doc-topic-aside">
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
               :technology="technology"
@@ -55,7 +55,7 @@
                 </transition>
               </template>
             </NavigatorDataProvider>
-          </aside>
+          </div>
         </template>
         <Topic
           v-bind="topicProps"
