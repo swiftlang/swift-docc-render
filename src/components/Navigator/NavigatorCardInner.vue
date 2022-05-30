@@ -23,7 +23,7 @@ export default { name: 'NavigatorCardInner' };
   --nav-card-inner-vertical-offset: 0px;
   position: sticky;
   top: var(--nav-height);
-  height: calc(100vh - var(--nav-height) - var(--nav-card-inner-vertical-offset));
+  height: calc(var(--app-height) - var(--nav-height) - var(--nav-card-inner-vertical-offset));
   display: flex;
   flex-flow: column;
   @include breakpoint(medium, nav) {
