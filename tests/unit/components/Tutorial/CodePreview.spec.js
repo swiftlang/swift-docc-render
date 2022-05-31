@@ -151,7 +151,7 @@ describe('CodePreview', () => {
     wrapper = mountWithVariant(variantSizeEmpty);
 
     let runtimePreview = wrapper.find('.runtime-preview');
-    expect(runtimePreview.attributes('style')).toBe('width: 300px; height: 0px;');
+    expect(runtimePreview.attributes('style')).toBe('width: 300px;');
 
     const variantNoSize = [
       {
@@ -166,7 +166,7 @@ describe('CodePreview', () => {
     wrapper = mountWithVariant(variantNoSize);
 
     runtimePreview = wrapper.find('.runtime-preview');
-    expect(runtimePreview.attributes('style')).toBe('width: 300px; height: 0px;');
+    expect(runtimePreview.attributes('style')).toBe('width: 300px;');
   });
 
   it('renders an image or video with only a width property defined in its size', () => {
@@ -181,7 +181,7 @@ describe('CodePreview', () => {
     wrapper = mountWithVariant(variantWithOnlyWidth);
 
     const runtimePreview = wrapper.find('.runtime-preview');
-    expect(runtimePreview.attributes('style')).toBe('width: 400px; height: 0px;');
+    expect(runtimePreview.attributes('style')).toBe('width: 400px;');
   });
 
   it('renders an image or video with only a height property defined in its size', () => {

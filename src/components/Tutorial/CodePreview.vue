@@ -143,7 +143,7 @@ export default {
       } = this.previewSize;
       return {
         width: `${width}px`,
-        height: `${height || '0'}px`,
+        height: height ? `${height}px` : 'initial',
       };
     },
     codeProps() {
