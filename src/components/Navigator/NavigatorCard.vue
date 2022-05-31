@@ -431,7 +431,9 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags }) => selectedTags[0] === HIDE_DEPRECATED_TAG,
+    deprecatedHidden: ({ selectedTags, debouncedFilter }) => (
+      selectedTags[0] === HIDE_DEPRECATED_TAG && !debouncedFilter.length
+    ),
     apiChangesObject() {
       return this.apiChanges || {};
     },
