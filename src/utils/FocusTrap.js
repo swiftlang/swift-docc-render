@@ -45,11 +45,15 @@ export default class FocusTrap {
    */
   start() {
     this.collectTabTargets();
-
     // If the current active element is not in the container,
     // focus the first tab target available.
     if (this.firstTabTarget) {
-      if (!this.focusContainer.contains(document.activeElement)) {
+      if (
+        // check if the focus container does not contain the current element
+        !this.focusContainer.contains(document.activeElement)
+        // or if if the current element should not be focusable (mouse click still focuses)
+        || !TabManager.isTabbableElement(document.activeElement)
+      ) {
         this.firstTabTarget.focus();
       }
     } else {
@@ -88,7 +92,14 @@ export default class FocusTrap {
       event.preventDefault();
       this.collectTabTargets();
 
-      if (this.lastFocusedElement === this.lastTabTarget || !this.lastFocusedElement) {
+      if (
+        // if we are at the end of the tabbing list
+        this.lastFocusedElement === this.lastTabTarget
+        // or there is was no focused element at all
+        || !this.lastFocusedElement
+        // or the document no longer holds the reference to that element
+        || !document.contains(this.lastFocusedElement)
+      ) {
         this.firstTabTarget.focus();
         this.lastFocusedElement = this.firstTabTarget;
         return;
