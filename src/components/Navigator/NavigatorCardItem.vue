@@ -11,14 +11,10 @@
 <template>
   <div
     class="navigator-card-item"
-    :role="isGroupMarker ? null : 'link'"
-    :tabindex="isFocused ? '0' : '-1'"
     :class="{ expanded }"
     :style="{ '--nesting-index': item.depth }"
-    :aria-hidden="isRendered ? null : 'true'"
-    :aria-expanded="expanded ? 'true': 'false'"
-    :aria-describedby="ariaDescribedBy"
     :id="`container-${item.uid}`"
+    :aria-hidden="isRendered ? null : 'true'"
     @keydown.left.prevent="handleLeftKeydown"
     @keydown.right.prevent="handleRightKeydown"
     @keydown.enter.prevent="clickReference"
@@ -35,6 +31,9 @@
           v-if="isParent"
           class="tree-toggle"
           tabindex="-1"
+          :aria-labelledby="item.uid"
+          :aria-expanded="expanded ? 'true': 'false'"
+          :aria-describedby="ariaDescribedBy"
           @click.exact.prevent="toggleTree"
           @click.alt.prevent="toggleEntireTree"
           @click.meta.prevent="toggleSiblings"
@@ -72,8 +71,9 @@
           :id="item.uid"
           :class="{ bolded: isBold }"
           :url="isGroupMarker ? null : (item.path || '')"
+          :tabindex="isFocused ? '0' : '-1'"
+          :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
           class="leaf-link"
-          tabindex="-1"
           ref="reference"
           @click.native="handleClick"
         >
@@ -148,7 +148,7 @@ export default {
       type: Boolean,
       default: () => false,
     },
-    enableSelfFocus: {
+    enableFocus: {
       type: Boolean,
       default: true,
     },
@@ -166,11 +166,11 @@ export default {
     siblingsLabel: ({ item }) => `label-${item.uid}`,
     usageLabel: ({ item }) => `usage-${item.uid}`,
     ariaDescribedBy({
-      item, siblingsLabel, parentLabel, isParent, usageLabel,
+      item, siblingsLabel, parentLabel, isParent,
     }) {
       const baseLabel = `${siblingsLabel} ${item.parent}`;
-      if (!isParent) return `${baseLabel} ${usageLabel}`;
-      return `${baseLabel} ${parentLabel} ${usageLabel}`;
+      if (!isParent) return `${baseLabel}`;
+      return `${baseLabel} ${parentLabel}`;
     },
     isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
@@ -205,10 +205,10 @@ export default {
       this.toggleTree();
     },
     clickReference() {
-      this.$refs.reference.$el.click();
+      (this.$refs.reference.$el || this.$refs.reference).click();
     },
-    selfFocus() {
-      this.$el.focus();
+    focusReference() {
+      (this.$refs.reference.$el || this.$refs.reference).focus();
     },
     handleClick() {
       if (this.isGroupMarker) return;
@@ -218,8 +218,8 @@ export default {
   watch: {
     async isFocused(newVal) {
       await waitFrames(8);
-      if (newVal && this.isRendered && this.enableSelfFocus) {
-        this.selfFocus();
+      if (newVal && this.isRendered && this.enableFocus) {
+        this.focusReference();
       }
     },
     async expanded() {
@@ -244,17 +244,19 @@ $depth-spacer-base-spacing: (
 $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
 .navigator-card-item {
-  overflow: hidden;
   height: $item-height;
   display: flex;
   align-items: center;
 
-  @include on-keyboard-focus {
-    margin: $card-horizontal-spacing-small;
-    height: $item-height - 10px;
+  .fromkeyboard & {
+    &:focus-within {
+      margin: $card-horizontal-spacing-small;
+      height: $item-height - 10px;
+      @include focus-outline();
 
-    .depth-spacer {
-      margin-left: -$card-horizontal-spacing-small;
+      .depth-spacer {
+        margin-left: -$card-horizontal-spacing-small;
+      }
     }
   }
 }
@@ -349,6 +351,10 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
     vertical-align: middle;
     @include font-styles(body-reduced-tight);
 
+    @include on-keyboard-focus {
+      outline: none;
+    }
+
     &:hover {
       text-decoration: none;
     }
@@ -377,6 +383,7 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 }
 
 .tree-toggle {
+  overflow: hidden;
   position: absolute;
   width: 100%;
   height: 100%;

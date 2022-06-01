@@ -20,9 +20,10 @@ export default { name: 'NavigatorCardInner' };
 @import 'docc-render/styles/_core.scss';
 
 .navigator-card-inner {
+  --nav-card-inner-vertical-offset: 0px;
   position: sticky;
-  top: $nav-height;
-  height: calc(100vh - #{$nav-height});
+  top: var(--nav-height);
+  height: calc(var(--app-height) - var(--nav-height) - var(--nav-card-inner-vertical-offset));
   display: flex;
   flex-flow: column;
   @include breakpoint(medium, nav) {
