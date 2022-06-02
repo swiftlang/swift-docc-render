@@ -1080,6 +1080,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: baseline;
+    box-sizing: border-box;
 
     &.router-link-exact-active {
       background: $navigator-head-background-active;
@@ -1096,10 +1097,12 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
     @include breakpoint(medium, nav) {
       justify-content: center;
+      height: $nav-height;
       padding: 14px $card-horizontal-spacing-large;
     }
 
     @include breakpoint(small, nav) {
+      height: $nav-height-small;
       padding: 12px $card-horizontal-spacing-large;
     }
 
