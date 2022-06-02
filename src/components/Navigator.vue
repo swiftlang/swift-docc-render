@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <nav class="navigator">
+  <nav
+    :aria-labelledby="INDEX_ROOT_KEY"
+    class="navigator"
+  >
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
@@ -66,6 +69,11 @@ export default {
     NavigatorCard,
     NavigatorCardInner,
     SpinnerIcon,
+  },
+  data() {
+    return {
+      INDEX_ROOT_KEY,
+    };
   },
   props: {
     parentTopicIdentifiers: {
