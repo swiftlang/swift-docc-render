@@ -35,7 +35,6 @@ describe('ChapterTopicList', () => {
       },
       {
         kind: TopicKind.article,
-        estimatedTime: '4min',
         title: 'Bar',
         url: '/tutorials/blah/bar',
       },
@@ -67,7 +66,7 @@ describe('ChapterTopicList', () => {
     items.wrappers.forEach((item, i) => {
       const topic = propsData.topics[i];
       const {
-        title, url, kind,
+        title, url, kind, estimatedTime,
       } = topic;
 
       const link = item.find(RouterLinkStub);
@@ -76,11 +75,16 @@ describe('ChapterTopicList', () => {
 
       expect(link.find('.link').text()).toBe(title);
       expect(link.attributes('aria-label'))
-        .toBe(`${title} - ${TopicKindIconLabel[kind]} - 4 minutes Estimated Time`);
+        .toBe(`${title} - ${TopicKindIconLabel[kind]}${estimatedTime ? ' - 4 minutes Estimated Time' : ''}`);
 
-      const time = item.find('.time');
-      expect(time.find('.time-label').text()).toBe(propsData.topics[i].estimatedTime);
-      expect(time.contains(TimerIcon)).toBe(true);
+      if (estimatedTime) {
+        const time = item.find('.time');
+        expect(time.find('.time-label').text()).toBe(estimatedTime);
+        expect(time.contains(TimerIcon)).toBe(true);
+      } else {
+        expect(item.classes()).toContain('no-time-estimate');
+        expect(item.find('.time').exists()).toBeFalsy();
+      }
     });
   });
 

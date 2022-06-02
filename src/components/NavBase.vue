@@ -20,7 +20,7 @@
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
         <div class="pre-title">
-          <slot name="pre-title" :close-nav="closeNav" />
+          <slot name="pre-title" :close-nav="closeNav" :is-open="isOpen" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
@@ -400,7 +400,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     // nav is collapsed
     @include nav-in-breakpoint {
       min-height: $nav-height-small;
-      transition: background-color 0.5s ease 0.7s;
+      transition: background-color $nav-bg-transition-timing ease 0.7s;
     }
 
     // nav is sticky
@@ -408,7 +408,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {
@@ -431,7 +431,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {
