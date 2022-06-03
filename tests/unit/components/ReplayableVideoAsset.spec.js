@@ -50,7 +50,7 @@ describe('ReplayableVideoAsset', () => {
     expect(video.props('autoplays')).toBe(true);
   });
 
-  it('displays the replay button when the video has ended', () => {
+  it('displays the replay button when the video has ended', async () => {
     const wrapper = mountWithProps();
 
     const replayButton = wrapper.find('.replay-button');
@@ -67,6 +67,7 @@ describe('ReplayableVideoAsset', () => {
 
     // When the video is playing, the replay button should be hidden.
     replayButton.trigger('click');
+    await flushPromises();
     expect(replayButton.classes('visible')).toBe(false);
   });
 
