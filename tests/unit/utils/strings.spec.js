@@ -139,6 +139,24 @@ describe('pluralize', () => {
 });
 
 describe('cssEscapeTopicIdHash', () => {
+  const escapeSpy = jest.spyOn(CSS, 'escape');
+
+  it('calls CSS.escape', () => {
+    expect(escapeSpy).not.toHaveBeenCalled();
+    // not a match
+    expect(cssEscapeTopicIdHash('abc')).toBe('abc');
+    expect(escapeSpy).not.toHaveBeenCalled();
+    // is a match
+    expect(cssEscapeTopicIdHash('#abc')).toBe('#abc');
+    expect(escapeSpy).toHaveBeenCalledTimes(1);
+    expect(escapeSpy).toHaveBeenCalledWith('abc');
+  });
+
+  it('escapes bad css selector characters', () => {
+    expect(cssEscapeTopicIdHash('#abc.')).toBe('#abc\\.');
+    expect(cssEscapeTopicIdHash('#ab c.:!')).toBe('#ab\\ c\\.\\:\\!');
+  });
+
   it('returns strings without a leading hashtag/digit unchanged', () => {
     expect(cssEscapeTopicIdHash('abc')).toBe('abc');
     expect(cssEscapeTopicIdHash('#abc')).toBe('#abc');

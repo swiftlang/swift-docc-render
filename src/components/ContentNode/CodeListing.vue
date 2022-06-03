@@ -154,7 +154,8 @@ export default {
 pre {
   padding: $code-listing-with-numbers-padding;
   display: flex;
-  overflow: auto;
+  // set as `unset` to fix a Safari issue, where the scrollbar is hidden until you resize window
+  overflow: unset;
   -webkit-overflow-scrolling: touch;
   white-space: pre;
   word-wrap: normal;
