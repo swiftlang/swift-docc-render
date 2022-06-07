@@ -129,11 +129,9 @@ export default {
     previewSize() {
       const collapsedPreviewSize = {
         width: 102,
-        height: 32,
       };
       return (this.shouldDisplayHideLabel && this.previewAssetSize) ? ({
         width: this.previewAssetSize.width,
-        height: this.previewAssetSize.height + collapsedPreviewSize.height,
       }) : (
         collapsedPreviewSize
       );
