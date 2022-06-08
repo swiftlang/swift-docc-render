@@ -18,26 +18,28 @@
       :class="runtimePreviewClasses"
       :style="previewStyles"
     >
-      <button
-        class="header"
-        :disabled="!hasRuntimePreview"
-        :title="runtimePreviewTitle"
-        @click="togglePreview"
-      >
+      <div class="runtimve-preview__container">
+        <button
+          class="header"
+          :disabled="!hasRuntimePreview"
+          :title="runtimePreviewTitle"
+          @click="togglePreview"
+        >
         <span
           class="runtime-preview-label"
           :aria-label="textAriaLabel"
         >{{ togglePreviewText }}</span>
-        <DiagonalArrowIcon
-          :class="[ shouldDisplayHideLabel ? 'preview-hide': 'preview-show' ]"
-          class="icon-inline preview-icon"
-        />
-      </button>
-      <transition @leave="handleLeave">
-        <div class="runtime-preview-asset" v-show="shouldDisplayHideLabel">
-          <slot />
-        </div>
-      </transition>
+          <DiagonalArrowIcon
+            :class="[ shouldDisplayHideLabel ? 'preview-hide': 'preview-show' ]"
+            class="icon-inline preview-icon"
+          />
+        </button>
+        <transition @leave="handleLeave">
+          <div class="runtime-preview-asset" v-show="shouldDisplayHideLabel">
+            <slot />
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -111,7 +113,7 @@ export default {
          * videos are not provided with size attributes.
          * The width result ends up being 300px
          * because all sizes bigger than 400 get scaled down by 3 on the `scaledSize` function.
-        */
+         */
         width: 900,
       };
 
@@ -127,11 +129,9 @@ export default {
     previewSize() {
       const collapsedPreviewSize = {
         width: 102,
-        height: 32,
       };
       return (this.shouldDisplayHideLabel && this.previewAssetSize) ? ({
         width: this.previewAssetSize.width,
-        height: this.previewAssetSize.height + collapsedPreviewSize.height,
       }) : (
         collapsedPreviewSize
       );
@@ -139,11 +139,9 @@ export default {
     previewStyles() {
       const {
         width,
-        height,
       } = this.previewSize;
       return {
         width: `${width}px`,
-        height: height ? `${height}px` : 'initial',
       };
     },
     codeProps() {
@@ -261,28 +259,19 @@ $duration: 0.2s;
   margin-left: 0;
   // For animation
   // Width and height must have a pixel value in order to be transitioned
-  transition: width $duration $runtime-preview-transition-curve,
-  height $duration $runtime-preview-transition-curve;
+  transition: width $duration $runtime-preview-transition-curve;
   // fallback to correctly stretch the toggle button for older browsers
   @supports not (width: stretch) {
     display: flex;
     flex-direction: column;
   }
 
-  &::before {
-    box-shadow: 0px 0px 3px 0px var(--color-runtime-preview-shadow);
+  .runtimve-preview__container {
     border-radius: $border-radius;
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-
-    @include prefers-dark {
-      mix-blend-mode: difference;
-    }
+    overflow: hidden;
   }
+
+  box-shadow: 0px 0px 3px 0px var(--color-runtime-preview-shadow);
 }
 
 .runtime-preview-ide {
@@ -303,7 +292,6 @@ $duration: 0.2s;
   // Potentially a JS method that can create the proper dimensions
   // based on text.
   width: 102px;
-  height: 28px;
 
   .header {
     border-radius: $border-radius;
