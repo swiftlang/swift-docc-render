@@ -270,10 +270,11 @@ $sidenav-icon-size: 19px;
   margin-right: -$space;
   padding-left: $space;
   padding-right: $space;
-}
 
-.sidenav-icon {
-  width: $sidenav-icon-size;
-  height: $sidenav-icon-size;
+  .sidenav-icon {
+    display: flex;
+    width: $sidenav-icon-size;
+    height: $sidenav-icon-size;
+  }
 }
 </style>
