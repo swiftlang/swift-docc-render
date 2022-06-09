@@ -12,13 +12,8 @@ import { pathJoin } from 'docc-render/utils/assets';
 import { queryStringForParams, areEquivalentLocations } from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import { baseUrl } from 'docc-render/utils/theme-settings';
-
-export class FetchError extends Error {
-  constructor(route) {
-    super('Unable to fetch data');
-    this.route = route;
-  }
-}
+import RedirectError from 'docc-render/errors/RedirectError';
+import FetchError from 'docc-render/errors/FetchError';
 
 export async function fetchData(path, params = {}) {
   function isBadResponse(response) {
@@ -46,6 +41,16 @@ export async function fetchData(path, params = {}) {
     throw response;
   }
 
+  // check if there was a redirect and `next` exists
+  if (response.redirected) {
+    // extract the new path and query, from the response url
+    const redirectedURL = new URL(response.url);
+    throw new RedirectError({
+      location: `${redirectedURL.pathname}${redirectedURL.search}`,
+      response,
+    });
+  }
+
   const json = await response.json();
   emitWarningForSchemaVersionMismatch(json.schemaVersion);
   return json;
@@ -69,6 +74,12 @@ export async function fetchDataForRouteEnter(to, from, next) {
       // so we stop the navigation by calling `next(false)`
       /* eslint-disable no-throw-literal */
       throw false;
+    }
+
+    if (error instanceof RedirectError) {
+      // throw the redirect location, so it's passed to the `next` error handler and
+      // vue router redirects to that location
+      throw error.location;
     }
 
     if (error.status && error.status === 404) {
