@@ -116,8 +116,10 @@ describe('Navigator', () => {
 
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
+    const navigator = wrapper.find('.navigator');
     // assert navigator is a `nav`
-    expect(wrapper.find('.navigator').is('nav')).toBe(true);
+    expect(navigator.is('nav')).toBe(true);
+    expect(navigator.attributes()).toHaveProperty('aria-labelledby', INDEX_ROOT_KEY);
     // assert Navigator card is rendered
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
