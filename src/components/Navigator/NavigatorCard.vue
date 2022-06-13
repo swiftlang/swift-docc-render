@@ -233,7 +233,6 @@ export default {
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
       activeUID: null,
-      resetScroll: false,
       lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
@@ -308,10 +307,11 @@ export default {
         FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
       )),
       set(values) {
+        // guard against accidental clearings
+        if (!this.selectedTags.length && !values.length) return;
         this.selectedTags = values.map(label => (
           FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label] || label
         ));
-        this.resetScroll = true;
       },
     },
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
@@ -360,7 +360,7 @@ export default {
         title, path, type, deprecated,
       }) => {
         // check if `title` matches the pattern, if provided
-        const titleMatch = filterPattern ? filterPattern.test(title) : true;
+        const titleMatch = filterPattern ? filterPattern.exec(title) : true;
         // check if `type` matches any of the selected tags
         let tagMatch = true;
         if (selectedTags.length) {
@@ -375,15 +375,19 @@ export default {
         }
         // find items, that have API changes
         const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
-        // group markers are hidden when filtering, unless "Hide Deprecated" is ON.
-        const isGroupMarker = deprecatedHidden ? false : type === TopicTypes.groupMarker;
+        let shouldShowGroupMarker = true;
+        // if current item is a groupMarker and "Hide Deprecated" is not selected
+        if (type === TopicTypes.groupMarker && !deprecatedHidden) {
+          // check if the group title is an exact case-insensitive match
+          shouldShowGroupMarker = titleMatch ? titleMatch[0] === title : false;
+        }
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges && !isGroupMarker;
+        return titleMatch && tagMatch && hasAPIChanges && shouldShowGroupMarker;
       });
     },
     /**
      * Returns a Set of all nodes that match a filter, along with their parents.
-     * @returns NavigatorFlatItem[]
+     * @returns Set<NavigatorFlatItem>
      */
     filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
       filteredChildren.flatMap(({ uid }) => getParents(uid)),
@@ -398,21 +402,29 @@ export default {
       let all = [];
       // create a set of all matches and their parents
       filteredChildrenUpToRootSet.forEach((current) => {
-        // if it has no children, just add it
+        // if the item is a groupMarker, all of its child labels should be rendered
+        if (current.childLabelUIDs) {
+          // push all the related child items plus the group marker
+          all = all.concat(this.getAllChildren(current.uid));
+          return;
+        }
+        // if it's a plain end node, just add it
         if (!current.childUIDs.length) {
           all.push(current);
           return;
         }
+        // check if none of the child items of this parent are matching
         const noChildrenMatch = !current.childUIDs.some(uid => (
           filteredChildrenUpToRootSet.has(childrenMap[uid])
         ));
+        // if no children are matching, add all to the list, otherwise just the current parent
         all = all.concat(noChildrenMatch ? this.getAllChildren(current.uid) : current);
       });
 
       return this.convertChildrenArrayToObject(all);
     },
     /**
-     * Creates a computed for the two items, that the openNodes calc depends on
+     * Creates a computed for the items, that the openNodes calc depends on
      */
     nodeChangeDeps: ({
       filteredChildren, activePathChildren, debouncedFilter, selectedTags,
@@ -460,7 +472,6 @@ export default {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
-      this.resetScroll = true;
     },
     scrollToFocus() {
       this.$refs.scroller.scrollToItem(this.focusedIndex);
@@ -468,8 +479,6 @@ export default {
     debounceInput: debounce(function debounceInput(value) {
       // store the new filter value
       this.debouncedFilter = value;
-      // note to the component, that we want to reset the scroll
-      this.resetScroll = true;
       // reset the last focus target
       this.lastFocusTarget = null;
     }, 500),
@@ -617,7 +626,7 @@ export default {
         // add it's uid
         arr.push(obj);
         // add all if it's children to the front of the stack
-        stack.unshift(...obj.childUIDs);
+        stack.unshift(...(obj.childLabelUIDs || obj.childUIDs));
       }
 
       return arr;
@@ -834,7 +843,8 @@ export default {
       await waitFrames(1);
       if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      if (this.resetScroll) {
+      if (this.hasFilter) {
+        // console.trace({ F: this.filter, D: this.debouncedFilter });
         this.$refs.scroller.scrollToItem(0);
         return;
       }
@@ -925,7 +935,6 @@ export default {
      */
     setActiveUID(uid) {
       this.activeUID = uid;
-      this.resetScroll = false;
     },
     /**
      * Handles the `navigate` event from NavigatorCardItem, guarding from selecting an item,
