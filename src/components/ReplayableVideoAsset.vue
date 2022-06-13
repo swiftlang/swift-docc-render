@@ -62,10 +62,8 @@ export default {
     async replay() {
       const videoPlayer = this.$refs.asset.$el;
       if (videoPlayer) {
-        this.showsReplayButton = false;
-        // Start video playback from the beginning.
-        videoPlayer.currentTime = 0;
         await videoPlayer.play();
+        this.showsReplayButton = false;
       }
     },
     onVideoEnd() {

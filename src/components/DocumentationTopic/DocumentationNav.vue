@@ -20,10 +20,11 @@
     class="documentation-nav"
     aria-label="API Reference"
   >
-    <template #pre-title="{ closeNav }" v-if="isWideFormat">
+    <template #pre-title="{ closeNav, isOpen }" v-if="isWideFormat">
       <button
         aria-label="Open documentation navigator"
         class="sidenav-toggle"
+        :tabindex="isOpen ? -1 : null"
         @click.prevent="handleSidenavToggle(closeNav)"
       >
         <SidenavIcon class="icon-inline sidenav-icon" />
@@ -269,10 +270,11 @@ $sidenav-icon-size: 19px;
   margin-right: -$space;
   padding-left: $space;
   padding-right: $space;
-}
 
-.sidenav-icon {
-  width: $sidenav-icon-size;
-  height: $sidenav-icon-size;
+  .sidenav-icon {
+    display: flex;
+    width: $sidenav-icon-size;
+    height: $sidenav-icon-size;
+  }
 }
 </style>
