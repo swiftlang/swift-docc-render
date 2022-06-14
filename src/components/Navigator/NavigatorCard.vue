@@ -397,13 +397,16 @@ export default {
      * This is used on both toggling, as well as on navigation and filtering.
      * @return {Object.<string, NavigatorFlatItem>}
      */
-    renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
+    renderableChildNodesMap({
+      filteredChildrenUpToRootSet, childrenMap, hasFilter, deprecatedHidden,
+    }) {
       if (!hasFilter) return childrenMap;
       let all = [];
       // create a set of all matches and their parents
       filteredChildrenUpToRootSet.forEach((current) => {
-        // if the item is a groupMarker, all of its child labels should be rendered
-        if (current.childLabelUIDs) {
+        // if the item is a groupMarker, all of its child labels should be rendered.
+        // This should not happen when "Hide Deprecated" is picked, or the items would show up
+        if (current.childLabelUIDs && !deprecatedHidden) {
           // push all the related child items plus the group marker
           all = all.concat(this.getAllChildren(current.uid));
           return;

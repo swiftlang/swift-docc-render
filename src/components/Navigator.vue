@@ -173,7 +173,6 @@ export default {
       for (index = 0; index < len; index += 1) {
         // get the children
         const { children, ...node } = childrenNodes[index];
-        const isGroupMarker = node.type === TopicTypes.groupMarker;
         // generate the extra properties
         const { uid: parentUID = INDEX_ROOT_KEY } = parent || {};
         // generate a uid to track by
@@ -181,7 +180,7 @@ export default {
         // store the parent uid
         node.parent = parentUID;
         // store the current groupMarker reference
-        if (isGroupMarker) {
+        if (node.type === TopicTypes.groupMarker) {
           node.childLabelUIDs = [];
           groupMarkerNode = node;
         } else if (groupMarkerNode) {
