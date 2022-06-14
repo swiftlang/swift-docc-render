@@ -43,10 +43,8 @@ export async function fetchData(path, params = {}) {
 
   // check if there was a redirect and `next` exists
   if (response.redirected) {
-    // extract the new path and query, from the response url
-    const redirectedURL = new URL(response.url);
     throw new RedirectError({
-      location: `${redirectedURL.pathname}${redirectedURL.search}`,
+      location: response.url,
       response,
     });
   }
@@ -59,6 +57,19 @@ export async function fetchData(path, params = {}) {
 function createDataPath(path) {
   const dataPath = path.replace(/\/$/, '');
   return `${pathJoin([baseUrl, 'data', dataPath])}.json`;
+}
+
+/**
+ * Transforms a data JSON path, to a route path
+ * @param {string} dataURL - the JSON path
+ * @returns {string}
+ */
+function transformDataPathToRoutePath(dataURL) {
+  const { pathname, search } = new URL(dataURL);
+  const RE = /\/data(\/.*).json$/;
+  const match = RE.exec(pathname);
+  if (!match) return pathname + search;
+  return match[1] + search;
 }
 
 export async function fetchDataForRouteEnter(to, from, next) {
@@ -79,7 +90,7 @@ export async function fetchDataForRouteEnter(to, from, next) {
     if (error instanceof RedirectError) {
       // throw the redirect location, so it's passed to the `next` error handler and
       // vue router redirects to that location
-      throw error.location;
+      throw transformDataPathToRoutePath(error.location);
     }
 
     if (error.status && error.status === 404) {

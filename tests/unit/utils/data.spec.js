@@ -42,7 +42,7 @@ const notFoundFetchResposne = {
 const redirectResponse = {
   redirected: true,
   ok: true,
-  url: 'https://localhost:8080/documentation/foo/framework?language=objc',
+  url: 'https://localhost:8080/data/documentation/foo/framework.json?language=objc',
 };
 
 const badIDEFetchResponse = {
@@ -102,7 +102,7 @@ describe('fetchData', () => {
     } catch (err) {
       expect(err).toBeInstanceOf(RedirectError);
       expect(err.response).toEqual(redirectResponse);
-      expect(err.location).toEqual('/documentation/foo/framework?language=objc');
+      expect(err.location).toEqual(redirectResponse.url);
     }
   });
 
