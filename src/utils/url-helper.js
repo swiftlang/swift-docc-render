@@ -88,5 +88,9 @@ export function areEquivalentLocations(routeA, routeB) {
 //
 // resolveAbsoluteUrl('/foo/bar', 'http://example.com') // http://example.com/foo/bar
 export function resolveAbsoluteUrl(path, baseUrl = window.location.origin) {
+  return new URL(path, baseUrl).href;
+}
+
+export function resolveAssetsAbsoluteUrl(path, baseUrl = window.location.origin) {
   return new URL(normalizePath(path), baseUrl).href;
 }
