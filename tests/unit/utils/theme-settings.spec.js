@@ -21,6 +21,13 @@ const fetchMock = jest.fn().mockResolvedValue({
   json: jsonMock,
 });
 
+const resolveAssetsAbsoluteUrlMock = jest.fn();
+const mockUrlHelper = {
+  resolveAssetsAbsoluteUrl: resolveAssetsAbsoluteUrlMock,
+};
+
+jest.mock('docc-render/utils/url-helper', () => (mockUrlHelper));
+
 function importDeps() {
   jest.resetModules();
   // eslint-disable-next-line global-require
@@ -37,15 +44,17 @@ describe('theme-settings', () => {
 
   it('fetches the theme settings from a remote path', async () => {
     window.baseUrl = '/';
+    resolveAssetsAbsoluteUrlMock.mockReturnValue({ href: 'http://localhost/theme-settings.json' });
     importDeps();
     await fetchThemeSettings();
+    expect(resolveAssetsAbsoluteUrlMock).toHaveBeenCalledWith('theme-settings.json');
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost/theme-settings.json');
     expect(jsonMock).toHaveBeenCalledTimes(1);
   });
 
   it('uses the window.baseUrl for the json path', async () => {
     window.baseUrl = '/bar/foo/';
+    resolveAssetsAbsoluteUrlMock.mockReturnValue({ href: `http://localhost${window.baseUrl}theme-settings.json` });
     importDeps();
     await fetchThemeSettings();
     expect(fetchMock).toHaveBeenCalledTimes(1);

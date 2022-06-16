@@ -11,7 +11,7 @@
 /**
  * Utility functions for working with Assets
  */
-import { baseUrl } from 'docc-render/utils/theme-settings';
+const { baseUrl } = window;
 
 /**
  * Separate array of variants by light/dark mode

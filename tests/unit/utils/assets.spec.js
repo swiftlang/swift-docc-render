@@ -7,15 +7,16 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import { pathJoin } from 'docc-render/utils/assets';
 
-import { normalizeAssetUrl, pathJoin } from 'docc-render/utils/assets';
-
-const mockBaseUrl = jest.fn().mockReturnValue('/');
+let normalizeAssetUrl;
 const absoluteBaseUrl = 'https://foo.com';
 
-jest.mock('@/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
-}));
+function importDeps() {
+  jest.resetModules();
+  // eslint-disable-next-line global-require
+  ({ normalizeAssetUrl } = require('@/utils/assets'));
+}
 
 Object.defineProperty(window, 'location', {
   value: {
@@ -42,12 +43,14 @@ describe('assets', () => {
   });
   describe('normalizeAssetUrl', () => {
     it('works correctly if baseurl is just a slash', () => {
-      mockBaseUrl.mockReturnValue('/');
+      window.baseUrl = '/';
+      importDeps();
       expect(normalizeAssetUrl('/foo')).toBe('/foo');
     });
 
     it('works when both have slashes leading', () => {
-      mockBaseUrl.mockReturnValue('/base/');
+      window.baseUrl = '/base';
+      importDeps();
       expect(normalizeAssetUrl('/foo')).toBe('/base/foo');
     });
 
@@ -57,12 +60,14 @@ describe('assets', () => {
     });
 
     it('does not change, if path is relative', () => {
-      mockBaseUrl.mockReturnValue('/base');
+      window.baseUrl = '/base';
+      importDeps();
       expect(normalizeAssetUrl('foo/bar')).toBe('foo/bar');
     });
 
     it('does not change, if the path is already prefixed', () => {
-      mockBaseUrl.mockReturnValue('/base');
+      window.baseUrl = '/base';
+      importDeps();
       expect(normalizeAssetUrl('/base/foo')).toBe('/base/foo');
     });
 

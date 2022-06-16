@@ -9,7 +9,9 @@
 */
 
 import { pathJoin } from 'docc-render/utils/assets';
-import { queryStringForParams, areEquivalentLocations, resolveAssetsAbsoluteUrl, resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
+import {
+  queryStringForParams, areEquivalentLocations, getAssetsAbsoluteUrl, getAbsoluteUrl,
+} from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import RedirectError from 'docc-render/errors/RedirectError';
@@ -30,7 +32,7 @@ export async function fetchData(path, params = {}) {
     return !response.ok;
   }
 
-  const url = resolveAbsoluteUrl(path);
+  const url = getAbsoluteUrl(path);
   const queryString = queryStringForParams(params);
   if (queryString) {
     url.search = queryString;
@@ -132,6 +134,6 @@ export function clone(jsonObject) {
 }
 
 export async function fetchIndexPathsData() {
-  const path = resolveAssetsAbsoluteUrl('index/index.json');
+  const path = getAssetsAbsoluteUrl('/index/index.json');
   return fetchData(path);
 }

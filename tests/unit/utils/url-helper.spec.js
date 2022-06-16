@@ -8,19 +8,39 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import {
-  areEquivalentLocations,
-  buildUrl,
-  resolveAbsoluteUrl,
-} from 'docc-render/utils/url-helper';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
 
-const mockBaseUrl = jest.fn().mockReturnValue('/');
-jest.mock('@/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
-}));
+let areEquivalentLocations;
+let buildUrl;
+let resolveAbsoluteUrl;
+let resolveAssetsAbsoluteUrl;
+
+const normalizeAssetUrlMock = jest.fn();
+
+const mockAssets = {
+  normalizeAssetUrl: normalizeAssetUrlMock,
+};
+
+jest.mock('docc-render/utils/assets', () => (mockAssets));
+
+function importDeps() {
+  jest.resetModules();
+  // eslint-disable-next-line global-require
+  ({
+    areEquivalentLocations,
+    buildUrl,
+    resolveAbsoluteUrl,
+    resolveAssetsAbsoluteUrl,
+  // eslint-disable-next-line global-require
+  } = require('@/utils/url-helper'));
+}
 
 describe('areEquivalentLocations', () => {
+  beforeEach(() => {
+    importDeps();
+    jest.clearAllMocks();
+  });
+
   it('returns false for the same route with a different path', () => {
     expect(areEquivalentLocations({
       name: 'foo',
@@ -142,27 +162,30 @@ describe('resolveAbsoluteUrl', () => {
     expect(resolveAbsoluteUrl('/foo/bar')).toBe('http://localhost/foo/bar');
     expect(resolveAbsoluteUrl('foo/bar')).toBe('http://localhost/foo/bar');
   });
+});
 
+describe('resolveAssetsAbsoluteUrl', () => {
   it('resolves against the host and base path of the current environment', () => {
     const { location } = window;
-
-    mockBaseUrl.mockReturnValue('/foo');
+    normalizeAssetUrlMock.mockImplementation(n => `/foo${n}`);
+    importDeps();
     Object.defineProperty(window, 'location', {
       value: new URL('https://example.com'),
     });
-    expect(resolveAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
-    expect(resolveAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
+    expect(resolveAssetsAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
 
-    mockBaseUrl.mockReturnValue('/');
+    normalizeAssetUrlMock.mockImplementation(n => n);
+    expect(resolveAssetsAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
+
     Object.defineProperty(window, 'location', { value: location });
   });
 
   it('can resolve against a provided base URL', () => {
-    expect(resolveAbsoluteUrl('/foo/bar', 'https://swift.org'))
+    expect(resolveAssetsAbsoluteUrl('/foo/bar', 'https://swift.org'))
       .toBe('https://swift.org/foo/bar');
-    expect(resolveAbsoluteUrl('foobar', 'https://swift.org'))
+    expect(resolveAssetsAbsoluteUrl('foobar', 'https://swift.org'))
       .toBe('https://swift.org/foobar');
-    expect(resolveAbsoluteUrl('foo/bar', 'https://swift.org/blah'))
+    expect(resolveAssetsAbsoluteUrl('foo/bar', 'https://swift.org/blah'))
       .toBe('https://swift.org/foo/bar');
   });
 });

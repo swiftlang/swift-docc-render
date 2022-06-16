@@ -28,7 +28,7 @@ export const { baseUrl } = window;
  * @return {Promise<{}>}
  */
 export async function fetchThemeSettings() {
-  const url = resolveAssetsAbsoluteUrl('theme-settings.json');
+  const url = resolveAssetsAbsoluteUrl('/theme-settings.json');
   return fetch(url.href)
     .then(r => r.json())
     .catch(() => ({}));
