@@ -37,6 +37,7 @@
         />
       </div>
       <div
+        v-if="!disableResizing"
         class="resize-handle"
         @mousedown.prevent="startDrag"
         @touchstart.prevent="startDrag"
@@ -113,6 +114,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    disableResizing: {
+      type: Boolean,
+      default: false,
+    },
+    hardWidth: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     const windowWidth = window.innerWidth;
@@ -131,7 +140,7 @@ export default {
     return {
       isDragging: false,
       // limit the width to a range
-      width: Math.min(Math.max(storedWidth, minWidth), maxWidth),
+      width: this.hardWidth || Math.min(Math.max(storedWidth, minWidth), maxWidth),
       isTouch: false,
       windowWidth,
       windowHeight,
@@ -231,6 +240,11 @@ export default {
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {
+      // if there is a hard-set width, we want to use that always
+      if (this.hardWidth) {
+        this.width = this.hardWidth;
+        return;
+      }
       // make sure sidebar is never wider than the windowWidth
       if (this.width > this.maxWidth) {
         this.width = this.maxWidth;
@@ -417,6 +431,7 @@ export default {
     position: fixed;
     top: var(--top-offset-mobile);
     bottom: 0;
+    left: 0;
     z-index: $nav-z-index + 1;
     transform: translateX(-100%);
     transition: transform 0.15s ease-in;
