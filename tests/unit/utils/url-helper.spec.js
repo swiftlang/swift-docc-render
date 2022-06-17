@@ -13,12 +13,11 @@ import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryPara
 let areEquivalentLocations;
 let buildUrl;
 let resolveAbsoluteUrl;
-let resolveAssetsAbsoluteUrl;
 
-const normalizeAssetUrlMock = jest.fn();
+const normalizeUrlMock = jest.fn().mockImplementation(n => n);
 
 const mockAssets = {
-  normalizeAssetUrl: normalizeAssetUrlMock,
+  normalizeUrl: normalizeUrlMock,
 };
 
 jest.mock('docc-render/utils/assets', () => (mockAssets));
@@ -30,7 +29,6 @@ function importDeps() {
     areEquivalentLocations,
     buildUrl,
     resolveAbsoluteUrl,
-    resolveAssetsAbsoluteUrl,
   // eslint-disable-next-line global-require
   } = require('@/utils/url-helper'));
 }
@@ -162,30 +160,28 @@ describe('resolveAbsoluteUrl', () => {
     expect(resolveAbsoluteUrl('/foo/bar')).toBe('http://localhost/foo/bar');
     expect(resolveAbsoluteUrl('foo/bar')).toBe('http://localhost/foo/bar');
   });
-});
 
-describe('resolveAssetsAbsoluteUrl', () => {
   it('resolves against the host and base path of the current environment', () => {
     const { location } = window;
-    normalizeAssetUrlMock.mockImplementation(n => `/foo${n}`);
+    normalizeUrlMock.mockImplementation(n => `/foo${n}`);
     importDeps();
     Object.defineProperty(window, 'location', {
       value: new URL('https://example.com'),
     });
-    expect(resolveAssetsAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
+    expect(resolveAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
 
-    normalizeAssetUrlMock.mockImplementation(n => n);
-    expect(resolveAssetsAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
+    normalizeUrlMock.mockImplementation(n => n);
+    expect(resolveAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
 
     Object.defineProperty(window, 'location', { value: location });
   });
 
   it('can resolve against a provided base URL', () => {
-    expect(resolveAssetsAbsoluteUrl('/foo/bar', 'https://swift.org'))
+    expect(resolveAbsoluteUrl('/foo/bar', 'https://swift.org'))
       .toBe('https://swift.org/foo/bar');
-    expect(resolveAssetsAbsoluteUrl('foobar', 'https://swift.org'))
+    expect(resolveAbsoluteUrl('foobar', 'https://swift.org'))
       .toBe('https://swift.org/foobar');
-    expect(resolveAssetsAbsoluteUrl('foo/bar', 'https://swift.org/blah'))
+    expect(resolveAbsoluteUrl('foo/bar', 'https://swift.org/blah'))
       .toBe('https://swift.org/foo/bar');
   });
 });

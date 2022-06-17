@@ -57,7 +57,7 @@ import imageAsset from 'docc-render/mixins/imageAsset';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
-import { normalizeAssetUrl } from 'docc-render/utils/assets';
+import { normalizeUrl } from 'docc-render/utils/assets';
 
 const RADIX_DECIMAL = 10;
 
@@ -77,12 +77,12 @@ function constructAttributes(sources) {
   if (!sources.length) {
     return null;
   }
-  const srcSet = sources.map(s => `${normalizeAssetUrl(s.src)} ${s.density}`).join(', ');
+  const srcSet = sources.map(s => `${normalizeUrl(s.src)} ${s.density}`).join(', ');
   const defaultSource = sources[0];
 
   const attrs = {
     srcSet,
-    src: normalizeAssetUrl(defaultSource.src),
+    src: normalizeUrl(defaultSource.src),
   };
 
   // All the variants should have the same size, so use the size of the first

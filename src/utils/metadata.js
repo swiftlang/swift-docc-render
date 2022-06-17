@@ -12,7 +12,7 @@ import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
 
-const createMetaTags = ({ title, description, path }) => [
+const createMetaTags = ({ title, description, path }, urlResolver = resolveAbsoluteUrl) => [
   {
     name: 'description',
     content: description,
@@ -39,15 +39,15 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     property: 'og:url',
-    content: resolveAbsoluteUrl(path),
+    content: urlResolver(path),
   },
   {
     property: 'og:image',
-    content: resolveAbsoluteUrl('/developer-og.jpg'),
+    content: urlResolver('/developer-og.jpg'),
   },
   {
     name: 'twitter:image',
-    content: resolveAbsoluteUrl('/developer-og-twitter.jpg'),
+    content: urlResolver('/developer-og-twitter.jpg'),
   },
   {
     name: 'twitter:card',
@@ -63,7 +63,7 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     name: 'twitter:url',
-    content: resolveAbsoluteUrl(path),
+    content: urlResolver(path),
   },
 ];
 
@@ -97,12 +97,12 @@ const addTitle = (title) => {
  * @param {Object} pageData
  */
 // eslint-disable-next-line import/prefer-default-export
-export function addOrUpdateMetadata({ title, description, path }) {
+export function addOrUpdateMetadata({ title, description, path }, urlResolver) {
   const formattedTitle = formatTitle(title);
   // add title
   addTitle(formattedTitle);
   // create and add metadata tags
-  createMetaTags({ title: formattedTitle, description, path }).forEach(
+  createMetaTags({ title: formattedTitle, description, path }, urlResolver).forEach(
     metadata => addOrUpdateMetaTag(metadata),
   );
 }

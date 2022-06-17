@@ -40,7 +40,7 @@ jest.mock('docc-render/utils/theme-settings', () => ({
 }));
 
 jest.mock('docc-render/utils/assets', () => ({
-  normalizeAssetUrl: jest.fn(name => name),
+  normalizeUrl: jest.fn(name => name),
 }));
 
 document.documentElement.innerHTML = html.toString();

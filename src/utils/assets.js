@@ -69,7 +69,7 @@ export function pathJoin(parts) {
  * @param {String} url
  * @return {String}
  */
-export function normalizeAssetUrl(url) {
+export function normalizeUrl(url) {
   if (!url || typeof url !== 'string' || url.startsWith(baseUrl) || !url.startsWith('/')) {
     return url;
   }

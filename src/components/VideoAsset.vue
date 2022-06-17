@@ -12,7 +12,7 @@
   <video
     :controls="showsControls"
     :autoplay="autoplays"
-    :poster="normalizeAssetUrl(defaultPosterAttributes.url)"
+    :poster="normalizeUrl(defaultPosterAttributes.url)"
     muted
     playsinline
     @playing="$emit('playing')"
@@ -24,12 +24,12 @@
       is handled with JavaScript media query listeners unlike the `<source>`
       based implementation being used for image assets.
     -->
-    <source :src="normalizeAssetUrl(videoAttributes.url)">
+    <source :src="normalizeUrl(videoAttributes.url)">
   </video>
 </template>
 
 <script>
-import { separateVariantsByAppearance, normalizeAssetUrl } from 'docc-render/utils/assets';
+import { separateVariantsByAppearance, normalizeUrl } from 'docc-render/utils/assets';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 
@@ -117,7 +117,7 @@ export default {
     ),
   },
   methods: {
-    normalizeAssetUrl,
+    normalizeUrl,
   },
 };
 </script>

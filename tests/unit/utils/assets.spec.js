@@ -9,13 +9,13 @@
 */
 import { pathJoin } from 'docc-render/utils/assets';
 
-let normalizeAssetUrl;
+let normalizeUrl;
 const absoluteBaseUrl = 'https://foo.com';
 
 function importDeps() {
   jest.resetModules();
   // eslint-disable-next-line global-require
-  ({ normalizeAssetUrl } = require('@/utils/assets'));
+  ({ normalizeUrl } = require('@/utils/assets'));
 }
 
 Object.defineProperty(window, 'location', {
@@ -41,40 +41,40 @@ describe('assets', () => {
       expect(pathJoin(params)).toEqual(expected);
     });
   });
-  describe('normalizeAssetUrl', () => {
+  describe('normalizeUrl', () => {
     it('works correctly if baseurl is just a slash', () => {
       window.baseUrl = '/';
       importDeps();
-      expect(normalizeAssetUrl('/foo')).toBe('/foo');
+      expect(normalizeUrl('/foo')).toBe('/foo');
     });
 
     it('works when both have slashes leading', () => {
       window.baseUrl = '/base';
       importDeps();
-      expect(normalizeAssetUrl('/foo')).toBe('/base/foo');
+      expect(normalizeUrl('/foo')).toBe('/base/foo');
     });
 
     it('does not change, if passed a url', () => {
-      expect(normalizeAssetUrl('https://foo.com')).toBe('https://foo.com');
-      expect(normalizeAssetUrl('http://foo.com')).toBe('http://foo.com');
+      expect(normalizeUrl('https://foo.com')).toBe('https://foo.com');
+      expect(normalizeUrl('http://foo.com')).toBe('http://foo.com');
     });
 
     it('does not change, if path is relative', () => {
       window.baseUrl = '/base';
       importDeps();
-      expect(normalizeAssetUrl('foo/bar')).toBe('foo/bar');
+      expect(normalizeUrl('foo/bar')).toBe('foo/bar');
     });
 
     it('does not change, if the path is already prefixed', () => {
       window.baseUrl = '/base';
       importDeps();
-      expect(normalizeAssetUrl('/base/foo')).toBe('/base/foo');
+      expect(normalizeUrl('/base/foo')).toBe('/base/foo');
     });
 
     it('returns empty, if nothing passed', () => {
-      expect(normalizeAssetUrl('')).toBe('');
-      expect(normalizeAssetUrl(undefined)).toBe(undefined);
-      expect(normalizeAssetUrl(null)).toBe(null);
+      expect(normalizeUrl('')).toBe('');
+      expect(normalizeUrl(undefined)).toBe(undefined);
+      expect(normalizeUrl(null)).toBe(null);
     });
   });
 });

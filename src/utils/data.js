@@ -10,10 +10,9 @@
 
 import { pathJoin } from 'docc-render/utils/assets';
 import {
-  queryStringForParams, areEquivalentLocations, getAssetsAbsoluteUrl, getAbsoluteUrl,
+  queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
 } from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
-import { baseUrl } from 'docc-render/utils/theme-settings';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
 
@@ -57,8 +56,7 @@ export async function fetchData(path, params = {}) {
 }
 
 function createDataPath(path) {
-  const dataPath = path.replace(/\/$/, '');
-  return `${pathJoin([baseUrl, 'data', dataPath])}.json`;
+  return `${pathJoin(['/data', path.replace(/\/$/, '')])}.json`;
 }
 
 /**
@@ -134,6 +132,6 @@ export function clone(jsonObject) {
 }
 
 export async function fetchIndexPathsData() {
-  const path = getAssetsAbsoluteUrl('/index/index.json');
+  const path = '/index/index.json';
   return fetchData(path);
 }

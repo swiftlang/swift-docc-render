@@ -21,12 +21,6 @@ import RedirectError from 'docc-render/errors/RedirectError';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
-const mockBaseUrl = jest.fn().mockReturnValue('/');
-
-jest.mock('docc-render/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
-}));
-
 const badFetchResponse = {
   ok: false,
   status: 500,
@@ -162,20 +156,6 @@ describe('fetchDataForRouteEnter', () => {
     const data = await fetchDataForRouteEnter(to, from, next);
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
       '/data/tutorials/augmented-reality/tutorials.json',
-      window.location.href,
-    ).href);
-    await expect(data).toEqual(await goodFetchResponse.json());
-
-    window.fetch.mockRestore();
-  });
-
-  it('calls `fetchData` with a configurable base url', async () => {
-    mockBaseUrl.mockReturnValueOnce('/base-prefix/');
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
-
-    const data = await fetchDataForRouteEnter(to, from, next);
-    await expect(window.fetch).toHaveBeenCalledWith(new URL(
-      '/base-prefix/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
     ).href);
     await expect(data).toEqual(await goodFetchResponse.json());

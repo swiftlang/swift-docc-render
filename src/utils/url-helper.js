@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { normalizeAssetUrl } from 'docc-render/utils/assets';
+import { normalizeUrl } from 'docc-render/utils/assets';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
 
 export function queryStringForParams(params = {}) {
@@ -76,11 +76,14 @@ export function areEquivalentLocations(routeA, routeB) {
 //   with the current website origin.
 //
 // Examples:
-//
+// if baseURL is '/'
 // getAbsoluteUrl('/bar') // URL { href: http://localhost:8080/bar }
 // getAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/bar }
+// if baseURL is '/foo/'
+// getAssetsAbsoluteUrl('/bar') // URL { href: http://localhost:8080/foo/bar }
+// getAssetsAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/foo/bar }
 export function getAbsoluteUrl(path, baseUrl = window.location.href) {
-  return new URL(path, baseUrl);
+  return new URL(normalizeUrl(path), baseUrl);
 }
 // Resolve a given path into a full, absolute URL.
 //
@@ -90,49 +93,13 @@ export function getAbsoluteUrl(path, baseUrl = window.location.href) {
 // @return {String} The absolute URL resulting from resolving the given path
 //   with the current website origin.
 //
-// Note that the same call may result in different output for the same input
-// depending on where/how this instance of DocC-Render is being hosted.
-//
 // Examples:
-//
+// if baseURL is '/'
 // getAbsoluteUrl('/bar') // http://localhost:8080/bar
 // getAbsoluteUrl('/bar', 'http://example.com') // http://example.com/bar
-export function resolveAbsoluteUrl(path, baseUrl) {
-  return getAbsoluteUrl(path, baseUrl).href;
-}
-// Resolve a given path into an absolute URL object for an asset that is inside a DocCArchive.
-//
-// @param {String} path A URL path.
-// @param {String} baseUrl An optional base URL to resolve against. The default
-//   value will be the origin of the current website.
-// @return {Object} The absolute URL object resulting from resolving the given path
-//   with the current website origin and base URL
-//
-// Note that the same call may result in different output for the same input
-// depending on where/how this instance of DocC-Render is being hosted.
-//
-// Examples:
-// if baseURL is '/foo'
-// getAssetsAbsoluteUrl('/bar') // URL { href: http://localhost:8080/foo/bar }
-// getAssetsAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/foo/bar }
-export function getAssetsAbsoluteUrl(path, baseUrl) {
-  return getAbsoluteUrl(normalizeAssetUrl(path), baseUrl);
-}
-// Resolve a given path into a full, absolute URL for an asset that is inside a DocCArchive.
-//
-// @param {String} path A URL path.
-// @param {String} baseUrl An optional base URL to resolve against. The default
-//   value will be the origin of the current website.
-// @return {String} The absolute URL resulting from resolving the given path
-//   with the current website origin.
-//
-// Note that the same call may result in different output for the same input
-// depending on where/how this instance of DocC-Render is being hosted.
-//
-// Examples:
-// if baseURL is '/foo'
+// if baseURL is '/foo/'
 // resolveAssetsAbsoluteUrl('/bar') // http://localhost:8080/foo/bar
 // resolveAssetsAbsoluteUrl('/bar', 'http://example.com') // http://example.com/foo/bar
-export function resolveAssetsAbsoluteUrl(path, baseUrl) {
-  return getAssetsAbsoluteUrl(path, baseUrl).href;
+export function resolveAbsoluteUrl(path, baseUrl) {
+  return getAbsoluteUrl(path, baseUrl).href;
 }
