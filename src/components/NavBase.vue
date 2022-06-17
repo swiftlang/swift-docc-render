@@ -20,7 +20,7 @@
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
         <div class="pre-title">
-          <slot name="pre-title" :close-nav="closeNav" />
+          <slot name="pre-title" :close-nav="closeNav" :is-open="isOpen" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
@@ -77,11 +77,12 @@ import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
-import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import { waitFrames } from 'docc-render/utils/loading';
 
+const { noClose } = MenuLinkModifierClasses;
 const { BreakpointName, BreakpointScopes } = BreakpointEmitter.constants;
 
 const NoBGTransitionFrames = 8;
@@ -270,8 +271,11 @@ export default {
      * @param {EventTarget} event.target
      */
     handleTrayClick({ target }) {
-      // if the target is a link and has a `href` property, close the nav
-      if (target.href) this.closeNav();
+      // If the target is a link and has a `href` property, close the nav.
+      // Targets can opt out of this default behavior with the "noclose" class.
+      if (target.href && !target.classList.contains(noClose)) {
+        this.closeNav();
+      }
     },
     /**
      * Closes the nav, if clicking outside of it.
@@ -396,7 +400,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     // nav is collapsed
     @include nav-in-breakpoint {
       min-height: $nav-height-small;
-      transition: background-color 0.5s ease 0.7s;
+      transition: background-color $nav-bg-transition-timing ease 0.7s;
     }
 
     // nav is sticky
@@ -404,7 +408,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {
@@ -427,7 +431,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {

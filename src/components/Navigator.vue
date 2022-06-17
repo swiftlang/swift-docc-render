@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <nav class="navigator">
+  <nav
+    :aria-labelledby="INDEX_ROOT_KEY"
+    class="navigator"
+  >
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
@@ -28,6 +31,9 @@
         <SpinnerIcon class="loading-spinner" />
       </transition>
     </NavigatorCardInner>
+    <div aria-live="polite" class="visuallyhidden">
+      Navigator is {{ isFetching ? 'loading' : 'ready' }}
+    </div>
   </nav>
 </template>
 
@@ -63,6 +69,11 @@ export default {
     NavigatorCard,
     NavigatorCardInner,
     SpinnerIcon,
+  },
+  data() {
+    return {
+      INDEX_ROOT_KEY,
+    };
   },
   props: {
     parentTopicIdentifiers: {
@@ -194,6 +205,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
+  --nav-height: #{$nav-height};
   height: 100%;
   display: flex;
   flex-flow: column;

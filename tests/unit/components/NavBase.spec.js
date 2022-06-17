@@ -15,7 +15,7 @@ import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
-import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { waitFrames } from 'docc-render/utils/loading';
 import { createEvent } from '../../../test-utils';
 
@@ -161,6 +161,19 @@ describe('NavBase', () => {
     expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
     expect(preTitleProps).toEqual({
       closeNav: expect.any(Function),
+      isOpen: false,
+    });
+    wrapper.find('a.nav-menucta').trigger('click');
+    expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
+    expect(preTitleProps).toEqual({
+      closeNav: expect.any(Function),
+      isOpen: true,
+    });
+    preTitleProps.closeNav();
+    expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+    expect(preTitleProps).toEqual({
+      closeNav: expect.any(Function),
+      isOpen: false,
     });
   });
 
@@ -225,6 +238,21 @@ describe('NavBase', () => {
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     tray.find('.with-anchor a').trigger('click');
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+  });
+
+  it('does not close the navigation if clicked on a .noclose link inside the tray', async () => {
+    const { noClose } = MenuLinkModifierClasses;
+    wrapper = await createWrapper({
+      data: () => ({ isOpen: true }),
+      slots: {
+        'menu-items': `
+          <li class="with-anchor"><a class="${noClose}" href="#">Somewhere</a></li>
+          <li class="without-anchor"><div class="foo">Foo</div></li>`,
+      },
+    });
+    const tray = wrapper.find(NavMenuItems);
+    tray.find('.with-anchor a').trigger('click');
+    expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
   });
 
   it('adds extra classes to stop scrolling while animating the tray up/down', async () => {

@@ -210,13 +210,19 @@ describe('DocumentationTopic', () => {
     expect(main.attributes('tabindex')).toBe('0');
   });
 
+  it('renders an aria live that tells VO users which it is the current page content', () => {
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe(`Current page is ${propsData.title}`);
+  });
+
   it('renders a `DocumentationHero`, enabled', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
     expect(hero.props()).toEqual({
       role: propsData.role,
       enhanceBackground: true,
-      extraPadding: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
     });
   });
 
@@ -225,16 +231,17 @@ describe('DocumentationTopic', () => {
     expect(hero.props()).toEqual({
       role: TopicTypes.collection,
       enhanceBackground: true,
-      extraPadding: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
     });
   });
 
-  it('computes `extraPadding correctly', () => {
+  it('computes `shortHero correctly', () => {
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props('extraPadding')).toBe(false);
+    expect(hero.props('shortHero')).toBe(false);
 
     wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
-    expect(hero.props('extraPadding')).toBe(true);
+    expect(hero.props('shortHero')).toBe(true);
   });
 
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
@@ -254,7 +261,8 @@ describe('DocumentationTopic', () => {
     expect(hero.props()).toEqual({
       role: 'symbol',
       enhanceBackground: false,
-      extraPadding: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
     });
   });
 
