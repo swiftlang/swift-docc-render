@@ -77,6 +77,12 @@
       </NavigatorCardInner>
     </div>
     <div class="filter-wrapper" v-if="!errorFetching">
+      <div v-show="showQuickNavigationModal">
+        <QuickNavigationModal
+          @toggleShowQuickNavigationModal="toggleShowQuickNavigationModal()"
+          :children="children"
+        />
+      </div>
       <div class="navigator-filter">
         <div class="input-wrapper">
           <FilterInput
@@ -91,6 +97,13 @@
             @clear="clearFilters"
           />
         </div>
+        <div
+            class="magnifier-icon"
+            @click="toggleShowQuickNavigationModal()"
+            v-if="enableQuickNavigation"
+          >
+            <MagnifierIcon/>
+          </div>
       </div>
     </div>
   </div>
@@ -98,6 +111,7 @@
 
 <script>
 import { RecycleScroller } from 'vue-virtual-scroller';
+import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
@@ -114,6 +128,8 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
+import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
+import { getSetting } from 'docc-render/utils/theme-settings';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -175,10 +191,12 @@ export default {
   components: {
     FilterInput,
     SidenavIcon,
+    MagnifierIcon,
     NavigatorCardInner,
     NavigatorCardItem,
     RecycleScroller,
     Reference,
+    QuickNavigationModal,
   },
   props: {
     technology: {
@@ -239,6 +257,7 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
+      showQuickNavigationModal: false,
     };
   },
   computed: {
@@ -441,6 +460,9 @@ export default {
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
   },
   created() {
     this.restorePersistedState();
@@ -456,6 +478,9 @@ export default {
     },
   },
   methods: {
+    toggleShowQuickNavigationModal() {
+      this.showQuickNavigationModal = !this.showQuickNavigationModal;
+    },
     clearFilters() {
       this.filter = '';
       this.debouncedFilter = '';
@@ -1054,6 +1079,13 @@ $navigator-card-vertical-spacing: 8px !default;
 $filter-height: 71px;
 $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
+
+.magnifier-icon {
+  height: 20px;
+  width: auto;
+  margin: auto;
+  padding-left: 5px;
+}
 
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
