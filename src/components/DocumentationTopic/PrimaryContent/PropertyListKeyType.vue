@@ -9,12 +9,32 @@
 -->
 
 <template>
- <div class="type">{{ typeOutput }}</div>
+  <div class="type">
+    <template v-for="(type, index) in types">
+      <DeclarationToken v-if="type.kind" class="type-child token-type" v-bind="type" :key="index" />
+      <span
+        v-else
+        :key="index"
+        class="type-child simple-type"
+      >{{ normaliseType(type) }}</span><template
+       v-if="index + 1 < typesCount"
+      >
+        <template v-if="!moreThanTwo"> or </template>
+        <template
+          v-else>, <template v-if="index === typesCount - 2">or </template>
+        </template>
+      </template>
+    </template>
+  </div>
 </template>
 
 <script>
+import DeclarationToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
+
 export default {
   name: 'PropertyListKeyType',
+  components: { DeclarationToken },
   props: {
     types: {
       type: Array,
@@ -22,26 +42,17 @@ export default {
     },
   },
   computed: {
-    englishTypes() {
-      return this.types.map(({
-        arrayMode,
-        baseType = '*',
-      }) => (arrayMode ? (
+    typesCount: ({ types }) => types.length,
+    moreThanTwo: ({ types }) => types.length > 2,
+  },
+  methods: {
+    normaliseType({ arrayMode, baseType = '*' }) {
+      return arrayMode ? (
         `array of ${this.pluralizeKeyType(baseType)}`
       ) : (
         baseType
-      )));
+      );
     },
-    typeOutput() {
-      if (this.englishTypes.length > 2) {
-        return [this.englishTypes.slice(0, this.englishTypes.length - 1).join(', '),
-          this.englishTypes[this.englishTypes.length - 1],
-        ].join(', or ');
-      }
-      return this.englishTypes.join(' or ');
-    },
-  },
-  methods: {
     pluralizeKeyType(type) {
       switch (type) {
       case 'dictionary':

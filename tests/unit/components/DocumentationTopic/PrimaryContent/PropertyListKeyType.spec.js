@@ -6,10 +6,13 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
-import PropertyListKeyType from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
+import PropertyListKeyType
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
+import DeclarationToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
 
 const mountWithProps = propsData => shallowMount(PropertyListKeyType, { propsData });
 const mountWithTypes = (types = []) => mountWithProps({ types });
@@ -31,6 +34,31 @@ describe('PropertyListKeyType', () => {
     ]).text()).toBe(
       'array of dictionaries, array of arrays, array of numbers, array of strings, or array of other',
     );
+  });
+
+  it('detects declaration tokens and renders them', () => {
+    const wrapper = mountWithTypes([
+      { arrayMode: true, baseType: 'dictionary' },
+      { kind: 'text', text: '[string]' },
+      { arrayMode: false, baseType: 'other' },
+      { arrayMode: false },
+    ]);
+    const children = wrapper.findAll('.type-child');
+    expect(children).toHaveLength(4);
+    expect(children.at(0).classes()).toContain('simple-type');
+    expect(children.at(0).text()).toBe('array of dictionaries');
+    expect(children.at(1).classes()).toContain('token-type');
+    expect(children.at(1).is(DeclarationToken)).toBe(true);
+    expect(children.at(1).props()).toEqual({
+      identifier: undefined,
+      kind: 'text',
+      text: '[string]',
+      tokens: [],
+    });
+    expect(children.at(2).classes()).toContain('simple-type');
+    expect(children.at(2).text()).toBe('other');
+    expect(children.at(3).classes()).toContain('simple-type');
+    expect(children.at(3).text()).toBe('*');
   });
 
   it('adds commas correctly depending on number of types', () => {
