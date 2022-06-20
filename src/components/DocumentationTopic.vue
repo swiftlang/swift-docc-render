@@ -97,7 +97,7 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import metadata from 'docc-render/mixins/metadata';
+import metadata from 'theme/mixins/metadata.js';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';

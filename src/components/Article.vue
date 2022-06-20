@@ -34,7 +34,7 @@
 import { PortalTarget } from 'portal-vue';
 
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
-import metadata from 'docc-render/mixins/metadata';
+import metadata from 'theme/mixins/metadata.js';
 import Body from './Article/Body.vue';
 import CallToAction from './Article/CallToAction.vue';
 import Hero from './Article/Hero.vue';

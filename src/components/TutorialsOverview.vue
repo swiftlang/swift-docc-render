@@ -38,7 +38,7 @@
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 
 import Nav from 'theme/components/TutorialsOverview/Nav.vue';
-import metadata from 'docc-render/mixins/metadata';
+import metadata from 'theme/mixins/metadata.js';
 import Hero from './TutorialsOverview/Hero.vue';
 import LearningPath from './TutorialsOverview/LearningPath.vue';
 
