@@ -351,7 +351,7 @@ export default {
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
-      apiChangesObject, apiChanges, deprecatedHidden,
+      apiChangesObject, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
@@ -375,14 +375,8 @@ export default {
         }
         // find items, that have API changes
         const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
-        let shouldShowGroupMarker = true;
-        // if current item is a groupMarker and "Hide Deprecated" is not selected
-        if (type === TopicTypes.groupMarker && !deprecatedHidden) {
-          // check if the group title is an exact case-insensitive match
-          shouldShowGroupMarker = titleMatch ? titleMatch[0] === title : false;
-        }
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges && shouldShowGroupMarker;
+        return titleMatch && tagMatch && hasAPIChanges;
       });
     },
     /**
@@ -398,17 +392,22 @@ export default {
      * @return {Object.<string, NavigatorFlatItem>}
      */
     renderableChildNodesMap({
-      filteredChildrenUpToRootSet, childrenMap, hasFilter, deprecatedHidden,
+      filteredChildrenUpToRootSet, childrenMap, hasFilter,
+      getAllChildren, convertChildrenArrayToObject, removeDeprecated,
     }) {
       if (!hasFilter) return childrenMap;
       let all = [];
       // create a set of all matches and their parents
       filteredChildrenUpToRootSet.forEach((current) => {
         // if the item is a groupMarker, all of its child labels should be rendered.
-        // This should not happen when "Hide Deprecated" is picked, or the items would show up
-        if (current.childLabelUIDs && !deprecatedHidden) {
+        if (current.childLabelUIDs) {
+          const noChildrenMatch = !current.childLabelUIDs.some(uid => (
+            filteredChildrenUpToRootSet.has(childrenMap[uid])
+          ));
           // push all the related child items plus the group marker
-          all = all.concat(this.getAllChildren(current.uid));
+          all = all.concat(noChildrenMatch
+            ? removeDeprecated(getAllChildren(current.uid))
+            : current);
           return;
         }
         // if it's a plain end node, just add it
@@ -421,10 +420,9 @@ export default {
           filteredChildrenUpToRootSet.has(childrenMap[uid])
         ));
         // if no children are matching, add all to the list, otherwise just the current parent
-        all = all.concat(noChildrenMatch ? this.getAllChildren(current.uid) : current);
+        all = all.concat(noChildrenMatch ? removeDeprecated(getAllChildren(current.uid)) : current);
       });
-
-      return this.convertChildrenArrayToObject(all);
+      return convertChildrenArrayToObject(all);
     },
     /**
      * Creates a computed for the items, that the openNodes calc depends on
@@ -446,9 +444,7 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags, debouncedFilter }) => (
-      selectedTags[0] === HIDE_DEPRECATED_TAG && !debouncedFilter.length
-    ),
+    deprecatedHidden: ({ selectedTags }) => selectedTags[0] === HIDE_DEPRECATED_TAG,
     apiChangesObject() {
       return this.apiChanges || {};
     },
@@ -510,7 +506,11 @@ export default {
       // decide which items are open
       // if "Hide Deprecated" is picked, there is no filter,
       // or navigate to page while filtering, we open the items leading to the activeUID
-      const nodes = this.deprecatedHidden || (pageChange && this.hasFilter) || !this.hasFilter
+      const nodes = (
+        (this.deprecatedHidden && !this.debouncedFilter.length)
+        || (pageChange && this.hasFilter)
+        || !this.hasFilter
+      )
         ? activePathChildren
         // get all parents of the current filter match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
@@ -683,6 +683,15 @@ export default {
       if (!item) return [];
       return (item.childUIDs || [])
         .map(child => this.childrenMap[child]);
+    },
+    /**
+     * Removes deprecated items from a list
+     * @param {NavigatorFlatItem[]} items
+     * @returns {NavigatorFlatItem[]}
+     */
+    removeDeprecated(items) {
+      if (!this.deprecatedHidden) return items;
+      return items.filter(({ deprecated }) => !deprecated);
     },
     /**
      * Stores all the nodes we should render at this point.
