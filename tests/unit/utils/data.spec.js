@@ -9,7 +9,6 @@
 */
 
 import {
-  FetchError,
   fetchData,
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
@@ -17,6 +16,8 @@ import {
   fetchIndexPathsData,
 } from 'docc-render/utils/data';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
+import FetchError from 'docc-render/errors/FetchError';
+import RedirectError from 'docc-render/errors/RedirectError';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
@@ -37,6 +38,11 @@ const goodFetchResponse = {
 const notFoundFetchResposne = {
   ok: false,
   status: 404,
+};
+const redirectResponse = {
+  redirected: true,
+  ok: true,
+  url: 'https://localhost:8080/data/documentation/foo/framework.json?language=objc',
 };
 
 const badIDEFetchResponse = {
@@ -94,6 +100,17 @@ describe('fetchData', () => {
     expect(emitWarningForSchemaVersionMismatch).toHaveBeenCalledTimes(1);
 
     expect(emitWarningForSchemaVersionMismatch).toHaveBeenCalledWith(schemaVersion);
+  });
+
+  it('throws a RedirectError, when a redirect response is present', async () => {
+    window.fetch = jest.fn().mockImplementation(() => redirectResponse);
+    try {
+      await fetchData('/data/tutorials/augmented-responses/tutorials.json');
+    } catch (err) {
+      expect(err).toBeInstanceOf(RedirectError);
+      expect(err.response).toEqual(redirectResponse);
+      expect(err.location).toEqual(redirectResponse.url);
+    }
   });
 
   describe('with an IDE target', () => {
@@ -215,6 +232,16 @@ describe('fetchDataForRouteEnter', () => {
 
     window.fetch.mockRestore();
     process.env.VUE_APP_TARGET = '';
+  });
+
+  it('throws with a new path, when `fetch` has been redirected', async () => {
+    window.fetch = jest.fn().mockResolvedValue(redirectResponse);
+
+    await expect(fetchDataForRouteEnter(to, from, next))
+      .rejects
+      .toBe('/documentation/foo/framework?language=objc');
+    expect(next).toHaveBeenCalledTimes(0);
+    window.fetch.mockRestore();
   });
 
   it('calls the `next` fn with a `FetchError`', async () => {
