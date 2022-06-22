@@ -96,11 +96,11 @@ describe('CodePreview', () => {
       it('renders the media preview at 1/3 scale', () => {
         TopicStore.updateBreakpoint('large');
         let runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
 
         TopicStore.updateBreakpoint('small');
         runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
       });
     });
 
@@ -108,7 +108,7 @@ describe('CodePreview', () => {
       it('renders the preview at 80% of 1/3 scale', () => {
         TopicStore.updateBreakpoint('medium');
         const runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 160px; height: 352px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
     });
   });
@@ -196,8 +196,8 @@ describe('CodePreview', () => {
     wrapper = mountWithVariant(variantWithOnlyHeight);
 
     const runtimePreview = wrapper.find('.runtime-preview');
-    // 32px are added from the collapsedPreviewSize's height
-    expect(runtimePreview.attributes('style')).toBe('height: 432px;');
+    // no height is defined at all
+    expect(runtimePreview.attributes('style')).toBeFalsy();
   });
 
   describe('collapsed', () => {
@@ -243,7 +243,7 @@ describe('CodePreview', () => {
     it('renders the collapsed preview button at proper dimensions', () => {
       wrapper = mountWithPreviewVisible(false);
       const runtimePreview = wrapper.find('.runtime-preview');
-      expect(runtimePreview.attributes('style')).toBe('width: 102px; height: 32px;');
+      expect(runtimePreview.attributes('style')).toBe('width: 102px;');
     });
   });
 
@@ -265,11 +265,11 @@ describe('CodePreview', () => {
       it('renders the preview at 1/1.75 scale', () => {
         TopicStore.updateBreakpoint('large');
         let runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
 
         TopicStore.updateBreakpoint('small');
         runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
       });
     });
 
@@ -277,7 +277,7 @@ describe('CodePreview', () => {
       it('renders the preview at 80% of 1/1.75 scale', () => {
         TopicStore.updateBreakpoint('medium');
         const runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 160px; height: 352px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
     });
   });
@@ -307,7 +307,7 @@ describe('CodePreview', () => {
     it('renders the preview with a disabled state', () => {
       const preview = wrapper.find('.runtime-preview');
       expect(preview.classes('disabled')).toBe(true);
-      expect(preview.attributes('style')).toBe('width: 102px; height: 32px;');
+      expect(preview.attributes('style')).toBe('width: 102px;');
 
       const button = preview.find('button');
       expect(button.attributes('disabled')).toBe('disabled');
