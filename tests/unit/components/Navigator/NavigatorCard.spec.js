@@ -1521,8 +1521,7 @@ describe('NavigatorCard', () => {
       parent: root0.uid,
       depth: 1,
       index: 4,
-      childUIDs: [],
-      childLabelUIDs: [root0Child0.uid, root0Child1.uid],
+      childUIDs: [root0Child0.uid, root0Child1.uid],
     };
 
     const root0Updated = {
@@ -1570,14 +1569,15 @@ describe('NavigatorCard', () => {
       filter.vm.$emit('input', 'First Child');
       await flushPromises();
       allItems = wrapper.findAll(NavigatorCardItem);
-      // assert that filtering opens everything as usual, hiding groupMarkers
-      expect(allItems).toHaveLength(3);
+      // assert that filtering opens everything as usual, showing groupMarkers as well
+      expect(allItems).toHaveLength(4);
       expect(allItems.at(0).props('item')).toEqual(root0Updated);
-      expect(allItems.at(1).props('item')).toEqual(root0Child1);
-      expect(allItems.at(2).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(1).props('item')).toEqual(groupMarker);
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
     });
 
-    it('shows groupMarkers in results, only if direct matching the name, showing contracted all top level children', async () => {
+    it('shows groupMarkers in results, showing children that match if any or all if none', async () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
@@ -1602,10 +1602,16 @@ describe('NavigatorCard', () => {
       items = wrapper.findAll(NavigatorCardItem);
       expect(items).toHaveLength(5);
       expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
-      // assert that only full groupMarker matches show them
-      wrapper.find(FilterInput).vm.$emit('input', 'Group Marker');
+      // assert that partial matches of group and children show only those that match
+      wrapper.find(FilterInput).vm.$emit('input', 'First Child');
       await flushPromises();
-      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(0);
+      items = wrapper.findAll(NavigatorCardItem);
+      expect(items).toHaveLength(5);
+      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(1).props('item')).toEqual(groupMarker);
+      expect(items.at(2).props('item')).toEqual(root0Child0);
+      expect(items.at(3).props('item')).toEqual(root0Child1);
+      expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
     });
   });
 

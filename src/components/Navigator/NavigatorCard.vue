@@ -360,7 +360,7 @@ export default {
         title, path, type, deprecated,
       }) => {
         // check if `title` matches the pattern, if provided
-        const titleMatch = filterPattern ? filterPattern.exec(title) : true;
+        const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
         let tagMatch = true;
         if (selectedTags.length) {
@@ -399,17 +399,6 @@ export default {
       let all = [];
       // create a set of all matches and their parents
       filteredChildrenUpToRootSet.forEach((current) => {
-        // if the item is a groupMarker, all of its child labels should be rendered.
-        if (current.childLabelUIDs) {
-          const noChildrenMatch = !current.childLabelUIDs.some(uid => (
-            filteredChildrenUpToRootSet.has(childrenMap[uid])
-          ));
-          // push all the related child items plus the group marker
-          all = all.concat(noChildrenMatch
-            ? removeDeprecated(getAllChildren(current.uid))
-            : current);
-          return;
-        }
         // if it's a plain end node, just add it
         if (!current.childUIDs.length) {
           all.push(current);
@@ -629,7 +618,7 @@ export default {
         // add it's uid
         arr.push(obj);
         // add all if it's children to the front of the stack
-        stack.unshift(...(obj.childLabelUIDs || obj.childUIDs));
+        stack.unshift(...obj.childUIDs);
       }
 
       return arr;
@@ -856,7 +845,6 @@ export default {
       if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
       if (this.hasFilter) {
-        // console.trace({ F: this.filter, D: this.debouncedFilter });
         this.$refs.scroller.scrollToItem(0);
         return;
       }

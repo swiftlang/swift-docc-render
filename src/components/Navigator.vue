@@ -58,7 +58,6 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
  * @property {number} siblingsCount - number of siblings
  * @property {number[]} childUIDs - array of child UIDs
  * @property {boolean} deprecated - symbol is deprecated or is not
- * @property {number[]} [childLabelUIDs] - array of child UIDs that a groupMarker is attached to
  */
 
 /**
@@ -181,11 +180,10 @@ export default {
         node.parent = parentUID;
         // store the current groupMarker reference
         if (node.type === TopicTypes.groupMarker) {
-          node.childLabelUIDs = [];
           groupMarkerNode = node;
         } else if (groupMarkerNode) {
           // push the current node to the group marker before it
-          groupMarkerNode.childLabelUIDs.push(node.uid);
+          groupMarkerNode.childUIDs.push(node.uid);
         }
         // store which item it is
         node.index = index;

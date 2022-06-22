@@ -290,11 +290,10 @@ describe('Navigator', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(NavigatorCard).props('children')).toEqual([
       {
-        childLabelUIDs: [
+        childUIDs: [
           551503844,
           -97593391,
         ],
-        childUIDs: [],
         depth: 0,
         index: 0,
         parent: INDEX_ROOT_KEY,
@@ -320,12 +319,11 @@ describe('Navigator', () => {
         uid: 551503844,
       },
       {
-        childLabelUIDs: [
+        childUIDs: [
           1438225895,
           1439149417,
           1440072939,
         ],
-        childUIDs: [],
         depth: 1,
         index: 0,
         parent: 551503844,

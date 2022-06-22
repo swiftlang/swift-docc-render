@@ -161,7 +161,7 @@ export default {
   },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
-    isParent: ({ item }) => !!item.childUIDs.length,
+    isParent: ({ item, isGroupMarker }) => !!item.childUIDs.length && !isGroupMarker,
     parentLabel: ({ item }) => `label-parent-${item.uid}`,
     siblingsLabel: ({ item }) => `label-${item.uid}`,
     usageLabel: ({ item }) => `usage-${item.uid}`,
