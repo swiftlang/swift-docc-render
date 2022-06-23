@@ -11,7 +11,7 @@
 import { restoreScrollOnReload, saveScrollOnReload, scrollBehavior } from 'docc-render/utils/router-utils';
 import Router from 'vue-router';
 import SwiftDocCRenderRouter from 'docc-render/setup-utils/SwiftDocCRenderRouter';
-import { FetchError } from 'docc-render/utils/data';
+import FetchError from 'docc-render/errors/FetchError';
 
 jest.mock('docc-render/utils/theme-settings', () => ({
   baseUrl: '/',
