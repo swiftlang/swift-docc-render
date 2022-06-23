@@ -9,17 +9,26 @@
 -->
 
 <template>
-  <a :href="url">
-    {{ fileName }}
+  <a
+    :href="url"
+    :title="`Open source file for ${fileName}`"
+    target="_blank"
+    class="declaration-source-link"
+  >
+    <SwiftFileIcon v-if="isSwiftFile" class="declaration-icon" />
+    <span>{{ fileName }}</span>
   </a>
 </template>
 
 <script>
+import SwiftFileIcon from 'docc-render/components/Icons/SwiftFileIcon.vue';
+
 export default {
   name: 'DeclarationSourceLink',
+  components: { SwiftFileIcon },
   props: {
     url: {
-      type: Array,
+      type: String,
       required: true,
     },
     fileName: {
@@ -27,13 +36,25 @@ export default {
       required: true,
     },
   },
+  computed: {
+    isSwiftFile: ({ fileName }) => fileName.endsWith('.swift'),
+  },
 };
 </script>
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-a {
-  @include font-styles(documentation-declaration-link);
+.declaration-source-link {
+  @include font-styles(body-reduced-tight);
+  display: flex;
+  align-items: center;
+  // nudge up, so its closer to the declaration source
+  margin-top: -4px;
+}
+
+.declaration-icon {
+  width: 1em;
+  margin-right: 5px;
 }
 </style>

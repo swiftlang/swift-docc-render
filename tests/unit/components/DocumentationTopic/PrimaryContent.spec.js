@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
 import PrimaryContent from 'docc-render/components/DocumentationTopic/PrimaryContent.vue';
@@ -147,6 +147,7 @@ const restEndpointSection = {
 
 const propsData = {
   conformance: { availbilityPrefix: [], constraints: [] },
+  source: { url: 'foo.com' },
   sections: [
     declarationsSection,
     detailsSection,
@@ -186,6 +187,7 @@ describe('PrimaryContent', () => {
   checkProps(Declaration, {
     conformance: propsData.conformance,
     declarations: declarationsSection.declarations,
+    source: propsData.source,
   });
   checkProps(PropertyListKeyDetails, { details: detailsSection.details });
   checkProps(GenericContent, { content: genericContentSection.content, tag: 'div' });

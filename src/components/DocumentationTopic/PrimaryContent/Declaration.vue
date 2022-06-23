@@ -32,15 +32,15 @@
         :changeType="changeType"
       />
     </template>
-    <ConditionalConstraints
-      v-if="conformance"
-      :constraints="conformance.constraints"
-      :prefix="conformance.availabilityPrefix"
-    />
     <DeclarationSourceLink
       v-if="source"
       :url="source.url"
       :fileName="source.fileName"
+    />
+    <ConditionalConstraints
+      v-if="conformance"
+      :constraints="conformance.constraints"
+      :prefix="conformance.availabilityPrefix"
     />
   </OnThisPageSection>
 </template>

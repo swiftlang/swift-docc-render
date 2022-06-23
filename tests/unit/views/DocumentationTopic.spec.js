@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
@@ -100,6 +100,9 @@ const topicData = {
       paths: ['documentation/swift'],
     },
   ],
+  source: {
+    url: 'foo.com',
+  },
   schemaVersion: {
     major: 0,
     minor: 2,
