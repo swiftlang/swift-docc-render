@@ -179,6 +179,7 @@ export default {
       if (topic.titleStyle === TitleStyles.title) {
         return topic.ideTitle ? 'span' : 'code';
       }
+      if (topic.role === 'collection') return 'span';
 
       switch (topic.kind) {
       case TopicKind.symbol:
