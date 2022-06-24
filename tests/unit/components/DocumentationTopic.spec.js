@@ -272,6 +272,18 @@ describe('DocumentationTopic', () => {
     const title = hero.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
+    expect(title.text()).toBe(propsData.title);
+    expect(title.find(WordBreak).exists()).toBe(false);
+  });
+
+  it('uses `WordBreak` in the title for symbol pages', () => {
+    wrapper.setProps({
+      role: 'symbol',
+      symbolKind: 'protocol',
+    });
+
+    const title = wrapper.find(Title);
+    expect(title.exists()).toBe(true);
 
     const wb = title.find(WordBreak);
     expect(wb.exists()).toBe(true);
