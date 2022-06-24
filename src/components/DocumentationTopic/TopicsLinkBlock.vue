@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { TopicRole } from 'docc-render/constants/roles';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import Badge from 'docc-render/components/Badge.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
@@ -179,7 +180,7 @@ export default {
       if (topic.titleStyle === TitleStyles.title) {
         return topic.ideTitle ? 'span' : 'code';
       }
-      if (topic.role === 'collection') return 'span';
+      if (topic.role && topic.role === TopicRole.collection) return 'span';
 
       switch (topic.kind) {
       case TopicKind.symbol:

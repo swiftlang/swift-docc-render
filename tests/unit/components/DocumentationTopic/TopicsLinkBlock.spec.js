@@ -142,8 +142,14 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('renders a `WordBreak` using <span> tag for Framework name links in Topic that have role collection', () => {
-    // eslint-disable-next-line max-len
-    wrapper.setProps({ topic: { ...propsData.topic, role: TopicRole.collection, kind: TopicKind.symbol } });
+    wrapper.setProps({
+      topic:
+      {
+        ...propsData.topic,
+        role: TopicRole.collection,
+        kind: TopicKind.symbol,
+      },
+    });
     const wordBreak = wrapper.find('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
@@ -151,8 +157,14 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('renders a `WordBreak` using <code> tag for Framework name links in Topic that have role: article ', () => {
-    // eslint-disable-next-line max-len
-    wrapper.setProps({ topic: { ...propsData.topic, role: TopicRole.article, kind: TopicKind.symbol } });
+    wrapper.setProps({
+      topic:
+      {
+        ...propsData.topic,
+        role: TopicRole.article,
+        kind: TopicKind.symbol,
+      },
+    });
     const wordBreak = wrapper.find('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
@@ -160,7 +172,6 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection', () => {
-    // eslint-disable-next-line max-len
     wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
     const wordBreak = wrapper.find('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
