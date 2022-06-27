@@ -81,6 +81,7 @@
         <QuickNavigationModal
           @toggleShowQuickNavigationModal="toggleShowQuickNavigationModal()"
           :children="children"
+          :showQuickNavigationModal="showQuickNavigationModal"
         />
       </div>
       <div class="navigator-filter">
