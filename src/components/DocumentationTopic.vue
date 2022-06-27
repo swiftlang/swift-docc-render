@@ -28,7 +28,7 @@
           :swiftPath="swiftPath"
         />
         <Title :eyebrow="roleHeading">
-          <WordBreak>{{ title }}</WordBreak>
+          <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
             slot="after"
@@ -328,6 +328,11 @@ export default {
         ? technologyList
         : [];
     },
+    // there shouldn't be a pressing need to use the `WordBreak` component in
+    // the main title for for non-symbol pages with the "enhanced" background
+    titleBreakComponent: ({ enhanceBackground }) => (enhanceBackground
+      ? 'span'
+      : WordBreak),
     showContainer: ({
       isRequirement,
       deprecationSummary,
