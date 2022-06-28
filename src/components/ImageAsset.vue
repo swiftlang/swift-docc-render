@@ -30,7 +30,10 @@
     <img
       v-if="prefersDark && darkVariantAttributes"
       v-bind="darkVariantAttributes"
+      ref="img"
       :alt="alt"
+      :width="darkVariantAttributes.width || optimalWidth"
+      :height="(darkVariantAttributes.width || optimalWidth) ? 'auto' : null"
       @error="handleImageLoadError"
     >
     <!--
@@ -39,7 +42,10 @@
     <img
       v-else
       v-bind="defaultAttributes"
+      ref="img"
       :alt="alt"
+      :width="defaultAttributes.width || optimalWidth"
+      :height="(defaultAttributes.width || optimalWidth) ? 'auto' : null"
       @error="handleImageLoadError"
     >
   </picture>
@@ -52,6 +58,20 @@ import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
 import { normalizeAssetUrl } from 'docc-render/utils/assets';
+
+const RADIX_DECIMAL = 10;
+
+function getIntrinsicDimensions(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.onerror = reject;
+    img.onload = () => resolve({
+      width: img.width,
+      height: img.height,
+    });
+  });
+}
 
 function constructAttributes(sources) {
   if (!sources.length) {
@@ -83,8 +103,13 @@ export default {
   data: () => ({
     appState: AppStore.state,
     fallbackImageSrcSet: null,
+    optimalWidth: null,
   }),
   computed: {
+    allVariants: ({
+      lightVariants = [],
+      darkVariants = [],
+    }) => lightVariants.concat(darkVariants),
     defaultAttributes: ({
       lightVariantAttributes,
       darkVariantAttributes,
@@ -111,6 +136,65 @@ export default {
       // image fails to load for any reason
       this.fallbackImageSrcSet = `${noImage} 2x`;
     },
+    async calculateOptimalWidth() {
+      // Find the URL for the image currently being displayed, which may vary
+      // depending on the color scheme and pixel density of the display device,
+      // and calculate its optimal width for HTML/CSS rendering purposes.
+      // The `naturalWidth` property could be used for this ideally, but there
+      // is an issue with Chrome trying to optimize this value depending on
+      // whether or not the filename contains "2x". Instead, the image is
+      // loaded in the background to retrieve its intrinsic dimensions and the
+      // intrinsic width is adjusted by its pixel density trait.
+      const {
+        $refs: {
+          img: { currentSrc },
+        },
+        allVariants,
+      } = this;
+
+      // Find the intended density ratio for the image currently being
+      // displayed, which might differ from the density of the actual display
+      const { density } = allVariants.find(({ src }) => currentSrc.endsWith(src));
+      const currentVariantDensity = parseInt(density.match(/\d+/)[0], RADIX_DECIMAL);
+
+      // Find the intrinsic dimensions of the image currently being displayed.
+      // For a 2x image, the actual image size would be twice as large as how
+      // it will be displayed in CSS pixels.
+      const intrinsicDimensions = await getIntrinsicDimensions(currentSrc);
+
+      // Divide the source width of the currently displayed image by the pixel
+      // density of that image to obtain the optimal width in CSS pixels for
+      // display purposes so that a `width` can be assigned to the `img` tag to
+      // ensure that the image looks the same size for all devices
+      const optimalWidth = intrinsicDimensions.width / currentVariantDensity;
+
+      return optimalWidth;
+    },
+    // If the JSON data vended by the server already contains an optimal display
+    // size for this image, no additional work needs to be done.
+    //
+    // Otherwise, since we don't know the intended display size for the image,
+    // we need to calculate that once the image has first loaded.
+    //
+    // This is especially important if a 2x image is being used on a 1x device
+    // with no 1x version of the same image so that we can size the 2x image
+    // using the same dimensions for both 1x and 2x devices.
+    async optimizeImageSize() {
+      // Exit early if image size data already exists—nothing further needs to
+      // be calculated in that scenario.
+      if (this.defaultAttributes.width) {
+        return;
+      }
+
+      try {
+        this.optimalWidth = await this.calculateOptimalWidth();
+      } catch {
+        console.error('Unable to calculate optimal image width');
+      }
+    },
+  },
+  mounted() {
+    this.$refs.img.addEventListener('load', this.optimizeImageSize);
   },
 };
 </script>
