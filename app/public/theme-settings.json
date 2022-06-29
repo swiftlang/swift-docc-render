@@ -55,7 +55,7 @@
   "features": {
     "docs": {
       "quickNavigation": {
-        "enable": true
+        "enable": false
       }
     }
   }

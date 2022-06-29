@@ -35,17 +35,21 @@ describe('QuickNavigationModal', () => {
     symbols[0],
     symbols[1],
   ];
-  const propsData = {
-    userInput: '',
-    debouncedInput: '',
-    children: symbols,
+  const config = {
+    propsData: {},
+    provide: {
+      quickNavigationStore: {
+        state: {
+          enableQuickNavigation: false,
+          flattenIndex: symbols,
+        },
+      },
+    },
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    wrapper = shallowMount(QuickNavigationModal, {
-      propsData,
-    });
+    wrapper = shallowMount(QuickNavigationModal, config);
     input = wrapper.find({ ref: 'input' });
   });
 

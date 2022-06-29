@@ -106,7 +106,6 @@ $doc-hero-icon-dimension: 250px;
   overflow: hidden;
   text-align: left;
   position: relative;
-  z-index: -1;
 
   // gradient
   &:before {
@@ -170,7 +169,7 @@ $doc-hero-icon-dimension: 250px;
     padding-top: rem(40px);
     padding-bottom: 40px;
     position: relative;
-    z-index: -1;
+    z-index: 1;
     @include dynamic-content-container;
   }
 

@@ -11,7 +11,10 @@
 <template>
   <div class="quick-navigation-modal">
     <div class="container">
-      <div class="close-icon" @click="$emit('toggleShowQuickNavigationModal')">
+      <div
+        class="close-icon"
+        @click="closeQuickNavigationModal()"
+      >
         <p>
           Close
         </p>
@@ -26,18 +29,18 @@
         <div
           v-for="(symbol, idx) in filteredSymbols"
           class="symbol-match"
-          @click="$emit('toggleShowQuickNavigationModal')"
+          @click="closeQuickNavigationModal()"
           :key="idx"
         >
-          <router-link
-            :to="symbol.path"
-          >
-            -
-            <HighlightMatches
-              :text="symbol.title"
-              :matcher="fuzzyRegex"
-            />
-          </router-link>
+          <Reference :url="symbol.path" :id="idx">
+              -
+              {{symbol.title.slice(0, symbol.start)}}
+              <HighlightMatches
+                :text="symbol.substring"
+                :matcher="inputCoincidencesRegexPattern"
+              />
+              {{symbol.title.slice(symbol.start + symbol.matchLength)}}
+          </Reference>
         </div>
       </div>
     </div>
@@ -48,33 +51,33 @@
 import debounce from 'docc-render/utils/debounce';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 export default {
   name: 'QuickNavigationModal',
   components: {
     HighlightMatches,
+    Reference,
   },
+  inject: ['quickNavigationStore'],
   data() {
     return {
-      userInput: '',
       debouncedInput: '',
+      quickNavigationStore: this.quickNavigationStore,
       matchingChars: '',
+      userInput: '',
     };
   },
   computed: {
-    fuzzyRegex: ({
-      constructFuzzyRegex,
-      debouncedInput,
-    }) => new RegExp(constructFuzzyRegex(debouncedInput.toLowerCase())),
     filterPattern: ({ debouncedInput }) => new RegExp(safeHighlightPattern(debouncedInput), 'i'),
     filteredSymbols: ({
-      children,
+      flattenIndex,
       constructFuzzyRegex,
       fuzzyMatch,
       debouncedInput,
       orderSymbolsByPriority,
     }) => {
-      const symbols = children.filter(c => (
+      const symbols = flattenIndex.filter(c => (
         c.type !== 'groupMarker'
         && c.title != null
       ));
@@ -91,19 +94,21 @@ export default {
       }
       return false;
     },
-  },
-  props: {
-    children: {
-      type: Array,
-      required: true,
-    },
-    showQuickNavigationModal: {
-      type: Boolean,
-      required: true,
-    },
+    flattenIndex: ({ quickNavigationStore }) => quickNavigationStore.state.flattenIndex,
+    fuzzyRegex: ({
+      constructFuzzyRegex,
+      debouncedInput,
+    }) => new RegExp(constructFuzzyRegex(debouncedInput.toLowerCase())),
+    inputCoincidencesRegexPattern: ({ debouncedInput }) => new RegExp(`[${debouncedInput}]`),
   },
   methods: {
+    closeQuickNavigationModal() {
+      this.quickNavigationStore.toggleShowQuickNavigationModal();
+    },
     constructFuzzyRegex(userInput) {
+      // Construct regex for fuzzy match
+      // Ex:
+      // foobar -> f[^f]*?o[^o]*?o[^o]*?b[^b]*?a[^a]*?r
       let regexBuilder = '';
       [...userInput].forEach((char, idx) => {
         regexBuilder += char.toLowerCase();
@@ -131,14 +136,15 @@ export default {
             matches.push({
               title: symbol.title,
               path: symbol.path,
-              matchLength: match[0].length,
-              start: match.index,
-              matchLengthDifference: isExactMatch === true
-                ? 0
-                : Math.abs(match[0].length - debouncedInput.length),
               inputLengthDifference: Math.abs(
                 symbol.title.length - debouncedInput.length,
               ),
+              matchLength: match[0].length,
+              matchLengthDifference: isExactMatch === true
+                ? 0
+                : Math.abs(match[0].length - debouncedInput.length),
+              start: match.index,
+              substring: match[0],
             });
             return true;
           }
@@ -172,12 +178,8 @@ export default {
       });
     },
   },
-  mixins: [],
   watch: {
     userInput: 'debounceInput',
-    showQuickNavigationModal() {
-      this.userInput = '';
-    },
   },
 };
 </script>
@@ -205,8 +207,6 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    width: 100%;
-    height: 100%;
     z-index: 100;
     padding: 100px;
     overflow: scroll;

@@ -77,13 +77,6 @@
       </NavigatorCardInner>
     </div>
     <div class="filter-wrapper" v-if="!errorFetching">
-      <div v-show="showQuickNavigationModal">
-        <QuickNavigationModal
-          @toggleShowQuickNavigationModal="toggleShowQuickNavigationModal()"
-          :children="children"
-          :showQuickNavigationModal="showQuickNavigationModal"
-        />
-      </div>
       <div class="navigator-filter">
         <div class="input-wrapper">
           <FilterInput
@@ -99,12 +92,12 @@
           />
         </div>
         <div
-            class="magnifier-icon"
-            @click="toggleShowQuickNavigationModal()"
-            v-if="enableQuickNavigation"
-          >
-            <MagnifierIcon/>
-          </div>
+          class="magnifier-icon"
+          @click="store.toggleShowQuickNavigationModal()"
+          v-if="enableQuickNavigation"
+        >
+          <MagnifierIcon/>
+        </div>
       </div>
     </div>
   </div>
@@ -112,7 +105,6 @@
 
 <script>
 import { RecycleScroller } from 'vue-virtual-scroller';
-import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
@@ -131,6 +123,7 @@ import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -197,7 +190,6 @@ export default {
     NavigatorCardItem,
     RecycleScroller,
     Reference,
-    QuickNavigationModal,
   },
   props: {
     technology: {
@@ -253,12 +245,12 @@ export default {
       nodesToRender: [],
       activeUID: null,
       resetScroll: false,
+      store: QuickNavigationStore,
       lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
-      showQuickNavigationModal: false,
     };
   },
   computed: {
@@ -479,9 +471,6 @@ export default {
     },
   },
   methods: {
-    toggleShowQuickNavigationModal() {
-      this.showQuickNavigationModal = !this.showQuickNavigationModal;
-    },
     clearFilters() {
       this.filter = '';
       this.debouncedFilter = '';
@@ -1067,6 +1056,9 @@ export default {
       // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
       this.focusIndex(parentIndex);
     },
+  },
+  provide() {
+    return { store: this.store };
   },
 };
 </script>
