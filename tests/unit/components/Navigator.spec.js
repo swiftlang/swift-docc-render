@@ -15,6 +15,7 @@ import SpinnerIcon from '@/components/Icons/SpinnerIcon.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
+import { clone } from '@/utils/data';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
@@ -368,5 +369,34 @@ describe('Navigator', () => {
         uid: -134251586,
       },
     ]);
+  });
+
+  it('removes the `beta` flag from children, if the technology is a `beta`', () => {
+    const technologyClone = clone(technology);
+    technologyClone.beta = true;
+    technologyClone.children[0].beta = true;
+    technologyClone.children[0].children[0].beta = true;
+    const wrapper = createWrapper({
+      propsData: {
+        technology: technologyClone,
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('children')).toMatchSnapshot();
+  });
+
+  it('removes the `beta` flag from children, if the parent is a `beta`', () => {
+    const technologyClone = clone(technology);
+    technologyClone.children[0].beta = true;
+    technologyClone.children[0].children[0].beta = true;
+    technologyClone.children[0].children[1].beta = true;
+    technologyClone.children[0].children[2].beta = true;
+    // set an end node as beta
+    technologyClone.children[1].children[0].beta = true;
+    const wrapper = createWrapper({
+      propsData: {
+        technology: technologyClone,
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('children')).toMatchSnapshot();
   });
 });

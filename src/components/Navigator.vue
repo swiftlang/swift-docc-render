@@ -189,6 +189,10 @@ export default {
           // push child to parent
           parent.childUIDs.push(node.uid);
         }
+        if (node.beta && ((parent && parent.beta) || this.technology.beta)) {
+          node.beta = false;
+        }
+
         items.push(node);
         if (children) {
           // return the children to the parent
