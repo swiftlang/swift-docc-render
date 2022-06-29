@@ -125,23 +125,24 @@ export default {
     },
   },
   computed: {
-    pageSections() {
-      const projectReferences = this.chapters
+    currentProject() {
+      return this.chapters
+        // collect all the projects for all the chapters
         .reduce((acc, { projects }) => acc.concat(projects), [])
+        // find the current project
         .find(project => project.reference === this.identifierUrl);
-      if (!projectReferences) return [];
+    },
+    pageSections() {
+      if (!this.currentProject) return [];
 
-      const allSections = [FirstSectionItem, ...projectReferences.sections];
-      const { linkableSections } = this.tutorialState;
+      const allSections = [FirstSectionItem].concat(this.currentProject.sections);
 
-      return linkableSections.map((linkableSection, index) => {
+      return this.tutorialState.linkableSections.map((linkableSection, index) => {
         const singleSection = allSections[index];
         const referenceObject = this.references[singleSection.reference];
         const { url, title } = referenceObject || singleSection;
         return {
-          depth: linkableSection.depth,
-          visibility: linkableSection.visibility,
-          sectionNumber: linkableSection.sectionNumber,
+          ...linkableSection,
           title,
           path: url,
         };
