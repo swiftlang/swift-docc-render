@@ -55,6 +55,9 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
  * @property {array} abstract - symbol abstract
  * @property {string} path - path to page, used in navigation
  * @property {number} parent - parent UID
+ * @property {number} groupMarkerUID - UID of the groupMarker that labels this
+ * @property {number} deprecatedChildrenCount - number of children that are deprecated.
+ * Used for filtering
  * @property {number} depth - depth of symbol in original tree
  * @property {number} index - index of item in siblings
  * @property {number} siblingsCount - number of siblings
@@ -189,10 +192,17 @@ export default {
         node.parent = parentUID;
         // store the current groupMarker reference
         if (node.type === TopicTypes.groupMarker) {
+          node.deprecatedChildrenCount = 0;
           groupMarkerNode = node;
         } else if (groupMarkerNode) {
           // push the current node to the group marker before it
           groupMarkerNode.childUIDs.push(node.uid);
+          // store the groupMarker UID for each item
+          node.groupMarkerUID = groupMarkerNode.uid;
+          if (node.deprecated) {
+            // count deprecated children, so we can hide the entire group when filtering
+            groupMarkerNode.deprecatedChildrenCount += 1;
+          }
         }
         // store which item it is
         node.index = index;
