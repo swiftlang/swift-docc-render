@@ -160,6 +160,7 @@ describe('Topic', () => {
       expect(article.exists()).toBe(true);
       expect(article.props()).toEqual({
         ...props,
+        identifierUrl: 'foo',
         hierarchy: {
           technologyNavigation: ['overview', 'tutorials', 'resources'],
         },
@@ -224,6 +225,7 @@ describe('Topic', () => {
       expect(tutorial.exists()).toBe(true);
       expect(tutorial.props()).toEqual({
         ...props,
+        identifierUrl: 'foo',
         hierarchy: {
           technologyNavigation: ['overview', 'tutorials', 'resources'],
         },
