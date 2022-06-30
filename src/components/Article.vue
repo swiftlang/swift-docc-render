@@ -16,6 +16,7 @@
       :technology="metadata.category"
       :topic="heroTitle || ''"
       :rootReference="hierarchy.reference"
+      :identifierUrl="identifierUrl"
     />
     <main id="main" role="main" tabindex="0">
       <slot name="above-hero" />
@@ -82,6 +83,10 @@ export default {
       validator: sections => sections.every(({ kind }) => (
         Object.prototype.hasOwnProperty.call(SectionKind, kind)
       )),
+    },
+    identifierUrl: {
+      type: String,
+      required: true,
     },
   },
   computed: {

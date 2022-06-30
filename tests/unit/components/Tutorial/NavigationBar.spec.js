@@ -38,34 +38,19 @@ describe('NavigationBar', () => {
 
   const chapters = [
     {
-      title: 'Building Interactive AR Experiences',
-      identifier: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences',
+      reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences',
       projects: [
         {
-          title: 'Basic Augmented Reality App',
-          identifier: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App',
-          path: '/tutorials/augmented-reality/basic-augmented-reality-app',
-          sections: [],
-        },
-        {
-          title: 'Lists and Data Flow',
-          identifier: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App',
-          path: '/tutorials/augmented-reality/lists-and-data-flow',
+          reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App',
           sections: [
             {
-              title: 'Create a new AR project',
-              identifier: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Create-a-new-AR-project',
-              path: '/tutorials/augmented-reality/basic-augmented-reality-app#create-a-new-ar-project',
+              reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Create-a-new-AR-project',
             },
             {
-              title: 'Initiate ARKit plane detection',
-              identifier: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Initiate-ARKit-plane-detection',
-              path: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
+              reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Initiate-ARKit-plane-detection',
             },
             {
-              title: 'Check your understanding',
-              identifier: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
-              path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
+              reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
             },
           ],
         },
@@ -73,11 +58,29 @@ describe('NavigationBar', () => {
     },
   ];
 
-  const topic = chapters[0].projects[0].title;
-
   const references = {
     foo: { url: 'foo.com' },
+    'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App': {
+      title: 'Basic Augmented Reality App',
+    },
+    'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Create-a-new-AR-project': {
+      title: 'Create a new AR project',
+      reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Create-a-new-AR-project',
+      url: '/tutorials/augmented-reality/basic-augmented-reality-app#create-a-new-ar-project',
+    },
+    'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Initiate-ARKit-plane-detection': {
+      title: 'Initiate ARKit plane detection',
+      reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Initiate-ARKit-plane-detection',
+      url: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
+    },
+    'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment': {
+      title: 'Check your understanding',
+      reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
+      url: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
+    },
   };
+
+  const topic = references[chapters[0].projects[0].reference].title;
 
   const rootReference = 'foo';
 
@@ -96,6 +99,7 @@ describe('NavigationBar', () => {
       topic,
       technologyNavigation: ['overview', 'tutorials', 'resources'],
       rootReference,
+      identifierUrl: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App',
     },
     provide: {
       store: TopicStore,
@@ -145,18 +149,22 @@ describe('NavigationBar', () => {
       TopicStore.addLinkableSection({
         anchor: 'introduction',
         title: 'Introduction',
+        depth: 0,
       });
       TopicStore.addLinkableSection({
         anchor: 'create-a-new-ar-project',
         title: 'Create a new AR project',
+        depth: 0,
       });
       TopicStore.addLinkableSection({
         anchor: 'initiate-arkit-plane-detection',
         title: 'Initiate ARKit plane detection',
+        depth: 0,
       });
       TopicStore.addLinkableSection({
         anchor: 'check-your-understanding',
         title: 'Check your understanding',
+        depth: 0,
       });
 
       wrapper = shallowMount(NavigationBar, mountOptions);
@@ -206,20 +214,24 @@ describe('NavigationBar', () => {
         currentOption: 'Introduction',
         sections: [
           {
-            path: '/tutorials/augmented-reality/basic-augmented-reality-app#introduction',
+            path: '#introduction',
             title: 'Introduction',
+            depth: 0,
           },
           {
             path: '/tutorials/augmented-reality/basic-augmented-reality-app#create-a-new-ar-project',
             title: 'Create a new AR project',
+            depth: 0,
           },
           {
             path: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
             title: 'Initiate ARKit plane detection',
+            depth: 0,
           },
           {
             path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
             title: 'Check your understanding',
+            depth: 0,
           },
         ],
       });
@@ -276,20 +288,24 @@ describe('NavigationBar', () => {
       expect(secondaryDropdown.is(SecondaryDropdown)).toBe(true);
       expect(secondaryDropdown.props('options')).toEqual([
         {
-          path: '/tutorials/augmented-reality/basic-augmented-reality-app#introduction',
+          path: '#introduction',
           title: 'Introduction',
+          depth: 0,
         },
         {
           path: '/tutorials/augmented-reality/basic-augmented-reality-app#create-a-new-ar-project',
           title: 'Create a new AR project',
+          depth: 0,
         },
         {
           path: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
           title: 'Initiate ARKit plane detection',
+          depth: 0,
         },
         {
           path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
           title: 'Check your understanding',
+          depth: 0,
         },
       ]);
       expect(secondaryDropdown.props('currentOption'))
