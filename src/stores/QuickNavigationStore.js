@@ -11,7 +11,7 @@
 export default {
   state: {
     enableQuickNavigation: false,
-    flattenIndex: [1, 2, 3],
+    flattenIndex: [],
   },
   reset() {
     this.state.flattenIndex = [];

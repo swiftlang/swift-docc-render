@@ -189,7 +189,7 @@ export default {
         // Shortests symbol title have preference over larger titles
         if (a.inputLengthDifference > b.inputLengthDifference) return 1;
         if (a.inputLengthDifference < b.inputLengthDifference) return -1;
-        // Matches at the beggining of string have relevance over matches at the end
+        // Matches at the beginning of string have relevance over matches at the end
         if (a.start > b.start) return 1;
         if (a.start < b.start) return -1;
         return 0;
