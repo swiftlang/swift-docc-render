@@ -99,7 +99,25 @@ export default {
       constructFuzzyRegex,
       debouncedInput,
     }) => new RegExp(constructFuzzyRegex(debouncedInput.toLowerCase())),
-    inputCoincidencesRegexPattern: ({ debouncedInput }) => new RegExp(`[${debouncedInput}]`),
+    inputCoincidencesRegexPattern: ({ debouncedInput }) => {
+      let regexPattern = '';
+      [...debouncedInput].forEach((char, idx) => {
+        if (idx !== 0) {
+          regexPattern += '|';
+        }
+        regexPattern += `(?<!${char}`;
+        if (idx !== 0 && char === [...debouncedInput][idx - 1]) {
+          regexPattern += char;
+        }
+        regexPattern += '[^';
+        if (idx !== 0) {
+          regexPattern += [...debouncedInput][idx - 1];
+        }
+        regexPattern += char;
+        regexPattern += `]*?)${char}`;
+      });
+      return new RegExp(regexPattern, 'gi');
+    },
   },
   methods: {
     closeQuickNavigationModal() {
