@@ -189,6 +189,8 @@ export default {
           // push child to parent
           parent.childUIDs.push(node.uid);
         }
+        // if the parent or the entire technology are marked as `Beta`,
+        // child elements do not get marked as `Beta`.
         if (node.beta && ((parent && parent.beta) || this.technology.beta)) {
           node.beta = false;
         }
