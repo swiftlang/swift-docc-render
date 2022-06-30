@@ -16,6 +16,7 @@
       :chapters="hierarchy.modules"
       :topic="tutorialTitle || ''"
       :rootReference="hierarchy.reference"
+      :identifierUrl="identifierUrl"
     />
     <main id="main" role="main" tabindex="0">
       <Section
@@ -118,6 +119,10 @@ export default {
     },
     metadata: {
       type: Object,
+      required: true,
+    },
+    identifierUrl: {
+      type: String,
       required: true,
     },
   },
