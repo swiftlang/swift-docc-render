@@ -31,7 +31,6 @@ Array [
     "uid": 745124197,
   },
   Object {
-    "beta": false,
     "childUIDs": Array [
       1489150959,
     ],
@@ -45,6 +44,7 @@ Array [
     "uid": 746047719,
   },
   Object {
+    "beta": false,
     "childUIDs": Array [],
     "depth": 2,
     "index": 0,
@@ -56,7 +56,6 @@ Array [
     "uid": 1489150959,
   },
   Object {
-    "beta": false,
     "childUIDs": Array [],
     "depth": 1,
     "index": 2,
