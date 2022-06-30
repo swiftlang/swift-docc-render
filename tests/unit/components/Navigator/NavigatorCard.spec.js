@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -1570,6 +1570,47 @@ describe('NavigatorCard', () => {
     expect(allItems.at(0).props('item')).toEqual(root0Updated);
     expect(allItems.at(1).props('item')).toEqual(root0Child1);
     expect(allItems.at(2).props('item')).toEqual(root0Child1GrandChild0);
+  });
+
+  it('Does not show "Hide Deprecated" tag, if API changes are ON', async () => {
+    const updatedChild = {
+      ...root0Child0,
+      deprecated: true,
+    };
+    const groupMarker = {
+      type: TopicTypes.groupMarker,
+      title: 'First Child Group Marker',
+      uid: 22,
+      parent: root0.uid,
+      depth: 1,
+      index: 4,
+      childUIDs: [],
+    };
+    const root0Updated = {
+      ...root0,
+      childUIDs: root0.childUIDs.concat(groupMarker.uid),
+    };
+    const apiChanges = {
+      [updatedChild.path]: ChangeTypes.added,
+      [root0Updated.path]: ChangeTypes.modified,
+      [root0Child1GrandChild0.path]: ChangeTypes.modified,
+      [root1.path]: ChangeTypes.deprecated,
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        children: [
+          root0Updated, updatedChild, groupMarker, root0Child1, root0Child1GrandChild0, root1,
+        ],
+        activePath: [root0.path],
+        apiChanges,
+      },
+    });
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    // assert there is no 'Hide Deprecated' tag
+    expect(filter.props('tags')).toEqual([
+      'Articles', 'Tutorials', ChangeNames.modified, ChangeNames.added, ChangeNames.deprecated,
+    ]);
   });
 
   describe('navigating', () => {
