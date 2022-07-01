@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
 import Settings from 'docc-render/utils/settings';
@@ -17,6 +17,7 @@ export default {
   state: {
     onThisPageSections: [],
     preferredLanguage: Settings.preferredLanguage,
+    contentWidth: 0,
     ...changesState,
   },
   reset() {
@@ -30,6 +31,9 @@ export default {
   setPreferredLanguage(language) {
     this.state.preferredLanguage = language;
     Settings.preferredLanguage = this.state.preferredLanguage;
+  },
+  setContentWidth(width) {
+    this.state.contentWidth = width;
   },
   ...changesActions,
 };

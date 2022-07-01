@@ -39,7 +39,7 @@
         @touchstart.prevent="startDrag"
       />
     </div>
-    <div class="content">
+    <div class="content" ref="content">
       <slot />
     </div>
     <BreakpointEmitter :scope="BreakpointScopes.nav" @change="breakpoint = $event" />
@@ -100,6 +100,7 @@ export default {
   components: {
     BreakpointEmitter,
   },
+  inject: ['store'],
   props: {
     openExternally: {
       type: Boolean,
@@ -198,20 +199,19 @@ export default {
     $route: 'closeMobileSidebar',
     width: {
       immediate: true,
-      handler: debounce(function widthHandler(value) {
+      handler: debounce(async function widthHandler(value) {
         this.emitEventChange(value);
+        await this.$nextTick();
       }, 250, true, true),
     },
     windowWidth: 'getWidthInCheck',
-    async breakpoint(value, oldValue) {
+    async breakpoint(value) {
       // adjust the width, so it does not go outside of limits
       this.getWidthInCheck();
       // make sure we close the nav
-      if (oldValue === BreakpointName.small) {
+      if (value === BreakpointName.large) {
         this.closeMobileSidebar();
       }
-      // if we are not going into the `small` breakpoint, return early
-      if (oldValue !== BreakpointName.small && value !== BreakpointName.small) return;
       // make sure we dont apply transitions for a few moments, to prevent flashes
       this.noTransition = true;
       // await for a few moments
@@ -220,6 +220,7 @@ export default {
       this.noTransition = false;
     },
     openExternally: 'handleExternalOpen',
+    isTransitioning: 'updateContentWidthInStore',
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {
@@ -237,6 +238,7 @@ export default {
       await this.$nextTick();
       this.windowWidth = window.innerWidth;
       this.windowHeight = window.innerHeight;
+      this.updateContentWidthInStore();
     }, 100),
     closeMobileSidebar() {
       if (!this.openExternally) return;
@@ -294,6 +296,7 @@ export default {
     },
     emitEventChange(width) {
       this.$emit('width-change', width);
+      this.updateContentWidthInStore();
     },
     getTopOffset() {
       const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
@@ -306,6 +309,10 @@ export default {
         this.mobileTopOffset = this.getTopOffset();
       }
       this.toggleScrollLock(isOpen);
+    },
+    async updateContentWidthInStore() {
+      await this.$nextTick();
+      this.store.setContentWidth(this.$refs.content.offsetWidth);
     },
     /**
      * Toggles the scroll lock on/off
@@ -337,7 +344,7 @@ export default {
 
 .adjustable-sidebar-width {
   display: flex;
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     display: block;
     position: relative;
   }
@@ -353,7 +360,7 @@ export default {
 
 .sidebar {
   position: relative;
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     position: static;
   }
 }
@@ -368,7 +375,7 @@ export default {
     transition: none !important;
   }
 
-  @include breakpoints-from(medium, nav) {
+  @include breakpoints-from(large, nav) {
     &:not(.dragging) {
       transition: width 0.15s ease-in, visibility 0s linear 0s;
     }
@@ -381,7 +388,7 @@ export default {
     }
   }
 
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     width: 100% !important;
     overflow: hidden;
     min-width: 0;
@@ -390,7 +397,7 @@ export default {
     position: fixed;
     top: var(--top-offset-mobile);
     bottom: 0;
-    z-index: $nav-z-index;
+    z-index: $nav-z-index + 1;
     transform: translateX(-100%);
     transition: transform 0.15s ease-in;
 
@@ -436,7 +443,7 @@ export default {
   transition: background-color .15s;
   transform: translateX(50%);
 
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     display: none;
   }
 

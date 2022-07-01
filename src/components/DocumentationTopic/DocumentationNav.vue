@@ -22,6 +22,7 @@
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
       <button
+        v-if="currentBreakpoint === BreakpointName.large ? showSidebarToggle: true"
         aria-label="Open documentation navigator"
         class="sidenav-toggle"
         :tabindex="isOpen ? -1 : null"
@@ -141,6 +142,10 @@ export default {
     swiftPath: {
       type: String,
       required: false,
+    },
+    showSidebarToggle: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

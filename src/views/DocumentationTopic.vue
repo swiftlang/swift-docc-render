@@ -11,23 +11,8 @@
 <template>
   <CodeTheme class="doc-topic-view">
     <template v-if="topicData">
-      <Nav
-        v-if="!isTargetIDE"
-        :title="topicProps.title"
-        :diffAvailability="topicProps.diffAvailability"
-        :interfaceLanguage="topicProps.interfaceLanguage"
-        :objcPath="objcPath"
-        :swiftPath="swiftPath"
-        :parentTopicIdentifiers="parentTopicIdentifiers"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-        :currentTopicTags="topicProps.tags"
-        :references="topicProps.references"
-        :isWideFormat="enableNavigator"
-        @toggle-sidenav="handleToggleSidenav"
-      />
       <component
-        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'div'"
+        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
         v-bind="sidebarProps"
         v-on="sidebarListeners"
       >
@@ -50,13 +35,29 @@
                     :references="topicProps.references"
                     :scrollLockID="scrollLockID"
                     :breakpoint="breakpoint"
-                    @close="isMobileSideNavOpen = false"
+                    @close="handleToggleSidenav(breakpoint)"
                   />
                 </transition>
               </template>
             </NavigatorDataProvider>
           </div>
         </template>
+        <Nav
+          v-if="!isTargetIDE"
+          :title="topicProps.title"
+          :diffAvailability="topicProps.diffAvailability"
+          :interfaceLanguage="topicProps.interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :parentTopicIdentifiers="parentTopicIdentifiers"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :currentTopicTags="topicProps.tags"
+          :references="topicProps.references"
+          :isWideFormat="enableNavigator"
+          :showSidebarToggle="isLargeSideNavClosed"
+          @toggle-sidenav="handleToggleSidenav"
+        />
         <Topic
           v-bind="topicProps"
           :key="topicKey"
@@ -90,6 +91,7 @@ import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvi
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
+import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
@@ -103,6 +105,7 @@ export default {
   components: {
     Navigator,
     AdjustableSidebarWidth,
+    StaticContentWidth,
     NavigatorDataProvider,
     Topic: DocumentationTopic,
     CodeTheme,
@@ -294,10 +297,10 @@ export default {
       CodeThemeStore.updateCodeColors(codeColors);
     },
     handleToggleSidenav(breakpoint) {
-      if (breakpoint === BreakpointName.small) {
-        this.toggleMobileSidenav();
-      } else {
+      if (breakpoint === BreakpointName.large) {
         this.toggleLargeSidenav();
+      } else {
+        this.toggleMobileSidenav();
       }
     },
     toggleLargeSidenav(value = !this.isLargeSideNavClosed) {
@@ -388,7 +391,7 @@ export default {
   box-sizing: border-box;
   border-right: 1px solid var(--color-grid);
 
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     background: var(--color-fill);
     border-right: none;
 

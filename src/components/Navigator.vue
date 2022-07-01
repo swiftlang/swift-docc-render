@@ -205,7 +205,6 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
-  --nav-height: #{$nav-height};
   height: 100%;
   display: flex;
   flex-flow: column;

@@ -15,7 +15,7 @@
         <div class="head-wrapper">
           <button
             aria-label="Close documentation navigator"
-            class="close-card-mobile"
+            class="close-card"
             @click="$emit('close')"
           >
             <SidenavIcon class="icon-inline close-icon" />
@@ -441,7 +441,7 @@ export default {
     apiChangesObject() {
       return this.apiChanges || {};
     },
-    isFilterReversed: ({ breakpoint }) => breakpoint !== BreakpointName.small,
+    isFilterReversed: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
@@ -1056,8 +1056,10 @@ export default {
 $navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
 $filter-height: 73px;
+$filter-height-small: 62px;
 $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
+$close-icon-size: 19px;
 
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
@@ -1079,13 +1081,13 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
 
   .navigator-head {
-    padding: 10px $card-horizontal-spacing-large;
+    padding: 0 $card-horizontal-spacing-large*2 0 $card-horizontal-spacing-large;
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
-    align-items: baseline;
-    box-sizing: border-box;
-    overflow: hidden;
+    align-items: center;
+    height: $nav-height;
+    white-space: nowrap;
 
     &.router-link-exact-active {
       background: $navigator-head-background-active;
@@ -1100,19 +1102,20 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
       text-decoration: none;
     }
 
+    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
+    @include safe-area-right-set(padding-right,
+      $card-horizontal-spacing-large * 2 + $close-icon-size
+    );
+
     @include breakpoint(medium, nav) {
-      height: $nav-height;
-      padding: 14px $card-horizontal-spacing-large;
+      justify-content: center;
+      @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
     }
 
     @include breakpoint(small, nav) {
-      justify-content: center;
       height: $nav-height-small;
-      padding: 12px $card-horizontal-spacing-large;
+      padding: 0 $card-horizontal-spacing-large;
     }
-
-    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
-    @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
   }
 
   .card-icon {
@@ -1127,26 +1130,34 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
 }
 
-.close-card-mobile {
-  display: none;
+.close-card {
+  display: flex;
   position: absolute;
   z-index: 1;
-  color: var(--color-link);
   align-items: center;
   justify-content: center;
+  height: 100%;
+  right: 0;
+  padding-left: $card-horizontal-spacing-large;
+  padding-right: $card-horizontal-spacing-large;
+  @include safe-area-left-set(padding-right, $card-horizontal-spacing-large);
+
+  @include breakpoint(medium, nav) {
+    right: unset;
+    left: 0;
+    padding-right: $nav-padding;
+    @include safe-area-left-set(padding-left, $nav-padding);
+  }
 
   @include breakpoint(small, nav) {
-    display: flex;
-    left: 0;
-    height: 100%;
-    @include safe-area-left-set(padding-left, $nav-padding-small);
     padding-left: $nav-padding-small;
     padding-right: $nav-padding-small;
+    @include safe-area-left-set(padding-left, $nav-padding-small);
   }
 
   .close-icon {
-    width: 19px;
-    height: 19px;
+    width: $close-icon-size;
+    height: $close-icon-size;
   }
 }
 
@@ -1155,9 +1166,9 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     --card-vertical-spacing: 0px;
-    padding-top: $filter-height;
+    padding-top: $filter-height-small;
   }
 }
 
@@ -1165,6 +1176,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   color: var(--color-text);
   @include font-styles(body-reduced);
   font-weight: $font-weight-semibold;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .navigator-filter {
@@ -1182,11 +1195,11 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   @include safe-area-left-set(padding-left, 30px);
   @include safe-area-right-set(padding-right, 30px);
 
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     border: none;
     padding: 10px 20px;
     align-items: flex-start;
-    height: 62px;
+    height: $filter-height-small;
 
     @include safe-area-left-set(padding-left, 20px);
     @include safe-area-right-set(padding-right, 20px);
@@ -1233,11 +1246,15 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   position: sticky;
   bottom: 0;
   background: var(--color-fill);
-
-  @include breakpoint(small, nav) {
+  @include breakpoint(medium, nav) {
     position: absolute;
+    top: $nav-height;
+    // nudge to show the border
+    margin-top: 1px;
     bottom: auto;
     width: 100%;
+  }
+  @include breakpoint(small, nav) {
     top: $nav-height-small;
   }
 }
