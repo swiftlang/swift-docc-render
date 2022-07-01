@@ -16,7 +16,7 @@
 
 <script>
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
-import TopicModuleIcon from 'theme/components/Icons/TopicModuleIcon.vue';
+import TechnologyIcon from 'theme/components/Icons/TechnologyIcon.vue';
 import ArticleIcon from 'theme/components/Icons/ArticleIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import TopicFuncIcon from 'theme/components/Icons/TopicFuncIcon.vue';
@@ -26,14 +26,15 @@ import CurlyBracketsIcon from 'theme/components/Icons/CurlyBracketsIcon.vue';
 import TopicSubscriptIcon from 'theme/components/Icons/TopicSubscriptIcon.vue';
 import TwoLetterSymbolIcon from 'theme/components/Icons/TwoLetterSymbolIcon.vue';
 import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIcon.vue';
-import { TopicTypes, TopicTypeAliases, TopicTypeColorsMap } from 'docc-render/constants/TopicTypes';
+import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
+import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 
 const TopicTypeIcons = {
   [TopicTypes.article]: ArticleIcon,
   [TopicTypes.associatedtype]: CollectionIcon,
   [TopicTypes.buildSetting]: CollectionIcon,
-  [TopicTypes.collection]: CollectionIcon,
   [TopicTypes.class]: SingleLetterSymbolIcon,
+  [TopicTypes.collection]: CollectionIcon,
   [TopicTypes.dictionarySymbol]: SingleLetterSymbolIcon,
   [TopicTypes.container]: CollectionIcon,
   [TopicTypes.enum]: SingleLetterSymbolIcon,
@@ -45,7 +46,7 @@ const TopicTypeIcons = {
   [TopicTypes.learn]: PathIcon,
   [TopicTypes.method]: SingleLetterSymbolIcon,
   [TopicTypes.macro]: SingleLetterSymbolIcon,
-  [TopicTypes.module]: TopicModuleIcon,
+  [TopicTypes.module]: TechnologyIcon,
   [TopicTypes.overview]: PathIcon,
   [TopicTypes.protocol]: TwoLetterSymbolIcon,
   [TopicTypes.property]: SingleLetterSymbolIcon,
@@ -96,7 +97,7 @@ export default {
     normalisedType: ({ type }) => TopicTypeAliases[type] || type,
     icon: ({ normalisedType }) => TopicTypeIcons[normalisedType] || CollectionIcon,
     iconProps: ({ normalisedType }) => TopicTypeProps[normalisedType] || {},
-    color: ({ normalisedType }) => TopicTypeColorsMap[normalisedType],
+    color: ({ normalisedType }) => HeroColorsMap[normalisedType],
     styles: ({ color, withColors }) => (withColors && color ? { color: `var(--color-type-icon-${color})` } : {}),
   },
 };

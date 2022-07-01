@@ -29,6 +29,7 @@ const {
   Topics,
   Title,
   BetaLegalText,
+  WordBreak,
 } = DocumentationTopic.components;
 
 const foo = {
@@ -110,6 +111,7 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
+  role: TopicTypes.collection,
   symbolKind: TopicTypes.module,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
@@ -208,44 +210,84 @@ describe('DocumentationTopic', () => {
     expect(main.attributes('tabindex')).toBe('0');
   });
 
+  it('renders an aria live that tells VO users which it is the current page content', () => {
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe(`Current page is ${propsData.title}`);
+  });
+
   it('renders a `DocumentationHero`, enabled', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
-    expect(hero.props()).toEqual({ type: propsData.symbolKind, enhanceBackground: true });
-  });
-
-  it('renders a `DocumentationHero`, enabled, with a the `role`, if no symbolKind', () => {
-    wrapper.setProps({
-      role: TopicTypes.article,
-      symbolKind: '',
+    expect(hero.props()).toEqual({
+      role: propsData.role,
+      enhanceBackground: true,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
     });
-    const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.article, enhanceBackground: true });
   });
 
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
-    wrapper.setProps({
-      role: TopicTypes.collection,
-      symbolKind: 'module',
-    });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.module, enhanceBackground: true });
+    expect(hero.props()).toEqual({
+      role: TopicTypes.collection,
+      enhanceBackground: true,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+    });
+  });
+
+  it('computes `shortHero correctly', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props('shortHero')).toBe(false);
+
+    wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
+    expect(hero.props('shortHero')).toBe(true);
   });
 
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
-    wrapper.setProps({
+    /* wrapper.setProps({
       symbolKind: 'protocol',
+    }); */
+
+    // setProps isn't working for some reason...
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData: {
+        ...propsData,
+        role: 'symbol',
+        symbolKind: 'protocol',
+      },
     });
     const hero = wrapper.find(DocumentationHero);
-    expect(hero.props()).toEqual({ type: TopicTypes.protocol, enhanceBackground: false });
+    expect(hero.props()).toEqual({
+      role: 'symbol',
+      enhanceBackground: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+    });
   });
 
   it('renders a `Title`', () => {
     const hero = wrapper.find(DocumentationHero);
+
     const title = hero.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
+    expect(title.find(WordBreak).exists()).toBe(false);
+  });
+
+  it('uses `WordBreak` in the title for symbol pages', () => {
+    wrapper.setProps({
+      role: 'symbol',
+      symbolKind: 'protocol',
+    });
+
+    const title = wrapper.find(Title);
+    expect(title.exists()).toBe(true);
+
+    const wb = title.find(WordBreak);
+    expect(wb.exists()).toBe(true);
+    expect(wb.text()).toBe(propsData.title);
   });
 
   it('renders smaller "Beta" and "Deprecated" text in title when relevant', () => {
@@ -261,9 +303,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).is('.beta')).toBe(false);
-    expect(smalls.at(0).is('.deprecated')).toBe(true);
-    expect(smalls.at(0).text()).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
 
     // only beta
     wrapper.setProps({
@@ -272,9 +312,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).is('.beta')).toBe(true);
-    expect(smalls.at(0).is('.deprecated')).toBe(false);
-    expect(smalls.at(0).text()).toBe('Beta');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('Beta');
 
     // only deprecated
     wrapper.setProps({
@@ -283,9 +321,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).is('.beta')).toBe(false);
-    expect(smalls.at(0).is('.deprecated')).toBe(true);
-    expect(smalls.at(0).text()).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
   });
 
   it('renders an abstract', () => {
@@ -332,6 +368,16 @@ describe('DocumentationTopic', () => {
   });
 
   describe('description column', () => {
+    it('renders the description section', () => {
+      const description = wrapper.find('.description');
+      expect(description.exists()).toBe(true);
+      expect(description.classes()).toContain('after-enhanced-hero');
+      wrapper.setProps({
+        symbolKind: 'something-else',
+      });
+      expect(description.classes()).not.toContain('after-enhanced-hero');
+    });
+
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
@@ -560,6 +606,19 @@ describe('DocumentationTopic', () => {
       },
     });
     expect(wrapper.find(DocumentationHero).contains('.above-title')).toBe(true);
+  });
+
+  it('renders content in the `above-hero-content` slot', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      slots: {
+        'above-hero-content': '<div class="above-hero-content">Above Hero Content</div>',
+      },
+      stubs: {
+        DocumentationHero,
+      },
+    });
+    expect(wrapper.contains('.above-hero-content')).toBe(true);
   });
 
   describe('lifecycle hooks', () => {

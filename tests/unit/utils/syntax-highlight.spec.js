@@ -13,7 +13,7 @@
 import {
   LanguageAliasEntries,
   SupportedLanguagesSet,
-  sanitizeMultilineNodes
+  sanitizeMultilineNodes,
 } from "docc-render/utils/syntax-highlight";
 
 let hljs;
@@ -40,7 +40,7 @@ async function prepare(content, language) {
   const sanitizedCode = highlightContent(content, language);
   return {
     highlightedCode: tempElement.innerHTML,
-    sanitizedCode: sanitizedCode.join("\n") // revert back to string
+    sanitizedCode: sanitizedCode.join("\n"), // revert back to string
   };
 }
 
@@ -51,12 +51,8 @@ describe("syntax-highlight", () => {
   beforeEach(async () => {
     jest.resetModules();
     hljs = await import("highlight.js/lib/core");
-    ({
-      highlightContent,
-      highlight,
-      registerHighlightLanguage,
-      LanguageAliasCacheMap
-    } = await import("docc-render/utils/syntax-highlight"));
+    ({ highlightContent, highlight, registerHighlightLanguage, LanguageAliasCacheMap } =
+      await import("docc-render/utils/syntax-highlight"));
   });
 
   it("does nothing to single row syntax", async () => {
@@ -78,7 +74,7 @@ describe("syntax-highlight", () => {
       "        (___)(_(_/_(_ //_ (__",
       "                     /)",
       "                    (/",
-      '        """'
+      '        """',
     ];
     const { highlightedCode, sanitizedCode } = await prepare(content, "swift");
     expect(sanitizedCode).not.toEqual(highlightedCode);
@@ -100,7 +96,7 @@ describe("syntax-highlight", () => {
       "          bar,",
       "          baz) {",
       "  foo()",
-      "}"
+      "}",
     ];
     const { highlightedCode, sanitizedCode } = await prepare(content, "js");
     expect(sanitizedCode).not.toEqual(highlightedCode);
@@ -136,6 +132,24 @@ describe("syntax-highlight", () => {
     expect(highlightedCode).toMatchInlineSnapshot(
       `<span class="syntax-keyword">class</span> <span class="syntax-keyword">func</span> <span class="syntax-title function_">foo</span>() <span class="syntax-keyword">async</span> <span class="syntax-keyword">throws</span> -&gt; [<span class="syntax-type">Bar</span>]`
     );
+  });
+
+  it("does not tokenize swift keywords inside words", async () => {
+    const content = [
+      "var protocolMock = true  // 'protocol' is not highlighted",
+      "var myenum = true  // 'enum' is not highlighted",
+      "if FooConfig.supportsReconstruction(.someClassification) {",
+      "    configuration.fooReconstruction = .someprotocolextensionclass",
+      "}",
+    ];
+    const { highlightedCode } = await prepare(content, "swift");
+    expect(highlightedCode).toMatchInlineSnapshot(`
+      <span class="syntax-keyword">var</span> protocolMock <span class="syntax-operator">=</span> <span class="syntax-literal">true</span> <span class="syntax-comment">// 'protocol' is not highlighted</span>
+      <span class="syntax-keyword">var</span> myenum <span class="syntax-operator">=</span> <span class="syntax-literal">true</span> <span class="syntax-comment">// 'enum' is not highlighted</span>
+      <span class="syntax-keyword">if</span> <span class="syntax-type">FooConfig</span>.supportsReconstruction(.someClassification) {
+      configuration.fooReconstruction <span class="syntax-operator">=</span> .someprotocolextensionclass
+      }
+    `);
   });
 
   it('tokenizes docc "documentation markup" for markdown language', async () => {
@@ -177,7 +191,7 @@ describe("syntax-highlight", () => {
       "",
       "<doc:FakeSymbol>",
       "",
-      "<doc:/path/to/fakesymbol>"
+      "<doc:/path/to/fakesymbol>",
     ];
     const { highlightedCode } = await prepare(content, "markdown");
     expect(highlightedCode).toMatchInlineSnapshot(`
@@ -273,11 +287,19 @@ describe("syntax-highlight", () => {
 
   it.each([...SupportedLanguagesSet])(
     'does not thrown an error when the language is "%s"',
-    async language => {
+    async (language) => {
       await registerHighlightLanguage(language);
       expect(tryHighlight("foo", language)).not.toThrow();
     }
   );
+
+  describe("custom aliases", () => {
+    it('does not throw an error when the language is "objective-c"', async () => {
+      const language = "objective-c";
+      await registerHighlightLanguage(language);
+      expect(tryHighlight("foo", language)).not.toThrow();
+    });
+  });
 
   it("throws an error for unsupported languages", () => {
     expect(tryHighlight("foo", "bash")).toThrowError(

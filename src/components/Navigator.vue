@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <div class="navigator">
+  <nav
+    :aria-labelledby="INDEX_ROOT_KEY"
+    class="navigator"
+  >
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
@@ -23,16 +26,21 @@
       :api-changes="apiChanges"
       @close="$emit('close')"
     />
-    <div v-else class="loading-placeholder">
-      <div class="loading-placeholder-content">
-        Fetching...
-      </div>
+    <NavigatorCardInner v-else class="loading-placeholder">
+      <transition name="delay-visibility" appear>
+        <SpinnerIcon class="loading-spinner" />
+      </transition>
+    </NavigatorCardInner>
+    <div aria-live="polite" class="visuallyhidden">
+      Navigator is {{ isFetching ? 'loading' : 'ready' }}
     </div>
-  </div>
+  </nav>
 </template>
 
 <script>
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
+import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
+import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
@@ -59,6 +67,13 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
+    NavigatorCardInner,
+    SpinnerIcon,
+  },
+  data() {
+    return {
+      INDEX_ROOT_KEY,
+    };
   },
   props: {
     parentTopicIdentifiers: {
@@ -107,6 +122,9 @@ export default {
     },
     // splits out the top-level technology crumb
     activePath({ parentTopicReferences, $route: { path } }) {
+      // Ensure the path does not have a trailing slash
+      // eslint-disable-next-line no-param-reassign
+      path = path.replace(/\/$/, '').toLowerCase();
       // route's path is activePath on root
       if (!parentTopicReferences.length) return [path];
       let itemsToSlice = 1;
@@ -146,9 +164,12 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     flattenNestedData(childrenNodes, parent = null, depth = 0) {
-      return childrenNodes.reduce((items, item, index) => {
+      let items = [];
+      const len = childrenNodes.length;
+      let index;
+      for (index = 0; index < len; index += 1) {
         // get the children
-        const { children, ...node } = item;
+        const { children, ...node } = childrenNodes[index];
         // generate the extra properties
         const { uid: parentUID = INDEX_ROOT_KEY } = parent || {};
         // generate a uid to track by
@@ -158,7 +179,7 @@ export default {
         // store which item it is
         node.index = index;
         // store how many siblings it has
-        node.siblingsCount = childrenNodes.length;
+        node.siblingsCount = len;
         // store the depth
         node.depth = depth;
         // store child UIDs
@@ -168,17 +189,13 @@ export default {
           // push child to parent
           parent.childUIDs.push(node.uid);
         }
+        items.push(node);
         if (children) {
-          // recursively walk the children
-          const iteratedChildren = this.flattenNestedData(children, node, depth + 1);
-          // push the node to the items stack
-          items.push(node);
           // return the children to the parent
-          return items.concat(iteratedChildren);
+          items = items.concat(this.flattenNestedData(children, node, depth + 1));
         }
-        // return the node
-        return items.concat(node);
-      }, []);
+      }
+      return items;
     },
   },
 };
@@ -188,8 +205,8 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
+  --nav-height: #{$nav-height};
   height: 100%;
-  border-left: 1px solid var(--color-grid);
   display: flex;
   flex-flow: column;
 
@@ -199,18 +216,26 @@ export default {
 
   @include breakpoint(medium, nav) {
     position: static;
-    border-left: none;
     transition: none;
   }
 }
 
 .loading-placeholder {
-  @include font-styles(body-reduced);
+  align-items: center;
   color: var(--color-figure-gray-secondary);
-  overflow: hidden;
+  justify-content: center;
+}
 
-  &-content {
-    padding: 12px;
+.loading-spinner {
+  --spinner-size: 40px; // used for both width and height
+  --spinner-delay: 1s; // don't show spinner until this much time has passed
+
+  height: var(--spinner-size);
+  width: var(--spinner-size);
+
+  &.delay-visibility-enter-active {
+    transition: visibility var(--spinner-delay);
+    visibility: hidden;
   }
 }
 </style>

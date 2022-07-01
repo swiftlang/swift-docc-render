@@ -20,7 +20,7 @@
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
         <div class="pre-title">
-          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint, currentBreakpoint }" />
+          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
@@ -77,11 +77,15 @@ import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
-import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
+import { waitFrames } from 'docc-render/utils/loading';
 
+const { noClose } = MenuLinkModifierClasses;
 const { BreakpointName, BreakpointScopes } = BreakpointEmitter.constants;
+
+const NoBGTransitionFrames = 8;
 
 const NavStateClasses = {
   isDark: 'theme-dark',
@@ -93,12 +97,13 @@ const NavStateClasses = {
   hasNoBorder: 'nav--noborder',
   hasFullWidthBorder: 'nav--fullwidth-border',
   isWideFormat: 'nav--is-wide-format',
+  noBackgroundTransition: 'nav--no-bg-transition',
 };
 
 export default {
   name: 'NavBase',
   components: { NavMenuItems, BreakpointEmitter },
-  constants: { NavStateClasses },
+  constants: { NavStateClasses, NoBGTransitionFrames },
   props: {
     /**
      * At which breakpoint size should the nav transform to a mobile friendly navigation.
@@ -148,6 +153,7 @@ export default {
       isOpen: false,
       isTransitioning: false,
       isSticking: false,
+      noBackgroundTransition: true,
       focusTrapInstance: null,
       currentBreakpoint: BreakpointName.large,
     };
@@ -159,7 +165,7 @@ export default {
     ),
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
-      hasNoBorder, hasFullWidthBorder, isDark, isWideFormat,
+      hasNoBorder, hasFullWidthBorder, isDark, isWideFormat, noBackgroundTransition,
     }) => ({
       [NavStateClasses.isDark]: isDark,
       [NavStateClasses.isOpen]: isOpen,
@@ -170,6 +176,7 @@ export default {
       [NavStateClasses.hasNoBorder]: hasNoBorder,
       [NavStateClasses.hasFullWidthBorder]: hasFullWidthBorder,
       [NavStateClasses.isWideFormat]: isWideFormat,
+      [NavStateClasses.noBackgroundTransition]: noBackgroundTransition,
     }),
   },
   watch: {
@@ -187,6 +194,7 @@ export default {
     window.addEventListener('popstate', this.closeNav);
     window.addEventListener('orientationchange', this.closeNav);
     document.addEventListener('click', this.handleClickOutside);
+    this.handleFlashOnMount();
     await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.wrapper);
   },
@@ -265,8 +273,11 @@ export default {
      * @param {EventTarget} event.target
      */
     handleTrayClick({ target }) {
-      // if the target is a link and has a `href` property, close the nav
-      if (target.href) this.closeNav();
+      // If the target is a link and has a `href` property, close the nav.
+      // Targets can opt out of this default behavior with the "noclose" class.
+      if (target.href && !target.classList.contains(noClose)) {
+        this.closeNav();
+      }
     },
     /**
      * Closes the nav, if clicking outside of it.
@@ -300,6 +311,10 @@ export default {
       this.toggleScrollLock(false);
       this.focusTrapInstance.stop();
       changeElementVOVisibility.show(this.$refs.wrapper);
+    },
+    async handleFlashOnMount() {
+      await waitFrames(NoBGTransitionFrames);
+      this.noBackgroundTransition = false;
     },
   },
 };
@@ -356,6 +371,12 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     z-index: 1;
     transition: background-color $nav-bg-color-transition;
 
+    // apply a no-transition, for cases where the nav is sticked at page load,
+    // removes a nasty flash in the background.
+    .nav--no-bg-transition & {
+      transition: none !important;
+    }
+
     // nav has a solid fill background
     @include unify-selector('.nav--solid-background') {
       background-color: var(--color-nav-solid-background);
@@ -381,7 +402,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     // nav is collapsed
     @include nav-in-breakpoint {
       min-height: $nav-height-small;
-      transition: background-color 0.5s ease 0.7s;
+      transition: background-color $nav-bg-transition-timing ease 0.7s;
     }
 
     // nav is sticky
@@ -389,7 +410,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {
@@ -412,7 +433,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {
@@ -615,7 +636,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 .nav-actions {
   display: flex;
   align-items: center;
-  max-height: $nav-height-small;
 
   @include nav-in-breakpoint {
     grid-area: actions;
@@ -733,7 +753,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     width: 100%;
     height: rem(12px);
     transition: $nav-chevron-transition;
-    margin-top: 2px;
 
     &::before,
     &::after {

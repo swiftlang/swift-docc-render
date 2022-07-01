@@ -20,9 +20,11 @@
     class="documentation-nav"
     aria-label="API Reference"
   >
-    <template #pre-title="{ closeNav, currentBreakpoint }" v-if="isWideFormat">
+    <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
       <button
+        aria-label="Open documentation navigator"
         class="sidenav-toggle"
+        :tabindex="isOpen ? -1 : null"
         @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
       >
         <span class="sidenav-icon-wrapper">
@@ -324,6 +326,7 @@ $sidenav-icon-size: 19px;
 }
 
 .sidenav-icon {
+  display: flex;
   width: $sidenav-icon-size;
   height: $sidenav-icon-size;
 }

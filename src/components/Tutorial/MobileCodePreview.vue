@@ -132,7 +132,6 @@ $-preview-padding: 60px;
   /deep/ img:not(.file-icon) {
     border-radius: $border-radius;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
-    min-height: 320px;
     max-height: 80vh;
     width: auto;
     display: block;

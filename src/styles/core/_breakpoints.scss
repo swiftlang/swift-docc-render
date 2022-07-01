@@ -14,15 +14,15 @@
 $breakpoint-attributes: (
   default: (
     xlarge: (
-      min-width: 1800px
+      min-width: 1920px
     ),
     large: (
-      min-width: 1069px,
+      min-width: 1251px,
       content-width: 980px,
     ),
     medium: (
       min-width: 736px,
-      max-width: 1068px,
+      max-width: 1250px,
       content-width: 692px,
     ),
     small: (
@@ -63,6 +63,22 @@ $breakpoint-attributes: (
 @function breakpoint-names($scope: default) {
   $attributes: map-get-default($breakpoint-attributes, $scope, ());
   @return map-keys($attributes);
+}
+
+/// Returns the width for the dynamic-sidebar-content in small viewport.
+/// This function allows overriding the small width in third party themes.
+///
+/// @param {Number} $content-width
+///   The width of the content
+///
+/// @param {Number} $min-width
+///   The min-width of the content
+///
+/// @returns {String | Number}
+///   Returns a width value
+///
+@function -calculate-small-dynamic-sidebar-content-width($content-width, $min-width) {
+  @return auto;
 }
 
 /// Injects the provided style block within a max-width media query so that the
@@ -326,7 +342,6 @@ $breakpoint-attributes: (
 @mixin breakpoint-dynamic-sidebar-content {
   @include inTargetWeb {
     max-width: 920px;
-    min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
     margin-left: auto;
     margin-right: auto;
     padding-left: 80px;
@@ -342,8 +357,11 @@ $breakpoint-attributes: (
     }
 
     @include breakpoint(small) {
-      padding-left: 20px;
-      padding-right: 20px;
+      $content-width: map-deep-get($breakpoint-attributes, (default, small, content-width));
+      $min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
+      width: -calculate-small-dynamic-sidebar-content-width($content-width, $min-width);
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
     }
   }
 

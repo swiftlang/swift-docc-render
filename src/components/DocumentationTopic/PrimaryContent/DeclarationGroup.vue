@@ -111,6 +111,9 @@ export default {
 }
 
 @include changedStyles {
+  &.declaration-group {
+    background: var(--background, var(--color-code-background));
+  }
   .source {
     background: none;
     border: none;

@@ -120,19 +120,17 @@ export default {
   },
   mounted() {
     // on resize, re-calculate the width of the select.
-    const cb = debounce(() => {
-      this.calculateSelectWidth();
-    }, 150, true);
-    const orientationChangeCallback = async () => {
-      // we wait for 3 frames, as that is the minimum it takes for the transitions to finish
+    const cb = debounce(async () => {
+      // we wait for 3 frames, as that is the minimum it takes
+      // for the browser orientation-change transitions to finish
       await waitFrames(3);
       this.calculateSelectWidth();
-    };
+    }, 150, true);
     window.addEventListener('resize', cb);
-    window.addEventListener('orientationchange', orientationChangeCallback);
+    window.addEventListener('orientationchange', cb);
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('resize', cb);
-      window.removeEventListener('orientationchange', orientationChangeCallback);
+      window.removeEventListener('orientationchange', cb);
     });
   },
   watch: {
@@ -242,6 +240,9 @@ $nav-menu-toggle-label-margin: 6px;
     padding: 0 $dropdown-icon-padding 0 4px;
     margin-left: -4px;
     @include font-styles(nav-toggles);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
 
     // remove the default focus styles, and re-add them on keyboard navigation, only.
     &:focus {

@@ -11,19 +11,16 @@
 <template>
   <div class="topictitle">
     <span v-if="eyebrow" class="eyebrow">{{eyebrow}}</span>
-    <WordBreak class="title" tag="h1">
+    <h1 class="title">
       <slot />
       <slot name="after" />
-    </WordBreak>
+    </h1>
   </div>
 </template>
 
 <script>
-import WordBreak from 'docc-render/components/WordBreak.vue';
-
 export default {
   name: 'Title',
-  components: { WordBreak },
   props: {
     eyebrow: {
       type: String,
@@ -59,8 +56,13 @@ export default {
 
 small {
   @include font-styles(eyebrow);
+  padding-left: 10px;
 
-  &.beta {
+  &::before {
+    content: attr(data-tag-name);
+  }
+
+  &.Beta {
     color: var(--color-badge-beta);
 
     .theme-dark & {
@@ -68,7 +70,7 @@ small {
     }
   }
 
-  &.deprecated {
+  &.Deprecated {
     color: var(--color-badge-deprecated);
 
     .theme-dark & {

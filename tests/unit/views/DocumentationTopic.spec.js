@@ -6,11 +6,10 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
@@ -19,22 +18,14 @@ import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
 import { storage } from '@/utils/storage';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { flushPromises } from '../../../test-utils';
-import { BreakpointName } from '@/utils/breakpoints';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
-jest.mock('docc-render/utils/theme-settings');
 jest.mock('docc-render/utils/storage');
-
-const defaultGetSetting = (_, fallback) => fallback;
-const getSettingWithNavigatorEnabled = (settingKeyPath, fallback) => (
-  (settingKeyPath.join('.') === 'features.docs.navigator.enable') || fallback
-);
-
-getSetting.mockImplementation(defaultGetSetting);
 
 const TechnologyWithChildren = {
   path: '/documentation/foo',
@@ -112,6 +103,26 @@ const topicData = {
       paths: ['documentation/swift'],
     },
   ],
+  schemaVersion: {
+    major: 0,
+    minor: 2,
+    patch: 0,
+  },
+};
+
+const schemaVersionWithSidebar = {
+  major: 0,
+  minor: 3,
+  patch: 0,
+};
+
+const AdjustableSidebarWidthSmallStub = {
+  render() {
+    return this.$scopedSlots.aside({
+      scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
+      breakpoint: BreakpointName.small,
+    });
+  },
 };
 
 describe('DocumentationTopic', () => {
@@ -151,9 +162,12 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders the Navigator and AdjustableSidebarWidth when enabled', async () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
-    wrapper.setData({ topicData });
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
     const adjustableWidth = wrapper.find(AdjustableSidebarWidth);
     expect(adjustableWidth.classes())
       .toEqual(expect.arrayContaining(['full-width-container', 'topic-wrapper']));
@@ -197,20 +211,61 @@ describe('DocumentationTopic', () => {
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
     expect(nav.props('isWideFormat')).toBe(true);
-    getSetting.mockReset();
+  });
+
+  describe('if breakpoint is small', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(DocumentationTopic, {
+        mocks,
+        stubs: {
+          // renders sidebar on a small device
+          AdjustableSidebarWidth: AdjustableSidebarWidthSmallStub,
+          NavigatorDataProvider,
+        },
+      });
+    });
+
+    it('applies display none to Navigator if is closed', async () => {
+      // renders a closed navigator
+      wrapper.setData({
+        topicData: {
+          ...topicData,
+          schemaVersion: schemaVersionWithSidebar,
+        },
+      });
+      await wrapper.vm.$nextTick();
+      // assert navigator has display: none
+      expect(wrapper.find(Navigator).attributes('style')).toContain('display: none');
+    });
+
+    it('does not apply display none to Navigator if is open', async () => {
+      // renders an open navigator
+      wrapper.setData({
+        topicData: {
+          ...topicData,
+          schemaVersion: schemaVersionWithSidebar,
+        },
+        isSideNavOpen: true,
+      });
+      await wrapper.vm.$nextTick();
+      // assert navigator doesn't have display: none
+      expect(wrapper.find(Navigator).attributes('style')).toBeFalsy();
+    });
   });
 
   it('provides the selected api changes, to the NavigatorDataProvider', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
     wrapper.vm.store.state.selectedAPIChangesVersion = 'latest_major';
-    wrapper.setData({ topicData });
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
     const dataProvider = wrapper.find(NavigatorDataProvider);
     expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
   });
 
   it('renders the Navigator with data when no reference is found for a top-level collection', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
     const technologies = {
       id: 'topic://technologies',
       title: 'Technologies',
@@ -233,6 +288,7 @@ describe('DocumentationTopic', () => {
             [technologies.id, ...topicData.hierarchy.paths[0]],
           ],
         },
+        schemaVersion: schemaVersionWithSidebar,
       },
     });
 
@@ -246,8 +302,6 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders the Navigator with data when no reference is found for a top-level item', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
     const technologies = {
       id: 'topic://not-existing',
       title: 'Technologies',
@@ -257,6 +311,7 @@ describe('DocumentationTopic', () => {
     wrapper.setData({
       topicData: {
         ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
         hierarchy: {
           paths: [
             [technologies.id, ...topicData.hierarchy.paths[0]],
@@ -275,8 +330,6 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders the Navigator with data when no reference is found, for any if if the breadcrumbs', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
     const technologies = {
       id: 'topic://not-existing',
       title: 'Technologies',
@@ -286,6 +339,7 @@ describe('DocumentationTopic', () => {
     wrapper.setData({
       topicData: {
         ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
         hierarchy: {
           paths: [
             [technologies.id, ...topicData.hierarchy.paths[0]],
@@ -306,11 +360,10 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders the Navigator with data when no hierarchy and reference is found for the current page', () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
-
     wrapper.setData({
       topicData: {
         ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
         // remove the hierarchy items
         hierarchy: {},
         // remove the references as well, so it falls back to the last fallback
@@ -328,8 +381,6 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders without a sidebar', () => {
-    getSetting.mockImplementation(defaultGetSetting);
-
     wrapper.setData({ topicData });
 
     // assert the Nav
@@ -361,10 +412,32 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find('.topic-wrapper').classes()).toContain('static-width-container');
   });
 
-  it('handles the `@close`, on Navigator', async () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
+  it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        references: {
+          ...topicData.references,
+          // add pages that match with the `mocks.$route.path`
+          'topic://baz': { url: '/documentation/somepath' },
+          'topic://baq': { url: '/documentation/somepath/page' },
+        },
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+    expect(wrapper.find(Navigator).props('parentTopicIdentifiers'))
+      .toEqual(topicData.hierarchy.paths[1]);
+    expect(wrapper.find(Nav).props('parentTopicIdentifiers'))
+      .toEqual(topicData.hierarchy.paths[1]);
+  });
 
-    wrapper.setData({ topicData });
+  it('handles the `@close`, on Navigator', async () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
     await flushPromises();
     const nav = wrapper.find(Nav);
     nav.vm.$emit('toggle-sidenav', BreakpointName.small);
@@ -373,17 +446,19 @@ describe('DocumentationTopic', () => {
     await flushPromises();
     wrapper.find(Navigator).vm.$emit('close');
     expect(sidebar.props('openExternally')).toBe(false);
-
-    getSetting.mockReset();
   });
 
   it('handles `@toggle-sidenav` on Nav, for `Large` and `Medium` breakpoints', async () => {
-    getSetting.mockImplementation(getSettingWithNavigatorEnabled);
     // assert that the storage was called to get the navigator closed state from LS
     expect(storage.get).toHaveBeenCalledTimes(1);
     expect(storage.get).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, false);
 
-    wrapper.setData({ topicData });
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
     await flushPromises();
     const nav = wrapper.find(Nav);
     const sidebar = wrapper.find(AdjustableSidebarWidth);
@@ -401,8 +476,6 @@ describe('DocumentationTopic', () => {
     nav.vm.$emit('toggle-sidenav', BreakpointName.large);
     expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_CLOSED_KEY, true);
     sidebar.vm.$emit('update:closedExternally', false);
-
-    getSetting.mockReset();
   });
 
   it('renders a `Topic` with `topicData`', () => {
@@ -410,6 +483,7 @@ describe('DocumentationTopic', () => {
 
     const topic = wrapper.find(Topic);
     expect(topic.exists()).toBe(true);
+    expect(topic.attributes('style')).toBeFalsy();
     expect(topic.props()).toEqual({
       ...wrapper.vm.topicProps,
       isSymbolBeta: false,
@@ -436,7 +510,7 @@ describe('DocumentationTopic', () => {
     expect(topic.props('languagePaths')).toEqual({});
   });
 
-  it('computes isSymbolBeta', () => {
+  it('computes isSymbolBeta', async () => {
     const platforms = [
       {
         introducedAt: '1.0',
@@ -460,6 +534,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
+    await wrapper.vm.$nextTick();
     const topic = wrapper.find(Topic);
     expect(topic.props('isSymbolBeta')).toBe(true);
 
@@ -483,10 +558,11 @@ describe('DocumentationTopic', () => {
         },
       },
     });
+    await wrapper.vm.$nextTick();
     expect(topic.props('isSymbolBeta')).toBe(false);
   });
 
-  it('computes isSymbolDeprecated if there is a deprecationSummary', () => {
+  it('computes isSymbolDeprecated if there is a deprecationSummary', async () => {
     wrapper.setData({ topicData });
     const topic = wrapper.find(Topic);
     expect(topic.props('isSymbolDeprecated')).toBeFalsy();
@@ -504,12 +580,13 @@ describe('DocumentationTopic', () => {
         }],
       },
     });
-    expect(topic.props('isSymbolDeprecated')).toBe(true);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(Topic).props('isSymbolDeprecated')).toBe(true);
     // cleanup
     topicData.deprecationSummary = [];
   });
 
-  it('computes isSymbolDeprecated', () => {
+  it('computes isSymbolDeprecated', async () => {
     const platforms = [
       {
         deprecatedAt: '1',
@@ -529,7 +606,7 @@ describe('DocumentationTopic', () => {
         },
       },
     });
-
+    await wrapper.vm.$nextTick();
     const topic = wrapper.find(Topic);
     expect(topic.props('isSymbolDeprecated')).toBe(true);
 
@@ -553,6 +630,7 @@ describe('DocumentationTopic', () => {
         },
       },
     });
+    await wrapper.vm.$nextTick();
     expect(topic.props('isSymbolDeprecated')).toBe(false);
   });
 

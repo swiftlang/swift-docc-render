@@ -90,6 +90,38 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
   });
 
+  it('renders a beta badge when item is beta', () => {
+    let wrapper;
+    wrapper = createWrapper();
+    expect(wrapper.contains(Badge)).toBe(false);
+    wrapper = createWrapper({
+      propsData: {
+        item: {
+          ...defaultProps.item,
+          beta: true,
+        },
+      },
+    });
+    expect(wrapper.find(Badge).attributes('variant')).toBe('beta');
+  });
+
+  it('only renders a deprecated badge when item is both deprecated and beta', () => {
+    let wrapper;
+    wrapper = createWrapper();
+    expect(wrapper.contains(Badge)).toBe(false);
+    wrapper = createWrapper({
+      propsData: {
+        item: {
+          ...defaultProps.item,
+          beta: true,
+          deprecated: true,
+        },
+      },
+    });
+    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
+    expect(wrapper.findAll(Badge).length).toBe(1);
+  });
+
   it('does not render the expand button, if has no children', () => {
     const wrapper = createWrapper({
       propsData: {
@@ -229,22 +261,72 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
   });
 
+  describe('keyboard navigation', () => {
+    it('clicks the reference link on `@keydown.enter`', () => {
+      const wrapper = createWrapper();
+      const spy = jest.spyOn(wrapper.find(Reference).vm.$el, 'click');
+      wrapper.trigger('keydown.enter');
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens children on `@keydown.right`', () => {
+      const wrapper = createWrapper();
+      wrapper.trigger('keydown.right');
+      expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+    });
+
+    it('does nothing if already open on `@keydown.right`', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          expanded: true,
+        },
+      });
+      wrapper.trigger('keydown.right');
+      expect(wrapper.emitted('toggle')).toBeFalsy();
+    });
+
+    it('does nothing if has no children, on `@keydown.right`', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            childUIDs: [],
+          },
+        },
+      });
+      wrapper.trigger('keydown.right');
+      expect(wrapper.emitted('toggle')).toBeFalsy();
+    });
+
+    it('closes, on `@keydown.left`, if open', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          expanded: true,
+        },
+      });
+      wrapper.trigger('keydown.left');
+      expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
+    });
+
+    it('focuses its parent, on `@keydown.left` if not open', () => {
+      const wrapper = createWrapper();
+      wrapper.trigger('keydown.left');
+      expect(wrapper.emitted('toggle')).toBeFalsy();
+      expect(wrapper.emitted('focus-parent')).toEqual([[defaultProps.item]]);
+    });
+  });
+
   describe('AX', () => {
-    it('applies aria-hidden to NavigatorCardItem if isRendered is false', () => {
+    it('applies aria-hidden if isRendered is false', () => {
       const wrapper = createWrapper({
         propsData: {
           isRendered: false,
         },
       });
-      expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBe('true');
+      expect(wrapper.attributes('aria-hidden')).toBe('true');
     });
 
-    it('applies role link to NavigatorCardItem if item type is not groupMarker', () => {
-      const wrapper = createWrapper();
-      expect(wrapper.find('.navigator-card-item').attributes('role')).toBe('link');
-    });
-
-    it('does not apply role link to NavigatorCardItem if item type is groupMarker', () => {
+    it('does not emit a `navigate` event, if is a groupMarker', () => {
       const wrapper = createWrapper({
         propsData: {
           item: {
@@ -253,7 +335,20 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.find('.navigator-card-item').attributes('role')).toBeFalsy();
+      wrapper.find('.leaf-link').trigger('click');
+      expect(wrapper.emitted('navigate')).toBeFalsy();
+    });
+
+    it('renders a h3 if it is a groupMaker', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          item: {
+            ...defaultProps.item,
+            type: TopicTypes.groupMarker,
+          },
+        },
+      });
+      expect(wrapper.find('.leaf-link').is('h3')).toBe(true);
     });
 
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {
@@ -269,21 +364,13 @@ describe('NavigatorCardItem', () => {
         .toBe('To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow');
     });
 
-    it('renders aria tags to describe item', () => {
-      const wrapper = createWrapper();
-      expect(wrapper.attributes('aria-expanded')).toBe('false');
-      expect(wrapper.attributes('tabindex')).toBe('-1');
-      expect(wrapper.attributes('aria-describedby'))
-        .toBe(`label-${defaultProps.item.uid} Foo label-parent-${defaultProps.item.uid} usage-${defaultProps.item.uid}`);
-    });
-
-    it('renders tabindex 0 when element is focused', () => {
+    it('renders tabindex 0 on link when element is focused', () => {
       const wrapper = createWrapper({
         propsData: {
           isFocused: true,
         },
       });
-      expect(wrapper.attributes('tabindex')).toBe('0');
+      expect(wrapper.find('.leaf-link').attributes('tabindex')).toBe('0');
     });
 
     it('renders tabindex -1 in button and reference', () => {
@@ -294,22 +381,24 @@ describe('NavigatorCardItem', () => {
       expect(link.attributes('tabindex')).toBe('-1');
     });
 
-    it('renders tabindex -1 in button when component is not rendered', () => {
-      const wrapper = createWrapper({
-        propsData: {
-          isRendered: false,
-        },
-      });
-      expect(wrapper.find('.tree-toggle').attributes('tabindex')).toBe('-1');
+    it('renders aria tags in button', () => {
+      const wrapper = createWrapper();
+      const btn = wrapper.find('.tree-toggle');
+      expect(btn.attributes('tabindex')).toBe('-1');
+      expect(btn.attributes('aria-expanded')).toBe('false');
+      expect(btn.attributes('tabindex')).toBe('-1');
+      expect(btn.attributes('aria-labelledby')).toBe(`${defaultProps.item.uid}`);
+      expect(btn.attributes('aria-describedby'))
+        .toBe(`label-${defaultProps.item.uid} Foo label-parent-${defaultProps.item.uid}`);
     });
 
-    it('renders aria-expanded true in wrapper when component is expanded', () => {
+    it('renders aria-expanded true in button when component is expanded', () => {
       const wrapper = createWrapper({
         propsData: {
           expanded: true,
         },
       });
-      expect(wrapper.attributes('aria-expanded')).toBe('true');
+      expect(wrapper.find('.tree-toggle').attributes('aria-expanded')).toBe('true');
     });
 
     it('renders a hidden span telling the user the position of a symbol', () => {
@@ -336,36 +425,37 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.attributes('aria-describedby'))
+      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
         .toBe(`label-${defaultProps.item.uid} Foo usage-${defaultProps.item.uid}`);
     });
 
-    it('focuses itself, if `isFocused`, `isRendered` and `enableSelfFocus` is `true`', async () => {
+    it('focuses its link, if `isFocused`, `isRendered` and `enableFocus` is `true`', async () => {
       const wrapper = createWrapper({
         propsData: {
           isFocused: false,
           isRendered: true,
-          enableSelfFocus: false,
+          enableFocus: false,
         },
       });
       await flushPromises();
       expect(document.activeElement).not.toEqual(wrapper.element);
       wrapper.setProps({
         isFocused: true,
-        enableSelfFocus: true,
+        enableFocus: true,
       });
       await flushPromises();
       expect(waitFrames).toHaveBeenCalledTimes(1);
       expect(waitFrames).toHaveBeenCalledWith(8);
-      expect(document.activeElement).toEqual(wrapper.element);
+      const leafLink = wrapper.find('.leaf-link');
+      expect(document.activeElement).toEqual(leafLink.element);
     });
 
-    it('does not focus itself, if `isRendered` or `enableSelfFocus` are `false`', async () => {
+    it('does not focus itself, if `isRendered` or `enableFocus` are `false`', async () => {
       const wrapper = createWrapper({
         propsData: {
           isFocused: false,
           isRendered: true,
-          enableSelfFocus: false,
+          enableFocus: false,
         },
       });
       await flushPromises();

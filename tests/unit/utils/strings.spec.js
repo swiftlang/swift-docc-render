@@ -139,6 +139,24 @@ describe('pluralize', () => {
 });
 
 describe('cssEscapeTopicIdHash', () => {
+  const escapeSpy = jest.spyOn(CSS, 'escape');
+
+  it('calls CSS.escape', () => {
+    expect(escapeSpy).not.toHaveBeenCalled();
+    // not a match
+    expect(cssEscapeTopicIdHash('abc')).toBe('abc');
+    expect(escapeSpy).not.toHaveBeenCalled();
+    // is a match
+    expect(cssEscapeTopicIdHash('#abc')).toBe('#abc');
+    expect(escapeSpy).toHaveBeenCalledTimes(1);
+    expect(escapeSpy).toHaveBeenCalledWith('abc');
+  });
+
+  it('escapes bad css selector characters', () => {
+    expect(cssEscapeTopicIdHash('#abc.')).toBe('#abc\\.');
+    expect(cssEscapeTopicIdHash('#ab c.:!')).toBe('#ab\\ c\\.\\:\\!');
+  });
+
   it('returns strings without a leading hashtag/digit unchanged', () => {
     expect(cssEscapeTopicIdHash('abc')).toBe('abc');
     expect(cssEscapeTopicIdHash('#abc')).toBe('#abc');
@@ -181,13 +199,13 @@ describe('escapeRegExp', () => {
 
 describe('whiteSpaceIgnorantRegex', () => {
   it('adds white space matches before each character', () => {
-    expect(whiteSpaceIgnorantRegex('abc')).toBe('\\s*a\\s*b\\s*c');
+    expect(whiteSpaceIgnorantRegex('abc')).toBe('a\\s*b\\s*c');
   });
 
   it('takes into consideration escaped characters', () => {
     expect(whiteSpaceIgnorantRegex('a\\[\\.\\')).toBe(
       /* eslint-disable no-useless-concat */
-      '\\s*' + 'a'
+      'a'
       + '\\s*' + '\\['
       + '\\s*' + '\\.'
       + '\\s*' + '\\',
@@ -196,13 +214,22 @@ describe('whiteSpaceIgnorantRegex', () => {
 
   it('skips white spaces between characters', () => {
     expect(whiteSpaceIgnorantRegex('  a     b   ')).toBe(
-      '\\s*' + 'a'
+      'a'
       + '\\s*' + 'b',
     );
   });
 
   it('reduces multiple empty spaces to a single one, so no infinite matchers are returned', () => {
     expect(whiteSpaceIgnorantRegex('  ')).toBe(' ');
+  });
+
+  it('skips the first char, even if its an escape character', () => {
+    expect(whiteSpaceIgnorantRegex('\\[\\.\\')).toBe(
+      /* eslint-disable no-useless-concat */
+      '\\['
+      + '\\s*' + '\\.'
+      + '\\s*' + '\\',
+    );
   });
 });
 

@@ -19,7 +19,7 @@
     >
       <div
         :class="asideClasses"
-        :style="{ width: widthInPx, '--top-offset': `${mobileTopOffset}px` }"
+        :style="asideStyles"
         class="aside"
         ref="aside"
         :aria-hidden="closedExternally ? 'true': null"
@@ -61,8 +61,8 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 export const STORAGE_KEY = 'sidebar';
 
 // the maximum width, after which the full-width content does not grow
-export const MAX_WIDTH = 1800;
-export const ULTRA_WIDE_DEFAULT = 500;
+export const MAX_WIDTH = 1920;
+export const ULTRA_WIDE_DEFAULT = 543;
 
 export const eventsMap = {
   touch: {
@@ -112,6 +112,7 @@ export default {
   },
   data() {
     const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
     const breakpoint = BreakpointName.large;
     // get the min width, in case we dont have a previously saved value
     const minWidth = calcWidthPercent(minWidthResponsivePercents[breakpoint]);
@@ -129,11 +130,13 @@ export default {
       width: Math.min(Math.max(storedWidth, minWidth), maxWidth),
       isTouch: false,
       windowWidth,
+      windowHeight,
       breakpoint,
       noTransition: false,
       isTransitioning: false,
       focusTrapInstance: null,
       mobileTopOffset: 0,
+      topOffset: 0,
     };
   },
   computed: {
@@ -145,6 +148,14 @@ export default {
     minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
     widthInPx: ({ width }) => `${width}px`,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
+    asideStyles: ({
+      widthInPx, mobileTopOffset, topOffset, windowHeight,
+    }) => ({
+      width: widthInPx,
+      '--top-offset': topOffset ? `${topOffset}px` : null,
+      '--top-offset-mobile': `${mobileTopOffset}px`,
+      '--app-height': `${windowHeight}px`,
+    }),
     asideClasses: ({
       isDragging, openExternally, noTransition, isTransitioning, closedExternally, mobileTopOffset,
     }) => ({
@@ -153,20 +164,26 @@ export default {
       'force-close': closedExternally,
       'no-transition': noTransition,
       animating: isTransitioning,
-      'has-top-offset': mobileTopOffset,
+      'has-mobile-top-offset': mobileTopOffset,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
     BreakpointScopes: () => BreakpointScopes,
   },
   async mounted() {
     window.addEventListener('keydown', this.onEscapeKeydown);
-    window.addEventListener('resize', this.storeWindowSize);
-    window.addEventListener('orientationchange', this.storeWindowSize);
+    window.addEventListener('resize', this.storeWindowSize, { passive: true });
+    window.addEventListener('orientationchange', this.storeWindowSize, { passive: true });
+
+    this.storeTopOffset();
+    if (!(this.topOffset === 0 && window.scrollY === 0)) {
+      window.addEventListener('scroll', this.storeTopOffset, { passive: true });
+    }
 
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('keydown', this.onEscapeKeydown);
       window.removeEventListener('resize', this.storeWindowSize);
       window.removeEventListener('orientationchange', this.storeWindowSize);
+      window.removeEventListener('scroll', this.storeTopOffset);
       if (this.openExternally) {
         this.toggleScrollLock(false);
       }
@@ -219,6 +236,7 @@ export default {
     storeWindowSize: throttle(async function storeWindowSize() {
       await this.$nextTick();
       this.windowWidth = window.innerWidth;
+      this.windowHeight = window.innerHeight;
     }, 100),
     closeMobileSidebar() {
       if (!this.openExternally) return;
@@ -277,23 +295,25 @@ export default {
     emitEventChange(width) {
       this.$emit('width-change', width);
     },
+    getTopOffset() {
+      const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
+      if (!stickyNavAnchor) return 0;
+      const { y } = stickyNavAnchor.getBoundingClientRect();
+      return Math.max(y, 0);
+    },
     handleExternalOpen(isOpen) {
       if (isOpen) {
-        const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
-        if (stickyNavAnchor) {
-          const { y } = stickyNavAnchor.getBoundingClientRect();
-          this.mobileTopOffset = Math.max(y, 0);
-        }
+        this.mobileTopOffset = this.getTopOffset();
       }
       this.toggleScrollLock(isOpen);
     },
     /**
      * Toggles the scroll lock on/off
      */
-    toggleScrollLock(lock) {
+    async toggleScrollLock(lock) {
       const scrollLockContainer = document.getElementById(this.scrollLockID);
-      if (!scrollLockContainer) return;
       if (lock) {
+        await this.$nextTick();
         scrollLock.lockScroll(scrollLockContainer);
         // lock focus
         this.focusTrapInstance.start();
@@ -305,6 +325,9 @@ export default {
         changeElementVOVisibility.show(this.$refs.aside);
       }
     },
+    storeTopOffset: throttle(function storeTopOffset() {
+      this.topOffset = this.getTopOffset();
+    }, 60),
   },
 };
 </script>
@@ -363,9 +386,9 @@ export default {
     overflow: hidden;
     min-width: 0;
     max-width: 100%;
-    height: calc(100vh - var(--top-offset));
+    height: calc(var(--app-height) - var(--top-offset-mobile));
     position: fixed;
-    top: var(--top-offset);
+    top: var(--top-offset-mobile);
     bottom: 0;
     z-index: $nav-z-index;
     transform: translateX(-100%);
@@ -386,7 +409,7 @@ export default {
       }
     }
 
-    &.has-top-offset {
+    &.has-mobile-top-offset {
       border-top: 1px solid var(--color-fill-gray-tertiary);
     }
   }

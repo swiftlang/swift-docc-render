@@ -41,6 +41,13 @@ const scrollLockTarget = document.createElement('DIV');
 scrollLockTarget.id = SCROLL_LOCK_ID;
 document.body.appendChild(scrollLockTarget);
 
+const navStickyElement = document.createElement('DIV');
+navStickyElement.id = baseNavStickyAnchorId;
+const boundingClientSpy = jest.spyOn(navStickyElement, 'getBoundingClientRect')
+  .mockReturnValue({ y: 0 });
+
+document.body.appendChild(navStickyElement);
+
 const maxWidth = 500; // 50% of the innerWidth, as per the default maxWidth on large
 let slotProps = {};
 
@@ -157,16 +164,39 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       assertWidth(wrapper, ULTRA_WIDE_DEFAULT);
     });
+
+    it('stores the topOffset, if any', async () => {
+      boundingClientSpy.mockReturnValue({ y: 22 });
+      const wrapper = createWrapper();
+      await flushPromises();
+      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      expect(wrapper.vm.topOffset).toBe(22);
+      // cannot assert css vars in JSDOM
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', '22px');
+      // assert scroll watcher is initiated
+      boundingClientSpy.mockReturnValue({ y: 11 });
+      window.dispatchEvent(createEvent('scroll'));
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', '11px');
+    });
+
+    it('does not initiate a scroll listener, if topOffset is 0 and there is no scrollY', async () => {
+      boundingClientSpy.mockReturnValue({ y: 0 });
+      const wrapper = createWrapper();
+      await flushPromises();
+      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      expect(wrapper.vm.topOffset).toBe(0);
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', null);
+      // assert scroll watcher is initiated
+      boundingClientSpy.mockReturnValue({ y: 11 });
+      window.dispatchEvent(createEvent('scroll'));
+      expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', null);
+    });
   });
 
   describe('external open', () => {
-    const navStickyElement = document.createElement('DIV');
-    navStickyElement.id = baseNavStickyAnchorId;
-    const boundingClientSpy = jest.spyOn(navStickyElement, 'getBoundingClientRect')
-      .mockReturnValue({ y: 22 });
-
-    document.body.appendChild(navStickyElement);
-
+    beforeEach(() => {
+      boundingClientSpy.mockReturnValue({ y: 22 });
+    });
     it('allows opening the sidebar externally', async () => {
       const wrapper = createWrapper();
       await flushPromises();
@@ -183,7 +213,8 @@ describe('AdjustableSidebarWidth', () => {
       expect(aside.classes()).toContain('force-open');
       // assert `mobileTopOffset` is the same as the `navStickyElement` `y` offset.
       expect(wrapper.vm.mobileTopOffset).toBe(22);
-      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      // called once on mount, once now
+      expect(boundingClientSpy).toHaveBeenCalledTimes(2);
       // assert scroll lock and other helpers initiated
       expect(scrollLock.lockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.hide).toHaveBeenCalledWith(aside.element);
@@ -214,7 +245,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(aside.classes()).toContain('force-open');
       // assert `mobileTopOffset` is 0, if `navStickyElement.y` is negative
       expect(wrapper.vm.mobileTopOffset).toBe(0);
-      expect(boundingClientSpy).toHaveBeenCalledTimes(1);
+      expect(boundingClientSpy).toHaveBeenCalledTimes(2);
     });
 
     it('allows closing the sidebar, with Esc', () => {
@@ -295,6 +326,23 @@ describe('AdjustableSidebarWidth', () => {
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
     assertWidth(wrapper, 250); // 20% out of 1000, as that is the min percentage
+  });
+
+  it('stores the height of screen on orientationchange and resize', async () => {
+    const wrapper = createWrapper();
+
+    window.innerHeight = 500;
+    window.dispatchEvent(createEvent('resize'));
+    await flushPromises();
+    expect(wrapper.vm.asideStyles).toHaveProperty('--app-height', '500px');
+    window.innerHeight = 1000;
+    window.dispatchEvent(createEvent('resize'));
+    await flushPromises();
+    expect(wrapper.vm.asideStyles).toHaveProperty('--app-height', '1000px');
+    window.innerHeight = 700;
+    window.dispatchEvent(createEvent('orientationchange'));
+    await flushPromises();
+    expect(wrapper.vm.asideStyles).toHaveProperty('--app-height', '700px');
   });
 
   it('allows dragging the handle to expand/contract the sidebar, with the mouse', () => {
@@ -396,7 +444,7 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, 900); // wrapper is no wider than 50% of the widest possible, which is 1800
+    assertWidth(wrapper, 960); // wrapper is no wider than 50% of the widest possible, which is 1920
   });
 
   it('prevents dragging below the `minWidth`', () => {
@@ -437,7 +485,7 @@ describe('AdjustableSidebarWidth', () => {
     expect(wrapper.emitted('update:closedExternally')).toEqual([[true], [false]]);
   });
 
-  it('removes any locks upon destruction', async () => {
+  it('removes any locks or listeners upon destruction', async () => {
     const wrapper = createWrapper();
     await flushPromises();
     wrapper.setProps({ openExternally: true });
@@ -447,6 +495,10 @@ describe('AdjustableSidebarWidth', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
     expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
+    // assert scroll watcher is not called
+    boundingClientSpy.mockReturnValue({ y: 11 });
+    window.dispatchEvent(createEvent('scroll'));
+    expect(wrapper.vm.asideStyles).toHaveProperty('--top-offset', '22px');
   });
 
   it('accounts for zoomed in devices', () => {

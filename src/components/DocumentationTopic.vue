@@ -11,7 +11,15 @@
 <template>
   <div class="doc-topic">
     <main class="main" id="main" role="main" tabindex="0">
-      <DocumentationHero :type="symbolKind || role" :enhanceBackground="enhanceBackground">
+      <DocumentationHero
+        :role="role"
+        :enhanceBackground="enhanceBackground"
+        :shortHero="shortHero"
+        :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
+      >
+        <template #above-content>
+          <slot name="above-hero-content" />
+        </template>
         <slot name="above-title" />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
@@ -20,9 +28,13 @@
           :swiftPath="swiftPath"
         />
         <Title :eyebrow="roleHeading">
-          {{ title }}
-          <small v-if="isSymbolDeprecated" slot="after" class="deprecated">Deprecated</small>
-          <small v-else-if="isSymbolBeta" slot="after" class="beta">Beta</small>
+          <component :is="titleBreakComponent">{{ title }}</component>
+          <small
+            v-if="isSymbolDeprecated || isSymbolBeta"
+            slot="after"
+            :class="tagName"
+            :data-tag-name="tagName"
+          />
         </Title>
         <Abstract v-if="abstract" :content="abstract" />
         <div v-if="sampleCodeDownload">
@@ -34,7 +46,7 @@
         />
       </DocumentationHero>
       <div v-if="showContainer" class="container">
-        <div class="description">
+        <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
           <RequirementMetadata
             v-if="isRequirement"
             :defaultImplementationsCount="defaultImplementationsCount"
@@ -77,6 +89,9 @@
       />
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
+    <div aria-live="polite" class="visuallyhidden">
+      Current page is {{ pageTitle }}
+    </div>
   </div>
 </template>
 
@@ -88,6 +103,7 @@ import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
+import WordBreak from 'docc-render/components/WordBreak.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -134,6 +150,7 @@ export default {
     SeeAlso,
     Title,
     Topics,
+    WordBreak,
   },
   props: {
     abstract: {
@@ -287,9 +304,20 @@ export default {
       abstract ? extractFirstParagraphText(abstract) : null
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
-      objcPath && swiftPath && isTargetIDE
+      !!(objcPath && swiftPath && isTargetIDE)
     ),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    shortHero: ({
+      roleHeading,
+      abstract,
+      sampleCodeDownload,
+      hasAvailability,
+      shouldShowLanguageSwitcher,
+    }) => (
+      // apply extra padding when there are less than 2 items in the Hero section other than `title`
+      (!!roleHeading + !!abstract + !!sampleCodeDownload
+        + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
+    ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
         list.push(module.name);
@@ -300,6 +328,11 @@ export default {
         ? technologyList
         : [];
     },
+    // there shouldn't be a pressing need to use the `WordBreak` component in
+    // the main title for for non-symbol pages with the "enhanced" background
+    titleBreakComponent: ({ enhanceBackground }) => (enhanceBackground
+      ? 'span'
+      : WordBreak),
     showContainer: ({
       isRequirement,
       deprecationSummary,
@@ -311,6 +344,7 @@ export default {
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
     ),
+    tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
   },
   methods: {
     normalizePath(path) {
@@ -381,12 +415,14 @@ export default {
 }
 
 .description {
+  margin-bottom: $contenttable-spacing-single-side;
+
   &:empty {
     display: none;
   }
 
-  &:not(:empty) {
-    margin-bottom: $contenttable-spacing-single-side;
+  &.after-enhanced-hero {
+    margin-top: $contenttable-spacing-single-side;
   }
 
   /deep/ .content + * {

@@ -190,7 +190,7 @@ $docs-declaration-source-border-width: 1px !default;
   background: var(--background, var(--color-code-background));
   border-color: var(--color-grid);
   color: var(--text, var(--color-code-plain));
-  border-radius: $big-border-radius;
+  border-radius: $large-border-radius;
   border-style: solid;
   border-width: $docs-declaration-source-border-width;
   padding: $code-block-style-elements-padding;

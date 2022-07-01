@@ -267,8 +267,10 @@ describe('DocumentationNav', () => {
   });
 
   it('renders a sidenav toggle, emitting `@toggle-sidenav` event', async () => {
-    wrapper.find('.sidenav-toggle').trigger('click');
+    const button = wrapper.find('.sidenav-toggle');
+    button.trigger('click');
     await flushPromises();
+    expect(button.attributes('aria-label')).toBe('Open documentation navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });
 
@@ -277,11 +279,14 @@ describe('DocumentationNav', () => {
     await flushPromises();
     wrapper.find('.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain('nav--is-open');
-    wrapper.find('.sidenav-toggle').trigger('click');
+    const toggle = wrapper.find('.sidenav-toggle');
+    expect(toggle.attributes()).toHaveProperty('tabindex', '-1');
+    toggle.trigger('click');
     expect(wrapper.classes()).not.toContain('nav--is-open');
     expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
     await flushPromises();
     expect(wrapper.emitted('toggle-sidenav')).toEqual([[BreakpointName.medium]]);
+    expect(toggle.attributes()).not.toHaveProperty('tabindex');
   });
 
   it('renders the nav, with `isWideFormat` to `false`', () => {

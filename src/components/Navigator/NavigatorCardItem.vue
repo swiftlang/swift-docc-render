@@ -11,16 +11,12 @@
 <template>
   <div
     class="navigator-card-item"
-    :role="isGroupMarker ? null : 'link'"
-    :tabindex="isFocused ? '0' : '-1'"
     :class="{ expanded }"
     :style="{ '--nesting-index': item.depth }"
-    :aria-hidden="isRendered ? null : 'true'"
-    :aria-expanded="expanded ? 'true': 'false'"
-    :aria-describedby="ariaDescribedBy"
     :id="`container-${item.uid}`"
-    @keydown.left.prevent="toggleTree"
-    @keydown.right.prevent="toggleTree"
+    :aria-hidden="isRendered ? null : 'true'"
+    @keydown.left.prevent="handleLeftKeydown"
+    @keydown.right.prevent="handleRightKeydown"
     @keydown.enter.prevent="clickReference"
   >
     <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
@@ -35,6 +31,9 @@
           v-if="isParent"
           class="tree-toggle"
           tabindex="-1"
+          :aria-labelledby="item.uid"
+          :aria-expanded="expanded ? 'true': 'false'"
+          :aria-describedby="ariaDescribedBy"
           @click.exact.prevent="toggleTree"
           @click.alt.prevent="toggleEntireTree"
           @click.meta.prevent="toggleSiblings"
@@ -67,22 +66,24 @@
         >
           {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
         </span>
-        <Reference
+        <component
+          :is="refComponent"
           :id="item.uid"
-          :url="item.path || ''"
-          :isActive="!isGroupMarker"
           :class="{ bolded: isBold }"
+          :url="isGroupMarker ? null : (item.path || '')"
+          :tabindex="isFocused ? '0' : '-1'"
+          :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
           class="leaf-link"
-          tabindex="-1"
           ref="reference"
-          @click.native="$emit('navigate', item.uid)"
+          @click.native="handleClick"
         >
           <HighlightMatches
             :text="item.title"
             :matcher="filterPattern"
           />
-        </Reference>
+        </component>
         <Badge v-if="isDeprecated" variant="deprecated" />
+        <Badge v-else-if="isBeta" variant="beta" />
       </div>
     </div>
   </div>
@@ -147,7 +148,7 @@ export default {
       type: Boolean,
       default: () => false,
     },
-    enableSelfFocus: {
+    enableFocus: {
       type: Boolean,
       default: true,
     },
@@ -165,13 +166,15 @@ export default {
     siblingsLabel: ({ item }) => `label-${item.uid}`,
     usageLabel: ({ item }) => `usage-${item.uid}`,
     ariaDescribedBy({
-      item, siblingsLabel, parentLabel, isParent, usageLabel,
+      item, siblingsLabel, parentLabel, isParent,
     }) {
       const baseLabel = `${siblingsLabel} ${item.parent}`;
-      if (!isParent) return `${baseLabel} ${usageLabel}`;
-      return `${baseLabel} ${parentLabel} ${usageLabel}`;
+      if (!isParent) return `${baseLabel}`;
+      return `${baseLabel} ${parentLabel}`;
     },
+    isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
+    refComponent: ({ isGroupMarker }) => (isGroupMarker ? 'h3' : Reference),
   },
   methods: {
     toggleTree() {
@@ -186,18 +189,37 @@ export default {
       this.idState.isOpening = true;
       this.$emit('toggle-siblings', this.item);
     },
-    clickReference() {
-      this.$refs.reference.$el.click();
+    handleLeftKeydown() {
+      // if not expanded, go to the nearest parent
+      if (!this.expanded) {
+        this.$emit('focus-parent', this.item);
+        return;
+      }
+      // close the tree otherwise
+      this.toggleTree();
     },
-    selfFocus() {
-      this.$el.focus();
+    handleRightKeydown() {
+      // if we are already expanded, dont do anything
+      if (this.expanded || !this.isParent) return;
+      // otherwise expand
+      this.toggleTree();
+    },
+    clickReference() {
+      (this.$refs.reference.$el || this.$refs.reference).click();
+    },
+    focusReference() {
+      (this.$refs.reference.$el || this.$refs.reference).focus();
+    },
+    handleClick() {
+      if (this.isGroupMarker) return;
+      this.$emit('navigate', this.item.uid);
     },
   },
   watch: {
     async isFocused(newVal) {
       await waitFrames(8);
-      if (newVal && this.isRendered && this.enableSelfFocus) {
-        this.selfFocus();
+      if (newVal && this.isRendered && this.enableFocus) {
+        this.focusReference();
       }
     },
     async expanded() {
@@ -226,12 +248,15 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
   display: flex;
   align-items: center;
 
-  @include on-keyboard-focus {
-    margin: $card-horizontal-spacing-small;
-    height: $item-height - 10px;
+  .fromkeyboard & {
+    &:focus-within {
+      margin: $card-horizontal-spacing-small;
+      height: $item-height - 10px;
+      @include focus-outline();
 
-    .depth-spacer {
-      margin-left: -$card-horizontal-spacing-small;
+      .depth-spacer {
+        margin-left: -$card-horizontal-spacing-small;
+      }
     }
   }
 }
@@ -255,6 +280,9 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
   min-width: 0;
   height: 100%;
 
+  @include safe-area-left-set(padding-left, $card-horizontal-spacing);
+  @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
+
   &.active {
     background: var(--color-fill-gray-quaternary);
   }
@@ -263,6 +291,10 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
     .leaf-link {
       color: var(--color-figure-gray-secondary);
       font-weight: $font-weight-semibold;
+      // groups dont need the overlay
+      &:after {
+        display: none;
+      }
     }
   }
 
@@ -276,34 +308,38 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 
     &.changed {
       border: none;
-      width: rem(16px);
-      height: rem(16px);
-      margin-right: 6px;
+      width: 1em;
+      height: 1em;
+      margin-right: 7px;
+      z-index: 0;
 
       &:after {
-        width: 100%;
-        height: 100%;
-        background-image: $modified-rounded-svg;
+        top: 50%;
+        left: 50%;
+        right: auto;
+        bottom: auto;
+        transform: translate(-50%, -50%);
+        background-image: $modified-svg;
 
         @include prefers-dark {
-          background-image: $modified-dark-rounded-svg;
+          background-image: $modified-dark-svg;
         }
         margin: 0;
       }
 
       &-added::after {
-        background-image: $added-rounded-svg;
+        background-image: $added-svg;
 
         @include prefers-dark {
-          background-image: $added-dark-rounded-svg;
+          background-image: $added-dark-svg;
         }
       }
 
       &-deprecated::after {
-        background-image: $deprecated-rounded-svg;
+        background-image: $deprecated-svg;
 
         @include prefers-dark {
-          background-image: $deprecated-dark-rounded-svg;
+          background-image: $deprecated-dark-svg;
         }
       }
     }
@@ -318,6 +354,10 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
     display: inline;
     vertical-align: middle;
     @include font-styles(body-reduced-tight);
+
+    @include on-keyboard-focus {
+      outline: none;
+    }
 
     &:hover {
       text-decoration: none;
@@ -347,6 +387,7 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
 }
 
 .tree-toggle {
+  overflow: hidden;
   position: absolute;
   width: 100%;
   height: 100%;

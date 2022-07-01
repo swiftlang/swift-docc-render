@@ -15,7 +15,8 @@ import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
-import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
+import { waitFrames } from 'docc-render/utils/loading';
 import { createEvent } from '../../../test-utils';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
@@ -23,7 +24,7 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/FocusTrap');
 
 const { BreakpointScopes, BreakpointName } = BreakpointEmitter.constants;
-const { NavStateClasses } = NavBase.constants;
+const { NoBGTransitionFrames, NavStateClasses } = NavBase.constants;
 
 const emitEndOfTrayTransition = (wrapper, propertyName = 'max-height') => {
   wrapper.find({ ref: 'tray' }).trigger('transitionend', { propertyName });
@@ -160,8 +161,21 @@ describe('NavBase', () => {
     expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
     expect(preTitleProps).toEqual({
       closeNav: expect.any(Function),
+      isOpen: false,
       inBreakpoint: false,
       currentBreakpoint: BreakpointName.large,
+    });
+    wrapper.find('a.nav-menucta').trigger('click');
+    expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
+    expect(preTitleProps).toEqual({
+      closeNav: expect.any(Function),
+      isOpen: true,
+    });
+    preTitleProps.closeNav();
+    expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+    expect(preTitleProps).toEqual({
+      closeNav: expect.any(Function),
+      isOpen: false,
     });
   });
 
@@ -226,6 +240,21 @@ describe('NavBase', () => {
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     tray.find('.with-anchor a').trigger('click');
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+  });
+
+  it('does not close the navigation if clicked on a .noclose link inside the tray', async () => {
+    const { noClose } = MenuLinkModifierClasses;
+    wrapper = await createWrapper({
+      data: () => ({ isOpen: true }),
+      slots: {
+        'menu-items': `
+          <li class="with-anchor"><a class="${noClose}" href="#">Somewhere</a></li>
+          <li class="without-anchor"><div class="foo">Foo</div></li>`,
+      },
+    });
+    const tray = wrapper.find(NavMenuItems);
+    tray.find('.with-anchor a').trigger('click');
+    expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
   });
 
   it('adds extra classes to stop scrolling while animating the tray up/down', async () => {
@@ -395,6 +424,14 @@ describe('NavBase', () => {
     link.trigger('click');
     await wrapper.vm.$nextTick();
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders with a no-transition class and removes it after a few frames', async () => {
+    jest.useFakeTimers();
+    wrapper = await createWrapper();
+    expect(wrapper.classes()).toContain(NavStateClasses.noBackgroundTransition);
+    await waitFrames(NoBGTransitionFrames);
+    expect(wrapper.classes()).not.toContain(NavStateClasses.noBackgroundTransition);
   });
 
   it('unlocks the scrolling, if still open before destroying', async () => {

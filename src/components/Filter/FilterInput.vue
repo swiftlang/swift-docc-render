@@ -56,36 +56,36 @@
           <label
             id="filter-label"
             :for="FilterInputId"
-            class="visuallyhidden"
-            aria-hidden="true"
+            :data-value="modelValue"
+            :aria-label="placeholder"
+            class="filter__input-label"
           >
-            {{ placeholder }}
+            <input
+              :id="FilterInputId"
+              ref="input"
+              v-model="modelValue"
+              :placeholder="hasSelectedTags ? '' : placeholder"
+              :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
+              :disabled="disabled"
+              v-bind="AXinputProperties"
+              type="text"
+              class="filter__input"
+              v-on="inputMultipleSelectionListeners"
+              @keydown.down.prevent="downHandler"
+              @keydown.up.prevent="upHandler"
+              @keydown.left="leftKeyInputHandler"
+              @keydown.right="rightKeyInputHandler"
+              @keydown.delete="deleteHandler"
+              @keydown.meta.a.prevent="selectInputAndTags"
+              @keydown.ctrl.a.prevent="selectInputAndTags"
+              @keydown.exact="inputKeydownHandler"
+              @keydown.enter.exact="enterHandler"
+              @keydown.shift.exact="inputKeydownHandler"
+              @keydown.shift.meta.exact="inputKeydownHandler"
+              @keydown.meta.exact="assignEventValues"
+              @keydown.ctrl.exact="assignEventValues"
+            >
           </label>
-          <input
-            :id="FilterInputId"
-            ref="input"
-            v-model="modelValue"
-            :placeholder="hasSelectedTags ? '' : placeholder"
-            :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
-            :disabled="disabled"
-            v-bind="AXinputProperties"
-            type="text"
-            class="filter__input"
-            v-on="inputMultipleSelectionListeners"
-            @keydown.down.prevent="downHandler"
-            @keydown.up.prevent="upHandler"
-            @keydown.left="leftKeyInputHandler"
-            @keydown.right="rightKeyInputHandler"
-            @keydown.delete="deleteHandler"
-            @keydown.meta.a.prevent="selectInputAndTags"
-            @keydown.ctrl.a.prevent="selectInputAndTags"
-            @keydown.exact="inputKeydownHandler"
-            @keydown.enter.exact="enterHandler"
-            @keydown.shift.exact="inputKeydownHandler"
-            @keydown.shift.meta.exact="inputKeydownHandler"
-            @keydown.meta.exact="assignEventValues"
-            @keydown.ctrl.exact="assignEventValues"
-          >
         </div>
         <div class="filter__delete-button-wrapper">
           <button
@@ -134,7 +134,6 @@ const SuggestedTagsId = 'suggested-tags';
 const AXinputProperties = {
   autocorrect: 'off',
   autocapitalize: 'off',
-  autocomplete: 'off',
   spellcheck: 'false',
   role: 'combobox',
   'aria-haspopup': 'true',
@@ -549,6 +548,27 @@ $input-height: rem(28px);
     border-bottom-right-radius: $small-border-radius;
   }
 
+  &__input-label {
+    position: relative;
+    flex-grow: 1;
+    height: var(--input-height);
+    padding: var(--input-vertical-padding) 0;
+
+    &::after {
+      content: attr(data-value);
+      visibility: hidden;
+      width: auto;
+      white-space: nowrap;
+      min-width: 130px; // set a min width, so user can select the area
+      display: block;
+      text-indent: rem(7px);
+
+      @include breakpoint(small) {
+        text-indent: rem(3px);
+      }
+    }
+  }
+
   &__input-box-wrapper {
     @include custom-horizontal-scrollbar;
     display: flex;
@@ -564,13 +584,11 @@ $input-height: rem(28px);
     height: var(--input-height);
     border: none;
     width: 100%;
-    min-width: 130px; // set a min width, so it does not get crushed by tags
+    position: absolute;
     background: transparent;
-    padding: var(--input-vertical-padding) 0;
     z-index: 1;
     // Text indent is needed instead of padding so text inside <input> doesn't get cut off
     text-indent: rem(7px);
-    text-overflow: ellipsis;
 
     @include breakpoint(small) {
       text-indent: rem(3px);

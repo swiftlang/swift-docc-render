@@ -32,27 +32,30 @@
         v-on="sidebarListeners"
       >
         <template #aside="{ scrollLockID, breakpoint }">
-          <aside class="doc-topic-aside">
+          <div class="doc-topic-aside">
             <NavigatorDataProvider
               :interface-language="topicProps.interfaceLanguage"
               :technology="technology"
               :api-changes-version="store.state.selectedAPIChangesVersion"
             >
               <template #default="slotProps">
-                <Navigator
-                  :parent-topic-identifiers="parentTopicIdentifiers"
-                  :technology="slotProps.technology || technology"
-                  :is-fetching="slotProps.isFetching"
-                  :error-fetching="slotProps.errorFetching"
-                  :api-changes="slotProps.apiChanges"
-                  :references="topicProps.references"
-                  :scrollLockID="scrollLockID"
-                  :breakpoint="breakpoint"
-                  @close="isMobileSideNavOpen = false"
-                />
+                <transition name="delay-hiding">
+                  <Navigator
+                    v-show="isSideNavOpen || breakpoint === BreakpointName.large"
+                    :parent-topic-identifiers="parentTopicIdentifiers"
+                    :technology="slotProps.technology || technology"
+                    :is-fetching="slotProps.isFetching"
+                    :error-fetching="slotProps.errorFetching"
+                    :api-changes="slotProps.apiChanges"
+                    :references="topicProps.references"
+                    :scrollLockID="scrollLockID"
+                    :breakpoint="breakpoint"
+                    @close="isMobileSideNavOpen = false"
+                  />
+                </transition>
               </template>
             </NavigatorDataProvider>
-          </aside>
+          </div>
         </template>
         <Topic
           v-bind="topicProps"
@@ -70,7 +73,6 @@
 
 <script>
 import { apply } from 'docc-render/utils/json-patch';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import { TopicRole } from 'docc-render/constants/roles';
 import {
   clone,
@@ -88,13 +90,16 @@ import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvi
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
+import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
-import { BreakpointName } from '@/utils/breakpoints';
 
+const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_CLOSED_KEY = 'navigator-closed';
 
 export default {
   name: 'DocumentationTopicView',
+  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_CLOSED_KEY },
   components: {
     Navigator,
     AdjustableSidebarWidth,
@@ -103,7 +108,6 @@ export default {
     CodeTheme,
     Nav: DocumentationNav,
   },
-  constants: { NAVIGATOR_CLOSED_KEY },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
     return {
@@ -112,6 +116,7 @@ export default {
       isMobileSideNavOpen: false,
       isLargeSideNavClosed: storage.get(NAVIGATOR_CLOSED_KEY, false),
       store: DocumentationTopicStore,
+      BreakpointName,
     };
   },
   computed: {
@@ -199,8 +204,18 @@ export default {
     // The `hierarchy.paths` array will contain zero or more subarrays, each
     // representing a "path" of parent topic IDs that could be considered the
     // hierarchy/breadcrumb for a given topic. We choose to render only the
-    // first one.
-    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths: [ids = []] = [] } } }) => ids,
+    // one, that has the same path as the current URL.
+    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] }, references }, $route }) => {
+      if (!paths.length) return [];
+      return paths.find((identifiers) => {
+        const rootIdentifier = identifiers.find(id => references[id] && references[id].kind !== 'technologies');
+        const rootReference = rootIdentifier && references[rootIdentifier];
+        // if there is an item, check if the current url starts with it
+        return rootReference && $route.path.toLowerCase().startsWith(
+          rootReference.url.toLowerCase(),
+        );
+      }) || paths[0];
+    },
     technology: ({
       $route,
       topicProps: {
@@ -252,11 +267,12 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         )
       ),
-    // Always disable the navigator for IDE targets. For other targets, allow
-    // this feature to be enabled through the `features.docs.navigator.enable`
-    // setting in `theme-settings.json`
-    enableNavigator: ({ isTargetIDE }) => !isTargetIDE && (
-      getSetting(['features', 'docs', 'navigator', 'enable'], false)
+    // Always disable the navigator for IDE targets. For other targets, detect whether the
+    // RenderJSON version is in the required range.
+    enableNavigator: ({ isTargetIDE, topicDataDefault }) => !isTargetIDE && (
+      compareVersions(
+        combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
+      ) >= 0
     ),
     sidebarProps: ({ isMobileSideNavOpen, enableNavigator, isLargeSideNavClosed }) => (
       enableNavigator
@@ -356,9 +372,15 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .doc-topic-view {
+  --delay: 1s;
   display: flex;
   flex-flow: column;
   background: var(--colors-text-background, var(--color-text-background));
+
+  .delay-hiding-leave-active {
+    // don't hide navigator until delay time has passed
+    transition: display var(--delay);
+  }
 }
 
 .doc-topic-aside {
