@@ -41,7 +41,7 @@
               <template #default="slotProps">
                 <transition name="delay-hiding">
                   <Navigator
-                    v-show="isSideNavOpen || breakpoint === BreakpointName.large"
+                    v-show="isMobileSideNavOpen || breakpoint === BreakpointName.large"
                     :parent-topic-identifiers="parentTopicIdentifiers"
                     :technology="slotProps.technology || technology"
                     :is-fetching="slotProps.isFetching"

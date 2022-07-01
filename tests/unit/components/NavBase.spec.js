@@ -170,12 +170,16 @@ describe('NavBase', () => {
     expect(preTitleProps).toEqual({
       closeNav: expect.any(Function),
       isOpen: true,
+      inBreakpoint: false,
+      currentBreakpoint: BreakpointName.large,
     });
     preTitleProps.closeNav();
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
     expect(preTitleProps).toEqual({
       closeNav: expect.any(Function),
       isOpen: false,
+      inBreakpoint: false,
+      currentBreakpoint: BreakpointName.large,
     });
   });
 
