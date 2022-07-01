@@ -1592,9 +1592,6 @@ describe('NavigatorCard', () => {
     };
     const apiChanges = {
       [updatedChild.path]: ChangeTypes.added,
-      [root0Updated.path]: ChangeTypes.modified,
-      [root0Child1GrandChild0.path]: ChangeTypes.modified,
-      [root1.path]: ChangeTypes.deprecated,
     };
     const wrapper = createWrapper({
       propsData: {
@@ -1608,9 +1605,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there is no 'Hide Deprecated' tag
-    expect(filter.props('tags')).toEqual([
-      'Articles', 'Tutorials', ChangeNames.modified, ChangeNames.added, ChangeNames.deprecated,
-    ]);
+    expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED_TAG);
   });
 
   describe('navigating', () => {
