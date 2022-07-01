@@ -16,6 +16,7 @@
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
+      :is-technology-beta="technology.beta"
       :technology-path="technology.path || technology.url"
       :type="type"
       :children="flatChildren"
