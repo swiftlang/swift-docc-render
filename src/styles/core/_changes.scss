@@ -116,8 +116,8 @@ $deprecated-dark-rounded-svg: $deprecated-svg !default;
 /// The 1 value represents the border width.
 ///
 @mixin change-highlight-horizontal-text-alignment() {
-  margin-left: -8px;
-  width: calc(100% + 8px);
+  //margin-left: -8px;
+  //width: calc(100% + 8px);
 
   //@include change-highlight-horizontal-text-alignment-small();
 }
