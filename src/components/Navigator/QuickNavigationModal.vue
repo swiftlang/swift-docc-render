@@ -34,12 +34,12 @@
         >
           <Reference :url="symbol.path" :id="idx">
               -
-              {{symbol.title.slice(0, symbol.start)}}
-              <HighlightMatches
+              {{ symbol.title.slice(0, symbol.start) }}
+              <QuickNavigationHighlighter
                 :text="symbol.substring"
-                :matcher="inputCoincidencesRegexPattern"
+                :matcherText="debouncedInput"
               />
-              {{symbol.title.slice(symbol.start + symbol.matchLength)}}
+              {{ symbol.title.slice(symbol.start + symbol.matchLength) }}
           </Reference>
         </div>
       </div>
@@ -49,14 +49,14 @@
 
 <script>
 import debounce from 'docc-render/utils/debounce';
-import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
+import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 export default {
   name: 'QuickNavigationModal',
   components: {
-    HighlightMatches,
+    QuickNavigationHighlighter,
     Reference,
   },
   inject: ['quickNavigationStore'],
@@ -99,25 +99,6 @@ export default {
       constructFuzzyRegex,
       debouncedInput,
     }) => new RegExp(constructFuzzyRegex(debouncedInput.toLowerCase())),
-    inputCoincidencesRegexPattern: ({ debouncedInput }) => {
-      let regexPattern = '';
-      [...debouncedInput].forEach((char, idx) => {
-        if (idx !== 0) {
-          regexPattern += '|';
-        }
-        regexPattern += `(?<!${char}`;
-        if (idx !== 0 && char === [...debouncedInput][idx - 1]) {
-          regexPattern += char;
-        }
-        regexPattern += '[^';
-        if (idx !== 0) {
-          regexPattern += [...debouncedInput][idx - 1];
-        }
-        regexPattern += char;
-        regexPattern += `]*?)${char}`;
-      });
-      return new RegExp(regexPattern, 'gi');
-    },
   },
   methods: {
     closeQuickNavigationModal() {
@@ -127,62 +108,39 @@ export default {
       // Construct regex for fuzzy match
       // Ex:
       // foobar -> f[^f]*?o[^o]*?o[^o]*?b[^b]*?a[^a]*?r
-      let regexBuilder = '';
-      [...userInput].forEach((char, idx) => {
-        regexBuilder += char.toLowerCase();
-        if (idx !== userInput.length - 1) {
-          regexBuilder += `[^${char.toLowerCase()}]*?`;
-        }
-      });
-      return regexBuilder;
+      return [...userInput].reduce((prev, char, index) => (
+        prev
+          .concat(char.toLowerCase())
+          .concat(index < userInput.length - 1 ? `[^${char.toLowerCase()}]*?` : '')
+      ), '');
     },
     debounceInput: debounce(function debounceInput(value) {
       this.debouncedInput = value;
     }, 500),
-    fuzzyMatch({ debouncedInput, symbols, processedInputRegex }) {
-      const matches = [];
+    fuzzyMatch: ({ debouncedInput, symbols, processedInputRegex }) => (
       symbols.map((symbol) => {
-        if (debouncedInput) {
-          const match = processedInputRegex.exec(symbol.title.toLowerCase());
-          if (match) {
-            const isExactMatch = RegExp(
-              debouncedInput,
-            ).test(symbol.title.toLowerCase());
-            if (Math.abs(match[0].length - debouncedInput.length) > debouncedInput.length * 2) {
-              return false;
-            }
-            matches.push({
-              title: symbol.title,
-              path: symbol.path,
-              inputLengthDifference: Math.abs(
-                symbol.title.length - debouncedInput.length,
-              ),
-              matchLength: match[0].length,
-              matchLengthDifference: isExactMatch === true
-                ? 0
-                : Math.abs(match[0].length - debouncedInput.length),
-              start: match.index,
-              substring: match[0],
-            });
-            return true;
-          }
-        }
-        return false;
-      });
-      return matches;
-    },
+        const match = processedInputRegex.exec(symbol.title.toLowerCase());
+        // dismiss if symbol isn't matched
+        if (!match) return false;
+
+        const matchLength = match[0].length;
+        const inputLength = debouncedInput.length;
+        // dismiss if match length is greater than 3x the input's length
+        if (matchLength > inputLength * 3) return false;
+
+        return ({
+          title: symbol.title,
+          path: symbol.path,
+          inputLengthDifference: symbol.title.length - inputLength,
+          matchLength,
+          matchLengthDifference: matchLength - inputLength,
+          start: match.index,
+          substring: match[0],
+        });
+      }).filter(Boolean)
+    ),
     orderSymbolsByPriority(matchingSymbols) {
       return matchingSymbols.sort((a, b) => {
-        // Sort exact string match by symbol title length
-        if (a.matchLengthDifference === 0 && b.matchLengthDifference === 0) {
-          if (a.inputLengthDifference > b.inputLengthDifference) return 1;
-          if (a.inputLengthDifference < b.inputLengthDifference) return -1;
-        }
-        // Exact string match have priority over fuzzy match
-        if (a.matchLengthDifference === 0 || b.matchLengthDifference === 0) {
-          if (a.matchLengthDifference > b.matchLengthDifference) return 1;
-          if (a.matchLengthDifference < b.matchLengthDifference) return -1;
-        }
         // Shortests symbol match title have preference over larger titles
         if (a.matchLengthDifference > b.matchLengthDifference) return 1;
         if (a.matchLengthDifference < b.matchLengthDifference) return -1;
@@ -202,7 +160,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import 'docc-render/styles/_core.scss';
 
   .close-icon {
     padding-bottom: 10px;
@@ -211,15 +170,15 @@ export default {
       flex-direction: row;
   }
   .filter {
-    border-radius: 5px;
-    background-color: white;
-    border: solid rgb(212, 212, 212) 1px;
+    border-radius: $border-radius;
+    background-color: var(--color-fill);
+    border: solid var(--color-figure-gray) 1px;
     padding: 20px;
     width: 80%;
     margin-bottom: 20px;
   }
   .quick-navigation-modal {
-    background-color: rgb(255, 255, 255);
+    background-color: var(--color-fill);
     position: fixed;
     top: 0;
     bottom: 0;

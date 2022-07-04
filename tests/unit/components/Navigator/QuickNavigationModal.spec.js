@@ -9,8 +9,9 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
+import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHighlighter.vue';
 import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vue';
+import Reference from '@/components/ContentNode/Reference.vue';
 
 describe('QuickNavigationModal', () => {
   let wrapper;
@@ -20,15 +21,15 @@ describe('QuickNavigationModal', () => {
   const symbols = [
     {
       title: 'foo',
-      path: '',
+      path: '/foo',
     },
     {
       title: 'fobaro',
-      path: '',
+      path: '/fobaro',
     },
     {
       title: 'bar',
-      path: '',
+      path: '/bar',
     },
   ];
   const filteredSymbols = [
@@ -73,6 +74,8 @@ describe('QuickNavigationModal', () => {
     expect(matches).toHaveLength(filteredSymbols.length);
     expect(matches.at(0)).toMatchObject(filteredSymbols[0]);
     expect(matches.at(1)).toMatchObject(filteredSymbols[1]);
-    expect(wrapper.find(HighlightMatches));
+    expect(wrapper.findAll(QuickNavigationHighlighter).length).toBe(2);
+    expect(wrapper.findAll(Reference).at(0).props().url).toBe(filteredSymbols[0].path);
+    expect(wrapper.findAll(Reference).at(1).props().url).toBe(filteredSymbols[1].path);
   });
 });

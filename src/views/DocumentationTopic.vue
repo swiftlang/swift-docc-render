@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div :class="quickNavigationStore.state.enableQuickNavigation ? 'modal-open' : ''">
+  <div :class="{ 'modal-open': quickNavigationStore.state.enableQuickNavigation }">
     <div v-show="quickNavigationStore.state.enableQuickNavigation">
       <QuickNavigationModal/>
     </div>
