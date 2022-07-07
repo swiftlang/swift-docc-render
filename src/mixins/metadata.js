@@ -10,6 +10,7 @@
 
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
 import { firstParagraph } from 'docc-render/utils/strings';
+import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 
 export default {
@@ -26,12 +27,13 @@ export default {
   },
   computed: {
     pagePath: ({ $route: { path = '/' } = {} }) => path,
+    pageURL: ({ pagePath = '/' }) => resolveAbsoluteUrl(pagePath),
   },
   mounted() {
     addOrUpdateMetadata({
       title: this.pageTitle,
       description: this.pageDescription,
-      path: this.pagePath,
+      url: this.pageURL,
     });
   },
 };
