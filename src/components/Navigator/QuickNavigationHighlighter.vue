@@ -29,16 +29,14 @@ export default {
     const children = [];
     let lastIndex = 0;
     [...matcherText].forEach((char) => {
-      const nextIndex = text.indexOf(char, lastIndex);
-      const spanText = text.slice(lastIndex, nextIndex);
-      if (spanText) {
-        children.push(createElement('span', spanText));
+      const charIndex = text.indexOf(char, lastIndex);
+      if (lastIndex) {
+        children.push(createElement('span', text.slice(lastIndex, charIndex)));
       }
+      const nextIndex = charIndex + 1;
+      children.push(createElement('span', { class: 'match' }, text.slice(charIndex, nextIndex)));
       lastIndex = nextIndex;
-      children.push(createElement('span', { class: 'match' }, text.slice(lastIndex, lastIndex + 1)));
-      lastIndex += 1;
     });
-    children.push(createElement('span', text.slice(lastIndex)));
     return createElement('p', { class: 'highlight' }, children);
   },
 };
