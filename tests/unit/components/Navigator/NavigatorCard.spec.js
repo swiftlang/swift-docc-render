@@ -21,6 +21,7 @@ import FilterInput from '@/components/Filter/FilterInput.vue';
 import { BreakpointName } from '@/utils/breakpoints';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
+import Badge from 'docc-render/components/Badge.vue';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -1570,6 +1571,18 @@ describe('NavigatorCard', () => {
     expect(allItems.at(0).props('item')).toEqual(root0Updated);
     expect(allItems.at(1).props('item')).toEqual(root0Child1);
     expect(allItems.at(2).props('item')).toEqual(root0Child1GrandChild0);
+  });
+
+  it('renders a Beta badge in the header', async () => {
+    const wrapper = createWrapper({
+      propsData: {
+        isTechnologyBeta: true,
+      },
+    });
+    await flushPromises();
+    expect(wrapper.find('.navigator-head').find(Badge).props()).toMatchObject({
+      variant: 'beta',
+    });
   });
 
   it('Does not show "Hide Deprecated" tag, if API changes are ON', async () => {
