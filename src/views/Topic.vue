@@ -112,6 +112,7 @@ export default {
         metadata,
         references,
         sections,
+        identifier,
       } = topic;
       return {
         [TopicKind.article]: {
@@ -119,12 +120,14 @@ export default {
           metadata,
           references,
           sections,
+          identifierUrl: identifier.url,
         },
         [TopicKind.tutorial]: {
           hierarchy,
           metadata,
           references,
           sections,
+          identifierUrl: identifier.url,
         },
       }[kind];
     },

@@ -99,6 +99,7 @@ const propsData = {
     assessmentsSection,
     ctaSection,
   ],
+  identifierUrl: 'foo',
 };
 
 describe('Article', () => {
@@ -136,6 +137,7 @@ describe('Article', () => {
       technology: propsData.metadata.category,
       topic: heroSection.title,
       rootReference: hierarchy.reference,
+      identifierUrl: propsData.identifierUrl,
     });
   });
 

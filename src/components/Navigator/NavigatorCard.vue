@@ -266,6 +266,10 @@ export default {
 
       const tagLabelsSet = new Set(tagLabels);
       const generalTags = new Set([HIDE_DEPRECATED_TAG]);
+      // when API changes are available, remove the `HIDE_DEPRECATED_TAG` option
+      if (apiChangesTypesSet.size) {
+        generalTags.delete(HIDE_DEPRECATED_TAG);
+      }
       const availableTags = {
         type: [],
         changes: [],
