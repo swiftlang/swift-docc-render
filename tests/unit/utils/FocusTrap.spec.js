@@ -17,6 +17,7 @@ const DOM = parseHTMLString(`
     <input class="first">
     <button class="second">Button</button>
     <a href="#" class="third">Anchor</a>
+    <a href="" tabindex="-1" class="none-tabbable">None Tabbable</a>
   </div>
   <button class="after">After</button>
 `);
@@ -28,6 +29,7 @@ const firstElement = DOM.querySelector('.first');
 const secondElement = DOM.querySelector('.second');
 const thirdElement = DOM.querySelector('.third');
 const afterElement = DOM.querySelector('.after');
+const noneTabbable = DOM.querySelector('.none-tabbable');
 
 let focusInstance;
 
@@ -62,8 +64,23 @@ describe('FocusTrap', () => {
     expect(document.activeElement).toEqual(firstElement);
   });
 
+  it('on start, moves focuses the first tabbable element, if `activeElement` is in container, but its not tabbable', () => {
+    // stop focus tracking
+    focusInstance.stop();
+    // focus a none tabbable element
+    noneTabbable.focus();
+    expect(document.activeElement).toEqual(noneTabbable);
+    // start the focus tracking again
+    focusInstance.start();
+    expect(document.activeElement).toEqual(firstElement);
+  });
+
   it('on start, does not focus the first target, if active element is inside container', () => {
+    focusInstance.stop();
+    expect(document.activeElement).toEqual(firstElement);
     thirdElement.focus();
+    expect(document.activeElement).toEqual(thirdElement);
+    focusInstance.start();
     expect(document.activeElement).toEqual(thirdElement);
   });
 
@@ -87,6 +104,19 @@ describe('FocusTrap', () => {
     beforeElement.focus();
     // assert the new focus target is the last available element
     expect(document.activeElement).toEqual(thirdElement);
+  });
+
+  it('on focus, moves focus the first element if focusing element that was focused last, but is no longer in DOM', () => {
+    // focus the last element
+    thirdElement.focus();
+    // now delete the last element
+    thirdElement.parentElement.removeChild(thirdElement);
+    // move focus outside
+    afterElement.focus();
+    // assert the new focus target is the first available element
+    expect(document.activeElement).toEqual(firstElement);
+    // revert the removal
+    containerElement.appendChild(thirdElement);
   });
 
   it('updates the container', () => {

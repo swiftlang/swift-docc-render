@@ -11,6 +11,7 @@
 import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
+import SpinnerIcon from '@/components/Icons/SpinnerIcon.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
@@ -115,8 +116,10 @@ describe('Navigator', () => {
 
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
+    const navigator = wrapper.find('.navigator');
     // assert navigator is a `nav`
-    expect(wrapper.find('.navigator').is('nav')).toBe(true);
+    expect(navigator.is('nav')).toBe(true);
+    expect(navigator.attributes()).toHaveProperty('aria-labelledby', INDEX_ROOT_KEY);
     // assert Navigator card is rendered
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
@@ -141,7 +144,26 @@ describe('Navigator', () => {
     });
     // assert Navigator card is rendered
     expect(wrapper.find(NavigatorCard).exists()).toBe(false);
-    expect(wrapper.find('.loading-placeholder').text()).toBe('Fetching...');
+
+    const placeholder = wrapper.find('.loading-placeholder');
+    expect(placeholder.exists()).toBe(true);
+    expect(placeholder.contains(SpinnerIcon)).toBe(true);
+  });
+
+  it('renders an aria live that tells VO users when navigator is loading', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        isFetching: true,
+      },
+    });
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is loading');
+  });
+
+  it('renders an aria live that tells VO users when navigator is ready', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is ready');
   });
 
   it('falls back to using the `technology.url` for the `technology-path`', () => {

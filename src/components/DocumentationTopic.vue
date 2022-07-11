@@ -14,7 +14,8 @@
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
-        :extraPadding="extraPadding"
+        :shortHero="shortHero"
+        :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
       >
         <template #above-content>
           <slot name="above-hero-content" />
@@ -27,7 +28,7 @@
           :swiftPath="swiftPath"
         />
         <Title :eyebrow="roleHeading">
-          <WordBreak>{{ title }}</WordBreak>
+          <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
             slot="after"
@@ -88,6 +89,9 @@
       />
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
+    <div aria-live="polite" class="visuallyhidden">
+      Current page is {{ pageTitle }}
+    </div>
   </div>
 </template>
 
@@ -300,17 +304,19 @@ export default {
       abstract ? extractFirstParagraphText(abstract) : null
     ),
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
-      objcPath && swiftPath && isTargetIDE
+      !!(objcPath && swiftPath && isTargetIDE)
     ),
     enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
-    extraPadding: ({
+    shortHero: ({
       roleHeading,
       abstract,
       sampleCodeDownload,
       hasAvailability,
+      shouldShowLanguageSwitcher,
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
-      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!hasAvailability) <= 1
+      (!!roleHeading + !!abstract + !!sampleCodeDownload
+        + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {
@@ -322,6 +328,11 @@ export default {
         ? technologyList
         : [];
     },
+    // there shouldn't be a pressing need to use the `WordBreak` component in
+    // the main title for for non-symbol pages with the "enhanced" background
+    titleBreakComponent: ({ enhanceBackground }) => (enhanceBackground
+      ? 'span'
+      : WordBreak),
     showContainer: ({
       isRequirement,
       deprecationSummary,
