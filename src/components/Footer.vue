@@ -37,5 +37,10 @@ export default {
   display: flex;
   flex-direction: row-reverse;
   padding: 20px 0;
+  @include breakpoint(small) {
+    width: 100%;
+    padding: 20px $nav-padding-small;
+    box-sizing: border-box;
+  }
 }
 </style>
