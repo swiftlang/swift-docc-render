@@ -10,7 +10,12 @@
 
 <template>
   <ol class="topic-list">
-    <li v-for="topic in topics" class="topic" :class="kindClassFor(topic)" :key="topic.url">
+    <li
+      v-for="topic in topics"
+      :key="topic.url"
+      :class="[kindClassFor(topic), { 'no-time-estimate': !topic.estimatedTime }]"
+      class="topic"
+    >
       <div class="topic-icon">
         <component :is="iconComponent(topic)" />
       </div>
@@ -207,6 +212,15 @@ $circle-diameter: $circle-radius * 2;
   .topic {
     height: auto;
     align-items: flex-start;
+
+    &.no-time-estimate {
+      align-items: center;
+
+      .topic-icon {
+        align-self: flex-start;
+        top: 0;
+      }
+    }
 
     & + & {
       margin-top: rem(20px);

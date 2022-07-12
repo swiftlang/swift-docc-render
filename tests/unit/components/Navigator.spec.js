@@ -15,6 +15,7 @@ import SpinnerIcon from '@/components/Icons/SpinnerIcon.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
+import { clone } from '@/utils/data';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
@@ -116,8 +117,10 @@ describe('Navigator', () => {
 
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
+    const navigator = wrapper.find('.navigator');
     // assert navigator is a `nav`
-    expect(wrapper.find('.navigator').is('nav')).toBe(true);
+    expect(navigator.is('nav')).toBe(true);
+    expect(navigator.attributes()).toHaveProperty('aria-labelledby', INDEX_ROOT_KEY);
     // assert Navigator card is rendered
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
@@ -126,6 +129,7 @@ describe('Navigator', () => {
       type: TopicTypes.module,
       technology: technology.title,
       technologyPath: technology.path,
+      isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
@@ -177,6 +181,7 @@ describe('Navigator', () => {
       type: TopicTypes.module,
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
+      isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
@@ -366,5 +371,34 @@ describe('Navigator', () => {
         uid: -134251586,
       },
     ]);
+  });
+
+  it('removes the `beta` flag from children, if the technology is a `beta`', () => {
+    const technologyClone = clone(technology);
+    technologyClone.beta = true;
+    technologyClone.children[0].beta = true;
+    technologyClone.children[0].children[0].beta = true;
+    const wrapper = createWrapper({
+      propsData: {
+        technology: technologyClone,
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('children')).toMatchSnapshot();
+  });
+
+  it('removes the `beta` flag from children, if the parent is a `beta`', () => {
+    const technologyClone = clone(technology);
+    technologyClone.children[0].beta = true;
+    technologyClone.children[0].children[0].beta = true;
+    // case where the direct parent is NOT `Beta`, but an ancestor is
+    technologyClone.children[0].children[1].children[0].beta = true;
+    // set an end node as beta
+    technologyClone.children[1].children[0].beta = true;
+    const wrapper = createWrapper({
+      propsData: {
+        technology: technologyClone,
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('children')).toMatchSnapshot();
   });
 });

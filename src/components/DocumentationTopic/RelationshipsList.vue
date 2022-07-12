@@ -160,6 +160,7 @@ export default {
      // ensure that column layout stays a block content
     &.column {
       display: block;
+      box-sizing: border-box;
     }
   }
 }

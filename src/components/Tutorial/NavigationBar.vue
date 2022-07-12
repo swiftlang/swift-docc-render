@@ -68,6 +68,14 @@ import MobileDropdown from './NavigationBar/MobileDropdown.vue';
 import SecondaryDropdown from './NavigationBar/SecondaryDropdown.vue';
 import PrimaryDropdown from './NavigationBar/PrimaryDropdown.vue';
 
+const FirstSectionItem = {
+  title: 'Introduction',
+  url: '#introduction',
+  reference: 'introduction',
+  sectionNumber: 0,
+  depth: 0,
+};
+
 export default {
   name: 'NavigationBar',
   components: {
@@ -80,7 +88,7 @@ export default {
     ChevronIcon,
   },
   mixins: [scrollToElement],
-  inject: ['store'],
+  inject: ['store', 'references'],
   props: {
     chapters: {
       type: Array,
@@ -98,13 +106,14 @@ export default {
       type: String,
       required: true,
     },
+    identifierUrl: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      currentSection: {
-        sectionNumber: 0,
-        title: 'Introduction',
-      },
+      currentSection: FirstSectionItem,
       tutorialState: this.store.state,
     };
   },
@@ -116,12 +125,28 @@ export default {
     },
   },
   computed: {
+    currentProject() {
+      return this.chapters
+        // collect all the projects for all the chapters
+        .reduce((acc, { projects }) => acc.concat(projects), [])
+        // find the current project
+        .find(project => project.reference === this.identifierUrl);
+    },
     pageSections() {
-      const tutorialPath = this.$route.path.replace(/#$/, '');
-      return this.tutorialState.linkableSections.map(section => ({
-        ...section,
-        path: `${tutorialPath}#${section.anchor}`,
-      }));
+      if (!this.currentProject) return [];
+
+      const allSections = [FirstSectionItem].concat(this.currentProject.sections);
+
+      return this.tutorialState.linkableSections.map((linkableSection, index) => {
+        const singleSection = allSections[index];
+        const referenceObject = this.references[singleSection.reference];
+        const { url, title } = referenceObject || singleSection;
+        return {
+          ...linkableSection,
+          title,
+          path: url,
+        };
+      });
     },
     optionsForSections() {
       return this.pageSections.map(({ depth, path, title }) => ({ depth, path, title }));

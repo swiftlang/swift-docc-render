@@ -161,6 +161,19 @@ describe('NavBase', () => {
     expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
     expect(preTitleProps).toEqual({
       closeNav: expect.any(Function),
+      isOpen: false,
+    });
+    wrapper.find('a.nav-menucta').trigger('click');
+    expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
+    expect(preTitleProps).toEqual({
+      closeNav: expect.any(Function),
+      isOpen: true,
+    });
+    preTitleProps.closeNav();
+    expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+    expect(preTitleProps).toEqual({
+      closeNav: expect.any(Function),
+      isOpen: false,
     });
   });
 

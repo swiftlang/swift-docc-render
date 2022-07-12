@@ -291,6 +291,10 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
     .leaf-link {
       color: var(--color-figure-gray-secondary);
       font-weight: $font-weight-semibold;
+      // groups dont need the overlay
+      &:after {
+        display: none;
+      }
     }
   }
 

@@ -24,6 +24,7 @@
             <h2 class="card-link">
               {{ technology }}
             </h2>
+            <Badge v-if="isTechnologyBeta" variant="beta" />
           </Reference>
         </div>
         <slot name="post-head" />
@@ -114,6 +115,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
+import Badge from 'docc-render/components/Badge.vue';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -173,6 +175,7 @@ export default {
     HIDE_DEPRECATED_TAG,
   },
   components: {
+    Badge,
     FilterInput,
     SidenavIcon,
     NavigatorCardInner,
@@ -216,6 +219,10 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
+    },
+    isTechnologyBeta: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [
@@ -266,6 +273,10 @@ export default {
 
       const tagLabelsSet = new Set(tagLabels);
       const generalTags = new Set([HIDE_DEPRECATED_TAG]);
+      // when API changes are available, remove the `HIDE_DEPRECATED_TAG` option
+      if (apiChangesTypesSet.size) {
+        generalTags.delete(HIDE_DEPRECATED_TAG);
+      }
       const availableTags = {
         type: [],
         changes: [],
@@ -351,7 +362,7 @@ export default {
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
-      apiChangesObject, apiChanges,
+      apiChangesObject, apiChanges, deprecatedHidden,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
@@ -375,8 +386,10 @@ export default {
         }
         // find items, that have API changes
         const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
+        // group markers are hidden when filtering, unless "Hide Deprecated" is ON.
+        const isGroupMarker = deprecatedHidden ? false : type === TopicTypes.groupMarker;
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges && type !== TopicTypes.groupMarker;
+        return titleMatch && tagMatch && hasAPIChanges && !isGroupMarker;
       });
     },
     /**
@@ -424,6 +437,14 @@ export default {
     hasFilter({ debouncedFilter, selectedTags, apiChanges }) {
       return Boolean(debouncedFilter.length || selectedTags.length || apiChanges);
     },
+    /**
+     * Determine if "Hide Deprecated" tag is selected.
+     * If we enable multiple tags, this should be an include instead.
+     * @returns boolean
+     */
+    deprecatedHidden: ({ selectedTags, debouncedFilter }) => (
+      selectedTags[0] === HIDE_DEPRECATED_TAG && !debouncedFilter.length
+    ),
     apiChangesObject() {
       return this.apiChanges || {};
     },
@@ -486,8 +507,9 @@ export default {
       // if the activePath items change, we navigated to another page
       const pageChange = !isEqual(activePathChildrenBefore, activePathChildren);
       // decide which items are open
-      // if there is no filter or navigate to page while filtering, ensure activeUID is visible
-      const nodes = (pageChange && this.hasFilter) || !this.hasFilter
+      // if "Hide Deprecated" is picked, there is no filter,
+      // or navigate to page while filtering, we open the items leading to the activeUID
+      const nodes = this.deprecatedHidden || (pageChange && this.hasFilter) || !this.hasFilter
         ? activePathChildren
         // get all parents of the current filter match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
@@ -495,7 +517,9 @@ export default {
       const newOpenNodes = Object.fromEntries(nodes
         .map(({ uid }) => [uid, true]));
       // if we navigate across pages, persist the previously open nodes
-      this.openNodes = Object.assign(pageChange ? this.openNodes : {}, newOpenNodes);
+      const baseNodes = pageChange ? this.openNodes : {};
+      // merge in the new open nodes with the base nodes
+      this.openNodes = Object.assign(baseNodes, newOpenNodes);
       this.generateNodesToRender();
       // update the focus index, based on the activeUID
       this.updateFocusIndexExternally();
@@ -1066,7 +1090,12 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    box-sizing: border-box;
+
+    .badge {
+      margin-top: 0;
+    }
 
     &.router-link-exact-active {
       background: $navigator-head-background-active;
@@ -1083,10 +1112,12 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 
     @include breakpoint(medium, nav) {
       justify-content: center;
+      height: $nav-height;
       padding: 14px $card-horizontal-spacing-large;
     }
 
     @include breakpoint(small, nav) {
+      height: $nav-height-small;
       padding: 12px $card-horizontal-spacing-large;
     }
 
@@ -1196,6 +1227,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   box-sizing: border-box;
   padding: var(--card-vertical-spacing) 0;
   padding-bottom: calc(var(--top-offset, 0px) + var(--card-vertical-spacing));
+  transition: padding-bottom ease-in 0.15s;
 
   @include breakpoint(medium, nav) {
     padding-bottom: $nav-menu-items-ios-bottom-spacing;

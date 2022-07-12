@@ -19,7 +19,7 @@ const mockBaseUrl = 'developer';
 const title = 'Featured';
 const description = 'Browse the latest developer documentation, including tutorials, sample code, articles, and API reference.';
 const differentDescription = 'Some different description.';
-const pagePath = '/path';
+const pageURL = 'http://localhost/developer/path';
 const pageWithTitleAndDescription = {
   name: 'Page with title and description',
   title,
@@ -52,7 +52,7 @@ const assertMetadata = ({
   const expectedTitle = [...new Set([rawTitle, process.env.VUE_APP_TITLE])].filter(Boolean).join(' | ');
   describe(name, () => {
     beforeEach(() => {
-      addOrUpdateMetadata({ ...params, path: pagePath });
+      addOrUpdateMetadata({ ...params, url: pageURL });
     });
 
     it('adds title', () => {

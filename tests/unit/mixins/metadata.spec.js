@@ -21,6 +21,11 @@ const pageData = {
   description: 'Description',
   path: '/path',
 };
+const expectedMetadata = {
+  title: pageData.title,
+  description: pageData.description,
+  url: `http://localhost${pageData.path}`,
+};
 
 const createWrapper = ({ title, description, path }) => (
   shallowMount({
@@ -46,7 +51,7 @@ describe('metadata', () => {
   it('calls addOrUpdateMetadata function when component is created', () => {
     createWrapper(pageData);
     expect(addOrUpdateMetadata).toHaveBeenCalledTimes(1);
-    expect(addOrUpdateMetadata).toHaveBeenCalledWith(pageData);
+    expect(addOrUpdateMetadata).toHaveBeenCalledWith(expectedMetadata);
   });
 
   describe('.extractFirstParagraphText', () => {

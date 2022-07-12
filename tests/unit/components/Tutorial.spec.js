@@ -171,6 +171,7 @@ describe('Tutorial', () => {
     sections,
     hierarchy,
     metadata: { category: 'Blah' },
+    identifierUrl: 'foo',
   };
 
   beforeEach(() => {
@@ -201,6 +202,7 @@ describe('Tutorial', () => {
       chapters: propsData.hierarchy.modules,
       topic: propsData.sections[0].title,
       rootReference: hierarchy.reference,
+      identifierUrl: propsData.identifierUrl,
     });
   });
 
@@ -253,6 +255,7 @@ describe('Tutorial without hero section', () => {
         hierarchy,
         metadata: { category: 'Blah' },
         technologyNavigation: ['overview', 'tutorials', 'resources'],
+        identifierUrl: 'foo',
       },
       mocks,
       provide: {
