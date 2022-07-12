@@ -143,8 +143,7 @@ describe('TopicsLinkBlock', () => {
 
   it('renders a `WordBreak` using <span> tag for Framework name links in Topic that have role collection', () => {
     wrapper.setProps({
-      topic:
-      {
+      topic: {
         ...propsData.topic,
         role: TopicRole.collection,
         kind: TopicKind.symbol,
@@ -153,21 +152,6 @@ describe('TopicsLinkBlock', () => {
     const wordBreak = wrapper.find('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
-    expect(wordBreak.text()).toBe(propsData.topic.title);
-  });
-
-  it('renders a `WordBreak` using <code> tag for Framework name links in Topic that have role: article ', () => {
-    wrapper.setProps({
-      topic:
-      {
-        ...propsData.topic,
-        role: TopicRole.article,
-        kind: TopicKind.symbol,
-      },
-    });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
-    expect(wordBreak.exists()).toBe(true);
-    expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
