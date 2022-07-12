@@ -24,6 +24,7 @@
             <h2 class="card-link">
               {{ technology }}
             </h2>
+            <Badge v-if="isTechnologyBeta" variant="beta" />
           </Reference>
         </div>
         <slot name="post-head" />
@@ -121,6 +122,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
+import Badge from 'docc-render/components/Badge.vue';
 import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
@@ -183,6 +185,7 @@ export default {
     HIDE_DEPRECATED_TAG,
   },
   components: {
+    Badge,
     FilterInput,
     SidenavIcon,
     MagnifierIcon,
@@ -227,6 +230,10 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
+    },
+    isTechnologyBeta: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [
@@ -278,6 +285,10 @@ export default {
 
       const tagLabelsSet = new Set(tagLabels);
       const generalTags = new Set([HIDE_DEPRECATED_TAG]);
+      // when API changes are available, remove the `HIDE_DEPRECATED_TAG` option
+      if (apiChangesTypesSet.size) {
+        generalTags.delete(HIDE_DEPRECATED_TAG);
+      }
       const availableTags = {
         type: [],
         changes: [],
@@ -1104,8 +1115,12 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
-    align-items: baseline;
+    align-items: center;
     box-sizing: border-box;
+
+    .badge {
+      margin-top: 0;
+    }
 
     &.router-link-exact-active {
       background: $navigator-head-background-active;

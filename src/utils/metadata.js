@@ -12,7 +12,7 @@ import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
 
-const createMetaTags = ({ title, description, path }) => [
+const createMetaTags = ({ title, description, url }) => [
   {
     name: 'description',
     content: description,
@@ -39,7 +39,7 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     property: 'og:url',
-    content: resolveAbsoluteUrl(path),
+    content: url,
   },
   {
     property: 'og:image',
@@ -63,7 +63,7 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     name: 'twitter:url',
-    content: resolveAbsoluteUrl(path),
+    content: url,
   },
 ];
 
@@ -97,12 +97,12 @@ const addTitle = (title) => {
  * @param {Object} pageData
  */
 // eslint-disable-next-line import/prefer-default-export
-export function addOrUpdateMetadata({ title, description, path }) {
+export function addOrUpdateMetadata({ title, description, url }) {
   const formattedTitle = formatTitle(title);
   // add title
   addTitle(formattedTitle);
   // create and add metadata tags
-  createMetaTags({ title: formattedTitle, description, path }).forEach(
+  createMetaTags({ title: formattedTitle, description, url }).forEach(
     metadata => addOrUpdateMetaTag(metadata),
   );
 }
