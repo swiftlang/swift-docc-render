@@ -408,7 +408,12 @@ export default {
 
 .full-width-container {
   @include inTargetWeb {
-    @include breakpoint-full-width-container()
+    @include breakpoint-full-width-container();
+    @include breakpoints-from(xlarge) {
+      border-left: 1px solid var(--color-grid);
+      border-right: 1px solid var(--color-grid);
+      box-sizing: border-box;
+    }
   }
 }
 </style>

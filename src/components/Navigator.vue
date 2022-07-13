@@ -209,10 +209,6 @@ export default {
   display: flex;
   flex-flow: column;
 
-  @include breakpoints-from(xlarge) {
-    border-left: 1px solid var(--color-grid);
-  }
-
   @include breakpoint(medium, nav) {
     position: static;
     transition: none;
