@@ -24,6 +24,7 @@
             <h2 class="card-link">
               {{ technology }}
             </h2>
+            <Badge v-if="isTechnologyBeta" variant="beta" />
           </Reference>
         </div>
         <slot name="post-head" />
@@ -114,6 +115,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
+import Badge from 'docc-render/components/Badge.vue';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -173,6 +175,7 @@ export default {
     HIDE_DEPRECATED_TAG,
   },
   components: {
+    Badge,
     FilterInput,
     SidenavIcon,
     NavigatorCardInner,
@@ -216,6 +219,10 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
+    },
+    isTechnologyBeta: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [
@@ -1088,6 +1095,10 @@ $close-icon-size: 19px;
     align-items: center;
     height: $nav-height;
     white-space: nowrap;
+
+    .badge {
+      margin-top: 0;
+    }
 
     &.router-link-exact-active {
       background: $navigator-head-background-active;

@@ -16,6 +16,7 @@
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
+      :is-technology-beta="technology.beta"
       :technology-path="technology.path || technology.url"
       :type="type"
       :children="flatChildren"
@@ -138,8 +139,8 @@ export default {
      * Recomputes the list of flat children.
      * @return NavigatorFlatItem[]
      */
-    flatChildren: ({ flattenNestedData, technology: { children = [] } = {} }) => (
-      flattenNestedData(children)
+    flatChildren: ({ flattenNestedData, technology = {} }) => (
+      flattenNestedData(technology.children || [], null, 0, technology.beta)
     ),
     /**
      * The root item is always a module
@@ -161,9 +162,10 @@ export default {
      * @param {{path: string, type: string, title: string, children?: [] }[]} childrenNodes
      * @param {NavigatorFlatItem | null} parent
      * @param {Number} depth
+     * @param {Boolean} parentBetaStatus
      * @return {NavigatorFlatItem[]}
      */
-    flattenNestedData(childrenNodes, parent = null, depth = 0) {
+    flattenNestedData(childrenNodes, parent = null, depth = 0, parentBetaStatus = false) {
       let items = [];
       const len = childrenNodes.length;
       let index;
@@ -189,10 +191,18 @@ export default {
           // push child to parent
           parent.childUIDs.push(node.uid);
         }
+        // if the parent or the entire technology are marked as `Beta`,
+        // child elements do not get marked as `Beta`.
+        if (node.beta && parentBetaStatus) {
+          node.beta = false;
+        }
+
         items.push(node);
         if (children) {
           // return the children to the parent
-          items = items.concat(this.flattenNestedData(children, node, depth + 1));
+          items = items.concat(this.flattenNestedData(
+            children, node, depth + 1, parentBetaStatus || node.beta,
+          ));
         }
       }
       return items;

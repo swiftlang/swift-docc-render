@@ -34,7 +34,7 @@
 import { PortalTarget } from 'portal-vue';
 
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
-import metadata from 'docc-render/mixins/metadata';
+import metadata from 'theme/mixins/metadata.js';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
