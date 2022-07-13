@@ -199,9 +199,8 @@ export default {
     $route: 'closeMobileSidebar',
     width: {
       immediate: true,
-      handler: debounce(async function widthHandler(value) {
+      handler: debounce(function widthHandler(value) {
         this.emitEventChange(value);
-        await this.$nextTick();
       }, 250, true, true),
     },
     windowWidth: 'getWidthInCheck',
