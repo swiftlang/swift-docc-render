@@ -21,17 +21,25 @@
     aria-label="API Reference"
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
-      <button
-        v-if="currentBreakpoint === BreakpointName.large ? showSidebarToggle: true"
-        aria-label="Open documentation navigator"
-        class="sidenav-toggle"
-        :tabindex="isOpen ? -1 : null"
-        @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
-      >
-        <span class="sidenav-icon-wrapper">
-          <SidenavIcon class="icon-inline sidenav-icon" />
-        </span>
-      </button>
+      <transition name="sidenav-toggle">
+        <button
+          v-if="shouldShowTogggle(currentBreakpoint)"
+          aria-label="Open documentation navigator"
+          class="sidenav-toggle"
+          :tabindex="isOpen ? -1 : null"
+          @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
+        >
+          <span class="sidenav-icon-wrapper">
+            <SidenavIcon class="icon-inline sidenav-icon" />
+          </span>
+        </button>
+      </transition>
+      <transition name="fade">
+        <span
+          v-if="shouldShowTogggle(currentBreakpoint)"
+          class="sidenav-toggle__separator"
+        />
+      </transition>
     </template>
     <template slot="default">
       <slot
@@ -190,6 +198,11 @@ export default {
       // toggle the sidenav
       this.$emit('toggle-sidenav', currentBreakpoint);
     },
+    // Show the sidebar toggle if breakpoint is large and nav is force closed.
+    // On breakpoints below large, always show it.
+    shouldShowTogggle(currentBreakpoint) {
+      return currentBreakpoint === BreakpointName.large ? this.showSidebarToggle : true;
+    },
   },
 };
 </script>
@@ -295,15 +308,11 @@ $sidenav-icon-size: 19px;
     }
   }
 
-  &:after {
-    content: '';
-    position: absolute;
-    right: -$nav-pre-title-item-margin;
+  &__separator {
     height: .8em;
-    top: 50%;
     width: 1px;
     background: var(--color-nav-color);
-    transform: translateY(-50%);
+    align-self: center;
   }
 
   @include nav-in-breakpoint() {
@@ -314,7 +323,7 @@ $sidenav-icon-size: 19px;
     padding-right: $space;
     align-self: stretch;
 
-    &:after {
+    &__separator {
       display: none;
     }
   }
@@ -334,5 +343,28 @@ $sidenav-icon-size: 19px;
   display: flex;
   width: $sidenav-icon-size;
   height: $sidenav-icon-size;
+}
+// fade-in transition for the separator
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s ease-in-out;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+// delay the slide-in animation of the toggle
+.sidenav-toggle-enter-active {
+  transition: margin .15s ease-in-out .3s, visibility 0.15s;
+}
+
+// move the toggle left by 50px, so it goes outside of the nav, and hide it
+.sidenav-toggle-enter, .sidenav-toggle-leave-to {
+  margin-left: -50px;
+  visibility: hidden;
+}
+// upon hiding, start slide animation, and after 0.1s hide so it does not collide
+.sidenav-toggle-leave-active {
+  transition: margin .15s ease-in-out 0s, visibility 0s linear 0.1s;
 }
 </style>

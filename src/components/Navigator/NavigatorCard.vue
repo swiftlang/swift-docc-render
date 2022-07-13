@@ -1140,6 +1140,8 @@ $close-icon-size: 19px;
   right: 0;
   padding-left: $card-horizontal-spacing-large;
   padding-right: $card-horizontal-spacing-large;
+  transition: transform .15s linear 0.3s;
+
   @include safe-area-left-set(padding-right, $card-horizontal-spacing-large);
 
   @include breakpoint(medium, nav) {
@@ -1158,6 +1160,14 @@ $close-icon-size: 19px;
   .close-icon {
     width: $close-icon-size;
     height: $close-icon-size;
+  }
+
+  @include breakpoints-from(large, nav) {
+    // when the entire page is closed on desktop, translate away the button
+    .closed-externally & {
+      transform: translateX(100%);
+      transition-delay: 0s;
+    }
   }
 }
 
