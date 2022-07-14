@@ -580,5 +580,13 @@ describe('NavBase', () => {
       await wrapper.vm.$nextTick();
       expect(resolved).toBe(true);
     });
+
+    it('resolves closeNav immediately, if already closed and in breakpoint', async () => {
+      wrapper = await createWrapper({
+        data: () => ({ inBreakpoint: true, isOpen: false }),
+      });
+      expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+      await expect(wrapper.vm.closeNav()).resolves.toBeUndefined();
+    });
   });
 });

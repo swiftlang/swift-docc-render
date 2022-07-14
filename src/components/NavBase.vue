@@ -217,12 +217,15 @@ export default {
       this.isTransitioning = true;
     },
     closeNav() {
+      const oldValue = this.isOpen;
+      // close the nav
       this.isOpen = false;
-      return this.resolveOnceTransitionsEnd();
+      // return a promise, that resolves when transitions end
+      return this.resolveOnceTransitionsEnd(oldValue);
     },
-    resolveOnceTransitionsEnd() {
-      // if outside the breakpoint, resolve as there is no tray animation
-      if (!this.inBreakpoint) return Promise.resolve();
+    resolveOnceTransitionsEnd(oldIsOpen) {
+      // if outside the breakpoint, or was already closed, resolve as there is no tray animation
+      if (!oldIsOpen || !this.inBreakpoint) return Promise.resolve();
       // enable the transitioning up tracking
       this.isTransitioning = true;
       // resolve a promise, when we stop transitioning
