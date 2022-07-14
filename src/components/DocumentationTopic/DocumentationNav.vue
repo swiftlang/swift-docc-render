@@ -295,12 +295,6 @@ $sidenav-icon-size: 19px;
     color: var(--color-nav-dark-link-color);
   }
 
-  @include nav-in-breakpoint() {
-    padding-right: $nav-pre-title-item-margin;
-    padding-left: $nav-pre-title-item-margin;
-    margin-left: -$nav-pre-title-item-margin;
-  }
-
   &:hover .sidenav-icon-wrapper {
     background: var(--color-fill-gray-quaternary);
 
@@ -364,6 +358,7 @@ $sidenav-icon-size: 19px;
   margin-left: -50px;
   visibility: hidden;
 }
+
 // upon hiding, start slide animation, and after 0.1s hide so it does not collide
 .sidenav-toggle-leave-active {
   transition: margin .15s ease-in-out 0s, visibility 0s linear 0.1s;

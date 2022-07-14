@@ -1064,8 +1064,8 @@ $navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
 $filter-height: 73px;
 $filter-height-small: 62px;
-$navigator-head-background: var(--color-fill-secondary) !default;
-$navigator-head-background-active: var(--color-fill-tertiary) !default;
+$navigator-head-background: var(--color-fill) !default;
+$navigator-head-background-active: var(--color-fill) !default;
 $close-icon-size: 19px;
 
 .navigator-card {
@@ -1171,11 +1171,18 @@ $close-icon-size: 19px;
   .close-icon {
     width: $close-icon-size;
     height: $close-icon-size;
+    padding: 5px;
+    margin-left: -5px;
+    margin-right: -5px;
+    border-radius: $tiny-border-radius;
   }
 
   @include breakpoints-from(large, nav) {
-    // when the entire page is closed on desktop, translate away the button
-    .closed-externally & {
+    &:hover .close-icon {
+      background: var(--color-fill-gray-quaternary);
+    }
+    // when the navigator is closed on desktop, translate away the button
+    .sidebar-hidden & {
       transform: translateX(100%);
       transition-delay: 0s;
     }

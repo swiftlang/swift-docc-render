@@ -11,7 +11,10 @@
 <template>
   <div
     class="adjustable-sidebar-width"
-    :class="{ dragging: isDragging, 'closed-externally': closedExternally }"
+    :class="{
+      dragging: isDragging,
+      'sidebar-hidden': closedExternally
+  }"
   >
     <div
       ref="sidebar"
@@ -23,8 +26,8 @@
         class="aside"
         ref="aside"
         :aria-hidden="closedExternally ? 'true': null"
-        @transitionstart="isTransitioning = true"
-        @transitionend="isTransitioning = false"
+        @transitionstart="trackTransitionStart"
+        @transitionend="trackTransitionEnd"
       >
         <slot
           name="aside"
@@ -334,6 +337,14 @@ export default {
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
     }, 60),
+    trackTransitionStart(event) {
+      if (event.propertyName !== 'width') return;
+      this.isTransitioning = true;
+    },
+    trackTransitionEnd(event) {
+      if (event.propertyName !== 'width') return;
+      this.isTransitioning = false;
+    },
   },
 };
 </script>
@@ -352,7 +363,7 @@ export default {
     cursor: col-resize !important;
   }
 
-  &.closed-externally.dragging /deep/ * {
+  &.sidebar-hidden.dragging /deep/ * {
     cursor: e-resize !important;
   }
 }

@@ -83,7 +83,7 @@
 <script>
 import { waitFrames } from 'docc-render/utils/loading';
 import Language from 'docc-render/constants/Language';
-import debounce from 'docc-render/utils/debounce';
+import throttle from 'docc-render/utils/throttle';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.vue';
 
@@ -125,12 +125,12 @@ export default {
   },
   mounted() {
     // on resize, re-calculate the width of the select.
-    const cb = debounce(async () => {
+    const cb = throttle(async () => {
       // we wait for 3 frames, as that is the minimum it takes
       // for the browser orientation-change transitions to finish
       await waitFrames(3);
       this.calculateSelectWidth();
-    }, 150, true);
+    }, 150);
     window.addEventListener('resize', cb);
     window.addEventListener('orientationchange', cb);
     this.$once('hook:beforeDestroy', () => {
