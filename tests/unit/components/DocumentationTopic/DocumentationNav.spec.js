@@ -211,6 +211,7 @@ describe('DocumentationNav', () => {
       interfaceLanguage: propsData.interfaceLanguage,
       swiftPath: propsData.swiftPath,
       objcPath: propsData.objcPath,
+      closeNav: expect.any(Function),
     });
   });
 

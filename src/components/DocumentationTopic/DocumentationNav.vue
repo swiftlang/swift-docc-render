@@ -56,7 +56,7 @@
         <span v-else class="nav-title-link inactive">Documentation</span>
       </slot>
     </template>
-    <template slot="tray">
+    <template #tray="{ closeNav }">
       <Hierarchy
         :currentTopicTitle="title"
         :isSymbolDeprecated="isSymbolDeprecated"
@@ -74,6 +74,7 @@
           :interfaceLanguage="interfaceLanguage"
           :objcPath="objcPath"
           :swiftPath="swiftPath"
+          :closeNav="closeNav"
         />
         <slot name="menu-items" />
       </NavMenuItems>

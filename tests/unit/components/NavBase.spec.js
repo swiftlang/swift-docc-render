@@ -210,14 +210,21 @@ describe('NavBase', () => {
   });
 
   it('renders the `tray` slot', async () => {
+    let slotProps = null;
     wrapper = await createWrapper({
-      slots: {
-        tray: '<div class="tray-slot">Tray slot content</div>',
+      scopedSlots: {
+        tray(props) {
+          slotProps = props;
+          return this.$createElement('div', { class: 'tray-slot' }, 'Tray slot content');
+        },
       },
     });
     const tray = wrapper.find({ ref: 'tray' });
     expect(tray.find('.tray-slot').text()).toBe('Tray slot content');
     expect(wrapper.find(NavMenuItems).exists()).toBe(false);
+    expect(slotProps).toEqual({
+      closeNav: expect.any(Function),
+    });
   });
 
   it('renders the `menu-items` slot', async () => {
@@ -556,6 +563,22 @@ describe('NavBase', () => {
 
       wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
       expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+    });
+
+    it('resolves closeNav on transitionEnd, only when inside Breakpoint', async () => {
+      wrapper = await createWrapper({
+        data: () => ({ inBreakpoint: true, isOpen: true }),
+      });
+      expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
+      let resolved = false;
+      wrapper.vm.closeNav().then(() => {
+        resolved = true;
+      });
+      await wrapper.vm.$nextTick();
+      expect(resolved).toBe(false);
+      emitEndOfTrayTransition(wrapper);
+      await wrapper.vm.$nextTick();
+      expect(resolved).toBe(true);
     });
   });
 });

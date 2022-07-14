@@ -45,7 +45,7 @@
             @transitionend.self="onTransitionEnd"
             @click="handleTrayClick"
           >
-            <slot name="tray">
+            <slot name="tray" :closeNav="closeNav">
               <NavMenuItems>
                 <slot name="menu-items" />
               </NavMenuItems>
@@ -91,7 +91,7 @@ const NavStateClasses = {
   isDark: 'theme-dark',
   isOpen: 'nav--is-open',
   inBreakpoint: 'nav--in-breakpoint-range',
-  isTransitioning: 'nav--is-opening',
+  isTransitioning: 'nav--is-transitioning',
   isSticking: 'nav--is-sticking',
   hasSolidBackground: 'nav--solid-background',
   hasNoBorder: 'nav--noborder',
@@ -218,6 +218,20 @@ export default {
     },
     closeNav() {
       this.isOpen = false;
+      return this.resolveOnceTransitionsEnd();
+    },
+    resolveOnceTransitionsEnd() {
+      // if outside the breakpoint, resolve as there is no tray animation
+      if (!this.inBreakpoint) return Promise.resolve();
+      // enable the transitioning up tracking
+      this.isTransitioning = true;
+      // resolve a promise, when we stop transitioning
+      return new Promise((resolve) => {
+        const unwatch = this.$watch('isTransitioning', () => {
+          resolve();
+          unwatch();
+        });
+      });
     },
     /**
      * When the closing animation ends,
@@ -626,7 +640,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       visibility: visible;
       transition-delay: 0.2s, 0s;
 
-      @include unify-selector('.nav--is-opening', $nested: true) {
+      @include unify-selector('.nav--is-transitioning', $nested: true) {
         overflow-y: hidden;
       }
 
