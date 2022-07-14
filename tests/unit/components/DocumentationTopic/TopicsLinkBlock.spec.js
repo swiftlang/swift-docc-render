@@ -140,6 +140,42 @@ describe('TopicsLinkBlock', () => {
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
+  it('renders a `WordBreak` using <span> tag for Framework name links in Topic that have role collection', () => {
+    wrapper.setProps({
+      topic: {
+        ...propsData.topic,
+        role: TopicRole.collection,
+        kind: TopicKind.symbol,
+      },
+    });
+    const wordBreak = wrapper.find('.link').find(WordBreak);
+    expect(wordBreak.exists()).toBe(true);
+    expect(wordBreak.attributes('tag')).toBe('span');
+    expect(wordBreak.text()).toBe(propsData.topic.title);
+  });
+
+  it('renders a `WordBreak` using <span> tag for property list links in Topic, which have role dictionarySymbol', () => {
+    wrapper.setProps({
+      topic: {
+        ...propsData.topic,
+        role: TopicRole.dictionarySymbol,
+        kind: TopicKind.symbol,
+      },
+    });
+    const wordBreak = wrapper.find('.link').find(WordBreak);
+    expect(wordBreak.exists()).toBe(true);
+    expect(wordBreak.attributes('tag')).toBe('span');
+    expect(wordBreak.text()).toBe(propsData.topic.title);
+  });
+
+  it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection or dictionarySymbol', () => {
+    wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
+    const wordBreak = wrapper.find('.link').find(WordBreak);
+    expect(wordBreak.exists()).toBe(true);
+    expect(wordBreak.attributes('tag')).toBe('code');
+    expect(wordBreak.text()).toBe(propsData.topic.title);
+  });
+
   it('renders a `WordBreak` using <code> tag for links with a titleStyle == title and no ideTitle', () => {
     wrapper.setProps({ topic: { ...propsData.topic, titleStyle: 'title' } });
     const wordBreak = wrapper.find('.link').find(WordBreak);

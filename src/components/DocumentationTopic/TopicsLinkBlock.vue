@@ -179,6 +179,8 @@ export default {
       if (topic.titleStyle === TitleStyles.title) {
         return topic.ideTitle ? 'span' : 'code';
       }
+      // Framework name and property list links and should not be code voice
+      if (topic.role && (topic.role === TopicRole.collection || topic.role === TopicRole.dictionarySymbol)) return 'span';
 
       switch (topic.kind) {
       case TopicKind.symbol:
