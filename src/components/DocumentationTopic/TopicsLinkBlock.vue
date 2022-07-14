@@ -180,6 +180,7 @@ export default {
       if (topic.titleStyle === TitleStyles.title) {
         return topic.ideTitle ? 'span' : 'code';
       }
+      // Framework name links should not be code voice
       if (topic.role && topic.role === TopicRole.collection) return 'span';
 
       switch (topic.kind) {
