@@ -28,7 +28,7 @@
           :swiftPath="swiftPath"
         />
         <Title :eyebrow="roleHeading">
-          <WordBreak>{{ title }}</WordBreak>
+          <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
             slot="after"
@@ -97,7 +97,7 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import metadata from 'docc-render/mixins/metadata';
+import metadata from 'theme/mixins/metadata.js';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
@@ -328,6 +328,11 @@ export default {
         ? technologyList
         : [];
     },
+    // there shouldn't be a pressing need to use the `WordBreak` component in
+    // the main title for for non-symbol pages with the "enhanced" background
+    titleBreakComponent: ({ enhanceBackground }) => (enhanceBackground
+      ? 'span'
+      : WordBreak),
     showContainer: ({
       isRequirement,
       deprecationSummary,

@@ -246,6 +246,9 @@ $nav-menu-toggle-label-margin: 6px;
     padding: 0 $dropdown-icon-padding 0 4px;
     margin-left: -4px;
     @include font-styles(nav-toggles);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
 
     // remove the default focus styles, and re-add them on keyboard navigation, only.
     &:focus {
