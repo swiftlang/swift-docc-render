@@ -16,8 +16,9 @@
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
     @keydown.left.prevent="handleLeftKeydown"
-    @keydown.right.prevent="handleRightKeydown"
+    @keydown.right.exact.prevent="handleRightKeydown"
     @keydown.enter.prevent="clickReference"
+    @keydown.alt.right.prevent="toggleEntireTree"
   >
     <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
       <span
