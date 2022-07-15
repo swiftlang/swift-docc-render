@@ -286,6 +286,14 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
   });
 
+  it('emits a `toggle-full` event, when alt + clicking on the leaf-link', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.leaf-link').trigger('click', {
+      altKey: true,
+    });
+    expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
+  });
+
   describe('keyboard navigation', () => {
     it('clicks the reference link on `@keydown.enter`', () => {
       const wrapper = createWrapper();
