@@ -12,6 +12,7 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import TopicsLinkBlock from 'docc-render/components/DocumentationTopic/TopicsLinkBlock.vue';
 import { ChangeNames } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { TopicRole } from 'docc-render/constants/roles';
 
 const {
   ReferenceType,

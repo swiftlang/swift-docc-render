@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { TopicRole } from 'docc-render/constants/roles';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import Badge from 'docc-render/components/Badge.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
