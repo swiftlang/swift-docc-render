@@ -7,7 +7,7 @@ body:
     value: |
       Thank you for contributing to Swift-DocC-Render! 
       
-      Before you submit your issue, please complete each text area below with the relevant details for your bug, and complete the steps in the checklist
+      Before you submit your issue, please complete each text area below with the relevant details for your bug, and complete the steps in the checklist.
 - type: textarea
   attributes:
     label: Description
