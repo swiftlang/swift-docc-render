@@ -24,7 +24,7 @@
   }
 
   &::after {
-    right: 0;
+    left: $change-coin-x-offset;
     @include coin($modified-svg, $change-icon-width);
     margin-top: $change-coin-y-offset-reduced;
     // Workaround for a bug, where -webkit-backdrop-filter not working on iOS when <pre> has `overflow: auto`
