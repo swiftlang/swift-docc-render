@@ -76,7 +76,8 @@
           :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
           class="leaf-link"
           ref="reference"
-          @click.native="handleClick"
+          @click.exact.native="handleClick"
+          @click.alt.native.prevent="toggleEntireTree"
         >
           <HighlightMatches
             :text="item.title"

@@ -469,6 +469,16 @@ describe('TopicsLinkBlock', () => {
       expect(linkBlock.classes(`changed-${changeType}`)).toBe(!isOnLink);
     };
 
+    it('does not render the TopicLinkBlockIcon', () => {
+      expect(wrapper.find(TopicLinkBlockIcon).exists()).toBe(true);
+      store.state.apiChanges = {
+        [propsData.topic.identifier]: {
+          change: 'modified',
+        },
+      };
+      expect(wrapper.find(TopicLinkBlockIcon).exists()).toBe(false);
+    });
+
     describe('when the topic does not have an abstract', () => {
       beforeEach(() => {
         wrapper = shallowMount(TopicsLinkBlock, {
