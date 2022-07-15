@@ -188,7 +188,6 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
   });
 
-
   it('emits a `toggle-full` event, when @keydown.right + alt/option the tree-toggle button', () => {
     const wrapper = createWrapper();
     wrapper.find('.tree-toggle').trigger('keydown.right', {
