@@ -66,13 +66,14 @@
           >
             {{ language.name }}
           </span>
-          <router-link
+          <a
             v-else
+            href="#"
             class="nav-menu-link"
-            :to="getRoute(language.route)"
+            @click.prevent="pushRoute(language.route)"
           >
             {{ language.name }}
-          </router-link>
+          </a>
         </li>
       </ul>
     </div>
@@ -110,6 +111,10 @@ export default {
     swiftPath: {
       type: String,
       required: false,
+    },
+    closeNav: {
+      type: Function,
+      default: () => {},
     },
   },
   data() {
@@ -160,7 +165,8 @@ export default {
         path: this.isCurrentPath(route.path) ? null : this.normalizePath(route.path),
       };
     },
-    pushRoute(route) {
+    async pushRoute(route) {
+      await this.closeNav();
       // Persist the selected language as a preference in the store (backed by
       // the browser's local storage so that it can be retrieved later for
       // subsequent navigation without the query parameter present)
