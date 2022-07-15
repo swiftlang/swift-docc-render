@@ -198,11 +198,6 @@ export default {
       // toggle the sidenav
       this.$emit('toggle-sidenav', currentBreakpoint);
     },
-    // Show the sidebar toggle if breakpoint is large and nav is force closed.
-    // On breakpoints below large, always show it.
-    shouldShowTogggle(currentBreakpoint) {
-      return currentBreakpoint === BreakpointName.large ? this.showSidebarToggle : true;
-    },
   },
 };
 </script>

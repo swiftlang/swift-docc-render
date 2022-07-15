@@ -567,7 +567,7 @@ describe('NavBase', () => {
 
     it('resolves closeNav on transitionEnd, only when inside Breakpoint', async () => {
       wrapper = await createWrapper({
-        data: () => ({ inBreakpoint: true, isOpen: true }),
+        data: () => ({ currentBreakpoint: BreakpointName.small, isOpen: true }),
       });
       expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
       let resolved = false;
@@ -583,7 +583,7 @@ describe('NavBase', () => {
 
     it('resolves closeNav immediately, if already closed and in breakpoint', async () => {
       wrapper = await createWrapper({
-        data: () => ({ inBreakpoint: true, isOpen: false }),
+        data: () => ({ currentBreakpoint: BreakpointName.small, isOpen: false }),
       });
       expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
       await expect(wrapper.vm.closeNav()).resolves.toBeUndefined();

@@ -6,12 +6,12 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
 import Hierarchy from 'docc-render/components/DocumentationTopic/DocumentationNav/Hierarchy.vue';
 import Badge from 'docc-render/components/Badge.vue';
-import { createEvent } from '../../../../test-utils';
+import Vue from 'vue';
 
 const {
   HierarchyCollapsedItems,
@@ -61,9 +61,14 @@ const references = {
   [qux.identifier]: qux,
 };
 
+const store = Vue.observable({
+  state: {
+    contentWidth: 1800,
+  },
+});
+
 function changeSize(size) {
-  window.innerWidth = size;
-  window.dispatchEvent(createEvent('resize'));
+  store.state.contentWidth = size;
 }
 
 const mountWithProps = ({ propsData, ...others } = {}) => shallowMount(Hierarchy, {
@@ -79,10 +84,11 @@ const mountWithProps = ({ propsData, ...others } = {}) => shallowMount(Hierarchy
       query: { language: 'objc' },
     },
   },
+  provide: {
+    store,
+  },
   ...others,
 });
-
-window.innerWidth = 1800;
 
 // Currently (as of `@vue/test-utils ^1.0.0-beta.20`), the `.props()` function
 // does not work with functional components like `HierarchyItem` wrappers.
@@ -609,20 +615,6 @@ describe('Hierarchy', () => {
         ]);
       });
     });
-  });
-
-  it('keeps track of the windowSize, and stops on `destroy`', () => {
-    const wrapper = mountWithProps({
-      propsData: {
-        currentTopicTitle: 'Foo',
-      },
-    });
-    expect(wrapper.vm.windowWidth).toEqual(window.innerWidth);
-    changeSize(1800);
-    expect(wrapper.vm.windowWidth).toEqual(window.innerWidth);
-    wrapper.destroy();
-    changeSize(1000);
-    expect(wrapper.vm.windowWidth).toEqual(1800);
   });
 
   it('renders a beta badge', () => {

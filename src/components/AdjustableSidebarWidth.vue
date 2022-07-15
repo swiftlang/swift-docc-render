@@ -14,7 +14,7 @@
     :class="{
       dragging: isDragging,
       'sidebar-hidden': closedExternally
-  }"
+    }"
   >
     <div
       ref="sidebar"
@@ -222,7 +222,9 @@ export default {
       this.noTransition = false;
     },
     openExternally: 'handleExternalOpen',
-    isTransitioning: 'updateContentWidthInStore',
+    isTransitioning(value) {
+      if (!value) this.updateContentWidthInStore();
+    },
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {

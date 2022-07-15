@@ -14,6 +14,8 @@ import AdjustableSidebarWidth, {
   MAX_WIDTH,
   ULTRA_WIDE_DEFAULT,
 } from '@/components/AdjustableSidebarWidth.vue';
+
+import store from '@/stores/DocumentationTopicStore';
 import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
 import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
@@ -62,6 +64,9 @@ const createWrapper = opts => shallowMount(AdjustableSidebarWidth, {
     },
   },
   mocks: { $route: {} },
+  provide: {
+    store,
+  },
   ...opts,
 });
 
@@ -74,6 +79,7 @@ Object.defineProperty(HTMLElement.prototype, 'offsetLeft', { configurable: true,
 describe('AdjustableSidebarWidth', () => {
   beforeEach(() => {
     window.innerWidth = 1000; // 1000 for easy math
+    store.state.contentWidth = 0;
     jest.clearAllMocks();
   });
   it('renders the AdjustableSidebarWidth', () => {
@@ -126,13 +132,8 @@ describe('AdjustableSidebarWidth', () => {
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
       // try going back to large now
-      emitter.vm.$emit('change', BreakpointName.medium);
-      expect(aside.classes()).toContain('no-transition');
-      await waitFrames(5);
-      expect(aside.classes()).not.toContain('no-transition');
-      // assert that going into Large does not add `no-transition`
       emitter.vm.$emit('change', BreakpointName.large);
-      expect(aside.classes()).not.toContain('no-transition');
+      expect(aside.classes()).toContain('no-transition');
       await waitFrames(5);
       expect(aside.classes()).not.toContain('no-transition');
     });
@@ -265,23 +266,23 @@ describe('AdjustableSidebarWidth', () => {
       expect(AdjustableSidebarWidth.watch.$route).toEqual('closeMobileSidebar');
     });
 
-    it('closes the nav, on breakpoint change from small to medium/large', async () => {
+    it('closes the nav, on breakpoint change from medium to large', async () => {
       const wrapper = createWrapper({
         propsData: {
           openExternally: true,
         },
       });
       // setup
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.small);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('update:openExternally')).toBeFalsy();
       // true test
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
       expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
     });
   });
 
-  it('adds a `force-close` class, when `closedExternally: true`', () => {
+  it('adds a `force-close` class, when `closedExternally: true`', async () => {
     const wrapper = createWrapper({
       propsData: {
         closedExternally: true,
@@ -526,12 +527,91 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   it('adds a transition detection', () => {
+    const oldEvent = window.Event;
+    window.Event = null;
+
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
     expect(aside.classes()).not.toContain('animating');
-    aside.trigger('transitionstart');
+    aside.trigger('transitionstart', { propertyName: 'width' });
     expect(aside.classes()).toContain('animating');
-    aside.trigger('transitionend');
+    aside.trigger('transitionend', { propertyName: 'width' });
     expect(aside.classes()).not.toContain('animating');
+    window.Event = oldEvent;
+  });
+
+  it('hides the nav on desktop', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        closedExternally: true,
+      },
+    });
+    expect(wrapper.classes()).toContain('sidebar-hidden');
+    const aside = wrapper.find({ ref: 'aside' });
+    expect(aside.attributes('aria-hidden')).toBe('true');
+    expect(aside.classes()).toContain('force-close');
+  });
+
+  describe('stores the content width in the store', () => {
+    function setContentWidth(wrapper, value) {
+      Object.defineProperty(wrapper.find({ ref: 'content' }).element, 'offsetWidth', {
+        value,
+        writable: true,
+      });
+    }
+
+    it('when dragging to resize', async () => {
+      const wrapper = createWrapper();
+      setContentWidth(wrapper, 99);
+      expect(store.state.contentWidth).toBe(0);
+      wrapper.find('.resize-handle').trigger('touchstart', { type: 'touchstart' });
+      document.dispatchEvent(createEvent(eventsMap.touch.move, {
+        touches: [{
+          clientX: 300,
+        }],
+      }));
+      await flushPromises();
+      expect(store.state.contentWidth).toBe(99);
+    });
+
+    it('when toggling on/off the sidebar', async () => {
+      const backup = window.Event;
+      window.Event = null;
+      const wrapper = createWrapper();
+      setContentWidth(wrapper, 99);
+      expect(store.state.contentWidth).toBe(0);
+      // setup an external close
+      wrapper.setProps({ closedExternally: true });
+      const aside = wrapper.find('.aside');
+      aside.trigger('transitionstart', { propertyName: 'width' });
+      aside.trigger('transitionend', { propertyName: 'width' });
+      await flushPromises();
+      // assert changes
+      expect(store.state.contentWidth).toBe(99);
+      // prepare for an external open
+      setContentWidth(wrapper, 1099);
+      wrapper.setProps({ closedExternally: false });
+      aside.trigger('transitionstart', { propertyName: 'width' });
+      await flushPromises();
+      // assert its the same, until transitions end
+      expect(store.state.contentWidth).toBe(99);
+      aside.trigger('transitionend', { propertyName: 'width' });
+      await flushPromises();
+      expect(store.state.contentWidth).toBe(1099);
+      window.Event = backup;
+    });
+
+    it('when resizing the screen', async () => {
+      const wrapper = createWrapper();
+      setContentWidth(wrapper, 99);
+      expect(store.state.contentWidth).toBe(0);
+      // setup window resize
+      window.innerWidth = 500;
+      window.dispatchEvent(createEvent('resize'));
+      await flushPromises();
+      // assert content changes as well as content width is stored
+      assertWidth(wrapper, 250);
+      expect(store.state.contentWidth).toBe(99);
+    });
   });
 });

@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import {
   shallowMount,
@@ -276,6 +276,9 @@ describe('DocumentationNav', () => {
   });
 
   it('closes the nav, if open and clicking on the sidenav-toggle', async () => {
+    const backup = window.Event;
+    window.Event = null;
+
     wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
     await flushPromises();
     wrapper.find('.nav-menucta').trigger('click');
@@ -283,11 +286,13 @@ describe('DocumentationNav', () => {
     const toggle = wrapper.find('.sidenav-toggle');
     expect(toggle.attributes()).toHaveProperty('tabindex', '-1');
     toggle.trigger('click');
+    wrapper.find('.nav-menu-tray').trigger('transitionend', { propertyName: 'max-height' });
     expect(wrapper.classes()).not.toContain('nav--is-open');
     expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
     await flushPromises();
     expect(wrapper.emitted('toggle-sidenav')).toEqual([[BreakpointName.medium]]);
     expect(toggle.attributes()).not.toHaveProperty('tabindex');
+    window.Event = backup;
   });
 
   it('renders the nav, with `isWideFormat` to `false`', () => {

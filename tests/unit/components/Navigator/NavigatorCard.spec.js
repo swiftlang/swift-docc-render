@@ -335,13 +335,10 @@ describe('NavigatorCard', () => {
   it('reverses the FilterInput, on mobile', async () => {
     const wrapper = createWrapper({
       propsData: {
-        breakpoint: BreakpointName.small,
+        breakpoint: BreakpointName.medium,
       },
     });
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
-    wrapper.setProps({ breakpoint: BreakpointName.medium });
-    await flushPromises();
-    expect(wrapper.find(FilterInput).props('positionReversed')).toBe(true);
   });
 
   it('renders aria-live regions for polite and assertive notifications', () => {
@@ -1220,7 +1217,7 @@ describe('NavigatorCard', () => {
 
   it('emits a `close` event', async () => {
     const wrapper = createWrapper();
-    const button = wrapper.find('.close-card-mobile');
+    const button = wrapper.find('.close-card');
     button.trigger('click');
     await flushPromises();
     expect(button.attributes('aria-label')).toBe('Close documentation navigator');

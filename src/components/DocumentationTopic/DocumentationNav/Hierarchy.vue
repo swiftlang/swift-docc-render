@@ -142,7 +142,7 @@ export default {
     firstItemSlice: ({ root }) => (root ? 1 : 0),
     /**
      * Figure out how many items we can show, after the collapsed items,
-     * based on the window.innerWidth
+     * based on the content width
      */
     linksAfterCollapse: ({ windowWidth, hasBadge }) => {
       const extraItemsToRemove = hasBadge ? 1 : 0;
