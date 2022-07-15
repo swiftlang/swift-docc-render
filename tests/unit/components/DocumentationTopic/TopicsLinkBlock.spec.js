@@ -155,7 +155,21 @@ describe('TopicsLinkBlock', () => {
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
-  it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection', () => {
+  it('renders a `WordBreak` using <span> tag for property list links in Topic, which have role dictionarySymbol', () => {
+    wrapper.setProps({
+      topic: {
+        ...propsData.topic,
+        role: TopicRole.dictionarySymbol,
+        kind: TopicKind.symbol,
+      },
+    });
+    const wordBreak = wrapper.find('.link').find(WordBreak);
+    expect(wordBreak.exists()).toBe(true);
+    expect(wordBreak.attributes('tag')).toBe('span');
+    expect(wordBreak.text()).toBe(propsData.topic.title);
+  });
+
+  it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection or dictionarySymbol', () => {
     wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
     const wordBreak = wrapper.find('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
