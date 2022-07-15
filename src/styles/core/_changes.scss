@@ -110,34 +110,6 @@ $deprecated-dark-rounded-svg: $deprecated-svg !default;
   padding-top: $change-highlight-vertical-space-total;
   padding-bottom: $change-highlight-vertical-space-total;
 }
-///
-/// Counteracts the left (start) padding created by `change-highlight-horizontal-spacing()`
-/// in order to keep the text aligned with its siblings.
-/// The 1 value represents the border width.
-///
-@mixin change-highlight-horizontal-text-alignment() {
-  //margin-left: -8px;
-  //width: calc(100% + 8px);
-
-  //@include change-highlight-horizontal-text-alignment-small();
-}
-
-///
-/// Small vp specific padding and margin to have margin go outside of content symmetrically
-///
-@mixin change-highlight-horizontal-text-alignment-small() {
-  @include breakpoint(small) {
-    &:not(.changed) {
-      margin-left: 0;
-      width: 100%;
-    }
-
-    &.changed {
-      margin-left: -$change-icon-occupied-space;
-      width: calc(100% + #{$change-icon-occupied-space * 2});
-    }
-  }
-}
 
 ////
 /// Apply styles related to the API diff/changes functionality
