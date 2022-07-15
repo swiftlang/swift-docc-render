@@ -22,23 +22,22 @@
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
       <transition name="sidenav-toggle">
-        <button
-          v-if="shouldShowTogggle(currentBreakpoint)"
-          aria-label="Open documentation navigator"
-          class="sidenav-toggle"
-          :tabindex="isOpen ? -1 : null"
-          @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
+        <div
+          v-show="showSidebarToggle"
+          class="sidenav-toggle-wrapper"
         >
+          <button
+            aria-label="Open documentation navigator"
+            class="sidenav-toggle"
+            :tabindex="isOpen ? -1 : null"
+            @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
+          >
           <span class="sidenav-icon-wrapper">
             <SidenavIcon class="icon-inline sidenav-icon" />
           </span>
-        </button>
-      </transition>
-      <transition name="fade">
-        <span
-          v-if="shouldShowTogggle(currentBreakpoint)"
-          class="sidenav-toggle__separator"
-        />
+          </button>
+          <span class="sidenav-toggle__separator" />
+        </div>
       </transition>
     </template>
     <template slot="default">
@@ -285,11 +284,31 @@ $sidenav-icon-size: 19px;
   }
 }
 
+.sidenav-toggle-wrapper {
+  display: flex;
+  margin-top: 1px;
+
+  // This is a hack to enforce the toggle to be visible when in breakpoint,
+  // even if already toggled off on desktop.
+  @include nav-in-breakpoint() {
+    display: flex !important;
+  }
+}
+
+// desktop only animation for the toggle
+@include breakpoints-from(large, nav) {
+  .sidenav-toggle-enter-active, .sidenav-toggle-leave-active {
+    transition: margin $adjustable-sidebar-hide-transition-duration ease-in 0s;
+  }
+  .sidenav-toggle-enter, .sidenav-toggle-leave-to {
+    margin-left: -64px;
+  }
+}
+
 .sidenav-toggle {
   align-self: center;
   color: var(--color-nav-link-color);
   position: relative;
-  margin-right: $nav-pre-title-item-margin;
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);
@@ -308,6 +327,7 @@ $sidenav-icon-size: 19px;
     width: 1px;
     background: var(--color-nav-color);
     align-self: center;
+    margin: 0 $nav-padding;
   }
 
   @include nav-in-breakpoint() {
@@ -338,29 +358,5 @@ $sidenav-icon-size: 19px;
   display: flex;
   width: $sidenav-icon-size;
   height: $sidenav-icon-size;
-}
-// fade-in transition for the separator
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s ease-in-out;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-
-// delay the slide-in animation of the toggle
-.sidenav-toggle-enter-active {
-  transition: margin .15s ease-in-out .3s, visibility 0.15s;
-}
-
-// move the toggle left by 50px, so it goes outside of the nav, and hide it
-.sidenav-toggle-enter, .sidenav-toggle-leave-to {
-  margin-left: -50px;
-  visibility: hidden;
-}
-
-// upon hiding, start slide animation, and after 0.1s hide so it does not collide
-.sidenav-toggle-leave-active {
-  transition: margin .15s ease-in-out 0s, visibility 0s linear 0.1s;
 }
 </style>

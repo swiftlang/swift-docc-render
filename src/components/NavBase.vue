@@ -552,10 +552,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
 .pre-title {
   display: flex;
-  padding-right: $nav-pre-title-item-margin;
-  padding-left: $nav-pre-title-item-margin;
-  margin-left: -$nav-pre-title-item-margin;
-  overflow: hidden;
 
   &:empty {
     display: none;

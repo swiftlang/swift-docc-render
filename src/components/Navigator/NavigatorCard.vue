@@ -1150,10 +1150,11 @@ $close-icon-size: 19px;
   height: 100%;
   right: 0;
   padding-left: $card-horizontal-spacing-large;
-  padding-right: $card-horizontal-spacing-large;
-  transition: transform .15s linear 0.3s;
+  padding-right: $nav-padding;
 
-  @include safe-area-left-set(padding-right, $card-horizontal-spacing-large);
+  transition: visibility 0s linear $adjustable-sidebar-hide-transition-duration;
+
+  @include safe-area-left-set(padding-right, $nav-padding);
 
   @include breakpoint(medium, nav) {
     right: unset;
@@ -1183,7 +1184,7 @@ $close-icon-size: 19px;
     }
     // when the navigator is closed on desktop, translate away the button
     .sidebar-hidden & {
-      transform: translateX(100%);
+      visibility: hidden;
       transition-delay: 0s;
     }
   }

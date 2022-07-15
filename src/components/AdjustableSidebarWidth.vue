@@ -386,15 +386,18 @@ export default {
   }
 
   @include breakpoints-from(large, nav) {
+
     &:not(.dragging) {
-      transition: width 0.15s ease-in, visibility 0s linear 0s;
+      transition: width $adjustable-sidebar-hide-transition-duration ease-in,
+      visibility 0s linear 0s;
     }
 
     &.force-close {
       width: 0 !important;
       visibility: hidden;
       pointer-events: none;
-      transition: width 0.15s ease-in, visibility 0s linear 0.2s;
+      transition: width $adjustable-sidebar-hide-transition-duration ease-in,
+      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
     }
   }
 
