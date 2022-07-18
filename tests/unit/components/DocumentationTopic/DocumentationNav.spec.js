@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import {
   shallowMount,
@@ -268,9 +268,18 @@ describe('DocumentationNav', () => {
   });
 
   it('renders a sidenav toggle, emitting `@toggle-sidenav` event', async () => {
-    const button = wrapper.find('.sidenav-toggle');
+    // assert the wrapper is hidden
+    const sidenavToggleWrapper = wrapper.find('.sidenav-toggle-wrapper');
+    expect(sidenavToggleWrapper.isVisible()).toBe(false);
+    // show the wrapper
+    wrapper.setProps({ sidenavHiddenOnLarge: true });
+    // assert its visible
+    expect(sidenavToggleWrapper.isVisible()).toBe(true);
+    // interact with button
+    const button = sidenavToggleWrapper.find('.sidenav-toggle');
     button.trigger('click');
     await flushPromises();
+    // assert the button works and is rendered as expected
     expect(button.attributes('aria-label')).toBe('Open documentation navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
   });

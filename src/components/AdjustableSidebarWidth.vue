@@ -13,7 +13,7 @@
     class="adjustable-sidebar-width"
     :class="{
       dragging: isDragging,
-      'sidebar-hidden': closedExternally
+      'sidebar-hidden': hiddenOnLarge
     }"
   >
     <div
@@ -25,7 +25,7 @@
         :style="asideStyles"
         class="aside"
         ref="aside"
-        :aria-hidden="closedExternally ? 'true': null"
+        :aria-hidden="hiddenOnLarge ? 'true': null"
         @transitionstart="trackTransitionStart"
         @transitionend="trackTransitionEnd"
       >
@@ -105,11 +105,11 @@ export default {
   },
   inject: ['store'],
   props: {
-    openExternally: {
+    shownOnMobile: {
       type: Boolean,
       default: false,
     },
-    closedExternally: {
+    hiddenOnLarge: {
       type: Boolean,
       default: false,
     },
@@ -161,11 +161,11 @@ export default {
       '--app-height': `${windowHeight}px`,
     }),
     asideClasses: ({
-      isDragging, openExternally, noTransition, isTransitioning, closedExternally, mobileTopOffset,
+      isDragging, shownOnMobile, noTransition, isTransitioning, hiddenOnLarge, mobileTopOffset,
     }) => ({
       dragging: isDragging,
-      'force-open': openExternally,
-      'force-close': closedExternally,
+      'show-on-mobile': shownOnMobile,
+      'hide-on-large': hiddenOnLarge,
       'no-transition': noTransition,
       animating: isTransitioning,
       'has-mobile-top-offset': mobileTopOffset,
@@ -188,7 +188,7 @@ export default {
       window.removeEventListener('resize', this.storeWindowSize);
       window.removeEventListener('orientationchange', this.storeWindowSize);
       window.removeEventListener('scroll', this.storeTopOffset);
-      if (this.openExternally) {
+      if (this.shownOnMobile) {
         this.toggleScrollLock(false);
       }
       if (this.focusTrapInstance) this.focusTrapInstance.destroy();
@@ -221,7 +221,7 @@ export default {
       // re-apply transitions
       this.noTransition = false;
     },
-    openExternally: 'handleExternalOpen',
+    shownOnMobile: 'handleExternalOpen',
     isTransitioning(value) {
       if (!value) this.updateContentWidthInStore();
     },
@@ -245,8 +245,8 @@ export default {
       this.updateContentWidthInStore();
     }, 100),
     closeMobileSidebar() {
-      if (!this.openExternally) return;
-      this.$emit('update:openExternally', false);
+      if (!this.shownOnMobile) return;
+      this.$emit('update:shownOnMobile', false);
     },
     startDrag({ type }) {
       this.isTouch = type === 'touchstart';
@@ -274,14 +274,14 @@ export default {
       // calculate the forceClose cutoff point
       const forceCloseCutoff = this.minWidth / 2;
       // if we are going beyond the cutoff point and we are closed, open the navigator
-      if (this.closedExternally && newWidth >= forceCloseCutoff) {
-        this.$emit('update:closedExternally', false);
+      if (this.hiddenOnLarge && newWidth >= forceCloseCutoff) {
+        this.$emit('update:hiddenOnLarge', false);
       }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);
       // if the new width is smaller than the cutoff point, force close the nav
       if (newWidth <= forceCloseCutoff) {
-        this.$emit('update:closedExternally', true);
+        this.$emit('update:hiddenOnLarge', true);
       }
     },
     /**
@@ -394,7 +394,7 @@ export default {
       visibility 0s linear 0s;
     }
 
-    &.force-close {
+    &.hide-on-large {
       width: 0 !important;
       visibility: hidden;
       pointer-events: none;
@@ -420,7 +420,7 @@ export default {
       opacity: 0;
     }
 
-    &.force-open {
+    &.show-on-mobile {
       transform: translateX(0);
 
       /deep/ .aside-animated-child {

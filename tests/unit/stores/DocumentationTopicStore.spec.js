@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';

@@ -203,15 +203,15 @@ describe('AdjustableSidebarWidth', () => {
       await flushPromises();
       // assert not open
       const aside = wrapper.find('.aside');
-      expect(aside.classes()).not.toContain('force-open');
+      expect(aside.classes()).not.toContain('show-on-mobile');
       expect(FocusTrap).toHaveBeenCalledTimes(1);
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(0);
       expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
       // trigger opening externally
-      wrapper.setProps({ openExternally: true });
+      wrapper.setProps({ shownOnMobile: true });
       await flushPromises();
       // assert open class attached
-      expect(aside.classes()).toContain('force-open');
+      expect(aside.classes()).toContain('show-on-mobile');
       // assert `mobileTopOffset` is the same as the `navStickyElement` `y` offset.
       expect(wrapper.vm.mobileTopOffset).toBe(22);
       // called once on mount, once now
@@ -222,10 +222,10 @@ describe('AdjustableSidebarWidth', () => {
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
       expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
       // close again
-      wrapper.setProps({ openExternally: false });
+      wrapper.setProps({ shownOnMobile: false });
       await flushPromises();
       // assert class
-      expect(aside.classes()).not.toContain('force-open');
+      expect(aside.classes()).not.toContain('show-on-mobile');
       // assert helper status
       expect(scrollLock.unlockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.show).toHaveBeenCalledWith(aside.element);
@@ -240,10 +240,10 @@ describe('AdjustableSidebarWidth', () => {
       // assert not open
       const aside = wrapper.find('.aside');
       // trigger opening externally
-      wrapper.setProps({ openExternally: true });
+      wrapper.setProps({ shownOnMobile: true });
       await flushPromises();
       // assert open class attached
-      expect(aside.classes()).toContain('force-open');
+      expect(aside.classes()).toContain('show-on-mobile');
       // assert `mobileTopOffset` is 0, if `navStickyElement.y` is negative
       expect(wrapper.vm.mobileTopOffset).toBe(0);
       expect(boundingClientSpy).toHaveBeenCalledTimes(2);
@@ -252,13 +252,13 @@ describe('AdjustableSidebarWidth', () => {
     it('allows closing the sidebar, with Esc', () => {
       const wrapper = createWrapper({
         propsData: {
-          openExternally: true,
+          shownOnMobile: true,
         },
       });
       window.dispatchEvent(createEvent('keydown', {
         key: 'Escape',
       }));
-      expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
+      expect(wrapper.emitted('update:shownOnMobile')).toEqual([[false]]);
     });
 
     it('allows closing the sidebar, when `$route` changes', () => {
@@ -269,32 +269,32 @@ describe('AdjustableSidebarWidth', () => {
     it('closes the nav, on breakpoint change from medium to large', async () => {
       const wrapper = createWrapper({
         propsData: {
-          openExternally: true,
+          shownOnMobile: true,
         },
       });
       // setup
       wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
       await wrapper.vm.$nextTick();
-      expect(wrapper.emitted('update:openExternally')).toBeFalsy();
+      expect(wrapper.emitted('update:shownOnMobile')).toBeFalsy();
       // true test
       wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
-      expect(wrapper.emitted('update:openExternally')).toEqual([[false]]);
+      expect(wrapper.emitted('update:shownOnMobile')).toEqual([[false]]);
     });
   });
 
-  it('adds a `force-close` class, when `closedExternally: true`', async () => {
+  it('adds a `hide-on-large` class, when `hiddenOnLarge: true`', async () => {
     const wrapper = createWrapper({
       propsData: {
-        closedExternally: true,
+        hiddenOnLarge: true,
       },
     });
     const aside = wrapper.find({ ref: 'aside' });
-    expect(aside.classes()).toContain('force-close');
+    expect(aside.classes()).toContain('hide-on-large');
     expect(aside.attributes()).toMatchObject({
       'aria-hidden': 'true',
     });
-    wrapper.setProps({ closedExternally: false });
-    expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('force-close');
+    wrapper.setProps({ hiddenOnLarge: false });
+    expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('hide-on-large');
   });
 
   it('changes the sidebar width, if outside the min/max on orientation change', async () => {
@@ -465,7 +465,7 @@ describe('AdjustableSidebarWidth', () => {
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
     // assert dragging
-    expect(wrapper.emitted('update:closedExternally')).toBeFalsy();
+    expect(wrapper.emitted('update:hiddenOnLarge')).toBeFalsy();
     wrapper.find('.resize-handle').trigger('mousedown', { type: 'mousedown' });
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       // minimum is 200, so 100px wide is the forceClose cutoff point, so we drag 50px beyond it
@@ -474,22 +474,22 @@ describe('AdjustableSidebarWidth', () => {
     // assert class
     expect(aside.classes()).toContain('dragging');
     assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
-    expect(wrapper.emitted('update:closedExternally')).toEqual([[true]]);
+    expect(wrapper.emitted('update:hiddenOnLarge')).toEqual([[true]]);
     wrapper.setProps({
-      closedExternally: true,
+      hiddenOnLarge: true,
     });
     // drag open now
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       clientX: 350,
     }));
     assertWidth(wrapper, 250);
-    expect(wrapper.emitted('update:closedExternally')).toEqual([[true], [false]]);
+    expect(wrapper.emitted('update:hiddenOnLarge')).toEqual([[true], [false]]);
   });
 
   it('removes any locks or listeners upon destruction', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    wrapper.setProps({ openExternally: true });
+    wrapper.setProps({ shownOnMobile: true });
     await flushPromises();
     wrapper.destroy();
     expect(FocusTrap.mock.results[0].value.destroy).toHaveBeenCalledTimes(1);
@@ -543,13 +543,13 @@ describe('AdjustableSidebarWidth', () => {
   it('hides the nav on desktop', () => {
     const wrapper = createWrapper({
       propsData: {
-        closedExternally: true,
+        hiddenOnLarge: true,
       },
     });
     expect(wrapper.classes()).toContain('sidebar-hidden');
     const aside = wrapper.find({ ref: 'aside' });
     expect(aside.attributes('aria-hidden')).toBe('true');
-    expect(aside.classes()).toContain('force-close');
+    expect(aside.classes()).toContain('hide-on-large');
   });
 
   describe('stores the content width in the store', () => {
@@ -581,7 +581,7 @@ describe('AdjustableSidebarWidth', () => {
       setContentWidth(wrapper, 99);
       expect(store.state.contentWidth).toBe(0);
       // setup an external close
-      wrapper.setProps({ closedExternally: true });
+      wrapper.setProps({ hiddenOnLarge: true });
       const aside = wrapper.find('.aside');
       aside.trigger('transitionstart', { propertyName: 'width' });
       aside.trigger('transitionend', { propertyName: 'width' });
@@ -590,7 +590,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(store.state.contentWidth).toBe(99);
       // prepare for an external open
       setContentWidth(wrapper, 1099);
-      wrapper.setProps({ closedExternally: false });
+      wrapper.setProps({ hiddenOnLarge: false });
       aside.trigger('transitionstart', { propertyName: 'width' });
       await flushPromises();
       // assert its the same, until transitions end

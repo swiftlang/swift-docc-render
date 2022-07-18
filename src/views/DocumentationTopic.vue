@@ -59,7 +59,7 @@
             :currentTopicTags="topicProps.tags"
             :references="topicProps.references"
             :isWideFormat="enableNavigator"
-            :showSidebarToggle="isLargeSideNavClosed"
+            :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
             @toggle-sidenav="handleToggleSidenav"
           />
           <Topic
@@ -104,11 +104,11 @@ import { storage } from 'docc-render/utils/storage';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
-const NAVIGATOR_CLOSED_KEY = 'navigator-closed';
+const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
 
 export default {
   name: 'DocumentationTopicView',
-  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_CLOSED_KEY },
+  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_HIDDEN_ON_LARGE_KEY },
   components: {
     Navigator,
     AdjustableSidebarWidth,
@@ -125,7 +125,7 @@ export default {
       topicDataDefault: null,
       topicDataObjc: null,
       isMobileSideNavOpen: false,
-      isLargeSideNavClosed: storage.get(NAVIGATOR_CLOSED_KEY, false),
+      sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       store: DocumentationTopicStore,
       quickNavigationStore: QuickNavigationStore,
@@ -287,19 +287,19 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
-    sidebarProps: ({ isMobileSideNavOpen, enableNavigator, isLargeSideNavClosed }) => (
+    sidebarProps: ({ isMobileSideNavOpen, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
         ? {
           class: 'full-width-container topic-wrapper',
-          openExternally: isMobileSideNavOpen,
-          closedExternally: isLargeSideNavClosed,
+          shownOnMobile: isMobileSideNavOpen,
+          hiddenOnLarge: sidenavHiddenOnLarge,
         }
         : { class: 'static-width-container topic-wrapper' }
     ),
     sidebarListeners() {
       return this.enableNavigator ? ({
-        'update:openExternally': this.toggleMobileSidenav,
-        'update:closedExternally': this.toggleLargeSidenav,
+        'update:shownOnMobile': this.toggleMobileSidenav,
+        'update:hiddenOnLarge': this.toggleLargeSidenav,
       }) : {};
     },
   },
@@ -317,9 +317,9 @@ export default {
         this.toggleMobileSidenav();
       }
     },
-    toggleLargeSidenav(value = !this.isLargeSideNavClosed) {
-      this.isLargeSideNavClosed = value;
-      storage.set(NAVIGATOR_CLOSED_KEY, value);
+    toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
+      this.sidenavHiddenOnLarge = value;
+      storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
     },
     toggleMobileSidenav(value = !this.isMobileSideNavOpen) {
       this.isMobileSideNavOpen = value;

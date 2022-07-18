@@ -39,7 +39,7 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
 });
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
-const { NAVIGATOR_CLOSED_KEY } = DocumentationTopic.constants;
+const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
 const mocks = {
   $bridge: {
@@ -172,8 +172,8 @@ describe('DocumentationTopic', () => {
     expect(adjustableWidth.classes())
       .toEqual(expect.arrayContaining(['full-width-container', 'topic-wrapper']));
     expect(adjustableWidth.props()).toEqual({
-      openExternally: false,
-      closedExternally: false,
+      shownOnMobile: false,
+      hiddenOnLarge: false,
     });
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
@@ -398,6 +398,7 @@ describe('DocumentationTopic', () => {
       interfaceLanguage: topicData.identifier.interfaceLanguage,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
+      sidenavHiddenOnLarge: false,
     });
     expect(nav.attributes()).toMatchObject({
       interfacelanguage: 'swift',
@@ -431,7 +432,7 @@ describe('DocumentationTopic', () => {
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
-  it('handles the `@close`, on Navigator', async () => {
+  it('handles the `@close`, on Navigator, for Mobile breakpoints', async () => {
     wrapper.setData({
       topicData: {
         ...topicData,
@@ -439,19 +440,53 @@ describe('DocumentationTopic', () => {
       },
     });
     await flushPromises();
+    const navigator = wrapper.find(Navigator);
     const nav = wrapper.find(Nav);
+    // toggle the navigator from the Nav component, in Small breakpoint
     nav.vm.$emit('toggle-sidenav', BreakpointName.small);
     const sidebar = wrapper.find(AdjustableSidebarWidth);
-    expect(sidebar.props('openExternally')).toBe(true);
+    // set the breakpoint to small on the sidebar
+    sidebar.vm.breakpoint = BreakpointName.small;
+    expect(sidebar.props('shownOnMobile')).toBe(true);
     await flushPromises();
-    wrapper.find(Navigator).vm.$emit('close');
-    expect(sidebar.props('openExternally')).toBe(false);
+    navigator.vm.$emit('close');
+    expect(sidebar.props('shownOnMobile')).toBe(false);
+    // Test that Medium works with the same set of props/events
+    // toggle the navigator from the Nav component, in Medium breakpoint
+    nav.vm.$emit('toggle-sidenav', BreakpointName.medium);
+    expect(sidebar.props('shownOnMobile')).toBe(true);
+    await flushPromises();
+    sidebar.vm.breakpoint = BreakpointName.medium;
+    navigator.vm.$emit('close');
+    expect(sidebar.props('shownOnMobile')).toBe(false);
+    expect(storage.set).toHaveBeenCalledTimes(0);
   });
 
-  it('handles `@toggle-sidenav` on Nav, for `Large` and `Medium` breakpoints', async () => {
+  it('handles the `@close`, on Navigator, for `Large` breakpoints', async () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+    await flushPromises();
+    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    const nav = wrapper.find(Nav);
+    // close the navigator
+    wrapper.find(Navigator).vm.$emit('close');
+    // assert its closed on Large
+    expect(sidebar.props('hiddenOnLarge')).toBe(true);
+    // now toggle it back from the Nav
+    nav.vm.$emit('toggle-sidenav', BreakpointName.large);
+    await flushPromises();
+    // assert its no longer hidden
+    expect(sidebar.props('hiddenOnLarge')).toBe(false);
+  });
+
+  it('handles `@toggle-sidenav` on Nav, for `Large` breakpoint', async () => {
     // assert that the storage was called to get the navigator closed state from LS
     expect(storage.get).toHaveBeenCalledTimes(1);
-    expect(storage.get).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, false);
+    expect(storage.get).toHaveBeenCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false);
 
     wrapper.setData({
       topicData: {
@@ -462,20 +497,17 @@ describe('DocumentationTopic', () => {
     await flushPromises();
     const nav = wrapper.find(Nav);
     const sidebar = wrapper.find(AdjustableSidebarWidth);
-    // assert the prop is false
-    expect(sidebar.props('closedExternally')).toBe(false);
-    // trigger the `@toggle-sidenav` handler
-    nav.vm.$emit('toggle-sidenav', BreakpointName.medium);
-    expect(sidebar.props('closedExternally')).toBe(true);
-    expect(storage.set).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, true);
-    sidebar.vm.$emit('update:closedExternally', false);
-    // assert we are storing the updated values
-    expect(sidebar.props('closedExternally')).toBe(false);
-    expect(storage.set).toHaveBeenCalledWith(NAVIGATOR_CLOSED_KEY, false);
-
+    // assert the hidden prop is false
+    expect(sidebar.props('hiddenOnLarge')).toBe(false);
+    // Now close from the sidebar
+    sidebar.vm.$emit('update:hiddenOnLarge', true);
+    expect(sidebar.props('hiddenOnLarge')).toBe(true);
+    expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, true);
+    // now toggle it back, from within the Nav button
     nav.vm.$emit('toggle-sidenav', BreakpointName.large);
-    expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_CLOSED_KEY, true);
-    sidebar.vm.$emit('update:closedExternally', false);
+    // assert we are storing the updated values
+    expect(sidebar.props('hiddenOnLarge')).toBe(false);
+    expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false);
   });
 
   it('renders a `Topic` with `topicData`', () => {

@@ -23,7 +23,7 @@
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
       <transition name="sidenav-toggle">
         <div
-          v-show="showSidebarToggle"
+          v-show="sidenavHiddenOnLarge"
           class="sidenav-toggle-wrapper"
         >
           <button
@@ -151,7 +151,7 @@ export default {
       type: String,
       required: false,
     },
-    showSidebarToggle: {
+    sidenavHiddenOnLarge: {
       type: Boolean,
       default: false,
     },
@@ -284,7 +284,8 @@ $sidenav-icon-size: 19px;
   margin-top: 1px;
 
   // This is a hack to enforce the toggle to be visible when in breakpoint,
-  // even if already toggled off on desktop.
+  // even if already toggled off on desktop. Conditionally checking the current breakpoint,
+  // would trigger animations when switching between breakpoints.
   @include nav-in-breakpoint() {
     display: flex !important;
   }
@@ -296,7 +297,8 @@ $sidenav-icon-size: 19px;
     transition: margin $adjustable-sidebar-hide-transition-duration ease-in 0s;
   }
   .sidenav-toggle-enter, .sidenav-toggle-leave-to {
-    margin-left: -64px;
+    // 2x the nav padding, 1px border, and the side of the icon
+    margin-left: (rem($sidenav-icon-size + 1px) + $nav-padding * 2) * -1;
   }
 }
 
