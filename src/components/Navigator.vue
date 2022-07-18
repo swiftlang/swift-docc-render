@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
 import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
@@ -74,6 +75,7 @@ export default {
   data() {
     return {
       INDEX_ROOT_KEY,
+      store: QuickNavigationStore,
     };
   },
   props: {
@@ -110,6 +112,9 @@ export default {
       default: null,
     },
   },
+  provide() {
+    return { store: this.store };
+  },
   computed: {
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
@@ -139,9 +144,11 @@ export default {
      * Recomputes the list of flat children.
      * @return NavigatorFlatItem[]
      */
-    flatChildren: ({ flattenNestedData, technology = {} }) => (
-      flattenNestedData(technology.children || [], null, 0, technology.beta)
-    ),
+    flatChildren: ({ flattenNestedData, technology = {}, store }) => {
+      const flatIndex = flattenNestedData(technology.children || [], null, 0, technology.beta);
+      store.setFlattenIndex(flatIndex);
+      return flatIndex;
+    },
     /**
      * The root item is always a module
      */

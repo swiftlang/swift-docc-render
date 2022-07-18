@@ -9,67 +9,72 @@
 -->
 
 <template>
-  <CodeTheme class="doc-topic-view">
-    <template v-if="topicData">
-      <component
-        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
-        v-bind="sidebarProps"
-        v-on="sidebarListeners"
-      >
-        <template #aside="{ scrollLockID, breakpoint }">
-          <div class="doc-topic-aside">
-            <NavigatorDataProvider
-              :interface-language="topicProps.interfaceLanguage"
-              :technology="technology"
-              :api-changes-version="store.state.selectedAPIChangesVersion"
-            >
-              <template #default="slotProps">
-                <transition name="delay-hiding">
-                  <Navigator
-                    v-show="isMobileSideNavOpen || breakpoint === BreakpointName.large"
-                    :parent-topic-identifiers="parentTopicIdentifiers"
-                    :technology="slotProps.technology || technology"
-                    :is-fetching="slotProps.isFetching"
-                    :error-fetching="slotProps.errorFetching"
-                    :api-changes="slotProps.apiChanges"
-                    :references="topicProps.references"
-                    :scrollLockID="scrollLockID"
-                    :breakpoint="breakpoint"
-                    @close="handleToggleSidenav(breakpoint)"
-                  />
-                </transition>
-              </template>
-            </NavigatorDataProvider>
-          </div>
-        </template>
-        <Nav
-          v-if="!isTargetIDE"
-          :title="topicProps.title"
-          :diffAvailability="topicProps.diffAvailability"
-          :interfaceLanguage="topicProps.interfaceLanguage"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :parentTopicIdentifiers="parentTopicIdentifiers"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :currentTopicTags="topicProps.tags"
-          :references="topicProps.references"
-          :isWideFormat="enableNavigator"
-          :showSidebarToggle="isLargeSideNavClosed"
-          @toggle-sidenav="handleToggleSidenav"
-        />
-        <Topic
-          v-bind="topicProps"
-          :key="topicKey"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :languagePaths="languagePaths"
-        />
-      </component>
-    </template>
-  </CodeTheme>
+  <div :class="{ 'modal-open': quickNavigationStore.state.enableQuickNavigation }">
+    <div v-show="quickNavigationStore.state.enableQuickNavigation">
+      <QuickNavigationModal />
+    </div>
+    <CodeTheme class="doc-topic-view">
+      <template v-if="topicData">
+        <component
+          :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
+          v-bind="sidebarProps"
+          v-on="sidebarListeners"
+        >
+          <template #aside="{ scrollLockID, breakpoint }">
+            <div class="doc-topic-aside">
+              <NavigatorDataProvider
+                :interface-language="topicProps.interfaceLanguage"
+                :technology="technology"
+                :api-changes-version="store.state.selectedAPIChangesVersion"
+              >
+                <template #default="slotProps">
+                  <transition name="delay-hiding">
+                    <Navigator
+                      v-show="isMobileSideNavOpen || breakpoint === BreakpointName.large"
+                      :parent-topic-identifiers="parentTopicIdentifiers"
+                      :technology="slotProps.technology || technology"
+                      :is-fetching="slotProps.isFetching"
+                      :error-fetching="slotProps.errorFetching"
+                      :api-changes="slotProps.apiChanges"
+                      :references="topicProps.references"
+                      :scrollLockID="scrollLockID"
+                      :breakpoint="breakpoint"
+                      @close="handleToggleSidenav(breakpoint)"
+                    />
+                  </transition>
+                </template>
+              </NavigatorDataProvider>
+            </div>
+          </template>
+          <Nav
+            v-if="!isTargetIDE"
+            :title="topicProps.title"
+            :diffAvailability="topicProps.diffAvailability"
+            :interfaceLanguage="topicProps.interfaceLanguage"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
+            :parentTopicIdentifiers="parentTopicIdentifiers"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+            :currentTopicTags="topicProps.tags"
+            :references="topicProps.references"
+            :isWideFormat="enableNavigator"
+            :showSidebarToggle="isLargeSideNavClosed"
+            @toggle-sidenav="handleToggleSidenav"
+          />
+          <Topic
+            v-bind="topicProps"
+            :key="topicKey"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+            :languagePaths="languagePaths"
+          />
+        </component>
+      </template>
+    </CodeTheme>
+  </div>
 </template>
 
 <script>
@@ -88,6 +93,7 @@ import Language from 'docc-render/constants/Language';
 import performanceMetrics from 'docc-render/mixins/performanceMetrics';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
+import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
@@ -95,6 +101,7 @@ import StaticContentWidth from 'docc-render/components/DocumentationTopic/Static
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
+import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_CLOSED_KEY = 'navigator-closed';
@@ -110,6 +117,7 @@ export default {
     Topic: DocumentationTopic,
     CodeTheme,
     Nav: DocumentationNav,
+    QuickNavigationModal,
   },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
@@ -118,7 +126,9 @@ export default {
       topicDataObjc: null,
       isMobileSideNavOpen: false,
       isLargeSideNavClosed: storage.get(NAVIGATOR_CLOSED_KEY, false),
+      showQuickNavigationModal: false,
       store: DocumentationTopicStore,
+      quickNavigationStore: QuickNavigationStore,
       BreakpointName,
     };
   },
@@ -279,7 +289,11 @@ export default {
     ),
     sidebarProps: ({ isMobileSideNavOpen, enableNavigator, isLargeSideNavClosed }) => (
       enableNavigator
-        ? { class: 'full-width-container topic-wrapper', openExternally: isMobileSideNavOpen, closedExternally: isLargeSideNavClosed }
+        ? {
+          class: 'full-width-container topic-wrapper',
+          openExternally: isMobileSideNavOpen,
+          closedExternally: isLargeSideNavClosed,
+        }
         : { class: 'static-width-container topic-wrapper' }
     ),
     sidebarListeners() {
@@ -320,7 +334,10 @@ export default {
     this.$bridge.send({ type: 'requestCodeColors' });
   },
   provide() {
-    return { store: this.store };
+    return {
+      quickNavigationStore: this.quickNavigationStore,
+      store: this.store,
+    };
   },
   inject: {
     isTargetIDE: {
@@ -399,6 +416,11 @@ export default {
       border-right: 1px solid var(--color-grid);
     }
   }
+}
+
+.modal-open {
+  position: fixed;
+  width: 100%
 }
 
 .topic-wrapper {

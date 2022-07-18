@@ -92,6 +92,13 @@
             @clear="clearFilters"
           />
         </div>
+        <div
+          class="magnifier-icon"
+          @click="store.toggleShowQuickNavigationModal()"
+          v-if="enableQuickNavigation"
+        >
+          <MagnifierIcon/>
+        </div>
       </div>
     </div>
   </div>
@@ -116,6 +123,9 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
+import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
+import { getSetting } from 'docc-render/utils/theme-settings';
+import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -178,6 +188,7 @@ export default {
     Badge,
     FilterInput,
     SidenavIcon,
+    MagnifierIcon,
     NavigatorCardInner,
     NavigatorCardItem,
     RecycleScroller,
@@ -241,6 +252,7 @@ export default {
       nodesToRender: [],
       activeUID: null,
       resetScroll: false,
+      store: QuickNavigationStore,
       lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
@@ -452,6 +464,9 @@ export default {
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
   },
   created() {
     this.restorePersistedState();
@@ -1053,6 +1068,9 @@ export default {
       this.focusIndex(parentIndex);
     },
   },
+  provide() {
+    return { store: this.store };
+  },
 };
 </script>
 
@@ -1067,6 +1085,13 @@ $filter-height-small: 62px;
 $navigator-head-background: var(--color-fill) !default;
 $navigator-head-background-active: var(--color-fill) !default;
 $close-icon-size: 19px;
+
+.magnifier-icon {
+  height: 20px;
+  width: auto;
+  margin: auto;
+  padding-left: 5px;
+}
 
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
