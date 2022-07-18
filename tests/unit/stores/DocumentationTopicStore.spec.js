@@ -84,7 +84,7 @@ describe('DocumentationTopicStore', () => {
     });
   });
 
-  it('sets teh content width', () => {
+  it('sets the content width', () => {
     DocumentationTopicStore.setContentWidth(99);
     expect(DocumentationTopicStore.state.contentWidth).toBe(99);
   });

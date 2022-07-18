@@ -19,6 +19,7 @@ import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
@@ -408,9 +409,12 @@ describe('DocumentationTopic', () => {
 
     // assert the sidebar
     expect(wrapper.find(AdjustableSidebarWidth).exists()).toBe(false);
+    const staticContentWidth = wrapper.find(StaticContentWidth);
+    expect(staticContentWidth.exists()).toBe(true);
     expect(wrapper.find(Navigator).exists()).toBe(false);
     // assert the proper container class is applied
-    expect(wrapper.find('.topic-wrapper').classes()).toContain('static-width-container');
+    expect(staticContentWidth.classes())
+      .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
   });
 
   it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {

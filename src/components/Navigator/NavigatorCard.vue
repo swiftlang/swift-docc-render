@@ -1207,7 +1207,7 @@ $close-icon-size: 19px;
     &:hover .close-icon {
       background: var(--color-fill-gray-quaternary);
     }
-    // when the navigator is closed on desktop, translate away the button
+    // when the navigator is closed on desktop, hide the button
     .sidebar-hidden & {
       visibility: hidden;
       transition-delay: 0s;
