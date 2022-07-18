@@ -22,14 +22,17 @@ describe('QuickNavigationModal', () => {
     {
       title: 'foo',
       path: '/foo',
+      type: '',
     },
     {
       title: 'fobaro',
       path: '/fobaro',
+      type: '',
     },
     {
       title: 'bar',
       path: '/bar',
+      type: '',
     },
   ];
   const filteredSymbols = [
@@ -37,7 +40,9 @@ describe('QuickNavigationModal', () => {
     symbols[1],
   ];
   const config = {
-    propsData: {},
+    propsData: {
+      isModalOpen: false,
+    },
     provide: {
       quickNavigationStore: {
         state: {

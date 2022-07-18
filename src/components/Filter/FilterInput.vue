@@ -428,7 +428,9 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('keydown', this.onKeydown);
+    if (this.enableQuickNavigation) {
+      window.addEventListener('keydown', this.onKeydown);
+    }
   },
   created() {
     if (
@@ -443,7 +445,9 @@ export default {
     return { store: this.store };
   },
   beforeDestroy() {
-    document.removeEventListener('keydown', this.onKeydown);
+    if (this.enableQuickNavigation) {
+      document.removeEventListener('keydown', this.onKeydown);
+    }
   },
 };
 </script>

@@ -119,8 +119,8 @@ export default {
     border: none;
     margin-top: 0;
     margin-bottom: 0;
-    margin-right: $change-icon-width + $change-highlight-horizontal-space-rem;
-    padding-right: 0;
+    margin-left: $change-icon-occupied-space;
+    padding-left: 0;
   }
 }
 </style>

@@ -9,7 +9,6 @@
 -->
 
 <template>
-
   <div>
     <!-- <PortalTarget name="modal-destination" multiple /> -->
     <!-- <GenericModal
@@ -409,6 +408,10 @@ export default {
       border-right: 1px solid var(--color-grid);
     }
   }
+}
+.modal-open {
+  position: fixed;
+  width: 100%
 }
 
 .topic-wrapper {

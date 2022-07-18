@@ -17,7 +17,7 @@
       class="link"
       ref="apiChangesDiff"
     >
-      <TopicLinkBlockIcon v-if="topic.role" :role="topic.role" />
+      <TopicLinkBlockIcon v-if="topic.role && !change" :role="topic.role" />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
       <span v-if="change" class="visuallyhidden">- {{ changeName }}</span>
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { TopicRole } from 'docc-render/constants/roles';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import Badge from 'docc-render/components/Badge.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
@@ -179,6 +180,8 @@ export default {
       if (topic.titleStyle === TitleStyles.title) {
         return topic.ideTitle ? 'span' : 'code';
       }
+      // Framework name and property list links and should not be code voice
+      if (topic.role && (topic.role === TopicRole.collection || topic.role === TopicRole.dictionarySymbol)) return 'span';
 
       switch (topic.kind) {
       case TopicKind.symbol:
@@ -253,7 +256,6 @@ export default {
 
   &.changed {
     @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment();
     box-sizing: border-box;
   }
 }

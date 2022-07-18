@@ -146,22 +146,18 @@ export default {
       debouncedInput,
       orderSymbolsByPriority,
     }) => {
-      const symbols = flattenIndex.filter(c => (
-        c.type !== 'groupMarker'
-        && c.title != null
+      const symbols = flattenIndex.filter(symbol => (
+        symbol.type !== 'groupMarker'
+        && symbol.title != null
       ));
-      if (debouncedInput) {
-        const regexFuzzyBuilt = constructFuzzyRegex(debouncedInput);
-        const processedInputRegex = RegExp(regexFuzzyBuilt, 'i');
-        const matches = fuzzyMatch({
-          debouncedInput: debouncedInput.toLowerCase(),
-          symbols,
-          processedInputRegex,
-        });
-        const priorityOrderSymbols = orderSymbolsByPriority(matches);
-        return priorityOrderSymbols.slice(0, 20);
-      }
-      return false;
+      if (!debouncedInput) return [];
+      const matches = fuzzyMatch({
+        debouncedInput: debouncedInput.toLowerCase(),
+        symbols,
+        processedInputRegex: new RegExp(constructFuzzyRegex(debouncedInput)),
+      });
+      // Return the first 20 symbols out of sorted ones
+      return orderSymbolsByPriority(matches).slice(0, 20);
     },
     flattenIndex: ({ quickNavigationStore }) => quickNavigationStore.state.flattenIndex,
     modalOn: ({ quickNavigationStore }) => quickNavigationStore.state.enableQuickNavigation,
@@ -206,12 +202,14 @@ export default {
     fuzzyMatch: ({ debouncedInput, symbols, processedInputRegex }) => (
       symbols.map((symbol) => {
         const match = processedInputRegex.exec(symbol.title);
-        // dismiss if symbol isn't matched
+        // Dismiss if symbol isn't matched
         if (!match) return false;
+
         const matchLength = match[0].length;
         const inputLength = debouncedInput.length;
-        // dismiss if match length is greater than 3x the input's length
+        // Dismiss if match length is greater than 3x the input's length
         if (matchLength > inputLength * 3) return false;
+
         return ({
           title: symbol.title,
           path: symbol.path,
