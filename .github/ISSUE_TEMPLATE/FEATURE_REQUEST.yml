@@ -1,6 +1,6 @@
 name: Feature Request
 description: A suggestion for a new feature
-labels: [enhancement]
+labels: [New Feature]
 body:
 - type: markdown
   attributes:
@@ -21,7 +21,9 @@ body:
 
       Design proposals to show what's missing, or what new capabilities will be possible, are very helpful! Provide links to existing issues or external references/discussions, if appropriate.
 
-      How does it behaves in different viewports?
+      How does it behave in different viewports?
+
+      Are there accessibility considerations for this feature?
   validations:
     required: true
 - type: textarea

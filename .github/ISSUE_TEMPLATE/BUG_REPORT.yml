@@ -49,9 +49,7 @@ body:
 
       2. With this viewport size...
       
-      3. Run '...'
-      
-      4. See error/bug...
+      3. See error/bug...
   validations:
     required: false
 - type: input
