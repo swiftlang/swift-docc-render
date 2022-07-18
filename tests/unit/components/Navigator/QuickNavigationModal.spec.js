@@ -56,7 +56,7 @@ describe('QuickNavigationModal', () => {
 
   it('it renders the Quick navigation modal', () => {
     expect(input.exists()).toBe(true);
-    expect(wrapper.classes('quick-navigation-modal')).toBe(true);
+    expect(wrapper.classes('quick-navigation')).toBe(true);
   });
 
   it('it adds text to the input', async () => {

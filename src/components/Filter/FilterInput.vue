@@ -98,6 +98,22 @@
             <ClearRoundedIcon />
           </button>
         </div>
+        <button
+          v-if="enableQuickNavigation"
+          class="filter__quick-navigation-container"
+          @click.stop="store.toggleShowQuickNavigationModal(true)"
+        >
+          <kbd
+            class="filter__quick-navigation-icon"
+          >
+            <abbr
+              class="filter__open-modal-key"
+              title="Forward slash"
+            >
+              /
+            </abbr>
+          </kbd>
+        </button>
       </div>
       <TagList
         v-if="displaySuggestedTags"
@@ -123,6 +139,8 @@ import { pluralize } from 'docc-render/utils/strings';
 import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
+import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import TagList from './TagList.vue';
 
 // Max number of tags to show
@@ -207,6 +225,7 @@ export default {
       SuggestedTagsId,
       AXinputProperties,
       showSuggestedTags: false,
+      store: QuickNavigationStore,
     };
   },
   computed: {
@@ -275,6 +294,9 @@ export default {
         focus: focusTagHandler,
         'paste-tags': handlePaste,
       }
+    ),
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
     ),
   },
   watch: {
@@ -395,6 +417,18 @@ export default {
         this.$emit('focus-prev');
       }
     },
+    onKeydown(event) {
+      if (
+        event.key === '/'
+        || (event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))
+      ) {
+        this.store.toggleShowQuickNavigationModal(true);
+        event.preventDefault();
+      }
+    },
+  },
+  mounted() {
+    window.addEventListener('keydown', this.onKeydown);
   },
   created() {
     if (
@@ -404,6 +438,12 @@ export default {
     ) {
       this.focusInput();
     }
+  },
+  provide() {
+    return { store: this.store };
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.onKeydown);
   },
 };
 </script>
@@ -429,6 +469,25 @@ $input-height: rem(28px);
   border-radius: $small-border-radius + 1;
   @include on-keyboard-focus() {
     outline: none;
+  }
+  &__quick-navigation-container {
+    padding: 0 10px 0 0;
+    .filter__quick-navigation-icon {
+      height: 20px;
+      width: 20px;
+      margin: auto;
+      color: var(--input-text);
+      border: solid 1px;
+      border-radius: 5px;
+      border-color: var(--color-grid);
+      display: flex;
+      align-items: center;
+      .filter__open-modal-key {
+        text-decoration: none;
+        margin: auto;
+        font-size: rem(12px);
+      }
+    }
   }
 
   &__top-wrapper {

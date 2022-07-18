@@ -9,37 +9,93 @@
 -->
 
 <template>
-  <div class="quick-navigation-modal">
-    <div class="container">
-      <div
-        class="close-icon"
-        @click="closeQuickNavigationModal()"
-      >
-        <p>
-          Close
-        </p>
+  <div
+    class="quick-navigation"
+  >
+    <div
+      class="quick-navigation__modal-shadow"
+      @click="closeQuickNavigationModal()"
+    >
+    </div>
+    <div
+      class="quick-navigation__container"
+      ref="container"
+    >
+      <div class="quick-navigation__input-container">
+        <div class="quick-navigation__magnifier-icon-container">
+          <MagnifierIcon/>
+        </div>
+        <input
+          class="quick-navigation__filter"
+          ref="input"
+          type="text"
+          placeholder="Quick Navigation"
+          v-model="userInput"
+          @input="selectedIndex = 0"
+        />
+        <button
+          v-if="userInput.length"
+          class="quick-navigation__clear-icon"
+          @click="clearUserInput()"
+        >
+          <ClearRoundedIcon />
+        </button>
+        <div class="quick-navigation__close-key">
+          <span>
+            ESC
+          </span>
+        </div>
       </div>
-      <input
-        ref="input"
-        class="filter"
-        v-model="userInput"
-        type="text"
-      />
-      <div>
+      <div
+        class="quick-navigation__match-list"
+        :class="{ 'active' : debouncedInput.length }"
+      >
+        <div
+          v-if="debouncedInput.length && !filteredSymbols.length"
+          class="no-results"
+        >
+          <p>
+            No results found.
+         </p>
+        </div>
         <div
           v-for="(symbol, idx) in filteredSymbols"
-          class="symbol-match"
-          @click="closeQuickNavigationModal()"
+          :class="{ 'selected': idx == selectedIndex }"
           :key="idx"
+          @click="closeQuickNavigationModal()"
         >
-          <Reference :url="symbol.path" :id="idx">
-              -
-              {{ symbol.title.slice(0, symbol.start) }}
-              <QuickNavigationHighlighter
-                :text="symbol.substring"
-                :matcherText="debouncedInput"
-              />
-              {{ symbol.title.slice(symbol.start + symbol.matchLength) }}
+          <Reference
+            class="quick-navigation__reference"
+            :url="symbol.path"
+            :id="idx"
+          >
+            <div
+              class="quick-navigation__symbol-match"
+              ref="match"
+            >
+              <div class="symbol-info">
+                <div class="symbol-name">
+                  <NavigatorLeafIcon
+                    class="navigator-icon"
+                    :type="symbol.type"
+                  />
+                  <p class="symbol-title">
+                      {{ symbol.title.slice(0, symbol.start) }}<QuickNavigationHighlighter
+                      :text="symbol.substring"
+                      :matcherText="debouncedInput"
+                    /><span
+                    >{{ symbol.title.slice(symbol.start + symbol.matchLength) }}
+                    </span>
+                  </p>
+                </div>
+                <div
+                  v-if="symbol.relativePath"
+                  class="symbol-path"
+                >
+                  {{ symbol.relativePath }}
+                </div>
+              </div>
+            </div>
           </Reference>
         </div>
       </div>
@@ -48,31 +104,44 @@
 </template>
 
 <script>
-import debounce from 'docc-render/utils/debounce';
+import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
-import { safeHighlightPattern } from 'docc-render/utils/search-utils';
+import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
+import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import debounce from 'docc-render/utils/debounce';
+import scrollLock from 'docc-render/utils/scroll-lock';
+import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 
 export default {
   name: 'QuickNavigationModal',
   components: {
+    ClearRoundedIcon,
+    MagnifierIcon,
+    NavigatorLeafIcon,
     QuickNavigationHighlighter,
     Reference,
   },
-  inject: ['quickNavigationStore'],
+  props: {
+    isModalOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       debouncedInput: '',
-      quickNavigationStore: this.quickNavigationStore,
       matchingChars: '',
+      selectedIndex: -1,
       userInput: '',
+      quickNavigationStore: this.quickNavigationStore,
     };
   },
   computed: {
     filterPattern: ({ debouncedInput }) => new RegExp(safeHighlightPattern(debouncedInput), 'i'),
     filteredSymbols: ({
-      flattenIndex,
       constructFuzzyRegex,
+      flattenIndex,
       fuzzyMatch,
       debouncedInput,
       orderSymbolsByPriority,
@@ -83,7 +152,7 @@ export default {
       ));
       if (debouncedInput) {
         const regexFuzzyBuilt = constructFuzzyRegex(debouncedInput);
-        const processedInputRegex = RegExp(regexFuzzyBuilt);
+        const processedInputRegex = RegExp(regexFuzzyBuilt, 'i');
         const matches = fuzzyMatch({
           debouncedInput: debouncedInput.toLowerCase(),
           symbols,
@@ -95,14 +164,31 @@ export default {
       return false;
     },
     flattenIndex: ({ quickNavigationStore }) => quickNavigationStore.state.flattenIndex,
+    modalOn: ({ quickNavigationStore }) => quickNavigationStore.state.enableQuickNavigation,
     fuzzyRegex: ({
       constructFuzzyRegex,
       debouncedInput,
     }) => new RegExp(constructFuzzyRegex(debouncedInput.toLowerCase())),
   },
+  watch: {
+    isModalOpen(isOpen) {
+      if (isOpen) {
+        this.onShow();
+      } else {
+        this.onHide();
+      }
+    },
+    userInput: 'debounceInput',
+  },
+  inject: ['quickNavigationStore'],
   methods: {
+    clearUserInput() {
+      this.debouncedInput = '';
+      this.userInput = '';
+      this.$refs.input.focus();
+    },
     closeQuickNavigationModal() {
-      this.quickNavigationStore.toggleShowQuickNavigationModal();
+      this.quickNavigationStore.toggleShowQuickNavigationModal(false);
     },
     constructFuzzyRegex(userInput) {
       // Construct regex for fuzzy match
@@ -119,18 +205,18 @@ export default {
     }, 500),
     fuzzyMatch: ({ debouncedInput, symbols, processedInputRegex }) => (
       symbols.map((symbol) => {
-        const match = processedInputRegex.exec(symbol.title.toLowerCase());
+        const match = processedInputRegex.exec(symbol.title);
         // dismiss if symbol isn't matched
         if (!match) return false;
-
         const matchLength = match[0].length;
         const inputLength = debouncedInput.length;
         // dismiss if match length is greater than 3x the input's length
         if (matchLength > inputLength * 3) return false;
-
         return ({
           title: symbol.title,
           path: symbol.path,
+          relativePath: symbol.path.split('/').slice(3, -1).join('/'),
+          type: symbol.type,
           inputLengthDifference: symbol.title.length - inputLength,
           matchLength,
           matchLengthDifference: matchLength - inputLength,
@@ -139,6 +225,63 @@ export default {
         });
       }).filter(Boolean)
     ),
+    handleKeyDown() {
+      if (
+        this.selectedIndex === this.filteredSymbols.length - 1
+      ) { return; }
+      if (this.selectedIndex === -1) {
+        this.selectedIndex = 0;
+        return;
+      }
+      this.selectedIndex += 1;
+      this.$refs.match[this.selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    },
+    handleKeyUp() {
+      if (
+        !this.filteredSymbols.length
+        || this.selectedIndex === 0
+      ) {
+        this.selectedIndex = 0;
+        return;
+      }
+      this.selectedIndex -= 1;
+      this.$refs.match[this.selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    },
+    handleKeyEnter() {
+      this.$router.push(this.filteredSymbols[this.selectedIndex].path);
+      this.closeQuickNavigationModal();
+    },
+    onHide() {
+      // unlock scroll
+      scrollLock.unlockScroll(this.$refs.container);
+    },
+    onKeydown(event) {
+      if (!this.modalOn) { return; }
+      if (event.key === 'Escape') {
+        this.closeQuickNavigationModal();
+        event.preventDefault();
+        return;
+      }
+      switch (event.key) {
+      case 'ArrowDown':
+        this.handleKeyDown();
+        break;
+      case 'ArrowUp':
+        this.handleKeyUp();
+        event.preventDefault();
+        break;
+      case 'Enter':
+        this.handleKeyEnter();
+        break;
+      default: break;
+      }
+    },
+    onShow() {
+      // lock scroll
+      scrollLock.lockScroll(this.$refs.container);
+      this.$refs.input.focus();
+      this.selectedIndex = -1;
+    },
     orderSymbolsByPriority(matchingSymbols) {
       return matchingSymbols.sort((a, b) => {
         // Shortests symbol match title have preference over larger titles
@@ -154,8 +297,11 @@ export default {
       });
     },
   },
-  watch: {
-    userInput: 'debounceInput',
+  mounted() {
+    window.addEventListener('keydown', this.onKeydown);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.onKeydown);
   },
 };
 </script>
@@ -163,33 +309,117 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-  .close-icon {
-    padding-bottom: 10px;
+.quick-navigation {
+    z-index: 9998;
+  input[type="text"] {
+      font-size: 20px;
   }
-  .container {
-      flex-direction: row;
+  &__clear-icon {
+    height: rem(23px);
+    margin: auto;
+    margin-right: 5px;
+    width: rem(23px);
   }
-  .filter {
+  &__close-key {
+    border: solid 1px;
+    border-color: var(--color-grid);
+    border-radius: 5px;
+    color: var(--color-figure-gray-secondary);
+    font-size: rem(12px);
+    line-height: initial;
+    padding: 5px;
+  }
+  &__container {
+    background-color: var(--color-fill);
+    border: 1px solid var(--color-fill-gray);
     border-radius: $border-radius;
-    background-color: var(--color-fill);
-    border: solid var(--color-figure-gray) 1px;
-    padding: 20px;
-    width: 80%;
-    margin-bottom: 20px;
-  }
-  .quick-navigation-modal {
-    background-color: var(--color-fill);
+    filter: drop-shadow(0px 7px 50px rgba(0, 0, 0, 0.25));
+    left: 0;
+    margin: auto;
     position: fixed;
-    top: 0;
+    right: 0;
+    top: $modal-margin-top;
+    z-index: 10000;
+    width: 680px;
+  }
+  &__filter {
+    background: var(--color-fill);
+    border: 0px;
+    border-radius: $border-radius;
+    box-sizing: border-box;
+    outline-width: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+  }
+  &__input-container {
+    display: flex;
+    padding: 20px;
+  }
+  &__magnifier-icon-container {
+    height: rem(18px);
+    margin: auto;
+    width: rem(18px);
+  }
+  &__match-list {
+    overflow: scroll;
+    max-height: 400px;
+    &.active {
+      border-top: 1px solid var(--color-fill-gray);
+    }
+    .no-results {
+      margin: auto;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .selected {
+      background-color: var(--color-fill-tertiary);
+    }
+  }
+  &__modal-shadow {
+    background-color: var(--color-quick-navigation-modal-shadow);
     bottom: 0;
     left: 0;
+    position: fixed;
     right: 0;
-    z-index: 100;
-    padding: 100px;
-    overflow: scroll;
+    top: 0;
+    z-index: 9999;
   }
-  .symbol-match {
-    width: fit-content;
+  &__reference {
+    text-decoration: none;
   }
+  &__symbol-match {
+    display: flex;
+    height: rem(40px);
+    padding: rem(12px) rem(20px) rem(12px) rem(20px);
+    color: var(--color-figure-gray);
+    &:hover {
+      background-color: var(--color-navigator-item-hover);
+    }
+    .symbol-info {
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 90%;
+      .navigator-icon {
+        margin-bottom: auto;
+        margin-right: rem(10px);
+      }
+      .symbol-name {
+        display: flex;
+        p {
+          margin: 0;
+        }
+        .symbol-title {
+           @include truncate(100%);
+        }
+      }
+      .symbol-path {
+        color: var(--color-figure-gray-secondary);
+        font-size: rem(13px);
+        margin-left: 27px;
+      }
+    }
+  }
+}
 
 </style>
