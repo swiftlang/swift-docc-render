@@ -72,7 +72,9 @@
             {{ politeAriaLive }}
           </div>
           <div aria-live="assertive" class="no-items-wrapper">
-            {{ assertiveAriaLive }}
+            <p class="no-items">
+              {{ assertiveAriaLive }}
+            </p>
           </div>
         </div>
       </NavigatorCardInner>
@@ -97,7 +99,7 @@
           @click="store.toggleShowQuickNavigationModal()"
           v-if="enableQuickNavigation"
         >
-          <MagnifierIcon/>
+          <MagnifierIcon />
         </div>
       </div>
     </div>
@@ -1163,9 +1165,16 @@ $close-icon-size: 19px;
 }
 
 .no-items-wrapper {
+  overflow: hidden;
   color: var(--color-figure-gray-tertiary);
-  @include font-styles(body-reduced);
-  padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
+
+  .no-items {
+    @include font-styles(body-reduced);
+    padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
+    // make sure the text does not get weirdly cut
+    min-width: 200px;
+    box-sizing: border-box;
+  }
 }
 
 .close-card {
@@ -1226,6 +1235,7 @@ $close-icon-size: 19px;
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
+  height: 100%;
   @include breakpoint(medium, nav) {
     --card-vertical-spacing: 0px;
     padding-top: $filter-height-small;
