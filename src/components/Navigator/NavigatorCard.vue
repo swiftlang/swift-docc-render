@@ -1110,6 +1110,8 @@ $close-icon-size: 19px;
 
   .head-wrapper {
     position: relative;
+    overflow: hidden;
+    flex: 1 0 auto;
   }
 
   .navigator-head {
@@ -1177,7 +1179,7 @@ $close-icon-size: 19px;
   padding-left: $card-horizontal-spacing-large;
   padding-right: $nav-padding;
 
-  transition: visibility 0s linear $adjustable-sidebar-hide-transition-duration;
+  transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s, visibility 0s;
 
   @include safe-area-left-set(padding-right, $nav-padding);
 
@@ -1207,10 +1209,14 @@ $close-icon-size: 19px;
     &:hover .close-icon {
       background: var(--color-fill-gray-quaternary);
     }
-    // when the navigator is closed on desktop, hide the button
+    // when the navigator is closed on desktop,
+    // move the button so it looks like its going to the nav
     .sidebar-hidden & {
+      transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s,
+      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
       visibility: hidden;
-      transition-delay: 0s;
+      // 2x the nav padding, 1px border, and the size of the icon
+      transform: translateX(rem($close-icon-size + 1px) + $nav-padding * 2);
     }
   }
 }

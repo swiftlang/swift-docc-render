@@ -206,6 +206,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $sidenav-icon-size: 19px;
+$sidenav-icon-padding-size: 5px;
 
 // overwrite the typography of menu items outside of breakpoint only
 /deep/ .nav-menu {
@@ -297,7 +298,7 @@ $sidenav-icon-size: 19px;
     transition: margin $adjustable-sidebar-hide-transition-duration ease-in 0s;
   }
   .sidenav-toggle-enter, .sidenav-toggle-leave-to {
-    // 2x the nav padding, 1px border, and the side of the icon
+    // 2x the nav padding, 1px border, and the size of the icon
     margin-left: (rem($sidenav-icon-size + 1px) + $nav-padding * 2) * -1;
   }
 }
@@ -306,6 +307,7 @@ $sidenav-icon-size: 19px;
   align-self: center;
   color: var(--color-nav-link-color);
   position: relative;
+  margin: 0 -$sidenav-icon-padding-size;
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);
@@ -342,9 +344,7 @@ $sidenav-icon-size: 19px;
 }
 
 .sidenav-icon-wrapper {
-  padding: 5px;
-  margin-left: -5px;
-  margin-right: -5px;
+  padding: $sidenav-icon-padding-size;
   display: flex;
   align-items: center;
   justify-content: center;
