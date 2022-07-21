@@ -411,8 +411,8 @@ describe('Navigator', () => {
   it('removes the `beta` flag from children, if the technology is a `beta`', () => {
     const technologyClone = clone(technology);
     technologyClone.beta = true;
-    technologyClone.children[0].beta = true;
-    technologyClone.children[0].children[0].beta = true;
+    technologyClone.children[1].beta = true;
+    technologyClone.children[1].children[0].beta = true;
     const wrapper = createWrapper({
       propsData: {
         technology: technologyClone,
@@ -423,12 +423,12 @@ describe('Navigator', () => {
 
   it('removes the `beta` flag from children, if the parent is a `beta`', () => {
     const technologyClone = clone(technology);
-    technologyClone.children[0].beta = true;
-    technologyClone.children[0].children[0].beta = true;
+    technologyClone.children[1].beta = true;
+    technologyClone.children[1].children[1].beta = true;
     // case where the direct parent is NOT `Beta`, but an ancestor is
-    technologyClone.children[0].children[1].children[0].beta = true;
+    technologyClone.children[1].children[2].children[0].beta = true;
     // set an end node as beta
-    technologyClone.children[1].children[0].beta = true;
+    technologyClone.children[2].children[0].beta = true;
     const wrapper = createWrapper({
       propsData: {
         technology: technologyClone,
