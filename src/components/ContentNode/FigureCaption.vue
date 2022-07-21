@@ -10,7 +10,7 @@
 
 <template>
   <figcaption class="caption">
-    <strong>{{ title }}</strong>&nbsp;<slot />
+    <strong v-if="title">{{ title }}</strong>&nbsp;<slot />
   </figcaption>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: false,
     },
   },
 };

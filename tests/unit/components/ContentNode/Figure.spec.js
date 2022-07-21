@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
 import Figure from 'docc-render/components/ContentNode/Figure.vue';
@@ -20,6 +20,17 @@ describe('Figure', () => {
 
     expect(wrapper.is('figure')).toBe(true);
     expect(wrapper.attributes('id')).toBe(propsData.anchor);
+
+    const p = wrapper.find('p');
+    expect(p.exists()).toBe(true);
+    expect(p.text()).toBe('blah');
+  });
+
+  it('renders a <figure> without an id, just slot content', () => {
+    const wrapper = shallowMount(Figure, { slots });
+
+    expect(wrapper.is('figure')).toBe(true);
+    expect(wrapper.attributes('id')).toBeFalsy();
 
     const p = wrapper.find('p');
     expect(p.exists()).toBe(true);
