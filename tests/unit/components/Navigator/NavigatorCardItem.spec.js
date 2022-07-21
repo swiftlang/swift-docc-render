@@ -200,6 +200,14 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
   });
 
+  it('emits a `toggle-full` event, when @keydown.right + alt/option the tree-toggle button', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('keydown.right', {
+      altKey: true,
+    });
+    expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
+  });
+
   it('emits a `toggle-siblings` event, when cmd + clicking the tree-toggle button', () => {
     const wrapper = createWrapper();
     wrapper.find('.tree-toggle').trigger('click', {
@@ -225,7 +233,24 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
   });
 
-  it('adds a temporary `animating` class, on `@toggle-full`', async () => {
+  it('adds a temporary `animating` class, on `@toggle-full` when @keydown.right + alt/option the tree-toggle button', async () => {
+    const wrapper = createWrapper();
+    wrapper.find('.tree-toggle').trigger('keydown.right', { altKey: true });
+    expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
+    // assert it adds the animating class
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    wrapper.setProps({
+      expanded: true,
+    });
+    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    await flushPromises();
+    // assert we have waited a few frames
+    expect(waitFrames).toHaveBeenCalledTimes(1);
+    expect(waitFrames).toHaveBeenCalledWith(9);
+    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+  });
+
+  it('adds a temporary `animating` class, on `@toggle-full` with alt + rightkey', async () => {
     const wrapper = createWrapper();
     wrapper.find('.tree-toggle').trigger('click', { altKey: true });
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
@@ -271,6 +296,14 @@ describe('NavigatorCardItem', () => {
     const wrapper = createWrapper();
     wrapper.find('.leaf-link').trigger('click');
     expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
+  });
+
+  it('emits a `toggle-full` event, when alt + clicking on the leaf-link', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.leaf-link').trigger('click', {
+      altKey: true,
+    });
+    expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
   });
 
   describe('keyboard navigation', () => {

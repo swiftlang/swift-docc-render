@@ -24,6 +24,7 @@
             <h2 class="card-link">
               {{ technology }}
             </h2>
+            <Badge v-if="isTechnologyBeta" variant="beta" />
           </Reference>
         </div>
         <slot name="post-head" />
@@ -91,6 +92,13 @@
             @clear="clearFilters"
           />
         </div>
+        <div
+          class="magnifier-icon"
+          @click="store.toggleShowQuickNavigationModal()"
+          v-if="enableQuickNavigation"
+        >
+          <MagnifierIcon/>
+        </div>
       </div>
     </div>
   </div>
@@ -114,6 +122,10 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
+import Badge from 'docc-render/components/Badge.vue';
+import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
+import { getSetting } from 'docc-render/utils/theme-settings';
+import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -173,8 +185,10 @@ export default {
     HIDE_DEPRECATED_TAG,
   },
   components: {
+    Badge,
     FilterInput,
     SidenavIcon,
+    MagnifierIcon,
     NavigatorCardInner,
     NavigatorCardItem,
     RecycleScroller,
@@ -217,6 +231,10 @@ export default {
       type: Object,
       default: null,
     },
+    isTechnologyBeta: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [
     keyboardNavigation,
@@ -233,6 +251,7 @@ export default {
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
       activeUID: null,
+      store: QuickNavigationStore,
       lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
@@ -265,6 +284,10 @@ export default {
 
       const tagLabelsSet = new Set(tagLabels);
       const generalTags = new Set([HIDE_DEPRECATED_TAG]);
+      // when API changes are available, remove the `HIDE_DEPRECATED_TAG` option
+      if (apiChangesTypesSet.size) {
+        generalTags.delete(HIDE_DEPRECATED_TAG);
+      }
       const availableTags = {
         type: [],
         changes: [],
@@ -441,6 +464,9 @@ export default {
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
   },
   created() {
     this.restorePersistedState();
@@ -1051,6 +1077,9 @@ export default {
       this.focusIndex(parentIndex);
     },
   },
+  provide() {
+    return { store: this.store };
+  },
 };
 </script>
 
@@ -1063,6 +1092,13 @@ $navigator-card-vertical-spacing: 8px !default;
 $filter-height: 71px;
 $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
+
+.magnifier-icon {
+  height: 20px;
+  width: auto;
+  margin: auto;
+  padding-left: 5px;
+}
 
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
@@ -1088,8 +1124,12 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
-    align-items: baseline;
+    align-items: center;
     box-sizing: border-box;
+
+    .badge {
+      margin-top: 0;
+    }
 
     &.router-link-exact-active {
       background: $navigator-head-background-active;

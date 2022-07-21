@@ -16,6 +16,7 @@
     <NavigatorCard
       v-if="!isFetching"
       :technology="technology.title"
+      :is-technology-beta="technology.beta"
       :technology-path="technology.path || technology.url"
       :type="type"
       :children="flatChildren"
@@ -38,6 +39,7 @@
 </template>
 
 <script>
+import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
 import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
@@ -73,6 +75,7 @@ export default {
   data() {
     return {
       INDEX_ROOT_KEY,
+      store: QuickNavigationStore,
     };
   },
   props: {
@@ -109,6 +112,9 @@ export default {
       default: null,
     },
   },
+  provide() {
+    return { store: this.store };
+  },
   computed: {
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
@@ -138,9 +144,11 @@ export default {
      * Recomputes the list of flat children.
      * @return NavigatorFlatItem[]
      */
-    flatChildren: ({ flattenNestedData, technology: { children = [] } = {} }) => (
-      flattenNestedData(children)
-    ),
+    flatChildren: ({ flattenNestedData, technology = {}, store }) => {
+      const flatIndex = flattenNestedData(technology.children || [], null, 0, technology.beta);
+      store.setFlattenIndex(flatIndex);
+      return flatIndex;
+    },
     /**
      * The root item is always a module
      */
@@ -161,9 +169,10 @@ export default {
      * @param {{path: string, type: string, title: string, children?: [] }[]} childrenNodes
      * @param {NavigatorFlatItem | null} parent
      * @param {Number} depth
+     * @param {Boolean} parentBetaStatus
      * @return {NavigatorFlatItem[]}
      */
-    flattenNestedData(childrenNodes, parent = null, depth = 0) {
+    flattenNestedData(childrenNodes, parent = null, depth = 0, parentBetaStatus = false) {
       let items = [];
       const len = childrenNodes.length;
       let index;
@@ -198,10 +207,18 @@ export default {
           // push child to parent
           parent.childUIDs.push(node.uid);
         }
+        // if the parent or the entire technology are marked as `Beta`,
+        // child elements do not get marked as `Beta`.
+        if (node.beta && parentBetaStatus) {
+          node.beta = false;
+        }
+
         items.push(node);
         if (children) {
           // return the children to the parent
-          items = items.concat(this.flattenNestedData(children, node, depth + 1));
+          items = items.concat(this.flattenNestedData(
+            children, node, depth + 1, parentBetaStatus || node.beta,
+          ));
         }
       }
       return items;
