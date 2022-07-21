@@ -14,13 +14,17 @@ import DeclarationSource
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { hasMultipleLines } from 'docc-render/utils/multipleLines';
 import { themeSettingsState } from 'docc-render/utils/theme-settings';
+import { indentDeclaration } from 'docc-render/utils/indentation';
+import Language from '@/constants/Language';
+import { flushPromises } from '../../../../../test-utils';
 
 const { Token } = DeclarationSource.components;
 const { TokenKind } = Token.constants;
 
-jest.mock('@/utils/multipleLines', () => ({
-  hasMultipleLines: jest.fn(),
-}));
+jest.mock('@/utils/indentation');
+jest.mock('@/utils/multipleLines');
+
+hasMultipleLines.mockImplementation(() => false);
 
 describe('DeclarationSource', () => {
   let wrapper;
@@ -86,6 +90,27 @@ describe('DeclarationSource', () => {
 
     await wrapper.vm.$nextTick();
     expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain(multipleLinesClass);
+  });
+
+  it('runs the hasMultipleLines, after `indentDeclaration` for ObjC code', async () => {
+    const callStack = [];
+    hasMultipleLines.mockImplementationOnce(() => {
+      callStack.push('hasMultipleLines');
+      return true;
+    });
+    indentDeclaration.mockImplementationOnce(() => callStack.push('indentDeclaration'));
+
+    wrapper = shallowMount(DeclarationSource, {
+      propsData: {
+        ...propsData,
+        language: Language.objectiveC.key.api,
+      },
+    });
+    await flushPromises();
+    expect(indentDeclaration).toHaveBeenCalledTimes(1);
+    expect(indentDeclaration)
+      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).element, Language.objectiveC.key.api);
+    expect(callStack).toEqual(['indentDeclaration', 'hasMultipleLines']);
   });
 });
 
