@@ -25,6 +25,7 @@
       :error-fetching="errorFetching"
       :breakpoint="breakpoint"
       :api-changes="apiChanges"
+      :enableQuickNavigation="enableQuickNavigation"
       @close="$emit('close')"
     />
     <NavigatorCardInner v-else class="loading-placeholder">
@@ -46,6 +47,7 @@ import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardIn
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import { getSetting } from 'docc-render/utils/theme-settings';
 
 /**
  * @typedef NavigatorFlatItem
@@ -140,13 +142,20 @@ export default {
       }
       return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat(path);
     },
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
     /**
      * Recomputes the list of flat children.
      * @return NavigatorFlatItem[]
      */
-    flatChildren: ({ flattenNestedData, technology = {}, store }) => {
+    flatChildren: ({
+      enableQuickNavigation, flattenNestedData, technology = {}, store,
+    }) => {
       const flatIndex = flattenNestedData(technology.children || [], null, 0, technology.beta);
-      store.setFlattenIndex(flatIndex);
+      if (enableQuickNavigation) {
+        store.setFlattenIndex(flatIndex);
+      }
       return flatIndex;
     },
     /**
