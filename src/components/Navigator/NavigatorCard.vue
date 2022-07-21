@@ -1211,7 +1211,7 @@ $close-icon-size: 19px;
     padding: 5px;
     margin-left: -5px;
     margin-right: -5px;
-    border-radius: $tiny-border-radius;
+    border-radius: $nano-border-radius;
   }
 
   @include breakpoints-from(large, nav) {

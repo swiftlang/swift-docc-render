@@ -348,7 +348,7 @@ $sidenav-icon-padding-size: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: $tiny-border-radius;
+  border-radius: $nano-border-radius;
 }
 
 .sidenav-icon {
