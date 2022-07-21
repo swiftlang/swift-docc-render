@@ -176,6 +176,8 @@ export default {
       let items = [];
       const len = childrenNodes.length;
       let index;
+      // reference to the last label node
+      let groupMarkerNode = null;
       for (index = 0; index < len; index += 1) {
         // get the children
         const { children, ...node } = childrenNodes[index];
@@ -185,6 +187,13 @@ export default {
         node.uid = this.hashCode(`${parentUID}+${node.path}_${depth}_${index}`);
         // store the parent uid
         node.parent = parentUID;
+        // store the current groupMarker reference
+        if (node.type === TopicTypes.groupMarker) {
+          groupMarkerNode = node;
+        } else if (groupMarkerNode) {
+          // push the current node to the group marker before it
+          groupMarkerNode.childUIDs.push(node.uid);
+        }
         // store which item it is
         node.index = index;
         // store how many siblings it has

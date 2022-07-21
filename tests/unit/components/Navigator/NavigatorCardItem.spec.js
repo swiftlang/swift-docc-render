@@ -134,6 +134,18 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.tree-toggle').exists()).toBe(false);
   });
 
+  it('does not render the expand button, if its a groupMarker with children', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        item: {
+          ...defaultProps.item,
+          type: TopicTypes.groupMarker,
+        },
+      },
+    });
+    expect(wrapper.find('.tree-toggle').exists()).toBe(false);
+  });
+
   it('adds extra classes when expanded', () => {
     const wrapper = createWrapper({
       propsData: {
