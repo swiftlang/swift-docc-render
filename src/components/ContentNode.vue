@@ -20,6 +20,7 @@ import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
+import TabNavigator from './ContentNode/TabNavigator.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -32,6 +33,7 @@ const BlockType = {
   termList: 'termList',
   unorderedList: 'unorderedList',
   dictionaryExample: 'dictionaryExample',
+  tabNavigator: 'tabNavigator',
 };
 
 const InlineType = {
@@ -273,6 +275,16 @@ function renderNode(createElement, references) {
         example: node.example,
       };
       return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
+    }
+    case BlockType.tabNavigator: {
+      // If the tabs are more than 5, use vertical tab instead
+      const vertical = node.tabs.length > 5;
+      return createElement(TabNavigator, {
+        props: {
+          vertical,
+          items: node.tabs,
+        },
+      });
     }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (

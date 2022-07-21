@@ -22,6 +22,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'TabnavItem',
   inject: {
@@ -31,8 +32,8 @@ export default {
   },
   props: {
     value: {
-      type: String,
-      default: '',
+      type: [String, Number],
+      default: null,
     },
   },
   computed: {

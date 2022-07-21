@@ -21,6 +21,7 @@ import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
+import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -317,6 +318,78 @@ describe('ContentNode', () => {
       expect(items.length).toBe(2);
       expect(items.at(0).find('p').text()).toBe('foo');
       expect(items.at(1).find('p').text()).toBe('bar');
+    });
+  });
+
+  describe('with type="tabNavigator"', () => {
+    it('renders a `<TabNavigator>`', () => {
+      const props = {
+        type: 'tabNavigator',
+        tabs: [
+          {
+            title: 'Foo',
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: 'Bar',
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+      const wrapper = mountWithItem(props);
+      const tabs = wrapper.find(TabNavigator);
+      expect(tabs.props()).toEqual({
+        items: props.tabs,
+        position: 'start',
+        vertical: false,
+      });
+    });
+
+    it('renders a `<TabNavigator>` in vertcal mode, if more than 5 tabs', () => {
+      const content = [
+        {
+          type: 'paragraph',
+          inlineContent: [
+            {
+              type: 'text',
+              text: 'foo',
+            },
+          ],
+        },
+      ];
+      const props = {
+        type: 'tabNavigator',
+        tabs: [
+          { title: '1', content },
+          { title: '2', content },
+          { title: '3', content },
+          { title: '4', content },
+          { title: '5', content },
+          { title: '6', content },
+        ],
+      };
+      const wrapper = mountWithItem(props);
+      expect(wrapper.find(TabNavigator).props('vertical')).toBe(true);
     });
   });
 
