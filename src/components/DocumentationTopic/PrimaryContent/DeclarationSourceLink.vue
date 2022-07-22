@@ -16,16 +16,17 @@
     class="declaration-source-link"
   >
     <SwiftFileIcon v-if="isSwiftFile" class="declaration-icon" />
-    <span>{{ fileName }}</span>
+    <WordBreak>{{ fileName }}</WordBreak>
   </a>
 </template>
 
 <script>
 import SwiftFileIcon from 'docc-render/components/Icons/SwiftFileIcon.vue';
+import WordBreak from 'docc-render/components/WordBreak.vue';
 
 export default {
   name: 'DeclarationSourceLink',
-  components: { SwiftFileIcon },
+  components: { WordBreak, SwiftFileIcon },
   props: {
     url: {
       type: String,

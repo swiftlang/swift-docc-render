@@ -2,6 +2,7 @@ import DeclarationSourceLink
   from '@/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
 import { shallowMount } from '@vue/test-utils';
 import SwiftFileIcon from '@/components/Icons/SwiftFileIcon.vue';
+import WordBreak from '@/components/WordBreak';
 
 const defaultProps = {
   url: 'foo.com',
@@ -20,7 +21,7 @@ describe('DeclarationSourceLink', () => {
   it('renders the DeclarationSourceLink with a swift icon', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(SwiftFileIcon).exists()).toBe(true);
-    expect(wrapper.text()).toContain(defaultProps.fileName);
+    expect(wrapper.find(WordBreak).text()).toContain(defaultProps.fileName);
     expect(wrapper.find('a').attributes('href')).toBe(defaultProps.url);
   });
 
