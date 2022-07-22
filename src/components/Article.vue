@@ -16,6 +16,7 @@
       :technology="metadata.category"
       :topic="heroTitle || ''"
       :rootReference="hierarchy.reference"
+      :identifierUrl="identifierUrl"
     />
     <main id="main" role="main" tabindex="0">
       <slot name="above-hero" />
@@ -34,7 +35,7 @@
 import { PortalTarget } from 'portal-vue';
 
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
-import metadata from 'docc-render/mixins/metadata';
+import metadata from 'theme/mixins/metadata.js';
 import Body from './Article/Body.vue';
 import CallToAction from './Article/CallToAction.vue';
 import Hero from './Article/Hero.vue';
@@ -82,6 +83,10 @@ export default {
       validator: sections => sections.every(({ kind }) => (
         Object.prototype.hasOwnProperty.call(SectionKind, kind)
       )),
+    },
+    identifierUrl: {
+      type: String,
+      required: true,
     },
   },
   computed: {

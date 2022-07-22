@@ -16,6 +16,7 @@
       :chapters="hierarchy.modules"
       :topic="tutorialTitle || ''"
       :rootReference="hierarchy.reference"
+      :identifierUrl="identifierUrl"
     />
     <main id="main" role="main" tabindex="0">
       <Section
@@ -33,7 +34,7 @@
 import { PortalTarget } from 'portal-vue';
 
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
-import metadata from 'docc-render/mixins/metadata';
+import metadata from 'theme/mixins/metadata.js';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
@@ -118,6 +119,10 @@ export default {
     },
     metadata: {
       type: Object,
+      required: true,
+    },
+    identifierUrl: {
+      type: String,
       required: true,
     },
   },
