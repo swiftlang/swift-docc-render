@@ -21,6 +21,8 @@ import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
+import Grid from '@/components/ContentNode/Grid.vue';
+import Column from '@/components/ContentNode/Column.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -317,6 +319,54 @@ describe('ContentNode', () => {
       expect(items.length).toBe(2);
       expect(items.at(0).find('p').text()).toBe('foo');
       expect(items.at(1).find('p').text()).toBe('bar');
+    });
+  });
+
+  describe('with type="row"', () => {
+    it('renders a `<Grid>` and `<Column>`', () => {
+      const wrapper = mountWithItem({
+        type: 'row',
+        numberOfColumns: 4,
+        columns: [
+          {
+            size: 2,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const grid = wrapper.find(Grid);
+      expect(grid.props()).toEqual({
+        columns: 4,
+      });
+      const columns = grid.findAll(Column);
+      expect(columns).toHaveLength(2);
+      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).find('p').text()).toBe('foo');
+      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).find('p').text()).toBe('bar');
     });
   });
 
@@ -1030,7 +1080,8 @@ describe('ContentNode', () => {
 
       const content = wrapper.find(StrikeThrough);
       // assert the `strong` tag is rendered
-      expect(content.html()).toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
+      expect(content.html())
+        .toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
     });
   });
 
