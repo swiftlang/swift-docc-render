@@ -86,4 +86,6 @@
   --color-syntax-urls: rgb(102, 153, 255);
   --color-tutorial-background: var(--color-fill-tertiary);
   --color-navigator-item-hover: #{change-color(dark-color(fill-blue), $alpha: 0.5)};
+
+  --color-card-shadow: rgb(255, 255, 255, 0.04);
 }
