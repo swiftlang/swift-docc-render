@@ -116,7 +116,6 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 
 const STORAGE_KEY = 'navigator.state';
@@ -242,7 +241,6 @@ export default {
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
       activeUID: null,
-      resetScroll: false,
       store: QuickNavigationStore,
       lastFocusTarget: null,
       NO_RESULTS,
@@ -322,10 +320,11 @@ export default {
         FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
       )),
       set(values) {
+        // guard against accidental clearings
+        if (!this.selectedTags.length && !values.length) return;
         this.selectedTags = values.map(label => (
           FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label] || label
         ));
-        this.resetScroll = true;
       },
     },
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
@@ -365,7 +364,7 @@ export default {
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
-      apiChangesObject, apiChanges, deprecatedHidden,
+      apiChangesObject, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
@@ -389,15 +388,13 @@ export default {
         }
         // find items, that have API changes
         const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
-        // group markers are hidden when filtering, unless "Hide Deprecated" is ON.
-        const isGroupMarker = deprecatedHidden ? false : type === TopicTypes.groupMarker;
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges && !isGroupMarker;
+        return titleMatch && tagMatch && hasAPIChanges;
       });
     },
     /**
      * Returns a Set of all nodes that match a filter, along with their parents.
-     * @returns NavigatorFlatItem[]
+     * @returns Set<NavigatorFlatItem>
      */
     filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
       filteredChildren.flatMap(({ uid }) => getParents(uid)),
@@ -407,26 +404,30 @@ export default {
      * This is used on both toggling, as well as on navigation and filtering.
      * @return {Object.<string, NavigatorFlatItem>}
      */
-    renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
+    renderableChildNodesMap({
+      filteredChildrenUpToRootSet, childrenMap, hasFilter,
+      getAllChildren, convertChildrenArrayToObject, removeDeprecated,
+    }) {
       if (!hasFilter) return childrenMap;
       let all = [];
       // create a set of all matches and their parents
       filteredChildrenUpToRootSet.forEach((current) => {
-        // if it has no children, just add it
+        // if it's a plain end node, just add it
         if (!current.childUIDs.length) {
           all.push(current);
           return;
         }
+        // check if none of the child items of this parent are matching
         const noChildrenMatch = !current.childUIDs.some(uid => (
           filteredChildrenUpToRootSet.has(childrenMap[uid])
         ));
-        all = all.concat(noChildrenMatch ? this.getAllChildren(current.uid) : current);
+        // if no children are matching, add all to the list, otherwise just the current parent
+        all = all.concat(noChildrenMatch ? removeDeprecated(getAllChildren(current.uid)) : current);
       });
-
-      return this.convertChildrenArrayToObject(all);
+      return convertChildrenArrayToObject(all);
     },
     /**
-     * Creates a computed for the two items, that the openNodes calc depends on
+     * Creates a computed for the items, that the openNodes calc depends on
      */
     nodeChangeDeps: ({
       filteredChildren, activePathChildren, debouncedFilter, selectedTags,
@@ -445,9 +446,7 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags, debouncedFilter }) => (
-      selectedTags[0] === HIDE_DEPRECATED_TAG && !debouncedFilter.length
-    ),
+    deprecatedHidden: ({ selectedTags }) => selectedTags[0] === HIDE_DEPRECATED_TAG,
     apiChangesObject() {
       return this.apiChanges || {};
     },
@@ -455,9 +454,6 @@ export default {
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
-    enableQuickNavigation: () => (
-      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
-    ),
   },
   created() {
     this.restorePersistedState();
@@ -477,7 +473,6 @@ export default {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
-      this.resetScroll = true;
     },
     scrollToFocus() {
       this.$refs.scroller.scrollToItem(this.focusedIndex);
@@ -485,8 +480,6 @@ export default {
     debounceInput: debounce(function debounceInput(value) {
       // store the new filter value
       this.debouncedFilter = value;
-      // note to the component, that we want to reset the scroll
-      this.resetScroll = true;
       // reset the last focus target
       this.lastFocusTarget = null;
     }, 500),
@@ -515,7 +508,11 @@ export default {
       // decide which items are open
       // if "Hide Deprecated" is picked, there is no filter,
       // or navigate to page while filtering, we open the items leading to the activeUID
-      const nodes = this.deprecatedHidden || (pageChange && this.hasFilter) || !this.hasFilter
+      const nodes = (
+        (this.deprecatedHidden && !this.debouncedFilter.length)
+        || (pageChange && this.hasFilter)
+        || !this.hasFilter
+      )
         ? activePathChildren
         // get all parents of the current filter match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
@@ -690,6 +687,15 @@ export default {
         .map(child => this.childrenMap[child]);
     },
     /**
+     * Removes deprecated items from a list
+     * @param {NavigatorFlatItem[]} items
+     * @returns {NavigatorFlatItem[]}
+     */
+    removeDeprecated(items) {
+      if (!this.deprecatedHidden) return items;
+      return items.filter(({ deprecated }) => !deprecated);
+    },
+    /**
      * Stores all the nodes we should render at this point.
      * This gets called everytime you open/close a node,
      * or when you start filtering.
@@ -851,7 +857,7 @@ export default {
       await waitFrames(1);
       if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      if (this.resetScroll) {
+      if (this.hasFilter) {
         this.$refs.scroller.scrollToItem(0);
         return;
       }
@@ -942,7 +948,6 @@ export default {
      */
     setActiveUID(uid) {
       this.activeUID = uid;
-      this.resetScroll = false;
     },
     /**
      * Handles the `navigate` event from NavigatorCardItem, guarding from selecting an item,

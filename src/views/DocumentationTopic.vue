@@ -12,18 +12,21 @@
   <div>
     <!-- <PortalTarget name="modal-destination" multiple />
     <GenericModal
-      :visible="quickNavigationStore.state.enableQuickNavigation"
+      :visible="quickNavigationStore.state.showQuickNavigation"
       isFullscreen
       theme="dark"
     >
        <QuickNavigationModal
-        :isModalOpen=quickNavigationStore.state.enableQuickNavigation
-        v-show="quickNavigationStore.state.enableQuickNavigation"
+        :isModalOpen=quickNavigationStore.state.showQuickNavigation
+        v-show="quickNavigationStore.state.showQuickNavigation"
       />
     </GenericModal> -->
-    <div v-show="quickNavigationStore.state.enableQuickNavigation">
+    <!-- <div :class="{ 'modal-open': quickNavigationStore.state.showQuickNavigation }">
+    <div v-show="quickNavigationStore.state.showQuickNavigation">
+      <QuickNavigationModal/> -->
+    <div v-show="quickNavigationStore.state.showQuickNavigation">
       <QuickNavigationModal
-        :isModalOpen=quickNavigationStore.state.enableQuickNavigation
+        :isModalOpen=quickNavigationStore.state.showQuickNavigation
       />
     </div>
     <CodeTheme class="doc-topic-view">
@@ -409,10 +412,10 @@ export default {
     }
   }
 }
-.modal-open {
-  position: fixed;
-  width: 100%
-}
+// .modal-open {
+//   position: fixed;
+//   width: 100%
+// }
 
 .topic-wrapper {
   flex: 1 1 auto;

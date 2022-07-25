@@ -23,10 +23,18 @@ const technology = {
   title: 'FooTechnology',
   children: [
     {
+      title: 'Group Marker',
+      type: TopicTypes.groupMarker,
+    },
+    {
       title: 'Child0',
       path: '/foo/child0',
       type: 'article',
       children: [
+        {
+          title: 'Group Marker, Child 0',
+          type: TopicTypes.groupMarker,
+        },
         {
           title: 'Child0_GrandChild0',
           path: '/foo/child0/grandchild0',
@@ -284,91 +292,118 @@ describe('Navigator', () => {
   it('flattens deeply nested children and provides them to the NavigatorCard', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(NavigatorCard).props('children')).toEqual([
-      // root
       {
         childUIDs: [
-          745124197,
-          746047719,
-          746971241,
+          551503844,
+          -97593391,
         ],
         depth: 0,
         index: 0,
-        type: 'article',
-        siblingsCount: 2,
+        parent: INDEX_ROOT_KEY,
+        siblingsCount: 3,
+        title: 'Group Marker',
+        type: 'groupMarker',
+        uid: -196255993,
+      },
+      {
+        childUIDs: [
+          -361407047,
+          1438225895,
+          1439149417,
+          1440072939,
+        ],
+        depth: 0,
+        index: 1,
         parent: INDEX_ROOT_KEY,
         path: '/foo/child0',
+        siblingsCount: 3,
         title: 'Child0',
-        uid: 551503843,
+        type: 'article',
+        uid: 551503844,
+      },
+      {
+        childUIDs: [
+          1438225895,
+          1439149417,
+          1440072939,
+        ],
+        depth: 1,
+        index: 0,
+        parent: 551503844,
+        siblingsCount: 4,
+        title: 'Group Marker, Child 0',
+        type: 'groupMarker',
+        uid: -361407047,
       },
       {
         childUIDs: [],
         depth: 1,
-        index: 0,
-        type: 'tutorial',
-        parent: 551503843,
-        siblingsCount: 3,
+        index: 1,
+        parent: 551503844,
         path: '/foo/child0/grandchild0',
+        siblingsCount: 4,
         title: 'Child0_GrandChild0',
-        uid: 745124197,
+        type: 'tutorial',
+        uid: 1438225895,
       },
       {
         childUIDs: [
-          1489150959,
+          305326087,
         ],
         depth: 1,
-        index: 1,
-        type: 'tutorial',
-        parent: 551503843,
-        siblingsCount: 3,
+        index: 2,
+        parent: 551503844,
         path: '/foo/child0/grandchild1',
+        siblingsCount: 4,
         title: 'Child0_GrandChild1',
-        uid: 746047719,
+        type: 'tutorial',
+        uid: 1439149417,
       },
       {
         childUIDs: [],
         depth: 2,
         index: 0,
-        type: 'tutorial',
-        parent: 746047719,
-        siblingsCount: 1,
+        parent: 1439149417,
         path: '/foo/child0/grandchild0/greatgrandchild0',
+        siblingsCount: 1,
         title: 'Child0_GrandChild0_GreatGrandChild0',
-        uid: 1489150959,
+        type: 'tutorial',
+        uid: 305326087,
       },
       {
         childUIDs: [],
         depth: 1,
-        index: 2,
-        type: 'tutorial',
-        parent: 551503843,
-        siblingsCount: 3,
+        index: 3,
+        parent: 551503844,
         path: '/foo/child0/grandchild2',
+        siblingsCount: 4,
         title: 'Child0_GrandChild2',
-        uid: 746971241,
+        type: 'tutorial',
+        uid: 1440072939,
       },
       {
         childUIDs: [
-          -134251586,
+          -827353283,
         ],
         depth: 0,
-        index: 1,
-        type: 'tutorial',
+        index: 2,
         parent: INDEX_ROOT_KEY,
-        siblingsCount: 2,
         path: '/foo/child1/',
+        siblingsCount: 3,
         title: 'Child1',
-        uid: -97593392,
+        type: 'tutorial',
+        uid: -97593391,
       },
       {
         childUIDs: [],
         depth: 1,
         index: 0,
-        type: 'method',
-        parent: -97593392,
-        siblingsCount: 1,
+        parent: -97593391,
         path: '/foo/child1/grandchild0',
+        siblingsCount: 1,
         title: 'Child1_GrandChild0',
-        uid: -134251586,
+        type: 'method',
+        uid: -827353283,
       },
     ]);
   });
@@ -376,8 +411,8 @@ describe('Navigator', () => {
   it('removes the `beta` flag from children, if the technology is a `beta`', () => {
     const technologyClone = clone(technology);
     technologyClone.beta = true;
-    technologyClone.children[0].beta = true;
-    technologyClone.children[0].children[0].beta = true;
+    technologyClone.children[1].beta = true;
+    technologyClone.children[1].children[0].beta = true;
     const wrapper = createWrapper({
       propsData: {
         technology: technologyClone,
@@ -388,12 +423,12 @@ describe('Navigator', () => {
 
   it('removes the `beta` flag from children, if the parent is a `beta`', () => {
     const technologyClone = clone(technology);
-    technologyClone.children[0].beta = true;
-    technologyClone.children[0].children[0].beta = true;
+    technologyClone.children[1].beta = true;
+    technologyClone.children[1].children[1].beta = true;
     // case where the direct parent is NOT `Beta`, but an ancestor is
-    technologyClone.children[0].children[1].children[0].beta = true;
+    technologyClone.children[1].children[2].children[0].beta = true;
     // set an end node as beta
-    technologyClone.children[1].children[0].beta = true;
+    technologyClone.children[2].children[0].beta = true;
     const wrapper = createWrapper({
       propsData: {
         technology: technologyClone,

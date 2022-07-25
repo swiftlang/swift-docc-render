@@ -1514,11 +1514,7 @@ describe('NavigatorCard', () => {
     expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
   });
 
-  it('shows "Hide Deprecated" tag, if there are deprecated items', async () => {
-    const updatedChild = {
-      ...root0Child0,
-      deprecated: true,
-    };
+  describe('with groupMarker', () => {
     const groupMarker = {
       type: TopicTypes.groupMarker,
       title: 'First Child Group Marker',
@@ -1526,51 +1522,98 @@ describe('NavigatorCard', () => {
       parent: root0.uid,
       depth: 1,
       index: 4,
-      childUIDs: [],
+      childUIDs: [root0Child0.uid, root0Child1.uid],
     };
+
     const root0Updated = {
       ...root0,
-      childUIDs: root0.childUIDs.concat(groupMarker.uid),
+      childUIDs: [groupMarker.uid].concat(root0.childUIDs),
     };
-    const wrapper = createWrapper({
-      propsData: {
-        children: [
-          root0Updated, updatedChild, groupMarker, root0Child1, root0Child1GrandChild0, root1,
-        ],
-        activePath: [root0.path],
-      },
+
+    it('shows "Hide Deprecated" tag, if there are deprecated items', async () => {
+      const updatedChild = {
+        ...root0Child0,
+        deprecated: true,
+      };
+
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            root0Updated, groupMarker, updatedChild, root0Child1, root0Child1GrandChild0, root1,
+          ],
+          activePath: [root0.path],
+        },
+      });
+      await flushPromises();
+      const filter = wrapper.find(FilterInput);
+      // assert there are no Articles for example
+      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED_TAG]);
+      // apply a filter
+      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      await flushPromises();
+      // assert no other tags are shown now
+      expect(filter.props('tags')).toEqual([]);
+      let allItems = wrapper.findAll(NavigatorCardItem);
+      // assert the deprecated item is filtered out
+      expect(allItems).toHaveLength(4);
+      // assert root is rendered
+      expect(allItems.at(0).props('item')).toEqual(root0Updated);
+      // assert the group marker is rendered
+      expect(allItems.at(1).props('item')).toEqual(groupMarker);
+      // assert the none-deprecated child is rendered, but its not expanded
+      expect(allItems.at(2).props()).toMatchObject({
+        item: root0Child1,
+        expanded: false,
+      });
+      expect(allItems.at(3).props('item')).toEqual(root1);
+      // Ensure all first children should show up
+      filter.vm.$emit('input', 'First Child');
+      await flushPromises();
+      allItems = wrapper.findAll(NavigatorCardItem);
+      // assert that filtering opens everything as usual, showing groupMarkers as well
+      expect(allItems).toHaveLength(4);
+      expect(allItems.at(0).props('item')).toEqual(root0Updated);
+      expect(allItems.at(1).props('item')).toEqual(groupMarker);
+      expect(allItems.at(2).props('item')).toEqual(root0Child1);
+      expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
     });
-    await flushPromises();
-    const filter = wrapper.find(FilterInput);
-    // assert there are no Articles for example
-    expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED_TAG]);
-    // apply a filter
-    filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
-    await flushPromises();
-    // assert no other tags are shown now
-    expect(filter.props('tags')).toEqual([]);
-    let allItems = wrapper.findAll(NavigatorCardItem);
-    // assert the deprecated item is filtered out
-    expect(allItems).toHaveLength(4);
-    // assert root is rendered
-    expect(allItems.at(0).props('item')).toEqual(root0Updated);
-    // assert the group marker is rendered
-    expect(allItems.at(1).props('item')).toEqual(groupMarker);
-    // assert the none-deprecated child is rendered, but its not expanded
-    expect(allItems.at(2).props()).toMatchObject({
-      item: root0Child1,
-      expanded: false,
+
+    it('shows groupMarkers in results, showing children that match if any or all if none', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            root0Updated, groupMarker, root0Child0, root0Child1, root0Child1GrandChild0, root1,
+          ],
+          activePath: [root0.path],
+        },
+      });
+      await flushPromises();
+      wrapper.find(FilterInput).vm.$emit('input', groupMarker.title);
+      await flushPromises();
+      let items = wrapper.findAll(NavigatorCardItem);
+      // parent + group and 2 siblings
+      expect(items).toHaveLength(4);
+      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(1).props('item')).toEqual(groupMarker);
+      expect(items.at(2).props('item')).toEqual(root0Child0);
+      expect(items.at(3).props('item')).toEqual(root0Child1);
+      // assert that toggling children shows items as normal
+      items.at(3).vm.$emit('toggle', root0Child1);
+      await flushPromises();
+      items = wrapper.findAll(NavigatorCardItem);
+      expect(items).toHaveLength(5);
+      expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
+      // assert that partial matches of group and children show only those that match
+      wrapper.find(FilterInput).vm.$emit('input', 'First Child');
+      await flushPromises();
+      items = wrapper.findAll(NavigatorCardItem);
+      expect(items).toHaveLength(5);
+      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(1).props('item')).toEqual(groupMarker);
+      expect(items.at(2).props('item')).toEqual(root0Child0);
+      expect(items.at(3).props('item')).toEqual(root0Child1);
+      expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
     });
-    expect(allItems.at(3).props('item')).toEqual(root1);
-    // Ensure all first children should show up
-    filter.vm.$emit('input', 'First Child');
-    await flushPromises();
-    allItems = wrapper.findAll(NavigatorCardItem);
-    // assert that filtering opens everything as usual, hiding groupMarkers
-    expect(allItems).toHaveLength(3);
-    expect(allItems.at(0).props('item')).toEqual(root0Updated);
-    expect(allItems.at(1).props('item')).toEqual(root0Child1);
-    expect(allItems.at(2).props('item')).toEqual(root0Child1GrandChild0);
   });
 
   it('renders a Beta badge in the header', async () => {

@@ -160,7 +160,7 @@ export default {
       return orderSymbolsByPriority(matches).slice(0, 20);
     },
     flattenIndex: ({ quickNavigationStore }) => quickNavigationStore.state.flattenIndex,
-    modalOn: ({ quickNavigationStore }) => quickNavigationStore.state.enableQuickNavigation,
+    modalOn: ({ quickNavigationStore }) => quickNavigationStore.state.showQuickNavigation,
     fuzzyRegex: ({
       constructFuzzyRegex,
       debouncedInput,
