@@ -79,14 +79,15 @@
                     class="navigator-icon"
                     :type="symbol.type"
                   />
-                  <p class="symbol-title">
-                      {{ symbol.title.slice(0, symbol.start) }}<QuickNavigationHighlighter
+                  <div class="symbol-title">
+                    <span v-text="symbol.title.slice(0, symbol.start)"></span>
+                    <QuickNavigationHighlighter
                       :text="symbol.substring"
                       :matcherText="debouncedInput"
-                    /><span
-                    >{{ symbol.title.slice(symbol.start + symbol.matchLength) }}
+                    />
+                    <span v-text="symbol.title.slice(symbol.start + symbol.matchLength)">
                     </span>
-                  </p>
+                  </div>
                 </div>
                 <div
                   v-if="symbol.relativePath"
@@ -131,7 +132,6 @@ export default {
   data() {
     return {
       debouncedInput: '',
-      matchingChars: '',
       selectedIndex: -1,
       userInput: '',
       quickNavigationStore: this.quickNavigationStore,
@@ -307,29 +307,35 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+$clear-icon-size: rem(23px);
+$modal-margin-top: 10rem;
+$modal-margin-sides: 20rem;
+$modal-padding-top: 1.25rem;
+$base-border-width: 1px;
+$filter-padding: rem(20px);
+
 .quick-navigation {
-    z-index: 9998;
+  z-index: 9998;
   input[type="text"] {
-      font-size: 20px;
+    @include font-styles(body-large);
   }
   &__clear-icon {
-    height: rem(23px);
+    height: $clear-icon-size;
     margin: auto;
-    margin-right: 5px;
-    width: rem(23px);
+    margin-right: rem(5px);
+    width: $clear-icon-size;
   }
   &__close-key {
-    border: solid 1px;
+    @include font-styles(caption);
+    border: solid $base-border-width;
     border-color: var(--color-grid);
-    border-radius: 5px;
+    border-radius: $border-radius;
     color: var(--color-figure-gray-secondary);
-    font-size: rem(12px);
-    line-height: initial;
-    padding: 5px;
+    padding: rem(5px);
   }
   &__container {
     background-color: var(--color-fill);
-    border: 1px solid var(--color-fill-gray);
+    border: solid $base-border-width var(--color-fill-gray);
     border-radius: $border-radius;
     filter: drop-shadow(0px 7px 50px rgba(0, 0, 0, 0.25));
     left: 0;
@@ -346,13 +352,13 @@ export default {
     border-radius: $border-radius;
     box-sizing: border-box;
     outline-width: 0;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: $filter-padding;
+    padding-right: $filter-padding;
     width: 100%;
   }
   &__input-container {
     display: flex;
-    padding: 20px;
+    padding: $filter-padding;
   }
   &__magnifier-icon-container {
     height: rem(18px);
@@ -366,9 +372,8 @@ export default {
       border-top: 1px solid var(--color-fill-gray);
     }
     .no-results {
-      margin: auto;
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin: 20px auto 20px auto;
+      width: fit-content;
     }
     .selected {
       background-color: var(--color-fill-tertiary);
@@ -376,9 +381,9 @@ export default {
   }
   &__modal-shadow {
     background-color: var(--color-quick-navigation-modal-shadow);
+    position: fixed;
     bottom: 0;
     left: 0;
-    position: fixed;
     right: 0;
     top: 0;
     z-index: 9999;
@@ -389,7 +394,7 @@ export default {
   &__symbol-match {
     display: flex;
     height: rem(40px);
-    padding: rem(12px) rem(20px) rem(12px) rem(20px);
+    padding: rem(12px) $filter-padding rem(12px) $filter-padding;
     color: var(--color-figure-gray);
     &:hover {
       background-color: var(--color-navigator-item-hover);
@@ -397,7 +402,7 @@ export default {
     .symbol-info {
       margin-top: auto;
       margin-bottom: auto;
-      width: 90%;
+      width: 100%;
       .navigator-icon {
         margin-bottom: auto;
         margin-right: rem(10px);
@@ -412,8 +417,8 @@ export default {
         }
       }
       .symbol-path {
+        @include font-styles(body-reduced-tight);
         color: var(--color-figure-gray-secondary);
-        font-size: rem(13px);
         margin-left: 27px;
       }
     }

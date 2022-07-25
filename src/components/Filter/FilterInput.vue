@@ -101,7 +101,7 @@
         <button
           v-if="enableQuickNavigation"
           class="filter__quick-navigation-container"
-          @click.stop="store.toggleShowQuickNavigationModal(true)"
+          @click="openQuickNavigationModal()"
         >
           <kbd
             class="filter__quick-navigation-icon"
@@ -422,9 +422,13 @@ export default {
         event.key === '/'
         || (event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))
       ) {
-        this.store.toggleShowQuickNavigationModal(true);
+        this.openQuickNavigationModal();
         event.preventDefault();
       }
+    },
+    openQuickNavigationModal() {
+      this.store.toggleShowQuickNavigationModal(true);
+      return true;
     },
   },
   mounted() {
@@ -455,6 +459,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+$quick-navigation-icon: rem(20px);
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
 $input-height: rem(28px);
@@ -477,12 +482,12 @@ $input-height: rem(28px);
   &__quick-navigation-container {
     padding: 0 10px 0 0;
     .filter__quick-navigation-icon {
-      height: 20px;
-      width: 20px;
+      height: $quick-navigation-icon;
+      width: $quick-navigation-icon;
       margin: auto;
       color: var(--input-text);
       border: solid 1px;
-      border-radius: 5px;
+      border-radius: $border-radius;
       border-color: var(--color-grid);
       display: flex;
       align-items: center;

@@ -10,8 +10,8 @@
 
 <template>
   <div>
-    <!-- <PortalTarget name="modal-destination" multiple /> -->
-    <!-- <GenericModal
+    <!-- <PortalTarget name="modal-destination" multiple />
+    <GenericModal
       :visible="quickNavigationStore.state.enableQuickNavigation"
       isFullscreen
       theme="dark"

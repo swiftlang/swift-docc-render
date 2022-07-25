@@ -28,6 +28,9 @@ export default {
     const { matcherText, text } = this;
     const children = [];
     let lastIndex = 0;
+    if (!matcherText) {
+      return createElement('span', { class: 'highlight' }, text);
+    }
     [...matcherText].forEach((char) => {
       const charIndex = text.toLowerCase().indexOf(char.toLowerCase(), lastIndex);
       if (lastIndex) {
