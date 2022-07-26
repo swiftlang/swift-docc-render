@@ -33,11 +33,16 @@ export default {
       type: String,
       required: true,
     },
+    level: {
+      type: Number,
+      default: 2,
+    },
   },
   created() {
     this.store.addOnThisPageSection({
       anchor: this.anchor,
       title: this.title,
+      level: this.level,
     });
   },
 };

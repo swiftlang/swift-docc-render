@@ -31,19 +31,20 @@ export default {
   methods: {
     ...ContentNode.methods,
     addOnThisPageSections() {
-      const { isTopLevelHeading, store } = this;
+      const { shouldRegisterHeading, store } = this;
       this.forEach((node) => {
-        if (isTopLevelHeading(node)) {
+        if (shouldRegisterHeading(node)) {
           store.addOnThisPageSection({
             anchor: node.anchor,
             title: node.text,
+            level: node.level,
           });
         }
       });
     },
-    isTopLevelHeading(node) {
+    shouldRegisterHeading(node) {
       const { level, type } = node;
-      return type === ContentNode.BlockType.heading && level === 2;
+      return type === ContentNode.BlockType.heading && level > 1 && level < 4;
     },
   },
   created() {

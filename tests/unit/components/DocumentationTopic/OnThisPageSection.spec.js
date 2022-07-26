@@ -45,6 +45,10 @@ describe('OnThisPageSection', () => {
   });
 
   it('calls `store.addOnThisPageSection` on created', () => {
-    expect(provide.store.addOnThisPageSection).toBeCalled();
+    expect(provide.store.addOnThisPageSection).toBeCalledWith({
+      anchor: 'foo',
+      title: 'Foo',
+      level: 2,
+    });
   });
 });

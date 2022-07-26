@@ -29,6 +29,12 @@ describe('GenericContent', () => {
       level: 3,
       text: 'Bar',
     },
+    {
+      type: ContentNode.BlockType.heading,
+      anchor: 'baz',
+      level: 4,
+      text: 'Baz',
+    },
   ];
 
   const paragraphs = [
@@ -58,18 +64,16 @@ describe('GenericContent', () => {
       paragraphs[0],
       headings[1],
       paragraphs[1],
+      headings[2],
     ],
   };
-
-  const provide = {
-    store: { addOnThisPageSection: jest.fn() },
-  };
+  const store = { addOnThisPageSection: jest.fn() };
 
   beforeEach(() => {
-    provide.store.addOnThisPageSection.mockReset();
+    jest.clearAllMocks();
     wrapper = shallowMount(GenericContent, {
       propsData,
-      provide,
+      provide: { store },
     });
   });
 
@@ -79,13 +83,19 @@ describe('GenericContent', () => {
     expect(node.props('content')).toEqual(propsData.content);
   });
 
-  it('calls `store.addOnThisPageSection` for each h2 on created', () => {
-    const { mock } = provide.store.addOnThisPageSection;
-    expect(mock.calls.length).toBe(1);
+  it('calls `store.addOnThisPageSection` for each `h2` and `h3`, on created', () => {
+    expect(store.addOnThisPageSection).toHaveBeenCalledTimes(2);
 
-    expect(mock.calls[0][0]).toEqual({
+    expect(store.addOnThisPageSection).toHaveBeenNthCalledWith(1, {
       anchor: headings[0].anchor,
       title: headings[0].text,
+      level: headings[0].level,
+    });
+
+    expect(store.addOnThisPageSection).toHaveBeenNthCalledWith(2, {
+      anchor: headings[1].anchor,
+      title: headings[1].text,
+      level: headings[1].level,
     });
   });
 });

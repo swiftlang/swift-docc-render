@@ -1,0 +1,178 @@
+<!--
+  This source file is part of the Swift.org open source project
+
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Licensed under Apache License v2.0 with Runtime Library Exception
+
+  See https://swift.org/LICENSE.txt for license information
+  See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+-->
+<template>
+  <div class="OnThisPageTracker">
+    <slot
+      :active="currentPageSection"
+      :sections="onThisPageSections"
+      :nestedSections="nestedSections"
+      :checkIsActive="checkIsActive"
+      :scrollTo="scrollTo"
+    >
+      <ul>
+        <li
+          v-for="item in nestedSections"
+          :key="item.anchor"
+          class="parent-item"
+          :class="{ active: checkIsActive(item) }"
+        >
+          <router-link
+            :to="{ hash: item.anchor }"
+            class="floating-link parent-link"
+            @click.native="scrollTo(item)"
+          >
+            {{ item.title }}
+          </router-link>
+          <ul v-if="item.children && item.children.length" class="children">
+            <li
+              v-for="child in item.children"
+              :key="child.anchor"
+              :class="{ active: checkIsActive(child) }"
+              class="child-item"
+            >
+              <router-link
+                :to="{ hash: child.anchor }"
+                class="floating-link child-link"
+                @click.native="scrollTo(child)"
+              >
+                {{ child.title }}
+              </router-link>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </slot>
+  </div>
+</template>
+
+<script>
+import throttle from 'docc-render/utils/throttle';
+import { waitFrames } from 'docc-render/utils/loading';
+import { last } from 'docc-render/utils/arrays';
+import ScrollToElement from 'docc-render/mixins/scrollToElement';
+
+export default {
+  name: 'OnThisPageTracker',
+  mixins: [ScrollToElement],
+  inject: {
+    store: {
+      default() {
+        return {
+          state: { onThisPageSections: [], currentPageSection: {} },
+        };
+      },
+    },
+  },
+  computed: {
+    onThisPageSections: ({ store }) => store.state.onThisPageSections,
+    currentPageSection: ({ store }) => store.state.currentPageSection || {},
+    /**
+     * Nests the flat list of sections by the level.
+     * @returns {Array}
+     */
+    nestedSections: ({ onThisPageSections }) => onThisPageSections.reduce((all, current) => {
+      if (current.level === 2) {
+        return all.concat({ ...current, children: [] });
+      }
+      const lastItem = last(all);
+      // in the odd chance there is no H2 before the H3, we just push the H3 as a top level items
+      if (!lastItem || lastItem.level !== 2) {
+        return all.concat(current);
+      }
+      lastItem.children.push(current);
+      return all;
+    }, []),
+  },
+  async mounted() {
+    window.addEventListener('scroll', this.onScroll, false);
+    this.$once('hook:beforeDestroy', () => {
+      window.removeEventListener('scroll', this.onScroll);
+    });
+    // make sure everything is ready
+    await waitFrames(8);
+    this.onScroll();
+  },
+  methods: {
+    onScroll: throttle(function onScroll() {
+      // get the point at which we intercept, 1/3 of screen
+      const { scrollY, innerHeight } = window;
+      const { scrollHeight } = document.body;
+      const isBottom = scrollY + innerHeight >= scrollHeight;
+      const isTop = scrollY <= 0;
+      const intersectionPoint = (innerHeight * 0.3) + scrollY;
+      const len = this.onThisPageSections.length;
+      if (!len) return;
+      if (isTop || isBottom) {
+        const index = isTop ? 0 : len - 1;
+        this.store.setCurrentPageSection(this.onThisPageSections[index].anchor);
+        return;
+      }
+      // init loop vars
+      let nearestAnchor = null;
+      let i;
+      let item;
+      for (i = 0; i < len; i += 1) {
+        item = this.onThisPageSections[i];
+        // get the element's offset
+        const { offsetTop } = document.getElementById(item.anchor);
+        // if the element is above the intersection point, it is "active".
+        if (offsetTop < intersectionPoint) {
+          nearestAnchor = item.anchor;
+        } else {
+          // item is below the intersectionPoint, so we bail
+          break;
+        }
+      }
+      // set the nearest index as active
+      if (nearestAnchor !== null) {
+        this.store.setCurrentPageSection(nearestAnchor);
+      }
+    }, 100),
+    /**
+     * Returns whether the current item or some of its children is active.
+     * @param item
+     * @returns {boolean}
+     */
+    checkIsActive(item) {
+      const activeItem = this.currentPageSection;
+      return item.anchor === activeItem.anchor
+        || (item.children || []).some(c => c.anchor === activeItem.anchor);
+    },
+    async scrollTo({ anchor }) {
+      const element = document.getElementById(anchor);
+      if (!element) return;
+      // Focus scrolls to the element
+      element.focus();
+      // but we need to compensate for the navigation height
+      await this.scrollToElement(`#${anchor}`);
+    },
+  },
+};
+</script>
+
+<style scoped lang='scss'>
+@import 'docc-render/styles/_core.scss';
+
+.children {
+  max-height: 0;
+  transition: max-height 0.3s ease-in;
+  overflow: hidden;
+
+  .active & {
+    max-height: 100vh;
+  }
+}
+
+.active {
+  & > .floating-link {
+    font-weight: bold;
+  }
+}
+</style>
