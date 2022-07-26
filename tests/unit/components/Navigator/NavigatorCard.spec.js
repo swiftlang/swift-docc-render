@@ -1523,6 +1523,7 @@ describe('NavigatorCard', () => {
       depth: 1,
       index: 4,
       childUIDs: [root0Child0.uid, root0Child1.uid],
+      deprecatedChildrenCount: 0,
     };
 
     const root0Updated = {
@@ -1578,7 +1579,7 @@ describe('NavigatorCard', () => {
       expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
     });
 
-    it('shows groupMarkers in results, showing children that match if any or all if none', async () => {
+    it('matches groupMarkers in results, showing children that match if any or all if none', async () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
@@ -1588,7 +1589,8 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      wrapper.find(FilterInput).vm.$emit('input', groupMarker.title);
+      const input = wrapper.find(FilterInput);
+      input.vm.$emit('input', groupMarker.title);
       await flushPromises();
       let items = wrapper.findAll(NavigatorCardItem);
       // parent + group and 2 siblings
@@ -1604,7 +1606,7 @@ describe('NavigatorCard', () => {
       expect(items).toHaveLength(5);
       expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
       // assert that partial matches of group and children show only those that match
-      wrapper.find(FilterInput).vm.$emit('input', 'First Child');
+      input.vm.$emit('input', 'First Child');
       await flushPromises();
       items = wrapper.findAll(NavigatorCardItem);
       expect(items).toHaveLength(5);
@@ -1613,6 +1615,65 @@ describe('NavigatorCard', () => {
       expect(items.at(2).props('item')).toEqual(root0Child0);
       expect(items.at(3).props('item')).toEqual(root0Child1);
       expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
+    });
+
+    it('renders the `groupMarker`, that is connected to a search result', async () => {
+      const root0Child0Clone = { ...root0Child0, groupMarkerUID: groupMarker.uid };
+      const root0Child1Clone = { ...root0Child1, groupMarkerUID: groupMarker.uid };
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            root0Updated, groupMarker, root0Child0Clone,
+            root0Child1Clone, root0Child1GrandChild0, root1,
+          ],
+          activePath: [root0.path],
+        },
+      });
+      await flushPromises();
+      const filter = wrapper.find(FilterInput);
+      // apply a filter that matches an element
+      filter.vm.$emit('input', root0Child1Clone.title);
+      await flushPromises();
+      const items = wrapper.findAll(NavigatorCardItem);
+      // parent + group and 1 item
+      expect(items).toHaveLength(3);
+      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(1).props('item')).toEqual(groupMarker);
+      expect(items.at(2).props('item')).toEqual(root0Child1Clone);
+    });
+
+    it('does not render a `groupMarker`, if all of its children are deprecated, and `HideDeprecated` is ON', async () => {
+      const root0Child0Clone = {
+        ...root0Child0,
+        groupMarkerUID: groupMarker.uid,
+        deprecated: true,
+      };
+      const root0Child1Clone = {
+        ...root0Child1,
+        groupMarkerUID: groupMarker.uid,
+        deprecated: true,
+        childUIDs: [],
+      };
+      const groupMarkerClone = { ...groupMarker, deprecatedChildrenCount: 2 };
+      const root0Clone = { ...root0Updated, deprecated: true };
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            root0Clone, groupMarkerClone, root0Child0Clone,
+            root0Child1Clone, root1,
+          ],
+          activePath: [root0Clone.path],
+        },
+      });
+      await flushPromises();
+      const filter = wrapper.find(FilterInput);
+      // apply a filter that matches an element
+      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      await flushPromises();
+      const items = wrapper.findAll(NavigatorCardItem);
+      // parent
+      expect(items).toHaveLength(1);
+      expect(items.at(0).props('item')).toEqual(root1);
     });
   });
 
