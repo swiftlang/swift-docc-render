@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <div :class="{ 'modal-open': quickNavigationStore.state.enableQuickNavigation }">
-    <div v-show="quickNavigationStore.state.enableQuickNavigation">
+  <div :class="{ 'modal-open': quickNavigationStore.state.showQuickNavigation }">
+    <div v-show="quickNavigationStore.state.showQuickNavigation">
       <QuickNavigationModal/>
     </div>
     <CodeTheme class="doc-topic-view">

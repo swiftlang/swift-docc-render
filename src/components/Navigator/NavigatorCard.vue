@@ -124,7 +124,6 @@ import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
 import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 
 const STORAGE_KEY = 'navigator.state';
@@ -232,6 +231,10 @@ export default {
       default: null,
     },
     isTechnologyBeta: {
+      type: Boolean,
+      default: false,
+    },
+    enableQuickNavigation: {
       type: Boolean,
       default: false,
     },
@@ -467,9 +470,6 @@ export default {
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
-    enableQuickNavigation: () => (
-      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
-    ),
   },
   created() {
     this.restorePersistedState();
