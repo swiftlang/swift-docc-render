@@ -1132,6 +1132,8 @@ $close-icon-padding: 5px;
 
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
+  --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
+  --nav-filter-horizontal-padding: 30px;
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -1155,7 +1157,8 @@ $close-icon-padding: 5px;
   }
 
   .navigator-head {
-    padding: 0 $card-horizontal-spacing-large*2 0 $card-horizontal-spacing-large;
+    --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
+    padding: 0 var(--navigator-head-padding-right) 0 var(--card-horizontal-spacing);
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
@@ -1180,19 +1183,17 @@ $close-icon-padding: 5px;
       text-decoration: none;
     }
 
-    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
-    @include safe-area-right-set(padding-right,
-      $card-horizontal-spacing-large * 2 + $close-icon-size
-    );
+    @include safe-area-left-set(padding-left, var(--card-horizontal-spacing));
+    @include safe-area-right-set(padding-right, var(--navigator-head-padding-right));
 
     @include breakpoint(medium, nav) {
       justify-content: center;
-      @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
+      --navigator-head-padding-right: var(--card-horizontal-spacing);
     }
 
     @include breakpoint(small, nav) {
       height: $nav-height-small;
-      padding: 0 $card-horizontal-spacing-large;
+      padding: 0 $nav-card-horizontal-spacing-large;
     }
   }
 
@@ -1208,7 +1209,7 @@ $close-icon-padding: 5px;
 
   .no-items {
     @include font-styles(body-reduced);
-    padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
+    padding: var(--card-vertical-spacing) var(--card-horizontal-spacing);
     // make sure the text does not get weirdly cut
     min-width: 200px;
     box-sizing: border-box;
@@ -1232,7 +1233,7 @@ $close-icon-padding: 5px;
     top: 0;
     left: 0;
     margin: 0;
-    padding: 0 $nav-padding 0 $card-horizontal-spacing-large;
+    padding: 0 $nav-padding 0 $nav-card-horizontal-spacing-large;
     height: 100%;
     @include safe-area-left-set(padding-left, $nav-padding);
   }
@@ -1291,23 +1292,22 @@ $close-icon-padding: 5px;
 
 .navigator-filter {
   box-sizing: border-box;
-  padding: 15px 30px;
+  padding: 15px var(--nav-filter-horizontal-padding);
   border-top: 1px solid var(--color-grid);
   height: $filter-height;
   display: flex;
   align-items: flex-end;
 
-  @include safe-area-left-set(padding-left, 30px);
-  @include safe-area-right-set(padding-right, 30px);
+  @include safe-area-left-set(padding-left, var(--nav-filter-horizontal-padding));
+  @include safe-area-right-set(padding-right, var(--nav-filter-horizontal-padding));
 
   @include breakpoint(medium, nav) {
+    --nav-filter-horizontal-padding: 20px;
     border: none;
-    padding: 10px 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     align-items: flex-start;
     height: $filter-height-small;
-
-    @include safe-area-left-set(padding-left, 20px);
-    @include safe-area-right-set(padding-right, 20px);
   }
 
   .input-wrapper {
