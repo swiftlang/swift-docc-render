@@ -114,7 +114,6 @@ import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
-import scrollLock from 'docc-render/utils/scroll-lock';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 
 export default {
@@ -125,12 +124,6 @@ export default {
     NavigatorLeafIcon,
     QuickNavigationHighlighter,
     Reference,
-  },
-  props: {
-    isModalOpen: {
-      type: Boolean,
-      required: true,
-    },
   },
   data() {
     return {
@@ -170,13 +163,6 @@ export default {
     }) => new RegExp(constructFuzzyRegex(debouncedInput.toLowerCase())),
   },
   watch: {
-    isModalOpen(isOpen) {
-      if (isOpen) {
-        this.onShow();
-      } else {
-        this.onHide();
-      }
-    },
     userInput: 'debounceInput',
   },
   inject: ['quickNavigationStore'],
@@ -195,7 +181,7 @@ export default {
       // foobar -> f[^f]*?o[^o]*?o[^o]*?b[^b]*?a[^a]*?r
       return [...userInput].reduce((prev, char, index) => (
         prev
-          .concat(char.toLowerCase())
+          .concat(`[${char.toLowerCase()}]`)
           .concat(index < userInput.length - 1 ? `[^${char.toLowerCase()}]*?` : '')
       ), '');
     },
@@ -228,16 +214,25 @@ export default {
     ),
     handleKeyDown() {
       if (
-        this.selectedIndex === this.filteredSymbols.length - 1
+        !this.$refs.match
+        || !this.$refs.match[this.selectedIndex]
+        || this.selectedIndex === this.filteredSymbols.length - 1
       ) { return; }
       if (this.selectedIndex === -1) {
         this.selectedIndex = 0;
         return;
       }
       this.selectedIndex += 1;
-      this.$refs.match[this.selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      this.$refs.match[this.selectedIndex].scrollIntoView({
+        block: 'nearest',
+        inline: 'start',
+      });
     },
     handleKeyUp() {
+      if (
+        !this.$refs.match
+        || !this.$refs.match[this.selectedIndex]
+      ) { return; }
       if (
         !this.filteredSymbols.length
         || this.selectedIndex === 0
@@ -246,15 +241,14 @@ export default {
         return;
       }
       this.selectedIndex -= 1;
-      this.$refs.match[this.selectedIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      this.$refs.match[this.selectedIndex].scrollIntoView({
+        block: 'nearest',
+        inline: 'start',
+      });
     },
     handleKeyEnter() {
       this.$router.push(this.filteredSymbols[this.selectedIndex].path);
       this.closeQuickNavigationModal();
-    },
-    onHide() {
-      // unlock scroll
-      scrollLock.unlockScroll(this.$refs.container);
     },
     onKeydown(event) {
       if (!this.modalOn) { return; }
@@ -278,8 +272,6 @@ export default {
       }
     },
     onShow() {
-      // lock scroll
-      scrollLock.lockScroll(this.$refs.container);
       this.$refs.input.focus();
       this.selectedIndex = -1;
     },
@@ -318,14 +310,12 @@ $base-border-width: 1px;
 $filter-padding: rem(20px);
 
 .quick-navigation {
-  z-index: 9998;
   input[type="text"] {
     @include font-styles(body-large);
   }
   &__clear-icon {
     display: flex;
     height: 100%;
-    // height: $clear-icon-size;
     margin: auto;
     margin-right: rem(5px);
     width: $clear-icon-size;
@@ -380,12 +370,12 @@ $filter-padding: rem(20px);
   }
   &__match-list {
     overflow: scroll;
-    max-height: 400px;
+    max-height: rem(400px);
     &.active {
       border-top: 1px solid var(--color-fill-gray);
     }
     .no-results {
-      margin: 20px auto 20px auto;
+      margin: $filter-padding auto $filter-padding auto;
       width: fit-content;
     }
     .selected {
@@ -399,7 +389,6 @@ $filter-padding: rem(20px);
     left: 0;
     right: 0;
     top: 0;
-    z-index: 9999;
   }
   &__reference {
     text-decoration: none;
@@ -432,7 +421,7 @@ $filter-padding: rem(20px);
       .symbol-path {
         @include font-styles(body-reduced-tight);
         color: var(--color-figure-gray-secondary);
-        margin-left: 27px;
+        margin-left: rem(27px);
       }
     }
   }

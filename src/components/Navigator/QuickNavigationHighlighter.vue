@@ -40,7 +40,7 @@ export default {
       children.push(createElement('span', { class: 'match' }, text.slice(charIndex, nextIndex)));
       lastIndex = nextIndex;
     });
-    return createElement('span', { class: 'highlight' }, children);
+    return createElement('p', { class: 'highlight' }, children);
   },
 };
 </script>

@@ -18,10 +18,7 @@
       :codeBackgroundColorOverride="'transparent'"
       :theme="'code'"
     >
-       <QuickNavigationModal
-        :isModalOpen=quickNavigationStore.state.showQuickNavigation
-        v-show="quickNavigationStore.state.showQuickNavigation"
-      />
+       <QuickNavigationModal />
     </GenericModal>
     <CodeTheme class="doc-topic-view">
       <template v-if="topicData">
@@ -406,10 +403,6 @@ export default {
     }
   }
 }
-// .modal-open {
-//   position: fixed;
-//   width: 100%
-// }
 
 .topic-wrapper {
   flex: 1 1 auto;
