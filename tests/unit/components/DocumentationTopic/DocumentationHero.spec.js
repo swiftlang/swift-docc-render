@@ -64,7 +64,7 @@ describe('DocumentationHero', () => {
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.find('.above-content-slot').text()).toBe('Above Content Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary)))`,
     });
   });
 
@@ -98,7 +98,7 @@ describe('DocumentationHero', () => {
     });
     const color = HeroColorsMap[TopicTypeAliases[TopicTypes.init]];
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${color}, var(--color-figure-gray-secondary)))`,
     });
   });
 
@@ -109,7 +109,7 @@ describe('DocumentationHero', () => {
       },
     });
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColors.teal}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColors.teal}, var(--color-figure-gray-secondary)))`,
     });
   });
 
@@ -118,7 +118,7 @@ describe('DocumentationHero', () => {
       propsData: { role: TopicTypes.collection },
     });
     expect(wrapper.vm.styles['--accent-color'])
-      .toBe('var(--color-type-icon-sky, var(--color-figure-gray-secondary))');
+      .toBe('var(--color-documentation-intro-accent, var(--color-type-icon-sky, var(--color-figure-gray-secondary)))');
   });
 
   it('renders the DocumentationHero, disabled', () => {
@@ -132,7 +132,7 @@ describe('DocumentationHero', () => {
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary)))`,
     });
   });
 
