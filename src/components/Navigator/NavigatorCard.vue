@@ -16,6 +16,7 @@
           <button
             aria-label="Close documentation navigator"
             class="close-card"
+            :class="{ 'hide-on-large': !allowHiding }"
             @click="$emit('close')"
           >
             <SidenavIcon class="icon-inline close-icon" />
@@ -236,6 +237,10 @@ export default {
     isTechnologyBeta: {
       type: Boolean,
       default: false,
+    },
+    allowHiding: {
+      type: Boolean,
+      default: true,
     },
   },
   mixins: [
@@ -1203,6 +1208,12 @@ $close-icon-size: 19px;
     padding-left: $nav-padding-small;
     padding-right: $nav-padding-small;
     @include safe-area-left-set(padding-left, $nav-padding-small);
+  }
+
+  @include breakpoints-from(large, nav) {
+    &.hide-on-large {
+      display: none;
+    }
   }
 
   .close-icon {

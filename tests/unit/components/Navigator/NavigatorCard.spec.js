@@ -1621,6 +1621,15 @@ describe('NavigatorCard', () => {
     expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED_TAG);
   });
 
+  it('hides the toggle button, if `allowHiding` is `false`', async () => {
+    const wrapper = createWrapper({
+      propsData: {
+        allowHiding: false,
+      },
+    });
+    expect(wrapper.find('.close-card').classes()).toContain('hide-on-large');
+  });
+
   describe('navigating', () => {
     it('changes the open item, when navigating across pages, keeping the previously open items', async () => {
       // simulate navigating to the bottom most item.

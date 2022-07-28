@@ -134,6 +134,7 @@ describe('Navigator', () => {
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
       apiChanges: null,
+      allowHiding: true,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
@@ -186,6 +187,7 @@ describe('Navigator', () => {
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
       apiChanges: null,
+      allowHiding: true,
     });
   });
 

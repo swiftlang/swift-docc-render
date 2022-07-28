@@ -196,6 +196,7 @@ describe('DocumentationTopic', () => {
       // assert we are passing the default technology, if we dont have the children yet
       technology,
       apiChanges: null,
+      allowHiding: true,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -208,6 +209,7 @@ describe('DocumentationTopic', () => {
       references: topicData.references,
       technology: TechnologyWithChildren,
       apiChanges: null,
+      allowHiding: true,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);

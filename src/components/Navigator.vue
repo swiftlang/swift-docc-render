@@ -25,6 +25,7 @@
       :error-fetching="errorFetching"
       :breakpoint="breakpoint"
       :api-changes="apiChanges"
+      :allow-hiding="allowHiding"
       @close="$emit('close')"
     />
     <NavigatorCardInner v-else class="loading-placeholder">
@@ -110,6 +111,10 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
+    },
+    allowHiding: {
+      type: Boolean,
+      default: true,
     },
   },
   provide() {
