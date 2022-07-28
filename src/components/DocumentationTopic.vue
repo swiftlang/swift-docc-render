@@ -45,49 +45,56 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-      <div v-if="showContainer" class="container">
-        <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
-          <RequirementMetadata
-            v-if="isRequirement"
-            :defaultImplementationsCount="defaultImplementationsCount"
+      <div class="doc-content-wrapper">
+        <div class="doc-content">
+          <div v-if="showContainer" class="container">
+            <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
+              <RequirementMetadata
+                v-if="isRequirement"
+                :defaultImplementationsCount="defaultImplementationsCount"
+              />
+              <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+                <ContentNode :content="deprecationSummary" />
+              </Aside>
+              <Aside
+                v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+                kind="note"
+              >
+                <ContentNode :content="downloadNotAvailableSummary" />
+              </Aside>
+            </div>
+            <PrimaryContent
+              v-if="primaryContentSections && primaryContentSections.length"
+              :class="{ 'with-border': !enhanceBackground }"
+              :conformance="conformance"
+              :source="remoteSource"
+              :sections="primaryContentSections"
+            />
+          </div>
+          <Topics
+            v-if="topicSections"
+            :sections="topicSections"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
           />
-          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-            <ContentNode :content="deprecationSummary" />
-          </Aside>
-          <Aside
-            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-            kind="note"
-          >
-            <ContentNode :content="downloadNotAvailableSummary" />
-          </Aside>
+          <DefaultImplementations
+            v-if="defaultImplementationsSections"
+            :sections="defaultImplementationsSections"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+          />
+          <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+          <!-- NOTE: see also may contain information about other apis, so we cannot
+          pass deprecation and beta information -->
+          <SeeAlso
+            v-if="seeAlsoSections"
+            :sections="seeAlsoSections"
+          />
         </div>
-        <PrimaryContent
-          v-if="primaryContentSections && primaryContentSections.length"
-          :class="{ 'with-border': !enhanceBackground }"
-          :conformance="conformance"
-          :source="remoteSource"
-          :sections="primaryContentSections"
-        />
+        <div class="aside-floating-container">
+          <OnThisPageTracker />
+        </div>
       </div>
-      <Topics
-        v-if="topicSections"
-        :sections="topicSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <DefaultImplementations
-        v-if="defaultImplementationsSections"
-        :sections="defaultImplementationsSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
-      <!-- NOTE: see also may contain information about other apis, so we cannot
-      pass deprecation and beta information -->
-      <SeeAlso
-        v-if="seeAlsoSections"
-        :sections="seeAlsoSections"
-      />
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
     <div aria-live="polite" class="visuallyhidden">
@@ -105,6 +112,7 @@ import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import OnThisPageTracker from '@/components/OnThisPageTracker.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -136,6 +144,7 @@ export default {
     },
   },
   components: {
+    OnThisPageTracker,
     DocumentationHero,
     Abstract,
     Aside,
@@ -446,6 +455,33 @@ export default {
   @each $heading in (h3, h4, h5, h6) {
     #{$heading} {
       @include font-styles(documentation-#{$heading});
+    }
+  }
+}
+
+.doc-content-wrapper {
+  display: flex;
+
+  .sidebar-hidden & {
+    justify-content: center;
+  }
+
+  .doc-content {
+    min-width: 0;
+  }
+
+  .aside-floating-container {
+    $sticky-aside-width: 170px;
+    margin-top: $contenttable-spacing-single-side;
+    width: $sticky-aside-width;
+    position: sticky;
+    top: $nav-height;
+    background: pink;
+    align-self: flex-start;
+    flex: 0 0 auto;
+    margin-right: -$sticky-aside-width;
+    @include breakpoint(small) {
+      display: none;
     }
   }
 }
