@@ -91,6 +91,7 @@ describe('QuickNavigationModal', () => {
     },
     provide: {
       quickNavigationStore: {
+        toggleShowQuickNavigationModal: () => true,
         state: {
           showQuickNavigation: false,
           flattenIndex: symbols,

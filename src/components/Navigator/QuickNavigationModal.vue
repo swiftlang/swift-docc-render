@@ -178,7 +178,7 @@ export default {
     constructFuzzyRegex(userInput) {
       // Construct regex for fuzzy match
       // Ex:
-      // foobar -> f[^f]*?o[^o]*?o[^o]*?b[^b]*?a[^a]*?r
+      // foobar -> [f][^f]*?[o][^o]*?[o][^o]*?[b][^b]*?[a][^a]*?r
       return [...userInput].reduce((prev, char, index) => (
         prev
           .concat(`[${char.toLowerCase()}]`)

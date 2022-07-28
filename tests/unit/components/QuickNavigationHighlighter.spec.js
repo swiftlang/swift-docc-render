@@ -29,7 +29,7 @@ describe('QuickNavigationHighlighter', () => {
       },
     });
     expect(wrapper.html())
-      .toEqual('<span class="highlight"><span class="match">S</span><span>ome </span><span class="match">S</span><span>tring t</span><span class="match">o</span><span> Matc</span><span class="match">h</span></span>');
+      .toEqual('<p class="highlight"><span class="match">S</span><span>ome </span><span class="match">S</span><span>tring t</span><span class="match">o</span><span> Matc</span><span class="match">h</span></p>');
   });
 
   it('it renders the text, when no matcher provided', () => {
