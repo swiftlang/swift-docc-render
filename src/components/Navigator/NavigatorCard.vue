@@ -90,7 +90,25 @@
             :clear-filter-on-tag-select="false"
             class="filter-component"
             @clear="clearFilters"
+            @toggleIsFilterInputFocused="toggleIsFilterInputFocused"
           />
+          <button
+            v-if="enableQuickNavigation"
+            v-show="!isFilterInputFocused"
+            class="quick-navigation-container"
+            @click="openQuickNavigationModal()"
+          >
+            <kbd
+              class="quick-navigation-icon"
+            >
+              <abbr
+                class="open-modal-key"
+                title="Forward slash"
+              >
+                /
+              </abbr>
+            </kbd>
+          </button>
         </div>
       </div>
     </div>
@@ -117,6 +135,7 @@ import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
+import { getSetting } from 'docc-render/utils/theme-settings';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -236,6 +255,8 @@ export default {
       // debounced filter value, to reduce the computed property computations. Used in filter logic.
       debouncedFilter: '',
       selectedTags: [],
+      // value to hide the open-modal icon
+      isFilterInputFocused: false,
       /** @type {Object.<string, boolean>} */
       openNodes: {},
       /** @type {NavigatorFlatItem[]} */
@@ -327,6 +348,9 @@ export default {
         ));
       },
     },
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
       ? null
       // remove the `g` for global, as that causes bugs when matching
@@ -1063,9 +1087,35 @@ export default {
       // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
       this.focusIndex(parentIndex);
     },
+    openQuickNavigationModal() {
+      this.store.toggleShowQuickNavigationModal(true);
+      return true;
+    },
+    onKeydown(event) {
+      if (
+        event.key === '/'
+        || (event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))
+      ) {
+        this.openQuickNavigationModal();
+        event.preventDefault();
+      }
+    },
+    toggleIsFilterInputFocused() {
+      this.isFilterInputFocused = !this.isFilterInputFocused;
+    },
   },
   provide() {
     return { store: this.store };
+  },
+  mounted() {
+    if (this.enableQuickNavigation) {
+      window.addEventListener('keydown', this.onKeydown);
+    }
+  },
+  beforeDestroy() {
+    if (this.enableQuickNavigation) {
+      document.removeEventListener('keydown', this.onKeydown);
+    }
   },
 };
 </script>
@@ -1079,6 +1129,7 @@ $navigator-card-vertical-spacing: 8px !default;
 $filter-height: 71px;
 $navigator-head-background: var(--color-fill-secondary) !default;
 $navigator-head-background-active: var(--color-fill-tertiary) !default;
+$quick-navigation-icon: rem(20px);
 
 .magnifier-icon {
   height: 20px;
@@ -1274,6 +1325,32 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
   @include breakpoint(small, nav) {
     top: $nav-height-small;
+  }
+  .quick-navigation-container {
+    padding: 0 10px 0 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    @include breakpoint(small) {
+      display: none;
+    }
+    .quick-navigation-icon {
+      height: $quick-navigation-icon;
+      width: $quick-navigation-icon;
+      margin: auto;
+      color: var(--input-text);
+      border: solid 1px;
+      border-radius: $border-radius;
+      border-color: var(--color-grid);
+      display: flex;
+      align-items: center;
+      .open-modal-key {
+        text-decoration: none;
+        margin: auto;
+        font-size: rem(12px);
+      }
+    }
   }
 }
 

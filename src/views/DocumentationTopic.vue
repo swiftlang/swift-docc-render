@@ -10,25 +10,19 @@
 
 <template>
   <div>
-    <!-- <PortalTarget name="modal-destination" multiple />
+    <PortalTarget name="modal-destination" multiple />
     <GenericModal
+      :showClose=false
       :visible="quickNavigationStore.state.showQuickNavigation"
-      isFullscreen
-      theme="dark"
+      :isFullscreen=true
+      :codeBackgroundColorOverride="'transparent'"
+      :theme="'code'"
     >
        <QuickNavigationModal
         :isModalOpen=quickNavigationStore.state.showQuickNavigation
         v-show="quickNavigationStore.state.showQuickNavigation"
       />
-    </GenericModal> -->
-    <!-- <div :class="{ 'modal-open': quickNavigationStore.state.showQuickNavigation }">
-    <div v-show="quickNavigationStore.state.showQuickNavigation">
-      <QuickNavigationModal/> -->
-    <div v-show="quickNavigationStore.state.showQuickNavigation">
-      <QuickNavigationModal
-        :isModalOpen=quickNavigationStore.state.showQuickNavigation
-      />
-    </div>
+    </GenericModal>
     <CodeTheme class="doc-topic-view">
       <template v-if="topicData">
         <Nav

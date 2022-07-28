@@ -16,7 +16,7 @@
     :aria-labelledby="searchAriaLabelledBy"
     :class="{ 'focus': showSuggestedTags }"
     @blur.capture="handleBlur"
-    @focus.capture="showSuggestedTags = true"
+    @focus.capture="showSuggestedTags = true; $emit('toggleIsFilterInputFocused')"
   >
     <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
       <div class="filter__top-wrapper">
@@ -98,22 +98,6 @@
             <ClearRoundedIcon />
           </button>
         </div>
-        <button
-          v-if="enableQuickNavigation"
-          class="filter__quick-navigation-container"
-          @click="openQuickNavigationModal()"
-        >
-          <kbd
-            class="filter__quick-navigation-icon"
-          >
-            <abbr
-              class="filter__open-modal-key"
-              title="Forward slash"
-            >
-              /
-            </abbr>
-          </kbd>
-        </button>
       </div>
       <TagList
         v-if="displaySuggestedTags"
@@ -385,7 +369,7 @@ export default {
       if (target && target.matches && target.matches('button, input, ul') && this.$el.contains(target)) return;
       // Wait for mousedown to send event listeners
       await this.$nextTick();
-
+      this.$emit('toggleIsFilterInputFocused');
       this.resetActiveTags();
 
       if (this.preventedBlur) {
@@ -417,24 +401,6 @@ export default {
         this.$emit('focus-prev');
       }
     },
-    onKeydown(event) {
-      if (
-        event.key === '/'
-        || (event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))
-      ) {
-        this.openQuickNavigationModal();
-        event.preventDefault();
-      }
-    },
-    openQuickNavigationModal() {
-      this.store.toggleShowQuickNavigationModal(true);
-      return true;
-    },
-  },
-  mounted() {
-    if (this.enableQuickNavigation) {
-      window.addEventListener('keydown', this.onKeydown);
-    }
   },
   created() {
     if (
@@ -447,11 +413,6 @@ export default {
   },
   provide() {
     return { store: this.store };
-  },
-  beforeDestroy() {
-    if (this.enableQuickNavigation) {
-      document.removeEventListener('keydown', this.onKeydown);
-    }
   },
 };
 </script>
@@ -481,6 +442,10 @@ $input-height: rem(28px);
   }
   &__quick-navigation-container {
     padding: 0 10px 0 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
     .filter__quick-navigation-icon {
       height: $quick-navigation-icon;
       width: $quick-navigation-icon;

@@ -8,9 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { mount, shallowMount } from '@vue/test-utils';
-import DocumentationTopic from '@/views/DocumentationTopic.vue';
-import FilterInput from '@/components/Filter/FilterInput.vue';
+import { shallowMount } from '@vue/test-utils';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHighlighter.vue';
 import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vue';
@@ -127,16 +125,6 @@ describe('QuickNavigationModal', () => {
     expect(matches.at(0)).toMatchObject(filteredSymbols[0]);
     expect(matches.at(1)).toMatchObject(filteredSymbols[1]);
     expect(wrapper.findAll(QuickNavigationHighlighter).length).toBe(filteredSymbols.length);
-  });
-
-  it('it opens modal on `filter__quick-navigation-icon` click', async () => {
-    const filterInputWrapper = shallowMount(FilterInput, config);
-    const documentationTopic = mount(DocumentationTopic, config);
-    const openQuickNavigationModal = jest.spyOn(filterInputWrapper.vm, 'openQuickNavigationModal');
-    expect(filterInputWrapper.find('.filter__quick-navigation-container').exists()).toBe(true);
-    await filterInputWrapper.find('.filter__quick-navigation-container').trigger('click');
-    expect(openQuickNavigationModal).toHaveBeenCalled();
-    expect(documentationTopic.find('.quick-navigation').exists()).toBe(true);
   });
 
   it('it renders the modal shadow', () => {

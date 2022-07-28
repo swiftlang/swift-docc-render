@@ -23,7 +23,7 @@
     >
       <div class="quick-navigation__input-container">
         <div class="quick-navigation__magnifier-icon-container">
-          <MagnifierIcon/>
+          <MagnifierIcon />
         </div>
         <input
           class="quick-navigation__filter"
@@ -40,11 +40,14 @@
         >
           <ClearRoundedIcon />
         </button>
-        <div class="quick-navigation__close-key">
+        <button
+          class="quick-navigation__close-key"
+          @click="closeQuickNavigationModal()"
+        >
           <span>
             ESC
           </span>
-        </div>
+        </button>
       </div>
       <div
         class="quick-navigation__match-list"
@@ -320,10 +323,16 @@ $filter-padding: rem(20px);
     @include font-styles(body-large);
   }
   &__clear-icon {
-    height: $clear-icon-size;
+    display: flex;
+    height: 100%;
+    // height: $clear-icon-size;
     margin: auto;
     margin-right: rem(5px);
     width: $clear-icon-size;
+    > * {
+      width: 100%;
+      height: 100%;
+    }
   }
   &__close-key {
     @include font-styles(caption);
@@ -361,9 +370,13 @@ $filter-padding: rem(20px);
     padding: $filter-padding;
   }
   &__magnifier-icon-container {
+    display: flex;
     height: rem(18px);
     margin: auto;
     width: rem(18px);
+    > * {
+      width: 100%;
+    }
   }
   &__match-list {
     overflow: scroll;
