@@ -38,7 +38,7 @@
                       :api-changes="slotProps.apiChanges"
                       :references="topicProps.references"
                       :scrollLockID="scrollLockID"
-                      :breakpoint="breakpoint"
+                      :reverse-filter-position="breakpoint !== BreakpointName.large"
                       @close="handleToggleSidenav(breakpoint)"
                     />
                   </transition>
