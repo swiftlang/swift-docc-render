@@ -186,7 +186,7 @@ code {
 .code-listing {
   flex-direction: column;
   min-height: 100%;
-  border-radius: $border-radius;
+  border-radius: var(--code-border-radius, $border-radius);
   overflow: auto;
 
   &.single-line {
