@@ -383,8 +383,10 @@ export default {
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
       return children.filter(({
-        title, path, type, deprecated,
+        title, path, type, deprecated, deprecatedChildrenCount, childUIDs,
       }) => {
+        // groupMarkers know how many children they have and how many are deprecated
+        const isDeprecated = deprecated || deprecatedChildrenCount === childUIDs.length;
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
@@ -395,7 +397,7 @@ export default {
           if (apiChanges && !tagMatch) {
             tagMatch = tagsSet.has(apiChangesObject[path]);
           }
-          if (!deprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
+          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
             tagMatch = true;
           }
         }
@@ -409,8 +411,9 @@ export default {
      * Returns a Set of all nodes that match a filter, along with their parents.
      * @returns Set<NavigatorFlatItem>
      */
-    filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
-      filteredChildren.flatMap(({ uid }) => getParents(uid)),
+    filteredChildrenUpToRootSet: ({ filteredChildren, getParents, childrenMap }) => new Set(
+      filteredChildren.flatMap(({ uid, groupMarkerUID }) => getParents(uid)
+        .concat(childrenMap[groupMarkerUID] || [])),
     ),
     /**
      * This generates a map of all the nodes we are allowed to render at a certain time.
