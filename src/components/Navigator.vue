@@ -26,6 +26,7 @@
       :breakpoint="breakpoint"
       :api-changes="apiChanges"
       :allow-hiding="allowHiding"
+      :enableQuickNavigation="enableQuickNavigation"
       @close="$emit('close')"
     />
     <NavigatorCardInner v-else class="loading-placeholder">
@@ -47,6 +48,7 @@ import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardIn
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import { getSetting } from 'docc-render/utils/theme-settings';
 
 /**
  * @typedef NavigatorFlatItem
@@ -56,6 +58,9 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
  * @property {array} abstract - symbol abstract
  * @property {string} path - path to page, used in navigation
  * @property {number} parent - parent UID
+ * @property {number} groupMarkerUID - UID of the groupMarker that labels this
+ * @property {number} deprecatedChildrenCount - number of children that are deprecated.
+ * Used for filtering
  * @property {number} depth - depth of symbol in original tree
  * @property {number} index - index of item in siblings
  * @property {number} siblingsCount - number of siblings
@@ -145,13 +150,20 @@ export default {
       }
       return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat(path);
     },
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
     /**
      * Recomputes the list of flat children.
      * @return NavigatorFlatItem[]
      */
-    flatChildren: ({ flattenNestedData, technology = {}, store }) => {
+    flatChildren: ({
+      enableQuickNavigation, flattenNestedData, technology = {}, store,
+    }) => {
       const flatIndex = flattenNestedData(technology.children || [], null, 0, technology.beta);
-      store.setFlattenIndex(flatIndex);
+      if (enableQuickNavigation) {
+        store.setFlattenIndex(flatIndex);
+      }
       return flatIndex;
     },
     /**
@@ -181,6 +193,8 @@ export default {
       let items = [];
       const len = childrenNodes.length;
       let index;
+      // reference to the last label node
+      let groupMarkerNode = null;
       for (index = 0; index < len; index += 1) {
         // get the children
         const { children, ...node } = childrenNodes[index];
@@ -190,6 +204,20 @@ export default {
         node.uid = this.hashCode(`${parentUID}+${node.path}_${depth}_${index}`);
         // store the parent uid
         node.parent = parentUID;
+        // store the current groupMarker reference
+        if (node.type === TopicTypes.groupMarker) {
+          node.deprecatedChildrenCount = 0;
+          groupMarkerNode = node;
+        } else if (groupMarkerNode) {
+          // push the current node to the group marker before it
+          groupMarkerNode.childUIDs.push(node.uid);
+          // store the groupMarker UID for each item
+          node.groupMarkerUID = groupMarkerNode.uid;
+          if (node.deprecated) {
+            // count deprecated children, so we can hide the entire group when filtering
+            groupMarkerNode.deprecatedChildrenCount += 1;
+          }
+        }
         // store which item it is
         node.index = index;
         // store how many siblings it has
