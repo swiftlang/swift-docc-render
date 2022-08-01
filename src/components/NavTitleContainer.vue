@@ -36,6 +36,7 @@ export default {
 }
 
 .title {
+  color: var(--color-nav-root-title, currentColor);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
