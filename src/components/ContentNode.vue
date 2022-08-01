@@ -20,6 +20,7 @@ import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
+import Small from './ContentNode/Small.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -32,6 +33,7 @@ const BlockType = {
   termList: 'termList',
   unorderedList: 'unorderedList',
   dictionaryExample: 'dictionaryExample',
+  small: 'small',
 };
 
 const InlineType = {
@@ -273,6 +275,9 @@ function renderNode(createElement, references) {
         example: node.example,
       };
       return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
+    }
+    case BlockType.small: {
+      return createElement(Small, renderChildren(node.content));
     }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (
