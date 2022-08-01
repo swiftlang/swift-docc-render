@@ -58,9 +58,10 @@ $badge-border-radius: $border-radius - 1px !default;
   padding: 2px 10px;
   white-space: nowrap;
   background: none;
-  border-radius: $badge-border-radius;
+  border-radius: var(--badge-border-radius, $badge-border-radius);
+  border-style: var(--badge-border-style, solid);
+  border-width: var(--badge-border-width, 1px);
   margin-left: 10px;
-  border: 1px solid var(--badge-color);
   color: var(--badge-color);
 
   .theme-dark & {
