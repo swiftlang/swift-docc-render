@@ -28,6 +28,7 @@
         >
           <button
             aria-label="Open documentation navigator"
+            :id="baseNavOpenSidenavButtonId"
             class="sidenav-toggle"
             :tabindex="isOpen ? -1 : null"
             @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
@@ -90,6 +91,8 @@ import NavBase from 'docc-render/components/NavBase.vue';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
+import { SIDEBAR_HIDE_BUTTON_ID } from 'docc-render/constants/sidebar';
+import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 import Hierarchy from './DocumentationNav/Hierarchy.vue';
 import LanguageToggle from './DocumentationNav/LanguageToggle.vue';
 
@@ -157,6 +160,7 @@ export default {
     },
   },
   computed: {
+    baseNavOpenSidenavButtonId: () => baseNavOpenSidenavButtonId,
     BreakpointName: () => BreakpointName,
     breadcrumbCount: ({ hierarchyItems }) => hierarchyItems.length + 1,
     /**
@@ -197,6 +201,11 @@ export default {
       await closeNav();
       // toggle the sidenav
       this.$emit('toggle-sidenav', currentBreakpoint);
+      await this.$nextTick();
+      const trigger = document.getElementById(SIDEBAR_HIDE_BUTTON_ID);
+      if (trigger) {
+        trigger.focus();
+      }
     },
   },
 };

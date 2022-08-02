@@ -15,6 +15,7 @@ import {
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import { BreakpointName } from '@/utils/breakpoints';
 import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
+import { SIDEBAR_HIDE_BUTTON_ID } from 'docc-render/constants/sidebar';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
@@ -268,6 +269,9 @@ describe('DocumentationNav', () => {
   });
 
   it('renders a sidenav toggle, emitting `@toggle-sidenav` event', async () => {
+    const btn = document.createElement('button');
+    btn.id = SIDEBAR_HIDE_BUTTON_ID;
+    document.body.appendChild(btn);
     // assert the wrapper is hidden
     const sidenavToggleWrapper = wrapper.find('.sidenav-toggle-wrapper');
     expect(sidenavToggleWrapper.isVisible()).toBe(false);
@@ -282,6 +286,8 @@ describe('DocumentationNav', () => {
     // assert the button works and is rendered as expected
     expect(button.attributes('aria-label')).toBe('Open documentation navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+    // assert the nav-hide button is focused
+    expect(document.activeElement).toEqual(btn);
   });
 
   it('closes the nav, if open and clicking on the sidenav-toggle', async () => {

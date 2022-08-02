@@ -30,7 +30,7 @@
                 <template #default="slotProps">
                   <transition name="delay-hiding">
                     <Navigator
-                      v-show="isMobileSideNavOpen || breakpoint === BreakpointName.large"
+                      v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
                       :parent-topic-identifiers="parentTopicIdentifiers"
                       :technology="slotProps.technology || technology"
                       :is-fetching="slotProps.isFetching"
@@ -124,7 +124,7 @@ export default {
     return {
       topicDataDefault: null,
       topicDataObjc: null,
-      isMobileSideNavOpen: false,
+      sidenavVisibleOnMobile: false,
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       store: DocumentationTopicStore,
@@ -287,11 +287,11 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
-    sidebarProps: ({ isMobileSideNavOpen, enableNavigator, sidenavHiddenOnLarge }) => (
+    sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
         ? {
           class: 'full-width-container topic-wrapper',
-          shownOnMobile: isMobileSideNavOpen,
+          shownOnMobile: sidenavVisibleOnMobile,
           hiddenOnLarge: sidenavHiddenOnLarge,
         }
         : { class: 'static-width-container topic-wrapper' }
@@ -321,8 +321,8 @@ export default {
       this.sidenavHiddenOnLarge = value;
       storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
     },
-    toggleMobileSidenav(value = !this.isMobileSideNavOpen) {
-      this.isMobileSideNavOpen = value;
+    toggleMobileSidenav(value = !this.sidenavVisibleOnMobile) {
+      this.sidenavVisibleOnMobile = value;
     },
   },
   mounted() {

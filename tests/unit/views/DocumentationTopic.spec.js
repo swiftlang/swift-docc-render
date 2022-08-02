@@ -248,7 +248,7 @@ describe('DocumentationTopic', () => {
           ...topicData,
           schemaVersion: schemaVersionWithSidebar,
         },
-        isMobileSideNavOpen: true,
+        sidenavVisibleOnMobile: true,
       });
       await wrapper.vm.$nextTick();
       // assert navigator doesn't have display: none

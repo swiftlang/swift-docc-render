@@ -22,6 +22,7 @@ import { BreakpointName } from '@/utils/breakpoints';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
+import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -1215,13 +1216,17 @@ describe('NavigatorCard', () => {
     expect(all.at(3).props('item')).toEqual(root1);
   });
 
-  it('emits a `close` event', async () => {
+  it('emits a `close` event, and focuses the open toggle', async () => {
+    const btn = document.createElement('BUTTON');
+    btn.id = baseNavOpenSidenavButtonId;
+    document.body.appendChild(btn);
     const wrapper = createWrapper();
     const button = wrapper.find('.close-card');
     button.trigger('click');
     await flushPromises();
     expect(button.attributes('aria-label')).toBe('Close documentation navigator');
     expect(wrapper.emitted('close')).toHaveLength(1);
+    expect(document.activeElement).toEqual(btn);
   });
 
   it('persists the filtered state, per technology path', async () => {

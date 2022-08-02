@@ -15,9 +15,10 @@
         <div class="head-wrapper">
           <button
             aria-label="Close documentation navigator"
+            :id="SIDEBAR_HIDE_BUTTON_ID"
             class="close-card"
             :class="{ 'hide-on-large': !allowHiding }"
-            @click="$emit('close')"
+            @click="handleHideClick"
           >
             <SidenavIcon class="icon-inline close-icon" />
           </button>
@@ -113,7 +114,11 @@ import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
-import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
+import {
+  INDEX_ROOT_KEY,
+  SIDEBAR_HIDE_BUTTON_ID,
+  SIDEBAR_ITEM_SIZE,
+} from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
@@ -128,6 +133,7 @@ import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
 import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
+import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -270,6 +276,7 @@ export default {
     };
   },
   computed: {
+    SIDEBAR_HIDE_BUTTON_ID: () => SIDEBAR_HIDE_BUTTON_ID,
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
     politeAriaLive: ({ hasNodes, nodesToRender }) => {
       if (!hasNodes) return '';
@@ -1086,6 +1093,14 @@ export default {
       // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
       this.focusIndex(parentIndex);
     },
+    async handleHideClick() {
+      this.$emit('close');
+      await this.$nextTick();
+      const trigger = document.getElementById(baseNavOpenSidenavButtonId);
+      if (trigger) {
+        trigger.focus();
+      }
+    },
   },
   provide() {
     return { store: this.store };
@@ -1227,18 +1242,16 @@ $close-icon-padding: 5px;
     @include safe-area-left-set(padding-left, $nav-padding-small);
   }
 
-  @include breakpoints-from(large, nav) {
-    &.hide-on-large {
-      display: none;
-    }
-  }
-
   .close-icon {
     width: $close-icon-size;
     height: $close-icon-size;
   }
 
   @include breakpoints-from(large, nav) {
+    &.hide-on-large {
+      display: none;
+    }
+
     &:hover {
       border-radius: $nano-border-radius;
       background: var(--color-fill-gray-quaternary);
