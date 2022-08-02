@@ -13,21 +13,23 @@
     <div class="navigator-card-full-height">
       <NavigatorCardInner>
         <div class="head-wrapper">
-          <button
-            aria-label="Close documentation navigator"
-            :id="SIDEBAR_HIDE_BUTTON_ID"
-            class="close-card"
-            :class="{ 'hide-on-large': !allowHiding }"
-            @click="handleHideClick"
-          >
-            <SidenavIcon class="icon-inline close-icon" />
-          </button>
-          <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <h2 class="card-link">
-              {{ technology }}
-            </h2>
-            <Badge v-if="isTechnologyBeta" variant="beta" />
-          </Reference>
+          <div class="head-inner">
+            <button
+              aria-label="Close documentation navigator"
+              :id="SIDEBAR_HIDE_BUTTON_ID"
+              class="close-card"
+              :class="{ 'hide-on-large': !allowHiding }"
+              @click="handleHideClick"
+            >
+              <SidenavIcon class="icon-inline close-icon" />
+            </button>
+            <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
+              <h2 class="card-link">
+                {{ technology }}
+              </h2>
+              <Badge v-if="isTechnologyBeta" variant="beta" />
+            </Reference>
+          </div>
         </div>
         <slot name="post-head" />
         <div
@@ -1143,14 +1145,13 @@ $close-icon-padding: 5px;
     --nav-card-inner-vertical-offset: #{$filter-height};
   }
 
+  .head-inner {
+    overflow: hidden;
+  }
+
   .head-wrapper {
     position: relative;
     flex: 1 0 auto;
-
-    // while sidebar is animating, hide overflowing items.
-    .sidebar-transitioning & {
-      overflow: hidden;
-    }
   }
 
   .navigator-head {
