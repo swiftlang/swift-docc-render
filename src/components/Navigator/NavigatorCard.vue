@@ -1129,8 +1129,12 @@ $close-icon-size: 19px;
 
   .head-wrapper {
     position: relative;
-    overflow: hidden;
     flex: 1 0 auto;
+
+    // while sidebar is animating, hide overflowing items.
+    .sidebar-transitioning & {
+      overflow: hidden;
+    }
   }
 
   .navigator-head {
@@ -1281,10 +1285,6 @@ $close-icon-size: 19px;
   display: flex;
   align-items: flex-end;
 
-  .animating &, .force-close & {
-    overflow: hidden;
-  }
-
   @include safe-area-left-set(padding-left, 30px);
   @include safe-area-right-set(padding-right, 30px);
 
@@ -1339,6 +1339,11 @@ $close-icon-size: 19px;
   position: sticky;
   bottom: 0;
   background: var(--color-fill);
+
+  .sidebar-transitioning & {
+    overflow: hidden;
+  }
+
   @include breakpoint(medium, nav) {
     position: absolute;
     top: $nav-height;

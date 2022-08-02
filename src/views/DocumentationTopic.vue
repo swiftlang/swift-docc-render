@@ -412,7 +412,7 @@ export default {
     background: var(--color-fill);
     border-right: none;
 
-    .animating & {
+    .sidebar-transitioning & {
       border-right: 1px solid var(--color-grid);
     }
   }

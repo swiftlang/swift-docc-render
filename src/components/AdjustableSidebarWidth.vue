@@ -167,7 +167,7 @@ export default {
       'show-on-mobile': shownOnMobile,
       'hide-on-large': hiddenOnLarge,
       'no-transition': noTransition,
-      animating: isTransitioning,
+      'sidebar-transitioning': isTransitioning,
       'has-mobile-top-offset': mobileTopOffset,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
@@ -224,6 +224,9 @@ export default {
     shownOnMobile: 'handleExternalOpen',
     isTransitioning(value) {
       if (!value) this.updateContentWidthInStore();
+    },
+    hiddenOnLarge() {
+      this.isTransitioning = true;
     },
   },
   methods: {
@@ -339,13 +342,15 @@ export default {
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
     }, 60),
-    trackTransitionStart(event) {
-      if (event.propertyName !== 'width') return;
-      this.isTransitioning = true;
+    trackTransitionStart({ propertyName }) {
+      if (propertyName === 'width' || propertyName === 'transform') {
+        this.isTransitioning = true;
+      }
     },
-    trackTransitionEnd(event) {
-      if (event.propertyName !== 'width') return;
-      this.isTransitioning = false;
+    trackTransitionEnd({ propertyName }) {
+      if (propertyName === 'width' || propertyName === 'transform') {
+        this.isTransitioning = false;
+      }
     },
   },
 };

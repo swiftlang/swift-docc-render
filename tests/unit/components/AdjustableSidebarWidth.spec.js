@@ -283,18 +283,20 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   it('adds a `hide-on-large` class, when `hiddenOnLarge: true`', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        hiddenOnLarge: true,
-      },
-    });
+    const wrapper = createWrapper();
     const aside = wrapper.find({ ref: 'aside' });
+    expect(aside.classes()).not.toContain('hide-on-large');
+    expect(aside.classes()).not.toContain('sidebar-transitioning');
+    wrapper.setProps({ hiddenOnLarge: true });
+    await wrapper.vm.$nextTick();
     expect(aside.classes()).toContain('hide-on-large');
+    expect(aside.classes()).toContain('sidebar-transitioning');
     expect(aside.attributes()).toMatchObject({
       'aria-hidden': 'true',
     });
     wrapper.setProps({ hiddenOnLarge: false });
     expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('hide-on-large');
+    expect(aside.classes()).toContain('sidebar-transitioning');
   });
 
   it('changes the sidebar width, if outside the min/max on orientation change', async () => {
@@ -532,11 +534,11 @@ describe('AdjustableSidebarWidth', () => {
 
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
-    expect(aside.classes()).not.toContain('animating');
+    expect(aside.classes()).not.toContain('sidebar-transitioning');
     aside.trigger('transitionstart', { propertyName: 'width' });
-    expect(aside.classes()).toContain('animating');
+    expect(aside.classes()).toContain('sidebar-transitioning');
     aside.trigger('transitionend', { propertyName: 'width' });
-    expect(aside.classes()).not.toContain('animating');
+    expect(aside.classes()).not.toContain('sidebar-transitioning');
     window.Event = oldEvent;
   });
 
