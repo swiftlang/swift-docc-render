@@ -561,6 +561,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 
   @include nav-in-breakpoint() {
+    overflow: visible;
     padding: 0;
     margin-left: 0;
   }

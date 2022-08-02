@@ -1104,6 +1104,7 @@ $filter-height-small: 62px;
 $navigator-head-background: var(--color-fill) !default;
 $navigator-head-background-active: var(--color-fill) !default;
 $close-icon-size: 19px;
+$close-icon-padding: 5px;
 
 .magnifier-icon {
   height: 20px;
@@ -1204,19 +1205,19 @@ $close-icon-size: 19px;
   z-index: 1;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  right: 0;
-  padding-left: $card-horizontal-spacing-large;
-  padding-right: $nav-padding;
-
+  right: $nav-padding - rem($close-icon-padding);
+  padding: $close-icon-padding;
+  margin-left: -$close-icon-padding;
+  top: calc(50% - #{$close-icon-size} + #{$close-icon-padding});
   transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s, visibility 0s;
-
-  @include safe-area-left-set(padding-right, $nav-padding);
 
   @include breakpoint(medium, nav) {
     right: unset;
+    top: 0;
     left: 0;
-    padding-right: $nav-padding;
+    margin: 0;
+    padding: 0 $nav-padding 0 $card-horizontal-spacing-large;
+    height: 100%;
     @include safe-area-left-set(padding-left, $nav-padding);
   }
 
@@ -1235,14 +1236,11 @@ $close-icon-size: 19px;
   .close-icon {
     width: $close-icon-size;
     height: $close-icon-size;
-    padding: 5px;
-    margin-left: -5px;
-    margin-right: -5px;
-    border-radius: $nano-border-radius;
   }
 
   @include breakpoints-from(large, nav) {
-    &:hover .close-icon {
+    &:hover {
+      border-radius: $nano-border-radius;
       background: var(--color-fill-gray-quaternary);
     }
     // when the navigator is closed on desktop,
