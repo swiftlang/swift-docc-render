@@ -67,7 +67,7 @@
     line-height: $line-height;
     clip-path: unset;
   }
-}
+};
 
 ////
 /// Apply styling only when focused via the keyboard.
@@ -78,7 +78,18 @@
       @content
     }
   }
-}
+};
+
+////
+/// Apply styling only when focused via the keyboard in a element inside.
+////
+@mixin on-keyboard-focus-within() {
+  .fromkeyboard & {
+    &:focus-within {
+      @content
+    }
+  }
+};
 
 ////
 /// Replaces the outline effect when an element is in focus, with a box shadow effect.
