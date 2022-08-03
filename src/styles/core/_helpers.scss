@@ -81,7 +81,7 @@
 };
 
 ////
-/// Apply styling only when focused via the keyboard in a element inside.
+/// Apply styling only when focused via the keyboard in an element inside.
 ////
 @mixin on-keyboard-focus-within() {
   .fromkeyboard & {
