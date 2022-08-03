@@ -51,4 +51,19 @@ describe('OnThisPageSection', () => {
       level: 2,
     });
   });
+
+  it('does not register the section in the store, if it has no title provided', () => {
+    jest.clearAllMocks();
+    wrapper.destroy();
+    shallowMount(OnThisPageSection, {
+      propsData: {
+        anchor: 'foo',
+        title: '',
+      },
+      provide,
+      slots,
+    });
+
+    expect(provide.store.addOnThisPageSection).toHaveBeenCalledTimes(0);
+  });
 });

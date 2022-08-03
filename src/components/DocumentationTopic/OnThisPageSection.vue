@@ -39,6 +39,7 @@ export default {
     },
   },
   created() {
+    if (!this.title || !this.anchor) return;
     this.store.addOnThisPageSection({
       anchor: this.anchor,
       title: this.title,
