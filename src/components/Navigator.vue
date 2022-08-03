@@ -25,6 +25,7 @@
       :error-fetching="errorFetching"
       :breakpoint="breakpoint"
       :api-changes="apiChanges"
+      :allow-hiding="allowHiding"
       :enableQuickNavigation="enableQuickNavigation"
       @close="$emit('close')"
     />
@@ -115,6 +116,10 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
+    },
+    allowHiding: {
+      type: Boolean,
+      default: true,
     },
   },
   provide() {
@@ -250,14 +255,9 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
-  --nav-height: #{$nav-height};
   height: 100%;
   display: flex;
   flex-flow: column;
-
-  @include breakpoints-from(xlarge) {
-    border-left: 1px solid var(--color-grid);
-  }
 
   @include breakpoint(medium, nav) {
     position: static;

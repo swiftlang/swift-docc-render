@@ -20,7 +20,7 @@
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
         <div class="pre-title">
-          <slot name="pre-title" :close-nav="closeNav" :is-open="isOpen" />
+          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
@@ -151,15 +151,18 @@ export default {
   data() {
     return {
       isOpen: false,
-      inBreakpoint: false,
       isTransitioning: false,
       isSticking: false,
       noBackgroundTransition: true,
       focusTrapInstance: null,
+      currentBreakpoint: BreakpointName.large,
     };
   },
   computed: {
     BreakpointScopes: () => BreakpointScopes,
+    inBreakpoint: ({ currentBreakpoint, breakpoint }) => (
+      !isBreakpointAbove(currentBreakpoint, breakpoint)
+    ),
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
       hasNoBorder, hasFullWidthBorder, isDark, isWideFormat, noBackgroundTransition,
@@ -254,10 +257,9 @@ export default {
      * @param breakpoint
      */
     onBreakpointChange(breakpoint) {
-      const isOutsideBreakpoint = isBreakpointAbove(breakpoint, this.breakpoint);
-      this.inBreakpoint = !isOutsideBreakpoint;
+      this.currentBreakpoint = breakpoint;
       // close the nav if outside of the breakpoint
-      if (isOutsideBreakpoint) this.closeNav();
+      if (!this.inBreakpoint) this.closeNav();
     },
     /**
      * On every intersection change
@@ -549,15 +551,19 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 }
 
 .pre-title {
-  display: none;
+  display: flex;
+  overflow: hidden;
+  padding-left: $nav-padding;
+  margin-left: -$nav-padding;
 
   &:empty {
     display: none;
   }
 
   @include nav-in-breakpoint() {
-    display: flex;
+    overflow: visible;
     padding: 0;
+    margin-left: 0;
   }
 }
 
