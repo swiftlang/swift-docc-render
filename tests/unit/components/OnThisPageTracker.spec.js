@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import Vue from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
@@ -55,6 +55,12 @@ jest.spyOn(document, 'getElementById').mockImplementation((anchor) => {
   }
 });
 
+const $route = {
+  query: {
+    language: 'objc',
+  },
+};
+
 const createWrapper = () => {
   wrapper = shallowMount(OnThisPageTracker, {
     provide: {
@@ -62,6 +68,9 @@ const createWrapper = () => {
     },
     stubs: {
       RouterLink: RouterLinkStub,
+    },
+    mocks: {
+      $route,
     },
   });
 };
@@ -86,9 +95,7 @@ describe('OnThisPageTracker', () => {
     const parentLink1 = firstParent.find('.parent-link');
     // assert first parent is active
     expect(firstParent.classes()).toContain('active');
-    expect(parentLink1.props('to')).toEqual({
-      hash: sections[0].anchor,
-    });
+    expect(parentLink1.props('to')).toEqual(`?language=objc#${sections[0].anchor}`);
     expect(parentLink1.text()).toBe(sections[0].title);
     // assert children of first parent
     const children = firstParent.findAll('.child-item');
@@ -96,16 +103,12 @@ describe('OnThisPageTracker', () => {
     // assert child is not active
     expect(children.at(0).classes()).not.toContain('active');
     const childLink = children.at(0).find(RouterLinkStub);
-    expect(childLink.classes()).toEqual(['floating-link', 'child-link']);
-    expect(childLink.props('to')).toEqual({
-      hash: sections[1].anchor,
-    });
+    expect(childLink.classes()).toEqual(['base-link', 'child-link']);
+    expect(childLink.props('to')).toEqual(`?language=objc#${sections[1].anchor}`);
     // assert second parent
     const secondParent = parents.at(1);
     expect(secondParent.classes()).not.toContain('active');
-    expect(secondParent.find(RouterLinkStub).props('to')).toEqual({
-      hash: sections[2].anchor,
-    });
+    expect(secondParent.find(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[2].anchor}`);
     expect(secondParent.find('.children').exists()).toBe(false);
   });
 
@@ -143,8 +146,8 @@ describe('OnThisPageTracker', () => {
     // but not near third
     await scrollWindowBy(secondTop);
     expect(store.setCurrentPageSection).toHaveBeenLastCalledWith(sections[1].anchor);
-    // assert the first parent item AND the first child item are both active
-    expect(parents.at(0).classes()).toContain('active');
+    // assert the parent is not set as active by default
+    expect(parents.at(0).classes()).not.toContain('active');
     expect(child.classes()).toContain('active');
     expect(parents.at(1).classes()).not.toContain('active');
     // scroll to 900, which is beyond the third

@@ -16,7 +16,7 @@
       :checkIsActive="checkIsActive"
       :scrollTo="scrollTo"
     >
-      <ul>
+      <ul class="parent-items">
         <li
           v-for="item in nestedSections"
           :key="item.anchor"
@@ -24,8 +24,8 @@
           :class="{ active: checkIsActive(item) }"
         >
           <router-link
-            :to="{ hash: item.anchor }"
-            class="floating-link parent-link"
+            :to="item.url"
+            class="base-link parent-link"
             @click.native="scrollTo(item)"
           >
             {{ item.title }}
@@ -38,8 +38,8 @@
               class="child-item"
             >
               <router-link
-                :to="{ hash: child.anchor }"
-                class="floating-link child-link"
+                :to="child.url"
+                class="base-link child-link"
                 @click.native="scrollTo(child)"
               >
                 {{ child.title }}
@@ -57,6 +57,7 @@ import throttle from 'docc-render/utils/throttle';
 import { waitFrames } from 'docc-render/utils/loading';
 import { last } from 'docc-render/utils/arrays';
 import ScrollToElement from 'docc-render/mixins/scrollToElement';
+import { buildUrl } from 'docc-render/utils/url-helper';
 
 export default {
   name: 'OnThisPageTracker',
@@ -71,7 +72,10 @@ export default {
     },
   },
   computed: {
-    onThisPageSections: ({ store }) => store.state.onThisPageSections,
+    onThisPageSections: ({ store, $route }) => store.state.onThisPageSections.map(item => ({
+      ...item,
+      url: buildUrl(`#${item.anchor}`, $route.query),
+    })),
     currentPageSection: ({ store }) => store.state.currentPageSection || {},
     /**
      * Nests the flat list of sections by the level.
@@ -138,12 +142,13 @@ export default {
     /**
      * Returns whether the current item or some of its children is active.
      * @param item
+     * @param deep
      * @returns {boolean}
      */
-    checkIsActive(item) {
+    checkIsActive(item, deep = false) {
       const activeItem = this.currentPageSection;
       return item.anchor === activeItem.anchor
-        || (item.children || []).some(c => c.anchor === activeItem.anchor);
+        || (deep && (item.children || []).some(c => c.anchor === activeItem.anchor));
     },
     async scrollTo({ anchor }) {
       const element = document.getElementById(anchor);
@@ -160,19 +165,26 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-.children {
-  max-height: 0;
-  transition: max-height 0.3s ease-in;
-  overflow: hidden;
+ul {
+  list-style-type: none;
+  margin: 0;
+}
 
-  .active & {
-    max-height: 100vh;
-  }
+.parent-item > .base-link {
+  font-weight: bold;
+}
+
+.base-link {
+  color: var(--color-figure-gray-secondary);
+  @include font-styles(on-this-page);
+  display: inline-block;
+  margin-bottom: 5px;
 }
 
 .active {
-  & > .floating-link {
+  & > .base-link {
     font-weight: bold;
+    color: var(--color-figure-gray);
   }
 }
 </style>
