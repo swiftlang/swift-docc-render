@@ -232,9 +232,19 @@ function renderNode(createElement, references) {
         attrs: {
           id: node.anchor,
         },
-      }, (
-        node.text
-      ));
+      }, [
+        createElement('a', {
+          attrs: {
+            id: node.anchor,
+            class: 'header-anchor',
+            href: `#${node.anchor}`,
+            'aria-hidden': 'true',
+          },
+        }, (
+          '#'
+        )),
+        node.text,
+      ]);
     case BlockType.orderedList:
       return createElement('ol', {
         attrs: {
