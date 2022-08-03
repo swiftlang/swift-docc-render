@@ -13,7 +13,6 @@
     aria-label="Select a color scheme preference"
     class="color-scheme-toggle"
     role="radiogroup"
-    tabindex="0"
   >
     <label
       v-for="option in options"
@@ -83,6 +82,12 @@ export default {
 input {
   @include visuallyhidden;
   appearance: none;
+}
+
+label {
+  @include on-keyboard-focus-within() {
+    @include focus-outline();
+  }
 }
 
 .text {
