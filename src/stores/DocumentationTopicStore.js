@@ -17,6 +17,7 @@ export default {
   state: {
     onThisPageSections: [],
     preferredLanguage: Settings.preferredLanguage,
+    contentWidth: 0,
     ...changesState,
   },
   reset() {
@@ -30,6 +31,9 @@ export default {
   setPreferredLanguage(language) {
     this.state.preferredLanguage = language;
     Settings.preferredLanguage = this.state.preferredLanguage;
+  },
+  setContentWidth(width) {
+    this.state.contentWidth = width;
   },
   ...changesActions,
 };

@@ -11,27 +11,12 @@
 <template>
   <div :class="{ 'modal-open': quickNavigationStore.state.showQuickNavigation }">
     <div v-show="quickNavigationStore.state.showQuickNavigation">
-      <QuickNavigationModal/>
+      <QuickNavigationModal />
     </div>
     <CodeTheme class="doc-topic-view">
       <template v-if="topicData">
-        <Nav
-          v-if="!isTargetIDE"
-          :title="topicProps.title"
-          :diffAvailability="topicProps.diffAvailability"
-          :interfaceLanguage="topicProps.interfaceLanguage"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :parentTopicIdentifiers="parentTopicIdentifiers"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :currentTopicTags="topicProps.tags"
-          :references="topicProps.references"
-          :isWideFormat="enableNavigator"
-          @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
-        />
         <component
-          :is="enableNavigator ? 'AdjustableSidebarWidth' : 'div'"
+          :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
           v-bind="sidebarProps"
           v-on="sidebarListeners"
         >
@@ -45,7 +30,7 @@
                 <template #default="slotProps">
                   <transition name="delay-hiding">
                     <Navigator
-                      v-show="isSideNavOpen || breakpoint === BreakpointName.large"
+                      v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
                       :parent-topic-identifiers="parentTopicIdentifiers"
                       :technology="slotProps.technology || technology"
                       :is-fetching="slotProps.isFetching"
@@ -54,13 +39,29 @@
                       :references="topicProps.references"
                       :scrollLockID="scrollLockID"
                       :breakpoint="breakpoint"
-                      @close="isSideNavOpen = false"
+                      @close="handleToggleSidenav(breakpoint)"
                     />
                   </transition>
                 </template>
               </NavigatorDataProvider>
             </div>
           </template>
+          <Nav
+            v-if="!isTargetIDE"
+            :title="topicProps.title"
+            :diffAvailability="topicProps.diffAvailability"
+            :interfaceLanguage="topicProps.interfaceLanguage"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
+            :parentTopicIdentifiers="parentTopicIdentifiers"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+            :currentTopicTags="topicProps.tags"
+            :references="topicProps.references"
+            :isWideFormat="enableNavigator"
+            :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
+            @toggle-sidenav="handleToggleSidenav"
+          />
           <Topic
             v-bind="topicProps"
             :key="topicKey"
@@ -96,18 +97,22 @@ import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigati
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
+import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import { storage } from 'docc-render/utils/storage';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
+const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
 
 export default {
   name: 'DocumentationTopicView',
-  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX },
+  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_HIDDEN_ON_LARGE_KEY },
   components: {
     Navigator,
     AdjustableSidebarWidth,
+    StaticContentWidth,
     NavigatorDataProvider,
     Topic: DocumentationTopic,
     CodeTheme,
@@ -119,7 +124,8 @@ export default {
     return {
       topicDataDefault: null,
       topicDataObjc: null,
-      isSideNavOpen: false,
+      sidenavVisibleOnMobile: false,
+      sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       store: DocumentationTopicStore,
       quickNavigationStore: QuickNavigationStore,
@@ -281,14 +287,19 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
-    sidebarProps: ({ isSideNavOpen, enableNavigator }) => (
+    sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
-        ? { class: 'full-width-container topic-wrapper', openExternally: isSideNavOpen }
+        ? {
+          class: 'full-width-container topic-wrapper',
+          shownOnMobile: sidenavVisibleOnMobile,
+          hiddenOnLarge: sidenavHiddenOnLarge,
+        }
         : { class: 'static-width-container topic-wrapper' }
     ),
     sidebarListeners() {
       return this.enableNavigator ? ({
-        'update:openExternally': (v) => { this.isSideNavOpen = v; },
+        'update:shownOnMobile': this.toggleMobileSidenav,
+        'update:hiddenOnLarge': this.toggleLargeSidenav,
       }) : {};
     },
   },
@@ -298,6 +309,20 @@ export default {
     },
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
+    },
+    handleToggleSidenav(breakpoint) {
+      if (breakpoint === BreakpointName.large) {
+        this.toggleLargeSidenav();
+      } else {
+        this.toggleMobileSidenav();
+      }
+    },
+    toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
+      this.sidenavHiddenOnLarge = value;
+      storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
+    },
+    toggleMobileSidenav(value = !this.sidenavVisibleOnMobile) {
+      this.sidenavVisibleOnMobile = value;
     },
   },
   mounted() {
@@ -387,11 +412,12 @@ export default {
     background: var(--color-fill);
     border-right: none;
 
-    .animating & {
+    .sidebar-transitioning & {
       border-right: 1px solid var(--color-grid);
     }
   }
 }
+
 .modal-open {
   position: fixed;
   width: 100%
@@ -404,7 +430,12 @@ export default {
 
 .full-width-container {
   @include inTargetWeb {
-    @include breakpoint-full-width-container()
+    @include breakpoint-full-width-container();
+    @include breakpoints-from(xlarge) {
+      border-left: 1px solid var(--color-grid);
+      border-right: 1px solid var(--color-grid);
+      box-sizing: border-box;
+    }
   }
 }
 </style>

@@ -15,6 +15,7 @@ $form-focus-size: 4px;
 
 // Border radius
 $border-radius: 4px !default;
+$nano-border-radius: $border-radius !default;
 $tiny-border-radius: $border-radius !default;
 $large-border-radius: $border-radius !default;
 $big-border-radius: $border-radius !default;
@@ -68,3 +69,6 @@ $card-horizontal-spacing-small: $card-horizontal-spacing / 2;
 
 // Small vp padding and width
 $small-viewport-content-padding: 20px !default;
+
+// AdjustableSidebar
+$adjustable-sidebar-hide-transition-duration: 0.3s;
