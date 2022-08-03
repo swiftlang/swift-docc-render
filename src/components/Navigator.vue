@@ -25,6 +25,7 @@
       :error-fetching="errorFetching"
       :breakpoint="breakpoint"
       :api-changes="apiChanges"
+      :allow-hiding="allowHiding"
       :enableQuickNavigation="enableQuickNavigation"
       @close="$emit('close')"
     />
@@ -57,6 +58,9 @@ import { getSetting } from 'docc-render/utils/theme-settings';
  * @property {array} abstract - symbol abstract
  * @property {string} path - path to page, used in navigation
  * @property {number} parent - parent UID
+ * @property {number} groupMarkerUID - UID of the groupMarker that labels this
+ * @property {number} deprecatedChildrenCount - number of children that are deprecated.
+ * Used for filtering
  * @property {number} depth - depth of symbol in original tree
  * @property {number} index - index of item in siblings
  * @property {number} siblingsCount - number of siblings
@@ -112,6 +116,10 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
+    },
+    allowHiding: {
+      type: Boolean,
+      default: true,
     },
   },
   provide() {
@@ -198,10 +206,17 @@ export default {
         node.parent = parentUID;
         // store the current groupMarker reference
         if (node.type === TopicTypes.groupMarker) {
+          node.deprecatedChildrenCount = 0;
           groupMarkerNode = node;
         } else if (groupMarkerNode) {
           // push the current node to the group marker before it
           groupMarkerNode.childUIDs.push(node.uid);
+          // store the groupMarker UID for each item
+          node.groupMarkerUID = groupMarkerNode.uid;
+          if (node.deprecated) {
+            // count deprecated children, so we can hide the entire group when filtering
+            groupMarkerNode.deprecatedChildrenCount += 1;
+          }
         }
         // store which item it is
         node.index = index;
@@ -240,14 +255,9 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
-  --nav-height: #{$nav-height};
   height: 100%;
   display: flex;
   flex-flow: column;
-
-  @include breakpoints-from(xlarge) {
-    border-left: 1px solid var(--color-grid);
-  }
 
   @include breakpoint(medium, nav) {
     position: static;

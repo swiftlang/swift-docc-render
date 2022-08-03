@@ -9,7 +9,13 @@
 -->
 
 <template>
-  <div class="adjustable-sidebar-width">
+  <div
+    class="adjustable-sidebar-width"
+    :class="{
+      dragging: isDragging,
+      'sidebar-hidden': hiddenOnLarge
+    }"
+  >
     <div
       ref="sidebar"
       class="sidebar"
@@ -19,8 +25,9 @@
         :style="asideStyles"
         class="aside"
         ref="aside"
-        @transitionstart="isTransitioning = true"
-        @transitionend="isTransitioning = false"
+        :aria-hidden="hiddenOnLarge ? 'true': null"
+        @transitionstart="trackTransitionStart"
+        @transitionend="trackTransitionEnd"
       >
         <slot
           name="aside"
@@ -35,7 +42,7 @@
         @touchstart.prevent="startDrag"
       />
     </div>
-    <div class="content">
+    <div class="content" ref="content">
       <slot />
     </div>
     <BreakpointEmitter :scope="BreakpointScopes.nav" @change="breakpoint = $event" />
@@ -96,8 +103,13 @@ export default {
   components: {
     BreakpointEmitter,
   },
+  inject: ['store'],
   props: {
-    openExternally: {
+    shownOnMobile: {
+      type: Boolean,
+      default: false,
+    },
+    hiddenOnLarge: {
       type: Boolean,
       default: false,
     },
@@ -149,12 +161,13 @@ export default {
       '--app-height': `${windowHeight}px`,
     }),
     asideClasses: ({
-      isDragging, openExternally, noTransition, isTransitioning, mobileTopOffset,
+      isDragging, shownOnMobile, noTransition, isTransitioning, hiddenOnLarge, mobileTopOffset,
     }) => ({
       dragging: isDragging,
-      'force-open': openExternally,
+      'show-on-mobile': shownOnMobile,
+      'hide-on-large': hiddenOnLarge,
       'no-transition': noTransition,
-      animating: isTransitioning,
+      'sidebar-transitioning': isTransitioning,
       'has-mobile-top-offset': mobileTopOffset,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
@@ -175,7 +188,7 @@ export default {
       window.removeEventListener('resize', this.storeWindowSize);
       window.removeEventListener('orientationchange', this.storeWindowSize);
       window.removeEventListener('scroll', this.storeTopOffset);
-      if (this.openExternally) {
+      if (this.shownOnMobile) {
         this.toggleScrollLock(false);
       }
       if (this.focusTrapInstance) this.focusTrapInstance.destroy();
@@ -208,7 +221,13 @@ export default {
       // re-apply transitions
       this.noTransition = false;
     },
-    openExternally: 'handleExternalOpen',
+    shownOnMobile: 'handleExternalOpen',
+    isTransitioning(value) {
+      if (!value) this.updateContentWidthInStore();
+    },
+    hiddenOnLarge() {
+      this.isTransitioning = true;
+    },
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {
@@ -226,10 +245,11 @@ export default {
       await this.$nextTick();
       this.windowWidth = window.innerWidth;
       this.windowHeight = window.innerHeight;
+      this.updateContentWidthInStore();
     }, 100),
     closeMobileSidebar() {
-      if (!this.openExternally) return;
-      this.$emit('update:openExternally', false);
+      if (!this.shownOnMobile) return;
+      this.$emit('update:shownOnMobile', false);
     },
     startDrag({ type }) {
       this.isTouch = type === 'touchstart';
@@ -254,8 +274,18 @@ export default {
       if (newWidth > this.maxWidth) {
         newWidth = this.maxWidth;
       }
+      // calculate the forceClose cutoff point
+      const forceCloseCutoff = this.minWidth / 2;
+      // if we are going beyond the cutoff point and we are closed, open the navigator
+      if (this.hiddenOnLarge && newWidth >= forceCloseCutoff) {
+        this.$emit('update:hiddenOnLarge', false);
+      }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);
+      // if the new width is smaller than the cutoff point, force close the nav
+      if (newWidth <= forceCloseCutoff) {
+        this.$emit('update:hiddenOnLarge', true);
+      }
     },
     /**
      * Stop the dragging upon mouse up
@@ -273,6 +303,7 @@ export default {
     },
     emitEventChange(width) {
       this.$emit('width-change', width);
+      this.updateContentWidthInStore();
     },
     getTopOffset() {
       const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
@@ -285,6 +316,10 @@ export default {
         this.mobileTopOffset = this.getTopOffset();
       }
       this.toggleScrollLock(isOpen);
+    },
+    async updateContentWidthInStore() {
+      await this.$nextTick();
+      this.store.setContentWidth(this.$refs.content.offsetWidth);
     },
     /**
      * Toggles the scroll lock on/off
@@ -307,6 +342,16 @@ export default {
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
     }, 60),
+    trackTransitionStart({ propertyName }) {
+      if (propertyName === 'width' || propertyName === 'transform') {
+        this.isTransitioning = true;
+      }
+    },
+    trackTransitionEnd({ propertyName }) {
+      if (propertyName === 'width' || propertyName === 'transform') {
+        this.isTransitioning = false;
+      }
+    },
   },
 };
 </script>
@@ -319,6 +364,14 @@ export default {
   @include breakpoint(medium, nav) {
     display: block;
     position: relative;
+  }
+
+  &.dragging /deep/ * {
+    cursor: col-resize !important;
+  }
+
+  &.sidebar-hidden.dragging /deep/ * {
+    cursor: e-resize !important;
   }
 }
 
@@ -339,6 +392,22 @@ export default {
     transition: none !important;
   }
 
+  @include breakpoints-from(large, nav) {
+
+    &:not(.dragging) {
+      transition: width $adjustable-sidebar-hide-transition-duration ease-in,
+      visibility 0s linear 0s;
+    }
+
+    &.hide-on-large {
+      width: 0 !important;
+      visibility: hidden;
+      pointer-events: none;
+      transition: width $adjustable-sidebar-hide-transition-duration ease-in,
+      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
+    }
+  }
+
   @include breakpoint(medium, nav) {
     width: 100% !important;
     overflow: hidden;
@@ -348,7 +417,7 @@ export default {
     position: fixed;
     top: var(--top-offset-mobile);
     bottom: 0;
-    z-index: $nav-z-index;
+    z-index: $nav-z-index + 1;
     transform: translateX(-100%);
     transition: transform 0.15s ease-in;
 
@@ -356,7 +425,7 @@ export default {
       opacity: 0;
     }
 
-    &.force-open {
+    &.show-on-mobile {
       transform: translateX(0);
 
       /deep/ .aside-animated-child {

@@ -487,11 +487,9 @@ $input-height: rem(28px);
       border-bottom-left-radius: $small-border-radius - 1;
       border-bottom-right-radius: $small-border-radius - 1;
 
-      .fromkeyboard & {
-        &:focus {
-          outline: none;
-          box-shadow: 0 0 0 5px var(--color-focus-color);
-        }
+      @include on-keyboard-focus() {
+        outline: none;
+        box-shadow: 0 0 0 5px var(--color-focus-color);
       }
     }
 

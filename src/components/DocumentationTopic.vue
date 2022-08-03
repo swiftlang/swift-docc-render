@@ -391,12 +391,6 @@ export default {
   outline-style: none;
   height: 100%;
 
-  @include with-adjustable-sidebar {
-    @include breakpoints-from(xlarge) {
-      border-right: 1px solid var(--color-grid);
-    }
-  }
-
   @include inTargetIde {
     min-height: 100vh;
     display: flex;
