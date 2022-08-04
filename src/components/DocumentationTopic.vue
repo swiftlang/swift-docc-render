@@ -91,9 +91,9 @@
             :sections="seeAlsoSections"
           />
         </div>
-        <div class="aside-floating-container">
+        <OnThisPageStickyContainer>
           <OnThisPageTracker />
-        </div>
+        </OnThisPageStickyContainer>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
@@ -124,6 +124,7 @@ import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
+import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
 
 export default {
   name: 'DocumentationTopic',
@@ -144,6 +145,7 @@ export default {
     },
   },
   components: {
+    OnThisPageStickyContainer,
     OnThisPageTracker,
     DocumentationHero,
     Abstract,
@@ -468,21 +470,7 @@ export default {
 
   .doc-content {
     min-width: 0;
-  }
-
-  .aside-floating-container {
-    $sticky-aside-width: 170px;
-    margin-top: $contenttable-spacing-single-side;
-    width: $sticky-aside-width;
-    position: sticky;
-    top: $nav-height;
-    background: pink;
-    align-self: flex-start;
-    flex: 0 0 auto;
-    margin-right: -$sticky-aside-width;
-    @include breakpoint(small) {
-      display: none;
-    }
+    width: 100%;
   }
 }
 </style>

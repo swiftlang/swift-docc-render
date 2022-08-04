@@ -351,8 +351,6 @@ $breakpoint-attributes: (
     // make sure there is 120px space between the content and nav bar on xl and l
     @include breakpoints-from(large) {
       box-sizing: unset;
-      padding-left: 120px;
-      padding-right: 120px;
       margin-left: 0px;
 
       // when the sidebar is hidden on desktop, center the content
