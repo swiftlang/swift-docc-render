@@ -15,18 +15,21 @@
     :title="title"
   >
     <div class="container">
-      <h2 class="title">{{title}}</h2>
+      <SectionTitle class="title" :anchor="anchor">
+        {{ title }}
+      </SectionTitle>
       <slot />
     </div>
   </OnThisPageSection>
 </template>
 
 <script>
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
 import OnThisPageSection from './OnThisPageSection.vue';
 
 export default {
   name: 'ContentTable',
-  components: { OnThisPageSection },
+  components: { OnThisPageSection, SectionTitle },
   props: {
     anchor: {
       type: String,

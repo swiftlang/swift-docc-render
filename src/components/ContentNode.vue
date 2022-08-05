@@ -11,6 +11,7 @@
 <script>
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
+import SectionTitle from './ContentNode/SectionTitle.vue';
 import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
@@ -24,6 +25,7 @@ import StrikeThrough from './ContentNode/StrikeThrough.vue';
 const BlockType = {
   aside: 'aside',
   codeListing: 'codeListing',
+  sectionTitle: 'sectionTitle',
   endpointExample: 'endpointExample',
   heading: 'heading',
   orderedList: 'orderedList',
@@ -227,24 +229,13 @@ function renderNode(createElement, references) {
       };
       return createElement(EndpointExample, { props }, renderChildren(node.summary || []));
     }
-    case BlockType.heading:
-      return createElement(`h${node.level}`, {
-        attrs: {
-          id: node.anchor,
-        },
-      }, [
-        createElement('a', {
-          attrs: {
-            id: node.anchor,
-            class: 'header-anchor',
-            href: `#${node.anchor}`,
-            'aria-hidden': 'true',
-          },
-        }, (
-          '#'
-        )),
-        node.text,
-      ]);
+    case BlockType.heading: {
+      const props = {
+        anchor: node.anchor,
+        tag: `h${node.level}`,
+      };
+      return createElement(SectionTitle, { props }, node.text);
+    }
     case BlockType.orderedList:
       return createElement('ol', {
         attrs: {
