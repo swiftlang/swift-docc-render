@@ -142,6 +142,7 @@ describe('Navigator', () => {
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
       apiChanges: null,
+      allowHiding: true,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
@@ -194,6 +195,7 @@ describe('Navigator', () => {
       breakpoint: defaultProps.breakpoint,
       errorFetching: false,
       apiChanges: null,
+      allowHiding: true,
     });
   });
 
@@ -297,6 +299,7 @@ describe('Navigator', () => {
           551503844,
           -97593391,
         ],
+        deprecatedChildrenCount: 0,
         depth: 0,
         index: 0,
         parent: INDEX_ROOT_KEY,
@@ -313,6 +316,7 @@ describe('Navigator', () => {
           1440072939,
         ],
         depth: 0,
+        groupMarkerUID: -196255993,
         index: 1,
         parent: INDEX_ROOT_KEY,
         path: '/foo/child0',
@@ -327,6 +331,7 @@ describe('Navigator', () => {
           1439149417,
           1440072939,
         ],
+        deprecatedChildrenCount: 0,
         depth: 1,
         index: 0,
         parent: 551503844,
@@ -338,6 +343,7 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
+        groupMarkerUID: -361407047,
         index: 1,
         parent: 551503844,
         path: '/foo/child0/grandchild0',
@@ -351,6 +357,7 @@ describe('Navigator', () => {
           305326087,
         ],
         depth: 1,
+        groupMarkerUID: -361407047,
         index: 2,
         parent: 551503844,
         path: '/foo/child0/grandchild1',
@@ -373,6 +380,7 @@ describe('Navigator', () => {
       {
         childUIDs: [],
         depth: 1,
+        groupMarkerUID: -361407047,
         index: 3,
         parent: 551503844,
         path: '/foo/child0/grandchild2',
@@ -386,6 +394,7 @@ describe('Navigator', () => {
           -827353283,
         ],
         depth: 0,
+        groupMarkerUID: -196255993,
         index: 2,
         parent: INDEX_ROOT_KEY,
         path: '/foo/child1/',
@@ -406,6 +415,21 @@ describe('Navigator', () => {
         uid: -827353283,
       },
     ]);
+  });
+
+  it('counts the amount of deprecated items a groupMarker has', () => {
+    const technologyClone = clone(technology);
+    technologyClone.children[1].deprecated = true;
+    technologyClone.children[2].deprecated = true;
+    technologyClone.children[1].children[1].deprecated = true;
+    const wrapper = createWrapper({
+      propsData: {
+        technology: technologyClone,
+      },
+    });
+    const children = wrapper.find(NavigatorCard).props('children');
+    expect(children[0]).toHaveProperty('deprecatedChildrenCount', 2);
+    expect(children).toMatchSnapshot();
   });
 
   it('removes the `beta` flag from children, if the technology is a `beta`', () => {

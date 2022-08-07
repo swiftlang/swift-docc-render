@@ -250,15 +250,13 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
   display: flex;
   align-items: center;
 
-  .fromkeyboard & {
-    &:focus-within {
-      margin: $card-horizontal-spacing-small;
-      height: $item-height - 10px;
-      @include focus-outline();
+  @include on-keyboard-focus-within() {
+    margin: $card-horizontal-spacing-small;
+    height: $item-height - 10px;
+    @include focus-outline();
 
-      .depth-spacer {
-        margin-left: -$card-horizontal-spacing-small;
-      }
+    .depth-spacer {
+      margin-left: -$card-horizontal-spacing-small;
     }
   }
 }
