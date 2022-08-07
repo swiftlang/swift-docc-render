@@ -16,7 +16,7 @@
     :aria-labelledby="searchAriaLabelledBy"
     :class="{ 'focus': showSuggestedTags }"
     @blur.capture="handleBlur"
-    @focus.capture="showSuggestedTags = true; $emit('toggleIsFilterInputFocused')"
+    @focus.capture="handleCapture"
   >
     <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
       <div class="filter__top-wrapper">
@@ -98,6 +98,22 @@
             <ClearRoundedIcon />
           </button>
         </div>
+        <button
+          v-if="enableQuickNavigation"
+          class="filter__quick-navigation-container"
+          @click.stop="openQuickNavigationModal"
+        >
+          <kbd
+            class="filter__quick-navigation-icon"
+          >
+            <abbr
+              class="filter__open-modal-key"
+              title="Forward slash"
+            >
+              /
+            </abbr>
+          </kbd>
+        </button>
       </div>
       <TagList
         v-if="displaySuggestedTags"
@@ -369,7 +385,6 @@ export default {
       if (target && target.matches && target.matches('button, input, ul') && this.$el.contains(target)) return;
       // Wait for mousedown to send event listeners
       await this.$nextTick();
-      this.$emit('toggleIsFilterInputFocused');
       this.resetActiveTags();
 
       if (this.preventedBlur) {
@@ -401,6 +416,23 @@ export default {
         this.$emit('focus-prev');
       }
     },
+    openQuickNavigationModal() {
+      this.store.toggleShowQuickNavigationModal(true);
+      return true;
+    },
+    onKeydown(event) {
+      if (
+        event.key === '/'
+        || (event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))
+      ) {
+        this.openQuickNavigationModal();
+        event.preventDefault();
+      }
+    },
+    handleCapture(event) {
+      if (event.target.className === 'filter__quick-navigation-container') return;
+      this.showSuggestedTags = true;
+    },
   },
   created() {
     if (
@@ -413,6 +445,16 @@ export default {
   },
   provide() {
     return { store: this.store };
+  },
+  mounted() {
+    if (this.enableQuickNavigation) {
+      window.addEventListener('keydown', this.onKeydown);
+    }
+  },
+  beforeDestroy() {
+    if (this.enableQuickNavigation) {
+      document.removeEventListener('keydown', this.onKeydown);
+    }
   },
 };
 </script>
@@ -442,10 +484,10 @@ $input-height: rem(28px);
   }
   &__quick-navigation-container {
     padding: 0 10px 0 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    margin: auto;
+    @include breakpoint(small) {
+      display: none;
+    }
     .filter__quick-navigation-icon {
       height: $quick-navigation-icon;
       width: $quick-navigation-icon;
@@ -457,9 +499,9 @@ $input-height: rem(28px);
       display: flex;
       align-items: center;
       .filter__open-modal-key {
+        @include font-styles(body-reduced-tight);
         text-decoration: none;
         margin: auto;
-        font-size: rem(12px);
       }
     }
   }

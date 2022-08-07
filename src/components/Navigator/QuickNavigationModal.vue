@@ -11,6 +11,9 @@
 <template>
   <div
     class="quick-navigation"
+    @keydown.down.exact.prevent="handleKeyDown"
+    @keydown.enter.exact="handleKeyEnter"
+    @keydown.esc.prevent="closeQuickNavigationModal"
   >
     <div
       class="quick-navigation__modal-shadow"
@@ -26,21 +29,25 @@
           <MagnifierIcon />
         </div>
         <input
+          aria-label="Search"
           class="quick-navigation__filter"
           ref="input"
           type="text"
           placeholder="Quick Navigation"
+          tabindex="0"
           v-model="userInput"
           @input="selectedIndex = 0"
         />
         <button
           v-if="userInput.length"
+          aria-label="Clear input"
           class="quick-navigation__clear-icon"
           @click="clearUserInput()"
         >
           <ClearRoundedIcon />
         </button>
         <button
+          aria-label="Close modal"
           class="quick-navigation__close-key"
           @click="closeQuickNavigationModal()"
         >
@@ -66,15 +73,19 @@
           :class="{ 'selected': idx == selectedIndex }"
           :key="idx"
           @click="closeQuickNavigationModal()"
+          @keydown.tab.exact.prevent="handleKeyDown"
+          @keydown.up.exact="handleKeyUp"
         >
           <Reference
-            class="quick-navigation__reference"
             :url="symbol.path"
             :id="idx"
+            class="quick-navigation__reference"
           >
             <div
               class="quick-navigation__symbol-match"
               ref="match"
+              role="list"
+              tabindex="0"
             >
               <div class="symbol-info">
                 <div class="symbol-name">
@@ -148,9 +159,9 @@ export default {
       ));
       if (!debouncedInput) return [];
       const matches = fuzzyMatch({
-        debouncedInput: debouncedInput.toLowerCase(),
+        debouncedInput,
         symbols,
-        processedInputRegex: new RegExp(constructFuzzyRegex(debouncedInput)),
+        processedInputRegex: new RegExp(constructFuzzyRegex(debouncedInput), 'i'),
       });
       // Return the first 20 symbols out of sorted ones
       return orderSymbolsByPriority(matches).slice(0, 20);
@@ -160,7 +171,7 @@ export default {
     fuzzyRegex: ({
       constructFuzzyRegex,
       debouncedInput,
-    }) => new RegExp(constructFuzzyRegex(debouncedInput.toLowerCase())),
+    }) => new RegExp(constructFuzzyRegex(debouncedInput)),
   },
   watch: {
     userInput: 'debounceInput',
@@ -181,7 +192,7 @@ export default {
       // foobar -> [f][^f]*?[o][^o]*?[o][^o]*?[b][^b]*?[a][^a]*?r
       return [...userInput].reduce((prev, char, index) => (
         prev
-          .concat(`[${char.toLowerCase()}]`)
+          .concat(`[${char}]`)
           .concat(index < userInput.length - 1 ? `[^${char.toLowerCase()}]*?` : '')
       ), '');
     },
@@ -213,88 +224,55 @@ export default {
       }).filter(Boolean)
     ),
     handleKeyDown() {
-      if (
-        !this.$refs.match
-        || !this.$refs.match[this.selectedIndex]
-        || this.selectedIndex === this.filteredSymbols.length - 1
-      ) { return; }
-      if (this.selectedIndex === -1) {
+      if (!this.$refs.match) return;
+      if (this.selectedIndex === this.filteredSymbols.length - 1) {
+        // Reset selected symbol to the first one of the list
         this.selectedIndex = 0;
-        return;
+      } else {
+        this.selectedIndex += 1;
       }
-      this.selectedIndex += 1;
+      this.$refs.match[this.selectedIndex].focus({ preventScroll: true });
       this.$refs.match[this.selectedIndex].scrollIntoView({
         block: 'nearest',
         inline: 'start',
+        behavior: 'smooth',
       });
     },
-    handleKeyUp() {
-      if (
-        !this.$refs.match
-        || !this.$refs.match[this.selectedIndex]
-      ) { return; }
-      if (
-        !this.filteredSymbols.length
-        || this.selectedIndex === 0
-      ) {
-        this.selectedIndex = 0;
-        return;
+    handleKeyUp(event) {
+      event.preventDefault();
+      if (!this.$refs.match) return;
+      if (this.selectedIndex === 0) {
+        // Reset selected symbol to the last one of the list
+        this.selectedIndex = this.filteredSymbols.length - 1;
+      } else {
+        this.selectedIndex -= 1;
       }
-      this.selectedIndex -= 1;
+      this.$refs.match[this.selectedIndex].focus();
       this.$refs.match[this.selectedIndex].scrollIntoView({
         block: 'nearest',
         inline: 'start',
+        behavior: 'smooth',
       });
     },
     handleKeyEnter() {
+      if (!this.filteredSymbols[this.selectedIndex]) return;
       this.$router.push(this.filteredSymbols[this.selectedIndex].path);
       this.closeQuickNavigationModal();
-    },
-    onKeydown(event) {
-      if (!this.modalOn) { return; }
-      if (event.key === 'Escape') {
-        this.closeQuickNavigationModal();
-        event.preventDefault();
-        return;
-      }
-      switch (event.key) {
-      case 'ArrowDown':
-        this.handleKeyDown();
-        break;
-      case 'ArrowUp':
-        this.handleKeyUp();
-        event.preventDefault();
-        break;
-      case 'Enter':
-        this.handleKeyEnter();
-        break;
-      default: break;
-      }
-    },
-    onShow() {
-      this.$refs.input.focus();
-      this.selectedIndex = -1;
     },
     orderSymbolsByPriority(matchingSymbols) {
       return matchingSymbols.sort((a, b) => {
         // Shortests symbol match title have preference over larger titles
         if (a.matchLengthDifference > b.matchLengthDifference) return 1;
         if (a.matchLengthDifference < b.matchLengthDifference) return -1;
-        // Shortests symbol title have preference over larger titles
-        if (a.inputLengthDifference > b.inputLengthDifference) return 1;
-        if (a.inputLengthDifference < b.inputLengthDifference) return -1;
         // Matches at the beginning of string have relevance over matches at the end
         if (a.start > b.start) return 1;
         if (a.start < b.start) return -1;
+        // Shortests symbol title have preference over larger titles
+        if (a.inputLengthDifference > b.inputLengthDifference) return 1;
+        if (a.inputLengthDifference < b.inputLengthDifference) return -1;
         return 0;
       });
     },
-  },
-  mounted() {
-    window.addEventListener('keydown', this.onKeydown);
-  },
-  beforeDestroy() {
-    document.removeEventListener('keydown', this.onKeydown);
   },
 };
 </script>
