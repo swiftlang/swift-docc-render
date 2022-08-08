@@ -10,7 +10,7 @@
 
 export default {
   state: {
-    enableQuickNavigation: false,
+    showQuickNavigation: false,
     flattenIndex: [],
   },
   reset() {
@@ -20,7 +20,7 @@ export default {
     this.state.flattenIndex = flattenIndex;
   },
   toggleShowQuickNavigationModal() {
-    this.state.enableQuickNavigation = !this.state.enableQuickNavigation;
+    this.state.showQuickNavigation = !this.state.showQuickNavigation;
   },
 
 };

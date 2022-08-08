@@ -15,6 +15,7 @@ describe('DocumentationTopicStore', () => {
   const defaultState = {
     onThisPageSections: [],
     preferredLanguage: null,
+    contentWidth: 0,
     ...ApiChangesStoreBase.state,
   };
 
@@ -23,6 +24,7 @@ describe('DocumentationTopicStore', () => {
     DocumentationTopicStore.reset();
     // force reset the api changes
     DocumentationTopicStore.setAPIChanges(null);
+    DocumentationTopicStore.state.contentWidth = 0;
   });
 
   it('has a default state', () => {
@@ -80,6 +82,11 @@ describe('DocumentationTopicStore', () => {
       DocumentationTopicStore.setPreferredLanguage('objc');
       expect(DocumentationTopicStore.state.preferredLanguage).toBe('objc');
     });
+  });
+
+  it('sets the content width', () => {
+    DocumentationTopicStore.setContentWidth(99);
+    expect(DocumentationTopicStore.state.contentWidth).toBe(99);
   });
 
   describe('APIChanges', () => {

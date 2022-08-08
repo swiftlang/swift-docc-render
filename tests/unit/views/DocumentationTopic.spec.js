@@ -17,13 +17,16 @@ import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
+import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
+jest.mock('docc-render/utils/storage');
 
 const TechnologyWithChildren = {
   path: '/documentation/foo',
@@ -37,6 +40,7 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
 });
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
+const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
 const mocks = {
   $bridge: {
@@ -130,6 +134,7 @@ describe('DocumentationTopic', () => {
   let wrapper;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     wrapper = shallowMount(DocumentationTopic, {
       mocks,
       stubs: {
@@ -171,7 +176,8 @@ describe('DocumentationTopic', () => {
     expect(adjustableWidth.classes())
       .toEqual(expect.arrayContaining(['full-width-container', 'topic-wrapper']));
     expect(adjustableWidth.props()).toEqual({
-      openExternally: false,
+      shownOnMobile: false,
+      hiddenOnLarge: false,
     });
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
@@ -193,6 +199,7 @@ describe('DocumentationTopic', () => {
       // assert we are passing the default technology, if we dont have the children yet
       technology,
       apiChanges: null,
+      allowHiding: true,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -205,6 +212,7 @@ describe('DocumentationTopic', () => {
       references: topicData.references,
       technology: TechnologyWithChildren,
       apiChanges: null,
+      allowHiding: true,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
@@ -243,7 +251,7 @@ describe('DocumentationTopic', () => {
           ...topicData,
           schemaVersion: schemaVersionWithSidebar,
         },
-        isSideNavOpen: true,
+        sidenavVisibleOnMobile: true,
       });
       await wrapper.vm.$nextTick();
       // assert navigator doesn't have display: none
@@ -396,6 +404,7 @@ describe('DocumentationTopic', () => {
       interfaceLanguage: topicData.identifier.interfaceLanguage,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
+      sidenavHiddenOnLarge: false,
     });
     expect(nav.attributes()).toMatchObject({
       interfacelanguage: 'swift',
@@ -405,9 +414,12 @@ describe('DocumentationTopic', () => {
 
     // assert the sidebar
     expect(wrapper.find(AdjustableSidebarWidth).exists()).toBe(false);
+    const staticContentWidth = wrapper.find(StaticContentWidth);
+    expect(staticContentWidth.exists()).toBe(true);
     expect(wrapper.find(Navigator).exists()).toBe(false);
     // assert the proper container class is applied
-    expect(wrapper.find('.topic-wrapper').classes()).toContain('static-width-container');
+    expect(staticContentWidth.classes())
+      .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
   });
 
   it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {
@@ -429,7 +441,62 @@ describe('DocumentationTopic', () => {
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
-  it('handles the `@close`, on Navigator', async () => {
+  it('handles the `@close`, on Navigator, for Mobile breakpoints', async () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+    await flushPromises();
+    const navigator = wrapper.find(Navigator);
+    const nav = wrapper.find(Nav);
+    // toggle the navigator from the Nav component, in Small breakpoint
+    nav.vm.$emit('toggle-sidenav', BreakpointName.small);
+    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    // set the breakpoint to small on the sidebar
+    sidebar.vm.breakpoint = BreakpointName.small;
+    expect(sidebar.props('shownOnMobile')).toBe(true);
+    await flushPromises();
+    navigator.vm.$emit('close');
+    expect(sidebar.props('shownOnMobile')).toBe(false);
+    // Test that Medium works with the same set of props/events
+    // toggle the navigator from the Nav component, in Medium breakpoint
+    nav.vm.$emit('toggle-sidenav', BreakpointName.medium);
+    expect(sidebar.props('shownOnMobile')).toBe(true);
+    await flushPromises();
+    sidebar.vm.breakpoint = BreakpointName.medium;
+    navigator.vm.$emit('close');
+    expect(sidebar.props('shownOnMobile')).toBe(false);
+    expect(storage.set).toHaveBeenCalledTimes(0);
+  });
+
+  it('handles the `@close`, on Navigator, for `Large` breakpoints', async () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+    await flushPromises();
+    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    const nav = wrapper.find(Nav);
+    // close the navigator
+    wrapper.find(Navigator).vm.$emit('close');
+    // assert its closed on Large
+    expect(sidebar.props('hiddenOnLarge')).toBe(true);
+    // now toggle it back from the Nav
+    nav.vm.$emit('toggle-sidenav', BreakpointName.large);
+    await flushPromises();
+    // assert its no longer hidden
+    expect(sidebar.props('hiddenOnLarge')).toBe(false);
+  });
+
+  it('handles `@toggle-sidenav` on Nav, for `Large` breakpoint', async () => {
+    // assert that the storage was called to get the navigator closed state from LS
+    expect(storage.get).toHaveBeenCalledTimes(1);
+    expect(storage.get).toHaveBeenCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false);
+
     wrapper.setData({
       topicData: {
         ...topicData,
@@ -438,12 +505,18 @@ describe('DocumentationTopic', () => {
     });
     await flushPromises();
     const nav = wrapper.find(Nav);
-    nav.vm.$emit('toggle-sidenav');
     const sidebar = wrapper.find(AdjustableSidebarWidth);
-    expect(sidebar.props('openExternally')).toBe(true);
-    await flushPromises();
-    wrapper.find(Navigator).vm.$emit('close');
-    expect(sidebar.props('openExternally')).toBe(false);
+    // assert the hidden prop is false
+    expect(sidebar.props('hiddenOnLarge')).toBe(false);
+    // Now close from the sidebar
+    sidebar.vm.$emit('update:hiddenOnLarge', true);
+    expect(sidebar.props('hiddenOnLarge')).toBe(true);
+    expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, true);
+    // now toggle it back, from within the Nav button
+    nav.vm.$emit('toggle-sidenav', BreakpointName.large);
+    // assert we are storing the updated values
+    expect(sidebar.props('hiddenOnLarge')).toBe(false);
+    expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false);
   });
 
   it('renders a `Topic` with `topicData`', () => {

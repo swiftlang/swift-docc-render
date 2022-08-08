@@ -13,19 +13,23 @@
     <div class="navigator-card-full-height">
       <NavigatorCardInner>
         <div class="head-wrapper">
-          <button
-            aria-label="Close documentation navigator"
-            class="close-card-mobile"
-            @click="$emit('close')"
-          >
-            <SidenavIcon class="icon-inline close-icon" />
-          </button>
-          <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <h2 class="card-link">
-              {{ technology }}
-            </h2>
-            <Badge v-if="isTechnologyBeta" variant="beta" />
-          </Reference>
+          <div class="head-inner">
+            <button
+              aria-label="Close documentation navigator"
+              :id="SIDEBAR_HIDE_BUTTON_ID"
+              class="close-card"
+              :class="{ 'hide-on-large': !allowHiding }"
+              @click="handleHideClick"
+            >
+              <SidenavIcon class="icon-inline close-icon" />
+            </button>
+            <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
+              <h2 class="card-link">
+                {{ technology }}
+              </h2>
+              <Badge v-if="isTechnologyBeta" variant="beta" />
+            </Reference>
+          </div>
         </div>
         <slot name="post-head" />
         <div
@@ -72,7 +76,9 @@
             {{ politeAriaLive }}
           </div>
           <div aria-live="assertive" class="no-items-wrapper">
-            {{ assertiveAriaLive }}
+            <p class="no-items">
+              {{ assertiveAriaLive }}
+            </p>
           </div>
         </div>
       </NavigatorCardInner>
@@ -86,7 +92,7 @@
             :selected-tags.sync="selectedTagsModelValue"
             placeholder="Filter"
             :should-keep-open-on-blur="false"
-            :position-reversed="isLargeBreakpoint"
+            :position-reversed="isFilterReversed"
             :clear-filter-on-tag-select="false"
             class="filter-component"
             @clear="clearFilters"
@@ -97,7 +103,7 @@
           @click="store.toggleShowQuickNavigationModal()"
           v-if="enableQuickNavigation"
         >
-          <MagnifierIcon/>
+          <MagnifierIcon />
         </div>
       </div>
     </div>
@@ -110,7 +116,11 @@ import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
-import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
+import {
+  INDEX_ROOT_KEY,
+  SIDEBAR_HIDE_BUTTON_ID,
+  SIDEBAR_ITEM_SIZE,
+} from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
@@ -124,8 +134,8 @@ import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
 import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
+import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -235,6 +245,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    enableQuickNavigation: {
+      type: Boolean,
+      default: false,
+    },
+    allowHiding: {
+      type: Boolean,
+      default: true,
+    },
   },
   mixins: [
     keyboardNavigation,
@@ -251,7 +269,6 @@ export default {
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
       activeUID: null,
-      resetScroll: false,
       store: QuickNavigationStore,
       lastFocusTarget: null,
       NO_RESULTS,
@@ -261,6 +278,7 @@ export default {
     };
   },
   computed: {
+    SIDEBAR_HIDE_BUTTON_ID: () => SIDEBAR_HIDE_BUTTON_ID,
     INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
     politeAriaLive: ({ hasNodes, nodesToRender }) => {
       if (!hasNodes) return '';
@@ -331,10 +349,11 @@ export default {
         FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
       )),
       set(values) {
+        // guard against accidental clearings
+        if (!this.selectedTags.length && !values.length) return;
         this.selectedTags = values.map(label => (
           FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label] || label
         ));
-        this.resetScroll = true;
       },
     },
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
@@ -374,14 +393,16 @@ export default {
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
-      apiChangesObject, apiChanges, deprecatedHidden,
+      apiChangesObject, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
       return children.filter(({
-        title, path, type, deprecated,
+        title, path, type, deprecated, deprecatedChildrenCount, childUIDs,
       }) => {
+        // groupMarkers know how many children they have and how many are deprecated
+        const isDeprecated = deprecated || deprecatedChildrenCount === childUIDs.length;
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
@@ -392,50 +413,53 @@ export default {
           if (apiChanges && !tagMatch) {
             tagMatch = tagsSet.has(apiChangesObject[path]);
           }
-          if (!deprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
+          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
             tagMatch = true;
           }
         }
         // find items, that have API changes
         const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
-        // group markers are hidden when filtering, unless "Hide Deprecated" is ON.
-        const isGroupMarker = deprecatedHidden ? false : type === TopicTypes.groupMarker;
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges && !isGroupMarker;
+        return titleMatch && tagMatch && hasAPIChanges;
       });
     },
     /**
      * Returns a Set of all nodes that match a filter, along with their parents.
-     * @returns NavigatorFlatItem[]
+     * @returns Set<NavigatorFlatItem>
      */
-    filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
-      filteredChildren.flatMap(({ uid }) => getParents(uid)),
+    filteredChildrenUpToRootSet: ({ filteredChildren, getParents, childrenMap }) => new Set(
+      filteredChildren.flatMap(({ uid, groupMarkerUID }) => getParents(uid)
+        .concat(childrenMap[groupMarkerUID] || [])),
     ),
     /**
      * This generates a map of all the nodes we are allowed to render at a certain time.
      * This is used on both toggling, as well as on navigation and filtering.
      * @return {Object.<string, NavigatorFlatItem>}
      */
-    renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
+    renderableChildNodesMap({
+      filteredChildrenUpToRootSet, childrenMap, hasFilter,
+      getAllChildren, convertChildrenArrayToObject, removeDeprecated,
+    }) {
       if (!hasFilter) return childrenMap;
       let all = [];
       // create a set of all matches and their parents
       filteredChildrenUpToRootSet.forEach((current) => {
-        // if it has no children, just add it
+        // if it's a plain end node, just add it
         if (!current.childUIDs.length) {
           all.push(current);
           return;
         }
+        // check if none of the child items of this parent are matching
         const noChildrenMatch = !current.childUIDs.some(uid => (
           filteredChildrenUpToRootSet.has(childrenMap[uid])
         ));
-        all = all.concat(noChildrenMatch ? this.getAllChildren(current.uid) : current);
+        // if no children are matching, add all to the list, otherwise just the current parent
+        all = all.concat(noChildrenMatch ? removeDeprecated(getAllChildren(current.uid)) : current);
       });
-
-      return this.convertChildrenArrayToObject(all);
+      return convertChildrenArrayToObject(all);
     },
     /**
-     * Creates a computed for the two items, that the openNodes calc depends on
+     * Creates a computed for the items, that the openNodes calc depends on
      */
     nodeChangeDeps: ({
       filteredChildren, activePathChildren, debouncedFilter, selectedTags,
@@ -454,19 +478,14 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags, debouncedFilter }) => (
-      selectedTags[0] === HIDE_DEPRECATED_TAG && !debouncedFilter.length
-    ),
+    deprecatedHidden: ({ selectedTags }) => selectedTags[0] === HIDE_DEPRECATED_TAG,
     apiChangesObject() {
       return this.apiChanges || {};
     },
-    isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
+    isFilterReversed: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
-    enableQuickNavigation: () => (
-      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
-    ),
   },
   created() {
     this.restorePersistedState();
@@ -486,7 +505,6 @@ export default {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
-      this.resetScroll = true;
     },
     scrollToFocus() {
       this.$refs.scroller.scrollToItem(this.focusedIndex);
@@ -494,8 +512,6 @@ export default {
     debounceInput: debounce(function debounceInput(value) {
       // store the new filter value
       this.debouncedFilter = value;
-      // note to the component, that we want to reset the scroll
-      this.resetScroll = true;
       // reset the last focus target
       this.lastFocusTarget = null;
     }, 500),
@@ -524,7 +540,11 @@ export default {
       // decide which items are open
       // if "Hide Deprecated" is picked, there is no filter,
       // or navigate to page while filtering, we open the items leading to the activeUID
-      const nodes = this.deprecatedHidden || (pageChange && this.hasFilter) || !this.hasFilter
+      const nodes = (
+        (this.deprecatedHidden && !this.debouncedFilter.length)
+        || (pageChange && this.hasFilter)
+        || !this.hasFilter
+      )
         ? activePathChildren
         // get all parents of the current filter match, excluding it in the process
         : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
@@ -699,6 +719,15 @@ export default {
         .map(child => this.childrenMap[child]);
     },
     /**
+     * Removes deprecated items from a list
+     * @param {NavigatorFlatItem[]} items
+     * @returns {NavigatorFlatItem[]}
+     */
+    removeDeprecated(items) {
+      if (!this.deprecatedHidden) return items;
+      return items.filter(({ deprecated }) => !deprecated);
+    },
+    /**
      * Stores all the nodes we should render at this point.
      * This gets called everytime you open/close a node,
      * or when you start filtering.
@@ -860,7 +889,7 @@ export default {
       await waitFrames(1);
       if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      if (this.resetScroll) {
+      if (this.hasFilter) {
         this.$refs.scroller.scrollToItem(0);
         return;
       }
@@ -951,7 +980,6 @@ export default {
      */
     setActiveUID(uid) {
       this.activeUID = uid;
-      this.resetScroll = false;
     },
     /**
      * Handles the `navigate` event from NavigatorCardItem, guarding from selecting an item,
@@ -1067,6 +1095,14 @@ export default {
       // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
       this.focusIndex(parentIndex);
     },
+    async handleHideClick() {
+      this.$emit('close');
+      await this.$nextTick();
+      const trigger = document.getElementById(baseNavOpenSidenavButtonId);
+      if (trigger) {
+        trigger.focus();
+      }
+    },
   },
   provide() {
     return { store: this.store };
@@ -1080,9 +1116,12 @@ export default {
 
 $navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
-$filter-height: 71px;
-$navigator-head-background: var(--color-fill-secondary) !default;
-$navigator-head-background-active: var(--color-fill-tertiary) !default;
+$filter-height: 73px;
+$filter-height-small: 62px;
+$navigator-head-background: var(--color-fill) !default;
+$navigator-head-background-active: var(--color-fill) !default;
+$close-icon-size: 19px;
+$close-icon-padding: 5px;
 
 .magnifier-icon {
   height: 20px;
@@ -1106,17 +1145,23 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     --nav-card-inner-vertical-offset: #{$filter-height};
   }
 
+  .head-inner {
+    overflow: hidden;
+  }
+
   .head-wrapper {
     position: relative;
+    flex: 1 0 auto;
   }
 
   .navigator-head {
-    padding: 10px $card-horizontal-spacing-large;
+    padding: 0 $card-horizontal-spacing-large*2 0 $card-horizontal-spacing-large;
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
     align-items: center;
-    box-sizing: border-box;
+    height: $nav-height;
+    white-space: nowrap;
 
     .badge {
       margin-top: 0;
@@ -1135,19 +1180,20 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
       text-decoration: none;
     }
 
+    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
+    @include safe-area-right-set(padding-right,
+      $card-horizontal-spacing-large * 2 + $close-icon-size
+    );
+
     @include breakpoint(medium, nav) {
       justify-content: center;
-      height: $nav-height;
-      padding: 14px $card-horizontal-spacing-large;
+      @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
     }
 
     @include breakpoint(small, nav) {
       height: $nav-height-small;
-      padding: 12px $card-horizontal-spacing-large;
+      padding: 0 $card-horizontal-spacing-large;
     }
-
-    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
-    @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
   }
 
   .card-icon {
@@ -1157,37 +1203,69 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
 }
 
 .no-items-wrapper {
+  overflow: hidden;
   color: var(--color-figure-gray-tertiary);
-  @include font-styles(body-reduced);
-  padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
+
+  .no-items {
+    @include font-styles(body-reduced);
+    padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
+    // make sure the text does not get weirdly cut
+    min-width: 200px;
+    box-sizing: border-box;
+  }
 }
 
-.close-card-mobile {
-  display: none;
+.close-card {
+  display: flex;
   position: absolute;
   z-index: 1;
-  color: var(--color-link);
   align-items: center;
   justify-content: center;
+  right: $nav-padding - rem($close-icon-padding);
+  padding: $close-icon-padding;
+  margin-left: -$close-icon-padding;
+  top: calc(50% - #{$close-icon-size} + #{$close-icon-padding});
+  transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s, visibility 0s;
 
   @include breakpoint(medium, nav) {
-    display: flex;
+    right: unset;
+    top: 0;
     left: 0;
+    margin: 0;
+    padding: 0 $nav-padding 0 $card-horizontal-spacing-large;
     height: 100%;
-    padding-left: $nav-padding;
-    padding-right: $nav-padding;
-
     @include safe-area-left-set(padding-left, $nav-padding);
   }
 
   @include breakpoint(small, nav) {
     padding-left: $nav-padding-small;
     padding-right: $nav-padding-small;
+    @include safe-area-left-set(padding-left, $nav-padding-small);
   }
 
   .close-icon {
-    width: 19px;
-    height: 19px;
+    width: $close-icon-size;
+    height: $close-icon-size;
+  }
+
+  @include breakpoints-from(large, nav) {
+    &.hide-on-large {
+      display: none;
+    }
+
+    &:hover {
+      border-radius: $nano-border-radius;
+      background: var(--color-fill-gray-quaternary);
+    }
+    // when the navigator is closed on desktop,
+    // move the button so it looks like its going to the nav
+    .sidebar-hidden & {
+      transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s,
+      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
+      visibility: hidden;
+      // 2x the nav padding, 1px border, and the size of the icon
+      transform: translateX(rem($close-icon-size + 1px) + $nav-padding * 2);
+    }
   }
 }
 
@@ -1196,9 +1274,10 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   padding-right: 0;
   flex: 1 1 auto;
   min-height: 0;
+  height: 100%;
   @include breakpoint(medium, nav) {
     --card-vertical-spacing: 0px;
-    padding-top: $filter-height;
+    padding-top: $filter-height-small;
   }
 }
 
@@ -1206,6 +1285,8 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   color: var(--color-text);
   @include font-styles(body-reduced);
   font-weight: $font-weight-semibold;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .navigator-filter {
@@ -1223,7 +1304,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
     border: none;
     padding: 10px 20px;
     align-items: flex-start;
-    height: 62px;
+    height: $filter-height-small;
 
     @include safe-area-left-set(padding-left, 20px);
     @include safe-area-right-set(padding-right, 20px);
@@ -1270,9 +1351,16 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   position: sticky;
   bottom: 0;
   background: var(--color-fill);
+
+  .sidebar-transitioning & {
+    overflow: hidden;
+  }
+
   @include breakpoint(medium, nav) {
     position: absolute;
     top: $nav-height;
+    // nudge to show the border
+    margin-top: 1px;
     bottom: auto;
     width: 100%;
   }

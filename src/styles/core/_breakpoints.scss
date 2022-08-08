@@ -354,6 +354,11 @@ $breakpoint-attributes: (
       padding-left: 120px;
       padding-right: 120px;
       margin-left: 0px;
+
+      // when the sidebar is hidden on desktop, center the content
+      @include unify-selector('.sidebar-hidden', true) {
+        margin-left: auto;
+      }
     }
 
     @include breakpoint(small) {
