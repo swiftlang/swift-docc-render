@@ -145,6 +145,7 @@ const propsData = {
       type: 'foo',
     },
   ],
+  remoteSource: { url: 'foo' },
 };
 
 describe('DocumentationTopic', () => {
@@ -355,6 +356,7 @@ describe('DocumentationTopic', () => {
     expect(primary.exists()).toBe(true);
     expect(primary.props('conformance')).toEqual(propsData.conformance);
     expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
+    expect(primary.props('source')).toEqual(propsData.remoteSource);
   });
 
   it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', () => {
