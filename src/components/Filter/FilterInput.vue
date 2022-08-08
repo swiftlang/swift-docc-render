@@ -16,7 +16,7 @@
     :aria-labelledby="searchAriaLabelledBy"
     :class="{ 'focus': showSuggestedTags }"
     @blur.capture="handleBlur"
-    @focus.capture="handleCapture"
+    @focus.capture="handleFocus"
   >
     <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
       <div class="filter__top-wrapper">
@@ -103,9 +103,7 @@
           class="filter__quick-navigation-container"
           @click.stop="openQuickNavigationModal"
         >
-          <kbd
-            class="filter__quick-navigation-icon"
-          >
+          <kbd class="filter__quick-navigation-icon">
             <abbr
               class="filter__open-modal-key"
               title="Forward slash"
@@ -139,7 +137,6 @@ import { pluralize } from 'docc-render/utils/strings';
 import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
-import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import TagList from './TagList.vue';
 
@@ -225,9 +222,9 @@ export default {
       SuggestedTagsId,
       AXinputProperties,
       showSuggestedTags: false,
-      store: QuickNavigationStore,
     };
   },
+  inject: ['quickNavigationStore'],
   computed: {
     tagsText: ({ suggestedTags }) => pluralize({
       en: {
@@ -385,6 +382,7 @@ export default {
       if (target && target.matches && target.matches('button, input, ul') && this.$el.contains(target)) return;
       // Wait for mousedown to send event listeners
       await this.$nextTick();
+
       this.resetActiveTags();
 
       if (this.preventedBlur) {
@@ -417,7 +415,7 @@ export default {
       }
     },
     openQuickNavigationModal() {
-      this.store.toggleShowQuickNavigationModal(true);
+      this.quickNavigationStore.toggleShowQuickNavigationModal(true);
       return true;
     },
     onKeydown(event) {
@@ -429,7 +427,7 @@ export default {
         event.preventDefault();
       }
     },
-    handleCapture(event) {
+    handleFocus(event) {
       if (event.target.className === 'filter__quick-navigation-container') return;
       this.showSuggestedTags = true;
     },
@@ -442,9 +440,6 @@ export default {
     ) {
       this.focusInput();
     }
-  },
-  provide() {
-    return { store: this.store };
   },
   mounted() {
     if (this.enableQuickNavigation) {
@@ -484,20 +479,17 @@ $input-height: rem(28px);
   }
   &__quick-navigation-container {
     padding: 0 10px 0 0;
-    margin: auto;
-    @include breakpoint(small) {
+    @include breakpoint(medium, nav) {
       display: none;
     }
     .filter__quick-navigation-icon {
       height: $quick-navigation-icon;
       width: $quick-navigation-icon;
-      margin: auto;
       color: var(--input-text);
       border: solid 1px;
       border-radius: $border-radius;
       border-color: var(--color-grid);
       display: flex;
-      align-items: center;
       .filter__open-modal-key {
         @include font-styles(body-reduced-tight);
         text-decoration: none;

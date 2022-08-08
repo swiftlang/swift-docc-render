@@ -12,11 +12,11 @@
   <div>
     <PortalTarget name="modal-destination" multiple />
     <GenericModal
-      :showClose=false
-      :visible="quickNavigationStore.state.showQuickNavigation"
-      :isFullscreen=true
       :codeBackgroundColorOverride="'transparent'"
+      :isFullscreen=true
+      :showClose=false
       :theme="'code'"
+      :visible="quickNavigationStore.state.showQuickNavigation"
     >
        <QuickNavigationModal />
     </GenericModal>

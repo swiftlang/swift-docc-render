@@ -11,9 +11,9 @@
 <template>
   <div
     class="quick-navigation"
-    @keydown.down.exact.prevent="handleKeyDown"
-    @keydown.enter.exact="handleKeyEnter"
+    @keydown.down.prevent="handleKeyDown"
     @keydown.esc.prevent="closeQuickNavigationModal"
+    @keydown.enter="handleKeyEnter"
   >
     <div
       class="quick-navigation__modal-shadow"
@@ -22,7 +22,6 @@
     </div>
     <div
       class="quick-navigation__container"
-      ref="container"
     >
       <div class="quick-navigation__input-container">
         <div class="quick-navigation__magnifier-icon-container">
@@ -31,10 +30,10 @@
         <input
           aria-label="Search"
           class="quick-navigation__filter"
-          ref="input"
-          type="text"
           placeholder="Quick Navigation"
+          ref="input"
           tabindex="0"
+          type="text"
           v-model="userInput"
           @input="selectedIndex = 0"
         />
@@ -70,11 +69,11 @@
         </div>
         <div
           v-for="(symbol, idx) in filteredSymbols"
-          :class="{ 'selected': idx == selectedIndex }"
+          :class="{ 'selected' : idx == selectedIndex }"
           :key="idx"
           @click="closeQuickNavigationModal()"
-          @keydown.tab.exact.prevent="handleKeyDown"
-          @keydown.up.exact="handleKeyUp"
+          @keydown.tab.prevent="handleKeyDown"
+          @keydown.up="handleKeyUp"
         >
           <Reference
             :url="symbol.path"
@@ -125,7 +124,6 @@ import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
-import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 
 export default {
   name: 'QuickNavigationModal',
@@ -145,7 +143,6 @@ export default {
     };
   },
   computed: {
-    filterPattern: ({ debouncedInput }) => new RegExp(safeHighlightPattern(debouncedInput), 'i'),
     filteredSymbols: ({
       constructFuzzyRegex,
       flattenIndex,
@@ -167,11 +164,6 @@ export default {
       return orderSymbolsByPriority(matches).slice(0, 20);
     },
     flattenIndex: ({ quickNavigationStore }) => quickNavigationStore.state.flattenIndex,
-    modalOn: ({ quickNavigationStore }) => quickNavigationStore.state.showQuickNavigation,
-    fuzzyRegex: ({
-      constructFuzzyRegex,
-      debouncedInput,
-    }) => new RegExp(constructFuzzyRegex(debouncedInput)),
   },
   watch: {
     userInput: 'debounceInput',
@@ -235,23 +227,20 @@ export default {
       this.$refs.match[this.selectedIndex].scrollIntoView({
         block: 'nearest',
         inline: 'start',
-        behavior: 'smooth',
       });
     },
     handleKeyUp(event) {
       event.preventDefault();
       if (!this.$refs.match) return;
       if (this.selectedIndex === 0) {
-        // Reset selected symbol to the last one of the list
-        this.selectedIndex = this.filteredSymbols.length - 1;
-      } else {
-        this.selectedIndex -= 1;
+        this.$refs.input.focus();
+        return;
       }
+      this.selectedIndex -= 1;
       this.$refs.match[this.selectedIndex].focus();
       this.$refs.match[this.selectedIndex].scrollIntoView({
         block: 'nearest',
         inline: 'start',
-        behavior: 'smooth',
       });
     },
     handleKeyEnter() {
@@ -282,8 +271,6 @@ export default {
 
 $clear-icon-size: rem(23px);
 $modal-margin-top: 10rem;
-$modal-margin-sides: 20rem;
-$modal-padding-top: 1.25rem;
 $base-border-width: 1px;
 $filter-padding: rem(20px);
 
@@ -293,7 +280,6 @@ $filter-padding: rem(20px);
   }
   &__clear-icon {
     display: flex;
-    height: 100%;
     margin: auto;
     margin-right: rem(5px);
     width: $clear-icon-size;
@@ -320,8 +306,7 @@ $filter-padding: rem(20px);
     position: fixed;
     right: 0;
     top: $modal-margin-top;
-    z-index: 10000;
-    width: 680px;
+    width: rem(680px);
   }
   &__filter {
     background: var(--color-fill);
@@ -340,8 +325,8 @@ $filter-padding: rem(20px);
   &__magnifier-icon-container {
     display: flex;
     height: rem(18px);
-    margin: auto;
     width: rem(18px);
+    margin: auto;
     > * {
       width: 100%;
     }
