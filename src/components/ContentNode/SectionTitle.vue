@@ -12,6 +12,7 @@
   <component
    :id="anchor"
    :is="tag"
+   class="section-title"
   >
     <a
       :href="`#${anchor}`"
@@ -41,7 +42,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-h2 {
+.section-title {
   scroll-margin-top: $nav-height + 1rem;
 
   @include breakpoint(small, $scope: nav) {
@@ -49,21 +50,18 @@ h2 {
   }
 }
 
-h2:hover {
+.section-title:hover {
   .header-anchor {
     opacity: 1;
   }
 }
 
 .header-anchor {
-  margin-left: -30px;
+  margin-left: -0.73em;
+  padding-right: 0.23em;
   transition: opacity .25s;
   opacity: 0;
   text-decoration: none;
-
-  @include breakpoint(small, $scope: nav) {
-    margin-left: -20px;
-  }
 
   &:hover {
     opacity: 1;

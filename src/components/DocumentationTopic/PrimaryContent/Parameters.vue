@@ -14,7 +14,7 @@
     class="parameters"
     title="Parameters"
   >
-    <h2>Parameters</h2>
+    <SectionTitle anchor="parameters">Parameters</SectionTitle>
     <dl>
       <template v-for="param in parameters">
         <dt class="param-name" :key="`${param.name}:name`">
@@ -31,12 +31,14 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
 
 export default {
   name: 'Parameters',
   components: {
     ContentNode,
     OnThisPageSection,
+    SectionTitle,
   },
   props: {
     parameters: {

@@ -14,7 +14,7 @@
     class="declaration"
     title="Declaration"
   >
-    <h2>Declaration</h2>
+    <SectionTitle anchor="declaration">Declaration</SectionTitle>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
@@ -48,6 +48,7 @@
 <script>
 import ConditionalConstraints from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
 
 import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import DeclarationDiff
@@ -65,6 +66,7 @@ export default {
     DeclarationSourceLink,
     ConditionalConstraints,
     OnThisPageSection,
+    SectionTitle,
   },
   constants: { ChangeTypes, multipleLinesClass },
   inject: ['identifier', 'store'],

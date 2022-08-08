@@ -12,7 +12,7 @@
   <div class="contenttable-section">
     <div class="section-title">
       <slot name="title">
-        <h3 class="title">{{ title }}</h3>
+        <SectionTitle tag="h3" class="title" :anchor="anchor">{{ title }}</SectionTitle>
       </slot>
     </div>
     <div class="section-content">
@@ -24,13 +24,19 @@
 </template>
 
 <script>
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
+
 export default {
   name: 'ContentTableSection',
+  components: { SectionTitle },
   props: {
     title: {
       type: String,
       required: true,
     },
+  },
+  computed: {
+    anchor: ({ title }) => title.replaceAll(' ', '-'),
   },
 };
 </script>
