@@ -100,7 +100,7 @@ const topicData = {
       paths: ['documentation/swift'],
     },
   ],
-  source: {
+  remoteSource: {
     url: 'foo.com',
   },
   schemaVersion: {

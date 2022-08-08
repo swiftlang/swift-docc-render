@@ -172,7 +172,7 @@ export default {
           tags = [],
           role,
           symbolKind = '',
-          source,
+          remoteSource,
         } = {},
         primaryContentSections,
         relationshipsSections,
@@ -207,7 +207,7 @@ export default {
         variantOverrides,
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
-        source,
+        remoteSource,
       };
     },
     // The `hierarchy.paths` array will contain zero or more subarrays, each

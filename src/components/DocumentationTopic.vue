@@ -65,7 +65,7 @@
           v-if="primaryContentSections && primaryContentSections.length"
           :class="{ 'with-border': !enhanceBackground }"
           :conformance="conformance"
-          :source="source"
+          :source="remoteSource"
           :sections="primaryContentSections"
         />
       </div>
@@ -266,7 +266,7 @@ export default {
       type: String,
       default: '',
     },
-    source: {
+    remoteSource: {
       type: Object,
       required: false,
     },
