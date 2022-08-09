@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import TopicsTable from 'docc-render/components/DocumentationTopic/TopicsTable.vue';
 
 const {
-  ContentTable, TopicsLinkBlock, ContentTableSection, ContentNode, WordBreak,
+  ContentTable, TopicsLinkBlock, ContentTableSection, ContentNode, WordBreak, SectionTitle,
 } = TopicsTable.components;
 
 describe('TopicsTable', () => {
@@ -140,8 +140,11 @@ describe('TopicsTable', () => {
     expect(wordBreak.exists()).toBe(false);
 
     wrapper.setProps({ wrapTitle: true });
+    const sectionTitle = wrapper.find(SectionTitle);
     wordBreak = wrapper.find(WordBreak);
-    expect(wordBreak.attributes('tag')).toBe('h3');
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.attributes('tag')).toBe('h3');
+    expect(sectionTitle.attributes('href')).toBe('topics');
   });
 });

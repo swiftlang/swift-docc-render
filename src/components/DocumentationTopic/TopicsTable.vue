@@ -16,10 +16,8 @@
       :title="section.title"
     >
       <template v-if="wrapTitle" slot="title">
-        <SectionTitle :href="anchor" class="title">
-          <WordBreak tag="h3" class="title">
-          {{ section.title }}
-          </WordBreak>
+        <SectionTitle tag="h3" :href="anchor" class="title">
+          <WordBreak>{{ section.title }}</WordBreak>
         </SectionTitle>
       </template>
       <template v-if="section.abstract" slot="abstract">
@@ -43,6 +41,7 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
 import TopicsLinkBlock from './TopicsLinkBlock.vue';
@@ -62,6 +61,7 @@ export default {
     TopicsLinkBlock,
     ContentNode,
     ContentTableSection,
+    SectionTitle,
   },
   props: {
     isSymbolDeprecated: Boolean,
