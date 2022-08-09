@@ -20,6 +20,7 @@ import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
+import InlineVideo from './ContentNode/InlineVideo.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -38,6 +39,7 @@ const InlineType = {
   codeVoice: 'codeVoice',
   emphasis: 'emphasis',
   image: 'image',
+  video: 'video',
   inlineHead: 'inlineHead',
   link: 'link',
   newTerm: 'newTerm',
@@ -300,6 +302,19 @@ function renderNode(createElement, references) {
       ) : (
         null
       );
+    }
+    case InlineType.video: {
+      if (node.metadata && node.metadata.abstract) {
+        return renderFigure(node);
+      }
+
+      return references[node.identifier] ? (
+        createElement(InlineVideo, {
+          props: {
+            identifier: node.identifier,
+          },
+        })
+      ) : null;
     }
     case InlineType.link:
       // Note: `InlineType.link` has been deprecated, but may still be found in old JSON.

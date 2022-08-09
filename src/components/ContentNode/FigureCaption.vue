@@ -31,6 +31,10 @@ export default {
 
 .caption {
   @include font-styles(documentation-figcaption);
+
+  &:last-child {
+    margin-top: $stacked-margin-xlarge;
+  }
 }
 
 /deep/ p {

@@ -21,6 +21,7 @@ import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
+import InlineVideo from '@/components/ContentNode/InlineVideo.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -507,6 +508,100 @@ describe('ContentNode', () => {
       expect(figure.contains(InlineImage)).toBe(true);
 
       expect(wrapper.find(FigureCaption).exists()).toBe(false);
+    });
+  });
+
+  describe('with type="video"', () => {
+    const identifier = 'video.mp4';
+    const references = {
+      [identifier]: {
+        identifier,
+        variants: [
+          {
+            traits: ['2x', 'light'],
+            url: '',
+            size: { width: 1202, height: 630 },
+          },
+        ],
+      },
+    };
+
+    it('renders an `InlineVideo`', () => {
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+      }, references);
+
+      const inlineVideo = wrapper.find('.content').find(InlineVideo);
+      expect(inlineVideo.exists()).toBe(true);
+      expect(inlineVideo.props('identifier')).toEqual(identifier);
+    });
+
+    it('does not crash with missing video reference data', () => {
+      expect(() => mountWithItem({
+        type: 'video',
+        identifier,
+      }, {})).not.toThrow();
+    });
+
+    it('renders a `Figure`/`FigureCaption` with metadata', () => {
+      const metadata = {
+        anchor: 'foo',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBe('foo');
+      expect(figure.contains(InlineVideo)).toBe(true);
+
+      const caption = wrapper.find(FigureCaption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.text()).toContain('blah');
+    });
+
+    it('renders a `Figure`/`FigureCaption` without an anchor, with text under the video', () => {
+      const metadata = {
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.contains(InlineVideo)).toBe(true);
+
+      const caption = wrapper.find(FigureCaption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBeFalsy();
+      expect(caption.text()).toContain('blah');
+      // assert figurerecaption is below the image
+      expect(figure.html()).toMatchInlineSnapshot(`
+        <figure-stub>
+          <inlinevideo-stub identifier="video.mp4"></inlinevideo-stub>
+          <figurecaption-stub>
+            <p>blah</p>
+          </figurecaption-stub>
+        </figure-stub>
+      `);
     });
   });
 
