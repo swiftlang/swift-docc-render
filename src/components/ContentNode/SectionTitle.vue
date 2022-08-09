@@ -10,12 +10,13 @@
 
 <template>
   <component
-   :id="anchor"
+   :id="anchor ? anchor : null"
    :is="tag"
    class="section-title"
   >
     <a
-      :href="`#${anchor}`"
+      v-if="anchor || href"
+      :href="`#${anchor || href}`"
       class="header-anchor"
       aria-label="hidden"
     >#</a>
@@ -29,7 +30,11 @@ export default {
   props: {
     anchor: {
       type: String,
-      required: true,
+      required: false,
+    },
+    href: {
+      type: String,
+      required: false,
     },
     tag: {
       type: String,

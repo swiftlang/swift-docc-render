@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+    <SectionTitle :href="anchor">{{ title }}</SectionTitle>
     <ParametersTable :parameters="[bodyParam]" :changes="bodyChanges" keyBy="key">
       <template slot="symbol" slot-scope="{ type, content, changes, name }">
         <PossiblyChangedType
@@ -84,6 +84,7 @@
 import { anchorize } from 'docc-render/utils/strings';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
 
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
@@ -107,6 +108,7 @@ export default {
     ContentNode,
     OnThisPageSection,
     ParametersTable,
+    SectionTitle,
   },
   constants: { ChangesKey },
   props: {

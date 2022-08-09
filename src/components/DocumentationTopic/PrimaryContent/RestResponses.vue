@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+    <SectionTitle :href="anchor">{{ title }}</SectionTitle>
     <ParametersTable :parameters="responses" :changes="propertyChanges" key-by="status">
       <template slot="symbol" slot-scope="{ status, type, reason, content, changes }">
         <div class="response-name">
@@ -51,6 +51,7 @@
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 
@@ -68,6 +69,7 @@ export default {
     ContentNode,
     OnThisPageSection,
     ParametersTable,
+    SectionTitle,
   },
   props: {
     title: {

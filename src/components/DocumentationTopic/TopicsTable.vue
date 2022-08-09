@@ -16,9 +16,11 @@
       :title="section.title"
     >
       <template v-if="wrapTitle" slot="title">
-        <WordBreak tag="h3" class="title">
+        <SectionTitle :href="anchor" class="title">
+          <WordBreak tag="h3" class="title">
           {{ section.title }}
-        </WordBreak>
+          </WordBreak>
+        </SectionTitle>
       </template>
       <template v-if="section.abstract" slot="abstract">
         <ContentNode :content="section.abstract" />
