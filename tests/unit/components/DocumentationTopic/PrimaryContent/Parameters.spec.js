@@ -14,6 +14,7 @@ import Parameters from 'docc-render/components/DocumentationTopic/PrimaryContent
 const {
   ContentNode,
   OnThisPageSection,
+  SectionTitle,
 } = Parameters.components;
 
 describe('Parameters', () => {
@@ -59,9 +60,10 @@ describe('Parameters', () => {
   });
 
   it('renders an h2 with "Parameters"', () => {
-    const h2 = wrapper.find('h2');
+    const h2 = wrapper.find(SectionTitle);
     expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe('Parameters');
+    expect(h2.attributes('tag')).toBe('h2');
+    expect(h2.text()).toContain('Parameters');
   });
 
   it('renders a <dl>', () => {

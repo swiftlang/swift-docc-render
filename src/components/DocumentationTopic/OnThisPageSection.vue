@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <section><slot /></section>
+  <section :id="anchor"><slot /></section>
 </template>
 
 <script>
@@ -25,6 +25,10 @@ export default {
     },
   },
   props: {
+    anchor: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: true,

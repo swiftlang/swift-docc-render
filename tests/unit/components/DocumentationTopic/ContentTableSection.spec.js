@@ -11,6 +11,10 @@
 import { shallowMount } from '@vue/test-utils';
 import ContentTableSection from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
 
+const {
+  SectionTitle,
+} = ContentTableSection.components;
+
 describe('ContentTableSection', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
@@ -26,10 +30,11 @@ describe('ContentTableSection', () => {
   it('renders the title as `h3.title` by default', () => {
     const div = wrapper.findAll('.section-title').at(0);
 
-    const title = div.find('h3');
+    const title = div.find(SectionTitle);
     expect(title.exists()).toBe(true);
+    expect(title.attributes('tag')).toBe('h3');
     expect(title.classes('title')).toBe(true);
-    expect(title.text()).toBe(propsData.title);
+    expect(title.text()).toContain(propsData.title);
   });
 
   it('renders a slot for a title', () => {

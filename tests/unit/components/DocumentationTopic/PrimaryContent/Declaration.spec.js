@@ -21,6 +21,7 @@ const {
   ConditionalConstraints,
   OnThisPageSection,
   DeclarationGroup,
+  SectionTitle,
 } = Declaration.components;
 
 const { ChangeTypes } = Declaration.constants;
@@ -81,10 +82,11 @@ describe('Declaration', () => {
     });
   });
 
-  it('renders an h2 title', () => {
-    const h2 = wrapper.find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe('Declaration');
+  it('renders an h2 section title', () => {
+    const sectionTitle = wrapper.find(SectionTitle);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.attributes('tag')).toBe('h2');
+    expect(sectionTitle.text()).toContain('Declaration');
   });
 
   it('renders 1 `DeclarationGroup` and 0 labels without multiple declarations', () => {

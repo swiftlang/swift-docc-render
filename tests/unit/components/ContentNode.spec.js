@@ -22,7 +22,7 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
 
-const { TableHeaderStyle } = ContentNode.constants;
+const { TableHeaderStyle, SectionTitle } = ContentNode.constants;
 
 const mountWithContent = (content = [], provide = { references: {} }) => (
   shallowMount(ContentNode, {
@@ -160,11 +160,12 @@ describe('ContentNode', () => {
           text: 'heading',
         });
 
-        const heading = wrapper.find('.content').find(`h${level}`);
-        expect(heading.exists()).toBe(true);
-        expect(heading.attributes('id')).toBe('heading');
-        expect(heading.isEmpty()).toBe(false);
-        expect(heading.text()).toBe('heading');
+        const sectionTitle = wrapper.find('.content').find(SectionTitle);
+        expect(sectionTitle.exists()).toBe(true);
+        expect(sectionTitle.attributes('tag')).toBe(`h${level}`);
+        expect(sectionTitle.attributes('anchor')).toBe('heading');
+        expect(sectionTitle.isEmpty()).toBe(false);
+        expect(sectionTitle.text()).toContain('heading');
       }
     });
   });

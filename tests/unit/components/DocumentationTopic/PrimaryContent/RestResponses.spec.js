@@ -17,6 +17,7 @@ const {
   PossiblyChangedType,
   PossiblyChangedMimetype,
   ParametersTable,
+  SectionTitle,
 } = RestResponses.components;
 
 describe('RestResponses', () => {
@@ -71,10 +72,10 @@ describe('RestResponses', () => {
     expect(section.props('title')).toBe(propsData.title);
   });
 
-  it('renders an h2 title', () => {
-    const h2 = mountComponent().find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe(propsData.title);
+  it('renders an h2 section title', () => {
+    const sectionTitle = mountComponent().find(SectionTitle);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('renders a `ParametersTable`', () => {
