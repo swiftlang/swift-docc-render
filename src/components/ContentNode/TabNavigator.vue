@@ -14,11 +14,11 @@
     :class="[{ 'tabs--vertical': vertical }]"
   >
     <Tabnav v-model="current" v-bind="{ position, vertical }">
-      <TabnavItem v-for="(item, index) in items" :key="index" :value="index">
+      <TabnavItem v-for="(item, index) in items" :key="item.title" :value="index">
         {{ item.title }}
       </TabnavItem>
     </Tabnav>
-    <div class="content">
+    <div class="tabs-content">
       <ContentNode :content="currentContent" />
     </div>
   </div>
@@ -83,7 +83,7 @@ export default {
     width: 20%;
   }
 
-  .content {
+  .tabs-content {
     flex: 1 0 auto;
   }
 }

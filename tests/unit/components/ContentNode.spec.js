@@ -365,7 +365,7 @@ describe('ContentNode', () => {
       });
     });
 
-    it('renders a `<TabNavigator>` in vertcal mode, if more than 5 tabs', () => {
+    it('renders a `<TabNavigator>` in vertcal mode, when tabs reach threshold', () => {
       const content = [
         {
           type: 'paragraph',

@@ -87,6 +87,9 @@ const TableHeaderStyle = {
   row: 'row',
 };
 
+// The point at which a TabNavigator turns to vertical mode.
+const TabNavigatorVerticalThreshold = 5;
+
 // Recursively call the passed `createElement` function for each content node
 // and any of its children by mapping each node `type` to a given Vue component
 //
@@ -277,8 +280,8 @@ function renderNode(createElement, references) {
       return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
     }
     case BlockType.tabNavigator: {
-      // If the tabs are more than 5, use vertical tab instead
-      const vertical = node.tabs.length > 5;
+      // If the tabs count is more than the threshold, use vertical tabs instead.
+      const vertical = node.tabs.length > TabNavigatorVerticalThreshold;
       return createElement(TabNavigator, {
         props: {
           vertical,
