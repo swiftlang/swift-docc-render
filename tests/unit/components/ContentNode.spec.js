@@ -20,9 +20,10 @@ import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue'
 import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
+import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
 
-const { TableHeaderStyle, SectionTitle } = ContentNode.constants;
+const { TableHeaderStyle } = ContentNode.constants;
 
 const mountWithContent = (content = [], provide = { references: {} }) => (
   shallowMount(ContentNode, {
