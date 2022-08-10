@@ -34,5 +34,8 @@ export default {
 .column {
   grid-column: span var(--col-span);
   min-width: 0;
+  @include breakpoint(small) {
+    grid-column: span 1;
+  }
 }
 </style>
