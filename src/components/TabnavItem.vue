@@ -55,7 +55,7 @@ $tabnav-item-gutter: rem(30px);
   border-bottom: 1px solid;
   border-color: var(--colors-tabnav-item-border-color, var(--color-tabnav-item-border-color));
 
-  display: inline-block;
+  display: flex;
   list-style: none;
   padding-left: $tabnav-item-gutter;
   margin: 0;
@@ -85,6 +85,7 @@ $tabnav-item-gutter: rem(30px);
   display: block;
   position: relative;
   z-index: 0;
+  width: 100%;
 
   &:hover {
     text-decoration: none;

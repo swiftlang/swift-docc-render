@@ -82,8 +82,8 @@ $-tabnav-bottom-margin: rem(25px);
     flex-flow: column wrap;
 
     .tabnav-items {
-      display: flex;
       flex-flow: column;
+      overflow: hidden;
     }
 
     /deep/ .tabnav-item {
@@ -93,7 +93,7 @@ $-tabnav-bottom-margin: rem(25px);
 }
 
 .tabnav-items {
-  display: inline-block;
+  display: flex;
   margin: 0;
   text-align: center;
 }

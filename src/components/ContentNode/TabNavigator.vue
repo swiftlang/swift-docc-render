@@ -73,6 +73,11 @@ export default {
 
 .TabNavigator {
   margin-bottom: $stacked-margin-large;
+
+  .tabnav {
+    overflow: auto;
+    white-space: nowrap;
+  }
 }
 
 .tabs--vertical {
@@ -81,6 +86,10 @@ export default {
 
   .tabnav {
     width: 20%;
+    white-space: normal;
+    @include breakpoint(small) {
+      width: 35%;
+    }
   }
 
   .tabs-content {
