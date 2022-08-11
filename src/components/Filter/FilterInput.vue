@@ -426,7 +426,7 @@ $input-height: rem(28px);
   // Remove Gray Highlight When Tapping Links in Mobile Safari =>
   // https://css-tricks.com/snippets/css/remove-gray-highlight-when-tapping-links-in-mobile-safari/
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  border-radius: $small-border-radius + 1;
+  border-radius: calc(#{$small-border-radius} + 1px);
   @include on-keyboard-focus() {
     outline: none;
   }
@@ -484,8 +484,8 @@ $input-height: rem(28px);
     /deep/ ul {
       padding: var(--input-vertical-padding) rem(9px);
       border: 1px solid transparent;
-      border-bottom-left-radius: $small-border-radius - 1;
-      border-bottom-right-radius: $small-border-radius - 1;
+      border-bottom-left-radius: calc(#{$small-border-radius} - 1px);
+      border-bottom-right-radius: calc(#{$small-border-radius} - 1px);
 
       @include on-keyboard-focus() {
         outline: none;
