@@ -48,6 +48,7 @@
       <TopicTypeIcon
         v-if="!isGroupMarker && !apiChange"
         :type="item.type"
+        :image-override="item.icon ? navigatorReferences[item.icon] : null"
         class="navigator-icon"
       />
       <span
@@ -153,6 +154,10 @@ export default {
     enableFocus: {
       type: Boolean,
       default: true,
+    },
+    navigatorReferences: {
+      type: Object,
+      default: () => ({}),
     },
   },
   idState() {

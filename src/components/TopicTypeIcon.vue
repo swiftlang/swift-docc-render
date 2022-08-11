@@ -10,7 +10,20 @@
 
 <template>
   <div class="TopicTypeIcon">
-    <component :is="icon" v-bind="iconProps" class="icon-inline" :style="styles" />
+    <component
+      v-if="!imagePath"
+      :is="icon"
+      v-bind="iconProps"
+      :style="styles"
+      class="icon-inline"
+    />
+    <SVGIcon
+      v-else
+      :icon-url="imagePath"
+      theme-id="topic"
+      :style="styles"
+      class="icon-inline"
+    />
   </div>
 </template>
 
@@ -28,6 +41,7 @@ import TwoLetterSymbolIcon from 'theme/components/Icons/TwoLetterSymbolIcon.vue'
 import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIcon.vue';
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
+import SVGIcon from 'docc-render/components/SVGIcon.vue';
 
 const TopicTypeIcons = {
   [TopicTypes.article]: ArticleIcon,
@@ -81,7 +95,7 @@ const TopicTypeProps = {
 
 export default {
   name: 'TopicTypeIcon',
-  components: { SingleLetterSymbolIcon },
+  components: { SVGIcon, SingleLetterSymbolIcon },
   constants: { TopicTypeIcons, TopicTypeProps },
   props: {
     type: {
@@ -92,13 +106,24 @@ export default {
       type: Boolean,
       default: false,
     },
+    imageOverride: {
+      type: Object,
+      default: null,
+    },
   },
   computed: {
     normalisedType: ({ type }) => TopicTypeAliases[type] || type,
     icon: ({ normalisedType }) => TopicTypeIcons[normalisedType] || CollectionIcon,
     iconProps: ({ normalisedType }) => TopicTypeProps[normalisedType] || {},
     color: ({ normalisedType }) => HeroColorsMap[normalisedType],
-    styles: ({ color, withColors }) => (withColors && color ? { color: `var(--color-type-icon-${color})` } : {}),
+    imagePath: ({ imageOverride }) => {
+      if (!imageOverride) return null;
+      return imageOverride.variants[0].url;
+    },
+    styles: ({
+      color,
+      withColors,
+    }) => (withColors && color ? { color: `var(--color-type-icon-${color})` } : {}),
   },
 };
 </script>

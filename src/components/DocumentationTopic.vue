@@ -16,6 +16,7 @@
         :enhanceBackground="enhanceBackground"
         :shortHero="shortHero"
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
+        :iconOverride="references[pageIcon]"
       >
         <template #above-content>
           <slot name="above-hero-content" />
@@ -268,6 +269,10 @@ export default {
     },
     remoteSource: {
       type: Object,
+      required: false,
+    },
+    pageIcon: {
+      type: String,
       required: false,
     },
   },

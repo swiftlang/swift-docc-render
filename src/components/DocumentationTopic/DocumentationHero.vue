@@ -18,7 +18,9 @@
   >
     <div class="icon">
       <TopicTypeIcon
-        v-if="enhanceBackground" :type="type"
+        v-if="enhanceBackground"
+        :type="type"
+        :image-override="iconOverride"
         key="first" class="background-icon first-icon" with-colors
       />
     </div>
@@ -60,6 +62,10 @@ export default {
     shouldShowLanguageSwitcher: {
       type: Boolean,
       required: true,
+    },
+    iconOverride: {
+      type: Object,
+      required: false,
     },
   },
   computed: {

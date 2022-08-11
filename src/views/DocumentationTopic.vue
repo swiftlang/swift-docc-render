@@ -37,6 +37,7 @@
                       :error-fetching="slotProps.errorFetching"
                       :api-changes="slotProps.apiChanges"
                       :references="topicProps.references"
+                      :navigator-references="slotProps.references"
                       :scrollLockID="scrollLockID"
                       :breakpoint="breakpoint"
                       @close="handleToggleSidenav(breakpoint)"
@@ -179,6 +180,7 @@ export default {
           role,
           symbolKind = '',
           remoteSource,
+          pageIcon = '',
         } = {},
         primaryContentSections,
         relationshipsSections,
@@ -214,6 +216,7 @@ export default {
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
         remoteSource,
+        pageIcon,
       };
     },
     // The `hierarchy.paths` array will contain zero or more subarrays, each
