@@ -11,7 +11,7 @@
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { HeroColors, HeroColorsMap } from '@/constants/HeroColors';
 import { TopicRole } from '@/constants/roles';
 
@@ -53,7 +53,7 @@ describe('DocumentationHero', () => {
 
   it('renders the DocumentationHero, enabled', () => {
     const wrapper = createWrapper();
-    const allIcons = wrapper.findAll(NavigatorLeafIcon);
+    const allIcons = wrapper.findAll(TopicTypeIcon);
     expect(allIcons).toHaveLength(1);
     expect(allIcons.at(0).props()).toEqual({
       withColors: true,
@@ -127,7 +127,7 @@ describe('DocumentationHero', () => {
       enhanceBackground: false,
     });
     // assert no icon
-    const allIcons = wrapper.findAll(NavigatorLeafIcon);
+    const allIcons = wrapper.findAll(TopicTypeIcon);
     expect(allIcons).toHaveLength(0);
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
@@ -143,7 +143,7 @@ describe('DocumentationHero', () => {
         role: TopicRole.collection,
       },
     });
-    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(TopicTypes.module);
+    expect(wrapper.find(TopicTypeIcon).props('type')).toBe(TopicTypes.module);
   });
 
   it('maps the "collectionGroup" role to the "collection" type', () => {
@@ -153,6 +153,6 @@ describe('DocumentationHero', () => {
         role: TopicRole.collectionGroup,
       },
     });
-    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(TopicTypes.collection);
+    expect(wrapper.find(TopicTypeIcon).props('type')).toBe(TopicTypes.collection);
   });
 });

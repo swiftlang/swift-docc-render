@@ -17,7 +17,7 @@
     :style="styles"
   >
     <div class="icon">
-      <NavigatorLeafIcon
+      <TopicTypeIcon
         v-if="enhanceBackground" :type="type"
         key="first" class="background-icon first-icon" with-colors
       />
@@ -36,14 +36,14 @@
 
 <script>
 
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap, HeroColors } from 'docc-render/constants/HeroColors';
 import { TopicRole } from 'docc-render/constants/roles';
 
 export default {
   name: 'DocumentationHero',
-  components: { NavigatorLeafIcon },
+  components: { TopicTypeIcon },
   props: {
     role: {
       type: String,

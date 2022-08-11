@@ -8,17 +8,17 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 import CollectionIcon from '@/components/Icons/CollectionIcon.vue';
 
-const createWrapper = opts => shallowMount(NavigatorLeafIcon, opts);
+const createWrapper = opts => shallowMount(TopicTypeIcon, opts);
 const {
   TopicTypeIcons,
   TopicTypeProps,
-} = NavigatorLeafIcon.constants;
+} = TopicTypeIcon.constants;
 
 const cases = Object.keys(TopicTypes).map((type) => {
   const k = TopicTypeAliases[type] || type;
@@ -27,7 +27,7 @@ const cases = Object.keys(TopicTypes).map((type) => {
   return [type, icon.name, TopicTypeProps[type] || {}, color, icon];
 });
 
-describe('NavigatorLeafIcon', () => {
+describe('TopicTypeIcon', () => {
   it.each(cases)('Should render %s as %s, with %O bindings, and a %s color', (type, iconName, bindings, color, icon) => {
     const wrapper = createWrapper({
       propsData: {

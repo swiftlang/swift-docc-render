@@ -11,7 +11,7 @@
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
 import { waitFrames } from 'docc-render/utils/loading';
@@ -62,7 +62,7 @@ describe('NavigatorCardItem', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
-    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(defaultProps.item.type);
+    expect(wrapper.find(TopicTypeIcon).props('type')).toBe(defaultProps.item.type);
     const leafLink = wrapper.find('.leaf-link');
     expect(leafLink.is(Reference)).toBe(true);
     expect(leafLink.props('url')).toEqual(defaultProps.item.path);
@@ -287,7 +287,7 @@ describe('NavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find(NavigatorLeafIcon).exists()).toBe(false);
+    expect(wrapper.find(TopicTypeIcon).exists()).toBe(false);
     expect(wrapper.find('.navigator-icon').classes())
       .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
   });

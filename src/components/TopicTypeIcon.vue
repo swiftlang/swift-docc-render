@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="NavigatorLeafIcon">
+  <div class="TopicTypeIcon">
     <component :is="icon" v-bind="iconProps" class="icon-inline" :style="styles" />
   </div>
 </template>
@@ -80,7 +80,7 @@ const TopicTypeProps = {
 };
 
 export default {
-  name: 'NavigatorLeafIcon',
+  name: 'TopicTypeIcon',
   components: { SingleLetterSymbolIcon },
   constants: { TopicTypeIcons, TopicTypeProps },
   props: {
@@ -106,7 +106,7 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-.NavigatorLeafIcon {
+.TopicTypeIcon {
   width: 1em;
   height: 1em;
   margin-right: 7px;

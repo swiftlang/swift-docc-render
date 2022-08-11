@@ -45,7 +45,7 @@
           />
         </button>
       </div>
-      <NavigatorLeafIcon
+      <TopicTypeIcon
         v-if="!isGroupMarker && !apiChange"
         :type="item.type"
         class="navigator-icon"
@@ -93,7 +93,7 @@
 
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
@@ -111,7 +111,7 @@ export default {
   ],
   components: {
     HighlightMatches,
-    NavigatorLeafIcon,
+    TopicTypeIcon,
     InlineChevronRightIcon,
     Reference,
     Badge,
