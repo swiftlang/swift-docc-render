@@ -15,7 +15,7 @@
     :title="title"
   >
     <div class="container">
-      <SectionTitle class="title" :href="anchor">{{ title }}</SectionTitle>
+      <SectionTitle class="title" :anchor="anchor">{{ title }}</SectionTitle>
       <slot />
     </div>
   </OnThisPageSection>

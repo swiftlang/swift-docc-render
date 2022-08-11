@@ -16,7 +16,7 @@
       :title="section.title"
     >
       <template v-if="wrapTitle" slot="title">
-        <SectionTitle tag="h3" :href="anchor" class="title">
+        <SectionTitle tag="h3" :anchor="anchor" class="title">
           <WordBreak>{{ section.title }}</WordBreak>
         </SectionTitle>
       </template>

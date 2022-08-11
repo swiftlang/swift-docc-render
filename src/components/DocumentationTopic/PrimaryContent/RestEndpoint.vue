@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <SectionTitle :href="anchor">{{ title }}</SectionTitle>
+    <SectionTitle :anchor="anchor">{{ title }}</SectionTitle>
     <DeclarationSource :tokens="tokens" />
   </OnThisPageSection>
 </template>

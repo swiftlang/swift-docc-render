@@ -10,29 +10,34 @@
 
 <template>
   <component
-   :id="anchor ? anchor : null"
+   :id="id"
    :is="tag"
    class="section-title"
   >
     <a
-      v-if="anchor || href"
-      :href="`#${anchor || href}`"
+      v-if="anchor"
+      :href="`#${anchor}`"
       class="header-anchor"
       aria-label="hidden"
+      @click="handleFocusAndScroll(anchor)"
     >#</a>
     <slot />
   </component>
 </template>
 
 <script>
+import scrollToElement from 'docc-render/mixins/scrollToElement';
+
 export default {
   name: 'SectionTitle',
+  mixins: [scrollToElement],
+  data() {
+    return {
+      id: null,
+    };
+  },
   props: {
     anchor: {
-      type: String,
-      required: false,
-    },
-    href: {
       type: String,
       required: false,
     },
@@ -41,19 +46,20 @@ export default {
       default: () => 'h2',
     },
   },
+  mounted() {
+    if (!this.anchor) return;
+    const element = document.getElementById(`${this.anchor}`);
+    // if there is no element in the document that has an id,
+    // add it to this component
+    if (!element) {
+      this.id = this.anchor;
+    }
+  },
 };
 </script>
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
-
-.section-title {
-  scroll-margin-top: $nav-height + 1rem;
-
-  @include breakpoint(small, $scope: nav) {
-    scroll-margin-top: $nav-height-small + 1rem;
-  }
-}
 
 .section-title:hover {
   .header-anchor {
@@ -68,7 +74,7 @@ export default {
   opacity: 0;
   text-decoration: none;
 
-  &:hover {
+  &:hover, &:focus {
     opacity: 1;
   }
 }

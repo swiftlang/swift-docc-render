@@ -145,6 +145,6 @@ describe('TopicsTable', () => {
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.attributes('tag')).toBe('h3');
-    expect(sectionTitle.attributes('href')).toBe('topics');
+    expect(sectionTitle.attributes('anchor')).toBe('topics');
   });
 });

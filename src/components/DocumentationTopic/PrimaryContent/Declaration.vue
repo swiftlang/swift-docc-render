@@ -14,7 +14,7 @@
     class="declaration"
     title="Declaration"
   >
-    <SectionTitle href="declaration">Declaration</SectionTitle>
+    <SectionTitle anchor="declaration">Declaration</SectionTitle>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"

@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <SectionTitle :href="anchor">{{ title }}</SectionTitle>
+    <SectionTitle :anchor="anchor">{{ title }}</SectionTitle>
     <ParametersTable :parameters="responses" :changes="propertyChanges" key-by="status">
       <template slot="symbol" slot-scope="{ status, type, reason, content, changes }">
         <div class="response-name">

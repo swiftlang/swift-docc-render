@@ -14,7 +14,7 @@
     class="parameters"
     title="Parameters"
   >
-    <SectionTitle href="parameters">Parameters</SectionTitle>
+    <SectionTitle anchor="parameters">Parameters</SectionTitle>
     <dl>
       <template v-for="param in parameters">
         <dt class="param-name" :key="`${param.name}:name`">

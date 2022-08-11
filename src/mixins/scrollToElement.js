@@ -27,5 +27,19 @@ export default {
       window.scrollBy(-offset.x, -offset.y);
       return element;
     },
+    /**
+     * Always scroll to the element and focus it.
+     * This ensures that the next tab target is inside
+     * and that it is in view, even if the hash is in the url
+     * @returns {Promise<void>}
+    */
+    async handleFocusAndScroll(hash) {
+      const element = document.getElementById(hash);
+      if (!element) return;
+      // Focus scrolls to the element
+      element.focus();
+      // but we need to compensate for the navigation height
+      await this.scrollToElement(`#${hash}`);
+    },
   },
 };

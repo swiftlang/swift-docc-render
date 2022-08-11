@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <SectionTitle :href="anchor">{{ title }}</SectionTitle>
+    <SectionTitle :anchor="anchor">{{ title }}</SectionTitle>
     <ParametersTable :parameters="parameters" :changes="parameterChanges">
       <template slot="symbol" slot-scope="{ name, type, content, changes, deprecated }">
         <div class="param-name" :class="{ deprecated: deprecated }">

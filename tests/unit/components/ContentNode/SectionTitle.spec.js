@@ -30,7 +30,7 @@ describe('SectionTitle', () => {
     expect(wrapper.is('h3')).toBe(true);
   });
 
-  it('renders a section title with a header anchor and an id on the wrapper', () => {
+  it('renders a section title with a header anchor and an id on the wrapper', async () => {
     const wrapper = shallowMount(SectionTitle, {
       propsData: {
         tag: 'h2',
@@ -38,6 +38,7 @@ describe('SectionTitle', () => {
       },
       slots: { default: 'Title' },
     });
+    await wrapper.vm.$nextTick();
     expect(wrapper.text()).toBe('# Title');
     expect(wrapper.attributes('id')).toBe('title');
     const headerAnchor = wrapper.find('.header-anchor');
@@ -45,11 +46,16 @@ describe('SectionTitle', () => {
     expect(headerAnchor.attributes('aria-label')).toBe('hidden');
   });
 
-  it('renders a section title with a header anchor and no id on the wrapper', () => {
+  it('renders a section title with a header anchor and no id on the wrapper if it already exists on the document', () => {
+    // create element with id outside the component
+    const div = document.createElement('div');
+    div.innerHTML = '<div id="title>';
+    document.body.appendChild(div);
+
     const wrapper = shallowMount(SectionTitle, {
       propsData: {
         tag: 'h2',
-        href: 'title',
+        anchor: 'title',
       },
       slots: { default: 'Title' },
     });
@@ -60,7 +66,7 @@ describe('SectionTitle', () => {
     expect(headerAnchor.attributes('aria-label')).toBe('hidden');
   });
 
-  it('does not render anchor if there is no anchor or href props', () => {
+  it('does not render anchor if there is no anchor', () => {
     const wrapper = shallowMount(SectionTitle);
     expect(wrapper.find('.header-anchor').exists()).toBe(false);
   });

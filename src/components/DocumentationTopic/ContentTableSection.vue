@@ -25,6 +25,7 @@
 
 <script>
 import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
+import { anchorize } from 'docc-render/utils/strings';
 
 export default {
   name: 'ContentTableSection',
@@ -36,7 +37,7 @@ export default {
     },
   },
   computed: {
-    anchor: ({ title }) => title.replaceAll(' ', '-'),
+    anchor: ({ title }) => anchorize(title),
   },
 };
 </script>

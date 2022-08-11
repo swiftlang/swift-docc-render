@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <SectionTitle :href="anchor">{{ title }}</SectionTitle>
+    <SectionTitle :anchor="anchor">{{ title }}</SectionTitle>
     <ParametersTable :parameters="[bodyParam]" :changes="bodyChanges" keyBy="key">
       <template slot="symbol" slot-scope="{ type, content, changes, name }">
         <PossiblyChangedType
