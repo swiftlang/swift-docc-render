@@ -122,7 +122,9 @@ const children = [
 ];
 
 const activePath = [root0.path, root0Child0.path];
-
+const navigatorReferences = {
+  foo: {},
+};
 const defaultProps = {
   technology: 'TestKit',
   technologyPath: '/documentation/testkit',
@@ -131,6 +133,7 @@ const defaultProps = {
   type: TopicTypes.module,
   scrollLockID: 'foo',
   breakpoint: 'large',
+  navigatorReferences,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -215,6 +218,7 @@ describe('NavigatorCard', () => {
       item: root0,
       apiChange: null,
       enableFocus: false,
+      navigatorReferences,
     });
     // assert no-items-wrapper
     expect(wrapper.find('.no-items-wrapper').exists()).toBe(true);
@@ -426,6 +430,7 @@ describe('NavigatorCard', () => {
         isRendered: false,
         apiChange: null,
         enableFocus: false,
+        navigatorReferences,
       });
       unopenedItem.vm.$emit('toggle', item);
       await wrapper.vm.$nextTick();
@@ -1860,6 +1865,7 @@ describe('NavigatorCard', () => {
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
         enableFocus: false,
+        navigatorReferences,
       });
       // assert item is scrolled to once
       expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
@@ -1884,6 +1890,7 @@ describe('NavigatorCard', () => {
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
         enableFocus: false,
+        navigatorReferences,
       });
     });
 

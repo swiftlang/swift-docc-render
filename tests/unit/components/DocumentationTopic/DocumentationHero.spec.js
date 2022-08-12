@@ -20,6 +20,7 @@ const defaultProps = {
   enhanceBackground: true,
   shortHero: true,
   shouldShowLanguageSwitcher: true,
+  iconOverride: { variants: ['foo'] },
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -58,6 +59,7 @@ describe('DocumentationHero', () => {
     expect(allIcons.at(0).props()).toEqual({
       withColors: true,
       type: defaultProps.role,
+      imageOverride: defaultProps.iconOverride,
     });
     expect(allIcons.at(0).classes()).toEqual(['background-icon', 'first-icon']);
     // assert slot

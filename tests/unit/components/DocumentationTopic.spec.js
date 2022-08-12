@@ -146,6 +146,7 @@ const propsData = {
     },
   ],
   remoteSource: { url: 'foo' },
+  pageIcon: 'foo',
 };
 
 describe('DocumentationTopic', () => {
@@ -217,6 +218,12 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders a `DocumentationHero`, enabled', () => {
+    const iconOverride = { variants: [] };
+    wrapper.setProps({
+      references: {
+        [propsData.pageIcon]: iconOverride,
+      },
+    });
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
     expect(hero.props()).toEqual({
@@ -224,6 +231,7 @@ describe('DocumentationTopic', () => {
       enhanceBackground: true,
       shortHero: false,
       shouldShowLanguageSwitcher: false,
+      iconOverride,
     });
   });
 
