@@ -10,12 +10,12 @@
 
 <template>
   <component
-   :id="id"
+   :id="!isTargetIDE ? id : null"
    :is="tag"
    class="section-title"
   >
     <a
-      v-if="anchor"
+      v-if="anchor && !isTargetIDE"
       :href="`#${anchor}`"
       class="header-anchor"
       aria-label="hidden"
@@ -44,6 +44,11 @@ export default {
     tag: {
       type: String,
       default: () => 'h2',
+    },
+  },
+  inject: {
+    isTargetIDE: {
+      default: () => false,
     },
   },
   mounted() {

@@ -33,7 +33,6 @@ describe('SectionTitle', () => {
   it('renders a section title with a header anchor and an id on the wrapper', async () => {
     const wrapper = shallowMount(SectionTitle, {
       propsData: {
-        tag: 'h2',
         anchor: 'title',
       },
       slots: { default: 'Title' },
@@ -54,7 +53,6 @@ describe('SectionTitle', () => {
 
     const wrapper = shallowMount(SectionTitle, {
       propsData: {
-        tag: 'h2',
         anchor: 'title',
       },
       slots: { default: 'Title' },
@@ -68,6 +66,18 @@ describe('SectionTitle', () => {
 
   it('does not render anchor if there is no anchor', () => {
     const wrapper = shallowMount(SectionTitle);
+    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+  });
+
+  it('does not render anchor if target ide is true', () => {
+    const wrapper = shallowMount(SectionTitle, {
+      propsData: {
+        anchor: 'title',
+      },
+      provide: {
+        isTargetIDE: true,
+      },
+    });
     expect(wrapper.find('.header-anchor').exists()).toBe(false);
   });
 });
