@@ -15,7 +15,7 @@ import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vu
 import Reference from '@/components/ContentNode/Reference.vue';
 
 jest.mock('docc-render/utils/theme-settings', () => ({
-  getSetting: () => true,
+  getSetting: jest.fn((_, fallback) => fallback),
 }));
 
 describe('QuickNavigationModal', () => {
@@ -32,6 +32,14 @@ describe('QuickNavigationModal', () => {
     },
     $route: {
       path: '/documentation/somepath',
+    },
+    $router: {
+      push: jest.fn(),
+    },
+    $refs: {
+      match: {
+        scrollIntoView: jest.fn(),
+      },
     },
   };
   const symbols = [
@@ -104,6 +112,7 @@ describe('QuickNavigationModal', () => {
     jest.clearAllMocks();
     wrapper = shallowMount(QuickNavigationModal, config);
     input = wrapper.find({ ref: 'input' });
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
   });
 
   it('it renders the Quick navigation modal', () => {
@@ -218,9 +227,6 @@ describe('QuickNavigationModal', () => {
     expect(symbolMatchWrapper.at(1).text()).toBe(filteredSymbols[1].relativePath);
   });
 
-  it('it highlights symbol match on hover', async () => {
-  });
-
   it('it redirects to the symbol path on symbol-match selection', async () => {
     wrapper.setData({
       debouncedInput: inputValue,
@@ -255,10 +261,13 @@ describe('QuickNavigationModal', () => {
     ).toBe(symbolsMatchBlueprint[3].subMatchString);
   });
 
-  it('it resets `selectedIndex` when `debounced input` changes', async () => {
-    wrapper.vm.selectedIndex = 1;
+  it('it resets `focusedIndex` when `debounced input` changes', async () => {
+    jest.useFakeTimers();
     input.setValue(inputValue);
-    expect(wrapper.vm.selectedIndex).toBe(0);
+    jest.advanceTimersByTime(500);
+    wrapper.vm.focusedIndex = 1;
+    input.setValue(inputValue);
+    expect(wrapper.vm.focusedIndex).toBe(0);
   });
 
   it('it debounces user input before filtering the symbols', () => {
@@ -311,5 +320,14 @@ describe('QuickNavigationModal', () => {
       debouncedInput: 'foobar',
     });
     expect(wrapper.find(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
+  });
+
+  it('it access a symbol on `enter` key', async () => {
+    const handleKeyEnter = jest.spyOn(wrapper.vm, 'handleKeyEnter');
+    wrapper.setData({
+      debouncedInput: inputValue,
+    });
+    await wrapper.trigger('keydown.enter');
+    expect(handleKeyEnter).toHaveBeenCalledTimes(1);
   });
 });

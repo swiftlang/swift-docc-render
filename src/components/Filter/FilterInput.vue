@@ -416,7 +416,6 @@ export default {
     },
     openQuickNavigationModal() {
       this.quickNavigationStore.toggleShowQuickNavigationModal(true);
-      return true;
     },
     onKeydown(event) {
       if (

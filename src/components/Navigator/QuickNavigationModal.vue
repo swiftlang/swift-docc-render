@@ -11,9 +11,10 @@
 <template>
   <div
     class="quick-navigation"
-    @keydown.down.prevent="handleKeyDown"
+    @keydown.down.exact.capture.prevent="focusNext"
     @keydown.esc.prevent="closeQuickNavigationModal"
-    @keydown.enter="handleKeyEnter"
+    @keydown.up.exact.capture.prevent="focusPrev"
+    @keydown.enter.exact="handleKeyEnter"
   >
     <div
       class="quick-navigation__modal-shadow"
@@ -35,7 +36,7 @@
           tabindex="0"
           type="text"
           v-model="userInput"
-          @input="selectedIndex = 0"
+          @input="focusedIndex = 0"
         />
         <button
           v-if="userInput.length"
@@ -68,16 +69,14 @@
          </p>
         </div>
         <div
-          v-for="(symbol, idx) in filteredSymbols"
-          :class="{ 'selected' : idx == selectedIndex }"
-          :key="idx"
+          v-for="(symbol, index) in filteredSymbols"
+          :class="{ 'selected' : index == focusedIndex }"
+          :key="index"
           @click="closeQuickNavigationModal()"
-          @keydown.tab.prevent="handleKeyDown"
-          @keydown.up="handleKeyUp"
         >
           <Reference
             :url="symbol.path"
-            :id="idx"
+            :id="index"
             class="quick-navigation__reference"
           >
             <div
@@ -85,6 +84,7 @@
               ref="match"
               role="list"
               tabindex="0"
+              @focus.capture="focusIndex(index)"
             >
               <div class="symbol-info">
                 <div class="symbol-name">
@@ -124,6 +124,7 @@ import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
+import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 
 export default {
   name: 'QuickNavigationModal',
@@ -134,10 +135,12 @@ export default {
     QuickNavigationHighlighter,
     Reference,
   },
+  mixins: [
+    keyboardNavigation,
+  ],
   data() {
     return {
       debouncedInput: '',
-      selectedIndex: -1,
       userInput: '',
       quickNavigationStore: this.quickNavigationStore,
     };
@@ -164,9 +167,11 @@ export default {
       return orderSymbolsByPriority(matches).slice(0, 20);
     },
     flattenIndex: ({ quickNavigationStore }) => quickNavigationStore.state.flattenIndex,
+    totalItemsToNavigate: ({ filteredSymbols }) => filteredSymbols.length,
   },
   watch: {
     userInput: 'debounceInput',
+    focusedIndex: 'scrollIntoView',
   },
   inject: ['quickNavigationStore'],
   methods: {
@@ -190,7 +195,11 @@ export default {
     },
     debounceInput: debounce(function debounceInput(value) {
       this.debouncedInput = value;
-    }, 500),
+    }, 250),
+    endingPointHook() {
+      // Reset selected symbol to the first one of the list
+      this.focusedIndex = 0;
+    },
     fuzzyMatch: ({ debouncedInput, symbols, processedInputRegex }) => (
       symbols.map((symbol) => {
         const match = processedInputRegex.exec(symbol.title);
@@ -215,37 +224,9 @@ export default {
         });
       }).filter(Boolean)
     ),
-    handleKeyDown() {
-      if (!this.$refs.match) return;
-      if (this.selectedIndex === this.filteredSymbols.length - 1) {
-        // Reset selected symbol to the first one of the list
-        this.selectedIndex = 0;
-      } else {
-        this.selectedIndex += 1;
-      }
-      this.$refs.match[this.selectedIndex].focus({ preventScroll: true });
-      this.$refs.match[this.selectedIndex].scrollIntoView({
-        block: 'nearest',
-        inline: 'start',
-      });
-    },
-    handleKeyUp(event) {
-      event.preventDefault();
-      if (!this.$refs.match) return;
-      if (this.selectedIndex === 0) {
-        this.$refs.input.focus();
-        return;
-      }
-      this.selectedIndex -= 1;
-      this.$refs.match[this.selectedIndex].focus();
-      this.$refs.match[this.selectedIndex].scrollIntoView({
-        block: 'nearest',
-        inline: 'start',
-      });
-    },
     handleKeyEnter() {
-      if (!this.filteredSymbols[this.selectedIndex]) return;
-      this.$router.push(this.filteredSymbols[this.selectedIndex].path);
+      if (!this.filteredSymbols.length) return;
+      this.$router.push(this.filteredSymbols[this.focusedIndex].path);
       this.closeQuickNavigationModal();
     },
     orderSymbolsByPriority(matchingSymbols) {
@@ -261,6 +242,15 @@ export default {
         if (a.inputLengthDifference < b.inputLengthDifference) return -1;
         return 0;
       });
+    },
+    scrollIntoView() {
+      this.$refs.match[this.focusedIndex].scrollIntoView({
+        block: 'nearest',
+        inline: 'start',
+      });
+    },
+    startingPointHook() {
+      this.focusedIndex = this.filteredSymbols.length - 1;
     },
   },
 };
@@ -342,7 +332,7 @@ $filter-padding: rem(20px);
       width: fit-content;
     }
     .selected {
-      background-color: var(--color-fill-tertiary);
+      background-color: var(--color-navigator-item-hover);
     }
   }
   &__modal-shadow {
