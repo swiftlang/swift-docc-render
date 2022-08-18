@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
 import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
@@ -81,9 +80,10 @@ export default {
   data() {
     return {
       INDEX_ROOT_KEY,
-      store: QuickNavigationStore,
+      store: this.quickNavigationStore,
     };
   },
+  inject: ['quickNavigationStore'],
   props: {
     parentTopicIdentifiers: {
       type: Array,
@@ -122,9 +122,6 @@ export default {
       default: true,
     },
   },
-  provide() {
-    return { store: this.store };
-  },
   computed: {
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
@@ -162,7 +159,7 @@ export default {
     }) => {
       const flatIndex = flattenNestedData(technology.children || [], null, 0, technology.beta);
       if (enableQuickNavigation) {
-        store.setFlattenIndex(flatIndex);
+        store.setFlattenIndex(Object.freeze(flatIndex));
       }
       return flatIndex;
     },
