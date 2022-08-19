@@ -17,21 +17,27 @@ export default [
     path: '/tutorials/:id',
     name: 'tutorials-overview',
     component: () => import(
-      /* webpackChunkName: "tutorials-overview" */ 'theme/views/TutorialsOverview.vue'
+      /* webpackChunkName: "tutorials-overview" */
+      /* webpackPrefetch: true */
+      'theme/views/TutorialsOverview.vue'
     ),
   },
   {
     path: '/tutorials/:id/*',
     name: 'topic',
     component: () => import(
-      /* webpackChunkName: "topic" */ 'theme/views/Topic.vue'
+      /* webpackChunkName: "topic" */
+      /* webpackPrefetch: true */
+      'theme/views/Topic.vue'
     ),
   },
   {
     path: '/documentation/*',
     name: documentationTopicName,
     component: () => import(
-      /* webpackChunkName: "documentation-topic" */ 'theme/views/DocumentationTopic.vue'
+      /* webpackChunkName: "documentation-topic" */
+      /* webpackPrefetch: true */
+      'theme/views/DocumentationTopic.vue'
     ),
   },
   {
