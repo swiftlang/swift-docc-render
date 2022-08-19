@@ -26,7 +26,7 @@
       v-if="prefersAuto && darkVariantAttributes"
       media="(prefers-color-scheme: dark)"
       :srcset="darkVariantAttributes.srcSet"
-    />
+    >
     <!-- if "Dark" is selected and a dark variant exists, use it directly -->
     <img
       v-if="prefersDark && darkVariantAttributes"
@@ -36,9 +36,9 @@
       :loading="loading"
       :alt="alt"
       :width="darkVariantAttributes.width || optimalWidth"
-      :height="darkVariantAttributes.width || optimalWidth ? 'auto' : null"
+      :height="(darkVariantAttributes.width || optimalWidth) ? 'auto' : null"
       @error="handleImageLoadError"
-    />
+    >
     <!--
       otherwise use the default variant (light preferred over dark if both available)
     -->
@@ -50,19 +50,19 @@
       :loading="loading"
       :alt="alt"
       :width="defaultAttributes.width || optimalWidth"
-      :height="defaultAttributes.width || optimalWidth ? 'auto' : null"
+      :height="(defaultAttributes.width || optimalWidth) ? 'auto' : null"
       @error="handleImageLoadError"
-    />
+    >
   </picture>
 </template>
 
 <script>
 // Creates image attributes given variants of the same image.
-import imageAsset from "docc-render/mixins/imageAsset";
-import AppStore from "docc-render/stores/AppStore";
-import ColorScheme from "docc-render/constants/ColorScheme";
-import noImage from "theme/assets/img/no-image@2x.png";
-import { normalizeAssetUrl } from "docc-render/utils/assets";
+import imageAsset from 'docc-render/mixins/imageAsset';
+import AppStore from 'docc-render/stores/AppStore';
+import ColorScheme from 'docc-render/constants/ColorScheme';
+import noImage from 'theme/assets/img/no-image@2x.png';
+import { normalizeAssetUrl } from 'docc-render/utils/assets';
 
 const RADIX_DECIMAL = 10;
 
@@ -71,11 +71,10 @@ function getIntrinsicDimensions(src) {
     const img = new Image();
     img.src = src;
     img.onerror = reject;
-    img.onload = () =>
-      resolve({
-        width: img.width,
-        height: img.height,
-      });
+    img.onload = () => resolve({
+      width: img.width,
+      height: img.height,
+    });
   });
 }
 
@@ -83,9 +82,7 @@ function constructAttributes(sources) {
   if (!sources.length) {
     return null;
   }
-  const srcSet = sources
-    .map((s) => `${normalizeAssetUrl(s.src)} ${s.density}`)
-    .join(", ");
+  const srcSet = sources.map(s => `${normalizeAssetUrl(s.src)} ${s.density}`).join(', ');
   const defaultSource = sources[0];
 
   const attrs = {
@@ -99,14 +96,14 @@ function constructAttributes(sources) {
 
   if (width) {
     attrs.width = width;
-    attrs.height = "auto";
+    attrs.height = 'auto';
   }
 
   return attrs;
 }
 
 export default {
-  name: "ImageAsset",
+  name: 'ImageAsset',
   mixins: [imageAsset],
   data: () => ({
     appState: AppStore.state,
@@ -114,24 +111,24 @@ export default {
     optimalWidth: null,
   }),
   computed: {
-    allVariants: ({ lightVariants = [], darkVariants = [] }) =>
-      lightVariants.concat(darkVariants),
-    defaultAttributes: ({ lightVariantAttributes, darkVariantAttributes }) =>
-      lightVariantAttributes || darkVariantAttributes,
-    darkVariantAttributes: ({ darkVariants }) =>
-      constructAttributes(darkVariants),
-    lightVariantAttributes: ({ lightVariants }) =>
-      constructAttributes(lightVariants),
+    allVariants: ({
+      lightVariants = [],
+      darkVariants = [],
+    }) => lightVariants.concat(darkVariants),
+    defaultAttributes: ({
+      lightVariantAttributes,
+      darkVariantAttributes,
+    }) => lightVariantAttributes || darkVariantAttributes,
+    darkVariantAttributes: ({ darkVariants }) => constructAttributes(darkVariants),
+    lightVariantAttributes: ({ lightVariants }) => constructAttributes(lightVariants),
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
-    prefersAuto: ({ preferredColorScheme }) =>
-      preferredColorScheme === ColorScheme.auto.value,
-    prefersDark: ({ preferredColorScheme }) =>
-      preferredColorScheme === ColorScheme.dark.value,
+    prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto.value,
+    prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark.value,
   },
   props: {
     alt: {
       type: String,
-      default: "",
+      default: '',
     },
     variants: {
       type: Array,
@@ -139,7 +136,7 @@ export default {
     },
     loading: {
       type: String,
-      default: "lazy",
+      default: 'lazy'
     },
   },
   methods: {
@@ -166,13 +163,8 @@ export default {
 
       // Find the intended density ratio for the image currently being
       // displayed, which might differ from the density of the actual display
-      const { density } = allVariants.find(({ src }) =>
-        currentSrc.endsWith(src)
-      );
-      const currentVariantDensity = parseInt(
-        density.match(/\d+/)[0],
-        RADIX_DECIMAL
-      );
+      const { density } = allVariants.find(({ src }) => currentSrc.endsWith(src));
+      const currentVariantDensity = parseInt(density.match(/\d+/)[0], RADIX_DECIMAL);
 
       // Find the intrinsic dimensions of the image currently being displayed.
       // For a 2x image, the actual image size would be twice as large as how
@@ -206,12 +198,12 @@ export default {
       try {
         this.optimalWidth = await this.calculateOptimalWidth();
       } catch {
-        console.error("Unable to calculate optimal image width");
+        console.error('Unable to calculate optimal image width');
       }
     },
   },
   mounted() {
-    this.$refs.img.addEventListener("load", this.optimizeImageSize);
+    this.$refs.img.addEventListener('load', this.optimizeImageSize);
   },
 };
 </script>
