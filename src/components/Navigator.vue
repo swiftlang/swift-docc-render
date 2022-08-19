@@ -41,6 +41,8 @@
 </template>
 
 <script>
+
+import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
 import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
@@ -48,7 +50,6 @@ import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { getSetting } from 'docc-render/utils/theme-settings';
-
 /**
  * @typedef NavigatorFlatItem
  * @property {number} uid - generated UID
@@ -80,10 +81,9 @@ export default {
   data() {
     return {
       INDEX_ROOT_KEY,
-      store: this.quickNavigationStore,
+      store: QuickNavigationStore,
     };
   },
-  inject: ['quickNavigationStore'],
   props: {
     parentTopicIdentifiers: {
       type: Array,

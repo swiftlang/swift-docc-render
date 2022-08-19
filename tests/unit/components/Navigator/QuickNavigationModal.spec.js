@@ -51,7 +51,6 @@ describe('QuickNavigationModal', () => {
     {
       title: 'fobaro',
       path: '/foo/bar/foobar/fobaro',
-      relativePath: 'foobar',
       type: 'method',
     },
     {
@@ -214,17 +213,6 @@ describe('QuickNavigationModal', () => {
       + matchTitlesWrapper.at(1).find(QuickNavigationHighlighter).props().text
       + matchTitlesWrapper.at(1).find('span').text(),
     ).toBe(filteredSymbols[1].title);
-  });
-
-  it('it renders a symbol match with the symbol relative path if applies', () => {
-    wrapper.setData({
-      debouncedInput: inputValue,
-    });
-    const symbolMatchWrapper = wrapper.findAll('.symbol-info');
-    expect(symbolMatchWrapper.length).toBe(filteredSymbols.length);
-    expect(symbolMatchWrapper.at(0).find('.symbol-path').exists()).toBe(false);
-    expect(symbolMatchWrapper.at(1).find('.symbol-path').exists()).toBe(true);
-    expect(symbolMatchWrapper.at(1).text()).toBe(filteredSymbols[1].relativePath);
   });
 
   it('it redirects to the symbol path on symbol-match selection', async () => {

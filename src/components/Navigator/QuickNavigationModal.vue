@@ -11,106 +11,118 @@
 <template>
   <div
     class="quick-navigation"
-    @keydown.down.exact.capture.prevent="focusNext"
-    @keydown.esc.prevent="closeQuickNavigationModal"
-    @keydown.up.exact.capture.prevent="focusPrev"
+    @keydown.down.exact.prevent="focusNext"
+    @keydown.esc.exact.prevent="closeQuickNavigationModal"
+    @keydown.up.exact.prevent="focusPrev"
     @keydown.enter.exact="handleKeyEnter"
   >
     <div
       class="quick-navigation__modal-shadow"
-      @click="closeQuickNavigationModal()"
+      @click.self="closeQuickNavigationModal()"
     >
-    </div>
-    <div
-      class="quick-navigation__container"
-    >
-      <div class="quick-navigation__input-container">
-        <div class="quick-navigation__magnifier-icon-container">
-          <MagnifierIcon />
-        </div>
-        <input
-          aria-label="Search"
-          class="quick-navigation__filter"
-          placeholder="Quick Navigation"
-          ref="input"
-          tabindex="0"
-          type="text"
-          v-model="userInput"
-          @input="focusedIndex = 0"
-        />
-        <button
-          v-if="userInput.length"
-          aria-label="Clear input"
-          class="quick-navigation__clear-icon"
-          @click="clearUserInput()"
-        >
-          <ClearRoundedIcon />
-        </button>
-        <button
-          aria-label="Close modal"
-          class="quick-navigation__close-key"
-          @click="closeQuickNavigationModal()"
-        >
-          <span>
-            ESC
-          </span>
-        </button>
-      </div>
       <div
-        class="quick-navigation__match-list"
-        :class="{ 'active' : debouncedInput.length }"
+        class="quick-navigation__container"
       >
-        <div
-          v-if="debouncedInput.length && !filteredSymbols.length"
-          class="no-results"
-        >
-          <p>
-            No results found.
-         </p>
+        <div class="quick-navigation__input-container">
+          <div
+            class="quick-navigation__magnifier-icon-container"
+          >
+            <MagnifierIcon />
+          </div>
+          <input
+            aria-label="Search"
+            class="quick-navigation__filter"
+            placeholder="Quick Navigation"
+            ref="input"
+            tabindex="0"
+            type="text"
+            v-model="userInput"
+            @input="focusedIndex = 0"
+          />
+          <button
+            v-if="userInput.length"
+            aria-label="Clear input"
+            class="quick-navigation__clear-icon"
+            @click="clearUserInput()"
+          >
+            <ClearRoundedIcon />
+          </button>
+          <button
+            aria-label="Close modal"
+            class="quick-navigation__close-key"
+            @click="closeQuickNavigationModal()"
+          >
+            <span>
+              ESC
+            </span>
+          </button>
         </div>
         <div
-          v-for="(symbol, index) in filteredSymbols"
-          :class="{ 'selected' : index == focusedIndex }"
-          :key="index"
-          @click="closeQuickNavigationModal()"
+          class="quick-navigation__match-list"
+          :class="{ 'active' : debouncedInput.length }"
         >
-          <Reference
-            :url="symbol.path"
-            :id="index"
-            class="quick-navigation__reference"
+          <div
+            v-if="noneResultsWhereFound"
+            class="no-results"
           >
-            <div
-              class="quick-navigation__symbol-match"
-              ref="match"
-              role="list"
-              tabindex="0"
-              @focus.capture="focusIndex(index)"
+            <p>
+              No results found.
+          </p>
+          </div>
+          <div
+            v-for="(symbol, index) in filteredSymbols"
+            :class="{ 'selected' : index == focusedIndex }"
+            :key="index"
+            @click="closeQuickNavigationModal()"
+          >
+            <Reference
+              :url="symbol.path"
+              :id="index"
+              class="quick-navigation__reference"
             >
-              <div class="symbol-info">
-                <div class="symbol-name">
-                  <NavigatorLeafIcon
-                    class="navigator-icon"
-                    :type="symbol.type"
-                  />
-                  <div class="symbol-title">
-                    <span v-text="symbol.title.slice(0, symbol.start)"></span>
-                    <QuickNavigationHighlighter
-                      :text="symbol.substring"
-                      :matcherText="debouncedInput"
+              <div
+                class="quick-navigation__symbol-match"
+                ref="match"
+                role="list"
+                tabindex="0"
+                @focus.capture="focusIndex(index)"
+              >
+                <div class="symbol-info">
+                  <div class="symbol-name">
+                    <NavigatorLeafIcon
+                      class="navigator-icon"
+                      :type="symbol.type"
                     />
-                    <span v-text="symbol.title.slice(symbol.start + symbol.matchLength)">
-                    </span>
+                    <div class="symbol-title">
+                      <span v-text="symbol.title.slice(0, symbol.start)"></span>
+                      <QuickNavigationHighlighter
+                        :text="symbol.substring"
+                        :matcherText="debouncedInput"
+                      />
+                      <span v-text="symbol.title.slice(symbol.start + symbol.matchLength)">
+                      </span>
+                    </div>
+                  </div>
+                  <div class="symbol-path">
+                    <div
+                      v-for="(parent, index) in symbol.parents"
+                      :key="index"
+                    >
+                      <span
+                        v-text="parent.title"
+                        class="parent-path"
+                      />
+                      <span
+                        v-if="index !== symbol.parents.length - 1"
+                        class="parent-path"
+                        v-text="`/`"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div
-                  v-if="symbol.relativePath"
-                  class="symbol-path"
-                >
-                  {{ symbol.relativePath }}
-                </div>
               </div>
-            </div>
-          </Reference>
+            </Reference>
+          </div>
         </div>
       </div>
     </div>
@@ -125,6 +137,7 @@ import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
+import symbolTreeNavigator from 'docc-render/mixins/symbolTreeNavigator';
 
 export default {
   name: 'QuickNavigationModal',
@@ -137,12 +150,14 @@ export default {
   },
   mixins: [
     keyboardNavigation,
+    symbolTreeNavigator,
   ],
   data() {
     return {
       debouncedInput: '',
       userInput: '',
       quickNavigationStore: this.quickNavigationStore,
+      flattenIndex: this.quickNavigationStore.state.flattenIndex,
     };
   },
   computed: {
@@ -166,7 +181,9 @@ export default {
       // Return the first 20 symbols out of sorted ones
       return orderSymbolsByPriority(matches).slice(0, 20);
     },
-    flattenIndex: ({ quickNavigationStore }) => quickNavigationStore.state.flattenIndex,
+    noneResultsWhereFound: ({ debouncedInput, filteredSymbols }) => (
+      debouncedInput.length && !filteredSymbols.length
+    ),
     totalItemsToNavigate: ({ filteredSymbols }) => filteredSymbols.length,
   },
   watch: {
@@ -175,6 +192,10 @@ export default {
   },
   inject: ['quickNavigationStore'],
   methods: {
+    handleInputSelect(event) {
+      if (event.key !== 'a' || !event.metaKey) return;
+      this.$refs.input.select();
+    },
     clearUserInput() {
       this.debouncedInput = '';
       this.userInput = '';
@@ -194,14 +215,15 @@ export default {
       ), '');
     },
     debounceInput: debounce(function debounceInput(value) {
-      this.debouncedInput = value;
+      // Remove space-character
+      this.debouncedInput = value.replace(/\s/g, '');
     }, 250),
     endingPointHook() {
       // Reset selected symbol to the first one of the list
       this.focusedIndex = 0;
     },
-    fuzzyMatch: ({ debouncedInput, symbols, processedInputRegex }) => (
-      symbols.map((symbol) => {
+    fuzzyMatch({ debouncedInput, symbols, processedInputRegex }) {
+      return symbols.map((symbol) => {
         const match = processedInputRegex.exec(symbol.title);
         // Dismiss if symbol isn't matched
         if (!match) return false;
@@ -210,11 +232,10 @@ export default {
         const inputLength = debouncedInput.length;
         // Dismiss if match length is greater than 3x the input's length
         if (matchLength > inputLength * 3) return false;
-
         return ({
           title: symbol.title,
           path: symbol.path,
-          relativePath: symbol.path.split('/').slice(3, -1).join('/'),
+          parents: this.getParents(symbol.parent),
           type: symbol.type,
           inputLengthDifference: symbol.title.length - inputLength,
           matchLength,
@@ -222,8 +243,8 @@ export default {
           start: match.index,
           substring: match[0],
         });
-      }).filter(Boolean)
-    ),
+      }).filter(Boolean);
+    },
     handleKeyEnter() {
       if (!this.filteredSymbols.length) return;
       this.$router.push(this.filteredSymbols[this.focusedIndex].path);
@@ -252,6 +273,12 @@ export default {
     startingPointHook() {
       this.focusedIndex = this.filteredSymbols.length - 1;
     },
+  },
+  mounted() {
+    window.addEventListener('keydown', this.handleInputSelect);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleInputSelect);
   },
 };
 </script>
@@ -291,12 +318,8 @@ $filter-padding: rem(20px);
     border: solid $base-border-width var(--color-fill-gray);
     border-radius: $border-radius;
     filter: drop-shadow(0px 7px 50px rgba(0, 0, 0, 0.25));
-    left: 0;
     margin: auto;
-    position: fixed;
-    right: 0;
-    top: $modal-margin-top;
-    width: rem(680px);
+    max-width: rem(800px);
   }
   &__filter {
     background: var(--color-fill);
@@ -304,8 +327,8 @@ $filter-padding: rem(20px);
     border-radius: $border-radius;
     box-sizing: border-box;
     outline-width: 0;
-    padding-left: $filter-padding;
-    padding-right: $filter-padding;
+    padding-left: rem(10px);
+    padding-right: rem(10px);
     width: 100%;
   }
   &__input-container {
@@ -323,7 +346,7 @@ $filter-padding: rem(20px);
   }
   &__match-list {
     overflow: scroll;
-    max-height: rem(400px);
+    max-height: rem(450px);
     &.active {
       border-top: 1px solid var(--color-fill-gray);
     }
@@ -342,6 +365,8 @@ $filter-padding: rem(20px);
     left: 0;
     right: 0;
     top: 0;
+    padding: min(rem(10px));
+    padding-top: $modal-margin-top;
   }
   &__reference {
     text-decoration: none;
@@ -349,7 +374,7 @@ $filter-padding: rem(20px);
   &__symbol-match {
     display: flex;
     height: rem(40px);
-    padding: rem(12px) $filter-padding rem(12px) $filter-padding;
+    padding: rem(10px) $filter-padding rem(10px) $filter-padding;
     color: var(--color-figure-gray);
     &:hover {
       background-color: var(--color-navigator-item-hover);
@@ -374,7 +399,11 @@ $filter-padding: rem(20px);
       .symbol-path {
         @include font-styles(body-reduced-tight);
         color: var(--color-figure-gray-secondary);
+        display: flex;
         margin-left: rem(27px);
+        .parent-path {
+          padding-right: rem(5px);
+        }
       }
     }
   }
