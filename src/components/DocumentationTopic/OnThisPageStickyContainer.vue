@@ -26,7 +26,6 @@ export default {
   top: $nav-height;
   align-self: flex-start;
   flex: 0 0 auto;
-  box-sizing: border-box;
   width: $sticky-aside-width;
   margin-left: -$sticky-aside-width;
   padding-right: $nav-padding;
