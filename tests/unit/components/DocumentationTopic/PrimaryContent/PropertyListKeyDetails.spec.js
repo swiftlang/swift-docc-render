@@ -47,6 +47,7 @@ describe('PropertyKeyListDetails', () => {
     expect(section.props()).toEqual({
       anchor: 'details',
       title: 'Details',
+      level: 2,
     });
   });
 

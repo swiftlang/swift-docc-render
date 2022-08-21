@@ -6,11 +6,11 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import Vue from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import OnThisPageTracker from '@/components/OnThisPageTracker.vue';
+import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
@@ -62,7 +62,7 @@ const $route = {
 };
 
 const createWrapper = () => {
-  wrapper = shallowMount(OnThisPageTracker, {
+  wrapper = shallowMount(OnThisPageNav, {
     provide: {
       store,
     },
@@ -79,13 +79,13 @@ const scrollWindowBy = async (px) => {
   window.dispatchEvent(createEvent('scroll'));
   await flushPromises();
 };
-describe('OnThisPageTracker', () => {
+describe('OnThisPageNav', () => {
   beforeEach(() => {
     if (wrapper) wrapper.destroy();
     jest.clearAllMocks();
     window.scrollY = 0;
   });
-  it('renders the OnThisPageTracker, as nested items', () => {
+  it('renders the OnThisPageNav, as nested items', () => {
     createWrapper();
     const parents = wrapper.findAll('.parent-item');
     // assert parents

@@ -78,6 +78,7 @@ describe('Declaration', () => {
     expect(section.props()).toEqual({
       anchor: 'declaration',
       title: 'Declaration',
+      level: 2,
     });
   });
 

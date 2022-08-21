@@ -8,7 +8,7 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="OnThisPageTracker">
+  <div class="OnThisPageNav">
     <slot
       :active="currentPageSection"
       :sections="onThisPageSections"
@@ -60,7 +60,7 @@ import ScrollToElement from 'docc-render/mixins/scrollToElement';
 import { buildUrl } from 'docc-render/utils/url-helper';
 
 export default {
-  name: 'OnThisPageTracker',
+  name: 'OnThisPageNav',
   mixins: [ScrollToElement],
   inject: {
     store: {

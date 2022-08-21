@@ -55,6 +55,7 @@ describe('Parameters', () => {
     expect(section.props()).toEqual({
       anchor: 'parameters',
       title: 'Parameters',
+      level: 2,
     });
   });
 

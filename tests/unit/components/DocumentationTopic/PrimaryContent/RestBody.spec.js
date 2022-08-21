@@ -72,6 +72,7 @@ describe('RestBody', () => {
     expect(section.props()).toEqual({
       anchor: 'http-body',
       title: propsData.title,
+      level: 2,
     });
   });
 

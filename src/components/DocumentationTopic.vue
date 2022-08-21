@@ -92,7 +92,7 @@
           />
         </div>
         <OnThisPageStickyContainer>
-          <OnThisPageTracker />
+          <OnThisPageNav />
         </OnThisPageStickyContainer>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
@@ -112,7 +112,7 @@ import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import OnThisPageTracker from '@/components/OnThisPageTracker.vue';
+import OnThisPageNav from 'docc-render/components/OnThisPageNav.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -146,7 +146,7 @@ export default {
   },
   components: {
     OnThisPageStickyContainer,
-    OnThisPageTracker,
+    OnThisPageNav,
     DocumentationHero,
     Abstract,
     Aside,

@@ -34,6 +34,7 @@ describe('ContentTable', () => {
     expect(section.props()).toEqual({
       anchor: propsData.anchor,
       title: propsData.title,
+      level: 2,
     });
     expect(wrapper.is('.contenttable')).toBe(true);
   });
