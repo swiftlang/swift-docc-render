@@ -136,7 +136,7 @@ export default {
     },
     loading: {
       type: String,
-      default: 'lazy'
+      default: 'lazy',
     },
   },
   methods: {
