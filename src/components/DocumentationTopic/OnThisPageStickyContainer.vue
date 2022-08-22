@@ -29,14 +29,14 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .OnThisPageStickyContainer {
-  $sticky-aside-width: 170px;
+  $sticky-aside-width: rem(170px);
   margin-top: $contenttable-spacing-single-side;
   position: sticky;
   top: $nav-height;
   align-self: flex-start;
   flex: 0 0 auto;
   width: $sticky-aside-width;
-  margin-left: -$sticky-aside-width;
+  margin-left: -($sticky-aside-width + $nav-padding);
   padding-right: $nav-padding;
 
   @include breakpoint(small) {
