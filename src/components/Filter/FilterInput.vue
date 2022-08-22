@@ -98,20 +98,6 @@
             <ClearRoundedIcon />
           </button>
         </div>
-        <button
-          v-if="enableQuickNavigation"
-          class="filter__quick-navigation-container"
-          @click.stop="openQuickNavigationModal"
-        >
-          <kbd class="filter__quick-navigation-icon">
-            <abbr
-              class="filter__open-modal-key"
-              title="Forward slash"
-            >
-              /
-            </abbr>
-          </kbd>
-        </button>
       </div>
       <TagList
         v-if="displaySuggestedTags"
@@ -137,7 +123,6 @@ import { pluralize } from 'docc-render/utils/strings';
 import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import TagList from './TagList.vue';
 
 // Max number of tags to show
@@ -224,7 +209,6 @@ export default {
       showSuggestedTags: false,
     };
   },
-  inject: ['quickNavigationStore'],
   computed: {
     tagsText: ({ suggestedTags }) => pluralize({
       en: {
@@ -291,9 +275,6 @@ export default {
         focus: focusTagHandler,
         'paste-tags': handlePaste,
       }
-    ),
-    enableQuickNavigation: () => (
-      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
     ),
   },
   watch: {
@@ -414,20 +395,7 @@ export default {
         this.$emit('focus-prev');
       }
     },
-    openQuickNavigationModal() {
-      this.quickNavigationStore.toggleShowQuickNavigationModal(true);
-    },
-    onKeydown(event) {
-      if (
-        event.key === '/'
-        || (event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))
-      ) {
-        this.openQuickNavigationModal();
-        event.preventDefault();
-      }
-    },
-    handleFocus(event) {
-      if (event.target.className === 'filter__quick-navigation-container') return;
+    handleFocus() {
       this.showSuggestedTags = true;
     },
   },
@@ -438,16 +406,6 @@ export default {
       && this.inputIsNotEmpty
     ) {
       this.focusInput();
-    }
-  },
-  mounted() {
-    if (this.enableQuickNavigation) {
-      window.addEventListener('keydown', this.onKeydown);
-    }
-  },
-  beforeDestroy() {
-    if (this.enableQuickNavigation) {
-      document.removeEventListener('keydown', this.onKeydown);
     }
   },
 };
@@ -475,26 +433,6 @@ $input-height: rem(28px);
   border-radius: $small-border-radius + 1;
   @include on-keyboard-focus() {
     outline: none;
-  }
-  &__quick-navigation-container {
-    padding: 0 10px 0 0;
-    @include breakpoint(medium, nav) {
-      display: none;
-    }
-    .filter__quick-navigation-icon {
-      height: $quick-navigation-icon;
-      width: $quick-navigation-icon;
-      color: var(--input-text);
-      border: solid 1px;
-      border-radius: $border-radius;
-      border-color: var(--color-grid);
-      display: flex;
-      .filter__open-modal-key {
-        @include font-styles(body-reduced-tight);
-        text-decoration: none;
-        margin: auto;
-      }
-    }
   }
 
   &__top-wrapper {

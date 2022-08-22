@@ -32,7 +32,7 @@
           <input
             aria-label="Search"
             class="quick-navigation__filter"
-            placeholder="Quick Navigation"
+            placeholder="Search symbols"
             ref="input"
             tabindex="0"
             type="text"
@@ -289,7 +289,7 @@ export default {
 $clear-icon-size: rem(23px);
 $modal-margin-top: 10rem;
 $base-border-width: 1px;
-$filter-padding: rem(20px);
+$filter-padding: rem(15px);
 
 .quick-navigation {
   input[type="text"] {

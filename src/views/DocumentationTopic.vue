@@ -68,7 +68,15 @@
             :isWideFormat="enableNavigator"
             :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
             @toggle-sidenav="handleToggleSidenav"
-          />
+          >
+            <template v-slot:nav-menu-items>
+              <div
+                v-if="enableQuickNavigation"
+              >
+                <QuickNavigationBar />
+              </div>
+            </template>
+          </Nav>
           <Topic
             v-bind="topicProps"
             :key="topicKey"
@@ -107,9 +115,11 @@ import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
+import QuickNavigationBar from 'docc-render/components/QuickNavigationBar.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -126,6 +136,7 @@ export default {
     Topic: DocumentationTopic,
     CodeTheme,
     Nav: DocumentationNav,
+    QuickNavigationBar,
     QuickNavigationModal,
     GenericModal,
     PortalTarget,
@@ -155,6 +166,9 @@ export default {
       const objcVariant = variantOverrides.find(hasObjcTrait);
       return objcVariant ? objcVariant.patch : null;
     },
+    enableQuickNavigation: () => (
+      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
     topicData: {
       get() {
         return this.topicDataObjc ? this.topicDataObjc : this.topicDataDefault;
