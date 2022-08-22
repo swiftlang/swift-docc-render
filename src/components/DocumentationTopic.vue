@@ -112,7 +112,7 @@ import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import OnThisPageNav from 'docc-render/components/OnThisPageNav.vue';
+import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
