@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
@@ -535,7 +535,23 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
+      enableOnThisPageNav: true,
     });
+  });
+
+  it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
+    wrapper.destroy();
+    wrapper = shallowMount(DocumentationTopic, {
+      mocks,
+      provide: { isTargetIDE: true },
+      stubs: {
+        // renders sidebar on a small device
+        AdjustableSidebarWidth: AdjustableSidebarWidthSmallStub,
+        NavigatorDataProvider,
+      },
+    });
+    wrapper.setData({ topicData });
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
   });
 
   it('provides an empty languagePaths, even if no variants', () => {

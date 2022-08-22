@@ -91,7 +91,7 @@
             :sections="seeAlsoSections"
           />
         </div>
-        <OnThisPageStickyContainer>
+        <OnThisPageStickyContainer v-if="enableOnThisPageNav">
           <OnThisPageNav />
         </OnThisPageStickyContainer>
       </div>
@@ -280,6 +280,10 @@ export default {
     remoteSource: {
       type: Object,
       required: false,
+    },
+    enableOnThisPageNav: {
+      type: Boolean,
+      default: false,
     },
   },
   provide() {

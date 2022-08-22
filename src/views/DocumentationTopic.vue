@@ -70,6 +70,7 @@
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
             :languagePaths="languagePaths"
+            :enableOnThisPageNav="enableOnThisPageNav"
           />
         </component>
       </template>
@@ -289,6 +290,7 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
+    enableOnThisPageNav: ({ isTargetIDE }) => !isTargetIDE,
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
         ? {
