@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import { shallowMount } from '@vue/test-utils';
 import Card from 'docc-render/components/Card.vue';
@@ -23,11 +23,6 @@ describe('Card', () => {
   const image = {
     identifier: 'identifier',
   };
-
-  const abstract = [{
-    type: 'text',
-    text: 'Abstract',
-  }];
 
   const references = {
     [image.identifier]: {
