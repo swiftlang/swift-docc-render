@@ -104,6 +104,9 @@ const topicData = {
       paths: ['documentation/swift'],
     },
   ],
+  remoteSource: {
+    url: 'foo.com',
+  },
   schemaVersion: {
     major: 0,
     minor: 2,
