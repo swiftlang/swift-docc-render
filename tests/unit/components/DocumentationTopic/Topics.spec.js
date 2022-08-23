@@ -10,12 +10,19 @@
 
 import { shallowMount } from '@vue/test-utils';
 import Topics from 'docc-render/components/DocumentationTopic/Topics.vue';
+import { TopicStyles } from '@/constants/TopicStyles';
+import TopicsGrid from '@/components/DocumentationTopic/TopicsGrid.vue';
 
 const { TopicsTable } = Topics.components;
 
 describe('Topics', () => {
   it('renders a `TopicsTable` with appropriate anchor/title', () => {
-    const wrapper = shallowMount(Topics, { propsData: { sections: [] } });
+    const wrapper = shallowMount(Topics, {
+      propsData: {
+        sections: [],
+        topicStyle: TopicStyles.list,
+      },
+    });
 
     const table = wrapper.find(TopicsTable);
     expect(table.exists()).toBe(true);
@@ -31,5 +38,21 @@ describe('Topics', () => {
     expect(table.props('isSymbolDeprecated')).toBe(true);
     table.setProps({ isSymbolBeta: true });
     expect(table.props('isSymbolBeta')).toBe(true);
+  });
+
+  it('renders a `TopicsGrid`, if the `topicStyle` is not `list`', () => {
+    const wrapper = shallowMount(Topics, {
+      propsData: {
+        sections: [],
+        topicStyle: TopicStyles.detailedGrid,
+      },
+    });
+    expect(wrapper.find(TopicsTable).exists()).toBe(false);
+    const grid = wrapper.find(TopicsGrid);
+    expect(grid.exists()).toBe(true);
+    expect(grid.props()).toEqual({
+      sections: [],
+      topicStyle: TopicStyles.detailedGrid,
+    });
   });
 });

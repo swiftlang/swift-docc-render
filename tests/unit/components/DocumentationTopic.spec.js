@@ -13,6 +13,7 @@ import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import { TopicStyles } from '@/constants/TopicStyles';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import OnThisPageStickyContainer from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 
@@ -462,7 +463,7 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders `Topics` if there are topic sections', () => {
+  it('renders `Topics` if there are topic sections, passing the `topicSectionStyles` over', () => {
     expect(wrapper.contains(Topics)).toBe(false);
 
     const topicSections = [
@@ -478,11 +479,23 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ topicSections });
+    wrapper.setProps({ topicSections, topicSectionsStyle: TopicStyles.detailedGrid });
 
     const topics = wrapper.find(Topics);
     expect(topics.exists()).toBe(true);
     expect(topics.props('sections')).toBe(topicSections);
+    expect(topics.props('topicStyle')).toBe(TopicStyles.detailedGrid);
+  });
+
+  it('does not render the `Topics` if the `topicSectionsStyle` is `hidden`', () => {
+    const topicSections = [
+      {
+        title: 'Baz',
+        identifiers: ['baz'],
+      },
+    ];
+    wrapper.setProps({ topicSections, topicSectionsStyle: 'hidden' });
+    expect(wrapper.find(Topics).exists()).toBe(false);
   });
 
   it('renders `SeeAlso` if there are see also sections', () => {

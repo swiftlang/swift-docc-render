@@ -10,24 +10,39 @@
 
 <template>
   <TopicsTable
+    v-if="shouldRenderList"
     anchor="topics"
     title="Topics"
     :isSymbolDeprecated="isSymbolDeprecated"
     :isSymbolBeta="isSymbolBeta"
     :sections="sections"
   />
+  <TopicsGrid
+    v-else
+    :sections="sections"
+    :topicStyle="topicStyle"
+  />
 </template>
 
 <script>
+import { TopicStyles } from 'docc-render/constants/TopicStyles';
+import TopicsGrid from './TopicsGrid.vue';
 import TopicsTable from './TopicsTable.vue';
 
 export default {
   name: 'Topics',
-  components: { TopicsTable },
+  components: { TopicsGrid, TopicsTable },
   props: {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,
     sections: TopicsTable.props.sections,
+    topicStyle: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    shouldRenderList: ({ topicStyle }) => topicStyle === TopicStyles.list,
   },
 };
 </script>
