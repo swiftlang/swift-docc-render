@@ -54,7 +54,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe(alt);
-    expect(image.attributes('decoding').toBe('async'));
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has one variant with no appearance trait', () => {
