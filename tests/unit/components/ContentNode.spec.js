@@ -804,6 +804,7 @@ describe('ContentNode', () => {
       });
       const table = wrapper.find('.content').find(Table);
       expect(table.exists()).toBe(true);
+      expect(table.props('spanned')).toBe(false);
       expect(table.contains('thead')).toBe(false);
       expect(table.findAll('tbody tr').length).toBe(2);
       expect(table.findAll('tbody tr td').length).toBe(4);
@@ -922,7 +923,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.find('.content').find(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          <table-stub spanned="true">
             <tbody>
               <tr>
                 <td colspan="2">row0col0</td>
@@ -951,7 +952,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.find('.content').find(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          <table-stub spanned="true">
             <thead>
               <tr>
                 <th scope="col" colspan="2">row0col0</th>
@@ -982,7 +983,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.find('.content').find(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          <table-stub spanned="true">
             <thead>
               <tr>
                 <th scope="col" colspan="2">row0col0</th>
@@ -1013,7 +1014,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.find('.content').find(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          <table-stub spanned="true">
             <tbody>
               <tr>
                 <th scope="row" colspan="2">row0col0</th>

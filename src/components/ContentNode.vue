@@ -271,7 +271,11 @@ function renderNode(createElement, references) {
         return renderFigure(node);
       }
 
-      return createElement(Table, {}, (
+      return createElement(Table, {
+        props: {
+          spanned: !!node.extendedData,
+        },
+      }, (
         renderTableChildren(node.rows, node.header, node.extendedData)
       ));
     case BlockType.termList:
