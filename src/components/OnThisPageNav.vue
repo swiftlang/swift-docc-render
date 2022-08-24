@@ -12,40 +12,23 @@
     <slot
       :active="currentPageSection"
       :sections="onThisPageSections"
-      :nestedSections="nestedSections"
       :checkIsActive="checkIsActive"
       :scrollTo="scrollTo"
+      :getItemClasses="getItemClasses"
     >
-      <ul class="parent-items">
+      <ul class="items">
         <li
-          v-for="item in nestedSections"
+          v-for="item in onThisPageSections"
           :key="item.anchor"
-          class="parent-item"
-          :class="{ active: checkIsActive(item) }"
+          :class="getItemClasses(item)"
         >
           <router-link
             :to="item.url"
-            class="base-link parent-link"
+            class="base-link"
             @click.native="scrollTo(item)"
           >
             {{ item.title }}
           </router-link>
-          <ul v-if="item.children && item.children.length" class="children">
-            <li
-              v-for="child in item.children"
-              :key="child.anchor"
-              :class="{ active: checkIsActive(child) }"
-              class="child-item"
-            >
-              <router-link
-                :to="child.url"
-                class="base-link child-link"
-                @click.native="scrollTo(child)"
-              >
-                {{ child.title }}
-              </router-link>
-            </li>
-          </ul>
         </li>
       </ul>
     </slot>
@@ -55,7 +38,6 @@
 <script>
 import throttle from 'docc-render/utils/throttle';
 import { waitFrames } from 'docc-render/utils/loading';
-import { last } from 'docc-render/utils/arrays';
 import ScrollToElement from 'docc-render/mixins/scrollToElement';
 import { buildUrl } from 'docc-render/utils/url-helper';
 
@@ -77,22 +59,6 @@ export default {
       url: buildUrl(`#${item.anchor}`, $route.query),
     })),
     currentPageSection: ({ store }) => store.state.currentPageSection || {},
-    /**
-     * Nests the flat list of sections by the level.
-     * @returns {Array}
-     */
-    nestedSections: ({ onThisPageSections }) => onThisPageSections.reduce((all, current) => {
-      if (current.level === 2) {
-        return all.concat({ ...current, children: [] });
-      }
-      const lastItem = last(all);
-      // in the odd chance there is no H2 before the H3, we just push the H3 as a top level items
-      if (!lastItem || lastItem.level !== 2) {
-        return all.concat(current);
-      }
-      lastItem.children.push(current);
-      return all;
-    }, []),
   },
   async mounted() {
     window.addEventListener('scroll', this.onScroll, false);
@@ -142,13 +108,10 @@ export default {
     /**
      * Returns whether the current item or some of its children is active.
      * @param item
-     * @param deep
      * @returns {boolean}
      */
-    checkIsActive(item, deep = false) {
-      const activeItem = this.currentPageSection;
-      return item.anchor === activeItem.anchor
-        || (deep && (item.children || []).some(c => c.anchor === activeItem.anchor));
+    checkIsActive(item) {
+      return item.anchor === this.currentPageSection.anchor;
     },
     async scrollTo({ anchor }) {
       const element = document.getElementById(anchor);
@@ -157,6 +120,13 @@ export default {
       element.focus();
       // but we need to compensate for the navigation height
       await this.scrollToElement(`#${anchor}`);
+    },
+    getItemClasses(item) {
+      return {
+        active: this.checkIsActive(item),
+        'parent-item': item.level === 2,
+        'child-item': item.level === 3,
+      };
     },
   },
 };
@@ -170,7 +140,7 @@ ul {
   margin: 0;
 }
 
-.parent-item > .base-link {
+.parent-item .base-link {
   font-weight: bold;
 }
 
@@ -181,10 +151,8 @@ ul {
   margin-bottom: 5px;
 }
 
-.active {
-  & > .base-link {
-    font-weight: bold;
-    color: var(--color-figure-gray);
-  }
+.active .base-link {
+  font-weight: bold;
+  color: var(--color-figure-gray);
 }
 </style>

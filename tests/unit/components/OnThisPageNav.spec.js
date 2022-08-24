@@ -85,25 +85,25 @@ describe('OnThisPageNav', () => {
     jest.clearAllMocks();
     window.scrollY = 0;
   });
-  it('renders the OnThisPageNav, as nested items', () => {
+  it('renders the OnThisPageNav, as flat list of items', () => {
     createWrapper();
     const parents = wrapper.findAll('.parent-item');
     // assert parents
     expect(parents).toHaveLength(2);
     // assert first parent
     const firstParent = parents.at(0);
-    const parentLink1 = firstParent.find('.parent-link');
+    const parentLink1 = firstParent.find('.base-link');
     // assert first parent is active
     expect(firstParent.classes()).toContain('active');
     expect(parentLink1.props('to')).toEqual(`?language=objc#${sections[0].anchor}`);
     expect(parentLink1.text()).toBe(sections[0].title);
-    // assert children of first parent
-    const children = firstParent.findAll('.child-item');
+    // assert "children" items
+    const children = wrapper.findAll('.child-item');
     expect(children).toHaveLength(1);
     // assert child is not active
     expect(children.at(0).classes()).not.toContain('active');
     const childLink = children.at(0).find(RouterLinkStub);
-    expect(childLink.classes()).toEqual(['base-link', 'child-link']);
+    expect(childLink.classes()).toEqual(['base-link']);
     expect(childLink.props('to')).toEqual(`?language=objc#${sections[1].anchor}`);
     // assert second parent
     const secondParent = parents.at(1);
@@ -133,7 +133,7 @@ describe('OnThisPageNav', () => {
     createWrapper();
     await flushPromises();
     const parents = wrapper.findAll('.parent-item');
-    const child = parents.at(0).find('.child-item');
+    const child = wrapper.find('.child-item');
 
     expect(store.setCurrentPageSection).toHaveBeenCalledTimes(1);
     // intersection point would be 250(150+100), which is not reaching second item
