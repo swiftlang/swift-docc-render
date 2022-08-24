@@ -86,7 +86,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('300');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe('');
-    expect(image.attributes('decoding').toBe('async'));
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has two light variants', () => {
