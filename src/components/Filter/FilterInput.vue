@@ -14,7 +14,7 @@
     role="search"
     tabindex="0"
     :aria-labelledby="searchAriaLabelledBy"
-    :class="{ 'focus': showSuggestedTags }"
+    :class="{ 'focus': showSuggestedTags && !preventFocusStyle }"
     @blur.capture="handleBlur"
     @focus.capture="handleFocus"
   >
@@ -98,6 +98,8 @@
             <ClearRoundedIcon />
           </button>
         </div>
+        <slot name="input-menu-items">
+        </slot>
       </div>
       <TagList
         v-if="displaySuggestedTags"
@@ -158,6 +160,10 @@ export default {
     FilterIcon,
   },
   props: {
+    preventFocusStyle: {
+      type: Boolean,
+      default: () => false,
+    },
     positionReversed: {
       type: Boolean,
       default: () => false,
@@ -403,7 +409,6 @@ export default {
     if (
       this.focusInputWhenCreated
       && document.activeElement !== this.$refs.input
-      && this.inputIsNotEmpty
     ) {
       this.focusInput();
     }

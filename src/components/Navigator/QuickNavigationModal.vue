@@ -23,40 +23,35 @@
       <div
         class="quick-navigation__container"
       >
-        <div class="quick-navigation__input-container">
-          <div
-            class="quick-navigation__magnifier-icon-container"
-          >
-            <MagnifierIcon />
-          </div>
-          <input
-            aria-label="Search"
-            class="quick-navigation__filter"
-            placeholder="Search symbols"
-            ref="input"
-            tabindex="0"
-            type="text"
-            v-model="userInput"
-            @input="focusedIndex = 0"
-          />
-          <button
-            v-if="userInput.length"
-            aria-label="Clear input"
-            class="quick-navigation__clear-icon"
-            @click="clearUserInput()"
-          >
-            <ClearRoundedIcon />
-          </button>
-          <button
-            aria-label="Close modal"
-            class="quick-navigation__close-key"
-            @click="closeQuickNavigationModal()"
-          >
-            <span>
-              ESC
-            </span>
-          </button>
-        </div>
+        <FilterInput
+          v-model="userInput"
+          placeholder="Search symbols"
+          class="quick-navigation__filter"
+          :preventFocusStyle=true
+          :focusInputWhenCreated=true
+          @input="focusedIndex = 0"
+        >
+          <template slot="icon">
+            <div
+              class="quick-navigation__magnifier-icon-container"
+            >
+              <MagnifierIcon />
+            </div>
+          </template>
+          <template v-slot:input-menu-items>
+            <div class="quick-navigation__close-key-container">
+              <button
+                aria-label="Close modal"
+                class="quick-navigation__close-key"
+                @click="closeQuickNavigationModal()"
+              >
+                <span>
+                  ESC
+                </span>
+              </button>
+            </div>
+          </template>
+        </FilterInput>
         <div
           class="quick-navigation__match-list"
           :class="{ 'active' : debouncedInput.length }"
@@ -131,8 +126,8 @@
 
 <script>
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
-import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
@@ -142,7 +137,7 @@ import symbolTreeNavigator from 'docc-render/mixins/symbolTreeNavigator';
 export default {
   name: 'QuickNavigationModal',
   components: {
-    ClearRoundedIcon,
+    FilterInput,
     MagnifierIcon,
     NavigatorLeafIcon,
     QuickNavigationHighlighter,
@@ -283,7 +278,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import 'docc-render/styles/_core.scss';
 
 $clear-icon-size: rem(23px);
@@ -313,6 +308,11 @@ $filter-padding: rem(15px);
     color: var(--color-figure-gray-secondary);
     padding: rem(5px);
   }
+  &__close-key-container {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: rem(10px);
+  }
   &__container {
     background-color: var(--color-fill);
     border: solid $base-border-width var(--color-fill-gray);
@@ -320,6 +320,9 @@ $filter-padding: rem(15px);
     filter: drop-shadow(0px 7px 50px rgba(0, 0, 0, 0.25));
     margin: auto;
     max-width: rem(800px);
+    .filter__wrapper {
+      border: 0px;
+    }
   }
   &__filter {
     background: var(--color-fill);
@@ -327,8 +330,6 @@ $filter-padding: rem(15px);
     border-radius: $border-radius;
     box-sizing: border-box;
     outline-width: 0;
-    padding-left: rem(10px);
-    padding-right: rem(10px);
     width: 100%;
   }
   &__input-container {
@@ -368,9 +369,9 @@ $filter-padding: rem(15px);
     padding: min(rem(10px));
     padding-top: $modal-margin-top;
   }
-  &__reference {
-    text-decoration: none;
-  }
+  &__reference:hover {
+      text-decoration: none;
+    }
   &__symbol-match {
     display: flex;
     height: rem(40px);

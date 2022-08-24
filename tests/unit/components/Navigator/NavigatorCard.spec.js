@@ -226,6 +226,7 @@ describe('NavigatorCard', () => {
       placeholder: 'Filter',
       positionReversed: true,
       preventedBlur: false,
+      preventFocusStyle: false,
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [

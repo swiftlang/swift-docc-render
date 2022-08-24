@@ -20,7 +20,6 @@ jest.mock('docc-render/utils/theme-settings', () => ({
 
 describe('QuickNavigationModal', () => {
   let wrapper;
-  let input;
 
   const inputValue = 'foo';
   const nonResultsInputValue = 'xyz';
@@ -110,18 +109,11 @@ describe('QuickNavigationModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     wrapper = shallowMount(QuickNavigationModal, config);
-    input = wrapper.find({ ref: 'input' });
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
   });
 
   it('it renders the Quick navigation modal', () => {
-    expect(input.exists()).toBe(true);
     expect(wrapper.classes('quick-navigation')).toBe(true);
-  });
-
-  it('it adds text to the input', async () => {
-    await input.setValue(inputValue);
-    expect(input.element.value).toBe(inputValue);
   });
 
   it('it filters the symbols according to debouncedInput value', async () => {
@@ -141,45 +133,22 @@ describe('QuickNavigationModal', () => {
   });
 
   it('it renders the filter input', () => {
-    expect(input.exists()).toBe(true);
-  });
-
-  it('it does not render the clear input x icon when user input exists', () => {
-    expect(wrapper.find('.quick-navigation__clear-icon').exists()).toBe(false);
-  });
-
-  it('it renders the clear input x icon when user input exists', () => {
-    input.setValue(inputValue);
-    expect(wrapper.find('.quick-navigation__clear-icon').exists()).toBe(true);
-  });
-
-  it('it closes the modal on `modal-shadow` click', async () => {
-    const closeQuickNavigationModal = jest.spyOn(wrapper.vm, 'closeQuickNavigationModal');
-    await wrapper.find('.quick-navigation__modal-shadow').trigger('click');
-    expect(closeQuickNavigationModal).toHaveBeenCalled();
-  });
-
-  it('it clears the user input on the x icon click', async () => {
-    input.setValue(inputValue);
-    const clearUserInput = jest.spyOn(wrapper.vm, 'clearUserInput');
-    await wrapper.find('.quick-navigation__clear-icon').trigger('click');
-    expect(clearUserInput).toHaveBeenCalled();
-    expect(input.element.value).toBe('');
+    expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
   });
 
   it('it renders the match list on user input', async () => {
-    jest.useFakeTimers();
-    input.setValue(inputValue);
-    jest.advanceTimersByTime(500);
+    wrapper.setData({
+      debouncedInput: inputValue,
+    });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(filteredSymbols.length);
     expect(wrapper.find('.no-results').exists()).toBe(false);
   });
 
-  it('it renders the `no results found` string when input does not exist', () => {
-    jest.useFakeTimers();
-    input.setValue(nonResultsInputValue);
-    jest.advanceTimersByTime(500);
+  it('it renders the `no results found` string when no symbols are found given an input', () => {
+    wrapper.setData({
+      debouncedInput: nonResultsInputValue,
+    });
     const noResultsWrapper = wrapper.find('.no-results');
     expect(wrapper.vm.debouncedInput).toBe(nonResultsInputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(0);
@@ -249,21 +218,25 @@ describe('QuickNavigationModal', () => {
     ).toBe(symbolsMatchBlueprint[3].subMatchString);
   });
 
-  it('it resets `focusedIndex` when `debounced input` changes', async () => {
-    jest.useFakeTimers();
-    input.setValue(inputValue);
-    jest.advanceTimersByTime(500);
-    wrapper.vm.focusedIndex = 1;
-    input.setValue(inputValue);
-    expect(wrapper.vm.focusedIndex).toBe(0);
-  });
+  // it('it resets `focusedIndex` when `debounced input` changes', async () => {
+  //   wrapper.setData({
+  //     debouncedInput: inputValue,
+  //   });
+  //   wrapper.vm.focusedIndex = 1;
+  //   wrapper.setData({
+  //     debouncedInput: inputValue,
+  //   });
+  //   expect(wrapper.vm.focusedIndex).toBe(0);
+  // });
 
   it('it debounces user input before filtering the symbols', () => {
-    jest.useFakeTimers();
-    input.setValue(inputValue);
-    jest.advanceTimersByTime(500);
+    wrapper.setData({
+      debouncedInput: inputValue,
+    });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
-    input.setValue(nonResultsInputValue);
+    wrapper.setData({
+      userInput: nonResultsInputValue,
+    });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
   });
 
