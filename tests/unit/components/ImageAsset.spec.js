@@ -130,7 +130,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('srcset')).toBe(`${url2x} 2x, ${url3x} 3x`);
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
-    expect(image.attributes('decoding').toBe('async'));
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has two dark variants', () => {
