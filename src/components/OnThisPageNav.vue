@@ -141,7 +141,7 @@ ul {
 }
 
 .parent-item .base-link {
-  font-weight: bold;
+  font-weight: $font-weight-bold;
 }
 
 .base-link {
@@ -152,7 +152,7 @@ ul {
 }
 
 .active .base-link {
-  font-weight: bold;
+  font-weight: $font-weight-semibold;
   color: var(--color-figure-gray);
 }
 </style>
