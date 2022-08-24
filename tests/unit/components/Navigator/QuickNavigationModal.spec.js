@@ -218,17 +218,6 @@ describe('QuickNavigationModal', () => {
     ).toBe(symbolsMatchBlueprint[3].subMatchString);
   });
 
-  // it('it resets `focusedIndex` when `debounced input` changes', async () => {
-  //   wrapper.setData({
-  //     debouncedInput: inputValue,
-  //   });
-  //   wrapper.vm.focusedIndex = 1;
-  //   wrapper.setData({
-  //     debouncedInput: inputValue,
-  //   });
-  //   expect(wrapper.vm.focusedIndex).toBe(0);
-  // });
-
   it('it debounces user input before filtering the symbols', () => {
     wrapper.setData({
       debouncedInput: inputValue,

@@ -57,7 +57,7 @@
           :class="{ 'active' : debouncedInput.length }"
         >
           <div
-            v-if="noneResultsWhereFound"
+            v-if="noResultsWereFound"
             class="no-results"
           >
             <p>
@@ -80,6 +80,7 @@
                 ref="match"
                 role="list"
                 tabindex="0"
+                :id="MatchId"
                 @focus.capture="focusIndex(index)"
               >
                 <div class="symbol-info">
@@ -134,6 +135,8 @@ import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import symbolTreeNavigator from 'docc-render/mixins/symbolTreeNavigator';
 
+const MatchId = 'symbol-match';
+
 export default {
   name: 'QuickNavigationModal',
   components: {
@@ -147,12 +150,16 @@ export default {
     keyboardNavigation,
     symbolTreeNavigator,
   ],
+  constants: {
+    MatchId,
+  },
   data() {
     return {
       debouncedInput: '',
-      userInput: '',
-      quickNavigationStore: this.quickNavigationStore,
       flattenIndex: this.quickNavigationStore.state.flattenIndex,
+      MatchId,
+      quickNavigationStore: this.quickNavigationStore,
+      userInput: '',
     };
   },
   computed: {
@@ -176,7 +183,7 @@ export default {
       // Return the first 20 symbols out of sorted ones
       return orderSymbolsByPriority(matches).slice(0, 20);
     },
-    noneResultsWhereFound: ({ debouncedInput, filteredSymbols }) => (
+    noResultsWereFound: ({ debouncedInput, filteredSymbols }) => (
       debouncedInput.length && !filteredSymbols.length
     ),
     totalItemsToNavigate: ({ filteredSymbols }) => filteredSymbols.length,
@@ -240,8 +247,11 @@ export default {
         });
       }).filter(Boolean);
     },
-    handleKeyEnter() {
-      if (!this.filteredSymbols.length) return;
+    handleKeyEnter(event) {
+      if (
+        (event.srcElement.id !== 'filter-input' && event.srcElement.id !== MatchId)
+        || this.noResultsWereFound
+      ) return;
       this.$router.push(this.filteredSymbols[this.focusedIndex].path);
       this.closeQuickNavigationModal();
     },

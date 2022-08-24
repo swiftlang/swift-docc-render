@@ -98,8 +98,7 @@
             <ClearRoundedIcon />
           </button>
         </div>
-        <slot name="input-menu-items">
-        </slot>
+        <slot name="input-menu-items" />
       </div>
       <TagList
         v-if="displaySuggestedTags"
@@ -419,7 +418,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$quick-navigation-icon: rem(20px);
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
 $input-height: rem(28px);

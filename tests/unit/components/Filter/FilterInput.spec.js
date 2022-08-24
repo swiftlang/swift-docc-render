@@ -40,14 +40,6 @@ const {
   TagLimit,
 } = FilterInput.constants;
 
-const quickNavigationStore = {
-  toggleShowQuickNavigationModal: jest.fn(),
-};
-
-const provide = {
-  quickNavigationStore,
-};
-
 describe('FilterInput', () => {
   let wrapper;
   let input;
@@ -89,7 +81,6 @@ describe('FilterInput', () => {
     wrapper = shallowMount(FilterInput, {
       propsData,
       stubs: { TagList },
-      provide,
     });
 
     input = wrapper.find({ ref: 'input' });
@@ -207,7 +198,6 @@ describe('FilterInput', () => {
         focusInputWhenCreated: true,
       },
       stubs: { TagList },
-      provide,
     });
     await wrapper.vm.$nextTick();
     input = wrapper.find({ ref: 'input' });
@@ -691,7 +681,6 @@ describe('FilterInput', () => {
         wrapper = shallowMount(FilterInput, {
           propsData: { selectedTags: [selectedTag] },
           stubs: { TagList },
-          provide,
         });
 
         input = wrapper.find({ ref: 'input' });
@@ -1034,7 +1023,6 @@ describe('FilterInput', () => {
       wrapper = shallowMount(FilterInput, {
         propsData,
         stubs: { TagList },
-        provide,
       });
 
       wrapper.setProps({ value: '', selectedTags: tags });

@@ -14,10 +14,7 @@ import QuickNavigationBar from '@/components/QuickNavigationBar.vue';
 describe('QuickNavigationBar', () => {
   let wrapper;
 
-  const mocks = {};
-
   const config = {
-    mocks,
     provide: {
       quickNavigationStore: {
         toggleShowQuickNavigationModal: () => true,
