@@ -6,17 +6,19 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
-import OnThisPageStickyContainer, { ON_THIS_PAGE_CONTENT_BREAKPOINT }
-  from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
+import OnThisPageStickyContainer, {
+  ON_THIS_PAGE_CONTENT_BREAKPOINT, ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG,
+} from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 
-const store = {
+const store = Vue.observable({
   state: {
     contentWidth: ON_THIS_PAGE_CONTENT_BREAKPOINT + 100,
   },
-};
+});
 
 const createWrapper = ({ provide, ...others } = {}) => shallowMount(OnThisPageStickyContainer, {
   provide: {
@@ -36,16 +38,20 @@ describe('OnThisPageStickyContainer', () => {
   });
 
   it('renders the OnThisPageStickyContainer as hidden, when under a threshold', () => {
-    const wrapper = createWrapper({
-      provide: {
-        store: {
-          state: {
-            contentWidth: ON_THIS_PAGE_CONTENT_BREAKPOINT - 200,
-          },
-        },
-      },
-    });
+    const wrapper = createWrapper();
+    store.state.contentWidth = ON_THIS_PAGE_CONTENT_BREAKPOINT - 200;
     expect(wrapper.classes()).toContain('hidden');
+    store.state.contentWidth = ON_THIS_PAGE_CONTENT_BREAKPOINT + 1;
+    expect(wrapper.classes()).not.toContain('hidden');
+  });
+
+  it('renders the OnThisPageStickyContainer as hidden, when under the big threshold', () => {
+    window.outerWidth = 1500;
+    store.state.contentWidth = ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG - 100;
+    const wrapper = createWrapper();
+    expect(wrapper.classes()).toContain('hidden');
+    store.state.contentWidth = ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG + 10;
+    expect(wrapper.classes()).not.toContain('hidden');
   });
 
   it('renders the default slot', () => {

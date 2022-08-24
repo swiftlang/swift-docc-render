@@ -14,13 +14,23 @@
 </template>
 
 <script>
+// 660px content + (170px aside + 22px padding-right)*2 + 28px*2 gutter
+export const ON_THIS_PAGE_CONTENT_BREAKPOINT = 1110;
+// 1080 content + (170px aside + 22px padding-right)
+export const ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG = 1272;
 
-export const ON_THIS_PAGE_CONTENT_BREAKPOINT = 1270;
 export default {
   name: 'OnThisPageStickyContainer',
   inject: ['store'],
   computed: {
-    isHidden: ({ store }) => store.state.contentWidth < ON_THIS_PAGE_CONTENT_BREAKPOINT,
+    isHidden: ({ store }) => {
+      let compareTo = ON_THIS_PAGE_CONTENT_BREAKPOINT;
+      // when the window is above 1500, the content max-width grows
+      if (window.outerWidth >= 1500) {
+        compareTo = ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG;
+      }
+      return store.state.contentWidth < compareTo;
+    },
   },
 };
 </script>
@@ -29,14 +39,14 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .OnThisPageStickyContainer {
-  $sticky-aside-width: rem(170px);
+  $aside-width: rem(170px);
   margin-top: $contenttable-spacing-single-side;
   position: sticky;
-  top: $nav-height;
+  top: $nav-height + rem(10px);
   align-self: flex-start;
   flex: 0 0 auto;
-  width: $sticky-aside-width;
-  margin-left: -($sticky-aside-width + $nav-padding);
+  width: $aside-width;
+  margin-left: -($aside-width + $nav-padding);
   padding-right: $nav-padding;
 
   @include breakpoint(small) {
@@ -45,15 +55,6 @@ export default {
 
   &.hidden {
     display: none;
-  }
-
-  // if there is a sidebar, and its hidden, OR when we dont have a sidebar at all
-  .full-width-container.sidebar-hidden &, .static-width-container {
-    // 1080 content + 2x170px(aside) == 1500px. Extra 15px on each side.
-    // Anything below it wont fit the floating aside
-    @media screen and (max-width: 1500px) {
-      display: none;
-    }
   }
 }
 </style>
