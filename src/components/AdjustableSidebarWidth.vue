@@ -420,6 +420,7 @@ export default {
     z-index: $nav-z-index + 1;
     transform: translateX(-100%);
     transition: transform 0.15s ease-in;
+    left: 0;
 
     /deep/ .aside-animated-child {
       opacity: 0;
