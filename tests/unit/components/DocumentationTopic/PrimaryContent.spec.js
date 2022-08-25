@@ -147,6 +147,7 @@ const restEndpointSection = {
 
 const propsData = {
   conformance: { availbilityPrefix: [], constraints: [] },
+  source: { url: 'foo.com' },
   sections: [
     declarationsSection,
     detailsSection,
@@ -186,6 +187,7 @@ describe('PrimaryContent', () => {
   checkProps(Declaration, {
     conformance: propsData.conformance,
     declarations: declarationsSection.declarations,
+    source: propsData.source,
   });
   checkProps(PropertyListKeyDetails, { details: detailsSection.details });
   checkProps(GenericContent, { content: genericContentSection.content, tag: 'div' });

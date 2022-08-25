@@ -10,8 +10,12 @@
 
 import { shallowMount } from '@vue/test-utils';
 import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
-import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
-import DeclarationDiff from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
+import DeclarationToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
+import DeclarationDiff
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
+import DeclarationSourceLink
+  from '@/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
 
 const {
   ConditionalConstraints,
@@ -93,6 +97,20 @@ describe('Declaration', () => {
     const group = wrapper.find(DeclarationGroup);
     expect(group.exists()).toBe(true);
     expect(group.props('declaration')).toEqual(propsData.declarations[0]);
+  });
+
+  it('renders a DeclarationSourceLink if `source` is available', () => {
+    expect(wrapper.find(DeclarationSourceLink).exists()).toBe(false);
+    wrapper.setProps({
+      source: {
+        url: 'foo.com',
+        fileName: 'Foo.swift',
+      },
+    });
+    expect(wrapper.find(DeclarationSourceLink).props()).toEqual({
+      url: 'foo.com',
+      fileName: 'Foo.swift',
+    });
   });
 
   it('renders a `ConditionalConstraints` for availability with `conformance` data', () => {

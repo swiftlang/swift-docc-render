@@ -66,6 +66,10 @@ export default {
       type: Object,
       required: false,
     },
+    source: {
+      type: Object,
+      required: false,
+    },
     sections: {
       type: Array,
       required: true,
@@ -101,7 +105,10 @@ export default {
       }[section.kind];
     },
     propsFor(section) {
-      const { conformance } = this;
+      const {
+        conformance,
+        source,
+      } = this;
       const {
         bodyContentType,
         content,
@@ -117,7 +124,7 @@ export default {
       } = section;
       return {
         [SectionKind.content]: { content },
-        [SectionKind.declarations]: { conformance, declarations },
+        [SectionKind.declarations]: { conformance, source, declarations },
         [SectionKind.details]: { details },
         [SectionKind.parameters]: { parameters },
         [SectionKind.possibleValues]: { values },
