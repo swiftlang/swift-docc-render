@@ -1370,6 +1370,7 @@ $close-icon-padding: 5px;
   background: var(--color-fill);
 
   .sidebar-transitioning & {
+    flex: 1 0 $filter-height;
     overflow: hidden;
   }
 }
