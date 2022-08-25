@@ -130,7 +130,7 @@ const defaultProps = {
   activePath,
   type: TopicTypes.module,
   scrollLockID: 'foo',
-  breakpoint: 'large',
+  reverseFilterPosition: false,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -336,10 +336,17 @@ describe('NavigatorCard', () => {
   it('reverses the FilterInput, on mobile', async () => {
     const wrapper = createWrapper({
       propsData: {
-        breakpoint: BreakpointName.medium,
+        reverseFilterPosition: true,
       },
     });
+    expect(wrapper.classes()).toContain('filter-reversed');
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
+    wrapper.setProps({
+      reverseFilterPosition: false,
+    });
+    await flushPromises();
+    expect(wrapper.classes()).not.toContain('filter-reversed');
+    expect(wrapper.find(FilterInput).props('positionReversed')).toBe(true);
   });
 
   it('renders aria-live regions for polite and assertive notifications', () => {
