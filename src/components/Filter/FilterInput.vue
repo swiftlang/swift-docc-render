@@ -76,7 +76,7 @@
               @keydown.left="leftKeyInputHandler"
               @keydown.right="rightKeyInputHandler"
               @keydown.delete="deleteHandler"
-              @keydown.meta.a.prevent="selectInputAndTags"
+              @keydown.meta.a.prevent.stop="selectInputAndTags"
               @keydown.ctrl.a.prevent="selectInputAndTags"
               @keydown.exact="inputKeydownHandler"
               @keydown.enter.exact="enterHandler"
@@ -444,7 +444,7 @@ $input-height: rem(28px);
 
   &__filter-button {
     position: relative;
-    margin-left: rem(10px);
+    margin-left: rem(15px);
     z-index: 1;
     cursor: text;
     margin-right: rem(3px);

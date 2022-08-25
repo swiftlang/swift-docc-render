@@ -158,7 +158,7 @@ export default {
       debouncedInput: '',
       flattenIndex: this.quickNavigationStore.state.flattenIndex,
       MatchId,
-      quickNavigationStore: this.quickNavigationStore,
+      toggleModal: ({ toggle }) => this.quickNavigationStore.toggleShowQuickNavigationModal(toggle),
       userInput: '',
     };
   },
@@ -183,8 +183,8 @@ export default {
       // Return the first 20 symbols out of sorted ones
       return orderSymbolsByPriority(matches).slice(0, 20);
     },
-    noResultsWereFound: ({ debouncedInput, filteredSymbols }) => (
-      debouncedInput.length && !filteredSymbols.length
+    noResultsWereFound: ({ debouncedInput, totalItemsToNavigate }) => (
+      debouncedInput.length && !totalItemsToNavigate
     ),
     totalItemsToNavigate: ({ filteredSymbols }) => filteredSymbols.length,
   },
@@ -194,17 +194,8 @@ export default {
   },
   inject: ['quickNavigationStore'],
   methods: {
-    handleInputSelect(event) {
-      if (event.key !== 'a' || !event.metaKey) return;
-      this.$refs.input.select();
-    },
-    clearUserInput() {
-      this.debouncedInput = '';
-      this.userInput = '';
-      this.$refs.input.focus();
-    },
     closeQuickNavigationModal() {
-      this.quickNavigationStore.toggleShowQuickNavigationModal(false);
+      this.toggleModal(false);
     },
     constructFuzzyRegex(userInput) {
       // Construct regex for fuzzy match
@@ -276,14 +267,8 @@ export default {
       });
     },
     startingPointHook() {
-      this.focusedIndex = this.filteredSymbols.length - 1;
+      this.focusedIndex = this.totalItemsToNavigate - 1;
     },
-  },
-  mounted() {
-    window.addEventListener('keydown', this.handleInputSelect);
-  },
-  beforeDestroy() {
-    window.removeEventListener('keydown', this.handleInputSelect);
   },
 };
 </script>
@@ -299,16 +284,6 @@ $filter-padding: rem(15px);
 .quick-navigation {
   input[type="text"] {
     @include font-styles(body-large);
-  }
-  &__clear-icon {
-    display: flex;
-    margin: auto;
-    margin-right: rem(5px);
-    width: $clear-icon-size;
-    > * {
-      width: 100%;
-      height: 100%;
-    }
   }
   &__close-key {
     @include font-styles(caption);
@@ -333,6 +308,9 @@ $filter-padding: rem(15px);
     .filter__wrapper {
       border: 0px;
     }
+    > * {
+      --input-text: var(--color-figure-gray-secondary) !important;
+    }
   }
   &__filter {
     background: var(--color-fill);
@@ -342,13 +320,9 @@ $filter-padding: rem(15px);
     outline-width: 0;
     width: 100%;
   }
-  &__input-container {
-    display: flex;
-    padding: $filter-padding;
-  }
   &__magnifier-icon-container {
     display: flex;
-    height: rem(18px);
+    height: auto;
     width: rem(18px);
     margin: auto;
     > * {
@@ -412,6 +386,8 @@ $filter-padding: rem(15px);
         color: var(--color-figure-gray-secondary);
         display: flex;
         margin-left: rem(27px);
+        overflow: hidden;
+        white-space: nowrap;
         .parent-path {
           padding-right: rem(5px);
         }
