@@ -13,24 +13,24 @@ import {
 } from 'docc-render/constants/sidebar';
 
 export default {
-  data() {
-    return {
-      flattenIndex: this.quickNavigationStore.state.flattenIndex,
-    };
+  props: {
+    children: {
+      type: Array,
+      required: true,
+    },
   },
-  inject: ['quickNavigationStore'],
   computed: {
     /**
     * Generates a map of the flattenIndex, with the uid as the key.
     * @return {Object.<string, NavigatorFlatItem>}
     */
-    childrenMap({ flattenIndex }) {
-      return this.convertChildrenArrayToObject(flattenIndex);
+    childrenMap({ children }) {
+      return this.convertChildrenArrayToObject(children);
     },
   },
   methods: {
-    convertChildrenArrayToObject(flattenIndex) {
-      return flattenIndex.reduce((all, current) => {
+    convertChildrenArrayToObject(children) {
+      return children.reduce((all, current) => {
         // eslint-disable-next-line no-param-reassign
         all[current.uid] = current;
         return all;

@@ -127,6 +127,7 @@ import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
+import symbolTreeNavigator from 'docc-render/mixins/symbolTreeNavigator';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -242,6 +243,7 @@ export default {
   },
   mixins: [
     keyboardNavigation,
+    symbolTreeNavigator,
   ],
   data() {
     return {
@@ -654,34 +656,6 @@ export default {
       return arr;
     },
     /**
-     * Get all the parents of a node, up to the root.
-     * @param {number} uid
-     * @return {NavigatorFlatItem[]}
-     */
-    getParents(uid) {
-      const arr = [];
-      const stack = [uid];
-      let current = null;
-
-      // loop over the stack
-      while (stack.length) {
-        // get the top item
-        current = stack.pop();
-        // find the object
-        const obj = this.childrenMap[current];
-        if (!obj) {
-          return [];
-        }
-        // push the object to the results
-        arr.unshift(obj);
-        // if the current object has a parent and its not the root, add it to the stack
-        if (obj.parent && obj.parent !== INDEX_ROOT_KEY) {
-          stack.push(obj.parent);
-        }
-      }
-      return arr;
-    },
-    /**
      * Get all sibling nodes of a node
      * @return {NavigatorFlatItem[]}
      */
@@ -1060,13 +1034,6 @@ export default {
         // if there is no active item, or we cant see it, return the index to 0
         this.focusIndex(0);
       }
-    },
-    convertChildrenArrayToObject(children) {
-      return children.reduce((all, current) => {
-        // eslint-disable-next-line no-param-reassign
-        all[current.uid] = current;
-        return all;
-      }, {});
     },
     /**
      * Focuses the parent of a child node.

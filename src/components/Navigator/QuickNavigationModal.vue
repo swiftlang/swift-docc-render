@@ -156,21 +156,26 @@ export default {
   data() {
     return {
       debouncedInput: '',
-      flattenIndex: this.quickNavigationStore.state.flattenIndex,
       MatchId,
       toggleModal: ({ toggle }) => this.quickNavigationStore.toggleShowQuickNavigationModal(toggle),
       userInput: '',
     };
   },
+  props: {
+    children: {
+      type: Array,
+      required: true,
+    },
+  },
   computed: {
     filteredSymbols: ({
       constructFuzzyRegex,
-      flattenIndex,
+      children,
       fuzzyMatch,
       debouncedInput,
       orderSymbolsByPriority,
     }) => {
-      const symbols = flattenIndex.filter(symbol => (
+      const symbols = children.filter(symbol => (
         symbol.type !== 'groupMarker'
         && symbol.title != null
       ));

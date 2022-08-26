@@ -93,16 +93,10 @@ describe('QuickNavigationModal', () => {
   const config = {
     mocks,
     propsData: {
-      isModalOpen: false,
+      children: symbols,
     },
     provide: {
-      quickNavigationStore: {
-        toggleShowQuickNavigationModal: () => true,
-        state: {
-          showQuickNavigation: false,
-          flattenIndex: symbols,
-        },
-      },
+      quickNavigationStore: {},
     },
   };
 
@@ -256,14 +250,10 @@ describe('QuickNavigationModal', () => {
     ];
     wrapper = shallowMount(QuickNavigationModal, {
       propsData: {
-        isModalOpen: false,
+        children: customSymbols,
       },
       provide: {
-        quickNavigationStore: {
-          state: {
-            flattenIndex: customSymbols,
-          },
-        },
+        quickNavigationStore: {},
       },
     });
     wrapper.setData({

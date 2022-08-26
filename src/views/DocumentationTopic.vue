@@ -18,7 +18,9 @@
       :showClose="false"
       :visible="quickNavigationStore.state.showQuickNavigation"
     >
-       <QuickNavigationModal />
+      <QuickNavigationModal
+        :children="quickNavigationStore.state.flattenIndex"
+      />
     </GenericModal>
     <CodeTheme class="doc-topic-view">
       <template v-if="topicData">
