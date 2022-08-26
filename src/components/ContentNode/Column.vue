@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'column',
+  name: 'Column',
   props: {
     span: {
       type: Number,
