@@ -10,21 +10,19 @@
 
 <template>
   <div class="TopicsGrid">
-    <OnThisPageSection
-      v-for="(section, i) in sections"
-      :key="i"
-      :title="section.title || ''"
-      :anchor="anchorize(section.title || '')"
-      :level="3"
-      class="topic-grid"
-    >
-      <div class="container">
-        <h3 class="title" v-if="section.title">
-          {{ section.title }}
-        </h3>
-        <TopicsLinkCardGrid :identifiers="section.identifiers" :topicStyle="topicStyle" />
-      </div>
-    </OnThisPageSection>
+    <ContentTable anchor="topics" title="Topics">
+      <ContentTableSection
+        v-for="section in sections"
+        :key="section.title"
+        :title="section.title || ''"
+      >
+        <TopicsLinkCardGrid
+          :identifiers="section.identifiers"
+          :topicStyle="topicStyle"
+          class="topic-grid"
+        />
+      </ContentTableSection>
+    </ContentTable>
   </div>
 </template>
 
@@ -32,11 +30,12 @@
 import { anchorize } from 'docc-render/utils/strings';
 
 import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import ContentTable from 'docc-render/components/DocumentationTopic/ContentTable.vue';
+import ContentTableSection from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
 
 export default {
   name: 'TopicsGrid',
-  components: { OnThisPageSection, TopicsLinkCardGrid },
+  components: { ContentTableSection, ContentTable, TopicsLinkCardGrid },
   props: {
     sections: {
       type: Array,
@@ -56,15 +55,7 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-.container {
-  @include dynamic-content-container
-}
-
-.title {
-  @include font-styles(label);
-}
-
-.topic-grid + .topic-grid {
-  margin-top: $stacked-margin-large;
+.topic-grid {
+  margin-top: $stacked-margin-xlarge;
 }
 </style>

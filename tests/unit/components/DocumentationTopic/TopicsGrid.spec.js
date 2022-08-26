@@ -11,8 +11,9 @@
 import TopicsGrid from '@/components/DocumentationTopic/TopicsGrid.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicStyles } from '@/constants/TopicStyles';
-import OnThisPageSection from '@/components/DocumentationTopic/OnThisPageSection.vue';
+import ContentTableSection from '@/components/DocumentationTopic/ContentTableSection.vue';
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
+import ContentTable from '@/components/DocumentationTopic/ContentTable.vue';
 
 const defaultProps = {
   sections: [
@@ -39,20 +40,19 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(TopicsGrid
 describe('TopicsGrid', () => {
   it('renders the TopicsGrid', () => {
     const wrapper = createWrapper();
-    const sections = wrapper.findAll(OnThisPageSection);
+    expect(wrapper.find(ContentTable).props()).toEqual({
+      anchor: 'topics',
+      title: 'Topics',
+    });
+    const sections = wrapper.findAll(ContentTableSection);
     expect(sections).toHaveLength(2);
     expect(sections.at(0).props()).toEqual({
       title: defaultProps.sections[0].title,
-      anchor: 'foo',
-      // level: 3,
     });
     expect(sections.at(1).props()).toEqual({
       title: defaultProps.sections[1].title,
-      anchor: 'bar',
-      // level: 3,
     });
     // assert contents
-    expect(sections.at(0).find('h3.title').text()).toBe(defaultProps.sections[0].title);
     expect(sections.at(0).find(TopicsLinkCardGrid).props()).toEqual({
       identifiers: defaultProps.sections[0].identifiers,
       topicStyle: defaultProps.topicStyle,
@@ -68,14 +68,11 @@ describe('TopicsGrid', () => {
         }],
       },
     });
-    const sections = wrapper.findAll(OnThisPageSection);
+    const sections = wrapper.findAll(ContentTableSection);
     expect(sections).toHaveLength(1);
     expect(sections.at(0).props()).toEqual({
       title: '',
-      anchor: '',
-      // level: 3,
     });
-    expect(sections.at(0).find('.title').exists()).toBe(false);
     expect(sections.at(0).find(TopicsLinkCardGrid).exists()).toBe(true);
   });
 });
