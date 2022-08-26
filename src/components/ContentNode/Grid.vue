@@ -35,8 +35,7 @@ export default {
 
 .grid {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, unquote('minmax(calc(100%/12), 1fr)'));
 
   &.with-columns {
     grid-template-columns: repeat(var(--col-count, 12), 1fr);
