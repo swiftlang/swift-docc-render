@@ -50,5 +50,8 @@ export default {
     grid-template-columns: 1fr;
     grid-auto-flow: row;
   }
+  /deep/ + * {
+    margin-top: $stacked-margin-large;
+  }
 }
 </style>
