@@ -13,6 +13,11 @@ import scrollToElement from 'docc-render/mixins/scrollToElement';
 import * as loading from 'docc-render/utils/loading';
 
 const framesWait = jest.spyOn(loading, 'waitFrames');
+window.innerHeight = 700;
+window.scrollY = 300;
+Object.defineProperty(document.body, 'scrollHeight', {
+  value: 1000,
+});
 
 describe('scrollToElement', () => {
   it('scrolls to the correct element when "scrollToElement" is called', async () => {
@@ -70,6 +75,12 @@ describe('scrollToElement', () => {
     expect(framesWait).toHaveBeenCalledTimes(2);
     expect(framesWait).toHaveBeenLastCalledWith(8);
 
+    // it does not call `scrollBy` if already at the bottom
+    expect(scrollByMock).toBeCalledTimes(0);
+    // change the scroll position
+    window.scrollY = 100;
+    await wrapper.vm.scrollToElement(anchor);
+    // assert `scrollBy` is called
     expect(scrollByMock).toBeCalledWith(-scrollOffset.x, -scrollOffset.y);
   });
 });

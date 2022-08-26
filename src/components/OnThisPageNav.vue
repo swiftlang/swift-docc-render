@@ -116,8 +116,10 @@ export default {
     async scrollTo({ anchor }) {
       const element = document.getElementById(anchor);
       if (!element) return;
-      // Focus scrolls to the element
-      element.focus();
+      // Focus the element without scrolling to it, we do that after
+      element.focus({
+        preventScroll: true,
+      });
       // but we need to compensate for the navigation height
       await this.scrollToElement(`#${anchor}`);
     },

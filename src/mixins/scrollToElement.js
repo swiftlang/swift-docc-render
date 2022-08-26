@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { waitFrames } from 'docc-render/utils/loading';
 
@@ -24,7 +24,10 @@ export default {
       if (!element) return null;
 
       element.scrollIntoView();
-      window.scrollBy(-offset.x, -offset.y);
+      // if not scrolled to the bottom, use the offset
+      if (window.scrollY + window.innerHeight < document.body.scrollHeight) {
+        window.scrollBy(-offset.x, -offset.y);
+      }
       return element;
     },
   },
