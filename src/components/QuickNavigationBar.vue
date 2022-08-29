@@ -83,7 +83,7 @@ $quick-navigation-icon-size: rem(20px);
   background: var(--background, var(--color-code-background));
   width: rem(250px);
   height: rem(33px);
-  margin-right: rem(20px);
+  margin-left: rem(20px);
   border-radius: rem(5px);
   border: solid 1px var(--color-grid);
   display: flex;

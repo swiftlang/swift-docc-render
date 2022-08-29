@@ -69,7 +69,6 @@
         class="nav-menu-settings"
         :previousSiblingChildren="breadcrumbCount"
       >
-        <slot name="nav-menu-items" />
         <LanguageToggle
           v-if="interfaceLanguage && (swiftPath || objcPath)"
           :interfaceLanguage="interfaceLanguage"

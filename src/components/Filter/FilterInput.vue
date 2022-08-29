@@ -444,7 +444,7 @@ $input-height: rem(28px);
 
   &__filter-button {
     position: relative;
-    margin-left: rem(15px);
+    margin-left: rem(10px);
     z-index: 1;
     cursor: text;
     margin-right: rem(3px);

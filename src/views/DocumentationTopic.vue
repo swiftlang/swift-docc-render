@@ -71,7 +71,7 @@
             :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
             @toggle-sidenav="handleToggleSidenav"
           >
-            <template v-slot:nav-menu-items>
+            <template v-slot:menu-items>
               <div
                 v-if="enableQuickNavigation"
               >
