@@ -11,7 +11,7 @@
 <template>
   <div
     class="navigator-card-item"
-    :class="{ expanded }"
+    :class="{ expanded, active: isActive }"
     :style="{ '--nesting-index': item.depth }"
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
@@ -20,7 +20,7 @@
     @keydown.enter.prevent="clickReference"
     @keydown.alt.right.prevent="toggleEntireTree"
   >
-    <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
+    <div class="head-wrapper" :class="{ 'is-group': isGroupMarker }">
       <span
         hidden
         :id="usageLabel"
@@ -246,49 +246,45 @@ $depth-spacer-base-spacing: (
 $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-small;
 
 .navigator-card-item {
-  height: $item-height;
-  display: flex;
-  align-items: center;
   --nav-head-wrapper-left-space: #{$nav-card-horizontal-spacing};
   --nav-head-wrapper-right-space: #{$nav-card-horizontal-spacing-large};
+  --head-wrapper-vertical-space: 5px;
   --nav-depth-spacer: #{$depth-spacer-base-spacing};
 
-  @include on-keyboard-focus-within() {
-    margin: $nav-card-horizontal-spacing-small;
-    height: $item-height - 10px;
-    @include focus-outline();
+  display: flex;
+  align-items: stretch;
+  min-height: $item-height;
+  box-sizing: border-box;
 
-    .depth-spacer {
-      margin-left: -$nav-card-horizontal-spacing-small;
-    }
+  @include on-keyboard-focus-within() {
+    @include focus-outline(-4px);
+  }
+
+  &.active {
+    background: var(--color-fill-gray-quaternary);
   }
 }
 
 .depth-spacer {
   width: calc(var(--nesting-index) * #{$nesting-spacing} + var(--nav-depth-spacer));
-  height: $item-height;
+  height: 100%;
   position: relative;
   flex: 0 0 auto;
-  @include on-keyboard-focus {
-    margin: 0 -$nav-card-horizontal-spacing-small;
-  }
 }
 
 .head-wrapper {
-  padding: 0 var(--nav-head-wrapper-right-space) 0 var(--nav-head-wrapper-left-space);
+  padding: var(--head-wrapper-vertical-space)
+  var(--nav-head-wrapper-right-space)
+  var(--head-wrapper-vertical-space)
+  var(--nav-head-wrapper-left-space);
   position: relative;
   display: flex;
   align-items: center;
   flex: 1;
   min-width: 0;
-  height: 100%;
 
   @include safe-area-left-set(padding-left, var(--nav-head-wrapper-left-space));
   @include safe-area-right-set(padding-right, var(--nav-head-wrapper-right-space));
-
-  &.active {
-    background: var(--color-fill-gray-quaternary);
-  }
 
   &.is-group {
     .leaf-link {

@@ -39,15 +39,14 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <RecycleScroller
+          <DynamicScroller
             v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
             aria-label="Documentation Navigator"
             :items="nodesToRender"
-            :item-size="itemSize"
-            :buffer="1000"
+            :min-item-size="itemSize"
             emit-update
             key-field="uid"
             v-slot="{ item, active, index }"
@@ -55,23 +54,25 @@
             @focusout.native="handleFocusOut"
             @update="handleScrollerUpdate"
           >
-            <NavigatorCardItem
-              :item="item"
-              :isRendered="active"
-              :filter-pattern="filterPattern"
-              :is-active="item.uid === activeUID"
-              :is-bold="activePathMap[item.uid]"
-              :expanded="openNodes[item.uid]"
-              :api-change="apiChangesObject[item.path]"
-              :isFocused="focusedIndex === index"
-              :enableFocus="!externalFocusChange"
-              @toggle="toggle"
-              @toggle-full="toggleFullTree"
-              @toggle-siblings="toggleSiblings"
-              @navigate="handleNavigationChange"
-              @focus-parent="focusNodeParent"
-            />
-          </RecycleScroller>
+            <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
+                <NavigatorCardItem
+                  :item="item"
+                  :isRendered="active"
+                  :filter-pattern="filterPattern"
+                  :is-active="item.uid === activeUID"
+                  :is-bold="activePathMap[item.uid]"
+                  :expanded="openNodes[item.uid]"
+                  :api-change="apiChangesObject[item.path]"
+                  :isFocused="focusedIndex === index"
+                  :enableFocus="!externalFocusChange"
+                  @toggle="toggle"
+                  @toggle-full="toggleFullTree"
+                  @toggle-siblings="toggleSiblings"
+                  @navigate="handleNavigationChange"
+                  @focus-parent="focusNodeParent"
+                />
+              </DynamicScrollerItem>
+          </DynamicScroller>
           <div aria-live="polite" class="visuallyhidden">
             {{ politeAriaLive }}
           </div>
@@ -111,7 +112,7 @@
 </template>
 
 <script>
-import { RecycleScroller } from 'vue-virtual-scroller';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
@@ -200,7 +201,8 @@ export default {
     MagnifierIcon,
     NavigatorCardInner,
     NavigatorCardItem,
-    RecycleScroller,
+    DynamicScroller,
+    DynamicScrollerItem,
     Reference,
   },
   props: {
@@ -907,7 +909,7 @@ export default {
      * returns 0, if inside the viewport
      * returns 1, if below the viewport
      *
-     * @param {Element} element - child element
+     * @param {HTMLAnchorElement} element - child element
      * @return Number
      */
     getChildPositionInScroller(element) {
@@ -922,7 +924,7 @@ export default {
       const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
       // get the position of the active element
       const { y: elY } = element.getBoundingClientRect();
-      const elHeight = SIDEBAR_ITEM_SIZE;
+      const elHeight = element.offsetParent.offsetHeight;
       // calculate where element starts from
       const elementStart = elY - areaY - offset.top;
       // element is above the scrollarea
@@ -939,14 +941,16 @@ export default {
     isInsideScroller(element) {
       return this.$refs.scroller.$el.contains(element);
     },
-    handleFocusIn(event) {
-      this.lastFocusTarget = event.target;
-      const multiplier = this.getChildPositionInScroller(event.target);
-      // multiplier is 0  the item is in scrollarea
-      if (multiplier === 0) return;
+    handleFocusIn({ target }) {
+      this.lastFocusTarget = target;
+      const positionIndex = this.getChildPositionInScroller(target);
+      // if multiplier is 0, the item is inside the scrollarea, no need to scroll
+      if (positionIndex === 0) return;
+      // get the height of the closest positioned item.
+      const { offsetHeight } = target.offsetParent;
       // scroll the area, up/down, based on position of child item
       this.$refs.scroller.$el.scrollBy({
-        top: SIDEBAR_ITEM_SIZE * multiplier,
+        top: offsetHeight * positionIndex,
         left: 0,
       });
     },
