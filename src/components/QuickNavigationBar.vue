@@ -57,13 +57,10 @@ export default {
       this.quickNavigationStore.toggleShowQuickNavigationModal(true);
     },
     onKeydown(event) {
-      if (
-        event.key === '/'
-        || (event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))
-      ) {
-        this.openQuickNavigationModal();
-        event.preventDefault();
-      }
+      if (this.quickNavigationStore.state.showQuickNavigation) return;
+      if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))) return;
+      this.openQuickNavigationModal();
+      event.preventDefault();
     },
   },
   mounted() {
