@@ -8,24 +8,30 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="grid" :style="style" :class="{ 'with-columns': columns }">
+  <div class="row" :style="style" :class="{ 'with-columns': columns }">
     <slot />
   </div>
 </template>
 
 <script>
+/**
+ * A Row component that accepts an optional `columns` prop.
+ * When columns is passed, the grid will have that exact number of columns.
+ * If no `columns` provided, width is split up equally across each cell.
+ * Max number of allowed columns is 12.
+ */
 export default {
-  name: 'Grid',
+  name: 'Row',
   props: {
     columns: {
       type: Number,
       default: null,
       required: false,
-      validator: v => v > 0,
+      validator: v => v > 0 && v <= 12,
     },
   },
   computed: {
-    style: ({ columns }) => ({ '--col-count': columns }),
+    style: ({ columns }) => ({ '--col-count': columns || 12 }),
   },
 };
 </script>
@@ -33,13 +39,12 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-.grid {
+.row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, unquote('minmax(calc(100%/12), 1fr)'));
+  grid-template-columns: repeat(auto-fit, unquote('minmax(calc(100% / var(--col-count)), 1fr)'));
 
   &.with-columns {
-    grid-template-columns: repeat(var(--col-count, 12), 1fr);
-    grid-auto-flow: row;
+    grid-template-columns: repeat(var(--col-count), 1fr);
 
     @include breakpoint(small) {
       grid-template-columns: 1fr;
@@ -48,8 +53,8 @@ export default {
 
   @include breakpoint(small) {
     grid-template-columns: 1fr;
-    grid-auto-flow: row;
   }
+
   /deep/ + * {
     margin-top: $stacked-margin-large;
   }

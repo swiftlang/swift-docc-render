@@ -8,20 +8,20 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Grid from '@/components/ContentNode/Grid.vue';
+import Row from '@/components/ContentNode/Row.vue';
 import { shallowMount } from '@vue/test-utils';
 
-const createWrapper = props => shallowMount(Grid, {
+const createWrapper = props => shallowMount(Row, {
   slots: {
     default: 'Slot Content',
   },
   ...props,
 });
 
-describe('Grid', () => {
-  it('renders the Grid', () => {
+describe('Row', () => {
+  it('renders the Row', () => {
     const wrapper = createWrapper();
-    expect(wrapper.classes()).toContain('grid');
+    expect(wrapper.classes()).toContain('row');
     expect(wrapper.classes()).not.toContain('with-columns');
     expect(wrapper.text()).toContain('Slot Content');
   });

@@ -21,7 +21,7 @@ import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
 import Column from './ContentNode/Column.vue';
-import Grid from './ContentNode/Grid.vue';
+import Row from './ContentNode/Row.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -279,7 +279,7 @@ function renderNode(createElement, references) {
     }
     case BlockType.row: {
       return createElement(
-        Grid, { props: { columns: node.numberOfColumns } }, node.columns.map(col => (
+        Row, { props: { columns: node.numberOfColumns } }, node.columns.map(col => (
           createElement(
             Column, { props: { span: col.size } }, renderChildren(col.content),
           )

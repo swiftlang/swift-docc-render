@@ -21,7 +21,7 @@ import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
-import Grid from '@/components/ContentNode/Grid.vue';
+import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
@@ -323,7 +323,7 @@ describe('ContentNode', () => {
   });
 
   describe('with type="row"', () => {
-    it('renders a `<Grid>` and `<Column>`', () => {
+    it('renders a `<Row>` and `<Column>`', () => {
       const wrapper = mountWithItem({
         type: 'row',
         numberOfColumns: 4,
@@ -357,7 +357,7 @@ describe('ContentNode', () => {
           },
         ],
       });
-      const grid = wrapper.find(Grid);
+      const grid = wrapper.find(Row);
       expect(grid.props()).toEqual({
         columns: 4,
       });
