@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Row from '@/components/ContentNode/Row.vue';
+import Row, { MAX_COLUMN_COUNT } from '@/components/ContentNode/Row.vue';
 import { shallowMount } from '@vue/test-utils';
 
 const createWrapper = props => shallowMount(Row, {
@@ -34,5 +34,11 @@ describe('Row', () => {
     });
     expect(wrapper.classes()).toContain('with-columns');
     expect(wrapper.vm.style).toHaveProperty('--col-count', 4);
+  });
+
+  it('always provides the --col-count', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.classes()).not.toContain('with-columns');
+    expect(wrapper.vm.style).toHaveProperty('--col-count', MAX_COLUMN_COUNT);
   });
 });

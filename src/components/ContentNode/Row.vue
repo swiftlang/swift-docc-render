@@ -14,6 +14,7 @@
 </template>
 
 <script>
+export const MAX_COLUMN_COUNT = 12;
 /**
  * A Row component that accepts an optional `columns` prop.
  * When columns is passed, the grid will have that exact number of columns.
@@ -27,11 +28,11 @@ export default {
       type: Number,
       default: null,
       required: false,
-      validator: v => v > 0 && v <= 12,
+      validator: v => v > 0 && v <= MAX_COLUMN_COUNT,
     },
   },
   computed: {
-    style: ({ columns }) => ({ '--col-count': columns || 12 }),
+    style: ({ columns }) => ({ '--col-count': columns || MAX_COLUMN_COUNT }),
   },
 };
 </script>
