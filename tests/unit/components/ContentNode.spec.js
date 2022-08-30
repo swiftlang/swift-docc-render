@@ -911,7 +911,9 @@ describe('ContentNode', () => {
       ];
       const extendedData = {
         '0_0': { colspan: 2 },
+        '0_1': { colspan: 0 },
         '1_2': { rowspan: 2 },
+        '2_2': { rowspan: 0 },
       };
 
       it('renders header="none" style table, with spans', () => {

@@ -101,41 +101,18 @@ function renderNode(createElement, references) {
   ));
 
   const renderTableCell = (
-    element, attrs, data, cellIndex, rowIndex, extendedData, cellsToRender,
+    element, attrs, data, cellIndex, rowIndex, extendedData,
   ) => {
-    if (!cellsToRender[rowIndex][cellIndex]) return null;
     const { colspan, rowspan } = extendedData[`${rowIndex}_${cellIndex}`] || {};
+    // if either is `0`, then its spanned over and should not be rendered
+    if (colspan === 0 || rowspan === 0) return null;
     return createElement(element, { attrs: { ...attrs, colspan, rowspan } }, (
       renderChildren(data)
     ));
   };
 
-  function buildTableVisibilityMatrix(rows, extendedData) {
-    const matrix = Array(rows.length).fill(1).map(() => Array(rows[0].length).fill(1));
-    // specify which cells should be skipped, when siblings span across them.
-    Object.entries(extendedData).forEach(([key, { rowspan, colspan }]) => {
-      const split = key.split('_');
-      const row = parseInt(split[0], 10);
-      const col = parseInt(split[1], 10);
-      if (colspan) {
-        // replace the cols in the row with '0' values, indicating they should be skipped
-        const cellCount = colspan - 1;
-        matrix[row].splice(col + 1, cellCount, ...Array(cellCount).fill(0));
-      }
-      if (rowspan) {
-        // iterate over the rows that that need changing
-        let i;
-        for (i = row + 1; i > row && i < row + rowspan; i += 1) {
-          matrix[i].splice(col, 1, 0);
-        }
-      }
-    });
-    return matrix;
-  }
-
   const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none, extendedData = {}) => {
     // build the matrix for the array
-    const tableMatrix = buildTableVisibilityMatrix(rows, extendedData);
     switch (headerStyle) {
     // thead with first row and th for each first row cell
     // tbody with rows where first cell in each row is th, others are td
@@ -144,14 +121,14 @@ function renderNode(createElement, references) {
       return [
         createElement('thead', {}, [
           createElement('tr', {}, firstRow.map((cell, ci) => (
-            renderTableCell('th', { scope: 'col' }, cell, ci, 0, extendedData, tableMatrix)
+            renderTableCell('th', { scope: 'col' }, cell, ci, 0, extendedData)
           ))),
         ]),
         createElement('tbody', {}, otherRows.map(([firstCell, ...otherCells], ri) => (
           createElement('tr', {}, [
-            renderTableCell('th', { scope: 'row' }, firstCell, 0, ri + 1, extendedData, tableMatrix),
+            renderTableCell('th', { scope: 'row' }, firstCell, 0, ri + 1, extendedData),
             ...otherCells.map((cell, ci) => (
-              renderTableCell('td', {}, cell, ci + 1, ri + 1, extendedData, tableMatrix)
+              renderTableCell('td', {}, cell, ci + 1, ri + 1, extendedData)
             )),
           ])
         ))),
@@ -162,9 +139,9 @@ function renderNode(createElement, references) {
       return [
         createElement('tbody', {}, rows.map(([firstCell, ...otherCells], ri) => (
           createElement('tr', {}, [
-            renderTableCell('th', { scope: 'row' }, firstCell, 0, ri, extendedData, tableMatrix),
+            renderTableCell('th', { scope: 'row' }, firstCell, 0, ri, extendedData),
             ...otherCells.map((cell, ci) => (
-              renderTableCell('td', {}, cell, ci + 1, ri, extendedData, tableMatrix)
+              renderTableCell('td', {}, cell, ci + 1, ri, extendedData)
             )),
           ])
         ))),
@@ -176,12 +153,12 @@ function renderNode(createElement, references) {
       return [
         createElement('thead', {}, [
           createElement('tr', {}, firstRow.map((cell, ci) => renderTableCell(
-            'th', { scope: 'col' }, cell, ci, 0, extendedData, tableMatrix,
+            'th', { scope: 'col' }, cell, ci, 0, extendedData,
           ))),
         ]),
         createElement('tbody', {}, otherRows.map((row, ri) => (
           createElement('tr', {}, row.map((cell, cellIndex) => (
-            renderTableCell('td', {}, cell, cellIndex, ri + 1, extendedData, tableMatrix)
+            renderTableCell('td', {}, cell, cellIndex, ri + 1, extendedData)
           )))
         ))),
       ];
@@ -193,7 +170,7 @@ function renderNode(createElement, references) {
           rows.map((row, ri) => (
             createElement('tr', {}, (
               row.map((cell, ci) => (
-                renderTableCell('td', {}, cell, ci, ri, extendedData, tableMatrix)
+                renderTableCell('td', {}, cell, ci, ri, extendedData)
               ))
             ))
           ))
