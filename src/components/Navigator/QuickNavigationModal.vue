@@ -18,7 +18,7 @@
   >
     <div
       class="quick-navigation__modal-shadow"
-      @click.self="closeQuickNavigationModal()"
+      @click.self="closeQuickNavigationModal"
     >
       <div
         class="quick-navigation__container"
@@ -39,16 +39,11 @@
             </div>
           </template>
           <template v-slot:input-menu-items>
-            <div class="quick-navigation__close-key-container">
-              <button
-                aria-label="Close modal"
-                class="quick-navigation__close-key"
-                @click="closeQuickNavigationModal()"
-              >
-                <span>
-                  ESC
-                </span>
-              </button>
+            <div
+              v-if="!userInput.length"
+              class="quick-navigation__open-key-container"
+            >
+              <kbd>Cmd+Shift+o</kbd>
             </div>
           </template>
         </FilterInput>
@@ -290,19 +285,6 @@ $filter-padding: rem(15px);
   input[type="text"] {
     @include font-styles(body-large);
   }
-  &__close-key {
-    @include font-styles(caption);
-    border: solid $base-border-width;
-    border-color: var(--color-grid);
-    border-radius: $border-radius;
-    color: var(--color-figure-gray-secondary);
-    padding: rem(5px);
-  }
-  &__close-key-container {
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-right: rem(10px);
-  }
   &__container {
     background-color: var(--color-fill);
     border: solid $base-border-width var(--color-fill-gray);
@@ -330,6 +312,7 @@ $filter-padding: rem(15px);
     height: auto;
     width: rem(18px);
     margin: auto;
+    padding-left: rem(5px);
     > * {
       width: 100%;
     }
@@ -357,6 +340,12 @@ $filter-padding: rem(15px);
     top: 0;
     padding: min(rem(10px));
     padding-top: $modal-margin-top;
+  }
+  &__open-key-container {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: rem(15px);
+    color: var(--color-figure-gray-secondary);
   }
   &__reference:hover {
       text-decoration: none;

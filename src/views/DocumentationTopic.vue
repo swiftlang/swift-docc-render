@@ -74,8 +74,12 @@
             <template v-slot:menu-items>
               <div
                 v-if="enableQuickNavigation"
+                class="quick-navigation-open-container"
+                tabindex="0"
+                @click="openQuickNavigationModal()"
+                @keydown.enter.exact="openQuickNavigationModal"
               >
-                <QuickNavigationBar />
+                <MagnifierIcon />
               </div>
             </template>
           </Nav>
@@ -113,11 +117,11 @@ import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFra
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
+import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
-import QuickNavigationBar from 'docc-render/components/QuickNavigationBar.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
@@ -138,10 +142,10 @@ export default {
     Topic: DocumentationTopic,
     CodeTheme,
     Nav: DocumentationNav,
-    QuickNavigationBar,
     QuickNavigationModal,
     GenericModal,
     PortalTarget,
+    MagnifierIcon,
   },
   mixins: [performanceMetrics, onPageLoadScrollToFragment],
   data() {
@@ -346,12 +350,21 @@ export default {
         this.toggleMobileSidenav();
       }
     },
+    openQuickNavigationModal() {
+      this.quickNavigationStore.toggleShowQuickNavigationModal(true);
+    },
     toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
       this.sidenavHiddenOnLarge = value;
       storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
     },
     toggleMobileSidenav(value = !this.sidenavVisibleOnMobile) {
       this.sidenavVisibleOnMobile = value;
+    },
+    onKeydown(event) {
+      if (this.quickNavigationStore.state.showQuickNavigation) return;
+      if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))) return;
+      this.openQuickNavigationModal();
+      event.preventDefault();
     },
   },
   mounted() {
@@ -361,6 +374,7 @@ export default {
 
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
+    if (this.enableQuickNavigation) window.addEventListener('keydown', this.onKeydown);
   },
   provide() {
     return {
@@ -377,6 +391,7 @@ export default {
   },
   beforeDestroy() {
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
+    if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onKeydown);
   },
   beforeRouteEnter(to, from, next) {
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
@@ -444,6 +459,19 @@ export default {
     .sidebar-transitioning & {
       border-right: 1px solid var(--color-grid);
     }
+  }
+}
+
+.quick-navigation-open-container {
+  height: rem(15px);
+  width: rem(15px);
+  margin-left: rem(10px);
+  cursor: pointer;
+  @include nav-in-breakpoint() {
+    display: none;
+  }
+  * {
+    fill: var(--color-text);
   }
 }
 
