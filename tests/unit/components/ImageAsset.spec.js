@@ -54,6 +54,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe(alt);
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has one variant with no appearance trait', () => {
@@ -85,6 +86,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('300');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe('');
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has two light variants', () => {
@@ -128,6 +130,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('srcset')).toBe(`${url2x} 2x, ${url3x} 3x`);
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has two dark variants', () => {
