@@ -30,9 +30,16 @@ export default {
       required: false,
       validator: v => v > 0 && v <= MAX_COLUMN_COUNT,
     },
+    gap: {
+      type: Number,
+      default: null,
+    },
   },
   computed: {
-    style: ({ columns }) => ({ '--col-count': columns || MAX_COLUMN_COUNT }),
+    style: ({ columns, gap }) => ({
+      '--col-count': columns || MAX_COLUMN_COUNT,
+      '--col-gap': gap,
+    }),
   },
 };
 </script>
@@ -43,6 +50,7 @@ export default {
 .row {
   display: grid;
   grid-template-columns: repeat(auto-fit, unquote('minmax(calc(100% / var(--col-count)), 1fr)'));
+  grid-gap: var(--col-gap, #{$article-stacked-margin-small});
 
   &.with-columns {
     grid-template-columns: repeat(var(--col-count), 1fr);

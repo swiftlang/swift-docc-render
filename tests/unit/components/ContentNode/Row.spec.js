@@ -41,4 +41,13 @@ describe('Row', () => {
     expect(wrapper.classes()).not.toContain('with-columns');
     expect(wrapper.vm.style).toHaveProperty('--col-count', MAX_COLUMN_COUNT);
   });
+
+  it('provides a --col-gap', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        gap: 10,
+      },
+    });
+    expect(wrapper.vm.style).toHaveProperty('--col-gap', 10);
+  });
 });
