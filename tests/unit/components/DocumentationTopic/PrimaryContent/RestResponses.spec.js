@@ -17,7 +17,7 @@ const {
   PossiblyChangedType,
   PossiblyChangedMimetype,
   ParametersTable,
-  SectionTitle,
+  LinkableHeading,
 } = RestResponses.components;
 
 describe('RestResponses', () => {
@@ -73,7 +73,7 @@ describe('RestResponses', () => {
   });
 
   it('renders an h2 section title', () => {
-    const sectionTitle = mountComponent().find(SectionTitle);
+    const sectionTitle = mountComponent().find(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });

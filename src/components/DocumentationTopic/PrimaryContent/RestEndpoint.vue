@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <SectionTitle :anchor="anchor">{{ title }}</SectionTitle>
+    <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <DeclarationSource :tokens="tokens" />
   </OnThisPageSection>
 </template>
@@ -18,7 +18,7 @@
 <script>
 import { anchorize } from 'docc-render/utils/strings';
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
-import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import DeclarationSource
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 
@@ -30,7 +30,7 @@ export default {
   components: {
     DeclarationSource,
     OnThisPageSection,
-    SectionTitle,
+    LinkableHeading,
   },
   props: {
     title: {

@@ -10,8 +10,8 @@
 
 <template>
   <component
-   :id="!isTargetIDE ? id : null"
-   :is="tag"
+   :id="id"
+   :is="`h${level}`"
    class="section-title"
   >
     <a
@@ -28,8 +28,10 @@
 <script>
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 
+const HeadingLevels = [1, 2, 3, 4, 5, 6];
+
 export default {
-  name: 'SectionTitle',
+  name: 'LinkableHeading',
   mixins: [scrollToElement],
   data() {
     return {
@@ -41,9 +43,10 @@ export default {
       type: String,
       required: false,
     },
-    tag: {
-      type: String,
-      default: () => 'h2',
+    level: {
+      type: Number,
+      default: () => 2,
+      validator: v => v in HeadingLevels,
     },
   },
   inject: {

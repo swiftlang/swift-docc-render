@@ -11,7 +11,7 @@
 <script>
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
-import SectionTitle from './ContentNode/SectionTitle.vue';
+import LinkableHeading from './ContentNode/LinkableHeading.vue';
 import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
@@ -25,7 +25,6 @@ import StrikeThrough from './ContentNode/StrikeThrough.vue';
 const BlockType = {
   aside: 'aside',
   codeListing: 'codeListing',
-  sectionTitle: 'sectionTitle',
   endpointExample: 'endpointExample',
   heading: 'heading',
   orderedList: 'orderedList',
@@ -232,9 +231,9 @@ function renderNode(createElement, references) {
     case BlockType.heading: {
       const props = {
         anchor: node.anchor,
-        tag: `h${node.level}`,
+        level: Number(node.level),
       };
-      return createElement(SectionTitle, { props }, node.text);
+      return createElement(LinkableHeading, { props }, node.text);
     }
     case BlockType.orderedList:
       return createElement('ol', {

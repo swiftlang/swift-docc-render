@@ -21,7 +21,7 @@ const {
   ConditionalConstraints,
   OnThisPageSection,
   DeclarationGroup,
-  SectionTitle,
+  LinkableHeading,
 } = Declaration.components;
 
 const { ChangeTypes } = Declaration.constants;
@@ -83,9 +83,8 @@ describe('Declaration', () => {
   });
 
   it('renders an h2 section title', () => {
-    const sectionTitle = wrapper.find(SectionTitle);
+    const sectionTitle = wrapper.find(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
-    expect(sectionTitle.attributes('tag')).toBe('h2');
     expect(sectionTitle.text()).toContain('Declaration');
   });
 

@@ -14,11 +14,12 @@
       v-for="section in sectionsWithTopics"
       :key="section.title"
       :title="section.title"
+      :anchor="section.anchor"
     >
       <template v-if="wrapTitle" slot="title">
-        <SectionTitle tag="h3" :anchor="anchor" class="title">
+        <LinkableHeading :level="3" :anchor="anchor" class="title">
           <WordBreak>{{ section.title }}</WordBreak>
-        </SectionTitle>
+        </LinkableHeading>
       </template>
       <template v-if="section.abstract" slot="abstract">
         <ContentNode :content="section.abstract" />
@@ -41,7 +42,7 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
 import TopicsLinkBlock from './TopicsLinkBlock.vue';
@@ -61,7 +62,7 @@ export default {
     TopicsLinkBlock,
     ContentNode,
     ContentTableSection,
-    SectionTitle,
+    LinkableHeading,
   },
   props: {
     isSymbolDeprecated: Boolean,

@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import ContentTableSection from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
 
 const {
-  SectionTitle,
+  LinkableHeading,
 } = ContentTableSection.components;
 
 describe('ContentTableSection', () => {
@@ -30,11 +30,20 @@ describe('ContentTableSection', () => {
   it('renders the title as `h3.title` by default', () => {
     const div = wrapper.findAll('.section-title').at(0);
 
-    const title = div.find(SectionTitle);
+    const title = div.find(LinkableHeading);
     expect(title.exists()).toBe(true);
-    expect(title.attributes('tag')).toBe('h3');
+    expect(title.props('level')).toBe(3);
     expect(title.classes('title')).toBe(true);
     expect(title.text()).toContain(propsData.title);
+  });
+
+  it('renders an `id` if `anchor` is provided', () => {
+    const title = wrapper.find('.title');
+    expect(title.attributes('id')).toBe(undefined);
+    wrapper.setProps({
+      anchor: 'foo-bar',
+    });
+    expect(title.props('anchor')).toBe('foo-bar');
   });
 
   it('renders a slot for a title', () => {

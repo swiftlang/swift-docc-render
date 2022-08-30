@@ -13,7 +13,7 @@ import ContentTable from 'docc-render/components/DocumentationTopic/ContentTable
 
 const {
   OnThisPageSection,
-  SectionTitle,
+  LinkableHeading,
 } = ContentTable.components;
 
 describe('ContentTable', () => {
@@ -44,7 +44,7 @@ describe('ContentTable', () => {
   it('renders an h2 title', () => {
     const title = wrapper.find('.title');
     expect(title.exists()).toBe(true);
-    expect(title.is(SectionTitle)).toBe(true);
+    expect(title.is(LinkableHeading)).toBe(true);
     expect(title.text()).toBe(propsData.title);
   });
 

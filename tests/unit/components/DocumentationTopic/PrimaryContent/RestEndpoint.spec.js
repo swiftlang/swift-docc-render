@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import RestEndpoint from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
 
 const {
-  SectionTitle,
+  LinkableHeading,
 } = RestEndpoint.components;
 
 describe('RestEndpoint', () => {
@@ -28,7 +28,7 @@ describe('RestEndpoint', () => {
         tokens,
       },
     });
-    expect(wrapper.find(SectionTitle).text()).toContain('URL');
+    expect(wrapper.find(LinkableHeading).text()).toContain('URL');
 
     const source = wrapper.find({ name: 'DeclarationSource' });
     expect(source.exists()).toBe(true);

@@ -20,7 +20,7 @@ import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue'
 import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
-import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
@@ -153,7 +153,7 @@ describe('ContentNode', () => {
 
   describe('with type="heading"', () => {
     it('renders a <h*>', () => {
-      for (let level = 1; level <= 6; level += 1) {
+      for (let level = 1; level < 6; level += 1) {
         const wrapper = mountWithItem({
           type: 'heading',
           anchor: 'heading',
@@ -161,9 +161,9 @@ describe('ContentNode', () => {
           text: 'heading',
         });
 
-        const sectionTitle = wrapper.find('.content').find(SectionTitle);
+        const sectionTitle = wrapper.find('.content').find(LinkableHeading);
         expect(sectionTitle.exists()).toBe(true);
-        expect(sectionTitle.attributes('tag')).toBe(`h${level}`);
+        expect(sectionTitle.props('level')).toBe(level);
         expect(sectionTitle.attributes('anchor')).toBe('heading');
         expect(sectionTitle.isEmpty()).toBe(false);
         expect(sectionTitle.text()).toContain('heading');

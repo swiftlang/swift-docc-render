@@ -14,7 +14,7 @@ import Parameters from 'docc-render/components/DocumentationTopic/PrimaryContent
 const {
   ContentNode,
   OnThisPageSection,
-  SectionTitle,
+  LinkableHeading,
 } = Parameters.components;
 
 describe('Parameters', () => {
@@ -60,9 +60,9 @@ describe('Parameters', () => {
   });
 
   it('renders an h2 with "Parameters"', () => {
-    const h2 = wrapper.find(SectionTitle);
+    const h2 = wrapper.find(LinkableHeading);
     expect(h2.exists()).toBe(true);
-    expect(h2.attributes('tag')).toBe('h2');
+    expect(h2.props('level')).toBe(2);
     expect(h2.text()).toContain('Parameters');
   });
 

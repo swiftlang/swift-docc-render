@@ -9,11 +9,11 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import SectionTitle from 'docc-render/components/ContentNode/SectionTitle.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
-describe('SectionTitle', () => {
+describe('LinkableHeading', () => {
   it('renders a default section title that is a h2 by default', () => {
-    const wrapper = shallowMount(SectionTitle, {
+    const wrapper = shallowMount(LinkableHeading, {
       slots: { default: 'Title' },
     });
     expect(wrapper.text()).toBe('Title');
@@ -22,16 +22,16 @@ describe('SectionTitle', () => {
   });
 
   it('renders a section title which heading is tag prop', () => {
-    const wrapper = shallowMount(SectionTitle, {
+    const wrapper = shallowMount(LinkableHeading, {
       propsData: {
-        tag: 'h3',
+        level: 3,
       },
     });
     expect(wrapper.is('h3')).toBe(true);
   });
 
   it('renders a section title with a header anchor and an id on the wrapper', async () => {
-    const wrapper = shallowMount(SectionTitle, {
+    const wrapper = shallowMount(LinkableHeading, {
       propsData: {
         anchor: 'title',
       },
@@ -51,7 +51,7 @@ describe('SectionTitle', () => {
     div.innerHTML = '<div id="title>';
     document.body.appendChild(div);
 
-    const wrapper = shallowMount(SectionTitle, {
+    const wrapper = shallowMount(LinkableHeading, {
       propsData: {
         anchor: 'title',
       },
@@ -65,12 +65,12 @@ describe('SectionTitle', () => {
   });
 
   it('does not render anchor if there is no anchor', () => {
-    const wrapper = shallowMount(SectionTitle);
+    const wrapper = shallowMount(LinkableHeading);
     expect(wrapper.find('.header-anchor').exists()).toBe(false);
   });
 
   it('does not render anchor if target ide is true', () => {
-    const wrapper = shallowMount(SectionTitle, {
+    const wrapper = shallowMount(LinkableHeading, {
       propsData: {
         anchor: 'title',
       },

@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import TopicsTable from 'docc-render/components/DocumentationTopic/TopicsTable.vue';
 
 const {
-  ContentTable, TopicsLinkBlock, ContentTableSection, ContentNode, WordBreak, SectionTitle,
+  ContentTable, TopicsLinkBlock, ContentTableSection, ContentNode, WordBreak, LinkableHeading,
 } = TopicsTable.components;
 
 describe('TopicsTable', () => {
@@ -44,6 +44,7 @@ describe('TopicsTable', () => {
         abstract: [{ type: 'text', text: 'foo abstract' }],
         discussion: { type: 'content', content: [{ type: 'text', text: 'foo discussion' }] },
         identifiers: [foo.identifier, 'bar'],
+        anchor: 'foobar',
       },
       {
         title: 'Baz',
@@ -77,7 +78,9 @@ describe('TopicsTable', () => {
     const sections = wrapper.findAll(ContentTableSection);
     expect(sections.length).toBe(propsData.sections.length);
     expect(sections.at(0).props('title')).toBe(propsData.sections[0].title);
+    expect(sections.at(0).props('anchor')).toBe(propsData.sections[0].anchor);
     expect(sections.at(1).props('title')).toBe(propsData.sections[1].title);
+    expect(sections.at(1).props('anchor')).toBe(null);
   });
 
   it('renders a `TopicsLinkBlock` for each topic with reference data in a section', () => {
@@ -140,11 +143,11 @@ describe('TopicsTable', () => {
     expect(wordBreak.exists()).toBe(false);
 
     wrapper.setProps({ wrapTitle: true });
-    const sectionTitle = wrapper.find(SectionTitle);
+    const linkableHeading = wrapper.find(LinkableHeading);
     wordBreak = wrapper.find(WordBreak);
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
-    expect(sectionTitle.exists()).toBe(true);
-    expect(sectionTitle.attributes('tag')).toBe('h3');
-    expect(sectionTitle.attributes('anchor')).toBe('topics');
+    expect(linkableHeading.exists()).toBe(true);
+    expect(linkableHeading.props('level')).toBe(3);
+    expect(linkableHeading.attributes('anchor')).toBe('topics');
   });
 });

@@ -20,7 +20,7 @@ const {
   PossiblyChangedMimetype,
   WordBreak,
   PossiblyChangedTextAttribute,
-  SectionTitle,
+  LinkableHeading,
 } = RestBody.components;
 
 const { ChangesKey } = RestBody.constants;
@@ -77,7 +77,7 @@ describe('RestBody', () => {
   });
 
   it('renders an h2 section title', () => {
-    const sectionTitle = wrapper.find(SectionTitle);
+    const sectionTitle = wrapper.find(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });
