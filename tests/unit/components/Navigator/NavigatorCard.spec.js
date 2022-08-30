@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -177,8 +177,16 @@ function setOffsetParent(element, value) {
   });
 }
 
+function attachDivWithID(id) {
+  if (document.getElementById(id)) return;
+  const div = document.createElement('DIV');
+  div.id = id;
+  document.body.appendChild(div);
+}
+
 describe('NavigatorCard', () => {
   beforeEach(() => {
+    document.body.innerHTML = '';
     jest.clearAllMocks();
     // mock the position helper function, as its too difficult to mock the boundingClientRects
     getChildPositionInScroller = jest.spyOn(NavigatorCard.methods, 'getChildPositionInScroller')
@@ -941,6 +949,7 @@ describe('NavigatorCard', () => {
   });
 
   it('allows filtering the items, opening all items, that have matches in children', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     await flushPromises();
     // item is not scrolled to
@@ -971,6 +980,7 @@ describe('NavigatorCard', () => {
       root0Child1GrandChild0,
       root1,
     ];
+    attachDivWithID(root0Child0.uid);
 
     const wrapper = createWrapper({
       propsData: {
@@ -992,6 +1002,7 @@ describe('NavigatorCard', () => {
   });
 
   it('renders all the children of a directly matched parent', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
@@ -1019,6 +1030,7 @@ describe('NavigatorCard', () => {
   });
 
   it('allows filtering the items using Tags, opening all items, that have matches in children', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     await flushPromises();
     const filter = wrapper.find(FilterInput);
@@ -1036,6 +1048,7 @@ describe('NavigatorCard', () => {
   });
 
   it('aliases `project` to `tutorial`, when filtering using tags', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
@@ -1050,6 +1063,7 @@ describe('NavigatorCard', () => {
   });
 
   it('allows filtering the items with filter and Tags, opening all items, that have matches in children', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
@@ -1754,10 +1768,14 @@ describe('NavigatorCard', () => {
   describe('navigating', () => {
     it('changes the open item, when navigating across pages, keeping the previously open items', async () => {
       // simulate navigating to the bottom most item.
+      attachDivWithID(root0Child0.uid);
       const wrapper = createWrapper();
       await flushPromises();
+      // item is in viewport, no need to scroll to it
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
       // simulate the new item is below the fold
       getChildPositionInScroller.mockReturnValueOnce(1);
+      attachDivWithID(root0Child1GrandChild0.uid);
       wrapper.setProps({
         activePath: [
           root0.path,
@@ -1766,6 +1784,7 @@ describe('NavigatorCard', () => {
         ],
       });
       await flushPromises();
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(3);
       // assert all are open
       const all = wrapper.findAll(NavigatorCardItem);
@@ -1798,6 +1817,7 @@ describe('NavigatorCard', () => {
       // simulate the new item is above the scrollarea
       getChildPositionInScroller.mockReturnValueOnce(-1);
       // navigate to the top level sibling
+      attachDivWithID(root1.uid);
       wrapper.setProps({
         activePath: [
           root1.path,
@@ -1805,6 +1825,7 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       // assert it scrolls to the item
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(4);
       // assert items are still open
       expect(all.at(0).props()).toMatchObject({
@@ -1840,13 +1861,18 @@ describe('NavigatorCard', () => {
     });
 
     it('tracks current open item, from clicking child items, handling duplicate router changes on the way', async () => {
+      attachDivWithID(root0Child0.uid);
       const wrapper = createWrapper();
       await flushPromises();
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
       let allItems = wrapper.findAll(NavigatorCardItem);
       const targetChild = allItems.at(2);
       expect(targetChild.props('item')).toEqual(root0Child1);
       // simulate the new item is below the fold
       getChildPositionInScroller.mockReturnValueOnce(1);
+      // add an element with the same ID as the one we are navigating to,
+      // otherwise we won't scroll to it
+      attachDivWithID(root0Child1.uid);
       // trigger a navigation
       targetChild.vm.$emit('navigate', root0Child1.uid);
       await wrapper.vm.$nextTick();
@@ -2051,9 +2077,10 @@ describe('NavigatorCard', () => {
 
   describe('scroll to item', () => {
     it('resets the scroll position, if initiating a filter', async () => {
-      const wrapper = createWrapper();
+      attachDivWithID(root0Child0.uid);
       // simulate item is above the scrollarea
       getChildPositionInScroller.mockReturnValueOnce(1);
+      const wrapper = createWrapper();
       await flushPromises();
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
@@ -2067,43 +2094,45 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
     });
 
-    it('keeps the scroll position, if the item is already in the viewport, on navigation', async () => {
+    it('scrolls to item, if HIDE_DEPRECATED_TAG is picked', async () => {
+      attachDivWithID(root0Child0.uid);
+      // simulate item is in viewport
+      getChildPositionInScroller.mockReturnValueOnce(0);
       const wrapper = createWrapper();
       await flushPromises();
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
-      await flushPromises();
-      // make sure scrollToItem is not called, because active item is already in the viewport
-      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
-      // simulate header scroll
+      // simulate item is below the viewport
       getChildPositionInScroller.mockReturnValueOnce(1);
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
+      // add the "Hide Deprecated" tag
+      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
       await flushPromises();
-      // make sure scrollToItem is not called, because active item is already in the viewport
+      // assert current active item is still scrolled to
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
     });
 
-    it('scrolls to item, if outside of visible viewport, on page navigation', async () => {
+    it('keeps the scroll position, if the item is already in the viewport, on navigation', async () => {
+      attachDivWithID(root0Child0.uid);
       const wrapper = createWrapper();
       await flushPromises();
+      // assert scrollToItem is not called, because its "in view"
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
-      getChildPositionInScroller.mockReturnValueOnce(-1);
-      // scroll to the item
+      attachDivWithID(root0Child1.uid);
       wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
       await flushPromises();
-      // make sure scrollToItem is called
-      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-      // assert it was called for the 3-rd item
-      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2);
-      // assert scrolling beyond
+      // make sure scrollToItem is not called again, because active item is still in the viewport
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
+      // simulate item is below the fold and assert navigating to new place scrolls the item
       getChildPositionInScroller.mockReturnValueOnce(1);
-      // scroll to the item
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
+      // prepare
+      attachDivWithID(root0Child1GrandChild0.uid);
+      // navigate
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1GrandChild0.uid);
       await flushPromises();
-      // make sure scrollToItem is called
-      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
-      // assert it was called for the 3-rd item
-      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
+      // assert scrollToItem is called, because item was under the fold
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem)
+        .toHaveBeenLastCalledWith(3);
     });
 
     it('scrolls to the focused item, if not visible, as with the size of its closes parent', async () => {
