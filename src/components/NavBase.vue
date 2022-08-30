@@ -315,9 +315,10 @@ export default {
         scrollLock.unlockScroll(this.$refs.tray);
       }
     },
-    onExpand() {
+    async onExpand() {
       this.$emit('open');
       // lock focus
+      await this.$nextTick();
       this.focusTrapInstance.start();
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
