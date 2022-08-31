@@ -14,7 +14,7 @@
     <GenericModal
       codeBackgroundColorOverride="transparent"
       theme="code"
-      :isFullscreen="true"
+      isFullscreen
       :showClose="false"
       :visible="quickNavigationStore.state.showQuickNavigation"
     >
@@ -71,7 +71,7 @@
             :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
             @toggle-sidenav="handleToggleSidenav"
           >
-            <template v-slot:menu-items>
+            <template #menu-items>
               <div
                 v-if="enableQuickNavigation"
                 class="quick-navigation-open-container"

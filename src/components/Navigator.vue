@@ -41,7 +41,6 @@
 </template>
 
 <script>
-
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
@@ -50,6 +49,7 @@ import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { getSetting } from 'docc-render/utils/theme-settings';
+
 /**
  * @typedef NavigatorFlatItem
  * @property {number} uid - generated UID

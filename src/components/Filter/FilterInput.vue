@@ -199,6 +199,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    focusInputWhenEmpty: {
+      type: Boolean,
+      default: false,
+    },
     clearFilterOnTagSelect: {
       type: Boolean,
       default: true,
@@ -408,6 +412,7 @@ export default {
     if (
       this.focusInputWhenCreated
       && document.activeElement !== this.$refs.input
+      && (this.inputIsNotEmpty || this.focusInputWhenEmpty)
     ) {
       this.focusInput();
     }

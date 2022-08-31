@@ -27,8 +27,9 @@
           v-model="userInput"
           placeholder="Search symbols"
           class="quick-navigation__filter"
-          :preventFocusStyle=true
-          :focusInputWhenCreated=true
+          focusInputWhenCreated
+          focusInputWhenEmpty
+          preventFocusStyle
           @input="focusedIndex = 0"
         >
           <template slot="icon">
@@ -38,7 +39,7 @@
               <MagnifierIcon />
             </div>
           </template>
-          <template v-slot:input-menu-items>
+          <template #input-menu-items>
             <div
               v-if="!userInput.length"
               class="quick-navigation__open-key-container"
@@ -63,20 +64,20 @@
             v-for="(symbol, index) in filteredSymbols"
             :class="{ 'selected' : index == focusedIndex }"
             :key="index"
-            @click="closeQuickNavigationModal()"
+            :id="MatchId"
+            tabindex="0"
+            @click="closeQuickNavigationModal"
+            @focus.capture="focusIndex(index)"
           >
             <Reference
               :url="symbol.path"
-              :id="index"
               class="quick-navigation__reference"
+              tabindex="-1"
             >
               <div
                 class="quick-navigation__symbol-match"
                 ref="match"
                 role="list"
-                tabindex="0"
-                :id="MatchId"
-                @focus.capture="focusIndex(index)"
               >
                 <div class="symbol-info">
                   <div class="symbol-name">
