@@ -6,13 +6,15 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { mount } from '@vue/test-utils';
 import Card from '@/components/Card.vue';
 import { TopicRole } from '@/constants/roles';
 import TopicTypeIcon from '@/components/TopicTypeIcon.vue';
-import TopicsLinkCardGridItem from '@/components/DocumentationTopic/TopicsLinkCardGridItem.vue';
+import TopicsLinkCardGridItem, {
+  ROLE_LINK_TEXT,
+} from '@/components/DocumentationTopic/TopicsLinkCardGridItem.vue';
 
 const defaultProps = {
   item: {
@@ -118,7 +120,29 @@ describe('TopicsLinkCardGridItem', () => {
       content: defaultProps.item.abstract,
       floatingStyle: true,
       size: 'large',
-      linkText: 'Visit page',
+      linkText: ROLE_LINK_TEXT[TopicRole.article],
     });
+  });
+
+  it('renders different text for diff roles', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        ...defaultProps,
+        compact: false,
+        item: { ...defaultProps.item, role: TopicRole.overview },
+      },
+    });
+    // overview
+    const card = wrapper.find(Card);
+    expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.overview]);
+    // collection
+    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.collection } });
+    expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.collection]);
+    // symbol
+    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.symbol } });
+    expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.symbol]);
+    // other
+    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.link } });
+    expect(card.props('linkText')).toBe('Learn more');
   });
 });

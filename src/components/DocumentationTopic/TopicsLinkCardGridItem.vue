@@ -17,7 +17,7 @@
     :content="compact ? []: item.abstract"
     floating-style
     :size="compact ? undefined: 'large'"
-    :link-text="compact? '': 'Visit page'"
+    :link-text="compact? '': linkText"
   >
     <template #cover="{ classes }" v-if="!imageReferences.card">
       <div :class="classes" class="reference-card-grid-item__image">
@@ -34,6 +34,14 @@
 <script>
 import Card from 'docc-render/components/Card.vue';
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
+import { TopicRole } from '@/constants/roles';
+
+export const ROLE_LINK_TEXT = {
+  [TopicRole.article]: 'Read Article',
+  [TopicRole.overview]: 'Start Tutorial',
+  [TopicRole.collection]: 'View API Collection',
+  [TopicRole.symbol]: 'View Symbol',
+};
 
 export default {
   name: 'TopicsLinkCardGridItem',
@@ -55,6 +63,7 @@ export default {
       all[current.type] = current.reference;
       return all;
     }, { icon: null, card: null }),
+    linkText: ({ item }) => ROLE_LINK_TEXT[item.role] || 'Learn more',
   },
 };
 </script>
