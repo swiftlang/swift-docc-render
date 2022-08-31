@@ -231,7 +231,7 @@ function renderNode(createElement, references) {
     case BlockType.heading: {
       const props = {
         anchor: node.anchor,
-        level: Number(node.level),
+        level: node.level,
       };
       return createElement(LinkableHeading, { props }, node.text);
     }

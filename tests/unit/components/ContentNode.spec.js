@@ -153,7 +153,7 @@ describe('ContentNode', () => {
 
   describe('with type="heading"', () => {
     it('renders a <h*>', () => {
-      for (let level = 1; level < 6; level += 1) {
+      for (let level = 1; level <= 6; level += 1) {
         const wrapper = mountWithItem({
           type: 'heading',
           anchor: 'heading',

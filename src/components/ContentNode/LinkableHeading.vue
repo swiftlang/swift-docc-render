@@ -28,8 +28,6 @@
 <script>
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 
-const HeadingLevels = [1, 2, 3, 4, 5, 6];
-
 export default {
   name: 'LinkableHeading',
   mixins: [scrollToElement],
@@ -46,7 +44,7 @@ export default {
     level: {
       type: Number,
       default: () => 2,
-      validator: v => v in HeadingLevels,
+      validator: v => v >= 1 && v <= 6,
     },
   },
   inject: {
