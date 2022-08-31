@@ -9,14 +9,43 @@
 */
 import TabManager from 'docc-render/utils/TabManager';
 
+const PREFIX = 'data-original-';
+const ARIA = 'aria-hidden';
+const TABINDEX = 'tabindex';
+
 function setOriginalValue(element, prop) {
   // TO ASK: isn't this the same as originalVal = self || ''?
-  let originalValue = element.getAttribute(prop);
+  let originalValue = element.getAttribute(PREFIX + prop);
   if (!originalValue) {
     originalValue = element.getAttribute(prop) || '';
     element.setAttribute(prop, originalValue);
   }
   return originalValue;
+}
+
+function retrieveOriginalValue(element, prop) {
+  // get the cached property
+  const originalValue = element.getAttribute(PREFIX + prop);
+
+  // remove the prefixed attribute
+  element.removeAttribute(PREFIX + prop);
+
+  if (typeof originalValue === 'string') {
+    // if there is a value, set it back.
+    if (originalValue.length) {
+      element.setAttribute(ARIA, originalValue);
+    } else {
+      // otherwise remove the attribute entirely.
+      element.removeAttribute(ARIA);
+    }
+  }
+  if (typeof originalTabValue === 'number') {
+    if (originalValue.length) {
+      element.setAttribute(TABINDEX, originalValue);
+    } else {
+      element.removeAttribute(TABINDEX);
+    }
+  }
 }
 
 /* eslint-disable no-cond-assign */
@@ -38,51 +67,28 @@ function iterateOverSiblings(el, callback) {
   }
 }
 
-const PREFIX = 'data-original-';
-const prop = 'aria-hidden';
-const prefixedProperty = PREFIX + prop;
-const TABINDEX = 'tabindex';
 /**
  * Hides an element from VO
  * @param {HTMLElement} element
  */
 const hideElement = (element) => {
-  console.log('hideElement', element);
-  let originalValue = element.getAttribute(prefixedProperty);
-  let originalTabValue = element.getAttribute(TABINDEX);
-
   // set original value for prefixed properties and tabindex
   // store the prop temporarily, to retrieve later.
-  if (!originalValue) {
-    // TO ASK: isn't this the same as originalVal = self || ''?
-    originalValue = element.getAttribute(prop) || '';
-    element.setAttribute(prefixedProperty, originalValue);
-  }
+  setOriginalValue(element, ARIA);
+  setOriginalValue(element, TABINDEX);
 
-  // TODO: make it deep
-  if (!originalTabValue) {
-    originalTabValue = element.getAttribute(TABINDEX) || '';
-    element.setAttribute(TABINDEX, originalTabValue);
-  }
+  // hide the component from VO
+  element.setAttribute(ARIA, 'true');
 
-  // hide the component, set aria-hidden to be true shallowly
-  element.setAttribute(prop, 'true');
-
-  // hide the component, set tabindex to -1 deeply
+  // hide the component from tabbing
   element.setAttribute(TABINDEX, '-1');
-
-  if (TabManager.isFocusableElement(element)) {
-    console.log(element, 'is focusable');
-    element.setAttribute(TABINDEX, '-1');
-  } else {
-    // make sure element's tabbable children are hidden as well
-    const tabbables = TabManager.getTabbableElements(element);
-    console.log('tabindex children', tabbables);
-    let i = tabbables.length;
-    while (i -= 1) {
-      setOriginalValue(tabbables[i], TABINDEX);
-      tabbables[i].setAttribute(TABINDEX, '-1');
-    }
+  // make sure element's tabbable children are hidden as well
+  const tabbables = TabManager.getTabbableElements(element);
+  let i = tabbables.length - 1;
+  while (i >= 0) {
+    setOriginalValue(tabbables[i], TABINDEX);
+    tabbables[i].setAttribute(TABINDEX, '-1');
+    i -= 1;
   }
 };
 
@@ -91,44 +97,14 @@ const hideElement = (element) => {
  * @param {HTMLElement} element
  */
 const showElement = (element) => {
-  // get the cached property
-  const originalValue = element.getAttribute(prefixedProperty);
-  const originalTabValue = element.getAttribute(TABINDEX);
+  retrieveOriginalValue(element, ARIA);
+  retrieveOriginalValue(element, TABINDEX);
 
-  if (typeof originalValue === 'string') {
-    // if there is a value, set it back.
-    if (originalValue.length) {
-      element.setAttribute(prop, originalValue);
-    } else {
-      // otherwise remove the attribute entirely.
-      element.removeAttribute(prop);
-    }
-  }
-  if (typeof originalTabValue === 'number') {
-    if (originalTabValue.length) {
-      element.setAttribute(TABINDEX, originalTabValue);
-    } else {
-      element.removeAttribute(TABINDEX);
-    }
-  }
-
-  // remove the prefixed attribute
-  element.removeAttribute(prefixedProperty);
-
-  // remove tabindex deeply
-  if (TabManager.isFocusableElement(element)) {
-    element.removeAttribute(TABINDEX);
-  } else {
-    // make sure element's tabbable children are hidden as well
-    const tabbables = TabManager.getTabbableElements(element);
-    let i = tabbables.length;
-    while (i -= 1) {
-      if (originalValue.length) {
-        element.setAttribute(TABINDEX, originalTabValue);
-      } else {
-        element.removeAttribute(TABINDEX);
-      }
-    }
+  // make sure element's tabbable children are hidden as well
+  const tabbables = TabManager.getTabbableElements(element);
+  let i = tabbables.length;
+  while (i -= 1) {
+    retrieveOriginalValue(tabbables[i], TABINDEX);
   }
 };
 
