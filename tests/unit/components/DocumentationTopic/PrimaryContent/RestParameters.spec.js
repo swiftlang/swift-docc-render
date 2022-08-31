@@ -48,7 +48,7 @@ describe('RestParameters', () => {
 
   function mountComponent({ propsData: props, ...others } = {}) {
     return mount(RestParameters, {
-      stubs: ['ContentNode'],
+      stubs: ['ContentNode', 'router-link'],
       propsData: {
         ...propsData,
         ...props,

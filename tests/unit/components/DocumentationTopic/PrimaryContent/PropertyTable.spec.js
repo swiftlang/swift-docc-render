@@ -115,7 +115,7 @@ describe('PropertyTable', () => {
 
   function mountComponent(options) {
     return mount(PropertyTable, {
-      stubs: ['ContentNode'],
+      stubs: ['ContentNode', 'router-link'],
       propsData,
       provide,
       ...options,

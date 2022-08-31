@@ -8,12 +8,15 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 describe('LinkableHeading', () => {
+  const stubs = { 'router-link': RouterLinkStub };
+
   it('renders a default section title that is a h2 by default', () => {
     const wrapper = shallowMount(LinkableHeading, {
+      stubs,
       slots: { default: 'Title' },
     });
     expect(wrapper.text()).toBe('Title');
@@ -23,6 +26,7 @@ describe('LinkableHeading', () => {
 
   it('renders a section title which heading is tag prop', () => {
     const wrapper = shallowMount(LinkableHeading, {
+      stubs,
       propsData: {
         level: 3,
       },
@@ -32,6 +36,7 @@ describe('LinkableHeading', () => {
 
   it('renders a section title with a header anchor and an id on the wrapper', async () => {
     const wrapper = shallowMount(LinkableHeading, {
+      stubs,
       propsData: {
         anchor: 'title',
       },
@@ -41,7 +46,7 @@ describe('LinkableHeading', () => {
     expect(wrapper.text()).toBe('# Title');
     expect(wrapper.attributes('id')).toBe('title');
     const headerAnchor = wrapper.find('.header-anchor');
-    expect(headerAnchor.attributes('href')).toBe('#title');
+    expect(headerAnchor.props('to')).toEqual({ hash: '#title' });
     expect(headerAnchor.attributes('aria-label')).toBe('hidden');
   });
 
@@ -52,6 +57,7 @@ describe('LinkableHeading', () => {
     document.body.appendChild(div);
 
     const wrapper = shallowMount(LinkableHeading, {
+      stubs,
       propsData: {
         anchor: 'title',
       },
@@ -60,7 +66,7 @@ describe('LinkableHeading', () => {
     expect(wrapper.text()).toBe('# Title');
     expect(wrapper.attributes('id')).not.toBe('title');
     const headerAnchor = wrapper.find('.header-anchor');
-    expect(headerAnchor.attributes('href')).toBe('#title');
+    expect(headerAnchor.props('to')).toEqual({ hash: '#title' });
     expect(headerAnchor.attributes('aria-label')).toBe('hidden');
   });
 
@@ -71,6 +77,7 @@ describe('LinkableHeading', () => {
 
   it('does not render anchor if target ide is true', () => {
     const wrapper = shallowMount(LinkableHeading, {
+      stubs,
       propsData: {
         anchor: 'title',
       },

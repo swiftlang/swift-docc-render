@@ -57,7 +57,7 @@ describe('RestResponses', () => {
 
   function mountComponent(options) {
     const wrapper = mount(RestResponses, {
-      stubs: ['ContentNode'],
+      stubs: ['ContentNode', 'router-link'],
       propsData,
       provide,
       ...options,

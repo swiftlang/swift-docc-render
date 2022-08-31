@@ -35,6 +35,7 @@ export default {
     */
     async handleFocusAndScroll(hash) {
       const element = document.getElementById(hash);
+      // if no element to focus or scroll, exit
       if (!element) return;
       // Focus scrolls to the element
       element.focus();

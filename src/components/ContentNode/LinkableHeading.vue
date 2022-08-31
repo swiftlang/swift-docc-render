@@ -14,13 +14,13 @@
    :is="`h${level}`"
    class="section-title"
   >
-    <a
+    <router-link
       v-if="anchor && !isTargetIDE"
-      :href="`#${anchor}`"
+      :to="{ hash: `#${anchor}` }"
       class="header-anchor"
       aria-label="hidden"
       @click="handleFocusAndScroll(anchor)"
-    >#</a>
+    >#</router-link>
     <slot />
   </component>
 </template>

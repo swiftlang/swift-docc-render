@@ -185,7 +185,7 @@ describe('Asset', () => {
       expect(asset.exists()).toBe(true);
       expect(asset.props()).toEqual({
         alt: image.alt,
-        loading: "lazy",
+        loading: 'lazy',
         variants: image.variants,
       });
     });
@@ -195,7 +195,7 @@ describe('Asset', () => {
       const asset = wrapper.find(ImageAsset);
       expect(asset.props()).toEqual({
         alt: image.alt,
-        loading: "lazy",
+        loading: 'lazy',
         variants: image.variants,
       });
     });
