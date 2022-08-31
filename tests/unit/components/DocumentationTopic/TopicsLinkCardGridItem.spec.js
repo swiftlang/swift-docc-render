@@ -141,6 +141,9 @@ describe('TopicsLinkCardGridItem', () => {
     // symbol
     wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.symbol } });
     expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.symbol]);
+    // sampleCode
+    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.sampleCode } });
+    expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.sampleCode]);
     // other
     wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.link } });
     expect(card.props('linkText')).toBe('Learn more');

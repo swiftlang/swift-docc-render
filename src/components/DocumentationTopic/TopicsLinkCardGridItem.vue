@@ -37,10 +37,11 @@ import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicRole } from '@/constants/roles';
 
 export const ROLE_LINK_TEXT = {
-  [TopicRole.article]: 'Read Article',
-  [TopicRole.overview]: 'Start Tutorial',
-  [TopicRole.collection]: 'View API Collection',
-  [TopicRole.symbol]: 'View Symbol',
+  [TopicRole.article]: 'Read article',
+  [TopicRole.overview]: 'Start tutorial',
+  [TopicRole.collection]: 'View API collection',
+  [TopicRole.symbol]: 'View symbol',
+  [TopicRole.sampleCode]: 'View sample code',
 };
 
 export default {
