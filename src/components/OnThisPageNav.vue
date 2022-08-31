@@ -151,10 +151,10 @@ ul {
   @include font-styles(on-this-page);
   display: inline-block;
   margin-bottom: 5px;
+  transition: color 0.15s ease-in;
 }
 
 .active .base-link {
-  font-weight: $font-weight-semibold;
-  color: var(--color-figure-gray);
+  color: var(--color-text);
 }
 </style>
