@@ -10,7 +10,7 @@
 
 <template>
   <component
-   :id="id"
+   :id="anchor"
    :is="`h${level}`"
    class="section-title"
   >
@@ -31,11 +31,6 @@ import scrollToElement from 'docc-render/mixins/scrollToElement';
 export default {
   name: 'LinkableHeading',
   mixins: [scrollToElement],
-  data() {
-    return {
-      id: null,
-    };
-  },
   props: {
     anchor: {
       type: String,
@@ -51,15 +46,6 @@ export default {
     isTargetIDE: {
       default: () => false,
     },
-  },
-  mounted() {
-    if (!this.anchor) return;
-    const element = document.getElementById(`${this.anchor}`);
-    // if there is no element in the document that has an id,
-    // add it to this component
-    if (!element) {
-      this.id = this.anchor;
-    }
   },
 };
 </script>

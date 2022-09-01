@@ -148,6 +148,6 @@ describe('TopicsTable', () => {
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
     expect(linkableHeading.exists()).toBe(true);
     expect(linkableHeading.props('level')).toBe(3);
-    expect(linkableHeading.attributes('anchor')).toBe('topics');
+    expect(linkableHeading.attributes('anchor')).toBe(propsData.sections[0].anchor);
   });
 });

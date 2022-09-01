@@ -50,26 +50,6 @@ describe('LinkableHeading', () => {
     expect(headerAnchor.attributes('aria-label')).toBe('hidden');
   });
 
-  it('renders a section title with a header anchor and no id on the wrapper if it already exists on the document', () => {
-    // create element with id outside the component
-    const div = document.createElement('div');
-    div.innerHTML = '<div id="title>';
-    document.body.appendChild(div);
-
-    const wrapper = shallowMount(LinkableHeading, {
-      stubs,
-      propsData: {
-        anchor: 'title',
-      },
-      slots: { default: 'Title' },
-    });
-    expect(wrapper.text()).toBe('# Title');
-    expect(wrapper.attributes('id')).not.toBe('title');
-    const headerAnchor = wrapper.find('.header-anchor');
-    expect(headerAnchor.props('to')).toEqual({ hash: '#title' });
-    expect(headerAnchor.attributes('aria-label')).toBe('hidden');
-  });
-
   it('does not render anchor if there is no anchor', () => {
     const wrapper = shallowMount(LinkableHeading);
     expect(wrapper.find('.header-anchor').exists()).toBe(false);
