@@ -34,6 +34,7 @@
           <template slot="icon">
             <div
               class="quick-navigation__magnifier-icon-container"
+              :class="{ 'blue': userInput.length }"
             >
               <MagnifierIcon />
             </div>
@@ -290,7 +291,7 @@ $filter-padding: rem(15px);
     margin: auto;
     max-width: rem(800px);
     .filter__wrapper {
-      border: 0px;
+      border: none;
     }
     > * {
       --input-text: var(--color-figure-gray-secondary) !important;
@@ -298,7 +299,7 @@ $filter-padding: rem(15px);
   }
   &__filter {
     background: var(--color-fill);
-    border: 0px;
+    border: none;
     border-radius: $border-radius;
     box-sizing: border-box;
     outline-width: 0;
@@ -312,6 +313,10 @@ $filter-padding: rem(15px);
     padding-left: rem(5px);
     > * {
       width: 100%;
+    }
+    &.blue .magnifier-icon {
+      fill: var(--color-figure-blue);
+      color: var(--color-figure-blue);
     }
   }
   &__match-list {
