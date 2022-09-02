@@ -8,7 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import FilterInput from '@/components/Filter/FilterInput.vue';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHighlighter.vue';
 import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vue';
@@ -54,7 +55,7 @@ describe('QuickNavigationModal', () => {
     },
     {
       title: 'bar',
-      path: '/bar',
+      path: '/foo/bar',
       type: 'init',
     },
     {
@@ -128,6 +129,20 @@ describe('QuickNavigationModal', () => {
 
   it('it renders the filter input', () => {
     expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props()).toEqual({
+      placeholder: 'Search symbols',
+      focusInputWhenCreated: true,
+      focusInputWhenEmpty: true,
+      positionReversed: false,
+      disabled: false,
+      value: '',
+      preventedBlur: false,
+      selectedTags: [],
+      shouldTruncateTags: false,
+      tags: [],
+      clearFilterOnTagSelect: true,
+    });
   });
 
   it('it renders the match list on user input', async () => {
@@ -269,5 +284,39 @@ describe('QuickNavigationModal', () => {
     });
     await wrapper.trigger('keydown.enter');
     expect(handleKeyEnter).toHaveBeenCalledTimes(1);
+  });
+
+  it('it focuses the user input on open', async () => {
+    const mountWrapper = mount(QuickNavigationModal, config);
+    const filterInput = mountWrapper.find(FilterInput);
+    await filterInput.vm.$nextTick();
+    expect(filterInput.emitted('show-suggested-tags')).toBeTruthy();
+  });
+
+  it('it renders the symbol tree of the resulting symbol', async () => {
+    const parentWrapper = shallowMount(QuickNavigationModal, {
+      propsData: {
+        children: [
+          {
+            title: 'bar',
+            path: '/foo/bar',
+            type: 'init',
+            parents: [{
+              parent: '<root>',
+              title: 'foo',
+            }],
+          },
+        ],
+      },
+    });
+    const getParents = jest.spyOn(parentWrapper.vm, 'getParents');
+    parentWrapper.setData({
+      debouncedInput: 'bar',
+    });
+    expect(getParents).toHaveBeenCalledTimes(1);
+    const symbolTree = parentWrapper
+      .find('.quick-navigation__symbol-match')
+      .find('.parent-path');
+    expect(symbolTree.text()).toBe('bar');
   });
 });

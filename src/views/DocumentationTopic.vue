@@ -10,20 +10,34 @@
 
 <template>
   <div>
-    <PortalTarget name="modal-destination" multiple />
-    <GenericModal
-      codeBackgroundColorOverride="transparent"
-      theme="code"
-      isFullscreen
-      :showClose="false"
-      :visible="quickNavigationStore.state.showQuickNavigation"
-    >
-      <QuickNavigationModal
-        :children="quickNavigationStore.state.flattenIndex"
-      />
-    </GenericModal>
     <CodeTheme class="doc-topic-view">
       <template v-if="topicData">
+        <NavigatorDataProvider
+          :interface-language="topicProps.interfaceLanguage"
+          :technology="technology"
+          :api-changes-version="store.state.selectedAPIChangesVersion"
+          ref="NavigatorDataProvider"
+        >
+          <template #default="slotProps">
+            <div ref="div">
+              <PortalTarget name="modal-destination" multiple />
+              <GenericModal
+                ref="modal"
+                codeBackgroundColorOverride="transparent"
+                theme="code"
+                isFullscreen
+                :showClose="false"
+                :visible="showQuickNavigationModal"
+              >
+                <QuickNavigationModal
+                  @closeQuickNavigationModal="showQuickNavigationModal = false"
+                  ref="quickNavigationModal"
+                  :children="slotProps.flatChildren"
+                />
+              </GenericModal>
+            </div>
+          </template>
+        </NavigatorDataProvider>
         <component
           :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
           v-bind="sidebarProps"
@@ -37,20 +51,21 @@
                 :api-changes-version="store.state.selectedAPIChangesVersion"
               >
                 <template #default="slotProps">
-                  <transition name="delay-hiding">
-                    <Navigator
-                      v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                      :parent-topic-identifiers="parentTopicIdentifiers"
-                      :technology="slotProps.technology || technology"
-                      :is-fetching="slotProps.isFetching"
-                      :error-fetching="slotProps.errorFetching"
-                      :api-changes="slotProps.apiChanges"
-                      :references="topicProps.references"
-                      :scrollLockID="scrollLockID"
-                      :breakpoint="breakpoint"
-                      @close="handleToggleSidenav(breakpoint)"
-                    />
-                  </transition>
+                    <transition name="delay-hiding">
+                      <Navigator
+                        v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
+                        :flatChildren="slotProps.flatChildren"
+                        :parent-topic-identifiers="parentTopicIdentifiers"
+                        :technology="slotProps.technology || technology"
+                        :is-fetching="slotProps.isFetching"
+                        :error-fetching="slotProps.errorFetching"
+                        :api-changes="slotProps.apiChanges"
+                        :references="topicProps.references"
+                        :scrollLockID="scrollLockID"
+                        :breakpoint="breakpoint"
+                        @close="handleToggleSidenav(breakpoint)"
+                      />
+                    </transition>
                 </template>
               </NavigatorDataProvider>
             </div>
@@ -76,7 +91,7 @@
                 v-if="enableQuickNavigation"
                 class="quick-navigation-open-container"
                 tabindex="0"
-                @click="openQuickNavigationModal()"
+                @click="openQuickNavigationModal"
                 @keydown.enter.exact="openQuickNavigationModal"
               >
                 <MagnifierIcon />
@@ -126,7 +141,6 @@ import { compareVersions, combineVersions } from 'docc-render/utils/schema-versi
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
-import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -156,7 +170,6 @@ export default {
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       store: DocumentationTopicStore,
-      quickNavigationStore: QuickNavigationStore,
       BreakpointName,
     };
   },
@@ -351,7 +364,7 @@ export default {
       }
     },
     openQuickNavigationModal() {
-      this.quickNavigationStore.toggleShowQuickNavigationModal(true);
+      this.showQuickNavigationModal = true;
     },
     toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
       this.sidenavHiddenOnLarge = value;
@@ -361,7 +374,7 @@ export default {
       this.sidenavVisibleOnMobile = value;
     },
     onKeydown(event) {
-      if (this.quickNavigationStore.state.showQuickNavigation) return;
+      if (this.showQuickNavigationModal) return;
       if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))) return;
       this.openQuickNavigationModal();
       event.preventDefault();
@@ -378,7 +391,6 @@ export default {
   },
   provide() {
     return {
-      quickNavigationStore: this.quickNavigationStore,
       store: this.store,
     };
   },

@@ -200,8 +200,9 @@ describe('DocumentationTopic', () => {
       technology,
       apiChanges: null,
       allowHiding: true,
+      flatChildren: [],
     });
-    expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
+    expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(2);
     await flushPromises();
     expect(navigator.props()).toEqual({
       errorFetching: false,
@@ -213,6 +214,7 @@ describe('DocumentationTopic', () => {
       technology: TechnologyWithChildren,
       apiChanges: null,
       allowHiding: true,
+      flatChildren: [],
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);

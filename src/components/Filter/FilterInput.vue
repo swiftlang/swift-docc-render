@@ -14,7 +14,7 @@
     role="search"
     tabindex="0"
     :aria-labelledby="searchAriaLabelledBy"
-    :class="{ 'focus': showSuggestedTags && !preventFocusStyle }"
+    :class="{ 'focus': showSuggestedTags }"
     @blur.capture="handleBlur"
     @focus.capture="handleFocus"
   >
@@ -159,10 +159,6 @@ export default {
     FilterIcon,
   },
   props: {
-    preventFocusStyle: {
-      type: Boolean,
-      default: () => false,
-    },
     positionReversed: {
       type: Boolean,
       default: () => false,

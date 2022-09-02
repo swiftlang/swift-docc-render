@@ -29,7 +29,6 @@
           class="quick-navigation__filter"
           focusInputWhenCreated
           focusInputWhenEmpty
-          preventFocusStyle
           @input="focusedIndex = 0"
         >
           <template slot="icon">
@@ -153,7 +152,6 @@ export default {
     return {
       debouncedInput: '',
       MatchId,
-      toggleModal: ({ toggle }) => this.quickNavigationStore.toggleShowQuickNavigationModal(toggle),
       userInput: '',
     };
   },
@@ -193,10 +191,9 @@ export default {
     userInput: 'debounceInput',
     focusedIndex: 'scrollIntoView',
   },
-  inject: ['quickNavigationStore'],
   methods: {
     closeQuickNavigationModal() {
-      this.toggleModal(false);
+      this.$emit('closeQuickNavigationModal', false);
     },
     constructFuzzyRegex(userInput) {
       // Construct regex for fuzzy match
@@ -277,7 +274,6 @@ export default {
 <style lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$clear-icon-size: rem(23px);
 $modal-margin-top: 10rem;
 $base-border-width: 1px;
 $filter-padding: rem(15px);
