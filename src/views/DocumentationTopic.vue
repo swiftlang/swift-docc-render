@@ -9,108 +9,105 @@
 -->
 
 <template>
-  <div>
-    <CodeTheme class="doc-topic-view">
-      <template v-if="topicData">
-        <NavigatorDataProvider
-          :interface-language="topicProps.interfaceLanguage"
-          :technology="technology"
-          :api-changes-version="store.state.selectedAPIChangesVersion"
-          ref="NavigatorDataProvider"
+  <CodeTheme class="doc-topic-view">
+    <template v-if="topicData">
+      <NavigatorDataProvider
+        :interface-language="topicProps.interfaceLanguage"
+        :technology="technology"
+        :api-changes-version="store.state.selectedAPIChangesVersion"
+        ref="NavigatorDataProvider"
+      >
+        <template #default="slotProps">
+          <div ref="div">
+            <PortalTarget name="modal-destination" multiple />
+            <GenericModal
+              ref="modal"
+              codeBackgroundColorOverride="transparent"
+              theme="code"
+              isFullscreen
+              :showClose="false"
+              :visible="showQuickNavigationModal"
+            >
+              <QuickNavigationModal
+                @closeQuickNavigationModal="showQuickNavigationModal = false"
+                :children="slotProps.flatChildren"
+              />
+            </GenericModal>
+          </div>
+        </template>
+      </NavigatorDataProvider>
+      <component
+        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
+        v-bind="sidebarProps"
+        v-on="sidebarListeners"
+      >
+        <template #aside="{ scrollLockID, breakpoint }">
+          <div class="doc-topic-aside">
+            <NavigatorDataProvider
+              :interface-language="topicProps.interfaceLanguage"
+              :technology="technology"
+              :api-changes-version="store.state.selectedAPIChangesVersion"
+            >
+              <template #default="slotProps">
+                  <transition name="delay-hiding">
+                    <Navigator
+                      v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
+                      :flatChildren="slotProps.flatChildren"
+                      :parent-topic-identifiers="parentTopicIdentifiers"
+                      :technology="slotProps.technology || technology"
+                      :is-fetching="slotProps.isFetching"
+                      :error-fetching="slotProps.errorFetching"
+                      :api-changes="slotProps.apiChanges"
+                      :references="topicProps.references"
+                      :scrollLockID="scrollLockID"
+                      :breakpoint="breakpoint"
+                      @close="handleToggleSidenav(breakpoint)"
+                    />
+                  </transition>
+              </template>
+            </NavigatorDataProvider>
+          </div>
+        </template>
+        <Nav
+          v-if="!isTargetIDE"
+          :title="topicProps.title"
+          :diffAvailability="topicProps.diffAvailability"
+          :interfaceLanguage="topicProps.interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :parentTopicIdentifiers="parentTopicIdentifiers"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :currentTopicTags="topicProps.tags"
+          :references="topicProps.references"
+          :isWideFormat="enableNavigator"
+          :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
+          @toggle-sidenav="handleToggleSidenav"
         >
-          <template #default="slotProps">
-            <div ref="div">
-              <PortalTarget name="modal-destination" multiple />
-              <GenericModal
-                ref="modal"
-                codeBackgroundColorOverride="transparent"
-                theme="code"
-                isFullscreen
-                :showClose="false"
-                :visible="showQuickNavigationModal"
-              >
-                <QuickNavigationModal
-                  @closeQuickNavigationModal="showQuickNavigationModal = false"
-                  ref="quickNavigationModal"
-                  :children="slotProps.flatChildren"
-                />
-              </GenericModal>
+          <template #menu-items>
+            <div
+              v-if="enableQuickNavigation"
+              class="quick-navigation-open-container"
+              tabindex="0"
+              @click="openQuickNavigationModal"
+              @keydown.enter.exact="openQuickNavigationModal"
+            >
+              <MagnifierIcon />
             </div>
           </template>
-        </NavigatorDataProvider>
-        <component
-          :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
-          v-bind="sidebarProps"
-          v-on="sidebarListeners"
-        >
-          <template #aside="{ scrollLockID, breakpoint }">
-            <div class="doc-topic-aside">
-              <NavigatorDataProvider
-                :interface-language="topicProps.interfaceLanguage"
-                :technology="technology"
-                :api-changes-version="store.state.selectedAPIChangesVersion"
-              >
-                <template #default="slotProps">
-                    <transition name="delay-hiding">
-                      <Navigator
-                        v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                        :flatChildren="slotProps.flatChildren"
-                        :parent-topic-identifiers="parentTopicIdentifiers"
-                        :technology="slotProps.technology || technology"
-                        :is-fetching="slotProps.isFetching"
-                        :error-fetching="slotProps.errorFetching"
-                        :api-changes="slotProps.apiChanges"
-                        :references="topicProps.references"
-                        :scrollLockID="scrollLockID"
-                        :breakpoint="breakpoint"
-                        @close="handleToggleSidenav(breakpoint)"
-                      />
-                    </transition>
-                </template>
-              </NavigatorDataProvider>
-            </div>
-          </template>
-          <Nav
-            v-if="!isTargetIDE"
-            :title="topicProps.title"
-            :diffAvailability="topicProps.diffAvailability"
-            :interfaceLanguage="topicProps.interfaceLanguage"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-            :parentTopicIdentifiers="parentTopicIdentifiers"
-            :isSymbolDeprecated="isSymbolDeprecated"
-            :isSymbolBeta="isSymbolBeta"
-            :currentTopicTags="topicProps.tags"
-            :references="topicProps.references"
-            :isWideFormat="enableNavigator"
-            :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
-            @toggle-sidenav="handleToggleSidenav"
-          >
-            <template #menu-items>
-              <div
-                v-if="enableQuickNavigation"
-                class="quick-navigation-open-container"
-                tabindex="0"
-                @click="openQuickNavigationModal"
-                @keydown.enter.exact="openQuickNavigationModal"
-              >
-                <MagnifierIcon />
-              </div>
-            </template>
-          </Nav>
-          <Topic
-            v-bind="topicProps"
-            :key="topicKey"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-            :isSymbolDeprecated="isSymbolDeprecated"
-            :isSymbolBeta="isSymbolBeta"
-            :languagePaths="languagePaths"
-          />
-        </component>
-      </template>
-    </CodeTheme>
-  </div>
+        </Nav>
+        <Topic
+          v-bind="topicProps"
+          :key="topicKey"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :languagePaths="languagePaths"
+        />
+      </component>
+    </template>
+  </CodeTheme>
 </template>
 
 <script>

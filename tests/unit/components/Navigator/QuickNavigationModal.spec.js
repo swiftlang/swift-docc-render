@@ -287,14 +287,14 @@ describe('QuickNavigationModal', () => {
   });
 
   it('it focuses the user input on open', async () => {
-    const mountWrapper = mount(QuickNavigationModal, config);
-    const filterInput = mountWrapper.find(FilterInput);
+    wrapper = mount(QuickNavigationModal, config);
+    const filterInput = wrapper.find(FilterInput);
     await filterInput.vm.$nextTick();
     expect(filterInput.emitted('show-suggested-tags')).toBeTruthy();
   });
 
   it('it renders the symbol tree of the resulting symbol', async () => {
-    const parentWrapper = shallowMount(QuickNavigationModal, {
+    wrapper = shallowMount(QuickNavigationModal, {
       propsData: {
         children: [
           {
@@ -309,12 +309,12 @@ describe('QuickNavigationModal', () => {
         ],
       },
     });
-    const getParents = jest.spyOn(parentWrapper.vm, 'getParents');
-    parentWrapper.setData({
+    const getParents = jest.spyOn(wrapper.vm, 'getParents');
+    wrapper.setData({
       debouncedInput: 'bar',
     });
     expect(getParents).toHaveBeenCalledTimes(1);
-    const symbolTree = parentWrapper
+    const symbolTree = wrapper
       .find('.quick-navigation__symbol-match')
       .find('.parent-path');
     expect(symbolTree.text()).toBe('bar');
