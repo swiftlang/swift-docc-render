@@ -20,6 +20,7 @@
       @click="handleFocusAndScroll(anchor)"
     >
       <slot />
+      <LinkIcon class="icon" aria-hidden="true"/>
     </router-link>
     <template v-else>
       <slot />
@@ -29,10 +30,14 @@
 
 <script>
 import scrollToElement from 'docc-render/mixins/scrollToElement';
+import LinkIcon from 'theme/components/Icons/LinkIcon.vue';
 
 export default {
   name: 'LinkableHeading',
   mixins: [scrollToElement],
+  components: {
+    LinkIcon,
+  },
   props: {
     anchor: {
       type: String,
@@ -58,22 +63,28 @@ export default {
 .header-anchor {
   color: var(--colors-text, var(--color-text));
   text-decoration: none;
-  position: relative;
 
-  &:after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 0px;
-    bottom: -3px;
-    height: 1px;
-    background-color: var(--colors-text, var(--color-text));
-    // transition: width 0.2s cubic-bezier(0.82, 0.085, 0.395, 0.895) 0s;
-    // transition-delay: .5s;
+  // &:after {
+  //   content: "";
+  //   display: block;
+  //   position: absolute;
+  //   width: 0px;
+  //   bottom: -3px;
+  //   height: 1px;
+  //   background-color: var(--colors-text, var(--color-text));
+  //   // transition: width 0.2s cubic-bezier(0.82, 0.085, 0.395, 0.895) 0s;
+  //   // transition-delay: .5s;
+  // }
+
+  .icon {
+    display: none;
+    height: .6em;
+    margin-left: .3em;
+    fill: currentColor;
   }
 
-  &:hover::after {
-    width: 100%;
+  &:hover .icon {
+    display: inline;
   }
 }
 </style>
