@@ -12,16 +12,18 @@
   <component
    :id="anchor"
    :is="`h${level}`"
-   class="section-title"
   >
     <router-link
       v-if="anchor && !isTargetIDE"
       :to="{ hash: `#${anchor}` }"
       class="header-anchor"
-      aria-label="hidden"
       @click="handleFocusAndScroll(anchor)"
-    >#</router-link>
-    <slot />
+    >
+      <slot />
+    </router-link>
+    <template v-else>
+      <slot />
+    </template>
   </component>
 </template>
 
@@ -53,21 +55,25 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.section-title:hover {
-  .header-anchor {
-    opacity: 1;
-  }
-}
-
 .header-anchor {
-  margin-left: -0.73em;
-  padding-right: 0.23em;
-  transition: opacity .25s;
-  opacity: 0;
+  color: var(--colors-text, var(--color-text));
   text-decoration: none;
+  position: relative;
 
-  &:hover, &:focus {
-    opacity: 1;
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 0px;
+    bottom: -3px;
+    height: 1px;
+    background-color: var(--colors-text, var(--color-text));
+    // transition: width 0.2s cubic-bezier(0.82, 0.085, 0.395, 0.895) 0s;
+    // transition-delay: .5s;
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 }
 </style>

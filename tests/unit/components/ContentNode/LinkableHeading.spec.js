@@ -14,17 +14,16 @@ import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.
 describe('LinkableHeading', () => {
   const stubs = { 'router-link': RouterLinkStub };
 
-  it('renders a default section title that is a h2 by default', () => {
+  it('renders a default heading that is a h2 by default', () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
       slots: { default: 'Title' },
     });
     expect(wrapper.text()).toBe('Title');
     expect(wrapper.is('h2')).toBe(true);
-    expect(wrapper.classes()).toContain('section-title');
   });
 
-  it('renders a section title which heading is tag prop', () => {
+  it('renders a heading with a given level', () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
       propsData: {
@@ -34,7 +33,7 @@ describe('LinkableHeading', () => {
     expect(wrapper.is('h3')).toBe(true);
   });
 
-  it('renders a section title with a header anchor and an id on the wrapper', async () => {
+  it('renders a heading with a header anchor and an id on the wrapper', async () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
       propsData: {
@@ -43,11 +42,10 @@ describe('LinkableHeading', () => {
       slots: { default: 'Title' },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.text()).toBe('# Title');
     expect(wrapper.attributes('id')).toBe('title');
     const headerAnchor = wrapper.find('.header-anchor');
     expect(headerAnchor.props('to')).toEqual({ hash: '#title' });
-    expect(headerAnchor.attributes('aria-label')).toBe('hidden');
+    expect(headerAnchor.text()).toBe('Title');
   });
 
   it('does not render anchor if there is no anchor', () => {
