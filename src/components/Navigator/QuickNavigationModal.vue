@@ -58,12 +58,12 @@
           >
             <p>
               No results found.
-          </p>
+            </p>
           </div>
           <div
             v-for="(symbol, index) in filteredSymbols"
             :class="{ 'selected' : index == focusedIndex }"
-            :key="index"
+            :key="symbol.uid"
             :id="MatchId"
             tabindex="0"
             @click="closeQuickNavigationModal"
@@ -98,7 +98,7 @@
                   <div class="symbol-path">
                     <div
                       v-for="(parent, index) in symbol.parents"
-                      :key="index"
+                      :key="parent.title"
                     >
                       <span
                         v-text="parent.title"
@@ -225,6 +225,7 @@ export default {
         // Dismiss if match length is greater than 3x the input's length
         if (matchLength > inputLength * 3) return false;
         return ({
+          uid: symbol.uid,
           title: symbol.title,
           path: symbol.path,
           parents: this.getParents(symbol.parent),
@@ -272,7 +273,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
 $modal-margin-top: 10rem;
@@ -290,11 +291,8 @@ $filter-padding: rem(15px);
     filter: drop-shadow(0px 7px 50px rgba(0, 0, 0, 0.25));
     margin: auto;
     max-width: rem(800px);
-    .filter__wrapper {
-      border: none;
-    }
     > * {
-      --input-text: var(--color-figure-gray-secondary) !important;
+      --input-text: var(--color-figure-gray-secondary);
     }
   }
   &__filter {
@@ -340,7 +338,7 @@ $filter-padding: rem(15px);
     left: 0;
     right: 0;
     top: 0;
-    padding: min(rem(10px));
+    padding: rem(10px);
     padding-top: $modal-margin-top;
   }
   &__open-key-container {
@@ -350,8 +348,8 @@ $filter-padding: rem(15px);
     color: var(--color-figure-gray-secondary);
   }
   &__reference:hover {
-      text-decoration: none;
-    }
+    text-decoration: none;
+  }
   &__symbol-match {
     display: flex;
     height: rem(40px);
