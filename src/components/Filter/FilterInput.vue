@@ -93,6 +93,7 @@
             aria-label="Reset Filter"
             class="filter__delete-button"
             @click="resetFilters(true)"
+            @keydown.enter.exact.stop="resetFilters(true)"
             @mousedown.prevent
           >
             <ClearRoundedIcon />

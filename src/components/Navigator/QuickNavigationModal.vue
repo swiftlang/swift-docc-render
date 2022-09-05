@@ -29,7 +29,6 @@
           class="quick-navigation__filter"
           focusInputWhenCreated
           focusInputWhenEmpty
-          @input="focusedIndex = 0"
         >
           <template slot="icon">
             <div
@@ -64,7 +63,6 @@
             v-for="(symbol, index) in filteredSymbols"
             :class="{ 'selected' : index == focusedIndex }"
             :key="symbol.uid"
-            :id="MatchId"
             tabindex="0"
             @click="closeQuickNavigationModal"
             @focus.capture="focusIndex(index)"
@@ -131,8 +129,6 @@ import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import symbolTreeNavigator from 'docc-render/mixins/symbolTreeNavigator';
 
-const MatchId = 'symbol-match';
-
 export default {
   name: 'QuickNavigationModal',
   components: {
@@ -146,13 +142,9 @@ export default {
     keyboardNavigation,
     symbolTreeNavigator,
   ],
-  constants: {
-    MatchId,
-  },
   data() {
     return {
       debouncedInput: '',
-      MatchId,
       userInput: '',
     };
   },
@@ -238,10 +230,10 @@ export default {
         });
       }).filter(Boolean);
     },
-    handleKeyEnter(event) {
+    handleKeyEnter() {
       if (
-        (event.srcElement.id !== 'filter-input' && event.srcElement.id !== MatchId)
-        || this.noResultsWereFound
+        this.noResultsWereFound
+        || !this.userInput.length
       ) return;
       this.$router.push(this.filteredSymbols[this.focusedIndex].path);
       this.closeQuickNavigationModal();
