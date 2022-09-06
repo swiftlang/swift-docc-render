@@ -63,20 +63,11 @@ export default {
 .header-anchor {
   color: var(--colors-text, var(--color-text));
   text-decoration: none;
-
-  // &:after {
-  //   content: "";
-  //   display: block;
-  //   position: absolute;
-  //   width: 0px;
-  //   bottom: -3px;
-  //   height: 1px;
-  //   background-color: var(--colors-text, var(--color-text));
-  //   // transition: width 0.2s cubic-bezier(0.82, 0.085, 0.395, 0.895) 0s;
-  //   // transition-delay: .5s;
-  // }
+  position: relative;
 
   .icon {
+    position: absolute;
+    bottom: .2em;
     display: none;
     height: .6em;
     margin-left: .3em;
