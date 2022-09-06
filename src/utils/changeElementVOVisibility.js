@@ -9,25 +9,30 @@
 */
 import TabManager from 'docc-render/utils/TabManager';
 
-const PREFIX = 'data-original-';
+const OG_PREFIX = 'data-original-';
 const ARIA = 'aria-hidden';
 const TABINDEX = 'tabindex';
 
-function setOriginalValue(element, prop) {
+function cacheOriginalAttribute(element, prop) {
   // make sure that prop isn't cached already
-  let originalValue = element.getAttribute(PREFIX + prop);
-  if (originalValue === undefined || originalValue === null || originalValue === '') {
+  let originalValue = element.getAttribute(OG_PREFIX + prop);
+  if (!element.hasAttribute(OG_PREFIX + prop) || originalValue === '') {
     originalValue = element.getAttribute(prop) || '';
-    element.setAttribute(PREFIX + prop, originalValue);
+    element.setAttribute(OG_PREFIX + prop, originalValue);
   }
 }
 
-function retrieveOriginalValue(element, prop) {
+function retrieveOriginalAttribute(element, prop) {
   // get the cached property
-  const originalValue = element.getAttribute(PREFIX + prop);
+  const originalValue = element.getAttribute(OG_PREFIX + prop);
 
   // remove the prefixed attribute
-  element.removeAttribute(PREFIX + prop);
+  element.removeAttribute(OG_PREFIX + prop);
+
+  console.log(element, prop);
+  const originalValue1 = element.getAttribute('hanqing');
+  console.log(typeof originalValue1);
+  console.log(originalValue1);
 
   if (typeof originalValue === 'string') {
     // if there is a value, set it back.
@@ -66,8 +71,8 @@ function iterateOverSiblings(el, callback) {
 const hideElement = (element) => {
   // set original value for prefixed properties and tabindex
   // store the prop temporarily, to retrieve later.
-  setOriginalValue(element, ARIA);
-  setOriginalValue(element, TABINDEX);
+  cacheOriginalAttribute(element, ARIA);
+  cacheOriginalAttribute(element, TABINDEX);
 
   // hide the component from VO
   element.setAttribute(ARIA, 'true');
@@ -78,7 +83,7 @@ const hideElement = (element) => {
   const tabbables = TabManager.getTabbableElements(element);
   let i = tabbables.length - 1;
   while (i >= 0) {
-    setOriginalValue(tabbables[i], TABINDEX);
+    cacheOriginalAttribute(tabbables[i], TABINDEX);
     tabbables[i].setAttribute(TABINDEX, '-1');
     i -= 1;
   }
@@ -89,14 +94,14 @@ const hideElement = (element) => {
  * @param {HTMLElement} element
  */
 const showElement = (element) => {
-  retrieveOriginalValue(element, ARIA);
-  retrieveOriginalValue(element, TABINDEX);
+  retrieveOriginalAttribute(element, ARIA);
+  retrieveOriginalAttribute(element, TABINDEX);
 
   // make sure element's tabbable children are restored as well
-  const tabbables = element.querySelectorAll(`[${PREFIX + TABINDEX}]`);
+  const tabbables = element.querySelectorAll(`[${OG_PREFIX + TABINDEX}]`);
   let i = tabbables.length - 1;
   while (i >= 0) {
-    retrieveOriginalValue(tabbables[i], TABINDEX);
+    retrieveOriginalAttribute(tabbables[i], TABINDEX);
     i -= 1;
   }
 };
