@@ -41,7 +41,6 @@ export default {
         tabbableElements.push(elements[i]);
       }
     }
-    console.log(tabbableElements);
     return tabbableElements;
   },
 

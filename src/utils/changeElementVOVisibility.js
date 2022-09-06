@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -14,13 +14,12 @@ const ARIA = 'aria-hidden';
 const TABINDEX = 'tabindex';
 
 function setOriginalValue(element, prop) {
-  // TO ASK: isn't this the same as originalVal = self || ''?
+  // make sure that prop isn't cached already
   let originalValue = element.getAttribute(PREFIX + prop);
-  if (!originalValue) {
+  if (originalValue === undefined || originalValue === null || originalValue === '') {
     originalValue = element.getAttribute(prop) || '';
-    element.setAttribute(prop, originalValue);
+    element.setAttribute(PREFIX + prop, originalValue);
   }
-  return originalValue;
 }
 
 function retrieveOriginalValue(element, prop) {
@@ -33,17 +32,10 @@ function retrieveOriginalValue(element, prop) {
   if (typeof originalValue === 'string') {
     // if there is a value, set it back.
     if (originalValue.length) {
-      element.setAttribute(ARIA, originalValue);
+      element.setAttribute(prop, originalValue);
     } else {
       // otherwise remove the attribute entirely.
-      element.removeAttribute(ARIA);
-    }
-  }
-  if (typeof originalTabValue === 'number') {
-    if (originalValue.length) {
-      element.setAttribute(TABINDEX, originalValue);
-    } else {
-      element.removeAttribute(TABINDEX);
+      element.removeAttribute(prop);
     }
   }
 }
@@ -100,11 +92,12 @@ const showElement = (element) => {
   retrieveOriginalValue(element, ARIA);
   retrieveOriginalValue(element, TABINDEX);
 
-  // make sure element's tabbable children are hidden as well
-  const tabbables = TabManager.getTabbableElements(element);
-  let i = tabbables.length;
-  while (i -= 1) {
+  // make sure element's tabbable children are restored as well
+  const tabbables = element.querySelectorAll(`[${PREFIX + TABINDEX}]`);
+  let i = tabbables.length - 1;
+  while (i >= 0) {
     retrieveOriginalValue(tabbables[i], TABINDEX);
+    i -= 1;
   }
 };
 
