@@ -29,11 +29,6 @@ function retrieveOriginalAttribute(element, prop) {
   // remove the prefixed attribute
   element.removeAttribute(OG_PREFIX + prop);
 
-  console.log(element, prop);
-  const originalValue1 = element.getAttribute('hanqing');
-  console.log(typeof originalValue1);
-  console.log(originalValue1);
-
   if (typeof originalValue === 'string') {
     // if there is a value, set it back.
     if (originalValue.length) {
