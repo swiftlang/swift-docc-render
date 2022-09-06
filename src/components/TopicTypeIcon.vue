@@ -10,17 +10,17 @@
 
 <template>
   <div class="TopicTypeIcon">
-    <component
-      v-if="!imagePath"
-      :is="icon"
-      v-bind="iconProps"
+    <SVGIcon
+      v-if="imageOverridePath && imageOverrideId"
+      :icon-url="imageOverridePath"
+      :theme-id="imageOverrideId"
       :style="styles"
       class="icon-inline"
     />
-    <SVGIcon
+    <component
       v-else
-      :icon-url="imagePath"
-      theme-id="topic"
+      :is="icon"
+      v-bind="iconProps"
       :style="styles"
       class="icon-inline"
     />
@@ -116,10 +116,12 @@ export default {
     icon: ({ normalisedType }) => TopicTypeIcons[normalisedType] || CollectionIcon,
     iconProps: ({ normalisedType }) => TopicTypeProps[normalisedType] || {},
     color: ({ normalisedType }) => HeroColorsMap[normalisedType],
-    imagePath: ({ imageOverride }) => {
+    imageOverrideVariant: ({ imageOverride }) => {
       if (!imageOverride) return null;
-      return imageOverride.variants[0].url;
+      return imageOverride.variants[0];
     },
+    imageOverridePath: ({ imageOverrideVariant }) => imageOverrideVariant && imageOverrideVariant.url,
+    imageOverrideId: ({ imageOverrideVariant }) => imageOverrideVariant && imageOverrideVariant.svgID,
     styles: ({
       color,
       withColors,

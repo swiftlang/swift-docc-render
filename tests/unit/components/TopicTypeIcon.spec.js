@@ -58,6 +58,7 @@ describe('TopicTypeIcon', () => {
     const imageOverride = {
       variants: [{
         url: 'baz.svg',
+        svgID: 'foo',
       }, {
         url: 'bar.svg',
       }],
@@ -72,7 +73,23 @@ describe('TopicTypeIcon', () => {
     expect(icon.is(SVGIcon)).toBe(true);
     expect(icon.props()).toMatchObject({
       iconUrl: imageOverride.variants[0].url,
-      themeId: 'topic', // TODO: figure out if we should make this authorable
+      themeId: imageOverride.variants[0].svgID,
     });
+  });
+
+  it('does not render icon overrides, if it does not have an `svgID`', () => {
+    const imageOverride = {
+      variants: [{
+        url: 'baz.svg',
+      }],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        imageOverride,
+        type: TopicTypes.class,
+      },
+    });
+    const icon = wrapper.find('.icon-inline');
+    expect(icon.is(SVGIcon)).toBe(false);
   });
 });
