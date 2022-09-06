@@ -18,7 +18,12 @@
       :style="modalColors"
     >
       <div class="backdrop" @click="onClickOutside" />
-      <div class="container" ref="container" :style="{ width }">
+      <div
+        class="container"
+        ref="container"
+        :style="{ width }"
+        :class="{'pin-content' : pinContent }"
+      >
         <button
           v-if="showClose"
           class="close"
@@ -86,6 +91,10 @@ export default {
     showClose: {
       type: Boolean,
       default: true,
+    },
+    pinContent: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -223,6 +232,7 @@ export default {
         this.selectContent();
       }
       if (key !== 'Escape') return;
+      event.preventDefault();
       this.closeModal();
     },
     /**
@@ -250,6 +260,7 @@ export default {
 $-modal-close-font-size: 40px;
 $-modal-close-font-size-medium: 32px;
 $modal-close-color: light-color(figure-gray-tertiary) !default;
+$pinned-modal-top:  10rem;
 
 .generic-modal {
   position: fixed;
@@ -294,6 +305,11 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
       @include prefers-dark {
         background: rgb(29, 29, 31);
       }
+      &.pin-content {
+        padding: 0;
+        top: $pinned-modal-top;
+        position: fixed;
+      }
     }
 
     @include breakpoint(small) {
@@ -306,6 +322,11 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
         width: 100%;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
+        &.pin-content {
+          padding: 0;
+          width: 90%;
+          top: $pinned-modal-top;
+        }
       }
     }
   }

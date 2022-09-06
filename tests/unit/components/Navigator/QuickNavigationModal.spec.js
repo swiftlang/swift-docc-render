@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
 import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHighlighter.vue';
@@ -95,9 +95,7 @@ describe('QuickNavigationModal', () => {
     mocks,
     propsData: {
       children: symbols,
-    },
-    provide: {
-      quickNavigationStore: {},
+      showQuickNavigationModal: true,
     },
   };
 
@@ -108,7 +106,7 @@ describe('QuickNavigationModal', () => {
   });
 
   it('it renders the Quick navigation modal', () => {
-    expect(wrapper.classes('quick-navigation')).toBe(true);
+    expect(wrapper.find('.quick-navigation').exists()).toBe(true);
   });
 
   it('it filters the symbols according to debouncedInput value', async () => {
@@ -121,10 +119,6 @@ describe('QuickNavigationModal', () => {
     expect(matches.at(0)).toMatchObject(filteredSymbols[0]);
     expect(matches.at(1)).toMatchObject(filteredSymbols[1]);
     expect(wrapper.findAll(QuickNavigationHighlighter).length).toBe(filteredSymbols.length);
-  });
-
-  it('it renders the modal shadow', () => {
-    expect(wrapper.find('.quick-navigation__modal-shadow').exists()).toBe(true);
   });
 
   it('it renders the filter input', () => {
@@ -266,6 +260,7 @@ describe('QuickNavigationModal', () => {
     wrapper = shallowMount(QuickNavigationModal, {
       propsData: {
         children: customSymbols,
+        showQuickNavigationModal: true,
       },
       provide: {
         quickNavigationStore: {},
@@ -282,15 +277,8 @@ describe('QuickNavigationModal', () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
-    await wrapper.trigger('keydown.enter');
+    await wrapper.find('.quick-navigation').trigger('keydown.enter');
     expect(handleKeyEnter).toHaveBeenCalledTimes(1);
-  });
-
-  it('it focuses the user input on open', async () => {
-    wrapper = mount(QuickNavigationModal, config);
-    const filterInput = wrapper.find(FilterInput);
-    await filterInput.vm.$nextTick();
-    expect(filterInput.emitted('show-suggested-tags')).toBeTruthy();
   });
 
   it('it renders the symbol tree of the resulting symbol', async () => {
@@ -307,6 +295,7 @@ describe('QuickNavigationModal', () => {
             }],
           },
         ],
+        showQuickNavigationModal: true,
       },
     });
     const getParents = jest.spyOn(wrapper.vm, 'getParents');

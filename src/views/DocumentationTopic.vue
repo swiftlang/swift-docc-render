@@ -20,19 +20,11 @@
         <template #default="slotProps">
           <div ref="div">
             <PortalTarget name="modal-destination" multiple />
-            <GenericModal
-              ref="modal"
-              codeBackgroundColorOverride="transparent"
-              theme="code"
-              isFullscreen
-              :showClose="false"
-              :visible="showQuickNavigationModal"
-            >
-              <QuickNavigationModal
-                @closeQuickNavigationModal="showQuickNavigationModal = false"
-                :children="slotProps.flatChildren"
-              />
-            </GenericModal>
+            <QuickNavigationModal
+              :children="slotProps.flatChildren"
+              :showQuickNavigationModal="showQuickNavigationModal"
+              @closeQuickNavigationModal="showQuickNavigationModal = false"
+            />
           </div>
         </template>
       </NavigatorDataProvider>
@@ -132,7 +124,6 @@ import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidt
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
-import GenericModal from 'docc-render/components/GenericModal.vue';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
@@ -154,7 +145,6 @@ export default {
     CodeTheme,
     Nav: DocumentationNav,
     QuickNavigationModal,
-    GenericModal,
     PortalTarget,
     MagnifierIcon,
   },

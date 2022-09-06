@@ -9,28 +9,31 @@
 -->
 
 <template>
-  <div
-    class="quick-navigation"
-    @keydown.down.exact.prevent="focusNext"
-    @keydown.esc.exact.prevent="closeQuickNavigationModal"
-    @keydown.up.exact.prevent="focusPrev"
-    @keydown.enter.exact="handleKeyEnter"
+  <GenericModal
+    ref="modal"
+    pinContent
+    :showClose="false"
+    :visible="showQuickNavigationModal"
+    @update:visible="$emit('closeQuickNavigationModal')"
   >
     <div
-      class="quick-navigation__modal-shadow"
-      @click.self="closeQuickNavigationModal"
+      class="quick-navigation"
+      @keydown.down.exact.prevent="focusNext"
+      @keydown.up.exact.prevent="focusPrev"
+      @keydown.enter.exact="handleKeyEnter"
     >
       <div
         class="quick-navigation__container"
       >
         <FilterInput
           v-model="userInput"
-          placeholder="Search symbols"
           class="quick-navigation__filter"
+          placeholder="Search symbols"
           focusInputWhenCreated
           focusInputWhenEmpty
+          @input="focusedIndex = 0"
         >
-          <template slot="icon">
+          <template #icon>
             <div
               class="quick-navigation__magnifier-icon-container"
               :class="{ 'blue': userInput.length }"
@@ -116,12 +119,13 @@
         </div>
       </div>
     </div>
-  </div>
+  </GenericModal>
 </template>
 
 <script>
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
+import GenericModal from 'docc-render/components/GenericModal.vue';
 import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -133,6 +137,7 @@ export default {
   name: 'QuickNavigationModal',
   components: {
     FilterInput,
+    GenericModal,
     MagnifierIcon,
     NavigatorLeafIcon,
     QuickNavigationHighlighter,
@@ -151,6 +156,10 @@ export default {
   props: {
     children: {
       type: Array,
+      required: true,
+    },
+    showQuickNavigationModal: {
+      type: Boolean,
       required: true,
     },
   },
@@ -279,27 +288,19 @@ $filter-padding: rem(15px);
   &__container {
     background-color: var(--color-fill);
     border: solid $base-border-width var(--color-fill-gray);
-    border-radius: $border-radius;
-    filter: drop-shadow(0px 7px 50px rgba(0, 0, 0, 0.25));
-    margin: auto;
-    max-width: rem(800px);
+    border-radius: $small-border-radius + 1;
     > * {
       --input-text: var(--color-figure-gray-secondary);
     }
   }
   &__filter {
-    background: var(--color-fill);
-    border: none;
-    border-radius: $border-radius;
-    box-sizing: border-box;
-    outline-width: 0;
-    width: 100%;
+    overflow: hidden;
+    > * {
+      --input-border-color: var(--color-fill);
+    }
   }
   &__magnifier-icon-container {
-    display: flex;
-    height: auto;
     width: rem(18px);
-    margin: auto;
     padding-left: rem(5px);
     > * {
       width: 100%;
@@ -322,16 +323,6 @@ $filter-padding: rem(15px);
     .selected {
       background-color: var(--color-navigator-item-hover);
     }
-  }
-  &__modal-shadow {
-    background-color: var(--color-quick-navigation-modal-shadow);
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
-    padding: rem(10px);
-    padding-top: $modal-margin-top;
   }
   &__open-key-container {
     margin-top: auto;
