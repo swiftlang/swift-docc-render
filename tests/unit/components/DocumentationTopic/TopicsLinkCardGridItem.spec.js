@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import { mount } from '@vue/test-utils';
 import Card from '@/components/Card.vue';
@@ -15,6 +15,7 @@ import TopicTypeIcon from '@/components/TopicTypeIcon.vue';
 import TopicsLinkCardGridItem, {
   ROLE_LINK_TEXT,
 } from '@/components/DocumentationTopic/TopicsLinkCardGridItem.vue';
+import ContentNode from 'docc-render/components/ContentNode.vue';
 
 const defaultProps = {
   item: {
@@ -54,12 +55,12 @@ describe('TopicsLinkCardGridItem', () => {
       url: defaultProps.item.url,
       image: defaultProps.item.images[0].reference,
       title: defaultProps.item.title,
-      content: [], // compact items do not have content
       floatingStyle: true,
       size: undefined,
       linkText: '',
     });
     expect(wrapper.find('.reference-card-grid-item__image').exists()).toBe(false);
+    expect(wrapper.find(ContentNode).exists()).toBe(false);
   });
 
   it('renders a TopicsLinkCardGridItem, with an icon as a fallback', () => {
@@ -76,11 +77,11 @@ describe('TopicsLinkCardGridItem', () => {
       url: defaultProps.item.url,
       image: null,
       title: defaultProps.item.title,
-      content: [], // compact items do not have content
       floatingStyle: true,
       size: undefined,
       linkText: '',
     });
+    expect(wrapper.find(ContentNode).exists()).toBe(false);
     const imageWrapper = wrapper.find('.reference-card-grid-item__image');
     expect(imageWrapper.exists()).toBe(true);
     const icon = imageWrapper.find(TopicTypeIcon);
@@ -106,22 +107,24 @@ describe('TopicsLinkCardGridItem', () => {
     expect(wrapper.find(TopicTypeIcon).props('imageOverride')).toEqual(iconRef);
   });
 
-  it('renders a TopicsLinkCardGridItem, in a none compact variant', () => {
+  it('renders a TopicsLinkCardGridItem, in a none compact variant', async () => {
     const wrapper = createWrapper({
       propsData: {
         ...defaultProps,
         compact: false,
       },
     });
-    expect(wrapper.find(Card).props()).toMatchObject({
+    await wrapper.vm.$nextTick();
+    const card = wrapper.find(Card);
+    expect(card.props()).toMatchObject({
       url: defaultProps.item.url,
       image: defaultProps.item.images[0].reference,
       title: defaultProps.item.title,
-      content: defaultProps.item.abstract,
       floatingStyle: true,
       size: 'large',
       linkText: ROLE_LINK_TEXT[TopicRole.article],
     });
+    expect(wrapper.find(ContentNode).props('content')).toBe(defaultProps.item.abstract);
   });
 
   it('renders different text for diff roles', () => {

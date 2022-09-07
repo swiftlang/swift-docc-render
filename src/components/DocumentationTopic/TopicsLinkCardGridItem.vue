@@ -14,7 +14,6 @@
     :url="item.url"
     :image="imageReferences.card"
     :title="item.title"
-    :content="compact ? []: item.abstract"
     floating-style
     :size="compact ? undefined: 'large'"
     :link-text="compact? '': linkText"
@@ -28,6 +27,7 @@
         />
       </div>
     </template>
+    <ContentNode v-if="!compact" :content="item.abstract" />
   </Card>
 </template>
 
@@ -46,7 +46,11 @@ export const ROLE_LINK_TEXT = {
 
 export default {
   name: 'TopicsLinkCardGridItem',
-  components: { TopicTypeIcon, Card },
+  components: {
+    TopicTypeIcon,
+    Card,
+    ContentNode: () => import('docc-render/components/ContentNode.vue'),
+  },
   inject: ['references'],
   props: {
     item: {
