@@ -17,11 +17,10 @@ function cacheOriginalAttribute(element, prop) {
   const attr = OG_PREFIX + prop;
 
   // make sure that prop isn't cached already
-  let originalValue = element.getAttribute(attr);
-  if (!element.hasAttribute(attr) || originalValue === '') {
-    originalValue = element.getAttribute(prop) || '';
-    element.setAttribute(attr, originalValue);
-  }
+  if (element.getAttribute(attr)) return;
+
+  const originalValue = element.getAttribute(prop) || '';
+  element.setAttribute(attr, originalValue);
 }
 
 function retrieveOriginalAttribute(element, prop) {
