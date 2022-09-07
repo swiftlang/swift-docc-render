@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -14,29 +14,32 @@ const ARIA = 'aria-hidden';
 const TABINDEX = 'tabindex';
 
 function cacheOriginalAttribute(element, prop) {
+  const attr = OG_PREFIX + prop;
+
   // make sure that prop isn't cached already
-  let originalValue = element.getAttribute(OG_PREFIX + prop);
-  if (!element.hasAttribute(OG_PREFIX + prop) || originalValue === '') {
+  let originalValue = element.getAttribute(attr);
+  if (!element.hasAttribute(attr) || originalValue === '') {
     originalValue = element.getAttribute(prop) || '';
-    element.setAttribute(OG_PREFIX + prop, originalValue);
+    element.setAttribute(attr, originalValue);
   }
 }
 
 function retrieveOriginalAttribute(element, prop) {
+  const attr = OG_PREFIX + prop;
+
+  // return if attribute doesn't exist
+  if (!element.hasAttribute(attr)) return;
   // get the cached property
-  const originalValue = element.getAttribute(OG_PREFIX + prop);
-
+  const originalValue = element.getAttribute(attr);
   // remove the prefixed attribute
-  element.removeAttribute(OG_PREFIX + prop);
+  element.removeAttribute(attr);
 
-  if (typeof originalValue === 'string') {
-    // if there is a value, set it back.
-    if (originalValue.length) {
-      element.setAttribute(prop, originalValue);
-    } else {
-      // otherwise remove the attribute entirely.
-      element.removeAttribute(prop);
-    }
+  // if there is a value, set it back.
+  if (originalValue.length) {
+    element.setAttribute(prop, originalValue);
+  } else {
+    // otherwise remove the attribute entirely.
+    element.removeAttribute(prop);
   }
 }
 
