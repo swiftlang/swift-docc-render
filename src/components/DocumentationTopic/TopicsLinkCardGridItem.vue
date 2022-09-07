@@ -34,7 +34,7 @@
 <script>
 import Card from 'docc-render/components/Card.vue';
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
-import { TopicRole } from '@/constants/roles';
+import { TopicRole } from 'docc-render/constants/roles';
 
 export const ROLE_LINK_TEXT = {
   [TopicRole.article]: 'Read article',
