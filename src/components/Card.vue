@@ -38,11 +38,9 @@
       >
         {{ title }}
       </div>
-      <ContentNode
-        v-if="content"
-        :content="content"
-        :id="contentId"
-      />
+      <div v-if="$slots.default" class="card-content" :id="contentId">
+        <slot />
+      </div>
       <component
         v-if="linkText"
         :is="hasButton ? 'ButtonLink': 'div'"
@@ -70,7 +68,6 @@ export default {
     Reference,
     DiagonalArrowIcon,
     InlineChevronRightIcon,
-    ContentNode: () => import('docc-render/components/ContentNode.vue'),
     CardCover,
     ButtonLink,
   },
@@ -108,13 +105,10 @@ export default {
       type: String,
       required: false,
     },
-    content: {
-      type: Array,
-      required: false,
-    },
     url: {
       type: String,
       required: false,
+      default: '',
     },
     eyebrow: {
       type: String,
@@ -126,7 +120,7 @@ export default {
     },
     size: {
       type: String,
-      validator: s => s in CardSize,
+      validator: s => Object.prototype.hasOwnProperty.call(CardSize, s),
     },
     title: {
       type: String,
@@ -264,7 +258,7 @@ $content-margin: 4px;
   }
 }
 
-.content {
+.card-content {
   color: var(--color-card-content-text);
   margin-top: $content-margin;
 }

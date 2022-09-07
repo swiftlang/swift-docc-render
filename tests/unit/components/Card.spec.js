@@ -12,7 +12,6 @@ import { shallowMount } from '@vue/test-utils';
 import Card from 'docc-render/components/Card.vue';
 import CardSize from 'docc-render/constants/CardSize';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
-import ContentNode from 'docc-render/components/ContentNode.vue';
 import { flushPromises } from '../../../test-utils';
 
 const {
@@ -44,9 +43,6 @@ describe('Card', () => {
   const mountCard = options => shallowMount(Card, {
     propsData,
     provide,
-    stubs: {
-      ContentNode,
-    },
     ...options,
   });
 
@@ -188,20 +184,24 @@ describe('Card', () => {
     expect(h3.text()).toBe(propsData.title);
   });
 
-  it('renders a `ContentNode` when content is provided', async () => {
-    const content = [
-      {
-        type: 'paragraph',
-        inlineContent: [{ type: 'text', text: 'hello world' }],
+  it('renders content in the default slot', async () => {
+    const content = 'Foo bar baz';
+    const wrapper = mountCard({
+      slots: {
+        default: content,
       },
-    ];
-    const propsWithContent = { ...propsData, content };
-    const wrapper = mountCard({ propsData: propsWithContent });
+    });
     await flushPromises();
-    const node = wrapper.find(ContentNode);
-    expect(node.exists()).toBe(true);
-    expect(node.props('content')).toEqual(content);
-    expect(node.attributes('id')).toMatch(cardContentIdRE);
+    const contentDiv = wrapper.find('.card-content');
+    expect(contentDiv.exists()).toBe(true);
+    expect(contentDiv.text()).toEqual(content);
+    expect(contentDiv.attributes('id')).toMatch(cardContentIdRE);
+  });
+
+  it('does not render the card-content, if no default slot provided', async () => {
+    const wrapper = mountCard();
+    await flushPromises();
+    expect(wrapper.find('.card-content').exists()).toBe(false);
   });
 
   it('renders card as a `floatingStyle`', () => {
