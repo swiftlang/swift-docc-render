@@ -194,5 +194,5 @@
   --color-card-background: var(--color-fill);
   --color-card-content-text: var(--color-figure-gray);
   --color-card-eyebrow: var(--color-figure-gray-secondary-alt);
-  --color-card-shadow: rgb(0, 0, 0, 0.04);
+  --color-card-shadow: #{change-color(dark-color(fill), $alpha: 0.04)};
 }

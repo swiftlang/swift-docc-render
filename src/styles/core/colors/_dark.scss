@@ -87,5 +87,5 @@
   --color-tutorial-background: var(--color-fill-tertiary);
   --color-navigator-item-hover: #{change-color(dark-color(fill-blue), $alpha: 0.5)};
 
-  --color-card-shadow: rgb(255, 255, 255, 0.04);
+  --color-card-shadow: #{change-color(light-color(fill), $alpha: 0.04)};
 }
