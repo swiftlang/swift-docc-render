@@ -19,9 +19,7 @@
 
 <script>
 import imageAsset from 'docc-render/mixins/imageAsset';
-import { normalizeAssetUrl } from 'docc-render/utils/assets';
-
-const toCSSUrl = url => (url ? `url('${normalizeAssetUrl(url)}')` : undefined);
+import { toCSSUrl } from 'docc-render/utils/assets';
 
 export default {
   name: 'CardCover',
