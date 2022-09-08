@@ -216,10 +216,7 @@ $content-margin: 4px;
   padding: $details-padding;
   position: relative;
   height: var(--card-details-height);
-
-  .small &, & {
-    @include font-styles(card-content-small);
-  }
+  @include font-styles(card-content-small);
 
   .large & {
     @include font-styles(card-content-large);
@@ -235,10 +232,7 @@ $content-margin: 4px;
   color: var(--color-card-eyebrow);
   display: block;
   margin-bottom: $content-margin;
-
-  .small &, & {
-    @include font-styles(card-eyebrow-small);
-  }
+  @include font-styles(card-eyebrow-small);
 
   .large & {
     @include font-styles(card-eyebrow-large);
@@ -248,10 +242,7 @@ $content-margin: 4px;
 .title {
   font-weight: $font-weight-semibold;
   color: var(--color-card-content-text);
-
-  .small &, & {
-    @include font-styles(card-title-small);
-  }
+  @include font-styles(card-title-small);
 
   .large & {
     @include font-styles(card-title-large);
