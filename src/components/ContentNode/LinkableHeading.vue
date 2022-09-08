@@ -64,6 +64,8 @@ export default {
   color: var(--colors-text, var(--color-text));
   text-decoration: none;
   position: relative;
+  padding-right: 1em;
+  display: inline-block;
 
   .icon {
     position: absolute;
