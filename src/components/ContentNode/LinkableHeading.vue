@@ -17,6 +17,7 @@
       v-if="anchor && !isTargetIDE"
       :to="{ hash: `#${anchor}` }"
       class="header-anchor"
+      aria-label="Scroll to section"
       @click="handleFocusAndScroll(anchor)"
     >
       <slot />
