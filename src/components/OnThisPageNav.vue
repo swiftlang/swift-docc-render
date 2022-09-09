@@ -9,29 +9,21 @@
 -->
 <template>
   <div class="OnThisPageNav">
-    <slot
-      :active="currentPageAnchor"
-      :sections="onThisPageSections"
-      :checkIsActive="checkIsActive"
-      :scrollTo="scrollTo"
-      :getItemClasses="getItemClasses"
-    >
-      <ul class="items">
-        <li
-          v-for="item in onThisPageSections"
-          :key="item.anchor"
-          :class="getItemClasses(item)"
+    <ul class="items">
+      <li
+        v-for="item in onThisPageSections"
+        :key="item.anchor"
+        :class="getItemClasses(item)"
+      >
+        <router-link
+          :to="item.url"
+          class="base-link"
+          @click.native="scrollTo(item)"
         >
-          <router-link
-            :to="item.url"
-            class="base-link"
-            @click.native="scrollTo(item)"
-          >
-            {{ item.title }}
-          </router-link>
-        </li>
-      </ul>
-    </slot>
+          {{ item.title }}
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
