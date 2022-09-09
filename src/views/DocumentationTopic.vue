@@ -180,7 +180,7 @@ export default {
           role,
           symbolKind = '',
           remoteSource,
-          pageIcon = '',
+          images: pageImages = [],
         } = {},
         primaryContentSections,
         relationshipsSections,
@@ -216,7 +216,7 @@ export default {
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
         remoteSource,
-        pageIcon,
+        pageImages,
       };
     },
     // The `hierarchy.paths` array will contain zero or more subarrays, each

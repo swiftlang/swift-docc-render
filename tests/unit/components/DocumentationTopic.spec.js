@@ -146,7 +146,7 @@ const propsData = {
     },
   ],
   remoteSource: { url: 'foo' },
-  pageIcon: 'foo',
+  pageImages: [{ reference: 'foo', type: 'icon' }],
 };
 
 describe('DocumentationTopic', () => {
@@ -221,7 +221,7 @@ describe('DocumentationTopic', () => {
     const iconOverride = { variants: [] };
     wrapper.setProps({
       references: {
-        [propsData.pageIcon]: iconOverride,
+        [propsData.pageImages[0].reference]: iconOverride,
       },
     });
     const hero = wrapper.find(DocumentationHero);
@@ -232,6 +232,21 @@ describe('DocumentationTopic', () => {
       shortHero: false,
       shouldShowLanguageSwitcher: false,
       iconOverride,
+    });
+  });
+
+  it('renders a `DocumentationHero` without an image override ', () => {
+    wrapper.setProps({
+      pageImages: [],
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.exists()).toBe(true);
+    expect(hero.props()).toEqual({
+      role: propsData.role,
+      enhanceBackground: true,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+      iconOverride: undefined,
     });
   });
 

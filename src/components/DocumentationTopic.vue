@@ -271,8 +271,8 @@ export default {
       type: Object,
       required: false,
     },
-    pageIcon: {
-      type: String,
+    pageImages: {
+      type: Array,
       required: false,
     },
   },
@@ -355,6 +355,15 @@ export default {
       || (primaryContentSections && primaryContentSections.length)
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
+    /**
+     * Finds the page icon in the `pageImages` array
+     * @param {Array} pageImages
+     * @returns {String|null}
+     */
+    pageIcon: ({ pageImages = [] }) => {
+      const icon = pageImages.find(({ type }) => type === 'icon');
+      return icon ? icon.reference : null;
+    },
   },
   methods: {
     normalizePath(path) {
