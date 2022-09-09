@@ -28,14 +28,14 @@ describe('OnThisPageSectionsStoreBase', () => {
   it('does not set anything, if no anchor matches', () => {
     OnThisPageSectionsStoreBase.addOnThisPageSection(section);
     OnThisPageSectionsStoreBase.setCurrentPageSection('none-matching');
-    expect(OnThisPageSectionsStoreBase.state.currentPageSection).toBe(null);
+    expect(OnThisPageSectionsStoreBase.state.currentPageAnchor).toBe(null);
   });
 
   it('sets a section as current by the anchor', () => {
     OnThisPageSectionsStoreBase.addOnThisPageSection(section);
     OnThisPageSectionsStoreBase.addOnThisPageSection(section2);
     OnThisPageSectionsStoreBase.setCurrentPageSection(section2.anchor);
-    expect(OnThisPageSectionsStoreBase.state.currentPageSection).toBe(section2);
+    expect(OnThisPageSectionsStoreBase.state.currentPageAnchor).toBe(section2.anchor);
   });
 
   it('resets the state', () => {
@@ -43,7 +43,7 @@ describe('OnThisPageSectionsStoreBase', () => {
     OnThisPageSectionsStoreBase.addOnThisPageSection(section2);
     OnThisPageSectionsStoreBase.setCurrentPageSection(section2.anchor);
     OnThisPageSectionsStoreBase.resetPageSections();
-    expect(OnThisPageSectionsStoreBase.state.currentPageSection).toBeNull();
+    expect(OnThisPageSectionsStoreBase.state.currentPageAnchor).toBeNull();
     expect(OnThisPageSectionsStoreBase.state.onThisPageSections).toEqual([]);
   });
 });

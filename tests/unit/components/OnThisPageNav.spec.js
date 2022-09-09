@@ -23,10 +23,10 @@ const sections = [
 const store = {
   state: Vue.observable({
     onThisPageSections: sections,
-    currentPageSection: { title: 'First', level: 2, anchor: 'first' },
+    currentPageAnchor: 'first',
   }),
   setCurrentPageSection: jest.fn((anchor) => {
-    store.state.currentPageSection = sections.find(s => s.anchor === anchor);
+    store.state.currentPageAnchor = anchor;
   }),
 };
 

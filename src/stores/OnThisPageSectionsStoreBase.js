@@ -11,18 +11,18 @@
 export default {
   state: {
     onThisPageSections: [],
-    currentPageSection: null,
+    currentPageAnchor: null,
   },
   resetPageSections() {
     this.state.onThisPageSections = [];
-    this.state.currentPageSection = null;
+    this.state.currentPageAnchor = null;
   },
   addOnThisPageSection(section) {
     this.state.onThisPageSections.push(section);
   },
   setCurrentPageSection(sectionAnchor) {
-    const section = this.state.onThisPageSections.find(({ anchor }) => anchor === sectionAnchor);
-    if (!section) return;
-    this.state.currentPageSection = section;
+    const i = this.state.onThisPageSections.findIndex(({ anchor }) => anchor === sectionAnchor);
+    if (i === -1) return;
+    this.state.currentPageAnchor = sectionAnchor;
   },
 };

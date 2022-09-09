@@ -10,7 +10,7 @@
 <template>
   <div class="OnThisPageNav">
     <slot
-      :active="currentPageSection"
+      :active="currentPageAnchor"
       :sections="onThisPageSections"
       :checkIsActive="checkIsActive"
       :scrollTo="scrollTo"
@@ -48,7 +48,7 @@ export default {
     store: {
       default() {
         return {
-          state: { onThisPageSections: [], currentPageSection: {} },
+          state: { onThisPageSections: [], currentPageAnchor: null },
         };
       },
     },
@@ -58,7 +58,7 @@ export default {
       ...item,
       url: buildUrl(`#${item.anchor}`, $route.query),
     })),
-    currentPageSection: ({ store }) => store.state.currentPageSection || {},
+    currentPageAnchor: ({ store }) => store.state.currentPageAnchor,
   },
   async mounted() {
     window.addEventListener('scroll', this.onScroll, false);
@@ -111,7 +111,7 @@ export default {
      * @returns {boolean}
      */
     checkIsActive(item) {
-      return item.anchor === this.currentPageSection.anchor;
+      return item.anchor === this.currentPageAnchor;
     },
     async scrollTo({ anchor }) {
       const element = document.getElementById(anchor);
