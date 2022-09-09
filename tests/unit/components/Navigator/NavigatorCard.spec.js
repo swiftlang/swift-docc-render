@@ -330,6 +330,45 @@ describe('NavigatorCard', () => {
     expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
   });
 
+  it('allows expand/collapse all symbols when clicking on framework name + while pressing alt', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    // assert initial items are rendered
+    let all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4);
+
+    // close all children symbols
+    wrapper.find('.navigator-head').trigger('click', {
+      altKey: true,
+    });
+    // re-fetch items
+    await wrapper.vm.$nextTick();
+    all = wrapper.findAll(NavigatorCardItem);
+
+    // assert only parent symbols are visible
+    expect(all).toHaveLength(2);
+
+    // open all children symbols
+    wrapper.find('.navigator-head').trigger('click', {
+      altKey: true,
+    });
+    // re-fetch items
+    await wrapper.vm.$nextTick();
+    all = wrapper.findAll(NavigatorCardItem);
+    // assert all children are visible
+    expect(all).toHaveLength(5);
+
+    // close all children symbols
+    wrapper.find('.navigator-head').trigger('click', {
+      altKey: true,
+    });
+    // re-fetch items
+    await wrapper.vm.$nextTick();
+    all = wrapper.findAll(NavigatorCardItem);
+    // assert all children are visible
+    expect(all).toHaveLength(2);
+  });
+
   it('allows the user to navigate to the first item on the list when pressing alt + up key', async () => {
     const wrapper = createWrapper();
     await flushPromises();
