@@ -131,7 +131,7 @@ import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
-import symbolTreeNavigator from 'docc-render/mixins/symbolTreeNavigator';
+import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorIndex';
 
 export default {
   name: 'QuickNavigationModal',
@@ -145,7 +145,6 @@ export default {
   },
   mixins: [
     keyboardNavigation,
-    symbolTreeNavigator,
   ],
   data() {
     return {
@@ -164,6 +163,9 @@ export default {
     },
   },
   computed: {
+    childrenMap({ children }) {
+      return convertChildrenArrayToObject(children);
+    },
     filteredSymbols: ({
       constructFuzzyRegex,
       children,
@@ -229,7 +231,7 @@ export default {
           uid: symbol.uid,
           title: symbol.title,
           path: symbol.path,
-          parents: this.getParents(symbol.parent),
+          parents: getParents(symbol.parent, this.childrenMap),
           type: symbol.type,
           inputLengthDifference: symbol.title.length - inputLength,
           matchLength,

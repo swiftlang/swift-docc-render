@@ -298,11 +298,9 @@ describe('QuickNavigationModal', () => {
         showQuickNavigationModal: true,
       },
     });
-    const getParents = jest.spyOn(wrapper.vm, 'getParents');
     wrapper.setData({
       debouncedInput: 'bar',
     });
-    expect(getParents).toHaveBeenCalledTimes(1);
     const symbolTree = wrapper
       .find('.quick-navigation__symbol-match')
       .find('.parent-path');
