@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import OnThisPageStickyContainer, {
   ON_THIS_PAGE_CONTENT_BREAKPOINT, ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG,
