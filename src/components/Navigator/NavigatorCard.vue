@@ -23,7 +23,12 @@
             >
               <SidenavIcon class="icon-inline close-icon" />
             </button>
-            <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
+            <Reference
+              class="navigator-head"
+              :url="technologyPath"
+              :id="INDEX_ROOT_KEY"
+              @click.alt.native.prevent="toggleAllNodes"
+            >
               <h2 class="card-link">
                 {{ technology }}
               </h2>
@@ -501,6 +506,15 @@ export default {
     },
   },
   methods: {
+    toggleAllNodes() {
+      const parentNodes = this.children.filter(child => child.parent === INDEX_ROOT_KEY);
+
+      parentNodes.forEach((node) => {
+        if (node.type !== 'groupMarker') {
+          this.toggleFullTree(node);
+        }
+      });
+    },
     clearFilters() {
       this.filter = '';
       this.debouncedFilter = '';
