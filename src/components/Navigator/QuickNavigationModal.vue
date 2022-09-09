@@ -14,7 +14,7 @@
     pinContent
     :showClose="false"
     :visible="showQuickNavigationModal"
-    @update:visible="$emit('closeQuickNavigationModal')"
+    @update:visible="$emit('update:showQuickNavigationModal', false)"
   >
     <div
       class="quick-navigation"
@@ -62,60 +62,56 @@
               No results found.
             </p>
           </div>
-          <div
+          <Reference
             v-for="(symbol, index) in filteredSymbols"
-            :class="{ 'selected' : index == focusedIndex }"
+            class="quick-navigation__reference"
             :key="symbol.uid"
-            tabindex="0"
-            @click="closeQuickNavigationModal"
-            @focus.capture="focusIndex(index)"
+            :url="symbol.path"
+            @click.native="closeQuickNavigationModal"
+            @focus.native="focusIndex(index)"
           >
-            <Reference
-              :url="symbol.path"
-              class="quick-navigation__reference"
-              tabindex="-1"
+            <div
+              class="quick-navigation__symbol-match"
+              ref="match"
+              role="list"
+              :class="{ 'selected' : index == focusedIndex }"
             >
-              <div
-                class="quick-navigation__symbol-match"
-                ref="match"
-                role="list"
-              >
-                <div class="symbol-info">
-                  <div class="symbol-name">
-                    <NavigatorLeafIcon
-                      class="navigator-icon"
-                      :type="symbol.type"
+              <div class="symbol-info">
+                <div class="symbol-name">
+                  <NavigatorLeafIcon
+                    class="navigator-icon"
+                    :type="symbol.type"
+                  />
+                  <div class="symbol-title">
+                    <span v-text="formatSymbolTitle(symbol.title, 0, symbol.start)" />
+                    <QuickNavigationHighlighter
+                      :text="symbol.substring"
+                      :matcherText="debouncedInput"
                     />
-                    <div class="symbol-title">
-                      <span v-text="symbol.title.slice(0, symbol.start)"></span>
-                      <QuickNavigationHighlighter
-                        :text="symbol.substring"
-                        :matcherText="debouncedInput"
-                      />
-                      <span v-text="symbol.title.slice(symbol.start + symbol.matchLength)">
-                      </span>
-                    </div>
+                    <span
+                      v-text="formatSymbolTitle(symbol.title, symbol.start + symbol.matchLength)"
+                    />
                   </div>
-                  <div class="symbol-path">
-                    <div
-                      v-for="(parent, index) in symbol.parents"
-                      :key="parent.title"
-                    >
-                      <span
-                        v-text="parent.title"
-                        class="parent-path"
-                      />
-                      <span
-                        v-if="index !== symbol.parents.length - 1"
-                        class="parent-path"
-                        v-text="`/`"
-                      />
-                    </div>
+                </div>
+                <div class="symbol-path">
+                  <div
+                    v-for="(parent, index) in symbol.parents"
+                    :key="parent.title"
+                  >
+                    <span
+                      v-text="parent.title"
+                      class="parent-path"
+                    />
+                    <span
+                      v-if="index !== symbol.parents.length - 1"
+                      class="parent-path"
+                      v-text="`/`"
+                    />
                   </div>
                 </div>
               </div>
-            </Reference>
-          </div>
+            </div>
+          </Reference>
         </div>
       </div>
     </div>
@@ -197,7 +193,7 @@ export default {
   },
   methods: {
     closeQuickNavigationModal() {
-      this.$emit('closeQuickNavigationModal', false);
+      this.$emit('update:showQuickNavigationModal', false);
     },
     constructFuzzyRegex(userInput) {
       // Construct regex for fuzzy match
@@ -216,6 +212,9 @@ export default {
     endingPointHook() {
       // Reset selected symbol to the first one of the list
       this.focusedIndex = 0;
+    },
+    formatSymbolTitle(symbolTitle, symbolStart, symbolEnd) {
+      return symbolTitle.slice(symbolStart, symbolEnd);
     },
     fuzzyMatch({ debouncedInput, symbols, processedInputRegex }) {
       return symbols.map((symbol) => {
@@ -266,7 +265,6 @@ export default {
     scrollIntoView() {
       this.$refs.match[this.focusedIndex].scrollIntoView({
         block: 'nearest',
-        inline: 'start',
       });
     },
     startingPointHook() {

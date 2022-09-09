@@ -23,7 +23,7 @@
             <QuickNavigationModal
               :children="slotProps.flatChildren"
               :showQuickNavigationModal="showQuickNavigationModal"
-              @closeQuickNavigationModal="showQuickNavigationModal = false"
+              @update:showQuickNavigationModal="(show) => showQuickNavigationModal = show"
             />
           </div>
         </template>
@@ -77,7 +77,7 @@
           @toggle-sidenav="handleToggleSidenav"
         >
           <template #menu-items>
-            <div
+            <button
               v-if="enableQuickNavigation"
               class="quick-navigation-open-container"
               tabindex="0"
@@ -85,7 +85,7 @@
               @keydown.enter.exact="openQuickNavigationModal"
             >
               <MagnifierIcon />
-            </div>
+            </button>
           </template>
         </Nav>
         <Topic
@@ -465,7 +465,6 @@ export default {
   height: rem(15px);
   width: rem(15px);
   margin-left: rem(10px);
-  cursor: pointer;
   @include nav-in-breakpoint() {
     display: none;
   }
