@@ -148,7 +148,7 @@ ul {
 
 .base-link {
   color: var(--color-figure-gray-secondary);
-  @include font-styles(on-this-page);
+  @include font-styles(body-reduced-tight);
   display: inline-block;
   margin-bottom: 5px;
   transition: color 0.15s ease-in;
