@@ -9,8 +9,14 @@
 -->
 
 <template>
-  <div class="topic-icon-wrapper" v-if="icon">
-    <component :is="icon" class="topic-icon" />
+  <div class="topic-icon-wrapper" v-if="icon || shouldShowImageOverride">
+    <SVGIcon
+      v-if="shouldShowImageOverride"
+      :icon-url="imageOverridePath"
+      :theme-id="imageOverrideId"
+      class="topic-icon"
+    />
+    <component v-else :is="icon" class="topic-icon" />
   </div>
 </template>
 
@@ -21,6 +27,7 @@ import ApiCollectionIcon from 'theme/components/Icons/APIReferenceIcon.vue';
 import EndpointIcon from 'theme/components/Icons/EndpointIcon.vue';
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
+import SVGIcon from 'docc-render/components/SVGIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
 
 const TopicRoleIcons = {
@@ -36,15 +43,30 @@ const TopicRoleIcons = {
 };
 
 export default {
+  components: { SVGIcon },
   props: {
     role: {
       type: String,
       required: true,
     },
+    imageOverride: {
+      type: Object,
+      default: null,
+    },
   },
 
   computed: {
     icon: ({ role }) => TopicRoleIcons[role],
+    imageOverrideVariant: ({ imageOverride }) => {
+      if (!imageOverride) return null;
+      return imageOverride.variants[0];
+    },
+    imageOverridePath: ({ imageOverrideVariant }) => imageOverrideVariant && imageOverrideVariant.url,
+    imageOverrideId: ({ imageOverrideVariant }) => imageOverrideVariant && imageOverrideVariant.svgID,
+    shouldShowImageOverride: ({
+      imageOverridePath,
+      imageOverrideId,
+    }) => imageOverridePath && imageOverrideId,
   },
 };
 </script>
