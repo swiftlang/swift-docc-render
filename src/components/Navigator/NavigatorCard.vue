@@ -507,12 +507,11 @@ export default {
   },
   methods: {
     toggleAllNodes() {
-      const parentNodes = this.children.filter(child => child.parent === INDEX_ROOT_KEY);
+      const parentNodes = this.children.filter(child => child.parent === INDEX_ROOT_KEY
+        && child.type !== TopicTypes.groupMarker && child.childUIDs.length);
 
       parentNodes.forEach((node) => {
-        if (node.type !== 'groupMarker') {
-          this.toggleFullTree(node);
-        }
+        this.toggleFullTree(node);
       });
     },
     clearFilters() {
