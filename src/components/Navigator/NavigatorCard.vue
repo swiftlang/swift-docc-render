@@ -280,7 +280,7 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
-      shouldRestoreOpenNodes: false,
+      allNodesToggled: false,
     };
   },
   computed: {
@@ -512,8 +512,8 @@ export default {
         && child.type !== TopicTypes.groupMarker && child.childUIDs.length);
 
       // make sure all nodes get either open or close
-      this.shouldRestoreOpenNodes = !this.shouldRestoreOpenNodes;
-      if (this.shouldRestoreOpenNodes) {
+      this.allNodesToggled = !this.allNodesToggled;
+      if (this.allNodesToggled) {
         this.openNodes = {};
       }
 
