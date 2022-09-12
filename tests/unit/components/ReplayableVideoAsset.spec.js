@@ -15,9 +15,11 @@ import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
 import { flushPromises } from '../../../test-utils';
 
 const variants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/myvideo.mp4' }];
+const posterVariants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/image.jpg' }];
 
 const propsData = {
   variants,
+  posterVariants,
 };
 describe('ReplayableVideoAsset', () => {
   const mountWithProps = props => shallowMount(ReplayableVideoAsset, {
@@ -46,6 +48,7 @@ describe('ReplayableVideoAsset', () => {
 
     const video = wrapper.find(VideoAsset);
     expect(video.props('variants')).toBe(variants);
+    expect(video.props('posterVariants')).toBe(posterVariants);
     expect(video.props('showsControls')).toBe(true);
     expect(video.props('autoplays')).toBe(true);
   });
@@ -78,5 +81,54 @@ describe('ReplayableVideoAsset', () => {
     wrapper.find('.replay-button').trigger('click');
     await flushPromises();
     expect(playMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the Replay on first mount, if not set to autoplay', async () => {
+    const wrapper = mountWithProps({
+      autoplays: false,
+    });
+    const replay = wrapper.find('.replay-button');
+    expect(replay.text()).toBe('Play');
+    expect(replay.classes()).toContain('visible');
+    replay.trigger('click');
+    await flushPromises();
+    // text is not changed, but its invisible
+    expect(replay.text()).toBe('Play');
+    expect(replay.classes()).not.toContain('visible');
+    // now end the video
+    wrapper.find({ ref: 'asset' }).trigger('ended');
+    // assert text changed and its visible
+    expect(replay.text()).toBe('Replay');
+    expect(replay.classes()).toContain('visible');
+  });
+
+  it('shows the Replay on `pause` if no `showsControls` is false', async () => {
+    const wrapper = mountWithProps({
+      autoplays: false,
+      showsControls: false,
+    });
+    const replay = wrapper.find('.replay-button');
+    expect(replay.classes()).toContain('visible');
+    // play
+    replay.trigger('click');
+    await flushPromises();
+    // assert button is hidden
+    expect(replay.classes()).not.toContain('visible');
+    // pause
+    wrapper.find({ ref: 'asset' }).trigger('pause');
+    // assert button is visible again
+    expect(replay.classes()).toContain('visible');
+  });
+
+  it('hides the button when @playing fired', () => {
+    const wrapper = mountWithProps({
+      autoplays: false,
+    });
+    const replay = wrapper.find('.replay-button');
+    expect(replay.classes()).toContain('visible');
+    // Simulate browser starts playing
+    wrapper.find({ ref: 'asset' }).trigger('playing');
+    // assert button is hidden
+    expect(replay.classes()).not.toContain('visible');
   });
 });
