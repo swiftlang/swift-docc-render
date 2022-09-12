@@ -51,6 +51,10 @@ export default {
       type: Boolean,
       default: () => true,
     },
+    videoMuted: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     rawAsset() {
@@ -96,6 +100,7 @@ export default {
       return {
         variants: this.asset.variants,
         showsControls: this.showsVideoControls,
+        muted: this.videoMuted,
         autoplays: this.prefersReducedMotion ? false : this.videoAutoplays,
         posterVariants: this.videoPoster ? this.videoPoster.variants : [],
       };
