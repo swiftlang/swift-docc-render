@@ -889,16 +889,17 @@ export default {
       await waitFrames(1);
       if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      if (this.hasFilter) {
+      if (this.hasFilter && !this.deprecatedHidden) {
         this.$refs.scroller.scrollToItem(0);
         return;
       }
       // check if the current element is visible and needs scrolling into
       const element = document.getElementById(this.activeUID);
-      // check if item is inside scroller
-      if (this.getChildPositionInScroller(element) === 0) return;
-      // find the index of the current active UID in the newly added nodes
+      // check if there is such an item AND the item is inside scroller area
+      if (element && this.getChildPositionInScroller(element) === 0) return;
+      // find the index of the current active UID in the nodes to render
       const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
+      if (index === -1) return;
       // check if the element is visible
       // call the scroll method on the `scroller` component.
       this.$refs.scroller.scrollToItem(index);

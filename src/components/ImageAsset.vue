@@ -13,6 +13,7 @@
     v-if="fallbackImageSrcSet"
     class="fallback"
     title="Image failed to load"
+    decoding="async"
     :alt="alt"
     :srcset="fallbackImageSrcSet"
   />
@@ -31,6 +32,8 @@
       v-if="prefersDark && darkVariantAttributes"
       v-bind="darkVariantAttributes"
       ref="img"
+      decoding="async"
+      :loading="loading"
       :alt="alt"
       :width="darkVariantAttributes.width || optimalWidth"
       :height="(darkVariantAttributes.width || optimalWidth) ? 'auto' : null"
@@ -43,6 +46,8 @@
       v-else
       v-bind="defaultAttributes"
       ref="img"
+      decoding="async"
+      :loading="loading"
       :alt="alt"
       :width="defaultAttributes.width || optimalWidth"
       :height="(defaultAttributes.width || optimalWidth) ? 'auto' : null"
@@ -128,6 +133,10 @@ export default {
     variants: {
       type: Array,
       required: true,
+    },
+    loading: {
+      type: String,
+      default: 'lazy',
     },
   },
   methods: {
