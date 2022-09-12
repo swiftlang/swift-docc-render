@@ -1694,6 +1694,30 @@ describe('NavigatorCard', () => {
       expect(items).toHaveLength(1);
       expect(items.at(0).props('item')).toEqual(root1);
     });
+
+    it('toggles siblings properly, even when there are groupMarkers', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            root0Updated, groupMarker, root0Child0, root0Child1, root0Child1GrandChild0, root1,
+          ],
+          activePath: [root0Updated.path],
+        },
+      });
+      await flushPromises();
+      // assert we have 5 items rendered
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
+      // open the item and it's siblings
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-siblings', root0Child1);
+      await flushPromises();
+      // assert we have one extra item visible
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(6);
+      // close back the item
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-siblings', root0Child1);
+      await flushPromises();
+      // assert we are left with 5 items again
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
+    });
   });
 
   it('renders a Beta badge in the header', async () => {
