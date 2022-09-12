@@ -280,6 +280,7 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
+      shouldRestoreOpenNodes: false,
     };
   },
   computed: {
@@ -509,6 +510,12 @@ export default {
     toggleAllNodes() {
       const parentNodes = this.children.filter(child => child.parent === INDEX_ROOT_KEY
         && child.type !== TopicTypes.groupMarker && child.childUIDs.length);
+
+      // make sure all nodes get either open or close
+      this.shouldRestoreOpenNodes = !this.shouldRestoreOpenNodes;
+      if (this.shouldRestoreOpenNodes) {
+        this.openNodes = {};
+      }
 
       parentNodes.forEach((node) => {
         this.toggleFullTree(node);
