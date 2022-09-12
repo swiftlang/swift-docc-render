@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -75,7 +75,6 @@ import onIntersect from 'docc-render/mixins/onIntersect';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
-import FocusTrap from 'docc-render/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
@@ -154,7 +153,6 @@ export default {
       isTransitioning: false,
       isSticking: false,
       noBackgroundTransition: true,
-      focusTrapInstance: null,
       currentBreakpoint: BreakpointName.large,
     };
   },
@@ -196,7 +194,6 @@ export default {
     document.addEventListener('click', this.handleClickOutside);
     this.handleFlashOnMount();
     await this.$nextTick();
-    this.focusTrapInstance = new FocusTrap(this.$refs.wrapper);
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.onEscape);
@@ -206,7 +203,6 @@ export default {
     if (this.isOpen) {
       this.toggleScrollLock(false);
     }
-    this.focusTrapInstance.destroy();
   },
   methods: {
     getIntersectionTargets() {
@@ -317,16 +313,15 @@ export default {
     },
     onExpand() {
       this.$emit('open');
-      // lock focus
-      this.focusTrapInstance.start();
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
+      // focus on the toggle to prevent tabbing to links in the body
+      this.$refs.axToggle.focus();
     },
     onClose() {
       this.$emit('close');
       // stop the scroll lock
       this.toggleScrollLock(false);
-      this.focusTrapInstance.stop();
       changeElementVOVisibility.show(this.$refs.wrapper);
     },
     async handleFlashOnMount() {
