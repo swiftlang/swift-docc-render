@@ -14,12 +14,10 @@
 </template>
 
 <script>
-export const MAX_COLUMN_COUNT = 12;
 /**
  * A Row component that accepts an optional `columns` prop.
  * When columns is passed, the grid will have that exact number of columns.
  * If no `columns` provided, width is split up equally across each cell.
- * Max number of allowed columns is 12.
  */
 export default {
   name: 'Row',
@@ -28,7 +26,7 @@ export default {
       type: Number,
       default: null,
       required: false,
-      validator: v => v > 0 && v <= MAX_COLUMN_COUNT,
+      validator: v => v > 0,
     },
     gap: {
       type: Number,
@@ -37,7 +35,7 @@ export default {
   },
   computed: {
     style: ({ columns, gap }) => ({
-      '--col-count': columns || MAX_COLUMN_COUNT,
+      '--col-count': columns,
       '--col-gap': gap,
     }),
   },
@@ -49,7 +47,8 @@ export default {
 
 .row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, unquote('minmax(calc(100% / var(--col-count)), 1fr)'));
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   grid-gap: var(--col-gap, #{$article-stacked-margin-small});
 
   &.with-columns {
@@ -57,11 +56,13 @@ export default {
 
     @include breakpoint(small) {
       grid-template-columns: 1fr;
+      grid-auto-flow: row;
     }
   }
 
   @include breakpoint(small) {
     grid-template-columns: 1fr;
+    grid-auto-flow: row;
   }
 
   /deep/ + * {
