@@ -146,7 +146,7 @@ const propsData = {
     },
   ],
   remoteSource: { url: 'foo' },
-  pageImages: [{ reference: 'foo', type: 'icon' }],
+  pageImages: [{ identifier: 'foo', type: 'icon' }],
 };
 
 describe('DocumentationTopic', () => {
@@ -221,7 +221,7 @@ describe('DocumentationTopic', () => {
     const iconOverride = { variants: [] };
     wrapper.setProps({
       references: {
-        [propsData.pageImages[0].reference]: iconOverride,
+        [propsData.pageImages[0].identifier]: iconOverride,
       },
     });
     const hero = wrapper.find(DocumentationHero);

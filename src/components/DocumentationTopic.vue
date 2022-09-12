@@ -362,7 +362,7 @@ export default {
      */
     pageIcon: ({ pageImages = [] }) => {
       const icon = pageImages.find(({ type }) => type === 'icon');
-      return icon ? icon.reference : null;
+      return icon ? icon.identifier : null;
     },
   },
   methods: {
