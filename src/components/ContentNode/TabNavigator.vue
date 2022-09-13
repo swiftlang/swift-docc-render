@@ -86,14 +86,18 @@ export default {
 
   .tabnav {
     width: 20%;
+    flex: 0 0 auto;
     white-space: normal;
+    margin: 0;
     @include breakpoint(small) {
       width: 35%;
     }
   }
 
   .tabs-content {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-right: $stacked-margin-large;
   }
 }
 </style>
