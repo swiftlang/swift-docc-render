@@ -33,13 +33,13 @@ const BlockType = {
   termList: 'termList',
   unorderedList: 'unorderedList',
   dictionaryExample: 'dictionaryExample',
+  video: 'video',
 };
 
 const InlineType = {
   codeVoice: 'codeVoice',
   emphasis: 'emphasis',
   image: 'image',
-  video: 'video',
   inlineHead: 'inlineHead',
   link: 'link',
   newTerm: 'newTerm',
@@ -277,6 +277,19 @@ function renderNode(createElement, references) {
       };
       return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
     }
+    case BlockType.video: {
+      if (node.metadata && node.metadata.abstract) {
+        return renderFigure(node);
+      }
+
+      return references[node.identifier] ? (
+        createElement(InlineVideo, {
+          props: {
+            identifier: node.identifier,
+          },
+        })
+      ) : null;
+    }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (
         node.code
@@ -302,19 +315,6 @@ function renderNode(createElement, references) {
       ) : (
         null
       );
-    }
-    case InlineType.video: {
-      if (node.metadata && node.metadata.abstract) {
-        return renderFigure(node);
-      }
-
-      return references[node.identifier] ? (
-        createElement(InlineVideo, {
-          props: {
-            identifier: node.identifier,
-          },
-        })
-      ) : null;
     }
     case InlineType.link:
       // Note: `InlineType.link` has been deprecated, but may still be found in old JSON.
