@@ -277,7 +277,9 @@ function renderNode(createElement, references) {
       return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
     }
     case BlockType.small: {
-      return createElement(Small, renderChildren(node.content));
+      return createElement('p', {}, [
+        createElement(Small, {}, renderChildren(node.inlineContent)),
+      ]);
     }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (
@@ -314,7 +316,7 @@ function renderNode(createElement, references) {
       const reference = references[node.identifier];
       if (!reference) return null;
       const titleInlineContent = node.overridingTitleInlineContent
-          || reference.titleInlineContent;
+        || reference.titleInlineContent;
       const titlePlainText = node.overridingTitle || reference.title;
       return createElement(Reference, {
         props: {

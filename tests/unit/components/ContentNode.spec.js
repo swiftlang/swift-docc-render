@@ -325,15 +325,20 @@ describe('ContentNode', () => {
     it('renders a `<Small>`', () => {
       const wrapper = mountWithItem({
         type: 'small',
-        content: [
+        inlineContent: [
           {
             type: 'text',
             text: 'foo',
           },
         ],
       });
-      const small = wrapper.find(Small);
-      expect(small.text()).toBe('foo');
+      const paragraph = wrapper.find('p');
+      // assert the small tag is wrapped in a paragraph
+      expect(paragraph.html()).toMatchInlineSnapshot(`
+        <p>
+          <small-stub>foo</small-stub>
+        </p>
+      `);
     });
   });
 
