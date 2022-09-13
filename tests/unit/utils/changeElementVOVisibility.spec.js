@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -44,18 +44,23 @@ describe("changeElementVOVisibility", () => {
     expect(document.querySelector(".main .navigation").getAttribute("aria-hidden")).toBe("true");
     expect(document.querySelector(".main .target").getAttribute("aria-hidden")).toBeFalsy();
     expect(document.querySelector(".footer").getAttribute("aria-hidden")).toBe("true");
+
+    expect(document.querySelector(".header").getAttribute("tabindex")).toBe("-1");
+    expect(document.querySelector(".main .navigation").getAttribute("tabindex")).toBe("-1");
+    expect(document.querySelector(".footer").getAttribute("tabindex")).toBe("-1");
+
     expect(document.body.outerHTML).toMatchInlineSnapshot(`
       <body>
         <div>
           <div>
-            <div class="header" data-original-aria-hidden="" aria-hidden="true">Header</div>
+            <div class="header" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Header</div>
             <main class="main">
-              <nav class="navigation" data-original-aria-hidden="" aria-hidden="true">Navigation</nav>
+              <nav class="navigation" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Navigation</nav>
               <div class="target">
                 <div class="inside">Inside</div>
               </div>
             </main>
-            <div class="footer" data-original-aria-hidden="" aria-hidden="true">Footer</div>
+            <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
           </div>
         </div>
       </body>
@@ -110,14 +115,49 @@ describe("changeElementVOVisibility", () => {
       <body>
         <div>
           <div>
-            <div class="header" aria-hidden="true" data-original-aria-hidden="true">Header</div>
+            <div class="header" aria-hidden="true" data-original-aria-hidden="true" data-original-tabindex="" tabindex="-1">Header</div>
             <main class="main">
-              <nav class="navigation" aria-hidden="true" data-original-aria-hidden="false">Navigation</nav>
+              <nav class="navigation" aria-hidden="true" data-original-aria-hidden="false" data-original-tabindex="" tabindex="-1">Navigation</nav>
               <div class="target">
                 <div class="inside">Inside</div>
               </div>
             </main>
-            <div class="footer" data-original-aria-hidden="" aria-hidden="true">Footer</div>
+            <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
+          </div>
+        </div>
+      </body>
+    `);
+    changeElementVOVisibility.show(target);
+    expect(document.body.outerHTML).toEqual(cachedHTML);
+  });
+
+  it("preserves previously set tabindex values", () => {
+    DOM.querySelector(".header").setAttribute("tabindex", "2");
+    DOM.querySelector(".navigation").setAttribute("tabindex", "-1");
+    document.body.appendChild(DOM);
+    const cachedHTML = document.body.outerHTML;
+
+    const target = document.querySelector(".target");
+    // hide all
+    changeElementVOVisibility.hide(target);
+    expect(document.querySelector(".header").getAttribute("data-original-tabindex")).toBe(
+      "2"
+    );
+    expect(document.querySelector(".navigation").getAttribute("data-original-tabindex")).toBe(
+      "-1"
+    );
+    expect(document.body.outerHTML).toMatchInlineSnapshot(`
+      <body>
+        <div>
+          <div>
+            <div class="header" tabindex="-1" data-original-aria-hidden="" data-original-tabindex="2" aria-hidden="true">Header</div>
+            <main class="main">
+              <nav class="navigation" tabindex="-1" data-original-aria-hidden="" data-original-tabindex="-1" aria-hidden="true">Navigation</nav>
+              <div class="target">
+                <div class="inside">Inside</div>
+              </div>
+            </main>
+            <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
           </div>
         </div>
       </body>

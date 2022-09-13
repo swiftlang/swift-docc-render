@@ -1,12 +1,46 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import TabManager from 'docc-render/utils/TabManager';
+
+const OG_PREFIX = 'data-original-';
+const ARIA = 'aria-hidden';
+const TABINDEX = 'tabindex';
+
+function cacheOriginalAttribute(element, prop) {
+  const attr = OG_PREFIX + prop;
+
+  // make sure that prop isn't cached already
+  if (element.getAttribute(attr)) return;
+
+  const originalValue = element.getAttribute(prop) || '';
+  element.setAttribute(attr, originalValue);
+}
+
+function retrieveOriginalAttribute(element, prop) {
+  const attr = OG_PREFIX + prop;
+
+  // return if attribute doesn't exist
+  if (!element.hasAttribute(attr)) return;
+  // get the cached property
+  const originalValue = element.getAttribute(attr);
+  // remove the prefixed attribute
+  element.removeAttribute(attr);
+
+  // if there is a value, set it back.
+  if (originalValue.length) {
+    element.setAttribute(prop, originalValue);
+  } else {
+    // otherwise remove the attribute entirely.
+    element.removeAttribute(prop);
+  }
+}
 
 /* eslint-disable no-cond-assign */
 function iterateOverSiblings(el, callback) {
@@ -27,23 +61,29 @@ function iterateOverSiblings(el, callback) {
   }
 }
 
-const PREFIX = 'data-original-';
-const prop = 'aria-hidden';
-const prefixedProperty = PREFIX + prop;
-
 /**
  * Hides an element from VO
  * @param {HTMLElement} element
  */
 const hideElement = (element) => {
-  let originalValue = element.getAttribute(prefixedProperty);
-  if (!originalValue) {
-    // store the prop temporarily, to retrieve later.
-    originalValue = element.getAttribute(prop) || '';
-    element.setAttribute(prefixedProperty, originalValue);
+  // set original value for prefixed properties and tabindex
+  // store the prop temporarily, to retrieve later.
+  cacheOriginalAttribute(element, ARIA);
+  cacheOriginalAttribute(element, TABINDEX);
+
+  // hide the component from VO
+  element.setAttribute(ARIA, 'true');
+
+  // hide the component from tabbing
+  element.setAttribute(TABINDEX, '-1');
+  // make sure element's tabbable children are hidden as well
+  const tabbables = TabManager.getTabbableElements(element);
+  let i = tabbables.length - 1;
+  while (i >= 0) {
+    cacheOriginalAttribute(tabbables[i], TABINDEX);
+    tabbables[i].setAttribute(TABINDEX, '-1');
+    i -= 1;
   }
-  // hide the component
-  element.setAttribute(prop, 'true');
 };
 
 /**
@@ -51,19 +91,16 @@ const hideElement = (element) => {
  * @param {HTMLElement} element
  */
 const showElement = (element) => {
-  // get the cached property
-  const originalValue = element.getAttribute(prefixedProperty);
-  if (typeof originalValue === 'string') {
-    // if there is a value, set it back.
-    if (originalValue.length) {
-      element.setAttribute(prop, originalValue);
-    } else {
-      // otherwise remove the attribute entirely.
-      element.removeAttribute(prop);
-    }
+  retrieveOriginalAttribute(element, ARIA);
+  retrieveOriginalAttribute(element, TABINDEX);
+
+  // make sure element's tabbable children are restored as well
+  const tabbables = element.querySelectorAll(`[${OG_PREFIX + TABINDEX}]`);
+  let i = tabbables.length - 1;
+  while (i >= 0) {
+    retrieveOriginalAttribute(tabbables[i], TABINDEX);
+    i -= 1;
   }
-  // remove the prefixed attribute
-  element.removeAttribute(prefixedProperty);
 };
 
 /**

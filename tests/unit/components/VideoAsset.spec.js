@@ -40,6 +40,7 @@ describe('VideoAsset', () => {
 
   it('renders a video', () => {
     expect(wrapper.is('video')).toBe(true);
+    expect(wrapper.element.muted).toBe(true);
   });
 
   it('adds a poster to the `video`, using light by default', () => {
@@ -86,11 +87,14 @@ describe('VideoAsset', () => {
     expect(source.attributes('controls')).toBe(undefined);
   });
 
-  it('forwards `playing` and `ended` events', () => {
+  it('forwards `playing`, `pause` and `ended` events', () => {
     const video = wrapper.find('video');
 
     video.trigger('playing');
     expect(wrapper.emitted().playing.length).toBe(1);
+
+    video.trigger('pause');
+    expect(wrapper.emitted().pause.length).toBe(1);
 
     video.trigger('ended');
     expect(wrapper.emitted().ended.length).toBe(1);
@@ -142,5 +146,12 @@ describe('VideoAsset', () => {
     source = wrapper.find('source');
     expect(source.exists()).toBe(true);
     expect(source.attributes('src')).toBe(propsData.variants[1].url);
+  });
+
+  it('renders a video as none-muted', () => {
+    wrapper.setProps({
+      muted: false,
+    });
+    expect(wrapper.element.muted).toBeFalsy();
   });
 });
