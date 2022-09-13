@@ -860,6 +860,56 @@ describe('NavigatorCard', () => {
       expect(allItems.at(3).props('item')).toEqual(root1WithChildren);
       expect(allItems.at(4).props('item')).toEqual(root1Child0);
     });
+
+    it('toggles siblings properly, even when there are groupMarkers', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            root0WithGroupMarker,
+            groupMarker,
+            root0Child0WithChildren,
+            root0Child0WithChildrenGrandChild0,
+            root0Child1,
+            root0Child1GrandChild0,
+            root1WithChildren,
+            root1Child0,
+          ],
+          activePath: [root0WithGroupMarker.path],
+        },
+      });
+      await flushPromises();
+      // assert we have 3 items rendered
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
+      // open the item and it's siblings
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-siblings', root0Child1);
+      await flushPromises();
+      // assert we have one extra item visible
+      let allItems = wrapper.findAll(NavigatorCardItem);
+      // assert all items are as we expect them to be
+      expect(allItems).toHaveLength(7);
+      expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
+      expect(allItems.at(1).props('item')).toEqual(groupMarker);
+      expect(allItems.at(2).props('item')).toEqual(root0Child0WithChildren);
+      expect(allItems.at(3).props('item')).toEqual(root0Child0WithChildrenGrandChild0);
+      expect(allItems.at(4).props('item')).toEqual(root0Child1);
+      expect(allItems.at(5).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(6).props('item')).toEqual(root1WithChildren);
+
+      // toggle the items
+      allItems.at(0).vm.$emit('toggle-siblings', root0Child1);
+      await flushPromises();
+      allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems).toHaveLength(5);
+      expect(allItems.at(0).props()).toMatchObject({
+        item: root0WithGroupMarker,
+        expanded: true,
+      });
+      expect(allItems.at(1).props('item')).toEqual(groupMarker);
+      expect(allItems.at(2).props())
+        .toMatchObject({ item: root0Child0WithChildren, expanded: false });
+      expect(allItems.at(3).props()).toMatchObject({ item: root0Child1, expanded: false });
+      expect(allItems.at(4).props()).toMatchObject({ item: root1WithChildren, expanded: false });
+    });
   });
 
   describe('on @focus-parent', () => {
