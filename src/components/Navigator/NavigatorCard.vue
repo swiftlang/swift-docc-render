@@ -624,8 +624,9 @@ export default {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
       const siblings = this.getSiblings(node.uid);
-      siblings.forEach(({ uid, childUIDs }) => {
-        if (!childUIDs.length) return;
+      siblings.forEach(({ uid, childUIDs, type }) => {
+        // if the item has no children or is a groupMarker, exit early
+        if (!childUIDs.length || type === TopicTypes.groupMarker) return;
         if (isOpen) {
           const children = this.getAllChildren(uid);
           // remove all children
@@ -655,7 +656,7 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     getAllChildren(uid) {
-      const arr = [];
+      const collection = new Set([]);
       const stack = [uid];
       let current = null;
 
@@ -665,13 +666,13 @@ export default {
         current = stack.shift();
         // find the object
         const obj = this.childrenMap[current];
-        // add it's uid
-        arr.push(obj);
+        // add it to the collection
+        collection.add(obj);
         // add all if it's children to the front of the stack
         stack.unshift(...obj.childUIDs);
       }
 
-      return arr;
+      return [...collection];
     },
     /**
      * Get all the parents of a node, up to the root.
@@ -894,16 +895,17 @@ export default {
       await waitFrames(1);
       if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      if (this.hasFilter) {
+      if (this.hasFilter && !this.deprecatedHidden) {
         this.$refs.scroller.scrollToItem(0);
         return;
       }
       // check if the current element is visible and needs scrolling into
       const element = document.getElementById(this.activeUID);
-      // check if item is inside scroller
-      if (this.getChildPositionInScroller(element) === 0) return;
-      // find the index of the current active UID in the newly added nodes
+      // check if there is such an item AND the item is inside scroller area
+      if (element && this.getChildPositionInScroller(element) === 0) return;
+      // find the index of the current active UID in the nodes to render
       const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
+      if (index === -1) return;
       // check if the element is visible
       // call the scroll method on the `scroller` component.
       this.$refs.scroller.scrollToItem(index);
