@@ -60,21 +60,21 @@ export default {
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
+$icon-margin: 7px;
 
 .header-anchor {
   color: var(--colors-text, var(--color-text));
   text-decoration: none;
   position: relative;
-  padding-right: 1em;
+  padding-right: $icon-size + $icon-margin;
   display: inline-block;
 
   .icon {
     position: absolute;
     bottom: .2em;
     display: none;
-    height: .6em;
-    margin-left: .3em;
-    fill: currentColor;
+    height: $icon-size;
+    margin-left: $icon-margin;
   }
 
   &:hover .icon {
