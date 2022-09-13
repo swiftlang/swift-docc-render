@@ -13,9 +13,10 @@
     :controls="showsControls"
     :autoplay="autoplays"
     :poster="normalizeAssetUrl(defaultPosterAttributes.url)"
-    muted
+    :muted="muted"
     playsinline
     @playing="$emit('playing')"
+    @pause="$emit('pause')"
     @ended="$emit('ended')"
   >
     <!--
@@ -52,6 +53,10 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    muted: {
+      type: Boolean,
+      default: true,
     },
   },
   data: () => ({ appState: AppStore.state }),
