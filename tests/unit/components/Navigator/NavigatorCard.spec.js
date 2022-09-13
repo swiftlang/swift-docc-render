@@ -359,39 +359,24 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert initial items are rendered
-    let all = wrapper.findAll(NavigatorCardItem);
-    expect(all).toHaveLength(4);
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
 
-    // close all children symbols
-    wrapper.find('.navigator-head').trigger('click', {
-      altKey: true,
-    });
-    // re-fetch items
-    await wrapper.vm.$nextTick();
-    all = wrapper.findAll(NavigatorCardItem);
-
-    // assert only parent symbols are visible
-    expect(all).toHaveLength(2);
+    const navHead = wrapper.find('.navigator-head');
 
     // open all children symbols
-    wrapper.find('.navigator-head').trigger('click', {
-      altKey: true,
-    });
-    // re-fetch items
+    navHead.trigger('click', { altKey: true });
     await wrapper.vm.$nextTick();
-    all = wrapper.findAll(NavigatorCardItem);
-    // assert all children are visible
-    expect(all).toHaveLength(5);
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
 
     // close all children symbols
-    wrapper.find('.navigator-head').trigger('click', {
-      altKey: true,
-    });
-    // re-fetch items
+    navHead.trigger('click', { altKey: true });
     await wrapper.vm.$nextTick();
-    all = wrapper.findAll(NavigatorCardItem);
-    // assert all children are visible
-    expect(all).toHaveLength(2);
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+
+    // open all children symbols
+    navHead.trigger('click', { altKey: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
   });
 
   it('allows the user to navigate to the first item on the list when pressing alt + up key', async () => {
