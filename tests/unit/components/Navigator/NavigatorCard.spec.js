@@ -113,8 +113,33 @@ const root1 = {
   childUIDs: [],
 };
 
+const groupMarker = {
+  type: TopicTypes.groupMarker,
+  title: 'First Child Group Marker',
+  uid: 22,
+  parent: root0.uid,
+  depth: 1,
+  index: 4,
+  childUIDs: [root0Child0.uid, root0Child1.uid],
+  deprecatedChildrenCount: 0,
+};
+
+const root0WithGroupMarker = {
+  ...root0,
+  childUIDs: [groupMarker.uid].concat(root0.childUIDs),
+};
+
 const children = [
   root0,
+  root0Child0,
+  root0Child1,
+  root0Child1GrandChild0,
+  root1,
+];
+
+const childrenWithGroupMarker = [
+  root0WithGroupMarker,
+  groupMarker,
   root0Child0,
   root0Child1,
   root0Child1GrandChild0,
@@ -549,6 +574,23 @@ describe('NavigatorCard', () => {
       expect(all).toHaveLength(3);
       expect(all.at(1).props('item')).toEqual(root0Child1);
       expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    });
+
+    it('keeps groupMarkers in mind, when `@toggle-full` is handled', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          // make sure no items are open
+          activePath: [],
+          children: childrenWithGroupMarker,
+        },
+      });
+      await flushPromises();
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-full', root0);
+      await flushPromises();
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(6);
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-full', root0);
+      await flushPromises();
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
     });
   });
 
@@ -1534,22 +1576,6 @@ describe('NavigatorCard', () => {
   });
 
   describe('with groupMarker', () => {
-    const groupMarker = {
-      type: TopicTypes.groupMarker,
-      title: 'First Child Group Marker',
-      uid: 22,
-      parent: root0.uid,
-      depth: 1,
-      index: 4,
-      childUIDs: [root0Child0.uid, root0Child1.uid],
-      deprecatedChildrenCount: 0,
-    };
-
-    const root0Updated = {
-      ...root0,
-      childUIDs: [groupMarker.uid].concat(root0.childUIDs),
-    };
-
     it('shows "Hide Deprecated" tag, if there are deprecated items', async () => {
       const updatedChild = {
         ...root0Child0,
@@ -1559,7 +1585,8 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
-            root0Updated, groupMarker, updatedChild, root0Child1, root0Child1GrandChild0, root1,
+            root0WithGroupMarker, groupMarker, updatedChild, root0Child1, root0Child1GrandChild0,
+            root1,
           ],
           activePath: [root0.path],
         },
@@ -1577,7 +1604,7 @@ describe('NavigatorCard', () => {
       // assert the deprecated item is filtered out
       expect(allItems).toHaveLength(4);
       // assert root is rendered
-      expect(allItems.at(0).props('item')).toEqual(root0Updated);
+      expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
       // assert the group marker is rendered
       expect(allItems.at(1).props('item')).toEqual(groupMarker);
       // assert the none-deprecated child is rendered, but its not expanded
@@ -1592,7 +1619,7 @@ describe('NavigatorCard', () => {
       allItems = wrapper.findAll(NavigatorCardItem);
       // assert that filtering opens everything as usual, showing groupMarkers as well
       expect(allItems).toHaveLength(4);
-      expect(allItems.at(0).props('item')).toEqual(root0Updated);
+      expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(allItems.at(1).props('item')).toEqual(groupMarker);
       expect(allItems.at(2).props('item')).toEqual(root0Child1);
       expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
@@ -1602,7 +1629,8 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
-            root0Updated, groupMarker, root0Child0, root0Child1, root0Child1GrandChild0, root1,
+            root0WithGroupMarker, groupMarker, root0Child0, root0Child1, root0Child1GrandChild0,
+            root1,
           ],
           activePath: [root0.path],
         },
@@ -1614,7 +1642,7 @@ describe('NavigatorCard', () => {
       let items = wrapper.findAll(NavigatorCardItem);
       // parent + group and 2 siblings
       expect(items).toHaveLength(4);
-      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(items.at(1).props('item')).toEqual(groupMarker);
       expect(items.at(2).props('item')).toEqual(root0Child0);
       expect(items.at(3).props('item')).toEqual(root0Child1);
@@ -1629,7 +1657,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       items = wrapper.findAll(NavigatorCardItem);
       expect(items).toHaveLength(5);
-      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(items.at(1).props('item')).toEqual(groupMarker);
       expect(items.at(2).props('item')).toEqual(root0Child0);
       expect(items.at(3).props('item')).toEqual(root0Child1);
@@ -1642,7 +1670,7 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
-            root0Updated, groupMarker, root0Child0Clone,
+            root0WithGroupMarker, groupMarker, root0Child0Clone,
             root0Child1Clone, root0Child1GrandChild0, root1,
           ],
           activePath: [root0.path],
@@ -1656,7 +1684,7 @@ describe('NavigatorCard', () => {
       const items = wrapper.findAll(NavigatorCardItem);
       // parent + group and 1 item
       expect(items).toHaveLength(3);
-      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(items.at(1).props('item')).toEqual(groupMarker);
       expect(items.at(2).props('item')).toEqual(root0Child1Clone);
     });
@@ -1674,7 +1702,7 @@ describe('NavigatorCard', () => {
         childUIDs: [],
       };
       const groupMarkerClone = { ...groupMarker, deprecatedChildrenCount: 2 };
-      const root0Clone = { ...root0Updated, deprecated: true };
+      const root0Clone = { ...root0WithGroupMarker, deprecated: true };
       const wrapper = createWrapper({
         propsData: {
           children: [
@@ -1712,15 +1740,6 @@ describe('NavigatorCard', () => {
     const updatedChild = {
       ...root0Child0,
       deprecated: true,
-    };
-    const groupMarker = {
-      type: TopicTypes.groupMarker,
-      title: 'First Child Group Marker',
-      uid: 22,
-      parent: root0.uid,
-      depth: 1,
-      index: 4,
-      childUIDs: [],
     };
     const root0Updated = {
       ...root0,
