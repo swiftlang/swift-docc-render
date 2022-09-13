@@ -9,7 +9,7 @@
 */
 
 import TopicLinkBlockIcon from '@/components/DocumentationTopic/TopicLinkBlockIcon.vue';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { TopicRole } from '@/constants/roles';
 import ArticleIcon from '@/components/Icons/ArticleIcon.vue';
 import SVGIcon from '@/components/SVGIcon.vue';
@@ -18,7 +18,7 @@ const defaultProps = {
   role: TopicRole.article,
 };
 
-const createWrapper = ({ propsData, ...others } = {}) => shallowMount(TopicLinkBlockIcon, {
+const createWrapper = ({ propsData, ...others } = {}) => mount(TopicLinkBlockIcon, {
   propsData: {
     ...defaultProps,
     ...propsData,

@@ -9,13 +9,14 @@
 */
 
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 import CollectionIcon from '@/components/Icons/CollectionIcon.vue';
 import SVGIcon from '@/components/SVGIcon.vue';
 
-const createWrapper = opts => shallowMount(TopicTypeIcon, opts);
+const createWrapper = opts => mount(TopicTypeIcon, opts);
+
 const {
   TopicTypeIcons,
   TopicTypeProps,

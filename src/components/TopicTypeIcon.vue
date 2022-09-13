@@ -9,22 +9,26 @@
 -->
 
 <template>
-  <div class="TopicTypeIcon">
-    <SVGIcon
-      v-if="imageOverridePath && imageOverrideId"
-      :icon-url="imageOverridePath"
-      :theme-id="imageOverrideId"
-      :style="styles"
-      class="icon-inline"
-    />
-    <component
-      v-else
-      :is="icon"
-      v-bind="iconProps"
-      :style="styles"
-      class="icon-inline"
-    />
-  </div>
+  <IconOverrideProvider
+    :imageOverride="imageOverride"
+    #default="{ shouldUseOverride, themeId, iconUrl }"
+  >
+    <div class="TopicTypeIcon">
+      <SVGIcon
+        v-if="shouldUseOverride"
+        v-bind="{ themeId, iconUrl }"
+        :style="styles"
+        class="icon-inline"
+      />
+      <component
+        v-else
+        :is="icon"
+        v-bind="iconProps"
+        :style="styles"
+        class="icon-inline"
+      />
+    </div>
+  </IconOverrideProvider>
 </template>
 
 <script>
@@ -42,6 +46,7 @@ import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIco
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 import SVGIcon from 'docc-render/components/SVGIcon.vue';
+import IconOverrideProvider from 'docc-render/components/IconOverrideProvider.vue';
 
 const TopicTypeIcons = {
   [TopicTypes.article]: ArticleIcon,
@@ -95,7 +100,7 @@ const TopicTypeProps = {
 
 export default {
   name: 'TopicTypeIcon',
-  components: { SVGIcon, SingleLetterSymbolIcon },
+  components: { IconOverrideProvider, SVGIcon, SingleLetterSymbolIcon },
   constants: { TopicTypeIcons, TopicTypeProps },
   props: {
     type: {
@@ -116,12 +121,6 @@ export default {
     icon: ({ normalisedType }) => TopicTypeIcons[normalisedType] || CollectionIcon,
     iconProps: ({ normalisedType }) => TopicTypeProps[normalisedType] || {},
     color: ({ normalisedType }) => HeroColorsMap[normalisedType],
-    imageOverrideVariant: ({ imageOverride }) => {
-      if (!imageOverride) return null;
-      return imageOverride.variants[0];
-    },
-    imageOverridePath: ({ imageOverrideVariant }) => imageOverrideVariant && imageOverrideVariant.url,
-    imageOverrideId: ({ imageOverrideVariant }) => imageOverrideVariant && imageOverrideVariant.svgID,
     styles: ({
       color,
       withColors,
