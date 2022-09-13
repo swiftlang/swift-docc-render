@@ -619,8 +619,9 @@ export default {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
       const siblings = this.getSiblings(node.uid);
-      siblings.forEach(({ uid, childUIDs }) => {
-        if (!childUIDs.length) return;
+      siblings.forEach(({ uid, childUIDs, type }) => {
+        // if the item has no children or is a groupMarker, exit early
+        if (!childUIDs.length || type === TopicTypes.groupMarker) return;
         if (isOpen) {
           const children = this.getAllChildren(uid);
           // remove all children
@@ -650,7 +651,7 @@ export default {
      * @return {NavigatorFlatItem[]}
      */
     getAllChildren(uid) {
-      const arr = [];
+      const collection = new Set([]);
       const stack = [uid];
       let current = null;
 
@@ -660,13 +661,13 @@ export default {
         current = stack.shift();
         // find the object
         const obj = this.childrenMap[current];
-        // add it's uid
-        arr.push(obj);
+        // add it to the collection
+        collection.add(obj);
         // add all if it's children to the front of the stack
         stack.unshift(...obj.childUIDs);
       }
 
-      return arr;
+      return [...collection];
     },
     /**
      * Get all the parents of a node, up to the root.
