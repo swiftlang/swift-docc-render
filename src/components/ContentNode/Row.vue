@@ -53,10 +53,10 @@ export default {
 
   &.with-columns {
     grid-template-columns: repeat(var(--col-count), 1fr);
+    grid-auto-flow: row;
 
     @include breakpoint(small) {
       grid-template-columns: 1fr;
-      grid-auto-flow: row;
     }
   }
 
