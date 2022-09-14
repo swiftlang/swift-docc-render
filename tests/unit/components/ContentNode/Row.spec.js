@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Row  from '@/components/ContentNode/Row.vue';
+import Row from '@/components/ContentNode/Row.vue';
 import { shallowMount } from '@vue/test-utils';
 
 const createWrapper = props => shallowMount(Row, {
@@ -42,6 +42,6 @@ describe('Row', () => {
         gap: 10,
       },
     });
-    expect(wrapper.vm.style).toHaveProperty('--col-gap', 10);
+    expect(wrapper.vm.style).toHaveProperty('--col-gap', '10px');
   });
 });

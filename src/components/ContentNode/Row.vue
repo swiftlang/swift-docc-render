@@ -30,13 +30,13 @@ export default {
     },
     gap: {
       type: Number,
-      default: null,
+      required: false,
     },
   },
   computed: {
     style: ({ columns, gap }) => ({
       '--col-count': columns,
-      '--col-gap': gap,
+      '--col-gap': gap && `${gap}px`,
     }),
   },
 };
