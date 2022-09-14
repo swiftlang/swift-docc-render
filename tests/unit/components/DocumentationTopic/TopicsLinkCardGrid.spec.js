@@ -11,7 +11,7 @@
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicStyles } from '@/constants/TopicStyles';
-import Grid from '@/components/ContentNode/Grid.vue';
+import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 import TopicsLinkCardGridItem from '@/components/DocumentationTopic/TopicsLinkCardGridItem.vue';
 
@@ -35,7 +35,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(TopicsLink
 describe('TopicsLinkCardGrid', () => {
   it('renders the TopicsLinkCardGrid', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(Grid).props()).toEqual({
+    expect(wrapper.find(Row).props()).toEqual({
       columns: 3, // compact grid is a 3 column setup
     });
     const cols = wrapper.findAll(Column);
@@ -53,7 +53,7 @@ describe('TopicsLinkCardGrid', () => {
         topicStyle: TopicStyles.detailedGrid,
       },
     });
-    expect(wrapper.find(Grid).props()).toEqual({
+    expect(wrapper.find(Row).props()).toEqual({
       columns: 2, // detailed grid is a 2 column setup
     });
     expect(wrapper.find(TopicsLinkCardGridItem).props('compact')).toBe(false);

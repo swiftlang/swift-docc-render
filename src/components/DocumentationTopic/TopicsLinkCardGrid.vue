@@ -10,26 +10,26 @@
 
 <template>
   <div class="TopicsLinkCardGrid">
-    <Grid :columns="compactCards ? 3 : 2">
+    <Row :columns="compactCards ? 3 : 2">
       <Column
         v-for="(item, index) in items"
         :key="index"
       >
         <TopicsLinkCardGridItem :item="item" :compact="compactCards" />
       </Column>
-    </Grid>
+    </Row>
   </div>
 </template>
 
 <script>
-import Grid from 'docc-render/components/ContentNode/Grid.vue';
+import Row from 'docc-render/components/ContentNode/Row.vue';
 import Column from 'docc-render/components/ContentNode/Column.vue';
 import { TopicStyles } from 'docc-render/constants/TopicStyles';
 import TopicsLinkCardGridItem from './TopicsLinkCardGridItem.vue';
 
 export default {
   name: 'TopicsLinkCardGrid',
-  components: { TopicsLinkCardGridItem, Column, Grid },
+  components: { TopicsLinkCardGridItem, Column, Row },
   inject: ['references'],
   props: {
     identifiers: {
@@ -49,11 +49,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang='scss'>
-@import 'docc-render/styles/_core.scss';
-
-.grid {
-  grid-gap: 20px;
-}
-</style>
