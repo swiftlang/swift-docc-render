@@ -13,13 +13,15 @@
     class="TabNavigator"
     :class="[{ 'tabs--vertical': vertical }]"
   >
-    <Tabnav v-model="current" v-bind="{ position, vertical }">
-      <TabnavItem v-for="(item, index) in items" :key="item.title" :value="index">
-        {{ item.title }}
+    <Tabnav v-model="currentTitle" v-bind="{ position, vertical }">
+      <TabnavItem v-for="title in titles" :key="title" :value="title">
+        {{ title }}
       </TabnavItem>
     </Tabnav>
     <div class="tabs-content">
-      <ContentNode :content="currentContent" />
+      <template v-for="title in titles">
+        <slot v-if="title === currentTitle" :name="title"></slot>
+      </template>
     </div>
   </div>
 </template>
@@ -39,7 +41,6 @@ export default {
   components: {
     TabnavItem,
     Tabnav,
-    ContentNode: () => import('docc-render/components/ContentNode.vue'),
   },
   props: {
     vertical: {
@@ -51,7 +52,7 @@ export default {
       default: 'start',
       validator: v => new Set(['start', 'center', 'end']).has(v),
     },
-    items: {
+    titles: {
       type: Array,
       required: true,
       default: () => [],
@@ -59,11 +60,8 @@ export default {
   },
   data() {
     return {
-      current: this.items.length ? 0 : null,
+      currentTitle: this.titles[0],
     };
-  },
-  computed: {
-    currentContent: ({ current, items }) => items[current].content,
   },
 };
 </script>
