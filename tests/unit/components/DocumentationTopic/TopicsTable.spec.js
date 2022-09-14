@@ -6,13 +6,12 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import { shallowMount } from '@vue/test-utils';
 import TopicsTable from 'docc-render/components/DocumentationTopic/TopicsTable.vue';
 import { TopicStyles } from '@/constants/TopicStyles';
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
-import reference from '@/components/ContentNode/Reference';
 
 const {
   ContentTable, TopicsLinkBlock, ContentTableSection, ContentNode, WordBreak, LinkableHeading,

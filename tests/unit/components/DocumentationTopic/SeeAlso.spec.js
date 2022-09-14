@@ -10,6 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import SeeAlso from 'docc-render/components/DocumentationTopic/SeeAlso.vue';
+import { TopicStyles } from '@/constants/TopicStyles';
 
 const { TopicsTable } = SeeAlso.components;
 
@@ -26,6 +27,7 @@ describe('SeeAlso', () => {
       sections: [],
       title: 'See Also',
       wrapTitle: false,
+      topicStyle: TopicStyles.list,
     });
   });
 });
