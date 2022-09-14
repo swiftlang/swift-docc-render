@@ -30,9 +30,8 @@ import TopicsLinkCardGridItem from './TopicsLinkCardGridItem.vue';
 export default {
   name: 'TopicsLinkCardGrid',
   components: { TopicsLinkCardGridItem, Column, Row },
-  inject: ['references'],
   props: {
-    identifiers: {
+    items: {
       type: Array,
       required: true,
     },
@@ -42,9 +41,6 @@ export default {
     },
   },
   computed: {
-    items() {
-      return this.identifiers.map(i => this.references[i]);
-    },
     compactCards: ({ topicStyle }) => topicStyle === TopicStyles.compactGrid,
   },
 };

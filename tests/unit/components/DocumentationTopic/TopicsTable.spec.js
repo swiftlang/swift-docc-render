@@ -6,10 +6,13 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
 import TopicsTable from 'docc-render/components/DocumentationTopic/TopicsTable.vue';
+import { TopicStyles } from '@/constants/TopicStyles';
+import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
+import reference from '@/components/ContentNode/Reference';
 
 const {
   ContentTable, TopicsLinkBlock, ContentTableSection, ContentNode, WordBreak, LinkableHeading,
@@ -85,6 +88,7 @@ describe('TopicsTable', () => {
 
   it('renders a `TopicsLinkBlock` for each topic with reference data in a section', () => {
     const sections = wrapper.findAll(ContentTableSection);
+    expect(wrapper.findAll(TopicsLinkCardGrid)).toHaveLength(0);
 
     const firstSectionBlocks = sections.at(0).findAll(TopicsLinkBlock);
     expect(firstSectionBlocks.length).toBe(1);
@@ -102,6 +106,26 @@ describe('TopicsTable', () => {
       topic: baz,
       isSymbolDeprecated: false,
       isSymbolBeta: false,
+    });
+  });
+
+  it('renders a `TopicsLinkCardGrid` if `topicStyle` is not `list`', () => {
+    wrapper.setProps({ topicStyle: TopicStyles.compactGrid });
+    expect(wrapper.findAll(TopicsLinkBlock)).toHaveLength(0);
+    const sections = wrapper.findAll(ContentTableSection);
+
+    const firstGrid = sections.at(0).find(TopicsLinkCardGrid);
+    expect(firstGrid.classes('topic')).toBe(true);
+    expect(firstGrid.props()).toEqual({
+      topicStyle: TopicStyles.compactGrid,
+      items: [foo],
+    });
+
+    const secondGrid = sections.at(1).find(TopicsLinkCardGrid);
+    expect(secondGrid.classes('topic')).toBe(true);
+    expect(secondGrid.props()).toEqual({
+      topicStyle: TopicStyles.compactGrid,
+      items: [baz],
     });
   });
 

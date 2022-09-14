@@ -32,14 +32,22 @@
       <template v-if="section.discussion" slot="discussion">
         <ContentNode :content="section.discussion.content" />
       </template>
-      <TopicsLinkBlock
-        v-for="topic in section.topics"
+      <TopicsLinkCardGrid
+        v-if="!shouldRenderList"
+        :items="section.topics"
+        :topicStyle="topicStyle"
         class="topic"
-        :key="topic.identifier"
-        :topic="topic"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
       />
+      <template v-else>
+        <TopicsLinkBlock
+          v-for="topic in section.topics"
+          class="topic"
+          :key="topic.identifier"
+          :topic="topic"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+      </template>
     </ContentTableSection>
   </ContentTable>
 </template>
@@ -47,6 +55,8 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import { TopicStyles } from 'docc-render/constants/TopicStyles';
+import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
@@ -62,6 +72,7 @@ export default {
     },
   },
   components: {
+    TopicsLinkCardGrid,
     WordBreak,
     ContentTable,
     TopicsLinkBlock,
@@ -94,8 +105,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    topicStyle: {
+      type: String,
+      default: TopicStyles.list,
+    },
   },
   computed: {
+    shouldRenderList: ({ topicStyle }) => topicStyle === TopicStyles.list,
     sectionsWithTopics() {
       return this.sections.map(section => ({
         ...section,
