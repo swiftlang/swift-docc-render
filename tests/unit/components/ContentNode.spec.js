@@ -455,12 +455,13 @@ describe('ContentNode', () => {
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBeFalsy();
+      expect(caption.props('centered')).toBe(true);
       expect(caption.text()).toContain('blah');
       // assert figurerecaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-          <figurecaption-stub>
+          <figurecaption-stub centered="true">
             <p>blah</p>
           </figurecaption-stub>
         </figure-stub>
@@ -567,6 +568,7 @@ describe('ContentNode', () => {
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.props('centered')).toBe(true);
       expect(caption.text()).toContain('blah');
     });
 
@@ -592,12 +594,13 @@ describe('ContentNode', () => {
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBeFalsy();
+      expect(caption.props('centered')).toBe(true);
       expect(caption.text()).toContain('blah');
       // assert figurerecaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <inlinevideo-stub identifier="video.mp4"></inlinevideo-stub>
-          <figurecaption-stub>
+          <figurecaption-stub centered="true">
             <p>blah</p>
           </figurecaption-stub>
         </figure-stub>
@@ -1043,6 +1046,7 @@ describe('ContentNode', () => {
       const caption = figure.find(FigureCaption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.props('centered')).toBe(false);
       expect(caption.contains('p')).toBe(true);
       expect(caption.text()).toContain('blah');
     });

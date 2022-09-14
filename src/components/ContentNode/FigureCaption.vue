@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <figcaption class="caption">
+  <figcaption class="caption" :class="{ centered }">
     <strong v-if="title">{{ title }}</strong>&nbsp;<slot />
   </figcaption>
 </template>
@@ -21,6 +21,10 @@ export default {
     title: {
       type: String,
       required: false,
+    },
+    centered: {
+      type: Boolean,
+      default: false,
     },
   },
 };
@@ -34,6 +38,10 @@ export default {
 
   &:last-child {
     margin-top: $stacked-margin-xlarge;
+  }
+
+  &.centered {
+    text-align: center;
   }
 }
 
