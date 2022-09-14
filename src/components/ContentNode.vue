@@ -338,7 +338,7 @@ function renderNode(createElement, references) {
       return createElement(LinksBlock, {
         props: {
           blockStyle: node.style,
-          items: node.items,
+          identifiers: node.items,
         },
       });
     }

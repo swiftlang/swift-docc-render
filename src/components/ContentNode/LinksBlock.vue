@@ -8,7 +8,19 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <TopicsLinkCardGrid v-if="!isListStyle" :identifiers="items" :topic-style="blockStyle" />
+  <TopicsLinkCardGrid
+    v-if="!isListStyle"
+    class="links-block"
+    :items="items"
+    :topic-style="blockStyle"
+  />
+  <div v-else class="links-block">
+    <TopicsLinkBlock
+      v-for="item in items"
+      :key="item.identifier"
+      :topic="item"
+    />
+  </div>
 </template>
 
 <script>
@@ -17,9 +29,14 @@ import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 
 export default {
   name: 'LinksBlock',
-  components: { TopicsLinkCardGrid },
+  inject: ['references'],
+  components: {
+    // async import to overcome potential infinite loops from importing ContentNode inside.
+    TopicsLinkBlock: () => import('docc-render/components/DocumentationTopic/TopicsLinkBlock.vue'),
+    TopicsLinkCardGrid,
+  },
   props: {
-    items: {
+    identifiers: {
       type: Array,
       required: true,
     },
@@ -30,6 +47,9 @@ export default {
   },
   computed: {
     isListStyle: ({ blockStyle }) => blockStyle === TopicSectionsStyle.list,
+    items: ({ identifiers, references }) => identifiers.reduce((all, identifier) => (
+      references[identifier] ? all.concat(references[identifier]) : all
+    ), []),
   },
 };
 </script>
@@ -37,4 +57,7 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
+.links-block + /deep/ * {
+  margin-top: $stacked-margin-xlarge;
+}
 </style>

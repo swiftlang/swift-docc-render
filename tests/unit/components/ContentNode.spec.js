@@ -481,7 +481,7 @@ describe('ContentNode', () => {
       });
       const links = wrapper.find(LinksBlock);
       expect(links.props()).toEqual({
-        items: [],
+        identifiers: [],
         blockStyle: TopicSectionsStyle.compactGrid,
       });
     });

@@ -12,10 +12,16 @@ import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
+import TopicsLinkBlock from '@/components/DocumentationTopic/TopicsLinkBlock.vue';
 
 const defaultProps = {
-  items: ['foo', 'bar'],
+  identifiers: ['foo', 'bar', 'baz'],
   blockStyle: TopicSectionsStyle.compactGrid,
+};
+
+const references = {
+  foo: { identifier: 'foo' },
+  bar: { identifier: 'bar' },
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(LinksBlock, {
@@ -23,6 +29,8 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(LinksBlock
     ...defaultProps,
     ...propsData,
   },
+  stubs: { TopicsLinkBlock: { props: ['topic'], template: '<div/>' } },
+  provide: { references },
   ...others,
 });
 
@@ -30,12 +38,12 @@ describe('LinksBlock', () => {
   it('renders the LinksBlock', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(TopicsLinkCardGrid).props()).toEqual({
-      identifiers: defaultProps.items,
+      items: [references.foo, references.bar],
       topicStyle: defaultProps.blockStyle,
     });
   });
 
-  it('does not render anything, if a list style is used', () => {
+  it('renders `TopicsLinkBlock` if `blockStyle` is a `list`', () => {
     const wrapper = createWrapper({
       propsData: {
         items: defaultProps.items,
@@ -43,5 +51,11 @@ describe('LinksBlock', () => {
       },
     });
     expect(wrapper.find(TopicsLinkCardGrid).exists()).toBe(false);
+    expect(wrapper.find('.links-block').exists()).toBe(true);
+    // they are two, because one does not have a reference object
+    const linkBlocks = wrapper.findAll(TopicsLinkBlock);
+    expect(linkBlocks).toHaveLength(2);
+    expect(linkBlocks.at(0).props('topic')).toEqual(references.foo);
+    expect(linkBlocks.at(1).props('topic')).toEqual(references.bar);
   });
 });
