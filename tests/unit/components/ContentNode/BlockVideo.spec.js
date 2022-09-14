@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import InlineVideo from '@/components/ContentNode/InlineVideo.vue';
+import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
 import { shallowMount } from '@vue/test-utils';
 import Asset from '@/components/Asset.vue';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
@@ -21,11 +21,11 @@ const defaultProps = {
   identifier: 'foo',
 };
 
-const createWrapper = () => shallowMount(InlineVideo, {
+const createWrapper = () => shallowMount(BlockVideo, {
   propsData: defaultProps,
 });
 
-describe('InlineVideo', () => {
+describe('BlockVideo', () => {
   it('renders an Asset on desktop', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(Asset).props()).toEqual({

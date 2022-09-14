@@ -20,7 +20,7 @@ import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
-import InlineVideo from './ContentNode/InlineVideo.vue';
+import BlockVideo from './ContentNode/BlockVideo.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -285,7 +285,7 @@ function renderNode(createElement, references) {
       }
 
       return references[node.identifier] ? (
-        createElement(InlineVideo, {
+        createElement(BlockVideo, {
           props: {
             identifier: node.identifier,
           },

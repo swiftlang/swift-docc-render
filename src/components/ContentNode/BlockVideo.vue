@@ -23,7 +23,7 @@ import Asset from 'docc-render/components/Asset.vue';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 
 export default {
-  name: 'InlineVideo',
+  name: 'BlockVideo',
   mixins: [isClientMobile],
   components: { Asset },
   props: {
