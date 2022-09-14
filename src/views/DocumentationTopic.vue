@@ -18,86 +18,75 @@
         ref="NavigatorDataProvider"
       >
         <template #default="slotProps">
-          <div ref="div">
+          <component
+            :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
+            v-bind="sidebarProps"
+            v-on="sidebarListeners"
+          >
             <PortalTarget name="modal-destination" multiple />
             <QuickNavigationModal
               :children="slotProps.flatChildren"
               :showQuickNavigationModal="showQuickNavigationModal"
               @update:showQuickNavigationModal="(show) => showQuickNavigationModal = show"
             />
-          </div>
-        </template>
-      </NavigatorDataProvider>
-      <component
-        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
-        v-bind="sidebarProps"
-        v-on="sidebarListeners"
-      >
-        <template #aside="{ scrollLockID, breakpoint }">
-          <div class="doc-topic-aside">
-            <NavigatorDataProvider
-              :interface-language="topicProps.interfaceLanguage"
-              :technology="technology"
-              :api-changes-version="store.state.selectedAPIChangesVersion"
+            <template #aside="{ scrollLockID, breakpoint }">
+              <div class="doc-topic-aside">
+                <transition name="delay-hiding">
+                  <Navigator
+                    v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
+                    :flatChildren="slotProps.flatChildren"
+                    :parent-topic-identifiers="parentTopicIdentifiers"
+                    :technology="slotProps.technology || technology"
+                    :is-fetching="slotProps.isFetching"
+                    :error-fetching="slotProps.errorFetching"
+                    :api-changes="slotProps.apiChanges"
+                    :references="topicProps.references"
+                    :scrollLockID="scrollLockID"
+                    :breakpoint="breakpoint"
+                    @close="handleToggleSidenav(breakpoint)"
+                  />
+                </transition>
+              </div>
+            </template>
+            <Nav
+              v-if="!isTargetIDE"
+              :title="topicProps.title"
+              :diffAvailability="topicProps.diffAvailability"
+              :interfaceLanguage="topicProps.interfaceLanguage"
+              :objcPath="objcPath"
+              :swiftPath="swiftPath"
+              :parentTopicIdentifiers="parentTopicIdentifiers"
+              :isSymbolDeprecated="isSymbolDeprecated"
+              :isSymbolBeta="isSymbolBeta"
+              :currentTopicTags="topicProps.tags"
+              :references="topicProps.references"
+              :isWideFormat="enableNavigator"
+              :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
+              @toggle-sidenav="handleToggleSidenav"
             >
-              <template #default="slotProps">
-                  <transition name="delay-hiding">
-                    <Navigator
-                      v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                      :flatChildren="slotProps.flatChildren"
-                      :parent-topic-identifiers="parentTopicIdentifiers"
-                      :technology="slotProps.technology || technology"
-                      :is-fetching="slotProps.isFetching"
-                      :error-fetching="slotProps.errorFetching"
-                      :api-changes="slotProps.apiChanges"
-                      :references="topicProps.references"
-                      :scrollLockID="scrollLockID"
-                      :breakpoint="breakpoint"
-                      @close="handleToggleSidenav(breakpoint)"
-                    />
-                  </transition>
+              <template #menu-items>
+                <button
+                  v-if="enableQuickNavigation"
+                  class="quick-navigation-open-container"
+                  @click="openQuickNavigationModal"
+                  @keydown.enter.exact="openQuickNavigationModal"
+                >
+                  <MagnifierIcon />
+                </button>
               </template>
-            </NavigatorDataProvider>
-          </div>
-        </template>
-        <Nav
-          v-if="!isTargetIDE"
-          :title="topicProps.title"
-          :diffAvailability="topicProps.diffAvailability"
-          :interfaceLanguage="topicProps.interfaceLanguage"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :parentTopicIdentifiers="parentTopicIdentifiers"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :currentTopicTags="topicProps.tags"
-          :references="topicProps.references"
-          :isWideFormat="enableNavigator"
-          :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
-          @toggle-sidenav="handleToggleSidenav"
-        >
-          <template #menu-items>
-            <button
-              v-if="enableQuickNavigation"
-              class="quick-navigation-open-container"
-              tabindex="0"
-              @click="openQuickNavigationModal"
-              @keydown.enter.exact="openQuickNavigationModal"
-            >
-              <MagnifierIcon />
-            </button>
-          </template>
-        </Nav>
-        <Topic
-          v-bind="topicProps"
-          :key="topicKey"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :languagePaths="languagePaths"
-        />
-      </component>
+            </Nav>
+            <Topic
+              v-bind="topicProps"
+              :key="topicKey"
+              :objcPath="objcPath"
+              :swiftPath="swiftPath"
+              :isSymbolDeprecated="isSymbolDeprecated"
+              :isSymbolBeta="isSymbolBeta"
+              :languagePaths="languagePaths"
+            />
+          </component>
+       </template>
+      </NavigatorDataProvider>
     </template>
   </CodeTheme>
 </template>
@@ -351,6 +340,7 @@ export default {
       }
     },
     openQuickNavigationModal() {
+      if (this.sidenavVisibleOnMobile) return;
       this.showQuickNavigationModal = true;
     },
     toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {

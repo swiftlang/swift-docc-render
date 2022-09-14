@@ -78,7 +78,7 @@
               @keydown.delete="deleteHandler"
               @keydown.meta.a.prevent.stop="selectInputAndTags"
               @keydown.ctrl.a.prevent="selectInputAndTags"
-              @keydown.exact="inputKeydownHandler"
+              @keydown.exact.stop="inputKeydownHandler"
               @keydown.enter.exact="enterHandler"
               @keydown.shift.exact="inputKeydownHandler"
               @keydown.shift.meta.exact="inputKeydownHandler"
