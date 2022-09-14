@@ -84,13 +84,17 @@ export default {
   display: flex;
   flex-flow: row-reverse;
 
+  @include breakpoint(small) {
+    flex-flow: column-reverse;
+  }
+
   .tabnav {
     width: 20%;
     flex: 0 0 auto;
     white-space: normal;
     margin: 0;
     @include breakpoint(small) {
-      width: 35%;
+      width: 100%;
     }
   }
 
@@ -98,6 +102,10 @@ export default {
     flex: 1 1 auto;
     min-width: 0;
     padding-right: $stacked-margin-large;
+    @include breakpoint(small) {
+      padding-right: 0;
+      padding-bottom: $stacked-margin-large;
+    }
   }
 }
 </style>
