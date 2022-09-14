@@ -24,7 +24,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 small {
-  @include font-styles(small-text);
+  @include font-styles(body-reduced-tight);
   color: var(--color-figure-gray);
 }
 </style>
