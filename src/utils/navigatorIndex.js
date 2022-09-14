@@ -25,7 +25,7 @@ export function convertChildrenArrayToObject(children) {
  * @return {NavigatorFlatItem[]}
  */
 export function getAllChildren(uid, childrenMap) {
-  const arr = [];
+  const collection = new Set([]);
   const stack = [uid];
   let current = null;
   // loop over the stack
@@ -35,11 +35,11 @@ export function getAllChildren(uid, childrenMap) {
     // find the object
     const obj = childrenMap[current];
     // add it's uid
-    arr.push(obj);
+    collection.add(obj);
     // add all if it's children to the front of the stack
     stack.unshift(...obj.childUIDs);
   }
-  return arr;
+  return [...collection];
 }
 
 /**

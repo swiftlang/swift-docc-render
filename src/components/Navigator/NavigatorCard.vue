@@ -617,8 +617,9 @@ export default {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
       const siblings = getSiblings(node.uid, this.childrenMap, this.children);
-      siblings.forEach(({ uid, childUIDs }) => {
-        if (!childUIDs.length) return;
+      siblings.forEach(({ uid, childUIDs, type }) => {
+        // if the item has no children or is a groupMarker, exit early
+        if (!childUIDs.length || type === TopicTypes.groupMarker) return;
         if (isOpen) {
           const children = getAllChildren(uid, this.childrenMap);
           // remove all children
