@@ -14,6 +14,8 @@
     pinContent
     :showClose="false"
     :visible="showQuickNavigationModal"
+    :isFullscreen="true"
+    :styleProps="modalStyleProps"
     @update:visible="$emit('update:showQuickNavigationModal', false)"
   >
     <div
@@ -129,6 +131,13 @@ import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorIndex';
 
+const ModalStyleProps = {
+  'max-width': '50rem',
+  height: 'fit-content',
+  flex: 'auto',
+  margin: '7rem 1rem',
+};
+
 export default {
   name: 'QuickNavigationModal',
   components: {
@@ -146,6 +155,7 @@ export default {
     return {
       debouncedInput: '',
       userInput: '',
+      modalStyleProps: ModalStyleProps,
     };
   },
   props: {

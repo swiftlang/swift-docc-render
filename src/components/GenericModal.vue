@@ -21,8 +21,7 @@
       <div
         class="container"
         ref="container"
-        :style="{ width }"
-        :class="{'pin-content' : pinContent }"
+        :style="styleProps"
       >
         <button
           v-if="showClose"
@@ -84,17 +83,13 @@ export default {
       type: String,
       default: '',
     },
-    width: {
-      type: String,
-      default: null,
-    },
     showClose: {
       type: Boolean,
       default: true,
     },
-    pinContent: {
-      type: Boolean,
-      default: false,
+    styleProps: {
+      type: Object,
+      default: null,
     },
   },
   data() {
@@ -305,11 +300,6 @@ $pinned-modal-top:  10rem;
       @include prefers-dark {
         background: rgb(29, 29, 31);
       }
-      &.pin-content {
-        padding: 0;
-        top: $pinned-modal-top;
-        position: fixed;
-      }
     }
 
     @include breakpoint(small) {
@@ -322,11 +312,6 @@ $pinned-modal-top:  10rem;
         width: 100%;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
-        &.pin-content {
-          padding: 0;
-          width: 90%;
-          top: $pinned-modal-top;
-        }
       }
     }
   }

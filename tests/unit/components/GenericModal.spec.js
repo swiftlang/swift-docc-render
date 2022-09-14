@@ -406,10 +406,12 @@ describe('GenericModal', () => {
     expect(wrapper.find('.close').exists()).toBe(true);
   });
 
-  it('allows specifying a width to the container', () => {
+  it('allows specifying a style to the container', () => {
     const wrapper = createWrapper({
       propsData: {
-        width: '100px',
+        styleProps: {
+          width: '100px',
+        },
       },
     });
     expect(wrapper.find('.container').attributes('style')).toEqual('width: 100px;');
