@@ -23,6 +23,8 @@ import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
 import Small from './ContentNode/Small.vue';
 import BlockVideo from './ContentNode/BlockVideo.vue';
+import Column from './ContentNode/Column.vue';
+import Row from './ContentNode/Row.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -37,6 +39,7 @@ const BlockType = {
   dictionaryExample: 'dictionaryExample',
   small: 'small',
   video: 'video',
+  row: 'row',
 };
 
 const InlineType = {
@@ -298,6 +301,15 @@ function renderNode(createElement, references) {
           },
         })
       ) : null;
+    }
+    case BlockType.row: {
+      return createElement(
+        Row, { props: { columns: node.numberOfColumns } }, node.columns.map(col => (
+          createElement(
+            Column, { props: { span: col.size } }, renderChildren(col.content),
+          )
+        )),
+      );
     }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (
