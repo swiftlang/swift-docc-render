@@ -20,4 +20,11 @@ describe('FigureCaption', () => {
     expect(wrapper.is('figcaption')).toBe(true);
     expect(wrapper.text()).toMatch(/Figure 1\sBlah/);
   });
+  it('renders a <figcaption> with slot content only', () => {
+    const slots = { default: '<p>Blah</p>' };
+    const wrapper = shallowMount(FigureCaption, { slots });
+
+    expect(wrapper.is('figcaption')).toBe(true);
+    expect(wrapper.text()).toBe('Blah');
+  });
 });

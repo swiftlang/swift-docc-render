@@ -185,19 +185,20 @@ function renderNode(createElement, references) {
 
   const renderFigure = ({
     metadata: {
-      abstract,
+      abstract = [],
       anchor,
       title,
     },
     ...node
-  }) => createElement(Figure, { props: { anchor } }, [
-    ...(title && abstract && abstract.length ? [
-      createElement(FigureCaption, { props: { title } }, (
-        renderChildren(abstract)
-      )),
-    ] : []),
-    renderChildren([node]),
-  ]);
+  }) => {
+    const figureContent = [renderChildren([node])];
+    if ((title && abstract.length) || abstract.length) {
+      // if there is a `title`, it should be above, otherwise below
+      figureContent.splice(title ? 0 : 1, 0,
+        createElement(FigureCaption, { props: { title } }, renderChildren(abstract)));
+    }
+    return createElement(Figure, { props: { anchor } }, figureContent);
+  };
 
   return function render(node) {
     switch (node.type) {
@@ -284,7 +285,7 @@ function renderNode(createElement, references) {
         renderChildren(node.inlineContent)
       ));
     case InlineType.image: {
-      if (node.metadata && node.metadata.anchor) {
+      if (node.metadata && (node.metadata.anchor || node.metadata.abstract)) {
         return renderFigure(node);
       }
 
