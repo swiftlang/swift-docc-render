@@ -21,6 +21,7 @@ import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
+import Small from '@/components/ContentNode/Small.vue';
 import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
@@ -318,6 +319,24 @@ describe('ContentNode', () => {
       expect(items.length).toBe(2);
       expect(items.at(0).find('p').text()).toBe('foo');
       expect(items.at(1).find('p').text()).toBe('bar');
+    });
+  });
+
+  describe('with type="small"', () => {
+    it('renders a `<Small>`', () => {
+      const wrapper = mountWithItem({
+        type: 'small',
+        inlineContent: [
+          {
+            type: 'text',
+            text: 'foo',
+          },
+        ],
+      });
+      const paragraph = wrapper.find('p');
+      const small = paragraph.find(Small);
+      expect(small.exists()).toBe(true);
+      expect(small.text()).toBe('foo');
     });
   });
 

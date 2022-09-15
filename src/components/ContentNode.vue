@@ -20,6 +20,7 @@ import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
+import Small from './ContentNode/Small.vue';
 import BlockVideo from './ContentNode/BlockVideo.vue';
 
 const BlockType = {
@@ -33,6 +34,7 @@ const BlockType = {
   termList: 'termList',
   unorderedList: 'unorderedList',
   dictionaryExample: 'dictionaryExample',
+  small: 'small',
   video: 'video',
 };
 
@@ -279,6 +281,11 @@ function renderNode(createElement, references) {
       };
       return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
     }
+    case BlockType.small: {
+      return createElement('p', {}, [
+        createElement(Small, {}, renderChildren(node.inlineContent)),
+      ]);
+    }
     case BlockType.video: {
       if (node.metadata && node.metadata.abstract) {
         return renderFigure(node);
@@ -327,7 +334,7 @@ function renderNode(createElement, references) {
       const reference = references[node.identifier];
       if (!reference) return null;
       const titleInlineContent = node.overridingTitleInlineContent
-          || reference.titleInlineContent;
+        || reference.titleInlineContent;
       const titlePlainText = node.overridingTitle || reference.title;
       return createElement(Reference, {
         props: {
