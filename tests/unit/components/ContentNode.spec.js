@@ -20,6 +20,7 @@ import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue'
 import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
 import Small from '@/components/ContentNode/Small.vue';
 import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
@@ -162,11 +163,12 @@ describe('ContentNode', () => {
           text: 'heading',
         });
 
-        const heading = wrapper.find('.content').find(`h${level}`);
-        expect(heading.exists()).toBe(true);
-        expect(heading.attributes('id')).toBe('heading');
-        expect(heading.isEmpty()).toBe(false);
-        expect(heading.text()).toBe('heading');
+        const sectionTitle = wrapper.find('.content').find(LinkableHeading);
+        expect(sectionTitle.exists()).toBe(true);
+        expect(sectionTitle.props('level')).toBe(level);
+        expect(sectionTitle.attributes('anchor')).toBe('heading');
+        expect(sectionTitle.isEmpty()).toBe(false);
+        expect(sectionTitle.text()).toContain('heading');
       }
     });
   });

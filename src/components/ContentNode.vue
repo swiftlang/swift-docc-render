@@ -11,6 +11,7 @@
 <script>
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
+import LinkableHeading from './ContentNode/LinkableHeading.vue';
 import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
@@ -234,14 +235,13 @@ function renderNode(createElement, references) {
       };
       return createElement(EndpointExample, { props }, renderChildren(node.summary || []));
     }
-    case BlockType.heading:
-      return createElement(`h${node.level}`, {
-        attrs: {
-          id: node.anchor,
-        },
-      }, (
-        node.text
-      ));
+    case BlockType.heading: {
+      const props = {
+        anchor: node.anchor,
+        level: node.level,
+      };
+      return createElement(LinkableHeading, { props }, node.text);
+    }
     case BlockType.orderedList:
       return createElement('ol', {
         attrs: {

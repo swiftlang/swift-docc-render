@@ -14,6 +14,7 @@ import PropertyListKeyDetails from 'docc-render/components/DocumentationTopic/Pr
 const {
   OnThisPageSection,
   PropertyListKeyType,
+  LinkableHeading,
 } = PropertyListKeyDetails.components;
 
 describe('PropertyKeyListDetails', () => {
@@ -50,10 +51,11 @@ describe('PropertyKeyListDetails', () => {
     });
   });
 
-  it('renders an h2 with "Details"', () => {
-    const h2 = wrapper.find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe('Details');
+  it('renders a title with "Details"', () => {
+    const title = wrapper.find(LinkableHeading);
+    expect(title.exists()).toBe(true);
+    expect(title.text()).toBe('Details');
+    expect(title.props('anchor')).toBe('details');
   });
 
   it('renders a <dl>', () => {
