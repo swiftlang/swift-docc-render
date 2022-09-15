@@ -22,6 +22,7 @@ import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
 import Small from './ContentNode/Small.vue';
+import BlockVideo from './ContentNode/BlockVideo.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -35,6 +36,7 @@ const BlockType = {
   unorderedList: 'unorderedList',
   dictionaryExample: 'dictionaryExample',
   small: 'small',
+  video: 'video',
 };
 
 const InlineType = {
@@ -198,7 +200,9 @@ function renderNode(createElement, references) {
     if ((title && abstract.length) || abstract.length) {
       // if there is a `title`, it should be above, otherwise below
       figureContent.splice(title ? 0 : 1, 0,
-        createElement(FigureCaption, { props: { title } }, renderChildren(abstract)));
+        createElement(FigureCaption, {
+          props: { title, centered: !title },
+        }, renderChildren(abstract)));
     }
     return createElement(Figure, { props: { anchor } }, figureContent);
   };
@@ -281,6 +285,19 @@ function renderNode(createElement, references) {
       return createElement('p', {}, [
         createElement(Small, {}, renderChildren(node.inlineContent)),
       ]);
+    }
+    case BlockType.video: {
+      if (node.metadata && node.metadata.abstract) {
+        return renderFigure(node);
+      }
+
+      return references[node.identifier] ? (
+        createElement(BlockVideo, {
+          props: {
+            identifier: node.identifier,
+          },
+        })
+      ) : null;
     }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (
