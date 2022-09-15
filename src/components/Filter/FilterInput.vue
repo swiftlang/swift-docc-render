@@ -540,10 +540,11 @@ $input-height: rem(28px);
     border-radius: 100%;
 
     .clear-rounded-icon {
-      height: rem(16px);
-      width: rem(16px);
+      height: rem(7px);
+      width: rem(7px);
       fill: var(--input-text);
       display: block;
+      padding: rem(5px);
     }
   }
 
