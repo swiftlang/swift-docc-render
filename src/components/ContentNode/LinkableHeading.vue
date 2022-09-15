@@ -63,17 +63,17 @@ export default {
 $icon-margin: 7px;
 
 .header-anchor {
-  color: var(--colors-text, var(--color-text));
+  color: inherit;
   text-decoration: none;
   position: relative;
-  padding-right: $icon-size + $icon-margin;
+  padding-right: $icon-size-default + $icon-margin;
   display: inline-block;
 
   .icon {
     position: absolute;
     bottom: .2em;
     display: none;
-    height: $icon-size;
+    height: $icon-size-default;
     margin-left: $icon-margin;
   }
 

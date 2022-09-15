@@ -142,14 +142,14 @@ export default {
 
 .changed {
   $-coin-spacer: 5px;
-  padding-left: $icon-size + ($-coin-spacer * 2);
+  padding-left: $icon-size-default + ($-coin-spacer * 2);
 
   &::after {
     content: none;
   }
 
   &::before {
-    @include coin($modified-svg, $icon-size);
+    @include coin($modified-svg, $icon-size-default);
     left: $-coin-spacer;
 
     @include prefers-dark {

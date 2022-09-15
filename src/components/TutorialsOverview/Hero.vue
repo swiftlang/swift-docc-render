@@ -107,8 +107,8 @@ export default {
 
   .timer-icon {
     margin-right: rem(6px);
-    height: $icon-size;
-    width: $icon-size;
+    height: $icon-size-default;
+    width: $icon-size-default;
     fill: var(--color-tutorials-overview-icon);
     @include breakpoint(small) {
       margin-right: rem(5px);
