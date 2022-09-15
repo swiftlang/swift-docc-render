@@ -21,6 +21,7 @@ import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
+import Small from '@/components/ContentNode/Small.vue';
 import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 
@@ -322,6 +323,24 @@ describe('ContentNode', () => {
     });
   });
 
+  describe('with type="small"', () => {
+    it('renders a `<Small>`', () => {
+      const wrapper = mountWithItem({
+        type: 'small',
+        inlineContent: [
+          {
+            type: 'text',
+            text: 'foo',
+          },
+        ],
+      });
+      const paragraph = wrapper.find('p');
+      const small = paragraph.find(Small);
+      expect(small.exists()).toBe(true);
+      expect(small.text()).toBe('foo');
+    });
+  });
+
   describe('with type="row"', () => {
     it('renders a `<Row>` and `<Column>`', () => {
       const wrapper = mountWithItem({
@@ -480,6 +499,83 @@ describe('ContentNode', () => {
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.text()).toContain('blah');
+    });
+
+    it('renders a `Figure`/`FigureCaption` without an anchor, with text under the image', () => {
+      const metadata = {
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.contains(InlineImage)).toBe(true);
+
+      const caption = wrapper.find(FigureCaption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBeFalsy();
+      expect(caption.text()).toContain('blah');
+      // assert figurerecaption is below the image
+      expect(figure.html()).toMatchInlineSnapshot(`
+        <figure-stub>
+          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
+          <figurecaption-stub>
+            <p>blah</p>
+          </figurecaption-stub>
+        </figure-stub>
+      `);
+    });
+
+    it('renders a `FigureCaption` before the image, if it has a title', () => {
+      const metadata = {
+        title: 'foo',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+      expect(wrapper.find(Figure).html()).toMatchInlineSnapshot(`
+        <figure-stub>
+          <figurecaption-stub title="foo">
+            <p>blah</p>
+          </figurecaption-stub>
+          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
+        </figure-stub>
+      `);
+    });
+
+    it('renders no `FigureCaption`, if there is a `title`, but no `abstract`', () => {
+      const metadata = {
+        postTitle: true,
+        title: 'Foo',
+        anchor: 'foo-figure',
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBe('foo-figure');
+      expect(figure.contains(InlineImage)).toBe(true);
+
+      expect(wrapper.find(FigureCaption).exists()).toBe(false);
     });
   });
 
