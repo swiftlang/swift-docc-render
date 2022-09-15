@@ -15,18 +15,19 @@
     :title="title"
   >
     <div class="container">
-      <h2 class="title">{{title}}</h2>
+      <LinkableHeading class="title" :anchor="anchor">{{ title }}</LinkableHeading>
       <slot />
     </div>
   </OnThisPageSection>
 </template>
 
 <script>
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import OnThisPageSection from './OnThisPageSection.vue';
 
 export default {
   name: 'ContentTable',
-  components: { OnThisPageSection },
+  components: { OnThisPageSection, LinkableHeading },
   props: {
     anchor: {
       type: String,

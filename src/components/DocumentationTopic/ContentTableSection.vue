@@ -12,7 +12,11 @@
   <div class="contenttable-section">
     <div class="section-title">
       <slot name="title">
-        <h3 class="title">{{ title }}</h3>
+        <LinkableHeading
+          :level="3"
+          class="title"
+          :anchor="anchorComputed"
+        >{{ title }}</LinkableHeading>
       </slot>
     </div>
     <div class="section-content">
@@ -24,13 +28,24 @@
 </template>
 
 <script>
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import { anchorize } from 'docc-render/utils/strings';
+
 export default {
   name: 'ContentTableSection',
+  components: { LinkableHeading },
   props: {
     title: {
       type: String,
       required: true,
     },
+    anchor: {
+      type: String,
+      default: null,
+    },
+  },
+  computed: {
+    anchorComputed: ({ title, anchor }) => anchor || anchorize(title),
   },
 };
 </script>

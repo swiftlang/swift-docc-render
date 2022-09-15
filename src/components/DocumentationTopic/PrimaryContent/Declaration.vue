@@ -14,7 +14,7 @@
     class="declaration"
     title="Declaration"
   >
-    <h2>Declaration</h2>
+    <LinkableHeading anchor="declaration">Declaration</LinkableHeading>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
@@ -48,6 +48,7 @@
 <script>
 import ConditionalConstraints from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import DeclarationDiff
@@ -65,6 +66,7 @@ export default {
     DeclarationSourceLink,
     ConditionalConstraints,
     OnThisPageSection,
+    LinkableHeading,
   },
   constants: { ChangeTypes, multipleLinesClass },
   inject: ['identifier', 'store'],

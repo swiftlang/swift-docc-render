@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+    <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="properties" :changes="propertyChanges" class="property-table">
       <template slot="symbol" slot-scope="{ name, type, content, changes, deprecated }">
         <div class="property-name" :class="{ deprecated: deprecated }">
@@ -60,6 +60,7 @@
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 
@@ -83,6 +84,7 @@ export default {
     ContentNode,
     OnThisPageSection,
     ParametersTable,
+    LinkableHeading,
   },
   props: {
     title: {
