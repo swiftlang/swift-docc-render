@@ -25,4 +25,15 @@ describe('Figure', () => {
     expect(p.exists()).toBe(true);
     expect(p.text()).toBe('blah');
   });
+
+  it('renders a <figure> without an id, just slot content', () => {
+    const wrapper = shallowMount(Figure, { slots });
+
+    expect(wrapper.is('figure')).toBe(true);
+    expect(wrapper.attributes('id')).toBeFalsy();
+
+    const p = wrapper.find('p');
+    expect(p.exists()).toBe(true);
+    expect(p.text()).toBe('blah');
+  });
 });
