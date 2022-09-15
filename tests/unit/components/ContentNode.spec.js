@@ -21,7 +21,7 @@ import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
-import InlineVideo from '@/components/ContentNode/InlineVideo.vue';
+import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -527,13 +527,13 @@ describe('ContentNode', () => {
       },
     };
 
-    it('renders an `InlineVideo`', () => {
+    it('renders an `BlockVideo`', () => {
       const wrapper = mountWithItem({
         type: 'video',
         identifier,
       }, references);
 
-      const inlineVideo = wrapper.find('.content').find(InlineVideo);
+      const inlineVideo = wrapper.find('.content').find(BlockVideo);
       expect(inlineVideo.exists()).toBe(true);
       expect(inlineVideo.props('identifier')).toEqual(identifier);
     });
@@ -562,7 +562,7 @@ describe('ContentNode', () => {
       const figure = wrapper.find(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBe('foo');
-      expect(figure.contains(InlineVideo)).toBe(true);
+      expect(figure.contains(BlockVideo)).toBe(true);
 
       const caption = wrapper.find(FigureCaption);
       expect(caption.exists()).toBe(true);
@@ -588,7 +588,7 @@ describe('ContentNode', () => {
       const figure = wrapper.find(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBeFalsy();
-      expect(figure.contains(InlineVideo)).toBe(true);
+      expect(figure.contains(BlockVideo)).toBe(true);
 
       const caption = wrapper.find(FigureCaption);
       expect(caption.exists()).toBe(true);
@@ -599,7 +599,7 @@ describe('ContentNode', () => {
       // assert figurerecaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
-          <inlinevideo-stub identifier="video.mp4"></inlinevideo-stub>
+          <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
           <figurecaption-stub centered="true">
             <p>blah</p>
           </figurecaption-stub>
