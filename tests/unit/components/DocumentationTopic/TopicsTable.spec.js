@@ -66,6 +66,9 @@ describe('TopicsTable', () => {
     wrapper = shallowMount(TopicsTable, {
       propsData,
       provide,
+      stubs: {
+        ContentTableSection,
+      },
     });
   });
 
@@ -173,5 +176,6 @@ describe('TopicsTable', () => {
     expect(linkableHeading.props('level')).toBe(3);
     expect(linkableHeading.props('registerOnThisPage')).toBe(false);
     expect(linkableHeading.attributes('anchor')).toBe(propsData.sections[0].anchor);
+    expect(linkableHeading.classes()).toContain('contenttable-title');
   });
 });

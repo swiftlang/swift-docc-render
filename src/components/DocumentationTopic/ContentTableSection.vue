@@ -11,10 +11,10 @@
 <template>
   <div class="contenttable-section">
     <div class="section-title">
-      <slot name="title">
+      <slot name="title" :className="className">
         <LinkableHeading
           :level="3"
-          class="title"
+          :class="className"
           :anchor="anchorComputed"
           :register-on-this-page="false"
         >{{ title }}</LinkableHeading>
@@ -47,6 +47,7 @@ export default {
   },
   computed: {
     anchorComputed: ({ title, anchor }) => anchor || anchorize(title),
+    className: () => 'contenttable-title',
   },
 };
 </script>
@@ -67,7 +68,7 @@ export default {
   }
 }
 
-/deep/ .title {
+/deep/ .contenttable-title {
   @include font-styles(label);
 }
 
@@ -86,7 +87,7 @@ export default {
     }
   }
 
-  /deep/ .title {
+  /deep/ .contenttable-title {
     margin: 0 0 $contenttable-spacing-single-side 0;
     padding-bottom: 0.5rem;
   }
