@@ -28,7 +28,8 @@
       @click.prevent="replay"
     >
       {{ text }}
-      <InlineReplayIcon class="replay-icon icon-inline" />
+      <InlineReplayIcon v-if="played" class="replay-icon icon-inline" />
+      <PlayIcon v-else class="replay-icon icon-inline" />
     </a>
   </div>
 </template>
@@ -36,10 +37,12 @@
 <script>
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
+import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
 
 export default {
   name: 'ReplayableVideoAsset',
   components: {
+    PlayIcon,
     InlineReplayIcon,
     VideoAsset,
   },

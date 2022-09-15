@@ -11,6 +11,7 @@
 <script>
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
+import LinkableHeading from './ContentNode/LinkableHeading.vue';
 import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
@@ -21,6 +22,7 @@ import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
 import Small from './ContentNode/Small.vue';
+import BlockVideo from './ContentNode/BlockVideo.vue';
 import Column from './ContentNode/Column.vue';
 import Row from './ContentNode/Row.vue';
 
@@ -36,6 +38,7 @@ const BlockType = {
   unorderedList: 'unorderedList',
   dictionaryExample: 'dictionaryExample',
   small: 'small',
+  video: 'video',
   row: 'row',
 };
 
@@ -200,7 +203,9 @@ function renderNode(createElement, references) {
     if ((title && abstract.length) || abstract.length) {
       // if there is a `title`, it should be above, otherwise below
       figureContent.splice(title ? 0 : 1, 0,
-        createElement(FigureCaption, { props: { title } }, renderChildren(abstract)));
+        createElement(FigureCaption, {
+          props: { title, centered: !title },
+        }, renderChildren(abstract)));
     }
     return createElement(Figure, { props: { anchor } }, figureContent);
   };
@@ -233,14 +238,13 @@ function renderNode(createElement, references) {
       };
       return createElement(EndpointExample, { props }, renderChildren(node.summary || []));
     }
-    case BlockType.heading:
-      return createElement(`h${node.level}`, {
-        attrs: {
-          id: node.anchor,
-        },
-      }, (
-        node.text
-      ));
+    case BlockType.heading: {
+      const props = {
+        anchor: node.anchor,
+        level: node.level,
+      };
+      return createElement(LinkableHeading, { props }, node.text);
+    }
     case BlockType.orderedList:
       return createElement('ol', {
         attrs: {
@@ -284,6 +288,19 @@ function renderNode(createElement, references) {
       return createElement('p', {}, [
         createElement(Small, {}, renderChildren(node.inlineContent)),
       ]);
+    }
+    case BlockType.video: {
+      if (node.metadata && node.metadata.abstract) {
+        return renderFigure(node);
+      }
+
+      return references[node.identifier] ? (
+        createElement(BlockVideo, {
+          props: {
+            identifier: node.identifier,
+          },
+        })
+      ) : null;
     }
     case BlockType.row: {
       return createElement(

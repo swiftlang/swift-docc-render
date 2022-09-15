@@ -27,4 +27,10 @@ describe('FigureCaption', () => {
     expect(wrapper.is('figcaption')).toBe(true);
     expect(wrapper.text()).toBe('Blah');
   });
+
+  it('renders a <figcaption> centered', () => {
+    const slots = { default: '<p>Blah</p>' };
+    const wrapper = shallowMount(FigureCaption, { slots, propsData: { centered: true } });
+    expect(wrapper.classes()).toContain('centered');
+  });
 });

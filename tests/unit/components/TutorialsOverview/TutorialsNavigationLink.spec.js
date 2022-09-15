@@ -17,7 +17,7 @@ import TutorialsNavigationLink
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 
 jest.mock('docc-render/mixins/scrollToElement', () => ({
-  methods: { scrollToElement: jest.fn() },
+  methods: { handleFocusAndScroll: jest.fn() },
 }));
 
 describe('TutorialsNavigationLink', () => {
@@ -79,16 +79,9 @@ describe('TutorialsNavigationLink', () => {
   });
 
   it('focuses the element when clicked, used for AX', async () => {
-    const mockObject = { focus: jest.fn() };
-    const getElementSpy = jest.spyOn(document, 'getElementById').mockReturnValue(mockObject);
-    const spy = scrollToElement.methods.scrollToElement.mockReturnValueOnce(mockObject);
     const link = wrapper.find(RouterLinkStub);
     link.trigger('click');
     await wrapper.vm.$nextTick();
-    expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledWith('#hello-world');
-    expect(mockObject.focus).toHaveBeenCalledTimes(1);
-    expect(getElementSpy).toHaveBeenCalledTimes(1);
-    spy.mockRestore();
-    getElementSpy.mockRestore();
+    expect(scrollToElement.methods.handleFocusAndScroll).toHaveBeenCalledWith('hello-world');
   });
 });
