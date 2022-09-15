@@ -10,7 +10,7 @@
 
 <template>
   <OnThisPageSection anchor="possibleValues" title="PossibleValues">
-    <h2>Possible Values</h2>
+     <LinkableHeading anchor="possibleValues">Possible Values</LinkableHeading>
     <dl class="datalist">
       <template v-for="value in values">
         <dt class="param-name" :key="`${value.name}:name`">
@@ -28,10 +28,16 @@
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 export default {
   name: 'PossibleValues',
-  components: { ContentNode, OnThisPageSection, WordBreak },
+  components: {
+    ContentNode,
+    OnThisPageSection,
+    LinkableHeading,
+    WordBreak,
+  },
   props: {
     values: {
       type: Array,
