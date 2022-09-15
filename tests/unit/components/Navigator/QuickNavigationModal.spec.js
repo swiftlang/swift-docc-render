@@ -278,7 +278,11 @@ describe('QuickNavigationModal', () => {
       debouncedInput: inputValue,
     });
     await wrapper.find('.quick-navigation').trigger('keydown.enter');
-    expect(handleKeyEnter).toHaveBeenCalledTimes(1);
+    wrapper.setData({
+      debouncedInput: inputValue,
+    });
+    await wrapper.find(FilterInput).trigger('keydown.enter');
+    expect(handleKeyEnter).toHaveBeenCalledTimes(2);
   });
 
   it('it renders the symbol tree of the resulting symbol', async () => {

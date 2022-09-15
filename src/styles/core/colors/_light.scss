@@ -134,7 +134,6 @@
   --color-nav-dark-uiblur-stuck: #{change-color(dark-color(fill-tertiary), $alpha: 0.7)};
   --color-nav-dark-root-subhead: #{dark-color(tutorials-teal)};
   --color-runtime-preview-background: var(--color-fill-tertiary);
-  --color-quick-navigation-modal-shadow: #{change-color(light-color(figure-gray), $alpha: 0.3)};
   --color-runtime-preview-disabled-text: #{change-color(light-color(figure-gray-secondary), $alpha: 0.6)};
   --color-runtime-preview-text: var(--color-figure-gray-secondary);
   --color-secondary-label: var(--color-figure-gray-secondary);

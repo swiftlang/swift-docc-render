@@ -26,9 +26,3 @@ export default {
   components: { SVGIcon },
 };
 </script>
-
-<style scoped lang="scss">
-  path {
-    transform: translate(5%, 5%)
-  }
-</style>

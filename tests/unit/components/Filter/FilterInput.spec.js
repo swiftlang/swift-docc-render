@@ -217,6 +217,11 @@ describe('FilterInput', () => {
     expect(document.activeElement).toBe(input.element);
   });
 
+  it('adds character `/` as input value', async () => {
+    input.setValue('/');
+    expect(wrapper.emitted('input')).toEqual([['/']]);
+  });
+
   describe('copy/paste', () => {
     let clipboardData = {};
 

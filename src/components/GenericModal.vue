@@ -255,7 +255,6 @@ export default {
 $-modal-close-font-size: 40px;
 $-modal-close-font-size-medium: 32px;
 $modal-close-color: light-color(figure-gray-tertiary) !default;
-$pinned-modal-top:  10rem;
 
 .generic-modal {
   position: fixed;

@@ -78,7 +78,8 @@
               @keydown.delete="deleteHandler"
               @keydown.meta.a.prevent.stop="selectInputAndTags"
               @keydown.ctrl.a.prevent="selectInputAndTags"
-              @keydown.exact.stop="inputKeydownHandler"
+              @keydown.exact="inputKeydownHandler"
+              @keydown.191.exact.stop="inputKeydownHandler"
               @keydown.enter.exact="enterHandler"
               @keydown.shift.exact="inputKeydownHandler"
               @keydown.shift.meta.exact="inputKeydownHandler"
@@ -99,7 +100,6 @@
             <ClearRoundedIcon />
           </button>
         </div>
-        <slot name="input-menu-items" />
       </div>
       <TagList
         v-if="displaySuggestedTags"

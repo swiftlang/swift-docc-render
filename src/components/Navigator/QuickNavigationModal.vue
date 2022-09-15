@@ -10,8 +10,6 @@
 
 <template>
   <GenericModal
-    ref="modal"
-    pinContent
     :showClose="false"
     :visible="showQuickNavigationModal"
     :isFullscreen="true"
@@ -41,14 +39,6 @@
               :class="{ 'blue': userInput.length }"
             >
               <MagnifierIcon />
-            </div>
-          </template>
-          <template #input-menu-items>
-            <div
-              v-if="!userInput.length"
-              class="quick-navigation__open-key-container"
-            >
-              <kbd>Cmd+Shift+o</kbd>
             </div>
           </template>
         </FilterInput>
@@ -132,10 +122,11 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorIndex';
 
 const ModalStyleProps = {
+  'background-color': 'transparent',
   'max-width': '50rem',
   height: 'fit-content',
   flex: 'auto',
-  margin: '7rem 1rem',
+  margin: '10rem 1rem',
 };
 
 export default {
@@ -287,7 +278,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$modal-margin-top: 10rem;
 $base-border-width: 1px;
 $filter-padding: rem(15px);
 
