@@ -87,7 +87,7 @@ const TableHeaderStyle = {
   row: 'row',
 };
 
-// The point at which a TabNavigator turns to vertical mode.
+// The point after which a TabNavigator turns to vertical mode.
 const TabNavigatorVerticalThreshold = 5;
 
 // Recursively call the passed `createElement` function for each content node
