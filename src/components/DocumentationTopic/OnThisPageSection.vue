@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <section :id="anchor"><slot /></section>
+  <section><slot /></section>
 </template>
 
 <script>

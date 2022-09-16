@@ -17,8 +17,10 @@
     :style="styles"
   >
     <div class="icon">
-      <NavigatorLeafIcon
-        v-if="enhanceBackground" :type="type"
+      <TopicTypeIcon
+        v-if="enhanceBackground"
+        :type="type"
+        :image-override="iconOverride"
         key="first" class="background-icon first-icon" with-colors
       />
     </div>
@@ -36,14 +38,14 @@
 
 <script>
 
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap, HeroColors } from 'docc-render/constants/HeroColors';
 import { TopicRole } from 'docc-render/constants/roles';
 
 export default {
   name: 'DocumentationHero',
-  components: { NavigatorLeafIcon },
+  components: { TopicTypeIcon },
   props: {
     role: {
       type: String,
@@ -60,6 +62,10 @@ export default {
     shouldShowLanguageSwitcher: {
       type: Boolean,
       required: true,
+    },
+    iconOverride: {
+      type: Object,
+      required: false,
     },
   },
   computed: {

@@ -35,7 +35,6 @@ describe('OnThisPageSection', () => {
 
   it('renders a <section> with an id attribute', () => {
     expect(wrapper.is('section')).toBe(true);
-    expect(wrapper.attributes('id')).toBe(propsData.anchor);
   });
 
   it('renders slot content', () => {

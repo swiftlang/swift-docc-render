@@ -20,31 +20,31 @@ Object.defineProperty(document.body, 'scrollHeight', {
 });
 
 describe('scrollToElement', () => {
-  it('scrolls to the correct element when "scrollToElement" is called', async () => {
-    const scrollOffset = { x: 0, y: 14 };
-    const anchor = 'heres-why';
+  const scrollOffset = { x: 0, y: 14 };
+  const anchor = 'heres-why';
 
-    const wrapper = shallowMount({
-      name: 'MyComponent',
-      mixins: [scrollToElement],
-      render() {
-        return `<div id="${anchor}"/>`;
-      },
-    }, {
-      mocks: {
-        $router: {
-          resolve: ({ hash }) => ({ route: { hash } }),
-          options: {
-            scrollBehavior(to) {
-              return new Promise(resolve => (
-                resolve({ selector: to.hash, offset: scrollOffset })
-              ));
-            },
+  const wrapper = shallowMount({
+    name: 'MyComponent',
+    mixins: [scrollToElement],
+    render() {
+      return `<div id="${anchor}"/>`;
+    },
+  }, {
+    mocks: {
+      $router: {
+        resolve: ({ hash }) => ({ route: { hash } }),
+        options: {
+          scrollBehavior(to) {
+            return new Promise(resolve => (
+              resolve({ selector: to.hash, offset: scrollOffset })
+            ));
           },
         },
       },
-    });
+    },
+  });
 
+  it('scrolls to the correct element when "scrollToElement" is called', async () => {
     const scrollIntoViewMock = jest.fn();
     const mockElement = { scrollIntoView: scrollIntoViewMock };
 
@@ -82,5 +82,32 @@ describe('scrollToElement', () => {
     await wrapper.vm.scrollToElement(anchor);
     // assert `scrollBy` is called
     expect(scrollByMock).toBeCalledWith(-scrollOffset.x, -scrollOffset.y);
+  });
+
+  it('focuses element and scrolls to it', async () => {
+    wrapper.vm.scrollToElement = jest.fn();
+    const hash = 'foo';
+    const mockObject = { focus: jest.fn() };
+    const getElementSpy = jest.spyOn(document, 'getElementById').mockReturnValue(mockObject);
+
+    await wrapper.vm.handleFocusAndScroll(hash);
+    // focus element
+    expect(mockObject.focus).toHaveBeenCalledTimes(1);
+    expect(getElementSpy).toHaveBeenCalledTimes(1);
+    // scrolls to element
+    expect(wrapper.vm.scrollToElement).toBeCalled();
+    expect(wrapper.vm.scrollToElement).toBeCalledWith(`#${hash}`);
+    getElementSpy.mockRestore();
+  });
+
+  it('does not focus element and scroll if element is not in the document', async () => {
+    wrapper.vm.scrollToElement = jest.fn();
+    const hash = 'foo';
+    const getElementSpy = jest.spyOn(document, 'getElementById').mockReturnValue(null);
+
+    await wrapper.vm.handleFocusAndScroll(hash);
+    // scrolls to element
+    expect(wrapper.vm.scrollToElement).not.toBeCalled();
+    getElementSpy.mockRestore();
   });
 });

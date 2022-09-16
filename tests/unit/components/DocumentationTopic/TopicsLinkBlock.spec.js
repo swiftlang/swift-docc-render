@@ -42,8 +42,18 @@ describe('TopicsLinkBlock', () => {
     },
   };
 
+  const iconOverride = {
+    type: 'icon',
+    identifier: 'icon-override',
+  };
+
+  const references = {
+    [iconOverride.identifier]: { foo: 'bar' },
+  };
+
   const provide = {
     store,
+    references,
   };
 
   const propsData = {
@@ -124,6 +134,18 @@ describe('TopicsLinkBlock', () => {
     const link = wrapper.find(TopicLinkBlockIcon);
     expect(link.exists()).toBe(true);
     expect(link.props('role')).toBe(propsData.topic.role);
+  });
+
+  it('renders a TopicLinkBlockIcon with an override', () => {
+    const icon = wrapper.find(TopicLinkBlockIcon);
+    expect(icon.props('imageOverride')).toBe(null);
+    wrapper.setProps({
+      topic: {
+        ...propsData.topic,
+        images: [iconOverride, { type: 'card', identifier: 'foo' }],
+      },
+    });
+    expect(icon.props('imageOverride')).toBe(references[iconOverride.identifier]);
   });
 
   it('renders a normal `WordBreak` for the link text', () => {
