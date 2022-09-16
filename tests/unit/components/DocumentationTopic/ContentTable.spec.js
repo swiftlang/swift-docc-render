@@ -11,7 +11,10 @@
 import { shallowMount } from '@vue/test-utils';
 import ContentTable from 'docc-render/components/DocumentationTopic/ContentTable.vue';
 
-const { OnThisPageSection } = ContentTable.components;
+const {
+  OnThisPageSection,
+  LinkableHeading,
+} = ContentTable.components;
 
 describe('ContentTable', () => {
   let wrapper;
@@ -41,7 +44,7 @@ describe('ContentTable', () => {
   it('renders an h2 title', () => {
     const title = wrapper.find('.title');
     expect(title.exists()).toBe(true);
-    expect(title.is('h2')).toBe(true);
+    expect(title.is(LinkableHeading)).toBe(true);
     expect(title.text()).toBe(propsData.title);
   });
 

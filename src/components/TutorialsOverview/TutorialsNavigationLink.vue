@@ -13,7 +13,7 @@
     class="tutorials-navigation-link"
     :class="{ active }"
     :to="fragment"
-    @click.native="handleFocus"
+    @click.native="handleFocusAndScroll(fragment.hash)"
   >
     <slot />
   </router-link>
@@ -41,23 +41,6 @@ export default {
     }) => text === activeTutorialLink,
     fragment: ({ text, $route }) => ({ hash: anchorize(text), query: $route.query }),
     text: ({ $slots: { default: [{ text: slotText }] } }) => slotText.trim(),
-  },
-  methods: {
-    /**
-     * Always scroll to the element and focus it.
-     * This ensures that the next tab target is inside
-     * and that it is in view, even if the hash is in the url
-     * @returns {Promise<void>}
-     */
-    async handleFocus() {
-      const { hash } = this.fragment;
-      const element = document.getElementById(hash);
-      if (!element) return;
-      // Focus scrolls to the element
-      element.focus();
-      // but we need to compensate for the navigation height
-      await this.scrollToElement(`#${hash}`);
-    },
   },
 };
 </script>
