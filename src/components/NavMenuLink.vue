@@ -18,21 +18,23 @@
   >
     <slot />
   </span>
-  <router-link
+  <Reference
     v-else
     class="nav-menu-link"
-    :to="url"
+    :url="url"
     tabindex="0"
   >
     <slot />
-  </router-link>
+  </Reference>
 </template>
 
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 export default {
   name: 'NavMenuLink',
+  components: { Reference },
   computed: {
     isCurrent: ({ $route, url }) => ((typeof url === 'string') ? (
       // Use the `buildUrl` to compare urls, as we dont want to compare unnecessary query params
