@@ -16,6 +16,7 @@
         :enhanceBackground="enhanceBackground"
         :shortHero="shortHero"
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
+        :iconOverride="references[pageIcon]"
       >
         <template #above-content>
           <slot name="above-hero-content" />
@@ -270,6 +271,10 @@ export default {
       type: Object,
       required: false,
     },
+    pageImages: {
+      type: Array,
+      required: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -350,6 +355,15 @@ export default {
       || (primaryContentSections && primaryContentSections.length)
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
+    /**
+     * Finds the page icon in the `pageImages` array
+     * @param {Array} pageImages
+     * @returns {String|null}
+     */
+    pageIcon: ({ pageImages = [] }) => {
+      const icon = pageImages.find(({ type }) => type === 'icon');
+      return icon ? icon.identifier : null;
+    },
   },
   methods: {
     normalizePath(path) {

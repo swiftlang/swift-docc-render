@@ -13,13 +13,30 @@
     aria-hidden="true"
     class="svg-icon"
     xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <slot />
+    <use v-if="themeOverrideURL" :href="`${themeOverrideURL}#${themeId}`" />
+    <slot v-else />
   </svg>
 </template>
 
 <script>
-export default { name: 'SVGIcon' };
+export default {
+  name: 'SVGIcon',
+  props: {
+    themeId: {
+      type: String,
+      required: false,
+    },
+    iconUrl: {
+      type: String,
+      default: null,
+    },
+  },
+  computed: {
+    themeOverrideURL: ({ iconUrl }) => iconUrl,
+  },
+};
 </script>
 
 <style scoped lang="scss">

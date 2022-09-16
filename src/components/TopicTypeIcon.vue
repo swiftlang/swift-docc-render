@@ -9,9 +9,26 @@
 -->
 
 <template>
-  <div class="NavigatorLeafIcon">
-    <component :is="icon" v-bind="iconProps" class="icon-inline" :style="styles" />
-  </div>
+  <IconOverrideProvider
+    :imageOverride="imageOverride"
+    #default="{ shouldUseOverride, themeId, iconUrl }"
+  >
+    <div class="TopicTypeIcon">
+      <SVGIcon
+        v-if="shouldUseOverride"
+        v-bind="{ themeId, iconUrl }"
+        :style="styles"
+        class="icon-inline"
+      />
+      <component
+        v-else
+        :is="icon"
+        v-bind="iconProps"
+        :style="styles"
+        class="icon-inline"
+      />
+    </div>
+  </IconOverrideProvider>
 </template>
 
 <script>
@@ -28,6 +45,8 @@ import TwoLetterSymbolIcon from 'theme/components/Icons/TwoLetterSymbolIcon.vue'
 import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIcon.vue';
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
+import SVGIcon from 'docc-render/components/SVGIcon.vue';
+import IconOverrideProvider from 'docc-render/components/IconOverrideProvider.vue';
 
 const TopicTypeIcons = {
   [TopicTypes.article]: ArticleIcon,
@@ -80,8 +99,8 @@ const TopicTypeProps = {
 };
 
 export default {
-  name: 'NavigatorLeafIcon',
-  components: { SingleLetterSymbolIcon },
+  name: 'TopicTypeIcon',
+  components: { IconOverrideProvider, SVGIcon, SingleLetterSymbolIcon },
   constants: { TopicTypeIcons, TopicTypeProps },
   props: {
     type: {
@@ -92,13 +111,20 @@ export default {
       type: Boolean,
       default: false,
     },
+    imageOverride: {
+      type: Object,
+      default: null,
+    },
   },
   computed: {
     normalisedType: ({ type }) => TopicTypeAliases[type] || type,
     icon: ({ normalisedType }) => TopicTypeIcons[normalisedType] || CollectionIcon,
     iconProps: ({ normalisedType }) => TopicTypeProps[normalisedType] || {},
     color: ({ normalisedType }) => HeroColorsMap[normalisedType],
-    styles: ({ color, withColors }) => (withColors && color ? { color: `var(--color-type-icon-${color})` } : {}),
+    styles: ({
+      color,
+      withColors,
+    }) => (withColors && color ? { color: `var(--color-type-icon-${color})` } : {}),
   },
 };
 </script>
@@ -106,7 +132,7 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-.NavigatorLeafIcon {
+.TopicTypeIcon {
   width: 1em;
   height: 1em;
   margin-right: 7px;
