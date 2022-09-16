@@ -14,29 +14,13 @@ import Tabnav from '@/components/Tabnav.vue';
 import TabnavItem from '@/components/TabnavItem.vue';
 import { flushPromises } from '../../../../test-utils';
 
-const items = [
-  {
-    title: 'Long tab title',
-    content: [
-      {
-        type: 'text',
-        text: 'Foo',
-      },
-    ],
-  },
-  {
-    title: 'A Longer tab title',
-    content: [
-      {
-        type: 'text',
-        text: 'Foo1',
-      },
-    ],
-  },
-];
-
+const titles = ['Long tab title', 'A Longer tab title'];
+const scopedSlots = {
+  [titles[0]]: '<div>First</div>',
+  [titles[1]]: '<div>Second</div>',
+};
 const defaultProps = {
-  items,
+  titles,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => mount(TabNavigator, {
@@ -44,6 +28,7 @@ const createWrapper = ({ propsData, ...others } = {}) => mount(TabNavigator, {
     ...defaultProps,
     ...propsData,
   },
+  scopedSlots,
   ...others,
 });
 
@@ -56,10 +41,10 @@ describe('TabNavigator.spec', () => {
     expect(wrapper.find(Tabnav).props()).toEqual({
       position: 'start',
       vertical: false,
-      value: 0, // first item
+      value: titles[0],
     });
     expect(wrapper.findAll(TabnavItem)).toHaveLength(2);
-    expect(wrapper.find('.content').text()).toEqual(items[0].content[0].text);
+    expect(wrapper.find('.tabs-content').text()).toEqual('First');
   });
 
   it('sets the TabNavigator in `vertical` mode', async () => {
@@ -76,10 +61,9 @@ describe('TabNavigator.spec', () => {
   it('changes the content, based on the picked tab', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    wrapper.setData({
-      current: 1,
-    });
-    expect(wrapper.find('.content').text()).toBe(items[1].content[0].text);
-    expect(wrapper.find(Tabnav).props('value')).toEqual(1);
+    const tabnav = wrapper.find(Tabnav);
+    tabnav.vm.$emit('input', titles[1]);
+    expect(wrapper.find('.tabs-content').text()).toBe('Second');
+    expect(tabnav.props('value')).toEqual(titles[1]);
   });
 });

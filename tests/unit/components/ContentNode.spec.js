@@ -431,9 +431,14 @@ describe('ContentNode', () => {
       const wrapper = mountWithItem(props);
       const tabs = wrapper.find(TabNavigator);
       expect(tabs.props()).toEqual({
-        items: props.tabs,
+        titles: [props.tabs[0].title, props.tabs[1].title],
         position: 'start',
         vertical: false,
+      });
+      // assert we passed the correct scoped slots
+      expect(tabs.vm.$scopedSlots).toEqual({
+        Foo: expect.any(Function),
+        Bar: expect.any(Function),
       });
     });
 

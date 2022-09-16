@@ -20,7 +20,7 @@
     </Tabnav>
     <div class="tabs-content">
       <template v-for="title in titles">
-        <slot v-if="title === currentTitle" :name="title"></slot>
+        <slot v-if="title === currentTitle" :name="title" />
       </template>
     </div>
   </div>
