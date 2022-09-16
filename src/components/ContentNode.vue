@@ -319,11 +319,17 @@ function renderNode(createElement, references) {
     case BlockType.tabNavigator: {
       // If the tabs count is more than the threshold, use vertical tabs instead.
       const vertical = node.tabs.length > TabNavigatorVerticalThreshold;
+      const titles = node.tabs.map(tab => tab.title);
+      const scopedSlots = node.tabs.reduce((slots, tab) => ({
+        ...slots,
+        [tab.title]: () => renderChildren(tab.content),
+      }), {});
       return createElement(TabNavigator, {
         props: {
+          titles,
           vertical,
-          items: node.tabs,
         },
+        scopedSlots,
       });
     }
     case InlineType.codeVoice:
