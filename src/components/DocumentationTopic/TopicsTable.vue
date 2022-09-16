@@ -32,13 +32,7 @@
       <template v-if="section.discussion" slot="discussion">
         <ContentNode :content="section.discussion.content" />
       </template>
-      <TopicsLinkCardGrid
-        v-if="!shouldRenderList"
-        :items="section.topics"
-        :topicStyle="topicStyle"
-        class="topic"
-      />
-      <template v-else>
+      <template v-if="shouldRenderList">
         <TopicsLinkBlock
           v-for="topic in section.topics"
           class="topic"
@@ -48,6 +42,12 @@
           :isSymbolBeta="isSymbolBeta"
         />
       </template>
+      <TopicsLinkCardGrid
+        v-else
+        :items="section.topics"
+        :topicStyle="topicStyle"
+        class="topic"
+      />
     </ContentTableSection>
   </ContentTable>
 </template>

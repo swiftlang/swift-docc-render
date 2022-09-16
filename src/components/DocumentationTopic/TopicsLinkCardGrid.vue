@@ -12,8 +12,8 @@
   <div class="TopicsLinkCardGrid">
     <Row :columns="compactCards ? 3 : 2">
       <Column
-        v-for="(item, index) in items"
-        :key="index"
+        v-for="item in items"
+        :key="item.title"
       >
         <TopicsLinkCardGridItem :item="item" :compact="compactCards" />
       </Column>
@@ -38,6 +38,7 @@ export default {
     topicStyle: {
       type: String,
       default: TopicStyles.compactGrid,
+      validator: v => v === TopicStyles.compactGrid || v === TopicStyles.detailedGrid,
     },
   },
   computed: {

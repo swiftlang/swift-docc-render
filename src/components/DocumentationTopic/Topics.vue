@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { TopicStyles } from '@/constants/TopicStyles';
 import TopicsTable from './TopicsTable.vue';
 
 export default {
@@ -32,6 +33,7 @@ export default {
     topicStyle: {
       type: String,
       required: true,
+      validator: v => Object.hasOwnProperty.call(TopicStyles, v),
     },
   },
 };
