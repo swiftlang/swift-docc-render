@@ -18,7 +18,7 @@
         <router-link
           :to="item.url"
           class="base-link"
-          @click.native="scrollTo(item)"
+          @click.native="handleFocusAndScroll(item.anchor)"
         >
           {{ item.title }}
         </router-link>
@@ -57,9 +57,15 @@ export default {
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('scroll', this.onScroll);
     });
-    // make sure everything is ready
-    await waitFrames(8);
-    this.onScroll();
+  },
+  watch: {
+    onThisPageSections: {
+      immediate: true,
+      async handler() {
+        await waitFrames(8);
+        this.onScroll();
+      },
+    },
   },
   methods: {
     onScroll: throttle(function onScroll() {
@@ -104,16 +110,6 @@ export default {
      */
     checkIsActive(item) {
       return item.anchor === this.currentPageAnchor;
-    },
-    async scrollTo({ anchor }) {
-      const element = document.getElementById(anchor);
-      if (!element) return;
-      // Focus the element without scrolling to it, we do that after
-      element.focus({
-        preventScroll: true,
-      });
-      // but we need to compensate for the navigation height
-      await this.scrollToElement(`#${anchor}`);
     },
     getItemClasses(item) {
       return {
