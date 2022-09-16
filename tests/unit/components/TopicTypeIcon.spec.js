@@ -8,17 +8,19 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
-import { shallowMount } from '@vue/test-utils';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
+import { mount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 import CollectionIcon from '@/components/Icons/CollectionIcon.vue';
+import SVGIcon from '@/components/SVGIcon.vue';
 
-const createWrapper = opts => shallowMount(NavigatorLeafIcon, opts);
+const createWrapper = opts => mount(TopicTypeIcon, opts);
+
 const {
   TopicTypeIcons,
   TopicTypeProps,
-} = NavigatorLeafIcon.constants;
+} = TopicTypeIcon.constants;
 
 const cases = Object.keys(TopicTypes).map((type) => {
   const k = TopicTypeAliases[type] || type;
@@ -27,7 +29,7 @@ const cases = Object.keys(TopicTypes).map((type) => {
   return [type, icon.name, TopicTypeProps[type] || {}, color, icon];
 });
 
-describe('NavigatorLeafIcon', () => {
+describe('TopicTypeIcon', () => {
   it.each(cases)('Should render %s as %s, with %O bindings, and a %s color', (type, iconName, bindings, color, icon) => {
     const wrapper = createWrapper({
       propsData: {
@@ -51,5 +53,44 @@ describe('NavigatorLeafIcon', () => {
       },
     });
     expect(wrapper.vm.styles).not.toHaveProperty('color');
+  });
+
+  it('renders an icon override', () => {
+    const imageOverride = {
+      variants: [{
+        url: 'baz.svg',
+        svgID: 'foo',
+      }, {
+        url: 'bar.svg',
+      }],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        imageOverride,
+        type: TopicTypes.class,
+      },
+    });
+    const icon = wrapper.find('.icon-inline');
+    expect(icon.is(SVGIcon)).toBe(true);
+    expect(icon.props()).toMatchObject({
+      iconUrl: imageOverride.variants[0].url,
+      themeId: imageOverride.variants[0].svgID,
+    });
+  });
+
+  it('does not render icon overrides, if it does not have an `svgID`', () => {
+    const imageOverride = {
+      variants: [{
+        url: 'baz.svg',
+      }],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        imageOverride,
+        type: TopicTypes.class,
+      },
+    });
+    const icon = wrapper.find('.icon-inline');
+    expect(icon.is(SVGIcon)).toBe(false);
   });
 });

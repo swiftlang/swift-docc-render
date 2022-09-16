@@ -24,6 +24,9 @@ import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
 import Small from '@/components/ContentNode/Small.vue';
 import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
+import Row from '@/components/ContentNode/Row.vue';
+import Column from '@/components/ContentNode/Column.vue';
+import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -339,6 +342,131 @@ describe('ContentNode', () => {
       const small = paragraph.find(Small);
       expect(small.exists()).toBe(true);
       expect(small.text()).toBe('foo');
+    });
+  });
+
+  describe('with type="row"', () => {
+    it('renders a `<Row>` and `<Column>`', () => {
+      const wrapper = mountWithItem({
+        type: 'row',
+        numberOfColumns: 4,
+        columns: [
+          {
+            size: 2,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const grid = wrapper.find(Row);
+      expect(grid.props()).toEqual({
+        columns: 4,
+      });
+      const columns = grid.findAll(Column);
+      expect(columns).toHaveLength(2);
+      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).find('p').text()).toBe('foo');
+      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).find('p').text()).toBe('bar');
+    });
+  });
+
+  describe('with type="tabNavigator"', () => {
+    it('renders a `<TabNavigator>`', () => {
+      const props = {
+        type: 'tabNavigator',
+        tabs: [
+          {
+            title: 'Foo',
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: 'Bar',
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+      const wrapper = mountWithItem(props);
+      const tabs = wrapper.find(TabNavigator);
+      expect(tabs.props()).toEqual({
+        titles: [props.tabs[0].title, props.tabs[1].title],
+        position: 'start',
+        vertical: false,
+      });
+      // assert we passed the correct scoped slots
+      expect(tabs.vm.$scopedSlots).toEqual({
+        Foo: expect.any(Function),
+        Bar: expect.any(Function),
+      });
+    });
+
+    it('renders a `<TabNavigator>` in vertcal mode, when tabs reach threshold', () => {
+      const content = [
+        {
+          type: 'paragraph',
+          inlineContent: [
+            {
+              type: 'text',
+              text: 'foo',
+            },
+          ],
+        },
+      ];
+      const props = {
+        type: 'tabNavigator',
+        tabs: [
+          { title: '1', content },
+          { title: '2', content },
+          { title: '3', content },
+          { title: '4', content },
+          { title: '5', content },
+          { title: '6', content },
+        ],
+      };
+      const wrapper = mountWithItem(props);
+      expect(wrapper.find(TabNavigator).props('vertical')).toBe(true);
     });
   });
 
@@ -1227,7 +1355,8 @@ describe('ContentNode', () => {
 
       const content = wrapper.find(StrikeThrough);
       // assert the `strong` tag is rendered
-      expect(content.html()).toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
+      expect(content.html())
+        .toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
     });
   });
 

@@ -23,6 +23,9 @@ import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
 import Small from './ContentNode/Small.vue';
 import BlockVideo from './ContentNode/BlockVideo.vue';
+import Column from './ContentNode/Column.vue';
+import Row from './ContentNode/Row.vue';
+import TabNavigator from './ContentNode/TabNavigator.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -37,6 +40,8 @@ const BlockType = {
   dictionaryExample: 'dictionaryExample',
   small: 'small',
   video: 'video',
+  row: 'row',
+  tabNavigator: 'tabNavigator',
 };
 
 const InlineType = {
@@ -89,6 +94,9 @@ const TableHeaderStyle = {
   none: 'none',
   row: 'row',
 };
+
+// The point after which a TabNavigator turns to vertical mode.
+const TabNavigatorVerticalThreshold = 5;
 
 // Recursively call the passed `createElement` function for each content node
 // and any of its children by mapping each node `type` to a given Vue component
@@ -298,6 +306,31 @@ function renderNode(createElement, references) {
           },
         })
       ) : null;
+    }
+    case BlockType.row: {
+      return createElement(
+        Row, { props: { columns: node.numberOfColumns } }, node.columns.map(col => (
+          createElement(
+            Column, { props: { span: col.size } }, renderChildren(col.content),
+          )
+        )),
+      );
+    }
+    case BlockType.tabNavigator: {
+      // If the tabs count is more than the threshold, use vertical tabs instead.
+      const vertical = node.tabs.length > TabNavigatorVerticalThreshold;
+      const titles = node.tabs.map(tab => tab.title);
+      const scopedSlots = node.tabs.reduce((slots, tab) => ({
+        ...slots,
+        [tab.title]: () => renderChildren(tab.content),
+      }), {});
+      return createElement(TabNavigator, {
+        props: {
+          titles,
+          vertical,
+        },
+        scopedSlots,
+      });
     }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (

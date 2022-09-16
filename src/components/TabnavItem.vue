@@ -14,6 +14,7 @@
       href="#"
       class="tabnav-link"
       :class="{ 'active': isActive }"
+      :aria-current="isActive ? 'true' : 'false'"
       @click.prevent="tabnavData.selectTab(value)"
     >
       <slot />
@@ -22,6 +23,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'TabnavItem',
   inject: {
@@ -31,8 +33,8 @@ export default {
   },
   props: {
     value: {
-      type: String,
-      default: '',
+      type: [String, Number],
+      default: null,
     },
   },
   computed: {
@@ -46,15 +48,15 @@ export default {
 <style lang='scss' scoped>
 @import 'docc-render/styles/_core.scss';
 
-$tabnav-padding: 11px !default;
-$tabnav-bottom-border-margin: 4px !default;
+$tabnav-padding: 6px !default;
+$tabnav-margin: 4px !default;
 $tabnav-item-gutter: rem(30px);
 
 .tabnav-item {
   border-bottom: 1px solid;
   border-color: var(--colors-tabnav-item-border-color, var(--color-tabnav-item-border-color));
 
-  display: inline-block;
+  display: flex;
   list-style: none;
   padding-left: $tabnav-item-gutter;
   margin: 0;
@@ -71,19 +73,17 @@ $tabnav-item-gutter: rem(30px);
 }
 
 .tabnav-link {
-  $-tabnav-padding-focus-offset: 2px;
-  $-tabnav-padding-top: $tabnav-padding - $-tabnav-padding-focus-offset;
-
   color: var(--colors-secondary-label, var(--color-secondary-label));
   @include font-styles(tabnav-link);
-  padding: $-tabnav-padding-top 0 $tabnav-padding;
-  margin-top: $-tabnav-padding-focus-offset;
-  margin-bottom: $tabnav-bottom-border-margin;
+  padding: $tabnav-padding 0;
+  margin-top: $tabnav-margin;
+  margin-bottom: $tabnav-margin;
   text-align: left;
   text-decoration: none;
   display: block;
   position: relative;
   z-index: 0;
+  width: 100%;
 
   &:hover {
     text-decoration: none;
@@ -96,7 +96,7 @@ $tabnav-item-gutter: rem(30px);
   &:after {
     content: '';
     position: absolute;
-    bottom: -1 * ($tabnav-bottom-border-margin + 1);
+    bottom: -1 * ($tabnav-margin + 1);
     left: 0;
     width: 100%;
     border: 1px solid transparent;
