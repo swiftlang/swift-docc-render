@@ -32,6 +32,8 @@
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import { anchorize } from 'docc-render/utils/strings';
 
+export const TITLE_CLASS_NAME = 'contenttable-title';
+
 export default {
   name: 'ContentTableSection',
   components: { LinkableHeading },
@@ -47,7 +49,7 @@ export default {
   },
   computed: {
     anchorComputed: ({ title, anchor }) => anchor || anchorize(title),
-    className: () => 'contenttable-title',
+    className: () => TITLE_CLASS_NAME,
   },
 };
 </script>
