@@ -9,9 +9,19 @@
 -->
 
 <template>
-  <div class="topic-icon-wrapper" v-if="icon">
-    <component :is="icon" class="topic-icon" />
-  </div>
+  <IconOverrideProvider
+    :imageOverride="imageOverride"
+    #default="{ shouldUseOverride, themeId, iconUrl }"
+  >
+    <div class="topic-icon-wrapper" v-if="icon || shouldUseOverride">
+      <SVGIcon
+        v-if="shouldUseOverride"
+        v-bind="{ themeId, iconUrl }"
+        class="topic-icon"
+      />
+      <component v-else :is="icon" class="topic-icon" />
+    </div>
+  </IconOverrideProvider>
 </template>
 
 <script>
@@ -21,7 +31,9 @@ import ApiCollectionIcon from 'theme/components/Icons/APIReferenceIcon.vue';
 import EndpointIcon from 'theme/components/Icons/EndpointIcon.vue';
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
+import SVGIcon from 'docc-render/components/SVGIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
+import IconOverrideProvider from 'docc-render/components/IconOverrideProvider.vue';
 
 const TopicRoleIcons = {
   [TopicRole.article]: ArticleIcon,
@@ -36,10 +48,15 @@ const TopicRoleIcons = {
 };
 
 export default {
+  components: { IconOverrideProvider, SVGIcon },
   props: {
     role: {
       type: String,
       required: true,
+    },
+    imageOverride: {
+      type: Object,
+      default: null,
     },
   },
 

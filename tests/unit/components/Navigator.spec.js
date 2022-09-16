@@ -94,12 +94,17 @@ const mocks = {
   },
 };
 
+const navigatorReferences = {
+  foo: {},
+};
+
 const defaultProps = {
   parentTopicIdentifiers,
   technology,
   references,
   scrollLockID: 'foo',
   breakpoint: 'large',
+  navigatorReferences,
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -144,6 +149,7 @@ describe('Navigator', () => {
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
@@ -198,6 +204,7 @@ describe('Navigator', () => {
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences,
     });
   });
 

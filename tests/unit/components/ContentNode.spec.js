@@ -20,8 +20,12 @@ import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue'
 import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
 import Small from '@/components/ContentNode/Small.vue';
+import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
+import Row from '@/components/ContentNode/Row.vue';
+import Column from '@/components/ContentNode/Column.vue';
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
@@ -162,11 +166,12 @@ describe('ContentNode', () => {
           text: 'heading',
         });
 
-        const heading = wrapper.find('.content').find(`h${level}`);
-        expect(heading.exists()).toBe(true);
-        expect(heading.attributes('id')).toBe('heading');
-        expect(heading.isEmpty()).toBe(false);
-        expect(heading.text()).toBe('heading');
+        const sectionTitle = wrapper.find('.content').find(LinkableHeading);
+        expect(sectionTitle.exists()).toBe(true);
+        expect(sectionTitle.props('level')).toBe(level);
+        expect(sectionTitle.attributes('anchor')).toBe('heading');
+        expect(sectionTitle.isEmpty()).toBe(false);
+        expect(sectionTitle.text()).toContain('heading');
       }
     });
   });
@@ -337,6 +342,54 @@ describe('ContentNode', () => {
       const small = paragraph.find(Small);
       expect(small.exists()).toBe(true);
       expect(small.text()).toBe('foo');
+    });
+  });
+
+  describe('with type="row"', () => {
+    it('renders a `<Row>` and `<Column>`', () => {
+      const wrapper = mountWithItem({
+        type: 'row',
+        numberOfColumns: 4,
+        columns: [
+          {
+            size: 2,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const grid = wrapper.find(Row);
+      expect(grid.props()).toEqual({
+        columns: 4,
+      });
+      const columns = grid.findAll(Column);
+      expect(columns).toHaveLength(2);
+      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).find('p').text()).toBe('foo');
+      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).find('p').text()).toBe('bar');
     });
   });
 
@@ -546,12 +599,13 @@ describe('ContentNode', () => {
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBeFalsy();
+      expect(caption.props('centered')).toBe(true);
       expect(caption.text()).toContain('blah');
       // assert figurerecaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-          <figurecaption-stub>
+          <figurecaption-stub centered="true">
             <p>blah</p>
           </figurecaption-stub>
         </figure-stub>
@@ -599,6 +653,102 @@ describe('ContentNode', () => {
       expect(figure.contains(InlineImage)).toBe(true);
 
       expect(wrapper.find(FigureCaption).exists()).toBe(false);
+    });
+  });
+
+  describe('with type="video"', () => {
+    const identifier = 'video.mp4';
+    const references = {
+      [identifier]: {
+        identifier,
+        variants: [
+          {
+            traits: ['2x', 'light'],
+            url: '',
+            size: { width: 1202, height: 630 },
+          },
+        ],
+      },
+    };
+
+    it('renders an `BlockVideo`', () => {
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+      }, references);
+
+      const inlineVideo = wrapper.find('.content').find(BlockVideo);
+      expect(inlineVideo.exists()).toBe(true);
+      expect(inlineVideo.props('identifier')).toEqual(identifier);
+    });
+
+    it('does not crash with missing video reference data', () => {
+      expect(() => mountWithItem({
+        type: 'video',
+        identifier,
+      }, {})).not.toThrow();
+    });
+
+    it('renders a `Figure`/`FigureCaption` with metadata', () => {
+      const metadata = {
+        anchor: 'foo',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBe('foo');
+      expect(figure.contains(BlockVideo)).toBe(true);
+
+      const caption = wrapper.find(FigureCaption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.props('centered')).toBe(true);
+      expect(caption.text()).toContain('blah');
+    });
+
+    it('renders a `Figure`/`FigureCaption` without an anchor, with text under the video', () => {
+      const metadata = {
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.contains(BlockVideo)).toBe(true);
+
+      const caption = wrapper.find(FigureCaption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBeFalsy();
+      expect(caption.props('centered')).toBe(true);
+      expect(caption.text()).toContain('blah');
+      // assert figurerecaption is below the image
+      expect(figure.html()).toMatchInlineSnapshot(`
+        <figure-stub>
+          <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
+          <figurecaption-stub centered="true">
+            <p>blah</p>
+          </figurecaption-stub>
+        </figure-stub>
+      `);
     });
   });
 
@@ -1040,6 +1190,7 @@ describe('ContentNode', () => {
       const caption = figure.find(FigureCaption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.props('centered')).toBe(false);
       expect(caption.contains('p')).toBe(true);
       expect(caption.text()).toContain('blah');
     });
@@ -1199,7 +1350,8 @@ describe('ContentNode', () => {
 
       const content = wrapper.find(StrikeThrough);
       // assert the `strong` tag is rendered
-      expect(content.html()).toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
+      expect(content.html())
+        .toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
     });
   });
 

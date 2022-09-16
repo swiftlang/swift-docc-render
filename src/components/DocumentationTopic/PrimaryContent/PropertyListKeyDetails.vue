@@ -14,7 +14,7 @@
     class="details"
     title="Details"
   >
-    <h2>Details</h2>
+    <LinkableHeading anchor="details">Details</LinkableHeading>
     <dl>
       <template v-if="isSymbol">
         <dt class="detail-type" :key="`${details.name}:name`">
@@ -45,12 +45,14 @@
 <script>
 import PropertyListKeyType from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
 import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 export default {
   name: 'PropertyListKeyDetails',
   components: {
     PropertyListKeyType,
     OnThisPageSection,
+    LinkableHeading,
   },
   props: {
     details: {

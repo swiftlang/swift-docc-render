@@ -12,6 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vue';
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
+import PlayIcon from '@/components/Icons/PlayIcon.vue';
 import { flushPromises } from '../../../test-utils';
 
 const variants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/myvideo.mp4' }];
@@ -62,11 +63,12 @@ describe('ReplayableVideoAsset', () => {
     expect(replayButton.exists()).toBe(true);
     expect(replayButton.classes('visible')).toBe(false);
 
-    expect(replayButton.find('.replay-icon').is(InlineReplayIcon)).toBe(true);
+    expect(replayButton.find('.replay-icon').is(PlayIcon)).toBe(true);
     const video = wrapper.find(VideoAsset);
     video.vm.$emit('ended');
 
     expect(replayButton.classes('visible')).toBe(true);
+    expect(wrapper.find('.replay-icon').is(InlineReplayIcon)).toBe(true);
 
     // When the video is playing, the replay button should be hidden.
     replayButton.trigger('click');
