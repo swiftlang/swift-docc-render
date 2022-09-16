@@ -11,7 +11,7 @@
 <template>
   <nav
     class="tabnav"
-    :class="[{ [`tabnav--${position}`]: position, 'tabnav--vertical': vertical }]"
+    :class="{ [`tabnav--${position}`]: position, 'tabnav--vertical': vertical }"
   >
     <ul class="tabnav-items">
       <slot />
