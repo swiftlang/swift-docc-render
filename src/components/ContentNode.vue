@@ -107,11 +107,29 @@ function renderNode(createElement, references) {
     renderNode(createElement, references),
   );
 
-  const renderListItems = items => items.map(item => (
-    createElement('li', {}, (
-      renderChildren(item.content)
-    ))
-  ));
+  const renderListItems = items => items.map((item) => {
+    const itemContent = [];
+    if (item.checked === true) {
+      const props = {
+        attrs: {
+          type: 'checkbox',
+          checked: true,
+          disabled: true,
+        },
+      };
+      itemContent.push(createElement('input', props, []));
+    } else if (item.checked === false) {
+      const props = {
+        attrs: {
+          type: 'checkbox',
+          disabled: true,
+        },
+      };
+      itemContent.push(createElement('input', props, []));
+    }
+    itemContent.push(...renderChildren(item.content));
+    return createElement('li', {}, itemContent);
+  });
 
   const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none) => {
     switch (headerStyle) {

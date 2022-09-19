@@ -325,6 +325,59 @@ describe('ContentNode', () => {
       expect(items.at(0).find('p').text()).toBe('foo');
       expect(items.at(1).find('p').text()).toBe('bar');
     });
+
+    it('renders a <ul> with <li> items and checkboxes', () => {
+      const wrapper = mountWithItem({
+        type: 'unorderedList',
+        items: [
+          {
+            checked: true,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            checked: false,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      const list = wrapper.find('.content ul');
+      expect(list.exists()).toBe(true);
+
+      const items = list.findAll('li');
+      expect(items.length).toBe(2);
+      expect(items.at(0).find('input').attributes()).toStrictEqual({
+        checked: 'checked',
+        disabled: 'disabled',
+        type: 'checkbox',
+      });
+      expect(items.at(0).find('p').text()).toBe('foo');
+      expect(items.at(1).find('input').attributes()).toStrictEqual({
+        disabled: 'disabled',
+        type: 'checkbox',
+      });
+      expect(items.at(1).find('p').text()).toBe('bar');
+    });
   });
 
   describe('with type="small"', () => {
