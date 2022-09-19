@@ -22,7 +22,7 @@ const defaultProps = {
     url: 'http://foo.com',
     images: [{
       type: 'card',
-      reference: 'card-reference',
+      identifier: 'card-reference',
     }],
     title: 'Foo',
     abstract: [{ type: 'text', text: 'Content' }],
@@ -53,7 +53,7 @@ describe('TopicsLinkCardGridItem', () => {
     const card = wrapper.find(Card);
     expect(card.props()).toMatchObject({
       url: defaultProps.item.url,
-      image: defaultProps.item.images[0].reference,
+      image: defaultProps.item.images[0].identifier,
       title: defaultProps.item.title,
       floatingStyle: true,
       size: undefined,
@@ -99,7 +99,7 @@ describe('TopicsLinkCardGridItem', () => {
           ...defaultProps.item,
           images: [{
             type: 'icon',
-            reference: iconRef.identifier,
+            identifier: iconRef.identifier,
           }],
         },
       },
@@ -118,7 +118,7 @@ describe('TopicsLinkCardGridItem', () => {
     const card = wrapper.find(Card);
     expect(card.props()).toMatchObject({
       url: defaultProps.item.url,
-      image: defaultProps.item.images[0].reference,
+      image: defaultProps.item.images[0].identifier,
       title: defaultProps.item.title,
       floatingStyle: true,
       size: 'large',

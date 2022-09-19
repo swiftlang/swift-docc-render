@@ -66,7 +66,7 @@ export default {
   computed: {
     imageReferences: ({ item }) => (item.images || []).reduce((all, current) => {
       // eslint-disable-next-line no-param-reassign
-      all[current.type] = current.reference;
+      all[current.type] = current.identifier;
       return all;
     }, { icon: null, card: null }),
     linkText: ({ compact, item }) => (compact ? '' : (ROLE_LINK_TEXT[item.role] || 'Learn more')),
