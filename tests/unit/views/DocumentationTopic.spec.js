@@ -33,10 +33,13 @@ const TechnologyWithChildren = {
   children: [],
 };
 
+const navigatorReferences = { foo: {} };
+
 jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
   interfaceLanguages: {
     [Language.swift.key.url]: [TechnologyWithChildren, { path: 'another/technology' }],
   },
+  references: navigatorReferences,
 });
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
@@ -199,6 +202,7 @@ describe('DocumentationTopic', () => {
       technology,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences: {},
       reverseFilterPosition: false,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
@@ -213,6 +217,7 @@ describe('DocumentationTopic', () => {
       technology: TechnologyWithChildren,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);

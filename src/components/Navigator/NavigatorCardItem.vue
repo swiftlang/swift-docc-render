@@ -45,9 +45,10 @@
           />
         </button>
       </div>
-      <NavigatorLeafIcon
+      <TopicTypeIcon
         v-if="!isGroupMarker && !apiChange"
         :type="item.type"
+        :image-override="item.icon ? navigatorReferences[item.icon] : null"
         class="navigator-icon"
       />
       <span
@@ -93,7 +94,7 @@
 
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
@@ -111,7 +112,7 @@ export default {
   ],
   components: {
     HighlightMatches,
-    NavigatorLeafIcon,
+    TopicTypeIcon,
     InlineChevronRightIcon,
     Reference,
     Badge,
@@ -153,6 +154,10 @@ export default {
     enableFocus: {
       type: Boolean,
       default: true,
+    },
+    navigatorReferences: {
+      type: Object,
+      default: () => ({}),
     },
   },
   idState() {
