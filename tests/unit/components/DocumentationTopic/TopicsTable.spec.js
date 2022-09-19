@@ -10,7 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import TopicsTable from 'docc-render/components/DocumentationTopic/TopicsTable.vue';
-import { TopicStyles } from '@/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 
 const {
@@ -112,21 +112,21 @@ describe('TopicsTable', () => {
   });
 
   it('renders a `TopicsLinkCardGrid` if `topicStyle` is not `list`', () => {
-    wrapper.setProps({ topicStyle: TopicStyles.compactGrid });
+    wrapper.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
     expect(wrapper.findAll(TopicsLinkBlock)).toHaveLength(0);
     const sections = wrapper.findAll(ContentTableSection);
 
     const firstGrid = sections.at(0).find(TopicsLinkCardGrid);
     expect(firstGrid.classes('topic')).toBe(true);
     expect(firstGrid.props()).toEqual({
-      topicStyle: TopicStyles.compactGrid,
+      topicStyle: TopicSectionsStyle.compactGrid,
       items: [foo],
     });
 
     const secondGrid = sections.at(1).find(TopicsLinkCardGrid);
     expect(secondGrid.classes('topic')).toBe(true);
     expect(secondGrid.props()).toEqual({
-      topicStyle: TopicStyles.compactGrid,
+      topicStyle: TopicSectionsStyle.compactGrid,
       items: [baz],
     });
   });

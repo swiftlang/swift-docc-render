@@ -17,7 +17,7 @@ import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
-import { TopicStyles } from '@/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
@@ -542,7 +542,7 @@ describe('DocumentationTopic', () => {
         swift: ['documentation/swift'],
       },
       enableOnThisPageNav: false,
-      topicSectionsStyle: TopicStyles.list, // default value
+      topicSectionsStyle: TopicSectionsStyle.list, // default value
     });
   });
 
@@ -573,12 +573,12 @@ describe('DocumentationTopic', () => {
     wrapper.setData({
       topicData: {
         ...topicData,
-        topicSectionsStyle: TopicStyles.detailedGrid,
+        topicSectionsStyle: TopicSectionsStyle.detailedGrid,
       },
     });
 
     const topic = wrapper.find(Topic);
-    expect(topic.props('topicSectionsStyle')).toEqual(TopicStyles.detailedGrid);
+    expect(topic.props('topicSectionsStyle')).toEqual(TopicSectionsStyle.detailedGrid);
   });
 
   it('provides an empty languagePaths, even if no variants', () => {

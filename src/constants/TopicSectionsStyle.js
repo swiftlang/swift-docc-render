@@ -9,7 +9,7 @@
 */
 
 /* eslint-disable import/prefer-default-export */
-export const TopicStyles = {
+export const TopicSectionsStyle = {
   list: 'list',
   compactGrid: 'compactGrid',
   detailedGrid: 'detailedGrid',

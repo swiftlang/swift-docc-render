@@ -114,7 +114,7 @@ import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import { TopicStyles } from 'docc-render/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
@@ -242,7 +242,7 @@ export default {
     },
     topicSectionsStyle: {
       type: String,
-      default: TopicStyles.list,
+      default: TopicSectionsStyle.list,
     },
     sampleCodeDownload: {
       type: Object,
@@ -385,7 +385,7 @@ export default {
     shouldRenderTopicSection: ({
       topicSectionsStyle,
       topicSections,
-    }) => topicSections && topicSectionsStyle !== TopicStyles.hidden,
+    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden,
   },
   methods: {
     normalizePath(path) {

@@ -24,7 +24,7 @@
 <script>
 import Row from 'docc-render/components/ContentNode/Row.vue';
 import Column from 'docc-render/components/ContentNode/Column.vue';
-import { TopicStyles } from 'docc-render/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import TopicsLinkCardGridItem from './TopicsLinkCardGridItem.vue';
 
 export default {
@@ -37,12 +37,12 @@ export default {
     },
     topicStyle: {
       type: String,
-      default: TopicStyles.compactGrid,
-      validator: v => v === TopicStyles.compactGrid || v === TopicStyles.detailedGrid,
+      default: TopicSectionsStyle.compactGrid,
+      validator: v => v === TopicSectionsStyle.compactGrid || v === TopicSectionsStyle.detailedGrid,
     },
   },
   computed: {
-    compactCards: ({ topicStyle }) => topicStyle === TopicStyles.compactGrid,
+    compactCards: ({ topicStyle }) => topicStyle === TopicSectionsStyle.compactGrid,
   },
 };
 </script>

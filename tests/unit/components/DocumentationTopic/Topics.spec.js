@@ -10,7 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import Topics from 'docc-render/components/DocumentationTopic/Topics.vue';
-import { TopicStyles } from '@/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 
 const { TopicsTable } = Topics.components;
 
@@ -19,7 +19,7 @@ describe('Topics', () => {
     const wrapper = shallowMount(Topics, {
       propsData: {
         sections: [],
-        topicStyle: TopicStyles.list,
+        topicStyle: TopicSectionsStyle.list,
       },
     });
 
@@ -32,13 +32,13 @@ describe('Topics', () => {
       sections: [],
       title: 'Topics',
       wrapTitle: false,
-      topicStyle: TopicStyles.list,
+      topicStyle: TopicSectionsStyle.list,
     });
     table.setProps({ isSymbolDeprecated: true });
     expect(table.props('isSymbolDeprecated')).toBe(true);
     table.setProps({ isSymbolBeta: true });
     expect(table.props('isSymbolBeta')).toBe(true);
-    table.setProps({ topicStyle: TopicStyles.compactGrid });
-    expect(table.props('topicStyle')).toBe(TopicStyles.compactGrid);
+    table.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
+    expect(table.props('topicStyle')).toBe(TopicSectionsStyle.compactGrid);
   });
 });

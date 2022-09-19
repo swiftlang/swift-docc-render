@@ -10,7 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import DefaultImplementations from 'docc-render/components/DocumentationTopic/DefaultImplementations.vue';
-import { TopicStyles } from '@/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 
 const { TopicsTable } = DefaultImplementations.components;
 
@@ -42,7 +42,7 @@ describe('DefaultImplementations', () => {
       isSymbolBeta: false,
       title: 'Default Implementations',
       wrapTitle: true,
-      topicStyle: TopicStyles.list,
+      topicStyle: TopicSectionsStyle.list,
     });
   });
 });

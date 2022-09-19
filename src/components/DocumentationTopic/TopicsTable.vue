@@ -55,7 +55,7 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import { TopicStyles } from 'docc-render/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import ContentTable from './ContentTable.vue';
@@ -107,11 +107,11 @@ export default {
     },
     topicStyle: {
       type: String,
-      default: TopicStyles.list,
+      default: TopicSectionsStyle.list,
     },
   },
   computed: {
-    shouldRenderList: ({ topicStyle }) => topicStyle === TopicStyles.list,
+    shouldRenderList: ({ topicStyle }) => topicStyle === TopicSectionsStyle.list,
     sectionsWithTopics() {
       return this.sections.map(section => ({
         ...section,

@@ -13,7 +13,7 @@ import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
-import { TopicStyles } from '@/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import OnThisPageStickyContainer from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 
@@ -479,12 +479,12 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ topicSections, topicSectionsStyle: TopicStyles.detailedGrid });
+    wrapper.setProps({ topicSections, topicSectionsStyle: TopicSectionsStyle.detailedGrid });
 
     const topics = wrapper.find(Topics);
     expect(topics.exists()).toBe(true);
     expect(topics.props('sections')).toBe(topicSections);
-    expect(topics.props('topicStyle')).toBe(TopicStyles.detailedGrid);
+    expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
   });
 
   it('does not render the `Topics` if the `topicSectionsStyle` is `hidden`', () => {

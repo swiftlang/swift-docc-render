@@ -10,7 +10,7 @@
 
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import { shallowMount } from '@vue/test-utils';
-import { TopicStyles } from '@/constants/TopicStyles';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 import TopicsLinkCardGridItem from '@/components/DocumentationTopic/TopicsLinkCardGridItem.vue';
@@ -48,7 +48,7 @@ describe('TopicsLinkCardGrid', () => {
     const wrapper = createWrapper({
       propsData: {
         ...defaultProps,
-        topicStyle: TopicStyles.detailedGrid,
+        topicStyle: TopicSectionsStyle.detailedGrid,
       },
     });
     expect(wrapper.find(Row).props()).toEqual({
