@@ -69,14 +69,15 @@ export default {
   },
   methods: {
     onScroll: throttle(function onScroll() {
+      // if there are no sections, exit early
+      const len = this.onThisPageSections.length;
+      if (!len) return;
       // get the point at which we intercept, 1/3 of screen
       const { scrollY, innerHeight } = window;
       const { scrollHeight } = document.body;
       const isBottom = scrollY + innerHeight >= scrollHeight;
       const isTop = scrollY <= 0;
       const intersectionPoint = (innerHeight * 0.3) + scrollY;
-      const len = this.onThisPageSections.length;
-      if (!len) return;
       if (isTop || isBottom) {
         const index = isTop ? 0 : len - 1;
         this.store.setCurrentPageSection(this.onThisPageSections[index].anchor);
