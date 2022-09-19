@@ -17,9 +17,17 @@ export default {
     this.state.onThisPageSections = [];
     this.state.currentPageAnchor = null;
   },
+  /**
+   * Register a section for the OnThisPage navigation
+   * @param {{anchor: string, title:string, level: number}} section
+   */
   addOnThisPageSection(section) {
     this.state.onThisPageSections.push(section);
   },
+  /**
+   * Sets a section as current.
+   * @param {string} sectionAnchor
+   */
   setCurrentPageSection(sectionAnchor) {
     const i = this.state.onThisPageSections.findIndex(({ anchor }) => anchor === sectionAnchor);
     if (i === -1) return;

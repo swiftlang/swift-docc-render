@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <OnThisPageSection :anchor="anchor" :title="title">
+  <section>
     <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="[bodyParam]" :changes="bodyChanges" keyBy="key">
       <template slot="symbol" slot-scope="{ type, content, changes, name }">
@@ -77,13 +77,12 @@
         </template>
       </ParametersTable>
     </template>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 import WordBreak from 'docc-render/components/WordBreak.vue';
@@ -106,7 +105,6 @@ export default {
     WordBreak,
     ParameterAttributes,
     ContentNode,
-    OnThisPageSection,
     ParametersTable,
     LinkableHeading,
   },
