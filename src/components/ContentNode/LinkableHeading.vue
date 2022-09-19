@@ -54,27 +54,10 @@ export default {
       default: true,
     },
   },
-  computed: {
-    shouldRegisterOnThisPage({ registerOnThisPage, level, anchor }) {
-      return registerOnThisPage && level < 4 && anchor;
-    },
-  },
   inject: {
     isTargetIDE: {
       default: () => false,
     },
-    store: {
-      default: () => ({ addOnThisPageSection: () => {} }),
-    },
-  },
-  mounted() {
-    if (this.shouldRegisterOnThisPage) {
-      this.store.addOnThisPageSection({
-        anchor: this.anchor,
-        title: this.$el.textContent.trim(),
-        level: this.level,
-      });
-    }
   },
 };
 </script>
