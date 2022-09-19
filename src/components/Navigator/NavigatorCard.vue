@@ -55,23 +55,24 @@
             @update="handleScrollerUpdate"
           >
             <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
-                <NavigatorCardItem
-                  :item="item"
-                  :isRendered="active"
-                  :filter-pattern="filterPattern"
-                  :is-active="item.uid === activeUID"
-                  :is-bold="activePathMap[item.uid]"
-                  :expanded="openNodes[item.uid]"
-                  :api-change="apiChangesObject[item.path]"
-                  :isFocused="focusedIndex === index"
-                  :enableFocus="!externalFocusChange"
-                  :navigator-references="navigatorReferences"@toggle="toggle"
-                  @toggle-full="toggleFullTree"
-                  @toggle-siblings="toggleSiblings"
-                  @navigate="handleNavigationChange"
-                  @focus-parent="focusNodeParent"
-                />
-              </DynamicScrollerItem>
+              <NavigatorCardItem
+                :item="item"
+                :isRendered="active"
+                :filter-pattern="filterPattern"
+                :is-active="item.uid === activeUID"
+                :is-bold="activePathMap[item.uid]"
+                :expanded="openNodes[item.uid]"
+                :api-change="apiChangesObject[item.path]"
+                :isFocused="focusedIndex === index"
+                :enableFocus="!externalFocusChange"
+                :navigator-references="navigatorReferences"
+                @toggle="toggle"
+                @toggle-full="toggleFullTree"
+                @toggle-siblings="toggleSiblings"
+                @navigate="handleNavigationChange"
+                @focus-parent="focusNodeParent"
+              />
+            </DynamicScrollerItem>
           </DynamicScroller>
           <div aria-live="polite" class="visuallyhidden">
             {{ politeAriaLive }}
