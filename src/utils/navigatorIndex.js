@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -10,12 +10,11 @@
 
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 
-// eslint-disable-next-line import/prefer-default-export
 export function convertChildrenArrayToObject(children) {
   return children.reduce((all, current) => {
-    // eslint-disable-next-line no-param-reassign
-    all[current.uid] = current;
-    return all;
+    const child = all;
+    child[current.uid] = current;
+    return child;
   }, {});
 }
 
