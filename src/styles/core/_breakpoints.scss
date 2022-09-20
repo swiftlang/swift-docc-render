@@ -341,19 +341,20 @@ $breakpoint-attributes: (
 /// default breakpoint-content mixin.
 @mixin breakpoint-dynamic-sidebar-content {
   @include inTargetWeb {
-    max-width: 920px;
+    max-width: 820px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 80px;
     padding-right: 80px;
     box-sizing: border-box;
 
-    // make sure there is 120px space between the content and nav bar on xl and l
+    @media only screen and (min-width: 1500px) {
+      max-width: 920px;
+    }
+
     @include breakpoints-from(large) {
       box-sizing: unset;
-      padding-left: 120px;
-      padding-right: 120px;
-      margin-left: 0px;
+      margin-left: 0;
 
       // when the sidebar is hidden on desktop, center the content
       @include unify-selector('.sidebar-hidden', true) {

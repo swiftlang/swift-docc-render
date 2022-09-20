@@ -9,35 +9,29 @@
 -->
 
 <template>
-  <OnThisPageSection
-    anchor="parameters"
-    class="parameters"
-    title="Parameters"
-  >
+  <section class="parameters">
     <LinkableHeading anchor="parameters">Parameters</LinkableHeading>
     <dl>
       <template v-for="param in parameters">
         <dt class="param-name" :key="`${param.name}:name`">
-          <code>{{param.name}}</code>
+          <code>{{ param.name }}</code>
         </dt>
         <dd class="param-content" :key="`${param.name}:content`">
           <ContentNode :content="param.content" />
         </dd>
       </template>
     </dl>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 export default {
   name: 'Parameters',
   components: {
     ContentNode,
-    OnThisPageSection,
     LinkableHeading,
   },
   props: {

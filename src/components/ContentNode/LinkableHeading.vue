@@ -10,8 +10,8 @@
 
 <template>
   <component
-   :id="anchor"
-   :is="`h${level}`"
+    :id="anchor"
+    :is="`h${level}`"
   >
     <router-link
       v-if="anchor && !isTargetIDE"
@@ -21,7 +21,7 @@
       @click="handleFocusAndScroll(anchor)"
     >
       <slot />
-      <LinkIcon class="icon" aria-hidden="true"/>
+      <LinkIcon class="icon" aria-hidden="true" />
     </router-link>
     <template v-else>
       <slot />
@@ -49,17 +49,39 @@ export default {
       default: () => 2,
       validator: v => v >= 1 && v <= 6,
     },
+    registerOnThisPage: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  computed: {
+    shouldRegisterOnThisPage({ registerOnThisPage, level, anchor }) {
+      return registerOnThisPage && level < 4 && anchor;
+    },
   },
   inject: {
     isTargetIDE: {
       default: () => false,
     },
+    store: {
+      default: () => ({ addOnThisPageSection: () => {} }),
+    },
+  },
+  mounted() {
+    if (this.shouldRegisterOnThisPage) {
+      this.store.addOnThisPageSection({
+        anchor: this.anchor,
+        title: this.$el.textContent.trim(),
+        level: this.level,
+      });
+    }
   },
 };
 </script>
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
+
 $icon-margin: 7px;
 
 .header-anchor {

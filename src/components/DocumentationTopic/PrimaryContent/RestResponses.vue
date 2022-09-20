@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <OnThisPageSection :anchor="anchor" :title="title">
+  <section>
     <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="responses" :changes="propertyChanges" key-by="status">
       <template slot="symbol" slot-scope="{ status, type, reason, content, changes }">
@@ -46,14 +46,13 @@
         />
       </template>
     </ParametersTable>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 
 import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
 import ParametersTable from './ParametersTable.vue';
@@ -67,7 +66,6 @@ export default {
     PossiblyChangedMimetype,
     PossiblyChangedType,
     ContentNode,
-    OnThisPageSection,
     ParametersTable,
     LinkableHeading,
   },

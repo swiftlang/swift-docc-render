@@ -33,6 +33,7 @@ describe('ContentTableSection', () => {
     const title = div.find(LinkableHeading);
     expect(title.exists()).toBe(true);
     expect(title.props('level')).toBe(3);
+    expect(title.props('registerOnThisPage')).toBe(false);
     expect(title.classes('title')).toBe(true);
     expect(title.text()).toContain(propsData.title);
   });
