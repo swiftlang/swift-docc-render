@@ -15,10 +15,12 @@
     :isSymbolDeprecated="isSymbolDeprecated"
     :isSymbolBeta="isSymbolBeta"
     :sections="sections"
+    :topicStyle="topicStyle"
   />
 </template>
 
 <script>
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import TopicsTable from './TopicsTable.vue';
 
 export default {
@@ -28,6 +30,11 @@ export default {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,
     sections: TopicsTable.props.sections,
+    topicStyle: {
+      type: String,
+      required: true,
+      validator: v => Object.hasOwnProperty.call(TopicSectionsStyle, v),
+    },
   },
 };
 </script>
