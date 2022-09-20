@@ -10,6 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import CardCover from 'docc-render/components/CardCover.vue';
+import ImageAsset from 'docc-render/components/ImageAsset.vue';
 
 const lightVariant = {
   url: 'https://image.light',
@@ -39,23 +40,11 @@ const mountCover = ({ propsData, ...rest } = {}) => {
 };
 
 describe('CardCover', () => {
-  it('renders images for light/dark backgrounds', () => {
+  it('renders an `<ImageAsset>`', () => {
     const wrapper = mountCover();
-    const covers = wrapper.findAll('.card-cover');
-    expect(covers).toHaveLength(2);
-    expect(wrapper.find('.card-cover--light').attributes('style'))
-      .toContain(`background-image: url(${lightVariant.url});`);
-    expect(wrapper.find('.card-cover--dark').attributes('style'))
-      .toContain(`background-image: url(${darkVariant.url});`);
-  });
-
-  it('falls back to light image if dark variant is not available', () => {
-    const wrapper = mountCover({
-      propsData: {
-        variants: [lightVariant],
-      },
-    });
-    expect(wrapper.find('.card-cover--dark').attributes('style')).toContain(lightVariant.url);
+    const asset = wrapper.find(ImageAsset);
+    expect(asset.classes()).toContain('card-cover');
+    expect(asset.props('variants')).toEqual(defaultProps.variants);
   });
 
   it('exposes a default slot', () => {
