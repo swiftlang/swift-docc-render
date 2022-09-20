@@ -114,7 +114,7 @@ import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';

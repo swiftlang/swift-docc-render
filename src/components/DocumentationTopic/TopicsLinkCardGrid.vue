@@ -24,7 +24,7 @@
 <script>
 import Row from 'docc-render/components/ContentNode/Row.vue';
 import Column from 'docc-render/components/ContentNode/Column.vue';
-import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import TopicsLinkCardGridItem from './TopicsLinkCardGridItem.vue';
 
 export default {
