@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
@@ -22,6 +22,7 @@ import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import { flushPromises } from '../../../test-utils';
+import OnThisPageRegistrator from '@/components/DocumentationTopic/OnThisPageRegistrator';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/utils/FocusTrap');
@@ -543,6 +544,14 @@ describe('DocumentationTopic', () => {
       },
       enableOnThisPageNav: false,
       topicSectionsStyle: TopicSectionsStyle.list, // default value
+    });
+  });
+
+  it('renders a `OnThisPageRegistrator` component when data is ready', () => {
+    expect(wrapper.find(OnThisPageRegistrator).exists()).toBe(false);
+    wrapper.setData({ topicData });
+    expect(wrapper.find(OnThisPageRegistrator).props()).toEqual({
+      topicData,
     });
   });
 

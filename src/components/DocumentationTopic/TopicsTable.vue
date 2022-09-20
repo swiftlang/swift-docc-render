@@ -21,7 +21,6 @@
           :level="3"
           :anchor="section.anchor"
           :class="className"
-          :register-on-this-page="false"
         >
           <WordBreak>{{ section.title }}</WordBreak>
         </LinkableHeading>

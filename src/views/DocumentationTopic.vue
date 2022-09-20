@@ -74,6 +74,7 @@
             :enableOnThisPageNav="enableOnThisPageNav"
           />
         </component>
+        <OnThisPageRegistrator :topicData="topicData" />
       </template>
     </CodeTheme>
   </div>
@@ -103,12 +104,8 @@ import StaticContentWidth from 'docc-render/components/DocumentationTopic/Static
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
-import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
-import {
-  PrimaryContentSectionAnchors,
-  MainContentSectionAnchors,
-} from 'docc-render/constants/ContentSectionAnchors';
-import { anchorize } from 'docc-render/utils/strings';
+import OnThisPageRegistrator
+  from 'docc-render/components/DocumentationTopic/OnThisPageRegistrator.vue';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -118,6 +115,7 @@ export default {
   name: 'DocumentationTopicView',
   constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_HIDDEN_ON_LARGE_KEY },
   components: {
+    OnThisPageRegistrator,
     Navigator,
     AdjustableSidebarWidth,
     StaticContentWidth,
@@ -341,57 +339,6 @@ export default {
     toggleMobileSidenav(value = !this.sidenavVisibleOnMobile) {
       this.sidenavVisibleOnMobile = value;
     },
-    extractOnThisPageSections(topicData) {
-      const {
-        primaryContentSections,
-        topicSections,
-        defaultImplementationsSections,
-        relationshipsSections,
-        seeAlsoSections,
-      } = topicData;
-      if (primaryContentSections) {
-        primaryContentSections.forEach((section) => {
-          switch (section.kind) {
-          case SectionKind.content:
-            section.content.forEach((subSection) => {
-              if (subSection.type === 'heading') {
-                this.store.addOnThisPageSection({
-                  title: subSection.text,
-                  anchor: subSection.anchor || anchorize(subSection.title),
-                  level: subSection.level,
-                });
-              }
-            });
-            break;
-          case SectionKind.properties:
-          case SectionKind.restBody:
-          case SectionKind.restCookies:
-          case SectionKind.restEndpoint:
-          case SectionKind.restHeaders:
-          case SectionKind.restParameters:
-          case SectionKind.restResponses:
-            this.store.addOnThisPageSection({
-              title: section.title, anchor: anchorize(section.title), level: 2,
-            });
-            break;
-          default:
-            this.store.addOnThisPageSection(PrimaryContentSectionAnchors[section.kind]);
-          }
-        });
-      }
-      if (topicSections) {
-        this.store.addOnThisPageSection(MainContentSectionAnchors.topics);
-      }
-      if (defaultImplementationsSections) {
-        this.store.addOnThisPageSection(MainContentSectionAnchors.defaultImplementations);
-      }
-      if (relationshipsSections) {
-        this.store.addOnThisPageSection(MainContentSectionAnchors.relationships);
-      }
-      if (seeAlsoSections) {
-        this.store.addOnThisPageSection(MainContentSectionAnchors.seeAlso);
-      }
-    },
   },
   mounted() {
     this.$bridge.on('contentUpdate', (data) => {
@@ -447,11 +394,10 @@ export default {
     this.store.reset();
   },
   watch: {
-    topicData(value) {
+    topicData() {
       this.$nextTick(() => {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
-        this.extractOnThisPageSections(value);
       });
     },
   },

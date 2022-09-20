@@ -49,10 +49,6 @@ export default {
       default: () => 2,
       validator: v => v >= 1 && v <= 6,
     },
-    registerOnThisPage: {
-      type: Boolean,
-      default: true,
-    },
   },
   inject: {
     isTargetIDE: {

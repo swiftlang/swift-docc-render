@@ -16,7 +16,6 @@
           :level="3"
           :class="className"
           :anchor="anchorComputed"
-          :register-on-this-page="false"
         >{{ title }}</LinkableHeading>
       </slot>
     </div>
