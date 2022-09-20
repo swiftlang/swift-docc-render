@@ -41,6 +41,7 @@
                     :error-fetching="slotProps.errorFetching"
                     :api-changes="slotProps.apiChanges"
                     :references="topicProps.references"
+                    :navigator-references="slotProps.references"
                     :scrollLockID="scrollLockID"
                     :breakpoint="breakpoint"
                     @close="handleToggleSidenav(breakpoint)"
@@ -83,6 +84,7 @@
               :isSymbolDeprecated="isSymbolDeprecated"
               :isSymbolBeta="isSymbolBeta"
               :languagePaths="languagePaths"
+              :enableOnThisPageNav="enableOnThisPageNav"
             />
           </component>
        </template>
@@ -199,11 +201,13 @@ export default {
           role,
           symbolKind = '',
           remoteSource,
+          images: pageImages = [],
         } = {},
         primaryContentSections,
         relationshipsSections,
         references = {},
         sampleCodeDownload,
+        topicSectionsStyle,
         topicSections,
         seeAlsoSections,
         variantOverrides,
@@ -229,11 +233,13 @@ export default {
         sampleCodeDownload,
         title,
         topicSections,
+        topicSectionsStyle,
         seeAlsoSections,
         variantOverrides,
         symbolKind,
         tags: tags.slice(0, 1), // make sure we only show the first tag
         remoteSource,
+        pageImages,
       };
     },
     // The `hierarchy.paths` array will contain zero or more subarrays, each
@@ -308,6 +314,9 @@ export default {
       compareVersions(
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
+    ),
+    enableOnThisPageNav: ({ isTargetIDE, store }) => (
+      !isTargetIDE && store.state.onThisPageSections.length > 2
     ),
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator

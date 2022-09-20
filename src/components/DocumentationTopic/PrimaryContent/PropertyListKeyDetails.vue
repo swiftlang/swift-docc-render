@@ -9,19 +9,15 @@
 -->
 
 <template>
-  <OnThisPageSection
-    anchor="details"
-    class="details"
-    title="Details"
-  >
-    <h2>Details</h2>
+  <section class="details">
+    <LinkableHeading anchor="details">Details</LinkableHeading>
     <dl>
       <template v-if="isSymbol">
         <dt class="detail-type" :key="`${details.name}:name`">
           Name
         </dt>
         <dd class="detail-content" :key="`${details.ideTitle}:content`">
-          {{details.ideTitle}}
+          {{ details.ideTitle }}
         </dd>
       </template>
       <template v-if="isTitle">
@@ -39,18 +35,19 @@
         <PropertyListKeyType :types="details.value" />
       </dd>
     </dl>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import PropertyListKeyType from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import PropertyListKeyType
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 export default {
   name: 'PropertyListKeyDetails',
   components: {
     PropertyListKeyType,
-    OnThisPageSection,
+    LinkableHeading,
   },
   props: {
     details: {

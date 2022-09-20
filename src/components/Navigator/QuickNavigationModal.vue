@@ -70,7 +70,7 @@
             >
               <div class="symbol-info">
                 <div class="symbol-name">
-                  <NavigatorLeafIcon
+                  <TopicTypeIcon
                     class="navigator-icon"
                     :type="symbol.type"
                   />
@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
 import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
@@ -136,7 +136,7 @@ export default {
     FilterInput,
     GenericModal,
     MagnifierIcon,
-    NavigatorLeafIcon,
+    TopicTypeIcon,
     QuickNavigationHighlighter,
     Reference,
   },

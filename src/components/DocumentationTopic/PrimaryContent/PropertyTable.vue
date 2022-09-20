@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+  <section>
+    <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="properties" :changes="propertyChanges" class="property-table">
       <template slot="symbol" slot-scope="{ name, type, content, changes, deprecated }">
         <div class="property-name" :class="{ deprecated: deprecated }">
@@ -55,15 +55,15 @@
         <ParameterAttributes :attributes="attributes" :changes="changes.attributes" />
       </template>
     </ParametersTable>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
 import Badge from 'docc-render/components/Badge.vue';
 import ParametersTable from './ParametersTable.vue';
@@ -81,8 +81,8 @@ export default {
     PossiblyChangedType,
     ParameterAttributes,
     ContentNode,
-    OnThisPageSection,
     ParametersTable,
+    LinkableHeading,
   },
   props: {
     title: {

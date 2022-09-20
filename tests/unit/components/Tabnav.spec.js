@@ -82,4 +82,24 @@ describe("Tabnav", () => {
       .trigger("click");
     expect(wrapper.emitted("input")).toEqual([["two"]]);
   });
+
+  it('applies a position class', () => {
+    const wrapper = shallowMount(Tabnav, {
+      propsData: {
+        ...propsData,
+        position: 'center',
+      },
+    });
+    expect(wrapper.find('.tabnav').classes()).toContain('tabnav--center');
+  });
+
+  it('applies a `vertical` class', () => {
+    const wrapper = shallowMount(Tabnav, {
+      propsData: {
+        ...propsData,
+        vertical: true,
+      },
+    });
+    expect(wrapper.find('.tabnav').classes()).toContain('tabnav--vertical');
+  });
 });

@@ -144,6 +144,7 @@ Object {
   "flatChildren": Array [],
   "isFetching": true,
   "isFetchingAPIChanges": false,
+  "references": Object {},
   "technology": undefined,
 }
 `;
@@ -155,6 +156,7 @@ Object {
   "flatChildren": Array [],
   "isFetching": true,
   "isFetchingAPIChanges": false,
+  "references": Object {},
   "technology": undefined,
 }
 `;

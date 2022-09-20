@@ -17,6 +17,7 @@ import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
@@ -33,10 +34,13 @@ const TechnologyWithChildren = {
   children: [],
 };
 
+const navigatorReferences = { foo: {} };
+
 jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
   interfaceLanguages: {
     [Language.swift.key.url]: [TechnologyWithChildren, { path: 'another/technology' }],
   },
+  references: navigatorReferences,
 });
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
@@ -201,6 +205,7 @@ describe('DocumentationTopic', () => {
       apiChanges: null,
       allowHiding: true,
       flatChildren: [],
+      navigatorReferences: {},
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -215,6 +220,7 @@ describe('DocumentationTopic', () => {
       apiChanges: null,
       allowHiding: true,
       flatChildren: [],
+      navigatorReferences,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
@@ -535,7 +541,44 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
+      enableOnThisPageNav: false,
+      topicSectionsStyle: TopicSectionsStyle.list, // default value
     });
+  });
+
+  it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
+    wrapper.destroy();
+    wrapper = shallowMount(DocumentationTopic, {
+      mocks,
+      provide: { isTargetIDE: true },
+      stubs: {
+        // renders sidebar on a small device
+        AdjustableSidebarWidth: AdjustableSidebarWidthSmallStub,
+        NavigatorDataProvider,
+      },
+    });
+    wrapper.setData({ topicData });
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+  });
+
+  it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
+    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    wrapper.setData({ store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
+    await flushPromises();
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
+  });
+
+  it('passes `topicSectionsStyle`', () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        topicSectionsStyle: TopicSectionsStyle.detailedGrid,
+      },
+    });
+
+    const topic = wrapper.find(Topic);
+    expect(topic.props('topicSectionsStyle')).toEqual(TopicSectionsStyle.detailedGrid);
   });
 
   it('provides an empty languagePaths, even if no variants', () => {

@@ -19,8 +19,8 @@ import DeclarationSourceLink
 
 const {
   ConditionalConstraints,
-  OnThisPageSection,
   DeclarationGroup,
+  LinkableHeading,
 } = Declaration.components;
 
 const { ChangeTypes } = Declaration.constants;
@@ -69,22 +69,14 @@ describe('Declaration', () => {
     wrapper = shallowMount(Declaration, { propsData, provide: provideFactory() });
   });
 
-  it('renders an `OnThisPageSection`', () => {
-    expect(wrapper.is('.declaration')).toBe(true);
-
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.classes('declaration')).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: 'declaration',
-      title: 'Declaration',
-    });
+  it('renders an `section.declaration`', () => {
+    expect(wrapper.is('section.declaration')).toBe(true);
   });
 
-  it('renders an h2 title', () => {
-    const h2 = wrapper.find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe('Declaration');
+  it('renders an h2 section title', () => {
+    const sectionTitle = wrapper.find(LinkableHeading);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.text()).toContain('Declaration');
   });
 
   it('renders 1 `DeclarationGroup` and 0 labels without multiple declarations', () => {

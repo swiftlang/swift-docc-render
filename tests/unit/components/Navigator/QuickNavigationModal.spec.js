@@ -10,7 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import FilterInput from '@/components/Filter/FilterInput.vue';
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from '@/components/TopicTypeIcon.vue';
 import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHighlighter.vue';
 import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
@@ -164,10 +164,10 @@ describe('QuickNavigationModal', () => {
       debouncedInput: inputValue,
     });
     const matchWrapper = wrapper.findAll('.quick-navigation__symbol-match');
-    expect(matchWrapper.at(0).find(NavigatorLeafIcon).exists()).toBe(true);
-    expect(matchWrapper.at(1).find(NavigatorLeafIcon).exists()).toBe(true);
-    expect(matchWrapper.at(0).find(NavigatorLeafIcon).props().type).toBe(filteredSymbols[0].type);
-    expect(matchWrapper.at(1).find(NavigatorLeafIcon).props().type).toBe(filteredSymbols[1].type);
+    expect(matchWrapper.at(0).find(TopicTypeIcon).exists()).toBe(true);
+    expect(matchWrapper.at(1).find(TopicTypeIcon).exists()).toBe(true);
+    expect(matchWrapper.at(0).find(TopicTypeIcon).props().type).toBe(filteredSymbols[0].type);
+    expect(matchWrapper.at(1).find(TopicTypeIcon).props().type).toBe(filteredSymbols[1].type);
   });
 
   it('it renders a symbol match with the corresponding symbol title', () => {

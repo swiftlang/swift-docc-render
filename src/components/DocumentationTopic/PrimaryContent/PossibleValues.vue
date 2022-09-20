@@ -9,29 +9,33 @@
 -->
 
 <template>
-  <OnThisPageSection anchor="possibleValues" title="PossibleValues">
-    <h2>Possible Values</h2>
+  <section>
+    <LinkableHeading anchor="possibleValues">Possible Values</LinkableHeading>
     <dl class="datalist">
       <template v-for="value in values">
         <dt class="param-name" :key="`${value.name}:name`">
-          <WordBreak tag="code">{{value.name}}</WordBreak>
+          <WordBreak tag="code">{{ value.name }}</WordBreak>
         </dt>
         <dd v-if="value.content" class="value-content" :key="`${value.name}:content`">
           <ContentNode :content="value.content" />
         </dd>
       </template>
     </dl>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 export default {
   name: 'PossibleValues',
-  components: { ContentNode, OnThisPageSection, WordBreak },
+  components: {
+    ContentNode,
+    LinkableHeading,
+    WordBreak,
+  },
   props: {
     values: {
       type: Array,

@@ -126,6 +126,10 @@ const objectiveCIndexOne = {
   children: [1],
 };
 
+const references = {
+  foo: { bar: 'bar' },
+};
+
 const response = {
   interfaceLanguages: {
     [Language.swift.key.url]: [
@@ -136,6 +140,7 @@ const response = {
       objectiveCIndexOne,
     ],
   },
+  references,
 };
 
 fetchIndexPathsData.mockResolvedValue(response);
@@ -178,6 +183,7 @@ describe('NavigatorDataProvider', () => {
       technology: swiftIndexOne,
       errorFetching: false,
       flatChildren,
+      references,
     });
   });
 
@@ -201,6 +207,7 @@ describe('NavigatorDataProvider', () => {
       technology: swiftIndexOne,
       errorFetching: false,
       flatChildren,
+      references,
     });
   });
 
@@ -218,6 +225,7 @@ describe('NavigatorDataProvider', () => {
       technology: undefined,
       errorFetching: true,
       flatChildren: [],
+      references: {},
     });
   });
 
@@ -245,6 +253,7 @@ describe('NavigatorDataProvider', () => {
         depth: 0,
         childUIDs: [],
       }],
+      references,
     });
   });
 
@@ -254,6 +263,7 @@ describe('NavigatorDataProvider', () => {
       interfaceLanguages: {
         [Language.swift.key.url]: response.interfaceLanguages[Language.swift.key.url],
       },
+      references,
     });
     createWrapper({
       propsData: {
@@ -270,6 +280,7 @@ describe('NavigatorDataProvider', () => {
       isFetching: false,
       technology: swiftIndexOne,
       flatChildren,
+      references,
     });
   });
 
@@ -289,6 +300,7 @@ describe('NavigatorDataProvider', () => {
       isFetching: false,
       technology: undefined,
       flatChildren: [],
+      references,
     });
   });
 
@@ -304,6 +316,7 @@ describe('NavigatorDataProvider', () => {
       technology: undefined,
       errorFetching: false,
       flatChildren: [],
+      references: undefined,
     });
   });
 
