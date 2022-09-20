@@ -11,7 +11,7 @@
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
 import { waitFrames } from 'docc-render/utils/loading';
@@ -62,7 +62,11 @@ describe('NavigatorCardItem', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
-    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(defaultProps.item.type);
+    expect(wrapper.find(TopicTypeIcon).props()).toEqual({
+      type: defaultProps.item.type,
+      imageOverride: null,
+      withColors: false,
+    });
     const leafLink = wrapper.find('.leaf-link');
     expect(leafLink.is(Reference)).toBe(true);
     expect(leafLink.props('url')).toEqual(defaultProps.item.path);
@@ -73,6 +77,25 @@ describe('NavigatorCardItem', () => {
     });
     expect(wrapper.find('.navigator-card-item').attributes('id'))
       .toBe(`container-${defaultProps.item.uid}`);
+  });
+
+  it('renders the NavigationCardItem with an icon override', () => {
+    const navigatorReferences = {
+      iconRef: {
+        identifier: 'iconRef',
+        variants: [],
+      },
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        navigatorReferences,
+        item: {
+          ...defaultProps.item,
+          icon: navigatorReferences.iconRef.identifier,
+        },
+      },
+    });
+    expect(wrapper.find(TopicTypeIcon).props('imageOverride')).toEqual(navigatorReferences.iconRef);
   });
 
   it('renders a deprecated badge when item is deprecated', () => {
@@ -287,7 +310,7 @@ describe('NavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find(NavigatorLeafIcon).exists()).toBe(false);
+    expect(wrapper.find(TopicTypeIcon).exists()).toBe(false);
     expect(wrapper.find('.navigator-icon').classes())
       .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
   });

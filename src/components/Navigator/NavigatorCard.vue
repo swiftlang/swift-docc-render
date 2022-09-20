@@ -70,6 +70,7 @@
               :api-change="apiChangesObject[item.path]"
               :isFocused="focusedIndex === index"
               :enableFocus="!externalFocusChange"
+              :navigator-references="navigatorReferences"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
@@ -257,6 +258,10 @@ export default {
     allowHiding: {
       type: Boolean,
       default: true,
+    },
+    navigatorReferences: {
+      type: Object,
+      default: () => {},
     },
   },
   mixins: [

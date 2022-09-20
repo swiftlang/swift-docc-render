@@ -40,6 +40,7 @@ export default {
       navigationIndex: {
         [Language.swift.key.url]: [],
       },
+      navigationReferences: {},
       diffs: null,
     };
   },
@@ -73,8 +74,9 @@ export default {
     async fetchIndexData() {
       try {
         this.isFetching = true;
-        const { interfaceLanguages } = await fetchIndexPathsData();
+        const { interfaceLanguages, references } = await fetchIndexPathsData();
         this.navigationIndex = Object.freeze(interfaceLanguages);
+        this.navigationReferences = Object.freeze(references);
       } catch (e) {
         this.errorFetching = true;
       } finally {
@@ -89,6 +91,7 @@ export default {
       errorFetching: this.errorFetching,
       isFetchingAPIChanges: this.isFetchingAPIChanges,
       apiChanges: this.diffs,
+      references: this.navigationReferences,
     });
   },
 };
