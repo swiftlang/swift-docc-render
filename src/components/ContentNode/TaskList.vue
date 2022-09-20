@@ -18,12 +18,19 @@
 </template>
 
 <script>
+const CHECKED_PROP = 'checked';
+
 export default {
   name: 'TaskList',
   props: {
     tasks: {
       required: true,
       type: Array,
+      // A task list is an unordered list that has at least one item with a
+      // boolean `checked` property
+      validator: list => list.some(item => (
+        Object.hasOwnProperty.call(item, CHECKED_PROP)
+      )),
     },
   },
 };

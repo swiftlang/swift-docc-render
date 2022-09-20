@@ -114,11 +114,6 @@ function renderNode(createElement, references) {
     ))
   ));
 
-  // a task list is an unordered list where some item has a `checked` flag
-  const isTaskList = node => node.items.some(item => (
-    Object.prototype.hasOwnProperty.call(item, 'checked')
-  ));
-
   const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none) => {
     switch (headerStyle) {
     // thead with first row and th for each first row cell
@@ -285,7 +280,8 @@ function renderNode(createElement, references) {
           renderChildren(definition.content)
         )),
       ]));
-    case BlockType.unorderedList:
+    case BlockType.unorderedList: {
+      const isTaskList = list => TaskList.props.tasks.validator(list.items);
       return isTaskList(node) ? (
         createElement(TaskList, {
           props: {
@@ -300,6 +296,7 @@ function renderNode(createElement, references) {
           renderListItems(node.items)
         ))
       );
+    }
     case BlockType.dictionaryExample: {
       const props = {
         example: node.example,
