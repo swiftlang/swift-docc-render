@@ -13,6 +13,8 @@ import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import OnThisPageNav from '@/components/OnThisPageNav.vue';
+import OnThisPageStickyContainer from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 
 const {
   Abstract,
@@ -644,6 +646,13 @@ describe('DocumentationTopic', () => {
       },
     });
     expect(wrapper.contains('.above-hero-content')).toBe(true);
+  });
+
+  it('renders `OnThisPageNav` component, if enabled via prop', () => {
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(false);
+    wrapper.setProps({ enableOnThisPageNav: true });
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(true);
+    expect(wrapper.find(OnThisPageStickyContainer).exists()).toBe(true);
   });
 
   describe('lifecycle hooks', () => {

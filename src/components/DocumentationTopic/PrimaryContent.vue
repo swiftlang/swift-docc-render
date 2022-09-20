@@ -22,9 +22,9 @@
 <script>
 import PossibleValues from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
 import RestEndpoint from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
+import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import Declaration from './PrimaryContent/Declaration.vue';
 import PropertyListKeyDetails from './PrimaryContent/PropertyListKeyDetails.vue';
-import GenericContent from './PrimaryContent/GenericContent.vue';
 import Parameters from './PrimaryContent/Parameters.vue';
 import PropertyTable from './PrimaryContent/PropertyTable.vue';
 import RestBody from './PrimaryContent/RestBody.vue';
@@ -50,7 +50,7 @@ export default {
   name: 'PrimaryContent',
   components: {
     Declaration,
-    GenericContent,
+    ContentNode,
     Parameters,
     PropertyListKeyDetails,
     PropertyTable,
@@ -90,7 +90,7 @@ export default {
   methods: {
     componentFor(section) {
       return {
-        [SectionKind.content]: GenericContent,
+        [SectionKind.content]: ContentNode,
         [SectionKind.declarations]: Declaration,
         [SectionKind.details]: PropertyListKeyDetails,
         [SectionKind.parameters]: Parameters,

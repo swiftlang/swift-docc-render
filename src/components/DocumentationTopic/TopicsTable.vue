@@ -17,7 +17,12 @@
       :anchor="section.anchor"
     >
       <template v-if="wrapTitle" slot="title">
-        <LinkableHeading :level="3" :anchor="section.anchor" class="title">
+        <LinkableHeading
+          :level="3"
+          :anchor="section.anchor"
+          class="title"
+          :register-on-this-page="false"
+        >
           <WordBreak>{{ section.title }}</WordBreak>
         </LinkableHeading>
       </template>
