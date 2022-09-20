@@ -32,10 +32,25 @@ const defaultProps = {
 
 const iconRef = {
   identifier: 'iconRef',
-  variants: [{ url: 'path/to/icon' }],
+  variants: [{
+    url: 'path/to/icon',
+    traits: [
+      '2x',
+      'light',
+    ],
+  }],
 };
 const references = {
   iconRef,
+  'card-reference': {
+    variants: [{
+      url: '/path/to/card',
+      traits: [
+        '2x',
+        'light',
+      ],
+    }],
+  },
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => mount(TopicsLinkCardGridItem, {
