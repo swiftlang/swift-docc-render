@@ -43,6 +43,9 @@ describe('Card', () => {
   const mountCard = options => shallowMount(Card, {
     propsData,
     provide,
+    slots: {
+      default: '<div>Default content</div>',
+    },
     ...options,
   });
 
@@ -71,6 +74,20 @@ describe('Card', () => {
     expect(title.find('.visuallyhidden').exists()).toBe(false);
 
     expect(card.find('.details').attributes('aria-hidden')).toBe('true');
+  });
+
+  it('does not add invisible component IDs in the AX tags', () => {
+    const card = mountCard({
+      propsData: {
+        ...propsData,
+        eyebrow: '',
+      },
+      slots: {
+        default: '',
+      },
+    });
+    expect(card.attributes('aria-labelledby')).not.toContain('card_eyebrow_');
+    expect(card.attributes('aria-describedby')).toBeFalsy();
   });
 
   it('renders `.link` with an `DiagonalArrowIcon` if external', () => {
@@ -199,7 +216,11 @@ describe('Card', () => {
   });
 
   it('does not render the card-content, if no default slot provided', async () => {
-    const wrapper = mountCard();
+    const wrapper = mountCard({
+      slots: {
+        default: '',
+      },
+    });
     await flushPromises();
     expect(wrapper.find('.card-content').exists()).toBe(false);
   });

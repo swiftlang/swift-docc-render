@@ -81,9 +81,11 @@ export default {
     titleId: ({ _uid }) => `card_title_${_uid}`,
     contentId: ({ _uid }) => `card_content_${_uid}`,
     eyebrowId: ({ _uid }) => `card_eyebrow_${_uid}`,
-    linkAriaTags: ({ titleId, eyebrowId, contentId }) => ({
-      'aria-labelledby': `${titleId} ${eyebrowId}`,
-      'aria-describedby': `${contentId}`,
+    linkAriaTags: ({
+      titleId, eyebrowId, contentId, eyebrow, $slots,
+    }) => ({
+      'aria-labelledby': titleId.concat(eyebrow ? ` ${eyebrowId}` : ''),
+      'aria-describedby': $slots.default ? `${contentId}` : null,
     }),
     classes: ({
       size,
