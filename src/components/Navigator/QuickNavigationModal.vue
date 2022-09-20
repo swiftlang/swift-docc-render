@@ -127,6 +127,7 @@ const ModalStyleProps = {
   height: 'fit-content',
   flex: 'auto',
   margin: '10rem 1rem',
+  overflow: 'visible',
 };
 
 export default {
@@ -291,12 +292,6 @@ $filter-padding: rem(15px);
     border-radius: $small-border-radius + 1;
     > * {
       --input-text: var(--color-figure-gray-secondary);
-    }
-  }
-  &__filter {
-    overflow: hidden;
-    > * {
-      --input-border-color: var(--color-fill);
     }
   }
   &__magnifier-icon-container {
