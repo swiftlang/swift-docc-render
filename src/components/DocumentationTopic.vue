@@ -77,7 +77,7 @@
             :sections="topicSections"
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
-        :topicStyle="topicSectionsStyle"
+            :topicStyle="topicSectionsStyle"
           />
           <DefaultImplementations
             v-if="defaultImplementationsSections"
