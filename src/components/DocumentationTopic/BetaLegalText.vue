@@ -54,9 +54,5 @@ export default {
   &-content /deep/ p {
     margin-bottom: 10px;
   }
-
-  .contenttable + & {
-    background-color: var(--color-fill);
-  }
 }
 </style>
