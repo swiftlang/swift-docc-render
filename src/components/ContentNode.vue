@@ -26,6 +26,7 @@ import BlockVideo from './ContentNode/BlockVideo.vue';
 import Column from './ContentNode/Column.vue';
 import Row from './ContentNode/Row.vue';
 import TabNavigator from './ContentNode/TabNavigator.vue';
+import TaskList from './ContentNode/TaskList.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -107,29 +108,16 @@ function renderNode(createElement, references) {
     renderNode(createElement, references),
   );
 
-  const renderListItems = items => items.map((item) => {
-    const itemContent = [];
-    if (item.checked === true) {
-      const props = {
-        attrs: {
-          type: 'checkbox',
-          checked: true,
-          disabled: true,
-        },
-      };
-      itemContent.push(createElement('input', props, []));
-    } else if (item.checked === false) {
-      const props = {
-        attrs: {
-          type: 'checkbox',
-          disabled: true,
-        },
-      };
-      itemContent.push(createElement('input', props, []));
-    }
-    itemContent.push(...renderChildren(item.content));
-    return createElement('li', {}, itemContent);
-  });
+  const renderListItems = items => items.map(item => (
+    createElement('li', {}, (
+      renderChildren(item.content)
+    ))
+  ));
+
+  // a task list is an unordered list where some item has a `checked` flag
+  const isTaskList = node => node.items.some(item => (
+    Object.prototype.hasOwnProperty.call(item, 'checked')
+  ));
 
   const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none) => {
     switch (headerStyle) {
@@ -298,9 +286,20 @@ function renderNode(createElement, references) {
         )),
       ]));
     case BlockType.unorderedList:
-      return createElement('ul', {}, (
-        renderListItems(node.items)
-      ));
+      return isTaskList(node) ? (
+        createElement(TaskList, {
+          props: {
+            tasks: node.items,
+          },
+          scopedSlots: {
+            task: slotProps => renderChildren(slotProps.task.content),
+          },
+        })
+      ) : (
+        createElement('ul', {}, (
+          renderListItems(node.items)
+        ))
+      );
     case BlockType.dictionaryExample: {
       const props = {
         example: node.example,

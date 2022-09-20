@@ -108,12 +108,6 @@ li li {
   font-size: 1em;
 }
 
-// make sure that task list checkboxes don't push the rest of the content to the next line
-li input[type="checkbox"] + p {
-  display: inline-block;
-  margin-left: 0.5em;
-}
-
 //
 // Links
 //
