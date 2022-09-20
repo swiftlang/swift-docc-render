@@ -140,7 +140,7 @@ export default {
       default() {
         return {
           reset() {},
-          state: { onThisPageSections: [] },
+          state: {},
         };
       },
     },
@@ -313,9 +313,6 @@ export default {
         (count, section) => count + section.identifiers.length,
         0,
       );
-    },
-    onThisPageSections() {
-      return this.topicState.onThisPageSections;
     },
     hasAvailability: ({ platforms, technologies }) => (
       (platforms || []).length || (technologies || []).length
