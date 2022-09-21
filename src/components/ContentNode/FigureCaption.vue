@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <figcaption class="caption">
-    <strong>{{ title }}</strong>&nbsp;<slot />
+  <figcaption class="caption" :class="{ centered }">
+    <strong v-if="title">{{ title }}</strong>&nbsp;<slot />
   </figcaption>
 </template>
 
@@ -20,7 +20,11 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: false,
+    },
+    centered: {
+      type: Boolean,
+      default: false,
     },
   },
 };
@@ -31,6 +35,14 @@ export default {
 
 .caption {
   @include font-styles(documentation-figcaption);
+
+  &:last-child {
+    margin-top: $stacked-margin-xlarge;
+  }
+
+  &.centered {
+    text-align: center;
+  }
 }
 
 /deep/ p {

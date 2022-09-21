@@ -17,7 +17,11 @@
       class="link"
       ref="apiChangesDiff"
     >
-      <TopicLinkBlockIcon v-if="topic.role && !change" :role="topic.role" />
+      <TopicLinkBlockIcon
+        v-if="topic.role && !change"
+        :role="topic.role"
+        :imageOverride="references[iconOverride]"
+      />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
       <span v-if="change" class="visuallyhidden">- {{ changeName }}</span>
@@ -66,7 +70,8 @@ import WordBreak from 'docc-render/components/WordBreak.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import TopicLinkBlockIcon from 'docc-render/components/DocumentationTopic/TopicLinkBlockIcon.vue';
 import DecoratedTopicTitle from 'docc-render/components/DocumentationTopic/DecoratedTopicTitle.vue';
-import ConditionalConstraints from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
+import ConditionalConstraints
+  from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
 import RequirementMetadata
 
   from 'docc-render/components/DocumentationTopic/Description/RequirementMetadata.vue';
@@ -98,7 +103,7 @@ export default {
     RequirementMetadata,
     ConditionalConstraints,
   },
-  inject: ['store'],
+  inject: ['store', 'references'],
   mixins: [getAPIChanges, APIChangesMultipleLines],
   constants: {
     ReferenceType,
@@ -208,6 +213,10 @@ export default {
     ),
     // pick only the first available tag
     tags: ({ topic }) => (topic.tags || []).slice(0, 1),
+    iconOverride: ({ topic: { images = [] } }) => {
+      const icon = images.find(({ type }) => type === 'icon');
+      return icon ? icon.identifier : null;
+    },
   },
 };
 </script>

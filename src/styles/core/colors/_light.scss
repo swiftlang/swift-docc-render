@@ -190,4 +190,9 @@
   --color-tutorial-hero-text: #{dark-color(figure-gray)};
   --color-tutorial-hero-background: #{dark-color(fill)};
   --color-navigator-item-hover: #{change-color(light-color(fill-blue), $alpha: 0.05)};
+
+  --color-card-background: var(--color-fill);
+  --color-card-content-text: var(--color-figure-gray);
+  --color-card-eyebrow: var(--color-figure-gray-secondary-alt);
+  --color-card-shadow: #{change-color(dark-color(fill), $alpha: 0.04)};
 }

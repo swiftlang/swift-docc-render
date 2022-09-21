@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <nav class="tabnav">
+  <nav
+    class="tabnav"
+    :class="{ [`tabnav--${position}`]: position, 'tabnav--vertical': vertical }"
+  >
     <ul class="tabnav-items">
       <slot />
     </ul>
@@ -35,8 +38,17 @@ export default {
     };
   },
   props: {
-    value: {
+    position: {
       type: String,
+      required: false,
+      validator: v => new Set(['start', 'center', 'end']).has(v),
+    },
+    vertical: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
+      type: [String, Number],
       required: true,
     },
   },
@@ -56,10 +68,32 @@ $-tabnav-bottom-margin: rem(25px);
 
 .tabnav {
   margin: $-tabnav-top-margin 0 $-tabnav-bottom-margin 0;
+  display: flex;
+
+  &--center {
+    justify-content: center;
+  }
+
+  &--end {
+    justify-content: flex-end;
+  }
+
+  &--vertical {
+    flex-flow: column wrap;
+
+    .tabnav-items {
+      flex-flow: column;
+      overflow: hidden;
+    }
+
+    /deep/ .tabnav-item {
+      padding-left: 0;
+    }
+  }
 }
 
 .tabnav-items {
-  display: inline-block;
+  display: flex;
   margin: 0;
   text-align: center;
 }

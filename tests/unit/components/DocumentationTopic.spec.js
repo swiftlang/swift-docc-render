@@ -13,6 +13,9 @@ import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import OnThisPageNav from '@/components/OnThisPageNav.vue';
+import OnThisPageStickyContainer from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 
 const {
   Abstract,
@@ -146,6 +149,7 @@ const propsData = {
     },
   ],
   remoteSource: { url: 'foo' },
+  pageImages: [{ identifier: 'foo', type: 'icon' }],
 };
 
 describe('DocumentationTopic', () => {
@@ -217,6 +221,12 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders a `DocumentationHero`, enabled', () => {
+    const iconOverride = { variants: [] };
+    wrapper.setProps({
+      references: {
+        [propsData.pageImages[0].identifier]: iconOverride,
+      },
+    });
     const hero = wrapper.find(DocumentationHero);
     expect(hero.exists()).toBe(true);
     expect(hero.props()).toEqual({
@@ -224,6 +234,22 @@ describe('DocumentationTopic', () => {
       enhanceBackground: true,
       shortHero: false,
       shouldShowLanguageSwitcher: false,
+      iconOverride,
+    });
+  });
+
+  it('renders a `DocumentationHero` without an image override ', () => {
+    wrapper.setProps({
+      pageImages: [],
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.exists()).toBe(true);
+    expect(hero.props()).toEqual({
+      role: propsData.role,
+      enhanceBackground: true,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+      iconOverride: undefined,
     });
   });
 
@@ -437,7 +463,7 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders `Topics` if there are topic sections', () => {
+  it('renders `Topics` if there are topic sections, passing the `topicSectionStyles` over', () => {
     expect(wrapper.contains(Topics)).toBe(false);
 
     const topicSections = [
@@ -453,11 +479,23 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ topicSections });
+    wrapper.setProps({ topicSections, topicSectionsStyle: TopicSectionsStyle.detailedGrid });
 
     const topics = wrapper.find(Topics);
     expect(topics.exists()).toBe(true);
     expect(topics.props('sections')).toBe(topicSections);
+    expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
+  });
+
+  it('does not render the `Topics` if the `topicSectionsStyle` is `hidden`', () => {
+    const topicSections = [
+      {
+        title: 'Baz',
+        identifiers: ['baz'],
+      },
+    ];
+    wrapper.setProps({ topicSections, topicSectionsStyle: 'hidden' });
+    expect(wrapper.find(Topics).exists()).toBe(false);
   });
 
   it('renders `SeeAlso` if there are see also sections', () => {
@@ -621,6 +659,13 @@ describe('DocumentationTopic', () => {
       },
     });
     expect(wrapper.contains('.above-hero-content')).toBe(true);
+  });
+
+  it('renders `OnThisPageNav` component, if enabled via prop', () => {
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(false);
+    wrapper.setProps({ enableOnThisPageNav: true });
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(true);
+    expect(wrapper.find(OnThisPageStickyContainer).exists()).toBe(true);
   });
 
   describe('lifecycle hooks', () => {

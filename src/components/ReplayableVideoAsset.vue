@@ -13,9 +13,13 @@
     <VideoAsset
       ref="asset"
       :variants="variants"
-      @ended="onVideoEnd"
-      :showsControls="showsControls"
       :autoplays="autoplays"
+      :showsControls="showsControls"
+      :muted="muted"
+      :posterVariants="posterVariants"
+      @pause="onPause"
+      @playing="onVideoPlaying"
+      @ended="onVideoEnd"
     />
     <a
       class="replay-button"
@@ -23,8 +27,9 @@
       :class="{ visible: this.showsReplayButton }"
       @click.prevent="replay"
     >
-      Replay
-      <InlineReplayIcon class="replay-icon icon-inline" />
+      {{ text }}
+      <InlineReplayIcon v-if="played" class="replay-icon icon-inline" />
+      <PlayIcon v-else class="replay-icon icon-inline" />
     </a>
   </div>
 </template>
@@ -32,10 +37,12 @@
 <script>
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
+import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
 
 export default {
   name: 'ReplayableVideoAsset',
   components: {
+    PlayIcon,
     InlineReplayIcon,
     VideoAsset,
   },
@@ -52,10 +59,22 @@ export default {
       type: Boolean,
       default: () => true,
     },
+    muted: {
+      type: Boolean,
+      default: true,
+    },
+    posterVariants: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  computed: {
+    text: ({ played }) => (played ? 'Replay' : 'Play'),
   },
   data() {
     return {
-      showsReplayButton: false,
+      showsReplayButton: !(this.autoplays && this.muted),
+      played: false,
     };
   },
   methods: {
@@ -68,6 +87,16 @@ export default {
     },
     onVideoEnd() {
       this.showsReplayButton = true;
+      this.played = true;
+    },
+    onVideoPlaying() {
+      this.showsReplayButton = false;
+    },
+    onPause() {
+      // if the video pauses, and we are hiding the controls, show the replay button
+      if (!this.showsControls && !this.showsReplayButton) {
+        this.showsReplayButton = true;
+      }
     },
   },
 };

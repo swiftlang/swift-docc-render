@@ -26,8 +26,8 @@
         class="aside"
         ref="aside"
         :aria-hidden="hiddenOnLarge ? 'true': null"
-        @transitionstart="trackTransitionStart"
-        @transitionend="trackTransitionEnd"
+        @transitionstart.self="trackTransitionStart"
+        @transitionend.self="trackTransitionEnd"
       >
         <slot
           name="aside"

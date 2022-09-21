@@ -9,12 +9,8 @@
 -->
 
 <template>
-  <OnThisPageSection
-    anchor="declaration"
-    class="declaration"
-    title="Declaration"
-  >
-    <h2>Declaration</h2>
+  <section class="declaration">
+    <LinkableHeading anchor="declaration">Declaration</LinkableHeading>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
@@ -42,17 +38,20 @@
       :constraints="conformance.constraints"
       :prefix="conformance.availabilityPrefix"
     />
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import ConditionalConstraints from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import ConditionalConstraints
+  from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
-import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
+import DeclarationGroup
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import DeclarationDiff
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
-import DeclarationSourceLink from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
+import DeclarationSourceLink
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
@@ -64,7 +63,7 @@ export default {
     DeclarationGroup,
     DeclarationSourceLink,
     ConditionalConstraints,
-    OnThisPageSection,
+    LinkableHeading,
   },
   constants: { ChangeTypes, multipleLinesClass },
   inject: ['identifier', 'store'],
