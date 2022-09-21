@@ -51,4 +51,21 @@ describe('ContentNode', () => {
     expect(paragraphs.at(0).text()).toBe(tasks[0].text);
     expect(paragraphs.at(1).text()).toBe(tasks[1].text);
   });
+
+  it('does not render checkbox for items without `checked` prop', () => {
+    const tasks = [
+      { checked: false, content: 'foo' },
+      { content: 'bar' },
+      { checked: true, content: 'baz' },
+    ];
+
+    const wrapper = createWrapper({
+      propsData: { tasks },
+    });
+    const items = wrapper.findAll('li');
+    expect(items.length).toBe(tasks.length);
+    expect(items.at(0).find('input[type="checkbox"]').exists()).toBe(true);
+    expect(items.at(1).find('input[type="checkbox"]').exists()).toBe(false);
+    expect(items.at(2).find('input[type="checkbox"]').exists()).toBe(true);
+  });
 });
