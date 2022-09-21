@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import CodeVoice from 'docc-render/components/ContentNode/CodeVoice.vue';
@@ -358,15 +358,25 @@ describe('ContentNode', () => {
           ],
         },
       ];
-      const wrapper = mountWithItem({
-        type: 'unorderedList',
-        items,
+      const wrapper = mount(ContentNode, {
+        propsData: {
+          content: [
+            {
+              type: 'unorderedList',
+              items,
+            },
+          ],
+        },
       });
 
       const list = wrapper.find(TaskList);
       expect(list.exists()).toBe(true);
       expect(list.props('tasks')).toEqual(items);
-      // TODO: find out how to make assertion on task slot
+
+      const paragraphs = list.findAll('li p');
+      expect(paragraphs.length).toBe(items.length);
+      expect(paragraphs.at(0).text()).toBe('foo');
+      expect(paragraphs.at(1).text()).toBe('bar');
     });
   });
 
