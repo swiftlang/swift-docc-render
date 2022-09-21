@@ -13,7 +13,6 @@ import Parameters from 'docc-render/components/DocumentationTopic/PrimaryContent
 
 const {
   ContentNode,
-  OnThisPageSection,
   LinkableHeading,
 } = Parameters.components;
 
@@ -47,16 +46,8 @@ describe('Parameters', () => {
     wrapper = shallowMount(Parameters, { propsData });
   });
 
-  it('renders an `OnThisPageSection`', () => {
-    expect(wrapper.is('.parameters')).toBe(true);
-
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.classes('parameters')).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: 'parameters',
-      title: 'Parameters',
-    });
+  it('renders an `section.parameters`', () => {
+    expect(wrapper.is('section.parameters')).toBe(true);
   });
 
   it('renders an h2 with "Parameters"', () => {

@@ -10,6 +10,8 @@
 
 import { shallowMount } from '@vue/test-utils';
 import TopicsTable from 'docc-render/components/DocumentationTopic/TopicsTable.vue';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 
 const {
   ContentTable, TopicsLinkBlock, ContentTableSection, ContentNode, WordBreak, LinkableHeading,
@@ -64,6 +66,9 @@ describe('TopicsTable', () => {
     wrapper = shallowMount(TopicsTable, {
       propsData,
       provide,
+      stubs: {
+        ContentTableSection,
+      },
     });
   });
 
@@ -85,6 +90,7 @@ describe('TopicsTable', () => {
 
   it('renders a `TopicsLinkBlock` for each topic with reference data in a section', () => {
     const sections = wrapper.findAll(ContentTableSection);
+    expect(wrapper.findAll(TopicsLinkCardGrid)).toHaveLength(0);
 
     const firstSectionBlocks = sections.at(0).findAll(TopicsLinkBlock);
     expect(firstSectionBlocks.length).toBe(1);
@@ -102,6 +108,26 @@ describe('TopicsTable', () => {
       topic: baz,
       isSymbolDeprecated: false,
       isSymbolBeta: false,
+    });
+  });
+
+  it('renders a `TopicsLinkCardGrid` if `topicStyle` is not `list`', () => {
+    wrapper.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
+    expect(wrapper.findAll(TopicsLinkBlock)).toHaveLength(0);
+    const sections = wrapper.findAll(ContentTableSection);
+
+    const firstGrid = sections.at(0).find(TopicsLinkCardGrid);
+    expect(firstGrid.classes('topic')).toBe(true);
+    expect(firstGrid.props()).toEqual({
+      topicStyle: TopicSectionsStyle.compactGrid,
+      items: [foo],
+    });
+
+    const secondGrid = sections.at(1).find(TopicsLinkCardGrid);
+    expect(secondGrid.classes('topic')).toBe(true);
+    expect(secondGrid.props()).toEqual({
+      topicStyle: TopicSectionsStyle.compactGrid,
+      items: [baz],
     });
   });
 
@@ -148,6 +174,8 @@ describe('TopicsTable', () => {
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
     expect(linkableHeading.exists()).toBe(true);
     expect(linkableHeading.props('level')).toBe(3);
+    expect(linkableHeading.props('registerOnThisPage')).toBe(false);
     expect(linkableHeading.attributes('anchor')).toBe(propsData.sections[0].anchor);
+    expect(linkableHeading.classes()).toContain('contenttable-title');
   });
 });
