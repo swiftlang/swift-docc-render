@@ -21,7 +21,7 @@
       <div
         class="container"
         ref="container"
-        :style="styleProps"
+        :style="modalStyle"
       >
         <button
           v-if="showClose"
@@ -87,6 +87,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    width: {
+      type: String,
+      default: null,
+    },
     styleProps: {
       type: Object,
       default: null,
@@ -110,6 +114,12 @@ export default {
       return {
         '--background': this.codeBackgroundColorOverride,
       };
+    },
+    modalStyle({ styleProps, width }) {
+      return ({
+        width,
+        ...styleProps,
+      });
     },
     themeClass({ theme, prefersDarkStyle, isThemeDynamic }) {
       let dynamicThemeClasses = {};

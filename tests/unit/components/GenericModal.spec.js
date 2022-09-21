@@ -409,11 +409,12 @@ describe('GenericModal', () => {
   it('allows specifying a style to the container', () => {
     const wrapper = createWrapper({
       propsData: {
+        width: '10px',
         styleProps: {
-          width: '100px',
+          height: '10px',
         },
       },
     });
-    expect(wrapper.find('.container').attributes('style')).toEqual('width: 100px;');
+    expect(wrapper.find('.container').attributes('style')).toEqual('width: 10px; height: 10px;');
   });
 });

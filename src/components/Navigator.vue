@@ -26,7 +26,6 @@
       :breakpoint="breakpoint"
       :api-changes="apiChanges"
       :allow-hiding="allowHiding"
-      :enableQuickNavigation="enableQuickNavigation"
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
     />
