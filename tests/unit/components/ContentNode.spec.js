@@ -27,6 +27,7 @@ import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
 import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
+import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -326,57 +327,46 @@ describe('ContentNode', () => {
       expect(items.at(1).find('p').text()).toBe('bar');
     });
 
-    it('renders a <ul> with <li> items and checkboxes', () => {
+    it('renders a `TaskList` for checked items', () => {
+      const items = [
+        {
+          checked: true,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'foo',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          checked: false,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'bar',
+                },
+              ],
+            },
+          ],
+        },
+      ];
       const wrapper = mountWithItem({
         type: 'unorderedList',
-        items: [
-          {
-            checked: true,
-            content: [
-              {
-                type: 'paragraph',
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'foo',
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            checked: false,
-            content: [
-              {
-                type: 'paragraph',
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'bar',
-                  },
-                ],
-              },
-            ],
-          },
-        ],
+        items,
       });
 
-      const list = wrapper.find('.content ul');
+      const list = wrapper.find(TaskList);
       expect(list.exists()).toBe(true);
-
-      const items = list.findAll('li');
-      expect(items.length).toBe(2);
-      expect(items.at(0).find('input').attributes()).toStrictEqual({
-        checked: 'checked',
-        disabled: 'disabled',
-        type: 'checkbox',
-      });
-      expect(items.at(0).find('p').text()).toBe('foo');
-      expect(items.at(1).find('input').attributes()).toStrictEqual({
-        disabled: 'disabled',
-        type: 'checkbox',
-      });
-      expect(items.at(1).find('p').text()).toBe('bar');
+      expect(list.props('tasks')).toEqual(items);
+      // TODO: find out how to make assertion on task slot
     });
   });
 
