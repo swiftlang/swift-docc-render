@@ -13,7 +13,7 @@ import PrimaryContent from 'docc-render/components/DocumentationTopic/PrimaryCon
 
 const {
   Declaration,
-  GenericContent,
+  ContentNode,
   Parameters,
   PossibleValues,
   PropertyListKeyDetails,
@@ -190,7 +190,7 @@ describe('PrimaryContent', () => {
     source: propsData.source,
   });
   checkProps(PropertyListKeyDetails, { details: detailsSection.details });
-  checkProps(GenericContent, { content: genericContentSection.content, tag: 'div' });
+  checkProps(ContentNode, { content: genericContentSection.content, tag: 'div' });
   checkProps(Parameters, { parameters: parametersSection.parameters });
   checkProps(RestParameters, { parameters: restParametersSection.items, title: 'Title' });
   checkProps(

@@ -12,7 +12,6 @@ import { shallowMount } from '@vue/test-utils';
 import PropertyListKeyDetails from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyDetails.vue';
 
 const {
-  OnThisPageSection,
   PropertyListKeyType,
   LinkableHeading,
 } = PropertyListKeyDetails.components;
@@ -39,16 +38,8 @@ describe('PropertyKeyListDetails', () => {
     wrapper = shallowMount(PropertyListKeyDetails, { propsData });
   });
 
-  it('renders an `OnThisPageSection`', () => {
-    expect(wrapper.is('.details')).toBe(true);
-
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.classes('details')).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: 'details',
-      title: 'Details',
-    });
+  it('renders an `section.details`', () => {
+    expect(wrapper.is('section.details')).toBe(true);
   });
 
   it('renders a title with "Details"', () => {

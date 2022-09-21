@@ -71,6 +71,7 @@
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
             :languagePaths="languagePaths"
+            :enableOnThisPageNav="enableOnThisPageNav"
           />
         </component>
       </template>
@@ -186,6 +187,7 @@ export default {
         relationshipsSections,
         references = {},
         sampleCodeDownload,
+        topicSectionsStyle,
         topicSections,
         seeAlsoSections,
         variantOverrides,
@@ -211,6 +213,7 @@ export default {
         sampleCodeDownload,
         title,
         topicSections,
+        topicSectionsStyle,
         seeAlsoSections,
         variantOverrides,
         symbolKind,
@@ -291,6 +294,9 @@ export default {
       compareVersions(
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
+    ),
+    enableOnThisPageNav: ({ isTargetIDE, store }) => (
+      !isTargetIDE && store.state.onThisPageSections.length > 2
     ),
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator

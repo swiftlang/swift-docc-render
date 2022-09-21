@@ -46,49 +46,57 @@
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
-      <div v-if="showContainer" class="container">
-        <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
-          <RequirementMetadata
-            v-if="isRequirement"
-            :defaultImplementationsCount="defaultImplementationsCount"
+      <div class="doc-content-wrapper">
+        <div class="doc-content">
+          <div v-if="showContainer" class="container">
+            <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
+              <RequirementMetadata
+                v-if="isRequirement"
+                :defaultImplementationsCount="defaultImplementationsCount"
+              />
+              <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
+                <ContentNode :content="deprecationSummary" />
+              </Aside>
+              <Aside
+                v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
+                kind="note"
+              >
+                <ContentNode :content="downloadNotAvailableSummary" />
+              </Aside>
+            </div>
+            <PrimaryContent
+              v-if="primaryContentSections && primaryContentSections.length"
+              :class="{ 'with-border': !enhanceBackground }"
+              :conformance="conformance"
+              :source="remoteSource"
+              :sections="primaryContentSections"
+            />
+          </div>
+          <Topics
+            v-if="shouldRenderTopicSection"
+            :sections="topicSections"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+            :topicStyle="topicSectionsStyle"
           />
-          <Aside v-if="deprecationSummary && deprecationSummary.length" kind="deprecated">
-            <ContentNode :content="deprecationSummary" />
-          </Aside>
-          <Aside
-            v-if="downloadNotAvailableSummary && downloadNotAvailableSummary.length"
-            kind="note"
-          >
-            <ContentNode :content="downloadNotAvailableSummary" />
-          </Aside>
+          <DefaultImplementations
+            v-if="defaultImplementationsSections"
+            :sections="defaultImplementationsSections"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+          />
+          <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+          <!-- NOTE: see also may contain information about other apis, so we cannot
+          pass deprecation and beta information -->
+          <SeeAlso
+            v-if="seeAlsoSections"
+            :sections="seeAlsoSections"
+          />
         </div>
-        <PrimaryContent
-          v-if="primaryContentSections && primaryContentSections.length"
-          :class="{ 'with-border': !enhanceBackground }"
-          :conformance="conformance"
-          :source="remoteSource"
-          :sections="primaryContentSections"
-        />
+        <OnThisPageStickyContainer v-if="enableOnThisPageNav">
+          <OnThisPageNav />
+        </OnThisPageStickyContainer>
       </div>
-      <Topics
-        v-if="topicSections"
-        :sections="topicSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <DefaultImplementations
-        v-if="defaultImplementationsSections"
-        :sections="defaultImplementationsSections"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-      />
-      <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
-      <!-- NOTE: see also may contain information about other apis, so we cannot
-      pass deprecation and beta information -->
-      <SeeAlso
-        v-if="seeAlsoSections"
-        :sections="seeAlsoSections"
-      />
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
     <div aria-live="polite" class="visuallyhidden">
@@ -106,6 +114,8 @@ import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
+import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -117,6 +127,7 @@ import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
+import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
 
 export default {
   name: 'DocumentationTopic',
@@ -131,12 +142,14 @@ export default {
       default() {
         return {
           reset() {},
-          state: { onThisPageSections: [] },
+          state: {},
         };
       },
     },
   },
   components: {
+    OnThisPageStickyContainer,
+    OnThisPageNav,
     DocumentationHero,
     Abstract,
     Aside,
@@ -227,6 +240,10 @@ export default {
       type: Array,
       required: false,
     },
+    topicSectionsStyle: {
+      type: String,
+      default: TopicSectionsStyle.list,
+    },
     sampleCodeDownload: {
       type: Object,
       required: false,
@@ -275,6 +292,14 @@ export default {
       type: Array,
       required: false,
     },
+    enableOnThisPageNav: {
+      type: Boolean,
+      default: false,
+    },
+    disableHeroBackground: {
+      type: Boolean,
+      default: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -299,9 +324,6 @@ export default {
         0,
       );
     },
-    onThisPageSections() {
-      return this.topicState.onThisPageSections;
-    },
     hasAvailability: ({ platforms, technologies }) => (
       (platforms || []).length || (technologies || []).length
     ),
@@ -316,7 +338,18 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
       !!(objcPath && swiftPath && isTargetIDE)
     ),
-    enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    enhanceBackground: ({ symbolKind, disableHeroBackground, topicSectionsStyle }) => {
+      if (
+        // if the hero bg is forcefully disabled
+        disableHeroBackground
+        // or the topicSectionsStyle is a `grid` type
+        || topicSectionsStyle === TopicSectionsStyle.compactGrid
+        || topicSectionsStyle === TopicSectionsStyle.detailedGrid
+      ) {
+        return false;
+      }
+      return symbolKind ? (symbolKind === 'module') : true;
+    },
     shortHero: ({
       roleHeading,
       abstract,
@@ -364,6 +397,10 @@ export default {
       const icon = pageImages.find(({ type }) => type === 'icon');
       return icon ? icon.identifier : null;
     },
+    shouldRenderTopicSection: ({
+      topicSectionsStyle,
+      topicSections,
+    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden,
   },
   methods: {
     normalizePath(path) {
@@ -461,6 +498,19 @@ export default {
     #{$heading} {
       @include font-styles(documentation-#{$heading});
     }
+  }
+}
+
+.doc-content-wrapper {
+  display: flex;
+
+  .sidebar-hidden & {
+    justify-content: center;
+  }
+
+  .doc-content {
+    min-width: 0;
+    width: 100%;
   }
 }
 </style>
