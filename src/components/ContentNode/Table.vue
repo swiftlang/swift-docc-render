@@ -49,11 +49,6 @@ export default {
 
 table {
   border-style: hidden;
-
-  &.spanned {
-    width: 100%;
-    table-layout: fixed;
-  }
 }
 
 /deep/ {
