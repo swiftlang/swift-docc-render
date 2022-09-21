@@ -13,7 +13,6 @@ import RestResponses from 'docc-render/components/DocumentationTopic/PrimaryCont
 import { ChangeTypes } from 'docc-render/constants/Changes';
 
 const {
-  OnThisPageSection,
   PossiblyChangedType,
   PossiblyChangedMimetype,
   ParametersTable,
@@ -64,13 +63,6 @@ describe('RestResponses', () => {
     });
     return wrapper;
   }
-
-  it('renders an `OnThisPageSection`', () => {
-    const section = mountComponent().find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.props('anchor')).toBe('title');
-    expect(section.props('title')).toBe(propsData.title);
-  });
 
   it('renders an h2 section title', () => {
     const sectionTitle = mountComponent().find(LinkableHeading);

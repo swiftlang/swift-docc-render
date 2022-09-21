@@ -13,7 +13,6 @@ import RestBody from 'docc-render/components/DocumentationTopic/PrimaryContent/R
 import { ChangeTypes } from 'docc-render/constants/Changes';
 
 const {
-  OnThisPageSection,
   ParametersTable,
   PossiblyChangedType,
   ParameterAttributes,
@@ -64,15 +63,6 @@ describe('RestBody', () => {
       propsData,
       stubs: { ParametersTable },
       provide,
-    });
-  });
-
-  it('renders an `OnThisPageSection`', () => {
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: 'http-body',
-      title: propsData.title,
     });
   });
 

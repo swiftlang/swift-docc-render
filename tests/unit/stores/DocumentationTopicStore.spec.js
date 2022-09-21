@@ -10,13 +10,14 @@
 
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
+import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
 
 describe('DocumentationTopicStore', () => {
   const defaultState = {
-    onThisPageSections: [],
     preferredLanguage: null,
     contentWidth: 0,
     ...ApiChangesStoreBase.state,
+    ...OnThisPageSectionsStoreBase.state,
   };
 
   beforeEach(() => {
