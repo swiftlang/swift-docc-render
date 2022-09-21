@@ -12,6 +12,9 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 describe('LinkableHeading', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   const stubs = { 'router-link': RouterLinkStub };
 
   it('renders a default heading that is a h2 by default', () => {
@@ -64,5 +67,71 @@ describe('LinkableHeading', () => {
       },
     });
     expect(wrapper.find('.header-anchor').exists()).toBe(false);
+  });
+
+  describe('onThisPage', () => {
+    const addOnThisPageSection = jest.fn();
+
+    it.each([
+      [1, true],
+      [2, true],
+      [3, true],
+      [4, false],
+      [5, false],
+    ])('registers heading, if `level` is %s', (level, shouldRegister) => {
+      shallowMount(LinkableHeading, {
+        stubs,
+        propsData: {
+          anchor: 'title',
+          level,
+        },
+        provide: {
+          store: {
+            addOnThisPageSection,
+          },
+        },
+        slots: { default: '<div>Title content</div>' },
+      });
+      if (shouldRegister) {
+        expect(addOnThisPageSection).toHaveBeenLastCalledWith({
+          anchor: 'title',
+          title: 'Title content',
+          level,
+        });
+      } else {
+        expect(addOnThisPageSection).toHaveBeenCalledTimes(0);
+      }
+    });
+
+    it('does not register, if no anchor ', () => {
+      shallowMount(LinkableHeading, {
+        stubs,
+        propsData: {},
+        provide: {
+          store: {
+            addOnThisPageSection,
+          },
+        },
+        slots: { default: '<div>Title content</div>' },
+      });
+      expect(addOnThisPageSection).toHaveBeenCalledTimes(0);
+    });
+
+    it('controls registration via `registerOnThisPage` boolean', () => {
+      shallowMount(LinkableHeading, {
+        stubs,
+        propsData: {
+          anchor: 'title',
+          registerOnThisPage: false,
+        },
+        provide: {
+          store: {
+            addOnThisPageSection,
+          },
+        },
+        slots: { default: '<div>Title content</div>' },
+      });
+      expect(addOnThisPageSection).toHaveBeenCalledTimes(0);
+    });
   });
 });
