@@ -293,6 +293,22 @@ describe('DocumentationTopic', () => {
     });
   });
 
+  it('renders a `DocumentationHero`, disabled, if `disableHeroBackground` prop is `true`', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props('enhanceBackground')).toBe(true);
+    wrapper.setProps({ disableHeroBackground: true });
+    expect(hero.props('enhanceBackground')).toBe(false);
+  });
+
+  it('renders a `DocumentationHero`, disabled, if the `topicSectionsStyle` is a grid type', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props('enhanceBackground')).toBe(true);
+    wrapper.setProps({ topicSectionsStyle: TopicSectionsStyle.detailedGrid });
+    expect(hero.props('enhanceBackground')).toBe(false);
+    wrapper.setProps({ topicSectionsStyle: TopicSectionsStyle.compactGrid });
+    expect(hero.props('enhanceBackground')).toBe(false);
+  });
+
   it('renders a `Title`', () => {
     const hero = wrapper.find(DocumentationHero);
 
@@ -463,7 +479,7 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders `Topics` if there are topic sections, passing the `topicSectionStyles` over', () => {
+  it('renders `Topics` if there are topic sections, passing the `topicSectionsStyle` over', () => {
     expect(wrapper.contains(Topics)).toBe(false);
 
     const topicSections = [
