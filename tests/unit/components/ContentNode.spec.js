@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import CodeVoice from 'docc-render/components/ContentNode/CodeVoice.vue';
@@ -27,6 +27,7 @@ import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
 import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
+import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -326,57 +327,56 @@ describe('ContentNode', () => {
       expect(items.at(1).find('p').text()).toBe('bar');
     });
 
-    it('renders a <ul> with <li> items and checkboxes', () => {
-      const wrapper = mountWithItem({
-        type: 'unorderedList',
-        items: [
-          {
-            checked: true,
-            content: [
-              {
-                type: 'paragraph',
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'foo',
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            checked: false,
-            content: [
-              {
-                type: 'paragraph',
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'bar',
-                  },
-                ],
-              },
-            ],
-          },
-        ],
+    it('renders a `TaskList` for checked items', () => {
+      const items = [
+        {
+          checked: true,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'foo',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          checked: false,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'bar',
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const wrapper = mount(ContentNode, {
+        propsData: {
+          content: [
+            {
+              type: 'unorderedList',
+              items,
+            },
+          ],
+        },
       });
 
-      const list = wrapper.find('.content ul');
+      const list = wrapper.find(TaskList);
       expect(list.exists()).toBe(true);
+      expect(list.props('tasks')).toEqual(items);
 
-      const items = list.findAll('li');
-      expect(items.length).toBe(2);
-      expect(items.at(0).find('input').attributes()).toStrictEqual({
-        checked: 'checked',
-        disabled: 'disabled',
-        type: 'checkbox',
-      });
-      expect(items.at(0).find('p').text()).toBe('foo');
-      expect(items.at(1).find('input').attributes()).toStrictEqual({
-        disabled: 'disabled',
-        type: 'checkbox',
-      });
-      expect(items.at(1).find('p').text()).toBe('bar');
+      const paragraphs = list.findAll('li p');
+      expect(paragraphs.length).toBe(items.length);
+      expect(paragraphs.at(0).text()).toBe('foo');
+      expect(paragraphs.at(1).text()).toBe('bar');
     });
   });
 
