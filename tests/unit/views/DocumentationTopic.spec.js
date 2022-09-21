@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
@@ -21,8 +21,8 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
+import OnThisPageRegistrator from 'docc-render/components/DocumentationTopic/OnThisPageRegistrator.vue';
 import { flushPromises } from '../../../test-utils';
-import OnThisPageRegistrator from '@/components/DocumentationTopic/OnThisPageRegistrator';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/utils/FocusTrap');

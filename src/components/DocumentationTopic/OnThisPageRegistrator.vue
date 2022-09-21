@@ -56,7 +56,7 @@ export default {
               if (subSection.type === 'heading' && subSection.level < 4) {
                 this.store.addOnThisPageSection({
                   title: subSection.text,
-                  anchor: subSection.anchor || anchorize(subSection.title),
+                  anchor: subSection.anchor || anchorize(subSection.text),
                   level: subSection.level,
                 });
               }
