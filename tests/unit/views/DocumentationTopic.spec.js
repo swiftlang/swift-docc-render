@@ -545,6 +545,7 @@ describe('DocumentationTopic', () => {
       },
       enableOnThisPageNav: false,
       topicSectionsStyle: TopicSectionsStyle.list, // default value
+      disableHeroBackground: false,
     });
   });
 
