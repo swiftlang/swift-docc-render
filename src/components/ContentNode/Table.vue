@@ -52,6 +52,7 @@ table {
 
   &.spanned {
     width: 100%;
+    table-layout: fixed;
   }
 }
 
