@@ -572,9 +572,21 @@ describe('AdjustableSidebarWidth', () => {
     expect(wrapper.vm.asideStyles).toHaveProperty('width', '200px');
     // simulate window changes width form orientation change.
     // This should trigger both breakpoint emitter and window resize, but not in Jest
-    window.innerWidth = 500;
+    window.innerWidth = 1500;
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
+    assertWidth(wrapper, 200); // hardcoded width
+    // drag the resize handle
+    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mouseevent' });
+    document.dispatchEvent(createEvent(eventsMap.mouse.move, {
+      clientX: 800,
+    }));
+    assertWidth(wrapper, 750); // 50% of 1500, on large
+    // make it small now
+    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mouseevent' });
+    document.dispatchEvent(createEvent(eventsMap.mouse.move, {
+      clientX: 100,
+    }));
     assertWidth(wrapper, 200); // hardcoded width
   });
 

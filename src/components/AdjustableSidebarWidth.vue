@@ -155,10 +155,12 @@ export default {
   computed: {
     minWidthPercent: ({ breakpoint }) => minWidthResponsivePercents[breakpoint] || 0,
     maxWidthPercent: ({ breakpoint }) => maxWidthResponsivePercents[breakpoint] || 100,
-    maxWidth: ({ maxWidthPercent, windowWidth }) => (
-      calcWidthPercent(maxWidthPercent, windowWidth)
+    maxWidth: ({ maxWidthPercent, windowWidth, hardWidth }) => (
+      Math.max(hardWidth, calcWidthPercent(maxWidthPercent, windowWidth))
     ),
-    minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
+    minWidth: ({ minWidthPercent, windowWidth, hardWidth }) => (
+      Math.min(hardWidth || windowWidth, calcWidthPercent(minWidthPercent, windowWidth))
+    ),
     widthInPx: ({ width }) => `${width}px`,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideStyles: ({
@@ -240,11 +242,6 @@ export default {
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {
-      // if there is a hard-set width, we want to use that always
-      if (this.hardWidth) {
-        this.width = this.hardWidth;
-        return;
-      }
       // make sure sidebar is never wider than the windowWidth
       if (this.width > this.maxWidth) {
         this.width = this.maxWidth;
