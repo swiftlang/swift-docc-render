@@ -8,19 +8,19 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <TopicsLinkCardGrid
-    v-if="!isListStyle"
-    class="links-block"
-    :items="items"
-    :topic-style="blockStyle"
-  />
-  <div v-else class="links-block">
+  <div v-if="isListStyle" class="links-block">
     <TopicsLinkBlock
       v-for="item in items"
       :key="item.identifier"
       :topic="item"
     />
   </div>
+  <TopicsLinkCardGrid
+    v-else
+    class="links-block"
+    :items="items"
+    :topic-style="blockStyle"
+  />
 </template>
 
 <script>
