@@ -296,6 +296,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    disableHeroBackground: {
+      type: Boolean,
+      default: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -334,7 +338,18 @@ export default {
     shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
       !!(objcPath && swiftPath && isTargetIDE)
     ),
-    enhanceBackground: ({ symbolKind }) => (symbolKind ? (symbolKind === 'module') : true),
+    enhanceBackground: ({ symbolKind, disableHeroBackground, topicSectionsStyle }) => {
+      if (
+        // if the hero bg is forcefully disabled
+        disableHeroBackground
+        // or the topicSectionsStyle is a `grid` type
+        || topicSectionsStyle === TopicSectionsStyle.compactGrid
+        || topicSectionsStyle === TopicSectionsStyle.detailedGrid
+      ) {
+        return false;
+      }
+      return symbolKind ? (symbolKind === 'module') : true;
+    },
     shortHero: ({
       roleHeading,
       abstract,
