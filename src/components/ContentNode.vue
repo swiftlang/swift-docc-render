@@ -26,6 +26,7 @@ import BlockVideo from './ContentNode/BlockVideo.vue';
 import Column from './ContentNode/Column.vue';
 import Row from './ContentNode/Row.vue';
 import TabNavigator from './ContentNode/TabNavigator.vue';
+import TaskList from './ContentNode/TaskList.vue';
 
 const BlockType = {
   aside: 'aside',
@@ -279,10 +280,23 @@ function renderNode(createElement, references) {
           renderChildren(definition.content)
         )),
       ]));
-    case BlockType.unorderedList:
-      return createElement('ul', {}, (
-        renderListItems(node.items)
-      ));
+    case BlockType.unorderedList: {
+      const isTaskList = list => TaskList.props.tasks.validator(list.items);
+      return isTaskList(node) ? (
+        createElement(TaskList, {
+          props: {
+            tasks: node.items,
+          },
+          scopedSlots: {
+            task: slotProps => renderChildren(slotProps.task.content),
+          },
+        })
+      ) : (
+        createElement('ul', {}, (
+          renderListItems(node.items)
+        ))
+      );
+    }
     case BlockType.dictionaryExample: {
       const props = {
         example: node.example,
