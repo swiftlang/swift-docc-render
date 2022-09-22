@@ -39,7 +39,7 @@
                       :references="topicProps.references"
                       :navigator-references="slotProps.references"
                       :scrollLockID="scrollLockID"
-                      :breakpoint="breakpoint"
+                      :render-filter-on-top="breakpoint !== BreakpointName.large"
                       @close="handleToggleSidenav(breakpoint)"
                     />
                   </transition>

@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import CodeVoice from 'docc-render/components/ContentNode/CodeVoice.vue';
@@ -27,6 +27,7 @@ import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
 import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
+import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
 
 const { TableHeaderStyle } = ContentNode.constants;
 
@@ -324,6 +325,58 @@ describe('ContentNode', () => {
       expect(items.length).toBe(2);
       expect(items.at(0).find('p').text()).toBe('foo');
       expect(items.at(1).find('p').text()).toBe('bar');
+    });
+
+    it('renders a `TaskList` for checked items', () => {
+      const items = [
+        {
+          checked: true,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'foo',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          checked: false,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'bar',
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const wrapper = mount(ContentNode, {
+        propsData: {
+          content: [
+            {
+              type: 'unorderedList',
+              items,
+            },
+          ],
+        },
+      });
+
+      const list = wrapper.find(TaskList);
+      expect(list.exists()).toBe(true);
+      expect(list.props('tasks')).toEqual(items);
+
+      const paragraphs = list.findAll('li p');
+      expect(paragraphs.length).toBe(items.length);
+      expect(paragraphs.at(0).text()).toBe('foo');
+      expect(paragraphs.at(1).text()).toBe('bar');
     });
   });
 
@@ -1128,6 +1181,7 @@ describe('ContentNode', () => {
       });
       const table = wrapper.find('.content').find(Table);
       expect(table.exists()).toBe(true);
+      expect(table.props('spanned')).toBe(false);
       expect(table.contains('thead')).toBe(false);
       expect(table.findAll('tbody tr').length).toBe(2);
       expect(table.findAll('tbody tr td').length).toBe(4);
@@ -1200,75 +1254,236 @@ describe('ContentNode', () => {
       expect(caption.text()).toContain('blah');
     });
 
-    describe('with type="termList"', () => {
-      it('renders a <dl> with <dt>/<dd> pairs for each term/definition', () => {
+    describe('and column/row spanning', () => {
+      // <table>
+      //   <tr>
+      //     <td colspan="2">row0col0</td>
+      //     <td>row0col2</td>
+      //   </tr>
+      //   <tr>
+      //     <td>row1col0</td>
+      //     <td>row1col1</td>
+      //     <td rowspan="2">row1col2</td>
+      //   </tr>
+      //   <tr>
+      //     <td>row2col0</td>
+      //     <td>row2col1</td>
+      //   </tr>
+      // </table>
+      const rowsExtended = [
+        [
+          [{ type: 'text', text: 'row0col0' }],
+          [{ type: 'text', text: 'row0col1' }],
+          [{ type: 'text', text: 'row0col2' }],
+        ],
+        [
+          [{ type: 'text', text: 'row1col0' }],
+          [{ type: 'text', text: 'row1col1' }],
+          [{ type: 'text', text: 'row1col2' }],
+        ],
+        [
+          [{ type: 'text', text: 'row2col0' }],
+          [{ type: 'text', text: 'row2col1' }],
+          [{ type: 'text', text: 'row2col2' }],
+        ],
+      ];
+      const extendedData = {
+        '0_0': { colspan: 2 },
+        '0_1': { colspan: 0 },
+        '1_2': { rowspan: 2 },
+        '2_2': { rowspan: 0 },
+      };
+
+      it('renders header="none" style table, with spans', () => {
         const wrapper = mountWithItem({
-          type: 'termList',
-          items: [
-            {
-              term: {
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'Foo',
-                  },
-                ],
-              },
-              definition: {
-                content: [
-                  {
-                    type: 'paragraph',
-                    inlineContent: [
-                      {
-                        type: 'text',
-                        text: 'foo',
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-            {
-              term: {
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'Bar',
-                  },
-                ],
-              },
-              definition: {
-                content: [
-                  {
-                    type: 'paragraph',
-                    inlineContent: [
-                      {
-                        type: 'text',
-                        text: 'bar',
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-          ],
+          type: 'table',
+          header: TableHeaderStyle.none,
+          rows: rowsExtended,
+          extendedData,
         });
-        const dl = wrapper.find('.content dl');
-        expect(dl.exists()).toBe(true);
-
-        const terms = dl.findAll('dt');
-        expect(terms.length).toBe(2);
-
-        const definitions = dl.findAll('dd');
-        expect(definitions.length).toBe(2);
-
-        expect(terms.at(0).text()).toBe('Foo');
-        expect(definitions.at(0).contains('p')).toBe(true);
-        expect(definitions.at(0).text()).toBe('foo');
-        expect(terms.at(1).text()).toBe('Bar');
-        expect(definitions.at(1).contains('p')).toBe(true);
-        expect(definitions.at(1).text()).toBe('bar');
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <tbody>
+              <tr>
+                <td colspan="2">row0col0</td>
+                <td>row0col2</td>
+              </tr>
+              <tr>
+                <td>row1col0</td>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <td>row2col0</td>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
       });
+
+      it('renders header="both" style table, with spans', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.both,
+          rows: rowsExtended,
+          extendedData,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <thead>
+              <tr>
+                <th scope="col" colspan="2">row0col0</th>
+                <th scope="col">row0col2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">row1col0</th>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <th scope="row">row2col0</th>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="row" style table, with spans', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.row,
+          rows: rowsExtended,
+          extendedData,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <thead>
+              <tr>
+                <th scope="col" colspan="2">row0col0</th>
+                <th scope="col">row0col2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>row1col0</td>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <td>row2col0</td>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="column" style table, with spans', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.column,
+          rows: rowsExtended,
+          extendedData,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <tbody>
+              <tr>
+                <th scope="row" colspan="2">row0col0</th>
+                <td>row0col2</td>
+              </tr>
+              <tr>
+                <th scope="row">row1col0</th>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <th scope="row">row2col0</th>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+    });
+  });
+
+  describe('with type="termList"', () => {
+    it('renders a <dl> with <dt>/<dd> pairs for each term/definition', () => {
+      const wrapper = mountWithItem({
+        type: 'termList',
+        items: [
+          {
+            term: {
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'Foo',
+                },
+              ],
+            },
+            definition: {
+              content: [
+                {
+                  type: 'paragraph',
+                  inlineContent: [
+                    {
+                      type: 'text',
+                      text: 'foo',
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            term: {
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'Bar',
+                },
+              ],
+            },
+            definition: {
+              content: [
+                {
+                  type: 'paragraph',
+                  inlineContent: [
+                    {
+                      type: 'text',
+                      text: 'bar',
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      });
+      const dl = wrapper.find('.content dl');
+      expect(dl.exists()).toBe(true);
+
+      const terms = dl.findAll('dt');
+      expect(terms.length).toBe(2);
+
+      const definitions = dl.findAll('dd');
+      expect(definitions.length).toBe(2);
+
+      expect(terms.at(0).text()).toBe('Foo');
+      expect(definitions.at(0).contains('p')).toBe(true);
+      expect(definitions.at(0).text()).toBe('foo');
+      expect(terms.at(1).text()).toBe('Bar');
+      expect(definitions.at(1).contains('p')).toBe(true);
+      expect(definitions.at(1).text()).toBe('bar');
     });
   });
 
