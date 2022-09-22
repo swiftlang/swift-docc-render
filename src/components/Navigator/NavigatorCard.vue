@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="navigator-card">
+  <div class="navigator-card" :class="{ 'filter-on-top': renderFilterOnTop }">
     <div class="navigator-card-full-height">
       <NavigatorCardInner>
         <div class="head-wrapper">
@@ -44,15 +44,14 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <RecycleScroller
+          <DynamicScroller
             v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
             class="scroller"
             aria-label="Documentation Navigator"
             :items="nodesToRender"
-            :item-size="itemSize"
-            :buffer="1000"
+            :min-item-size="itemSize"
             emit-update
             key-field="uid"
             v-slot="{ item, active, index }"
@@ -60,24 +59,26 @@
             @focusout.native="handleFocusOut"
             @update="handleScrollerUpdate"
           >
-            <NavigatorCardItem
-              :item="item"
-              :isRendered="active"
-              :filter-pattern="filterPattern"
-              :is-active="item.uid === activeUID"
-              :is-bold="activePathMap[item.uid]"
-              :expanded="openNodes[item.uid]"
-              :api-change="apiChangesObject[item.path]"
-              :isFocused="focusedIndex === index"
-              :enableFocus="!externalFocusChange"
-              :navigator-references="navigatorReferences"
-              @toggle="toggle"
-              @toggle-full="toggleFullTree"
-              @toggle-siblings="toggleSiblings"
-              @navigate="handleNavigationChange"
-              @focus-parent="focusNodeParent"
-            />
-          </RecycleScroller>
+            <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
+              <NavigatorCardItem
+                :item="item"
+                :isRendered="active"
+                :filter-pattern="filterPattern"
+                :is-active="item.uid === activeUID"
+                :is-bold="activePathMap[item.uid]"
+                :expanded="openNodes[item.uid]"
+                :api-change="apiChangesObject[item.path]"
+                :isFocused="focusedIndex === index"
+                :enableFocus="!externalFocusChange"
+                :navigator-references="navigatorReferences"
+                @toggle="toggle"
+                @toggle-full="toggleFullTree"
+                @toggle-siblings="toggleSiblings"
+                @navigate="handleNavigationChange"
+                @focus-parent="focusNodeParent"
+              />
+            </DynamicScrollerItem>
+          </DynamicScroller>
           <div aria-live="polite" class="visuallyhidden">
             {{ politeAriaLive }}
           </div>
@@ -87,37 +88,37 @@
             </p>
           </div>
         </div>
+        <div class="filter-wrapper" v-if="!errorFetching">
+          <div class="navigator-filter">
+            <div class="input-wrapper">
+              <FilterInput
+                v-model="filter"
+                :tags="availableTags"
+                :selected-tags.sync="selectedTagsModelValue"
+                placeholder="Filter"
+                :should-keep-open-on-blur="false"
+                :position-reversed="!renderFilterOnTop"
+                :clear-filter-on-tag-select="false"
+                class="filter-component"
+                @clear="clearFilters"
+              />
+            </div>
+            <div
+              class="magnifier-icon"
+              @click="store.toggleShowQuickNavigationModal()"
+              v-if="enableQuickNavigation"
+            >
+              <MagnifierIcon />
+            </div>
+          </div>
+        </div>
       </NavigatorCardInner>
-    </div>
-    <div class="filter-wrapper" v-if="!errorFetching">
-      <div class="navigator-filter">
-        <div class="input-wrapper">
-          <FilterInput
-            v-model="filter"
-            :tags="availableTags"
-            :selected-tags.sync="selectedTagsModelValue"
-            placeholder="Filter"
-            :should-keep-open-on-blur="false"
-            :position-reversed="isFilterReversed"
-            :clear-filter-on-tag-select="false"
-            class="filter-component"
-            @clear="clearFilters"
-          />
-        </div>
-        <div
-          class="magnifier-icon"
-          @click="store.toggleShowQuickNavigationModal()"
-          v-if="enableQuickNavigation"
-        >
-          <MagnifierIcon />
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { RecycleScroller } from 'vue-virtual-scroller';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
@@ -134,7 +135,6 @@ import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
@@ -207,7 +207,8 @@ export default {
     MagnifierIcon,
     NavigatorCardInner,
     NavigatorCardItem,
-    RecycleScroller,
+    DynamicScroller,
+    DynamicScrollerItem,
     Reference,
   },
   props: {
@@ -239,10 +240,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    breakpoint: {
-      type: String,
-      default: '',
-    },
     apiChanges: {
       type: Object,
       default: null,
@@ -262,6 +259,10 @@ export default {
     navigatorReferences: {
       type: Object,
       default: () => {},
+    },
+    renderFilterOnTop: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [
@@ -493,7 +494,6 @@ export default {
     apiChangesObject() {
       return this.apiChanges || {};
     },
-    isFilterReversed: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
@@ -936,7 +936,7 @@ export default {
      * returns 0, if inside the viewport
      * returns 1, if below the viewport
      *
-     * @param {Element} element - child element
+     * @param {HTMLAnchorElement} element - child element
      * @return Number
      */
     getChildPositionInScroller(element) {
@@ -951,7 +951,7 @@ export default {
       const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
       // get the position of the active element
       const { y: elY } = element.getBoundingClientRect();
-      const elHeight = SIDEBAR_ITEM_SIZE;
+      const elHeight = element.offsetParent.offsetHeight;
       // calculate where element starts from
       const elementStart = elY - areaY - offset.top;
       // element is above the scrollarea
@@ -968,14 +968,16 @@ export default {
     isInsideScroller(element) {
       return this.$refs.scroller.$el.contains(element);
     },
-    handleFocusIn(event) {
-      this.lastFocusTarget = event.target;
-      const multiplier = this.getChildPositionInScroller(event.target);
-      // multiplier is 0  the item is in scrollarea
-      if (multiplier === 0) return;
+    handleFocusIn({ target }) {
+      this.lastFocusTarget = target;
+      const positionIndex = this.getChildPositionInScroller(target);
+      // if multiplier is 0, the item is inside the scrollarea, no need to scroll
+      if (positionIndex === 0) return;
+      // get the height of the closest positioned item.
+      const { offsetHeight } = target.offsetParent;
       // scroll the area, up/down, based on position of child item
       this.$refs.scroller.$el.scrollBy({
-        top: SIDEBAR_ITEM_SIZE * multiplier,
+        top: offsetHeight * positionIndex,
         left: 0,
       });
     },
@@ -1159,17 +1161,35 @@ $close-icon-padding: 5px;
 
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
+  --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
+  --nav-filter-horizontal-padding: 30px;
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
   min-height: 0;
+  height: calc(var(--app-height) - var(--nav-height, 0px));
+  position: sticky;
+  top: var(--nav-height, 0px);
 
-  .navigator-card-full-height {
+  @include breakpoint(medium, nav) {
     height: 100%;
+    position: static;
+    background: var(--color-fill);
   }
 
-  .navigator-card-inner {
-    --nav-card-inner-vertical-offset: #{$filter-height};
+  &.filter-on-top {
+    .filter-wrapper {
+      order: 1;
+      position: static;
+    }
+
+    .card-body {
+      order: 2;
+    }
+  }
+
+  .navigator-card-full-height {
+    min-height: 0;
+    flex: 1 1 auto;
   }
 
   .head-inner {
@@ -1182,7 +1202,8 @@ $close-icon-padding: 5px;
   }
 
   .navigator-head {
-    padding: 0 $card-horizontal-spacing-large*2 0 $card-horizontal-spacing-large;
+    --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
+    padding: 0 var(--navigator-head-padding-right) 0 var(--card-horizontal-spacing);
     background: $navigator-head-background;
     border-bottom: 1px solid var(--color-grid);
     display: flex;
@@ -1207,19 +1228,17 @@ $close-icon-padding: 5px;
       text-decoration: none;
     }
 
-    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
-    @include safe-area-right-set(padding-right,
-      $card-horizontal-spacing-large * 2 + $close-icon-size
-    );
+    @include safe-area-left-set(padding-left, var(--card-horizontal-spacing));
+    @include safe-area-right-set(padding-right, var(--navigator-head-padding-right));
 
     @include breakpoint(medium, nav) {
       justify-content: center;
-      @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
+      --navigator-head-padding-right: var(--card-horizontal-spacing);
     }
 
     @include breakpoint(small, nav) {
       height: $nav-height-small;
-      padding: 0 $card-horizontal-spacing-large;
+      padding: 0 $nav-card-horizontal-spacing-large;
     }
   }
 
@@ -1235,7 +1254,7 @@ $close-icon-padding: 5px;
 
   .no-items {
     @include font-styles(body-reduced);
-    padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
+    padding: var(--card-vertical-spacing) var(--card-horizontal-spacing);
     // make sure the text does not get weirdly cut
     min-width: 200px;
     box-sizing: border-box;
@@ -1259,7 +1278,7 @@ $close-icon-padding: 5px;
     top: 0;
     left: 0;
     margin: 0;
-    padding: 0 $nav-padding 0 $card-horizontal-spacing-large;
+    padding: 0 $nav-padding 0 $nav-card-horizontal-spacing-large;
     height: 100%;
     @include safe-area-left-set(padding-left, $nav-padding);
   }
@@ -1304,7 +1323,6 @@ $close-icon-padding: 5px;
   height: 100%;
   @include breakpoint(medium, nav) {
     --card-vertical-spacing: 0px;
-    padding-top: $filter-height-small;
   }
 }
 
@@ -1318,23 +1336,26 @@ $close-icon-padding: 5px;
 
 .navigator-filter {
   box-sizing: border-box;
-  padding: 15px 30px;
+  padding: 15px var(--nav-filter-horizontal-padding);
   border-top: 1px solid var(--color-grid);
   height: $filter-height;
   display: flex;
   align-items: flex-end;
 
-  @include safe-area-left-set(padding-left, 30px);
-  @include safe-area-right-set(padding-right, 30px);
+  .filter-on-top & {
+    border-top: none;
+    align-items: flex-start;
+  }
+
+  @include safe-area-left-set(padding-left, var(--nav-filter-horizontal-padding));
+  @include safe-area-right-set(padding-right, var(--nav-filter-horizontal-padding));
 
   @include breakpoint(medium, nav) {
+    --nav-filter-horizontal-padding: 20px;
     border: none;
-    padding: 10px 20px;
-    align-items: flex-start;
+    padding-top: 10px;
+    padding-bottom: 10px;
     height: $filter-height-small;
-
-    @include safe-area-left-set(padding-left, 20px);
-    @include safe-area-right-set(padding-right, 20px);
   }
 
   .input-wrapper {
@@ -1380,19 +1401,8 @@ $close-icon-padding: 5px;
   background: var(--color-fill);
 
   .sidebar-transitioning & {
+    flex: 1 0 $filter-height;
     overflow: hidden;
-  }
-
-  @include breakpoint(medium, nav) {
-    position: absolute;
-    top: $nav-height;
-    // nudge to show the border
-    margin-top: 1px;
-    bottom: auto;
-    width: 100%;
-  }
-  @include breakpoint(small, nav) {
-    top: $nav-height-small;
   }
 }
 
