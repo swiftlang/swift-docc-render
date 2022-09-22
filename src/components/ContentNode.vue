@@ -114,7 +114,19 @@ function renderNode(createElement, references) {
     ))
   ));
 
-  const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none) => {
+  const renderTableCell = (
+    element, attrs, data, cellIndex, rowIndex, extendedData,
+  ) => {
+    const { colspan, rowspan } = extendedData[`${rowIndex}_${cellIndex}`] || {};
+    // if either is `0`, then its spanned over and should not be rendered
+    if (colspan === 0 || rowspan === 0) return null;
+    return createElement(element, { attrs: { ...attrs, colspan, rowspan } }, (
+      renderChildren(data)
+    ));
+  };
+
+  const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none, extendedData = {}) => {
+    // build the matrix for the array
     switch (headerStyle) {
     // thead with first row and th for each first row cell
     // tbody with rows where first cell in each row is th, others are td
@@ -122,21 +134,15 @@ function renderNode(createElement, references) {
       const [firstRow, ...otherRows] = rows;
       return [
         createElement('thead', {}, [
-          createElement('tr', {}, firstRow.map(cell => (
-            createElement('th', { attrs: { scope: 'col' } }, (
-              renderChildren(cell)
-            ))
+          createElement('tr', {}, firstRow.map((cell, cellIndex) => (
+            renderTableCell('th', { scope: 'col' }, cell, cellIndex, 0, extendedData)
           ))),
         ]),
-        createElement('tbody', {}, otherRows.map(([firstCell, ...otherCells]) => (
+        createElement('tbody', {}, otherRows.map(([firstCell, ...otherCells], rowIndex) => (
           createElement('tr', {}, [
-            createElement('th', { attrs: { scope: 'row' } }, (
-              renderChildren(firstCell)
-            )),
-            ...otherCells.map(cell => (
-              createElement('td', {}, (
-                renderChildren(cell)
-              ))
+            renderTableCell('th', { scope: 'row' }, firstCell, 0, rowIndex + 1, extendedData),
+            ...otherCells.map((cell, cellIndex) => (
+              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex + 1, extendedData)
             )),
           ])
         ))),
@@ -145,15 +151,11 @@ function renderNode(createElement, references) {
     // tbody with rows, th for first cell of each row, td for other cells
     case TableHeaderStyle.column:
       return [
-        createElement('tbody', {}, rows.map(([firstCell, ...otherCells]) => (
+        createElement('tbody', {}, rows.map(([firstCell, ...otherCells], rowIndex) => (
           createElement('tr', {}, [
-            createElement('th', { attrs: { scope: 'row' } }, (
-              renderChildren(firstCell)
-            )),
-            ...otherCells.map(cell => (
-              createElement('td', {}, (
-                renderChildren(cell)
-              ))
+            renderTableCell('th', { scope: 'row' }, firstCell, 0, rowIndex, extendedData),
+            ...otherCells.map((cell, cellIndex) => (
+              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex, extendedData)
             )),
           ])
         ))),
@@ -164,17 +166,13 @@ function renderNode(createElement, references) {
       const [firstRow, ...otherRows] = rows;
       return [
         createElement('thead', {}, [
-          createElement('tr', {}, firstRow.map(cell => (
-            createElement('th', { attrs: { scope: 'col' } }, (
-              renderChildren(cell)
-            ))
+          createElement('tr', {}, firstRow.map((cell, cellIndex) => renderTableCell(
+            'th', { scope: 'col' }, cell, cellIndex, 0, extendedData,
           ))),
         ]),
-        createElement('tbody', {}, otherRows.map(row => (
-          createElement('tr', {}, row.map(cell => (
-            createElement('td', {}, (
-              renderChildren(cell)
-            ))
+        createElement('tbody', {}, otherRows.map((row, rowIndex) => (
+          createElement('tr', {}, row.map((cell, cellIndex) => (
+            renderTableCell('td', {}, cell, cellIndex, rowIndex + 1, extendedData)
           )))
         ))),
       ];
@@ -183,12 +181,10 @@ function renderNode(createElement, references) {
       // tbody with all rows and every cell is td
       return [
         createElement('tbody', {}, (
-          rows.map(row => (
+          rows.map((row, rowIndex) => (
             createElement('tr', {}, (
-              row.map(cell => (
-                createElement('td', {}, (
-                  renderChildren(cell)
-                ))
+              row.map((cell, cellIndex) => (
+                renderTableCell('td', {}, cell, cellIndex, rowIndex, extendedData)
               ))
             ))
           ))
@@ -268,8 +264,12 @@ function renderNode(createElement, references) {
         return renderFigure(node);
       }
 
-      return createElement(Table, {}, (
-        renderTableChildren(node.rows, node.header)
+      return createElement(Table, {
+        props: {
+          spanned: !!node.extendedData,
+        },
+      }, (
+        renderTableChildren(node.rows, node.header, node.extendedData)
       ));
     case BlockType.termList:
       return createElement('dl', {}, node.items.map(({ term, definition }) => [
