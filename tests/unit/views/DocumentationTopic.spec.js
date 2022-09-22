@@ -204,7 +204,7 @@ describe('DocumentationTopic', () => {
       apiChanges: null,
       allowHiding: true,
       navigatorReferences: {},
-      reverseFilterPosition: false,
+      renderFilterOnTop: false,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -212,7 +212,7 @@ describe('DocumentationTopic', () => {
       errorFetching: false,
       isFetching: false,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      reverseFilterPosition: false,
+      renderFilterOnTop: false,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       technology: TechnologyWithChildren,
@@ -260,7 +260,7 @@ describe('DocumentationTopic', () => {
       });
       await wrapper.vm.$nextTick();
       // assert navigator has display: none
-      expect(wrapper.find(Navigator).props('reverseFilterPosition')).toBe(true);
+      expect(wrapper.find(Navigator).props('renderFilterOnTop')).toBe(true);
     });
 
     it('does not apply display none to Navigator if is open', async () => {

@@ -103,7 +103,7 @@ const defaultProps = {
   technology,
   references,
   scrollLockID: 'foo',
-  reverseFilterPosition: false,
+  renderFilterOnTop: false,
   navigatorReferences,
 };
 
@@ -145,7 +145,7 @@ describe('Navigator', () => {
       technologyPath: technology.path,
       isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      reverseFilterPosition: defaultProps.reverseFilterPosition,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,
@@ -200,7 +200,7 @@ describe('Navigator', () => {
       technologyPath: fallbackTechnology.url,
       isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      reverseFilterPosition: defaultProps.reverseFilterPosition,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,

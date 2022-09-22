@@ -23,7 +23,7 @@
       :active-path="activePath"
       :scrollLockID="scrollLockID"
       :error-fetching="errorFetching"
-      :reverseFilterPosition="reverseFilterPosition"
+      :render-filter-on-top="renderFilterOnTop"
       :api-changes="apiChanges"
       :allow-hiding="allowHiding"
       :enableQuickNavigation="enableQuickNavigation"
@@ -114,7 +114,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    reverseFilterPosition: {
+    renderFilterOnTop: {
       type: Boolean,
       default: false,
     },

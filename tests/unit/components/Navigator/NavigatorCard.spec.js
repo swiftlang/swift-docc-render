@@ -156,7 +156,7 @@ const defaultProps = {
   activePath,
   type: TopicTypes.module,
   scrollLockID: 'foo',
-  reverseFilterPosition: false,
+  renderFilterOnTop: false,
   navigatorReferences,
 };
 
@@ -378,16 +378,16 @@ describe('NavigatorCard', () => {
   it('reverses the FilterInput, on mobile', async () => {
     const wrapper = createWrapper({
       propsData: {
-        reverseFilterPosition: true,
+        renderFilterOnTop: true,
       },
     });
-    expect(wrapper.classes()).toContain('filter-reversed');
+    expect(wrapper.classes()).toContain('filter-on-top');
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
     wrapper.setProps({
-      reverseFilterPosition: false,
+      renderFilterOnTop: false,
     });
     await flushPromises();
-    expect(wrapper.classes()).not.toContain('filter-reversed');
+    expect(wrapper.classes()).not.toContain('filter-on-top');
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(true);
   });
 

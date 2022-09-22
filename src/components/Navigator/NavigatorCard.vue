@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="navigator-card" :class="{ 'filter-reversed': reverseFilterPosition }">
+  <div class="navigator-card" :class="{ 'filter-on-top': renderFilterOnTop }">
     <div class="navigator-card-full-height">
       <NavigatorCardInner>
         <div class="head-wrapper">
@@ -92,7 +92,7 @@
                 :selected-tags.sync="selectedTagsModelValue"
                 placeholder="Filter"
                 :should-keep-open-on-blur="false"
-                :position-reversed="!reverseFilterPosition"
+                :position-reversed="!renderFilterOnTop"
                 :clear-filter-on-tag-select="false"
                 class="filter-component"
                 @clear="clearFilters"
@@ -255,7 +255,7 @@ export default {
       type: Object,
       default: () => {},
     },
-    reverseFilterPosition: {
+    renderFilterOnTop: {
       type: Boolean,
       default: false,
     },
@@ -1156,7 +1156,7 @@ $close-icon-padding: 5px;
     background: var(--color-fill);
   }
 
-  &.filter-reversed {
+  &.filter-on-top {
     .filter-wrapper {
       order: 1;
       position: static;
@@ -1322,7 +1322,7 @@ $close-icon-padding: 5px;
   display: flex;
   align-items: flex-end;
 
-  .filter-reversed & {
+  .filter-on-top & {
     border-top: none;
     align-items: flex-start;
   }
