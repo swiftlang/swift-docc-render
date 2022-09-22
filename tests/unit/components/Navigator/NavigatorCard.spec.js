@@ -364,6 +364,30 @@ describe('NavigatorCard', () => {
     expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
   });
 
+  it('allows expand/collapse all symbols when clicking on framework name + while pressing alt', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    // assert initial items are rendered
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+
+    const navHead = wrapper.find('.navigator-head');
+
+    // open all children symbols
+    navHead.trigger('click', { altKey: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
+
+    // close all children symbols
+    navHead.trigger('click', { altKey: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+
+    // open all children symbols
+    navHead.trigger('click', { altKey: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
+  });
+
   it('allows the user to navigate to the first item on the list when pressing alt + up key', async () => {
     const wrapper = createWrapper();
     await flushPromises();
