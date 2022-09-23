@@ -10,6 +10,10 @@
 
 import { documentationTopicName } from 'docc-render/constants/router';
 
+/**
+ * Pixel based value for the extra scroll offset for doc pages.
+ * @type {number}
+ */
 export const EXTRA_DOCUMENTATION_OFFSET = 10;
 
 /**
