@@ -348,15 +348,6 @@ describe('AdjustableSidebarWidth', () => {
     expect(wrapper.vm.asideStyles).toHaveProperty('--app-height', '700px');
   });
 
-  it('disabled the resizing capabilities', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        disableResizing: true,
-      },
-    });
-    expect(wrapper.find('.resize-handle').exists()).toBe(false);
-  });
-
   it('allows dragging the handle to expand/contract the sidebar, with the mouse', () => {
     const wrapper = createWrapper();
     const aside = wrapper.find('.aside');
@@ -566,7 +557,7 @@ describe('AdjustableSidebarWidth', () => {
   it('allows hard-coding a width', async () => {
     const wrapper = createWrapper({
       propsData: {
-        hardWidth: 200,
+        fixedWidth: 200,
       },
     });
     expect(wrapper.vm.asideStyles).toHaveProperty('width', '200px');
@@ -576,18 +567,7 @@ describe('AdjustableSidebarWidth', () => {
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
     assertWidth(wrapper, 200); // hardcoded width
-    // drag the resize handle
-    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mouseevent' });
-    document.dispatchEvent(createEvent(eventsMap.mouse.move, {
-      clientX: 800,
-    }));
-    assertWidth(wrapper, 750); // 50% of 1500, on large
-    // make it small now
-    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mouseevent' });
-    document.dispatchEvent(createEvent(eventsMap.mouse.move, {
-      clientX: 100,
-    }));
-    assertWidth(wrapper, 200); // hardcoded width
+    expect(wrapper.find('.resize-handle').exists()).toBe(false);
   });
 
   describe('stores the content width in the store', () => {

@@ -37,7 +37,7 @@
         />
       </div>
       <div
-        v-if="!disableResizing"
+        v-if="!fixedWidth"
         class="resize-handle"
         @mousedown.prevent="startDrag"
         @touchstart.prevent="startDrag"
@@ -114,11 +114,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    disableResizing: {
-      type: Boolean,
-      default: false,
-    },
-    hardWidth: {
+    fixedWidth: {
       type: Number,
       default: null,
     },
@@ -140,7 +136,7 @@ export default {
     return {
       isDragging: false,
       // limit the width to a range
-      width: this.hardWidth || Math.min(Math.max(storedWidth, minWidth), maxWidth),
+      width: this.fixedWidth || Math.min(Math.max(storedWidth, minWidth), maxWidth),
       isTouch: false,
       windowWidth,
       windowHeight,
@@ -155,11 +151,11 @@ export default {
   computed: {
     minWidthPercent: ({ breakpoint }) => minWidthResponsivePercents[breakpoint] || 0,
     maxWidthPercent: ({ breakpoint }) => maxWidthResponsivePercents[breakpoint] || 100,
-    maxWidth: ({ maxWidthPercent, windowWidth, hardWidth }) => (
-      Math.max(hardWidth, calcWidthPercent(maxWidthPercent, windowWidth))
+    maxWidth: ({ maxWidthPercent, windowWidth, fixedWidth }) => (
+      Math.max(fixedWidth, calcWidthPercent(maxWidthPercent, windowWidth))
     ),
-    minWidth: ({ minWidthPercent, windowWidth, hardWidth }) => (
-      Math.min(hardWidth || windowWidth, calcWidthPercent(minWidthPercent, windowWidth))
+    minWidth: ({ minWidthPercent, windowWidth, fixedWidth }) => (
+      Math.min(fixedWidth || windowWidth, calcWidthPercent(minWidthPercent, windowWidth))
     ),
     widthInPx: ({ width }) => `${width}px`,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
