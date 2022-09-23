@@ -11,7 +11,7 @@
 import throttle from 'docc-render/utils/throttle';
 
 const func = jest.fn();
-const time = 100;
+const time = 10;
 const timeout = t => new Promise(r => setTimeout(r, t));
 
 describe('throttle', () => {
@@ -23,17 +23,17 @@ describe('throttle', () => {
     throttled(2);
     throttled(3);
     expect(func).toHaveBeenCalledTimes(1);
-    await timeout(50);
+    await timeout(5);
     throttled(4);
     // this is the last call before the timeout ends
     throttled(5);
     expect(func).toHaveBeenCalledTimes(1);
-    await timeout(time * 2);
+    await timeout(time);
     expect(func).toHaveBeenCalledTimes(2);
     // register new call
     throttled(6);
     // make sure its called after it ends
-    await timeout(time * 2);
+    await timeout(time + 1);
 
     expect(func).toHaveBeenCalledTimes(3);
     expect(func).toHaveBeenNthCalledWith(1, 1);
