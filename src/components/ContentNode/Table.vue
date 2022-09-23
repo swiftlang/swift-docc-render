@@ -62,6 +62,18 @@ table {
     border-style: solid;
     border-width: var(--table-border-width, 1px 1px);
     padding: rem(10px);
+
+    &.left-cell {
+      text-align: left;
+    }
+
+    &.right-cell {
+      text-align: right;
+    }
+
+    &.center-cell {
+      text-align: center;
+    }
   }
 }
 </style>
