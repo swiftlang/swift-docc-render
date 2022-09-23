@@ -11,7 +11,9 @@
 import { shallowMount } from '@vue/test-utils';
 import ContentTable from 'docc-render/components/DocumentationTopic/ContentTable.vue';
 
-const { OnThisPageSection } = ContentTable.components;
+const {
+  LinkableHeading,
+} = ContentTable.components;
 
 describe('ContentTable', () => {
   let wrapper;
@@ -27,21 +29,14 @@ describe('ContentTable', () => {
     wrapper = shallowMount(ContentTable, { propsData, slots });
   });
 
-  it('renders an `OnThisPageSection` root', () => {
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.classes('contenttable')).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: propsData.anchor,
-      title: propsData.title,
-    });
-    expect(wrapper.is('.contenttable')).toBe(true);
+  it('renders a `section.conntenttable`', () => {
+    expect(wrapper.is('section.contenttable')).toBe(true);
   });
 
   it('renders an h2 title', () => {
     const title = wrapper.find('.title');
     expect(title.exists()).toBe(true);
-    expect(title.is('h2')).toBe(true);
+    expect(title.is(LinkableHeading)).toBe(true);
     expect(title.text()).toBe(propsData.title);
   });
 

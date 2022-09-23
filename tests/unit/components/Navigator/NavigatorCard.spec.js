@@ -11,14 +11,13 @@
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
-import { RecycleScroller } from 'vue-virtual-scroller';
+import { DynamicScroller } from 'vue-virtual-scroller';
 import 'intersection-observer';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
-import { BreakpointName } from '@/utils/breakpoints';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
@@ -42,9 +41,9 @@ const {
   HIDE_DEPRECATED_TAG,
 } = NavigatorCard.constants;
 
-const RecycleScrollerStub = {
-  props: RecycleScroller.props,
-  template: '<div class="vue-recycle-scroller-stub"><template v-for="(item, index) in items"><slot v-bind="{ item, index }" /></template></div>',
+const DynamicScrollerStub = {
+  props: DynamicScroller.props,
+  template: '<div class="vue-recycle-scroller-stub"><template v-for="(item, index) in items"><slot v-bind="{ item, index, active: false }" /></template></div>',
   methods: {
     scrollToItem: jest.fn(),
   },
@@ -113,6 +112,22 @@ const root1 = {
   childUIDs: [],
 };
 
+const groupMarker = {
+  type: TopicTypes.groupMarker,
+  title: 'First Child Group Marker',
+  uid: 22,
+  parent: root0.uid,
+  depth: 1,
+  index: 4,
+  childUIDs: [root0Child0.uid, root0Child1.uid],
+  deprecatedChildrenCount: 0,
+};
+
+const root0WithGroupMarker = {
+  ...root0,
+  childUIDs: [groupMarker.uid].concat(root0.childUIDs),
+};
+
 const children = [
   root0,
   root0Child0,
@@ -121,8 +136,19 @@ const children = [
   root1,
 ];
 
-const activePath = [root0.path, root0Child0.path];
+const childrenWithGroupMarker = [
+  root0WithGroupMarker,
+  groupMarker,
+  root0Child0,
+  root0Child1,
+  root0Child1GrandChild0,
+  root1,
+];
 
+const activePath = [root0.path, root0Child0.path];
+const navigatorReferences = {
+  foo: {},
+};
 const defaultProps = {
   technology: 'TestKit',
   technologyPath: '/documentation/testkit',
@@ -130,7 +156,8 @@ const defaultProps = {
   activePath,
   type: TopicTypes.module,
   scrollLockID: 'foo',
-  breakpoint: 'large',
+  renderFilterOnTop: false,
+  navigatorReferences,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorCard, {
@@ -139,7 +166,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
     ...propsData,
   },
   stubs: {
-    RecycleScroller: RecycleScrollerStub,
+    DynamicScroller: DynamicScrollerStub,
     NavigatorCardItem,
   },
   sync: false,
@@ -171,8 +198,23 @@ function mergeSessionState(state) {
   };
 }
 
+function setOffsetParent(element, value) {
+  Object.defineProperty(element, 'offsetParent', {
+    value,
+    writable: true,
+  });
+}
+
+function attachDivWithID(id) {
+  if (document.getElementById(id)) return;
+  const div = document.createElement('DIV');
+  div.id = id;
+  document.body.appendChild(div);
+}
+
 describe('NavigatorCard', () => {
   beforeEach(() => {
+    document.body.innerHTML = '';
     jest.clearAllMocks();
     // mock the position helper function, as its too difficult to mock the boundingClientRects
     getChildPositionInScroller = jest.spyOn(NavigatorCard.methods, 'getChildPositionInScroller')
@@ -187,7 +229,7 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
     expect(wrapper.find('.card-link').is('h2')).toBe(true);
     // assert scroller
-    const scroller = wrapper.find(RecycleScroller);
+    const scroller = wrapper.find(DynamicScroller);
     expect(wrapper.vm.activePathChildren).toHaveLength(2);
     expect(scroller.props()).toMatchObject({
       items: [
@@ -196,11 +238,10 @@ describe('NavigatorCard', () => {
         root0Child1, // we skip the grandchild, its parent is not open
         root1,
       ],
-      itemSize: SIDEBAR_ITEM_SIZE,
+      minItemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
-      buffer: 1000,
     });
-    expect(wrapper.find(RecycleScroller).attributes('aria-label')).toBe('Documentation Navigator');
+    expect(wrapper.find(DynamicScroller).attributes('aria-label')).toBe('Documentation Navigator');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
     // assert CardItem
     const items = wrapper.findAll(NavigatorCardItem);
@@ -215,6 +256,7 @@ describe('NavigatorCard', () => {
       item: root0,
       apiChange: null,
       enableFocus: false,
+      navigatorReferences,
     });
     // assert no-items-wrapper
     expect(wrapper.find('.no-items-wrapper').exists()).toBe(true);
@@ -322,6 +364,30 @@ describe('NavigatorCard', () => {
     expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
   });
 
+  it('allows expand/collapse all symbols when clicking on framework name + while pressing alt', async () => {
+    const wrapper = createWrapper();
+    await flushPromises();
+    // assert initial items are rendered
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+
+    const navHead = wrapper.find('.navigator-head');
+
+    // open all children symbols
+    navHead.trigger('click', { altKey: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
+
+    // close all children symbols
+    navHead.trigger('click', { altKey: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+
+    // open all children symbols
+    navHead.trigger('click', { altKey: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
+  });
+
   it('allows the user to navigate to the first item on the list when pressing alt + up key', async () => {
     const wrapper = createWrapper();
     await flushPromises();
@@ -336,10 +402,17 @@ describe('NavigatorCard', () => {
   it('reverses the FilterInput, on mobile', async () => {
     const wrapper = createWrapper({
       propsData: {
-        breakpoint: BreakpointName.medium,
+        renderFilterOnTop: true,
       },
     });
+    expect(wrapper.classes()).toContain('filter-on-top');
     expect(wrapper.find(FilterInput).props('positionReversed')).toBe(false);
+    wrapper.setProps({
+      renderFilterOnTop: false,
+    });
+    await flushPromises();
+    expect(wrapper.classes()).not.toContain('filter-on-top');
+    expect(wrapper.find(FilterInput).props('positionReversed')).toBe(true);
   });
 
   it('renders aria-live regions for polite and assertive notifications', () => {
@@ -348,10 +421,10 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('[aria-live="assertive"]').exists()).toBe(true);
   });
 
-  it('hides the RecycleScroller, if no items to show', async () => {
+  it('hides the DynamicScroller, if no items to show', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    const scroller = wrapper.find(RecycleScroller);
+    const scroller = wrapper.find(DynamicScroller);
     expect(scroller.isVisible()).toBe(true);
     wrapper.find(FilterInput).vm.$emit('input', 'bad-query');
     await wrapper.vm.$nextTick();
@@ -361,7 +434,7 @@ describe('NavigatorCard', () => {
   it('renders a message updating aria-live, if no items found when filtering', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    const scroller = wrapper.find(RecycleScroller);
+    const scroller = wrapper.find(DynamicScroller);
     expect(scroller.isVisible()).toBe(true);
     wrapper.find(FilterInput).vm.$emit('input', 'bad-query');
     await wrapper.vm.$nextTick();
@@ -377,7 +450,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    const scroller = wrapper.find(RecycleScroller);
+    const scroller = wrapper.find(DynamicScroller);
     expect(scroller.isVisible()).toBe(false);
     expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_CHILDREN);
   });
@@ -426,6 +499,7 @@ describe('NavigatorCard', () => {
         isRendered: false,
         apiChange: null,
         enableFocus: false,
+        navigatorReferences,
       });
       unopenedItem.vm.$emit('toggle', item);
       await wrapper.vm.$nextTick();
@@ -541,6 +615,23 @@ describe('NavigatorCard', () => {
       expect(all).toHaveLength(3);
       expect(all.at(1).props('item')).toEqual(root0Child1);
       expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    });
+
+    it('keeps groupMarkers in mind, when `@toggle-full` is handled', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          // make sure no items are open
+          activePath: [],
+          children: childrenWithGroupMarker,
+        },
+      });
+      await flushPromises();
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-full', root0);
+      await flushPromises();
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(6);
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-full', root0);
+      await flushPromises();
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
     });
   });
 
@@ -810,6 +901,56 @@ describe('NavigatorCard', () => {
       expect(allItems.at(3).props('item')).toEqual(root1WithChildren);
       expect(allItems.at(4).props('item')).toEqual(root1Child0);
     });
+
+    it('toggles siblings properly, even when there are groupMarkers', async () => {
+      const wrapper = createWrapper({
+        propsData: {
+          children: [
+            root0WithGroupMarker,
+            groupMarker,
+            root0Child0WithChildren,
+            root0Child0WithChildrenGrandChild0,
+            root0Child1,
+            root0Child1GrandChild0,
+            root1WithChildren,
+            root1Child0,
+          ],
+          activePath: [root0WithGroupMarker.path],
+        },
+      });
+      await flushPromises();
+      // assert we have 3 items rendered
+      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
+      // open the item and it's siblings
+      wrapper.find(NavigatorCardItem).vm.$emit('toggle-siblings', root0Child1);
+      await flushPromises();
+      // assert we have one extra item visible
+      let allItems = wrapper.findAll(NavigatorCardItem);
+      // assert all items are as we expect them to be
+      expect(allItems).toHaveLength(7);
+      expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
+      expect(allItems.at(1).props('item')).toEqual(groupMarker);
+      expect(allItems.at(2).props('item')).toEqual(root0Child0WithChildren);
+      expect(allItems.at(3).props('item')).toEqual(root0Child0WithChildrenGrandChild0);
+      expect(allItems.at(4).props('item')).toEqual(root0Child1);
+      expect(allItems.at(5).props('item')).toEqual(root0Child1GrandChild0);
+      expect(allItems.at(6).props('item')).toEqual(root1WithChildren);
+
+      // toggle the items
+      allItems.at(0).vm.$emit('toggle-siblings', root0Child1);
+      await flushPromises();
+      allItems = wrapper.findAll(NavigatorCardItem);
+      expect(allItems).toHaveLength(5);
+      expect(allItems.at(0).props()).toMatchObject({
+        item: root0WithGroupMarker,
+        expanded: true,
+      });
+      expect(allItems.at(1).props('item')).toEqual(groupMarker);
+      expect(allItems.at(2).props())
+        .toMatchObject({ item: root0Child0WithChildren, expanded: false });
+      expect(allItems.at(3).props()).toMatchObject({ item: root0Child1, expanded: false });
+      expect(allItems.at(4).props()).toMatchObject({ item: root1WithChildren, expanded: false });
+    });
   });
 
   describe('on @focus-parent', () => {
@@ -929,16 +1070,17 @@ describe('NavigatorCard', () => {
   });
 
   it('allows filtering the items, opening all items, that have matches in children', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     await flushPromises();
     // item is not scrolled to
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     const filter = wrapper.find(FilterInput);
     filter.vm.$emit('input', root0Child1GrandChild0.title);
     await flushPromises();
     // assert list is scrolled to the top
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(3);
@@ -959,6 +1101,7 @@ describe('NavigatorCard', () => {
       root0Child1GrandChild0,
       root1,
     ];
+    attachDivWithID(root0Child0.uid);
 
     const wrapper = createWrapper({
       propsData: {
@@ -970,8 +1113,8 @@ describe('NavigatorCard', () => {
     // make sure we match at both the top item as well as one of its children
     filter.vm.$emit('input', 'Second');
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -980,13 +1123,14 @@ describe('NavigatorCard', () => {
   });
 
   it('renders all the children of a directly matched parent', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
     filter.vm.$emit('input', root0.title);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     let all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
@@ -1007,13 +1151,14 @@ describe('NavigatorCard', () => {
   });
 
   it('allows filtering the items using Tags, opening all items, that have matches in children', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(3);
@@ -1024,13 +1169,14 @@ describe('NavigatorCard', () => {
   });
 
   it('aliases `project` to `tutorial`, when filtering using tags', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
@@ -1038,13 +1184,14 @@ describe('NavigatorCard', () => {
   });
 
   it('allows filtering the items with filter and Tags, opening all items, that have matches in children', async () => {
+    attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
     await flushPromises();
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
     let all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(3);
@@ -1520,22 +1667,6 @@ describe('NavigatorCard', () => {
   });
 
   describe('with groupMarker', () => {
-    const groupMarker = {
-      type: TopicTypes.groupMarker,
-      title: 'First Child Group Marker',
-      uid: 22,
-      parent: root0.uid,
-      depth: 1,
-      index: 4,
-      childUIDs: [root0Child0.uid, root0Child1.uid],
-      deprecatedChildrenCount: 0,
-    };
-
-    const root0Updated = {
-      ...root0,
-      childUIDs: [groupMarker.uid].concat(root0.childUIDs),
-    };
-
     it('shows "Hide Deprecated" tag, if there are deprecated items', async () => {
       const updatedChild = {
         ...root0Child0,
@@ -1545,7 +1676,8 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
-            root0Updated, groupMarker, updatedChild, root0Child1, root0Child1GrandChild0, root1,
+            root0WithGroupMarker, groupMarker, updatedChild, root0Child1, root0Child1GrandChild0,
+            root1,
           ],
           activePath: [root0.path],
         },
@@ -1563,7 +1695,7 @@ describe('NavigatorCard', () => {
       // assert the deprecated item is filtered out
       expect(allItems).toHaveLength(4);
       // assert root is rendered
-      expect(allItems.at(0).props('item')).toEqual(root0Updated);
+      expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
       // assert the group marker is rendered
       expect(allItems.at(1).props('item')).toEqual(groupMarker);
       // assert the none-deprecated child is rendered, but its not expanded
@@ -1578,7 +1710,7 @@ describe('NavigatorCard', () => {
       allItems = wrapper.findAll(NavigatorCardItem);
       // assert that filtering opens everything as usual, showing groupMarkers as well
       expect(allItems).toHaveLength(4);
-      expect(allItems.at(0).props('item')).toEqual(root0Updated);
+      expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(allItems.at(1).props('item')).toEqual(groupMarker);
       expect(allItems.at(2).props('item')).toEqual(root0Child1);
       expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
@@ -1588,7 +1720,8 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
-            root0Updated, groupMarker, root0Child0, root0Child1, root0Child1GrandChild0, root1,
+            root0WithGroupMarker, groupMarker, root0Child0, root0Child1, root0Child1GrandChild0,
+            root1,
           ],
           activePath: [root0.path],
         },
@@ -1600,7 +1733,7 @@ describe('NavigatorCard', () => {
       let items = wrapper.findAll(NavigatorCardItem);
       // parent + group and 2 siblings
       expect(items).toHaveLength(4);
-      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(items.at(1).props('item')).toEqual(groupMarker);
       expect(items.at(2).props('item')).toEqual(root0Child0);
       expect(items.at(3).props('item')).toEqual(root0Child1);
@@ -1615,7 +1748,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       items = wrapper.findAll(NavigatorCardItem);
       expect(items).toHaveLength(5);
-      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(items.at(1).props('item')).toEqual(groupMarker);
       expect(items.at(2).props('item')).toEqual(root0Child0);
       expect(items.at(3).props('item')).toEqual(root0Child1);
@@ -1628,7 +1761,7 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper({
         propsData: {
           children: [
-            root0Updated, groupMarker, root0Child0Clone,
+            root0WithGroupMarker, groupMarker, root0Child0Clone,
             root0Child1Clone, root0Child1GrandChild0, root1,
           ],
           activePath: [root0.path],
@@ -1642,7 +1775,7 @@ describe('NavigatorCard', () => {
       const items = wrapper.findAll(NavigatorCardItem);
       // parent + group and 1 item
       expect(items).toHaveLength(3);
-      expect(items.at(0).props('item')).toEqual(root0Updated);
+      expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(items.at(1).props('item')).toEqual(groupMarker);
       expect(items.at(2).props('item')).toEqual(root0Child1Clone);
     });
@@ -1660,7 +1793,7 @@ describe('NavigatorCard', () => {
         childUIDs: [],
       };
       const groupMarkerClone = { ...groupMarker, deprecatedChildrenCount: 2 };
-      const root0Clone = { ...root0Updated, deprecated: true };
+      const root0Clone = { ...root0WithGroupMarker, deprecated: true };
       const wrapper = createWrapper({
         propsData: {
           children: [
@@ -1699,15 +1832,6 @@ describe('NavigatorCard', () => {
       ...root0Child0,
       deprecated: true,
     };
-    const groupMarker = {
-      type: TopicTypes.groupMarker,
-      title: 'First Child Group Marker',
-      uid: 22,
-      parent: root0.uid,
-      depth: 1,
-      index: 4,
-      childUIDs: [],
-    };
     const root0Updated = {
       ...root0,
       childUIDs: root0.childUIDs.concat(groupMarker.uid),
@@ -1742,10 +1866,14 @@ describe('NavigatorCard', () => {
   describe('navigating', () => {
     it('changes the open item, when navigating across pages, keeping the previously open items', async () => {
       // simulate navigating to the bottom most item.
+      attachDivWithID(root0Child0.uid);
       const wrapper = createWrapper();
       await flushPromises();
+      // item is in viewport, no need to scroll to it
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
       // simulate the new item is below the fold
       getChildPositionInScroller.mockReturnValueOnce(1);
+      attachDivWithID(root0Child1GrandChild0.uid);
       wrapper.setProps({
         activePath: [
           root0.path,
@@ -1754,7 +1882,8 @@ describe('NavigatorCard', () => {
         ],
       });
       await flushPromises();
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(3);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(3);
       // assert all are open
       const all = wrapper.findAll(NavigatorCardItem);
       expect(all).toHaveLength(5);
@@ -1786,6 +1915,7 @@ describe('NavigatorCard', () => {
       // simulate the new item is above the scrollarea
       getChildPositionInScroller.mockReturnValueOnce(-1);
       // navigate to the top level sibling
+      attachDivWithID(root1.uid);
       wrapper.setProps({
         activePath: [
           root1.path,
@@ -1793,7 +1923,8 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       // assert it scrolls to the item
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(4);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(4);
       // assert items are still open
       expect(all.at(0).props()).toMatchObject({
         expanded: true,
@@ -1828,13 +1959,18 @@ describe('NavigatorCard', () => {
     });
 
     it('tracks current open item, from clicking child items, handling duplicate router changes on the way', async () => {
+      attachDivWithID(root0Child0.uid);
       const wrapper = createWrapper();
       await flushPromises();
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
       let allItems = wrapper.findAll(NavigatorCardItem);
       const targetChild = allItems.at(2);
       expect(targetChild.props('item')).toEqual(root0Child1);
       // simulate the new item is below the fold
       getChildPositionInScroller.mockReturnValueOnce(1);
+      // add an element with the same ID as the one we are navigating to,
+      // otherwise we won't scroll to it
+      attachDivWithID(root0Child1.uid);
       // trigger a navigation
       targetChild.vm.$emit('navigate', root0Child1.uid);
       await wrapper.vm.$nextTick();
@@ -1860,17 +1996,18 @@ describe('NavigatorCard', () => {
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
         enableFocus: false,
+        navigatorReferences,
       });
       // assert item is scrolled to once
       expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
       // now simulate the router change
       wrapper.setProps({ activePath: [root0.path, root0Child1.path] });
       await flushPromises();
       // assert its not called again
       expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       // assert items have not changed
       allItems = wrapper.findAll(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
@@ -1884,6 +2021,7 @@ describe('NavigatorCard', () => {
         isRendered: false, // this is not passed in the mock
         item: root0Child1,
         enableFocus: false,
+        navigatorReferences,
       });
     });
 
@@ -2039,62 +2177,65 @@ describe('NavigatorCard', () => {
 
   describe('scroll to item', () => {
     it('resets the scroll position, if initiating a filter', async () => {
-      const wrapper = createWrapper();
+      attachDivWithID(root0Child0.uid);
       // simulate item is above the scrollarea
       getChildPositionInScroller.mockReturnValueOnce(1);
+      const wrapper = createWrapper();
       await flushPromises();
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
       // initiate a filter
       wrapper.find(FilterInput).vm.$emit('input', root0Child1.title);
       await wrapper.vm.$nextTick();
       // assert filter is applied
       expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
       // assert scroller has been reset
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
+    });
+
+    it('scrolls to item, if HIDE_DEPRECATED_TAG is picked', async () => {
+      attachDivWithID(root0Child0.uid);
+      // simulate item is in viewport
+      getChildPositionInScroller.mockReturnValueOnce(0);
+      const wrapper = createWrapper();
+      await flushPromises();
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
+      // simulate item is below the viewport
+      getChildPositionInScroller.mockReturnValueOnce(1);
+      // add the "Hide Deprecated" tag
+      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      await flushPromises();
+      // assert current active item is still scrolled to
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
     });
 
     it('keeps the scroll position, if the item is already in the viewport, on navigation', async () => {
+      attachDivWithID(root0Child0.uid);
       const wrapper = createWrapper();
       await flushPromises();
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
+      // assert scrollToItem is not called, because its "in view"
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
+      attachDivWithID(root0Child1.uid);
       wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
       await flushPromises();
-      // make sure scrollToItem is not called, because active item is already in the viewport
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
-      // simulate header scroll
+      // make sure scrollToItem is not called again, because active item is still in the viewport
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
+      // simulate item is below the fold and assert navigating to new place scrolls the item
       getChildPositionInScroller.mockReturnValueOnce(1);
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
+      // prepare
+      attachDivWithID(root0Child1GrandChild0.uid);
+      // navigate
+      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1GrandChild0.uid);
       await flushPromises();
-      // make sure scrollToItem is not called, because active item is already in the viewport
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      // assert scrollToItem is called, because item was under the fold
+      expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerStub.methods.scrollToItem)
+        .toHaveBeenLastCalledWith(3);
     });
 
-    it('scrolls to item, if outside of visible viewport, on page navigation', async () => {
-      const wrapper = createWrapper();
-      await flushPromises();
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
-      getChildPositionInScroller.mockReturnValueOnce(-1);
-      // scroll to the item
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
-      await flushPromises();
-      // make sure scrollToItem is called
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-      // assert it was called for the 3-rd item
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2);
-      // assert scrolling beyond
-      getChildPositionInScroller.mockReturnValueOnce(1);
-      // scroll to the item
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child0.uid);
-      await flushPromises();
-      // make sure scrollToItem is called
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
-      // assert it was called for the 3-rd item
-      expect(RecycleScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
-    });
-
-    it('scrolls to the focused item, if not visible', async () => {
+    it('scrolls to the focused item, if not visible, as with the size of its closes parent', async () => {
       const wrapper = createWrapper();
       const scrollBySpy = jest.fn();
       wrapper.find({ ref: 'scroller' }).element.scrollBy = scrollBySpy;
@@ -2104,26 +2245,30 @@ describe('NavigatorCard', () => {
       getChildPositionInScroller.mockReturnValueOnce(1);
       const items = wrapper.findAll(NavigatorCardItem);
 
-      items.at(3).trigger('focusin');
+      const fourthItem = items.at(3);
+      setOffsetParent(fourthItem.element, { offsetHeight: SIDEBAR_ITEM_SIZE });
+      fourthItem.trigger('focusin');
       await flushPromises();
       expect(scrollBySpy).toHaveBeenCalledTimes(1);
       expect(scrollBySpy).toHaveBeenCalledWith({
         top: SIDEBAR_ITEM_SIZE,
         left: 0,
       });
-      // simulate item is not visible
+      // simulate item is above the visible area
       getChildPositionInScroller.mockReturnValueOnce(-1);
-      items.at(0).trigger('focusin');
+      const firstItem = items.at(0);
+      setOffsetParent(firstItem.element, { offsetHeight: SIDEBAR_ITEM_SIZE + 50 });
+      firstItem.trigger('focusin');
       await flushPromises();
       expect(scrollBySpy).toHaveBeenCalledTimes(2);
       expect(scrollBySpy).toHaveBeenCalledWith({
-        top: -1 * SIDEBAR_ITEM_SIZE,
+        top: -1 * (SIDEBAR_ITEM_SIZE + 50),
         left: 0,
       });
     });
   });
 
-  describe('handles focus/blur state issues with the RecycleScroller', () => {
+  describe('handles focus/blur state issues with the DynamicScroller', () => {
     it('keeps track of the currently focused item', async () => {
       const wrapper = createWrapper();
       await flushPromises();
@@ -2161,16 +2306,16 @@ describe('NavigatorCard', () => {
       expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
     });
 
-    it('on RecycleScroller@update, does nothing, if there is no focusTarget', async () => {
+    it('on DynamicScroller@update, does nothing, if there is no focusTarget', async () => {
       const wrapper = createWrapper();
       await flushPromises();
-      wrapper.find(RecycleScroller).vm.$emit('update');
+      wrapper.find(DynamicScroller).vm.$emit('update');
       await flushPromises();
       expect(waitFor).toHaveBeenLastCalledWith(300);
       expect(wrapper.vm.lastFocusTarget).toEqual(null);
     });
 
-    it('on RecycleScroller@update, does nothing, if focusTarget is outside scroller', async () => {
+    it('on DynamicScroller@update, does nothing, if focusTarget is outside scroller', async () => {
       const wrapper = createWrapper();
       await flushPromises();
       // Set the focus item to be something outside the scroller.
@@ -2186,7 +2331,7 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       // trigger an update
-      wrapper.find(RecycleScroller).vm.$emit('update');
+      wrapper.find(DynamicScroller).vm.$emit('update');
       await flushPromises();
       expect(waitFor).toHaveBeenLastCalledWith(300);
       // we may still have the lastFocusTarget, as it did not emit a focusOut
@@ -2195,7 +2340,7 @@ describe('NavigatorCard', () => {
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('on RecycleScroller@update, does nothing, if `lastFocusTarget === activeElement`', async () => {
+    it('on DynamicScroller@update, does nothing, if `lastFocusTarget === activeElement`', async () => {
       const wrapper = createWrapper();
       await flushPromises();
       // Set the focus item to be something outside the scroller.
@@ -2209,13 +2354,13 @@ describe('NavigatorCard', () => {
       await flushPromises();
       expect(document.activeElement).toEqual(button.element);
       // trigger an update
-      wrapper.find(RecycleScroller).vm.$emit('update');
+      wrapper.find(DynamicScroller).vm.$emit('update');
       await flushPromises();
       expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('on RecycleScroller@update, re-focuses the `lastFocusTarget` if not the current focus item', async () => {
+    it('on DynamicScroller@update, re-focuses the `lastFocusTarget` if not the current focus item', async () => {
       const wrapper = createWrapper();
       await flushPromises();
       // Set the focus item to be something outside the scroller.
@@ -2225,7 +2370,7 @@ describe('NavigatorCard', () => {
       button.trigger('focusin');
       await flushPromises();
       // trigger an update
-      wrapper.find(RecycleScroller).vm.$emit('update');
+      wrapper.find(DynamicScroller).vm.$emit('update');
       await flushPromises();
       expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
       expect(focusSpy).toHaveBeenCalledTimes(1);
@@ -2245,7 +2390,7 @@ describe('NavigatorCard', () => {
       wrapper.find(FilterInput).vm.$emit('input', 'Child');
       await flushPromises();
       // trigger an update
-      wrapper.find(RecycleScroller).vm.$emit('update');
+      wrapper.find(DynamicScroller).vm.$emit('update');
       await flushPromises();
       expect(wrapper.vm.lastFocusTarget).toEqual(null);
       expect(focusSpy).toHaveBeenCalledTimes(0);
@@ -2264,8 +2409,10 @@ describe('NavigatorCard', () => {
       const element = {
         getBoundingClientRect: () => ({
           y: 25,
-          height: SIDEBAR_ITEM_SIZE,
         }),
+        offsetParent: {
+          offsetHeight: SIDEBAR_ITEM_SIZE,
+        },
       };
       expect(wrapper.vm.getChildPositionInScroller(element)).toBe(-1);
     });
@@ -2281,8 +2428,10 @@ describe('NavigatorCard', () => {
       const element = {
         getBoundingClientRect: () => ({
           y: 1050,
-          height: SIDEBAR_ITEM_SIZE,
         }),
+        offsetParent: {
+          offsetHeight: SIDEBAR_ITEM_SIZE,
+        },
       };
       expect(wrapper.vm.getChildPositionInScroller(element)).toBe(1);
     });
@@ -2303,11 +2452,17 @@ describe('NavigatorCard', () => {
         getBoundingClientRect: () => ({
           y: 55, // visible, but not, when considering the offset
         }),
+        offsetParent: {
+          offsetHeight: SIDEBAR_ITEM_SIZE,
+        },
       })).toBe(-1);
       expect(wrapper.vm.getChildPositionInScroller({
         getBoundingClientRect: () => ({
           y: 1010, // visible, but not, when considering the offset
         }),
+        offsetParent: {
+          offsetHeight: SIDEBAR_ITEM_SIZE,
+        },
       })).toBe(1);
     });
 
@@ -2322,8 +2477,10 @@ describe('NavigatorCard', () => {
       const element = {
         getBoundingClientRect: () => ({
           y: 250,
-          height: SIDEBAR_ITEM_SIZE,
         }),
+        offsetParent: {
+          offsetHeight: SIDEBAR_ITEM_SIZE,
+        },
       };
       expect(wrapper.vm.getChildPositionInScroller(element)).toBe(0);
     });

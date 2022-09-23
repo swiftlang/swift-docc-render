@@ -34,6 +34,9 @@ $article-stacked-margin-small: 20px;
 $topic-link-icon-width: 1.294rem;
 $topic-link-icon-spacing: 1rem;
 
+// Icons
+$icon-size-default: 16px;
+
 // Code Block Style Elements
 $code-block-style-elements-padding: 8px 14px !default;
 $code-listing-with-numbers-padding: 14px 0;
@@ -63,9 +66,9 @@ $aside-width-left-border: 6px !default;
 $total-columns: 12 !default;
 
 // Navigator
-$card-horizontal-spacing: 10px;
-$card-horizontal-spacing-large: $card-horizontal-spacing * 2;
-$card-horizontal-spacing-small: $card-horizontal-spacing / 2;
+$nav-card-horizontal-spacing: 10px;
+$nav-card-horizontal-spacing-large: $nav-card-horizontal-spacing * 2;
+$nav-card-horizontal-spacing-small: $nav-card-horizontal-spacing / 2;
 
 // Small vp padding and width
 $small-viewport-content-padding: 20px !default;

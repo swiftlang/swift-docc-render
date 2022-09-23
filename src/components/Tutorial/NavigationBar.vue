@@ -174,8 +174,8 @@ export default {
   methods: {
     onSelectSection(path) {
       // Manually scroll to the section to work around a vue-router bug: https://github.com/vuejs/vue-router/issues/1668
-      const hash = `#${path.split('#')[1]}`;
-      this.scrollToElement(hash);
+      const hash = path.split('#')[1];
+      this.handleFocusAndScroll(hash);
     },
   },
 };

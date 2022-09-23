@@ -17,6 +17,7 @@
       v-for="section in sectionsWithSymbols"
       :key="section.type"
       :title="section.title"
+      :anchor="section.anchor"
     >
       <List :symbols="section.symbols" :type="section.type" />
     </Section>

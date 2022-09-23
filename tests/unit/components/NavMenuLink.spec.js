@@ -9,10 +9,10 @@
 */
 
 import NavMenuLink from 'docc-render/components/NavMenuLink.vue';
-import { RouterLinkStub, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Reference from '@/components/ContentNode/Reference.vue';
 
 const mountItem = attrs => shallowMount(NavMenuLink, {
-  stubs: { RouterLinkStub },
   ...attrs,
 });
 
@@ -50,18 +50,17 @@ describe('NavMenuLink', () => {
     expect(wrapper.find('span.nav-menu-link').classes()).toContain('current');
   });
 
-  it('renders a <router-link> for local routes', () => {
+  it('renders a <Reference> for local routes', () => {
     const wrapper = mountItem({
-      propsData: { url: { name: 'blah' } },
-      mocks: { $route: { name: 'foobar' } },
-      stubs: { 'router-link': RouterLinkStub },
+      propsData: { url: '/foo/bar' },
+      mocks: { $route: { path: '/foo/baz', query: {} } },
       slots: { default: 'Blah' },
     });
 
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.find(Reference);
     expect(link.exists()).toBe(true);
     expect(link.classes('nav-menu-link')).toBe(true);
-    expect(link.props('to')).toEqual({ name: 'blah' });
+    expect(link.props('url')).toEqual('/foo/bar');
     expect(link.text()).toBe('Blah');
   });
 });

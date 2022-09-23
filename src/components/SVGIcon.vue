@@ -30,9 +30,13 @@ export default {
       type: String,
       required: false,
     },
+    iconUrl: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
-    themeOverrideURL: ({ themeId }) => getSetting([
+    themeOverrideURL: ({ iconUrl, themeId }) => iconUrl || getSetting([
       'theme',
       'icons',
       themeId,

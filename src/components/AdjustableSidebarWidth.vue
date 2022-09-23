@@ -26,8 +26,8 @@
         class="aside"
         ref="aside"
         :aria-hidden="hiddenOnLarge ? 'true': null"
-        @transitionstart="trackTransitionStart"
-        @transitionend="trackTransitionEnd"
+        @transitionstart.self="trackTransitionStart"
+        @transitionend.self="trackTransitionEnd"
       >
         <slot
           name="aside"
@@ -420,6 +420,7 @@ export default {
     z-index: $nav-z-index + 1;
     transform: translateX(-100%);
     transition: transform 0.15s ease-in;
+    left: 0;
 
     /deep/ .aside-animated-child {
       opacity: 0;

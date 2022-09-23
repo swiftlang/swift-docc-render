@@ -17,6 +17,7 @@ import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
@@ -33,10 +34,13 @@ const TechnologyWithChildren = {
   children: [],
 };
 
+const navigatorReferences = { foo: {} };
+
 jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
   interfaceLanguages: {
     [Language.swift.key.url]: [TechnologyWithChildren, { path: 'another/technology' }],
   },
+  references: navigatorReferences,
 });
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
@@ -195,11 +199,12 @@ describe('DocumentationTopic', () => {
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      breakpoint: 'large',
       // assert we are passing the default technology, if we dont have the children yet
       technology,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences: {},
+      renderFilterOnTop: false,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -207,12 +212,13 @@ describe('DocumentationTopic', () => {
       errorFetching: false,
       isFetching: false,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      breakpoint: 'large',
+      renderFilterOnTop: false,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       technology: TechnologyWithChildren,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
@@ -242,6 +248,19 @@ describe('DocumentationTopic', () => {
       await wrapper.vm.$nextTick();
       // assert navigator has display: none
       expect(wrapper.find(Navigator).attributes('style')).toContain('display: none');
+    });
+
+    it('reverses the filter position of the navigator', async () => {
+      // renders a closed navigator
+      wrapper.setData({
+        topicData: {
+          ...topicData,
+          schemaVersion: schemaVersionWithSidebar,
+        },
+      });
+      await wrapper.vm.$nextTick();
+      // assert navigator has display: none
+      expect(wrapper.find(Navigator).props('renderFilterOnTop')).toBe(true);
     });
 
     it('does not apply display none to Navigator if is open', async () => {
@@ -535,7 +554,45 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
+      enableOnThisPageNav: false,
+      topicSectionsStyle: TopicSectionsStyle.list, // default value
+      disableHeroBackground: false,
     });
+  });
+
+  it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
+    wrapper.destroy();
+    wrapper = shallowMount(DocumentationTopic, {
+      mocks,
+      provide: { isTargetIDE: true },
+      stubs: {
+        // renders sidebar on a small device
+        AdjustableSidebarWidth: AdjustableSidebarWidthSmallStub,
+        NavigatorDataProvider,
+      },
+    });
+    wrapper.setData({ topicData });
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+  });
+
+  it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
+    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    wrapper.setData({ store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
+    await flushPromises();
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
+  });
+
+  it('passes `topicSectionsStyle`', () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        topicSectionsStyle: TopicSectionsStyle.detailedGrid,
+      },
+    });
+
+    const topic = wrapper.find(Topic);
+    expect(topic.props('topicSectionsStyle')).toEqual(TopicSectionsStyle.detailedGrid);
   });
 
   it('provides an empty languagePaths, even if no variants', () => {

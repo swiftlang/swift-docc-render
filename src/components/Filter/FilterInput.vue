@@ -531,8 +531,8 @@ $input-height: rem(28px);
     border-radius: 100%;
 
     .clear-rounded-icon {
-      height: rem(16px);
-      width: rem(16px);
+      height: $icon-size-default;
+      width: $icon-size-default;
       fill: var(--input-text);
       display: block;
     }
