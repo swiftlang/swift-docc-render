@@ -39,7 +39,7 @@
                       :references="topicProps.references"
                       :navigator-references="slotProps.references"
                       :scrollLockID="scrollLockID"
-                      :breakpoint="breakpoint"
+                      :render-filter-on-top="breakpoint !== BreakpointName.large"
                       @close="handleToggleSidenav(breakpoint)"
                     />
                   </transition>
@@ -187,6 +187,7 @@ export default {
         relationshipsSections,
         references = {},
         sampleCodeDownload,
+        topicSectionsStyle,
         topicSections,
         seeAlsoSections,
         variantOverrides,
@@ -212,6 +213,7 @@ export default {
         sampleCodeDownload,
         title,
         topicSections,
+        topicSectionsStyle,
         seeAlsoSections,
         variantOverrides,
         symbolKind,

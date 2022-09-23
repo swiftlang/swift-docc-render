@@ -16,11 +16,11 @@
       :title="section.title"
       :anchor="section.anchor"
     >
-      <template v-if="wrapTitle" slot="title">
+      <template v-if="wrapTitle" #title="{ className }">
         <LinkableHeading
           :level="3"
           :anchor="section.anchor"
-          class="title"
+          :class="className"
           :register-on-this-page="false"
         >
           <WordBreak>{{ section.title }}</WordBreak>
@@ -32,13 +32,21 @@
       <template v-if="section.discussion" slot="discussion">
         <ContentNode :content="section.discussion.content" />
       </template>
-      <TopicsLinkBlock
-        v-for="topic in section.topics"
+      <template v-if="shouldRenderList">
+        <TopicsLinkBlock
+          v-for="topic in section.topics"
+          class="topic"
+          :key="topic.identifier"
+          :topic="topic"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+      </template>
+      <TopicsLinkCardGrid
+        v-else
+        :items="section.topics"
+        :topicStyle="topicStyle"
         class="topic"
-        :key="topic.identifier"
-        :topic="topic"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
       />
     </ContentTableSection>
   </ContentTable>
@@ -47,6 +55,8 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
+import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
@@ -62,6 +72,7 @@ export default {
     },
   },
   components: {
+    TopicsLinkCardGrid,
     WordBreak,
     ContentTable,
     TopicsLinkBlock,
@@ -94,8 +105,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    topicStyle: {
+      type: String,
+      default: TopicSectionsStyle.list,
+    },
   },
   computed: {
+    shouldRenderList: ({ topicStyle }) => topicStyle === TopicSectionsStyle.list,
     sectionsWithTopics() {
       return this.sections.map(section => ({
         ...section,

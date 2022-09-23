@@ -9,7 +9,9 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import ContentTableSection from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
+import ContentTableSection, {
+  TITLE_CLASS_NAME,
+} from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
 
 const {
   LinkableHeading,
@@ -34,12 +36,12 @@ describe('ContentTableSection', () => {
     expect(title.exists()).toBe(true);
     expect(title.props('level')).toBe(3);
     expect(title.props('registerOnThisPage')).toBe(false);
-    expect(title.classes('title')).toBe(true);
+    expect(title.classes()).toContain(TITLE_CLASS_NAME);
     expect(title.text()).toContain(propsData.title);
   });
 
   it('renders an `id` if `anchor` is provided', () => {
-    const title = wrapper.find('.title');
+    const title = wrapper.find(`.${TITLE_CLASS_NAME}`);
     expect(title.attributes('id')).toBe(undefined);
     wrapper.setProps({
       anchor: 'foo-bar',
@@ -50,12 +52,12 @@ describe('ContentTableSection', () => {
   it('renders a slot for a title', () => {
     wrapper = shallowMount(ContentTableSection, {
       propsData,
-      slots: {
-        title: '<div class="title">Title Text</div>',
+      scopedSlots: {
+        title: '<div :class="props.className">Title Text</div>',
       },
     });
     const div = wrapper.find('.section-title');
-    const title = div.find('.title');
+    const title = div.find(`.${TITLE_CLASS_NAME}`);
     expect(title.text()).toEqual('Title Text');
   });
 
