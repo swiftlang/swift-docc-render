@@ -281,13 +281,15 @@ describe('LanguageToggle', () => {
       });
   });
 
-  it('changes the model, if the interfaceLanguage changes', () => {
+  it('changes the model, if the interfaceLanguage changes', async () => {
     // assert proper language name is shown
     expect(wrapper.find('.current-language').text()).toBe(Language.swift.name);
     // change the language from outside
     wrapper.setProps({
       interfaceLanguage: Language.objectiveC.key.api,
     });
+    await wrapper.vm.$nextTick();
+
     // assert the language changes as well
     expect(wrapper.find('.current-language').text()).toBe(Language.objectiveC.name);
   });

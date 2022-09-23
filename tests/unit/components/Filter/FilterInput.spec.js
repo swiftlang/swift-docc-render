@@ -853,7 +853,7 @@ describe('FilterInput', () => {
       expect(wrapper.vm.resetedTagsViaDeleteButton).toEqual(true);
 
       wrapper.setProps({ value: 'foo', selectedTags: tags });
-      deleteButton.trigger('click');
+      wrapper.find('.filter__delete-button').trigger('click');
 
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
       expect(wrapper.emitted('input')).toEqual([[''], ['']]);

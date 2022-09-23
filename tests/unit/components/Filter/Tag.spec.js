@@ -187,6 +187,7 @@ describe('Tag', () => {
       wrapper.setProps({
         isFocused: true,
       });
+      await wrapper.vm.$nextTick();
       triggerGlobalEvent('copy');
       expect(setData).toHaveBeenCalledTimes(2);
       expect(setData)
@@ -195,7 +196,7 @@ describe('Tag', () => {
       expect(wrapper.emitted('delete-tag')).toBeFalsy();
     });
 
-    it('handles cutting a tag, only when tag is focused and removable', () => {
+    it('handles cutting a tag, only when tag is focused and removable', async () => {
       triggerGlobalEvent('cut');
 
       expect(setData).not.toHaveBeenCalled();
@@ -203,6 +204,8 @@ describe('Tag', () => {
       wrapper.setProps({
         isFocused: true,
       });
+      await wrapper.vm.$nextTick();
+
       triggerGlobalEvent('cut');
 
       expect(setData).not.toHaveBeenCalled();
@@ -211,6 +214,8 @@ describe('Tag', () => {
         isFocused: true,
         isRemovableTag: true,
       });
+      await wrapper.vm.$nextTick();
+
       triggerGlobalEvent('cut');
 
       expect(setData).toHaveBeenCalledTimes(2);
@@ -220,10 +225,12 @@ describe('Tag', () => {
       expect(wrapper.emitted('delete-tag')).toBeTruthy();
     });
 
-    it('handles copying a tag directly on the button', () => {
+    it('handles copying a tag directly on the button', async () => {
       wrapper.setProps({
         isFocused: true,
       });
+      await wrapper.vm.$nextTick();
+
       wrapper.find({ ref: 'button' }).trigger('copy', { clipboardData });
       expect(clipboardData.setData).toHaveBeenCalledTimes(2);
       expect(clipboardData.setData)
@@ -260,11 +267,12 @@ describe('Tag', () => {
       expect(wrapper.emitted('delete-tag')).toBeFalsy();
     });
 
-    it('on paste, deletes the current tag and emits up the event body, if focused and removable', () => {
+    it('on paste, deletes the current tag and emits up the event body, if focused and removable', async () => {
       wrapper.setProps({
         isFocused: true,
         isRemovableTag: true,
       });
+      await wrapper.vm.$nextTick();
 
       const event = triggerGlobalEvent('paste');
 
