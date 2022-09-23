@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <SVGIcon viewBox="0 0 14 14">
+  <SVGIcon viewBox="0 0 14 14" themeId="endpoint">
     <title>Web Service Endpoint</title>
     <path d="M4.052 8.737h-1.242l-1.878 5.263h1.15l0.364-1.081h1.939l0.339 1.081h1.193zM2.746 12.012l0.678-2.071 0.653 2.071z"></path>
     <path d="M11.969 8.737h1.093v5.263h-1.093v-5.263z"></path>
