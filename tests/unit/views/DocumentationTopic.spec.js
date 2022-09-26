@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
@@ -21,10 +21,11 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
-import OnThisPageRegistrator from 'docc-render/components/DocumentationTopic/OnThisPageRegistrator.vue';
+import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
+jest.mock('docc-render/mixins/onThisPageRegistrator');
 jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
@@ -561,12 +562,12 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders a `OnThisPageRegistrator` component when data is ready', () => {
-    expect(wrapper.find(OnThisPageRegistrator).exists()).toBe(false);
+  it('calls `extractOnThisPageSections` when `topicData` changes', () => {
+    // called once on mounted
+    expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(1);
     wrapper.setData({ topicData });
-    expect(wrapper.find(OnThisPageRegistrator).props()).toEqual({
-      topicData,
-    });
+    // assert its called again
+    expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(2);
   });
 
   it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {

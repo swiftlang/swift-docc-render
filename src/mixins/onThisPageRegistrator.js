@@ -1,34 +1,24 @@
-<!--
-  This source file is part of the Swift.org open source project
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
-  Licensed under Apache License v2.0 with Runtime Library Exception
-
-  See https://swift.org/LICENSE.txt for license information
-  See https://swift.org/CONTRIBUTORS.txt for Swift project authors
--->
-
-<template>
-  <div />
-</template>
-
-<script>
-import { SectionKind } from '@/constants/PrimaryContentSection';
-import { anchorize } from '@/utils/strings';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
+import { anchorize } from 'docc-render/utils/strings';
 import {
   MainContentSectionAnchors,
   PrimaryContentSectionAnchors,
-} from '@/constants/ContentSectionAnchors';
+} from 'docc-render/constants/ContentSectionAnchors';
 
+/**
+ * Crawls the `topicData` of a page, and extracts onThisPage sections.
+ */
 export default {
-  name: 'OnThisPageRegistrator',
-  inject: ['store'],
-  props: {
-    topicData: {
-      type: Object,
-      required: true,
-    },
-  },
   watch: {
     topicData: {
       immediate: true,
@@ -36,6 +26,9 @@ export default {
     },
   },
   methods: {
+    shouldRegisterContentSection(subSection) {
+      return subSection.type === 'heading' && subSection.level < 4;
+    },
     extractOnThisPageSections(topicData) {
       if (!topicData) return;
       // unregister old items
@@ -53,7 +46,7 @@ export default {
           switch (section.kind) {
           case SectionKind.content:
             section.content.forEach((subSection) => {
-              if (subSection.type === 'heading' && subSection.level < 4) {
+              if (this.shouldRegisterContentSection(subSection)) {
                 this.store.addOnThisPageSection({
                   title: subSection.text,
                   anchor: subSection.anchor || anchorize(subSection.text),
@@ -93,4 +86,3 @@ export default {
     },
   },
 };
-</script>
