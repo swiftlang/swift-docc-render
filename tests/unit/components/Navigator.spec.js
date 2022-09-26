@@ -102,9 +102,9 @@ const defaultProps = {
   technology,
   references,
   scrollLockID: 'foo',
-  breakpoint: 'large',
-  flatChildren: [],
+  renderFilterOnTop: false,
   navigatorReferences,
+  flatChildren: [],
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -144,7 +144,7 @@ describe('Navigator', () => {
       technologyPath: technology.path,
       isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      breakpoint: defaultProps.breakpoint,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,
@@ -198,7 +198,7 @@ describe('Navigator', () => {
       technologyPath: fallbackTechnology.url,
       isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      breakpoint: defaultProps.breakpoint,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,

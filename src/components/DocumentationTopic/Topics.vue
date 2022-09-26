@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import TopicsTable from './TopicsTable.vue';
 
 export default {

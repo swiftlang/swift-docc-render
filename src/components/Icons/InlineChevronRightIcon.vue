@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <SVGIcon class="inline-chevron-right-icon" viewBox="0 0 14 14">
+  <SVGIcon class="inline-chevron-right-icon" viewBox="0 0 14 14" themeId="inline-chevron-right">
     <path d="M2.964 1.366l0.649-0.76 7.426 6.343-7.423 6.445-0.655-0.755 6.545-5.683-6.542-5.59z"></path>
   </SVGIcon>
 </template>

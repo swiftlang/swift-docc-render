@@ -182,6 +182,7 @@ describe('DocumentationTopic', () => {
     expect(adjustableWidth.props()).toEqual({
       shownOnMobile: false,
       hiddenOnLarge: false,
+      fixedWidth: null,
     });
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
@@ -199,13 +200,13 @@ describe('DocumentationTopic', () => {
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      breakpoint: 'large',
       // assert we are passing the default technology, if we dont have the children yet
       technology,
       apiChanges: null,
       allowHiding: true,
       flatChildren: [],
       navigatorReferences: {},
+      renderFilterOnTop: false,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -213,7 +214,7 @@ describe('DocumentationTopic', () => {
       errorFetching: false,
       isFetching: false,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      breakpoint: 'large',
+      renderFilterOnTop: false,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       technology: TechnologyWithChildren,
@@ -250,6 +251,19 @@ describe('DocumentationTopic', () => {
       await wrapper.vm.$nextTick();
       // assert navigator has display: none
       expect(wrapper.find(Navigator).attributes('style')).toContain('display: none');
+    });
+
+    it('reverses the filter position of the navigator', async () => {
+      // renders a closed navigator
+      wrapper.setData({
+        topicData: {
+          ...topicData,
+          schemaVersion: schemaVersionWithSidebar,
+        },
+      });
+      await wrapper.vm.$nextTick();
+      // assert navigator has display: none
+      expect(wrapper.find(Navigator).props('renderFilterOnTop')).toBe(true);
     });
 
     it('does not apply display none to Navigator if is open', async () => {
@@ -543,6 +557,7 @@ describe('DocumentationTopic', () => {
       },
       enableOnThisPageNav: false,
       topicSectionsStyle: TopicSectionsStyle.list, // default value
+      disableHeroBackground: false,
     });
   });
 

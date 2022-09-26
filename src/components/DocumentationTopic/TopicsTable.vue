@@ -55,7 +55,7 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import ContentTable from './ContentTable.vue';
