@@ -109,7 +109,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .learning-path {
-  background: dark-color(fill);
+  background: var(--color-tutorials-overview-fill, dark-color(fill));
   padding: rem(80px) 0;
 }
 

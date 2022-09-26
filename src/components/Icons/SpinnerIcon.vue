@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <SVGIcon class="spinner-icon" viewBox="0 0 39.02 39.02">
+  <SVGIcon class="spinner-icon" viewBox="0 0 39.02 39.02" themeId="spinner">
     <path d="m15.529 11.96-3.57 3.569-7.99-7.99 3.57-3.57z"/>
     <path d="M0 22.072v-5.06h11.331v5.06z"/>
     <path d="m7.54 35.096-3.57-3.569 7.99-7.99 3.57 3.569z"/>
