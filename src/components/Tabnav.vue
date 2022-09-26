@@ -86,7 +86,7 @@ $-tabnav-bottom-margin: rem(25px);
       overflow: hidden;
     }
 
-    /deep/ .tabnav-item {
+    :deep(.tabnav-item) {
       padding-left: 0;
     }
   }

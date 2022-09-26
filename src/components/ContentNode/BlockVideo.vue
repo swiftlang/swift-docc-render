@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/ video {
+:deep(video) {
   display: block;
   margin-left: auto;
   margin-right: auto;

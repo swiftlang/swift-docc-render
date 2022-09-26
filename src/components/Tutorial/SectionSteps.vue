@@ -384,20 +384,20 @@ $rhs-col-width-max: 921px;
     min-height: $asset-min-height;
     height: 100%;
 
-    &, /deep/ picture {
+    &, :deep(picture) {
       height: 100%;
       display: flex;
       align-items: center;
     }
 
-    /deep/ .video-replay-container {
+    :deep(.video-replay-container) {
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    /deep/ img, /deep/ video {
+    :deep(img), :deep(video) {
       $asset-width: (100% - $lhs-col-width - $lhs-col-margin) / 100%;
       $content-width-large: map-deep-get($breakpoint-attributes, (default, large, content-width));
       $content-width-medium: map-deep-get($breakpoint-attributes, (default, medium, content-width));
@@ -413,11 +413,11 @@ $rhs-col-width-max: 921px;
       margin: 0;
     }
 
-    /deep/ img {
+    :deep(img) {
       min-height: $asset-min-height;
     }
 
-    /deep/ .video-replay-container {
+    :deep(.video-replay-container) {
       min-height: $asset-min-height;
 
       // For videos with replay buttons, decrease the video min-height
@@ -441,14 +441,14 @@ $rhs-col-width-max: 921px;
 
   &.ide {
     .step-asset {
-      /deep/ img {
+      :deep(img) {
         background-color: var(--background, var(--color-step-background));
       }
     }
   }
 }
 
-/deep/ .runtime-preview-asset {
+:deep(.runtime-preview-asset) {
   display: grid;
 
   & > * {

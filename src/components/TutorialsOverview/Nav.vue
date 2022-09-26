@@ -61,7 +61,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.nav /deep/ .nav-menu {
+.nav :deep(.nav-menu) {
   padding-top: 0;
 
   .nav-menu-items {

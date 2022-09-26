@@ -199,7 +199,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-/deep/ :focus:not(input):not(textarea):not(select) {
+:deep(:focus:not(input):not(textarea):not(select)) {
   outline: none;
 
   .fromkeyboard & {
@@ -212,7 +212,7 @@ export default {
   grid-template-rows: auto 1fr auto;
   min-height: 100%;
 
-  > /deep/ * {
+  > :deep(*) {
     min-width: 0;
   }
 

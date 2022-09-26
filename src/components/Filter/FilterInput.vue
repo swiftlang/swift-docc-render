@@ -452,7 +452,7 @@ $input-height: rem(28px);
       height: 21px;
     }
 
-    &.blue /deep/ > * {
+    &.blue :deep(> *) {
       fill: var(--color-figure-blue);
       color: var(--color-figure-blue);
     }
@@ -481,7 +481,7 @@ $input-height: rem(28px);
     z-index: 1;
     overflow: hidden;
 
-    /deep/ ul {
+    :deep(ul) {
       padding: var(--input-vertical-padding) rem(9px);
       border: 1px solid transparent;
       border-bottom-left-radius: calc(#{$small-border-radius} - 1px);
@@ -508,7 +508,7 @@ $input-height: rem(28px);
       padding-left: 0;
     }
 
-    /deep/ {
+    :deep() {
       ul {
         padding: $tag-outline-padding;
 

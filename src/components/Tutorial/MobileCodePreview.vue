@@ -129,7 +129,7 @@ $-preview-padding: 60px;
   padding: 45px $-preview-padding 0 $-preview-padding;
   min-width: calc(320px - 2 * #{$-preview-padding});
 
-  /deep/ img:not(.file-icon) {
+  :deep(img:not(.file-icon)) {
     border-radius: $border-radius;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
     max-height: 80vh;
@@ -147,16 +147,16 @@ $-preview-padding: 60px;
   }
 }
 
-/deep/ .code-listing {
+:deep(.code-listing) {
   color: var(--text, var(--color-code-plain));
 }
 
-/deep/ .full-code-listing {
+:deep(.full-code-listing) {
   padding-top: $-preview-padding;
   min-height: calc(100vh - #{$-preview-padding});
 }
 
-/deep/ pre {
+:deep(pre) {
   @include font-styles(code-preview);
 }
 

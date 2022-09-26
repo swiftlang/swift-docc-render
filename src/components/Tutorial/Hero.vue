@@ -217,7 +217,7 @@ export default {
   z-index: 1;
 }
 
-/deep/ .eyebrow {
+:deep(.eyebrow) {
   @include font-styles(eyebrow);
   color: var(--color-hero-eyebrow);
 }
@@ -260,7 +260,7 @@ export default {
   place-items: center center;
 }
 
-.video-asset /deep/ video {
+.video-asset :deep(video) {
   max-width: 1280px;
   min-width: 320px;
   width: 100%;

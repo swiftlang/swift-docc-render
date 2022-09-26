@@ -117,7 +117,7 @@ export default {
 .content {
   display: inline;
 
-  /deep/ p:first-child {
+  :deep(p:first-child) {
     display: inline;
   }
 }

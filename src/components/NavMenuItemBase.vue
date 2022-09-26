@@ -46,7 +46,7 @@ export default {
     min-height: rem(42px);
     // remove the first border of the first element
     &:first-child {
-      /deep/ .nav-menu-link {
+      :deep(.nav-menu-link) {
         border-top: 0;
       }
     }

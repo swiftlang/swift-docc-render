@@ -152,7 +152,7 @@ export default {
   margin: 25px 0;
 }
 
-.question-content /deep/ code {
+.question-content :deep(code) {
   @include font-styles(assessments-code);
 }
 
@@ -181,14 +181,14 @@ export default {
   border-color: var(--colors-grid, var(--color-grid));
   position: relative;
 
-  /deep/ img {
+  :deep(img) {
     max-height: rem(400px);
   }
   &:first-of-type {
     margin-top: 0;
   }
 
-  /deep/ code {
+  :deep(code) {
     @include font-styles(assessments-code);
   }
 }
@@ -268,16 +268,16 @@ input[type="radio"] {
   @include font-styles(caption);
 }
 
-/deep/ .question  > .code-listing {
+:deep(.question  > .code-listing) {
   padding: unset;
   border-radius: 0;
 }
 
-/deep/ pre {
+:deep(pre) {
   padding:0;
 }
 
-/deep/ img {
+:deep(img) {
   display: block;
   margin-left: auto;
   margin-right: auto;

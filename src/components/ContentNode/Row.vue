@@ -65,7 +65,7 @@ export default {
     grid-auto-flow: row;
   }
 
-  /deep/ + * {
+  + :deep(*) {
     margin-top: $stacked-margin-large;
   }
 }

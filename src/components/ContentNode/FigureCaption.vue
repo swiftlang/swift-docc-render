@@ -45,7 +45,7 @@ export default {
   }
 }
 
-/deep/ p {
+:deep(p) {
   display: inline-block;
 }
 </style>

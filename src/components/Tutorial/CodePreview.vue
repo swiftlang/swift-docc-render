@@ -211,11 +211,11 @@ $duration: 0.2s;
     height: $height-ide;
   }
 
-  /deep/ .code-listing {
+  :deep(.code-listing) {
     color: var(--text, var(--color-code-plain));
   }
 
-  /deep/ pre {
+  :deep(pre) {
     @include font-styles(code-preview);
   }
 }
@@ -278,7 +278,7 @@ $duration: 0.2s;
   top: 0;
 
   .runtime-preview-asset {
-    /deep/ img {
+    :deep(img) {
       background-color: var(--color-runtime-preview-background);
     }
   }
@@ -310,7 +310,7 @@ $duration: 0.2s;
 .runtime-preview-asset {
   border-radius: 0 0 $border-radius $border-radius;
 
-  /deep/ img {
+  :deep(img) {
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
   }

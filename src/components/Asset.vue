@@ -119,8 +119,7 @@ export default {
 
 <style scoped lang="scss">
 
-/deep/ img,
-/deep/ video {
+:deep(img), :deep(video) {
   display: block;
   margin-left: auto;
   margin-right: auto;

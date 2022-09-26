@@ -82,7 +82,7 @@ export default {
 $param-spacing: rem(28px);
 
 .parameters-table {
-  /deep/ {
+  :deep() {
     .change-added,
     .change-removed {
       display: inline-block;
@@ -138,7 +138,7 @@ $param-spacing: rem(28px);
     text-align: left;
   }
 
-  /deep/ .type-identifier-link {
+  :deep(.type-identifier-link) {
     color: var(--color-link);
   }
 }

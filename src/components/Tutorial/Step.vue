@@ -206,12 +206,12 @@ export default {
     display: block;
     position: relative;
 
-    /deep/ img, /deep/ video {
+    :deep(img), :deep(video) {
       max-height: 80vh;
     }
   }
 
-  /deep/ .asset {
+  :deep(.asset) {
     padding: 0 20px;
   }
 }

@@ -76,11 +76,11 @@ $param-spacing: rem(28px);
     padding-left: 0;
   }
 
-  /deep/ dt {
+  :deep(dt) {
     font-weight: $font-weight-semibold;
   }
 
-  /deep/ dd {
+  :deep(dd) {
     margin-left: 1em;
   }
 }

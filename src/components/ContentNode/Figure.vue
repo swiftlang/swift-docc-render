@@ -25,7 +25,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/ figcaption + * {
+:deep(figcaption + *) {
   margin-top: 1rem;
 }
 </style>

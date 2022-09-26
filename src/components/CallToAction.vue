@@ -125,7 +125,7 @@ export default {
   align-items: center;
 }
 
-/deep/ img, /deep/ video {
+:deep(img), :deep(video) {
   max-height: 560px;
 }
 

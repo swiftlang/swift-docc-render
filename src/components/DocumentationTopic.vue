@@ -475,13 +475,13 @@ export default {
     margin-top: $contenttable-spacing-single-side;
   }
 
-  /deep/ .content + * {
+  :deep(.content + *) {
     margin-top: $stacked-margin-large;
   }
 }
 
 // remove border-top for first section of the page
-/deep/ {
+:deep() {
   .documentation-hero + .contenttable {
     .container > .title {
       border-top: none;
@@ -493,7 +493,7 @@ export default {
   margin-top: 20px;
 }
 
-/deep/ {
+:deep() {
   @each $heading in (h3, h4, h5, h6) {
     #{$heading} {
       @include font-styles(documentation-#{$heading});

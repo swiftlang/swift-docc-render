@@ -225,7 +225,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .abstract,
-.link-block /deep/ .badge {
+.link-block :deep(.badge) {
   margin-left: calc(#{$topic-link-icon-spacing} + #{$topic-link-icon-width});
 }
 

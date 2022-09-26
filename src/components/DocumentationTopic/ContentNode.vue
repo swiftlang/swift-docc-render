@@ -30,7 +30,7 @@ export default {
 
 $docs-code-listing-border-width: 1px !default;
 
-/deep/ {
+:deep() {
   .code-listing {
     background: var(--background, var(--color-code-background));
     color: var(--text, var(--color-code-plain));

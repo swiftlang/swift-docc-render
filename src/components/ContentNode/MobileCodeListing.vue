@@ -80,7 +80,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/ pre {
+:deep(pre) {
   padding: 10px 0;
 }
 </style>

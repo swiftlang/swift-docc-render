@@ -138,7 +138,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-/deep/ {
+:deep() {
   h2 {
     @include font-styles(heading-2-reduced);
   }
@@ -153,7 +153,7 @@ export default {
     display: block;
   }
 
-  /deep/ {
+  :deep() {
     & > * {
       margin-bottom: $section-spacing-single-side;
       margin-top: $section-spacing-single-side;
