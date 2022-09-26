@@ -79,7 +79,6 @@
               @keydown.meta.a.prevent.stop="selectInputAndTags"
               @keydown.ctrl.a.prevent="selectInputAndTags"
               @keydown.exact="inputKeydownHandler"
-              @keydown.191.exact.stop="inputKeydownHandler"
               @keydown.enter.exact="enterHandler"
               @keydown.shift.exact="inputKeydownHandler"
               @keydown.shift.meta.exact="inputKeydownHandler"
@@ -446,9 +445,9 @@ $input-height: rem(28px);
 
   &__filter-button {
     position: relative;
-    margin-left: rem(10px);
     z-index: 1;
     cursor: text;
+    margin-left: rem(10px);
     margin-right: rem(3px);
 
     @include breakpoint(small) {
@@ -540,8 +539,8 @@ $input-height: rem(28px);
     border-radius: 100%;
 
     .clear-rounded-icon {
-      height: $icon-size-default;
-      width: $icon-size-default;
+      height: rem(14px);
+      width: rem(14px);
       fill: var(--input-text);
       display: block;
       padding: rem(5px);
@@ -551,7 +550,8 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding-right: rem(10px);
+    padding-left: rem(3px);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;
   }

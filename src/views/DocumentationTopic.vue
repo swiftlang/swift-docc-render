@@ -359,9 +359,11 @@ export default {
     toggleMobileSidenav(value = !this.sidenavVisibleOnMobile) {
       this.sidenavVisibleOnMobile = value;
     },
-    onKeydown(event) {
+    onQuickNavigationKeydown(event) {
       if (this.showQuickNavigationModal) return;
       if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))) return;
+      // Prevent the modal from opening when the event key is coming from an input
+      if (event.target.tagName === 'INPUT') return;
       this.openQuickNavigationModal();
       event.preventDefault();
     },
@@ -373,7 +375,7 @@ export default {
 
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
-    if (this.enableQuickNavigation) window.addEventListener('keydown', this.onKeydown);
+    if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
   },
   provide() {
     return {
@@ -389,7 +391,7 @@ export default {
   },
   beforeDestroy() {
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
-    if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onKeydown);
+    if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   beforeRouteEnter(to, from, next) {
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
