@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { getSetting } from 'docc-render/utils/theme-settings';
+
 export default {
   name: 'SVGIcon',
   props: {
@@ -34,7 +36,11 @@ export default {
     },
   },
   computed: {
-    themeOverrideURL: ({ iconUrl }) => iconUrl,
+    themeOverrideURL: ({ iconUrl, themeId }) => iconUrl || getSetting([
+      'theme',
+      'icons',
+      themeId,
+    ], undefined),
   },
 };
 </script>
