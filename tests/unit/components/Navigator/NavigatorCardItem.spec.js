@@ -185,7 +185,7 @@ describe('NavigatorCardItem', () => {
         isActive: true,
       },
     });
-    expect(wrapper.find('.head-wrapper').classes()).toContain('active');
+    expect(wrapper.classes()).toContain('active');
   });
 
   it('adds extra classes, when bolded', () => {

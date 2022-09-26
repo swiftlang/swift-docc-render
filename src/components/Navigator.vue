@@ -23,7 +23,7 @@
       :active-path="activePath"
       :scrollLockID="scrollLockID"
       :error-fetching="errorFetching"
-      :breakpoint="breakpoint"
+      :render-filter-on-top="renderFilterOnTop"
       :api-changes="apiChanges"
       :allow-hiding="allowHiding"
       :enableQuickNavigation="enableQuickNavigation"
@@ -48,7 +48,6 @@ import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
 import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
 /**
@@ -115,9 +114,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    breakpoint: {
-      type: String,
-      default: BreakpointName.large,
+    renderFilterOnTop: {
+      type: Boolean,
+      default: false,
     },
     apiChanges: {
       type: Object,
@@ -275,6 +274,9 @@ export default {
   align-items: center;
   color: var(--color-figure-gray-secondary);
   justify-content: center;
+  height: 100vh;
+  position: sticky;
+  top: var(--nav-height, 0px);
 }
 
 .loading-spinner {

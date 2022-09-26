@@ -122,7 +122,8 @@ export default {
       padding-top: $nav-height-small;
     }
 
-    background: var(--color-tutorials-overview-background);
+    background: var(--color-tutorials-overview-fill-secondary,
+      var(--color-tutorials-overview-background));
   }
 
   // HACK - remove the gradient for firefox only

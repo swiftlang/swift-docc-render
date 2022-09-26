@@ -12,6 +12,7 @@
   <SVGIcon
     class="inline-chevron-down-circle-icon"
     viewBox="0 0 14 14"
+    themeId="inline-chevron-down-circle"
   >
     <polygon points="10.1 4 11 4.7 7 10 3 4.7 3.9 4 7 8 10.1 4"/>
   </SVGIcon>

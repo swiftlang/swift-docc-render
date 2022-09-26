@@ -35,8 +35,8 @@ $docs-code-listing-border-width: 1px !default;
     background: var(--background, var(--color-code-background));
     color: var(--text, var(--color-code-plain));
     border-color: var(--colors-grid, var(--color-grid));
-    border-width: $docs-code-listing-border-width;
-    border-style: solid;
+    border-width: var(--code-border-width, $docs-code-listing-border-width);
+    border-style: var(--code-border-style, solid);
 
     & + *,
     * + & {
