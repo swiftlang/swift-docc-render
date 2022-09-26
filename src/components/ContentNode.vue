@@ -127,10 +127,10 @@ function renderNode(createElement, references) {
     const { colspan, rowspan } = extendedData[`${rowIndex}_${cellIndex}`] || {};
     // if either is `0`, then its spanned over and should not be rendered
     if (colspan === 0 || rowspan === 0) return null;
-    const cellAttrs = attrs;
     const align = alignments[cellIndex] || TableColumnAlignments.unset;
-    if (align !== TableColumnAlignments.unset) cellAttrs.class = `${align}-cell`;
-    return createElement(element, { attrs: { ...cellAttrs, colspan, rowspan } }, (
+    let classes = null;
+    if (align !== TableColumnAlignments.unset) classes = `${align}-cell`;
+    return createElement(element, { attrs: { ...attrs, colspan, rowspan }, class: classes }, (
       renderChildren(data)
     ));
   };
