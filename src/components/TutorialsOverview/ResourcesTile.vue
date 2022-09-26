@@ -99,7 +99,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .tile {
-  background: dark-color(fill-secondary);
+  background: var(--color-tutorials-overview-fill-secondary, dark-color(fill-secondary));
   padding: 40px 30px;
   color: var(--color-tutorials-overview-content-alt);
 }

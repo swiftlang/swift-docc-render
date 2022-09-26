@@ -12,6 +12,7 @@
   <SVGIcon
     class="two-letter-icon"
     width="16px" height="16px" viewBox="0 0 16 16"
+    themeId="two-letter"
   >
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g transform="translate(1.000000, 1.000000)">

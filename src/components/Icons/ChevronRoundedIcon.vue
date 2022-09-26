@@ -12,6 +12,7 @@
   <SVGIcon
     class="chevron-rounded-icon"
     viewBox="0 0 14 25"
+    themeId="chevron-rounded"
   >
     <path d="M1,24.4a.9.9,0,0,0,.7-.3L13.4,13a1,1,0,0,0,0-1.6L1.7.3A.9.9,0,0,0,1,0,.9.9,0,0,0,0,1a.9.9,0,0,0,.3.7l11,10.5L.3,22.7a.9.9,0,0,0-.3.7A.9.9,0,0,0,1,24.4Z" />
   </SVGIcon>

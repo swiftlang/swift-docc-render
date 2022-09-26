@@ -149,8 +149,11 @@ export default {
       // revert the old scroll position
       advancedUnlock(targetElement);
     } else {
-      // remove all inline styles
-      document.body.style.cssText = '';
+      // remove all inline styles added by the `simpleLock` function
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('top');
+      document.body.style.removeProperty('position');
+      document.body.style.removeProperty('width');
 
       // restore scrolled Y position after resetting the position property
       window.scrollTo(0, Math.abs(scrolledClientY));

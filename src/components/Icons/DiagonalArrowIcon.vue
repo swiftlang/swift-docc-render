@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <SVGIcon class="diagonal-arrow" viewBox="0 0 14 14">
+  <SVGIcon class="diagonal-arrow" viewBox="0 0 14 14" themeId="diagonal-arrow">
     <path d="M0.010 12.881l10.429-10.477-3.764 0.824-0.339-1.549 7.653-1.679-1.717 7.622-1.546-0.349 0.847-3.759-10.442 10.487z"></path>
   </SVGIcon>
 </template>
