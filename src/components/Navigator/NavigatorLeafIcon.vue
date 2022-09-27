@@ -109,7 +109,6 @@ export default {
 .NavigatorLeafIcon {
   width: 1em;
   height: 1em;
-  margin-right: 7px;
   flex: 0 0 auto;
   color: var(--color-figure-gray-secondary);
 

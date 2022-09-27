@@ -9,9 +9,9 @@
 -->
 
 <template>
-  <div
+  <BaseNavigatorCardItem
     class="navigator-card-item"
-    :class="{ expanded }"
+    :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
@@ -20,80 +20,80 @@
     @keydown.enter.prevent="clickReference"
     @keydown.alt.right.prevent="toggleEntireTree"
   >
-    <div class="head-wrapper" :class="{ active: isActive, 'is-group': isGroupMarker }">
+    <template #depth-spacer>
       <span
         hidden
         :id="usageLabel"
       >
         To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow
       </span>
-      <div class="depth-spacer">
-        <button
-          v-if="isParent"
-          class="tree-toggle"
-          tabindex="-1"
-          :aria-labelledby="item.uid"
-          :aria-expanded="expanded ? 'true': 'false'"
-          :aria-describedby="ariaDescribedBy"
-          @click.exact.prevent="toggleTree"
-          @click.alt.prevent="toggleEntireTree"
-          @click.meta.prevent="toggleSiblings"
-        >
-          <InlineChevronRightIcon
-            class="icon-inline chevron"
-            :class="{ rotate: expanded, animating: idState.isOpening }"
-          />
-        </button>
-      </div>
+      <button
+        v-if="isParent"
+        class="tree-toggle"
+        tabindex="-1"
+        :aria-labelledby="item.uid"
+        :aria-expanded="expanded ? 'true': 'false'"
+        :aria-describedby="ariaDescribedBy"
+        @click.exact.prevent="toggleTree"
+        @click.alt.prevent="toggleEntireTree"
+        @click.meta.prevent="toggleSiblings"
+      >
+        <InlineChevronRightIcon
+          class="icon-inline chevron"
+          :class="{ rotate: expanded, animating: idState.isOpening }"
+        />
+      </button>
+    </template>
+    <template #navigator-icon="{ className }">
       <NavigatorLeafIcon
         v-if="!isGroupMarker && !apiChange"
         :type="item.type"
-        class="navigator-icon"
+        :class="className"
       />
       <span
         v-else-if="apiChange"
-        class="navigator-icon"
-        :class="{ [`changed changed-${apiChange}`]: apiChange }"
+        :class="{ [`changed changed-${apiChange}`]: apiChange, className }"
       />
-      <div class="title-container">
-        <span
-          v-if="isParent"
-          hidden
-          :id="parentLabel"
-        >, containing {{ item.childUIDs.length }} symbols</span>
-        <span
-          :id="siblingsLabel"
-          hidden
-        >
-          {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
-        </span>
-        <component
-          :is="refComponent"
-          :id="item.uid"
-          :class="{ bolded: isBold }"
-          :url="isGroupMarker ? null : (item.path || '')"
-          :tabindex="isFocused ? '0' : '-1'"
-          :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
-          class="leaf-link"
-          ref="reference"
-          @click.exact.native="handleClick"
-          @click.alt.native.prevent="toggleEntireTree"
-        >
-          <HighlightMatches
-            :text="item.title"
-            :matcher="filterPattern"
-          />
-        </component>
-        <Badge v-if="isDeprecated" variant="deprecated" />
-        <Badge v-else-if="isBeta" variant="beta" />
-      </div>
-    </div>
-  </div>
+    </template>
+    <template #title-container>
+      <span
+        v-if="isParent"
+        hidden
+        :id="parentLabel"
+      >, containing {{ item.childUIDs.length }} symbols</span>
+      <span
+        :id="siblingsLabel"
+        hidden
+      >
+        {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
+      </span>
+      <component
+        :is="refComponent"
+        :id="item.uid"
+        :class="{ bolded: isBold }"
+        :url="isGroupMarker ? null : (item.path || '')"
+        :tabindex="isFocused ? '0' : '-1'"
+        :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
+        class="leaf-link"
+        ref="reference"
+        @click.exact.native="handleClick"
+        @click.alt.native.prevent="toggleEntireTree"
+      >
+        <HighlightMatches
+          :text="item.title"
+          :matcher="filterPattern"
+        />
+      </component>
+      <Badge v-if="isDeprecated" variant="deprecated" />
+      <Badge v-else-if="isBeta" variant="beta" />
+    </template>
+  </BaseNavigatorCardItem>
 </template>
 
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import BaseNavigatorCardItem from 'docc-render/components/Navigator/BaseNavigatorCardItem.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
@@ -110,6 +110,7 @@ export default {
     }),
   ],
   components: {
+    BaseNavigatorCardItem,
     HighlightMatches,
     NavigatorLeafIcon,
     InlineChevronRightIcon,
@@ -259,29 +260,6 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
       margin-left: -$card-horizontal-spacing-small;
     }
   }
-}
-
-.depth-spacer {
-  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
-  height: $item-height;
-  position: relative;
-  flex: 0 0 auto;
-  @include on-keyboard-focus {
-    margin: 0 -$card-horizontal-spacing-small;
-  }
-}
-
-.head-wrapper {
-  padding: 0 $card-horizontal-spacing-large 0 $card-horizontal-spacing;
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-
-  @include safe-area-left-set(padding-left, $card-horizontal-spacing);
-  @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
 
   &.active {
     background: var(--color-fill-gray-quaternary);
@@ -301,80 +279,90 @@ $nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
   .hover &:not(.is-group) {
     background: var(--color-navigator-item-hover);
   }
+}
 
-  .navigator-icon {
-    display: flex;
-    flex: 0 0 auto;
+.depth-spacer {
+  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
+  height: $item-height;
+  position: relative;
+  flex: 0 0 auto;
+  @include on-keyboard-focus {
+    margin: 0 -$card-horizontal-spacing-small;
+  }
+}
 
-    &.changed {
-      border: none;
-      width: 1em;
-      height: 1em;
-      margin-right: 7px;
-      z-index: 0;
+.navigator-icon {
+  display: flex;
+  flex: 0 0 auto;
+  margin-right: 7px;
 
-      &:after {
-        top: 50%;
-        left: 50%;
-        right: auto;
-        bottom: auto;
-        transform: translate(-50%, -50%);
-        background-image: $modified-svg;
+  &.changed {
+    border: none;
+    width: 1em;
+    height: 1em;
+    z-index: 0;
 
-        @include prefers-dark {
-          background-image: $modified-dark-svg;
-        }
-        margin: 0;
+    &:after {
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      transform: translate(-50%, -50%);
+      background-image: $modified-svg;
+
+      @include prefers-dark {
+        background-image: $modified-dark-svg;
       }
+      margin: 0;
+    }
 
-      &-added::after {
-        background-image: $added-svg;
+    &-added::after {
+      background-image: $added-svg;
 
-        @include prefers-dark {
-          background-image: $added-dark-svg;
-        }
+      @include prefers-dark {
+        background-image: $added-dark-svg;
       }
+    }
 
-      &-deprecated::after {
-        background-image: $deprecated-svg;
+    &-deprecated::after {
+      background-image: $deprecated-svg;
 
-        @include prefers-dark {
-          background-image: $deprecated-dark-svg;
-        }
+      @include prefers-dark {
+        background-image: $deprecated-dark-svg;
       }
     }
   }
+}
 
-  .leaf-link {
-    color: var(--color-figure-gray);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 100%;
-    display: inline;
-    vertical-align: middle;
-    @include font-styles(body-reduced-tight);
+.leaf-link {
+  color: var(--color-figure-gray);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+  display: inline;
+  vertical-align: middle;
+  @include font-styles(body-reduced-tight);
 
-    @include on-keyboard-focus {
-      outline: none;
-    }
+  @include on-keyboard-focus {
+    outline: none;
+  }
 
-    &:hover {
-      text-decoration: none;
-    }
+  &:hover {
+    text-decoration: none;
+  }
 
-    &.bolded {
-      font-weight: $font-weight-semibold;
-    }
+  &.bolded {
+    font-weight: $font-weight-semibold;
+  }
 
-    &:after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 

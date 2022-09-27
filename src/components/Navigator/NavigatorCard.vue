@@ -11,7 +11,7 @@
 <template>
   <div class="navigator-card">
     <div class="navigator-card-full-height">
-      <NavigatorCardInner>
+      <div class="navigator-card-inner">
         <div class="head-wrapper">
           <div class="head-inner">
             <button
@@ -39,7 +39,15 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
+          <div v-if="isLoading" class="scroller">
+            <LoadingNavigator
+              v-for="index in 10"
+              :key="index"
+              :index="index - 1"
+            />
+          </div>
           <RecycleScroller
+            v-else
             v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
@@ -81,7 +89,7 @@
             </p>
           </div>
         </div>
-      </NavigatorCardInner>
+      </div>
     </div>
     <div class="filter-wrapper" v-if="!errorFetching">
       <div class="navigator-filter">
@@ -122,7 +130,7 @@ import {
   SIDEBAR_ITEM_SIZE,
 } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
+import LoadingNavigator from 'docc-render/components/Navigator/LoadingNavigator.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -199,7 +207,7 @@ export default {
     FilterInput,
     SidenavIcon,
     MagnifierIcon,
-    NavigatorCardInner,
+    LoadingNavigator,
     NavigatorCardItem,
     RecycleScroller,
     Reference,
@@ -252,6 +260,10 @@ export default {
     allowHiding: {
       type: Boolean,
       default: true,
+    },
+    isLoading: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [
@@ -1371,4 +1383,16 @@ $close-icon-padding: 5px;
   }
 }
 
+.navigator-card-inner {
+  --nav-card-inner-vertical-offset: 0px;
+  position: sticky;
+  top: var(--nav-height, 0px);
+  height: calc(var(--app-height) - var(--nav-height, 0px) - var(--nav-card-inner-vertical-offset));
+  display: flex;
+  flex-flow: column;
+  @include breakpoint(medium, nav) {
+    position: static;
+    height: 100%;
+  }
+}
 </style>

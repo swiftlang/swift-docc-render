@@ -14,7 +14,7 @@
     class="navigator"
   >
     <NavigatorCard
-      v-if="!isFetching"
+      :isLoading="isFetching"
       :technology="technology.title"
       :is-technology-beta="technology.beta"
       :technology-path="technology.path || technology.url"
@@ -29,11 +29,6 @@
       :enableQuickNavigation="enableQuickNavigation"
       @close="$emit('close')"
     />
-    <NavigatorCardInner v-else class="loading-placeholder">
-      <transition name="delay-visibility" appear>
-        <SpinnerIcon class="loading-spinner" />
-      </transition>
-    </NavigatorCardInner>
     <div aria-live="polite" class="visuallyhidden">
       Navigator is {{ isFetching ? 'loading' : 'ready' }}
     </div>
@@ -43,8 +38,6 @@
 <script>
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
-import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
-import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
@@ -75,8 +68,6 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
-    NavigatorCardInner,
-    SpinnerIcon,
   },
   data() {
     return {
