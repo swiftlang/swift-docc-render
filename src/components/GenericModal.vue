@@ -83,13 +83,13 @@ export default {
       type: String,
       default: '',
     },
-    showClose: {
-      type: Boolean,
-      default: true,
-    },
     width: {
       type: String,
       default: null,
+    },
+    showClose: {
+      type: Boolean,
+      default: true,
     },
     styleProps: {
       type: Object,

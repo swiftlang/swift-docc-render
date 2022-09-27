@@ -289,10 +289,13 @@ $filter-padding: rem(15px);
   &__container {
     background-color: var(--color-fill);
     border: solid $base-border-width var(--color-fill-gray);
-    border-radius: $small-border-radius + 1;
+    border-radius: $small-border-radius;
     > * {
       --input-text: var(--color-figure-gray-secondary);
     }
+  }
+  &__filter{
+    --input-border-color: var(--color-fill);
   }
   &__magnifier-icon-container {
     width: rem(18px);
