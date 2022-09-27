@@ -40,6 +40,15 @@ describe('ContentTableSection', () => {
     expect(title.text()).toContain(propsData.title);
   });
 
+  it('does not require a title', () => {
+    wrapper.setProps({
+      title: undefined,
+    });
+
+    const title = wrapper.find(LinkableHeading);
+    expect(title.exists()).toBe(false);
+  });
+
   it('renders an `id` if `anchor` is provided', () => {
     const title = wrapper.find(`.${TITLE_CLASS_NAME}`);
     expect(title.attributes('id')).toBe(undefined);

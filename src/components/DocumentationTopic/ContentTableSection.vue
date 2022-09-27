@@ -13,6 +13,7 @@
     <div class="section-title">
       <slot name="title" :className="className">
         <LinkableHeading
+          v-if="title"
           :level="3"
           :class="className"
           :anchor="anchorComputed"
@@ -40,7 +41,8 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      default: '',
+      required: false,
     },
     anchor: {
       type: String,
