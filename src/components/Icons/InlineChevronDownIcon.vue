@@ -12,6 +12,7 @@
   <SVGIcon
     class="inline-chevron-down-icon"
     viewBox="0 0 14 14"
+    themeId="inline-chevron-down"
   >
     <path d="M12.634 2.964l0.76 0.649-6.343 7.426-6.445-7.423 0.755-0.655 5.683 6.545 5.59-6.542z"></path>
   </SVGIcon>

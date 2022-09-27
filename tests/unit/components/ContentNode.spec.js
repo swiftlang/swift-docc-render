@@ -29,7 +29,7 @@ import Column from '@/components/ContentNode/Column.vue';
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
 
-const { TableHeaderStyle } = ContentNode.constants;
+const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
 const mountWithContent = (content = [], provide = { references: {} }) => (
   shallowMount(ContentNode, {
@@ -1408,6 +1408,145 @@ describe('ContentNode', () => {
               <tr>
                 <th scope="row">row2col0</th>
                 <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+    });
+
+    describe('and column alignments', () => {
+      const alignedRows = [
+        [
+          [{ type: 'text', text: 'row0col0' }],
+          [{ type: 'text', text: 'row0col1' }],
+          [{ type: 'text', text: 'row0col2' }],
+          [{ type: 'text', text: 'row0col3' }],
+        ],
+        [
+          [{ type: 'text', text: 'row1col0' }],
+          [{ type: 'text', text: 'row1col1' }],
+          [{ type: 'text', text: 'row1col2' }],
+          [{ type: 'text', text: 'row1col3' }],
+        ],
+      ];
+      const alignments = [
+        TableColumnAlignments.left,
+        TableColumnAlignments.right,
+        TableColumnAlignments.center,
+        TableColumnAlignments.unset,
+      ];
+
+      it('renders header="none" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.none,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <tbody>
+              <tr>
+                <td class="left-cell">row0col0</td>
+                <td class="right-cell">row0col1</td>
+                <td class="center-cell">row0col2</td>
+                <td>row0col3</td>
+              </tr>
+              <tr>
+                <td class="left-cell">row1col0</td>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="both" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.both,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <thead>
+              <tr>
+                <th scope="col" class="left-cell">row0col0</th>
+                <th scope="col" class="right-cell">row0col1</th>
+                <th scope="col" class="center-cell">row0col2</th>
+                <th scope="col">row0col3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" class="left-cell">row1col0</th>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="row" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.row,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <thead>
+              <tr>
+                <th scope="col" class="left-cell">row0col0</th>
+                <th scope="col" class="right-cell">row0col1</th>
+                <th scope="col" class="center-cell">row0col2</th>
+                <th scope="col">row0col3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="left-cell">row1col0</td>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="column" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.column,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <tbody>
+              <tr>
+                <th scope="row" class="left-cell">row0col0</th>
+                <td class="right-cell">row0col1</td>
+                <td class="center-cell">row0col2</td>
+                <td>row0col3</td>
+              </tr>
+              <tr>
+                <th scope="row" class="left-cell">row1col0</th>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
               </tr>
             </tbody>
           </table-stub>

@@ -182,6 +182,7 @@ describe('DocumentationTopic', () => {
     expect(adjustableWidth.props()).toEqual({
       shownOnMobile: false,
       hiddenOnLarge: false,
+      fixedWidth: null,
     });
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({

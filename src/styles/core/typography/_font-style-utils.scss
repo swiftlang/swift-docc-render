@@ -14,7 +14,7 @@
 $default-fonts: ('Helvetica Neue', 'Helvetica', 'Arial', sans-serif) !default;
 
 $font-content:  $default-fonts !default;
-$font-mono: (Menlo, monospace) !default;
+$font-mono: var(--typography-html-font-mono, (Menlo, monospace)) !default;
 
 // Supported font-weight values
 $font-weight-semibold: 600 !default;
