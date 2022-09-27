@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <RenderChanged renderSingleChange :value="value" :changes="changes">
-    <span slot-scope="{ value }" v-if="value" class="property-text"><slot /></span>
+  <RenderChanged renderSingleChange :value="value" :changes="changes" v-slot="{ value }">
+    <span v-if="value" class="property-text"><slot /></span>
   </RenderChanged>
 </template>
 

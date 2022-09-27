@@ -43,7 +43,7 @@
     </HierarchyItem>
     <HierarchyItem>
       {{ currentTopicTitle }}
-      <template slot="tags">
+      <template #tags>
         <Badge v-if="isSymbolDeprecated" variant="deprecated" />
         <Badge v-else-if="isSymbolBeta" variant="beta" />
         <Badge

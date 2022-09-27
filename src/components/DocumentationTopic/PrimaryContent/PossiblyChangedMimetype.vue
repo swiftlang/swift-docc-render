@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <RenderChanged :changes="changeValues" :value="mimetype">
-    <div slot-scope="{ value }" class="response-mimetype">Content-Type: {{ value }}</div>
+  <RenderChanged :changes="changeValues" :value="mimetype" v-slot="{ value }">
+    <div class="response-mimetype">Content-Type: {{ value }}</div>
   </RenderChanged>
 </template>
 

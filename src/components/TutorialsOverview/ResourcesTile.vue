@@ -18,9 +18,9 @@
     <DestinationDataProvider
       v-if="action"
       :destination="action"
+      v-slot="{ url, title }"
     >
       <Reference
-        slot-scope="{ url, title }"
         class="link"
         :url="url"
       >

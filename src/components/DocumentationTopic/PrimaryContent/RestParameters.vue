@@ -12,7 +12,7 @@
   <section>
     <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="parameters" :changes="parameterChanges">
-      <template slot="symbol" slot-scope="{ name, type, content, changes, deprecated }">
+      <template #symbol="{ name, type, content, changes, deprecated }">
         <div class="param-name" :class="{ deprecated: deprecated }">
           <WordBreak tag="code">{{ name }}</WordBreak>
         </div>
@@ -23,8 +23,7 @@
         />
       </template>
       <template
-        slot="description"
-        slot-scope="{ name, type, content, required, attributes, changes, deprecated, readOnly }"
+        #description="{ name, type, content, required, attributes, changes, deprecated, readOnly }"
       >
         <div>
           <PossiblyChangedType

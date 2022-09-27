@@ -41,9 +41,8 @@ For the route `/documentation/path/to/something` DocC-Render will try to fetch D
 Links to pages in DocC-Render are generated using references coming from the render JSON. You can use `ReferenceUrlProvider` to get the URL and title from a reference.
 
 ```html
-<ReferenceUrlProvider :reference="someFooReference">
+<ReferenceUrlProvider :reference="someFooReference" v-slot="{ url, title }">
     <router-link 
-        slot-scope="{ url, title }"
         :to="url"
     >
         {{ title }}

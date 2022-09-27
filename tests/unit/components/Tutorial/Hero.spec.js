@@ -73,6 +73,10 @@ describe('Hero', () => {
     const chapter = 'myChapter';
     const wrapper = mountWithProps({
       chapter,
+    }, {}, {
+      stubs: {
+        Headline,
+      },
     });
 
     const headline = wrapper.find(Headline);

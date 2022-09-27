@@ -9,6 +9,7 @@
 */
 
 import {
+  RouterLinkStub,
   shallowMount,
 } from '@vue/test-utils';
 import Nav from 'docc-render/components/TutorialsOverview/Nav.vue';
@@ -51,6 +52,11 @@ describe('nav', () => {
       mocks,
       propsData,
       slots,
+      stubs: {
+        NavTitleContainer,
+        RouterLink: RouterLinkStub,
+        NavBase,
+      },
     });
   });
 
@@ -64,7 +70,7 @@ describe('nav', () => {
     expect(title.exists()).toBe(true);
     expect(title.props('to')).toEqual('/tutorials/swiftui?context=foo');
 
-    expect(title.text()).toBe('SwiftUI Tutorials');
+    expect(title.text()).toMatch(/SwiftUI\s*Tutorials/);
   });
 
   it('renders TutorialsNavigation and passes all sections to it', () => {

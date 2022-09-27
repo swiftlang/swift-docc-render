@@ -20,7 +20,7 @@
       <Row>
         <Column>
           <Headline :level="1">
-            <template v-if="chapter" slot="eyebrow">{{ chapter }}</template>
+            <template v-if="chapter" #eyebrow>{{ chapter }}</template>
             {{ title }}
           </Headline>
           <div v-if="content || video" class="intro">

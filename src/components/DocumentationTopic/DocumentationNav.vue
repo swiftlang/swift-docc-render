@@ -41,7 +41,7 @@
         </div>
       </transition>
     </template>
-    <template slot="default">
+    <template #default>
       <slot
         name="title"
         v-bind="{ rootLink, linkClass: 'nav-title-link', inactiveClass: 'inactive' }"
@@ -80,7 +80,7 @@
       </NavMenuItems>
       <slot name="tray-after" v-bind="{ breadcrumbCount }" />
     </template>
-    <template slot="after-content">
+    <template #after-content>
       <slot name="after-content" />
     </template>
   </NavBase>

@@ -30,12 +30,12 @@
         />
         <Title :eyebrow="roleHeading">
           <component :is="titleBreakComponent">{{ title }}</component>
-          <small
-            v-if="isSymbolDeprecated || isSymbolBeta"
-            slot="after"
-            :class="tagName"
-            :data-tag-name="tagName"
-          />
+          <template #after v-if="isSymbolDeprecated || isSymbolBeta">
+            <small
+              :class="tagName"
+              :data-tag-name="tagName"
+            />
+          </template>
         </Title>
         <Abstract v-if="abstract" :content="abstract" />
         <div v-if="sampleCodeDownload">

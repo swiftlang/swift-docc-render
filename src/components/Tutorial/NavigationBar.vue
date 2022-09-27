@@ -14,21 +14,18 @@
     :aria-label="technology"
     hasSolidBackground
   >
-    <template slot="default">
-      <ReferenceUrlProvider :reference="rootReference">
-        <NavTitleContainer
-          slot-scope="{ urlWithParams }"
-          :to="urlWithParams"
-        >
-          <template slot="default">{{ technology }}</template>
-          <template slot="subhead">Tutorials</template>
+    <template #default>
+      <ReferenceUrlProvider :reference="rootReference" v-slot="{ urlWithParams }">
+        <NavTitleContainer :to="urlWithParams">
+          <template #default>{{ technology }}</template>
+          <template #subhead>Tutorials</template>
         </NavTitleContainer>
       </ReferenceUrlProvider>
     </template>
-    <template slot="after-title">
+    <template #after-title>
       <div class="separator"></div>
     </template>
-    <template slot="tray">
+    <template #tray>
       <div class="mobile-dropdown-container">
         <MobileDropdown
           :options="chapters"

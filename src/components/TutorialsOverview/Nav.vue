@@ -11,12 +11,12 @@
 <template>
   <NavBase>
     <NavTitleContainer :to="buildUrl($route.path, $route.query)">
-      <template slot="default">
+      <template #default>
         <slot />
       </template>
-      <template slot="subhead">Tutorials</template>
+      <template #subhead>Tutorials</template>
     </NavTitleContainer>
-    <template slot="menu-items">
+    <template #menu-items>
       <NavMenuItemBase class="in-page-navigation">
         <TutorialsNavigation :sections="sections" />
       </NavMenuItemBase>

@@ -14,10 +14,7 @@
     :class="{ [OpenedClass]: isOpen, 'dropdown-small': isSmall }"
     class="dropdown-custom"
   >
-    <template
-      slot="dropdown"
-      slot-scope="{ dropdownClasses }"
-    >
+    <template #dropdown="{ dropdownClasses }">
       <span :id="`DropdownLabel_${_uid}`" class="visuallyhidden">{{ ariaLabel }}</span>
       <button
         ref="dropdownToggle"
@@ -38,10 +35,10 @@
         <slot name="toggle-post-content" />
       </button>
     </template>
-    <template slot="eyebrow">
+    <template #eyebrow>
       <slot name="eyebrow" />
     </template>
-    <template slot="after">
+    <template #after>
       <slot
         v-bind="{
           value,

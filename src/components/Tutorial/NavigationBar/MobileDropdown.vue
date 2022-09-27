@@ -14,9 +14,9 @@
       v-for="option in options"
       :key="option.reference"
       :reference="option.reference"
+      v-slot="{ title: optionTitle }"
     >
       <NavMenuItemBase
-        slot-scope="{ title: optionTitle }"
         class="chapter-list"
         role="group"
       >
@@ -26,11 +26,9 @@
             v-for="tutorial in option.projects"
             :reference="tutorial.reference"
             :key="tutorial.reference"
+            v-slot="{ url: tutorialUrl, urlWithParams, title: tutorialTitle }"
           >
-            <li
-              slot-scope="{ url: tutorialUrl, urlWithParams, title: tutorialTitle }"
-              class="tutorial-list-item"
-            >
+            <li class="tutorial-list-item">
               <router-link
                 :to="urlWithParams"
                 :value="tutorialTitle"

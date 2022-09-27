@@ -61,6 +61,7 @@ describe('SectionIntro', () => {
       },
       stubs: {
         'router-link': RouterLinkStub,
+        Headline,
       },
     });
   });

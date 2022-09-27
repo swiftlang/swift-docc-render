@@ -110,6 +110,7 @@ describe('NavigationBar', () => {
       'router-link': RouterLinkStub,
       ReferenceUrlProvider,
       NavBase,
+      NavTitleContainer,
     },
   };
 

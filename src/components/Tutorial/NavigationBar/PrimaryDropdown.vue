@@ -16,8 +16,7 @@
     isSmall
   >
     <template
-      slot="default"
-      slot-scope="{
+      #default="{
         closeAndFocusToggler,
         contentClasses,
         closeDropdown,
@@ -35,9 +34,9 @@
           v-for="chapterName in options"
           :key="chapterName.reference"
           :reference="chapterName.reference"
+          v-slot="{ title: chapterTitle }"
         >
           <li
-            slot-scope="{ title: chapterTitle }"
             class="chapter-list"
             role="group"
           >

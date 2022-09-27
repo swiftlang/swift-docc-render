@@ -15,12 +15,11 @@
     class="tutorial-dropdown"
     isSmall
   >
-    <template slot="toggle-post-content">
+    <template #toggle-post-content>
       <span class="section-tracker">{{ sectionTracker }}</span>
     </template>
     <template
-      slot="default"
-      slot-scope="{
+      #default="{
         closeAndFocusToggler,
         contentClasses,
         navigateOverOptions,

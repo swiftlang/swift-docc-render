@@ -12,14 +12,14 @@
   <section>
     <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="[bodyParam]" :changes="bodyChanges" keyBy="key">
-      <template slot="symbol" slot-scope="{ type, content, changes, name }">
+      <template #symbol="{ type, content, changes, name }">
         <PossiblyChangedType
           v-if="!shouldShiftType({ name, content })"
           :type="type"
           :changes="changes.type"
         />
       </template>
-      <template slot="description" slot-scope="{ name, content, mimeType, type, changes }">
+      <template #description="{ name, content, mimeType, type, changes }">
         <PossiblyChangedType
           v-if="shouldShiftType({ name, content })"
           :type="type"
@@ -37,7 +37,7 @@
     <template v-if="parts.length">
       <h3>Parts</h3>
       <ParametersTable :parameters="parts" class="parts" :changes="partsChanges">
-        <template slot="symbol" slot-scope="{ name, type, content, changes }">
+        <template #symbol="{ name, type, content, changes }">
           <div class="part-name">
             <WordBreak tag="code">{{ name }}</WordBreak>
           </div>
@@ -48,8 +48,7 @@
           />
         </template>
         <template
-          slot="description"
-          slot-scope="{ content, mimeType, required, type, attributes, changes, readOnly }"
+          #description="{ content, mimeType, required, type, attributes, changes, readOnly }"
         >
           <div>
             <PossiblyChangedType

@@ -26,10 +26,10 @@
           <WordBreak>{{ section.title }}</WordBreak>
         </LinkableHeading>
       </template>
-      <template v-if="section.abstract" slot="abstract">
+      <template v-if="section.abstract" #abstract>
         <ContentNode :content="section.abstract" />
       </template>
-      <template v-if="section.discussion" slot="discussion">
+      <template v-if="section.discussion" #discussion>
         <ContentNode :content="section.discussion.content" />
       </template>
       <template v-if="shouldRenderList">

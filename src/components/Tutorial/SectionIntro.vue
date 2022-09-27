@@ -13,9 +13,11 @@
     <Row :class="['intro', `intro-${sectionNumber}`, { ide: isTargetIDE }]">
       <Column class="left">
         <Headline :level="2">
-          <router-link :to="sectionLink" slot="eyebrow">
-            Section {{ sectionNumber }}
-          </router-link>
+          <template #eyebrow>
+            <router-link :to="sectionLink">
+              Section {{ sectionNumber }}
+            </router-link>
+          </template>
           {{ title }}
         </Headline>
         <ContentNode :content="content" />
