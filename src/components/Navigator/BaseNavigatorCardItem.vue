@@ -36,50 +36,58 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $item-height: 32px;
-$chevron-width: $card-horizontal-spacing;
-$tree-toggle-padding: $card-horizontal-spacing-small;
+$chevron-width: $nav-card-horizontal-spacing;
+$tree-toggle-padding: $nav-card-horizontal-spacing-small;
 $depth-spacer-base-spacing: (
-  $card-horizontal-spacing + $chevron-width + $tree-toggle-padding
+  $nav-card-horizontal-spacing + $chevron-width + $tree-toggle-padding
 );
-$nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
+$nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-small;
 
 .navigator-card-item {
-  height: $item-height;
+  --nav-head-wrapper-left-space: #{$nav-card-horizontal-spacing};
+  --nav-head-wrapper-right-space: #{$nav-card-horizontal-spacing-large};
+  --head-wrapper-vertical-space: 5px;
+  --nav-depth-spacer: #{$depth-spacer-base-spacing};
+
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  min-height: $item-height;
+  box-sizing: border-box;
 
   @include on-keyboard-focus-within() {
-    margin: $card-horizontal-spacing-small;
-    height: $item-height - 10px;
-    @include focus-outline();
+    @include focus-outline(-4px);
+  }
 
-    .depth-spacer {
-      margin-left: -$card-horizontal-spacing-small;
+  &.active {
+    background: var(--color-fill-gray-quaternary);
+  }
+
+  &:not(.is-group) {
+    .hover & {
+      background: var(--color-navigator-item-hover);
     }
   }
 }
 
 .depth-spacer {
-  --nesting-index: 0;
-  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
-  height: $item-height;
+  width: calc(var(--nesting-index) * #{$nesting-spacing} + var(--nav-depth-spacer));
+  height: 100%;
   position: relative;
   flex: 0 0 auto;
-  @include on-keyboard-focus {
-    margin: 0 -$card-horizontal-spacing-small;
-  }
 }
 
 .head-wrapper {
-  padding: 0 $card-horizontal-spacing-large 0 $card-horizontal-spacing;
+  padding: var(--head-wrapper-vertical-space)
+  var(--nav-head-wrapper-right-space)
+  var(--head-wrapper-vertical-space)
+  var(--nav-head-wrapper-left-space);
   position: relative;
   display: flex;
   align-items: center;
   flex: 1;
   min-width: 0;
-  height: 100%;
 
-  @include safe-area-left-set(padding-left, $card-horizontal-spacing);
-  @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
+  @include safe-area-left-set(padding-left, var(--nav-head-wrapper-left-space));
+  @include safe-area-right-set(padding-right, var(--nav-head-wrapper-right-space));
 }
 </style>

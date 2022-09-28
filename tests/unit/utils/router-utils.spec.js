@@ -19,6 +19,7 @@ import {
   restoreScrollOnReload,
   saveScrollOnReload,
 } from 'docc-render/utils/router-utils';
+import { EXTRA_DOCUMENTATION_OFFSET } from '@/utils/scroll-offset';
 
 const appTarget = process.env.VUE_APP_TARGET;
 
@@ -77,7 +78,7 @@ describe('router-utils', () => {
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeight },
+        offset: { x: 0, y: baseNavHeight + EXTRA_DOCUMENTATION_OFFSET },
       });
     });
 
@@ -89,7 +90,7 @@ describe('router-utils', () => {
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeightSmallBreakpoint },
+        offset: { x: 0, y: baseNavHeightSmallBreakpoint + EXTRA_DOCUMENTATION_OFFSET },
       });
 
       window.innerWidth = innerWidth;
@@ -101,7 +102,7 @@ describe('router-utils', () => {
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeight * 2 },
+        offset: { x: 0, y: baseNavHeight * 2 + EXTRA_DOCUMENTATION_OFFSET },
       });
     });
 

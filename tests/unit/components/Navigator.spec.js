@@ -94,12 +94,17 @@ const mocks = {
   },
 };
 
+const navigatorReferences = {
+  foo: {},
+};
+
 const defaultProps = {
   parentTopicIdentifiers,
   technology,
   references,
   scrollLockID: 'foo',
-  breakpoint: 'large',
+  renderFilterOnTop: false,
+  navigatorReferences,
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -140,10 +145,11 @@ describe('Navigator', () => {
       technologyPath: technology.path,
       isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      breakpoint: defaultProps.breakpoint,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
@@ -194,10 +200,11 @@ describe('Navigator', () => {
       technologyPath: fallbackTechnology.url,
       isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      breakpoint: defaultProps.breakpoint,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
       allowHiding: true,
+      navigatorReferences,
     });
   });
 

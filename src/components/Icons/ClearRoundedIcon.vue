@@ -12,6 +12,7 @@
   <SVGIcon
     class="clear-rounded-icon"
     viewBox="0 0 16 16"
+    themeId="clear-rounded"
   >
     <title>Clear</title>
     <path d="M9.864,3.5l.636.636L7.632,7l2.862,2.861-.636.636L7,7.639,4.142,10.494l-.636-.636L6.36,7,3.5,4.142l.636-.636L7,6.367Z" fill-rule="evenodd"/>

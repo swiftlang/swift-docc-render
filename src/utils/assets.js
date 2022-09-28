@@ -75,3 +75,10 @@ export function normalizeAssetUrl(url) {
   }
   return pathJoin([baseUrl, url]);
 }
+
+/**
+ * Transforms a URL string into a normalized css `url(/path)` format.
+ * @param {String} url
+ * @returns {string|undefined}
+ */
+export function toCSSUrl(url) { return url ? `url('${normalizeAssetUrl(url)}')` : undefined; }

@@ -172,7 +172,7 @@ $font-styles: (
     large: 17_25
   ),
   tabnav-link: (
-    large: tabnav_link_17_17
+    large: nav_14_14
   ),
   badge: (
     large: 12_16
@@ -194,5 +194,31 @@ $font-styles: (
   ),
   nav-menu-collapsible: (
     large: (nav_14_14, nav)
+  ),
+  card-eyebrow-small: (
+    large: 14_18_semibold,
+  ),
+  card-eyebrow-large: (
+    large: 17_21_semibold,
+    medium: 14_18_semibold,
+    small: 14_18_semibold,
+  ),
+  card-title-small: (
+    large: 17_21_semibold,
+    medium: 14_18_semibold,
+    small: 17_21_semibold,
+  ),
+  card-title-large: (
+    large: 21_25_semibold,
+    medium: 17_21_semibold,
+    small: 17_21_semibold,
+  ),
+  card-content-small: (
+    large: 14_18,
+  ),
+  card-content-large: (
+    large: 17_25,
+    medium: 14_18,
+    small: 14_18,
   ),
 ) !default;

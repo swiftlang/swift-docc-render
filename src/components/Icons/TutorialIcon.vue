@@ -12,6 +12,7 @@
   <SVGIcon
     class="tutorial-icon"
     viewBox="0 0 14 14"
+    themeId="tutorial"
   >
     <path d="M0.933 6.067h3.733v1.867h-3.733v-1.867z"></path>
     <path d="M0.933 1.867h3.733v1.867h-3.733v-1.867z"></path>

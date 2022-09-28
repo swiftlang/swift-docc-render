@@ -48,8 +48,11 @@ export default {
 @import "docc-render/styles/_core.scss";
 
 .button-cta {
-  border-radius: var(--style-button-borderRadius, $button-radius);
   background: var(--colors-button-light-background, var(--color-button-background));
+  border-color: var(--color-button-border, currentcolor);
+  border-radius: var(--button-border-radius, $button-radius);
+  border-style: var(--button-border-style, none);
+  border-width: var(--button-border-width, medium);
   color: var(--colors-button-text, var(--color-button-text));
   cursor: pointer;
   min-width: rem(30px);

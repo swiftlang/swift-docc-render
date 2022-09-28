@@ -49,7 +49,7 @@ export default {
 
 .name {
   @include font-styles(heading-2-reduced);
-  color: light-color(fill-tertiary);
+  color: var(--color-tutorials-overview-header-text, light-color(fill-tertiary));
   word-break: break-word;
 }
 
@@ -62,7 +62,7 @@ export default {
 .volume-name {
   padding: 50px 60px;
   text-align: center;
-  background: dark-color(fill-secondary);
+  background: var(--color-tutorials-overview-fill-secondary, dark-color(fill-secondary));
   margin: $tutorials-overview-tile-margin-single-side 0;
 
   @include breakpoint(small) {

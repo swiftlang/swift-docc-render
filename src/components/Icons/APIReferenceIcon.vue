@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <SVGIcon viewBox="0 0 14 14" class="api-reference-icon">
+  <SVGIcon viewBox="0 0 14 14" class="api-reference-icon" themeId="api-reference">
     <title>API Reference</title>
     <path d="m1 1v12h12v-12zm11 11h-10v-10h10z"/>
     <path d="m3 4h8v1h-8zm0 2.5h8v1h-8zm0 2.5h8v1h-8z"/>

@@ -15,10 +15,10 @@
     :style="{ '--nesting-index': item.depth }"
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
-    @keydown.left.prevent="handleLeftKeydown"
-    @keydown.right.exact.prevent="handleRightKeydown"
-    @keydown.enter.prevent="clickReference"
-    @keydown.alt.right.prevent="toggleEntireTree"
+    @keydown.left.native.prevent="handleLeftKeydown"
+    @keydown.right.exact.native.prevent="handleRightKeydown"
+    @keydown.enter.native.prevent="clickReference"
+    @keydown.alt.right.native.prevent="toggleEntireTree"
   >
     <template #depth-spacer>
       <span
@@ -45,9 +45,10 @@
       </button>
     </template>
     <template #navigator-icon="{ className }">
-      <NavigatorLeafIcon
+      <TopicTypeIcon
         v-if="!isGroupMarker && !apiChange"
         :type="item.type"
+        :image-override="item.icon ? navigatorReferences[item.icon] : null"
         :class="className"
       />
       <span
@@ -92,8 +93,8 @@
 
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
 import BaseNavigatorCardItem from 'docc-render/components/Navigator/BaseNavigatorCardItem.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
@@ -112,7 +113,7 @@ export default {
   components: {
     BaseNavigatorCardItem,
     HighlightMatches,
-    NavigatorLeafIcon,
+    TopicTypeIcon,
     InlineChevronRightIcon,
     Reference,
     Badge,
@@ -154,6 +155,10 @@ export default {
     enableFocus: {
       type: Boolean,
       default: true,
+    },
+    navigatorReferences: {
+      type: Object,
+      default: () => ({}),
     },
   },
   idState() {
@@ -238,56 +243,17 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-$item-height: 32px;
-$chevron-width: $card-horizontal-spacing;
-$tree-toggle-padding: $card-horizontal-spacing-small;
-$depth-spacer-base-spacing: (
-  $card-horizontal-spacing + $chevron-width + $tree-toggle-padding
-);
-$nesting-spacing: $card-horizontal-spacing + $card-horizontal-spacing-small;
+$tree-toggle-padding: $nav-card-horizontal-spacing-small;
+$chevron-width: $nav-card-horizontal-spacing;
 
-.navigator-card-item {
-  height: $item-height;
-  display: flex;
-  align-items: center;
-
-  @include on-keyboard-focus-within() {
-    margin: $card-horizontal-spacing-small;
-    height: $item-height - 10px;
-    @include focus-outline();
-
-    .depth-spacer {
-      margin-left: -$card-horizontal-spacing-small;
+.is-group {
+  .leaf-link {
+    color: var(--color-figure-gray-secondary);
+    font-weight: $font-weight-semibold;
+    // groups dont need the overlay
+    &:after {
+      display: none;
     }
-  }
-
-  &.active {
-    background: var(--color-fill-gray-quaternary);
-  }
-
-  &.is-group {
-    .leaf-link {
-      color: var(--color-figure-gray-secondary);
-      font-weight: $font-weight-semibold;
-      // groups dont need the overlay
-      &:after {
-        display: none;
-      }
-    }
-  }
-
-  .hover &:not(.is-group) {
-    background: var(--color-navigator-item-hover);
-  }
-}
-
-.depth-spacer {
-  width: calc(var(--nesting-index) * #{$nesting-spacing} + #{$depth-spacer-base-spacing});
-  height: $item-height;
-  position: relative;
-  flex: 0 0 auto;
-  @include on-keyboard-focus {
-    margin: 0 -$card-horizontal-spacing-small;
   }
 }
 

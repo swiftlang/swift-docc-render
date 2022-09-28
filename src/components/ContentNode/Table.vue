@@ -9,11 +9,23 @@
 -->
 
 <template>
-  <div class="table-wrapper"><table><slot /></table></div>
+  <div class="table-wrapper">
+    <table :class="{ spanned }">
+      <slot />
+    </table>
+  </div>
 </template>
 
 <script>
-export default { name: 'Table' };
+export default {
+  name: 'Table',
+  props: {
+    spanned: {
+      type: Boolean,
+      default: false,
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -35,6 +47,10 @@ export default { name: 'Table' };
   -webkit-overflow-scrolling: touch;
 }
 
+table {
+  border-style: hidden;
+}
+
 /deep/ {
   th {
     font-weight: $font-weight-semibold;
@@ -44,8 +60,20 @@ export default { name: 'Table' };
   th {
     border-color: var(--color-fill-gray-tertiary);
     border-style: solid;
-    border-width: 1px 0;
+    border-width: var(--table-border-width, 1px 1px);
     padding: rem(10px);
+
+    &.left-cell {
+      text-align: left;
+    }
+
+    &.right-cell {
+      text-align: right;
+    }
+
+    &.center-cell {
+      text-align: center;
+    }
   }
 }
 </style>
