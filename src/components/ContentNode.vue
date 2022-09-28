@@ -28,7 +28,7 @@ import Row from './ContentNode/Row.vue';
 import TabNavigator from './ContentNode/TabNavigator.vue';
 import TaskList from './ContentNode/TaskList.vue';
 
-const BlockType = {
+export const BlockType = {
   aside: 'aside',
   codeListing: 'codeListing',
   endpointExample: 'endpointExample',

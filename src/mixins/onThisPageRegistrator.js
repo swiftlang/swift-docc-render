@@ -10,10 +10,12 @@
 
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import { anchorize } from 'docc-render/utils/strings';
+import { BlockType } from 'docc-render/components/ContentNode.vue';
 import {
   MainContentSectionAnchors,
   PrimaryContentSectionAnchors,
 } from 'docc-render/constants/ContentSectionAnchors';
+import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 
 /**
  * Crawls the `topicData` of a page, and extracts onThisPage sections.
@@ -27,7 +29,7 @@ export default {
   },
   methods: {
     shouldRegisterContentSection(subSection) {
-      return subSection.type === 'heading' && subSection.level < 4;
+      return subSection.type === BlockType.heading && subSection.level < 4;
     },
     extractOnThisPageSections(topicData) {
       if (!topicData) return;
@@ -45,7 +47,8 @@ export default {
         primaryContentSections.forEach((section) => {
           switch (section.kind) {
           case SectionKind.content:
-            section.content.forEach((subSection) => {
+            // call the ContentNode foreach method, passing the section as context
+            ContentNode.methods.forEach.call(section, (subSection) => {
               if (this.shouldRegisterContentSection(subSection)) {
                 this.store.addOnThisPageSection({
                   title: subSection.text,

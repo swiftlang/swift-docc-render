@@ -12,11 +12,12 @@ import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { shallowMount } from '@vue/test-utils';
 import { SectionKind } from '@/constants/PrimaryContentSection';
 import onThisPageSectionsStoreBase from '@/stores/OnThisPageSectionsStoreBase';
+import { BlockType } from 'docc-render/components/ContentNode.vue';
 import { flushPromises } from '../../../test-utils';
 
 const contentSections = [
   {
-    type: 'heading',
+    type: BlockType.heading,
     level: 2,
     text: 'Heading Level 2',
     anchor: 'provided-heading-anchor',
@@ -26,12 +27,12 @@ const contentSections = [
     text: 'Some Content',
   },
   {
-    type: 'heading',
+    type: BlockType.heading,
     level: 3,
     text: 'Heading Level 3',
   },
   {
-    type: 'heading',
+    type: BlockType.heading,
     level: 4,
     text: 'Heading Level 4',
   },
@@ -136,6 +137,53 @@ describe('OnThisPageRegistrator', () => {
     ]);
   });
 
+  it('extracts headings deep from within the content', async () => {
+    const wrapper = createWrapper({
+      data: () => ({ topicData: null }),
+    });
+    await flushPromises();
+    wrapper.setData({
+      topicData: {
+        primaryContentSections: [
+          {
+            kind: SectionKind.content,
+            content: [
+              ...contentSections,
+              {
+                type: BlockType.aside,
+                content: [
+                  {
+                    type: BlockType.heading,
+                    level: 3,
+                    text: 'Deep Heading Level 3',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    });
+    await flushPromises();
+    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
+      {
+        anchor: 'provided-heading-anchor',
+        level: 2,
+        title: 'Heading Level 2',
+      },
+      {
+        anchor: 'heading-level-3',
+        level: 3,
+        title: 'Heading Level 3',
+      },
+      {
+        anchor: 'deep-heading-level-3',
+        level: 3,
+        title: 'Deep Heading Level 3',
+      },
+    ]);
+  });
+
   it('watches for changes, clears the store and extracts sections again', async () => {
     const wrapper = createWrapper();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(16);
@@ -148,6 +196,17 @@ describe('OnThisPageRegistrator', () => {
       ],
     };
     await flushPromises();
-    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(2);
+    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
+      {
+        anchor: 'provided-heading-anchor',
+        level: 2,
+        title: 'Heading Level 2',
+      },
+      {
+        anchor: 'heading-level-3',
+        level: 3,
+        title: 'Heading Level 3',
+      },
+    ]);
   });
 });
