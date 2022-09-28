@@ -73,6 +73,7 @@ export default {
 }
 
 .loading-card {
+  height: 35px;
   animation: pulse 2s ease;
   animation-iteration-count: infinite;
   animation-fill-mode: forwards;
