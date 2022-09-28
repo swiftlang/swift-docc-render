@@ -1,3 +1,13 @@
+<!--
+  This source file is part of the Swift.org open source project
+
+  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Licensed under Apache License v2.0 with Runtime Library Exception
+
+  See https://swift.org/LICENSE.txt for license information
+  See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+-->
+
 <template>
   <BaseNavigatorCardItem
     :style="`--index: ${index};`"
@@ -8,9 +18,7 @@
       <div
         v-if="Math.random() < 0.6"
         :class="className"
-      >
-        <div class="inner-icon"></div>
-      </div>
+      />
     </template>
     <template #title-container>
       <div
@@ -61,15 +69,7 @@ export default {
   width: 17px;
   height: 17px;
   border-radius: 2px;
-  border: 1px solid var(--color-fill-gray-tertiary);
-  padding: 2px;
-  box-sizing: border-box;
-
-  > .inner-icon {
-    background-color: var(--color-fill-gray-tertiary);
-    width: 100%;
-    height: 100%;
-  }
+  background-color: var(--color-fill-gray-tertiary);
 }
 
 .loading-card {

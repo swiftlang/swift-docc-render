@@ -70,6 +70,7 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
 }
 
 .depth-spacer {
+  --nesting-index: 0;
   width: calc(var(--nesting-index) * #{$nesting-spacing} + var(--nav-depth-spacer));
   height: 100%;
   position: relative;

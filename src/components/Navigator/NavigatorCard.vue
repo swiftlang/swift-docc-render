@@ -46,7 +46,7 @@
         >
           <div v-if="isLoading" class="scroller">
             <LoadingNavigator
-              v-for="index in 10"
+              v-for="index in 3"
               :key="index"
               :index="index - 1"
             />
