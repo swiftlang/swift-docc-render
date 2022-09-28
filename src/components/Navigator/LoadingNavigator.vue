@@ -73,6 +73,7 @@ export default {
 }
 
 .loading-card {
+  --nesting-index: -1;
   height: 35px;
   animation: pulse 2s ease;
   animation-iteration-count: infinite;

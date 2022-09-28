@@ -48,6 +48,7 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   --nav-head-wrapper-right-space: #{$nav-card-horizontal-spacing-large};
   --head-wrapper-vertical-space: 5px;
   --nav-depth-spacer: #{$depth-spacer-base-spacing};
+  --nesting-index: 0;
 
   display: flex;
   align-items: stretch;
@@ -70,7 +71,6 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
 }
 
 .depth-spacer {
-  --nesting-index: 0;
   width: calc(var(--nesting-index) * #{$nesting-spacing} + var(--nav-depth-spacer));
   height: 100%;
   position: relative;
