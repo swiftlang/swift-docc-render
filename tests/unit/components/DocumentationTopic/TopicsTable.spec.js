@@ -101,7 +101,7 @@ describe('TopicsTable', () => {
     const sections = wrapper.findAll(ContentTableSection);
     expect(sections.length).toBe(propsData.sections.length);
     const firstSection = sections.at(0);
-    expect(firstSection.props('title')).toBe('');
+    expect(firstSection.props('title')).toBeFalsy();
     expect(firstSection.classes()).toContain('no-title');
   });
 
