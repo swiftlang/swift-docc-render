@@ -41,7 +41,6 @@ export default {
   props: {
     title: {
       type: String,
-      default: '',
       required: false,
     },
     anchor: {
@@ -50,7 +49,7 @@ export default {
     },
   },
   computed: {
-    anchorComputed: ({ title, anchor }) => anchor || anchorize(title),
+    anchorComputed: ({ title, anchor }) => anchor || anchorize(title || ''),
     className: () => TITLE_CLASS_NAME,
   },
 };
