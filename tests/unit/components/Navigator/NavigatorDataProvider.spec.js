@@ -320,18 +320,6 @@ describe('NavigatorDataProvider', () => {
     });
   });
 
-  it('generates a unique hash', () => {
-    const wrapper = createWrapper();
-    // make sure hashCode returns a unique hash from a string
-    expect(wrapper.vm.hashCode('foo')).toBe(101574);
-    expect(wrapper.vm.hashCode('oof')).toBe(110214);
-    expect(wrapper.vm.hashCode('ofo')).toBe(109944);
-    expect(wrapper.vm.hashCode('foo1')).toBe(3148843);
-    // make sure hash is never too big
-    expect(wrapper.vm.hashCode('foo1'.repeat(10))).toBe(-1535108562);
-    expect(wrapper.vm.hashCode('foo1'.repeat(50))).toBe(-2107259162);
-  });
-
   it('counts the amount of deprecated items a groupMarker has', async () => {
     const technologyClone = JSON.parse(JSON.stringify(extendedTechnologies));
     technologyClone.children[1].deprecated = true;
