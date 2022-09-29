@@ -34,7 +34,6 @@ describe('DocumentationTopicStore', () => {
 
   describe('reset', () => {
     it('restores the default state', () => {
-      DocumentationTopicStore.state.onThisPageSections = null;
       DocumentationTopicStore.state.apiChanges = {};
       expect(DocumentationTopicStore.state).not.toEqual(defaultState);
       DocumentationTopicStore.reset();

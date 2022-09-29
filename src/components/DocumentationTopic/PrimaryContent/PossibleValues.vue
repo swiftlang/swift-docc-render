@@ -10,7 +10,9 @@
 
 <template>
   <section>
-    <LinkableHeading anchor="possibleValues">Possible Values</LinkableHeading>
+    <LinkableHeading :anchor="contentSectionData.anchor">
+      {{ contentSectionData.title }}
+    </LinkableHeading>
     <dl class="datalist">
       <template v-for="value in values">
         <dt class="param-name" :key="`${value.name}:name`">
@@ -28,6 +30,8 @@
 import ContentNode from 'docc-render/components/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
+import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 
 export default {
   name: 'PossibleValues',
@@ -41,6 +45,9 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  computed: {
+    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.possibleValues],
   },
 };
 </script>

@@ -10,8 +10,8 @@
 
 <template>
   <ContentTable
-    anchor="relationships"
-    title="Relationships"
+    :anchor="contentSectionData.anchor"
+    :title="contentSectionData.title"
   >
     <Section
       v-for="section in sectionsWithSymbols"
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { MainContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
 import RelationshipsList from './RelationshipsList.vue';
@@ -50,6 +51,7 @@ export default {
     },
   },
   computed: {
+    contentSectionData: () => MainContentSectionAnchors.relationships,
     sectionsWithSymbols() {
       return this.sections.map(section => ({
         ...section,

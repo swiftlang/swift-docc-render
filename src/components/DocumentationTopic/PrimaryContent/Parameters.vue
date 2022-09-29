@@ -10,7 +10,9 @@
 
 <template>
   <section class="parameters">
-    <LinkableHeading anchor="parameters">Parameters</LinkableHeading>
+    <LinkableHeading :anchor="contentSectionData.anchor">
+      {{ contentSectionData.title }}
+    </LinkableHeading>
     <dl>
       <template v-for="param in parameters">
         <dt class="param-name" :key="`${param.name}:name`">
@@ -27,6 +29,8 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
+import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 
 export default {
   name: 'Parameters',
@@ -39,6 +43,9 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  computed: {
+    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.parameters],
   },
 };
 </script>
