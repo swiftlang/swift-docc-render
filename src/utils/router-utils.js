@@ -17,6 +17,7 @@ import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
 import { cssEscapeTopicIdHash } from 'docc-render/utils/strings';
 import { areEquivalentLocations } from 'docc-render/utils/url-helper';
+import getExtraScrollOffset from 'theme/utils/scroll-offset.js';
 
 /**
  * Returns the current absolute location, eg: '/tutorials/swiftui/something'
@@ -54,8 +55,8 @@ export async function scrollBehavior(to, from, savedPosition) {
     const baseNavOffset = getBaseNavOffset();
     // if on docs and have API changes enabled
     const apiChangesNavHeight = (isDocumentation && hasNavBarOpen) ? baseNavOffset : 0;
-    // compensate for the nav sticky height.
-    const offset = baseNavOffset + apiChangesNavHeight;
+    // compensate for the nav sticky height and add any extra scroll offset we may need
+    const offset = baseNavOffset + apiChangesNavHeight + getExtraScrollOffset(to);
 
     const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
     return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };

@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <SVGIcon class="ellipsis-icon" viewBox="0 0 14 14">
+  <SVGIcon class="ellipsis-icon" viewBox="0 0 14 14" themeId="ellipsis">
     <path d="m12.439 7.777v-1.554h-1.554v1.554zm-4.662 0v-1.554h-1.554v1.554zm-4.662 0v-1.554h-1.554v1.554z"/>
   </SVGIcon>
 </template>

@@ -90,7 +90,7 @@ export default {
 $tile-margin: $tutorials-overview-tile-margin-single-side;
 
 .tile {
-  background: dark-color(fill-secondary);
+  background: var(--color-tutorials-overview-fill-secondary, dark-color(fill-secondary));
   margin: $tile-margin 0;
   padding: 50px 60px;
 }

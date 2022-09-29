@@ -21,9 +21,11 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
+import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
+jest.mock('docc-render/mixins/onThisPageRegistrator');
 jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
@@ -182,6 +184,7 @@ describe('DocumentationTopic', () => {
     expect(adjustableWidth.props()).toEqual({
       shownOnMobile: false,
       hiddenOnLarge: false,
+      fixedWidth: null,
     });
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
@@ -199,12 +202,12 @@ describe('DocumentationTopic', () => {
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      breakpoint: 'large',
       // assert we are passing the default technology, if we dont have the children yet
       technology,
       apiChanges: null,
       allowHiding: true,
       navigatorReferences: {},
+      renderFilterOnTop: false,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -212,7 +215,7 @@ describe('DocumentationTopic', () => {
       errorFetching: false,
       isFetching: false,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      breakpoint: 'large',
+      renderFilterOnTop: false,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
       technology: TechnologyWithChildren,
@@ -248,6 +251,19 @@ describe('DocumentationTopic', () => {
       await wrapper.vm.$nextTick();
       // assert navigator has display: none
       expect(wrapper.find(Navigator).attributes('style')).toContain('display: none');
+    });
+
+    it('reverses the filter position of the navigator', async () => {
+      // renders a closed navigator
+      wrapper.setData({
+        topicData: {
+          ...topicData,
+          schemaVersion: schemaVersionWithSidebar,
+        },
+      });
+      await wrapper.vm.$nextTick();
+      // assert navigator has display: none
+      expect(wrapper.find(Navigator).props('renderFilterOnTop')).toBe(true);
     });
 
     it('does not apply display none to Navigator if is open', async () => {
@@ -545,6 +561,14 @@ describe('DocumentationTopic', () => {
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
+  });
+
+  it('calls `extractOnThisPageSections` when `topicData` changes', () => {
+    // called once on mounted
+    expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(1);
+    wrapper.setData({ topicData });
+    // assert its called again
+    expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(2);
   });
 
   it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {

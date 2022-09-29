@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -28,8 +29,8 @@ const matchMedia = {
   removeListener: jest.fn(),
 };
 
-const setPropertySpy = jest.spyOn(document.documentElement.style, 'setProperty');
-const removePropertySpy = jest.spyOn(document.documentElement.style, 'removeProperty');
+const setPropertySpy = jest.spyOn(document.body.style, 'setProperty');
+const removePropertySpy = jest.spyOn(document.body.style, 'removeProperty');
 
 const path = '/the/new/path';
 const pushMock = jest.fn();
@@ -222,18 +223,31 @@ describe('App', () => {
     });
 
     it('returns dark mode colors', async () => {
+      // if "Auto" is preferred and the system is "Dark":
       window.matchMedia.mockReturnValueOnce({
         ...matchMedia,
         matches: true,
       });
-      createWrapper();
+      const wrapper = createWrapper();
+      wrapper.setData({
+        appState: {
+          ...wrapper.vm.appState,
+          preferredColorScheme: ColorScheme.auto.value,
+        },
+      });
       await flushPromises();
       expect(setPropertySpy)
         .toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.dark);
     });
 
-    it('dynamically changes the data, upon color scheme change', async () => {
+    it('dynamically changes the data, upon color scheme change (in auto mode)', async () => {
       const wrapper = createWrapper();
+      wrapper.setData({
+        appState: {
+          ...wrapper.vm.appState,
+          preferredColorScheme: ColorScheme.auto.value,
+        },
+      });
       await flushPromises();
       expect(setPropertySpy).toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.light);
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
@@ -243,6 +257,12 @@ describe('App', () => {
 
     it('updates the values applied to the root, if the colors update', async () => {
       const wrapper = createWrapper();
+      wrapper.setData({
+        appState: {
+          ...wrapper.vm.appState,
+          preferredColorScheme: ColorScheme.auto.value,
+        },
+      });
       await flushPromises();
       expect(removePropertySpy).toHaveBeenCalledTimes(1);
       expect(setPropertySpy).toHaveBeenCalledTimes(1);

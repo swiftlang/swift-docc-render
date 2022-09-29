@@ -29,7 +29,7 @@ import TabNavigator from './ContentNode/TabNavigator.vue';
 import TaskList from './ContentNode/TaskList.vue';
 import LinksBlock from './ContentNode/LinksBlock.vue';
 
-const BlockType = {
+export const BlockType = {
   aside: 'aside',
   codeListing: 'codeListing',
   endpointExample: 'endpointExample',
@@ -98,6 +98,13 @@ const TableHeaderStyle = {
   row: 'row',
 };
 
+const TableColumnAlignments = {
+  left: 'left',
+  right: 'right',
+  center: 'center',
+  unset: 'unset',
+};
+
 // The point after which a TabNavigator turns to vertical mode.
 const TabNavigatorVerticalThreshold = 5;
 
@@ -117,17 +124,22 @@ function renderNode(createElement, references) {
   ));
 
   const renderTableCell = (
-    element, attrs, data, cellIndex, rowIndex, extendedData,
+    element, attrs, data, cellIndex, rowIndex, extendedData, alignments,
   ) => {
     const { colspan, rowspan } = extendedData[`${rowIndex}_${cellIndex}`] || {};
     // if either is `0`, then its spanned over and should not be rendered
     if (colspan === 0 || rowspan === 0) return null;
-    return createElement(element, { attrs: { ...attrs, colspan, rowspan } }, (
+    const align = alignments[cellIndex] || TableColumnAlignments.unset;
+    let classes = null;
+    if (align !== TableColumnAlignments.unset) classes = `${align}-cell`;
+    return createElement(element, { attrs: { ...attrs, colspan, rowspan }, class: classes }, (
       renderChildren(data)
     ));
   };
 
-  const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none, extendedData = {}) => {
+  const renderTableChildren = (
+    rows, headerStyle = TableHeaderStyle.none, extendedData = {}, alignments = [],
+  ) => {
     // build the matrix for the array
     switch (headerStyle) {
     // thead with first row and th for each first row cell
@@ -137,14 +149,16 @@ function renderNode(createElement, references) {
       return [
         createElement('thead', {}, [
           createElement('tr', {}, firstRow.map((cell, cellIndex) => (
-            renderTableCell('th', { scope: 'col' }, cell, cellIndex, 0, extendedData)
+            renderTableCell('th', { scope: 'col' }, cell, cellIndex, 0, extendedData, alignments)
           ))),
         ]),
         createElement('tbody', {}, otherRows.map(([firstCell, ...otherCells], rowIndex) => (
           createElement('tr', {}, [
-            renderTableCell('th', { scope: 'row' }, firstCell, 0, rowIndex + 1, extendedData),
+            renderTableCell(
+              'th', { scope: 'row' }, firstCell, 0, rowIndex + 1, extendedData, alignments,
+            ),
             ...otherCells.map((cell, cellIndex) => (
-              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex + 1, extendedData)
+              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex + 1, extendedData, alignments)
             )),
           ])
         ))),
@@ -155,9 +169,11 @@ function renderNode(createElement, references) {
       return [
         createElement('tbody', {}, rows.map(([firstCell, ...otherCells], rowIndex) => (
           createElement('tr', {}, [
-            renderTableCell('th', { scope: 'row' }, firstCell, 0, rowIndex, extendedData),
+            renderTableCell(
+              'th', { scope: 'row' }, firstCell, 0, rowIndex, extendedData, alignments,
+            ),
             ...otherCells.map((cell, cellIndex) => (
-              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex, extendedData)
+              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex, extendedData, alignments)
             )),
           ])
         ))),
@@ -169,12 +185,12 @@ function renderNode(createElement, references) {
       return [
         createElement('thead', {}, [
           createElement('tr', {}, firstRow.map((cell, cellIndex) => renderTableCell(
-            'th', { scope: 'col' }, cell, cellIndex, 0, extendedData,
+            'th', { scope: 'col' }, cell, cellIndex, 0, extendedData, alignments,
           ))),
         ]),
         createElement('tbody', {}, otherRows.map((row, rowIndex) => (
           createElement('tr', {}, row.map((cell, cellIndex) => (
-            renderTableCell('td', {}, cell, cellIndex, rowIndex + 1, extendedData)
+            renderTableCell('td', {}, cell, cellIndex, rowIndex + 1, extendedData, alignments)
           )))
         ))),
       ];
@@ -186,7 +202,7 @@ function renderNode(createElement, references) {
           rows.map((row, rowIndex) => (
             createElement('tr', {}, (
               row.map((cell, cellIndex) => (
-                renderTableCell('td', {}, cell, cellIndex, rowIndex, extendedData)
+                renderTableCell('td', {}, cell, cellIndex, rowIndex, extendedData, alignments)
               ))
             ))
           ))
@@ -271,7 +287,7 @@ function renderNode(createElement, references) {
           spanned: !!node.extendedData,
         },
       }, (
-        renderTableChildren(node.rows, node.header, node.extendedData)
+        renderTableChildren(node.rows, node.header, node.extendedData, node.alignments)
       ));
     case BlockType.termList:
       return createElement('dl', {}, node.items.map(({ term, definition }) => [
@@ -427,7 +443,7 @@ function renderNode(createElement, references) {
 
 export default {
   name: 'ContentNode',
-  constants: { TableHeaderStyle },
+  constants: { TableHeaderStyle, TableColumnAlignments },
   render: function render(createElement) {
     // Dynamically map each content item and any children to their
     // corresponding components, and wrap the whole tree in a <div>

@@ -554,6 +554,22 @@ describe('AdjustableSidebarWidth', () => {
     expect(aside.classes()).toContain('hide-on-large');
   });
 
+  it('allows hard-coding a width', async () => {
+    const wrapper = createWrapper({
+      propsData: {
+        fixedWidth: 200,
+      },
+    });
+    expect(wrapper.vm.asideStyles).toHaveProperty('width', '200px');
+    // simulate window changes width form orientation change.
+    // This should trigger both breakpoint emitter and window resize, but not in Jest
+    window.innerWidth = 1500;
+    window.dispatchEvent(createEvent('resize'));
+    await flushPromises();
+    assertWidth(wrapper, 200); // hardcoded width
+    expect(wrapper.find('.resize-handle').exists()).toBe(false);
+  });
+
   describe('stores the content width in the store', () => {
     function setContentWidth(wrapper, value) {
       Object.defineProperty(wrapper.find({ ref: 'content' }).element, 'offsetWidth', {

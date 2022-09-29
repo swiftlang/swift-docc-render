@@ -113,7 +113,7 @@ export default {
 
 .name {
   @include font-styles(tutorials-overview-chapter-title);
-  color: light-color(fill-tertiary);
+  color: var(--color-tutorials-overview-header-text, light-color(fill-tertiary));
 
   &-text {
     word-break: break-word;

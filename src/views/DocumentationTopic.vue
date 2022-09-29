@@ -39,7 +39,7 @@
                       :references="topicProps.references"
                       :navigator-references="slotProps.references"
                       :scrollLockID="scrollLockID"
-                      :breakpoint="breakpoint"
+                      :render-filter-on-top="breakpoint !== BreakpointName.large"
                       @close="handleToggleSidenav(breakpoint)"
                     />
                   </transition>
@@ -103,6 +103,7 @@ import StaticContentWidth from 'docc-render/components/DocumentationTopic/Static
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
+import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -121,7 +122,7 @@ export default {
     Nav: DocumentationNav,
     QuickNavigationModal,
   },
-  mixins: [performanceMetrics, onPageLoadScrollToFragment],
+  mixins: [performanceMetrics, onPageLoadScrollToFragment, OnThisPageRegistrator],
   data() {
     return {
       topicDataDefault: null,

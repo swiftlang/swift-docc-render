@@ -137,7 +137,7 @@ export default {
 
 .step {
   position: relative;
-  border-radius: $border-radius;
+  border-radius: var(--tutorial-step-border-radius, $border-radius);
   padding: 1rem $step-padding-horizontal;
   background-color: var(--color-step-background);
   overflow: hidden;
