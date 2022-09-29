@@ -13,6 +13,7 @@
       v-for="item in items"
       :key="item.identifier"
       :topic="item"
+      class="topic-link-block"
     />
   </div>
   <TopicsLinkCardGrid
@@ -59,5 +60,9 @@ export default {
 
 .links-block + /deep/ * {
   margin-top: $stacked-margin-xlarge;
+}
+
+.topic-link-block {
+  margin-top: 15px; // make sure its the same as in the TopicsTable
 }
 </style>
