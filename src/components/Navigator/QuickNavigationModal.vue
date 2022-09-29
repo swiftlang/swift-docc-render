@@ -21,6 +21,7 @@
       @keydown.down.exact.prevent="focusNext"
       @keydown.up.exact.prevent="focusPrev"
       @keydown.enter.exact="handleKeyEnter"
+      @click.self="closeQuickNavigationModal"
     >
       <div
         class="quick-navigation__container"
@@ -126,7 +127,7 @@ const ModalStyleProps = {
   'max-width': '50rem',
   height: 'fit-content',
   flex: 'auto',
-  margin: '10rem 1rem',
+  margin: '10rem 0',
   overflow: 'visible',
 };
 
@@ -280,7 +281,6 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $base-border-width: 1px;
-$filter-padding: rem(15px);
 
 .quick-navigation {
   input[type="text"] {
@@ -290,6 +290,7 @@ $filter-padding: rem(15px);
     background-color: var(--color-fill);
     border: solid $base-border-width var(--color-fill-gray);
     border-radius: $small-border-radius;
+    margin: 0 rem(16px);
     > * {
       --input-text: var(--color-figure-gray-secondary);
     }
@@ -299,7 +300,6 @@ $filter-padding: rem(15px);
   }
   &__magnifier-icon-container {
     width: rem(18px);
-    padding-left: rem(5px);
     > * {
       width: 100%;
     }
@@ -315,7 +315,7 @@ $filter-padding: rem(15px);
       border-top: 1px solid var(--color-fill-gray);
     }
     .no-results {
-      margin: $filter-padding auto $filter-padding auto;
+      margin: rem(15px) auto;
       width: fit-content;
     }
     .selected {
@@ -334,7 +334,7 @@ $filter-padding: rem(15px);
   &__symbol-match {
     display: flex;
     height: rem(40px);
-    padding: rem(10px) $filter-padding rem(10px) $filter-padding;
+    padding: rem(10px) rem(15px);
     color: var(--color-figure-gray);
     &:hover {
       background-color: var(--color-navigator-item-hover);

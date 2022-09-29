@@ -539,11 +539,10 @@ $input-height: rem(28px);
     border-radius: 100%;
 
     .clear-rounded-icon {
-      height: rem(14px);
-      width: rem(14px);
+      height: rem(12px);
+      width: rem(12px);
       fill: var(--input-text);
       display: block;
-      padding: rem(5px);
     }
   }
 
