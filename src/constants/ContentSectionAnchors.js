@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { SectionKind } from '@/constants/PrimaryContentSection';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export const MainContentSectionAnchors = {
   topics: {

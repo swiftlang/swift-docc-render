@@ -25,7 +25,7 @@ import PossibleValues
 import RestEndpoint
   from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import { SectionKind } from '@/constants/PrimaryContentSection';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Declaration from './PrimaryContent/Declaration.vue';
 import PropertyListKeyDetails from './PrimaryContent/PropertyListKeyDetails.vue';
 import Parameters from './PrimaryContent/Parameters.vue';
