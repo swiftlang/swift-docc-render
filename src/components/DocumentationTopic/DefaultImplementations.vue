@@ -10,8 +10,8 @@
 
 <template>
   <TopicsTable
-    anchor="default-implementations"
-    title="Default Implementations"
+    :anchor="contentSectionData.anchor"
+    :title="contentSectionData.title"
     :isSymbolDeprecated="isSymbolDeprecated"
     :isSymbolBeta="isSymbolBeta"
     :sections="sections"
@@ -20,11 +20,15 @@
 </template>
 
 <script>
+import { MainContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 import TopicsTable from './TopicsTable.vue';
 
 export default {
   name: 'DefaultImplementations',
   components: { TopicsTable },
+  computed: {
+    contentSectionData: () => MainContentSectionAnchors.defaultImplementations,
+  },
   props: {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,

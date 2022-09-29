@@ -103,6 +103,7 @@ import StaticContentWidth from 'docc-render/components/DocumentationTopic/Static
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
+import OnThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -121,7 +122,7 @@ export default {
     Nav: DocumentationNav,
     QuickNavigationModal,
   },
-  mixins: [performanceMetrics, onPageLoadScrollToFragment],
+  mixins: [performanceMetrics, onPageLoadScrollToFragment, OnThisPageRegistrator],
   data() {
     return {
       topicDataDefault: null,

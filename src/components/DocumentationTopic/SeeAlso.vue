@@ -10,8 +10,8 @@
 
 <template>
   <TopicsTable
-    anchor="see-also"
-    title="See Also"
+    :anchor="contentSectionData.anchor"
+    :title="contentSectionData.title"
     :isSymbolDeprecated="isSymbolDeprecated"
     :isSymbolBeta="isSymbolBeta"
     :sections="sections"
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { MainContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 import TopicsTable from './TopicsTable.vue';
 
 export default {
@@ -28,6 +29,9 @@ export default {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,
     sections: TopicsTable.props.sections,
+  },
+  computed: {
+    contentSectionData: () => MainContentSectionAnchors.seeAlso,
   },
 };
 </script>

@@ -20,9 +20,12 @@
 </template>
 
 <script>
-import PossibleValues from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
-import RestEndpoint from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
+import PossibleValues
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
+import RestEndpoint
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import { SectionKind } from '@/constants/PrimaryContentSection';
 import Declaration from './PrimaryContent/Declaration.vue';
 import PropertyListKeyDetails from './PrimaryContent/PropertyListKeyDetails.vue';
 import Parameters from './PrimaryContent/Parameters.vue';
@@ -30,21 +33,6 @@ import PropertyTable from './PrimaryContent/PropertyTable.vue';
 import RestBody from './PrimaryContent/RestBody.vue';
 import RestParameters from './PrimaryContent/RestParameters.vue';
 import RestResponses from './PrimaryContent/RestResponses.vue';
-
-const SectionKind = {
-  content: 'content',
-  declarations: 'declarations',
-  details: 'details',
-  parameters: 'parameters',
-  possibleValues: 'possibleValues',
-  properties: 'properties',
-  restBody: 'restBody',
-  restCookies: 'restCookies',
-  restEndpoint: 'restEndpoint',
-  restHeaders: 'restHeaders',
-  restParameters: 'restParameters',
-  restResponses: 'restResponses',
-};
 
 export default {
   name: 'PrimaryContent',
