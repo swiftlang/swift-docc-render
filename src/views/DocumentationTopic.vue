@@ -11,26 +11,26 @@
 <template>
   <CodeTheme class="doc-topic-view">
     <template v-if="topicData">
-      <NavigatorDataProvider
-        :interface-language="topicProps.interfaceLanguage"
-        :technology="technology"
-        :api-changes-version="store.state.selectedAPIChangesVersion"
-        ref="NavigatorDataProvider"
+      <component
+        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
+        v-bind="sidebarProps"
+        v-on="sidebarListeners"
       >
-        <template #default="slotProps">
-          <component
-            :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
-            v-bind="sidebarProps"
-            v-on="sidebarListeners"
+        <PortalTarget name="modal-destination" multiple />
+        <template #aside="{ scrollLockID, breakpoint }">
+          <NavigatorDataProvider
+            :interface-language="topicProps.interfaceLanguage"
+            :technology="technology"
+            :api-changes-version="store.state.selectedAPIChangesVersion"
+            ref="NavigatorDataProvider"
           >
-            <PortalTarget name="modal-destination" multiple />
-            <QuickNavigationModal
-              :children="slotProps.flatChildren"
-              :showQuickNavigationModal="showQuickNavigationModal"
-              @update:showQuickNavigationModal="(show) => showQuickNavigationModal = show"
-            />
-            <template #aside="{ scrollLockID, breakpoint }">
+            <template #default="slotProps">
               <div class="doc-topic-aside">
+                <QuickNavigationModal
+                  :children="slotProps.flatChildren"
+                  :showQuickNavigationModal="showQuickNavigationModal"
+                  @update:showQuickNavigationModal="(show) => showQuickNavigationModal = show"
+                />
                 <transition name="delay-hiding">
                   <Navigator
                     v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
@@ -49,46 +49,46 @@
                 </transition>
               </div>
             </template>
-            <Nav
-              v-if="!isTargetIDE"
-              :title="topicProps.title"
-              :diffAvailability="topicProps.diffAvailability"
-              :interfaceLanguage="topicProps.interfaceLanguage"
-              :objcPath="objcPath"
-              :swiftPath="swiftPath"
-              :parentTopicIdentifiers="parentTopicIdentifiers"
-              :isSymbolDeprecated="isSymbolDeprecated"
-              :isSymbolBeta="isSymbolBeta"
-              :currentTopicTags="topicProps.tags"
-              :references="topicProps.references"
-              :isWideFormat="enableNavigator"
-              :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
-              @toggle-sidenav="handleToggleSidenav"
+          </NavigatorDataProvider>
+        </template>
+        <Nav
+          v-if="!isTargetIDE"
+          :title="topicProps.title"
+          :diffAvailability="topicProps.diffAvailability"
+          :interfaceLanguage="topicProps.interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :parentTopicIdentifiers="parentTopicIdentifiers"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :currentTopicTags="topicProps.tags"
+          :references="topicProps.references"
+          :isWideFormat="enableNavigator"
+          :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
+          @toggle-sidenav="handleToggleSidenav"
+        >
+          <template #menu-items>
+            <button
+              v-if="enableQuickNavigation && enableNavigator"
+              class="quick-navigation-open-container"
+              @click="openQuickNavigationModal"
+              @keydown.enter.exact="openQuickNavigationModal"
             >
-              <template #menu-items>
-                <button
-                  v-if="enableQuickNavigation"
-                  class="quick-navigation-open-container"
-                  @click="openQuickNavigationModal"
-                  @keydown.enter.exact="openQuickNavigationModal"
-                >
-                  <MagnifierIcon />
-                </button>
-              </template>
-            </Nav>
-            <Topic
-              v-bind="topicProps"
-              :key="topicKey"
-              :objcPath="objcPath"
-              :swiftPath="swiftPath"
-              :isSymbolDeprecated="isSymbolDeprecated"
-              :isSymbolBeta="isSymbolBeta"
-              :languagePaths="languagePaths"
-              :enableOnThisPageNav="enableOnThisPageNav"
-            />
-          </component>
-       </template>
-      </NavigatorDataProvider>
+              <MagnifierIcon />
+            </button>
+          </template>
+        </Nav>
+        <Topic
+          v-bind="topicProps"
+          :key="topicKey"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :languagePaths="languagePaths"
+          :enableOnThisPageNav="enableOnThisPageNav"
+        />
+      </component>
     </template>
   </CodeTheme>
 </template>
@@ -360,6 +360,8 @@ export default {
       this.sidenavVisibleOnMobile = value;
     },
     onQuickNavigationKeydown(event) {
+      // Prevent modal from openning if the navigator is disabled
+      if (!this.enableNavigator) return;
       if (this.showQuickNavigationModal) return;
       if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))) return;
       // Prevent the modal from opening when the event key is coming from an input

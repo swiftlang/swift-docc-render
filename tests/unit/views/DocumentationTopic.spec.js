@@ -444,6 +444,11 @@ describe('DocumentationTopic', () => {
       .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
   });
 
+  it('renders without NavigatorDataProvider', async () => {
+    wrapper.setData({ topicData });
+    expect(wrapper.find(NavigatorDataProvider).exists()).toBe(false);
+  });
+
   it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {
     wrapper.setData({
       topicData: {
