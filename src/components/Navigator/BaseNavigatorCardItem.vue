@@ -17,7 +17,15 @@
       <div class="depth-spacer">
         <slot name="depth-spacer" />
       </div>
-      <slot name="navigator-icon" className="navigator-icon" />
+      <div
+        v-if="!hideNavigatorIcon"
+        class="navigator-icon-wrapper"
+      >
+        <slot
+          name="navigator-icon"
+          className="navigator-icon"
+        />
+      </div>
       <div class="title-container">
         <slot name="title-container" />
       </div>
@@ -29,6 +37,12 @@
 export default {
   name: 'BaseNavigatorCardItem',
   inheritAttrs: false,
+  props: {
+    hideNavigatorIcon: {
+      type: Boolean,
+      default: () => false,
+    },
+  },
 };
 </script>
 
@@ -75,6 +89,14 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   height: 100%;
   position: relative;
   flex: 0 0 auto;
+}
+
+.title-container {
+  width: 100%;
+}
+
+.navigator-icon-wrapper {
+  margin-right: 7px;
 }
 
 .head-wrapper {

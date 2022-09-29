@@ -44,11 +44,13 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <div v-if="isLoading" class="scroller">
-            <LoadingNavigator
-              v-for="index in 3"
+          <div v-if="isLoading" class="scroller" aria-hidden="true">
+            <LoadingNavigatorItem
+              v-for="(row, index) in LOADER_ROWS"
               :key="index"
               :index="index - 1"
+              :width="row.width"
+              :hideNavigatorIcon="row.hideNavigatorIcon"
             />
           </div>
           <DynamicScroller
@@ -137,7 +139,7 @@ import {
   SIDEBAR_ITEM_SIZE,
 } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import LoadingNavigator from 'docc-render/components/Navigator/LoadingNavigator.vue';
+import LoadingNavigatorItem from 'docc-render/components/Navigator/LoadingNavigatorItem.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -163,6 +165,12 @@ const FILTER_TAGS = {
   tutorials: 'tutorials',
   articles: 'articles',
 };
+
+const LOADER_ROWS = [
+  { width: '30%', hideNavigatorIcon: true },
+  { width: '80%' },
+  { width: '50%' },
+];
 
 const FILTER_TAGS_TO_LABELS = {
   [FILTER_TAGS.sampleCode]: 'Sample Code',
@@ -213,7 +221,7 @@ export default {
     FilterInput,
     SidenavIcon,
     MagnifierIcon,
-    LoadingNavigator,
+    LoadingNavigatorItem,
     NavigatorCardItem,
     DynamicScroller,
     DynamicScrollerItem,
@@ -298,6 +306,7 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
+      LOADER_ROWS,
       allNodesToggled: false,
     };
   },

@@ -11,19 +11,16 @@
 <template>
   <BaseNavigatorCardItem
     :style="`--index: ${index};`"
-    class="loading-card"
-    disabled
+    :hideNavigatorIcon="hideNavigatorIcon"
+    class="loading-navigator-item"
   >
     <template #navigator-icon="{ className }">
-      <div
-        v-if="Math.random() < 0.6"
-        :class="className"
-      />
+      <div :class="className"/>
     </template>
     <template #title-container>
       <div
         class="loader"
-        :style="`width: ${getRandomNumber(200, 50)}px;`"
+        :style="{ width }"
       />
     </template>
   </BaseNavigatorCardItem>
@@ -33,19 +30,19 @@
 import BaseNavigatorCardItem from 'docc-render/components/Navigator/BaseNavigatorCardItem.vue';
 
 export default {
-  name: 'LoadingCard',
+  name: 'LoadingNavigatorItem',
   components: {
     BaseNavigatorCardItem,
   },
   props: {
+    ...BaseNavigatorCardItem.props,
     index: {
       type: Number,
       default: 0,
     },
-  },
-  methods: {
-    getRandomNumber(randomMultiplier, varyBy) {
-      return Math.floor(Math.random() * randomMultiplier) + varyBy;
+    width: {
+      type: String,
+      default: '50%',
     },
   },
 };
@@ -58,22 +55,16 @@ export default {
   height: rem(12px);
   background-color: var(--color-fill-gray-tertiary);
   border-radius: rem(4px);
-
-  + .loader {
-    margin-top: rem(10px);
-  }
 }
 
 .navigator-icon {
-  margin-right: 7px;
   width: 17px;
   height: 17px;
   border-radius: 2px;
   background-color: var(--color-fill-gray-tertiary);
 }
 
-.loading-card {
-  --nesting-index: -1;
+.loading-navigator-item {
   height: 35px;
   animation: pulse 2s ease;
   animation-iteration-count: infinite;

@@ -15,6 +15,7 @@
     :style="{ '--nesting-index': item.depth }"
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
+    :hideNavigatorIcon="isGroupMarker"
     @keydown.left.native.prevent="handleLeftKeydown"
     @keydown.right.exact.native.prevent="handleRightKeydown"
     @keydown.enter.native.prevent="clickReference"
@@ -46,13 +47,13 @@
     </template>
     <template #navigator-icon="{ className }">
       <TopicTypeIcon
-        v-if="!isGroupMarker && !apiChange"
+        v-if="!apiChange"
         :type="item.type"
         :image-override="item.icon ? navigatorReferences[item.icon] : null"
         :class="className"
       />
       <span
-        v-else-if="apiChange"
+        v-else
         :class="{ [`changed changed-${apiChange}`]: apiChange, className }"
       />
     </template>
@@ -260,7 +261,6 @@ $chevron-width: $nav-card-horizontal-spacing;
 .navigator-icon {
   display: flex;
   flex: 0 0 auto;
-  margin-right: 7px;
 
   &.changed {
     border: none;
