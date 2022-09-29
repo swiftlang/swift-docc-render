@@ -116,8 +116,8 @@ describe('QuickNavigationModal', () => {
     await wrapper.vm.$nextTick();
     const matches = wrapper.vm.filteredSymbols;
     expect(matches).toHaveLength(filteredSymbols.length);
-    expect(matches.at(0)).toMatchObject(filteredSymbols[0]);
-    expect(matches.at(1)).toMatchObject(filteredSymbols[1]);
+    expect(matches[0]).toMatchObject(filteredSymbols[0]);
+    expect(matches[1]).toMatchObject(filteredSymbols[1]);
     expect(wrapper.findAll(QuickNavigationHighlighter).length).toBe(filteredSymbols.length);
   });
 
