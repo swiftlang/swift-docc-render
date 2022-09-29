@@ -49,32 +49,11 @@ export default {
       default: () => 2,
       validator: v => v >= 1 && v <= 6,
     },
-    registerOnThisPage: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  computed: {
-    shouldRegisterOnThisPage({ registerOnThisPage, level, anchor }) {
-      return registerOnThisPage && level < 4 && anchor;
-    },
   },
   inject: {
     isTargetIDE: {
       default: () => false,
     },
-    store: {
-      default: () => ({ addOnThisPageSection: () => {} }),
-    },
-  },
-  mounted() {
-    if (this.shouldRegisterOnThisPage) {
-      this.store.addOnThisPageSection({
-        anchor: this.anchor,
-        title: this.$el.textContent.trim(),
-        level: this.level,
-      });
-    }
   },
 };
 </script>

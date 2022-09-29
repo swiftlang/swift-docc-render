@@ -21,9 +21,11 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
+import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
+jest.mock('docc-render/mixins/onThisPageRegistrator');
 jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
@@ -564,6 +566,14 @@ describe('DocumentationTopic', () => {
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
+  });
+
+  it('calls `extractOnThisPageSections` when `topicData` changes', () => {
+    // called once on mounted
+    expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(1);
+    wrapper.setData({ topicData });
+    // assert its called again
+    expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(2);
   });
 
   it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {

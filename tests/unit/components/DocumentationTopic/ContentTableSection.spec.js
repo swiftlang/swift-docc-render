@@ -35,9 +35,17 @@ describe('ContentTableSection', () => {
     const title = div.find(LinkableHeading);
     expect(title.exists()).toBe(true);
     expect(title.props('level')).toBe(3);
-    expect(title.props('registerOnThisPage')).toBe(false);
     expect(title.classes()).toContain(TITLE_CLASS_NAME);
     expect(title.text()).toContain(propsData.title);
+  });
+
+  it('does not require a title', () => {
+    wrapper.setProps({
+      title: undefined,
+    });
+
+    const title = wrapper.find(LinkableHeading);
+    expect(title.exists()).toBe(false);
   });
 
   it('renders an `id` if `anchor` is provided', () => {

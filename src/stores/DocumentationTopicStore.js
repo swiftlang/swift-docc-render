@@ -25,7 +25,6 @@ export default {
   reset() {
     this.state.preferredLanguage = Settings.preferredLanguage;
     this.resetApiChanges();
-    this.resetPageSections();
   },
   setPreferredLanguage(language) {
     this.state.preferredLanguage = language;

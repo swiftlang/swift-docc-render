@@ -120,6 +120,7 @@ import { compareVersions, combineVersions } from 'docc-render/utils/schema-versi
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -139,7 +140,7 @@ export default {
     PortalTarget,
     MagnifierIcon,
   },
-  mixins: [performanceMetrics, onPageLoadScrollToFragment],
+  mixins: [performanceMetrics, onPageLoadScrollToFragment, OnThisPageRegistrator],
   data() {
     return {
       topicDataDefault: null,
