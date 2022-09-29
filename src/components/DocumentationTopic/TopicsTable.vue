@@ -11,12 +11,13 @@
 <template>
   <ContentTable :anchor="anchor" :title="title">
     <ContentTableSection
-      v-for="section in sectionsWithTopics"
-      :key="section.title"
+      v-for="(section, i) in sectionsWithTopics"
+      :key="`${section.title}_${i}`"
       :title="section.title"
       :anchor="section.anchor"
+      :class="{ 'no-title': !section.title }"
     >
-      <template v-if="wrapTitle" #title="{ className }">
+      <template v-if="section.title && wrapTitle" #title="{ className }">
         <LinkableHeading
           :level="3"
           :anchor="section.anchor"
@@ -131,5 +132,10 @@ export default {
 .topic,
 .section-content > .content {
   margin-top: 15px;
+
+  // if there is no title, remove the top margin of the first item
+  .no-title &:first-child {
+    margin-top: 0;
+  }
 }
 </style>

@@ -88,6 +88,23 @@ describe('TopicsTable', () => {
     expect(sections.at(1).props('anchor')).toBe(null);
   });
 
+  it('renders a `ContentTableSection` for sections without a title', () => {
+    wrapper.setProps({
+      sections: [
+        {
+          ...propsData.sections[0],
+          title: undefined,
+        },
+        propsData.sections[1],
+      ],
+    });
+    const sections = wrapper.findAll(ContentTableSection);
+    expect(sections.length).toBe(propsData.sections.length);
+    const firstSection = sections.at(0);
+    expect(firstSection.props('title')).toBeFalsy();
+    expect(firstSection.classes()).toContain('no-title');
+  });
+
   it('renders a `TopicsLinkBlock` for each topic with reference data in a section', () => {
     const sections = wrapper.findAll(ContentTableSection);
     expect(wrapper.findAll(TopicsLinkCardGrid)).toHaveLength(0);
