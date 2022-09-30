@@ -11,6 +11,8 @@
 // Typography Utilities
 
 // List of common fonts to share in font groups.
+@use "sass:math";
+
 $default-fonts: ('Helvetica Neue', 'Helvetica', 'Arial', sans-serif) !default;
 
 $font-content:  $default-fonts !default;
@@ -92,7 +94,7 @@ $font-weight-bold: 700 !default;
   }
   // set the unit on the `$number`
   // @see {https://sass-lang.com/documentation/values/numbers#units}
-  @return ($value / ($value * 0 + 1)) * $unitNumber;
+  @return math.div($value, $value * 0 + 1) * $unitNumber;
 }
 
 //
@@ -109,7 +111,7 @@ $font-weight-bold: 700 !default;
 @function em($value) {
   // convert the value, based on the type of unit
   @if unit($value) == 'px' {
-    $value: $value / $body-font-size;
+    $value: math.div($value, $body-font-size);
   }
 
   @return change-unit($value, em);

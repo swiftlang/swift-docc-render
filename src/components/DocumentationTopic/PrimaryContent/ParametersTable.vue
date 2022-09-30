@@ -77,6 +77,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@use 'sass:math';
 @import 'docc-render/styles/_core.scss';
 
 $param-spacing: rem(28px);
@@ -107,7 +108,7 @@ $param-spacing: rem(28px);
     @include change-highlight-target();
 
     & + & {
-      margin-top: $param-spacing/2;
+      margin-top: math.div($param-spacing, 2);
     }
   }
 }

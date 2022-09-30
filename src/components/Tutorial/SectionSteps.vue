@@ -272,9 +272,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
 @import 'docc-render/styles/_core.scss';
 
-$margin-transision-duration: 0.3s;
+$margin-transision-duration: 0.1s;
 
 .steps {
   position: relative;
@@ -342,7 +343,7 @@ $rhs-col-width-max: 921px;
     top: $nav-height-small;
     height: calc(#{$height-ide} - #{$nav-height-small});
   }
-  transition: margin ($margin-transision-duration / 3) ease-in-out;
+  transition: margin $margin-transision-duration ease-in-out;
 
   // Let the code preview overflow, and avoid allowing overflow in both 'asset-container' and
   // 'code-preview'. Otherwise, two scroll bars appear.
@@ -398,7 +399,7 @@ $rhs-col-width-max: 921px;
     }
 
     :deep(img), :deep(video) {
-      $asset-width: (100% - $lhs-col-width - $lhs-col-margin) / 100%;
+      $asset-width: math.div(100% - $lhs-col-width - $lhs-col-margin, 100%);
       $content-width-large: map-deep-get($breakpoint-attributes, (default, large, content-width));
       $content-width-medium: map-deep-get($breakpoint-attributes, (default, medium, content-width));
 

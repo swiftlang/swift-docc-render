@@ -68,7 +68,7 @@ $total-columns: 12 !default;
 // Navigator
 $nav-card-horizontal-spacing: 10px;
 $nav-card-horizontal-spacing-large: $nav-card-horizontal-spacing * 2;
-$nav-card-horizontal-spacing-small: $nav-card-horizontal-spacing / 2;
+$nav-card-horizontal-spacing-small: $nav-card-horizontal-spacing * 0.5;
 
 // Small vp padding and width
 $small-viewport-content-padding: 20px !default;

@@ -31,6 +31,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
+
 @keyframes fadeout {
   from {
     opacity: 1;
@@ -44,7 +46,7 @@ export default {
 path {
   $num-rects: 8;
   $animation-duration-full: 1000ms;
-  $animation-duration-per-rect: $animation-duration-full / $num-rects;
+  $animation-duration-per-rect: math.div($animation-duration-full, $num-rects);
 
   animation-duration: $animation-duration-full;
   animation-iteration-count: infinite;

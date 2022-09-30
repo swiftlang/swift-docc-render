@@ -218,7 +218,7 @@ $sidenav-icon-size: 19px;
 $sidenav-icon-padding-size: 5px;
 
 // overwrite the typography of menu items outside of breakpoint only
-:deep(.nav-menu) {
+:deep() .nav-menu {
   @include font-styles(documentation-nav);
   // vertically align the items
   padding-top: 0;
@@ -316,7 +316,7 @@ $sidenav-icon-padding-size: 5px;
   align-self: center;
   color: var(--color-nav-link-color);
   position: relative;
-  margin: 0 -$sidenav-icon-padding-size;
+  margin: 0 (-$sidenav-icon-padding-size);
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);
