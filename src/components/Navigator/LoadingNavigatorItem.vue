@@ -66,11 +66,11 @@ export default {
 
 .loading-navigator-item {
   height: 35px;
-  animation: pulse 2s ease;
+  animation: pulse 2.5s ease;
   animation-iteration-count: infinite;
   animation-fill-mode: forwards;
   opacity: 0;
-  animation-delay: calc(0.25s * var(--index));
+  animation-delay: calc(var(--visibility-delay) + 0.3s * var(--index));
 }
 
 @keyframes pulse {
@@ -78,7 +78,11 @@ export default {
     opacity: 0;
   }
 
-  50% {
+  33% {
+    opacity: 1;
+  }
+
+  66% {
     opacity: 1;
   }
 

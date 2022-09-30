@@ -260,26 +260,4 @@ export default {
     transition: none;
   }
 }
-
-.loading-placeholder {
-  align-items: center;
-  color: var(--color-figure-gray-secondary);
-  justify-content: center;
-  height: 100vh;
-  position: sticky;
-  top: var(--nav-height, 0px);
-}
-
-.loading-spinner {
-  --spinner-size: 40px; // used for both width and height
-  --spinner-delay: 1s; // don't show spinner until this much time has passed
-
-  height: var(--spinner-size);
-  width: var(--spinner-size);
-
-  &.delay-visibility-enter-active {
-    transition: visibility var(--spinner-delay);
-    visibility: hidden;
-  }
-}
 </style>

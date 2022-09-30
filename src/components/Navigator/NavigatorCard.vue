@@ -44,15 +44,19 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <div v-if="isLoading" class="scroller" aria-hidden="true">
-            <LoadingNavigatorItem
-              v-for="(row, index) in LOADER_ROWS"
-              :key="index"
-              :index="index - 1"
-              :width="row.width"
-              :hideNavigatorIcon="row.hideNavigatorIcon"
-            />
-          </div>
+          <template v-if="isLoading">
+            <transition name="delay-visibility" appear>
+              <div class="scroller" aria-hidden="true">
+                <LoadingNavigatorItem
+                  v-for="(row, index) in LOADER_ROWS"
+                  :key="index"
+                  :index="index"
+                  :width="row.width"
+                  :hideNavigatorIcon="row.hideNavigatorIcon"
+                />
+              </div>
+            </transition>
+          </template>
           <DynamicScroller
             v-else
             v-show="hasNodes"
@@ -1184,6 +1188,7 @@ $close-icon-padding: 5px;
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
   --nav-filter-horizontal-padding: 30px;
+  --visibility-delay: 1s; // don't show spinner until this much time has passed
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -1438,5 +1443,10 @@ $close-icon-padding: 5px;
     position: static;
     height: 100%;
   }
+}
+
+.delay-visibility-enter-active {
+  transition: visibility var(--visibility-delay);
+  visibility: hidden;
 }
 </style>
