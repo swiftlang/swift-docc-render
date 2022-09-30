@@ -50,7 +50,7 @@ export default {
   // default height for a card, if no size is specified
   height: var(--card-cover-height, 180px);
 
-  /deep/ img {
+  &.fallback, /deep/ img {
     width: 100%;
     height: 100%;
     object-fit: cover;
