@@ -11,7 +11,6 @@
 import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
-import SpinnerIcon from '@/components/Icons/SpinnerIcon.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
@@ -147,25 +146,12 @@ describe('Navigator', () => {
       scrollLockID: defaultProps.scrollLockID,
       renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
+      isLoading: false,
       apiChanges: null,
       allowHiding: true,
       navigatorReferences,
     });
     expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
-  });
-
-  it('renders a loading placeholder, if is fetching', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isFetching: true,
-      },
-    });
-    // assert Navigator card is rendered
-    expect(wrapper.find(NavigatorCard).exists()).toBe(false);
-
-    const placeholder = wrapper.find('.loading-placeholder');
-    expect(placeholder.exists()).toBe(true);
-    expect(placeholder.contains(SpinnerIcon)).toBe(true);
   });
 
   it('renders an aria live that tells VO users when navigator is loading', () => {
@@ -202,6 +188,7 @@ describe('Navigator', () => {
       scrollLockID: defaultProps.scrollLockID,
       renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
+      isLoading: false,
       apiChanges: null,
       allowHiding: true,
       navigatorReferences,
