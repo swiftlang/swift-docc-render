@@ -58,7 +58,7 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-.links-block + /deep/ * {
+.links-block + :deep(*) {
   margin-top: $stacked-margin-xlarge;
 }
 
