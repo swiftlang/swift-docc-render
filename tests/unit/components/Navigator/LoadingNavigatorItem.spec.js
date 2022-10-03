@@ -29,23 +29,30 @@ const createWrapper = others => shallowMount(LoadingNavigatorItem, {
   ...others,
 });
 
-const wrapper = createWrapper();
+let wrapper;
 
 describe('LoadingNavigatorItem', () => {
-  it('renders a BaseNavigatorCardItem', () => {
-    expect(wrapper.is('.loading-navigator-item')).toBe(true);
-    expect(wrapper.classes()).toContain('loading-navigator-item');
+  beforeEach(() => {
+    wrapper = createWrapper();
   });
 
-  it('renders an empty BaseNavigatorCardItem', () => {
-    const component = wrapper.find(BaseNavigatorCardItem);
-    expect(component.props()).toEqual({
+  it('renders an empty BaseNavigatorCardItem with navigator-icon', () => {
+    const baseComponent = wrapper.find(BaseNavigatorCardItem);
+    expect(baseComponent.props()).toEqual({
       hideNavigatorIcon: propsData.hideNavigatorIcon,
     });
-    expect(component.classes('loading-navigator-item')).toBe(true);
+    expect(baseComponent.classes('loading-navigator-item')).toBe(true);
+    expect(baseComponent.find('.navigator-icon').exists()).toBe(true);
+  });
+
+  it('does not render a navigator-icon slot if hideNavigatorIcon is true', () => {
+    wrapper = createWrapper({ propsData: { hideNavigatorIcon: true } });
+    expect(wrapper.find('.navigator-icon').exists()).toBe(false);
   });
 
   it('renders a loader with a width given by prop', () => {
-    expect(wrapper.find('.loader').exists()).toBe(true);
+    const loader = wrapper.find('.loader');
+    expect(loader.exists()).toBe(true);
+    expect(loader.element.style.width).toEqual(propsData.width);
   });
 });

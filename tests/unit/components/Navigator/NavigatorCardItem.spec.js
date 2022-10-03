@@ -21,6 +21,7 @@ jest.mock('docc-render/utils/loading');
 
 const {
   Badge,
+  BaseNavigatorCardItem,
 } = NavigatorCardItem.components;
 
 const defaultProps = {
@@ -49,6 +50,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     RouterLink: RouterLinkStub,
+    BaseNavigatorCardItem,
   },
   ...others,
 });
@@ -311,8 +313,7 @@ describe('NavigatorCardItem', () => {
     });
 
     expect(wrapper.find(TopicTypeIcon).exists()).toBe(false);
-    expect(wrapper.find('.navigator-icon').classes())
-      .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
+    expect(wrapper.find('.changed.changed-modified'));
   });
 
   it('emits an event, when clicking on the leaf-link', () => {
