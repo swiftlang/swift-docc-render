@@ -54,12 +54,12 @@ export default {
 .loader {
   height: rem(12px);
   background-color: var(--color-fill-gray-tertiary);
-  border-radius: rem(4px);
+  border-radius: 4px;
 }
 
 .navigator-icon {
-  width: 17px;
-  height: 17px;
+  width: $icon-size-default;
+  height: $icon-size-default;
   border-radius: 2px;
   background-color: var(--color-fill-gray-tertiary);
 }

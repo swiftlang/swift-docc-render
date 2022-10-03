@@ -151,7 +151,6 @@ describe('Navigator', () => {
       allowHiding: true,
       navigatorReferences,
     });
-    expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
   });
 
   it('renders an aria live that tells VO users when navigator is loading', () => {
