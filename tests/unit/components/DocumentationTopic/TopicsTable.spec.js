@@ -88,6 +88,23 @@ describe('TopicsTable', () => {
     expect(sections.at(1).props('anchor')).toBe(null);
   });
 
+  it('renders a `ContentTableSection` for sections without a title', () => {
+    wrapper.setProps({
+      sections: [
+        {
+          ...propsData.sections[0],
+          title: undefined,
+        },
+        propsData.sections[1],
+      ],
+    });
+    const sections = wrapper.findAll(ContentTableSection);
+    expect(sections.length).toBe(propsData.sections.length);
+    const firstSection = sections.at(0);
+    expect(firstSection.props('title')).toBeFalsy();
+    expect(firstSection.classes()).toContain('no-title');
+  });
+
   it('renders a `TopicsLinkBlock` for each topic with reference data in a section', () => {
     const sections = wrapper.findAll(ContentTableSection);
     expect(wrapper.findAll(TopicsLinkCardGrid)).toHaveLength(0);
@@ -174,7 +191,6 @@ describe('TopicsTable', () => {
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
     expect(linkableHeading.exists()).toBe(true);
     expect(linkableHeading.props('level')).toBe(3);
-    expect(linkableHeading.props('registerOnThisPage')).toBe(false);
     expect(linkableHeading.attributes('anchor')).toBe(propsData.sections[0].anchor);
     expect(linkableHeading.classes()).toContain('contenttable-title');
   });

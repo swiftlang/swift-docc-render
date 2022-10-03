@@ -27,8 +27,9 @@ import Column from './ContentNode/Column.vue';
 import Row from './ContentNode/Row.vue';
 import TabNavigator from './ContentNode/TabNavigator.vue';
 import TaskList from './ContentNode/TaskList.vue';
+import LinksBlock from './ContentNode/LinksBlock.vue';
 
-const BlockType = {
+export const BlockType = {
   aside: 'aside',
   codeListing: 'codeListing',
   endpointExample: 'endpointExample',
@@ -43,6 +44,7 @@ const BlockType = {
   video: 'video',
   row: 'row',
   tabNavigator: 'tabNavigator',
+  links: 'links',
 };
 
 const InlineType = {
@@ -360,6 +362,14 @@ function renderNode(createElement, references) {
           vertical,
         },
         scopedSlots,
+      });
+    }
+    case BlockType.links: {
+      return createElement(LinksBlock, {
+        props: {
+          blockStyle: node.style,
+          identifiers: node.items,
+        },
       });
     }
     case InlineType.codeVoice:

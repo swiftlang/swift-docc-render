@@ -10,7 +10,9 @@
 
 <template>
   <section class="details">
-    <LinkableHeading anchor="details">Details</LinkableHeading>
+    <LinkableHeading :anchor="contentSectionData.anchor">
+      {{ contentSectionData.title }}
+    </LinkableHeading>
     <dl>
       <template v-if="isSymbol">
         <dt class="detail-type" :key="`${details.name}:name`">
@@ -42,6 +44,8 @@
 import PropertyListKeyType
   from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export default {
   name: 'PropertyListKeyDetails',
@@ -56,6 +60,7 @@ export default {
     },
   },
   computed: {
+    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.details],
     isTitle() {
       return this.details.titleStyle === 'title' && this.details.ideTitle;
     },

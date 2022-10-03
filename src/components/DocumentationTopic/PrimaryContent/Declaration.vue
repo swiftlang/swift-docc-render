@@ -10,7 +10,9 @@
 
 <template>
   <section class="declaration">
-    <LinkableHeading anchor="declaration">Declaration</LinkableHeading>
+    <LinkableHeading :anchor="contentSectionData.anchor">
+      {{ contentSectionData.title }}
+    </LinkableHeading>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
@@ -55,6 +57,8 @@ import DeclarationSourceLink
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export default {
   name: 'Declaration',
@@ -86,6 +90,7 @@ export default {
     },
   },
   computed: {
+    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.declarations],
     /**
      * Show the captions of DeclarationGroup without changes
      * when there are more than one declarations
