@@ -58,5 +58,9 @@ export default {
     display: block;
     margin: 0;
   }
+  // make sure we dont override the height for the fallback
+  &.fallback {
+    height: var(--card-cover-height, 180px);
+  }
 }
 </style>
