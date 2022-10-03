@@ -15,7 +15,7 @@
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <use v-if="themeOverrideURL" :href="`${themeOverrideURL}#${themeId}`" />
+    <use v-if="themeOverrideURL" :href="`${themeOverrideURL}#${themeId}`" width="100%" height="100%" />
     <slot v-else />
   </svg>
 </template>

@@ -56,6 +56,7 @@ export default {
     object-fit: cover;
     object-position: center;
     display: block;
+    margin: 0;
   }
 }
 </style>
