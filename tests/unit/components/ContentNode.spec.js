@@ -28,6 +28,8 @@ import Row from '@/components/ContentNode/Row.vue';
 import Column from '@/components/ContentNode/Column.vue';
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
 
 const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
@@ -520,6 +522,21 @@ describe('ContentNode', () => {
       };
       const wrapper = mountWithItem(props);
       expect(wrapper.find(TabNavigator).props('vertical')).toBe(true);
+    });
+  });
+
+  describe('with type="links"', () => {
+    it('renders a `<LinksBlock>`', () => {
+      const wrapper = mountWithItem({
+        type: 'links',
+        style: TopicSectionsStyle.compactGrid,
+        items: [],
+      });
+      const links = wrapper.find(LinksBlock);
+      expect(links.props()).toEqual({
+        identifiers: [],
+        blockStyle: TopicSectionsStyle.compactGrid,
+      });
     });
   });
 
