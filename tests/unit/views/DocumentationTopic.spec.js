@@ -507,6 +507,7 @@ describe('DocumentationTopic', () => {
         schemaVersion: schemaVersionWithSidebar,
       },
     });
+    await flushPromises();
     const sidebar = wrapper.find(AdjustableSidebarWidth);
     const nav = wrapper.find(Nav);
     // close the navigator
@@ -531,6 +532,7 @@ describe('DocumentationTopic', () => {
         schemaVersion: schemaVersionWithSidebar,
       },
     });
+    await flushPromises();
     const nav = wrapper.find(Nav);
     const sidebar = wrapper.find(AdjustableSidebarWidth);
     // assert the hidden prop is false
