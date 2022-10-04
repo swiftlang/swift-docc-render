@@ -275,8 +275,6 @@ export default {
 @use "sass:math";
 @import 'docc-render/styles/_core.scss';
 
-$margin-transision-duration: 0.1s;
-
 .steps {
   position: relative;
   @include font-styles(body-reduced);
@@ -343,7 +341,7 @@ $rhs-col-width-max: 921px;
     top: $nav-height-small;
     height: calc(#{$height-ide} - #{$nav-height-small});
   }
-  transition: margin $margin-transision-duration ease-in-out;
+  transition: margin 0.1s ease-in-out;
 
   // Let the code preview overflow, and avoid allowing overflow in both 'asset-container' and
   // 'code-preview'. Otherwise, two scroll bars appear.
