@@ -15,10 +15,6 @@ import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHi
 import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
 
-jest.mock('docc-render/utils/theme-settings', () => ({
-  getSetting: jest.fn((_, fallback) => fallback),
-}));
-
 describe('QuickNavigationModal', () => {
   let wrapper;
 

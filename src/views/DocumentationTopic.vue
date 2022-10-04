@@ -28,8 +28,7 @@
               <div class="doc-topic-aside">
                 <QuickNavigationModal
                   :children="slotProps.flatChildren"
-                  :showQuickNavigationModal="showQuickNavigationModal"
-                  @update:showQuickNavigationModal="(show) => showQuickNavigationModal = show"
+                  :showQuickNavigationModal.sync="showQuickNavigationModal"
                 />
                 <transition name="delay-hiding">
                   <Navigator

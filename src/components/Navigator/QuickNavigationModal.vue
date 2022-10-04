@@ -10,11 +10,10 @@
 
 <template>
   <GenericModal
+    isFullscreen
     :showClose="false"
-    :visible="showQuickNavigationModal"
-    :isFullscreen="true"
     :styleProps="modalStyleProps"
-    @update:visible="$emit('update:showQuickNavigationModal', false)"
+    :visible.sync="isVisible"
   >
     <div
       class="quick-navigation"
@@ -184,6 +183,12 @@ export default {
       });
       // Return the first 20 symbols out of sorted ones
       return orderSymbolsByPriority(matches).slice(0, 20);
+    },
+    isVisible: {
+      get: ({ showQuickNavigationModal }) => showQuickNavigationModal,
+      set(value) {
+        this.$emit('update:showQuickNavigationModal', value);
+      },
     },
     noResultsWereFound: ({ debouncedInput, totalItemsToNavigate }) => (
       debouncedInput.length && !totalItemsToNavigate
