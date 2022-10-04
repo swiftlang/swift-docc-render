@@ -65,7 +65,6 @@ export default {
 }
 
 .loading-navigator-item {
-  height: 35px;
   animation: pulse 2.5s ease;
   animation-iteration-count: infinite;
   animation-fill-mode: forwards;

@@ -9,10 +9,7 @@
 -->
 
 <template>
-  <div
-    v-bind="$attrs"
-    class="navigator-card-item"
-  >
+  <div class="navigator-card-item">
     <div class="head-wrapper">
       <div class="depth-spacer">
         <slot name="depth-spacer" />
@@ -36,7 +33,6 @@
 <script>
 export default {
   name: 'BaseNavigatorCardItem',
-  inheritAttrs: false,
   props: {
     hideNavigatorIcon: {
       type: Boolean,
@@ -93,6 +89,9 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
 
 .title-container {
   width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
 }
 
 .navigator-icon-wrapper {

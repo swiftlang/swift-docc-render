@@ -353,12 +353,6 @@ $chevron-width: $nav-card-horizontal-spacing;
   justify-content: flex-end;
 }
 
-.title-container {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-}
-
 .chevron {
   width: $chevron-width;
 
