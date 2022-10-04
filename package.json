@@ -54,5 +54,10 @@
   "engines": {
     "node": "16.17.1",
     "npm": "8.15.0"
+  },
+  "overrides": {
+    "@vue/cli-service": {
+      "@vue/compiler-sfc": "2.7.10"
+    }
   }
 }
