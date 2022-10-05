@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
-const ThemeResolverPlugin = require('webpack-theme-resolver-plugin');
+const ThemeResolverPlugin = require('@russmedia/theme-resolver-webpack');
 const themeUtils = require('./theme-build-utils');
 const { BannerPlugin, LICENSE_HEADER } = require('./license-header-built-files');
 

@@ -82,10 +82,11 @@ async function importHighlightFileForLanguage(language) {
         );
       } else {
         languageFile = await import(
+          // See bug https://github.com/webpack/webpack/issues/13865
           /* webpackChunkName: "highlight-js-[request]" */
           // eslint-disable-next-line max-len
           /* webpackInclude: /\/(bash|c|s?css|cpp|diff|http|java|llvm|perl|php|python|ruby|xml|javascript|json|markdown|objectivec|shell|swift)\.js$/ */
-          `highlight.js/lib/languages/${file}`
+          `@/../node_modules/highlight.js/lib/languages/${file}`
         );
       }
 
