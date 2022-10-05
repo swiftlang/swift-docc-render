@@ -360,12 +360,12 @@ export default {
       this.sidenavVisibleOnMobile = value;
     },
     onQuickNavigationKeydown(event) {
-      // Prevent modal from openning if the navigator is disabled
+      // Open the modal only on `/` or `cmd+shift+o` key event
+      if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && event.metaKey)) return;
+      // Prevent modal from opening when the navigator is disabled
       if (!this.enableNavigator) return;
-      if (this.showQuickNavigationModal) return;
-      if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && (event.metaKey || event.ctrlKey))) return;
-      // Prevent the modal from opening when the event key is coming from an input
-      if (event.target.tagName === 'INPUT') return;
+      // Prevent modal from opening if the event source element is an input
+      if (event.target.tagName.toLowerCase() === 'input') return;
       this.openQuickNavigationModal();
       event.preventDefault();
     },

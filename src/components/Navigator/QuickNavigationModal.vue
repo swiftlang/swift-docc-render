@@ -118,7 +118,7 @@ import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
-import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorIndex';
+import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/indexData';
 
 export default {
   name: 'QuickNavigationModal',
@@ -316,12 +316,6 @@ $base-border-width: 1px;
       background-color: var(--color-navigator-item-hover);
     }
   }
-  &__open-key-container {
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-right: rem(15px);
-    color: var(--color-figure-gray-secondary);
-  }
   &__reference:hover {
     text-decoration: none;
   }
@@ -334,18 +328,13 @@ $base-border-width: 1px;
       background-color: var(--color-navigator-item-hover);
     }
     .symbol-info {
-      margin-top: auto;
-      margin-bottom: auto;
+      margin: auto;
       width: 100%;
       .navigator-icon {
-        margin-bottom: auto;
         margin-right: rem(10px);
       }
       .symbol-name {
         display: flex;
-        p {
-          margin: 0;
-        }
         .symbol-title {
            @include truncate(100%);
         }

@@ -139,7 +139,7 @@ import {
   getChildren,
   getParents,
   getSiblings,
-} from 'docc-render/utils/navigatorIndex';
+} from 'docc-render/utils/indexData';
 
 const STORAGE_KEY = 'navigator.state';
 
