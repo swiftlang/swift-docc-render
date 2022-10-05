@@ -410,11 +410,8 @@ describe('GenericModal', () => {
     const wrapper = createWrapper({
       propsData: {
         width: '10px',
-        styleProps: {
-          height: '10px',
-        },
       },
     });
-    expect(wrapper.find('.container').attributes('style')).toEqual('width: 10px; height: 10px;');
+    expect(wrapper.find('.container').attributes('style')).toEqual('width: 10px;');
   });
 });

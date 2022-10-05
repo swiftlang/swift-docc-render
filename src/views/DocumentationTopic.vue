@@ -437,6 +437,17 @@ export default {
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
 
+/deep/ {
+  .modal-fullscreen .container {
+    background-color: transparent;
+    height: fit-content;
+    flex: auto;
+    margin: rem(160px) 0;
+    max-width: rem(800px);
+    overflow: visible;
+  }
+}
+
 .doc-topic-view {
   --delay: 1s;
   display: flex;

@@ -18,11 +18,7 @@
       :style="modalColors"
     >
       <div class="backdrop" @click="onClickOutside" />
-      <div
-        class="container"
-        ref="container"
-        :style="modalStyle"
-      >
+      <div class="container" ref="container" :style="{ width }">
         <button
           v-if="showClose"
           class="close"
@@ -91,10 +87,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    styleProps: {
-      type: Object,
-      default: null,
-    },
   },
   data() {
     return {
@@ -114,12 +106,6 @@ export default {
       return {
         '--background': this.codeBackgroundColorOverride,
       };
-    },
-    modalStyle({ styleProps, width }) {
-      return ({
-        width,
-        ...styleProps,
-      });
     },
     themeClass({ theme, prefersDarkStyle, isThemeDynamic }) {
       let dynamicThemeClasses = {};

@@ -12,7 +12,6 @@
   <GenericModal
     isFullscreen
     :showClose="false"
-    :styleProps="modalStyleProps"
     :visible.sync="isVisible"
   >
     <div
@@ -121,15 +120,6 @@ import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorIndex';
 
-const ModalStyleProps = {
-  'background-color': 'transparent',
-  'max-width': '50rem',
-  height: 'fit-content',
-  flex: 'auto',
-  margin: '10rem 0',
-  overflow: 'visible',
-};
-
 export default {
   name: 'QuickNavigationModal',
   components: {
@@ -147,7 +137,6 @@ export default {
     return {
       debouncedInput: '',
       userInput: '',
-      modalStyleProps: ModalStyleProps,
     };
   },
   props: {
