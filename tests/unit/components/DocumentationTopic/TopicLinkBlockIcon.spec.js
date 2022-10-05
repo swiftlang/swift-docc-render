@@ -12,7 +12,7 @@ import TopicLinkBlockIcon from '@/components/DocumentationTopic/TopicLinkBlockIc
 import { mount } from '@vue/test-utils';
 import { TopicRole } from '@/constants/roles';
 import ArticleIcon from '@/components/Icons/ArticleIcon.vue';
-import SVGIcon from '@/components/SVGIcon.vue';
+import OverridableAsset from '@/components/OverridableAsset.vue';
 
 const defaultProps = {
   role: TopicRole.article,
@@ -33,22 +33,22 @@ describe('TopicLinkBlockIcon', () => {
   });
 
   it('renders an override icon from an image override', () => {
+    const imageOverride = {
+      variants: [{
+        url: '/foo/bar',
+        svgID: 'foo',
+      }],
+    };
     const wrapper = createWrapper({
       propsData: {
-        imageOverride: {
-          variants: [{
-            url: '/foo/bar',
-            svgID: 'foo',
-          }],
-        },
+        imageOverride,
       },
     });
     const icon = wrapper.find('.topic-icon');
     expect(icon.is(ArticleIcon)).toBe(false);
-    expect(icon.is(SVGIcon)).toBe(true);
+    expect(icon.is(OverridableAsset)).toBe(true);
     expect(icon.props()).toMatchObject({
-      iconUrl: '/foo/bar',
-      themeId: 'foo',
+      imageOverride,
     });
   });
 

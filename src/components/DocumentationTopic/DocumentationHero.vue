@@ -154,7 +154,7 @@ $doc-hero-icon-dimension: 250px;
 
   .background-icon {
     color: var(--color-documentation-intro-accent, $doc-hero-icon-color);
-    display: block;
+    display: flex;
     width: $doc-hero-icon-dimension;
     height: auto;
     opacity: $doc-hero-icon-opacity;
