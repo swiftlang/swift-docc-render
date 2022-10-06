@@ -71,22 +71,4 @@ export default {
   opacity: 0;
   animation-delay: calc(var(--visibility-delay) + 0.3s * var(--index));
 }
-
-@keyframes pulse {
-  0% {
-    opacity: 0;
-  }
-
-  33% {
-    opacity: 1;
-  }
-
-  66% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
 </style>
