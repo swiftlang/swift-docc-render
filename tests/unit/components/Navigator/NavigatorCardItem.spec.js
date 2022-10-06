@@ -313,7 +313,8 @@ describe('NavigatorCardItem', () => {
     });
 
     expect(wrapper.find(TopicTypeIcon).exists()).toBe(false);
-    expect(wrapper.find('.changed.changed-modified').exists()).toBe(true);
+    expect(wrapper.find('.navigator-icon').classes())
+      .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
   });
 
   it('emits an event, when clicking on the leaf-link', () => {

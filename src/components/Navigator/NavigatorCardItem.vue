@@ -54,7 +54,7 @@
       />
       <span
         v-else
-        :class="{ [`changed changed-${apiChange}`]: apiChange, className }"
+        :class="[{ [`changed changed-${apiChange}`]: apiChange }, className ]"
       />
     </template>
     <template #title-container>
