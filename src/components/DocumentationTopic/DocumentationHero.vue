@@ -154,7 +154,7 @@ $doc-hero-icon-dimension: 250px;
 
   .background-icon {
     color: var(--color-documentation-intro-accent, $doc-hero-icon-color);
-    display: flex;
+    display: block;
     width: $doc-hero-icon-dimension;
     height: auto;
     opacity: $doc-hero-icon-opacity;
@@ -165,7 +165,7 @@ $doc-hero-icon-dimension: 250px;
     transform: translateY(-50%);
     max-height: 100%;
 
-    /deep/ svg {
+    /deep/ svg, /deep/ img {
       width: 100%;
       height: 100%;
     }

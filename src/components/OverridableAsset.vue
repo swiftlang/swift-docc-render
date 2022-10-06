@@ -32,8 +32,8 @@ export default {
     firstVariant: ({ variants }) => (variants[0]),
     iconUrl: ({ firstVariant }) => firstVariant && firstVariant.url,
     themeId: ({ firstVariant }) => firstVariant && firstVariant.svgID,
-    isSameDomain: ({ iconUrl, sameOrigin }) => sameOrigin(iconUrl),
-    shouldUseAsset: ({ isSameDomain, themeId }) => !isSameDomain || !themeId,
+    isSameOrigin: ({ iconUrl, sameOrigin }) => sameOrigin(iconUrl),
+    shouldUseAsset: ({ isSameOrigin, themeId }) => !isSameOrigin || !themeId,
   },
   methods: {
     sameOrigin(url) {
@@ -45,3 +45,9 @@ export default {
   },
 };
 </script>
+<style scoped lang="scss">
+picture {
+  width: 100%;
+  height: 100%;
+}
+</style>
