@@ -25,11 +25,11 @@
       class="replay-button"
       href="#"
       :class="{ visible: this.showsReplayButton }"
+      :title="text"
       @click.prevent="replay"
     >
-      {{ text }}
-      <InlineReplayIcon v-if="played" class="replay-icon icon-inline" />
-      <PlayIcon v-else class="replay-icon icon-inline" />
+      <InlineReplayIcon v-if="played" class="action-icon icon-inline" />
+      <PlayIcon v-else class="action-icon icon-inline" />
     </a>
   </div>
 </template>
@@ -69,7 +69,7 @@ export default {
     },
   },
   computed: {
-    text: ({ played }) => (played ? 'Replay' : 'Play'),
+    text: ({ played }) => (played ? 'Replay Video' : 'Play Video'),
   },
   data() {
     return {
@@ -105,23 +105,42 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+.video-replay-container {
+  position: relative;
+}
+
 .replay-button {
-  display: flex;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  visibility: hidden;
-  margin-top: .5rem;
   -webkit-tap-highlight-color: transparent;
+  color: light-color(fill);
+  background: change-color(dark-color(fill), $alpha: 0.2);
+  transition: background linear 0.15s;
 
-  &.visible {
-    visibility: visible;
+  &:hover {
+    text-shadow: 0 0 2px light-color(text);
+    background: change-color(dark-color(fill), $alpha: 0.32);
+
+    .action-icon {
+      transform: scale(1.05)
+    }
   }
 
-  svg.replay-icon {
-    height: 12px;
-    width: 12px;
-    margin-left: .3em;
+  &.visible {
+    display: flex;
+  }
+
+  svg.action-icon {
+    height: 118px;
+    width: 118px;
+    transition: transform linear 0.15s;
   }
 }
 </style>

@@ -63,12 +63,12 @@ describe('ReplayableVideoAsset', () => {
     expect(replayButton.exists()).toBe(true);
     expect(replayButton.classes('visible')).toBe(false);
 
-    expect(replayButton.find('.replay-icon').is(PlayIcon)).toBe(true);
+    expect(replayButton.find('.action-icon').is(PlayIcon)).toBe(true);
     const video = wrapper.find(VideoAsset);
     video.vm.$emit('ended');
 
     expect(replayButton.classes('visible')).toBe(true);
-    expect(wrapper.find('.replay-icon').is(InlineReplayIcon)).toBe(true);
+    expect(wrapper.find('.action-icon').is(InlineReplayIcon)).toBe(true);
 
     // When the video is playing, the replay button should be hidden.
     replayButton.trigger('click');
@@ -90,17 +90,17 @@ describe('ReplayableVideoAsset', () => {
       autoplays: false,
     });
     const replay = wrapper.find('.replay-button');
-    expect(replay.text()).toBe('Play');
+    expect(replay.attributes('title')).toBe('Play Video');
     expect(replay.classes()).toContain('visible');
     replay.trigger('click');
     await flushPromises();
     // text is not changed, but its invisible
-    expect(replay.text()).toBe('Play');
+    expect(replay.attributes('title')).toBe('Play Video');
     expect(replay.classes()).not.toContain('visible');
     // now end the video
     wrapper.find({ ref: 'asset' }).trigger('ended');
     // assert text changed and its visible
-    expect(replay.text()).toBe('Replay');
+    expect(replay.attributes('title')).toBe('Replay Video');
     expect(replay.classes()).toContain('visible');
   });
 
