@@ -504,10 +504,6 @@ export default {
 .doc-content-wrapper {
   display: flex;
 
-  .sidebar-hidden & {
-    justify-content: center;
-  }
-
   .doc-content {
     min-width: 0;
     width: 100%;

@@ -46,7 +46,7 @@ describe('OnThisPageStickyContainer', () => {
   });
 
   it('renders the OnThisPageStickyContainer as hidden, when under the big threshold', () => {
-    window.outerWidth = 1500;
+    window.innerWidth = 1500;
     store.state.contentWidth = ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG - 100;
     const wrapper = createWrapper();
     expect(wrapper.classes()).toContain('hidden');

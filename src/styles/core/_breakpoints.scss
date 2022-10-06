@@ -354,12 +354,6 @@ $breakpoint-attributes: (
 
     @include breakpoints-from(large) {
       box-sizing: unset;
-      margin-left: 0;
-
-      // when the sidebar is hidden on desktop, center the content
-      @include unify-selector('.sidebar-hidden', true) {
-        margin-left: auto;
-      }
     }
 
     @include breakpoint(small) {

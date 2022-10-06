@@ -15,9 +15,9 @@
 
 <script>
 // 660px content + (170px aside + 22px padding-right)*2 + 28px*2 gutter
-export const ON_THIS_PAGE_CONTENT_BREAKPOINT = 1110;
+export const ON_THIS_PAGE_CONTENT_BREAKPOINT = 1330;
 // 1080 content + (170px aside + 22px padding-right)
-export const ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG = 1272;
+export const ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG = 1400;
 
 export default {
   name: 'OnThisPageStickyContainer',
@@ -26,7 +26,7 @@ export default {
     isHidden: ({ store }) => {
       let compareTo = ON_THIS_PAGE_CONTENT_BREAKPOINT;
       // when the window is above 1500, the content max-width grows
-      if (window.outerWidth >= 1500) {
+      if (window.innerWidth >= 1500) {
         compareTo = ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG;
       }
       return store.state.contentWidth < compareTo;
