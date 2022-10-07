@@ -45,9 +45,3 @@ export default {
   },
 };
 </script>
-<style scoped lang="scss">
-picture {
-  width: 100%;
-  height: 100%;
-}
-</style>
