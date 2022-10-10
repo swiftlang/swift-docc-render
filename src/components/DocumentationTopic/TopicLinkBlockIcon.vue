@@ -9,19 +9,10 @@
 -->
 
 <template>
-  <IconOverrideProvider
-    :imageOverride="imageOverride"
-    #default="{ shouldUseOverride, themeId, iconUrl }"
-  >
-    <div class="topic-icon-wrapper" v-if="icon || shouldUseOverride">
-      <SVGIcon
-        v-if="shouldUseOverride"
-        v-bind="{ themeId, iconUrl }"
-        class="topic-icon"
-      />
-      <component v-else :is="icon" class="topic-icon" />
-    </div>
-  </IconOverrideProvider>
+  <div class="topic-icon-wrapper" v-if="imageOverride || icon">
+    <OverridableAsset v-if="imageOverride" :imageOverride="imageOverride" class="topic-icon" />
+    <component v-else-if="icon" :is="icon" class="topic-icon" />
+  </div>
 </template>
 
 <script>
@@ -33,7 +24,7 @@ import PathIcon from 'theme/components/Icons/PathIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import SVGIcon from 'docc-render/components/SVGIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
-import IconOverrideProvider from 'docc-render/components/IconOverrideProvider.vue';
+import OverridableAsset from 'docc-render/components/OverridableAsset.vue';
 
 const TopicRoleIcons = {
   [TopicRole.article]: ArticleIcon,
@@ -48,7 +39,7 @@ const TopicRoleIcons = {
 };
 
 export default {
-  components: { IconOverrideProvider, SVGIcon },
+  components: { OverridableAsset, SVGIcon },
   props: {
     role: {
       type: String,
@@ -83,6 +74,14 @@ export default {
 .topic-icon {
   height: rem(15px);
   @include prevent-clipped-svg();
+
+  /deep/ img {
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 
   // overwrite the height so the icon looks the same size as the rest.
   &.curly-brackets-icon {
