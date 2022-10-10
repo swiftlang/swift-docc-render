@@ -362,6 +362,11 @@ export default {
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
   },
   beforeRouteEnter(to, from, next) {
+    if (to.meta.skipFetchingData) {
+      next(vm => vm.newContentMounted());
+      return;
+    }
+
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {

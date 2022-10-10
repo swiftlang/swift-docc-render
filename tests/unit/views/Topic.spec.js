@@ -14,8 +14,12 @@ import Topic from 'docc-render/views/Topic.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 import Tutorial from 'docc-render/components/Tutorial.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import { fetchDataForRouteEnter } from '@/utils/data';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
+jest.mock('@/utils/data');
+
+fetchDataForRouteEnter.mockResolvedValue({});
 
 const mocks = {
   $bridge: {
@@ -54,6 +58,23 @@ describe('Topic', () => {
   it('provides `TopicStore` as `store`', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided.store).toEqual(TopicStore);
+  });
+
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
+    const next = jest.fn();
+    Topic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
+    // now call without `skipFetchingData`
+    const params = {
+      to: { name: 'foo', meta: {} },
+      from: { name: 'bar' },
+      next: jest.fn(),
+    };
+    Topic.beforeRouteEnter(params.to, params.from, params.next);
+    expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
+    expect(fetchDataForRouteEnter)
+      .toHaveBeenCalledWith(params.to, params.from, params.next);
   });
 
   async function testRenderedMessageWithProvide(provide) {

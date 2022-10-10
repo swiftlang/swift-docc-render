@@ -882,6 +882,23 @@ describe('DocumentationTopic', () => {
     expect(next).toBeCalled();
   });
 
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
+    const next = jest.fn();
+    DocumentationTopic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
+    // now call without `skipFetchingData`
+    const params = {
+      to: { name: 'foo', meta: {} },
+      from: { name: 'bar' },
+      next: jest.fn(),
+    };
+    DocumentationTopic.beforeRouteEnter(params.to, params.from, params.next);
+    expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
+    expect(dataUtils.fetchDataForRouteEnter)
+      .toHaveBeenCalledWith(params.to, params.from, params.next);
+  });
+
   describe('isTargetIDE', () => {
     const provide = { isTargetIDE: true };
 
