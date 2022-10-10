@@ -13,7 +13,7 @@ import { mount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 import CollectionIcon from '@/components/Icons/CollectionIcon.vue';
-import SVGIcon from '@/components/SVGIcon.vue';
+import OverridableAsset from '@/components/OverridableAsset.vue';
 
 const createWrapper = opts => mount(TopicTypeIcon, opts);
 
@@ -71,26 +71,9 @@ describe('TopicTypeIcon', () => {
       },
     });
     const icon = wrapper.find('.icon-inline');
-    expect(icon.is(SVGIcon)).toBe(true);
+    expect(icon.is(OverridableAsset)).toBe(true);
     expect(icon.props()).toMatchObject({
-      iconUrl: imageOverride.variants[0].url,
-      themeId: imageOverride.variants[0].svgID,
+      imageOverride,
     });
-  });
-
-  it('does not render icon overrides, if it does not have an `svgID`', () => {
-    const imageOverride = {
-      variants: [{
-        url: 'baz.svg',
-      }],
-    };
-    const wrapper = createWrapper({
-      propsData: {
-        imageOverride,
-        type: TopicTypes.class,
-      },
-    });
-    const icon = wrapper.find('.icon-inline');
-    expect(icon.is(SVGIcon)).toBe(false);
   });
 });
