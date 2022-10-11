@@ -351,6 +351,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   z-index: $nav-z-index;
   --nav-padding: #{$nav-padding};
 
+  @media print {
+    position: relative;
+  }
+
   @include breakpoint(small, $scope: nav) {
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
     height: $nav-height-small;

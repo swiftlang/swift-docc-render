@@ -49,6 +49,10 @@ export default {
   margin-left: -($aside-width + $nav-padding);
   padding-right: $nav-padding;
 
+  @media print {
+    display: none;
+  }
+
   @include breakpoint(small) {
     display: none;
   }

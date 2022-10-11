@@ -366,6 +366,12 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
+@media print {
+  .sidebar {
+    display: none;
+  }
+}
+
 .adjustable-sidebar-width {
   display: flex;
   @include breakpoint(medium, nav) {
