@@ -75,7 +75,7 @@ export default {
   height: rem(15px);
   @include prevent-clipped-svg();
 
-  /deep/ img {
+  :deep(img) {
     margin: 0;
     display: block;
     width: 100%;

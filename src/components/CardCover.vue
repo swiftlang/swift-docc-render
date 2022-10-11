@@ -58,7 +58,7 @@ export default {
     margin: 0;
   }
   // make sure we dont override the height for the fallback
-  /deep/ img {
+  :deep(img) {
     height: 100%;
   }
 }
