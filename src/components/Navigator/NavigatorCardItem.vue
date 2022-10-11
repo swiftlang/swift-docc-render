@@ -9,92 +9,93 @@
 -->
 
 <template>
-  <div
+  <BaseNavigatorCardItem
     class="navigator-card-item"
-    :class="{ expanded, active: isActive }"
+    :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
-    @keydown.left.prevent="handleLeftKeydown"
-    @keydown.right.exact.prevent="handleRightKeydown"
-    @keydown.enter.prevent="clickReference"
-    @keydown.alt.right.prevent="toggleEntireTree"
+    :hideNavigatorIcon="isGroupMarker"
+    @keydown.left.native.prevent="handleLeftKeydown"
+    @keydown.right.exact.native.prevent="handleRightKeydown"
+    @keydown.enter.native.prevent="clickReference"
+    @keydown.alt.right.native.prevent="toggleEntireTree"
   >
-    <div class="head-wrapper" :class="{ 'is-group': isGroupMarker }">
+    <template #depth-spacer>
       <span
         hidden
         :id="usageLabel"
       >
         To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow
       </span>
-      <div class="depth-spacer">
-        <button
-          v-if="isParent"
-          class="tree-toggle"
-          tabindex="-1"
-          :aria-labelledby="item.uid"
-          :aria-expanded="expanded ? 'true': 'false'"
-          :aria-describedby="ariaDescribedBy"
-          @click.exact.prevent="toggleTree"
-          @click.alt.prevent="toggleEntireTree"
-          @click.meta.prevent="toggleSiblings"
-        >
-          <InlineChevronRightIcon
-            class="icon-inline chevron"
-            :class="{ rotate: expanded, animating: idState.isOpening }"
-          />
-        </button>
-      </div>
+      <button
+        v-if="isParent"
+        class="tree-toggle"
+        tabindex="-1"
+        :aria-labelledby="item.uid"
+        :aria-expanded="expanded ? 'true': 'false'"
+        :aria-describedby="ariaDescribedBy"
+        @click.exact.prevent="toggleTree"
+        @click.alt.prevent="toggleEntireTree"
+        @click.meta.prevent="toggleSiblings"
+      >
+        <InlineChevronRightIcon
+          class="icon-inline chevron"
+          :class="{ rotate: expanded, animating: idState.isOpening }"
+        />
+      </button>
+    </template>
+    <template #navigator-icon="{ className }">
       <TopicTypeIcon
-        v-if="!isGroupMarker && !apiChange"
+        v-if="!apiChange"
         :type="item.type"
         :image-override="item.icon ? navigatorReferences[item.icon] : null"
-        class="navigator-icon"
+        :class="className"
       />
       <span
-        v-else-if="apiChange"
-        class="navigator-icon"
-        :class="{ [`changed changed-${apiChange}`]: apiChange }"
+        v-else
+        :class="[{ [`changed changed-${apiChange}`]: apiChange }, className ]"
       />
-      <div class="title-container">
-        <span
-          v-if="isParent"
-          hidden
-          :id="parentLabel"
-        >, containing {{ item.childUIDs.length }} symbols</span>
-        <span
-          :id="siblingsLabel"
-          hidden
+    </template>
+    <template #title-container>
+      <span
+        v-if="isParent"
+        hidden
+        :id="parentLabel"
+      >, containing {{ item.childUIDs.length }} symbols</span>
+      <span
+        :id="siblingsLabel"
+        hidden
+      >
+        {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
+      </span>
+      <component :is="refComponent" class="link">
+        <Reference
+          :id="item.uid"
+          :class="{ bolded: isBold }"
+          :url="item.path || ''"
+          :tabindex="isFocused ? '0' : '-1'"
+          :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
+          class="leaf-link"
+          ref="reference"
+          @click.exact.native="handleClick"
+          @click.alt.native.prevent="toggleEntireTree"
         >
-          {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
-        </span>
-        <component :is="refComponent" class="link">
-          <Reference
-            :id="item.uid"
-            :class="{ bolded: isBold }"
-            :url="item.path || ''"
-            :tabindex="isFocused ? '0' : '-1'"
-            :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
-            class="leaf-link"
-            ref="reference"
-            @click.exact.native="handleClick"
-            @click.alt.native.prevent="toggleEntireTree"
-          >
-            <HighlightMatches
-              :text="item.title"
-              :matcher="filterPattern"
-            />
-          </Reference>
-        </component>
-        <Badge v-if="isDeprecated" variant="deprecated" />
-        <Badge v-else-if="isBeta" variant="beta" />
-      </div>
-    </div>
-  </div>
+          <HighlightMatches
+            :text="item.title"
+            :matcher="filterPattern"
+          />
+        </Reference>
+      </component>
+      <Badge v-if="isDeprecated" variant="deprecated" />
+      <Badge v-else-if="isBeta" variant="beta" />
+    </template>
+  </BaseNavigatorCardItem>
 </template>
 
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
+import BaseNavigatorCardItem from 'docc-render/components/Navigator/BaseNavigatorCardItem.vue';
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import HighlightMatches from 'docc-render/components/Navigator/HighlightMatches.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -112,6 +113,7 @@ export default {
     }),
   ],
   components: {
+    BaseNavigatorCardItem,
     HighlightMatches,
     TopicTypeIcon,
     InlineChevronRightIcon,
@@ -243,143 +245,91 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-$item-height: 32px;
-$chevron-width: $nav-card-horizontal-spacing;
 $tree-toggle-padding: $nav-card-horizontal-spacing-small;
-$depth-spacer-base-spacing: (
-  $nav-card-horizontal-spacing + $chevron-width + $tree-toggle-padding
-);
-$nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-small;
+$chevron-width: $nav-card-horizontal-spacing;
 
-.navigator-card-item {
-  --nav-head-wrapper-left-space: #{$nav-card-horizontal-spacing};
-  --nav-head-wrapper-right-space: #{$nav-card-horizontal-spacing-large};
-  --head-wrapper-vertical-space: 5px;
-  --nav-depth-spacer: #{$depth-spacer-base-spacing};
-
-  display: flex;
-  align-items: stretch;
-  min-height: $item-height;
-  box-sizing: border-box;
-
-  @include on-keyboard-focus-within() {
-    @include focus-outline(-4px);
-  }
-
-  &.active {
-    background: var(--color-fill-gray-quaternary);
-  }
-}
-
-.depth-spacer {
-  width: calc(var(--nesting-index) * #{$nesting-spacing} + var(--nav-depth-spacer));
-  height: 100%;
-  position: relative;
-  flex: 0 0 auto;
-}
-
-.head-wrapper {
-  padding: var(--head-wrapper-vertical-space)
-  var(--nav-head-wrapper-right-space)
-  var(--head-wrapper-vertical-space)
-  var(--nav-head-wrapper-left-space);
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-
-  @include safe-area-left-set(padding-left, var(--nav-head-wrapper-left-space));
-  @include safe-area-right-set(padding-right, var(--nav-head-wrapper-right-space));
-
-  &.is-group {
-    .leaf-link {
-      color: var(--color-figure-gray-secondary);
-      font-weight: $font-weight-semibold;
-    }
-  }
-
-  .link {
-    line-height: 1;
-  }
-
-  .hover & {
-    background: var(--color-navigator-item-hover);
-  }
-
-  .navigator-icon {
-    display: flex;
-    flex: 0 0 auto;
-
-    &.changed {
-      border: none;
-      width: 1em;
-      height: 1em;
-      margin-right: 7px;
-      z-index: 0;
-
-      &:after {
-        top: 50%;
-        left: 50%;
-        right: auto;
-        bottom: auto;
-        transform: translate(-50%, -50%);
-        background-image: $modified-svg;
-
-        @include prefers-dark {
-          background-image: $modified-dark-svg;
-        }
-        margin: 0;
-      }
-
-      &-added::after {
-        background-image: $added-svg;
-
-        @include prefers-dark {
-          background-image: $added-dark-svg;
-        }
-      }
-
-      &-deprecated::after {
-        background-image: $deprecated-svg;
-
-        @include prefers-dark {
-          background-image: $deprecated-dark-svg;
-        }
-      }
-    }
-  }
-
+.is-group {
   .leaf-link {
-    color: var(--color-figure-gray);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 100%;
-    display: inline;
-    vertical-align: middle;
-    @include font-styles(body-reduced-tight);
+    color: var(--color-figure-gray-secondary);
+    font-weight: $font-weight-semibold;
+  }
+}
 
-    @include on-keyboard-focus {
-      outline: none;
-    }
+.link {
+  line-height: 1;
+}
 
-    &:hover {
-      text-decoration: none;
-    }
+.navigator-icon {
+  display: flex;
+  flex: 0 0 auto;
 
-    &.bolded {
-      font-weight: $font-weight-semibold;
-    }
+  &.changed {
+    border: none;
+    width: 1em;
+    height: 1em;
+    z-index: 0;
 
     &:after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      transform: translate(-50%, -50%);
+      background-image: $modified-svg;
+
+      @include prefers-dark {
+        background-image: $modified-dark-svg;
+      }
+      margin: 0;
     }
+
+    &-added::after {
+      background-image: $added-svg;
+
+      @include prefers-dark {
+        background-image: $added-dark-svg;
+      }
+    }
+
+    &-deprecated::after {
+      background-image: $deprecated-svg;
+
+      @include prefers-dark {
+        background-image: $deprecated-dark-svg;
+      }
+    }
+  }
+}
+
+.leaf-link {
+  color: var(--color-figure-gray);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+  display: inline;
+  vertical-align: middle;
+  @include font-styles(body-reduced-tight);
+
+  @include on-keyboard-focus {
+    outline: none;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &.bolded {
+    font-weight: $font-weight-semibold;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 
@@ -402,12 +352,6 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   display: flex;
   align-items: center;
   justify-content: flex-end;
-}
-
-.title-container {
-  min-width: 0;
-  display: flex;
-  align-items: center;
 }
 
 .chevron {
