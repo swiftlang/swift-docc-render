@@ -11,7 +11,7 @@
 <template>
   <div class="navigator-card" :class="{ 'filter-on-top': renderFilterOnTop }">
     <div class="navigator-card-full-height">
-      <NavigatorCardInner>
+      <div class="navigator-card-inner">
         <div class="head-wrapper">
           <div class="head-inner">
             <button
@@ -44,7 +44,21 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
+          <template v-if="isLoading">
+            <transition name="delay-visibility" appear>
+              <div class="scroller" aria-hidden="true">
+                <LoadingNavigatorItem
+                  v-for="(row, index) in LOADER_ROWS"
+                  :key="index"
+                  :index="index"
+                  :width="row.width"
+                  :hideNavigatorIcon="row.hideNavigatorIcon"
+                />
+              </div>
+            </transition>
+          </template>
           <DynamicScroller
+            v-else
             v-show="hasNodes"
             :id="scrollLockID"
             ref="scroller"
@@ -112,7 +126,7 @@
             </div>
           </div>
         </div>
-      </NavigatorCardInner>
+      </div>
     </div>
   </div>
 </template>
@@ -129,7 +143,7 @@ import {
   SIDEBAR_ITEM_SIZE,
 } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
+import LoadingNavigatorItem from 'docc-render/components/Navigator/LoadingNavigatorItem.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
@@ -155,6 +169,12 @@ const FILTER_TAGS = {
   tutorials: 'tutorials',
   articles: 'articles',
 };
+
+const LOADER_ROWS = [
+  { width: '30%', hideNavigatorIcon: true },
+  { width: '80%' },
+  { width: '50%' },
+];
 
 const FILTER_TAGS_TO_LABELS = {
   [FILTER_TAGS.sampleCode]: 'Sample Code',
@@ -205,7 +225,7 @@ export default {
     FilterInput,
     SidenavIcon,
     MagnifierIcon,
-    NavigatorCardInner,
+    LoadingNavigatorItem,
     NavigatorCardItem,
     DynamicScroller,
     DynamicScrollerItem,
@@ -256,6 +276,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
     navigatorReferences: {
       type: Object,
       default: () => {},
@@ -286,6 +310,7 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
+      LOADER_ROWS,
       allNodesToggled: false,
     };
   },
@@ -1163,6 +1188,7 @@ $close-icon-padding: 5px;
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
   --nav-filter-horizontal-padding: 30px;
+  --visibility-delay: 1s; // don't show spinner until this much time has passed
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -1406,4 +1432,21 @@ $close-icon-padding: 5px;
   }
 }
 
+.navigator-card-inner {
+  --nav-card-inner-vertical-offset: 0px;
+  position: sticky;
+  top: var(--nav-height, 0px);
+  height: calc(var(--app-height) - var(--nav-height, 0px) - var(--nav-card-inner-vertical-offset));
+  display: flex;
+  flex-flow: column;
+  @include breakpoint(medium, nav) {
+    position: static;
+    height: 100%;
+  }
+}
+
+.delay-visibility-enter-active {
+  transition: visibility var(--visibility-delay);
+  visibility: hidden;
+}
 </style>

@@ -88,7 +88,6 @@ export default {
   }
 
   &__icon {
-    display: flex;
     margin: 0;
   }
 }
