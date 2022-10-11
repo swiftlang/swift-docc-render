@@ -49,6 +49,7 @@ import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardIn
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import { anchorize } from '@/utils/strings';
 
 /**
  * @typedef NavigatorFlatItem
@@ -165,7 +166,8 @@ export default {
     flatChildren: ({
       enableQuickNavigation, flattenNestedData, technology = {}, store,
     }) => {
-      const flatIndex = flattenNestedData(technology.children || [], null, 0, technology.beta);
+      const flatIndex = flattenNestedData(technology.children || [],
+        { path: technology.path, uid: INDEX_ROOT_KEY }, 0, technology.beta);
       if (enableQuickNavigation) {
         store.setFlattenIndex(flatIndex);
       }
@@ -194,7 +196,7 @@ export default {
      * @param {Boolean} parentBetaStatus
      * @return {NavigatorFlatItem[]}
      */
-    flattenNestedData(childrenNodes, parent = null, depth = 0, parentBetaStatus = false) {
+    flattenNestedData(childrenNodes, parent, depth = 0, parentBetaStatus = false) {
       let items = [];
       const len = childrenNodes.length;
       let index;
@@ -204,7 +206,10 @@ export default {
         // get the children
         const { children, ...node } = childrenNodes[index];
         // generate the extra properties
-        const { uid: parentUID = INDEX_ROOT_KEY } = parent || {};
+        const {
+          uid: parentUID,
+          path: parentPath,
+        } = parent;
         // generate a uid to track by
         node.uid = this.hashCode(`${parentUID}+${node.path}_${depth}_${index}`);
         // store the parent uid
@@ -212,6 +217,7 @@ export default {
         // store the current groupMarker reference
         if (node.type === TopicTypes.groupMarker) {
           node.deprecatedChildrenCount = 0;
+          node.path = `${parentPath}#${anchorize(node.title)}`;
           groupMarkerNode = node;
         } else if (groupMarkerNode) {
           // push the current node to the group marker before it
@@ -232,7 +238,7 @@ export default {
         // store child UIDs
         node.childUIDs = [];
         // if the parent is not the root, push to its childUIDs the current node uid
-        if (parent) {
+        if (parent.childUIDs) {
           // push child to parent
           parent.childUIDs.push(node.uid);
         }

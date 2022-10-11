@@ -12,7 +12,7 @@ import 'css.escape';
 
 // characters that we want to replace by a dash to make them valid in the hash section
 // https://url.spec.whatwg.org/#fragment-percent-encode-set
-const NON_URL_CHARS_RE = /(?:\s+|[`"<>])/g;
+const NON_URL_CHARS_RE = /(?:\s+|[`"<>,])/g;
 const INITIAL_DASH_RE = /^-+/;
 
 // characters to escape for safe usage in HTML

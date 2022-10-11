@@ -416,7 +416,12 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.find('.leaf-link').is('h3')).toBe(true);
+      expect(wrapper.find('.link').is('h3')).toBe(true);
+    });
+
+    it('renders a div if it is not a groupMaker', () => {
+      const wrapper = createWrapper();
+      expect(wrapper.find('.link').is('div')).toBe(true);
     });
 
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {

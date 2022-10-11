@@ -39,10 +39,12 @@ describe('anchorize', () => {
     expect(anchorize('Hello`word')).toBe('hello-word');
     expect(anchorize('Hello<word')).toBe('hello-word');
     expect(anchorize('Hello>word')).toBe('hello-word');
+    expect(anchorize('Hello,word')).toBe('hello-word');
   });
 
   it('keeps multiple dashes in the middle when coming from a special character', () => {
     expect(anchorize('Hello""word')).toBe('hello--word');
+    expect(anchorize('Hello, word')).toBe('hello--word');
   });
 
   it('trim initial dashes', () => {

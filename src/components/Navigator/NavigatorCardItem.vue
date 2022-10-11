@@ -68,22 +68,23 @@
         >
           {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
         </span>
-        <component
-          :is="refComponent"
-          :id="item.uid"
-          :class="{ bolded: isBold }"
-          :url="isGroupMarker ? null : (item.path || '')"
-          :tabindex="isFocused ? '0' : '-1'"
-          :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
-          class="leaf-link"
-          ref="reference"
-          @click.exact.native="handleClick"
-          @click.alt.native.prevent="toggleEntireTree"
-        >
-          <HighlightMatches
-            :text="item.title"
-            :matcher="filterPattern"
-          />
+        <component :is="refComponent" class="link">
+          <Reference
+            :id="item.uid"
+            :class="{ bolded: isBold }"
+            :url="item.path || ''"
+            :tabindex="isFocused ? '0' : '-1'"
+            :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
+            class="leaf-link"
+            ref="reference"
+            @click.exact.native="handleClick"
+            @click.alt.native.prevent="toggleEntireTree"
+          >
+            <HighlightMatches
+              :text="item.title"
+              :matcher="filterPattern"
+            />
+          </Reference>
         </component>
         <Badge v-if="isDeprecated" variant="deprecated" />
         <Badge v-else-if="isBeta" variant="beta" />
@@ -181,7 +182,7 @@ export default {
     },
     isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
-    refComponent: ({ isGroupMarker }) => (isGroupMarker ? 'h3' : Reference),
+    refComponent: ({ isGroupMarker }) => (isGroupMarker ? 'h3' : 'div'),
   },
   methods: {
     toggleTree() {
@@ -295,14 +296,14 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
     .leaf-link {
       color: var(--color-figure-gray-secondary);
       font-weight: $font-weight-semibold;
-      // groups dont need the overlay
-      &:after {
-        display: none;
-      }
     }
   }
 
-  .hover &:not(.is-group) {
+  .link {
+    line-height: 1;
+  }
+
+  .hover & {
     background: var(--color-navigator-item-hover);
   }
 
