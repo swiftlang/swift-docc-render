@@ -71,7 +71,7 @@
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
             :languagePaths="languagePaths"
-            :enableOnThisPageNav="enableOnThisPageNav"
+            :enableOnThisPageNav="!isTargetIDE"
           />
         </component>
       </template>
@@ -295,9 +295,6 @@ export default {
       compareVersions(
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
-    ),
-    enableOnThisPageNav: ({ isTargetIDE, store }) => (
-      !isTargetIDE && store.state.onThisPageSections.length > 2
     ),
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator

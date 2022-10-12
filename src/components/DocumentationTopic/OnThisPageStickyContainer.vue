@@ -15,21 +15,26 @@
 
 <script>
 // 660px content + (170px aside + 22px padding-right)*2 + 28px*2 gutter
-export const ON_THIS_PAGE_CONTENT_BREAKPOINT = 1330;
-// 1080 content + (170px aside + 22px padding-right)
-export const ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG = 1400;
+export const ON_THIS_PAGE_CONTENT_BREAKPOINT = 1050;
 
 export default {
   name: 'OnThisPageStickyContainer',
   inject: ['store'],
+  props: {
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+  },
   computed: {
-    isHidden: ({ store }) => {
-      let compareTo = ON_THIS_PAGE_CONTENT_BREAKPOINT;
-      // when the window is above 1500, the content max-width grows
-      if (window.innerWidth >= 1500) {
-        compareTo = ON_THIS_PAGE_CONTENT_BREAKPOINT_BIG;
-      }
-      return store.state.contentWidth < compareTo;
+    isHidden: ({ store }) => store.state.contentWidth < ON_THIS_PAGE_CONTENT_BREAKPOINT,
+  },
+  watch: {
+    isHidden: {
+      immediate: true,
+      handler(v) {
+        this.$emit('update:visible', !v);
+      },
     },
   },
 };
@@ -39,15 +44,14 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .OnThisPageStickyContainer {
-  $aside-width: rem(170px);
   margin-top: $contenttable-spacing-single-side;
   position: sticky;
   top: $nav-height + rem(10px);
   align-self: flex-start;
   flex: 0 0 auto;
-  width: $aside-width;
-  margin-left: -($aside-width + $nav-padding);
+  width: $on-this-page-aside-width;
   padding-right: $nav-padding;
+  box-sizing: border-box;
 
   @include breakpoint(small) {
     display: none;

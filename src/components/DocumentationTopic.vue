@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <div class="doc-topic">
+  <div
+    class="doc-topic"
+    :class="{ 'with-on-this-page': enableOnThisPageNav && isOnThisPageVisible }"
+  >
     <main class="main" id="main" role="main" tabindex="0">
       <DocumentationHero
         :role="role"
@@ -31,10 +34,10 @@
         <Title :eyebrow="roleHeading">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
-            v-if="isSymbolDeprecated || isSymbolBeta"
-            slot="after"
-            :class="tagName"
-            :data-tag-name="tagName"
+          v-if="isSymbolDeprecated || isSymbolBeta"
+          slot="after"
+          :class="tagName"
+          :data-tag-name="tagName"
           />
         </Title>
         <Abstract v-if="abstract" :content="abstract" />
@@ -93,8 +96,11 @@
             :sections="seeAlsoSections"
           />
         </div>
-        <OnThisPageStickyContainer v-if="enableOnThisPageNav">
-          <OnThisPageNav />
+        <OnThisPageStickyContainer
+          v-if="enableOnThisPageNav"
+          :visible.sync="isOnThisPageVisible"
+        >
+          <OnThisPageNav v-if="topicState.onThisPageSections.length > 2" />
         </OnThisPageStickyContainer>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
@@ -315,6 +321,7 @@ export default {
   data() {
     return {
       topicState: this.store.state,
+      isOnThisPageVisible: false,
     };
   },
   computed: {
@@ -441,6 +448,10 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  &.with-on-this-page {
+    --doc-hero-right-offset: #{$on-this-page-aside-width};
+  }
 }
 
 #main {
@@ -503,10 +514,25 @@ export default {
 
 .doc-content-wrapper {
   display: flex;
+  justify-content: center;
 
   .doc-content {
     min-width: 0;
     width: 100%;
+
+    .with-on-this-page & {
+      $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));
+
+      max-width: $large-max-width - 2*$large-viewport-dynamic-content-gutter;
+
+      @include breakpoints-from(large) {
+        max-width: $large-max-width;
+      }
+
+      @media only screen and (min-width: 1500px) {
+        max-width: $large-max-width + 100;
+      }
+    }
   }
 }
 </style>
