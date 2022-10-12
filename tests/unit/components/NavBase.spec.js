@@ -452,13 +452,6 @@ describe('NavBase', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
   });
 
-  it('focuses on the toggle on expand', async () => {
-    wrapper = await createWrapper();
-    wrapper.find({ ref: 'axToggle' }).trigger('click');
-    // assert the toggle is focused
-    expect(document.activeElement).toEqual(wrapper.find({ ref: 'axToggle' }).element);
-  });
-
   it('changes the sibling visibility to `hidden` on expand', async () => {
     wrapper = await createWrapper();
 
