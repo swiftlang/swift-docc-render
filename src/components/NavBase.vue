@@ -182,6 +182,7 @@ export default {
       this.$emit('change', value);
       if (value) {
         this.onExpand();
+        document.activeElement.blur();
       } else {
         this.onClose();
       }
@@ -315,6 +316,8 @@ export default {
       this.$emit('open');
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
+      // focus on the toggle to prevent tabbing to links in the body
+      this.$refs.axToggle.focus();
     },
     onClose() {
       this.$emit('close');
