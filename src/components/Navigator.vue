@@ -42,7 +42,7 @@ import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { getSetting } from 'docc-render/utils/theme-settings';
-import { anchorize } from '@/utils/strings';
+import { anchorize } from 'docc-render/utils/strings';
 
 /**
  * @typedef NavigatorFlatItem
