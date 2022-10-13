@@ -34,6 +34,7 @@ describe('Topic', () => {
   let wrapper;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     wrapper = shallowMount(Topic, { mocks });
   });
 
@@ -140,19 +141,14 @@ describe('Topic', () => {
       identifier: 'myIdentifier',
     };
 
-    wrapper = shallowMount(Topic, {
-      mocks: {
-        ...mocks,
-        $bridge: {
-          ...mocks.$bridge,
-          on(type, handler) {
-            handler(data);
-          },
-        },
-      },
-    });
-
+    expect(mocks.$bridge.on).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
+    // invoke the callback on the $bridge
+    mocks.$bridge.on.mock.calls[0][1](data);
+    // assert the data is stored
     expect(wrapper.vm.topicData).toEqual(data);
+    // destroy the instance
+    wrapper.destroy();
+    expect(mocks.$bridge.off).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
   });
 
   describe('with article data', () => {
