@@ -557,7 +557,7 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
-      enableOnThisPageNav: false,
+      enableOnThisPageNav: true,
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
@@ -584,14 +584,6 @@ describe('DocumentationTopic', () => {
     });
     wrapper.setData({ topicData });
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
-  });
-
-  it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
-    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
-    wrapper.setData({ store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
-    await flushPromises();
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
   });
 
   it('passes `topicSectionsStyle`', () => {

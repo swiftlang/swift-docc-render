@@ -11,7 +11,7 @@
 <template>
   <div
     class="doc-topic"
-    :class="{ 'with-on-this-page': enableOnThisPageNav && isOnThisPageVisible }"
+    :class="{ 'with-on-this-page': enableOnThisPageNav && isOnThisPageNavVisible }"
   >
     <main class="main" id="main" role="main" tabindex="0">
       <DocumentationHero
@@ -96,12 +96,11 @@
             :sections="seeAlsoSections"
           />
         </div>
-        <OnThisPageStickyContainer
-          v-if="enableOnThisPageNav"
-          :visible.sync="isOnThisPageVisible"
-        >
-          <OnThisPageNav v-if="topicState.onThisPageSections.length > 2" />
-        </OnThisPageStickyContainer>
+        <template v-if="enableOnThisPageNav">
+          <OnThisPageStickyContainer v-show="isOnThisPageNavVisible">
+            <OnThisPageNav v-if="topicState.onThisPageSections.length > 2" />
+          </OnThisPageStickyContainer>
+        </template>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
@@ -135,9 +134,13 @@ import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
 
+// size above which, the OnThisPage container is visible
+const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
+
 export default {
   name: 'DocumentationTopic',
   mixins: [metadata],
+  constants: { ON_THIS_PAGE_CONTAINER_BREAKPOINT },
   inject: {
     isTargetIDE: {
       default() {
@@ -321,7 +324,6 @@ export default {
   data() {
     return {
       topicState: this.store.state,
-      isOnThisPageVisible: false,
     };
   },
   computed: {
@@ -408,6 +410,9 @@ export default {
       topicSectionsStyle,
       topicSections,
     }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden,
+    isOnThisPageNavVisible: ({ topicState }) => (
+      topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
+    ),
   },
   methods: {
     normalizePath(path) {

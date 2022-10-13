@@ -8,35 +8,15 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="OnThisPageStickyContainer" :class="{ hidden: isHidden }">
+  <div class="OnThisPageStickyContainer">
     <slot />
   </div>
 </template>
 
 <script>
-// 660px content + (170px aside + 22px padding-right)*2 + 28px*2 gutter
-export const ON_THIS_PAGE_CONTENT_BREAKPOINT = 1050;
 
 export default {
   name: 'OnThisPageStickyContainer',
-  inject: ['store'],
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  computed: {
-    isHidden: ({ store }) => store.state.contentWidth < ON_THIS_PAGE_CONTENT_BREAKPOINT,
-  },
-  watch: {
-    isHidden: {
-      immediate: true,
-      handler(v) {
-        this.$emit('update:visible', !v);
-      },
-    },
-  },
 };
 </script>
 
@@ -54,10 +34,6 @@ export default {
   box-sizing: border-box;
 
   @include breakpoint(small) {
-    display: none;
-  }
-
-  &.hidden {
     display: none;
   }
 }
