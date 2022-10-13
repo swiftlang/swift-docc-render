@@ -182,7 +182,7 @@ export default {
       this.$emit('change', value);
       if (value) {
         this.onExpand();
-        document.activeElement.blur();
+        document.activeElement.blur(); // blur focus to allow toggling the navigator
       } else {
         this.onClose();
       }

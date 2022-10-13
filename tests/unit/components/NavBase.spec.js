@@ -452,6 +452,18 @@ describe('NavBase', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
   });
 
+  it('focuses on the toggle on expand before resetting focus', async () => {
+    wrapper = await createWrapper();
+    const axToggle = wrapper.find({ ref: 'axToggle' });
+    const focusSpy = jest.spyOn(axToggle.element, 'focus');
+    axToggle.trigger('click');
+
+    // assert focus on toggle is called to prevent tabbing to body links
+    expect(focusSpy).toHaveBeenCalledTimes(1);
+    // assert focus is reset to allow navigator toggle to work
+    expect(document.activeElement).toEqual(document.body);
+  });
+
   it('changes the sibling visibility to `hidden` on expand', async () => {
     wrapper = await createWrapper();
 
