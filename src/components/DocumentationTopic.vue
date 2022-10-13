@@ -34,10 +34,10 @@
         <Title :eyebrow="roleHeading">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
-          v-if="isSymbolDeprecated || isSymbolBeta"
-          slot="after"
-          :class="tagName"
-          :data-tag-name="tagName"
+            v-if="isSymbolDeprecated || isSymbolBeta"
+            slot="after"
+            :class="tagName"
+            :data-tag-name="tagName"
           />
         </Title>
         <Abstract v-if="abstract" :content="abstract" />

@@ -705,6 +705,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('hides the `OnThisPageStickyContainer`, if the store.contentWidth is below a threshold', () => {
+    expect(wrapper.classes()).not.toContain('with-on-this-page');
     wrapper.setProps({ enableOnThisPageNav: true });
     wrapper.setData({
       topicState: {
@@ -720,6 +721,7 @@ describe('DocumentationTopic', () => {
       },
     });
     expect(container.isVisible()).toBe(true);
+    expect(wrapper.classes()).toContain('with-on-this-page');
   });
 
   describe('lifecycle hooks', () => {
