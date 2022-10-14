@@ -18,7 +18,6 @@
       <span :id="`DropdownLabel_${_uid}`" class="visuallyhidden">{{ ariaLabel }}</span>
       <button
         ref="dropdownToggle"
-        role="button"
         :id="`DropdownToggle_${_uid}`"
         :class="dropdownClasses"
         class="form-dropdown-toggle"

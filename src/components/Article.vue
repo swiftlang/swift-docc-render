@@ -18,7 +18,7 @@
       :rootReference="hierarchy.reference"
       :identifierUrl="identifierUrl"
     />
-    <main id="main" role="main" tabindex="0">
+    <main id="main" tabindex="0">
       <slot name="above-hero" />
       <component
         v-for="(section, index) in sections"
@@ -35,7 +35,7 @@
 import { PortalTarget } from 'portal-vue';
 
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import Body from './Article/Body.vue';
 import CallToAction from './Article/CallToAction.vue';
 import Hero from './Article/Hero.vue';

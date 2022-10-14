@@ -41,7 +41,6 @@
           v-slot="{ navigate }"
         >
           <li
-            role="option"
             :value="option.title"
             :class="[OptionClass, { [ActiveOptionClass] : currentOption === option.title }]"
             :aria-selected="currentOption === option.title"

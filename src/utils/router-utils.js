@@ -17,7 +17,7 @@ import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
 import { cssEscapeTopicIdHash } from 'docc-render/utils/strings';
 import { areEquivalentLocations } from 'docc-render/utils/url-helper';
-import getExtraScrollOffset from 'theme/utils/scroll-offset.js';
+import getExtraScrollOffset from 'theme/utils/scroll-offset';
 
 /**
  * Returns the current absolute location, eg: '/tutorials/swiftui/something'

@@ -21,7 +21,6 @@
     "webpack-asset-path.js"
   ],
   "dependencies": {
-    "@russmedia/theme-resolver-webpack": "^4.1.0",
     "core-js": "^3.8.2",
     "css.escape": "^1.5.1",
     "highlight.js": "^11.3.1",
@@ -59,10 +58,5 @@
   "engines": {
     "node": "16.17.1",
     "npm": "8.15.0"
-  },
-  "overrides": {
-    "@russmedia/theme-resolver-webpack": {
-      "webpack": "5"
-    }
   }
 }

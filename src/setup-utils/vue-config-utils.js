@@ -10,8 +10,6 @@
 
 const fs = require('fs');
 const path = require('path');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const ThemeResolverPlugin = require('@russmedia/theme-resolver-webpack');
 const themeUtils = require('./theme-build-utils');
 const { BannerPlugin, LICENSE_HEADER } = require('./license-header-built-files');
 
@@ -39,8 +37,6 @@ function baseGenerateCssOptions(config) {
 }
 
 function baseChainWebpack(config) {
-  const themeFallbackDirectories = themeUtils.getThemePaths();
-
   config.module
     .rule('static-html-assets')
     .test(/\.html$/)
@@ -53,15 +49,7 @@ function baseChainWebpack(config) {
     .end();
 
   // Add theme fallback resolver
-  config.resolve
-    .plugin('ThemeResolverPlugin')
-    .use(ThemeResolverPlugin, [[
-      {
-        prefix: 'theme',
-        directories: themeFallbackDirectories,
-      },
-    ]]);
-
+  config.resolve.alias.set('theme', themeUtils.getThemePaths());
   config.resolve.alias.set('docc-render', path.resolve(__dirname, '../'));
 
   // Add license header to built files

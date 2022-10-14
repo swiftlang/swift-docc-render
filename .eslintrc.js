@@ -36,6 +36,13 @@ module.exports = {
     'template-curly-spacing': 'off',
     'vue/experimental-script-setup-vars': 'off',
     'vue/multi-word-component-names': 'off',
+    'function-paren-newline': ['error', 'consistent'],
+    'function-call-argument-newline': 'off',
+    'vuejs-accessibility/form-control-has-label': 'off',
+    'vuejs-accessibility/label-has-for': 'off',
+    'vuejs-accessibility/aria-role': 'off',
+    'vuejs-accessibility/click-events-have-key-events': 'off',
+    'vuejs-accessibility/anchor-has-content': 'off',
   },
   overrides: [
     {

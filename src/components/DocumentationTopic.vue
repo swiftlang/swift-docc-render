@@ -10,7 +10,7 @@
 
 <template>
   <div class="doc-topic">
-    <main class="main" id="main" role="main" tabindex="0">
+    <main class="main" id="main"  tabindex="0">
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
@@ -107,7 +107,7 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
