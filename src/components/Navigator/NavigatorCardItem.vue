@@ -256,7 +256,8 @@ $chevron-width: $nav-card-horizontal-spacing;
 }
 
 .link {
-  line-height: 1;
+  min-width: 0;
+  display: flex;
 }
 
 .navigator-icon {
@@ -307,7 +308,7 @@ $chevron-width: $nav-card-horizontal-spacing;
   overflow: hidden;
   white-space: nowrap;
   max-width: 100%;
-  display: inline;
+  display: inline-block;
   vertical-align: middle;
   @include font-styles(body-reduced-tight);
 
