@@ -130,6 +130,7 @@ describe('Primary Dropdown', () => {
       provide: {
         references,
       },
+      attachToDocument: true,
     });
 
     btn = wrapper.find('.form-dropdown-toggle');
@@ -165,7 +166,6 @@ describe('Primary Dropdown', () => {
     expect(options.at(0).props('to')).toEqual('/tutorials/technologyx/tutorial?context=foo');
     expect(options.at(0).find('li').attributes()).toEqual({
       class: 'option',
-      role: 'option',
       tabindex: '-1',
       value: 'Basic Augmented Reality App',
     });
@@ -173,7 +173,6 @@ describe('Primary Dropdown', () => {
       .toEqual('/tutorials/technologyx/testtutorialarticle?context=foo');
     expect(options.at(1).find('li').attributes()).toEqual({
       class: `option ${ActiveOptionClass}`,
-      role: 'option',
       tabindex: '-1',
       value: 'Making an Augmented Reality App',
       'aria-current': 'tutorial',
@@ -194,6 +193,7 @@ describe('Primary Dropdown', () => {
   it('focuses the next element, when `down` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
     btn.trigger('keydown.down');
+    expect(wrapper.classes('is-open')).toBe(true);
     // use the down key on the first link
     firstLink.trigger('keydown.down');
     await wrapper.vm.$nextTick();

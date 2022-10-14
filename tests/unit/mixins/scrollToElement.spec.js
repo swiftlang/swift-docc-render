@@ -35,9 +35,9 @@ describe('scrollToElement', () => {
         resolve: ({ hash }) => ({ route: { hash } }),
         options: {
           scrollBehavior(to) {
-            return new Promise(resolve => (
-              resolve({ selector: to.hash, offset: scrollOffset })
-            ));
+            return new Promise((resolve) => {
+              resolve({ selector: to.hash, offset: scrollOffset });
+            });
           },
         },
       },

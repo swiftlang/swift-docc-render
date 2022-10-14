@@ -43,6 +43,7 @@ const createWrapper = ({ propsData, ...other } = {}) => {
     slots: {
       default: '<div class="default">Default</div>',
     },
+    attachToDocument: true,
     ...other,
   };
   return shallowMount(GenericModal, config);

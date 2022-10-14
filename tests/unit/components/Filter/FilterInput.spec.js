@@ -81,6 +81,7 @@ describe('FilterInput', () => {
     wrapper = shallowMount(FilterInput, {
       propsData,
       stubs: { TagList },
+      attachToDocument: true,
     });
 
     input = wrapper.find({ ref: 'input' });
@@ -197,6 +198,7 @@ describe('FilterInput', () => {
         value: 'Change',
         focusInputWhenCreated: true,
       },
+      attachToDocument: true,
       stubs: { TagList },
     });
     await wrapper.vm.$nextTick();

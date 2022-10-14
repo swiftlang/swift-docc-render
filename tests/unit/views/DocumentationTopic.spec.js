@@ -44,6 +44,7 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
   },
   references: navigatorReferences,
 });
+const routeEnterMock = jest.spyOn(dataUtils, 'fetchDataForRouteEnter').mockResolvedValue();
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
@@ -810,8 +811,6 @@ describe('DocumentationTopic', () => {
   });
 
   it('applies ObjC data when provided as overrides', () => {
-    dataUtils.fetchDataForRouteEnter = jest.fn();
-
     const oldInterfaceLang = topicData.identifier.interfaceLanguage; // swift
     const newInterfaceLang = 'occ';
 
@@ -842,7 +841,7 @@ describe('DocumentationTopic', () => {
     // is not fetched
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).not.toBe(oldInterfaceLang);
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
-    expect(dataUtils.fetchDataForRouteEnter).not.toBeCalled();
+    expect(routeEnterMock).not.toBeCalled();
     expect(next).toBeCalled();
   });
 
@@ -861,7 +860,7 @@ describe('DocumentationTopic', () => {
       variantOverrides,
     };
 
-    dataUtils.fetchDataForRouteEnter = jest.fn().mockResolvedValue(newTopicData);
+    routeEnterMock.mockResolvedValue(newTopicData);
     wrapper.setData({ topicData });
 
     const to = {
@@ -877,7 +876,7 @@ describe('DocumentationTopic', () => {
     // check that the provided override data has been applied after updating the
     // route with the "language=objc" query param and ensure that new data has
     // been fetched
-    expect(dataUtils.fetchDataForRouteEnter).toBeCalled();
+    expect(routeEnterMock).toBeCalled();
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(next).toBeCalled();
   });

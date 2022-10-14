@@ -214,7 +214,6 @@ describe('DocumentationTopic', () => {
     expect(main.exists()).toBe(true);
     expect(main.classes('main')).toBe(true);
     expect(main.attributes('id')).toBe('main');
-    expect(main.attributes('role')).toBe('main');
     expect(main.attributes('tabindex')).toBe('0');
   });
 

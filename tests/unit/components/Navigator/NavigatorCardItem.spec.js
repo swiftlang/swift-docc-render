@@ -50,6 +50,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   stubs: {
     RouterLink: RouterLinkStub,
   },
+  attachToDocument: true,
   ...others,
 });
 
