@@ -452,15 +452,25 @@ describe('NavBase', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
   });
 
-  it('focuses on the toggle on expand before resetting focus', async () => {
+  it('stays focus on axToggle, if nav expand is toggled from axToggle', async () => {
     wrapper = await createWrapper();
     const axToggle = wrapper.find({ ref: 'axToggle' });
     const focusSpy = jest.spyOn(axToggle.element, 'focus');
     axToggle.trigger('click');
 
-    // assert focus on toggle is called to prevent tabbing to body links
-    expect(focusSpy).toHaveBeenCalledTimes(1);
-    // assert focus is reset to allow navigator toggle to work
+    // assert focus is not moved
+    expect(focusSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('blurs active element, if nav expand is toggled by mouse click', async () => {
+    wrapper = await createWrapper();
+    const navToggle = wrapper.find('.nav-menucta');
+    const blurSpy = jest.spyOn(navToggle.element, 'blur');
+    // manually focus to fix JSDom issue
+    navToggle.element.focus();
+    navToggle.trigger('click');
+    expect(blurSpy).toHaveBeenCalledTimes(1);
+    // assert focus is on the body
     expect(document.activeElement).toEqual(document.body);
   });
 

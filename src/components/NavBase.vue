@@ -54,6 +54,7 @@
         </div>
         <div class="nav-actions">
           <a
+            ref="toggle"
             href="#"
             class="nav-menucta"
             tabindex="-1"
@@ -182,7 +183,6 @@ export default {
       this.$emit('change', value);
       if (value) {
         this.onExpand();
-        document.activeElement.blur(); // blur focus to allow toggling the navigator
       } else {
         this.onClose();
       }
@@ -316,8 +316,11 @@ export default {
       this.$emit('open');
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
-      // focus on the toggle to prevent tabbing to links in the body
-      this.$refs.axToggle.focus();
+      if (document.activeElement === this.$refs.toggle) {
+        // move focus to body to prevent tabbing to links in body
+        // when toggle is triggered by mouse
+        document.activeElement.blur();
+      }
     },
     onClose() {
       this.$emit('close');
