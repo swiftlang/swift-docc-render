@@ -477,6 +477,7 @@ describe('AdjustableSidebarWidth', () => {
     expect(aside.classes()).toContain('dragging');
     assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
     expect(wrapper.emitted('update:hiddenOnLarge')).toEqual([[true]]);
+    // simulate event is handled on parent
     wrapper.setProps({
       hiddenOnLarge: true,
     });
@@ -486,6 +487,7 @@ describe('AdjustableSidebarWidth', () => {
     }));
     assertWidth(wrapper, 250);
     expect(wrapper.emitted('update:hiddenOnLarge')).toEqual([[true], [false]]);
+    expect(aside.classes()).toContain('is-opening-on-large');
   });
 
   it('removes any locks or listeners upon destruction', async () => {
