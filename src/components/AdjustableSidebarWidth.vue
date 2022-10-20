@@ -159,6 +159,8 @@ export default {
       Math.min(fixedWidth || windowWidth, calcWidthPercent(minWidthPercent, windowWidth))
     ),
     widthInPx: ({ width }) => `${width}px`,
+    // Point at which, the nav is hidden/shown for large, when dragging.
+    hiddenOnLargeThreshold: ({ minWidth }) => minWidth / 2,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideStyles: ({
       widthInPx, mobileTopOffset, topOffset, windowHeight,
@@ -212,9 +214,9 @@ export default {
     $route: 'closeMobileSidebar',
     width: {
       immediate: true,
-      handler: debounce(function widthHandler(value) {
+      handler: throttle(function widthHandler(value) {
         this.emitEventChange(value);
-      }, 250, true, true),
+      }, 150),
     },
     windowWidth: 'getWidthInCheck',
     async breakpoint(value) {
@@ -284,17 +286,15 @@ export default {
       if (newWidth > this.maxWidth) {
         newWidth = this.maxWidth;
       }
-      // calculate the forceClose cutoff point
-      const forceCloseCutoff = this.minWidth / 2;
       // if we are going beyond the cutoff point and we are closed, open the navigator
-      if (this.hiddenOnLarge && newWidth >= forceCloseCutoff) {
+      if (this.hiddenOnLarge && newWidth >= this.hiddenOnLargeThreshold) {
         this.$emit('update:hiddenOnLarge', false);
         this.isOpeningOnLarge = true;
       }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);
       // if the new width is smaller than the cutoff point, force close the nav
-      if (newWidth <= forceCloseCutoff) {
+      if (newWidth <= this.hiddenOnLargeThreshold) {
         this.$emit('update:hiddenOnLarge', true);
       }
     },
