@@ -89,6 +89,12 @@ export default {
 
   &__icon {
     margin: 0;
+    display: flex;
+    justify-content: center;
+
+    /deep/ .icon-inline {
+      flex: 1 1 auto;
+    }
   }
 }
 </style>
