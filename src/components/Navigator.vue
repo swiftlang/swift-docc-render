@@ -14,7 +14,7 @@
     class="navigator"
   >
     <NavigatorCard
-      v-if="!isFetching"
+      :isLoading="isFetching"
       :technology="technology.title"
       :is-technology-beta="technology.beta"
       :technology-path="technology.path || technology.url"
@@ -29,11 +29,6 @@
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
     />
-    <NavigatorCardInner v-else class="loading-placeholder">
-      <transition name="delay-visibility" appear>
-        <SpinnerIcon class="loading-spinner" />
-      </transition>
-    </NavigatorCardInner>
     <div aria-live="polite" class="visuallyhidden">
       Navigator is {{ isFetching ? 'loading' : 'ready' }}
     </div>
@@ -42,8 +37,6 @@
 
 <script>
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
-import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
-import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 
@@ -73,8 +66,6 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
-    NavigatorCardInner,
-    SpinnerIcon,
   },
   data() {
     return {
@@ -171,28 +162,6 @@ export default {
   @include breakpoint(medium, nav) {
     position: static;
     transition: none;
-  }
-}
-
-.loading-placeholder {
-  align-items: center;
-  color: var(--color-figure-gray-secondary);
-  justify-content: center;
-  height: 100vh;
-  position: sticky;
-  top: var(--nav-height, 0px);
-}
-
-.loading-spinner {
-  --spinner-size: 40px; // used for both width and height
-  --spinner-delay: 1s; // don't show spinner until this much time has passed
-
-  height: var(--spinner-size);
-  width: var(--spinner-size);
-
-  &.delay-visibility-enter-active {
-    transition: visibility var(--spinner-delay);
-    visibility: hidden;
   }
 }
 </style>

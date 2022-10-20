@@ -9,6 +9,7 @@
 */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
+import LoadingNavigatorItem from '@/components/Navigator/LoadingNavigatorItem.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { DynamicScroller } from 'vue-virtual-scroller';
@@ -167,7 +168,10 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     DynamicScroller: DynamicScrollerStub,
-    NavigatorCardItem,
+    NavigatorCardItem: {
+      props: NavigatorCardItem.props,
+      template: '<div><button></button></div>',
+    },
   },
   sync: false,
   ...others,
@@ -297,6 +301,16 @@ describe('NavigatorCard', () => {
     });
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(0);
+  });
+
+  it('renders three loading navigator items, if is loading', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        isLoading: true,
+      },
+    });
+    const items = wrapper.findAll(LoadingNavigatorItem);
+    expect(items.length).toBe(3);
   });
 
   it('allows the user to navigate through arrow keys', async () => {

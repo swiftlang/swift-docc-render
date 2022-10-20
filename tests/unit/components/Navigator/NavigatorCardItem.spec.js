@@ -21,6 +21,7 @@ jest.mock('docc-render/utils/loading');
 
 const {
   Badge,
+  BaseNavigatorCardItem,
 } = NavigatorCardItem.components;
 
 const defaultProps = {
@@ -49,6 +50,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     RouterLink: RouterLinkStub,
+    BaseNavigatorCardItem,
   },
   ...others,
 });
