@@ -348,6 +348,12 @@ $breakpoint-attributes: (
     padding-right: 80px;
     box-sizing: border-box;
 
+    @media print {
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
+      max-width: none;
+    }
+
     @media only screen and (min-width: 1500px) {
       max-width: 920px;
     }
