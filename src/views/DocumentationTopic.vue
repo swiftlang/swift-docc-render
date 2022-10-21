@@ -104,6 +104,7 @@ import { compareVersions, combineVersions } from 'docc-render/utils/schema-versi
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -297,7 +298,9 @@ export default {
       ) >= 0
     ),
     enableOnThisPageNav: ({ isTargetIDE, store }) => (
-      !isTargetIDE && store.state.onThisPageSections.length > 2
+      getSetting(['features', 'docs', 'onThisPageNavigator', 'enable'], false)
+      && !isTargetIDE
+      && store.state.onThisPageSections.length > 2
     ),
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator

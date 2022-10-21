@@ -22,6 +22,7 @@ import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
@@ -30,6 +31,7 @@ jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
+jest.mock('docc-render/utils/theme-settings');
 
 const TechnologyWithChildren = {
   path: '/documentation/foo',
@@ -573,6 +575,7 @@ describe('DocumentationTopic', () => {
 
   it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
     wrapper.destroy();
+    getSetting.mockReturnValue(true);
     wrapper = shallowMount(DocumentationTopic, {
       mocks,
       provide: { isTargetIDE: true },
@@ -587,11 +590,20 @@ describe('DocumentationTopic', () => {
   });
 
   it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
+    getSetting.mockReturnValue(true);
     wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    // assert it enables itself
     wrapper.setData({ store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
     await flushPromises();
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
+  });
+
+  it('sets `enableOnThisPageNav` as `false`, if not enabled in theme settings', async () => {
+    getSetting.mockReturnValue(false);
+    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
+    await flushPromises();
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
   });
 
   it('passes `topicSectionsStyle`', () => {
