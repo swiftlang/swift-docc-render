@@ -12,8 +12,10 @@
   <video
     :controls="showsControls"
     :autoplay="autoplays"
-    :poster="normalizeAssetUrl(defaultPosterAttributes.url)"
+    :poster="normalisedPosterPath"
     :muted="muted"
+    :width="optimalWidth"
+    :height="optimalHeight"
     playsinline
     @playing="$emit('playing')"
     @pause="$emit('pause')"
@@ -30,7 +32,11 @@
 </template>
 
 <script>
-import { separateVariantsByAppearance, normalizeAssetUrl } from 'docc-render/utils/assets';
+import {
+  separateVariantsByAppearance,
+  normalizeAssetUrl,
+  getIntrinsicDimensions,
+} from 'docc-render/utils/assets';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 
@@ -59,7 +65,11 @@ export default {
       default: true,
     },
   },
-  data: () => ({ appState: AppStore.state }),
+  data: () => ({
+    appState: AppStore.state,
+    optimalWidth: null,
+    optimalHeight: null,
+  }),
   computed: {
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     systemColorScheme: ({ appState }) => appState.systemColorScheme,
@@ -68,7 +78,7 @@ export default {
       systemColorScheme,
     }) => preferredColorScheme === ColorScheme.dark.value || (
       preferredColorScheme === ColorScheme.auto.value
-        && systemColorScheme === ColorScheme.dark.value
+      && systemColorScheme === ColorScheme.dark.value
     ),
     shouldShowDarkVariant: ({
       darkVideoVariantAttributes,
@@ -112,6 +122,9 @@ export default {
       ? variants.dark[0]
       : variants.light[0] || {}
     ),
+    normalisedPosterPath: ({ defaultPosterAttributes }) => (
+      normalizeAssetUrl(defaultPosterAttributes.url)
+    ),
     videoAttributes: ({
       darkVideoVariantAttributes,
       defaultVideoAttributes,
@@ -121,8 +134,23 @@ export default {
       : defaultVideoAttributes
     ),
   },
+  watch: {
+    normalisedPosterPath: {
+      immediate: true,
+      handler: 'getPosterDimensions',
+    },
+  },
   methods: {
     normalizeAssetUrl,
+    async getPosterDimensions(path) {
+      let width = null;
+      let height = null;
+      if (path) {
+        ({ width, height } = await getIntrinsicDimensions(path));
+      }
+      this.optimalWidth = width;
+      this.optimalHeight = height;
+    },
   },
 };
 </script>
