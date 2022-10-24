@@ -528,7 +528,7 @@ export default {
     .with-on-this-page & {
       $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));
 
-      max-width: $large-max-width - 2*$large-viewport-dynamic-content-gutter;
+      max-width: $large-max-width - 2*$large-viewport-dynamic-content-padding;
 
       @include breakpoints-from(large) {
         max-width: $large-max-width;

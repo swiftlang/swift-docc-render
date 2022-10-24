@@ -344,11 +344,11 @@ $breakpoint-attributes: (
 
   @include inTargetWeb {
     // 820px
-    max-width: $large-max-width - $large-viewport-dynamic-content-gutter * 2;
+    max-width: $large-max-width - $large-viewport-dynamic-content-padding * 2;
     margin-left: auto;
     margin-right: auto;
-    padding-left: $large-viewport-dynamic-content-gutter;
-    padding-right: $large-viewport-dynamic-content-gutter;
+    padding-left: $large-viewport-dynamic-content-padding;
+    padding-right: $large-viewport-dynamic-content-padding;
     box-sizing: border-box;
 
     @include breakpoints-from(large) {
