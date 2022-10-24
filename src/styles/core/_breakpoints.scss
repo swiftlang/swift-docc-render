@@ -351,6 +351,12 @@ $breakpoint-attributes: (
     padding-right: $large-viewport-dynamic-content-padding;
     box-sizing: border-box;
 
+    @media print {
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
+      max-width: none;
+    }
+
     @include breakpoints-from(large) {
       max-width: $large-max-width;
     }

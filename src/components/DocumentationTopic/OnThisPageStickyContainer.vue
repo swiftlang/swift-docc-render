@@ -33,6 +33,10 @@ export default {
   padding-right: $nav-padding;
   box-sizing: border-box;
 
+  @media print {
+    display: none;
+  }
+
   @include breakpoint(small) {
     display: none;
   }
