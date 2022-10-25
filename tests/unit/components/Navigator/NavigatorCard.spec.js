@@ -1434,6 +1434,13 @@ describe('NavigatorCard', () => {
     expect(wrapper.find(FilterInput).props('selectedTags'))
       .toEqual([FILTER_TAGS_TO_LABELS.tutorials]);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
+    expect(sessionStorage.get).toHaveBeenCalledTimes(2);
+    wrapper.setProps({
+      isLoading: true,
+    });
+    await flushPromises();
+    // assert that session storage is restored again after data is fully loaded
+    expect(sessionStorage.get).toHaveBeenCalledTimes(4);
   });
 
   it('does not restore state, if path is different', async () => {
