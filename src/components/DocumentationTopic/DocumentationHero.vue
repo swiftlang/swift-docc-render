@@ -112,6 +112,8 @@ $doc-hero-icon-dimension: 250px;
   overflow: hidden;
   text-align: left;
   position: relative;
+  // extra offset applied when OnThisPage component is rendered
+  padding-right: var(--doc-hero-right-offset);
 
   // gradient
   &:before {
