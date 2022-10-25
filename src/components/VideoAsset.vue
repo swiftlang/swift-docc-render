@@ -15,7 +15,6 @@
     :poster="normalisedPosterPath"
     :muted="muted"
     :width="optimalWidth"
-    :height="optimalHeight"
     playsinline
     @playing="$emit('playing')"
     @pause="$emit('pause')"
@@ -36,6 +35,7 @@ import {
   separateVariantsByAppearance,
   normalizeAssetUrl,
   getIntrinsicDimensions,
+  extractDensities,
 } from 'docc-render/utils/assets';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
@@ -68,7 +68,6 @@ export default {
   data: () => ({
     appState: AppStore.state,
     optimalWidth: null,
-    optimalHeight: null,
   }),
   computed: {
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
@@ -108,7 +107,11 @@ export default {
      * @returns {{ light: [], dark: [] }}
      */
     posterVariantsGroupedByAppearance() {
-      return separateVariantsByAppearance(this.posterVariants);
+      const { light, dark } = separateVariantsByAppearance(this.posterVariants);
+      return {
+        light: extractDensities(light),
+        dark: extractDensities(dark),
+      };
     },
     /**
      * Returns dark poster variant if available and applicable
@@ -123,7 +126,7 @@ export default {
       : variants.light[0] || {}
     ),
     normalisedPosterPath: ({ defaultPosterAttributes }) => (
-      normalizeAssetUrl(defaultPosterAttributes.url)
+      normalizeAssetUrl(defaultPosterAttributes.src)
     ),
     videoAttributes: ({
       darkVideoVariantAttributes,
@@ -143,13 +146,14 @@ export default {
   methods: {
     normalizeAssetUrl,
     async getPosterDimensions(path) {
-      let width = null;
-      let height = null;
-      if (path) {
-        ({ width, height } = await getIntrinsicDimensions(path));
+      if (!path) {
+        this.optimalWidth = null;
+        return;
       }
-      this.optimalWidth = width;
-      this.optimalHeight = height;
+      const { density } = this.defaultPosterAttributes;
+      const currentVariantDensity = parseInt(density.match(/\d+/)[0], 10);
+      const { width } = await getIntrinsicDimensions(path);
+      this.optimalWidth = width / currentVariantDensity;
     },
   },
 };

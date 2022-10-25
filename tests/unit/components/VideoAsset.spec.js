@@ -30,7 +30,7 @@ const data = () => ({
 const propsData = {
   posterVariants: [
     { traits: ['light', '1x'], url: 'https://www.example.com/image.png' },
-    { traits: ['dark', '1x'], url: 'https://www.example.com/image~dark.png' },
+    { traits: ['dark', '2x'], url: 'https://www.example.com/image~dark.png' },
   ],
   variants: [
     { traits: ['light', '1x'], url: 'https://www.example.com/video.mp4' },
@@ -58,19 +58,26 @@ describe('VideoAsset', () => {
     await flushPromises();
     expect(wrapper.attributes()).toMatchObject({
       width: '100',
-      height: '100',
     });
   });
 
-  it('applies a dark poster if available and target prefers dark', () => {
+  it('applies a dark poster if available and target prefers dark', async () => {
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
     expect(getIntrinsicDimensionsSpy).toHaveBeenNthCalledWith(1, propsData.posterVariants[0].url);
+    expect(wrapper.attributes()).toMatchObject({
+      width: '100',
+    });
     wrapper.setData({
       appState: { preferredColorScheme: ColorScheme.dark.value },
     });
     expect(wrapper.find('video').attributes('poster')).toEqual(propsData.posterVariants[1].url);
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(2);
     expect(getIntrinsicDimensionsSpy).toHaveBeenNthCalledWith(2, propsData.posterVariants[1].url);
+    await flushPromises();
+    // dark image is 2x, so the width is half
+    expect(wrapper.attributes()).toMatchObject({
+      width: '50',
+    });
   });
 
   it('applies a light poster if there is no dark variant but target prefers dark', async () => {
