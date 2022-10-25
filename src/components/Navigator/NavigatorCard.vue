@@ -523,13 +523,14 @@ export default {
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
   },
-  created() {
-    this.restorePersistedState();
-  },
   watch: {
     filter: 'debounceInput',
     nodeChangeDeps: 'trackOpenNodes',
     activePath: 'handleActivePathChange',
+    isLoading: {
+      immediate: true,
+      handler: 'restorePersistedState',
+    },
     apiChanges(value) {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
@@ -873,7 +874,7 @@ export default {
       sessionStorage.set(STORAGE_KEY, state);
     },
     /**
-     * Restores the persisted state from sessionStorage. Called on `create` hook.
+     * Restores the persisted state from sessionStorage.
      */
     restorePersistedState() {
       // get the entire state for the technology
