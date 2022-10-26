@@ -74,6 +74,7 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
 // on the fact that a "doc-topic" class is applied to an ancestor element of
 // the aside in question
 .doc-topic aside {
+  break-inside: avoid;
   border-radius: var(--aside-border-radius, $border-radius);
   border-style: var(--aside-border-style, solid);
   border-width: var(--aside-border-width,

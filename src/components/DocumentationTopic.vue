@@ -9,7 +9,10 @@
 -->
 
 <template>
-  <div class="doc-topic">
+  <div
+    class="doc-topic"
+    :class="{ 'with-on-this-page': enableOnThisPageNav && isOnThisPageNavVisible }"
+  >
     <main class="main" id="main" role="main" tabindex="0">
       <DocumentationHero
         :role="role"
@@ -93,9 +96,11 @@
             :sections="seeAlsoSections"
           />
         </div>
-        <OnThisPageStickyContainer v-if="enableOnThisPageNav">
-          <OnThisPageNav />
-        </OnThisPageStickyContainer>
+        <template v-if="enableOnThisPageNav">
+          <OnThisPageStickyContainer v-show="isOnThisPageNavVisible">
+            <OnThisPageNav v-if="topicState.onThisPageSections.length > 2" />
+          </OnThisPageStickyContainer>
+        </template>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
@@ -129,9 +134,13 @@ import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
 
+// size above which, the OnThisPage container is visible
+const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
+
 export default {
   name: 'DocumentationTopic',
   mixins: [metadata],
+  constants: { ON_THIS_PAGE_CONTAINER_BREAKPOINT },
   inject: {
     isTargetIDE: {
       default() {
@@ -401,6 +410,9 @@ export default {
       topicSectionsStyle,
       topicSections,
     }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden,
+    isOnThisPageNavVisible: ({ topicState }) => (
+      topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
+    ),
   },
   methods: {
     normalizePath(path) {
@@ -441,6 +453,10 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  &.with-on-this-page {
+    --doc-hero-right-offset: #{$on-this-page-aside-width};
+  }
 }
 
 #main {
@@ -503,14 +519,25 @@ export default {
 
 .doc-content-wrapper {
   display: flex;
-
-  .sidebar-hidden & {
-    justify-content: center;
-  }
+  justify-content: center;
 
   .doc-content {
     min-width: 0;
     width: 100%;
+
+    .with-on-this-page & {
+      $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));
+
+      max-width: $large-max-width - 2*$large-viewport-dynamic-content-padding;
+
+      @include breakpoints-from(large) {
+        max-width: $large-max-width;
+      }
+
+      @media only screen and (min-width: 1500px) {
+        max-width: $large-max-width + 100;
+      }
+    }
   }
 }
 </style>

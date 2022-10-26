@@ -17,6 +17,8 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import OnThisPageStickyContainer from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 
+const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
+
 const {
   Abstract,
   ContentNode,
@@ -157,7 +159,15 @@ describe('DocumentationTopic', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(DocumentationTopic, { propsData });
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      provide: {
+        store: {
+          state: { onThisPageSections: [] },
+          reset() {},
+        },
+      },
+    });
   });
 
   it('provides a page title based on title prop', () => {
@@ -679,9 +689,39 @@ describe('DocumentationTopic', () => {
 
   it('renders `OnThisPageNav` component, if enabled via prop', () => {
     expect(wrapper.find(OnThisPageNav).exists()).toBe(false);
+    expect(wrapper.find(OnThisPageStickyContainer).exists()).toBe(false);
+    // enable the nav
     wrapper.setProps({ enableOnThisPageNav: true });
-    expect(wrapper.find(OnThisPageNav).exists()).toBe(true);
+    // assert container is visible, but not the nav
     expect(wrapper.find(OnThisPageStickyContainer).exists()).toBe(true);
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(false);
+    // show the nav
+    wrapper.setData({
+      topicState: {
+        onThisPageSections: [{ anchor: 'foo' }, { anchor: 'bar' }, { anchor: 'baz' }],
+      },
+    });
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(true);
+  });
+
+  it('hides the `OnThisPageStickyContainer`, if the store.contentWidth is below a threshold', () => {
+    expect(wrapper.classes()).not.toContain('with-on-this-page');
+    wrapper.setProps({ enableOnThisPageNav: true });
+    wrapper.setData({
+      topicState: {
+        contentWidth: 200,
+      },
+    });
+    const container = wrapper.find(OnThisPageStickyContainer);
+    expect(container.exists()).toBe(true);
+    expect(container.isVisible()).toBe(false);
+    wrapper.setData({
+      topicState: {
+        contentWidth: ON_THIS_PAGE_CONTAINER_BREAKPOINT + 10,
+      },
+    });
+    expect(container.isVisible()).toBe(true);
+    expect(wrapper.classes()).toContain('with-on-this-page');
   });
 
   describe('lifecycle hooks', () => {
