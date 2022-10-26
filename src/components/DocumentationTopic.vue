@@ -483,9 +483,7 @@ export default {
 // remove border-top for first section of the page
 /deep/ {
   .no-primary-content {
-    .container > .title {
-      border-top: none;
-    }
+    --content-table-title-border-width: 0px;
   }
 }
 
