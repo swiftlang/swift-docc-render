@@ -590,7 +590,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
-    getSetting.mockReturnValue(true);
+    getSetting.mockReturnValue(false);
     wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
     // assert it enables itself
@@ -599,11 +599,12 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
   });
 
-  it('sets `enableOnThisPageNav` as `false`, if not enabled in theme settings', async () => {
-    getSetting.mockReturnValue(false);
+  it('sets `enableOnThisPageNav` as `false`, if `disabled` in theme settings', async () => {
+    getSetting.mockReturnValue(true);
     wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
     await flushPromises();
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    expect(getSetting).toHaveBeenCalledWith(['features', 'docs', 'onThisPageNavigator', 'disable'], false);
   });
 
   it('passes `topicSectionsStyle`', () => {

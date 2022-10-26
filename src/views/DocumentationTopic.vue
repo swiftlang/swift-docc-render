@@ -298,7 +298,7 @@ export default {
       ) >= 0
     ),
     enableOnThisPageNav: ({ isTargetIDE, store }) => (
-      getSetting(['features', 'docs', 'onThisPageNavigator', 'enable'], false)
+      !getSetting(['features', 'docs', 'onThisPageNavigator', 'disable'], false)
       && !isTargetIDE
       && store.state.onThisPageSections.length > 2
     ),
