@@ -71,7 +71,7 @@
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
             :languagePaths="languagePaths"
-            :enableOnThisPageNav="!isTargetIDE"
+            :enableOnThisPageNav="enableOnThisPageNav"
           />
         </component>
       </template>
@@ -104,6 +104,7 @@ import { compareVersions, combineVersions } from 'docc-render/utils/schema-versi
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -295,6 +296,10 @@ export default {
       compareVersions(
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
+    ),
+    enableOnThisPageNav: ({ isTargetIDE }) => (
+      !getSetting(['features', 'docs', 'onThisPageNavigator', 'disable'], false)
+      && !isTargetIDE
     ),
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
