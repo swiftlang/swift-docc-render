@@ -559,7 +559,7 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
-      enableOnThisPageNav: false,
+      enableOnThisPageNav: true,
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
@@ -589,19 +589,8 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
   });
 
-  it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
-    getSetting.mockReturnValue(false);
-    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
-    // assert it enables itself
-    wrapper.setData({ store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
-    await flushPromises();
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
-  });
-
   it('sets `enableOnThisPageNav` as `false`, if `disabled` in theme settings', async () => {
     getSetting.mockReturnValue(true);
-    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
     await flushPromises();
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
     expect(getSetting).toHaveBeenCalledWith(['features', 'docs', 'onThisPageNavigator', 'disable'], false);
