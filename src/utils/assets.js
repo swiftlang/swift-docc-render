@@ -82,3 +82,20 @@ export function normalizeAssetUrl(url) {
  * @returns {string|undefined}
  */
 export function toCSSUrl(url) { return url ? `url('${normalizeAssetUrl(url)}')` : undefined; }
+
+/**
+ * Loads an image and gets its dimensions
+ * @param {String} src
+ * @returns {Promise<{width: Number, height: Number}>}
+ */
+export function getIntrinsicDimensions(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.onerror = reject;
+    img.onload = () => resolve({
+      width: img.width,
+      height: img.height,
+    });
+  });
+}
