@@ -306,4 +306,11 @@ describe('QuickNavigationModal', () => {
       .find('.parent-path');
     expect(symbolTree.text()).toBe('bar');
   });
+
+  it('it removes space characters from the debounced input string', () => {
+    wrapper.setData({
+      debouncedInput: 'bar foo',
+    });
+    expect(wrapper.vm.processedUserInput).toBe('barfoo');
+  });
 });

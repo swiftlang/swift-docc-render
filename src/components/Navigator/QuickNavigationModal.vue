@@ -43,7 +43,7 @@
         </FilterInput>
         <div
           class="quick-navigation__match-list"
-          :class="{ 'active' : debouncedInput.length }"
+          :class="{ 'active' : processedUserInput.length }"
         >
           <div
             v-if="noResultsWereFound"
@@ -77,7 +77,7 @@
                     <span v-text="formatSymbolTitle(symbol.title, 0, symbol.start)" />
                     <QuickNavigationHighlighter
                       :text="symbol.substring"
-                      :matcherText="debouncedInput"
+                      :matcherText="processedUserInput"
                     />
                     <span
                       v-text="formatSymbolTitle(symbol.title, symbol.start + symbol.matchLength)"
@@ -157,18 +157,18 @@ export default {
       constructFuzzyRegex,
       children,
       fuzzyMatch,
-      debouncedInput,
+      processedUserInput,
       orderSymbolsByPriority,
     }) => {
       const symbols = children.filter(symbol => (
         symbol.type !== 'groupMarker'
         && symbol.title != null
       ));
-      if (!debouncedInput) return [];
+      if (!processedUserInput) return [];
       const matches = fuzzyMatch({
-        debouncedInput,
+        processedUserInput,
         symbols,
-        processedInputRegex: new RegExp(constructFuzzyRegex(debouncedInput), 'i'),
+        processedInputRegex: new RegExp(constructFuzzyRegex(processedUserInput), 'i'),
       });
       // Return the first 20 symbols out of sorted ones
       return orderSymbolsByPriority(matches).slice(0, 20);
@@ -179,9 +179,12 @@ export default {
         this.$emit('update:showQuickNavigationModal', value);
       },
     },
-    noResultsWereFound: ({ debouncedInput, totalItemsToNavigate }) => (
-      debouncedInput.length && !totalItemsToNavigate
+    noResultsWereFound: ({ processedUserInput, totalItemsToNavigate }) => (
+      processedUserInput.length && !totalItemsToNavigate
     ),
+    // Transformations required for filtering symbols
+    // Remove space-character
+    processedUserInput: ({ debouncedInput }) => debouncedInput.replace(/\s/g, ''),
     totalItemsToNavigate: ({ filteredSymbols }) => filteredSymbols.length,
   },
   watch: {
@@ -204,7 +207,7 @@ export default {
     },
     debounceInput: debounce(function debounceInput(value) {
       // Remove space-character
-      this.debouncedInput = value.replace(/\s/g, '');
+      this.debouncedInput = value;
     }, 250),
     endingPointHook() {
       // Reset selected symbol to the first one of the list
@@ -213,14 +216,14 @@ export default {
     formatSymbolTitle(symbolTitle, symbolStart, symbolEnd) {
       return symbolTitle.slice(symbolStart, symbolEnd);
     },
-    fuzzyMatch({ debouncedInput, symbols, processedInputRegex }) {
+    fuzzyMatch({ processedUserInput, symbols, processedInputRegex }) {
       return symbols.map((symbol) => {
         const match = processedInputRegex.exec(symbol.title);
         // Dismiss if symbol isn't matched
         if (!match) return false;
 
         const matchLength = match[0].length;
-        const inputLength = debouncedInput.length;
+        const inputLength = processedUserInput.length;
         // Dismiss if match length is greater than 3x the input's length
         if (matchLength > inputLength * 3) return false;
         return ({
