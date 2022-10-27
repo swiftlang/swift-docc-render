@@ -258,9 +258,6 @@ describe('QuickNavigationModal', () => {
         children: customSymbols,
         showQuickNavigationModal: true,
       },
-      provide: {
-        quickNavigationStore: {},
-      },
     });
     wrapper.setData({
       debouncedInput: 'foobar',

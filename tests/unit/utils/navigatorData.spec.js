@@ -16,7 +16,7 @@ import {
   getParents,
   getSiblings,
   hashCode,
-} from 'docc-render/utils/indexData';
+} from 'docc-render/utils/navigatorData';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
 

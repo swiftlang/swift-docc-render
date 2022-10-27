@@ -153,7 +153,7 @@ import {
   getChildren,
   getParents,
   getSiblings,
-} from 'docc-render/utils/indexData';
+} from 'docc-render/utils/navigatorData';
 
 const STORAGE_KEY = 'navigator.state';
 

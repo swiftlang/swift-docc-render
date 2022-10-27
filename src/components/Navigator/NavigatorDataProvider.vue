@@ -10,7 +10,7 @@
 
 <script>
 import { fetchIndexPathsData } from 'docc-render/utils/data';
-import { flattenNestedData } from 'docc-render/utils/indexData';
+import { flattenNestedData } from 'docc-render/utils/navigatorData';
 import Language from 'docc-render/constants/Language';
 
 /**

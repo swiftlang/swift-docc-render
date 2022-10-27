@@ -118,7 +118,7 @@ import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
-import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/indexData';
+import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 
 export default {
   name: 'QuickNavigationModal',
@@ -241,10 +241,7 @@ export default {
       }).filter(Boolean);
     },
     handleKeyEnter() {
-      if (
-        this.noResultsWereFound
-        || !this.userInput.length
-      ) return;
+      if (this.noResultsWereFound || !this.userInput.length) return;
       this.$router.push(this.filteredSymbols[this.focusedIndex].path);
       this.closeQuickNavigationModal();
     },
@@ -294,6 +291,9 @@ $base-border-width: 1px;
   }
   &__filter{
     --input-border-color: var(--color-fill);
+  }
+  &__filter.focus + &__match-list {
+    border-top: 0;
   }
   &__magnifier-icon-container {
     width: rem(18px);
