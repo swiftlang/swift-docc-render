@@ -14,7 +14,7 @@
     class="navigator"
   >
     <NavigatorCard
-      :isLoading="isFetching"
+      v-if="!isFetching"
       :technology="technology.title"
       :is-technology-beta="technology.beta"
       :technology-path="technology.path || technology.url"
@@ -30,6 +30,11 @@
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
     />
+    <LoadingNavigatorCard
+      v-else
+      :technology="technology.title"
+      @close="$emit('close')"
+    />
     <div aria-live="polite" class="visuallyhidden">
       Navigator is {{ isFetching ? 'loading' : 'ready' }}
     </div>
@@ -39,6 +44,7 @@
 <script>
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
+import LoadingNavigatorCard from 'theme/components/Navigator/LoadingNavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { getSetting } from 'docc-render/utils/theme-settings';
@@ -69,6 +75,7 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
+    LoadingNavigatorCard,
   },
   data() {
     return {

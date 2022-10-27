@@ -9,7 +9,7 @@
 */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
-import LoadingNavigatorItem from '@/components/Navigator/LoadingNavigatorItem.vue';
+import BaseNavigatorCard from '@/components/Navigator/BaseNavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { DynamicScroller } from 'vue-virtual-scroller';
@@ -172,6 +172,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
       props: NavigatorCardItem.props,
       template: '<div><button></button></div>',
     },
+    BaseNavigatorCard,
   },
   sync: false,
   ...others,
@@ -300,16 +301,6 @@ describe('NavigatorCard', () => {
     });
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(0);
-  });
-
-  it('renders three loading navigator items, if is loading', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isLoading: true,
-      },
-    });
-    const items = wrapper.findAll(LoadingNavigatorItem);
-    expect(items.length).toBe(3);
   });
 
   it('allows the user to navigate through arrow keys', async () => {
@@ -1434,13 +1425,6 @@ describe('NavigatorCard', () => {
     expect(wrapper.find(FilterInput).props('selectedTags'))
       .toEqual([FILTER_TAGS_TO_LABELS.tutorials]);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
-    expect(sessionStorage.get).toHaveBeenCalledTimes(2);
-    wrapper.setProps({
-      isLoading: true,
-    });
-    await flushPromises();
-    // assert that session storage is restored again after data is fully loaded
-    expect(sessionStorage.get).toHaveBeenCalledTimes(4);
   });
 
   it('does not restore state, if path is different', async () => {

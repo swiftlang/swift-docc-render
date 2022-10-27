@@ -9,126 +9,111 @@
 -->
 
 <template>
-  <div class="navigator-card" :class="{ 'filter-on-top': renderFilterOnTop }">
-    <div class="navigator-card-full-height">
-      <div class="navigator-card-inner">
-        <div class="head-wrapper">
-          <div class="head-inner">
-            <button
-              aria-label="Close documentation navigator"
-              :id="SIDEBAR_HIDE_BUTTON_ID"
-              class="close-card"
-              :class="{ 'hide-on-large': !allowHiding }"
-              @click="handleHideClick"
-            >
-              <SidenavIcon class="icon-inline close-icon" />
-            </button>
-            <Reference
-              class="navigator-head"
-              :url="technologyPath"
-              :id="INDEX_ROOT_KEY"
-              @click.alt.native.prevent="toggleAllNodes"
-            >
-              <h2 class="card-link">
-                {{ technology }}
-              </h2>
-              <Badge v-if="isTechnologyBeta" variant="beta" />
-            </Reference>
-          </div>
-        </div>
-        <slot name="post-head" />
-        <div
-          class="card-body"
+  <BaseNavigatorCard
+    @close="$emit('close')"
+    :allowHiding="allowHiding"
+    :class="{ 'filter-on-top': renderFilterOnTop }"
+  >
+    <template #navigator-head="{ className, id }">
+      <Reference
+        :url="technologyPath"
+        :class="className"
+        :id="id"
+        @click.alt.native.prevent="toggleAllNodes"
+      >
+        <h2 class="card-link">
+          {{ technology }}
+        </h2>
+        <Badge v-if="isTechnologyBeta" variant="beta" />
+      </Reference>
+    </template>
+    <template #post-head>
+      <slot name="post-head" />
+    </template>
+    <template #body="{ className }">
+      <div
+        :class="className"
+        @keydown.alt.up.capture.prevent="focusFirst"
+        @keydown.alt.down.capture.prevent="focusLast"
+        @keydown.up.exact.capture.prevent="focusPrev"
+        @keydown.down.exact.capture.prevent="focusNext"
+      >
+        <DynamicScroller
+          v-show="hasNodes"
+          :id="scrollLockID"
+          ref="scroller"
+          class="scroller"
+          aria-label="Documentation Navigator"
+          :items="nodesToRender"
+          :min-item-size="itemSize"
+          emit-update
+          key-field="uid"
+          v-slot="{ item, active, index }"
+          @focusin.native="handleFocusIn"
+          @focusout.native="handleFocusOut"
+          @update="handleScrollerUpdate"
           @keydown.alt.up.capture.prevent="focusFirst"
           @keydown.alt.down.capture.prevent="focusLast"
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <template v-if="isLoading">
-            <transition name="delay-visibility" appear>
-              <div class="scroller" aria-hidden="true">
-                <LoadingNavigatorItem
-                  v-for="(row, index) in LOADER_ROWS"
-                  :key="index"
-                  :index="index"
-                  :width="row.width"
-                  :hideNavigatorIcon="row.hideNavigatorIcon"
-                />
-              </div>
-            </transition>
-          </template>
-          <DynamicScroller
-            v-else
-            v-show="hasNodes"
-            :id="scrollLockID"
-            ref="scroller"
-            class="scroller"
-            aria-label="Documentation Navigator"
-            :items="nodesToRender"
-            :min-item-size="itemSize"
-            emit-update
-            key-field="uid"
-            v-slot="{ item, active, index }"
-            @focusin.native="handleFocusIn"
-            @focusout.native="handleFocusOut"
-            @update="handleScrollerUpdate"
-          >
-            <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
-              <NavigatorCardItem
-                :item="item"
-                :isRendered="active"
-                :filter-pattern="filterPattern"
-                :is-active="item.uid === activeUID"
-                :is-bold="activePathMap[item.uid]"
-                :expanded="openNodes[item.uid]"
-                :api-change="apiChangesObject[item.path]"
-                :isFocused="focusedIndex === index"
-                :enableFocus="!externalFocusChange"
-                :navigator-references="navigatorReferences"
-                @toggle="toggle"
-                @toggle-full="toggleFullTree"
-                @toggle-siblings="toggleSiblings"
-                @navigate="handleNavigationChange"
-                @focus-parent="focusNodeParent"
-              />
-            </DynamicScrollerItem>
-          </DynamicScroller>
-          <div aria-live="polite" class="visuallyhidden">
-            {{ politeAriaLive }}
-          </div>
-          <div aria-live="assertive" class="no-items-wrapper">
-            <p class="no-items">
-              {{ assertiveAriaLive }}
-            </p>
-          </div>
+          <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
+            <NavigatorCardItem
+              :item="item"
+              :isRendered="active"
+              :filter-pattern="filterPattern"
+              :is-active="item.uid === activeUID"
+              :is-bold="activePathMap[item.uid]"
+              :expanded="openNodes[item.uid]"
+              :api-change="apiChangesObject[item.path]"
+              :isFocused="focusedIndex === index"
+              :enableFocus="!externalFocusChange"
+              :navigator-references="navigatorReferences"
+              @toggle="toggle"
+              @toggle-full="toggleFullTree"
+              @toggle-siblings="toggleSiblings"
+              @navigate="handleNavigationChange"
+              @focus-parent="focusNodeParent"
+            />
+          </DynamicScrollerItem>
+        </DynamicScroller>
+        <div aria-live="polite" class="visuallyhidden">
+          {{ politeAriaLive }}
         </div>
-        <div class="filter-wrapper" v-if="!errorFetching">
-          <div class="navigator-filter">
-            <div class="input-wrapper">
-              <FilterInput
-                v-model="filter"
-                :tags="availableTags"
-                :selected-tags.sync="selectedTagsModelValue"
-                placeholder="Filter"
-                :should-keep-open-on-blur="false"
-                :position-reversed="!renderFilterOnTop"
-                :clear-filter-on-tag-select="false"
-                class="filter-component"
-                @clear="clearFilters"
-              />
-            </div>
-            <div
-              class="magnifier-icon"
-              @click="store.toggleShowQuickNavigationModal()"
-              v-if="enableQuickNavigation"
-            >
-              <MagnifierIcon />
-            </div>
+        <div aria-live="assertive" class="no-items-wrapper">
+          <p class="no-items">
+            {{ assertiveAriaLive }}
+          </p>
+        </div>
+      </div>
+    </template>
+    <template #filter>
+      <div class="filter-wrapper" v-if="!errorFetching">
+        <div class="navigator-filter">
+          <div class="input-wrapper">
+            <FilterInput
+              v-model="filter"
+              :tags="availableTags"
+              :selected-tags.sync="selectedTagsModelValue"
+              placeholder="Filter"
+              :should-keep-open-on-blur="false"
+              :position-reversed="!renderFilterOnTop"
+              :clear-filter-on-tag-select="false"
+              class="filter-component"
+              @clear="clearFilters"
+            />
+          </div>
+          <div
+            class="magnifier-icon"
+            @click="store.toggleShowQuickNavigationModal()"
+            v-if="enableQuickNavigation"
+          >
+            <MagnifierIcon />
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </BaseNavigatorCard>
 </template>
 
 <script>
@@ -139,13 +124,11 @@ import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import {
   INDEX_ROOT_KEY,
-  SIDEBAR_HIDE_BUTTON_ID,
   SIDEBAR_ITEM_SIZE,
 } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import LoadingNavigatorItem from 'docc-render/components/Navigator/LoadingNavigatorItem.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
-import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
+import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCard.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
@@ -169,12 +152,6 @@ const FILTER_TAGS = {
   tutorials: 'tutorials',
   articles: 'articles',
 };
-
-const LOADER_ROWS = [
-  { width: '30%', hideNavigatorIcon: true },
-  { width: '80%' },
-  { width: '50%' },
-];
 
 const FILTER_TAGS_TO_LABELS = {
   [FILTER_TAGS.sampleCode]: 'Sample Code',
@@ -223,15 +200,15 @@ export default {
   components: {
     Badge,
     FilterInput,
-    SidenavIcon,
     MagnifierIcon,
-    LoadingNavigatorItem,
     NavigatorCardItem,
     DynamicScroller,
     DynamicScrollerItem,
     Reference,
+    BaseNavigatorCard,
   },
   props: {
+    ...BaseNavigatorCard.props,
     technology: {
       type: String,
       required: true,
@@ -272,14 +249,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    allowHiding: {
-      type: Boolean,
-      default: true,
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
     navigatorReferences: {
       type: Object,
       default: () => {},
@@ -310,13 +279,10 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
-      LOADER_ROWS,
       allNodesToggled: false,
     };
   },
   computed: {
-    SIDEBAR_HIDE_BUTTON_ID: () => SIDEBAR_HIDE_BUTTON_ID,
-    INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
     politeAriaLive: ({ hasNodes, nodesToRender }) => {
       if (!hasNodes) return '';
       return [nodesToRender.length, ITEMS_FOUND].join(' ');
@@ -523,14 +489,13 @@ export default {
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
   },
+  created() {
+    this.restorePersistedState();
+  },
   watch: {
     filter: 'debounceInput',
     nodeChangeDeps: 'trackOpenNodes',
     activePath: 'handleActivePathChange',
-    isLoading: {
-      immediate: true,
-      handler: 'restorePersistedState',
-    },
     apiChanges(value) {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
@@ -874,7 +839,7 @@ export default {
       sessionStorage.set(STORAGE_KEY, state);
     },
     /**
-     * Restores the persisted state from sessionStorage.
+     * Restores the persisted state from sessionStorage. Called on `create` hook.
      */
     restorePersistedState() {
       // get the entire state for the technology
@@ -1186,23 +1151,6 @@ $close-icon-padding: 5px;
 }
 
 .navigator-card {
-  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
-  --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
-  --nav-filter-horizontal-padding: 30px;
-  --visibility-delay: 1s; // don't show spinner until this much time has passed
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  height: calc(var(--app-height) - var(--nav-height, 0px));
-  position: sticky;
-  top: var(--nav-height, 0px);
-
-  @include breakpoint(medium, nav) {
-    height: 100%;
-    position: static;
-    background: var(--color-fill);
-  }
-
   &.filter-on-top {
     .filter-wrapper {
       order: 1;
@@ -1214,30 +1162,7 @@ $close-icon-padding: 5px;
     }
   }
 
-  .navigator-card-full-height {
-    min-height: 0;
-    flex: 1 1 auto;
-  }
-
-  .head-inner {
-    overflow: hidden;
-  }
-
-  .head-wrapper {
-    position: relative;
-    flex: 1 0 auto;
-  }
-
   .navigator-head {
-    --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
-    padding: 0 var(--navigator-head-padding-right) 0 var(--card-horizontal-spacing);
-    background: $navigator-head-background;
-    border-bottom: 1px solid var(--color-grid);
-    display: flex;
-    align-items: center;
-    height: $nav-height;
-    white-space: nowrap;
-
     .badge {
       margin-top: 0;
     }
@@ -1249,29 +1174,6 @@ $close-icon-padding: 5px;
         font-weight: $font-weight-bold;
       }
     }
-
-    &:hover {
-      background: var(--color-navigator-item-hover);
-      text-decoration: none;
-    }
-
-    @include safe-area-left-set(padding-left, var(--card-horizontal-spacing));
-    @include safe-area-right-set(padding-right, var(--navigator-head-padding-right));
-
-    @include breakpoint(medium, nav) {
-      justify-content: center;
-      --navigator-head-padding-right: var(--card-horizontal-spacing);
-    }
-
-    @include breakpoint(small, nav) {
-      height: $nav-height-small;
-      padding: 0 $nav-card-horizontal-spacing-large;
-    }
-  }
-
-  .card-icon {
-    width: 19px;
-    height: 19px;
   }
 }
 
@@ -1340,25 +1242,6 @@ $close-icon-padding: 5px;
       transform: translateX(rem($close-icon-size + 1px) + $nav-padding * 2);
     }
   }
-}
-
-.card-body {
-  // right padding is added by the items, so visually the scroller is stuck to the side
-  padding-right: 0;
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
-  @include breakpoint(medium, nav) {
-    --card-vertical-spacing: 0px;
-  }
-}
-
-.card-link {
-  color: var(--color-text);
-  @include font-styles(body-reduced);
-  font-weight: $font-weight-semibold;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .navigator-filter {
@@ -1431,23 +1314,5 @@ $close-icon-padding: 5px;
     flex: 1 0 $filter-height;
     overflow: hidden;
   }
-}
-
-.navigator-card-inner {
-  --nav-card-inner-vertical-offset: 0px;
-  position: sticky;
-  top: var(--nav-height, 0px);
-  height: calc(var(--app-height) - var(--nav-height, 0px) - var(--nav-card-inner-vertical-offset));
-  display: flex;
-  flex-flow: column;
-  @include breakpoint(medium, nav) {
-    position: static;
-    height: 100%;
-  }
-}
-
-.delay-visibility-enter-active {
-  transition: visibility var(--visibility-delay);
-  visibility: hidden;
 }
 </style>
