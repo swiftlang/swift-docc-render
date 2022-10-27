@@ -10,7 +10,7 @@
 
 <template>
   <BaseNavigatorCard @close="$emit('close')">
-    <template #navigator-head="{ className, id }">
+    <template #head="{ className, id }">
       <h2
         class="card-link"
         :class="className"

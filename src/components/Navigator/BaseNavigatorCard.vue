@@ -23,7 +23,7 @@
             >
               <SidenavIcon class="icon-inline close-icon" />
             </button>
-            <slot name="navigator-head" className="navigator-head" id="INDEX_ROOT_KEY" />
+            <slot name="head" className="navigator-head" id="INDEX_ROOT_KEY" />
           </div>
         </div>
         <slot name="post-head" />

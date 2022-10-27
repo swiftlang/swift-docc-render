@@ -14,7 +14,7 @@
     :allowHiding="allowHiding"
     :class="{ 'filter-on-top': renderFilterOnTop }"
   >
-    <template #navigator-head="{ className, id }">
+    <template #head="{ className, id }">
       <Reference
         :url="technologyPath"
         :class="className"
