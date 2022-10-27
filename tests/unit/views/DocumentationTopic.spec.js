@@ -22,6 +22,7 @@ import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
@@ -30,6 +31,7 @@ jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
+jest.mock('docc-render/utils/theme-settings');
 
 const TechnologyWithChildren = {
   path: '/documentation/foo',
@@ -44,6 +46,7 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
   },
   references: navigatorReferences,
 });
+getSetting.mockReturnValue(false);
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
@@ -564,7 +567,7 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
-      enableOnThisPageNav: false,
+      enableOnThisPageNav: true, // enabled by default
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
@@ -580,6 +583,7 @@ describe('DocumentationTopic', () => {
 
   it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
     wrapper.destroy();
+    getSetting.mockReturnValue(false);
     wrapper = shallowMount(DocumentationTopic, {
       mocks,
       provide: { isTargetIDE: true },
@@ -593,12 +597,12 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
   });
 
-  it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
-    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
-    wrapper.setData({ store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
+  it('sets `enableOnThisPageNav` as `false`, if `disabled` in theme settings', async () => {
+    getSetting.mockReturnValue(true);
+    wrapper.setData({ topicData });
     await flushPromises();
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    expect(getSetting).toHaveBeenCalledWith(['features', 'docs', 'onThisPageNavigator', 'disable'], false);
   });
 
   it('passes `topicSectionsStyle`', () => {

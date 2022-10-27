@@ -315,8 +315,9 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
-    enableOnThisPageNav: ({ isTargetIDE, store }) => (
-      !isTargetIDE && store.state.onThisPageSections.length > 2
+    enableOnThisPageNav: ({ isTargetIDE }) => (
+      !getSetting(['features', 'docs', 'onThisPageNavigator', 'disable'], false)
+      && !isTargetIDE
     ),
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
