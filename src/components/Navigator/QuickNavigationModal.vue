@@ -308,7 +308,9 @@ $base-border-width: 1px;
   &__match-list {
     overflow: scroll;
     max-height: rem(450px);
+    height: 0px;
     &.active {
+      height: auto;
       border-top: 1px solid var(--color-fill-gray);
     }
     .no-results {

@@ -438,6 +438,9 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 /deep/ {
+  .generic-modal {
+    overflow-y: overlay;
+  }
   .modal-fullscreen .container {
     background-color: transparent;
     height: fit-content;
