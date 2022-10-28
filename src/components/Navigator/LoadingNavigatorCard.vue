@@ -9,16 +9,10 @@
 -->
 
 <template>
-  <BaseNavigatorCard @close="$emit('close')">
-    <template #head="{ className, id }">
-      <h2
-        class="card-link"
-        :class="className"
-        :id="id"
-      >
-        {{ technology }}
-      </h2>
-    </template>
+  <BaseNavigatorCard
+    v-bind="$props"
+    @close="$emit('close')"
+  >
     <template #body="{ className }">
       <transition name="delay-visibility">
         <div aria-hidden="true" class="loading-navigator" :class="className">
@@ -51,16 +45,13 @@ export default {
     BaseNavigatorCard,
     LoadingNavigatorItem,
   },
-  props: {
-    technology: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
       LOADER_ROWS,
     };
+  },
+  props: {
+    ...BaseNavigatorCard.props,
   },
 };
 </script>

@@ -17,11 +17,9 @@ import 'intersection-observer';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
-import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
-import Badge from 'docc-render/components/Badge.vue';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -228,10 +226,6 @@ describe('NavigatorCard', () => {
   it('renders the NavigatorCard', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    // assert link
-    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
-    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
-    expect(wrapper.find('.card-link').is('h2')).toBe(true);
     // assert scroller
     const scroller = wrapper.find(DynamicScroller);
     expect(wrapper.vm.activePathChildren).toHaveLength(2);
@@ -1803,18 +1797,6 @@ describe('NavigatorCard', () => {
       // parent
       expect(items).toHaveLength(1);
       expect(items.at(0).props('item')).toEqual(root1);
-    });
-  });
-
-  it('renders a Beta badge in the header', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isTechnologyBeta: true,
-      },
-    });
-    await flushPromises();
-    expect(wrapper.find('.navigator-head').find(Badge).props()).toMatchObject({
-      variant: 'beta',
     });
   });
 

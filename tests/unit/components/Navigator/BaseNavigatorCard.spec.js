@@ -13,8 +13,13 @@ import { shallowMount } from '@vue/test-utils';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 import { flushPromises } from '../../../../test-utils';
 
+const { Reference, Badge } = BaseNavigatorCard.components;
+
 const defaultProps = {
   allowHiding: true,
+  technology: 'Technology',
+  technologyPath: '/path',
+  isTechnologyBeta: false,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(BaseNavigatorCard, {
@@ -58,13 +63,23 @@ describe('BaseNavigatorCard', () => {
     expect(wrapper.find('.close-card').classes()).toContain('hide-on-large');
   });
 
-  it('exposes a #head slot', () => {
+  it('renders a Beta badge in the header', async () => {
     const wrapper = createWrapper({
-      scopedSlots: {
-        head: '<div :class="props.className">CustomHead</div>',
+      propsData: {
+        isTechnologyBeta: true,
       },
     });
-    expect(wrapper.find('.navigator-head').text()).toBe('CustomHead');
+    await flushPromises();
+    expect(wrapper.find('.navigator-head').find(Badge).props()).toMatchObject({
+      variant: 'beta',
+    });
+  });
+
+  it('renders a card-link with the technology name', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
+    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
+    expect(wrapper.find('.card-link').is('h2')).toBe(true);
   });
 
   it('exposes a #post-head slot', () => {

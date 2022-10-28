@@ -14,10 +14,8 @@
     class="navigator"
   >
     <NavigatorCard
-      v-if="!isFetching"
-      :technology="technology.title"
-      :is-technology-beta="technology.beta"
-      :technology-path="technology.path || technology.url"
+      v-if="isFetching"
+      v-bind="technologyProps"
       :type="type"
       :children="flatChildren"
       :active-path="activePath"
@@ -32,7 +30,7 @@
     />
     <LoadingNavigatorCard
       v-else
-      :technology="technology.title"
+      v-bind="technologyProps"
       @close="$emit('close')"
     />
     <div aria-live="polite" class="visuallyhidden">
@@ -173,6 +171,11 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
+    technologyProps: ({ technology }) => ({
+      technology: technology.title,
+      technologyPath: technology.path || technology.url,
+      isTechnologyBeta: technology.beta,
+    }),
   },
   methods: {
     /**

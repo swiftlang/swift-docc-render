@@ -10,23 +10,15 @@
 
 <template>
   <BaseNavigatorCard
-    @close="$emit('close')"
-    :allowHiding="allowHiding"
     :class="{ 'filter-on-top': renderFilterOnTop }"
+    v-bind="{
+      technology,
+      isTechnologyBeta,
+      technologyPath,
+      clickReferenceAltEvent: toggleAllNodes
+    }"
+    @close="$emit('close')"
   >
-    <template #head="{ className, id }">
-      <Reference
-        :url="technologyPath"
-        :class="className"
-        :id="id"
-        @click.alt.native.prevent="toggleAllNodes"
-      >
-        <h2 class="card-link">
-          {{ technology }}
-        </h2>
-        <Badge v-if="isTechnologyBeta" variant="beta" />
-      </Reference>
-    </template>
     <template #post-head>
       <slot name="post-head" />
     </template>
@@ -127,13 +119,11 @@ import {
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
 import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCard.vue';
-import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
-import Badge from 'docc-render/components/Badge.vue';
 import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 
@@ -195,21 +185,15 @@ export default {
     HIDE_DEPRECATED_TAG,
   },
   components: {
-    Badge,
     FilterInput,
     MagnifierIcon,
     NavigatorCardItem,
     DynamicScroller,
     DynamicScrollerItem,
-    Reference,
     BaseNavigatorCard,
   },
   props: {
     ...BaseNavigatorCard.props,
-    technology: {
-      type: String,
-      required: true,
-    },
     children: {
       type: Array,
       required: true,
@@ -222,10 +206,6 @@ export default {
       type: String,
       required: true,
     },
-    technologyPath: {
-      type: String,
-      default: '',
-    },
     scrollLockID: {
       type: String,
       default: '',
@@ -237,10 +217,6 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
-    },
-    isTechnologyBeta: {
-      type: Boolean,
-      default: false,
     },
     enableQuickNavigation: {
       type: Boolean,
@@ -1123,14 +1099,9 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-$navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
 $filter-height: 73px;
 $filter-height-small: 62px;
-$navigator-head-background: var(--color-fill) !default;
-$navigator-head-background-active: var(--color-fill) !default;
-$close-icon-size: 19px;
-$close-icon-padding: 5px;
 
 .magnifier-icon {
   height: 20px;
@@ -1150,20 +1121,6 @@ $close-icon-padding: 5px;
       order: 2;
     }
   }
-
-  .navigator-head {
-    .badge {
-      margin-top: 0;
-    }
-
-    &.router-link-exact-active {
-      background: $navigator-head-background-active;
-
-      .card-link {
-        font-weight: $font-weight-bold;
-      }
-    }
-  }
 }
 
 .no-items-wrapper {
@@ -1176,60 +1133,6 @@ $close-icon-padding: 5px;
     // make sure the text does not get weirdly cut
     min-width: 200px;
     box-sizing: border-box;
-  }
-}
-
-.close-card {
-  display: flex;
-  position: absolute;
-  z-index: 1;
-  align-items: center;
-  justify-content: center;
-  right: $nav-padding - rem($close-icon-padding);
-  padding: $close-icon-padding;
-  margin-left: -$close-icon-padding;
-  top: calc(50% - #{$close-icon-size} + #{$close-icon-padding});
-  transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s, visibility 0s;
-
-  @include breakpoint(medium, nav) {
-    right: unset;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 0 $nav-padding 0 $nav-card-horizontal-spacing-large;
-    height: 100%;
-    @include safe-area-left-set(padding-left, $nav-padding);
-  }
-
-  @include breakpoint(small, nav) {
-    padding-left: $nav-padding-small;
-    padding-right: $nav-padding-small;
-    @include safe-area-left-set(padding-left, $nav-padding-small);
-  }
-
-  .close-icon {
-    width: $close-icon-size;
-    height: $close-icon-size;
-  }
-
-  @include breakpoints-from(large, nav) {
-    &.hide-on-large {
-      display: none;
-    }
-
-    &:hover {
-      border-radius: $nano-border-radius;
-      background: var(--color-fill-gray-quaternary);
-    }
-    // when the navigator is closed on desktop,
-    // move the button so it looks like its going to the nav
-    .sidebar-hidden & {
-      transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s,
-      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
-      visibility: hidden;
-      // 2x the nav padding, 1px border, and the size of the icon
-      transform: translateX(rem($close-icon-size + 1px) + $nav-padding * 2);
-    }
   }
 }
 

@@ -23,7 +23,17 @@
             >
               <SidenavIcon class="icon-inline close-icon" />
             </button>
-            <slot name="head" className="navigator-head" :id="INDEX_ROOT_KEY" />
+            <Reference
+              :url="technologyPath"
+              class="navigator-head"
+              :id="INDEX_ROOT_KEY"
+              @click.alt.native.prevent="clickReferenceAltEvent"
+            >
+              <h2 class="card-link">
+                {{ technology }}
+              </h2>
+              <Badge v-if="isTechnologyBeta" variant="beta" />
+            </Reference>
           </div>
         </div>
         <slot name="post-head" />
@@ -39,17 +49,37 @@ import {
   SIDEBAR_HIDE_BUTTON_ID,
 } from 'docc-render/constants/sidebar';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import Badge from 'docc-render/components/Badge.vue';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 
 export default {
   name: 'BaseNavigatorCard',
   components: {
     SidenavIcon,
+    Reference,
+    Badge,
   },
   props: {
     allowHiding: {
       type: Boolean,
       default: true,
+    },
+    clickReferenceAltEvent: {
+      type: Function,
+      default: () => {},
+    },
+    technologyPath: {
+      type: String,
+      default: '',
+    },
+    technology: {
+      type: String,
+      required: true,
+    },
+    isTechnologyBeta: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -76,8 +106,6 @@ export default {
 
 $navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
-$filter-height: 73px;
-$filter-height-small: 62px;
 $navigator-head-background: var(--color-fill) !default;
 $navigator-head-background-active: var(--color-fill) !default;
 $close-icon-size: 19px;
@@ -124,6 +152,26 @@ $close-icon-padding: 5px;
     align-items: center;
     height: $nav-height;
     white-space: nowrap;
+
+    .card-link {
+      color: var(--color-text);
+      @include font-styles(body-reduced);
+      font-weight: $font-weight-semibold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      margin-top: 0;
+    }
+
+    &.router-link-exact-active {
+      background: $navigator-head-background-active;
+
+      .card-link {
+        font-weight: $font-weight-bold;
+      }
+    }
 
     &:hover {
       background: var(--color-navigator-item-hover);
@@ -200,14 +248,6 @@ $close-icon-padding: 5px;
 }
 
 /deep/ {
-  .card-link {
-    color: var(--color-text);
-    @include font-styles(body-reduced);
-    font-weight: $font-weight-semibold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .card-body {
     // right padding is added by the items, so visually the scroller is stuck to the side
     padding-right: 0;

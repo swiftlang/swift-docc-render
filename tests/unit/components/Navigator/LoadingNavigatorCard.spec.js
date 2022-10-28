@@ -40,10 +40,6 @@ describe('LoadingNavigatorCard', () => {
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
 
-  it('renders a card-link with the technology name', () => {
-    expect(wrapper.find('h2.card-link').text()).toBe(defaultProps.technology);
-  });
-
   it('renders three loading navigator items, if is loading', () => {
     const items = wrapper.findAll(LoadingNavigatorItem);
     expect(items.length).toBe(3);
