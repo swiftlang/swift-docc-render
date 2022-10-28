@@ -41,5 +41,11 @@ export default {
         },
       });
     },
+    /**
+     * @param {Object} data
+     */
+    handleContentUpdateFromBridge(data) {
+      this.topicData = data;
+    },
   },
 };
