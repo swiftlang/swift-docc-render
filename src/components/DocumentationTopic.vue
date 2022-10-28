@@ -50,8 +50,8 @@
         />
       </DocumentationHero>
       <div class="doc-content-wrapper">
-        <div class="doc-content">
-          <div v-if="showContainer" class="container">
+        <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
+          <div v-if="hasPrimaryContent" class="container">
             <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
               <RequirementMetadata
                 v-if="isRequirement"
@@ -385,7 +385,7 @@ export default {
     titleBreakComponent: ({ enhanceBackground }) => (enhanceBackground
       ? 'span'
       : WordBreak),
-    showContainer: ({
+    hasPrimaryContent: ({
       isRequirement,
       deprecationSummary,
       downloadNotAvailableSummary,
@@ -498,10 +498,8 @@ export default {
 
 // remove border-top for first section of the page
 /deep/ {
-  .documentation-hero + .contenttable {
-    .container > .title {
-      border-top: none;
-    }
+  .no-primary-content {
+    --content-table-title-border-width: 0px;
   }
 }
 
