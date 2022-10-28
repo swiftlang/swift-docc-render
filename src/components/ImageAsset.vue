@@ -62,21 +62,9 @@ import imageAsset from 'docc-render/mixins/imageAsset';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
-import { normalizeAssetUrl } from 'docc-render/utils/assets';
+import { getIntrinsicDimensions, normalizeAssetUrl } from 'docc-render/utils/assets';
 
 const RADIX_DECIMAL = 10;
-
-function getIntrinsicDimensions(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = src;
-    img.onerror = reject;
-    img.onload = () => resolve({
-      width: img.width,
-      height: img.height,
-    });
-  });
-}
 
 function constructAttributes(sources) {
   if (!sources.length) {

@@ -54,6 +54,7 @@
         </div>
         <div class="nav-actions">
           <a
+            ref="toggle"
             href="#"
             class="nav-menucta"
             tabindex="-1"
@@ -315,6 +316,11 @@ export default {
       this.$emit('open');
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
+      if (document.activeElement === this.$refs.toggle) {
+        // move focus to body to prevent tabbing to links in body
+        // when toggle is triggered by mouse
+        document.activeElement.blur();
+      }
     },
     onClose() {
       this.$emit('close');
@@ -348,6 +354,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   height: $nav-height;
   z-index: $nav-z-index;
   --nav-padding: #{$nav-padding};
+
+  @media print {
+    position: relative;
+  }
 
   @include breakpoint(small, $scope: nav) {
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));

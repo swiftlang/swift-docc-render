@@ -72,6 +72,7 @@ $icon-margin: 7px;
 
   .icon {
     position: absolute;
+    right: 0;
     bottom: .2em;
     display: none;
     height: $icon-size-default;
