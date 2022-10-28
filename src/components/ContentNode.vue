@@ -340,8 +340,9 @@ function renderNode(createElement, references) {
       ) : null;
     }
     case BlockType.row: {
+      const columns = node.numberOfColumns ? { large: node.numberOfColumns } : undefined;
       return createElement(
-        Row, { props: { columns: node.numberOfColumns } }, node.columns.map(col => (
+        Row, { props: { columns } }, node.columns.map(col => (
           createElement(
             Column, { props: { span: col.size } }, renderChildren(col.content),
           )

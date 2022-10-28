@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import { shallowMount } from '@vue/test-utils';
@@ -34,7 +34,7 @@ describe('TopicsLinkCardGrid', () => {
   it('renders the TopicsLinkCardGrid', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(Row).props()).toEqual({
-      columns: 3, // compact grid is a 3 column setup
+      columns: { large: 3, medium: 2 }, // compact grid is a 3 column setup
     });
     const cols = wrapper.findAll(Column);
     expect(cols).toHaveLength(2);
@@ -52,7 +52,7 @@ describe('TopicsLinkCardGrid', () => {
       },
     });
     expect(wrapper.find(Row).props()).toEqual({
-      columns: 2, // detailed grid is a 2 column setup
+      columns: { large: 2, medium: 2 }, // detailed grid is a 2 column setup
     });
     expect(wrapper.find(TopicsLinkCardGridItem).props('compact')).toBe(false);
   });

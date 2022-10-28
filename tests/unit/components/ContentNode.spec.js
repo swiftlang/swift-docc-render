@@ -437,7 +437,51 @@ describe('ContentNode', () => {
       });
       const grid = wrapper.find(Row);
       expect(grid.props()).toEqual({
-        columns: 4,
+        columns: { large: 4 },
+      });
+      const columns = grid.findAll(Column);
+      expect(columns).toHaveLength(2);
+      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).find('p').text()).toBe('foo');
+      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).find('p').text()).toBe('bar');
+    });
+    it('renders a `<Row>` without column count specified', () => {
+      const wrapper = mountWithItem({
+        type: 'row',
+        columns: [
+          {
+            size: 2,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const grid = wrapper.find(Row);
+      expect(grid.props()).toEqual({
+        columns: undefined,
       });
       const columns = grid.findAll(Column);
       expect(columns).toHaveLength(2);
