@@ -18,7 +18,7 @@
         {{ title }}
       </TabnavItem>
     </Tabnav>
-    <div class="tabs-content">
+    <div class="tabs-content" :key="currentTitle">
       <template v-for="title in titles">
         <slot v-if="title === currentTitle" :name="title" />
       </template>
