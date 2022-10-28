@@ -23,12 +23,11 @@
             >
               <SidenavIcon class="icon-inline close-icon" />
             </button>
-            <slot name="head" className="navigator-head" id="INDEX_ROOT_KEY" />
+            <slot name="head" className="navigator-head" :id="INDEX_ROOT_KEY" />
           </div>
         </div>
         <slot name="post-head" />
         <slot name="body" className="card-body"/>
-        <slot name="filter"/>
       </div>
     </div>
   </div>
@@ -74,7 +73,6 @@ export default {
 
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
-@import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 $navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height

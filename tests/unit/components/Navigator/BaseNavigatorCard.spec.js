@@ -84,13 +84,4 @@ describe('BaseNavigatorCard', () => {
     });
     expect(wrapper.find('.card-body').text()).toBe('CustomBody');
   });
-
-  it('exposes a #filter slot', () => {
-    const wrapper = createWrapper({
-      scopedSlots: {
-        filter: '<div class="filter">CustomFilter</div>',
-      },
-    });
-    expect(wrapper.find('.filter').text()).toBe('CustomFilter');
-  });
 });

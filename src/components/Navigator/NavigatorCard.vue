@@ -86,8 +86,6 @@
           </p>
         </div>
       </div>
-    </template>
-    <template #filter>
       <div class="filter-wrapper" v-if="!errorFetching">
         <div class="navigator-filter">
           <div class="input-wrapper">
@@ -138,7 +136,6 @@ import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
 import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
 import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
-import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -1114,14 +1111,6 @@ export default {
       if (parentIndex === -1) return;
       // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
       this.focusIndex(parentIndex);
-    },
-    async handleHideClick() {
-      this.$emit('close');
-      await this.$nextTick();
-      const trigger = document.getElementById(baseNavOpenSidenavButtonId);
-      if (trigger) {
-        trigger.focus();
-      }
     },
   },
   provide() {
