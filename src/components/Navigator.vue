@@ -14,7 +14,7 @@
     class="navigator"
   >
     <NavigatorCard
-      v-if="isFetching"
+      v-if="!isFetching"
       v-bind="technologyProps"
       :type="type"
       :children="flatChildren"
