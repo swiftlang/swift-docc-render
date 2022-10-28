@@ -477,6 +477,20 @@ describe('DocumentationTopic', () => {
     });
   });
 
+  it('does not render any primary content or related markup, if not provided', () => {
+    const docContent = wrapper.find('.doc-content');
+    expect(docContent.classes()).not.toContain('no-primary-content');
+    wrapper.setProps({
+      primaryContentSections: [],
+      isRequirement: false,
+      deprecationSummary: null,
+      downloadNotAvailableSummary: null,
+    });
+    expect(wrapper.find(PrimaryContent).exists()).toBe(false);
+    expect(wrapper.find('.description').exists()).toBe(false);
+    expect(docContent.classes()).toContain('no-primary-content');
+  });
+
   it('renders a `LanguageSwitcher` if TargetIDE', () => {
     const provide = { isTargetIDE: true };
     wrapper = shallowMount(DocumentationTopic, { propsData, provide });
