@@ -17,14 +17,14 @@ import {
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
-import performanceMetrics from 'docc-render/mixins/performanceMetrics';
+import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import TutorialsOverview from 'theme/components/TutorialsOverview.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 
 export default {
   name: 'TutorialsOverview',
   components: { Overview: TutorialsOverview },
-  mixins: [performanceMetrics, onPageLoadScrollToFragment],
+  mixins: [communicationBridgeUtils, onPageLoadScrollToFragment],
   data() {
     return { topicData: null };
   },
@@ -46,6 +46,13 @@ export default {
     ].join(),
   },
   beforeRouteEnter(to, from, next) {
+    // skip fetching, and rely on data being provided via $bridge
+    if (to.meta.skipFetchingData) {
+      // notify the $bridge, the page is ready
+      next(vm => vm.newContentMounted());
+      return;
+    }
+
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
       vm.topicData = data; // eslint-disable-line no-param-reassign
     })).catch(next);
@@ -59,6 +66,12 @@ export default {
     } else {
       next();
     }
+  },
+  mounted() {
+    this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
+  },
+  beforeDestroy() {
+    this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
   },
   watch: {
     topicData() {

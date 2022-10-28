@@ -71,7 +71,7 @@
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
             :languagePaths="languagePaths"
-            :enableOnThisPageNav="!isTargetIDE"
+            :enableOnThisPageNav="enableOnThisPageNav"
           />
         </component>
       </template>
@@ -92,7 +92,7 @@ import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore'
 import CodeTheme from 'docc-render/components/Tutorial/CodeTheme.vue';
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import Language from 'docc-render/constants/Language';
-import performanceMetrics from 'docc-render/mixins/performanceMetrics';
+import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
@@ -104,6 +104,7 @@ import { compareVersions, combineVersions } from 'docc-render/utils/schema-versi
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import QuickNavigationStore from '../stores/QuickNavigationStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -122,7 +123,7 @@ export default {
     Nav: DocumentationNav,
     QuickNavigationModal,
   },
-  mixins: [performanceMetrics, onPageLoadScrollToFragment, OnThisPageRegistrator],
+  mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
   data() {
     return {
       topicDataDefault: null,
@@ -296,6 +297,10 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
+    enableOnThisPageNav: ({ isTargetIDE }) => (
+      !getSetting(['features', 'docs', 'onThisPageNavigator', 'disable'], false)
+      && !isTargetIDE
+    ),
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
         ? {
@@ -335,10 +340,7 @@ export default {
     },
   },
   mounted() {
-    this.$bridge.on('contentUpdate', (data) => {
-      this.topicData = data;
-    });
-
+    this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
   },
@@ -356,9 +358,17 @@ export default {
     },
   },
   beforeDestroy() {
+    this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
   },
   beforeRouteEnter(to, from, next) {
+    // skip fetching, and rely on data being provided via $bridge
+    if (to.meta.skipFetchingData) {
+      // notify the $bridge, the page is ready
+      next(vm => vm.newContentMounted());
+      return;
+    }
+
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
