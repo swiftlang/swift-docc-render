@@ -14,8 +14,12 @@ import Topic from 'docc-render/views/Topic.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 import Tutorial from 'docc-render/components/Tutorial.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import { fetchDataForRouteEnter } from '@/utils/data';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
+jest.mock('@/utils/data');
+
+fetchDataForRouteEnter.mockResolvedValue({});
 
 const mocks = {
   $bridge: {
@@ -30,6 +34,7 @@ describe('Topic', () => {
   let wrapper;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     wrapper = shallowMount(Topic, { mocks });
   });
 
@@ -54,6 +59,23 @@ describe('Topic', () => {
   it('provides `TopicStore` as `store`', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided.store).toEqual(TopicStore);
+  });
+
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
+    const next = jest.fn();
+    Topic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
+    // now call without `skipFetchingData`
+    const params = {
+      to: { name: 'foo', meta: {} },
+      from: { name: 'bar' },
+      next: jest.fn(),
+    };
+    Topic.beforeRouteEnter(params.to, params.from, params.next);
+    expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
+    expect(fetchDataForRouteEnter)
+      .toHaveBeenCalledWith(params.to, params.from, params.next);
   });
 
   async function testRenderedMessageWithProvide(provide) {
@@ -119,19 +141,14 @@ describe('Topic', () => {
       identifier: 'myIdentifier',
     };
 
-    wrapper = shallowMount(Topic, {
-      mocks: {
-        ...mocks,
-        $bridge: {
-          ...mocks.$bridge,
-          on(type, handler) {
-            handler(data);
-          },
-        },
-      },
-    });
-
+    expect(mocks.$bridge.on).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
+    // invoke the callback on the $bridge
+    mocks.$bridge.on.mock.calls[0][1](data);
+    // assert the data is stored
     expect(wrapper.vm.topicData).toEqual(data);
+    // destroy the instance
+    wrapper.destroy();
+    expect(mocks.$bridge.off).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
   });
 
   describe('with article data', () => {
