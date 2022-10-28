@@ -49,6 +49,6 @@ export default {
   padding-top: $section-spacing-single-side;
   border-top-color: var(--color-grid);
   border-top-style: solid;
-  border-top-width: 1px;
+  border-top-width: var(--content-table-title-border-width, 1px);
 }
 </style>
