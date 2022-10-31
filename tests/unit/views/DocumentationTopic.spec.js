@@ -209,6 +209,7 @@ describe('DocumentationTopic', () => {
       technology,
       apiChanges: null,
       allowHiding: true,
+      flatChildren: [],
       navigatorReferences: {},
       renderFilterOnTop: false,
     });
@@ -224,6 +225,7 @@ describe('DocumentationTopic', () => {
       technology: TechnologyWithChildren,
       apiChanges: null,
       allowHiding: true,
+      flatChildren: [],
       navigatorReferences,
     });
     // assert the nav is in wide format
@@ -445,6 +447,11 @@ describe('DocumentationTopic', () => {
     // assert the proper container class is applied
     expect(staticContentWidth.classes())
       .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
+  });
+
+  it('renders without NavigatorDataProvider', async () => {
+    wrapper.setData({ topicData });
+    expect(wrapper.find(NavigatorDataProvider).exists()).toBe(false);
   });
 
   it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {

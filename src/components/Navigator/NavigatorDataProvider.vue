@@ -10,6 +10,7 @@
 
 <script>
 import { fetchIndexPathsData } from 'docc-render/utils/data';
+import { flattenNestedData } from 'docc-render/utils/navigatorData';
 import Language from 'docc-render/constants/Language';
 
 /**
@@ -45,6 +46,17 @@ export default {
     };
   },
   computed: {
+    /**
+     * Recomputes the list of flat children.
+     * @return NavigatorFlatItem[]
+     */
+    flatChildren: ({
+      technologyWithChildren = {},
+    }) => (
+      flattenNestedData(
+        technologyWithChildren.children || [], null, 0, technologyWithChildren.beta,
+      )
+    ),
     technologyPath: ({ technology }) => {
       // regex should match only the first section, no slash - `/documentation/:technology`
       const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technology.url);
@@ -91,6 +103,7 @@ export default {
       errorFetching: this.errorFetching,
       isFetchingAPIChanges: this.isFetchingAPIChanges,
       apiChanges: this.diffs,
+      flatChildren: this.flatChildren,
       references: this.navigationReferences,
     });
   },
