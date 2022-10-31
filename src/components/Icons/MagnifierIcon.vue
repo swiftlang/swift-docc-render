@@ -18,7 +18,7 @@
 import SVGIcon from 'docc-render/components/SVGIcon.vue';
 
 export default {
-  name: 'MafnifierIcon',
+  name: 'MagnifierIcon',
   components: { SVGIcon },
 };
 </script>
