@@ -805,19 +805,15 @@ describe('DocumentationTopic', () => {
       },
     };
 
-    wrapper = shallowMount(DocumentationTopic, {
-      mocks: {
-        ...mocks,
-        $bridge: {
-          ...mocks.$bridge,
-          on(type, handler) {
-            handler(data);
-          },
-        },
-      },
-    });
-
+    expect(mocks.$bridge.on).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
+    expect(mocks.$bridge.on).toHaveBeenNthCalledWith(2, 'codeColors', expect.any(Function));
+    // invoke the callback on the $bridge
+    mocks.$bridge.on.mock.calls[0][1](data);
+    // assert the data is stored
     expect(wrapper.vm.topicData).toEqual(data);
+    // destroy the instance
+    wrapper.destroy();
+    expect(mocks.$bridge.off).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
   });
 
   it('applies ObjC data when provided as overrides', () => {
@@ -891,6 +887,23 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchDataForRouteEnter).toBeCalled();
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(next).toBeCalled();
+  });
+
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
+    const next = jest.fn();
+    DocumentationTopic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
+    // now call without `skipFetchingData`
+    const params = {
+      to: { name: 'foo', meta: {} },
+      from: { name: 'bar' },
+      next: jest.fn(),
+    };
+    DocumentationTopic.beforeRouteEnter(params.to, params.from, params.next);
+    expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
+    expect(dataUtils.fetchDataForRouteEnter)
+      .toHaveBeenCalledWith(params.to, params.from, params.next);
   });
 
   describe('isTargetIDE', () => {

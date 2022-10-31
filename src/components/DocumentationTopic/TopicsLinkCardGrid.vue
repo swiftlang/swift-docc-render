@@ -10,7 +10,10 @@
 
 <template>
   <div class="TopicsLinkCardGrid">
-    <Row :columns="compactCards ? 3 : 2">
+    <Row :columns="{
+      large: compactCards ? 3 : 2,
+      medium: 2,
+    }">
       <Column
         v-for="item in items"
         :key="item.title"
