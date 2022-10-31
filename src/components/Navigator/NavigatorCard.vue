@@ -15,14 +15,12 @@
       technology,
       isTechnologyBeta,
       technologyPath,
-      clickReferenceAltEvent: toggleAllNodes
     }"
     @close="$emit('close')"
+    @head-click-alt="toggleAllNodes"
   >
-    <template #post-head>
-      <slot name="post-head" />
-    </template>
     <template #body="{ className }">
+      <slot name="post-head" />
       <div
         :class="className"
         @keydown.alt.up.capture.prevent="focusFirst"

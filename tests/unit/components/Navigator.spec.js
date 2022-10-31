@@ -149,7 +149,6 @@ describe('Navigator', () => {
       apiChanges: null,
       allowHiding: true,
       navigatorReferences,
-      clickReferenceAltEvent: expect.any(Function),
     });
   });
 
@@ -190,7 +189,6 @@ describe('Navigator', () => {
       apiChanges: null,
       allowHiding: true,
       navigatorReferences,
-      clickReferenceAltEvent: expect.any(Function),
     });
   });
 

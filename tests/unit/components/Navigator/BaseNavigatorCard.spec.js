@@ -82,15 +82,6 @@ describe('BaseNavigatorCard', () => {
     expect(wrapper.find('.card-link').is('h2')).toBe(true);
   });
 
-  it('exposes a #post-head slot', () => {
-    const wrapper = createWrapper({
-      scopedSlots: {
-        'post-head': '<div class="post-head">CustomPostHead</div>',
-      },
-    });
-    expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
-  });
-
   it('exposes a #body slot', () => {
     const wrapper = createWrapper({
       scopedSlots: {

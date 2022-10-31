@@ -278,6 +278,15 @@ describe('NavigatorCard', () => {
     });
   });
 
+  it('exposes a #post-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'post-head': '<div class="post-head">CustomPostHead</div>',
+      },
+    });
+    expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
+  });
+
   it('focuses the current page', async () => {
     const wrapper = createWrapper();
     await flushPromises();

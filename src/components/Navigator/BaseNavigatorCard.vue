@@ -27,7 +27,7 @@
               :url="technologyPath"
               class="navigator-head"
               :id="INDEX_ROOT_KEY"
-              @click.alt.native.prevent="clickReferenceAltEvent"
+              @click.alt.native.prevent="$emit('head-click-alt')"
             >
               <h2 class="card-link">
                 {{ technology }}
@@ -36,7 +36,6 @@
             </Reference>
           </div>
         </div>
-        <slot name="post-head" />
         <slot name="body" className="card-body"/>
       </div>
     </div>
@@ -64,10 +63,6 @@ export default {
     allowHiding: {
       type: Boolean,
       default: true,
-    },
-    clickReferenceAltEvent: {
-      type: Function,
-      default: () => {},
     },
     technologyPath: {
       type: String,
