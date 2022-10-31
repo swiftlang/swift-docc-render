@@ -36,6 +36,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'docc-render/styles/_core.scss';
+
+.asset {
+  margin: $stacked-margin-xlarge auto;
+}
+
 /deep/ video {
   display: block;
   margin-left: auto;
