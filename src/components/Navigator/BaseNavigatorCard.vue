@@ -15,18 +15,18 @@
         <div class="head-wrapper">
           <div class="head-inner">
             <button
-              aria-label="Close documentation navigator"
               :id="SIDEBAR_HIDE_BUTTON_ID"
               class="close-card"
               :class="{ 'hide-on-large': !allowHiding }"
+              aria-label="Close documentation navigator"
               @click="handleHideClick"
             >
               <SidenavIcon class="icon-inline close-icon" />
             </button>
             <Reference
+              :id="INDEX_ROOT_KEY"
               :url="technologyPath"
               class="navigator-head"
-              :id="INDEX_ROOT_KEY"
               @click.alt.native.prevent="$emit('head-click-alt')"
             >
               <h2 class="card-link">
@@ -100,7 +100,6 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $navigator-card-vertical-spacing: 8px !default;
-// unfortunately we need to hard-code the filter height
 $navigator-head-background: var(--color-fill) !default;
 $navigator-head-background-active: var(--color-fill) !default;
 $close-icon-size: 19px;
@@ -256,15 +255,8 @@ $close-icon-padding: 5px;
 }
 
 .navigator-card-inner {
-  --nav-card-inner-vertical-offset: 0px;
-  position: sticky;
-  top: var(--nav-height, 0px);
-  height: calc(var(--app-height) - var(--nav-height, 0px) - var(--nav-card-inner-vertical-offset));
   display: flex;
   flex-flow: column;
-  @include breakpoint(medium, nav) {
-    position: static;
-    height: 100%;
-  }
+  height: 100%;
 }
 </style>
