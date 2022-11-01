@@ -192,7 +192,7 @@ describe('DocumentationTopic', () => {
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
-      technology,
+      technologyUrl: technology.url,
       apiChangesVersion: null,
     });
     // its rendered by default
