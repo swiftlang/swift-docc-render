@@ -133,6 +133,10 @@ export default {
   flex: 0 0 auto;
   color: var(--color-figure-gray-secondary);
 
+  /deep/ picture {
+    flex: 1;
+  }
+
   svg, /deep/ img {
     display: block;
     width: 100%;

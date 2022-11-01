@@ -8,7 +8,7 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <ImageAsset v-if="shouldUseAsset" :variants="variants" />
+  <ImageAsset v-if="shouldUseAsset" :variants="variants" :loading="null" />
   <SVGIcon v-else :icon-url="iconUrl" :themeId="themeId" />
 </template>
 <script>
