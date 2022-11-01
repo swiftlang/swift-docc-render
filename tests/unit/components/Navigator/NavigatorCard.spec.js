@@ -263,6 +263,7 @@ describe('NavigatorCard', () => {
     expect(filter.props()).toEqual({
       disabled: false,
       focusInputWhenCreated: false,
+      focusInputWhenEmpty: false,
       placeholder: 'Filter',
       positionReversed: true,
       preventedBlur: false,

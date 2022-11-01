@@ -29,11 +29,23 @@ describe('Row', () => {
   it('renders with columns in mind', () => {
     const wrapper = createWrapper({
       propsData: {
-        columns: 4,
+        columns: { large: 4 },
       },
     });
     expect(wrapper.classes()).toContain('with-columns');
-    expect(wrapper.vm.style).toHaveProperty('--col-count', 4);
+    expect(wrapper.vm.style).toHaveProperty('--col-count-large', 4);
+    expect(wrapper.vm.style).toHaveProperty('--col-count-medium', undefined);
+    expect(wrapper.vm.style).toHaveProperty('--col-count-small', 1);
+    wrapper.setProps({
+      columns: {
+        large: 3,
+        medium: 5,
+        small: 2,
+      },
+    });
+    expect(wrapper.vm.style).toHaveProperty('--col-count-large', 3);
+    expect(wrapper.vm.style).toHaveProperty('--col-count-medium', 5);
+    expect(wrapper.vm.style).toHaveProperty('--col-count-small', 2);
   });
 
   it('provides a --col-gap', () => {
