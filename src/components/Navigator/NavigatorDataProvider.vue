@@ -24,8 +24,13 @@ export default {
       type: String,
       default: Language.swift.key.url,
     },
-    technology: {
-      type: Object,
+    /**
+     * The technology we need to fetch data for.
+     * Important - We are passing just the URL, as the technology object changes
+     * between page navigations, resulting in excess re-calculations on each page change.
+     */
+    technologyUrl: {
+      type: String,
       required: true,
     },
     apiChangesVersion: {
@@ -57,9 +62,9 @@ export default {
         technologyWithChildren.children || [], null, 0, technologyWithChildren.beta,
       )
     ),
-    technologyPath: ({ technology }) => {
+    technologyPath: ({ technologyUrl }) => {
       // regex should match only the first section, no slash - `/documentation/:technology`
-      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technology.url);
+      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technologyUrl);
       return matches ? matches[1] : '';
     },
     /**
