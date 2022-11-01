@@ -39,7 +39,16 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .asset {
-  margin: $stacked-margin-xlarge auto;
+  margin-left: auto;
+  margin-right: auto;
+
+  @include anything-before {
+    margin-top: $stacked-margin-large;
+  }
+
+  @include anything-after {
+    margin-top: $stacked-margin-xlarge;
+  }
 }
 
 /deep/ video {

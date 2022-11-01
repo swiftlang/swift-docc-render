@@ -293,3 +293,15 @@
 @mixin safe-area-right-set($property, $value) {
   @include safe-area-set(right, $property, $value);
 }
+
+@mixin anything-before() {
+  * + & {
+    @content;
+  }
+}
+
+@mixin anything-after() {
+  & + /deep/ * {
+    @content;
+  }
+}

@@ -70,7 +70,12 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .TabNavigator {
-  margin-bottom: $stacked-margin-large;
+  @include anything-before {
+    margin-top: $stacked-margin-xlarge;
+  }
+  @include anything-after {
+    margin-top: $stacked-margin-xlarge;
+  }
 
   .tabnav {
     overflow: auto;
@@ -87,7 +92,7 @@ export default {
   }
 
   .tabnav {
-    width: 20%;
+    width: 30%;
     flex: 0 0 auto;
     white-space: normal;
     margin: 0;
@@ -99,7 +104,7 @@ export default {
   .tabs-content {
     flex: 1 1 auto;
     min-width: 0;
-    padding-right: $stacked-margin-large;
+    padding-right: $stacked-margin-xlarge;
     @include breakpoint(small) {
       padding-right: 0;
       padding-bottom: $stacked-margin-large;
