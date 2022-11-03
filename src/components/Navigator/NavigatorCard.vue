@@ -117,13 +117,6 @@
                 @clear="clearFilters"
               />
             </div>
-            <div
-              class="magnifier-icon"
-              @click="store.toggleShowQuickNavigationModal()"
-              v-if="enableQuickNavigation"
-            >
-              <MagnifierIcon />
-            </div>
           </div>
         </div>
       </div>
@@ -153,9 +146,14 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import Badge from 'docc-render/components/Badge.vue';
-import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
-import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
+import {
+  convertChildrenArrayToObject,
+  getAllChildren,
+  getChildren,
+  getParents,
+  getSiblings,
+} from 'docc-render/utils/navigatorData';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -224,7 +222,6 @@ export default {
     Badge,
     FilterInput,
     SidenavIcon,
-    MagnifierIcon,
     LoadingNavigatorItem,
     NavigatorCardItem,
     DynamicScroller,
@@ -268,10 +265,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    enableQuickNavigation: {
-      type: Boolean,
-      default: false,
-    },
     allowHiding: {
       type: Boolean,
       default: true,
@@ -304,7 +297,6 @@ export default {
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
       activeUID: null,
-      store: QuickNavigationStore,
       lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
@@ -406,7 +398,7 @@ export default {
      * @return {Object.<string, NavigatorFlatItem>}
      */
     childrenMap({ children }) {
-      return this.convertChildrenArrayToObject(children);
+      return convertChildrenArrayToObject(children);
     },
     /**
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
@@ -415,7 +407,7 @@ export default {
     activePathChildren({ activeUID, childrenMap }) {
       // if we have an activeUID and its not stale by any chance, fetch its parents
       return activeUID && childrenMap[activeUID]
-        ? this.getParents(activeUID)
+        ? getParents(activeUID, childrenMap)
         : [];
     },
     activePathMap: ({ activePathChildren }) => (
@@ -464,8 +456,8 @@ export default {
      * Returns a Set of all nodes that match a filter, along with their parents.
      * @returns Set<NavigatorFlatItem>
      */
-    filteredChildrenUpToRootSet: ({ filteredChildren, getParents, childrenMap }) => new Set(
-      filteredChildren.flatMap(({ uid, groupMarkerUID }) => getParents(uid)
+    filteredChildrenUpToRootSet: ({ filteredChildren, childrenMap }) => new Set(
+      filteredChildren.flatMap(({ uid, groupMarkerUID }) => getParents(uid, childrenMap)
         .concat(childrenMap[groupMarkerUID] || [])),
     ),
     /**
@@ -475,7 +467,7 @@ export default {
      */
     renderableChildNodesMap({
       filteredChildrenUpToRootSet, childrenMap, hasFilter,
-      getAllChildren, convertChildrenArrayToObject, removeDeprecated,
+      removeDeprecated,
     }) {
       if (!hasFilter) return childrenMap;
       let all = [];
@@ -491,7 +483,11 @@ export default {
           filteredChildrenUpToRootSet.has(childrenMap[uid])
         ));
         // if no children are matching, add all to the list, otherwise just the current parent
-        all = all.concat(noChildrenMatch ? removeDeprecated(getAllChildren(current.uid)) : current);
+        all = all.concat(
+          noChildrenMatch
+            ? removeDeprecated(getAllChildren(current.uid, childrenMap))
+            : current,
+        );
       });
       return convertChildrenArrayToObject(all);
     },
@@ -597,7 +593,9 @@ export default {
       )
         ? activePathChildren
         // get all parents of the current filter match, excluding it in the process
-        : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
+        : filteredChildren.flatMap(({ uid }) => (
+          getParents(uid, this.childrenMap).slice(0, -1)
+        ));
       // create a map to track open items - `{ [UID]: true }`
       const newOpenNodes = Object.fromEntries(nodes
         .map(({ uid }) => [uid, true]));
@@ -623,7 +621,7 @@ export default {
         // clone the open nodes map
         const openNodes = clone(this.openNodes);
         // remove current node and all of it's children, from the open list
-        const allChildren = this.getAllChildren(node.uid);
+        const allChildren = getAllChildren(node.uid, this.childrenMap);
         allChildren.forEach(({ uid }) => {
           delete openNodes[uid];
         });
@@ -634,7 +632,7 @@ export default {
       } else {
         this.$set(this.openNodes, node.uid, true);
         // include all childUIDs to get opened
-        include = this.getChildren(node.uid)
+        include = getChildren(node.uid, this.childrenMap, this.children)
           .filter(child => this.renderableChildNodesMap[child.uid]);
       }
       this.augmentRenderNodes({ uid: node.uid, include, exclude });
@@ -645,7 +643,7 @@ export default {
     toggleFullTree(node) {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
-      const allChildren = this.getAllChildren(node.uid);
+      const allChildren = getAllChildren(node.uid, this.childrenMap);
       let exclude = [];
       let include = [];
       allChildren.forEach(({ uid }) => {
@@ -668,12 +666,12 @@ export default {
     toggleSiblings(node) {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
-      const siblings = this.getSiblings(node.uid);
+      const siblings = getSiblings(node.uid, this.childrenMap, this.children);
       siblings.forEach(({ uid, childUIDs, type }) => {
         // if the item has no children or is a groupMarker, exit early
         if (!childUIDs.length || type === TopicTypes.groupMarker) return;
         if (isOpen) {
-          const children = this.getAllChildren(uid);
+          const children = getAllChildren(uid, this.childrenMap);
           // remove all children
           children.forEach((child) => {
             delete openNodes[child.uid];
@@ -685,7 +683,7 @@ export default {
         } else {
           // add it
           openNodes[uid] = true;
-          const children = this.getChildren(uid)
+          const children = getChildren(uid, this.childrenMap, this.children)
             .filter(child => this.renderableChildNodesMap[child.uid]);
           // augment the nodesToRender
           this.augmentRenderNodes({ uid, exclude: [], include: children });
@@ -694,80 +692,6 @@ export default {
       this.openNodes = openNodes;
       // persist all the open nodes, as we change the openNodes after the node augment runs
       this.persistState();
-    },
-    /**
-     * Get all children of a node recursively
-     * @param {number} uid - the UID of the node
-     * @return {NavigatorFlatItem[]}
-     */
-    getAllChildren(uid) {
-      const collection = new Set([]);
-      const stack = [uid];
-      let current = null;
-
-      // loop over the stack
-      while (stack.length) {
-        // get the top item
-        current = stack.shift();
-        // find the object
-        const obj = this.childrenMap[current];
-        // add it to the collection
-        collection.add(obj);
-        // add all if it's children to the front of the stack
-        stack.unshift(...obj.childUIDs);
-      }
-
-      return [...collection];
-    },
-    /**
-     * Get all the parents of a node, up to the root.
-     * @param {number} uid
-     * @return {NavigatorFlatItem[]}
-     */
-    getParents(uid) {
-      const arr = [];
-      const stack = [uid];
-      let current = null;
-
-      // loop over the stack
-      while (stack.length) {
-        // get the top item
-        current = stack.pop();
-        // find the object
-        const obj = this.childrenMap[current];
-        if (!obj) {
-          return [];
-        }
-        // push the object to the results
-        arr.unshift(obj);
-        // if the current object has a parent and its not the root, add it to the stack
-        if (obj.parent && obj.parent !== INDEX_ROOT_KEY) {
-          stack.push(obj.parent);
-        }
-      }
-      return arr;
-    },
-    /**
-     * Get all sibling nodes of a node
-     * @return {NavigatorFlatItem[]}
-     */
-    getSiblings(uid) {
-      const item = this.childrenMap[uid];
-      if (!item) return [];
-      return this.getChildren(item.parent);
-    },
-    /**
-     * Get the direct child nodes of a node.
-     * @return {NavigatorFlatItem[]}
-     */
-    getChildren(uid) {
-      if (uid === INDEX_ROOT_KEY) {
-        return this.children.filter(node => node.parent === INDEX_ROOT_KEY);
-      }
-      const item = this.childrenMap[uid];
-      if (!item) return [];
-      return (item.childUIDs || [])
-        .map(child => this.childrenMap[child]);
     },
     /**
      * Removes deprecated items from a list
@@ -1085,9 +1009,9 @@ export default {
           return;
         }
         // Get the surrounding items
-        const siblings = this.getSiblings(this.activeUID);
-        const children = this.getChildren(this.activeUID);
-        const parents = this.getParents(this.activeUID);
+        const siblings = getSiblings(this.activeUID, this.childrenMap, this.children);
+        const children = getChildren(this.activeUID, this.childrenMap, this.children);
+        const parents = getParents(this.activeUID, this.childrenMap);
         // try to match if any of the `siblings`,`children` or any of the `parents`,
         // match the current open item
         const matchingItem = [...children, ...siblings, ...parents]
@@ -1130,13 +1054,6 @@ export default {
         this.focusIndex(0);
       }
     },
-    convertChildrenArrayToObject(children) {
-      return children.reduce((all, current) => {
-        // eslint-disable-next-line no-param-reassign
-        all[current.uid] = current;
-        return all;
-      }, {});
-    },
     /**
      * Focuses the parent of a child node.
      * @param {NavigatorFlatItem} item
@@ -1158,9 +1075,6 @@ export default {
       }
     },
   },
-  provide() {
-    return { store: this.store };
-  },
 };
 </script>
 
@@ -1176,13 +1090,6 @@ $navigator-head-background: var(--color-fill) !default;
 $navigator-head-background-active: var(--color-fill) !default;
 $close-icon-size: 19px;
 $close-icon-padding: 5px;
-
-.magnifier-icon {
-  height: 20px;
-  width: auto;
-  margin: auto;
-  padding-left: 5px;
-}
 
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
