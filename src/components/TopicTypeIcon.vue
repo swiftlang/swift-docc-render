@@ -14,6 +14,7 @@
       v-if="imageOverride"
       :imageOverride="imageOverride"
       :style="styles"
+      :shouldCalculateOptimalWidth="shouldCalculateOptimalWidth"
       class="icon-inline"
     />
     <component
@@ -109,6 +110,10 @@ export default {
     imageOverride: {
       type: Object,
       default: null,
+    },
+    shouldCalculateOptimalWidth: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

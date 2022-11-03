@@ -8,7 +8,10 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <ImageAsset v-if="shouldUseAsset" :variants="variants" :loading="null" />
+  <ImageAsset
+    v-if="shouldUseAsset"
+    v-bind="{ variants, loading: null, shouldCalculateOptimalWidth }"
+  />
   <SVGIcon v-else :icon-url="iconUrl" :themeId="themeId" />
 </template>
 <script>
@@ -25,6 +28,10 @@ export default {
     imageOverride: {
       type: Object,
       default: null,
+    },
+    shouldCalculateOptimalWidth: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

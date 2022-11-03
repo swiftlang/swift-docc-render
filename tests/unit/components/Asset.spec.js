@@ -183,6 +183,7 @@ describe('Asset', () => {
         alt: image.alt,
         loading: 'lazy',
         variants: image.variants,
+        shouldCalculateOptimalWidth: true,
       });
     });
 
@@ -193,6 +194,7 @@ describe('Asset', () => {
         alt: image.alt,
         loading: 'lazy',
         variants: image.variants,
+        shouldCalculateOptimalWidth: true,
       });
     });
 

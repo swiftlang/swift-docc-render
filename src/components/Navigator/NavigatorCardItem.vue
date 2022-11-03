@@ -51,6 +51,7 @@
         :key="item.uid"
         :type="item.type"
         :image-override="item.icon ? navigatorReferences[item.icon] : null"
+        :shouldCalculateOptimalWidth="false"
         :class="className"
       />
       <span

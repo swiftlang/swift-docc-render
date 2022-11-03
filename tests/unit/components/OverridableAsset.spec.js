@@ -50,6 +50,7 @@ describe('OverridableAsset', () => {
       variants: [localVariantNoID],
       loading: null,
       alt: '',
+      shouldCalculateOptimalWidth: true,
     });
   });
 
