@@ -204,6 +204,24 @@ describe('FilterInput', () => {
     expect(document.activeElement).toBe(input.element);
   });
 
+  it('focuses input if `focusInputWhenEmpty` is on and input has no content', async () => {
+    wrapper = shallowMount(FilterInput, {
+      propsData: {
+        ...propsData,
+        focusInputWhenCreated: true,
+        focusInputWhenEmpty: true,
+      },
+    });
+    await wrapper.vm.$nextTick();
+    input = wrapper.find({ ref: 'input' });
+    expect(document.activeElement).toBe(input.element);
+  });
+
+  it('adds character `/` as input value', async () => {
+    input.setValue('/');
+    expect(wrapper.emitted('input')).toEqual([['/']]);
+  });
+
   describe('copy/paste', () => {
     let clipboardData = {};
 
