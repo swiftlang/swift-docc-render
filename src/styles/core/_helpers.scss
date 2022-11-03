@@ -67,7 +67,9 @@
     line-height: $line-height;
     clip-path: unset;
   }
-};
+}
+
+;
 
 ////
 /// Apply styling only when focused via the keyboard.
@@ -78,7 +80,9 @@
       @content
     }
   }
-};
+}
+
+;
 
 ////
 /// Apply styling only when focused via the keyboard in an element inside.
@@ -89,7 +93,9 @@
       @content
     }
   }
-};
+}
+
+;
 
 ////
 /// Replaces the outline effect when an element is in focus, with a box shadow effect.
@@ -281,7 +287,7 @@
 @mixin safe-area-set($inset, $property, $value) {
   // unquote is used to ensure that we are using the CSS Level 4 `max` function
   // instead of the builtin `max` function provided by the Sass preprocessor
-  @supports(padding: unquote('max(0px)')) {
+  @supports (padding: unquote('max(0px)')) {
     #{$property}: unquote('max(#{$value}, env(safe-area-inset-#{$inset}))');
   }
 }
@@ -294,14 +300,8 @@
   @include safe-area-set(right, $property, $value);
 }
 
-@mixin anything-before() {
-  * + & {
-    @content;
-  }
-}
-
-@mixin anything-after() {
-  & + /deep/ * {
-    @content;
+@mixin space-out-between-siblings($margin) {
+  * + &, & + /deep/ * {
+    margin-top: $margin;
   }
 }

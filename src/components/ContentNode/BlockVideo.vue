@@ -42,13 +42,7 @@ export default {
   margin-left: auto;
   margin-right: auto;
 
-  @include anything-before {
-    margin-top: $stacked-margin-large;
-  }
-
-  @include anything-after {
-    margin-top: $stacked-margin-xlarge;
-  }
+  @include space-out-between-siblings($stacked-margin-xlarge);
 }
 
 /deep/ video {

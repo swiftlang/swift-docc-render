@@ -70,12 +70,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .TabNavigator {
-  @include anything-before {
-    margin-top: $stacked-margin-xlarge;
-  }
-  @include anything-after {
-    margin-top: $stacked-margin-xlarge;
-  }
+  @include space-out-between-siblings($stacked-margin-xlarge);
 
   .tabnav {
     overflow: auto;
