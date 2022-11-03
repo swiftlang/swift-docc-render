@@ -13,6 +13,7 @@
     class="navigator-card-item"
     :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
+    :data-nesting-index="item.depth"
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
     :hideNavigatorIcon="isGroupMarker"

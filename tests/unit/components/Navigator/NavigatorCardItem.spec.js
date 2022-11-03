@@ -62,7 +62,8 @@ describe('NavigatorCardItem', () => {
   });
   it('renders the NavigatorCardItem', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
+    const cardItem = wrapper.find('.navigator-card-item');
+    expect(cardItem.exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
     expect(wrapper.find(TopicTypeIcon).props()).toEqual({
       type: defaultProps.item.type,
@@ -77,8 +78,9 @@ describe('NavigatorCardItem', () => {
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
     });
-    expect(wrapper.find('.navigator-card-item').attributes('id'))
+    expect(cardItem.attributes('id'))
       .toBe(`container-${defaultProps.item.uid}`);
+    expect(cardItem.attributes('data-nesting-index')).toBe(String(defaultProps.item.depth));
   });
 
   it('renders the NavigationCardItem with an icon override', () => {
