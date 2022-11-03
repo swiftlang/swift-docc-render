@@ -14,7 +14,6 @@ import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
-import { clone } from '@/utils/data';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
@@ -104,6 +103,7 @@ const defaultProps = {
   scrollLockID: 'foo',
   renderFilterOnTop: false,
   navigatorReferences,
+  flatChildren: [],
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -137,8 +137,7 @@ describe('Navigator', () => {
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
-      children: expect.any(Array),
-      enableQuickNavigation: false,
+      children: [],
       type: TopicTypes.module,
       technology: technology.title,
       technologyPath: technology.path,
@@ -179,7 +178,6 @@ describe('Navigator', () => {
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
       children: [],
-      enableQuickNavigation: false,
       type: TopicTypes.module,
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
@@ -272,187 +270,5 @@ describe('Navigator', () => {
     const wrapper = createWrapper();
     wrapper.find(NavigatorCard).vm.$emit('close');
     expect(wrapper.emitted('close')).toHaveLength(1);
-  });
-
-  it('generates a unique hash', () => {
-    const wrapper = createWrapper();
-    // make sure hashCode returns a unique hash from a string
-    expect(wrapper.vm.hashCode('foo')).toBe(101574);
-    expect(wrapper.vm.hashCode('oof')).toBe(110214);
-    expect(wrapper.vm.hashCode('ofo')).toBe(109944);
-    expect(wrapper.vm.hashCode('foo1')).toBe(3148843);
-    // make sure hash is never too big
-    expect(wrapper.vm.hashCode('foo1'.repeat(10))).toBe(-1535108562);
-    expect(wrapper.vm.hashCode('foo1'.repeat(50))).toBe(-2107259162);
-  });
-
-  it('flattens deeply nested children and provides them to the NavigatorCard', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(NavigatorCard).props('children')).toEqual([
-      {
-        childUIDs: [
-          551503844,
-          -97593391,
-        ],
-        deprecatedChildrenCount: 0,
-        depth: 0,
-        index: 0,
-        parent: INDEX_ROOT_KEY,
-        siblingsCount: 3,
-        title: 'Group Marker',
-        type: 'groupMarker',
-        uid: -196255993,
-      },
-      {
-        childUIDs: [
-          -361407047,
-          1438225895,
-          1439149417,
-          1440072939,
-        ],
-        depth: 0,
-        groupMarkerUID: -196255993,
-        index: 1,
-        parent: INDEX_ROOT_KEY,
-        path: '/foo/child0',
-        siblingsCount: 3,
-        title: 'Child0',
-        type: 'article',
-        uid: 551503844,
-      },
-      {
-        childUIDs: [
-          1438225895,
-          1439149417,
-          1440072939,
-        ],
-        deprecatedChildrenCount: 0,
-        depth: 1,
-        index: 0,
-        parent: 551503844,
-        siblingsCount: 4,
-        title: 'Group Marker, Child 0',
-        type: 'groupMarker',
-        uid: -361407047,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        groupMarkerUID: -361407047,
-        index: 1,
-        parent: 551503844,
-        path: '/foo/child0/grandchild0',
-        siblingsCount: 4,
-        title: 'Child0_GrandChild0',
-        type: 'tutorial',
-        uid: 1438225895,
-      },
-      {
-        childUIDs: [
-          305326087,
-        ],
-        depth: 1,
-        groupMarkerUID: -361407047,
-        index: 2,
-        parent: 551503844,
-        path: '/foo/child0/grandchild1',
-        siblingsCount: 4,
-        title: 'Child0_GrandChild1',
-        type: 'tutorial',
-        uid: 1439149417,
-      },
-      {
-        childUIDs: [],
-        depth: 2,
-        index: 0,
-        parent: 1439149417,
-        path: '/foo/child0/grandchild0/greatgrandchild0',
-        siblingsCount: 1,
-        title: 'Child0_GrandChild0_GreatGrandChild0',
-        type: 'tutorial',
-        uid: 305326087,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        groupMarkerUID: -361407047,
-        index: 3,
-        parent: 551503844,
-        path: '/foo/child0/grandchild2',
-        siblingsCount: 4,
-        title: 'Child0_GrandChild2',
-        type: 'tutorial',
-        uid: 1440072939,
-      },
-      {
-        childUIDs: [
-          -827353283,
-        ],
-        depth: 0,
-        groupMarkerUID: -196255993,
-        index: 2,
-        parent: INDEX_ROOT_KEY,
-        path: '/foo/child1/',
-        siblingsCount: 3,
-        title: 'Child1',
-        type: 'tutorial',
-        uid: -97593391,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        index: 0,
-        parent: -97593391,
-        path: '/foo/child1/grandchild0',
-        siblingsCount: 1,
-        title: 'Child1_GrandChild0',
-        type: 'method',
-        uid: -827353283,
-      },
-    ]);
-  });
-
-  it('counts the amount of deprecated items a groupMarker has', () => {
-    const technologyClone = clone(technology);
-    technologyClone.children[1].deprecated = true;
-    technologyClone.children[2].deprecated = true;
-    technologyClone.children[1].children[1].deprecated = true;
-    const wrapper = createWrapper({
-      propsData: {
-        technology: technologyClone,
-      },
-    });
-    const children = wrapper.find(NavigatorCard).props('children');
-    expect(children[0]).toHaveProperty('deprecatedChildrenCount', 2);
-    expect(children).toMatchSnapshot();
-  });
-
-  it('removes the `beta` flag from children, if the technology is a `beta`', () => {
-    const technologyClone = clone(technology);
-    technologyClone.beta = true;
-    technologyClone.children[1].beta = true;
-    technologyClone.children[1].children[0].beta = true;
-    const wrapper = createWrapper({
-      propsData: {
-        technology: technologyClone,
-      },
-    });
-    expect(wrapper.find(NavigatorCard).props('children')).toMatchSnapshot();
-  });
-
-  it('removes the `beta` flag from children, if the parent is a `beta`', () => {
-    const technologyClone = clone(technology);
-    technologyClone.children[1].beta = true;
-    technologyClone.children[1].children[1].beta = true;
-    // case where the direct parent is NOT `Beta`, but an ancestor is
-    technologyClone.children[1].children[2].children[0].beta = true;
-    // set an end node as beta
-    technologyClone.children[2].children[0].beta = true;
-    const wrapper = createWrapper({
-      propsData: {
-        technology: technologyClone,
-      },
-    });
-    expect(wrapper.find(NavigatorCard).props('children')).toMatchSnapshot();
   });
 });

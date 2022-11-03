@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { BreakpointName } from '@/utils/breakpoints';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 /**
  * A Row component that accepts an optional `columns` prop.
