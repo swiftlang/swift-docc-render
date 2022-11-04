@@ -60,6 +60,7 @@ describe('DocumentationHero', () => {
       withColors: true,
       type: defaultProps.role,
       imageOverride: defaultProps.iconOverride,
+      shouldCalculateOptimalWidth: true,
     });
     expect(allIcons.at(0).classes()).toEqual(['background-icon', 'first-icon']);
     // assert slot

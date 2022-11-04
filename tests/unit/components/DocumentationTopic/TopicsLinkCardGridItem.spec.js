@@ -104,6 +104,7 @@ describe('TopicsLinkCardGridItem', () => {
       type: defaultProps.item.role,
       imageOverride: null,
       withColors: false,
+      shouldCalculateOptimalWidth: true,
     });
   });
 
