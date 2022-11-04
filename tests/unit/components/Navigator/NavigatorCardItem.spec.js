@@ -69,6 +69,7 @@ describe('NavigatorCardItem', () => {
       type: defaultProps.item.type,
       imageOverride: null,
       withColors: false,
+      shouldCalculateOptimalWidth: false,
     });
     const leafLink = wrapper.find('.leaf-link');
     expect(leafLink.is(Reference)).toBe(true);

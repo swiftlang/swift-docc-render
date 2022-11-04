@@ -126,6 +126,10 @@ export default {
       type: String,
       default: 'lazy',
     },
+    shouldCalculateOptimalWidth: {
+      type: Boolean,
+      default: true,
+    },
   },
   methods: {
     handleImageLoadError() {
@@ -191,6 +195,7 @@ export default {
     },
   },
   mounted() {
+    if (!this.shouldCalculateOptimalWidth) return;
     this.$refs.img.addEventListener('load', this.optimizeImageSize);
   },
 };

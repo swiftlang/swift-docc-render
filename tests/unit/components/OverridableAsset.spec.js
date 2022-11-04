@@ -46,7 +46,12 @@ describe('OverridableAsset', () => {
         },
       },
     });
-    expect(wrapper.find(ImageAsset).props('variants')).toEqual([localVariantNoID]);
+    expect(wrapper.find(ImageAsset).props()).toEqual({
+      variants: [localVariantNoID],
+      loading: null,
+      alt: '',
+      shouldCalculateOptimalWidth: true,
+    });
   });
 
   it('renders an `ImageAsset` component, when the domain of the img is different', () => {
