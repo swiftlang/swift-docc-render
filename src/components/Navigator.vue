@@ -14,10 +14,8 @@
     class="navigator"
   >
     <NavigatorCard
-      :isLoading="isFetching"
-      :technology="technology.title"
-      :is-technology-beta="technology.beta"
-      :technology-path="technology.path || technology.url"
+      v-if="!isFetching"
+      v-bind="technologyProps"
       :type="type"
       :children="flatChildren"
       :active-path="activePath"
@@ -29,6 +27,11 @@
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
     />
+    <LoadingNavigatorCard
+      v-else
+      v-bind="technologyProps"
+      @close="$emit('close')"
+    />
     <div aria-live="polite" class="visuallyhidden">
       Navigator is {{ isFetching ? 'loading' : 'ready' }}
     </div>
@@ -37,6 +40,7 @@
 
 <script>
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
+import LoadingNavigatorCard from 'theme/components/Navigator/LoadingNavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 
@@ -66,6 +70,7 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
+    LoadingNavigatorCard,
   },
   data() {
     return {
@@ -147,6 +152,11 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
+    technologyProps: ({ technology }) => ({
+      technology: technology.title,
+      technologyPath: technology.path || technology.url,
+      isTechnologyBeta: technology.beta,
+    }),
   },
 };
 </script>
