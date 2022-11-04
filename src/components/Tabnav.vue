@@ -88,6 +88,10 @@ $-tabnav-bottom-margin: rem(25px);
 
     /deep/ .tabnav-item {
       padding-left: 0;
+
+      .tabnav-link {
+        padding-top: 8px;
+      }
     }
   }
 }
