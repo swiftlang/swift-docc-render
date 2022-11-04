@@ -89,7 +89,6 @@ $docs-code-listing-border-width: 1px !default;
   ol,
   ul {
     margin-top: $stacked-margin-large;
-    margin-left: 2rem;
 
     li:not(:first-child) {
       margin-top: $stacked-margin-large;
