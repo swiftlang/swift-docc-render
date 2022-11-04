@@ -223,6 +223,7 @@ export default {
         this.selectContent();
       }
       if (key !== 'Escape') return;
+      event.preventDefault();
       this.closeModal();
     },
     /**
