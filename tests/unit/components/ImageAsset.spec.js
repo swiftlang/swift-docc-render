@@ -328,6 +328,26 @@ describe('ImageAsset', () => {
     expect(img.attributes('height')).toBe('auto');
   });
 
+  it('allows disabling the optimal-width calculation', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+        shouldCalculateOptimalWidth: false,
+      },
+    });
+    const img = wrapper.find('img');
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBeFalsy();
+  });
+
   it('logs an error when unable to calculate the optimal width for an image', async () => {
     const url = 'https://www.example.com/image.png';
     const traits = ['2x'];
