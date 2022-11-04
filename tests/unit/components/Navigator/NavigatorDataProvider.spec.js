@@ -18,10 +18,7 @@ import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/data');
 
-const technology = {
-  title: 'Technology Name',
-  url: '/documentation/foo',
-};
+const technologyUrl = '/documentation/foo';
 
 const extendedTechnologies = {
   path: '/documentation/foo',
@@ -112,7 +109,7 @@ const flatChildren = [
 
 const swiftIndexOne = {
   id: 'foo',
-  path: technology.url,
+  path: technologyUrl,
   children: [1, 2, 3],
 };
 const swiftIndexTwo = {
@@ -122,7 +119,7 @@ const swiftIndexTwo = {
 };
 const objectiveCIndexOne = {
   id: 'foo-objc',
-  path: technology.url,
+  path: technologyUrl,
   children: [1],
 };
 
@@ -146,7 +143,7 @@ const response = {
 fetchIndexPathsData.mockResolvedValue(response);
 
 const defaultProps = {
-  technology,
+  technologyUrl,
 };
 
 let props = {};
@@ -191,10 +188,7 @@ describe('NavigatorDataProvider', () => {
     expect(fetchIndexPathsData).toHaveBeenCalledTimes(0);
     createWrapper({
       propsData: {
-        technology: {
-          ...technology,
-          url: `${technology.url}/bar/baz`,
-        },
+        technologyUrl: `${technologyUrl}/bar/baz`,
       },
     });
     expect(fetchIndexPathsData).toHaveBeenCalledTimes(1);
@@ -287,9 +281,7 @@ describe('NavigatorDataProvider', () => {
   it('returns undefined technology, if none matches', async () => {
     createWrapper({
       propsData: {
-        technology: {
-          url: '/documentation/bar',
-        },
+        technologyUrl: '/documentation/bar',
       },
     });
     await flushPromises();

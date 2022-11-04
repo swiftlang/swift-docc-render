@@ -20,7 +20,7 @@
         <template #aside="{ scrollLockID, breakpoint }">
           <NavigatorDataProvider
             :interface-language="topicProps.interfaceLanguage"
-            :technology="technology"
+            :technologyUrl="technology.url"
             :api-changes-version="store.state.selectedAPIChangesVersion"
             ref="NavigatorDataProvider"
           >
