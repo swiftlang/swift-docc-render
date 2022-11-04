@@ -30,6 +30,10 @@ export default {
 
 $docs-code-listing-border-width: 1px !default;
 
+@function between-elements-selector($el) {
+  @return '* + #{$el}, #{$el} + *'
+}
+
 /deep/ {
   .code-listing {
     background: var(--background, var(--color-code-background));
@@ -37,11 +41,6 @@ $docs-code-listing-border-width: 1px !default;
     border-color: var(--colors-grid, var(--color-grid));
     border-width: var(--code-border-width, $docs-code-listing-border-width);
     border-style: var(--code-border-style, solid);
-
-    & + *,
-    * + & {
-      margin-top: $stacked-margin-xlarge;
-    }
 
     pre {
       padding: $code-block-style-elements-padding;
@@ -54,36 +53,24 @@ $docs-code-listing-border-width: 1px !default;
     }
   }
 
-  .endpoint-example {
-    & + *,
-    * + & {
-      margin-top: $stacked-margin-xlarge;
-    }
+  // use a helper function to generate common selectors.
+  // Using `space-out-between-siblings` mixin does not work, because we are inside `/deep/`.
+  #{between-elements-selector('.code-listing')},
+  #{between-elements-selector('.endpoint-example')},
+  #{between-elements-selector('.inline-image-container')},
+  #{between-elements-selector(figure)},
+  #{between-elements-selector(aside)}, {
+    margin-top: $stacked-margin-xlarge;
   }
 
-  // move outside of aside, otherwise scoping breaks it
-  * + figure,
-  figure + *,
-  * + aside,
-  aside + * {
-    margin-top: $stacked-margin-xlarge;
+  #{between-elements-selector(dl)} {
+    margin-top: $stacked-margin-large;
   }
 
   img {
     display: block;
-    margin: $stacked-margin-xlarge auto;
+    margin: auto;
     max-width: 100%;
-  }
-
-  // if the image is inside a figure, and caption is after it, remove the bottom margin
-  figure > picture:first-child {
-    img {
-      margin-bottom: 0;
-    }
-    // ensure the figcaption has the same bottom margin as the img top margin
-    + figcaption {
-      margin-bottom: $stacked-margin-xlarge;
-    }
   }
 
   ol,
@@ -96,13 +83,6 @@ $docs-code-listing-border-width: 1px !default;
 
     @include breakpoint(small) {
       margin-left: 1.25rem;
-    }
-  }
-
-  dl {
-    & + *,
-    * + & {
-      margin-top: $stacked-margin-large;
     }
   }
 
