@@ -1114,6 +1114,9 @@ $filter-height-small: 62px;
   .sidebar-transitioning & {
     flex: 1 0 $filter-height;
     overflow: hidden;
+    @include breakpoint(medium, nav) {
+      flex-basis: $filter-height-small;
+    }
   }
 }
 </style>
