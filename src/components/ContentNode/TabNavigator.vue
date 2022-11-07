@@ -116,21 +116,19 @@ export default {
   }
 }
 
-/deep/ {
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity 0.2s ease-in-out;
-  }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
 
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
-  }
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 
-  // prevent the animating-out element from taking space
-  .fade-leave-active {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
+// prevent the animating-out element from taking space
+.fade-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 </style>
