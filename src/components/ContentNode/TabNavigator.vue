@@ -18,10 +18,14 @@
         {{ title }}
       </TabnavItem>
     </Tabnav>
-    <div class="tabs-content" :key="currentTitle">
-      <template v-for="title in titles">
-        <slot v-if="title === currentTitle" :name="title" />
-      </template>
+    <div class="tabs-content">
+      <div class="tabs-content-container">
+        <transition name="fade">
+          <div :key="currentTitle">
+            <slot :name="currentTitle" />
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -76,6 +80,11 @@ export default {
     overflow: auto;
     white-space: nowrap;
   }
+
+  .tabs-content-container {
+    position: relative;
+    overflow: hidden;
+  }
 }
 
 .tabs--vertical {
@@ -104,6 +113,24 @@ export default {
       padding-right: 0;
       padding-bottom: $stacked-margin-large;
     }
+  }
+}
+
+/deep/ {
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+
+  // prevent the animating-out element from taking space
+  .fade-leave-active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
   }
 }
 </style>
