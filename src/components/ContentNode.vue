@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -28,6 +28,7 @@ import Row from './ContentNode/Row.vue';
 import TabNavigator from './ContentNode/TabNavigator.vue';
 import TaskList from './ContentNode/TaskList.vue';
 import LinksBlock from './ContentNode/LinksBlock.vue';
+import DeviceFrame from './ContentNode/DeviceFrame.vue';
 
 export const BlockType = {
   aside: 'aside',
@@ -216,9 +217,14 @@ function renderNode(createElement, references) {
       abstract = [],
       anchor,
       title,
+      ...metadata
     },
-    ...node
+    ...rest
   }) => {
+    const node = {
+      ...rest,
+      metadata,
+    };
     const figureContent = [renderChildren([node])];
     if ((title && abstract.length) || abstract.length) {
       // if there is a `title`, it should be above, otherwise below
@@ -229,6 +235,14 @@ function renderNode(createElement, references) {
     }
     return createElement(Figure, { props: { anchor } }, figureContent);
   };
+
+  const renderDeviceFrame = ({ metadata: { deviceFrame }, ...node }) => (
+    createElement(DeviceFrame, {
+      props: {
+        device: deviceFrame,
+      },
+    }, renderChildren([node]))
+  );
 
   return function render(node) {
     switch (node.type) {
@@ -330,14 +344,14 @@ function renderNode(createElement, references) {
       if (node.metadata && node.metadata.abstract) {
         return renderFigure(node);
       }
-
-      return references[node.identifier] ? (
-        createElement(BlockVideo, {
-          props: {
-            identifier: node.identifier,
-          },
-        })
-      ) : null;
+      if (!references[node.identifier]) return null;
+      const { deviceFrame } = node.metadata || {};
+      return createElement(BlockVideo, {
+        props: {
+          identifier: node.identifier,
+          deviceFrame,
+        },
+      });
     }
     case BlockType.row: {
       const columns = node.numberOfColumns ? { large: node.numberOfColumns } : undefined;
@@ -388,16 +402,16 @@ function renderNode(createElement, references) {
       }
 
       const image = references[node.identifier];
-      return image ? (
-        createElement(InlineImage, {
-          props: {
-            alt: image.alt,
-            variants: image.variants,
-          },
-        })
-      ) : (
-        null
-      );
+      if (!image) return null;
+      if (node.metadata && node.metadata.deviceFrame) {
+        return renderDeviceFrame(node);
+      }
+      return createElement(InlineImage, {
+        props: {
+          alt: image.alt,
+          variants: image.variants,
+        },
+      });
     }
     case InlineType.link:
       // Note: `InlineType.link` has been deprecated, but may still be found in old JSON.
