@@ -27,6 +27,7 @@
             <template #default="slotProps">
               <div class="doc-topic-aside">
                 <QuickNavigationModal
+                  v-if="enableQuickNavigation"
                   :children="slotProps.flatChildren"
                   :showQuickNavigationModal.sync="showQuickNavigationModal"
                 />
