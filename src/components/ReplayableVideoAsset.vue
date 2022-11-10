@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="video-replay-container">
+  <div class="video-replay-container" :class="{ 'integrated-button': integratedButtonStyle }">
     <VideoAsset
       ref="asset"
       :variants="variants"
@@ -28,6 +28,7 @@
       :title="text"
       @click.prevent="replay"
     >
+      {{ integratedButtonStyle ? '' : text }}
       <InlineReplayIcon v-if="played" class="action-icon icon-inline" />
       <PlayIcon v-else class="action-icon icon-inline" />
     </a>
@@ -67,9 +68,16 @@ export default {
       type: Array,
       default: () => [],
     },
+    integratedButtonStyle: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    text: ({ played }) => (played ? 'Replay Video' : 'Play Video'),
+    text: ({
+      played,
+      integratedButtonStyle,
+    }) => (played ? 'Replay' : 'Play').concat(integratedButtonStyle ? ' Video' : ''),
   },
   data() {
     return {
@@ -110,37 +118,56 @@ export default {
 }
 
 .replay-button {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
+  display: flex;
+  visibility: hidden;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  color: light-color(fill);
-  background: change-color(dark-color(fill), $alpha: 0.2);
-  transition: background linear 0.15s;
+  margin-top: $stacked-margin-small;
 
-  &:hover {
-    text-shadow: 0 0 2px light-color(text);
-    background: change-color(dark-color(fill), $alpha: 0.32);
+  &.visible {
+    visibility: visible;
+  }
 
-    .action-icon {
-      transform: scale(1.05)
+  .integrated-button & {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    visibility: visible;
+    color: light-color(fill);
+    background: change-color(dark-color(fill), $alpha: 0.2);
+    transition: background linear 0.15s;
+    margin: 0;
+
+    &:hover {
+      text-shadow: 0 0 2px light-color(text);
+      background: change-color(dark-color(fill), $alpha: 0.32);
+
+      .action-icon {
+        transform: scale(1.05)
+      }
+    }
+
+    &.visible {
+      display: flex;
     }
   }
 
-  &.visible {
-    display: flex;
-  }
-
   svg.action-icon {
-    height: 118px;
-    width: 118px;
-    transition: transform linear 0.15s;
+    --action-icon-size: 12px;
+    height: var(--action-icon-size);
+    width: var(--action-icon-size);
+    margin-left: .3em;
+
+    .integrated-button & {
+      --action-icon-size: 118px;
+      margin: 0;
+      transition: transform linear 0.15s;
+    }
   }
 }
 </style>

@@ -90,17 +90,17 @@ describe('ReplayableVideoAsset', () => {
       autoplays: false,
     });
     const replay = wrapper.find('.replay-button');
-    expect(replay.attributes('title')).toBe('Play Video');
+    expect(replay.attributes('title')).toBe('Play');
     expect(replay.classes()).toContain('visible');
     replay.trigger('click');
     await flushPromises();
     // text is not changed, but its invisible
-    expect(replay.attributes('title')).toBe('Play Video');
+    expect(replay.attributes('title')).toBe('Play');
     expect(replay.classes()).not.toContain('visible');
     // now end the video
     wrapper.find({ ref: 'asset' }).trigger('ended');
     // assert text changed and its visible
-    expect(replay.attributes('title')).toBe('Replay Video');
+    expect(replay.attributes('title')).toBe('Replay');
     expect(replay.classes()).toContain('visible');
   });
 
@@ -132,5 +132,16 @@ describe('ReplayableVideoAsset', () => {
     wrapper.find({ ref: 'asset' }).trigger('playing');
     // assert button is hidden
     expect(replay.classes()).not.toContain('visible');
+  });
+
+  it('renders in an `integratedButtonStyle`', () => {
+    const wrapper = mountWithProps({
+      integratedButtonStyle: true,
+    });
+    expect(wrapper.classes()).toContain('integrated-button');
+    const replay = wrapper.find('.replay-button');
+
+    expect(replay.attributes('title')).toBe('Play Video');
+    expect(replay.text()).toBeFalsy();
   });
 });
