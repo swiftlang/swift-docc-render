@@ -12,8 +12,9 @@
   <video
     :controls="showsControls"
     :autoplay="autoplays"
-    :poster="normalizeAssetUrl(defaultPosterAttributes.url)"
+    :poster="normalisedPosterPath"
     :muted="muted"
+    :width="optimalWidth"
     playsinline
     @playing="$emit('playing')"
     @pause="$emit('pause')"
@@ -30,7 +31,12 @@
 </template>
 
 <script>
-import { separateVariantsByAppearance, normalizeAssetUrl } from 'docc-render/utils/assets';
+import {
+  separateVariantsByAppearance,
+  normalizeAssetUrl,
+  getIntrinsicDimensions,
+  extractDensities,
+} from 'docc-render/utils/assets';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 
@@ -59,7 +65,10 @@ export default {
       default: true,
     },
   },
-  data: () => ({ appState: AppStore.state }),
+  data: () => ({
+    appState: AppStore.state,
+    optimalWidth: null,
+  }),
   computed: {
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     systemColorScheme: ({ appState }) => appState.systemColorScheme,
@@ -68,7 +77,7 @@ export default {
       systemColorScheme,
     }) => preferredColorScheme === ColorScheme.dark.value || (
       preferredColorScheme === ColorScheme.auto.value
-        && systemColorScheme === ColorScheme.dark.value
+      && systemColorScheme === ColorScheme.dark.value
     ),
     shouldShowDarkVariant: ({
       darkVideoVariantAttributes,
@@ -98,7 +107,11 @@ export default {
      * @returns {{ light: [], dark: [] }}
      */
     posterVariantsGroupedByAppearance() {
-      return separateVariantsByAppearance(this.posterVariants);
+      const { light, dark } = separateVariantsByAppearance(this.posterVariants);
+      return {
+        light: extractDensities(light),
+        dark: extractDensities(dark),
+      };
     },
     /**
      * Returns dark poster variant if available and applicable
@@ -112,6 +125,9 @@ export default {
       ? variants.dark[0]
       : variants.light[0] || {}
     ),
+    normalisedPosterPath: ({ defaultPosterAttributes }) => (
+      normalizeAssetUrl(defaultPosterAttributes.src)
+    ),
     videoAttributes: ({
       darkVideoVariantAttributes,
       defaultVideoAttributes,
@@ -121,8 +137,24 @@ export default {
       : defaultVideoAttributes
     ),
   },
+  watch: {
+    normalisedPosterPath: {
+      immediate: true,
+      handler: 'getPosterDimensions',
+    },
+  },
   methods: {
     normalizeAssetUrl,
+    async getPosterDimensions(path) {
+      if (!path) {
+        this.optimalWidth = null;
+        return;
+      }
+      const { density } = this.defaultPosterAttributes;
+      const currentVariantDensity = parseInt(density.match(/\d+/)[0], 10);
+      const { width } = await getIntrinsicDimensions(path);
+      this.optimalWidth = width / currentVariantDensity;
+    },
   },
 };
 </script>

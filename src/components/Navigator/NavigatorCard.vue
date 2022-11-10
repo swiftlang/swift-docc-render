@@ -9,126 +9,92 @@
 -->
 
 <template>
-  <div class="navigator-card" :class="{ 'filter-on-top': renderFilterOnTop }">
-    <div class="navigator-card-full-height">
-      <div class="navigator-card-inner">
-        <div class="head-wrapper">
-          <div class="head-inner">
-            <button
-              aria-label="Close documentation navigator"
-              :id="SIDEBAR_HIDE_BUTTON_ID"
-              class="close-card"
-              :class="{ 'hide-on-large': !allowHiding }"
-              @click="handleHideClick"
-            >
-              <SidenavIcon class="icon-inline close-icon" />
-            </button>
-            <Reference
-              class="navigator-head"
-              :url="technologyPath"
-              :id="INDEX_ROOT_KEY"
-              @click.alt.native.prevent="toggleAllNodes"
-            >
-              <h2 class="card-link">
-                {{ technology }}
-              </h2>
-              <Badge v-if="isTechnologyBeta" variant="beta" />
-            </Reference>
-          </div>
-        </div>
-        <slot name="post-head" />
-        <div
-          class="card-body"
+  <BaseNavigatorCard
+    :class="{ 'filter-on-top': renderFilterOnTop }"
+    v-bind="{
+      technology,
+      isTechnologyBeta,
+      technologyPath,
+    }"
+    @close="$emit('close')"
+    @head-click-alt="toggleAllNodes"
+  >
+    <template #body="{ className }">
+      <slot name="post-head" />
+      <div
+        :class="className"
+        @keydown.alt.up.capture.prevent="focusFirst"
+        @keydown.alt.down.capture.prevent="focusLast"
+        @keydown.up.exact.capture.prevent="focusPrev"
+        @keydown.down.exact.capture.prevent="focusNext"
+      >
+        <DynamicScroller
+          v-show="hasNodes"
+          :id="scrollLockID"
+          ref="scroller"
+          class="scroller"
+          aria-label="Documentation Navigator"
+          :items="nodesToRender"
+          :min-item-size="itemSize"
+          emit-update
+          key-field="uid"
+          v-slot="{ item, active, index }"
+          @focusin.native="handleFocusIn"
+          @focusout.native="handleFocusOut"
+          @update="handleScrollerUpdate"
           @keydown.alt.up.capture.prevent="focusFirst"
           @keydown.alt.down.capture.prevent="focusLast"
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <template v-if="isLoading">
-            <transition name="delay-visibility" appear>
-              <div class="scroller" aria-hidden="true">
-                <LoadingNavigatorItem
-                  v-for="(row, index) in LOADER_ROWS"
-                  :key="index"
-                  :index="index"
-                  :width="row.width"
-                  :hideNavigatorIcon="row.hideNavigatorIcon"
-                />
-              </div>
-            </transition>
-          </template>
-          <DynamicScroller
-            v-else
-            v-show="hasNodes"
-            :id="scrollLockID"
-            ref="scroller"
-            class="scroller"
-            aria-label="Documentation Navigator"
-            :items="nodesToRender"
-            :min-item-size="itemSize"
-            emit-update
-            key-field="uid"
-            v-slot="{ item, active, index }"
-            @focusin.native="handleFocusIn"
-            @focusout.native="handleFocusOut"
-            @update="handleScrollerUpdate"
-          >
-            <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
-              <NavigatorCardItem
-                :item="item"
-                :isRendered="active"
-                :filter-pattern="filterPattern"
-                :is-active="item.uid === activeUID"
-                :is-bold="activePathMap[item.uid]"
-                :expanded="openNodes[item.uid]"
-                :api-change="apiChangesObject[item.path]"
-                :isFocused="focusedIndex === index"
-                :enableFocus="!externalFocusChange"
-                :navigator-references="navigatorReferences"
-                @toggle="toggle"
-                @toggle-full="toggleFullTree"
-                @toggle-siblings="toggleSiblings"
-                @navigate="handleNavigationChange"
-                @focus-parent="focusNodeParent"
-              />
-            </DynamicScrollerItem>
-          </DynamicScroller>
-          <div aria-live="polite" class="visuallyhidden">
-            {{ politeAriaLive }}
-          </div>
-          <div aria-live="assertive" class="no-items-wrapper">
-            <p class="no-items">
-              {{ assertiveAriaLive }}
-            </p>
-          </div>
+          <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
+            <NavigatorCardItem
+              :item="item"
+              :isRendered="active"
+              :filter-pattern="filterPattern"
+              :is-active="item.uid === activeUID"
+              :is-bold="activePathMap[item.uid]"
+              :expanded="openNodes[item.uid]"
+              :api-change="apiChangesObject[item.path]"
+              :isFocused="focusedIndex === index"
+              :enableFocus="!externalFocusChange"
+              :navigator-references="navigatorReferences"
+              @toggle="toggle"
+              @toggle-full="toggleFullTree"
+              @toggle-siblings="toggleSiblings"
+              @navigate="handleNavigationChange"
+              @focus-parent="focusNodeParent"
+            />
+          </DynamicScrollerItem>
+        </DynamicScroller>
+        <div aria-live="polite" class="visuallyhidden">
+          {{ politeAriaLive }}
         </div>
-        <div class="filter-wrapper" v-if="!errorFetching">
-          <div class="navigator-filter">
-            <div class="input-wrapper">
-              <FilterInput
-                v-model="filter"
-                :tags="availableTags"
-                :selected-tags.sync="selectedTagsModelValue"
-                placeholder="Filter"
-                :should-keep-open-on-blur="false"
-                :position-reversed="!renderFilterOnTop"
-                :clear-filter-on-tag-select="false"
-                class="filter-component"
-                @clear="clearFilters"
-              />
-            </div>
-            <div
-              class="magnifier-icon"
-              @click="store.toggleShowQuickNavigationModal()"
-              v-if="enableQuickNavigation"
-            >
-              <MagnifierIcon />
-            </div>
+        <div aria-live="assertive" class="no-items-wrapper">
+          <p class="no-items">
+            {{ assertiveAriaLive }}
+          </p>
+        </div>
+      </div>
+      <div class="filter-wrapper" v-if="!errorFetching">
+        <div class="navigator-filter">
+          <div class="input-wrapper">
+            <FilterInput
+              v-model="filter"
+              :tags="availableTags"
+              :selected-tags.sync="selectedTagsModelValue"
+              placeholder="Filter"
+              :should-keep-open-on-blur="false"
+              :position-reversed="!renderFilterOnTop"
+              :clear-filter-on-tag-select="false"
+              class="filter-component"
+              @clear="clearFilters"
+            />
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </BaseNavigatorCard>
 </template>
 
 <script>
@@ -139,23 +105,23 @@ import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
 import {
   INDEX_ROOT_KEY,
-  SIDEBAR_HIDE_BUTTON_ID,
   SIDEBAR_ITEM_SIZE,
 } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import LoadingNavigatorItem from 'docc-render/components/Navigator/LoadingNavigatorItem.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
-import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
-import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCard.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
-import Badge from 'docc-render/components/Badge.vue';
-import MagnifierIcon from 'docc-render/components/Icons/MagnifierIcon.vue';
-import QuickNavigationStore from 'docc-render/stores/QuickNavigationStore';
-import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
+import {
+  convertChildrenArrayToObject,
+  getAllChildren,
+  getChildren,
+  getParents,
+  getSiblings,
+} from 'docc-render/utils/navigatorData';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -169,12 +135,6 @@ const FILTER_TAGS = {
   tutorials: 'tutorials',
   articles: 'articles',
 };
-
-const LOADER_ROWS = [
-  { width: '30%', hideNavigatorIcon: true },
-  { width: '80%' },
-  { width: '50%' },
-];
 
 const FILTER_TAGS_TO_LABELS = {
   [FILTER_TAGS.sampleCode]: 'Sample Code',
@@ -221,21 +181,14 @@ export default {
     HIDE_DEPRECATED_TAG,
   },
   components: {
-    Badge,
     FilterInput,
-    SidenavIcon,
-    MagnifierIcon,
-    LoadingNavigatorItem,
     NavigatorCardItem,
     DynamicScroller,
     DynamicScrollerItem,
-    Reference,
+    BaseNavigatorCard,
   },
   props: {
-    technology: {
-      type: String,
-      required: true,
-    },
+    ...BaseNavigatorCard.props,
     children: {
       type: Array,
       required: true,
@@ -247,10 +200,6 @@ export default {
     type: {
       type: String,
       required: true,
-    },
-    technologyPath: {
-      type: String,
-      default: '',
     },
     scrollLockID: {
       type: String,
@@ -265,18 +214,6 @@ export default {
       default: null,
     },
     isTechnologyBeta: {
-      type: Boolean,
-      default: false,
-    },
-    enableQuickNavigation: {
-      type: Boolean,
-      default: false,
-    },
-    allowHiding: {
-      type: Boolean,
-      default: true,
-    },
-    isLoading: {
       type: Boolean,
       default: false,
     },
@@ -304,19 +241,15 @@ export default {
       /** @type {NavigatorFlatItem[]} */
       nodesToRender: [],
       activeUID: null,
-      store: QuickNavigationStore,
       lastFocusTarget: null,
       NO_RESULTS,
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
-      LOADER_ROWS,
       allNodesToggled: false,
     };
   },
   computed: {
-    SIDEBAR_HIDE_BUTTON_ID: () => SIDEBAR_HIDE_BUTTON_ID,
-    INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
     politeAriaLive: ({ hasNodes, nodesToRender }) => {
       if (!hasNodes) return '';
       return [nodesToRender.length, ITEMS_FOUND].join(' ');
@@ -406,7 +339,7 @@ export default {
      * @return {Object.<string, NavigatorFlatItem>}
      */
     childrenMap({ children }) {
-      return this.convertChildrenArrayToObject(children);
+      return convertChildrenArrayToObject(children);
     },
     /**
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
@@ -415,7 +348,7 @@ export default {
     activePathChildren({ activeUID, childrenMap }) {
       // if we have an activeUID and its not stale by any chance, fetch its parents
       return activeUID && childrenMap[activeUID]
-        ? this.getParents(activeUID)
+        ? getParents(activeUID, childrenMap)
         : [];
     },
     activePathMap: ({ activePathChildren }) => (
@@ -464,8 +397,8 @@ export default {
      * Returns a Set of all nodes that match a filter, along with their parents.
      * @returns Set<NavigatorFlatItem>
      */
-    filteredChildrenUpToRootSet: ({ filteredChildren, getParents, childrenMap }) => new Set(
-      filteredChildren.flatMap(({ uid, groupMarkerUID }) => getParents(uid)
+    filteredChildrenUpToRootSet: ({ filteredChildren, childrenMap }) => new Set(
+      filteredChildren.flatMap(({ uid, groupMarkerUID }) => getParents(uid, childrenMap)
         .concat(childrenMap[groupMarkerUID] || [])),
     ),
     /**
@@ -475,7 +408,7 @@ export default {
      */
     renderableChildNodesMap({
       filteredChildrenUpToRootSet, childrenMap, hasFilter,
-      getAllChildren, convertChildrenArrayToObject, removeDeprecated,
+      removeDeprecated,
     }) {
       if (!hasFilter) return childrenMap;
       let all = [];
@@ -491,7 +424,11 @@ export default {
           filteredChildrenUpToRootSet.has(childrenMap[uid])
         ));
         // if no children are matching, add all to the list, otherwise just the current parent
-        all = all.concat(noChildrenMatch ? removeDeprecated(getAllChildren(current.uid)) : current);
+        all = all.concat(
+          noChildrenMatch
+            ? removeDeprecated(getAllChildren(current.uid, childrenMap))
+            : current,
+        );
       });
       return convertChildrenArrayToObject(all);
     },
@@ -597,7 +534,9 @@ export default {
       )
         ? activePathChildren
         // get all parents of the current filter match, excluding it in the process
-        : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
+        : filteredChildren.flatMap(({ uid }) => (
+          getParents(uid, this.childrenMap).slice(0, -1)
+        ));
       // create a map to track open items - `{ [UID]: true }`
       const newOpenNodes = Object.fromEntries(nodes
         .map(({ uid }) => [uid, true]));
@@ -623,7 +562,7 @@ export default {
         // clone the open nodes map
         const openNodes = clone(this.openNodes);
         // remove current node and all of it's children, from the open list
-        const allChildren = this.getAllChildren(node.uid);
+        const allChildren = getAllChildren(node.uid, this.childrenMap);
         allChildren.forEach(({ uid }) => {
           delete openNodes[uid];
         });
@@ -634,7 +573,7 @@ export default {
       } else {
         this.$set(this.openNodes, node.uid, true);
         // include all childUIDs to get opened
-        include = this.getChildren(node.uid)
+        include = getChildren(node.uid, this.childrenMap, this.children)
           .filter(child => this.renderableChildNodesMap[child.uid]);
       }
       this.augmentRenderNodes({ uid: node.uid, include, exclude });
@@ -645,7 +584,7 @@ export default {
     toggleFullTree(node) {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
-      const allChildren = this.getAllChildren(node.uid);
+      const allChildren = getAllChildren(node.uid, this.childrenMap);
       let exclude = [];
       let include = [];
       allChildren.forEach(({ uid }) => {
@@ -668,12 +607,12 @@ export default {
     toggleSiblings(node) {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
-      const siblings = this.getSiblings(node.uid);
+      const siblings = getSiblings(node.uid, this.childrenMap, this.children);
       siblings.forEach(({ uid, childUIDs, type }) => {
         // if the item has no children or is a groupMarker, exit early
         if (!childUIDs.length || type === TopicTypes.groupMarker) return;
         if (isOpen) {
-          const children = this.getAllChildren(uid);
+          const children = getAllChildren(uid, this.childrenMap);
           // remove all children
           children.forEach((child) => {
             delete openNodes[child.uid];
@@ -685,7 +624,7 @@ export default {
         } else {
           // add it
           openNodes[uid] = true;
-          const children = this.getChildren(uid)
+          const children = getChildren(uid, this.childrenMap, this.children)
             .filter(child => this.renderableChildNodesMap[child.uid]);
           // augment the nodesToRender
           this.augmentRenderNodes({ uid, exclude: [], include: children });
@@ -694,80 +633,6 @@ export default {
       this.openNodes = openNodes;
       // persist all the open nodes, as we change the openNodes after the node augment runs
       this.persistState();
-    },
-    /**
-     * Get all children of a node recursively
-     * @param {number} uid - the UID of the node
-     * @return {NavigatorFlatItem[]}
-     */
-    getAllChildren(uid) {
-      const collection = new Set([]);
-      const stack = [uid];
-      let current = null;
-
-      // loop over the stack
-      while (stack.length) {
-        // get the top item
-        current = stack.shift();
-        // find the object
-        const obj = this.childrenMap[current];
-        // add it to the collection
-        collection.add(obj);
-        // add all if it's children to the front of the stack
-        stack.unshift(...obj.childUIDs);
-      }
-
-      return [...collection];
-    },
-    /**
-     * Get all the parents of a node, up to the root.
-     * @param {number} uid
-     * @return {NavigatorFlatItem[]}
-     */
-    getParents(uid) {
-      const arr = [];
-      const stack = [uid];
-      let current = null;
-
-      // loop over the stack
-      while (stack.length) {
-        // get the top item
-        current = stack.pop();
-        // find the object
-        const obj = this.childrenMap[current];
-        if (!obj) {
-          return [];
-        }
-        // push the object to the results
-        arr.unshift(obj);
-        // if the current object has a parent and its not the root, add it to the stack
-        if (obj.parent && obj.parent !== INDEX_ROOT_KEY) {
-          stack.push(obj.parent);
-        }
-      }
-      return arr;
-    },
-    /**
-     * Get all sibling nodes of a node
-     * @return {NavigatorFlatItem[]}
-     */
-    getSiblings(uid) {
-      const item = this.childrenMap[uid];
-      if (!item) return [];
-      return this.getChildren(item.parent);
-    },
-    /**
-     * Get the direct child nodes of a node.
-     * @return {NavigatorFlatItem[]}
-     */
-    getChildren(uid) {
-      if (uid === INDEX_ROOT_KEY) {
-        return this.children.filter(node => node.parent === INDEX_ROOT_KEY);
-      }
-      const item = this.childrenMap[uid];
-      if (!item) return [];
-      return (item.childUIDs || [])
-        .map(child => this.childrenMap[child]);
     },
     /**
      * Removes deprecated items from a list
@@ -1085,9 +950,9 @@ export default {
           return;
         }
         // Get the surrounding items
-        const siblings = this.getSiblings(this.activeUID);
-        const children = this.getChildren(this.activeUID);
-        const parents = this.getParents(this.activeUID);
+        const siblings = getSiblings(this.activeUID, this.childrenMap, this.children);
+        const children = getChildren(this.activeUID, this.childrenMap, this.children);
+        const parents = getParents(this.activeUID, this.childrenMap);
         // try to match if any of the `siblings`,`children` or any of the `parents`,
         // match the current open item
         const matchingItem = [...children, ...siblings, ...parents]
@@ -1130,13 +995,6 @@ export default {
         this.focusIndex(0);
       }
     },
-    convertChildrenArrayToObject(children) {
-      return children.reduce((all, current) => {
-        // eslint-disable-next-line no-param-reassign
-        all[current.uid] = current;
-        return all;
-      }, {});
-    },
     /**
      * Focuses the parent of a child node.
      * @param {NavigatorFlatItem} item
@@ -1149,17 +1007,6 @@ export default {
       // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
       this.focusIndex(parentIndex);
     },
-    async handleHideClick() {
-      this.$emit('close');
-      await this.$nextTick();
-      const trigger = document.getElementById(baseNavOpenSidenavButtonId);
-      if (trigger) {
-        trigger.focus();
-      }
-    },
-  },
-  provide() {
-    return { store: this.store };
   },
 };
 </script>
@@ -1168,40 +1015,11 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-$navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
 $filter-height: 73px;
 $filter-height-small: 62px;
-$navigator-head-background: var(--color-fill) !default;
-$navigator-head-background-active: var(--color-fill) !default;
-$close-icon-size: 19px;
-$close-icon-padding: 5px;
-
-.magnifier-icon {
-  height: 20px;
-  width: auto;
-  margin: auto;
-  padding-left: 5px;
-}
 
 .navigator-card {
-  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
-  --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
-  --nav-filter-horizontal-padding: 30px;
-  --visibility-delay: 1s; // don't show spinner until this much time has passed
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  height: calc(var(--app-height) - var(--nav-height, 0px));
-  position: sticky;
-  top: var(--nav-height, 0px);
-
-  @include breakpoint(medium, nav) {
-    height: 100%;
-    position: static;
-    background: var(--color-fill);
-  }
-
   &.filter-on-top {
     .filter-wrapper {
       order: 1;
@@ -1211,66 +1029,6 @@ $close-icon-padding: 5px;
     .card-body {
       order: 2;
     }
-  }
-
-  .navigator-card-full-height {
-    min-height: 0;
-    flex: 1 1 auto;
-  }
-
-  .head-inner {
-    overflow: hidden;
-  }
-
-  .head-wrapper {
-    position: relative;
-    flex: 1 0 auto;
-  }
-
-  .navigator-head {
-    --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
-    padding: 0 var(--navigator-head-padding-right) 0 var(--card-horizontal-spacing);
-    background: $navigator-head-background;
-    border-bottom: 1px solid var(--color-grid);
-    display: flex;
-    align-items: center;
-    height: $nav-height;
-    white-space: nowrap;
-
-    .badge {
-      margin-top: 0;
-    }
-
-    &.router-link-exact-active {
-      background: $navigator-head-background-active;
-
-      .card-link {
-        font-weight: $font-weight-bold;
-      }
-    }
-
-    &:hover {
-      background: var(--color-navigator-item-hover);
-      text-decoration: none;
-    }
-
-    @include safe-area-left-set(padding-left, var(--card-horizontal-spacing));
-    @include safe-area-right-set(padding-right, var(--navigator-head-padding-right));
-
-    @include breakpoint(medium, nav) {
-      justify-content: center;
-      --navigator-head-padding-right: var(--card-horizontal-spacing);
-    }
-
-    @include breakpoint(small, nav) {
-      height: $nav-height-small;
-      padding: 0 $nav-card-horizontal-spacing-large;
-    }
-  }
-
-  .card-icon {
-    width: 19px;
-    height: 19px;
   }
 }
 
@@ -1285,79 +1043,6 @@ $close-icon-padding: 5px;
     min-width: 200px;
     box-sizing: border-box;
   }
-}
-
-.close-card {
-  display: flex;
-  position: absolute;
-  z-index: 1;
-  align-items: center;
-  justify-content: center;
-  right: $nav-padding - rem($close-icon-padding);
-  padding: $close-icon-padding;
-  margin-left: -$close-icon-padding;
-  top: calc(50% - #{$close-icon-size} + #{$close-icon-padding});
-  transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s, visibility 0s;
-
-  @include breakpoint(medium, nav) {
-    right: unset;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 0 $nav-padding 0 $nav-card-horizontal-spacing-large;
-    height: 100%;
-    @include safe-area-left-set(padding-left, $nav-padding);
-  }
-
-  @include breakpoint(small, nav) {
-    padding-left: $nav-padding-small;
-    padding-right: $nav-padding-small;
-    @include safe-area-left-set(padding-left, $nav-padding-small);
-  }
-
-  .close-icon {
-    width: $close-icon-size;
-    height: $close-icon-size;
-  }
-
-  @include breakpoints-from(large, nav) {
-    &.hide-on-large {
-      display: none;
-    }
-
-    &:hover {
-      border-radius: $nano-border-radius;
-      background: var(--color-fill-gray-quaternary);
-    }
-    // when the navigator is closed on desktop,
-    // move the button so it looks like its going to the nav
-    .sidebar-hidden & {
-      transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s,
-      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
-      visibility: hidden;
-      // 2x the nav padding, 1px border, and the size of the icon
-      transform: translateX(rem($close-icon-size + 1px) + $nav-padding * 2);
-    }
-  }
-}
-
-.card-body {
-  // right padding is added by the items, so visually the scroller is stuck to the side
-  padding-right: 0;
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
-  @include breakpoint(medium, nav) {
-    --card-vertical-spacing: 0px;
-  }
-}
-
-.card-link {
-  color: var(--color-text);
-  @include font-styles(body-reduced);
-  font-weight: $font-weight-semibold;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .navigator-filter {
@@ -1429,24 +1114,9 @@ $close-icon-padding: 5px;
   .sidebar-transitioning & {
     flex: 1 0 $filter-height;
     overflow: hidden;
+    @include breakpoint(medium, nav) {
+      flex-basis: $filter-height-small;
+    }
   }
-}
-
-.navigator-card-inner {
-  --nav-card-inner-vertical-offset: 0px;
-  position: sticky;
-  top: var(--nav-height, 0px);
-  height: calc(var(--app-height) - var(--nav-height, 0px) - var(--nav-card-inner-vertical-offset));
-  display: flex;
-  flex-flow: column;
-  @include breakpoint(medium, nav) {
-    position: static;
-    height: 100%;
-  }
-}
-
-.delay-visibility-enter-active {
-  transition: visibility var(--visibility-delay);
-  visibility: hidden;
 }
 </style>

@@ -56,16 +56,6 @@ h6 {
     margin-top: $stacked-margin-large;
   }
 
-  // Add top margin to headings that immediately follow one another.
-  + h1,
-  + h2,
-  + h3,
-  + h4,
-  + h5,
-  + h6 {
-    margin-top: $stacked-margin-small;
-  }
-
   // Add top margin to headings that immediately follow paragraphs and lists.
   p + &,
   ul + &,

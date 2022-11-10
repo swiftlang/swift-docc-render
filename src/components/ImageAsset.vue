@@ -62,21 +62,9 @@ import imageAsset from 'docc-render/mixins/imageAsset';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
-import { normalizeAssetUrl } from 'docc-render/utils/assets';
+import { getIntrinsicDimensions, normalizeAssetUrl } from 'docc-render/utils/assets';
 
 const RADIX_DECIMAL = 10;
-
-function getIntrinsicDimensions(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = src;
-    img.onerror = reject;
-    img.onload = () => resolve({
-      width: img.width,
-      height: img.height,
-    });
-  });
-}
 
 function constructAttributes(sources) {
   if (!sources.length) {
@@ -138,6 +126,10 @@ export default {
       type: String,
       default: 'lazy',
     },
+    shouldCalculateOptimalWidth: {
+      type: Boolean,
+      default: true,
+    },
   },
   methods: {
     handleImageLoadError() {
@@ -190,8 +182,8 @@ export default {
     // using the same dimensions for both 1x and 2x devices.
     async optimizeImageSize() {
       // Exit early if image size data already exists—nothing further needs to
-      // be calculated in that scenario.
-      if (this.defaultAttributes.width) {
+      // be calculated in that scenario, or the img tag is no longer in the DOM for some reason.
+      if (this.defaultAttributes.width || !this.$refs.img) {
         return;
       }
 
@@ -203,6 +195,7 @@ export default {
     },
   },
   mounted() {
+    if (!this.shouldCalculateOptimalWidth) return;
     this.$refs.img.addEventListener('load', this.optimizeImageSize);
   },
 };

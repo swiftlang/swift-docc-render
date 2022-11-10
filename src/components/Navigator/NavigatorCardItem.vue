@@ -13,6 +13,7 @@
     class="navigator-card-item"
     :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
+    :data-nesting-index="item.depth"
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
     :hideNavigatorIcon="isGroupMarker"
@@ -48,8 +49,10 @@
     <template #navigator-icon="{ className }">
       <TopicTypeIcon
         v-if="!apiChange"
+        :key="item.uid"
         :type="item.type"
         :image-override="item.icon ? navigatorReferences[item.icon] : null"
+        :shouldCalculateOptimalWidth="false"
         :class="className"
       />
       <span

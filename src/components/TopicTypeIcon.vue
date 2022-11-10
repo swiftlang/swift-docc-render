@@ -14,6 +14,7 @@
       v-if="imageOverride"
       :imageOverride="imageOverride"
       :style="styles"
+      :shouldCalculateOptimalWidth="shouldCalculateOptimalWidth"
       class="icon-inline"
     />
     <component
@@ -110,6 +111,10 @@ export default {
       type: Object,
       default: null,
     },
+    shouldCalculateOptimalWidth: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     normalisedType: ({ type }) => TopicTypeAliases[type] || type,
@@ -132,6 +137,10 @@ export default {
   height: 1em;
   flex: 0 0 auto;
   color: var(--color-figure-gray-secondary);
+
+  /deep/ picture {
+    flex: 1;
+  }
 
   svg, /deep/ img {
     display: block;

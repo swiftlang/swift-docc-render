@@ -19,9 +19,13 @@
       </TabnavItem>
     </Tabnav>
     <div class="tabs-content">
-      <template v-for="title in titles">
-        <slot v-if="title === currentTitle" :name="title" />
-      </template>
+      <div class="tabs-content-container">
+        <transition name="fade">
+          <div :key="currentTitle">
+            <slot :name="currentTitle" />
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -70,11 +74,16 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .TabNavigator {
-  margin-bottom: $stacked-margin-large;
+  @include space-out-between-siblings($stacked-margin-xlarge);
 
   .tabnav {
     overflow: auto;
     white-space: nowrap;
+  }
+
+  .tabs-content-container {
+    position: relative;
+    overflow: hidden;
   }
 }
 
@@ -87,7 +96,7 @@ export default {
   }
 
   .tabnav {
-    width: 20%;
+    width: 30%;
     flex: 0 0 auto;
     white-space: normal;
     margin: 0;
@@ -99,11 +108,27 @@ export default {
   .tabs-content {
     flex: 1 1 auto;
     min-width: 0;
-    padding-right: $stacked-margin-large;
+    padding-right: $stacked-margin-xlarge;
     @include breakpoint(small) {
       padding-right: 0;
       padding-bottom: $stacked-margin-large;
     }
   }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+// prevent the animating-out element from taking space
+.fade-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 </style>

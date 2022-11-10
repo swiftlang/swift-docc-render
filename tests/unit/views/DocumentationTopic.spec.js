@@ -22,6 +22,7 @@ import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
@@ -30,6 +31,7 @@ jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
+jest.mock('docc-render/utils/theme-settings');
 
 const TechnologyWithChildren = {
   path: '/documentation/foo',
@@ -44,6 +46,7 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
   },
   references: navigatorReferences,
 });
+getSetting.mockReturnValue(false);
 
 const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
@@ -189,7 +192,7 @@ describe('DocumentationTopic', () => {
     const technology = topicData.references['topic://foo'];
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
-      technology,
+      technologyUrl: technology.url,
       apiChangesVersion: null,
     });
     // its rendered by default
@@ -206,6 +209,7 @@ describe('DocumentationTopic', () => {
       technology,
       apiChanges: null,
       allowHiding: true,
+      flatChildren: [],
       navigatorReferences: {},
       renderFilterOnTop: false,
     });
@@ -221,6 +225,7 @@ describe('DocumentationTopic', () => {
       technology: TechnologyWithChildren,
       apiChanges: null,
       allowHiding: true,
+      flatChildren: [],
       navigatorReferences,
     });
     // assert the nav is in wide format
@@ -444,6 +449,11 @@ describe('DocumentationTopic', () => {
       .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
   });
 
+  it('renders without NavigatorDataProvider', async () => {
+    wrapper.setData({ topicData });
+    expect(wrapper.find(NavigatorDataProvider).exists()).toBe(false);
+  });
+
   it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {
     wrapper.setData({
       topicData: {
@@ -557,7 +567,7 @@ describe('DocumentationTopic', () => {
         occ: ['documentation/objc'],
         swift: ['documentation/swift'],
       },
-      enableOnThisPageNav: false,
+      enableOnThisPageNav: true, // enabled by default
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
@@ -573,6 +583,7 @@ describe('DocumentationTopic', () => {
 
   it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
     wrapper.destroy();
+    getSetting.mockReturnValue(false);
     wrapper = shallowMount(DocumentationTopic, {
       mocks,
       provide: { isTargetIDE: true },
@@ -586,12 +597,12 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
   });
 
-  it('passes `enableOnThisPageNav` as `false`, if in onThisPageSections are 2 or less', async () => {
-    wrapper.setData({ topicData, store: { state: { onThisPageSections: ['a', 'b'] } } });
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
-    wrapper.setData({ store: { state: { onThisPageSections: ['a', 'b', 'c'] } } });
+  it('sets `enableOnThisPageNav` as `false`, if `disabled` in theme settings', async () => {
+    getSetting.mockReturnValue(true);
+    wrapper.setData({ topicData });
     await flushPromises();
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(true);
+    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    expect(getSetting).toHaveBeenCalledWith(['features', 'docs', 'onThisPageNavigator', 'disable'], false);
   });
 
   it('passes `topicSectionsStyle`', () => {
@@ -794,19 +805,15 @@ describe('DocumentationTopic', () => {
       },
     };
 
-    wrapper = shallowMount(DocumentationTopic, {
-      mocks: {
-        ...mocks,
-        $bridge: {
-          ...mocks.$bridge,
-          on(type, handler) {
-            handler(data);
-          },
-        },
-      },
-    });
-
+    expect(mocks.$bridge.on).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
+    expect(mocks.$bridge.on).toHaveBeenNthCalledWith(2, 'codeColors', expect.any(Function));
+    // invoke the callback on the $bridge
+    mocks.$bridge.on.mock.calls[0][1](data);
+    // assert the data is stored
     expect(wrapper.vm.topicData).toEqual(data);
+    // destroy the instance
+    wrapper.destroy();
+    expect(mocks.$bridge.off).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
   });
 
   it('applies ObjC data when provided as overrides', () => {
@@ -880,6 +887,23 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchDataForRouteEnter).toBeCalled();
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(next).toBeCalled();
+  });
+
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
+    const next = jest.fn();
+    DocumentationTopic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
+    // now call without `skipFetchingData`
+    const params = {
+      to: { name: 'foo', meta: {} },
+      from: { name: 'bar' },
+      next: jest.fn(),
+    };
+    DocumentationTopic.beforeRouteEnter(params.to, params.from, params.next);
+    expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
+    expect(dataUtils.fetchDataForRouteEnter)
+      .toHaveBeenCalledWith(params.to, params.from, params.next);
   });
 
   describe('isTargetIDE', () => {

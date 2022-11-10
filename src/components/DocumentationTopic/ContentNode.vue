@@ -75,10 +75,20 @@ $docs-code-listing-border-width: 1px !default;
     max-width: 100%;
   }
 
+  // if the image is inside a figure, and caption is after it, remove the bottom margin
+  figure > picture:first-child {
+    img {
+      margin-bottom: 0;
+    }
+    // ensure the figcaption has the same bottom margin as the img top margin
+    + figcaption {
+      margin-bottom: $stacked-margin-xlarge;
+    }
+  }
+
   ol,
   ul {
     margin-top: $stacked-margin-large;
-    margin-left: 2rem;
 
     li:not(:first-child) {
       margin-top: $stacked-margin-large;
