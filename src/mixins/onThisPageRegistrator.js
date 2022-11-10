@@ -37,12 +37,18 @@ export default {
       this.store.resetPageSections();
       // register new ones
       const {
+        metadata: { title },
         primaryContentSections,
         topicSections,
         defaultImplementationsSections,
         relationshipsSections,
         seeAlsoSections,
       } = topicData;
+      this.store.addOnThisPageSection({
+        title,
+        anchor: 'app',
+        level: 1,
+      });
       if (primaryContentSections) {
         primaryContentSections.forEach((section) => {
           switch (section.kind) {

@@ -3,6 +3,11 @@
 exports[`OnThisPageRegistrator extracts the sections from the JSON 1`] = `
 Array [
   Object {
+    "anchor": "app",
+    "level": 1,
+    "title": "PageTitle",
+  },
+  Object {
     "anchor": "provided-heading-anchor",
     "level": 2,
     "title": "Heading Level 2",
