@@ -164,8 +164,8 @@ export default {
       const objcVariant = variantOverrides.find(hasObjcTrait);
       return objcVariant ? objcVariant.patch : null;
     },
-    enableQuickNavigation: () => (
-      getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    enableQuickNavigation: ({ isTargetIDE }) => (
+      !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
     ),
     topicData: {
       get() {
