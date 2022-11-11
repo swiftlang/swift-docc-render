@@ -13,6 +13,7 @@ import { shallowMount } from '@vue/test-utils';
 import { SectionKind } from '@/constants/PrimaryContentSection';
 import onThisPageSectionsStoreBase from '@/stores/OnThisPageSectionsStoreBase';
 import { BlockType } from 'docc-render/components/ContentNode.vue';
+import { AppTopID } from '@/constants/AppTopID';
 import { flushPromises } from '../../../test-utils';
 
 const contentSections = [
@@ -128,7 +129,7 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: 'app', level: 1, title: 'Foo' },
+      { anchor: AppTopID, level: 1, title: 'Foo' },
       {
         anchor: 'provided-heading-anchor',
         level: 2,
@@ -172,7 +173,7 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: 'app', level: 1, title: 'Foo' },
+      { anchor: AppTopID, level: 1, title: 'Foo' },
       {
         anchor: 'provided-heading-anchor',
         level: 2,
@@ -205,7 +206,7 @@ describe('OnThisPageRegistrator', () => {
     };
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: 'app', level: 1, title: 'Foo' },
+      { anchor: AppTopID, level: 1, title: 'Foo' },
       {
         anchor: 'provided-heading-anchor',
         level: 2,

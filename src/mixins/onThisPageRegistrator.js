@@ -16,6 +16,7 @@ import {
   PrimaryContentSectionAnchors,
 } from 'docc-render/constants/ContentSectionAnchors';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import { AppTopID } from 'docc-render/constants/AppTopID';
 
 /**
  * Crawls the `topicData` of a page, and extracts onThisPage sections.
@@ -46,7 +47,7 @@ export default {
       } = topicData;
       this.store.addOnThisPageSection({
         title,
-        anchor: 'app',
+        anchor: AppTopID,
         level: 1,
       });
       if (primaryContentSections) {

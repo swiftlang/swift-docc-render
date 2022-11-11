@@ -11,12 +11,13 @@
 import Vue from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
+import { AppTopID } from '@/constants/AppTopID';
 import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 jest.mock('docc-render/utils/loading', () => ({ waitFrames: jest.fn() }));
 const sections = [
-  { title: 'Title', level: 1, anchor: 'app' },
+  { title: 'Title', level: 1, anchor: AppTopID },
   { title: 'First', level: 2, anchor: 'first' },
   { title: 'Second', level: 3, anchor: 'second' },
   { title: 'Third', level: 2, anchor: 'third' },
@@ -48,7 +49,7 @@ Object.defineProperty(document.body, 'scrollHeight', {
 let wrapper;
 jest.spyOn(document, 'getElementById').mockImplementation((anchor) => {
   switch (anchor) {
-  case 'app':
+  case AppTopID:
     return { offsetTop: titleTop };
   case 'first':
     return { offsetTop: firstTop };
