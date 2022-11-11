@@ -1005,16 +1005,16 @@ describe('DocumentationTopic', () => {
   });
 
   describe('isTargetIDE', () => {
-    const provide = { isTargetIDE: true };
+    const provideWithIDETarget = { isTargetIDE: true };
 
     it('does not render a `Nav`', () => {
-      wrapper = createWrapper({ provide });
+      wrapper = createWrapper({ provide: provideWithIDETarget });
       wrapper.setData({ topicData });
       expect(wrapper.contains(Nav)).toBe(false);
     });
 
     it('does not render an AdjustableSidebarWidth', () => {
-      wrapper = createWrapper({ provide });
+      wrapper = createWrapper({ provide: provideWithIDETarget });
       wrapper.setData({ topicData });
       expect(wrapper.find(AdjustableSidebarWidth).exists()).toBe(false);
       expect(wrapper.find(Topic).exists()).toBe(true);
