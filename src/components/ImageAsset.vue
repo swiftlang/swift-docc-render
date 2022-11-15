@@ -182,8 +182,8 @@ export default {
     // using the same dimensions for both 1x and 2x devices.
     async optimizeImageSize() {
       // Exit early if image size data already exists—nothing further needs to
-      // be calculated in that scenario.
-      if (this.defaultAttributes.width) {
+      // be calculated in that scenario, or the img tag is no longer in the DOM for some reason.
+      if (this.defaultAttributes.width || !this.$refs.img) {
         return;
       }
 
