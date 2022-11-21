@@ -13,6 +13,7 @@
     isFullscreen
     :showClose="false"
     :visible.sync="isVisible"
+    backdropBackgroundColorOverride="rgba(0, 0, 0, 0.7)"
   >
     <div
       class="quick-navigation"
@@ -23,6 +24,7 @@
     >
       <div
         class="quick-navigation__container"
+        :class="{ 'focus' : focusedInput }"
       >
         <FilterInput
           v-model="userInput"
@@ -31,6 +33,8 @@
           focusInputWhenCreated
           focusInputWhenEmpty
           @input="focusedIndex = 0"
+          @focus="focusedInput = true"
+          @blur="focusedInput = false"
         >
           <template #icon>
             <div
@@ -137,6 +141,7 @@ export default {
     return {
       debouncedInput: '',
       userInput: '',
+      focusedInput: false,
     };
   },
   props: {
@@ -275,11 +280,17 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $base-border-width: 1px;
+$input-horizontal-padding: rem(13px);
 
 .quick-navigation {
   input[type="text"] {
     @include font-styles(body-large);
   }
+
+  &__filter {
+    --input-horizontal-padding: #{$input-horizontal-padding};
+  }
+
   &__container {
     background-color: var(--color-fill);
     border: solid $base-border-width var(--color-fill-gray);
@@ -288,15 +299,18 @@ $base-border-width: 1px;
     > * {
       --input-text: var(--color-figure-gray-secondary);
     }
-  }
-  &__filter{
-    --input-border-color: var(--color-fill);
-  }
-  &__filter.focus + &__match-list {
-    border-top: 0;
+
+    &.focus {
+      @include focus-shadow-form-element();
+
+      /deep/ .filter__wrapper {
+        box-shadow: initial;
+        --input-border-color: var(--color-fill);
+      }
+    }
   }
   &__magnifier-icon-container {
-    width: rem(18px);
+    width: rem(17px);
     > * {
       width: 100%;
     }

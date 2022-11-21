@@ -376,6 +376,7 @@ export default {
         return;
       }
       this.showSuggestedTags = false;
+      this.$emit('blur');
     },
     downHandler($event) {
       const cb = () => this.$emit('focus-next', $event);
@@ -402,6 +403,7 @@ export default {
     },
     handleFocus() {
       this.showSuggestedTags = true;
+      this.$emit('focus');
     },
   },
   created() {
@@ -421,10 +423,12 @@ export default {
 
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
+$input-horizontal-padding: rem(10px) !default;
 $input-height: rem(28px);
 
 .filter {
   --input-vertical-padding: #{$input-vertical-padding};
+  --input-horizontal-padding:  #{$input-horizontal-padding};
   --input-height: #{$input-height};
   --input-border-color: var(--color-fill-gray-secondary);
   --input-text: var(--color-fill-gray-secondary);
@@ -447,7 +451,7 @@ $input-height: rem(28px);
     position: relative;
     z-index: 1;
     cursor: text;
-    margin-left: rem(10px);
+    margin-left: var(--input-horizontal-padding);
     margin-right: rem(3px);
 
     @include breakpoint(small) {
@@ -549,7 +553,7 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding-right: rem(10px);
+    padding-right: var(--input-horizontal-padding);
     padding-left: rem(3px);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;

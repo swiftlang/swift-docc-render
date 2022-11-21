@@ -79,6 +79,10 @@ export default {
       type: String,
       default: '',
     },
+    backdropBackgroundColorOverride: {
+      type: String,
+      required: false,
+    },
     width: {
       type: String,
       default: null,
@@ -104,7 +108,8 @@ export default {
     },
     modalColors() {
       return {
-        '--background': this.codeBackgroundColorOverride,
+        '--code-background': this.codeBackgroundColorOverride,
+        '--backdrop-background': this.backdropBackgroundColorOverride,
       };
     },
     themeClass({ theme, prefersDarkStyle, isThemeDynamic }) {
@@ -253,6 +258,7 @@ $-modal-close-font-size-medium: 32px;
 $modal-close-color: light-color(figure-gray-tertiary) !default;
 
 .generic-modal {
+  --backdrop-background: rgba(0, 0, 0, 0.4);
   position: fixed;
   top: 0;
   left: 0;
@@ -314,7 +320,7 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
 
 .backdrop {
   overflow: auto;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--backdrop-background);
   -webkit-overflow-scrolling: touch;
   width: 100%;
   height: 100%;
@@ -366,7 +372,7 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
 
   &-code {
     .container {
-      background-color: var(--background, var(--color-code-background));
+      background-color: var(--code-background, var(--color-code-background));
     }
   }
 }
