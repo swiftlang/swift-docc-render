@@ -29,7 +29,7 @@
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          placeholder="Search symbols"
+          placeholder="Jump to page"
           focusInputWhenCreated
           focusInputWhenEmpty
           @input="focusedIndex = 0"

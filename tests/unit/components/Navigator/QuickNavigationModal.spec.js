@@ -121,7 +121,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
-      placeholder: 'Search symbols',
+      placeholder: 'Jump to page',
       focusInputWhenCreated: true,
       focusInputWhenEmpty: true,
       positionReversed: false,
