@@ -284,6 +284,8 @@ $base-border-width: 1px;
 $input-horizontal-spacing: rem(15px);
 
 .quick-navigation {
+  --input-border-color: var(--color-grid);
+
   input[type="text"] {
     @include font-styles(body-large);
   }
@@ -321,7 +323,7 @@ $input-horizontal-spacing: rem(15px);
     height: 0px;
     &.active {
       height: auto;
-      border-top: 1px solid var(--color-fill-gray);
+      border-top: 1px solid var(--input-border-color);
     }
     .no-results {
       margin: rem(15px) auto;
