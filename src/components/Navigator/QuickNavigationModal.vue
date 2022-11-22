@@ -32,6 +32,7 @@
           placeholder="Jump to page"
           focusInputWhenCreated
           focusInputWhenEmpty
+          preventBorderStyle
           @input="focusedIndex = 0"
           @focus="focusedInput = true"
           @blur="focusedInput = false"
@@ -280,7 +281,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $base-border-width: 1px;
-$input-horizontal-spacing: rem(13px);
+$input-horizontal-spacing: rem(15px);
 
 .quick-navigation {
   input[type="text"] {
@@ -293,7 +294,7 @@ $input-horizontal-spacing: rem(13px);
 
   &__container {
     background-color: var(--color-fill);
-    border: solid $base-border-width var(--color-fill-gray);
+    border: solid $base-border-width var(--input-border-color);
     border-radius: $small-border-radius;
     margin: 0 rem(16px);
     > * {
@@ -302,11 +303,6 @@ $input-horizontal-spacing: rem(13px);
 
     &.focus {
       @include focus-shadow-form-element();
-
-      /deep/ .filter__wrapper {
-        box-shadow: initial;
-        --input-border-color: var(--color-fill);
-      }
     }
   }
   &__magnifier-icon-container {

@@ -135,6 +135,7 @@ describe('QuickNavigationModal', () => {
       focusInputWhenCreated: true,
       focusInputWhenEmpty: true,
       positionReversed: false,
+      preventBorderStyle: true,
       disabled: false,
       value: '',
       preventedBlur: false,

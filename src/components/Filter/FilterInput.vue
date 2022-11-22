@@ -14,11 +14,14 @@
     role="search"
     tabindex="0"
     :aria-labelledby="searchAriaLabelledBy"
-    :class="{ 'focus': showSuggestedTags }"
+    :class="{ 'focus': showSuggestedTags && !preventBorderStyle }"
     @blur.capture="handleBlur"
     @focus.capture="handleFocus"
   >
-    <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
+    <div :class="['filter__wrapper', {
+      'filter__wrapper--reversed': positionReversed,
+      'filter__wrapper--no-border-style': preventBorderStyle
+    }]">
       <div class="filter__top-wrapper">
         <button
           class="filter__filter-button"
@@ -202,6 +205,10 @@ export default {
     clearFilterOnTagSelect: {
       type: Boolean,
       default: true,
+    },
+    preventBorderStyle: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -485,6 +492,10 @@ $input-height: rem(28px);
     &--reversed {
       display: flex;
       flex-direction: column-reverse;
+    }
+
+    &--no-border-style {
+      border: none;
     }
   }
 
