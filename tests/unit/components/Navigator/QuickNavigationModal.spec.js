@@ -105,6 +105,16 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation').exists()).toBe(true);
   });
 
+  it('add the focus class on container if filter input is focused', () => {
+    wrapper.find(FilterInput).vm.$emit('focus');
+    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(true);
+  });
+
+  it('removes the focus class on container if filter input is blur', () => {
+    wrapper.find(FilterInput).vm.$emit('blur');
+    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(false);
+  });
+
   it('it filters the symbols according to debouncedInput value', async () => {
     wrapper.setData({
       debouncedInput: inputValue,

@@ -154,6 +154,7 @@ describe('FilterInput', () => {
     wrapper.find('.filter__filter-button').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['show-suggested-tags']).toBeTruthy();
+    expect(wrapper.emitted('focus')).toBeTruthy();
   });
 
   it('renders a filter button with an icon slot', () => {
@@ -569,6 +570,7 @@ describe('FilterInput', () => {
       await wrapper.vm.$nextTick();
       expect(suggestedTags.exists()).toBe(false);
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
+      expect(wrapper.emitted('blur')).toBeTruthy();
     });
 
     it('does not hide the tags, if `:preventedBlur=true`', async () => {

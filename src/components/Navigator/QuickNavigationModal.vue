@@ -280,7 +280,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $base-border-width: 1px;
-$input-horizontal-padding: rem(13px);
+$input-horizontal-spacing: rem(13px);
 
 .quick-navigation {
   input[type="text"] {
@@ -288,7 +288,7 @@ $input-horizontal-padding: rem(13px);
   }
 
   &__filter {
-    --input-horizontal-padding: #{$input-horizontal-padding};
+    --input-horizontal-spacing: #{$input-horizontal-spacing};
   }
 
   &__container {

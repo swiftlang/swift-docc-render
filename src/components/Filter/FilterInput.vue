@@ -423,12 +423,12 @@ export default {
 
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
-$input-horizontal-padding: rem(10px) !default;
+$input-horizontal-spacing: rem(10px) !default;
 $input-height: rem(28px);
 
 .filter {
   --input-vertical-padding: #{$input-vertical-padding};
-  --input-horizontal-padding:  #{$input-horizontal-padding};
+  --input-horizontal-spacing:  #{$input-horizontal-spacing};
   --input-height: #{$input-height};
   --input-border-color: var(--color-fill-gray-secondary);
   --input-text: var(--color-fill-gray-secondary);
@@ -451,7 +451,7 @@ $input-height: rem(28px);
     position: relative;
     z-index: 1;
     cursor: text;
-    margin-left: var(--input-horizontal-padding);
+    margin-left: var(--input-horizontal-spacing);
     margin-right: rem(3px);
 
     @include breakpoint(small) {
@@ -553,7 +553,7 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding-right: var(--input-horizontal-padding);
+    padding-right: var(--input-horizontal-spacing);
     padding-left: rem(3px);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;
