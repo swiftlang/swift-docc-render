@@ -20,37 +20,25 @@
 </template>
 
 <script>
-import PossibleValues from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
-import RestEndpoint from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
+import PossibleValues
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
+import RestEndpoint
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
+import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Declaration from './PrimaryContent/Declaration.vue';
 import PropertyListKeyDetails from './PrimaryContent/PropertyListKeyDetails.vue';
-import GenericContent from './PrimaryContent/GenericContent.vue';
 import Parameters from './PrimaryContent/Parameters.vue';
 import PropertyTable from './PrimaryContent/PropertyTable.vue';
 import RestBody from './PrimaryContent/RestBody.vue';
 import RestParameters from './PrimaryContent/RestParameters.vue';
 import RestResponses from './PrimaryContent/RestResponses.vue';
 
-const SectionKind = {
-  content: 'content',
-  declarations: 'declarations',
-  details: 'details',
-  parameters: 'parameters',
-  possibleValues: 'possibleValues',
-  properties: 'properties',
-  restBody: 'restBody',
-  restCookies: 'restCookies',
-  restEndpoint: 'restEndpoint',
-  restHeaders: 'restHeaders',
-  restParameters: 'restParameters',
-  restResponses: 'restResponses',
-};
-
 export default {
   name: 'PrimaryContent',
   components: {
     Declaration,
-    GenericContent,
+    ContentNode,
     Parameters,
     PropertyListKeyDetails,
     PropertyTable,
@@ -63,6 +51,10 @@ export default {
   constants: { SectionKind },
   props: {
     conformance: {
+      type: Object,
+      required: false,
+    },
+    source: {
       type: Object,
       required: false,
     },
@@ -86,7 +78,7 @@ export default {
   methods: {
     componentFor(section) {
       return {
-        [SectionKind.content]: GenericContent,
+        [SectionKind.content]: ContentNode,
         [SectionKind.declarations]: Declaration,
         [SectionKind.details]: PropertyListKeyDetails,
         [SectionKind.parameters]: Parameters,
@@ -101,7 +93,10 @@ export default {
       }[section.kind];
     },
     propsFor(section) {
-      const { conformance } = this;
+      const {
+        conformance,
+        source,
+      } = this;
       const {
         bodyContentType,
         content,
@@ -117,7 +112,7 @@ export default {
       } = section;
       return {
         [SectionKind.content]: { content },
-        [SectionKind.declarations]: { conformance, declarations },
+        [SectionKind.declarations]: { conformance, source, declarations },
         [SectionKind.details]: { details },
         [SectionKind.parameters]: { parameters },
         [SectionKind.possibleValues]: { values },

@@ -10,12 +10,14 @@
 
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
+import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
 
 describe('DocumentationTopicStore', () => {
   const defaultState = {
-    onThisPageSections: [],
     preferredLanguage: null,
+    contentWidth: 0,
     ...ApiChangesStoreBase.state,
+    ...OnThisPageSectionsStoreBase.state,
   };
 
   beforeEach(() => {
@@ -23,6 +25,7 @@ describe('DocumentationTopicStore', () => {
     DocumentationTopicStore.reset();
     // force reset the api changes
     DocumentationTopicStore.setAPIChanges(null);
+    DocumentationTopicStore.state.contentWidth = 0;
   });
 
   it('has a default state', () => {
@@ -31,7 +34,6 @@ describe('DocumentationTopicStore', () => {
 
   describe('reset', () => {
     it('restores the default state', () => {
-      DocumentationTopicStore.state.onThisPageSections = null;
       DocumentationTopicStore.state.apiChanges = {};
       expect(DocumentationTopicStore.state).not.toEqual(defaultState);
       DocumentationTopicStore.reset();
@@ -80,6 +82,11 @@ describe('DocumentationTopicStore', () => {
       DocumentationTopicStore.setPreferredLanguage('objc');
       expect(DocumentationTopicStore.state.preferredLanguage).toBe('objc');
     });
+  });
+
+  it('sets the content width', () => {
+    DocumentationTopicStore.setContentWidth(99);
+    expect(DocumentationTopicStore.state.contentWidth).toBe(99);
   });
 
   describe('APIChanges', () => {

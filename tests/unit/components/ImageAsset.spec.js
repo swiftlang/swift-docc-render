@@ -54,6 +54,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe(alt);
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has one variant with no appearance trait', () => {
@@ -85,6 +86,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('300');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe('');
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has two light variants', () => {
@@ -128,6 +130,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('srcset')).toBe(`${url2x} 2x, ${url3x} 3x`);
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
+    expect(image.attributes('decoding')).toBe('async');
   });
 
   it('renders an image that has two dark variants', () => {
@@ -323,6 +326,58 @@ describe('ImageAsset', () => {
     await flushPromises();
     expect(img.attributes('width')).toBe(`${optimalDisplayWidth}`);
     expect(img.attributes('height')).toBe('auto');
+  });
+
+  it('does not calculate widths, if the element unmounts just as it gets loaded', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+
+    // describe the image with a 2x trait (since it has an intrinsic width of 84
+    // pixels wide, it should be displayed as 42 pixels wide)
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+      },
+    });
+
+    const calculateOptimalWidthSpy = jest.spyOn(wrapper.vm, 'calculateOptimalWidth')
+      .mockReturnValue(99);
+    const img = wrapper.find('img');
+
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+
+    wrapper.destroy();
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+    expect(calculateOptimalWidthSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('allows disabling the optimal-width calculation', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+        shouldCalculateOptimalWidth: false,
+      },
+    });
+    const img = wrapper.find('img');
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBeFalsy();
   });
 
   it('logs an error when unable to calculate the optimal width for an image', async () => {

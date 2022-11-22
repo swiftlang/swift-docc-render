@@ -11,8 +11,13 @@
 <template>
   <div class="contenttable-section">
     <div class="section-title">
-      <slot name="title">
-        <h3 class="title">{{ title }}</h3>
+      <slot name="title" :className="className">
+        <LinkableHeading
+          v-if="title"
+          :level="3"
+          :class="className"
+          :anchor="anchorComputed"
+        >{{ title }}</LinkableHeading>
       </slot>
     </div>
     <div class="section-content">
@@ -24,13 +29,27 @@
 </template>
 
 <script>
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import { anchorize } from 'docc-render/utils/strings';
+
+export const TITLE_CLASS_NAME = 'contenttable-title';
+
 export default {
   name: 'ContentTableSection',
+  components: { LinkableHeading },
   props: {
     title: {
       type: String,
-      required: true,
+      required: false,
     },
+    anchor: {
+      type: String,
+      default: null,
+    },
+  },
+  computed: {
+    anchorComputed: ({ title, anchor }) => anchor || anchorize(title || ''),
+    className: () => TITLE_CLASS_NAME,
   },
 };
 </script>
@@ -51,7 +70,7 @@ export default {
   }
 }
 
-/deep/ .title {
+/deep/ .contenttable-title {
   @include font-styles(label);
 }
 
@@ -70,7 +89,7 @@ export default {
     }
   }
 
-  /deep/ .title {
+  /deep/ .contenttable-title {
     margin: 0 0 $contenttable-spacing-single-side 0;
     padding-bottom: 0.5rem;
   }

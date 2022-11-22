@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <SVGIcon class="document-icon" viewBox="0 0 14 14">
+  <SVGIcon class="document-icon" viewBox="0 0 14 14" themeId="document">
     <path d="M11.2,5.3,8,2l-.1-.1H2.8V12.1h8.5V6.3l-.1-1ZM8,3.2l2,2.1H8Zm2.4,8H3.6V2.8H7V6.3h3.4Z"/>
   </SVGIcon>
 </template>

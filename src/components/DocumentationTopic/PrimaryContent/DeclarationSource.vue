@@ -168,12 +168,11 @@ export default {
     },
   },
   async mounted() {
-    if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
-
     if (this.language === Language.objectiveC.key.api) {
       await this.$nextTick();
       indentDeclaration(this.$refs.code, this.language);
     }
+    if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
   },
 };
 </script>

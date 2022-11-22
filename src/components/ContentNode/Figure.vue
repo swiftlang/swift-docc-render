@@ -18,7 +18,7 @@ export default {
   props: {
     anchor: {
       type: String,
-      required: true,
+      required: false,
     },
   },
 };

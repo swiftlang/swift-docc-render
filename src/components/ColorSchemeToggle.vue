@@ -13,7 +13,6 @@
     aria-label="Select a color scheme preference"
     class="color-scheme-toggle"
     role="radiogroup"
-    tabindex="0"
   >
     <label
       v-for="option in options"
@@ -78,11 +77,21 @@ export default {
   @include prefers-dark {
     --toggle-color-text: var(--color-figure-blue);
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 input {
   @include visuallyhidden;
   appearance: none;
+}
+
+label {
+  @include on-keyboard-focus-within() {
+    @include focus-outline();
+  }
 }
 
 .text {

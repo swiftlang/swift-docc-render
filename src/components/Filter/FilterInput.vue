@@ -16,7 +16,7 @@
     :aria-labelledby="searchAriaLabelledBy"
     :class="{ 'focus': showSuggestedTags }"
     @blur.capture="handleBlur"
-    @focus.capture="showSuggestedTags = true"
+    @focus.capture="handleFocus"
   >
     <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
       <div class="filter__top-wrapper">
@@ -76,7 +76,7 @@
               @keydown.left="leftKeyInputHandler"
               @keydown.right="rightKeyInputHandler"
               @keydown.delete="deleteHandler"
-              @keydown.meta.a.prevent="selectInputAndTags"
+              @keydown.meta.a.prevent.stop="selectInputAndTags"
               @keydown.ctrl.a.prevent="selectInputAndTags"
               @keydown.exact="inputKeydownHandler"
               @keydown.enter.exact="enterHandler"
@@ -93,6 +93,7 @@
             aria-label="Reset Filter"
             class="filter__delete-button"
             @click="resetFilters(true)"
+            @keydown.enter.exact.stop="resetFilters(true)"
             @mousedown.prevent
           >
             <ClearRoundedIcon />
@@ -191,6 +192,10 @@ export default {
       default: false,
     },
     focusInputWhenCreated: {
+      type: Boolean,
+      default: false,
+    },
+    focusInputWhenEmpty: {
       type: Boolean,
       default: false,
     },
@@ -395,12 +400,15 @@ export default {
         this.$emit('focus-prev');
       }
     },
+    handleFocus() {
+      this.showSuggestedTags = true;
+    },
   },
   created() {
     if (
       this.focusInputWhenCreated
       && document.activeElement !== this.$refs.input
-      && this.inputIsNotEmpty
+      && (this.inputIsNotEmpty || this.focusInputWhenEmpty)
     ) {
       this.focusInput();
     }
@@ -426,7 +434,7 @@ $input-height: rem(28px);
   // Remove Gray Highlight When Tapping Links in Mobile Safari =>
   // https://css-tricks.com/snippets/css/remove-gray-highlight-when-tapping-links-in-mobile-safari/
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  border-radius: $small-border-radius + 1;
+  border-radius: calc(#{$small-border-radius} + 1px);
   @include on-keyboard-focus() {
     outline: none;
   }
@@ -437,9 +445,9 @@ $input-height: rem(28px);
 
   &__filter-button {
     position: relative;
-    margin-left: rem(10px);
     z-index: 1;
     cursor: text;
+    margin-left: rem(10px);
     margin-right: rem(3px);
 
     @include breakpoint(small) {
@@ -484,14 +492,12 @@ $input-height: rem(28px);
     /deep/ ul {
       padding: var(--input-vertical-padding) rem(9px);
       border: 1px solid transparent;
-      border-bottom-left-radius: $small-border-radius - 1;
-      border-bottom-right-radius: $small-border-radius - 1;
+      border-bottom-left-radius: calc(#{$small-border-radius} - 1px);
+      border-bottom-right-radius: calc(#{$small-border-radius} - 1px);
 
-      .fromkeyboard & {
-        &:focus {
-          outline: none;
-          box-shadow: 0 0 0 5px var(--color-focus-color);
-        }
+      @include on-keyboard-focus() {
+        outline: none;
+        box-shadow: 0 0 0 5px var(--color-focus-color);
       }
     }
 
@@ -533,8 +539,8 @@ $input-height: rem(28px);
     border-radius: 100%;
 
     .clear-rounded-icon {
-      height: rem(16px);
-      width: rem(16px);
+      height: rem(12px);
+      width: rem(12px);
       fill: var(--input-text);
       display: block;
     }
@@ -543,7 +549,8 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding-right: rem(10px);
+    padding-left: rem(3px);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;
   }

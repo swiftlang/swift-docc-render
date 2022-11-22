@@ -66,13 +66,14 @@
           >
             {{ language.name }}
           </span>
-          <router-link
+          <a
             v-else
+            href="#"
             class="nav-menu-link"
-            :to="getRoute(language.route)"
+            @click.prevent="pushRoute(language.route)"
           >
             {{ language.name }}
-          </router-link>
+          </a>
         </li>
       </ul>
     </div>
@@ -82,7 +83,7 @@
 <script>
 import { waitFrames } from 'docc-render/utils/loading';
 import Language from 'docc-render/constants/Language';
-import debounce from 'docc-render/utils/debounce';
+import throttle from 'docc-render/utils/throttle';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.vue';
 
@@ -111,6 +112,10 @@ export default {
       type: String,
       required: false,
     },
+    closeNav: {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -120,12 +125,12 @@ export default {
   },
   mounted() {
     // on resize, re-calculate the width of the select.
-    const cb = debounce(async () => {
+    const cb = throttle(async () => {
       // we wait for 3 frames, as that is the minimum it takes
       // for the browser orientation-change transitions to finish
       await waitFrames(3);
       this.calculateSelectWidth();
-    }, 150, true);
+    }, 150);
     window.addEventListener('resize', cb);
     window.addEventListener('orientationchange', cb);
     this.$once('hook:beforeDestroy', () => {
@@ -160,7 +165,8 @@ export default {
         path: this.isCurrentPath(route.path) ? null : this.normalizePath(route.path),
       };
     },
-    pushRoute(route) {
+    async pushRoute(route) {
+      await this.closeNav();
       // Persist the selected language as a preference in the store (backed by
       // the browser's local storage so that it can be retrieved later for
       // subsequent navigation without the query parameter present)

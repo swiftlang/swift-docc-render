@@ -11,7 +11,7 @@
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import HighlightMatches from '@/components/Navigator/HighlightMatches.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
 import { waitFrames } from 'docc-render/utils/loading';
@@ -21,6 +21,7 @@ jest.mock('docc-render/utils/loading');
 
 const {
   Badge,
+  BaseNavigatorCardItem,
 } = NavigatorCardItem.components;
 
 const defaultProps = {
@@ -49,6 +50,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     RouterLink: RouterLinkStub,
+    BaseNavigatorCardItem,
   },
   ...others,
 });
@@ -60,9 +62,15 @@ describe('NavigatorCardItem', () => {
   });
   it('renders the NavigatorCardItem', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
+    const cardItem = wrapper.find('.navigator-card-item');
+    expect(cardItem.exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
-    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(defaultProps.item.type);
+    expect(wrapper.find(TopicTypeIcon).props()).toEqual({
+      type: defaultProps.item.type,
+      imageOverride: null,
+      withColors: false,
+      shouldCalculateOptimalWidth: false,
+    });
     const leafLink = wrapper.find('.leaf-link');
     expect(leafLink.is(Reference)).toBe(true);
     expect(leafLink.props('url')).toEqual(defaultProps.item.path);
@@ -71,8 +79,28 @@ describe('NavigatorCardItem', () => {
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
     });
-    expect(wrapper.find('.navigator-card-item').attributes('id'))
+    expect(cardItem.attributes('id'))
       .toBe(`container-${defaultProps.item.uid}`);
+    expect(cardItem.attributes('data-nesting-index')).toBe(String(defaultProps.item.depth));
+  });
+
+  it('renders the NavigationCardItem with an icon override', () => {
+    const navigatorReferences = {
+      iconRef: {
+        identifier: 'iconRef',
+        variants: [],
+      },
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        navigatorReferences,
+        item: {
+          ...defaultProps.item,
+          icon: navigatorReferences.iconRef.identifier,
+        },
+      },
+    });
+    expect(wrapper.find(TopicTypeIcon).props('imageOverride')).toEqual(navigatorReferences.iconRef);
   });
 
   it('renders a deprecated badge when item is deprecated', () => {
@@ -134,6 +162,18 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.find('.tree-toggle').exists()).toBe(false);
   });
 
+  it('does not render the expand button, if its a groupMarker with children', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        item: {
+          ...defaultProps.item,
+          type: TopicTypes.groupMarker,
+        },
+      },
+    });
+    expect(wrapper.find('.tree-toggle').exists()).toBe(false);
+  });
+
   it('adds extra classes when expanded', () => {
     const wrapper = createWrapper({
       propsData: {
@@ -150,7 +190,7 @@ describe('NavigatorCardItem', () => {
         isActive: true,
       },
     });
-    expect(wrapper.find('.head-wrapper').classes()).toContain('active');
+    expect(wrapper.classes()).toContain('active');
   });
 
   it('adds extra classes, when bolded', () => {
@@ -187,7 +227,6 @@ describe('NavigatorCardItem', () => {
     });
     expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
   });
-
 
   it('emits a `toggle-full` event, when @keydown.right + alt/option the tree-toggle button', () => {
     const wrapper = createWrapper();
@@ -276,7 +315,7 @@ describe('NavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find(NavigatorLeafIcon).exists()).toBe(false);
+    expect(wrapper.find(TopicTypeIcon).exists()).toBe(false);
     expect(wrapper.find('.navigator-icon').classes())
       .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
   });
@@ -285,6 +324,14 @@ describe('NavigatorCardItem', () => {
     const wrapper = createWrapper();
     wrapper.find('.leaf-link').trigger('click');
     expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
+  });
+
+  it('emits a `toggle-full` event, when alt + clicking on the leaf-link', () => {
+    const wrapper = createWrapper();
+    wrapper.find('.leaf-link').trigger('click', {
+      altKey: true,
+    });
+    expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
   });
 
   describe('keyboard navigation', () => {

@@ -9,12 +9,10 @@
 -->
 
 <template>
-  <OnThisPageSection
-    anchor="declaration"
-    class="declaration"
-    title="Declaration"
-  >
-    <h2>Declaration</h2>
+  <section class="declaration">
+    <LinkableHeading :anchor="contentSectionData.anchor">
+      {{ contentSectionData.title }}
+    </LinkableHeading>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
@@ -32,32 +30,44 @@
         :changeType="changeType"
       />
     </template>
+    <DeclarationSourceLink
+      v-if="source"
+      :url="source.url"
+      :fileName="source.fileName"
+    />
     <ConditionalConstraints
       v-if="conformance"
       :constraints="conformance.constraints"
       :prefix="conformance.availabilityPrefix"
     />
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import ConditionalConstraints from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import ConditionalConstraints
+  from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
-import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
+import DeclarationGroup
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import DeclarationDiff
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
+import DeclarationSourceLink
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export default {
   name: 'Declaration',
   components: {
     DeclarationDiff,
     DeclarationGroup,
+    DeclarationSourceLink,
     ConditionalConstraints,
-    OnThisPageSection,
+    LinkableHeading,
   },
   constants: { ChangeTypes, multipleLinesClass },
   inject: ['identifier', 'store'],
@@ -70,12 +80,17 @@ export default {
       type: Object,
       required: false,
     },
+    source: {
+      type: Object,
+      required: false,
+    },
     declarations: {
       type: Array,
       required: true,
     },
   },
   computed: {
+    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.declarations],
     /**
      * Show the captions of DeclarationGroup without changes
      * when there are more than one declarations

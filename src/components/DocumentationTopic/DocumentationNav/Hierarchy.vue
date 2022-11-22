@@ -62,7 +62,6 @@
 import { buildUrl } from 'docc-render/utils/url-helper';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import Badge from 'docc-render/components/Badge.vue';
-import throttle from 'docc-render/utils/throttle';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
@@ -104,6 +103,7 @@ export default {
   constants: {
     MaxVisibleLinks,
   },
+  inject: ['store'],
   props: {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,
@@ -121,20 +121,8 @@ export default {
       default: () => [],
     },
   },
-  data() {
-    return {
-      windowWidth: window.innerWidth,
-    };
-  },
-  mounted() {
-    // start tracking the window size
-    const cb = throttle(() => { this.windowWidth = window.innerWidth; }, 150);
-    window.addEventListener('resize', cb);
-    this.$once('hook:beforeDestroy', () => {
-      window.removeEventListener('resize', cb);
-    });
-  },
   computed: {
+    windowWidth: ({ store }) => store.state.contentWidth,
     parentTopics() {
       return this.parentTopicIdentifiers.reduce((all, id) => {
         const reference = this.references[id];
@@ -154,7 +142,7 @@ export default {
     firstItemSlice: ({ root }) => (root ? 1 : 0),
     /**
      * Figure out how many items we can show, after the collapsed items,
-     * based on the window.innerWidth
+     * based on the content width
      */
     linksAfterCollapse: ({ windowWidth, hasBadge }) => {
       const extraItemsToRemove = hasBadge ? 1 : 0;

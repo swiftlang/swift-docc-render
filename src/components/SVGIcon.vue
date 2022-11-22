@@ -13,13 +13,36 @@
     aria-hidden="true"
     class="svg-icon"
     xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <slot />
+    <use v-if="themeOverrideURL" :href="`${themeOverrideURL}#${themeId}`" width="100%" height="100%" />
+    <slot v-else />
   </svg>
 </template>
 
 <script>
-export default { name: 'SVGIcon' };
+import { getSetting } from 'docc-render/utils/theme-settings';
+
+export default {
+  name: 'SVGIcon',
+  props: {
+    themeId: {
+      type: String,
+      required: false,
+    },
+    iconUrl: {
+      type: String,
+      default: null,
+    },
+  },
+  computed: {
+    themeOverrideURL: ({ iconUrl, themeId }) => iconUrl || getSetting([
+      'theme',
+      'icons',
+      themeId,
+    ], undefined),
+  },
+};
 </script>
 
 <style scoped lang="scss">

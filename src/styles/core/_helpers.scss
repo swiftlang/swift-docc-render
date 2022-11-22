@@ -81,6 +81,17 @@
 }
 
 ////
+/// Apply styling only when focused via the keyboard in an element inside.
+////
+@mixin on-keyboard-focus-within() {
+  .fromkeyboard & {
+    &:focus-within {
+      @content
+    }
+  }
+}
+
+////
 /// Replaces the outline effect when an element is in focus, with a box shadow effect.
 /// Applies only when using the keyboard, via `.fromkeyboard` parent class.
 /// This is applied in App.vue.
@@ -270,7 +281,7 @@
 @mixin safe-area-set($inset, $property, $value) {
   // unquote is used to ensure that we are using the CSS Level 4 `max` function
   // instead of the builtin `max` function provided by the Sass preprocessor
-  @supports(padding: unquote('max(0px)')) {
+  @supports (padding: unquote('max(0px)')) {
     #{$property}: unquote('max(#{$value}, env(safe-area-inset-#{$inset}))');
   }
 }
@@ -281,4 +292,10 @@
 
 @mixin safe-area-right-set($property, $value) {
   @include safe-area-set(right, $property, $value);
+}
+
+@mixin space-out-between-siblings($margin) {
+  * + &, & + /deep/ * {
+    margin-top: $margin;
+  }
 }

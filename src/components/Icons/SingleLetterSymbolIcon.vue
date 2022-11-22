@@ -12,6 +12,7 @@
   <SVGIcon
     class="single-letter-icon"
     width="16px" height="16px" viewBox="0 0 16 16"
+    themeId="single-letter"
   >
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <rect stroke="currentColor" x="1" y="1" width="14" height="14"></rect>

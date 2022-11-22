@@ -9,8 +9,9 @@
 -->
 
 <template>
-  <div class="topic-icon-wrapper" v-if="icon">
-    <component :is="icon" class="topic-icon" />
+  <div class="topic-icon-wrapper" v-if="imageOverride || icon">
+    <OverridableAsset v-if="imageOverride" :imageOverride="imageOverride" class="topic-icon" />
+    <component v-else-if="icon" :is="icon" class="topic-icon" />
   </div>
 </template>
 
@@ -21,7 +22,9 @@ import ApiCollectionIcon from 'theme/components/Icons/APIReferenceIcon.vue';
 import EndpointIcon from 'theme/components/Icons/EndpointIcon.vue';
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
+import SVGIcon from 'docc-render/components/SVGIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
+import OverridableAsset from 'docc-render/components/OverridableAsset.vue';
 
 const TopicRoleIcons = {
   [TopicRole.article]: ArticleIcon,
@@ -36,10 +39,15 @@ const TopicRoleIcons = {
 };
 
 export default {
+  components: { OverridableAsset, SVGIcon },
   props: {
     role: {
       type: String,
       required: true,
+    },
+    imageOverride: {
+      type: Object,
+      default: null,
     },
   },
 
@@ -66,6 +74,14 @@ export default {
 .topic-icon {
   height: rem(15px);
   @include prevent-clipped-svg();
+
+  /deep/ img {
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 
   // overwrite the height so the icon looks the same size as the rest.
   &.curly-brackets-icon {

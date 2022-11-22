@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OnThisPageRegistrator extracts the sections from the JSON 1`] = `
+Array [
+  Object {
+    "anchor": "app-top",
+    "level": 1,
+    "title": "PageTitle",
+  },
+  Object {
+    "anchor": "provided-heading-anchor",
+    "level": 2,
+    "title": "Heading Level 2",
+  },
+  Object {
+    "anchor": "heading-level-3",
+    "level": 3,
+    "title": "Heading Level 3",
+  },
+  Object {
+    "anchor": "properties-title",
+    "level": 2,
+    "title": "Properties Title",
+  },
+  Object {
+    "anchor": "restbody-title",
+    "level": 2,
+    "title": "restBody Title",
+  },
+  Object {
+    "anchor": "restcookies-title",
+    "level": 2,
+    "title": "restCookies Title",
+  },
+  Object {
+    "anchor": "restendpoint-title",
+    "level": 2,
+    "title": "restEndpoint Title",
+  },
+  Object {
+    "anchor": "restheaders-title",
+    "level": 2,
+    "title": "restHeaders Title",
+  },
+  Object {
+    "anchor": "restparameters-title",
+    "level": 2,
+    "title": "restParameters Title",
+  },
+  Object {
+    "anchor": "restresponses-title",
+    "level": 2,
+    "title": "restResponses Title",
+  },
+  Object {
+    "anchor": "declaration",
+    "level": 2,
+    "title": "Declaration",
+  },
+  Object {
+    "anchor": "details",
+    "level": 2,
+    "title": "Details",
+  },
+  Object {
+    "anchor": "parameters",
+    "level": 2,
+    "title": "Parameters",
+  },
+  Object {
+    "anchor": "possibleValues",
+    "level": 2,
+    "title": "Possible Values",
+  },
+  Object {
+    "anchor": "topics",
+    "level": 2,
+    "title": "Topics",
+  },
+  Object {
+    "anchor": "relationships",
+    "level": 2,
+    "title": "Relationships",
+  },
+  Object {
+    "anchor": "see-also",
+    "level": 2,
+    "title": "See Also",
+  },
+]
+`;

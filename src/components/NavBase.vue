@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -20,7 +20,7 @@
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
         <div class="pre-title">
-          <slot name="pre-title" :close-nav="closeNav" :is-open="isOpen" />
+          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }" />
         </div>
         <div v-if="$slots.default" class="nav-title">
           <slot />
@@ -45,7 +45,7 @@
             @transitionend.self="onTransitionEnd"
             @click="handleTrayClick"
           >
-            <slot name="tray">
+            <slot name="tray" :closeNav="closeNav">
               <NavMenuItems>
                 <slot name="menu-items" />
               </NavMenuItems>
@@ -54,6 +54,7 @@
         </div>
         <div class="nav-actions">
           <a
+            ref="toggle"
             href="#"
             class="nav-menucta"
             tabindex="-1"
@@ -75,7 +76,6 @@ import onIntersect from 'docc-render/mixins/onIntersect';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
-import FocusTrap from 'docc-render/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
@@ -91,7 +91,7 @@ const NavStateClasses = {
   isDark: 'theme-dark',
   isOpen: 'nav--is-open',
   inBreakpoint: 'nav--in-breakpoint-range',
-  isTransitioning: 'nav--is-opening',
+  isTransitioning: 'nav--is-transitioning',
   isSticking: 'nav--is-sticking',
   hasSolidBackground: 'nav--solid-background',
   hasNoBorder: 'nav--noborder',
@@ -151,15 +151,17 @@ export default {
   data() {
     return {
       isOpen: false,
-      inBreakpoint: false,
       isTransitioning: false,
       isSticking: false,
       noBackgroundTransition: true,
-      focusTrapInstance: null,
+      currentBreakpoint: BreakpointName.large,
     };
   },
   computed: {
     BreakpointScopes: () => BreakpointScopes,
+    inBreakpoint: ({ currentBreakpoint, breakpoint }) => (
+      !isBreakpointAbove(currentBreakpoint, breakpoint)
+    ),
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
       hasNoBorder, hasFullWidthBorder, isDark, isWideFormat, noBackgroundTransition,
@@ -193,7 +195,6 @@ export default {
     document.addEventListener('click', this.handleClickOutside);
     this.handleFlashOnMount();
     await this.$nextTick();
-    this.focusTrapInstance = new FocusTrap(this.$refs.wrapper);
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.onEscape);
@@ -203,7 +204,6 @@ export default {
     if (this.isOpen) {
       this.toggleScrollLock(false);
     }
-    this.focusTrapInstance.destroy();
   },
   methods: {
     getIntersectionTargets() {
@@ -214,7 +214,24 @@ export default {
       this.isTransitioning = true;
     },
     closeNav() {
+      const oldValue = this.isOpen;
+      // close the nav
       this.isOpen = false;
+      // return a promise, that resolves when transitions end
+      return this.resolveOnceTransitionsEnd(oldValue);
+    },
+    resolveOnceTransitionsEnd(oldIsOpen) {
+      // if outside the breakpoint, or was already closed, resolve as there is no tray animation
+      if (!oldIsOpen || !this.inBreakpoint) return Promise.resolve();
+      // enable the transitioning up tracking
+      this.isTransitioning = true;
+      // resolve a promise, when we stop transitioning
+      return new Promise((resolve) => {
+        const unwatch = this.$watch('isTransitioning', () => {
+          resolve();
+          unwatch();
+        });
+      });
     },
     /**
      * When the closing animation ends,
@@ -237,10 +254,9 @@ export default {
      * @param breakpoint
      */
     onBreakpointChange(breakpoint) {
-      const isOutsideBreakpoint = isBreakpointAbove(breakpoint, this.breakpoint);
-      this.inBreakpoint = !isOutsideBreakpoint;
+      this.currentBreakpoint = breakpoint;
       // close the nav if outside of the breakpoint
-      if (isOutsideBreakpoint) this.closeNav();
+      if (!this.inBreakpoint) this.closeNav();
     },
     /**
      * On every intersection change
@@ -298,16 +314,18 @@ export default {
     },
     onExpand() {
       this.$emit('open');
-      // lock focus
-      this.focusTrapInstance.start();
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
+      if (document.activeElement === this.$refs.toggle) {
+        // move focus to body to prevent tabbing to links in body
+        // when toggle is triggered by mouse
+        document.activeElement.blur();
+      }
     },
     onClose() {
       this.$emit('close');
       // stop the scroll lock
       this.toggleScrollLock(false);
-      this.focusTrapInstance.stop();
       changeElementVOVisibility.show(this.$refs.wrapper);
     },
     async handleFlashOnMount() {
@@ -336,6 +354,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   height: $nav-height;
   z-index: $nav-z-index;
   --nav-padding: #{$nav-padding};
+
+  @media print {
+    position: relative;
+  }
 
   @include breakpoint(small, $scope: nav) {
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
@@ -532,15 +554,19 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 }
 
 .pre-title {
-  display: none;
+  display: flex;
+  overflow: hidden;
+  padding-left: $nav-padding;
+  margin-left: -$nav-padding;
 
   &:empty {
     display: none;
   }
 
   @include nav-in-breakpoint() {
-    display: flex;
+    overflow: visible;
     padding: 0;
+    margin-left: 0;
   }
 }
 
@@ -620,7 +646,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       visibility: visible;
       transition-delay: 0.2s, 0s;
 
-      @include unify-selector('.nav--is-opening', $nested: true) {
+      @include unify-selector('.nav--is-transitioning', $nested: true) {
         overflow-y: hidden;
       }
 

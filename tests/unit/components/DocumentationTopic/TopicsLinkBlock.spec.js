@@ -12,6 +12,7 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import TopicsLinkBlock from 'docc-render/components/DocumentationTopic/TopicsLinkBlock.vue';
 import { ChangeNames } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { TopicRole } from 'docc-render/constants/roles';
 
 const {
   ReferenceType,
@@ -41,8 +42,18 @@ describe('TopicsLinkBlock', () => {
     },
   };
 
+  const iconOverride = {
+    type: 'icon',
+    identifier: 'icon-override',
+  };
+
+  const references = {
+    [iconOverride.identifier]: { foo: 'bar' },
+  };
+
   const provide = {
     store,
+    references,
   };
 
   const propsData = {
@@ -125,6 +136,18 @@ describe('TopicsLinkBlock', () => {
     expect(link.props('role')).toBe(propsData.topic.role);
   });
 
+  it('renders a TopicLinkBlockIcon with an override', () => {
+    const icon = wrapper.find(TopicLinkBlockIcon);
+    expect(icon.props('imageOverride')).toBe(null);
+    wrapper.setProps({
+      topic: {
+        ...propsData.topic,
+        images: [iconOverride, { type: 'card', identifier: 'foo' }],
+      },
+    });
+    expect(icon.props('imageOverride')).toBe(references[iconOverride.identifier]);
+  });
+
   it('renders a normal `WordBreak` for the link text', () => {
     const wordBreak = wrapper.find('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
@@ -133,6 +156,42 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('renders a `WordBreak` using <code> tag for link text to symbols', () => {
+    wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
+    const wordBreak = wrapper.find('.link').find(WordBreak);
+    expect(wordBreak.exists()).toBe(true);
+    expect(wordBreak.attributes('tag')).toBe('code');
+    expect(wordBreak.text()).toBe(propsData.topic.title);
+  });
+
+  it('renders a `WordBreak` using <span> tag for Framework name links in Topic that have role collection', () => {
+    wrapper.setProps({
+      topic: {
+        ...propsData.topic,
+        role: TopicRole.collection,
+        kind: TopicKind.symbol,
+      },
+    });
+    const wordBreak = wrapper.find('.link').find(WordBreak);
+    expect(wordBreak.exists()).toBe(true);
+    expect(wordBreak.attributes('tag')).toBe('span');
+    expect(wordBreak.text()).toBe(propsData.topic.title);
+  });
+
+  it('renders a `WordBreak` using <span> tag for property list links in Topic, which have role dictionarySymbol', () => {
+    wrapper.setProps({
+      topic: {
+        ...propsData.topic,
+        role: TopicRole.dictionarySymbol,
+        kind: TopicKind.symbol,
+      },
+    });
+    const wordBreak = wrapper.find('.link').find(WordBreak);
+    expect(wordBreak.exists()).toBe(true);
+    expect(wordBreak.attributes('tag')).toBe('span');
+    expect(wordBreak.text()).toBe(propsData.topic.title);
+  });
+
+  it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection or dictionarySymbol', () => {
     wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
     const wordBreak = wrapper.find('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
@@ -445,6 +504,16 @@ describe('TopicsLinkBlock', () => {
       expect(linkBlock.classes('changed')).toBe(!isOnLink);
       expect(linkBlock.classes(`changed-${changeType}`)).toBe(!isOnLink);
     };
+
+    it('does not render the TopicLinkBlockIcon', () => {
+      expect(wrapper.find(TopicLinkBlockIcon).exists()).toBe(true);
+      store.state.apiChanges = {
+        [propsData.topic.identifier]: {
+          change: 'modified',
+        },
+      };
+      expect(wrapper.find(TopicLinkBlockIcon).exists()).toBe(false);
+    });
 
     describe('when the topic does not have an abstract', () => {
       beforeEach(() => {

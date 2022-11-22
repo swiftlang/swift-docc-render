@@ -30,18 +30,20 @@ export default {
 
 $docs-code-listing-border-width: 1px !default;
 
+// Generates a selector to match $el, when its after an item, or when an item is after it.
+// This is different than `space-out-between-siblings`, as that used `&` selector for parents,
+// which does not work here, as we are already nested inside `/deep/`.
+@function between-els($el) {
+  @return '* + #{$el}, #{$el} + *'
+}
+
 /deep/ {
   .code-listing {
     background: var(--background, var(--color-code-background));
     color: var(--text, var(--color-code-plain));
     border-color: var(--colors-grid, var(--color-grid));
-    border-width: $docs-code-listing-border-width;
-    border-style: solid;
-
-    & + *,
-    * + & {
-      margin-top: $stacked-margin-xlarge;
-    }
+    border-width: var(--code-border-width, $docs-code-listing-border-width);
+    border-style: var(--code-border-style, solid);
 
     pre {
       padding: $code-block-style-elements-padding;
@@ -54,31 +56,29 @@ $docs-code-listing-border-width: 1px !default;
     }
   }
 
-  .endpoint-example {
-    & + *,
-    * + & {
-      margin-top: $stacked-margin-xlarge;
-    }
+  // use a helper function to generate common selectors.
+  // Using `space-out-between-siblings` mixin does not work, because we are inside `/deep/`.
+  #{between-els('.code-listing')},
+  #{between-els('.endpoint-example')},
+  #{between-els('.inline-image-container')},
+  #{between-els(figure)},
+  #{between-els(aside)}, {
+    margin-top: $stacked-margin-xlarge;
   }
 
-  // move outside of aside, otherwise scoping breaks it
-  * + figure,
-  figure + *,
-  * + aside,
-  aside + * {
-    margin-top: $stacked-margin-xlarge;
+  #{between-els(dl)} {
+    margin-top: $stacked-margin-large;
   }
 
   img {
     display: block;
-    margin: $stacked-margin-xlarge auto;
+    margin: auto;
     max-width: 100%;
   }
 
   ol,
   ul {
     margin-top: $stacked-margin-large;
-    margin-left: 2rem;
 
     li:not(:first-child) {
       margin-top: $stacked-margin-large;
@@ -86,13 +86,6 @@ $docs-code-listing-border-width: 1px !default;
 
     @include breakpoint(small) {
       margin-left: 1.25rem;
-    }
-  }
-
-  dl {
-    & + *,
-    * + & {
-      margin-top: $stacked-margin-large;
     }
   }
 

@@ -10,6 +10,7 @@
 
 <script>
 import { fetchIndexPathsData } from 'docc-render/utils/data';
+import { flattenNestedData } from 'docc-render/utils/navigatorData';
 import Language from 'docc-render/constants/Language';
 
 /**
@@ -23,8 +24,13 @@ export default {
       type: String,
       default: Language.swift.key.url,
     },
-    technology: {
-      type: Object,
+    /**
+     * The technology we need to fetch data for.
+     * Important - We are passing just the URL, as the technology object changes
+     * between page navigations, resulting in excess re-calculations on each page change.
+     */
+    technologyUrl: {
+      type: String,
       required: true,
     },
     apiChangesVersion: {
@@ -40,13 +46,25 @@ export default {
       navigationIndex: {
         [Language.swift.key.url]: [],
       },
+      navigationReferences: {},
       diffs: null,
     };
   },
   computed: {
-    technologyPath: ({ technology }) => {
+    /**
+     * Recomputes the list of flat children.
+     * @return NavigatorFlatItem[]
+     */
+    flatChildren: ({
+      technologyWithChildren = {},
+    }) => (
+      flattenNestedData(
+        technologyWithChildren.children || [], null, 0, technologyWithChildren.beta,
+      )
+    ),
+    technologyPath: ({ technologyUrl }) => {
       // regex should match only the first section, no slash - `/documentation/:technology`
-      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technology.url);
+      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technologyUrl);
       return matches ? matches[1] : '';
     },
     /**
@@ -73,8 +91,9 @@ export default {
     async fetchIndexData() {
       try {
         this.isFetching = true;
-        const { interfaceLanguages } = await fetchIndexPathsData();
+        const { interfaceLanguages, references } = await fetchIndexPathsData();
         this.navigationIndex = Object.freeze(interfaceLanguages);
+        this.navigationReferences = Object.freeze(references);
       } catch (e) {
         this.errorFetching = true;
       } finally {
@@ -89,6 +108,8 @@ export default {
       errorFetching: this.errorFetching,
       isFetchingAPIChanges: this.isFetchingAPIChanges,
       apiChanges: this.diffs,
+      flatChildren: this.flatChildren,
+      references: this.navigationReferences,
     });
   },
 };

@@ -13,7 +13,7 @@ import PrimaryContent from 'docc-render/components/DocumentationTopic/PrimaryCon
 
 const {
   Declaration,
-  GenericContent,
+  ContentNode,
   Parameters,
   PossibleValues,
   PropertyListKeyDetails,
@@ -147,6 +147,7 @@ const restEndpointSection = {
 
 const propsData = {
   conformance: { availbilityPrefix: [], constraints: [] },
+  source: { url: 'foo.com' },
   sections: [
     declarationsSection,
     detailsSection,
@@ -186,9 +187,10 @@ describe('PrimaryContent', () => {
   checkProps(Declaration, {
     conformance: propsData.conformance,
     declarations: declarationsSection.declarations,
+    source: propsData.source,
   });
   checkProps(PropertyListKeyDetails, { details: detailsSection.details });
-  checkProps(GenericContent, { content: genericContentSection.content, tag: 'div' });
+  checkProps(ContentNode, { content: genericContentSection.content, tag: 'div' });
   checkProps(Parameters, { parameters: parametersSection.parameters });
   checkProps(RestParameters, { parameters: restParametersSection.items, title: 'Title' });
   checkProps(

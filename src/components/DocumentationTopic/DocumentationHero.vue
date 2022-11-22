@@ -17,8 +17,10 @@
     :style="styles"
   >
     <div class="icon">
-      <NavigatorLeafIcon
-        v-if="enhanceBackground" :type="type"
+      <TopicTypeIcon
+        v-if="enhanceBackground"
+        :type="type"
+        :image-override="iconOverride"
         key="first" class="background-icon first-icon" with-colors
       />
     </div>
@@ -36,14 +38,14 @@
 
 <script>
 
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap, HeroColors } from 'docc-render/constants/HeroColors';
 import { TopicRole } from 'docc-render/constants/roles';
 
 export default {
   name: 'DocumentationHero',
-  components: { NavigatorLeafIcon },
+  components: { TopicTypeIcon },
   props: {
     role: {
       type: String,
@@ -61,13 +63,17 @@ export default {
       type: Boolean,
       required: true,
     },
+    iconOverride: {
+      type: Object,
+      required: false,
+    },
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
     color: ({ type }) => HeroColorsMap[TopicTypeAliases[type] || type] || HeroColors.teal,
     styles: ({ color }) => ({
       // use the color or fallback to the gray secondary, if not defined.
-      '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${color}, var(--color-figure-gray-secondary)))`,
     }),
     // This mapping is necessary to help create a consistent mapping for the
     // following kinds of things, which are represented as different strings
@@ -102,15 +108,17 @@ $doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
   background: dark-color(fill);
-  color: dark-color(figure-gray);
+  color: var(--color-documentation-intro-figure, dark-color(figure-gray));
   overflow: hidden;
   text-align: left;
   position: relative;
+  // extra offset applied when OnThisPage component is rendered
+  padding-right: var(--doc-hero-right-offset);
 
   // gradient
   &:before {
     content: '';
-    background: $doc-hero-gradient-background;
+    background: var(--color-documentation-intro-fill, $doc-hero-gradient-background);
     position: absolute;
     width: 100%;
     left: 0;
@@ -147,7 +155,7 @@ $doc-hero-icon-dimension: 250px;
   }
 
   .background-icon {
-    color: $doc-hero-icon-color;
+    color: var(--color-documentation-intro-accent, $doc-hero-icon-color);
     display: block;
     width: $doc-hero-icon-dimension;
     height: auto;
@@ -159,7 +167,7 @@ $doc-hero-icon-dimension: 250px;
     transform: translateY(-50%);
     max-height: 100%;
 
-    /deep/ svg {
+    /deep/ svg, /deep/ img {
       width: 100%;
       height: 100%;
     }

@@ -340,20 +340,29 @@ $breakpoint-attributes: (
 /// Applies a content container, for cases with dynamic adjustable sidebars. In IDE mode uses the
 /// default breakpoint-content mixin.
 @mixin breakpoint-dynamic-sidebar-content {
+  $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));
+
   @include inTargetWeb {
-    max-width: 920px;
+    // 820px
+    max-width: $large-max-width - $large-viewport-dynamic-content-padding * 2;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: $large-viewport-dynamic-content-padding;
+    padding-right: $large-viewport-dynamic-content-padding;
     box-sizing: border-box;
 
-    // make sure there is 120px space between the content and nav bar on xl and l
+    @media print {
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
+      max-width: none;
+    }
+
     @include breakpoints-from(large) {
-      box-sizing: unset;
-      padding-left: 120px;
-      padding-right: 120px;
-      margin-left: 0px;
+      max-width: $large-max-width;
+    }
+
+    @media only screen and (min-width: 1500px) {
+      max-width: $large-max-width + 100;
     }
 
     @include breakpoint(small) {

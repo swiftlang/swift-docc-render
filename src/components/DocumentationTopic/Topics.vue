@@ -10,24 +10,35 @@
 
 <template>
   <TopicsTable
-    anchor="topics"
-    title="Topics"
+    :anchor="contentSectionData.anchor"
+    :title="contentSectionData.title"
     :isSymbolDeprecated="isSymbolDeprecated"
     :isSymbolBeta="isSymbolBeta"
     :sections="sections"
+    :topicStyle="topicStyle"
   />
 </template>
 
 <script>
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
+import { MainContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 import TopicsTable from './TopicsTable.vue';
 
 export default {
   name: 'Topics',
   components: { TopicsTable },
+  computed: {
+    contentSectionData: () => MainContentSectionAnchors.topics,
+  },
   props: {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,
     sections: TopicsTable.props.sections,
+    topicStyle: {
+      type: String,
+      required: true,
+      validator: v => Object.hasOwnProperty.call(TopicSectionsStyle, v),
+    },
   },
 };
 </script>

@@ -14,6 +14,8 @@ import {
 } from '@vue/test-utils';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import { BreakpointName } from '@/utils/breakpoints';
+import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
+import { SIDEBAR_HIDE_BUTTON_ID } from 'docc-render/constants/sidebar';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
@@ -210,6 +212,7 @@ describe('DocumentationNav', () => {
       interfaceLanguage: propsData.interfaceLanguage,
       swiftPath: propsData.swiftPath,
       objcPath: propsData.objcPath,
+      closeNav: expect.any(Function),
     });
   });
 
@@ -265,25 +268,46 @@ describe('DocumentationNav', () => {
     expect(wrapper.find('.nav-title-link').exists()).toBe(false);
   });
 
-  it('renders a sidenav toggle', async () => {
-    const button = wrapper.find('.sidenav-toggle');
+  it('renders a sidenav toggle, emitting `@toggle-sidenav` event', async () => {
+    const btn = document.createElement('button');
+    btn.id = SIDEBAR_HIDE_BUTTON_ID;
+    document.body.appendChild(btn);
+    // assert the wrapper is hidden
+    const sidenavToggleWrapper = wrapper.find('.sidenav-toggle-wrapper');
+    expect(sidenavToggleWrapper.isVisible()).toBe(false);
+    // show the wrapper
+    wrapper.setProps({ sidenavHiddenOnLarge: true });
+    // assert its visible
+    expect(sidenavToggleWrapper.isVisible()).toBe(true);
+    // interact with button
+    const button = sidenavToggleWrapper.find('.sidenav-toggle');
     button.trigger('click');
     await flushPromises();
+    // assert the button works and is rendered as expected
     expect(button.attributes('aria-label')).toBe('Open documentation navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+    // assert the nav-hide button is focused
+    expect(document.activeElement).toEqual(btn);
   });
 
-  it('closes the nav, if open and clicking on the sidenavtoggle', async () => {
+  it('closes the nav, if open and clicking on the sidenav-toggle', async () => {
+    const backup = window.Event;
+    window.Event = null;
+
+    wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+    await flushPromises();
     wrapper.find('.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain('nav--is-open');
     const toggle = wrapper.find('.sidenav-toggle');
     expect(toggle.attributes()).toHaveProperty('tabindex', '-1');
     toggle.trigger('click');
+    wrapper.find('.nav-menu-tray').trigger('transitionend', { propertyName: 'max-height' });
     expect(wrapper.classes()).not.toContain('nav--is-open');
     expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
     await flushPromises();
-    expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
+    expect(wrapper.emitted('toggle-sidenav')).toEqual([[BreakpointName.medium]]);
     expect(toggle.attributes()).not.toHaveProperty('tabindex');
+    window.Event = backup;
   });
 
   it('renders the nav, with `isWideFormat` to `false`', () => {

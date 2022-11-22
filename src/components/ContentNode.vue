@@ -11,6 +11,7 @@
 <script>
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
+import LinkableHeading from './ContentNode/LinkableHeading.vue';
 import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
@@ -20,8 +21,15 @@ import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
 import StrikeThrough from './ContentNode/StrikeThrough.vue';
+import Small from './ContentNode/Small.vue';
+import BlockVideo from './ContentNode/BlockVideo.vue';
+import Column from './ContentNode/Column.vue';
+import Row from './ContentNode/Row.vue';
+import TabNavigator from './ContentNode/TabNavigator.vue';
+import TaskList from './ContentNode/TaskList.vue';
+import LinksBlock from './ContentNode/LinksBlock.vue';
 
-const BlockType = {
+export const BlockType = {
   aside: 'aside',
   codeListing: 'codeListing',
   endpointExample: 'endpointExample',
@@ -32,6 +40,11 @@ const BlockType = {
   termList: 'termList',
   unorderedList: 'unorderedList',
   dictionaryExample: 'dictionaryExample',
+  small: 'small',
+  video: 'video',
+  row: 'row',
+  tabNavigator: 'tabNavigator',
+  links: 'links',
 };
 
 const InlineType = {
@@ -85,6 +98,16 @@ const TableHeaderStyle = {
   row: 'row',
 };
 
+const TableColumnAlignments = {
+  left: 'left',
+  right: 'right',
+  center: 'center',
+  unset: 'unset',
+};
+
+// The point after which a TabNavigator turns to vertical mode.
+const TabNavigatorVerticalThreshold = 5;
+
 // Recursively call the passed `createElement` function for each content node
 // and any of its children by mapping each node `type` to a given Vue component
 //
@@ -100,7 +123,24 @@ function renderNode(createElement, references) {
     ))
   ));
 
-  const renderTableChildren = (rows, headerStyle = TableHeaderStyle.none) => {
+  const renderTableCell = (
+    element, attrs, data, cellIndex, rowIndex, extendedData, alignments,
+  ) => {
+    const { colspan, rowspan } = extendedData[`${rowIndex}_${cellIndex}`] || {};
+    // if either is `0`, then its spanned over and should not be rendered
+    if (colspan === 0 || rowspan === 0) return null;
+    const align = alignments[cellIndex] || TableColumnAlignments.unset;
+    let classes = null;
+    if (align !== TableColumnAlignments.unset) classes = `${align}-cell`;
+    return createElement(element, { attrs: { ...attrs, colspan, rowspan }, class: classes }, (
+      renderChildren(data)
+    ));
+  };
+
+  const renderTableChildren = (
+    rows, headerStyle = TableHeaderStyle.none, extendedData = {}, alignments = [],
+  ) => {
+    // build the matrix for the array
     switch (headerStyle) {
     // thead with first row and th for each first row cell
     // tbody with rows where first cell in each row is th, others are td
@@ -108,21 +148,17 @@ function renderNode(createElement, references) {
       const [firstRow, ...otherRows] = rows;
       return [
         createElement('thead', {}, [
-          createElement('tr', {}, firstRow.map(cell => (
-            createElement('th', { attrs: { scope: 'col' } }, (
-              renderChildren(cell)
-            ))
+          createElement('tr', {}, firstRow.map((cell, cellIndex) => (
+            renderTableCell('th', { scope: 'col' }, cell, cellIndex, 0, extendedData, alignments)
           ))),
         ]),
-        createElement('tbody', {}, otherRows.map(([firstCell, ...otherCells]) => (
+        createElement('tbody', {}, otherRows.map(([firstCell, ...otherCells], rowIndex) => (
           createElement('tr', {}, [
-            createElement('th', { attrs: { scope: 'row' } }, (
-              renderChildren(firstCell)
-            )),
-            ...otherCells.map(cell => (
-              createElement('td', {}, (
-                renderChildren(cell)
-              ))
+            renderTableCell(
+              'th', { scope: 'row' }, firstCell, 0, rowIndex + 1, extendedData, alignments,
+            ),
+            ...otherCells.map((cell, cellIndex) => (
+              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex + 1, extendedData, alignments)
             )),
           ])
         ))),
@@ -131,15 +167,13 @@ function renderNode(createElement, references) {
     // tbody with rows, th for first cell of each row, td for other cells
     case TableHeaderStyle.column:
       return [
-        createElement('tbody', {}, rows.map(([firstCell, ...otherCells]) => (
+        createElement('tbody', {}, rows.map(([firstCell, ...otherCells], rowIndex) => (
           createElement('tr', {}, [
-            createElement('th', { attrs: { scope: 'row' } }, (
-              renderChildren(firstCell)
-            )),
-            ...otherCells.map(cell => (
-              createElement('td', {}, (
-                renderChildren(cell)
-              ))
+            renderTableCell(
+              'th', { scope: 'row' }, firstCell, 0, rowIndex, extendedData, alignments,
+            ),
+            ...otherCells.map((cell, cellIndex) => (
+              renderTableCell('td', {}, cell, cellIndex + 1, rowIndex, extendedData, alignments)
             )),
           ])
         ))),
@@ -150,17 +184,13 @@ function renderNode(createElement, references) {
       const [firstRow, ...otherRows] = rows;
       return [
         createElement('thead', {}, [
-          createElement('tr', {}, firstRow.map(cell => (
-            createElement('th', { attrs: { scope: 'col' } }, (
-              renderChildren(cell)
-            ))
+          createElement('tr', {}, firstRow.map((cell, cellIndex) => renderTableCell(
+            'th', { scope: 'col' }, cell, cellIndex, 0, extendedData, alignments,
           ))),
         ]),
-        createElement('tbody', {}, otherRows.map(row => (
-          createElement('tr', {}, row.map(cell => (
-            createElement('td', {}, (
-              renderChildren(cell)
-            ))
+        createElement('tbody', {}, otherRows.map((row, rowIndex) => (
+          createElement('tr', {}, row.map((cell, cellIndex) => (
+            renderTableCell('td', {}, cell, cellIndex, rowIndex + 1, extendedData, alignments)
           )))
         ))),
       ];
@@ -169,12 +199,10 @@ function renderNode(createElement, references) {
       // tbody with all rows and every cell is td
       return [
         createElement('tbody', {}, (
-          rows.map(row => (
+          rows.map((row, rowIndex) => (
             createElement('tr', {}, (
-              row.map(cell => (
-                createElement('td', {}, (
-                  renderChildren(cell)
-                ))
+              row.map((cell, cellIndex) => (
+                renderTableCell('td', {}, cell, cellIndex, rowIndex, extendedData, alignments)
               ))
             ))
           ))
@@ -185,19 +213,22 @@ function renderNode(createElement, references) {
 
   const renderFigure = ({
     metadata: {
-      abstract,
+      abstract = [],
       anchor,
       title,
     },
     ...node
-  }) => createElement(Figure, { props: { anchor } }, [
-    ...(title && abstract && abstract.length ? [
-      createElement(FigureCaption, { props: { title } }, (
-        renderChildren(abstract)
-      )),
-    ] : []),
-    renderChildren([node]),
-  ]);
+  }) => {
+    const figureContent = [renderChildren([node])];
+    if ((title && abstract.length) || abstract.length) {
+      // if there is a `title`, it should be above, otherwise below
+      figureContent.splice(title ? 0 : 1, 0,
+        createElement(FigureCaption, {
+          props: { title, centered: !title },
+        }, renderChildren(abstract)));
+    }
+    return createElement(Figure, { props: { anchor } }, figureContent);
+  };
 
   return function render(node) {
     switch (node.type) {
@@ -227,14 +258,13 @@ function renderNode(createElement, references) {
       };
       return createElement(EndpointExample, { props }, renderChildren(node.summary || []));
     }
-    case BlockType.heading:
-      return createElement(`h${node.level}`, {
-        attrs: {
-          id: node.anchor,
-        },
-      }, (
-        node.text
-      ));
+    case BlockType.heading: {
+      const props = {
+        anchor: node.anchor,
+        level: node.level,
+      };
+      return createElement(LinkableHeading, { props }, node.text);
+    }
     case BlockType.orderedList:
       return createElement('ol', {
         attrs: {
@@ -243,17 +273,26 @@ function renderNode(createElement, references) {
       }, (
         renderListItems(node.items)
       ));
-    case BlockType.paragraph:
-      return createElement('p', {}, (
+    case BlockType.paragraph: {
+      const hasSingleImage = node.inlineContent.length === 1
+        && node.inlineContent[0].type === InlineType.image;
+      const props = hasSingleImage ? { class: ['inline-image-container'] } : {};
+
+      return createElement('p', props, (
         renderChildren(node.inlineContent)
       ));
+    }
     case BlockType.table:
       if (node.metadata && node.metadata.anchor) {
         return renderFigure(node);
       }
 
-      return createElement(Table, {}, (
-        renderTableChildren(node.rows, node.header)
+      return createElement(Table, {
+        props: {
+          spanned: !!node.extendedData,
+        },
+      }, (
+        renderTableChildren(node.rows, node.header, node.extendedData, node.alignments)
       ));
     case BlockType.termList:
       return createElement('dl', {}, node.items.map(({ term, definition }) => [
@@ -264,15 +303,80 @@ function renderNode(createElement, references) {
           renderChildren(definition.content)
         )),
       ]));
-    case BlockType.unorderedList:
-      return createElement('ul', {}, (
-        renderListItems(node.items)
-      ));
+    case BlockType.unorderedList: {
+      const isTaskList = list => TaskList.props.tasks.validator(list.items);
+      return isTaskList(node) ? (
+        createElement(TaskList, {
+          props: {
+            tasks: node.items,
+          },
+          scopedSlots: {
+            task: slotProps => renderChildren(slotProps.task.content),
+          },
+        })
+      ) : (
+        createElement('ul', {}, (
+          renderListItems(node.items)
+        ))
+      );
+    }
     case BlockType.dictionaryExample: {
       const props = {
         example: node.example,
       };
       return createElement(DictionaryExample, { props }, renderChildren(node.summary || []));
+    }
+    case BlockType.small: {
+      return createElement('p', {}, [
+        createElement(Small, {}, renderChildren(node.inlineContent)),
+      ]);
+    }
+    case BlockType.video: {
+      if (node.metadata && node.metadata.abstract) {
+        return renderFigure(node);
+      }
+
+      return references[node.identifier] ? (
+        createElement(BlockVideo, {
+          props: {
+            identifier: node.identifier,
+          },
+        })
+      ) : null;
+    }
+    case BlockType.row: {
+      const columns = node.numberOfColumns ? { large: node.numberOfColumns } : undefined;
+      return createElement(
+        Row, { props: { columns } }, node.columns.map(col => (
+          createElement(
+            Column, { props: { span: col.size } }, renderChildren(col.content),
+          )
+        )),
+      );
+    }
+    case BlockType.tabNavigator: {
+      // If the tabs count is more than the threshold, use vertical tabs instead.
+      const vertical = node.tabs.length > TabNavigatorVerticalThreshold;
+      const titles = node.tabs.map(tab => tab.title);
+      const scopedSlots = node.tabs.reduce((slots, tab) => ({
+        ...slots,
+        [tab.title]: () => renderChildren(tab.content),
+      }), {});
+      return createElement(TabNavigator, {
+        props: {
+          titles,
+          vertical,
+        },
+        scopedSlots,
+      });
+    }
+    case BlockType.links: {
+      return createElement(LinksBlock, {
+        props: {
+          blockStyle: node.style,
+          identifiers: node.items,
+        },
+      });
     }
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (
@@ -284,7 +388,7 @@ function renderNode(createElement, references) {
         renderChildren(node.inlineContent)
       ));
     case InlineType.image: {
-      if (node.metadata && node.metadata.anchor) {
+      if (node.metadata && (node.metadata.anchor || node.metadata.abstract)) {
         return renderFigure(node);
       }
 
@@ -309,7 +413,7 @@ function renderNode(createElement, references) {
       const reference = references[node.identifier];
       if (!reference) return null;
       const titleInlineContent = node.overridingTitleInlineContent
-          || reference.titleInlineContent;
+        || reference.titleInlineContent;
       const titlePlainText = node.overridingTitle || reference.title;
       return createElement(Reference, {
         props: {
@@ -345,7 +449,7 @@ function renderNode(createElement, references) {
 
 export default {
   name: 'ContentNode',
-  constants: { TableHeaderStyle },
+  constants: { TableHeaderStyle, TableColumnAlignments },
   render: function render(createElement) {
     // Dynamically map each content item and any children to their
     // corresponding components, and wrap the whole tree in a <div>

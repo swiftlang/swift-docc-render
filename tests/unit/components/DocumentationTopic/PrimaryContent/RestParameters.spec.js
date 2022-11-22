@@ -15,10 +15,10 @@ import Badge from 'docc-render/components/Badge.vue';
 
 const {
   PossiblyChangedType,
-  OnThisPageSection,
   WordBreak,
   ParameterAttributes,
   PossiblyChangedTextAttribute,
+  LinkableHeading,
 } = RestParameters.components;
 
 const { AttributeKind } = RestParameters.components.ParameterAttributes.constants;
@@ -47,7 +47,7 @@ describe('RestParameters', () => {
 
   function mountComponent({ propsData: props, ...others } = {}) {
     return mount(RestParameters, {
-      stubs: ['ContentNode'],
+      stubs: ['ContentNode', 'router-link'],
       propsData: {
         ...propsData,
         ...props,
@@ -57,17 +57,10 @@ describe('RestParameters', () => {
     });
   }
 
-  it('renders an `OnThisPageSection`', () => {
-    const section = mountComponent().find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.props('anchor')).toBe('title');
-    expect(section.props('title')).toBe(propsData.title);
-  });
-
-  it('renders an h2 title', () => {
-    const h2 = mountComponent().find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe(propsData.title);
+  it('renders an h2 section title', () => {
+    const sectionTitle = mountComponent().find(LinkableHeading);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('displays the parameters information', () => {

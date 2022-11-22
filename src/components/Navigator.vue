@@ -15,23 +15,23 @@
   >
     <NavigatorCard
       v-if="!isFetching"
-      :technology="technology.title"
-      :is-technology-beta="technology.beta"
-      :technology-path="technology.path || technology.url"
+      v-bind="technologyProps"
       :type="type"
       :children="flatChildren"
       :active-path="activePath"
       :scrollLockID="scrollLockID"
       :error-fetching="errorFetching"
-      :breakpoint="breakpoint"
+      :render-filter-on-top="renderFilterOnTop"
       :api-changes="apiChanges"
+      :allow-hiding="allowHiding"
+      :navigator-references="navigatorReferences"
       @close="$emit('close')"
     />
-    <NavigatorCardInner v-else class="loading-placeholder">
-      <transition name="delay-visibility" appear>
-        <SpinnerIcon class="loading-spinner" />
-      </transition>
-    </NavigatorCardInner>
+    <LoadingNavigatorCard
+      v-else
+      v-bind="technologyProps"
+      @close="$emit('close')"
+    />
     <div aria-live="polite" class="visuallyhidden">
       Navigator is {{ isFetching ? 'loading' : 'ready' }}
     </div>
@@ -40,20 +40,22 @@
 
 <script>
 import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
-import SpinnerIcon from 'theme/components/Icons/SpinnerIcon.vue';
-import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
+import LoadingNavigatorCard from 'theme/components/Navigator/LoadingNavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
 
 /**
  * @typedef NavigatorFlatItem
  * @property {number} uid - generated UID
  * @property {string} title - title of symbol
  * @property {string} type - symbol type, used for the icon
+ * @property {string} icon - an image reference to override the type icon
  * @property {array} abstract - symbol abstract
  * @property {string} path - path to page, used in navigation
  * @property {number} parent - parent UID
+ * @property {number} groupMarkerUID - UID of the groupMarker that labels this
+ * @property {number} deprecatedChildrenCount - number of children that are deprecated.
+ * Used for filtering
  * @property {number} depth - depth of symbol in original tree
  * @property {number} index - index of item in siblings
  * @property {number} siblingsCount - number of siblings
@@ -68,8 +70,7 @@ export default {
   name: 'Navigator',
   components: {
     NavigatorCard,
-    NavigatorCardInner,
-    SpinnerIcon,
+    LoadingNavigatorCard,
   },
   data() {
     return {
@@ -77,6 +78,10 @@ export default {
     };
   },
   props: {
+    flatChildren: {
+      type: Array,
+      required: true,
+    },
     parentTopicIdentifiers: {
       type: Array,
       required: true,
@@ -93,6 +98,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    navigatorReferences: {
+      type: Object,
+      default: () => {},
+    },
     scrollLockID: {
       type: String,
       default: '',
@@ -101,13 +110,17 @@ export default {
       type: Boolean,
       default: false,
     },
-    breakpoint: {
-      type: String,
-      default: BreakpointName.large,
+    renderFilterOnTop: {
+      type: Boolean,
+      default: false,
     },
     apiChanges: {
       type: Object,
       default: null,
+    },
+    allowHiding: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
@@ -136,77 +149,14 @@ export default {
       return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat(path);
     },
     /**
-     * Recomputes the list of flat children.
-     * @return NavigatorFlatItem[]
-     */
-    flatChildren: ({ flattenNestedData, technology = {} }) => (
-      flattenNestedData(technology.children || [], null, 0, technology.beta)
-    ),
-    /**
      * The root item is always a module
      */
     type: () => TopicTypes.module,
-  },
-  methods: {
-    /**
-     * Generates a unique hash, from a string, generating a signed number.
-     * @returns Number
-     */
-    hashCode(str) {
-      return str.split('').reduce((prevHash, currVal) => (
-        // eslint-disable-next-line no-bitwise
-        (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0
-      ), 0);
-    },
-    /**
-     * @param {{path: string, type: string, title: string, children?: [] }[]} childrenNodes
-     * @param {NavigatorFlatItem | null} parent
-     * @param {Number} depth
-     * @param {Boolean} parentBetaStatus
-     * @return {NavigatorFlatItem[]}
-     */
-    flattenNestedData(childrenNodes, parent = null, depth = 0, parentBetaStatus = false) {
-      let items = [];
-      const len = childrenNodes.length;
-      let index;
-      for (index = 0; index < len; index += 1) {
-        // get the children
-        const { children, ...node } = childrenNodes[index];
-        // generate the extra properties
-        const { uid: parentUID = INDEX_ROOT_KEY } = parent || {};
-        // generate a uid to track by
-        node.uid = this.hashCode(`${parentUID}+${node.path}_${depth}_${index}`);
-        // store the parent uid
-        node.parent = parentUID;
-        // store which item it is
-        node.index = index;
-        // store how many siblings it has
-        node.siblingsCount = len;
-        // store the depth
-        node.depth = depth;
-        // store child UIDs
-        node.childUIDs = [];
-        // if the parent is not the root, push to its childUIDs the current node uid
-        if (parent) {
-          // push child to parent
-          parent.childUIDs.push(node.uid);
-        }
-        // if the parent or the entire technology are marked as `Beta`,
-        // child elements do not get marked as `Beta`.
-        if (node.beta && parentBetaStatus) {
-          node.beta = false;
-        }
-
-        items.push(node);
-        if (children) {
-          // return the children to the parent
-          items = items.concat(this.flattenNestedData(
-            children, node, depth + 1, parentBetaStatus || node.beta,
-          ));
-        }
-      }
-      return items;
-    },
+    technologyProps: ({ technology }) => ({
+      technology: technology.title,
+      technologyPath: technology.path || technology.url,
+      isTechnologyBeta: technology.beta,
+    }),
   },
 };
 </script>
@@ -215,37 +165,13 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .navigator {
-  --nav-height: #{$nav-height};
   height: 100%;
   display: flex;
   flex-flow: column;
 
-  @include breakpoints-from(xlarge) {
-    border-left: 1px solid var(--color-grid);
-  }
-
   @include breakpoint(medium, nav) {
     position: static;
     transition: none;
-  }
-}
-
-.loading-placeholder {
-  align-items: center;
-  color: var(--color-figure-gray-secondary);
-  justify-content: center;
-}
-
-.loading-spinner {
-  --spinner-size: 40px; // used for both width and height
-  --spinner-delay: 1s; // don't show spinner until this much time has passed
-
-  height: var(--spinner-size);
-  width: var(--spinner-size);
-
-  &.delay-visibility-enter-active {
-    transition: visibility var(--spinner-delay);
-    visibility: hidden;
   }
 }
 </style>

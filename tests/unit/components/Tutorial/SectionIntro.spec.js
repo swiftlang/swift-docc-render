@@ -108,6 +108,7 @@ describe('SectionIntro', () => {
       showsReplayButton: true,
       showsVideoControls: false,
       videoAutoplays: true,
+      videoMuted: true,
     });
   });
 
