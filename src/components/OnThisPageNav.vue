@@ -115,7 +115,7 @@ export default {
     getItemClasses(item) {
       return {
         active: this.checkIsActive(item),
-        'parent-item': item.level === 2,
+        'parent-item': item.level <= 2,
         'child-item': item.level === 3,
       };
     },

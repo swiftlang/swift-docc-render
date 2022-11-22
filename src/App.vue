@@ -13,6 +13,7 @@
     id="app"
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
+    <div :id="AppTopID" />
     <a href="#main" id="skip-nav">Skip Navigation</a>
     <InitialLoadingPlaceholder />
     <slot name="header" :isTargetIDE="isTargetIDE">
@@ -38,6 +39,7 @@ import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlac
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { fetchThemeSettings, themeSettingsState } from 'docc-render/utils/theme-settings';
 import { objectToCustomProperties } from 'docc-render/utils/themes';
+import { AppTopID } from 'docc-render/constants/AppTopID';
 
 export default {
   name: 'CoreApp',
@@ -53,6 +55,7 @@ export default {
   },
   data() {
     return {
+      AppTopID,
       appState: AppStore.state,
       fromKeyboard: false,
       isTargetIDE: process.env.VUE_APP_TARGET === 'ide',

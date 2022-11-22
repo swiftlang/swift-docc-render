@@ -32,10 +32,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .table-wrapper {
-  & + *,
-  * + & {
-    margin-top: $stacked-margin-xlarge;
-  }
+  @include space-out-between-siblings($stacked-margin-xlarge);
 }
 </style>
 
