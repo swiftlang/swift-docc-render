@@ -12,16 +12,18 @@
   <footer class="footer">
     <div class="row">
       <ColorSchemeToggle />
+      <LocaleSelector />
     </div>
   </footer>
 </template>
 
 <script>
 import ColorSchemeToggle from 'docc-render/components/ColorSchemeToggle.vue';
+import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 
 export default {
   name: 'Footer',
-  components: { ColorSchemeToggle },
+  components: { ColorSchemeToggle, LocaleSelector },
 };
 </script>
 

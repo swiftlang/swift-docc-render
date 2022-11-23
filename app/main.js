@@ -10,15 +10,25 @@
 
 import '../webpack-asset-path';
 import Vue from 'vue';
+import VueI18n from 'vue-i18n';
 import Router from 'vue-router';
 import App from '@/App.vue';
 import SwiftDocCRenderPlugin from '@/setup-utils/SwiftDocCRenderPlugin';
 import SwiftDocCRenderRouter from '@/setup-utils/SwiftDocCRenderRouter';
+import * as messages from '@/lang';
 
 Vue.use(SwiftDocCRenderPlugin);
 Vue.use(Router);
+Vue.use(VueI18n);
+
+const i18n = new VueI18n({
+  locale: 'es',
+  fallbackLocale: 'en',
+  messages,
+});
 
 new Vue({
   router: SwiftDocCRenderRouter(),
   render: h => h(App),
+  i18n,
 }).$mount('#app');
