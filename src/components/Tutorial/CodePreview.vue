@@ -161,7 +161,7 @@ export default {
       return this.hasRuntimePreview ? null : 'No preview available for this step.';
     },
     togglePreviewText() {
-      return this.hasRuntimePreview ? 'Preview' : 'No Preview';
+      return this.hasRuntimePreview ? this.$t('preview') : this.$t('no-preview');
     },
     textAriaLabel: ({ shouldDisplayHideLabel, togglePreviewText }) => (
       `${togglePreviewText}, ${shouldDisplayHideLabel ? 'Hide' : 'Show'}`

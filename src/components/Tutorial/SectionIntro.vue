@@ -14,7 +14,7 @@
       <Column class="left">
         <Headline :level="2">
           <router-link :to="sectionLink" slot="eyebrow">
-            Section {{ sectionNumber }}
+            {{ $t('section') }} {{ sectionNumber }}
           </router-link>
           {{ title }}
         </Headline>

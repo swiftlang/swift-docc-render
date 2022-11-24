@@ -17,7 +17,7 @@
         <TimerIcon />
         <span class="meta-content">
           <strong class="time">{{estimatedTime}}</strong>
-          <span> Estimated Time</span>
+          <span> {{ $t('estimated-time') }}</span>
         </span>
       </p>
       <CallToActionButton

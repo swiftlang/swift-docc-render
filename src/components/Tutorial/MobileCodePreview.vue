@@ -43,7 +43,7 @@
       :visible.sync="previewIsVisible"
     >
       <div class="runtime-preview-modal-content">
-        <span class="runtime-preview-label">Preview</span>
+        <span class="runtime-preview-label">{{ $t('preview') }}</span>
         <slot />
       </div>
     </GenericModal>

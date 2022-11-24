@@ -1,3 +1,3 @@
 export default {
-  language: 'Lenguaje:',
+  language: 'Lenguaje',
 };

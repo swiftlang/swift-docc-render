@@ -88,7 +88,7 @@ export default {
     ariaLabelFor({ title, estimatedTime, kind }) {
       const titleItems = [title, TopicKindIconLabel[kind]];
       if (estimatedTime) {
-        titleItems.push(`${this.formatTime(estimatedTime)} Estimated Time`);
+        titleItems.push(`${this.formatTime(estimatedTime)} ${this.$t('estimated-time')}`);
       }
 
       return titleItems.join(' - ');

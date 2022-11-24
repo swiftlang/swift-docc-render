@@ -136,7 +136,7 @@ export default {
       };
     },
     title() {
-      return 'Check Your Understanding';
+      return this.$t('check-your-understanding');
     },
   },
   methods: {

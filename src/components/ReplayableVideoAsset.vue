@@ -69,7 +69,7 @@ export default {
     },
   },
   computed: {
-    text: ({ played }) => (played ? 'Replay' : 'Play'),
+    text: ({ played, $t }) => (played ? $t('replay') : $t('play')),
   },
   data() {
     return {

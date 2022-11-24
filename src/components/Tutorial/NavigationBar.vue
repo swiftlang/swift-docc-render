@@ -21,7 +21,7 @@
           :to="urlWithParams"
         >
           <template slot="default">{{ technology }}</template>
-          <template slot="subhead">Tutorials</template>
+          <template slot="subhead">{{ $t('tutorials') }}</template>
         </NavTitleContainer>
       </ReferenceUrlProvider>
     </template>
@@ -168,7 +168,7 @@ export default {
       if (sectionNumber === 0) {
         return undefined;
       }
-      return `(${sectionNumber} of ${numberOfSections})`;
+      return `(${sectionNumber} ${this.$t('of')} ${numberOfSections})`;
     },
   },
   methods: {

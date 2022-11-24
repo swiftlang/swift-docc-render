@@ -33,7 +33,7 @@
           :id="scrollLockID"
           ref="scroller"
           class="scroller"
-          aria-label="Documentation Navigator"
+          :aria-label="$t('documentation-navigator')"
           :items="nodesToRender"
           :min-item-size="itemSize"
           emit-update

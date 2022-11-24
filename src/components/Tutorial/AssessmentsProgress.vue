@@ -10,7 +10,7 @@
 
 <template>
   <Row>
-    <p class="title">Question {{ index }} of {{ total }}</p>
+    <p class="title">{{ $t('question') }} {{ index }} {{ $t('of') }} {{ total }}</p>
   </Row>
 </template>
 
