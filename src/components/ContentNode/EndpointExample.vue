@@ -35,11 +35,11 @@
       <div class="controls" v-if="isCollapsible">
         <a v-if="isCollapsed" href="#" class="toggle" @click.prevent="showMore">
           <InlinePlusCircleSolidIcon class="control-icon icon-inline" />
-          More
+          {{ $t('more') }}
         </a>
         <a v-else href="#" class="toggle" @click.prevent="showLess">
           <InlineMinusCircleSolidIcon class="control-icon icon-inline" />
-          Less
+          {{ $t('less') }}
         </a>
       </div>
     </Column>

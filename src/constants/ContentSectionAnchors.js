@@ -12,22 +12,22 @@ import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export const MainContentSectionAnchors = {
   topics: {
-    title: 'Topics',
+    title: this.$t('sections.topics'),
     anchor: 'topics',
     level: 2,
   },
   defaultImplementations: {
-    title: 'Default Implementations',
+    title: this.$t('sections.default-implementations'),
     anchor: 'default-implementations',
     level: 2,
   },
   relationships: {
-    title: 'Relationships',
+    title: this.$t('sections.relationships'),
     anchor: 'relationships',
     level: 2,
   },
   seeAlso: {
-    title: 'See Also',
+    title: this.$t('sections.see-also'),
     anchor: 'see-also',
     level: 2,
   },
@@ -35,22 +35,22 @@ export const MainContentSectionAnchors = {
 
 export const PrimaryContentSectionAnchors = {
   [SectionKind.declarations]: {
-    title: 'Declaration',
+    title: this.$t('section.declarations'),
     anchor: 'declaration',
     level: 2,
   },
   [SectionKind.details]: {
-    title: 'Details',
+    title: this.$t('section.details'),
     anchor: 'details',
     level: 2,
   },
   [SectionKind.parameters]: {
-    title: 'Parameters',
+    title: this.$t('section.parameters'),
     anchor: 'parameters',
     level: 2,
   },
   [SectionKind.possibleValues]: {
-    title: 'Possible Values',
+    title: this.$t('section.possible-values'),
     anchor: 'possibleValues',
     level: 2,
   },

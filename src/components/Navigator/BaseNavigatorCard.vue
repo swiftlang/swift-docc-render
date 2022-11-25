@@ -18,7 +18,7 @@
               :id="SIDEBAR_HIDE_BUTTON_ID"
               class="close-card"
               :class="{ 'hide-on-large': !allowHiding }"
-              aria-label="Close documentation navigator"
+              :aria-label="`${$t('verbs.close')} ${$t('documentation.navigator')}`"
               @click="handleHideClick"
             >
               <SidenavIcon class="icon-inline close-icon" />

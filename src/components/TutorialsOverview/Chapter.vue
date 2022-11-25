@@ -16,9 +16,12 @@
         <component
           :is="volumeHasName ? 'h3': 'h2'"
           class="name"
-          :aria-label="`${name} - Chapter ${number}`"
+          :aria-label="`${name} - ${$t('tutorials.sections.chapter')} ${number}`"
         >
-          <span class="eyebrow" aria-hidden="true">Chapter {{number}}</span>
+          <span class="eyebrow" aria-hidden="true">
+            {{$t('tutorials.sections.chapter')}}
+            {{number}}
+          </span>
           <span aria-hidden="true" class="name-text">{{name}}</span>
         </component>
         <ContentNode v-if="content" :content="content" />

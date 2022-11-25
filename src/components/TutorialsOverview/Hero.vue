@@ -17,13 +17,13 @@
         <TimerIcon />
         <span class="meta-content">
           <strong class="time">{{estimatedTime}}</strong>
-          <span> {{ $t('estimated-time') }}</span>
+          <span> {{ $t('tutorials.estimated-time') }}</span>
         </span>
       </p>
       <CallToActionButton
         v-if="action"
         :action="action"
-        :aria-label="`${action.overridingTitle} with ${title}`"
+        :aria-label="`${action.overridingTitle} ${$t('adverbs.with')} ${title}`"
         isDark
       />
     </div>

@@ -396,7 +396,7 @@ export default {
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
     ),
-    tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
+    tagName: ({ isSymbolDeprecated, $t }) => (isSymbolDeprecated ? $t('change-type.deprecated') : $t('kind.beta')),
     /**
      * Finds the page icon in the `pageImages` array
      * @param {Array} pageImages

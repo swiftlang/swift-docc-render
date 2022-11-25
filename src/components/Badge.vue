@@ -16,8 +16,8 @@
 
 <script>
 const VARIANT_TEXT = {
-  beta: 'Beta',
-  deprecated: 'Deprecated',
+  beta: this.$t('kind.beta'),
+  deprecated: this.$t('change-type.deprecated'),
 };
 
 export default {

@@ -16,7 +16,7 @@
           <p class="betainfo-label">Beta Software</p>
           <div class="betainfo-content">
             <slot name="content">
-              <p>This documentation refers to beta software and may be changed.</p>
+              <p>{{ $t('beta-legal') }}</p>
             </slot>
           </div>
           <slot name="after" />

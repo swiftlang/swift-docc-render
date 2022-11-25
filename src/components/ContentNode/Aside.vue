@@ -39,13 +39,13 @@ export default {
     },
   },
   computed: {
-    label: ({ kind, name }) => name || ({
-      [Kind.deprecated]: 'Deprecated',
-      [Kind.experiment]: 'Experiment',
-      [Kind.important]: 'Important',
-      [Kind.note]: 'Note',
-      [Kind.tip]: 'Tip',
-      [Kind.warning]: 'Warning',
+    label: ({ kind, name, $t }) => name || ({
+      [Kind.deprecated]: $t('change-type.deprecated'),
+      [Kind.experiment]: $t('kind.experiment'),
+      [Kind.important]: $t('kind.important'),
+      [Kind.note]: $t('kind.note'),
+      [Kind.tip]: $t('kind.tip'),
+      [Kind.warning]: $t('kind.warning'),
     }[kind]),
   },
 };

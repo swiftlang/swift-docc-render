@@ -51,9 +51,9 @@
           :to="rootLink"
           class="nav-title-link"
         >
-          {{ $t('documentation') }}
+          {{ $t('documentation.title') }}
         </router-link>
-        <span v-else class="nav-title-link inactive">{{ $t('documentation') }}</span>
+        <span v-else class="nav-title-link inactive">{{ $t('documentation.title') }}</span>
       </slot>
     </template>
     <template #tray="{ closeNav }">

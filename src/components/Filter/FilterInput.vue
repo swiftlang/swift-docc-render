@@ -90,7 +90,7 @@
         <div class="filter__delete-button-wrapper">
           <button
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
-            aria-label="Reset Filter"
+            :aria-label="`${$t('verbs.reset')} ${$t('filter')}`"
             class="filter__delete-button"
             @click="resetFilters(true)"
             @keydown.enter.exact.stop="resetFilters(true)"
@@ -177,7 +177,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => 'Filter',
+      default: () => this.$t('filter'),
     },
     disabled: {
       type: Boolean,

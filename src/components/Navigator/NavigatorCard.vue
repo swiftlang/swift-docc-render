@@ -33,7 +33,7 @@
           :id="scrollLockID"
           ref="scroller"
           class="scroller"
-          :aria-label="$t('documentation-navigator')"
+          :aria-label="$t('documentation.navigator')"
           :items="nodesToRender"
           :min-item-size="itemSize"
           emit-update
@@ -159,7 +159,7 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.project]: FILTER_TAGS.tutorials,
 };
 
-const HIDE_DEPRECATED_TAG = 'Hide Deprecated';
+const HIDE_DEPRECATED_TAG = `${this.t$('verbs.hide')} ${this.t$('change-type.deprecated')}`;
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
