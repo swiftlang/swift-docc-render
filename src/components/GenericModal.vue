@@ -23,7 +23,7 @@
           v-if="showClose"
           class="close"
           ref="close"
-          aria-label="Close"
+          :aria-label="$t('verbs.close')"
           @click.prevent="closeModal"
         >
           <CloseIcon />

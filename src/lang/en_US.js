@@ -1,6 +1,5 @@
 export default {
   language: 'Language',
-  availability: 'Availability',
   'on-this-page': 'On this page',
   video: {
     replay: 'Replay',
@@ -16,6 +15,9 @@ export default {
     assessment: {
       'check-your-understanding': 'Check Your Understanding',
       'success-message': 'Great job, you\'ve answered all the questions for this tutorial.',
+      'answer-number-is': 'Answer number {index} is',
+      correct: 'correct',
+      incorrect: 'incorrect',
     },
     'project-files': 'Project files',
     'estimated-time': 'Estimated Time',
@@ -48,9 +50,11 @@ export default {
   documentation: {
     title: 'Documentation',
     navigator: 'Documentation Navigator',
+    nav: {
+      breadcrumbs: 'Breadcrumbs',
+    },
   },
   'navigator-is': 'Navigator is',
-  filter: 'Filter',
   kind: {
     beta: 'Beta',
     experiment: 'Experiment',
@@ -69,6 +73,7 @@ export default {
     show: 'Show',
     close: 'Close',
     reset: 'Reset',
+    open: 'Open',
   },
   sections: {
     title: 'Section',
@@ -81,6 +86,7 @@ export default {
     parameters: 'Parameters',
     'possible-values': 'Possible Values',
     parts: 'Parts',
+    availability: 'Availability',
   },
   details: {
     name: 'Name',
@@ -90,4 +96,23 @@ export default {
   'beta-legal': 'This documentation refers to beta software and may be changed.',
   more: 'More',
   less: 'Less',
+  availability: {
+    'introduced-in': 'Introduced in',
+    'and-deprecated-in': 'and deprecated in',
+    'available-on': 'Available on',
+    'and-later': 'And later',
+  },
+  'api-reference': 'API Reference',
+  'color-scheme': 'Select a color scheme preference',
+  filter: {
+    title: 'Filter',
+    suggested: 'Suggested',
+    selected: 'Selected',
+  },
+  navigator: {
+    'no-results': 'No results found.',
+    'no-children': 'No data available.',
+    'error-fetching': 'There was an error fetching the data.',
+    'items-found': 'items were found. Tab back to navigate through them.',
+  },
 };

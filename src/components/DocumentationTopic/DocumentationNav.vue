@@ -18,7 +18,7 @@
     :isWideFormat="isWideFormat"
     hasFullWidthBorder
     class="documentation-nav"
-    aria-label="API Reference"
+    :aria-label="$t('api-reference')"
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
       <transition name="sidenav-toggle">
@@ -27,7 +27,7 @@
           class="sidenav-toggle-wrapper"
         >
           <button
-            aria-label="Open documentation navigator"
+            :aria-label="`${$t('verbs.open')} ${$t('documentation.navigator')}`"
             :id="baseNavOpenSidenavButtonId"
             class="sidenav-toggle"
             :tabindex="isOpen ? -1 : null"

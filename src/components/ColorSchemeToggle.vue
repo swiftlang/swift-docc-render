@@ -10,7 +10,7 @@
 
 <template>
   <div
-    aria-label="Select a color scheme preference"
+    :aria-label="$t('color-scheme')"
     class="color-scheme-toggle"
     role="radiogroup"
   >

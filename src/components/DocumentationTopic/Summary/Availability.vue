@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <Section class="availability" role="complementary" :aria-label="$t('availability')">
+  <Section class="availability" role="complementary" :aria-label="$t('sections.availability')">
     <Badge
       v-for="technology in technologies"
       class="technology"

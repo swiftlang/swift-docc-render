@@ -125,11 +125,6 @@ import {
 
 const STORAGE_KEY = 'navigator.state';
 
-const NO_RESULTS = 'No results found.';
-const NO_CHILDREN = 'No data available.';
-const ERROR_FETCHING = 'There was an error fetching the data.';
-const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
-
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
   tutorials: 'tutorials',
@@ -172,10 +167,6 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
-    NO_RESULTS,
-    NO_CHILDREN,
-    ERROR_FETCHING,
-    ITEMS_FOUND,
   },
   components: {
     FilterInput,
@@ -239,20 +230,22 @@ export default {
       nodesToRender: [],
       activeUID: null,
       lastFocusTarget: null,
-      NO_RESULTS,
-      NO_CHILDREN,
-      ERROR_FETCHING,
-      ITEMS_FOUND,
+      NO_RESULTS: this.$t('navigator.no-results'),
+      NO_CHILDREN: this.$t('navigator.no-children'),
+      ERROR_FETCHING: this.$t('navigator.error-fetching'),
+      ITEMS_FOUND: this.$t('navigator.items-found'),
       HIDE_DEPRECATED_TAG: `${this.$t('verbs.hide')} ${this.$t('change-type.deprecated')}`,
       allNodesToggled: false,
     };
   },
   computed: {
-    politeAriaLive: ({ hasNodes, nodesToRender }) => {
+    politeAriaLive: ({ hasNodes, nodesToRender, ITEMS_FOUND }) => {
       if (!hasNodes) return '';
       return [nodesToRender.length, ITEMS_FOUND].join(' ');
     },
-    assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
+    assertiveAriaLive: ({
+      hasNodes, hasFilter, errorFetching, NO_RESULTS, NO_CHILDREN, ERROR_FETCHING,
+    }) => {
       if (hasNodes) return '';
       if (hasFilter) return NO_RESULTS;
       if (errorFetching) return ERROR_FETCHING;

@@ -47,18 +47,18 @@ export default {
         .concat(description)
         .join(', ');
     },
-    description() {
-      const {
-        deprecatedAt,
-        introducedAt,
-        platformName: name,
-      } = this;
-      return deprecatedAt ? (
-        `Introduced in ${name} ${introducedAt} and deprecated in ${name} ${deprecatedAt}`
+    description: ({
+      deprecatedAt,
+      introducedAt,
+      platformName: name,
+      $t,
+    }) => (
+      deprecatedAt ? (
+        `${$t('availability.introduced-in')} ${name} ${introducedAt} ${$t('availability.and-deprecated-in')} ${name} ${deprecatedAt}`
       ) : (
-        `Available on ${name} ${introducedAt} and later`
-      );
-    },
+        `${$t('availability.available-on')} ${name} ${introducedAt} ${$t('availability.and-later')}`
+      )
+    ),
     text() {
       const {
         deprecatedAt,
