@@ -17,9 +17,9 @@ export const ChangeTypes = {
 export const ChangeTypesOrder = [ChangeTypes.modified, ChangeTypes.added, ChangeTypes.deprecated];
 
 export const ChangeNames = {
-  [ChangeTypes.modified]: this.$t('change-type.modified'),
-  [ChangeTypes.added]: this.$t('change-type.added'),
-  [ChangeTypes.deprecated]: this.$t('change-type.deprecated'),
+  [ChangeTypes.modified]: 'change-type.modified',
+  [ChangeTypes.added]: 'change-type.added',
+  [ChangeTypes.deprecated]: 'change-type.deprecated',
 };
 
 export const ChangeNameToType = {

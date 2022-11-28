@@ -159,8 +159,6 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.project]: FILTER_TAGS.tutorials,
 };
 
-const HIDE_DEPRECATED_TAG = `${this.t$('verbs.hide')} ${this.t$('change-type.deprecated')}`;
-
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
  * For performance reasons, the component uses watchers over computed, so we can more precisely
@@ -178,7 +176,6 @@ export default {
     NO_CHILDREN,
     ERROR_FETCHING,
     ITEMS_FOUND,
-    HIDE_DEPRECATED_TAG,
   },
   components: {
     FilterInput,
@@ -246,6 +243,7 @@ export default {
       NO_CHILDREN,
       ERROR_FETCHING,
       ITEMS_FOUND,
+      HIDE_DEPRECATED_TAG: `${this.$t('verbs.hide')} ${this.$t('change-type.deprecated')}`,
       allNodesToggled: false,
     };
   },
@@ -265,7 +263,7 @@ export default {
      * Shows only tags, that have children matches.
      */
     availableTags: ({
-      selectedTags, renderableChildNodesMap, apiChangesObject,
+      selectedTags, renderableChildNodesMap, apiChangesObject, HIDE_DEPRECATED_TAG, $t,
     }) => {
       const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
       if (!tagLabels.length) return tagLabels;
@@ -304,7 +302,7 @@ export default {
           tagLabelsSet.delete(tagLabel);
         }
         if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.changes.push(ChangeNames[changeType]);
+          availableTags.changes.push($t(ChangeNames[changeType]));
           apiChangesTypesSet.delete(changeType);
         }
         if (deprecated && generalTags.has(HIDE_DEPRECATED_TAG)) {
@@ -315,8 +313,8 @@ export default {
       return availableTags.type.concat(availableTags.changes, availableTags.other);
     },
     selectedTagsModelValue: {
-      get: ({ selectedTags }) => selectedTags.map(tag => (
-        FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
+      get: ({ selectedTags, $t }) => selectedTags.map(tag => (
+        FILTER_TAGS_TO_LABELS[tag] || $t(ChangeNames[tag]) || tag
       )),
       set(values) {
         // guard against accidental clearings
@@ -363,7 +361,7 @@ export default {
      */
     filteredChildren({
       hasFilter, children, filterPattern, selectedTags,
-      apiChangesObject, apiChanges,
+      apiChangesObject, apiChanges, HIDE_DEPRECATED_TAG,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
@@ -452,7 +450,9 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags }) => selectedTags[0] === HIDE_DEPRECATED_TAG,
+    deprecatedHidden: ({ selectedTags, HIDE_DEPRECATED_TAG }) => (
+      selectedTags[0] === HIDE_DEPRECATED_TAG
+    ),
     apiChangesObject() {
       return this.apiChanges || {};
     },
@@ -470,7 +470,7 @@ export default {
     apiChanges(value) {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
-      this.selectedTags = this.selectedTags.filter(t => !ChangeNames[t]);
+      this.selectedTags = this.selectedTags.filter(t => !this.$t(ChangeNames[t]));
     },
   },
   methods: {

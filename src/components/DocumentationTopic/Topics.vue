@@ -11,7 +11,7 @@
 <template>
   <TopicsTable
     :anchor="contentSectionData.anchor"
-    :title="contentSectionData.title"
+    :title="$t(contentSectionData.title)"
     :isSymbolDeprecated="isSymbolDeprecated"
     :isSymbolBeta="isSymbolBeta"
     :sections="sections"

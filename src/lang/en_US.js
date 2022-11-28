@@ -75,7 +75,7 @@ export default {
     topics: 'Topics',
     'default-implementations': 'Default Implementations',
     relationships: 'Relationships',
-    seeAlso: 'See Also',
+    'see-also': 'See Also',
     declarations: 'Declaration',
     details: 'Details',
     parameters: 'Parameters',

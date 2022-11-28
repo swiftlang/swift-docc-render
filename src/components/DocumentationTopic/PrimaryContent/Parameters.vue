@@ -11,7 +11,7 @@
 <template>
   <section class="parameters">
     <LinkableHeading :anchor="contentSectionData.anchor">
-      {{ contentSectionData.title }}
+      {{ $t(contentSectionData.title) }}
     </LinkableHeading>
     <dl>
       <template v-for="param in parameters">

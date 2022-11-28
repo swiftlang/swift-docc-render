@@ -16,8 +16,8 @@
 
 <script>
 const VARIANT_TEXT = {
-  beta: this.$t('kind.beta'),
-  deprecated: this.$t('change-type.deprecated'),
+  beta: 'kind.beta',
+  deprecated: 'change-type.deprecated',
 };
 
 export default {
@@ -35,7 +35,7 @@ export default {
      * @param variant
      * @return {'Deprecated' | 'Beta'}
      */
-    text: ({ variant }) => VARIANT_TEXT[variant],
+    text: ({ variant, $t }) => $t(VARIANT_TEXT[variant]),
   },
 };
 </script>

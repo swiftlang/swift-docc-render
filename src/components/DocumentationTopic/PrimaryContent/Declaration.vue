@@ -11,7 +11,7 @@
 <template>
   <section class="declaration">
     <LinkableHeading :anchor="contentSectionData.anchor">
-      {{ contentSectionData.title }}
+      {{ $t(contentSectionData.title) }}
     </LinkableHeading>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff

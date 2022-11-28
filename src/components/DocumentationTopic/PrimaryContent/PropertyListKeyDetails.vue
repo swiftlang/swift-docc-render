@@ -11,7 +11,7 @@
 <template>
   <section class="details">
     <LinkableHeading :anchor="contentSectionData.anchor">
-      {{ contentSectionData.title }}
+      {{ $t(contentSectionData.title) }}
     </LinkableHeading>
     <dl>
       <template v-if="isSymbol">
