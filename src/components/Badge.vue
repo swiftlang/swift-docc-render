@@ -10,7 +10,7 @@
 
 <template>
   <span class="badge" :class="{ [`badge-${variant}`]: variant }" role="presentation">
-    <slot>{{ text }}</slot>
+    <slot>{{ $t(text) }}</slot>
   </span>
 </template>
 
@@ -35,7 +35,7 @@ export default {
      * @param variant
      * @return {'Deprecated' | 'Beta'}
      */
-    text: ({ variant, $t }) => $t(VARIANT_TEXT[variant]),
+    text: ({ variant }) => VARIANT_TEXT[variant],
   },
 };
 </script>

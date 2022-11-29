@@ -13,8 +13,8 @@
     <Column class="example-code">
       <slot />
       <Tabnav v-model="currentTab">
-        <TabnavItem :value="Tab.request">{{ Tab.request }}</TabnavItem>
-        <TabnavItem :value="Tab.response">{{ Tab.response }}</TabnavItem>
+        <TabnavItem :value="Tab.request">{{ $t('tab.request') }}</TabnavItem>
+        <TabnavItem :value="Tab.response">{{ $t('tab.response') }}</TabnavItem>
       </Tabnav>
       <div class="output">
         <div v-if="isCurrent(Tab.request)" class="code">

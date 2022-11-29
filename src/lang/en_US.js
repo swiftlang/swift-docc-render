@@ -97,10 +97,8 @@ export default {
   more: 'More',
   less: 'Less',
   availability: {
-    'introduced-in': 'Introduced in',
-    'and-deprecated-in': 'and deprecated in',
-    'available-on': 'Available on',
-    'and-later': 'And later',
+    'introduced-and-deprecated': 'Introduced in {name} {introducedAt} and deprecated in {name} {deprecatedAt}',
+    'available-on': 'Available on {name} {introducedAt} and later',
   },
   'api-reference': 'API Reference',
   'color-scheme': 'Select a color scheme preference',
@@ -114,5 +112,9 @@ export default {
     'no-children': 'No data available.',
     'error-fetching': 'There was an error fetching the data.',
     'items-found': 'items were found. Tab back to navigate through them.',
+  },
+  tab: {
+    request: 'Request',
+    response: 'Response',
   },
 };

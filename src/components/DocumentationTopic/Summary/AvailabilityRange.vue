@@ -41,24 +41,25 @@ export default {
         deprecatedAt,
         description,
         text,
+        $t,
       } = this;
       return [text]
-        .concat(deprecatedAt ? this.$t('change-type.deprecated') : [])
+        .concat(deprecatedAt ? $t('change-type.deprecated') : [])
         .concat(description)
         .join(', ');
     },
-    description: ({
-      deprecatedAt,
-      introducedAt,
-      platformName: name,
-      $t,
-    }) => (
-      deprecatedAt ? (
-        `${$t('availability.introduced-in')} ${name} ${introducedAt} ${$t('availability.and-deprecated-in')} ${name} ${deprecatedAt}`
+    description() {
+      const {
+        deprecatedAt,
+        introducedAt,
+        platformName: name,
+      } = this;
+      return deprecatedAt ? (
+        this.$t('availability.introduced-and-deprecated', { name, introducedAt, deprecatedAt })
       ) : (
-        `${$t('availability.available-on')} ${name} ${introducedAt} ${$t('availability.and-later')}`
-      )
-    ),
+        this.$t('availability.available-on', { name, introducedAt })
+      );
+    },
     text() {
       const {
         deprecatedAt,
