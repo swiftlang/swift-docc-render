@@ -13,6 +13,7 @@ import { shallowMount } from '@vue/test-utils';
 import { SectionKind } from '@/constants/PrimaryContentSection';
 import onThisPageSectionsStoreBase from '@/stores/OnThisPageSectionsStoreBase';
 import { BlockType } from 'docc-render/components/ContentNode.vue';
+import { AppTopID } from '@/constants/AppTopID';
 import { flushPromises } from '../../../test-utils';
 
 const contentSections = [
@@ -38,6 +39,9 @@ const contentSections = [
   },
 ];
 const topicData = () => ({
+  metadata: {
+    title: 'PageTitle',
+  },
   primaryContentSections: [
     {
       kind: SectionKind.content,
@@ -107,6 +111,7 @@ describe('OnThisPageRegistrator', () => {
     await flushPromises();
     wrapper.setData({
       topicData: {
+        metadata: { title: 'Foo' },
         primaryContentSections: [
           {
             kind: SectionKind.content,
@@ -124,6 +129,7 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
+      { anchor: AppTopID, level: 1, title: 'Foo' },
       {
         anchor: 'provided-heading-anchor',
         level: 2,
@@ -144,6 +150,7 @@ describe('OnThisPageRegistrator', () => {
     await flushPromises();
     wrapper.setData({
       topicData: {
+        metadata: { title: 'Foo' },
         primaryContentSections: [
           {
             kind: SectionKind.content,
@@ -166,6 +173,7 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
+      { anchor: AppTopID, level: 1, title: 'Foo' },
       {
         anchor: 'provided-heading-anchor',
         level: 2,
@@ -186,8 +194,9 @@ describe('OnThisPageRegistrator', () => {
 
   it('watches for changes, clears the store and extracts sections again', async () => {
     const wrapper = createWrapper();
-    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(16);
+    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(17);
     wrapper.vm.topicData = {
+      metadata: { title: 'Foo' },
       primaryContentSections: [
         {
           kind: SectionKind.content,
@@ -197,6 +206,7 @@ describe('OnThisPageRegistrator', () => {
     };
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
+      { anchor: AppTopID, level: 1, title: 'Foo' },
       {
         anchor: 'provided-heading-anchor',
         level: 2,

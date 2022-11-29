@@ -16,6 +16,7 @@ import {
   PrimaryContentSectionAnchors,
 } from 'docc-render/constants/ContentSectionAnchors';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import { AppTopID } from 'docc-render/constants/AppTopID';
 
 /**
  * Crawls the `topicData` of a page, and extracts onThisPage sections.
@@ -37,12 +38,18 @@ export default {
       this.store.resetPageSections();
       // register new ones
       const {
+        metadata: { title },
         primaryContentSections,
         topicSections,
         defaultImplementationsSections,
         relationshipsSections,
         seeAlsoSections,
       } = topicData;
+      this.store.addOnThisPageSection({
+        title,
+        anchor: AppTopID,
+        level: 1,
+      });
       if (primaryContentSections) {
         primaryContentSections.forEach((section) => {
           switch (section.kind) {
