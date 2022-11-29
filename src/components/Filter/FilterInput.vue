@@ -486,7 +486,6 @@ $input-height: rem(28px);
 
   &__wrapper {
     border: 1px solid var(--input-border-color);
-    background: var(--color-fill);
     border-radius: $small-border-radius;
 
     &--reversed {
@@ -501,6 +500,7 @@ $input-height: rem(28px);
 
   &__suggested-tags {
     border-top: 1px solid var(--color-fill-gray-tertiary);
+    background-color: var(--color-fill);
     z-index: 1;
     overflow: hidden;
 

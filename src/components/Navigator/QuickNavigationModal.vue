@@ -295,7 +295,7 @@ $input-horizontal-spacing: rem(15px);
   }
 
   &__container {
-    background-color: var(--color-fill);
+    background-color: var(--color-fill-secondary);
     border: solid $base-border-width var(--input-border-color);
     border-radius: $small-border-radius;
     margin: 0 rem(16px);
