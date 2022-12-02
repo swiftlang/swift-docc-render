@@ -75,11 +75,7 @@ describe('PropertyListKeyType', () => {
       types[0],
       types[1],
     ]).text()).toBe('string or number');
-    expect(mountWithTypes([
-      types[0],
-      types[1],
-      types[2],
-    ]).text()).toBe('string, number, or boolean');
+    expect(mountWithTypes(types).text()).toBe('string, number, or boolean');
   });
 
   it('uses "*" as a wildcard placeholder for the base type', () => {

@@ -19,7 +19,7 @@
       >{{ normaliseType(type) }}</span><template
        v-if="index + 1 < typesCount"
       >
-        <template v-if="!moreThanTwo"> or </template>
+        <template v-if="twoOrLess"> or </template>
         <template
           v-else>, <template v-if="index === typesCount - 2">or </template>
         </template>
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     typesCount: ({ types }) => types.length,
-    moreThanTwo: ({ types }) => types.length > 2,
+    twoOrLess: ({ typesCount }) => typesCount <= 2,
   },
   methods: {
     normaliseType({ arrayMode, baseType = '*' }) {
