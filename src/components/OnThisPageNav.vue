@@ -141,6 +141,7 @@ ul {
   display: inline-block;
   margin-bottom: 5px;
   transition: color 0.15s ease-in;
+  max-width: 100%;
 }
 
 .active .base-link {
