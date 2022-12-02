@@ -13,6 +13,7 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import { AppTopID } from '@/constants/AppTopID';
 import { createEvent, flushPromises } from '../../../test-utils';
+import WordBreak from '@/components/WordBreak';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 jest.mock('docc-render/utils/loading', () => ({ waitFrames: jest.fn() }));
@@ -101,11 +102,12 @@ describe('OnThisPageNav', () => {
     // assert first parent is active
     expect(firstParent.classes()).not.toContain('active');
     expect(parentLink1.props('to')).toEqual(`?language=objc#${sections[0].anchor}`);
-    expect(parentLink1.text()).toBe(sections[0].title);
+    expect(parentLink1.find(WordBreak).text()).toBe(sections[0].title);
     // assert second parent
     const secondParent = parents.at(1);
     expect(secondParent.classes()).toContain('active');
     expect(secondParent.find(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[1].anchor}`);
+    expect(secondParent.find(WordBreak).text()).toBe(sections[1].title);
     // assert "children" items
     const children = wrapper.findAll('.child-item');
     expect(children).toHaveLength(1);
