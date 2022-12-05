@@ -12,8 +12,8 @@ import Vue from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import { AppTopID } from '@/constants/AppTopID';
+import WordBreak from '@/components/WordBreak.vue';
 import { createEvent, flushPromises } from '../../../test-utils';
-import WordBreak from '@/components/WordBreak';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 jest.mock('docc-render/utils/loading', () => ({ waitFrames: jest.fn() }));
