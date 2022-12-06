@@ -76,6 +76,7 @@ describe('router-utils', () => {
       const routeDocsNoChanges = createRoute(documentationTopicName, {}, 'bar');
 
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
+      expect(mockApp.app.$nextTick).toHaveBeenCalled();
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
         offset: { x: 0, y: baseNavHeight + EXTRA_DOCUMENTATION_OFFSET },

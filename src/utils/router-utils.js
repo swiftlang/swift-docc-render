@@ -59,6 +59,12 @@ export async function scrollBehavior(to, from, savedPosition) {
     const offset = baseNavOffset + apiChangesNavHeight + getExtraScrollOffset(to);
 
     const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
+
+    // Wait until the page has been rendered if the navigation to a hash is
+    // triggered from a previous route.
+    if (from) {
+      await this.app.$nextTick();
+    }
     return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };
   }
   if (areEquivalentLocations(to, from)) {
