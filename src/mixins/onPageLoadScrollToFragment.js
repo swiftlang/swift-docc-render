@@ -8,6 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import AppStore from 'docc-render/stores/AppStore';
+import ImageLoadingStrategy from 'docc-render/constants/ImageLoadingStrategy';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 
 function waitForImageToLoad(img) {
@@ -39,6 +41,11 @@ export default {
     async scrollToElementIfAnchorPresent() {
       const { hash } = this.$route;
       if (hash) {
+        // Use "eager" loading for all images since they need to be loaded so
+        // that any dynamic height adjustments can be accounted for
+        const { imageLoadingStrategy } = AppStore.state;
+        AppStore.setImageLoadingStrategy(ImageLoadingStrategy.eager);
+
         // Before scrolling, wait for the next tick to ensure that the page has
         // been fully rendered with the Vue lifecycle and also wait for any
         // images to load since those will also add to the height of the page.
@@ -46,6 +53,9 @@ export default {
         await waitForImagesToLoad();
 
         this.scrollToElement(hash);
+
+        // Restore the original image loading strategy after scrolling
+        AppStore.setImageLoadingStrategy(imageLoadingStrategy);
       }
     },
   },
