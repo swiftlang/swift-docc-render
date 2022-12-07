@@ -124,7 +124,7 @@ export default {
     },
     loading: {
       type: String,
-      default: 'lazy',
+      default: 'eager',
     },
     shouldCalculateOptimalWidth: {
       type: Boolean,

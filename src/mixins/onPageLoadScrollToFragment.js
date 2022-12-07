@@ -10,11 +10,43 @@
 
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 
+function waitForImageToLoad(img) {
+  return new Promise((resolve, reject) => {
+    if (img.complete) {
+      resolve();
+    } else {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', reject, { once: true });
+    }
+  });
+}
+
+function waitForImagesToLoad() {
+  return Promise.allSettled(
+    [...document.getElementsByTagName('img')].map(waitForImageToLoad),
+  );
+}
+
 export default {
   mixins: [scrollToElement],
   mounted() {
-    if (this.$route.hash) {
-      this.scrollToElement(this.$route.hash);
-    }
+    this.scrollToElementIfAnchorPresent();
+  },
+  updated() {
+    this.scrollToElementIfAnchorPresent();
+  },
+  methods: {
+    async scrollToElementIfAnchorPresent() {
+      const { hash } = this.$route;
+      if (hash) {
+        // Before scrolling, wait for the next tick to ensure that the page has
+        // been fully rendered with the Vue lifecycle and also wait for any
+        // images to load since those will also add to the height of the page.
+        await this.$nextTick();
+        await waitForImagesToLoad();
+
+        this.scrollToElement(hash);
+      }
+    },
   },
 };
