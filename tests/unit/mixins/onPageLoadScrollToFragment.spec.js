@@ -42,16 +42,19 @@ describe('onPageLoadScrollToFragment', () => {
     jest.clearAllMocks();
   });
 
-  it('calls scrollToElement on mount if route has a hash', async () => {
-    createWrapper({
+  it('calls scrollToElement on mounted/updated if route has a hash', async () => {
+    const wrapper = createWrapper({
       mocks: {
         $route: {
           hash: 'some-hash',
         },
       },
     });
+    wrapper.vm.$forceUpdate();
     await flushPromises();
-    expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledWith('some-hash');
+    expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledTimes(2);
+    expect(scrollToElement.methods.scrollToElement).toHaveBeenNthCalledWith(1, 'some-hash');
+    expect(scrollToElement.methods.scrollToElement).toHaveBeenNthCalledWith(2, 'some-hash');
   });
 
   it('does not call scrollToElement if no hash exists', () => {
