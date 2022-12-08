@@ -40,23 +40,25 @@ export default {
   methods: {
     async scrollToElementIfAnchorPresent() {
       const { hash } = this.$route;
-      if (hash) {
-        // Use "eager" loading for all images since they need to be loaded so
-        // that any dynamic height adjustments can be accounted for
-        const { imageLoadingStrategy } = AppStore.state;
-        AppStore.setImageLoadingStrategy(ImageLoadingStrategy.eager);
-
-        // Before scrolling, wait for the next tick to ensure that the page has
-        // been fully rendered with the Vue lifecycle and also wait for any
-        // images to load since those will also add to the height of the page.
-        await this.$nextTick();
-        await waitForImagesToLoad();
-
-        this.scrollToElement(hash);
-
-        // Restore the original image loading strategy after scrolling
-        AppStore.setImageLoadingStrategy(imageLoadingStrategy);
+      if (!hash) {
+        return;
       }
+
+      // Use "eager" loading for all images since they need to be loaded so
+      // that any dynamic height adjustments can be accounted for
+      const { imageLoadingStrategy } = AppStore.state;
+      AppStore.setImageLoadingStrategy(ImageLoadingStrategy.eager);
+
+      // Before scrolling, wait for the next tick to ensure that the page has
+      // been fully rendered with the Vue lifecycle and also wait for any
+      // images to load since those will also add to the height of the page.
+      await this.$nextTick();
+      await waitForImagesToLoad();
+
+      this.scrollToElement(hash);
+
+      // Restore the original image loading strategy after scrolling
+      AppStore.setImageLoadingStrategy(imageLoadingStrategy);
     },
   },
 };
