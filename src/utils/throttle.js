@@ -16,20 +16,23 @@
  */
 export default function throttle(func, limit) {
   let timer;
-  let ranLastTimeOn;
-  return function innerThrottle(...args) {
-    const context = this;
-    if (!ranLastTimeOn) {
-      func.apply(context, args);
-      ranLastTimeOn = Date.now();
+  let lastRanTime;
+
+  return function(...args) {
+    const currentTime = Date.now();
+
+    if (!lastRanTime) {
+      func.apply(this, args);
+      lastRanTime = currentTime;
       return;
     }
+
     clearTimeout(timer);
     timer = setTimeout(() => {
-      if ((Date.now() - ranLastTimeOn) >= limit) {
-        func.apply(context, args);
-        ranLastTimeOn = Date.now();
+      if (currentTime - lastRanTime >= limit) {
+        func.apply(this, args);
+        lastRanTime = currentTime;
       }
-    }, limit - (Date.now() - ranLastTimeOn));
+    }, limit - (currentTime - lastRanTime));
   };
 }
