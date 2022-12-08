@@ -11,6 +11,7 @@
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import { shallowMount } from '@vue/test-utils';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
+import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/loading', () => ({ waitFrames: () => {} }));
 jest.mock('docc-render/mixins/scrollToElement', () => ({
@@ -49,7 +50,7 @@ describe('onPageLoadScrollToFragment', () => {
         },
       },
     });
-    await Promise.resolve();
+    await flushPromises();
     expect(scrollToElement.methods.scrollToElement).toHaveBeenCalledWith('some-hash');
   });
 

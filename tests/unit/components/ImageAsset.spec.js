@@ -15,6 +15,7 @@ import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/stores/AppStore', () => ({
   state: {
+    imageLoadingStrategy: 'lazy',
     preferredColorScheme: 'auto',
     supportsAutoColorScheme: true,
     setPreferredColorScheme: jest.fn(),
@@ -55,6 +56,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe(alt);
     expect(image.attributes('decoding')).toBe('async');
+    expect(image.attributes('loading')).toBe('lazy');
   });
 
   it('renders an image that has one variant with no appearance trait', () => {
@@ -87,6 +89,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe('');
     expect(image.attributes('decoding')).toBe('async');
+    expect(image.attributes('loading')).toBe('lazy');
   });
 
   it('renders an image that has two light variants', () => {
@@ -131,6 +134,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('decoding')).toBe('async');
+    expect(image.attributes('loading')).toBe('lazy');
   });
 
   it('renders an image that has two dark variants', () => {
