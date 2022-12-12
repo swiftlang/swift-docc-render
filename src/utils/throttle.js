@@ -19,20 +19,19 @@ export default function throttle(func, limit) {
   let lastRanTime;
 
   return function(...args) {
-    const currentTime = Date.now();
 
     if (!lastRanTime) {
       func.apply(this, args);
-      lastRanTime = currentTime;
+      lastRanTime = Date.now();
       return;
     }
 
     clearTimeout(timer);
     timer = setTimeout(() => {
-      if (currentTime - lastRanTime >= limit) {
+      if (Date.now() - lastRanTime >= limit) {
         func.apply(this, args);
-        lastRanTime = currentTime;
+        lastRanTime = Date.now();
       }
-    }, limit - (currentTime - lastRanTime));
+    }, limit - (Date.now() - lastRanTime));
   };
 }
