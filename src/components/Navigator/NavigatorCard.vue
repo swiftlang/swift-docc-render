@@ -91,6 +91,14 @@
               @clear="clearFilters"
             />
           </div>
+          <button
+            v-if="enableQuickNavigation"
+            class="quick-navigation-open-container"
+            aria-label="Open Quick Navigation"
+            @click="$emit('open-quick-navigator')"
+          >
+            /
+          </button>
         </div>
       </div>
     </template>
@@ -122,6 +130,7 @@ import {
   getParents,
   getSiblings,
 } from 'docc-render/utils/navigatorData';
+import { getSetting } from 'docc-render/utils/theme-settings';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -254,6 +263,9 @@ export default {
       if (!hasNodes) return '';
       return [nodesToRender.length, ITEMS_FOUND].join(' ');
     },
+    enableQuickNavigation: ({ isTargetIDE }) => (
+      !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+    ),
     assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
       if (hasNodes) return '';
       if (hasFilter) return NO_RESULTS;
@@ -1117,6 +1129,31 @@ $filter-height-small: 62px;
     @include breakpoint(medium, nav) {
       flex-basis: $filter-height-small;
     }
+  }
+}
+
+.quick-navigation-open-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--nav-filter-horizontal-padding);
+  width: calc(var(--nav-filter-horizontal-padding) * 2);
+  border: 1px solid var(--color-grid);
+  height: 100%;
+  border-radius: $border-radius;
+  transition: background-color .15s;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: var(--color-fill-tertiary);
+  }
+
+  @include breakpoint(small) {
+    display: none;
+  }
+
+  @include on-keyboard-focus() {
+    @include focus-shadow-form-element();
   }
 }
 </style>

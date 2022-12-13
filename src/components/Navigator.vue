@@ -26,6 +26,7 @@
       :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
+      @open-quick-navigator="$emit('open-quick-navigator')"
     />
     <LoadingNavigatorCard
       v-else

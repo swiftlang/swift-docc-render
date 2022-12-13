@@ -45,6 +45,7 @@
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
                     @close="handleToggleSidenav(breakpoint)"
+                    @open-quick-navigator="openQuickNavigationModal"
                   />
                 </transition>
               </div>
@@ -67,16 +68,6 @@
           :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
           @toggle-sidenav="handleToggleSidenav"
         >
-          <template #menu-items>
-            <button
-              v-if="enableQuickNavigation && enableNavigator"
-              class="quick-navigation-open-container"
-              @click="openQuickNavigationModal"
-              @keydown.enter.exact="openQuickNavigationModal"
-            >
-              <MagnifierIcon />
-            </button>
-          </template>
         </Nav>
         <Topic
           v-bind="topicProps"
@@ -112,7 +103,6 @@ import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFra
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
-import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
@@ -138,7 +128,6 @@ export default {
     Nav: DocumentationNav,
     QuickNavigationModal,
     PortalTarget,
-    MagnifierIcon,
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
   data() {
@@ -482,18 +471,6 @@ export default {
     .sidebar-transitioning & {
       border-right: 1px solid var(--color-grid);
     }
-  }
-}
-
-.quick-navigation-open-container {
-  height: rem(15px);
-  width: rem(15px);
-  margin-left: rem(10px);
-  @include nav-in-breakpoint() {
-    display: none;
-  }
-  * {
-    fill: var(--color-text);
   }
 }
 
