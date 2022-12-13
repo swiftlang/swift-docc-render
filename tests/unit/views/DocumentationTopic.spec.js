@@ -55,7 +55,6 @@ const {
   Nav,
   Topic,
   QuickNavigationModal,
-  MagnifierIcon,
 } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
@@ -270,7 +269,7 @@ describe('DocumentationTopic', () => {
     expect(quickNavigationModalComponent.exists()).toBe(true);
   });
 
-  it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is false', () => {
+  it('does not render QuickNavigation if enableQuickNavigation is false', () => {
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -290,7 +289,7 @@ describe('DocumentationTopic', () => {
     expect(quickNavigationModalComponent.exists()).toBe(false);
   });
 
-  it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {
+  it('does not render QuickNavigation if enableNavigation is false', () => {
     getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
@@ -304,7 +303,7 @@ describe('DocumentationTopic', () => {
     expect(quickNavigationModalComponent.exists()).toBe(false);
   });
 
-  it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is true but IDE is being targeted', () => {
+  it('does not render QuickNavigation if enableQuickNavigation is true but IDE is being targeted', () => {
     getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       provide: { isTargetIDE: true },
