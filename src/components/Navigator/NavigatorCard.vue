@@ -106,6 +106,7 @@
 </template>
 
 <script>
+/* eslint-disable prefer-destructuring,no-continue,no-param-reassign,no-restricted-syntax */
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
@@ -246,9 +247,9 @@ export default {
       debouncedFilter: '',
       selectedTags: [],
       /** @type {Object.<string, boolean>} */
-      openNodes: {},
+      openNodes: Object.freeze({}),
       /** @type {NavigatorFlatItem[]} */
-      nodesToRender: [],
+      nodesToRender: Object.freeze([]),
       activeUID: null,
       lastFocusTarget: null,
       NO_RESULTS,
@@ -279,32 +280,31 @@ export default {
     availableTags: ({
       selectedTags, renderableChildNodesMap, apiChangesObject,
     }) => {
-      const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
-      if (!tagLabels.length) return tagLabels;
+      if (selectedTags.length) return [];
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
-
-      const tagLabelsSet = new Set(tagLabels);
+      const tagLabelsSet = new Set(Object.values(FILTER_TAGS_TO_LABELS));
       const generalTags = new Set([HIDE_DEPRECATED_TAG]);
       // when API changes are available, remove the `HIDE_DEPRECATED_TAG` option
       if (apiChangesTypesSet.size) {
         generalTags.delete(HIDE_DEPRECATED_TAG);
       }
+
       const availableTags = {
         type: [],
         changes: [],
         other: [],
       };
-      const children = Object.values(renderableChildNodesMap);
-      const len = children.length;
-      let i;
       // iterate over the nodes to render
-      for (i = 0; i < len; i += 1) {
+      for (const childID in renderableChildNodesMap) {
+        if (!Object.hasOwnProperty.call(renderableChildNodesMap, childID)) {
+          continue;
+        }
         // if there are no more tags to iterate over, end early
         if (!tagLabelsSet.size && !apiChangesTypesSet.size && !generalTags.size) {
           break;
         }
-        // extract the type
-        const { type, path, deprecated } = children[i];
+        // extract props
+        const { type, path, deprecated } = renderableChildNodesMap[childID];
         // grab the tagLabel
         const tagLabel = FILTER_TAGS_TO_LABELS[TOPIC_TYPE_TO_TAG[type]];
         const changeType = apiChangesObject[path];
@@ -374,8 +374,7 @@ export default {
      * @returns NavigatorFlatItem[]
      */
     filteredChildren({
-      hasFilter, children, filterPattern, selectedTags,
-      apiChangesObject, apiChanges,
+      hasFilter, children, filterPattern, selectedTags, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
@@ -389,60 +388,69 @@ export default {
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
         let tagMatch = true;
-        if (selectedTags.length) {
+        if (tagsSet.size) {
           tagMatch = tagsSet.has(TOPIC_TYPE_TO_TAG[type]);
           // if there are API changes and there is no tag match, try to match change types
           if (apiChanges && !tagMatch) {
-            tagMatch = tagsSet.has(apiChangesObject[path]);
+            tagMatch = tagsSet.has(apiChanges[path]);
           }
           if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
             tagMatch = true;
           }
         }
         // find items, that have API changes
-        const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
+        const hasAPIChanges = apiChanges ? !!apiChanges[path] : true;
         // make sure groupMarker's dont get matched
         return titleMatch && tagMatch && hasAPIChanges;
       });
     },
-    /**
-     * Returns a Set of all nodes that match a filter, along with their parents.
-     * @returns Set<NavigatorFlatItem>
-     */
-    filteredChildrenUpToRootSet: ({ filteredChildren, childrenMap }) => new Set(
-      filteredChildren.flatMap(({ uid, groupMarkerUID }) => getParents(uid, childrenMap)
-        .concat(childrenMap[groupMarkerUID] || [])),
-    ),
     /**
      * This generates a map of all the nodes we are allowed to render at a certain time.
      * This is used on both toggling, as well as on navigation and filtering.
      * @return {Object.<string, NavigatorFlatItem>}
      */
     renderableChildNodesMap({
-      filteredChildrenUpToRootSet, childrenMap, hasFilter,
-      removeDeprecated,
+      hasFilter, childrenMap, deprecatedHidden, filteredChildren, removeDeprecated,
     }) {
       if (!hasFilter) return childrenMap;
-      let all = [];
-      // create a set of all matches and their parents
-      filteredChildrenUpToRootSet.forEach((current) => {
-        // if it's a plain end node, just add it
-        if (!current.childUIDs.length) {
-          all.push(current);
-          return;
+
+      const childrenLength = filteredChildren.length - 1;
+      const filteredChildrenUpToRootSet = new Set([]);
+      // iterate backwards
+      for (let i = childrenLength; i >= 0; i -= 1) {
+        // get item
+        const child = filteredChildren[i];
+        const groupMarker = childrenMap[child.groupMarkerUID];
+        if (groupMarker) {
+          filteredChildrenUpToRootSet.add(groupMarker);
         }
-        // check if none of the child items of this parent are matching
-        const noChildrenMatch = !current.childUIDs.some(uid => (
-          filteredChildrenUpToRootSet.has(childrenMap[uid])
-        ));
-        // if no children are matching, add all to the list, otherwise just the current parent
-        all = all.concat(
-          noChildrenMatch
-            ? removeDeprecated(getAllChildren(current.uid, childrenMap))
-            : current,
-        );
-      });
-      return convertChildrenArrayToObject(all);
+        // check if item is already added to list,
+        // if yes, continue with next item, as this one is probably a parent of a prev match.
+        if (filteredChildrenUpToRootSet.has(child)) continue;
+
+        // if the current item's parent is already in the list, and its not a GroupMarker
+        // a sibling already did the heavy work, so we just add it and continue.
+        if (
+          filteredChildrenUpToRootSet.has(childrenMap[child.parent])
+          && child.type !== TopicTypes.groupMarker
+        ) {
+          filteredChildrenUpToRootSet.add(child);
+          continue;
+        }
+        let allChildren = [];
+        // check if it has children. This is for Parents and GroupMarkers
+        if (child.childUIDs.length) {
+          //   if yes, add them all, so we can expand to see them
+          allChildren = removeDeprecated(
+            getAllChildren(child.uid, childrenMap), deprecatedHidden,
+          );
+        }
+        // add item and all of it's parents + closest group marker
+        allChildren
+          .concat(getParents(child.uid, childrenMap))
+          .forEach(v => filteredChildrenUpToRootSet.add(v));
+      }
+      return convertChildrenArrayToObject([...filteredChildrenUpToRootSet]);
     },
     /**
      * Creates a computed for the items, that the openNodes calc depends on
@@ -513,7 +521,7 @@ export default {
       this.debouncedFilter = value;
       // reset the last focus target
       this.lastFocusTarget = null;
-    }, 500),
+    }, 200),
     /**
      * Finds which nodes need to be opened.
      * Initiates a watcher, that reacts to filtering and page navigation.
@@ -536,26 +544,45 @@ export default {
 
       // if the activePath items change, we navigated to another page
       const pageChange = !isEqual(activePathChildrenBefore, activePathChildren);
+      // store the childrenMap into a var, so we dont register multiple deps to it
+      const { childrenMap } = this;
       // decide which items are open
       // if "Hide Deprecated" is picked, there is no filter,
       // or navigate to page while filtering, we open the items leading to the activeUID
-      const nodes = (
-        (this.deprecatedHidden && !this.debouncedFilter.length)
+      let nodes = activePathChildren;
+
+      if (!((this.deprecatedHidden && !this.debouncedFilter.length)
         || (pageChange && this.hasFilter)
-        || !this.hasFilter
-      )
-        ? activePathChildren
-        // get all parents of the current filter match, excluding it in the process
-        : filteredChildren.flatMap(({ uid }) => (
-          getParents(uid, this.childrenMap).slice(0, -1)
-        ));
-      // create a map to track open items - `{ [UID]: true }`
-      const newOpenNodes = Object.fromEntries(nodes
-        .map(({ uid }) => [uid, true]));
+        || !this.hasFilter)) {
+        const nodesSet = new Set();
+        // gather all the parents of all the matches.
+        // we do this in reverse, so deep children do all the work.
+        const len = filteredChildren.length - 1;
+        for (let i = len; i >= 0; i -= 1) {
+          const child = filteredChildren[i];
+          // check if the parent or the child itself is already gathered
+          if (nodesSet.has(childrenMap[child.parent]) || nodesSet.has(child)) {
+            // if so, just skip iterating over them
+            continue;
+          }
+          // otherwise gather all the parents excluding the child itself, and add to the set
+          getParents(child.uid, childrenMap)
+            .slice(0, -1)
+            .forEach(c => nodesSet.add(c));
+        }
+        // dump the set into the nodes array
+        nodes = [...nodesSet];
+      }
       // if we navigate across pages, persist the previously open nodes
-      const baseNodes = pageChange ? this.openNodes : {};
+      const nodesToStartFrom = pageChange ? { ...this.openNodes } : {};
+      // generate a new list of open nodes
+      const newNodes = nodes.reduce((all, current) => {
+        all[current.uid] = true;
+        return all;
+      }, nodesToStartFrom);
+      this.openNodes = Object.freeze(newNodes);
+
       // merge in the new open nodes with the base nodes
-      this.openNodes = Object.assign(baseNodes, newOpenNodes);
       this.generateNodesToRender();
       // update the focus index, based on the activeUID
       this.updateFocusIndexExternally();
@@ -579,11 +606,11 @@ export default {
           delete openNodes[uid];
         });
         // set the new open nodes. Should be faster than iterating each and calling `this.$delete`.
-        this.openNodes = openNodes;
+        this.openNodes = Object.freeze(openNodes);
         // exclude all items, but the first
         exclude = allChildren.slice(1);
       } else {
-        this.$set(this.openNodes, node.uid, true);
+        this.openNodes = Object.freeze({ ...this.openNodes, [node.uid]: true });
         // include all childUIDs to get opened
         include = getChildren(node.uid, this.childrenMap, this.children)
           .filter(child => this.renderableChildNodesMap[child.uid]);
@@ -613,7 +640,7 @@ export default {
       } else {
         include = allChildren.slice(1).filter(child => this.renderableChildNodesMap[child.uid]);
       }
-      this.openNodes = openNodes;
+      this.openNodes = Object.freeze(openNodes);
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
     },
     toggleSiblings(node) {
@@ -642,17 +669,18 @@ export default {
           this.augmentRenderNodes({ uid, exclude: [], include: children });
         }
       });
-      this.openNodes = openNodes;
+      this.openNodes = Object.freeze(openNodes);
       // persist all the open nodes, as we change the openNodes after the node augment runs
       this.persistState();
     },
     /**
      * Removes deprecated items from a list
      * @param {NavigatorFlatItem[]} items
+     * @param {boolean} deprecatedHidden
      * @returns {NavigatorFlatItem[]}
      */
-    removeDeprecated(items) {
-      if (!this.deprecatedHidden) return items;
+    removeDeprecated(items, deprecatedHidden) {
+      if (!deprecatedHidden) return items;
       return items.filter(({ deprecated }) => !deprecated);
     },
     /**
@@ -666,13 +694,13 @@ export default {
 
       // create a set of all matches and their parents
       // generate the list of nodes to render
-      this.nodesToRender = children
+      this.nodesToRender = Object.freeze(children
         .filter(child => (
           // make sure the item can be rendered
           renderableChildNodesMap[child.uid]
           // and either its parent is open, or its a root item
           && (child.parent === INDEX_ROOT_KEY || openNodes[child.parent])
-        ));
+        )));
       // persist all the open nodes
       this.persistState();
       // wait a frame, so the scroller is ready, `nextTick` is not enough.
@@ -688,12 +716,17 @@ export default {
       if (include.length) {
         // remove duplicates
         const duplicatesRemoved = include.filter(i => !this.nodesToRender.includes(i));
-        // if add, find where to inject items
-        this.nodesToRender.splice(index + 1, 0, ...duplicatesRemoved);
+        // clone the nodes
+        const clonedNodes = this.nodesToRender.slice(0);
+        // inject the nodes at the index
+        clonedNodes.splice(index + 1, 0, ...duplicatesRemoved);
+        this.nodesToRender = Object.freeze(clonedNodes);
       } else if (exclude.length) {
         // if remove, filter out those items
         const excludeSet = new Set(exclude);
-        this.nodesToRender = this.nodesToRender.filter(item => !excludeSet.has(item));
+        this.nodesToRender = Object.freeze(
+          this.nodesToRender.filter(item => !excludeSet.has(item)),
+        );
       }
       this.persistState();
     },
@@ -777,8 +810,9 @@ export default {
         this.handleActivePathChange(this.activePath);
         return;
       }
+      const { childrenMap } = this;
       // make sure all nodes exist in the childrenMap
-      const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
+      const allNodesMatch = nodesToRender.every(uid => childrenMap[uid]);
       // check if activeUID node matches the current page path
       const activeUIDMatchesCurrentPath = activeUID
         ? ((this.childrenMap[activeUID] || {}).path === this.lastActivePathItem)
@@ -801,10 +835,10 @@ export default {
         return;
       }
       // create the openNodes map
-      this.openNodes = Object.fromEntries(openNodes.map(n => [n, true]));
+      this.openNodes = Object.freeze(Object.fromEntries(openNodes.map(n => [n, true])));
       // get all the nodes to render
       // generate the array of flat children objects to render
-      this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
+      this.nodesToRender = Object.freeze(nodesToRender.map(uid => childrenMap[uid]));
       // finally fetch any previously assigned filters or tags
       this.selectedTags = selectedTags;
       this.filter = filter;
@@ -929,6 +963,7 @@ export default {
     pathsToFlatChildren(paths) {
       // get the stack to iterate
       const stack = paths.slice(0).reverse();
+      const { childrenMap } = this;
       // the items to loop over. First iteration is over all items
       let childrenStack = this.children;
       const result = [];
@@ -943,7 +978,7 @@ export default {
         result.push(currentNode);
         if (stack.length) {
           // get the children, so we search in those
-          childrenStack = currentNode.childUIDs.map(c => this.childrenMap[c]);
+          childrenStack = currentNode.childUIDs.map(c => childrenMap[c]);
         }
       }
       return result;
