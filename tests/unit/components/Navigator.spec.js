@@ -269,4 +269,10 @@ describe('Navigator', () => {
     wrapper.find(NavigatorCard).vm.$emit('close');
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
+
+  it('re-emits the `@open-quick-navigator` event', () => {
+    const wrapper = createWrapper();
+    wrapper.find(NavigatorCard).vm.$emit('open-quick-navigator');
+    expect(wrapper.emitted('open-quick-navigator')).toHaveLength(1);
+  });
 });

@@ -20,11 +20,15 @@ import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/loading');
+jest.mock('docc-render/utils/theme-settings');
+
+getSetting.mockReturnValue(false);
 
 sessionStorage.get.mockImplementation((key, def) => def);
 
@@ -287,6 +291,17 @@ describe('NavigatorCard', () => {
       },
     });
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
+  });
+
+  it('renders Quick Navigation open container if enableQuickNavigation is true', () => {
+    getSetting.mockReturnValueOnce(true);
+    const wrapper = createWrapper();
+
+    const quickNavigationOpenContainer = wrapper.find('.quick-navigation-open-container');
+    expect(quickNavigationOpenContainer.exists()).toBe(true);
+    expect(quickNavigationOpenContainer.attributes('aria-label')).toBe('Open Quick Navigation');
+    quickNavigationOpenContainer.trigger('click');
+    expect(wrapper.emitted('open-quick-navigator')).toHaveLength(1);
   });
 
   it('focuses the current page', async () => {

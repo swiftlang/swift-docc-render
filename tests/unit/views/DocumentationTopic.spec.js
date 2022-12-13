@@ -249,7 +249,7 @@ describe('DocumentationTopic', () => {
     expect(nav.props('isWideFormat')).toBe(true);
   });
 
-  it('renders QuickNavigation and MagnifierIcon if enableQuickNavigation is true', () => {
+  it('renders QuickNavigation if enableQuickNavigation is true', () => {
     getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
@@ -267,9 +267,7 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(true);
-    expect(magnifierIconComponent.exists()).toBe(true);
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is false', () => {
@@ -289,9 +287,7 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
-    expect(magnifierIconComponent.exists()).toBe(false);
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {
@@ -305,9 +301,7 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
-    expect(magnifierIconComponent.exists()).toBe(false);
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is true but IDE is being targeted', () => {
@@ -329,9 +323,7 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
-    expect(magnifierIconComponent.exists()).toBe(false);
   });
 
   describe('if breakpoint is small', () => {
@@ -570,6 +562,19 @@ describe('DocumentationTopic', () => {
       .toEqual(topicData.hierarchy.paths[1]);
     expect(wrapper.find(Nav).props('parentTopicIdentifiers'))
       .toEqual(topicData.hierarchy.paths[1]);
+  });
+
+  it('shows the Quick Navigation Modal if open-quick-navigator is emitted in Navigator', async () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+    await flushPromises();
+
+    wrapper.find(Navigator).vm.$emit('open-quick-navigator');
+    expect(wrapper.vm.showQuickNavigationModal).toBe(true);
   });
 
   it('handles the `@close`, on Navigator, for Mobile breakpoints', async () => {
