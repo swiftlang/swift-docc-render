@@ -8,6 +8,11 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+// These are possible values for the `loading` attribute of `<img>` elements.
+// When the "eager" loading strategy is used (the default without specifying),
+// images are fetched and rendered on the page as soon as possible. With the
+// "lazy" loading strategy, the images are only fetched and rendered on the page
+// when necessary as the element comes into view in the browser.
 export default {
   eager: 'eager',
   lazy: 'lazy',
