@@ -1148,7 +1148,7 @@ $filter-height-small: 62px;
     background-color: var(--color-fill-tertiary);
   }
 
-  @include breakpoint(small) {
+  @include breakpoint(medium, nav) {
     display: none;
   }
 
