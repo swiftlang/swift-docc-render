@@ -172,8 +172,12 @@ export default {
         processedInputRegex: new RegExp(constructFuzzyRegex(processedUserInput), 'i'),
         childrenMap,
       });
-      // Return the first 20 symbols out of sorted ones
-      return orderSymbolsByPriority(matches).slice(0, 20);
+      // Filter symbols with repeated paths and return the first 20
+      return orderSymbolsByPriority(
+        matches.filter((s1, index) => (
+          index === matches.findIndex(s2 => s2.path === s1.path)
+        )),
+      ).slice(0, 20);
     },
     isVisible: {
       get: ({ showQuickNavigationModal }) => showQuickNavigationModal,
