@@ -31,7 +31,7 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <Title :eyebrow="roleHeading">
+        <Title :eyebrow="roleHeading" v-if="!enableMinimized">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
@@ -45,7 +45,7 @@
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="hasAvailability"
+          v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
@@ -69,7 +69,7 @@
             </div>
             <PrimaryContent
               v-if="primaryContentSections && primaryContentSections.length"
-              :class="{ 'with-border': !enhanceBackground }"
+              :class="{ 'with-border': !enhanceBackground && !enableMinimized }"
               :conformance="conformance"
               :source="remoteSource"
               :sections="primaryContentSections"
@@ -83,16 +83,19 @@
             :topicStyle="topicSectionsStyle"
           />
           <DefaultImplementations
-            v-if="defaultImplementationsSections"
+            v-if="defaultImplementationsSections && !enableMinimized"
             :sections="defaultImplementationsSections"
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
           />
-          <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+          <Relationships
+            v-if="relationshipsSections && !enableMinimized"
+            :sections="relationshipsSections"
+          />
           <!-- NOTE: see also may contain information about other apis, so we cannot
           pass deprecation and beta information -->
           <SeeAlso
-            v-if="seeAlsoSections"
+            v-if="seeAlsoSections && !enableMinimized"
             :sections="seeAlsoSections"
           />
         </div>
@@ -333,8 +336,8 @@ export default {
         0,
       );
     },
-    hasAvailability: ({ platforms, technologies }) => (
-      (platforms || []).length || (technologies || []).length
+    shouldShowAvailability: ({ platforms, technologies, enableMinimized }) => (
+      ((platforms || []).length || (technologies || []).length) && !enableMinimized
     ),
     hasBetaContent:
       ({ platforms }) => platforms
@@ -344,8 +347,13 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
-    shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
-      !!(objcPath && swiftPath && isTargetIDE)
+    shouldShowLanguageSwitcher: ({
+      objcPath,
+      swiftPath,
+      isTargetIDE,
+      enableMinimized,
+    }) => (
+      !!(objcPath && swiftPath && isTargetIDE) && !enableMinimized
     ),
     enhanceBackground: ({ symbolKind, disableHeroBackground, topicSectionsStyle }) => {
       if (
@@ -409,10 +417,14 @@ export default {
     shouldRenderTopicSection: ({
       topicSectionsStyle,
       topicSections,
-    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden,
+      enableMinimized,
+    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden && !enableMinimized,
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
+    enableMinimized({ $route }) {
+      return $route ? $route.path.split('/')[1] === 'minimized' : false;
+    },
   },
   methods: {
     normalizePath(path) {

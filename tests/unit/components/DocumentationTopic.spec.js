@@ -752,7 +752,7 @@ describe('DocumentationTopic', () => {
     });
 
     it('routes to the objc variant of a page if that is the preferred language', async () => {
-      const $route = { query: {} };
+      const $route = { query: {}, path: '' };
       const $router = { replace: jest.fn() };
       const store = {
         reset: () => {},
