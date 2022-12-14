@@ -117,4 +117,6 @@ export default {
     request: 'Request',
     response: 'Response',
   },
+  'default-implementation': 'Default implementation provided. | Default implementations provided.',
+  required: 'Required',
 };
