@@ -52,9 +52,11 @@ export default {
     navigator: 'Documentation Navigator',
     nav: {
       breadcrumbs: 'Breadcrumbs',
+      menu: 'Menu',
     },
+    'current-page': 'Current page is {title}',
   },
-  'navigator-is': 'Navigator is',
+  'navigator-is': 'Navigator is {state}',
   kind: {
     beta: 'Beta',
     experiment: 'Experiment',
@@ -87,13 +89,17 @@ export default {
     'possible-values': 'Possible Values',
     parts: 'Parts',
     availability: 'Availability',
+    resources: 'Resources',
   },
   details: {
     name: 'Name',
     key: 'Key',
     type: 'Type',
   },
-  'beta-legal': 'This documentation refers to beta software and may be changed.',
+  beta: {
+    legal: 'This documentation refers to beta software and may be changed.',
+    software: 'Beta Software',
+  },
   more: 'More',
   less: 'Less',
   availability: {
@@ -101,11 +107,16 @@ export default {
     'available-on': 'Available on {name} {introducedAt} and later',
   },
   'api-reference': 'API Reference',
-  'color-scheme': 'Select a color scheme preference',
   filter: {
     title: 'Filter',
     suggested: 'Suggested',
     selected: 'Selected',
+    'add-tag': 'Add tag',
+    tag: 'Tag',
+    'select-remove': 'Select to remove from list.',
+    navigate: 'To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow',
+    'containing-symbols': 'containing one symbol | containing {number} symbols',
+    'symbols-inside': '{number} of {total} symbols inside',
   },
   navigator: {
     'no-results': 'No results found.',
@@ -119,4 +130,25 @@ export default {
   },
   'default-implementation': 'Default implementation provided. | Default implementations provided.',
   required: 'Required',
+  parameters: {
+    default: 'Default',
+    minimum: 'Minimum',
+    maximum: 'Maximum',
+    'possible-types': 'Possible types',
+    type: 'Type',
+    'possible-values': 'Possible Values',
+    value: 'Value',
+  },
+  'content-type': 'Content-Type',
+  'read-only': 'Read only',
+  error: {
+    unknown: 'An unknown error occurred.',
+    image: 'Image failed to load',
+  },
+  'color-scheme': {
+    select: 'Select a color scheme preference',
+    auto: 'Auto',
+    dark: 'Dark',
+    light: 'Light',
+  },
 };

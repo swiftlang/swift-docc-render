@@ -12,7 +12,7 @@
   <img
     v-if="fallbackImageSrcSet"
     class="fallback"
-    title="Image failed to load"
+    :title="$t('error.image')"
     decoding="async"
     :alt="alt"
     :srcset="fallbackImageSrcSet"
@@ -110,8 +110,8 @@ export default {
     darkVariantAttributes: ({ darkVariants }) => constructAttributes(darkVariants),
     lightVariantAttributes: ({ lightVariants }) => constructAttributes(lightVariants),
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
-    prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto.value,
-    prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark.value,
+    prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto,
+    prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark,
   },
   props: {
     alt: {

@@ -9,7 +9,7 @@
 */
 
 export default {
-  auto: { label: 'Auto', value: 'auto' },
-  dark: { label: 'Dark', value: 'dark' },
-  light: { label: 'Light', value: 'light' },
+  auto: 'auto',
+  dark: 'dark',
+  light: 'light',
 };

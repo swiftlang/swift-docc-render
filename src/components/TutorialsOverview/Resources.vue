@@ -10,7 +10,7 @@
 
 <template>
   <section class="resources" id="resources" tabindex="-1">
-    <VolumeName name="Resources" :content="content" />
+    <VolumeName :name="$t('sections.resources')" :content="content" />
     <TileGroup :tiles="tiles" />
   </section>
 </template>

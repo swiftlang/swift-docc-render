@@ -105,7 +105,7 @@
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
     <div aria-live="polite" class="visuallyhidden">
-      Current page is {{ pageTitle }}
+      {{ $t('documentation.current-page', { title: pageTitle }) }}
     </div>
   </div>
 </template>

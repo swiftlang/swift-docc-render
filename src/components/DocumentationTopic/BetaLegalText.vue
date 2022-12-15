@@ -13,10 +13,10 @@
     <div class="betainfo-container">
       <GridRow>
         <GridColumn :span="{ large: 12 }">
-          <p class="betainfo-label">Beta Software</p>
+          <p class="betainfo-label">{{ $t('beta.software') }}</p>
           <div class="betainfo-content">
             <slot name="content">
-              <p>{{ $t('beta-legal') }}</p>
+              <p>{{ $t('beta.legal') }}</p>
             </slot>
           </div>
           <slot name="after" />
