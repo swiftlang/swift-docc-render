@@ -63,7 +63,7 @@
           :isSymbolBeta="isSymbolBeta"
           :currentTopicTags="topicProps.tags"
           :references="topicProps.references"
-          :isWideFormat="enableNavigator"
+          :displaySidenav="enableNavigator"
           :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
           @toggle-sidenav="handleToggleSidenav"
         >

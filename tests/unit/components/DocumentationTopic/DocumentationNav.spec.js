@@ -67,6 +67,7 @@ describe('DocumentationNav', () => {
     swiftPath: 'documentation/foo',
     objcPath: 'documentation/bar',
     references,
+    displaySidenav: true,
   };
 
   beforeEach(() => {
@@ -308,16 +309,5 @@ describe('DocumentationNav', () => {
     expect(wrapper.emitted('toggle-sidenav')).toEqual([[BreakpointName.medium]]);
     expect(toggle.attributes()).not.toHaveProperty('tabindex');
     window.Event = backup;
-  });
-
-  it('renders the nav, with `isWideFormat` to `false`', () => {
-    wrapper.setProps({
-      isWideFormat: false,
-    });
-    expect(wrapper.find(NavBase).props()).toMatchObject({
-      isWideFormat: false,
-      breakpoint: BreakpointName.medium,
-    });
-    expect(wrapper.find('.sidenav-toggle').exists()).toBe(false);
   });
 });

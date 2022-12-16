@@ -15,12 +15,12 @@
     hasSolidBackground
     :hasNoBorder="hasNoBorder"
     :isDark="isDark"
-    :isWideFormat="isWideFormat"
+    isWideFormat
     hasFullWidthBorder
     class="documentation-nav"
     aria-label="API Reference"
   >
-    <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
+    <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="displaySidenav">
       <transition name="sidenav-toggle">
         <div
           v-show="sidenavHiddenOnLarge"
@@ -138,10 +138,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    isWideFormat: {
-      type: Boolean,
-      default: true,
-    },
     interfaceLanguage: {
       type: String,
       required: false,
@@ -155,6 +151,10 @@ export default {
       required: false,
     },
     sidenavHiddenOnLarge: {
+      type: Boolean,
+      default: false,
+    },
+    displaySidenav: {
       type: Boolean,
       default: false,
     },
