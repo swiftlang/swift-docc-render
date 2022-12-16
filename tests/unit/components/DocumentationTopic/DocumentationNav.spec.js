@@ -310,4 +310,15 @@ describe('DocumentationNav', () => {
     expect(toggle.attributes()).not.toHaveProperty('tabindex');
     window.Event = backup;
   });
+
+  it('does not render the sidenav toggle if displaySidenav is false', () => {
+    wrapper.setProps({
+      displaySidenav: false,
+    });
+    expect(wrapper.find(NavBase).props()).toMatchObject({
+      isWideFormat: true,
+      breakpoint: BreakpointName.medium,
+    });
+    expect(wrapper.find('.sidenav-toggle').exists()).toBe(false);
+  });
 });
