@@ -172,12 +172,9 @@ export default {
         processedInputRegex: new RegExp(constructFuzzyRegex(processedUserInput), 'i'),
         childrenMap,
       });
-      // Filter symbols with repeated paths and return the first 20
-      return orderSymbolsByPriority(
-        matches.filter((s1, index) => (
-          index === matches.findIndex(s2 => s2.path === s1.path)
-        )),
-      ).slice(0, 20);
+      // Filter repeated matches and return the first 20
+      const uniqueMatches = [...new Map(matches.map(match => [match.path, match])).values()];
+      return orderSymbolsByPriority(uniqueMatches).slice(0, 20);
     },
     isVisible: {
       get: ({ showQuickNavigationModal }) => showQuickNavigationModal,

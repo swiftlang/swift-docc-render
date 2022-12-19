@@ -320,6 +320,10 @@ describe('QuickNavigationModal', () => {
         title: 'foo',
         path: '/foo',
       },
+      {
+        title: 'foo',
+        path: '/bar',
+      },
     ];
     wrapper = shallowMount(QuickNavigationModal, {
       propsData: {
@@ -330,6 +334,6 @@ describe('QuickNavigationModal', () => {
     wrapper.setData({
       debouncedInput: 'foo',
     });
-    expect(wrapper.vm.filteredSymbols.length).toBe(1);
+    expect(wrapper.vm.filteredSymbols.length).toBe(2);
   });
 });
