@@ -334,7 +334,7 @@ describe('DocumentationTopic', () => {
     expect(title.find(WordBreak).exists()).toBe(false);
 
     // Minimized view should not render Title
-    wrapper.vm.$route.path = '/minimized';
+    wrapper.setProps({ enableMinimized: true });
     expect(wrapper.find(DocumentationHero).find(Title).exists()).toBe(false);
   });
 
@@ -485,7 +485,7 @@ describe('DocumentationTopic', () => {
       expect(list.props('platforms')).toEqual(propsData.platforms);
 
       // Minimized view should not render Availability
-      wrapper.vm.$route.path = '/minimized';
+      wrapper.setProps({ enableMinimized: true });
       expect(wrapper.find(Availability).exists()).toBe(false);
     });
   });
@@ -524,7 +524,7 @@ describe('DocumentationTopic', () => {
     });
 
     // Minimized view should not render LanguageSwitcher
-    wrapper.vm.$route.path = '/minimized';
+    wrapper.setProps({ enableMinimized: true });
     expect(wrapper.find(LanguageSwitcher).exists()).toBe(false);
   });
 
@@ -552,7 +552,7 @@ describe('DocumentationTopic', () => {
     expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
 
     // Minimized view should not render Topics
-    wrapper.vm.$route.path = '/minimized';
+    wrapper.setProps({ enableMinimized: true });
     expect(wrapper.find(Topics).exists()).toBe(false);
   });
 
@@ -590,7 +590,7 @@ describe('DocumentationTopic', () => {
     expect(seeAlso.props('sections')).toBe(seeAlsoSections);
 
     // Minimized view should not render See Also
-    wrapper.vm.$route.path = '/minimized';
+    wrapper.setProps({ enableMinimized: true });
     expect(wrapper.find(SeeAlso).exists()).toBe(false);
   });
 
@@ -619,7 +619,7 @@ describe('DocumentationTopic', () => {
     expect(relationships.props('sections')).toBe(relationshipsSections);
 
     // Minimized view should not render Relationships
-    wrapper.vm.$route.path = '/minimized';
+    wrapper.setProps({ enableMinimized: true });
     expect(wrapper.find(Relationships).exists()).toBe(false);
   });
 
@@ -675,7 +675,7 @@ describe('DocumentationTopic', () => {
     expect(defaults.props('sections')).toEqual(defaultImplementationsSections);
 
     // Minimized view should not render DefaultImplementations
-    wrapper.vm.$route.path = '/minimized';
+    wrapper.setProps({ enableMinimized: true });
     expect(wrapper.find(DefaultImplementations).exists()).toBe(false);
   });
 

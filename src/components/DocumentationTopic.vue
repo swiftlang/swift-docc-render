@@ -304,6 +304,10 @@ export default {
       type: Array,
       required: false,
     },
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
     enableOnThisPageNav: {
       type: Boolean,
       default: false,
@@ -422,9 +426,6 @@ export default {
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
-    enableMinimized({ $route }) {
-      return $route ? $route.path.split('/')[1] === 'minimized' : false;
-    },
   },
   methods: {
     normalizePath(path) {
