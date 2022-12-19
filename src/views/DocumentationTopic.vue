@@ -142,6 +142,12 @@ export default {
     MagnifierIcon,
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
+  props: {
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       topicDataDefault: null,
@@ -151,7 +157,6 @@ export default {
       showQuickNavigationModal: false,
       store: DocumentationTopicStore,
       BreakpointName,
-      enableMinimized: false,
     };
   },
   computed: {
