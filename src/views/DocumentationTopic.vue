@@ -87,6 +87,7 @@
           :isSymbolBeta="isSymbolBeta"
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
+          :enableMinimized="enableMinimized"
         />
       </component>
     </template>
@@ -150,6 +151,7 @@ export default {
       showQuickNavigationModal: false,
       store: DocumentationTopicStore,
       BreakpointName,
+      enableMinimized: false,
     };
   },
   computed: {

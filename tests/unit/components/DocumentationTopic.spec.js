@@ -167,11 +167,6 @@ describe('DocumentationTopic', () => {
           reset() {},
         },
       },
-      mocks: {
-        $route: {
-          path: '/foo',
-        },
-      },
     });
   });
 
@@ -506,15 +501,7 @@ describe('DocumentationTopic', () => {
 
   it('renders a `LanguageSwitcher` if TargetIDE', () => {
     const provide = { isTargetIDE: true };
-    wrapper = shallowMount(DocumentationTopic, {
-      propsData,
-      provide,
-      mocks: {
-        $route: {
-          path: '/foo',
-        },
-      },
-    });
+    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
     const switcher = wrapper.find(LanguageSwitcher);
     expect(switcher.exists()).toBe(true);
     expect(switcher.props()).toEqual({
@@ -793,7 +780,7 @@ describe('DocumentationTopic', () => {
     });
 
     it('routes to the objc variant of a page if that is the preferred language', async () => {
-      const $route = { query: {}, path: '' };
+      const $route = { query: {} };
       const $router = { replace: jest.fn() };
       const store = {
         reset: () => {},
