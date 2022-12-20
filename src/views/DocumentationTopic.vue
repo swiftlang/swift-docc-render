@@ -87,6 +87,7 @@
           :isSymbolBeta="isSymbolBeta"
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
+          :enableMinimized="enableMinimized"
         />
       </component>
     </template>
@@ -141,6 +142,12 @@ export default {
     MagnifierIcon,
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
+  props: {
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       topicDataDefault: null,
