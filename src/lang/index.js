@@ -1,2 +1,2 @@
-export { default as es } from './es_ES';
-export { default as en } from './en_US';
+export { default as es } from './es_ES.json';
+export { default as en } from './en_US.json';
