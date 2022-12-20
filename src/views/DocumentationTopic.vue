@@ -9,7 +9,11 @@
 -->
 
 <template>
-  <CodeTheme class="doc-topic-view">
+  <CodeTheme
+    :class="['doc-topic-view', {
+      'background-disabled': enableMinimized,
+    }]"
+  >
     <template v-if="topicData">
       <component
         :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
@@ -463,6 +467,10 @@ export default {
     max-width: rem(800px);
     overflow: visible;
   }
+}
+
+.background-disabled {
+  background-color: transparent;
 }
 
 .doc-topic-view {
