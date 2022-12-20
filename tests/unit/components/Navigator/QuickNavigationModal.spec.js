@@ -315,14 +315,17 @@ describe('QuickNavigationModal', () => {
       {
         title: 'foo',
         path: '/foo',
+        type: 'method',
       },
       {
         title: 'foo',
         path: '/foo',
+        type: 'method',
       },
       {
         title: 'foo',
         path: '/bar',
+        type: 'method',
       },
     ];
     wrapper = shallowMount(QuickNavigationModal, {
