@@ -123,5 +123,11 @@
     "auto": "Auto",
     "dark": "Dark",
     "light": "Light"
+  },
+  "accessibility": {
+    "strike": {
+      "start": "start of stricken text",
+      "end": "end of stricken text"
+    }
   }
 }
