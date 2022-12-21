@@ -667,6 +667,7 @@ describe('DocumentationTopic', () => {
         swift: ['documentation/swift'],
       },
       enableOnThisPageNav: true, // enabled by default
+      enableMinimized: false, // disabled by default
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
