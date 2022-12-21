@@ -545,7 +545,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(Navigator).exists()).toBe(false);
     // assert the proper container class is applied
     expect(staticContentWidth.classes())
-      .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
+      .toEqual(expect.arrayContaining(['topic-wrapper', 'full-width-container']));
   });
 
   it('renders without NavigatorDataProvider', async () => {
