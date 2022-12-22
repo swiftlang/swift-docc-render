@@ -11,7 +11,7 @@
 <template>
   <BaseCTA
     v-bind="baseProps"
-    :label="$t('next')"
+    :label="$t('tutorials.next')"
   />
 </template>
 

@@ -1,42 +1,48 @@
 {
   "language": "Language",
-  "on-this-page": "On this page",
-  "video": { "replay": "Replay", "play": "Play", "watch": "Watch intro video" },
+  "video": {
+    "replay": "Replay",
+    "play": "Play",
+    "watch": "Watch intro video"
+  },
   "tutorials": {
     "title": "Tutorial | Tutorials",
-    "nav": { "chapters": "Chapters", "current": "Current {thing}" },
+    "step": "Step {number}",
+    "submit": "Submit",
+    "next": "Next",
+    "preview": { "title": "No Preview | Preview | Previews" },
+    "nav": {
+      "chapters": "Chapters",
+      "current": "Current {thing}"
+    },
     "assessment": {
       "check-your-understanding": "Check Your Understanding",
       "success-message": "Great job, you've answered all the questions for this tutorial.",
       "answer-number-is": "Answer number {index} is",
       "correct": "correct",
-      "incorrect": "incorrect"
+      "incorrect": "incorrect",
+      "next-question": "Next question"
     },
     "project-files": "Project files",
     "estimated-time": "Estimated Time",
-    "sections": { "chapter": "Chapter" }
+    "sections": { "chapter": "Chapter" },
+    "question-of": "Question {index} of {total}",
+    "section-of": "{number} of {total}",
+    "overriding-title": "{newTitle} with {title}",
+    "time": {
+      "minutes": {
+        "full": "minute | minutes | {count} minutes",
+        "short": "min | mins"
+      },
+      "hours": { "full": "hour | hours" }
+    }
   },
-  "step": "Step",
-  "preview": { "title": "No Preview | Preview | Previews" },
-  "question": "Question",
-  "adverbs": { "of": "of", "with": "with" },
-  "submit": "Submit",
-  "next": "Next",
-  "time": {
-    "minutes": {
-      "full": "minute | minutes | {count} minutes",
-      "short": "min | mins"
-    },
-    "hours": { "full": "hour | hours", "short": "hr | hrs" }
-  },
-  "skip-navigation": "Skip Navigation",
   "documentation": {
     "title": "Documentation",
     "navigator": "Documentation Navigator",
     "nav": { "breadcrumbs": "Breadcrumbs", "menu": "Menu" },
     "current-page": "Current page is {title}"
   },
-  "navigator-is": "Navigator is {state}",
   "kind": {
     "beta": "Beta",
     "experiment": "Experiment",
@@ -59,6 +65,7 @@
   },
   "sections": {
     "title": "Section",
+    "on-this-page": "On this page",
     "topics": "Topics",
     "default-implementations": "Default Implementations",
     "relationships": "Relationships",
@@ -71,17 +78,20 @@
     "availability": "Availability",
     "resources": "Resources"
   },
-  "details": { "name": "Name", "key": "Key", "type": "Type" },
-  "beta": {
-    "legal": "This documentation refers to beta software and may be changed.",
-    "software": "Beta Software"
+  "metadata": {
+    "details": { "name": "Name", "key": "Key", "type": "Type" },
+    "beta": {
+      "legal": "This documentation refers to beta software and may be changed.",
+      "software": "Beta Software"
+    },
+    "default-implementation": "Default implementation provided. | Default implementations provided."
   },
-  "more": "More",
-  "less": "Less",
   "availability": {
     "introduced-and-deprecated": "Introduced in {name} {introducedAt} and deprecated in {name} {deprecatedAt}",
     "available-on": "Available on {name} {introducedAt} and later"
   },
+  "more": "More",
+  "less": "Less",
   "api-reference": "API Reference",
   "filter": {
     "title": "Filter",
@@ -98,10 +108,10 @@
     "no-results": "No results found.",
     "no-children": "No data available.",
     "error-fetching": "There was an error fetching the data.",
-    "items-found": "items were found. Tab back to navigate through them."
+    "items-found": "items were found. Tab back to navigate through them.",
+    "navigator-is": "Navigator is {state}"
   },
   "tab": { "request": "Request", "response": "Response" },
-  "default-implementation": "Default implementation provided. | Default implementations provided.",
   "required": "Required",
   "parameters": {
     "default": "Default",
@@ -128,6 +138,7 @@
     "strike": {
       "start": "start of stricken text",
       "end": "end of stricken text"
-    }
+    },
+    "skip-navigation": "Skip Navigation"
   }
 }

@@ -12,7 +12,7 @@
   <div class="learning-path" :class="classes">
     <div class="main-container">
       <div v-if="!isTargetIDE" class="secondary-content-container">
-        <TutorialsNavigation :sections="sections" :aria-label="$t('on-this-page')" />
+        <TutorialsNavigation :sections="sections" :aria-label="$t('sections.on-this-page')" />
       </div>
       <div class="primary-content-container">
         <div class="content-sections-container">

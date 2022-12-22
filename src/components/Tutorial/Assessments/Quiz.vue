@@ -36,7 +36,7 @@
         @click.native="submit"
         :disabled="selectedIndex === null || showNextQuestion"
       >
-       {{ $t('submit') }}
+       {{ $t('tutorials.submit') }}
       </ButtonLink>
       <ButtonLink
         v-if="isLast"
@@ -44,7 +44,7 @@
         @click.native="seeResults"
         :disabled="!showNextQuestion"
       >
-        {{ $t('next') }}
+        {{ $t('tutorials.next') }}
       </ButtonLink>
       <ButtonLink
         v-else
@@ -52,7 +52,7 @@
         :disabled="!showNextQuestion"
         @click.native="advance"
       >
-        {{ $t('next') }} {{ $t('question') }}
+        {{ $t('tutorials.assessment.next-question') }}
       </ButtonLink>
     </div>
   </div>

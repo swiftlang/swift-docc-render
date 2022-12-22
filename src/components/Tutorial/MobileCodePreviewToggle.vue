@@ -16,11 +16,11 @@
       class="toggle-text"
       @click.prevent="$emit('click')"
     >
-      {{ $tc('preview.title', 1) }}
+      {{ $tc('tutorials.preview.title', 1) }}
       <InlinePlusCircleIcon class="toggle-icon icon-inline" />
     </a>
     <span class="toggle-text" v-else>
-      {{ $tc('preview.title', 0) }}
+      {{ $tc('tutorials.preview.title', 0) }}
     </span>
   </span>
 </template>

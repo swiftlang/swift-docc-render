@@ -10,7 +10,7 @@
 
 <template>
   <Row>
-    <p class="title">{{ $t('question') }} {{ index }} {{ $t('adverbs.of') }} {{ total }}</p>
+    <p class="title">{{ $t('tutorials.question-of', { index, total }) }}</p>
   </Row>
 </template>
 

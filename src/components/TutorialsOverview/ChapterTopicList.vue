@@ -83,8 +83,8 @@ export default {
       [TopicKind.tutorial]: TopicKindClass.tutorial,
     }[kind]),
     formatTime: time => time
-      .replace('min', ' minutes')
-      .replace('hrs', ' hours'),
+      .replace('min', ` ${this.$t('tutorials.time.minutes.full')}`)
+      .replace('hrs', ` ${this.$t('tutorials.time.hours.full')}`),
     ariaLabelFor({ title, estimatedTime, kind }) {
       const titleItems = [title, TopicKindIconLabel[kind]];
       if (estimatedTime) {

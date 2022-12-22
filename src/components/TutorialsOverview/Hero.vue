@@ -23,7 +23,7 @@
       <CallToActionButton
         v-if="action"
         :action="action"
-        :aria-label="`${action.overridingTitle} ${$t('adverbs.with')} ${title}`"
+        :aria-label="$t('overriding-title', { newTitle: overridingTitle, title } )"
         isDark
       />
     </div>

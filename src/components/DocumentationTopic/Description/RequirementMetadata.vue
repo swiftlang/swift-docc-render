@@ -13,7 +13,7 @@
   <p class="requirement-metadata" :class="data.staticClass">
     <strong>{{ $t('required') }}.</strong>
     <template v-if="props.defaultImplementationsCount">
-       {{ $tc('default-implementation', props.defaultImplementationsCount) }}
+       {{ $tc('metadata.default-implementation', props.defaultImplementationsCount) }}
     </template>
   </p>
 </template>

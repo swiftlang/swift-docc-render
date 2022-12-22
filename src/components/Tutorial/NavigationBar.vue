@@ -168,7 +168,7 @@ export default {
       if (sectionNumber === 0) {
         return undefined;
       }
-      return `(${sectionNumber} ${this.$t('adverbs.of')} ${numberOfSections})`;
+      return this.$t('section-of', { number: sectionNumber, total: numberOfSections });
     },
   },
   methods: {

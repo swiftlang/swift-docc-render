@@ -16,7 +16,7 @@
     <dl>
       <template v-if="isSymbol">
         <dt class="detail-type" :key="`${details.name}:name`">
-          {{ $t('details.name') }}
+          {{ $t('metadata.details.name') }}
         </dt>
         <dd class="detail-content" :key="`${details.ideTitle}:content`">
           {{ details.ideTitle }}
@@ -24,14 +24,14 @@
       </template>
       <template v-if="isTitle">
         <dt class="detail-type" :key="`${details.name}:key`">
-          {{ $t('details.key') }}
+          {{ $t('metadata.details.key') }}
         </dt>
         <dd class="detail-content" :key="`${details.ideTitle}:content`">
           {{ details.name }}
         </dd>
       </template>
       <dt class="detail-type" :key="`${details.name}:type`">
-        {{ $t('details.type') }}
+        {{ $t('metadata.details.type') }}
       </dt>
       <dd class="detail-content">
         <PropertyListKeyType :types="details.value" />

@@ -14,7 +14,9 @@
       class="item"
       v-if="estimatedTimeInMinutes"
       :aria-label="`
-        ${$tc('time.minutes.full', estimatedTimeInMinutes, { count: estimatedTimeInMinutes })}
+        ${$tc(
+          'tutorials.time.minutes.full', estimatedTimeInMinutes, { count: estimatedTimeInMinutes }
+        )}
         ${$t('tutorials.estimated-time')}
       `"
     >
@@ -23,7 +25,9 @@
       <div class="content" aria-hidden="true">
         <div class="duration">
           {{ estimatedTimeInMinutes }}
-          <div class="minutes">{{ $tc('time.minutes.short', estimatedTimeInMinutes) }}</div>
+          <div class="minutes">{{ $tc(
+            'tutorials.time.minutes.short', estimatedTimeInMinutes
+          ) }}</div>
         </div>
       </div>
       <div class="bottom" aria-hidden="true">{{ $t('tutorials.estimated-time') }}</div>
