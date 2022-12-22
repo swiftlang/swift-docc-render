@@ -327,6 +327,10 @@ describe('DocumentationTopic', () => {
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
     expect(title.find(WordBreak).exists()).toBe(false);
+
+    // Minimized view should not render Title
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(DocumentationHero).find(Title).exists()).toBe(false);
   });
 
   it('uses `WordBreak` in the title for symbol pages', () => {
@@ -474,6 +478,10 @@ describe('DocumentationTopic', () => {
       const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
       expect(list.props('platforms')).toEqual(propsData.platforms);
+
+      // Minimized view should not render Availability
+      wrapper.setProps({ enableMinimized: true });
+      expect(wrapper.find(Availability).exists()).toBe(false);
     });
   });
 
@@ -501,6 +509,10 @@ describe('DocumentationTopic', () => {
       objcPath: propsData.languagePaths.occ[0],
       swiftPath: propsData.languagePaths.swift[0],
     });
+
+    // Minimized view should not render LanguageSwitcher
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(LanguageSwitcher).exists()).toBe(false);
   });
 
   it('renders `Topics` if there are topic sections, passing the `topicSectionsStyle` over', () => {
@@ -525,6 +537,10 @@ describe('DocumentationTopic', () => {
     expect(topics.exists()).toBe(true);
     expect(topics.props('sections')).toBe(topicSections);
     expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
+
+    // Minimized view should not render Topics
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Topics).exists()).toBe(false);
   });
 
   it('does not render the `Topics` if the `topicSectionsStyle` is `hidden`', () => {
@@ -559,6 +575,10 @@ describe('DocumentationTopic', () => {
     const seeAlso = wrapper.find(SeeAlso);
     expect(seeAlso.exists()).toBe(true);
     expect(seeAlso.props('sections')).toBe(seeAlsoSections);
+
+    // Minimized view should not render See Also
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(SeeAlso).exists()).toBe(false);
   });
 
   it('renders `Relationships` if there are relationship sections', () => {
@@ -584,6 +604,10 @@ describe('DocumentationTopic', () => {
     const relationships = wrapper.find(Relationships);
     expect(relationships.exists()).toBe(true);
     expect(relationships.props('sections')).toBe(relationshipsSections);
+
+    // Minimized view should not render Relationships
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Relationships).exists()).toBe(false);
   });
 
   it('renders `Relationships` before `SeeAlso`', () => {
@@ -636,6 +660,10 @@ describe('DocumentationTopic', () => {
     const defaults = wrapper.find(DefaultImplementations);
     expect(defaults.exists()).toBe(true);
     expect(defaults.props('sections')).toEqual(defaultImplementationsSections);
+
+    // Minimized view should not render DefaultImplementations
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(DefaultImplementations).exists()).toBe(false);
   });
 
   it('computes isSymbolBeta', () => {
