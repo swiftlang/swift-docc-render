@@ -57,7 +57,7 @@ describe('LearningPath', () => {
     const navigation = wrapper.find(TutorialsNavigation);
     expect(navigation.exists()).toBe(true);
     expect(navigation.props('sections')).toEqual(propsData.sections);
-    expect(navigation.attributes('aria-label')).toBe('On this page');
+    expect(navigation.attributes('aria-label')).toBe('sections.on-this-page');
   });
 
   it('does not render TutorialsNavigation in IDE mode', () => {

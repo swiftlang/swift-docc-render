@@ -311,7 +311,7 @@ describe('CodePreview', () => {
 
       const button = preview.find('button');
       expect(button.attributes('disabled')).toBe('disabled');
-      expect(button.attributes('title')).toBe('No preview available for this step.');
+      expect(button.attributes('title')).toBe('tutorials.preview.no-preview-available-step');
 
       expect(wrapper.contains('.preview-hide')).toBe(false);
       expect(wrapper.contains('.preview-show')).toBe(true);

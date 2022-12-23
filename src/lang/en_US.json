@@ -10,7 +10,10 @@
     "step": "Step {number}",
     "submit": "Submit",
     "next": "Next",
-    "preview": { "title": "No Preview | Preview | Previews" },
+    "preview": {
+      "title": "No Preview | Preview | Previews",
+      "no-preview-available-step": "No preview available for this step."
+    },
     "nav": {
       "chapters": "Chapters",
       "current": "Current {thing}"

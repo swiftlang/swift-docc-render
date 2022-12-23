@@ -49,7 +49,7 @@ describe('TutorialsNavigationMenu', () => {
     expect(navigation.exists()).toBe(true);
     expect(navigation.contains('li')).toBe(true);
     expect(navigation.text()).toBe('foo');
-    expect(navigation.attributes('aria-label')).toBe('Chapters');
+    expect(navigation.attributes('aria-label')).toBe('tutorials.nav.chapters');
   });
 
   it('does not render the List if collapsed is false', () => {

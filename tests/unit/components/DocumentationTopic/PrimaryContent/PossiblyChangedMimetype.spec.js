@@ -74,6 +74,6 @@ describe('PossiblyChangedMimetype', () => {
       change: ChangeTypes.modified,
     });
 
-    expect(wrapper.find('.response-mimetype').text()).toBe('Content-Type: foo');
+    expect(wrapper.find('.response-mimetype').text()).toBe('content-type: foo');
   });
 });

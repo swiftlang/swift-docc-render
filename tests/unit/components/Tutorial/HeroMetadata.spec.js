@@ -89,7 +89,7 @@ describe('HeroMetadata', () => {
     expect(items.length).toBe(3);
 
     expect(items.at(0).text())
-      .toEqual(expect.stringContaining('Estimated Time'));
+      .toEqual(expect.stringContaining('tutorials.estimated-time'));
     expect(items.at(1).text())
       .toEqual(expect.stringContaining('Project files'));
     expect(items.at(2).text())

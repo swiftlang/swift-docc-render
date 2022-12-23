@@ -27,7 +27,7 @@ describe('Quiz', () => {
         inlineContent: [
           {
             type: 'text',
-            text: 'Check Your Understanding.',
+            text: 'tutorials.assessment.check-your-understanding.',
           },
         ],
       },

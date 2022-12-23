@@ -16,4 +16,5 @@ module.exports = {
     '^theme/(.*)$': '<rootDir>/src/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
+  setupFiles: ['./tests/unit/config.js'],
 };

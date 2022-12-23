@@ -31,7 +31,7 @@ describe('GenericError', () => {
   it('renders a default message', () => {
     const title = wrapper.find('.title');
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('An unknown error occurred.');
+    expect(title.text()).toBe('error.unknown');
   });
 
   it('exposes a slot', () => {

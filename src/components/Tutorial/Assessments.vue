@@ -58,7 +58,7 @@ import AssessmentsProgress from './AssessmentsProgress.vue';
 import Quiz from './Assessments/Quiz.vue';
 
 const additionalScrollOffset = 12;
-const SuccessMessage = this.$t('tutorials.assessment.success-message');
+const SuccessMessage = 'tutorials.assessment.success-message';
 
 export default {
   name: 'Assessments',
@@ -118,7 +118,7 @@ export default {
     return {
       activeIndex: 0,
       completed: false,
-      SuccessMessage,
+      SuccessMessage: this.$t(this.SuccessMessage),
     };
   },
   computed: {

@@ -158,7 +158,7 @@ export default {
       return this.hasRuntimePreview && this.isRuntimePreviewVisible;
     },
     runtimePreviewTitle() {
-      return this.hasRuntimePreview ? null : 'No preview available for this step.';
+      return this.hasRuntimePreview ? null : this.$t('tutorials.preview.no-preview-available-step');
     },
     togglePreviewText() {
       return this.hasRuntimePreview ? this.$tc('tutorials.preview.title', 1) : this.$tc('tutorials.preview.title', 0);

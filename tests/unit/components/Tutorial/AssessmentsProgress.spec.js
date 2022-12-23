@@ -22,6 +22,6 @@ describe('AssessmentsProgress', () => {
   it('renders index/total in a p tag', () => {
     const title = wrapper.find('p.title');
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Question 1 of 3');
+    expect(title.text()).toBe('tutorials.question-of');
   });
 });
