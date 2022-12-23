@@ -114,7 +114,11 @@ export default {
             numUnclosedParens -= 1;
             // if this ")" balances out the number of "(" characters that have
             // been seen, this is the one that pairs up with the first one
-            if (openParenTokenIndex !== null && numUnclosedParens === 0) {
+            if (
+              openParenTokenIndex !== null
+              && closeParenTokenIndex == null
+              && numUnclosedParens === 0
+            ) {
               closeParenCharIndex = k;
               closeParenTokenIndex = i;
             }
