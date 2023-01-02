@@ -30,7 +30,7 @@ describe('Topics', () => {
       isSymbolDeprecated: false,
       isSymbolBeta: false,
       sections: [],
-      title: 'Topics',
+      title: 'sections.topics',
       wrapTitle: false,
       topicStyle: TopicSectionsStyle.list,
     });

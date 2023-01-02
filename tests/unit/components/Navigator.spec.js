@@ -158,13 +158,13 @@ describe('Navigator', () => {
       },
     });
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is loading');
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is');
   });
 
   it('renders an aria live that tells VO users when navigator is ready', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is ready');
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is');
   });
 
   it('falls back to using the `technology.url` for the `technology-path`', () => {

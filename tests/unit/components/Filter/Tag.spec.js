@@ -138,7 +138,7 @@ describe('Tag', () => {
     });
     const span = wrapper.findAll('span.visuallyhidden');
     expect(span.length).toBe(1);
-    expect(span.at(0).text()).toEqual('– Tag. Select to remove from list.');
+    expect(span.at(0).text()).toEqual('– filter.tag. filter.select-remove');
   });
 
   describe('copy/cut', () => {

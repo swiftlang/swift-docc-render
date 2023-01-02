@@ -202,9 +202,9 @@ describe('NavBase', () => {
     wrapper = await createWrapper();
     const toggle = wrapper.find({ ref: 'axToggle' });
     const label = toggle.find('.visuallyhidden');
-    expect(label.text()).toBe('Open Menu');
+    expect(label.text()).toBe('verbs.open documentation.nav.menu');
     toggle.trigger('click');
-    expect(label.text()).toBe('Close Menu');
+    expect(label.text()).toBe('verbs.close documentation.nav.menu');
   });
 
   it('renders the `tray` slot', async () => {

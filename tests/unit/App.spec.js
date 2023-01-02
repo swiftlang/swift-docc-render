@@ -115,7 +115,7 @@ describe('App', () => {
   it('renders Skip Navigation', () => {
     const wrapper = createWrapper();
     const skipNavigation = wrapper.find('#skip-nav');
-    expect(skipNavigation.text()).toBe('Skip Navigation');
+    expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
     expect(skipNavigation.attributes('href')).toBe('#main');
   });
 

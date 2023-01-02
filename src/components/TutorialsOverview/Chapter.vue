@@ -19,8 +19,7 @@
           :aria-label="`${name} - ${$t('tutorials.sections.chapter')} ${number}`"
         >
           <span class="eyebrow" aria-hidden="true">
-            {{$t('tutorials.sections.chapter')}}
-            {{number}}
+            {{$t('tutorials.sections.chapter')}} {{number}}
           </span>
           <span aria-hidden="true" class="name-text">{{name}}</span>
         </component>

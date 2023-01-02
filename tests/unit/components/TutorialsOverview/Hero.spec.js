@@ -69,7 +69,7 @@ describe('Hero', () => {
     expect(btn.props('action')).toEqual(propsData.action);
     expect(btn.props('isDark')).toBe(true);
     expect(btn.attributes('aria-label'))
-      .toBe(`${propsData.action.overridingTitle} with ${propsData.title}`);
+      .toBe('overriding-title');
   });
 
   it('renders an `Asset`', () => {

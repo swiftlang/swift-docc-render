@@ -54,13 +54,13 @@ describe('LanguageSwitcher', () => {
     expect(section.exists()).toBe(true);
     expect(section.classes('language')).toBe(true);
     expect(section.attributes('role')).toBe('complementary');
-    expect(section.attributes('aria-label')).toBe('Language');
+    expect(section.attributes('aria-label')).toBe('language');
   });
 
   it('renders a summary `Title` of "Language"', () => {
     const title = wrapper.find(Title);
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Language:');
+    expect(title.text()).toBe('language:');
   });
 
   it('renders a `LanguageSwitcherLink` for swift and objc', () => {
