@@ -238,7 +238,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -251,7 +251,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -266,7 +266,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();

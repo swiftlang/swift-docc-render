@@ -112,7 +112,7 @@ describe('DocumentationNav', () => {
     const title = wrapper.find('.nav-title-link');
     expect(title.classes()).toContain('inactive');
     expect(title.is('span')).toBe(true);
-    expect(title.text()).toBe('Documentation');
+    expect(title.text()).toBe('documentation.title');
   });
 
   it('renders the title "Documentation" link, when there is a Technology root', () => {

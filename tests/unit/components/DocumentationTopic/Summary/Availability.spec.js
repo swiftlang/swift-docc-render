@@ -70,7 +70,7 @@ describe('Availability', () => {
     const section = wrapper.find(Section);
     expect(section.exists()).toBe(true);
     expect(section.classes('availability')).toBe(true);
-    expect(section.attributes('aria-label')).toBe('Availability');
+    expect(section.attributes('aria-label')).toBe('sections.availability');
     expect(section.attributes('role')).toBe('complementary');
   });
 

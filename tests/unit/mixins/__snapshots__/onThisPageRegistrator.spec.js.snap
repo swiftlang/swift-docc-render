@@ -55,37 +55,37 @@ Array [
   Object {
     "anchor": "declaration",
     "level": 2,
-    "title": "Declaration",
+    "title": "sections.declarations",
   },
   Object {
     "anchor": "details",
     "level": 2,
-    "title": "Details",
+    "title": "sections.details",
   },
   Object {
     "anchor": "parameters",
     "level": 2,
-    "title": "Parameters",
+    "title": "sections.parameters",
   },
   Object {
     "anchor": "possibleValues",
     "level": 2,
-    "title": "Possible Values",
+    "title": "sections.possible-values",
   },
   Object {
     "anchor": "topics",
     "level": 2,
-    "title": "Topics",
+    "title": "sections.topics",
   },
   Object {
     "anchor": "relationships",
     "level": 2,
-    "title": "Relationships",
+    "title": "sections.relationships",
   },
   Object {
     "anchor": "see-also",
     "level": 2,
-    "title": "See Also",
+    "title": "sections.see-also",
   },
 ]
 `;

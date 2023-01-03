@@ -103,19 +103,19 @@ describe('ParameterAttributes', () => {
         .at(0)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Possible types: string, number');
+    ).toBe('parameters.possible-types: string, number');
     expect(
       metadata
         .at(0)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Possible types: string, number');
+    ).toBe('parameters.possible-types: string, number');
     expect(
       metadata
         .at(1)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe("Possible values: 'one', 'two'");
+    ).toBe("parameters.possible-values: 'one', 'two'");
   });
 
   it('displays only one possible type and value metadata', () => {
@@ -139,13 +139,13 @@ describe('ParameterAttributes', () => {
         .at(0)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Type: string');
+    ).toBe('parameters.type: string');
     expect(
       metadata
         .at(1)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Value: \'one\'');
+    ).toBe('parameters.value: \'one\'');
   });
 
   describe('with Changes', () => {
@@ -275,25 +275,25 @@ describe('ParameterAttributes', () => {
           .at(0)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible types: string, number');
+      ).toBe('parameters.possible-types: string, number');
       expect(
         metadata
           .at(1)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible types: boolean, string');
+      ).toBe('parameters.possible-types: boolean, string');
       expect(
         metadata
           .at(2)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible values: \'one\', \'two\'');
+      ).toBe('parameters.possible-values: \'one\', \'two\'');
       expect(
         metadata
           .at(3)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible values: \'two\', \'one\'');
+      ).toBe('parameters.possible-values: \'two\', \'one\'');
     });
   });
 });

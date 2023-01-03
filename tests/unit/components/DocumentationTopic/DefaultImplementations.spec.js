@@ -40,7 +40,7 @@ describe('DefaultImplementations', () => {
       sections: propsData.sections,
       isSymbolDeprecated: false,
       isSymbolBeta: false,
-      title: 'Default Implementations',
+      title: 'sections.default-implementations',
       wrapTitle: true,
       topicStyle: TopicSectionsStyle.list,
     });

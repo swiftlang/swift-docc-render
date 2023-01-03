@@ -58,7 +58,7 @@ describe('HeroMetadata', () => {
 
     const span = wrapper.find('div.metadata div.item div.content div.duration');
     expect(span.exists()).toBe(true);
-    expect(span.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*min`));
+    expect(span.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*tutorials\\.time\\.minutes\\.short`));
   });
 
   it('renders requirements icon if requirements present', () => {
@@ -91,7 +91,7 @@ describe('HeroMetadata', () => {
     expect(items.at(0).text())
       .toEqual(expect.stringContaining('tutorials.estimated-time'));
     expect(items.at(1).text())
-      .toEqual(expect.stringContaining('Project files'));
+      .toEqual(expect.stringContaining('tutorials.project-files'));
     expect(items.at(2).text())
       .toEqual(expect.stringContaining('Xcode'));
   });

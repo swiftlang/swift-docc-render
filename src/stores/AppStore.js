@@ -12,8 +12,8 @@ import ColorScheme from 'docc-render/constants/ColorScheme';
 import Settings from 'docc-render/utils/settings';
 
 const supportsAutoColorScheme = (typeof window.matchMedia !== 'undefined') && [
-  ColorScheme.light.value,
-  ColorScheme.dark.value,
+  ColorScheme.light,
+  ColorScheme.dark,
   'no-preference',
 ].some(scheme => window.matchMedia(`(prefers-color-scheme: ${scheme})`).matches);
 
@@ -21,9 +21,9 @@ const defaultColorScheme = supportsAutoColorScheme ? ColorScheme.auto : ColorSch
 
 export default {
   state: {
-    preferredColorScheme: Settings.preferredColorScheme || defaultColorScheme.value,
+    preferredColorScheme: Settings.preferredColorScheme || defaultColorScheme,
     supportsAutoColorScheme,
-    systemColorScheme: ColorScheme.light.value,
+    systemColorScheme: ColorScheme.light,
   },
   setPreferredColorScheme(value) {
     this.state.preferredColorScheme = value;

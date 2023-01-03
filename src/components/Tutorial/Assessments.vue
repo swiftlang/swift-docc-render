@@ -118,7 +118,7 @@ export default {
     return {
       activeIndex: 0,
       completed: false,
-      SuccessMessage: this.$t(this.SuccessMessage),
+      SuccessMessage: this.$t(SuccessMessage),
     };
   },
   computed: {

@@ -25,7 +25,7 @@ describe('SeeAlso', () => {
       isSymbolDeprecated: false,
       isSymbolBeta: false,
       sections: [],
-      title: 'See Also',
+      title: 'sections.see-also',
       wrapTitle: false,
       topicStyle: TopicSectionsStyle.list,
     });

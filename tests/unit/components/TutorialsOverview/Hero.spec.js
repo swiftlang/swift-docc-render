@@ -81,7 +81,7 @@ describe('Hero', () => {
   it('renders an estimated time', () => {
     const meta = wrapper.find('p.meta');
     expect(meta.exists()).toBe(true);
-    expect(meta.text()).toMatch(/4hr 2min\s+Estimated Time/);
+    expect(meta.text()).toMatch(/4hr 2min\s+tutorials\.estimated-time/);
 
     expect(meta.contains(TimerIcon)).toBe(true);
 
