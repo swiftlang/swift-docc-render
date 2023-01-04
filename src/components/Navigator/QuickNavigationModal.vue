@@ -173,8 +173,9 @@ export default {
         processedInputRegex: new RegExp(constructFuzzyRegex(processedUserInput), 'i'),
         childrenMap,
       });
-      // Return the first 20 symbols out of sorted ones
-      return orderSymbolsByPriority(matches).slice(0, 20);
+      // Filter repeated matches and return the first 20
+      const uniqueMatches = [...new Map(matches.map(match => [match.path, match])).values()];
+      return orderSymbolsByPriority(uniqueMatches).slice(0, 20);
     },
     isVisible: {
       get: ({ showQuickNavigationModal }) => showQuickNavigationModal,
