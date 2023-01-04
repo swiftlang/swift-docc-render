@@ -64,7 +64,7 @@ describe('nav', () => {
     expect(title.exists()).toBe(true);
     expect(title.props('to')).toEqual('/tutorials/swiftui?context=foo');
 
-    expect(title.text()).toBe('SwiftUI Tutorials');
+    expect(title.text()).toBe('SwiftUI tutorials.title');
   });
 
   it('renders TutorialsNavigation and passes all sections to it', () => {

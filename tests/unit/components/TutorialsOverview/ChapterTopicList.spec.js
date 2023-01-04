@@ -75,7 +75,7 @@ describe('ChapterTopicList', () => {
 
       expect(link.find('.link').text()).toBe(title);
       expect(link.attributes('aria-label'))
-        .toBe(`${title} - ${TopicKindIconLabel[kind]}${estimatedTime ? ' - 4 minutes tutorials.estimated-time' : ''}`);
+        .toBe(`${title} - ${TopicKindIconLabel[kind]}${estimatedTime ? ' - 4 tutorials.time.minutes.full tutorials.estimated-time' : ''}`);
 
       if (estimatedTime) {
         const time = item.find('.time');

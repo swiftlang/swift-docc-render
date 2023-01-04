@@ -129,7 +129,7 @@ describe('Tag', () => {
     const span = wrapper.findAll('span.visuallyhidden');
     expect(span.exists()).toBe(true);
     expect(span.length).toBe(1);
-    expect(span.at(0).text()).toEqual('Add tag -');
+    expect(span.at(0).text()).toEqual('filter.add-tag -');
   });
 
   it('adds extra text `– Tag` as a span inside button if `isRemovableTag: true`', () => {

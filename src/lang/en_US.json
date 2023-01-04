@@ -98,6 +98,7 @@
   "api-reference": "API Reference",
   "filter": {
     "title": "Filter",
+    "search-symbols": "Search symbols",
     "suggested": "Suggested",
     "selected": "Selected",
     "add-tag": "Add tag",

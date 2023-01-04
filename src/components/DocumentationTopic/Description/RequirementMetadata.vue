@@ -11,9 +11,9 @@
 <template functional>
   <!-- because the component is functional we must mannually pass the classes -->
   <p class="requirement-metadata" :class="data.staticClass">
-    <strong>{{ $t('required') }}.</strong>
+    <strong>{{ parent.$t('required') }}.</strong>
     <template v-if="props.defaultImplementationsCount">
-       {{ $tc('metadata.default-implementation', props.defaultImplementationsCount) }}
+       {{ parent.$tc('metadata.default-implementation', props.defaultImplementationsCount) }}
     </template>
   </p>
 </template>

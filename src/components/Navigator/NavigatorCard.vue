@@ -83,7 +83,7 @@
               v-model="filter"
               :tags="availableTags"
               :selected-tags.sync="selectedTagsModelValue"
-              placeholder="Filter"
+              placeholder="filter.title"
               :should-keep-open-on-blur="false"
               :position-reversed="!renderFilterOnTop"
               :clear-filter-on-tag-select="false"
@@ -256,7 +256,7 @@ export default {
      * Shows only tags, that have children matches.
      */
     availableTags: ({
-      selectedTags, renderableChildNodesMap, apiChangesObject, HIDE_DEPRECATED_TAG, $t,
+      selectedTags, renderableChildNodesMap, apiChangesObject, HIDE_DEPRECATED_TAG,
     }) => {
       const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
       if (!tagLabels.length) return tagLabels;
@@ -295,7 +295,7 @@ export default {
           tagLabelsSet.delete(tagLabel);
         }
         if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.changes.push($t(ChangeNames[changeType]));
+          availableTags.changes.push(ChangeNames[changeType]);
           apiChangesTypesSet.delete(changeType);
         }
         if (deprecated && generalTags.has(HIDE_DEPRECATED_TAG)) {
@@ -306,8 +306,8 @@ export default {
       return availableTags.type.concat(availableTags.changes, availableTags.other);
     },
     selectedTagsModelValue: {
-      get: ({ selectedTags, $t }) => selectedTags.map(tag => (
-        FILTER_TAGS_TO_LABELS[tag] || $t(ChangeNames[tag]) || tag
+      get: ({ selectedTags }) => selectedTags.map(tag => (
+        FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
       )),
       set(values) {
         // guard against accidental clearings

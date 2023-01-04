@@ -43,7 +43,7 @@ describe('RequirementMetadata', () => {
         },
       },
     });
-    expect(wrapper.text().startsWith('Required.')).toBe(true);
-    expect(wrapper.text().endsWith('Default implementations provided.')).toBe(true);
+    expect(wrapper.text().startsWith('required.')).toBe(true);
+    expect(wrapper.text().endsWith('metadata.default-implementation')).toBe(true);
   });
 });

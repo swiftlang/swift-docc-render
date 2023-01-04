@@ -23,7 +23,7 @@
       <CallToActionButton
         v-if="action"
         :action="action"
-        :aria-label="$t('overriding-title', { newTitle: overridingTitle, title } )"
+        :aria-label="$t('tutorials.overriding-title', { newTitle: action.overridingTitle, title } )"
         isDark
       />
     </div>

@@ -262,7 +262,7 @@ describe('NavigatorCard', () => {
       disabled: false,
       focusInputWhenCreated: false,
       focusInputWhenEmpty: false,
-      placeholder: 'Filter',
+      placeholder: 'filter.title',
       positionReversed: true,
       preventedBlur: false,
       selectedTags: [],
