@@ -121,6 +121,7 @@ export default {
             ) {
               closeParenCharIndex = k;
               closeParenTokenIndex = i;
+              break;
             }
           }
         }
