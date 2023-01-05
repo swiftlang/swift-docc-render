@@ -246,7 +246,7 @@ describe('DocumentationTopic', () => {
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
-    expect(nav.props('isWideFormat')).toBe(true);
+    expect(nav.props('displaySidenav')).toBe(true);
   });
 
   it('renders QuickNavigation and MagnifierIcon if enableQuickNavigation is true', () => {
@@ -523,10 +523,10 @@ describe('DocumentationTopic', () => {
       isDark: false,
       hasNoBorder: false,
       currentTopicTags: [],
+      displaySidenav: false,
       references: topicData.references,
       isSymbolBeta: false,
       isSymbolDeprecated: false,
-      isWideFormat: false,
       interfaceLanguage: topicData.identifier.interfaceLanguage,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
@@ -545,7 +545,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(Navigator).exists()).toBe(false);
     // assert the proper container class is applied
     expect(staticContentWidth.classes())
-      .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
+      .toEqual(expect.arrayContaining(['topic-wrapper', 'full-width-container']));
   });
 
   it('renders without NavigatorDataProvider', async () => {
