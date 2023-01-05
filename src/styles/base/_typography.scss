@@ -21,7 +21,9 @@ html {
 
 body {
   @include font-styles(body);
-  background-color: var(--color-text-background);
+  @include inTargetWeb {
+    background-color: var(--color-text-background);
+  }
   color: var(--colors-text, var(--color-text));
   font-style: normal;
   word-wrap: break-word;

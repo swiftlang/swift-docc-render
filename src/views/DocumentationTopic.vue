@@ -469,10 +469,6 @@ export default {
   }
 }
 
-.background-disabled {
-  background-color: transparent;
-}
-
 .doc-topic-view {
   --delay: 1s;
   display: flex;
@@ -483,6 +479,10 @@ export default {
     // don't hide navigator until delay time has passed
     transition: display var(--delay);
   }
+}
+
+.background-disabled {
+  background-color: transparent;
 }
 
 .doc-topic-aside {

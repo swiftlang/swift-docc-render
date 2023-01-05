@@ -30,6 +30,7 @@ export default {
 
 .footer {
   border-top: 1px solid var(--color-grid);
+  background: var(--colors-text-background, var(--color-text-background));
 }
 
 .row {
