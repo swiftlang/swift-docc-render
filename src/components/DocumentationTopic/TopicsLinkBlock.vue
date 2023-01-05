@@ -203,7 +203,10 @@ export default {
     change({ topic: { identifier }, state: { apiChanges } }) {
       return this.changeFor(identifier, apiChanges);
     },
-    changeName: ({ change, getChangeName }) => getChangeName(change),
+    changeName() {
+      const { change, getChangeName } = this;
+      return this.$t(getChangeName(change));
+    },
     hasAbstractElements: ({
       topic: {
         abstract, conformance, required, defaultImplementations,

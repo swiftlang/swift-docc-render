@@ -23,7 +23,7 @@ export const ChangeNames = {
 };
 
 export const ChangeNameToType = {
-  Modified: ChangeTypes.modified,
-  Added: ChangeTypes.added,
-  Deprecated: ChangeTypes.deprecated,
+  'change-type.modified': ChangeTypes.modified,
+  'change-type.added': ChangeTypes.added,
+  'change-type.deprecated': ChangeTypes.deprecated,
 };
