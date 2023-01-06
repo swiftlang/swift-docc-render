@@ -32,7 +32,8 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <Title :eyebrow="roleHeading" v-if="!enableMinimized">
+        <LinkableHeading v-if="enableMinimized" class="minimized-summary">Summary</LinkableHeading>
+        <Title v-else :eyebrow="roleHeading">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
@@ -41,7 +42,6 @@
             :data-tag-name="tagName"
           />
         </Title>
-        <LinkableHeading v-else class="minimized-summary">Summary</LinkableHeading>
         <Abstract
           v-if="abstract"
           :class="{ 'minimized-abstract': enableMinimized }"
