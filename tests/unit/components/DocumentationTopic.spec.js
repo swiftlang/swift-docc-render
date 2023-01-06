@@ -33,6 +33,7 @@ const {
   SeeAlso,
   Topics,
   Title,
+  LinkableHeading,
   BetaLegalText,
   WordBreak,
 } = DocumentationTopic.components;
@@ -242,6 +243,7 @@ describe('DocumentationTopic', () => {
     expect(hero.props()).toEqual({
       role: propsData.role,
       enhanceBackground: true,
+      enableMinimized: false,
       shortHero: false,
       shouldShowLanguageSwitcher: false,
       iconOverride,
@@ -257,6 +259,7 @@ describe('DocumentationTopic', () => {
     expect(hero.props()).toEqual({
       role: propsData.role,
       enhanceBackground: true,
+      enableMinimized: false,
       shortHero: false,
       shouldShowLanguageSwitcher: false,
       iconOverride: undefined,
@@ -268,6 +271,7 @@ describe('DocumentationTopic', () => {
     expect(hero.props()).toEqual({
       role: TopicTypes.collection,
       enhanceBackground: true,
+      enableMinimized: false,
       shortHero: false,
       shouldShowLanguageSwitcher: false,
     });
@@ -298,6 +302,7 @@ describe('DocumentationTopic', () => {
     expect(hero.props()).toEqual({
       role: 'symbol',
       enhanceBackground: false,
+      enableMinimized: false,
       shortHero: false,
       shouldShowLanguageSwitcher: false,
     });
@@ -331,6 +336,13 @@ describe('DocumentationTopic', () => {
     // Minimized view should not render Title
     wrapper.setProps({ enableMinimized: true });
     expect(wrapper.find(DocumentationHero).find(Title).exists()).toBe(false);
+  });
+
+  it('renders a `LinkableHeading`, in minimized mode, if `enableMinimized` prop is `true`', () => {
+    const heading = wrapper.find(LinkableHeading);
+    expect(heading.exists()).toBe(false);
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(LinkableHeading).exists()).toBe(true);
   });
 
   it('uses `WordBreak` in the title for symbol pages', () => {
