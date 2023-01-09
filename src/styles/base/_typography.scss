@@ -15,7 +15,9 @@
 /// The base/default font-size for the html element in browsers is 16px.
 /// This makes the base font-size match our $-base-font-size.
 html {
-  font: var(--typography-html-font, $body-font-size $font-content);
+  @include inTargetWeb {
+    font: var(--typography-html-font, $body-font-size $font-content);
+  }
   quotes: "“" "”";
 }
 

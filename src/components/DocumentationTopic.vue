@@ -17,6 +17,7 @@
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
+        :enableMinimized="enableMinimized"
         :shortHero="shortHero"
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
         :iconOverride="references[pageIcon]"
@@ -31,7 +32,8 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <Title :eyebrow="roleHeading" v-if="!enableMinimized">
+        <LinkableHeading v-if="enableMinimized" class="minimized-summary">Summary</LinkableHeading>
+        <Title v-else :eyebrow="roleHeading">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
@@ -40,7 +42,11 @@
             :data-tag-name="tagName"
           />
         </Title>
-        <Abstract v-if="abstract" :content="abstract" />
+        <Abstract
+          v-if="abstract"
+          :class="{ 'minimized-abstract': enableMinimized }"
+          :content="abstract"
+        />
         <div v-if="sampleCodeDownload">
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
@@ -124,6 +130,7 @@ import DocumentationHero from 'docc-render/components/DocumentationTopic/Documen
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -163,6 +170,7 @@ export default {
     OnThisPageStickyContainer,
     OnThisPageNav,
     DocumentationHero,
+    LinkableHeading,
     Abstract,
     Aside,
     BetaLegalText,
@@ -486,6 +494,13 @@ export default {
       flex: 1;
     }
   }
+}
+
+.minimized-summary {
+  @include font-styles(heading-2);
+}
+.minimized-abstract {
+  @include font-styles(body);
 }
 
 .container {

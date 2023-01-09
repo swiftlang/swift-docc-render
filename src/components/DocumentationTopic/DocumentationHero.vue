@@ -29,8 +29,9 @@
     </div>
     <div
       class="documentation-hero__content"
-      :class="{ 'short-hero': shortHero, 'extra-bottom-padding': shouldShowLanguageSwitcher }"
-    >
+      :class="{ 'short-hero': shortHero,
+        'extra-bottom-padding': shouldShowLanguageSwitcher,
+        'minimized-hero': enableMinimized }">
       <slot />
     </div>
   </div>
@@ -54,6 +55,10 @@ export default {
     enhanceBackground: {
       type: Boolean,
       required: true,
+    },
+    enableMinimized: {
+      type: Boolean,
+      default: false,
     },
     shortHero: {
       type: Boolean,
@@ -179,6 +184,11 @@ $doc-hero-icon-dimension: 250px;
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
+  }
+
+  .minimized-hero {
+    padding-top: rem(20px);
+    padding-bottom: 0;
   }
 
   &__above-content {
