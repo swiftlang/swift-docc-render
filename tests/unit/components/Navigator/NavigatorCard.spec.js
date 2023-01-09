@@ -32,9 +32,9 @@ const {
   STORAGE_KEY,
   FILTER_TAGS,
   FILTER_TAGS_TO_LABELS,
-  HIDE_DEPRECATED_TAG,
 } = NavigatorCard.constants;
 
+const HIDE_DEPRECATED_TAG = 'verbs.hide change-type.deprecated';
 const ITEMS_FOUND = 'navigator.items-found';
 
 const DynamicScrollerStub = {
