@@ -1,2 +1,2 @@
-export { default as es } from './es_ES.json';
+// eslint-disable-next-line import/prefer-default-export
 export { default as en } from './en_US.json';

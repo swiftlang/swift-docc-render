@@ -16,7 +16,7 @@
 export default {
   name: 'LocaleSelector',
   data() {
-    return { langs: ['en', 'es'] };
+    return { langs: ['en'] };
   },
 };
 
