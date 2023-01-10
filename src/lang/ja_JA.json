@@ -1,0 +1,160 @@
+{
+  "language": "言語",
+  "video": {
+    "replay": "リプレイ",
+    "play": "再生",
+    "watch": "概要のビデオを観る"
+  },
+  "tutorials": {
+    "title": "チュートリアル | チュートリアル",
+    "step": "手順{number}",
+    "submit": "送信",
+    "next": "次へ",
+    "preview": {
+      "title": "プレビューなし | プレビュー | プレビュー"
+    },
+    "nav": {
+      "chapters": "章",
+      "current": "現在の{thing}"
+    },
+    "assessment": {
+      "check-your-understanding": "理解度を確認する",
+      "success-message": "よくできました。このチュートリアルの問題にすべて回答しました。",
+      "answer-number-is": "問題番号{index}は",
+      "correct": "正解です",
+      "incorrect": "不正解です",
+      "next-question": "次の問題"
+    },
+    "project-files": "プロジェクトファイル",
+    "estimated-time": "予測時間",
+    "sections": {
+      "chapter": "章"
+    },
+    "question-of": "{total}問中の{index}問",
+    "section-of": "{total}件中の{number}件",
+    "overriding-title": "{title}の{newTitle}",
+    "time": {
+      "minutes": {
+        "full": "分 | 分 |{count}分",
+        "short": "分 | 分"
+      },
+      "hours": {
+        "full": "時間 | 時間"
+      }
+    }
+  },
+  "documentation": {
+    "title": "ドキュメント",
+    "navigator": "ドキュメントナビゲータ",
+    "nav": {
+      "breadcrumbs": "パンくずリスト",
+      "menu": "メニュー"
+    },
+    "current-page": "現在のページは{title}です"
+  },
+  "kind": {
+    "beta": "ベータ版",
+    "experiment": "試験運用版",
+    "important": "重要",
+    "note": "注意",
+    "tip": "ヒント",
+    "warning": "警告"
+  },
+  "change-type": {
+    "added": "追加",
+    "modified": "変更",
+    "deprecated": "非推奨"
+  },
+  "verbs": {
+    "hide": "非表示",
+    "show": "表示",
+    "close": "閉じる",
+    "reset": "リセット",
+    "open": "開く"
+  },
+  "sections": {
+    "title": "セクション",
+    "on-this-page": "このページの内容",
+    "topics": "トピック",
+    "default-implementations": "デフォルト実装",
+    "relationships": "関連項目",
+    "see-also": "参照",
+    "declarations": "宣言",
+    "details": "詳細",
+    "parameters": "パラメータ",
+    "possible-values": "使用できる値",
+    "parts": "パーツ",
+    "availability": "利用可能",
+    "resources": "リソース"
+  },
+  "metadata": {
+    "details": {
+      "name": "名前",
+      "key": "キー",
+      "type": "タイプ"
+    },
+    "beta": {
+      "legal": "このドキュメントはベータ版のソフトウェアのもので、変更される可能性があります。",
+      "software": "ベータ版ソフトウェア"
+    },
+    "default-implementation": "デフォルト実装あり。| デフォルト実装あり。"
+  },
+  "availability": {
+    "introduced-and-deprecated": "{name}{introducedAt}で導入され、{name}{deprecatedAt}で非推奨になりました",
+    "available-on": "{name}{introducedAt}以降で使用できます"
+  },
+  "more": "さらに表示",
+  "less": "表示を減らす",
+  "api-reference": "APIリファレンス",
+  "filter": {
+    "title": "フィルタ",
+    "suggested": "提案",
+    "selected": "選択",
+    "add-tag": "タグを追加",
+    "tag": "タグ",
+    "select-remove": "選択してリストから削除します。",
+    "navigate": "シンボルを移動するには、上下左右の矢印キーを押します。",
+    "containing-symbols": "1個のシンボルを含む |{number}個のシンボルを含む",
+    "symbols-inside": "{total}個中{number}個のシンボルが中にあります"
+  },
+  "navigator": {
+    "no-results": "結果が見つかりません。",
+    "no-children": "使用できるデータがありません。",
+    "error-fetching": "データを取得する際にエラーが起きました。",
+    "items-found": "項目が見つかりました。Tabキーを押すと項目をナビゲートできます。",
+    "navigator-is": "ナビゲータは{state}です"
+  },
+  "tab": {
+    "request": "リクエスト",
+    "response": "レスポンス"
+  },
+  "required": "必須",
+  "parameters": {
+    "default": "デフォルト",
+    "minimum": "最小",
+    "maximum": "最大",
+    "possible-types": "使用できるタイプ",
+    "type": "タイプ",
+    "possible-values": "使用できる値",
+    "value": "値"
+  },
+  "content-type": "コンテンツタイプ",
+  "read-only": "読み出し専用",
+  "error": {
+    "unknown": "原因不明のエラーが起きました。",
+    "image": "イメージを読み込めませんでした"
+  },
+  "color-scheme": {
+    "select": "カラースキーム環境設定を選択",
+    "auto": "自動",
+    "dark": "ダーク",
+    "light": "ライト"
+  },
+  "accessibility": {
+    "strike": {
+      "start": "取り消し線テキストの開始",
+      "end": "取り消し線テキストの終了"
+    },
+    "skip-navigation": "ナビゲーションをスキップ"
+  }
+}

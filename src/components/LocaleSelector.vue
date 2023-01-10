@@ -13,10 +13,12 @@
 </template>
 
 <script>
+import * as messages from '@/lang';
+
 export default {
   name: 'LocaleSelector',
   data() {
-    return { langs: ['en'] };
+    return { langs: Object.keys(messages) };
   },
 };
 

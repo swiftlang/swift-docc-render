@@ -258,7 +258,7 @@ export default {
      */
     availableTags() {
       const {
-        selectedTags, renderableChildNodesMap, apiChangesObject, HIDE_DEPRECATED_TAG
+        selectedTags, renderableChildNodesMap, apiChangesObject, HIDE_DEPRECATED_TAG,
       } = this;
       if (selectedTags.length) return [];
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
