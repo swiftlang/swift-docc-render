@@ -19,9 +19,11 @@
       <div class="nav__background" />
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
-        <div class="pre-title">
-          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }" />
-        </div>
+        <slot
+          name="pre-title"
+          className="pre-title"
+          v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }"
+        />
         <div v-if="$slots.default" class="nav-title">
           <slot />
         </div>
@@ -674,6 +676,17 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 }
 
+.pre-title + .nav-title {
+  @include nav-in-breakpoint {
+    grid-area: title;
+
+    @include nav-is-wide-format(true) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
 .nav-title {
   height: $nav-height;
   @include font-styles(nav-title);
@@ -687,15 +700,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-top: 0;
     height: $nav-height-small;
     width: 90%;
-  }
-
-  @include nav-in-breakpoint {
-    grid-area: title;
-
-    @include nav-is-wide-format(true) {
-      width: 100%;
-      justify-content: center;
-    }
   }
 
   /deep/ span {

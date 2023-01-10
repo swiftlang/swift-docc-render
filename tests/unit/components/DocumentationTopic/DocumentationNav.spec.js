@@ -67,6 +67,7 @@ describe('DocumentationNav', () => {
     swiftPath: 'documentation/foo',
     objcPath: 'documentation/bar',
     references,
+    displaySidenav: true,
   };
 
   beforeEach(() => {
@@ -310,12 +311,12 @@ describe('DocumentationNav', () => {
     window.Event = backup;
   });
 
-  it('renders the nav, with `isWideFormat` to `false`', () => {
+  it('does not render the sidenav toggle if displaySidenav is false', () => {
     wrapper.setProps({
-      isWideFormat: false,
+      displaySidenav: false,
     });
     expect(wrapper.find(NavBase).props()).toMatchObject({
-      isWideFormat: false,
+      isWideFormat: true,
       breakpoint: BreakpointName.medium,
     });
     expect(wrapper.find('.sidenav-toggle').exists()).toBe(false);

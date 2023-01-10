@@ -109,6 +109,7 @@ export default {
     }) => lightVariantAttributes || darkVariantAttributes,
     darkVariantAttributes: ({ darkVariants }) => constructAttributes(darkVariants),
     lightVariantAttributes: ({ lightVariants }) => constructAttributes(lightVariants),
+    loading: ({ appState }) => appState.imageLoadingStrategy,
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto,
     prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark,
@@ -121,10 +122,6 @@ export default {
     variants: {
       type: Array,
       required: true,
-    },
-    loading: {
-      type: String,
-      default: 'lazy',
     },
     shouldCalculateOptimalWidth: {
       type: Boolean,

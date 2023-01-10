@@ -23,7 +23,7 @@
     <!-- The nav sticky anchor has to always be between the Header and the Content -->
     <div :id="baseNavStickyAnchorId" />
     <slot :isTargetIDE="isTargetIDE">
-      <router-view />
+      <router-view class="router-content" />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
       <Footer v-else-if="!isTargetIDE" />
     </slot>
@@ -211,16 +211,16 @@ export default {
 }
 
 #app {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-flow: column;
   min-height: 100%;
 
   > /deep/ * {
     min-width: 0;
   }
 
-  &.hascustomheader {
-    grid-template-rows: auto auto 1fr auto;
+  .router-content {
+    flex: 1;
   }
 }
 </style>

@@ -310,4 +310,33 @@ describe('QuickNavigationModal', () => {
     });
     expect(wrapper.vm.processedUserInput).toBe('barfoo');
   });
+  it('it removes filtered symbols with duplicate paths', () => {
+    const symbolsWithRepeatedPaths = [
+      {
+        title: 'foo',
+        path: '/foo',
+        type: 'method',
+      },
+      {
+        title: 'foo',
+        path: '/foo',
+        type: 'method',
+      },
+      {
+        title: 'foo',
+        path: '/bar',
+        type: 'method',
+      },
+    ];
+    wrapper = shallowMount(QuickNavigationModal, {
+      propsData: {
+        children: symbolsWithRepeatedPaths,
+        showQuickNavigationModal: true,
+      },
+    });
+    wrapper.setData({
+      debouncedInput: 'foo',
+    });
+    expect(wrapper.vm.filteredSymbols.length).toBe(2);
+  });
 });

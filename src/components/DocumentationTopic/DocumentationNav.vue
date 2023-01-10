@@ -15,31 +15,33 @@
     hasSolidBackground
     :hasNoBorder="hasNoBorder"
     :isDark="isDark"
-    :isWideFormat="isWideFormat"
+    isWideFormat
     hasFullWidthBorder
     class="documentation-nav"
     :aria-label="$t('api-reference')"
   >
-    <template #pre-title="{ closeNav, isOpen, currentBreakpoint }" v-if="isWideFormat">
-      <transition name="sidenav-toggle">
-        <div
-          v-show="sidenavHiddenOnLarge"
-          class="sidenav-toggle-wrapper"
-        >
-          <button
-            :aria-label="`${$t('verbs.open')} ${$t('documentation.navigator')}`"
-            :id="baseNavOpenSidenavButtonId"
-            class="sidenav-toggle"
-            :tabindex="isOpen ? -1 : null"
-            @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
+    <template #pre-title="{ closeNav, isOpen, currentBreakpoint, className }" v-if="displaySidenav">
+      <div :class="className">
+        <transition name="sidenav-toggle">
+          <div
+            v-show="sidenavHiddenOnLarge"
+            class="sidenav-toggle-wrapper"
           >
-          <span class="sidenav-icon-wrapper">
-            <SidenavIcon class="icon-inline sidenav-icon" />
-          </span>
-          </button>
-          <span class="sidenav-toggle__separator" />
-        </div>
-      </transition>
+            <button
+              :aria-label="`${$t('verbs.open')} ${$t('documentation.navigator')}`"
+              :id="baseNavOpenSidenavButtonId"
+              class="sidenav-toggle"
+              :tabindex="isOpen ? -1 : null"
+              @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
+            >
+            <span class="sidenav-icon-wrapper">
+              <SidenavIcon class="icon-inline sidenav-icon" />
+            </span>
+            </button>
+            <span class="sidenav-toggle__separator" />
+          </div>
+        </transition>
+      </div>
     </template>
     <template slot="default">
       <slot
@@ -138,10 +140,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    isWideFormat: {
-      type: Boolean,
-      default: true,
-    },
     interfaceLanguage: {
       type: String,
       required: false,
@@ -155,6 +153,10 @@ export default {
       required: false,
     },
     sidenavHiddenOnLarge: {
+      type: Boolean,
+      default: false,
+    },
+    displaySidenav: {
       type: Boolean,
       default: false,
     },

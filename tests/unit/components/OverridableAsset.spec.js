@@ -48,7 +48,6 @@ describe('OverridableAsset', () => {
     });
     expect(wrapper.find(ImageAsset).props()).toEqual({
       variants: [localVariantNoID],
-      loading: null,
       alt: '',
       shouldCalculateOptimalWidth: true,
     });

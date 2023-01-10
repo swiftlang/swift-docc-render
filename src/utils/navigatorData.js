@@ -23,11 +23,12 @@ export function hashCode(str) {
 }
 
 export function convertChildrenArrayToObject(children) {
-  return children.reduce((all, current) => {
-    const child = all;
-    child[current.uid] = current;
-    return child;
-  }, {});
+  const obj = {};
+  const len = children.length;
+  for (let i = 0; i < len; i += 1) {
+    obj[children[i].uid] = children[i];
+  }
+  return obj;
 }
 
 /**

@@ -15,6 +15,7 @@
         :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
         v-bind="sidebarProps"
         v-on="sidebarListeners"
+        class="full-width-container topic-wrapper"
       >
         <PortalTarget name="modal-destination" multiple />
         <template #aside="{ scrollLockID, breakpoint }">
@@ -63,7 +64,7 @@
           :isSymbolBeta="isSymbolBeta"
           :currentTopicTags="topicProps.tags"
           :references="topicProps.references"
-          :isWideFormat="enableNavigator"
+          :displaySidenav="enableNavigator"
           :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
           @toggle-sidenav="handleToggleSidenav"
         >
@@ -87,6 +88,7 @@
           :isSymbolBeta="isSymbolBeta"
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
+          :enableMinimized="enableMinimized"
         />
       </component>
     </template>
@@ -141,6 +143,12 @@ export default {
     MagnifierIcon,
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
+  props: {
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       topicDataDefault: null,
@@ -323,11 +331,10 @@ export default {
     sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
         ? {
-          class: 'full-width-container topic-wrapper',
           shownOnMobile: sidenavVisibleOnMobile,
           hiddenOnLarge: sidenavHiddenOnLarge,
         }
-        : { class: 'static-width-container topic-wrapper' }
+        : {}
     ),
     sidebarListeners() {
       return this.enableNavigator ? ({
