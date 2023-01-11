@@ -232,7 +232,6 @@ describe('FilterInput', () => {
     });
     input = wrapper.find('input');
     jest.spyOn(wrapper.vm, 'selectInputAndTags').mockImplementation();
-    input.setValue(inputValue);
     input.trigger('focus');
     expect(wrapper.vm.selectInputAndTags).toHaveBeenCalledTimes(1);
     expect(wrapper.vm.inputIsSelected()).toBeTruthy();
