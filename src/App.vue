@@ -13,6 +13,7 @@
     id="app"
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
+    <div :id="AppTopID" />
     <a href="#main" id="skip-nav">Skip Navigation</a>
     <InitialLoadingPlaceholder />
     <slot name="header" :isTargetIDE="isTargetIDE">
@@ -22,7 +23,7 @@
     <!-- The nav sticky anchor has to always be between the Header and the Content -->
     <div :id="baseNavStickyAnchorId" />
     <slot :isTargetIDE="isTargetIDE">
-      <router-view />
+      <router-view class="router-content" />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
       <Footer v-else-if="!isTargetIDE" />
     </slot>
@@ -38,6 +39,7 @@ import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlac
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { fetchThemeSettings, themeSettingsState } from 'docc-render/utils/theme-settings';
 import { objectToCustomProperties } from 'docc-render/utils/themes';
+import { AppTopID } from 'docc-render/constants/AppTopID';
 
 export default {
   name: 'CoreApp',
@@ -53,6 +55,7 @@ export default {
   },
   data() {
     return {
+      AppTopID,
       appState: AppStore.state,
       fromKeyboard: false,
       isTargetIDE: process.env.VUE_APP_TARGET === 'ide',
@@ -208,16 +211,16 @@ export default {
 }
 
 #app {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-flow: column;
   min-height: 100%;
 
   > /deep/ * {
     min-width: 0;
   }
 
-  &.hascustomheader {
-    grid-template-rows: auto auto 1fr auto;
+  .router-content {
+    flex: 1;
   }
 }
 </style>

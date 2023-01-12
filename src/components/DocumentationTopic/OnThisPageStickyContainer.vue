@@ -24,14 +24,18 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .OnThisPageStickyContainer {
+  $top: $nav-height + rem(10px);
   margin-top: $contenttable-spacing-single-side;
   position: sticky;
-  top: $nav-height + rem(10px);
+  top: $top;
   align-self: flex-start;
   flex: 0 0 auto;
   width: $on-this-page-aside-width;
   padding-right: $nav-padding;
   box-sizing: border-box;
+  padding-bottom: $stacked-margin-small;
+  max-height: calc(100vh - #{$top});
+  overflow: auto;
 
   @media print {
     display: none;
