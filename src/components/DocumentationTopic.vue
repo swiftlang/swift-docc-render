@@ -17,6 +17,7 @@
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
+        :enableMinimized="enableMinimized"
         :shortHero="shortHero"
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
         :iconOverride="references[pageIcon]"
@@ -31,7 +32,8 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <Title :eyebrow="roleHeading">
+        <LinkableHeading v-if="enableMinimized" class="minimized-summary">Summary</LinkableHeading>
+        <Title v-else :eyebrow="roleHeading">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
@@ -40,12 +42,16 @@
             :data-tag-name="tagName"
           />
         </Title>
-        <Abstract v-if="abstract" :content="abstract" />
+        <Abstract
+          v-if="abstract"
+          :class="{ 'minimized-abstract': enableMinimized }"
+          :content="abstract"
+        />
         <div v-if="sampleCodeDownload">
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="hasAvailability"
+          v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
@@ -69,7 +75,7 @@
             </div>
             <PrimaryContent
               v-if="primaryContentSections && primaryContentSections.length"
-              :class="{ 'with-border': !enhanceBackground }"
+              :class="{ 'with-border': !enhanceBackground && !enableMinimized }"
               :conformance="conformance"
               :source="remoteSource"
               :sections="primaryContentSections"
@@ -83,16 +89,19 @@
             :topicStyle="topicSectionsStyle"
           />
           <DefaultImplementations
-            v-if="defaultImplementationsSections"
+            v-if="defaultImplementationsSections && !enableMinimized"
             :sections="defaultImplementationsSections"
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
           />
-          <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+          <Relationships
+            v-if="relationshipsSections && !enableMinimized"
+            :sections="relationshipsSections"
+          />
           <!-- NOTE: see also may contain information about other apis, so we cannot
           pass deprecation and beta information -->
           <SeeAlso
-            v-if="seeAlsoSections"
+            v-if="seeAlsoSections && !enableMinimized"
             :sections="seeAlsoSections"
           />
         </div>
@@ -121,6 +130,7 @@ import DocumentationHero from 'docc-render/components/DocumentationTopic/Documen
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -160,6 +170,7 @@ export default {
     OnThisPageStickyContainer,
     OnThisPageNav,
     DocumentationHero,
+    LinkableHeading,
     Abstract,
     Aside,
     BetaLegalText,
@@ -301,6 +312,10 @@ export default {
       type: Array,
       required: false,
     },
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
     enableOnThisPageNav: {
       type: Boolean,
       default: false,
@@ -333,8 +348,8 @@ export default {
         0,
       );
     },
-    hasAvailability: ({ platforms, technologies }) => (
-      (platforms || []).length || (technologies || []).length
+    shouldShowAvailability: ({ platforms, technologies, enableMinimized }) => (
+      ((platforms || []).length || (technologies || []).length) && !enableMinimized
     ),
     hasBetaContent:
       ({ platforms }) => platforms
@@ -344,8 +359,13 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
-    shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
-      !!(objcPath && swiftPath && isTargetIDE)
+    shouldShowLanguageSwitcher: ({
+      objcPath,
+      swiftPath,
+      isTargetIDE,
+      enableMinimized,
+    }) => (
+      !!(objcPath && swiftPath && isTargetIDE) && !enableMinimized
     ),
     enhanceBackground: ({ symbolKind, disableHeroBackground, topicSectionsStyle }) => {
       if (
@@ -409,7 +429,8 @@ export default {
     shouldRenderTopicSection: ({
       topicSectionsStyle,
       topicSections,
-    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden,
+      enableMinimized,
+    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden && !enableMinimized,
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
@@ -473,6 +494,13 @@ export default {
       flex: 1;
     }
   }
+}
+
+.minimized-summary {
+  @include font-styles(heading-2);
+}
+.minimized-abstract {
+  @include font-styles(body);
 }
 
 .container {

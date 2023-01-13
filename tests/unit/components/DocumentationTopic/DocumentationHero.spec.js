@@ -18,6 +18,7 @@ import { TopicRole } from '@/constants/roles';
 const defaultProps = {
   role: TopicTypes.class,
   enhanceBackground: true,
+  enableMinimized: false,
   shortHero: true,
   shouldShowLanguageSwitcher: true,
   iconOverride: { variants: ['foo'] },
@@ -91,6 +92,18 @@ describe('DocumentationHero', () => {
       shouldShowLanguageSwitcher: false,
     });
     expect(content.classes()).not.toContain('extra-bottom-padding');
+  });
+
+  it('renders the right classes based on `enableMininized` prop', () => {
+    const wrapper = createWrapper();
+    const content = wrapper.find('.documentation-hero__content');
+
+    expect(content.classes()).not.toContain('minimized-hero');
+
+    wrapper.setProps({
+      enableMinimized: true,
+    });
+    expect(content.classes()).toContain('minimized-hero');
   });
 
   it('finds aliases, for the color', () => {
