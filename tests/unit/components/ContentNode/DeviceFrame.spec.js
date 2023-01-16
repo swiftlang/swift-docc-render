@@ -46,6 +46,16 @@ jest.mock('@/constants/DeviceFrames', () => ({
     frameHeight: 370,
     lightUrl: 'path/to/tv.svg',
   },
+  invalid: {
+    screenTop: 8,
+    screenWidth: 600,
+    screenHeight: 300,
+    screenLeft: 8,
+
+    framewidth: 630, // invalid name
+    'frame-height': '370',
+    lightUrl: 'path/to/tv.svg',
+  },
 }));
 
 // return the fallback by default
@@ -117,6 +127,25 @@ describe('DeviceFrame', () => {
       '--frame-aspect': null,
       '--frame-width': null,
       '--screen-aspect': null,
+      '--screen-height': null,
+      '--screen-left': null,
+      '--screen-top': null,
+      '--screen-width': null,
+    });
+  });
+
+  it('renders fine, if device frame is invalid', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        device: 'invalid',
+      },
+    });
+    expect(wrapper.attributes('data-device')).toBe('invalid');
+    expect(wrapper.classes()).not.toContain('no-device');
+    expect(wrapper.vm.styles).toMatchObject({
+      '--frame-aspect': null,
+      '--frame-width': null,
+      '--screen-aspect': 2,
       '--screen-height': null,
       '--screen-left': null,
       '--screen-top': null,

@@ -25,7 +25,8 @@
 import DeviceFrames from 'theme/constants/DeviceFrames.js';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
-const round = (v, dec = 4) => +(`${Math.round(`${v}e+${dec}`)}e-${dec}`);
+const isTruthy = val => val && val !== Infinity;
+const round = (v, dec = 4) => (isTruthy(v) ? +(`${Math.round(`${v}e+${dec}`)}e-${dec}`) : null);
 
 export default {
   name: 'DeviceFrame',
@@ -67,9 +68,9 @@ export default {
     }),
   },
   methods: {
-    toPixel: val => (val ? `${val}px` : null),
-    toUrl: val => (val ? `url(${val})` : null),
-    toPct: val => (val ? `${round(val * 100)}%` : null),
+    toPixel: val => (isTruthy(val) ? `${val}px` : null),
+    toUrl: val => (isTruthy(val) ? `url(${val})` : null),
+    toPct: val => (isTruthy(val) ? `${round(val * 100)}%` : null),
   },
 };
 </script>
@@ -84,6 +85,7 @@ export default {
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+  overflow: hidden;
   @include space-out-between-siblings($article-stacked-margin-large);
 }
 
