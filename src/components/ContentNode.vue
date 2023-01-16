@@ -287,10 +287,15 @@ function renderNode(createElement, references) {
       }, (
         renderListItems(node.items)
       ));
-    case BlockType.paragraph:
-      return createElement('p', {}, (
+    case BlockType.paragraph: {
+      const hasSingleImage = node.inlineContent.length === 1
+        && node.inlineContent[0].type === InlineType.image;
+      const props = hasSingleImage ? { class: ['inline-image-container'] } : {};
+
+      return createElement('p', props, (
         renderChildren(node.inlineContent)
       ));
+    }
     case BlockType.table:
       if (node.metadata && node.metadata.anchor) {
         return renderFigure(node);

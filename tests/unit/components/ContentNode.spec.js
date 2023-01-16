@@ -284,6 +284,36 @@ describe('ContentNode', () => {
       const paragraph = wrapper.find('.content p');
       expect(paragraph.exists()).toBe(true);
       expect(paragraph.text()).toBe('foobar');
+      expect(paragraph.classes()).toHaveLength(0);
+    });
+
+    it('renders a `<p> with a special class, if it has a single image inside', () => {
+      const references = {
+        'figure1.png': {
+          variants: [
+            {
+              traits: ['3x', 'light'],
+              url: '',
+              size: { width: 1202, height: 630 },
+            },
+          ],
+        },
+      };
+
+      const wrapper = mountWithItem({
+        type: 'paragraph',
+        inlineContent: [
+          {
+            type: 'image',
+            identifier: 'figure1.png',
+          },
+        ],
+      }, references);
+
+      const paragraph = wrapper.find('.content p');
+      expect(paragraph.classes()).toContain('inline-image-container');
+      const inlineImage = paragraph.find(InlineImage);
+      expect(inlineImage.exists()).toBe(true);
     });
   });
 

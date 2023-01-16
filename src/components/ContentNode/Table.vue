@@ -28,23 +28,13 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import 'docc-render/styles/_core.scss';
-
-.table-wrapper {
-  & + *,
-  * + & {
-    margin-top: $stacked-margin-xlarge;
-  }
-}
-</style>
-
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
 .table-wrapper {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  @include space-out-between-siblings($stacked-margin-xlarge);
 }
 
 table {

@@ -30,6 +30,7 @@
           placeholder="Search symbols"
           focusInputWhenCreated
           focusInputWhenEmpty
+          selectInputOnFocus
           @input="focusedIndex = 0"
         >
           <template #icon>
@@ -158,6 +159,7 @@ export default {
       children,
       fuzzyMatch,
       processedUserInput,
+      childrenMap,
       orderSymbolsByPriority,
     }) => {
       const symbols = children.filter(symbol => (
@@ -166,12 +168,14 @@ export default {
       ));
       if (!processedUserInput) return [];
       const matches = fuzzyMatch({
-        processedUserInput,
+        inputLength: processedUserInput.length,
         symbols,
         processedInputRegex: new RegExp(constructFuzzyRegex(processedUserInput), 'i'),
+        childrenMap,
       });
-      // Return the first 20 symbols out of sorted ones
-      return orderSymbolsByPriority(matches).slice(0, 20);
+      // Filter repeated matches and return the first 20
+      const uniqueMatches = [...new Map(matches.map(match => [match.path, match])).values()];
+      return orderSymbolsByPriority(uniqueMatches).slice(0, 20);
     },
     isVisible: {
       get: ({ showQuickNavigationModal }) => showQuickNavigationModal,
@@ -216,21 +220,22 @@ export default {
     formatSymbolTitle(symbolTitle, symbolStart, symbolEnd) {
       return symbolTitle.slice(symbolStart, symbolEnd);
     },
-    fuzzyMatch({ processedUserInput, symbols, processedInputRegex }) {
+    fuzzyMatch({
+      inputLength, symbols, processedInputRegex, childrenMap,
+    }) {
       return symbols.map((symbol) => {
         const match = processedInputRegex.exec(symbol.title);
         // Dismiss if symbol isn't matched
         if (!match) return false;
 
         const matchLength = match[0].length;
-        const inputLength = processedUserInput.length;
         // Dismiss if match length is greater than 3x the input's length
         if (matchLength > inputLength * 3) return false;
         return ({
           uid: symbol.uid,
           title: symbol.title,
           path: symbol.path,
-          parents: getParents(symbol.parent, this.childrenMap),
+          parents: getParents(symbol.parent, childrenMap),
           type: symbol.type,
           inputLengthDifference: symbol.title.length - inputLength,
           matchLength,

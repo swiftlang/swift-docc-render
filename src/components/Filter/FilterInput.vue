@@ -71,6 +71,7 @@
               type="text"
               class="filter__input"
               v-on="inputMultipleSelectionListeners"
+              @focus="selectInputOnFocus && selectInputAndTags()"
               @keydown.down.prevent="downHandler"
               @keydown.up.prevent="upHandler"
               @keydown.left="leftKeyInputHandler"
@@ -196,6 +197,10 @@ export default {
       default: false,
     },
     focusInputWhenEmpty: {
+      type: Boolean,
+      default: false,
+    },
+    selectInputOnFocus: {
       type: Boolean,
       default: false,
     },

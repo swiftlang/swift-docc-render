@@ -13,6 +13,8 @@ import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
+import NavBase from 'docc-render/components/NavBase.vue';
 import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
@@ -48,7 +50,13 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
 });
 getSetting.mockReturnValue(false);
 
-const { CodeTheme, Nav, Topic } = DocumentationTopic.components;
+const {
+  CodeTheme,
+  Nav,
+  Topic,
+  QuickNavigationModal,
+  MagnifierIcon,
+} = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
 const mocks = {
@@ -138,19 +146,27 @@ const AdjustableSidebarWidthSmallStub = {
   },
 };
 
+const stubs = {
+  AdjustableSidebarWidth,
+  NavigatorDataProvider,
+};
+
+const provide = { isTargetIDE: false };
+
+const createWrapper = props => shallowMount(DocumentationTopic, {
+  stubs,
+  provide,
+  mocks,
+  ...props,
+});
+
 describe('DocumentationTopic', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    wrapper = shallowMount(DocumentationTopic, {
-      mocks,
-      stubs: {
-        AdjustableSidebarWidth,
-        NavigatorDataProvider,
-      },
-    });
+    wrapper = createWrapper();
   });
 
   afterEach(() => {
@@ -230,15 +246,98 @@ describe('DocumentationTopic', () => {
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
-    expect(nav.props('isWideFormat')).toBe(true);
+    expect(nav.props('displaySidenav')).toBe(true);
+  });
+
+  it('renders QuickNavigation and MagnifierIcon if enableQuickNavigation is true', () => {
+    getSetting.mockReturnValueOnce(true);
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+
+    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const magnifierIconComponent = wrapper.find(MagnifierIcon);
+    expect(quickNavigationModalComponent.exists()).toBe(true);
+    expect(magnifierIconComponent.exists()).toBe(true);
+  });
+
+  it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is false', () => {
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+
+    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const magnifierIconComponent = wrapper.find(MagnifierIcon);
+    expect(quickNavigationModalComponent.exists()).toBe(false);
+    expect(magnifierIconComponent.exists()).toBe(false);
+  });
+
+  it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {
+    getSetting.mockReturnValueOnce(true);
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+
+    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const magnifierIconComponent = wrapper.find(MagnifierIcon);
+    expect(quickNavigationModalComponent.exists()).toBe(false);
+    expect(magnifierIconComponent.exists()).toBe(false);
+  });
+
+  it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is true but IDE is being targeted', () => {
+    getSetting.mockReturnValueOnce(true);
+    wrapper = createWrapper({
+      provide: { isTargetIDE: true },
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+
+    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const magnifierIconComponent = wrapper.find(MagnifierIcon);
+    expect(quickNavigationModalComponent.exists()).toBe(false);
+    expect(magnifierIconComponent.exists()).toBe(false);
   });
 
   describe('if breakpoint is small', () => {
     beforeEach(() => {
-      wrapper = shallowMount(DocumentationTopic, {
-        mocks,
+      wrapper = createWrapper({
         stubs: {
-          // renders sidebar on a small device
           AdjustableSidebarWidth: AdjustableSidebarWidthSmallStub,
           NavigatorDataProvider,
         },
@@ -424,10 +523,10 @@ describe('DocumentationTopic', () => {
       isDark: false,
       hasNoBorder: false,
       currentTopicTags: [],
+      displaySidenav: false,
       references: topicData.references,
       isSymbolBeta: false,
       isSymbolDeprecated: false,
-      isWideFormat: false,
       interfaceLanguage: topicData.identifier.interfaceLanguage,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
@@ -446,7 +545,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(Navigator).exists()).toBe(false);
     // assert the proper container class is applied
     expect(staticContentWidth.classes())
-      .toEqual(expect.arrayContaining(['topic-wrapper', 'static-width-container']));
+      .toEqual(expect.arrayContaining(['topic-wrapper', 'full-width-container']));
   });
 
   it('renders without NavigatorDataProvider', async () => {
@@ -568,6 +667,7 @@ describe('DocumentationTopic', () => {
         swift: ['documentation/swift'],
       },
       enableOnThisPageNav: true, // enabled by default
+      enableMinimized: false, // disabled by default
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });
@@ -584,8 +684,7 @@ describe('DocumentationTopic', () => {
   it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
     wrapper.destroy();
     getSetting.mockReturnValue(false);
-    wrapper = shallowMount(DocumentationTopic, {
-      mocks,
+    wrapper = createWrapper({
       provide: { isTargetIDE: true },
       stubs: {
         // renders sidebar on a small device
@@ -907,30 +1006,16 @@ describe('DocumentationTopic', () => {
   });
 
   describe('isTargetIDE', () => {
-    const provide = { isTargetIDE: true };
+    const provideWithIDETarget = { isTargetIDE: true };
 
     it('does not render a `Nav`', () => {
-      wrapper = shallowMount(DocumentationTopic, {
-        mocks,
-        stubs: {
-          AdjustableSidebarWidth,
-          NavigatorDataProvider,
-        },
-        provide,
-      });
+      wrapper = createWrapper({ provide: provideWithIDETarget });
       wrapper.setData({ topicData });
       expect(wrapper.contains(Nav)).toBe(false);
     });
 
     it('does not render an AdjustableSidebarWidth', () => {
-      wrapper = shallowMount(DocumentationTopic, {
-        mocks,
-        stubs: {
-          AdjustableSidebarWidth,
-          NavigatorDataProvider,
-        },
-        provide,
-      });
+      wrapper = createWrapper({ provide: provideWithIDETarget });
       wrapper.setData({ topicData });
       expect(wrapper.find(AdjustableSidebarWidth).exists()).toBe(false);
       expect(wrapper.find(Topic).exists()).toBe(true);

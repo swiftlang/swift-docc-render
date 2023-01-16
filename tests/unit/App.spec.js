@@ -13,6 +13,7 @@ import Footer from 'docc-render/components/Footer.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { AppTopID } from '@/constants/AppTopID';
 import { flushPromises } from '../../test-utils';
 
 jest.mock('docc-render/utils/theme-settings', () => ({
@@ -176,6 +177,11 @@ describe('App', () => {
 
     wrapper.setData({ isTargetIDE: true });
     expect(wrapper.contains(Footer)).toBe(false);
+  });
+
+  it('renders the app-top element', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(`#${AppTopID}`).exists()).toBe(true);
   });
 
   describe('Custom CSS Properties', () => {
