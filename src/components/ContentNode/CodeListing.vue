@@ -187,11 +187,20 @@ code {
   flex-direction: column;
   min-height: 100%;
   border-radius: var(--code-border-radius, $border-radius);
-  overflow: auto;
+  overflow: hidden;
+  // this mask image is not actually used for any visual effect since there is
+  // no background being used on this element—however, we need this in order to
+  // establish a new stacking context, which resolves a Safari bug where the
+  // scrollbar is not clipped by this element depending on its border-radius
+  -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
 
   &.single-line {
     border-radius: $large-border-radius;
   }
+}
+
+.container-general {
+  overflow: auto;
 }
 
 .container-general,
