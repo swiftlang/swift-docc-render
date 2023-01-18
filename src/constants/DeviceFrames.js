@@ -8,4 +8,5 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+// Swift-DocC-Render does not provide device frames out of the box.
 export default {};
