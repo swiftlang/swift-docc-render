@@ -30,6 +30,7 @@
           placeholder="filter.search-symbols"
           focusInputWhenCreated
           focusInputWhenEmpty
+          selectInputOnFocus
           @input="focusedIndex = 0"
         >
           <template #icon>

@@ -131,6 +131,7 @@ describe('QuickNavigationModal', () => {
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [],
+      selectInputOnFocus: true,
       clearFilterOnTagSelect: true,
     });
   });

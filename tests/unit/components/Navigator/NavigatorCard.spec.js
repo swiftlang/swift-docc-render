@@ -273,6 +273,7 @@ describe('NavigatorCard', () => {
         'Tutorials',
       ],
       value: '',
+      selectInputOnFocus: false,
       clearFilterOnTagSelect: false,
     });
   });

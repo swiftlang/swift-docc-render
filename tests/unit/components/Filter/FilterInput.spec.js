@@ -222,6 +222,21 @@ describe('FilterInput', () => {
     expect(wrapper.emitted('input')).toEqual([['/']]);
   });
 
+  it('selects input on focus if `selectInputOnFocus` prop is true', async () => {
+    wrapper = shallowMount(FilterInput, {
+      propsData: {
+        ...propsData,
+        selectInputOnFocus: true,
+        value: inputValue,
+      },
+    });
+    input = wrapper.find('input');
+    jest.spyOn(wrapper.vm, 'selectInputAndTags').mockImplementation();
+    input.trigger('focus');
+    expect(wrapper.vm.selectInputAndTags).toHaveBeenCalledTimes(1);
+    expect(wrapper.vm.inputIsSelected()).toBeTruthy();
+  });
+
   describe('copy/paste', () => {
     let clipboardData = {};
 
