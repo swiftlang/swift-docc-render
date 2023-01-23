@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * This source file is part of the Swift.org open source project
  *
@@ -8,6 +9,6 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-export { default as en } from './en_US.json';
-export { default as zh } from './zh_CN.json';
-export { default as ja } from './ja_JA.json';
+export { default as en_US } from './en_US.json';
+export { default as zh_CN } from './zh_CN.json';
+export { default as ja_JA } from './ja_JA.json';
