@@ -173,7 +173,7 @@ export default {
       return objcVariant ? objcVariant.patch : null;
     },
     enableQuickNavigation: ({ isTargetIDE }) => (
-      !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], false)
+      !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
     topicData: {
       get() {
