@@ -106,3 +106,7 @@ export function addOrUpdateMetadata({ title, description, url }) {
     metadata => addOrUpdateMetaTag(metadata),
   );
 }
+
+export const updateLangTag = (locale) => {
+  document.querySelector('html').setAttribute('lang', locale);
+};

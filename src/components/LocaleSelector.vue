@@ -10,7 +10,10 @@
 
 <template>
   <div class="locale-selector">
-    <select v-model="$i18n.locale">
+    <select
+      v-model="$i18n.locale"
+      @change="updateRouter"
+    >
       <option
         v-for="(lang, i) in langs"
         :key="`lang-${i}`"
@@ -40,6 +43,13 @@ export default {
   methods: {
     getLanguageName(lang) {
       return locales[lang];
+    },
+    updateRouter() {
+      this.$router.push({
+        params: {
+          locale: this.$i18n.locale,
+        },
+      });
     },
   },
 };

@@ -23,6 +23,7 @@
             :interface-language="topicProps.interfaceLanguage"
             :technologyUrl="technology.url"
             :api-changes-version="store.state.selectedAPIChangesVersion"
+            :currentLocale="$i18n.locale"
             ref="NavigatorDataProvider"
           >
             <template #default="slotProps">
@@ -123,6 +124,8 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
+import locales from '@/lang/locales.json';
+import { updateLangTag } from 'docc-render/utils/metadata';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -403,6 +406,7 @@ export default {
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   beforeRouteEnter(to, from, next) {
+    const paramLocale = to.params.locale;
     // skip fetching, and rely on data being provided via $bridge
     if (to.meta.skipFetchingData) {
       // notify the $bridge, the page is ready
@@ -411,6 +415,14 @@ export default {
     }
 
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
+      // Switch language
+      if (Object.keys(locales).includes(paramLocale)) {
+        // update locale
+        vm.$i18n.locale = paramLocale; // eslint-disable-line no-param-reassign
+        // modify html lang
+        updateLangTag(paramLocale);
+      }
+
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
         vm.applyObjcOverrides();
