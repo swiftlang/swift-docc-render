@@ -33,6 +33,10 @@ export default {
       type: String,
       required: true,
     },
+    currentLocale: {
+      type: String,
+      required: true,
+    },
     apiChangesVersion: {
       type: String,
       default: '',
@@ -91,13 +95,22 @@ export default {
     async fetchIndexData() {
       try {
         this.isFetching = true;
-        const { interfaceLanguages, references } = await fetchIndexPathsData();
+        const { interfaceLanguages, references } = await fetchIndexPathsData(
+          { currentLocale: this.$i18n.locale },
+        );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);
       } catch (e) {
         this.errorFetching = true;
       } finally {
         this.isFetching = false;
+      }
+    },
+  },
+  watch: {
+    currentLocale(newValue) {
+      if (newValue) {
+        this.fetchIndexData();
       }
     },
   },
