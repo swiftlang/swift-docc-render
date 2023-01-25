@@ -12,14 +12,19 @@ import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
 
-const createMetaTags = ({ title, description, url }) => [
+const createMetaTags = ({
+  title,
+  description,
+  url,
+  currentLocale,
+}) => [
   {
     name: 'description',
     content: description,
   },
   {
     property: 'og:locale',
-    content: 'en_US',
+    content: currentLocale,
   },
   {
     property: 'og:site_name',
@@ -97,12 +102,22 @@ const addTitle = (title) => {
  * @param {Object} pageData
  */
 // eslint-disable-next-line import/prefer-default-export
-export function addOrUpdateMetadata({ title, description, url }) {
+export function addOrUpdateMetadata({
+  title,
+  description,
+  url,
+  currentLocale,
+}) {
   const formattedTitle = formatTitle(title);
   // add title
   addTitle(formattedTitle);
   // create and add metadata tags
-  createMetaTags({ title: formattedTitle, description, url }).forEach(
+  createMetaTags({
+    title: formattedTitle,
+    description,
+    url,
+    currentLocale,
+  }).forEach(
     metadata => addOrUpdateMetaTag(metadata),
   );
 }
