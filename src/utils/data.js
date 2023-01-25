@@ -14,6 +14,7 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
+import { defaultLocale } from '@/lang';
 
 export async function fetchData(path, params = {}) {
   function isBadResponse(response) {
@@ -73,7 +74,8 @@ function transformDataPathToRoutePath(dataURL) {
 }
 
 export async function fetchDataForRouteEnter(to, from, next) {
-  const path = createDataPath(to.path);
+  const localePath = to.params.locale ? to.path : defaultLocale + to.path;
+  const path = createDataPath(localePath);
 
   let data;
   try {
