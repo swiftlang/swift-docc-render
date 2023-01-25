@@ -13,6 +13,7 @@
     <select
       v-model="$i18n.locale"
       @change="updateRouter"
+      :aria-label="$t('select-language')"
     >
       <option
         v-for="(lang, i) in langs"
@@ -22,18 +23,19 @@
         {{ getLanguageName(lang) }}
       </option>
     </select>
-    <ChevronRoundedIcon class="icon-inline" />
+    <ChevronThickIcon class="icon-inline" />
   </div>
 </template>
 
 <script>
-import ChevronRoundedIcon from 'theme/components/Icons/ChevronRoundedIcon.vue';
+import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import locales from '@/lang/locales.json';
+import { defaultLocale } from '@/lang';
 
 export default {
   name: 'LocaleSelector',
   components: {
-    ChevronRoundedIcon,
+    ChevronThickIcon,
   },
   data() {
     return {
@@ -45,9 +47,10 @@ export default {
       return locales[lang];
     },
     updateRouter() {
+      const currentLocale = this.$i18n.locale;
       this.$router.push({
         params: {
-          locale: this.$i18n.locale,
+          locale: currentLocale === defaultLocale ? null : currentLocale,
         },
       });
     },
@@ -59,13 +62,17 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 select {
+  @include font-styles(locale-selector);
   color: var(--color-fill-blue);
-  font-weight: $font-weight-semibold;
   padding-right: 15px;
   appearance: none;
   background: transparent;
   border: none;
   cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .locale-selector {
@@ -77,7 +84,6 @@ select {
   fill: var(--color-fill-blue);
   right: 2px;
   bottom: 7px;
-  height: .5rem;
-  transform: rotate(90deg);
+  height: 5px;
 }
 </style>
