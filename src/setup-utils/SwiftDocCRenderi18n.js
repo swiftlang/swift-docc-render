@@ -8,13 +8,17 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { config } from '@vue/test-utils';
-import { defaultLocale } from '@/lang';
+import VueI18n from 'vue-i18n';
+import * as lang from '@/lang';
 
-config.mocks = {
-  $t: tKey => tKey,
-  $tc: tKey => tKey,
-  $i18n: {
+const { defaultLocale, ...messages } = lang;
+
+export default function createi18nInstance() {
+  const i18n = new VueI18n({
     locale: defaultLocale,
-  },
-};
+    fallbackLocale: defaultLocale,
+    messages,
+  });
+
+  return i18n;
+}

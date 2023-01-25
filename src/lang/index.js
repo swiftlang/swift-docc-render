@@ -10,6 +10,9 @@
 
 /* eslint-disable camelcase */
 
-export { default as en_US } from './en_US.json';
-export { default as zh_CN } from './zh_CN.json';
-export { default as ja_JA } from './ja_JA.json';
+// default locale
+export const defaultLocale = 'en_US';
+// translated locales
+export { default as en_US } from './locales/en_US.json';
+export { default as zh_CN } from './locales/zh_CN.json';
+export { default as ja_JA } from './locales/ja_JA.json';

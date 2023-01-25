@@ -15,20 +15,14 @@ import Router from 'vue-router';
 import App from '@/App.vue';
 import SwiftDocCRenderPlugin from '@/setup-utils/SwiftDocCRenderPlugin';
 import SwiftDocCRenderRouter from '@/setup-utils/SwiftDocCRenderRouter';
-import * as messages from '@/lang';
+import SwiftDocCRenderi18n from '@/setup-utils/SwiftDocCRenderi18n';
 
 Vue.use(SwiftDocCRenderPlugin);
 Vue.use(Router);
 Vue.use(VueI18n);
 
-const i18n = new VueI18n({
-  locale: 'en_US',
-  fallbackLocale: 'en_US',
-  messages,
-});
-
 new Vue({
   router: SwiftDocCRenderRouter(),
   render: h => h(App),
-  i18n,
+  i18n: SwiftDocCRenderi18n(),
 }).$mount('#app');
