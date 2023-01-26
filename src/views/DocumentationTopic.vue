@@ -124,7 +124,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
-import locales from '@/lang/locales.json';
+import locales from 'docc-render/lang/locales.json';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';

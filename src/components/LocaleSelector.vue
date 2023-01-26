@@ -29,8 +29,8 @@
 
 <script>
 import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
-import locales from '@/lang/locales.json';
-import { defaultLocale } from '@/lang';
+import locales from 'docc-render/lang/locales.json';
+import { defaultLocale } from 'docc-render/lang';
 
 export default {
   name: 'LocaleSelector',

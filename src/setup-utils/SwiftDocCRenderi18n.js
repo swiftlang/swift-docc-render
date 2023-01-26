@@ -9,7 +9,7 @@
 */
 
 import VueI18n from 'vue-i18n';
-import * as lang from '@/lang';
+import * as lang from 'docc-render/lang';
 
 const { defaultLocale, ...messages } = lang;
 

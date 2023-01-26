@@ -9,7 +9,7 @@
 */
 
 import { config } from '@vue/test-utils';
-import { defaultLocale } from '@/lang';
+import { defaultLocale } from 'docc-render/lang';
 
 config.mocks = {
   $t: tKey => tKey,
