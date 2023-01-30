@@ -54,56 +54,59 @@
               No results found.
             </p>
           </div>
-          <Reference
-            v-for="(symbol, index) in filteredSymbols"
-            class="quick-navigation__reference"
-            :key="symbol.uid"
-            :url="symbol.path"
-            @click.native="closeQuickNavigationModal"
-            @focus.native="focusIndex(index)"
-          >
-            <div
-              class="quick-navigation__symbol-match"
-              ref="match"
-              role="list"
-              :class="{ 'selected' : index == focusedIndex }"
+          <div class="quick-navigation__refs">
+            <Reference
+              v-for="(symbol, index) in filteredSymbols"
+              class="quick-navigation__reference"
+              :key="symbol.uid"
+              :url="symbol.path"
+              @click.native="closeQuickNavigationModal"
+              @focus.native="focusIndex(index)"
             >
-              <div class="symbol-info">
-                <div class="symbol-name">
-                  <TopicTypeIcon
-                    class="navigator-icon"
-                    :type="symbol.type"
-                  />
-                  <div class="symbol-title">
-                    <span v-text="formatSymbolTitle(symbol.title, 0, symbol.start)" />
-                    <QuickNavigationHighlighter
-                      :text="symbol.substring"
-                      :matcherText="processedUserInput"
+              <div
+                class="quick-navigation__symbol-match"
+                ref="match"
+                role="list"
+                :class="{ 'selected' : index == focusedIndex }"
+              >
+                <div class="symbol-info">
+                  <div class="symbol-name">
+                    <TopicTypeIcon
+                      class="navigator-icon"
+                      :type="symbol.type"
                     />
-                    <span
-                      v-text="formatSymbolTitle(symbol.title, symbol.start + symbol.matchLength)"
-                    />
+                    <div class="symbol-title">
+                      <span v-text="formatSymbolTitle(symbol.title, 0, symbol.start)" />
+                      <QuickNavigationHighlighter
+                        :text="symbol.substring"
+                        :matcherText="processedUserInput"
+                      />
+                      <span
+                        v-text="formatSymbolTitle(symbol.title, symbol.start + symbol.matchLength)"
+                      />
+                    </div>
                   </div>
-                </div>
-                <div class="symbol-path">
-                  <div
-                    v-for="(parent, index) in symbol.parents"
-                    :key="parent.title"
-                  >
-                    <span
-                      v-text="parent.title"
-                      class="parent-path"
-                    />
-                    <span
-                      v-if="index !== symbol.parents.length - 1"
-                      class="parent-path"
-                      v-text="`/`"
-                    />
+                  <div class="symbol-path">
+                    <div
+                      v-for="(parent, index) in symbol.parents"
+                      :key="parent.title"
+                    >
+                      <span
+                        v-text="parent.title"
+                        class="parent-path"
+                      />
+                      <span
+                        v-if="index !== symbol.parents.length - 1"
+                        class="parent-path"
+                        v-text="`/`"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Reference>
+            </Reference>
+          </div>
+          <div class="quick-navigation__preview">hi</div>
         </div>
       </div>
     </div>
@@ -311,9 +314,15 @@ $base-border-width: 1px;
     }
   }
   &__match-list {
+    display: flex;
     overflow: scroll;
     max-height: rem(450px);
     height: 0px;
+
+    & > * {
+      flex: 1;
+      min-width: 0;
+    }
     &.active {
       height: auto;
       border-top: 1px solid var(--color-fill-gray);
