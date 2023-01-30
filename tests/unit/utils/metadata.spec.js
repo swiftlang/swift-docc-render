@@ -9,6 +9,7 @@
 */
 
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { defaultLocale } from 'docc-render/lang';
 
 const fs = require('fs');
 const path = require('path');
@@ -27,13 +28,16 @@ const pageWithTitleAndDescription = {
   params: {
     title,
     description,
+    currentLocale: defaultLocale,
   },
 };
 
 const pageWithoutTitleOrDescription = {
   name: 'Page without title and description',
   title: process.env.VUE_APP_TITLE,
-  params: {},
+  params: {
+    currentLocale: defaultLocale,
+  },
 };
 
 jest.mock('docc-render/utils/theme-settings', () => ({

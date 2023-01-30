@@ -406,13 +406,14 @@ export default {
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   beforeRouteEnter(to, from, next) {
-    const paramLocale = to.params.locale;
     // skip fetching, and rely on data being provided via $bridge
     if (to.meta.skipFetchingData) {
       // notify the $bridge, the page is ready
       next(vm => vm.newContentMounted());
       return;
     }
+
+    const paramLocale = to.params.locale;
 
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
       // Switch language

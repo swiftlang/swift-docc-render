@@ -122,6 +122,6 @@ export function addOrUpdateMetadata({
   );
 }
 
-export const updateLangTag = (locale) => {
-  document.querySelector('html').setAttribute('lang', locale);
-};
+export function updateLangTag(locale) {
+  return document.querySelector('html').setAttribute('lang', locale);
+}

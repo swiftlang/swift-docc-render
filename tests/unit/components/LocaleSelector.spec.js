@@ -16,7 +16,7 @@ jest.mock('docc-render/lang/locales.json', () => ({
   es_ES: 'Spanish',
 }));
 
-const { ChevronRoundedIcon } = LocaleSelector.components;
+const { ChevronThickIcon } = LocaleSelector.components;
 
 describe('LocaleSelector', () => {
   let wrapper;
@@ -31,7 +31,7 @@ describe('LocaleSelector', () => {
   });
 
   it('renders the icon', () => {
-    expect(wrapper.find(ChevronRoundedIcon).exists()).toBe(true);
+    expect(wrapper.find(ChevronThickIcon).exists()).toBe(true);
   });
 
   it('renders the options with locales\' values and names', () => {

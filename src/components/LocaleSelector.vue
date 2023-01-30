@@ -54,7 +54,7 @@ export default {
           locale: currentLocale === defaultLocale ? null : currentLocale,
         },
       });
-      updateLangTag(currentLocale);
+      updateLangTag(currentLocale || defaultLocale);
     },
   },
 };

@@ -19,6 +19,7 @@ import { flushPromises } from '../../test-utils';
 jest.mock('docc-render/utils/theme-settings', () => ({
   fetchThemeSettings: jest.fn(),
   themeSettingsState: { theme: {} },
+  getSetting: jest.fn(() => {}),
 }));
 
 let App;
