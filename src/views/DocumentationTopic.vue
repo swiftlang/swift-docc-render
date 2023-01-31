@@ -455,7 +455,7 @@ export default {
   .generic-modal {
     overflow-y: overlay;
   }
-  .modal-fullscreen .container {
+  .modal-fullscreen > .container {
     background-color: transparent;
     height: fit-content;
     flex: auto;

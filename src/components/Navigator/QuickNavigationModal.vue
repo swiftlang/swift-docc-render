@@ -353,6 +353,9 @@ $base-border-width: 1px;
       background-color: var(--color-navigator-item-hover);
     }
   }
+  &__preview {
+    overflow: auto;
+  }
   &__reference:hover {
     text-decoration: none;
   }
