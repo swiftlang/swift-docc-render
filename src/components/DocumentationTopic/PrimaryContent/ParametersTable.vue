@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -79,8 +79,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$param-spacing: rem(28px);
-
 .parameters-table {
   /deep/ {
     .change-added,
@@ -107,7 +105,7 @@ $param-spacing: rem(28px);
     @include change-highlight-target();
 
     & + & {
-      margin-top: $param-spacing/2;
+      margin-top: calc(var(--param-spacing)/2);
     }
   }
 }
@@ -144,7 +142,7 @@ $param-spacing: rem(28px);
 }
 
 .param + .param {
-  margin-top: $param-spacing;
+  margin-top: var(--param-spacing);
 
   &:first-child {
     margin-top: 0;

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -32,8 +32,7 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <LinkableHeading v-if="enableMinimized" class="minimized-summary">Summary</LinkableHeading>
-        <Title v-else :eyebrow="roleHeading">
+        <Title :eyebrow="roleHeading" :enableMinimized="enableMinimized">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
@@ -58,7 +57,12 @@
       <div class="doc-content-wrapper">
         <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
           <div v-if="hasPrimaryContent" class="container">
-            <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
+            <div class="description"
+              :class="{
+                'after-enhanced-hero': enhanceBackground,
+                'minimized-description': enableMinimized
+              }"
+            >
               <RequirementMetadata
                 v-if="isRequirement"
                 :defaultImplementationsCount="defaultImplementationsCount"
@@ -75,10 +79,11 @@
             </div>
             <PrimaryContent
               v-if="primaryContentSections && primaryContentSections.length"
-              :class="{ 'with-border': !enhanceBackground && !enableMinimized }"
+              :class="{ 'with-border': !enhanceBackground }"
               :conformance="conformance"
               :source="remoteSource"
               :sections="primaryContentSections"
+              :enableMinimized="enableMinimized"
             />
           </div>
           <Topics
@@ -130,7 +135,6 @@ import DocumentationHero from 'docc-render/components/DocumentationTopic/Documen
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
-import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -170,7 +174,6 @@ export default {
     OnThisPageStickyContainer,
     OnThisPageNav,
     DocumentationHero,
-    LinkableHeading,
     Abstract,
     Aside,
     BetaLegalText,
@@ -496,9 +499,6 @@ export default {
   }
 }
 
-.minimized-summary {
-  @include font-styles(heading-2);
-}
 .minimized-abstract {
   @include font-styles(body);
 }
@@ -520,8 +520,12 @@ export default {
   }
 
   /deep/ .content + * {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--stacked-margin-large);
   }
+}
+
+.minimized-description {
+  margin-bottom: 1.5em;
 }
 
 // remove border-top for first section of the page

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -160,6 +160,7 @@ const propsData = {
     possibleValuesSection,
     restEndpointSection,
   ],
+  enableMinmized: false,
 };
 
 describe('PrimaryContent', () => {
@@ -176,11 +177,22 @@ describe('PrimaryContent', () => {
    * @param {{ info?: string, at?: number }} [options] Extra options
    */
   function checkProps(Component, props, { info = '', at = 0 } = {}) {
+    // const wrapper = shallowMount(PrimaryContent, { propsData });
+
     it(`renders a "${Component.name}"${info ? `: ${info}` : ''}`, () => {
       const wrapper = shallowMount(PrimaryContent, { propsData });
       const component = wrapper.findAll(Component).at(at);
       expect(component.exists()).toBe(true);
       expect(component.props()).toEqual(props);
+    });
+
+    it('renders the right classes based on `enableMininized` prop', () => {
+      const wrapper = shallowMount(PrimaryContent, { propsData });
+      const component = wrapper.findAll(Component).at(at);
+      expect(component.classes()).not.toContain('minimized');
+
+      wrapper.setProps({ enableMinimized: true });
+      expect(wrapper.findAll(Component).at(at).classes()).toContain('minimized');
     });
   }
 

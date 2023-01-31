@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,8 +10,8 @@
 
 <template>
   <div class="topictitle">
-    <span v-if="eyebrow" class="eyebrow">{{eyebrow}}</span>
-    <h1 class="title">
+    <span v-if="eyebrow && !enableMinimized" class="eyebrow">{{eyebrow}}</span>
+    <h1 :class="['title',{ 'minimized': enableMinimized }]">
       <slot />
       <slot name="after" />
     </h1>
@@ -25,6 +25,11 @@ export default {
     eyebrow: {
       type: String,
       required: false,
+    },
+    enableMinimized: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 };
@@ -76,6 +81,16 @@ small {
     .theme-dark & {
       color: var(--color-badge-dark-deprecated);
     }
+  }
+}
+
+.minimized {
+  font-size: 1.416rem;
+  font-weight: bold;
+  margin-bottom: 0.833rem;
+
+  & > small {
+    font-size: 1rem;
   }
 }
 </style>

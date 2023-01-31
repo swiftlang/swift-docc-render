@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -15,6 +15,7 @@
       v-bind="propsFor(section)"
       :is="componentFor(section)"
       :key="i"
+      :class="{ 'minimized': enableMinimized }"
     />
   </div>
 </template>
@@ -64,6 +65,11 @@ export default {
       validator: sections => sections.every(({ kind }) => (
         Object.prototype.hasOwnProperty.call(SectionKind, kind)
       )),
+    },
+    enableMinimized: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -142,6 +148,11 @@ export default {
   h2 {
     @include font-styles(heading-2-reduced);
   }
+
+  .minimized > h2 {
+    font-size: 1.083rem;
+    font-weight: bold;
+  }
 }
 
 .primary-content {
@@ -162,6 +173,17 @@ export default {
         margin-top: $contenttable-spacing-single-side;
       }
     }
+  }
+
+  & > .minimized {
+    margin-bottom: 1.5em;
+    margin-top: 1.5em;
+    --stacked-margin-large: 0.667em;
+    --stacked-margin-xlarge: 1em;
+    --declaration-code-listing-margin: 1em 0;
+    --code-block-style-elements-padding: 7px 12px;
+    --code-border-radius: 10px;
+    --param-spacing: var(--stacked-margin-large);
   }
 }
 </style>

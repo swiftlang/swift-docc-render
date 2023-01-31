@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -74,7 +74,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .TabNavigator {
-  @include space-out-between-siblings($stacked-margin-xlarge);
+  @include space-out-between-siblings(var(--stacked-margin-xlarge));
 
   .tabnav {
     overflow: auto;
@@ -108,10 +108,10 @@ export default {
   .tabs-content {
     flex: 1 1 auto;
     min-width: 0;
-    padding-right: $stacked-margin-xlarge;
+    padding-right: var(--stacked-margin-xlarge);
     @include breakpoint(small) {
       padding-right: 0;
-      padding-bottom: $stacked-margin-large;
+      padding-bottom: var(--stacked-margin-large);
     }
   }
 }

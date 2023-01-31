@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -54,7 +54,6 @@ export default {
 <style lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$param-spacing: rem(28px);
 $left-padding: 1rem;
 
 .datalist {
@@ -69,7 +68,7 @@ $left-padding: 1rem;
 
     font-weight: $font-weight-semibold;
     padding-left: $left-padding;
-    padding-top: $param-spacing;
+    padding-top: var(--param-spacing);
   }
 }
 </style>

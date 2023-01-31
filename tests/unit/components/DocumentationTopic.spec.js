@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -332,17 +332,6 @@ describe('DocumentationTopic', () => {
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
     expect(title.find(WordBreak).exists()).toBe(false);
-
-    // Minimized view should not render Title
-    wrapper.setProps({ enableMinimized: true });
-    expect(wrapper.find(DocumentationHero).find(Title).exists()).toBe(false);
-  });
-
-  it('renders a `LinkableHeading`, in minimized mode, if `enableMinimized` prop is `true`', () => {
-    const heading = wrapper.find(LinkableHeading);
-    expect(heading.exists()).toBe(false);
-    wrapper.setProps({ enableMinimized: true });
-    expect(wrapper.find(LinkableHeading).exists()).toBe(true);
   });
 
   it('uses `WordBreak` in the title for symbol pages', () => {
@@ -446,6 +435,14 @@ describe('DocumentationTopic', () => {
         symbolKind: 'something-else',
       });
       expect(description.classes()).not.toContain('after-enhanced-hero');
+    });
+
+    it('renders the right classes based on `enableMininized` prop', () => {
+      const description = wrapper.find('.description');
+      expect(description.classes()).not.toContain('minimized-description');
+
+      wrapper.setProps({ enableMinimized: true });
+      expect(description.classes()).toContain('minimized-description');
     });
 
     it('renders a deprecated `Aside` when deprecated', () => {
