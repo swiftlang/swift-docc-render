@@ -103,6 +103,9 @@ export default {
     flex-flow: row wrap;
     width: 100%;
     @include change-highlight-target();
+    // Move the responsibility of the left padding to the first element instead.
+    // This is only for Large screens
+    padding-left: 0;
 
     & + & {
       margin-top: calc(var(--param-spacing)/2);
@@ -132,8 +135,15 @@ export default {
 .param-symbol {
   text-align: right;
 
+  .changed & {
+    @include change-highlight-end-spacing()
+  }
+
   @include breakpoint(small) {
     text-align: left;
+    .changed & {
+      padding-left: 0;
+    }
   }
 
   /deep/ .type-identifier-link {
