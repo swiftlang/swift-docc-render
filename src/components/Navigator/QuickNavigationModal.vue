@@ -106,7 +106,10 @@
               </div>
             </Reference>
           </div>
-          <div class="quick-navigation__preview">hi</div>
+          <div class="quick-navigation__preview">
+            <p v-if="selectedSymbol">{{selectedSymbol.title}}</p>
+            <p v-else>:(</p>
+          </div>
         </div>
       </div>
     </div>
@@ -193,6 +196,10 @@ export default {
     // Remove space-character
     processedUserInput: ({ debouncedInput }) => debouncedInput.replace(/\s/g, ''),
     totalItemsToNavigate: ({ filteredSymbols }) => filteredSymbols.length,
+    selectedSymbol: ({
+      filteredSymbols,
+      focusedIndex,
+    }) => (focusedIndex ? filteredSymbols[focusedIndex] : null),
   },
   watch: {
     userInput: 'debounceInput',
