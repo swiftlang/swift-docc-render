@@ -107,7 +107,10 @@
             </Reference>
           </div>
           <div class="quick-navigation__preview">
-            <p v-if="selectedSymbol">{{selectedSymbol.title}}</p>
+            <DocumentationTopic
+              v-if="selectedSymbolData"
+              enableMinimized
+              v-bind="selectedSymbolData" />
             <p v-else>:(</p>
           </div>
         </div>
@@ -123,9 +126,11 @@ import GenericModal from 'docc-render/components/GenericModal.vue';
 import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
+import { fetchDataForPreview } from 'docc-render/utils/data';
 
 export default {
   name: 'QuickNavigationModal',
@@ -136,6 +141,7 @@ export default {
     TopicTypeIcon,
     QuickNavigationHighlighter,
     Reference,
+    DocumentationTopic,
   },
   mixins: [
     keyboardNavigation,
@@ -144,6 +150,7 @@ export default {
     return {
       debouncedInput: '',
       userInput: '',
+      selectedSymbolData: null,
     };
   },
   props: {
@@ -204,6 +211,7 @@ export default {
   watch: {
     userInput: 'debounceInput',
     focusedIndex: 'scrollIntoView',
+    selectedSymbol: 'fetchSymbolData',
   },
   methods: {
     closeQuickNavigationModal() {
@@ -281,6 +289,9 @@ export default {
     },
     startingPointHook() {
       this.focusedIndex = this.totalItemsToNavigate - 1;
+    },
+    async fetchSymbolData() {
+      this.selectedSymbolData = await fetchDataForPreview(this.selectedSymbol.path);
     },
   },
 };

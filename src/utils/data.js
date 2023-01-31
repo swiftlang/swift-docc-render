@@ -127,6 +127,19 @@ export async function fetchAPIChangesForRoute(route, changes) {
   return data;
 }
 
+export async function fetchDataForPreview(path) {
+  const dataPath = createDataPath(path);
+
+  let data;
+  try {
+    data = await fetchData(dataPath);
+  } catch (error) {
+    throw new Error(`Unable to fetch preview data: ${error}`);
+  }
+
+  return data;
+}
+
 export function clone(jsonObject) {
   return JSON.parse(JSON.stringify(jsonObject));
 }
