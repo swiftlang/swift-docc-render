@@ -12,6 +12,7 @@
   <div class="locale-selector">
     <select
       v-model="$i18n.locale"
+      @change="updateRouter"
       :aria-label="$t('select-language')"
     >
       <option
@@ -48,6 +49,11 @@ export default {
     },
     updateRouter() {
       const currentLocale = this.$i18n.locale;
+      this.$router.push({
+        params: {
+          locale: currentLocale === defaultLocale ? null : currentLocale,
+        },
+      });
       updateLangTag(currentLocale || defaultLocale);
     },
   },

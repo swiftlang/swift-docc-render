@@ -18,6 +18,7 @@ import {
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import FetchError from 'docc-render/errors/FetchError';
 import RedirectError from 'docc-render/errors/RedirectError';
+import { defaultLocale } from 'docc-render/lang';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
@@ -141,6 +142,7 @@ describe('fetchDataForRouteEnter', () => {
   const to = {
     name: 'technology-tutorials',
     path: '/tutorials/augmented-reality/tutorials',
+    params: { locale: defaultLocale },
   };
   const from = {};
   const next = jest.fn();
@@ -249,6 +251,7 @@ describe('fetchDataForRouteEnter', () => {
     const data = await fetchDataForRouteEnter({
       name: 'technology-tutorials',
       path: '/tutorials/augmented-reality/tutorials/',
+      params: { locale: defaultLocale },
     }, from, next);
 
     await expect(window.fetch).toHaveBeenLastCalledWith(new URL(
@@ -348,8 +351,8 @@ describe('fetchIndexPathsData', () => {
   it('fetches the data for the index/index.json', async () => {
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
-    const data = await fetchIndexPathsData();
-    expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json');
+    const data = await fetchIndexPathsData({ currentLocale: defaultLocale });
+    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${defaultLocale}/index.json`);
     expect(data).toEqual({ foobar: 'foobar' });
   });
 });

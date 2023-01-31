@@ -23,6 +23,7 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
+import { defaultLocale } from 'docc-render/lang';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
@@ -209,6 +210,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technologyUrl: technology.url,
+      currentLocale: defaultLocale,
       apiChangesVersion: null,
     });
     // its rendered by default
@@ -995,7 +997,7 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
     // now call without `skipFetchingData`
     const params = {
-      to: { name: 'foo', meta: {} },
+      to: { name: 'foo', meta: {}, params: { locale: defaultLocale } },
       from: { name: 'bar' },
       next: jest.fn(),
     };
