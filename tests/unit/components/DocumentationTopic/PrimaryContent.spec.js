@@ -177,18 +177,15 @@ describe('PrimaryContent', () => {
    * @param {{ info?: string, at?: number }} [options] Extra options
    */
   function checkProps(Component, props, { info = '', at = 0 } = {}) {
-    // const wrapper = shallowMount(PrimaryContent, { propsData });
+    const wrapper = shallowMount(PrimaryContent, { propsData });
+    const component = wrapper.findAll(Component).at(at);
 
     it(`renders a "${Component.name}"${info ? `: ${info}` : ''}`, () => {
-      const wrapper = shallowMount(PrimaryContent, { propsData });
-      const component = wrapper.findAll(Component).at(at);
       expect(component.exists()).toBe(true);
       expect(component.props()).toEqual(props);
     });
 
     it('renders the right classes based on `enableMininized` prop', () => {
-      const wrapper = shallowMount(PrimaryContent, { propsData });
-      const component = wrapper.findAll(Component).at(at);
       expect(component.classes()).not.toContain('minimized');
 
       wrapper.setProps({ enableMinimized: true });
