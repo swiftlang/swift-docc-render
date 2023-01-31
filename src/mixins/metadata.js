@@ -34,6 +34,7 @@ export default {
       title: this.pageTitle,
       description: this.pageDescription,
       url: this.pageURL,
+      currentLocale: this.$i18n.locale,
     });
   },
 };
