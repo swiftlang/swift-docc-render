@@ -33,7 +33,6 @@ const {
   SeeAlso,
   Topics,
   Title,
-  LinkableHeading,
   BetaLegalText,
   WordBreak,
 } = DocumentationTopic.components;
