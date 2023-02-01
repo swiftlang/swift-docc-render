@@ -434,7 +434,7 @@ describe('NavigatorCardItem', () => {
       const label = wrapper.find(`#usage-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text())
-        .toBe('To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow');
+        .toBe('filter.navigate');
     });
 
     it('renders tabindex 0 on link when element is focused', () => {
@@ -479,14 +479,14 @@ describe('NavigatorCardItem', () => {
       const label = wrapper.find(`#label-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text())
-        .toBe(`${defaultProps.item.index + 1} of ${defaultProps.item.siblingsCount} symbols inside`);
+        .toBe('filter.symbols-inside');
     });
 
     it('renders a hidden span telling the containing number of symbols', () => {
       const wrapper = createWrapper();
       const label = wrapper.find(`#label-parent-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe(`, containing ${defaultProps.item.childUIDs.length} symbols`);
+      expect(label.text()).toBe(', filter.containing-symbols');
     });
 
     it('renders a aria-describedby without parent label if it is not a parent', () => {

@@ -129,7 +129,7 @@ describe('MobileCodePreview', () => {
       expect(modal.props()).toHaveProperty('visible', true);
       expect(modal.contains('img')).toBe(true);
 
-      expect(modal.find('.runtime-preview-label').text()).toBe('Preview');
+      expect(modal.find('.runtime-preview-label').text()).toBe('tutorials.preview.title');
     });
   });
 

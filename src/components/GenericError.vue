@@ -11,7 +11,7 @@
 <template>
   <div class="generic-error">
     <div class="container">
-      <h1 class="title error-content">{{message}}</h1>
+      <h1 class="title error-content">{{message || $t('error.unknown')}}</h1>
       <slot />
     </div>
   </div>
@@ -23,7 +23,7 @@ export default {
   props: {
     message: {
       type: String,
-      default: 'An unknown error occurred.',
+      required: false,
     },
   },
 };

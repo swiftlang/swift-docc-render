@@ -10,7 +10,7 @@
 
 <template>
   <NavMenuItems
-    aria-label="Breadcrumbs"
+    :aria-label="$t('documentation.nav.breadcrumbs')"
     :class="{ 'has-badge': hasBadge }"
     class="hierarchy"
   >

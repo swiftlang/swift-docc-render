@@ -14,7 +14,7 @@
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
     <div :id="AppTopID" />
-    <a href="#main" id="skip-nav">Skip Navigation</a>
+    <a href="#main" id="skip-nav">{{ $t('accessibility.skip-navigation') }}</a>
     <InitialLoadingPlaceholder />
     <slot name="header" :isTargetIDE="isTargetIDE">
       <!-- Render the custom header by default, if there is no content in the `header` slot -->
@@ -75,7 +75,7 @@ export default {
       // preference to determine if "Light" or "Dark" colors should be used.
       // Otherwise, if "Light" or "Dark" has been explicitly chosen, that choice
       // should be used directly.
-      objectToCustomProperties(themeSettings.theme, (preferredColorScheme === ColorScheme.auto.value
+      objectToCustomProperties(themeSettings.theme, (preferredColorScheme === ColorScheme.auto
         ? currentColorScheme
         : preferredColorScheme
       ))
@@ -170,7 +170,7 @@ export default {
     },
     onColorSchemePreferenceChange({ matches }) {
       const scheme = matches ? ColorScheme.dark : ColorScheme.light;
-      AppStore.setSystemColorScheme(scheme.value);
+      AppStore.setSystemColorScheme(scheme);
     },
     attachStylesToRoot(CSSCustomProperties) {
       const root = document.body;

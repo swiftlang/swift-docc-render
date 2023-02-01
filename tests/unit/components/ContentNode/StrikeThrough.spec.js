@@ -17,6 +17,6 @@ describe('StrikeThrough', () => {
       slots: { default: 'foobar' },
     });
     expect(wrapper.is('s')).toBe(true);
-    expect(wrapper.text()).toBe('foobar');
+    expect(wrapper.text()).toBe('accessibility.strike.start foobar accessibility.strike.end');
   });
 });

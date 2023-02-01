@@ -10,7 +10,7 @@
 
 <template>
   <aside :class="kind" :aria-label="kind">
-    <p class="label">{{ label }}</p>
+    <p class="label">{{ $t(label) }}</p>
     <slot />
   </aside>
 </template>
@@ -40,12 +40,12 @@ export default {
   },
   computed: {
     label: ({ kind, name }) => name || ({
-      [Kind.deprecated]: 'Deprecated',
-      [Kind.experiment]: 'Experiment',
-      [Kind.important]: 'Important',
-      [Kind.note]: 'Note',
-      [Kind.tip]: 'Tip',
-      [Kind.warning]: 'Warning',
+      [Kind.deprecated]: 'change-type.deprecated',
+      [Kind.experiment]: 'kind.experiment',
+      [Kind.important]: 'kind.important',
+      [Kind.note]: 'kind.note',
+      [Kind.tip]: 'kind.tip',
+      [Kind.warning]: 'kind.warning',
     }[kind]),
   },
 };

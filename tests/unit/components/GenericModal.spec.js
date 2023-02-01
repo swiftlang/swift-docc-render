@@ -109,7 +109,7 @@ describe('GenericModal', () => {
     expect(close.exists()).toBe(true);
     // assert props
     expect(close.is('button')).toBe(true);
-    expect(close.attributes()).toHaveProperty('aria-label', 'Close');
+    expect(close.attributes()).toHaveProperty('aria-label', 'verbs.close');
     // assert clicking closes modal
     close.trigger('click');
     expect(wrapper.emitted(VisibleChangeEvent)).toEqual([[false]]);

@@ -21,6 +21,7 @@ import { TopicRole } from '@/constants/roles';
 const router = createRouterInstance();
 const localVue = createLocalVue();
 localVue.use(Router);
+window.scrollTo = () => ({});
 
 describe('Reference', () => {
   it('renders a `ReferenceExternal` for external urls', () => {

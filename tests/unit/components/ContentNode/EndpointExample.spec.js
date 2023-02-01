@@ -27,11 +27,11 @@ describe('EndpointExample', () => {
           code: [
             'POST /resources HTTP/1.1',
             'Host: example.com',
-            'Content-Type: multipart/form-data; boundary=abc',
+            'content-type: multipart/form-data; boundary=abc',
             'Content-Length: 4',
             '',
             '--abc',
-            'Content-Type: text/plain',
+            'content-type: text/plain',
             'Content-Disposition: form-data; name=metadata',
             '',
             'blah',
@@ -64,9 +64,9 @@ describe('EndpointExample', () => {
     expect(tabnav.props()).toHaveProperty('value', Tab.request);
     expect(tabnavLinks.length).toBe(2);
     expect(tabnavLinks.at(0).props('value')).toBe(Tab.request);
-    expect(tabnavLinks.at(0).text()).toBe(Tab.request);
+    expect(tabnavLinks.at(0).text()).toBe('tab.request');
     expect(tabnavLinks.at(1).props('value')).toBe(Tab.response);
-    expect(tabnavLinks.at(1).text()).toBe(Tab.response);
+    expect(tabnavLinks.at(1).text()).toBe('tab.response');
   });
 
   it('renders a collapsed CollapsibleCodeListing as an output for Request/Response', () => {
@@ -94,13 +94,13 @@ describe('EndpointExample', () => {
     wrapper.find('.toggle').trigger('click');
 
     expect(codeListing.props('collapsed')).toBe(false);
-    expect(wrapper.find('.toggle').text()).toBe('Less');
+    expect(wrapper.find('.toggle').text()).toBe('less');
     expect(wrapper.find(InlineMinusCircleSolidIcon).exists()).toBe(true);
 
     wrapper.find('.toggle').trigger('click');
 
     expect(codeListing.props('collapsed')).toBe(true);
-    expect(wrapper.find('.toggle').text()).toBe('More');
+    expect(wrapper.find('.toggle').text()).toBe('more');
     expect(wrapper.find(InlinePlusCircleSolidIcon).exists()).toBe(true);
   });
 

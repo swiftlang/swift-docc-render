@@ -13,17 +13,24 @@
     <div
       class="item"
       v-if="estimatedTimeInMinutes"
-      :aria-label="`${estimatedTimeInMinutes} minutes estimated time`"
+      :aria-label="`
+        ${$tc(
+          'tutorials.time.minutes.full', estimatedTimeInMinutes, { count: estimatedTimeInMinutes }
+        )}
+        ${$t('tutorials.estimated-time')}
+      `"
     >
       <!-- Accessibility warning: if you remove the label above,
       also remove the aria-hidden="true" values below. -->
       <div class="content" aria-hidden="true">
         <div class="duration">
           {{ estimatedTimeInMinutes }}
-          <div class="minutes">min</div>
+          <div class="minutes">{{ $tc(
+            'tutorials.time.minutes.short', estimatedTimeInMinutes
+          ) }}</div>
         </div>
       </div>
-      <div class="bottom" aria-hidden="true">Estimated Time</div>
+      <div class="bottom" aria-hidden="true">{{ $t('tutorials.estimated-time') }}</div>
     </div>
     <div class="item" v-if="projectFilesUrl">
       <DownloadIcon class="item-large-icon icon-inline" />
@@ -32,7 +39,7 @@
           class="content-link project-download"
           :href="projectFilesUrl"
         >
-          Project files
+          {{ $t('tutorials.project-files') }}
           <InlineDownloadIcon class="small-icon icon-inline" />
         </a>
       </div>

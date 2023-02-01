@@ -75,7 +75,7 @@ const hierarchy = {
               path: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
             },
             {
-              title: 'Check your understanding',
+              title: 'tutorials.assessment.check-your-understanding',
               identifier:
                 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
               path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',

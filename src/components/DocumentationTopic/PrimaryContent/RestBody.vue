@@ -35,7 +35,7 @@
       </template>
     </ParametersTable>
     <template v-if="parts.length">
-      <h3>Parts</h3>
+      <h3>{{ $t('sections.parts') }}</h3>
       <ParametersTable :parameters="parts" class="parts" :changes="partsChanges">
         <template slot="symbol" slot-scope="{ name, type, content, changes }">
           <div class="part-name">

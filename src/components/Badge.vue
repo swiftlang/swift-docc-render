@@ -10,14 +10,14 @@
 
 <template>
   <span class="badge" :class="{ [`badge-${variant}`]: variant }" role="presentation">
-    <slot>{{ text }}</slot>
+    <slot>{{ $t(text) }}</slot>
   </span>
 </template>
 
 <script>
 const VARIANT_TEXT = {
-  beta: 'Beta',
-  deprecated: 'Deprecated',
+  beta: 'kind.beta',
+  deprecated: 'change-type.deprecated',
 };
 
 export default {

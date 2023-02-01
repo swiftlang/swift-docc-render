@@ -10,21 +10,21 @@
 
 <template>
   <div
-    aria-label="Select a color scheme preference"
+    :aria-label="$t('color-scheme.select')"
     class="color-scheme-toggle"
     role="radiogroup"
   >
     <label
       v-for="option in options"
-      :key="option.value"
+      :key="option"
     >
       <input
         type="radio"
         @input="setPreferredColorScheme"
-        :checked="option.value == preferredColorScheme"
-        :value="option.value"
+        :checked="option == preferredColorScheme"
+        :value="option"
       />
-      <div class="text">{{option.label}}</div>
+      <div class="text">{{ $t(`color-scheme.${option}`) }}</div>
     </label>
   </div>
 </template>

@@ -114,7 +114,7 @@
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
     <div aria-live="polite" class="visuallyhidden">
-      Current page is {{ pageTitle }}
+      {{ $t('documentation.current-page', { title: pageTitle }) }}
     </div>
   </div>
 </template>
@@ -416,7 +416,7 @@ export default {
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
     ),
-    tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
+    tagName: ({ isSymbolDeprecated, $t }) => (isSymbolDeprecated ? $t('change-type.deprecated') : $t('kind.beta')),
     /**
      * Finds the page icon in the `pageImages` array
      * @param {Array} pageImages

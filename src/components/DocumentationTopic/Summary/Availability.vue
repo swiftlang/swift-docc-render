@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <Section class="availability" role="complementary" aria-label="Availability">
+  <Section class="availability" role="complementary" :aria-label="$t('sections.availability')">
     <Badge
       v-for="technology in technologies"
       class="technology"
@@ -30,8 +30,10 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-      <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
-      <span v-else-if="platform.beta" class="beta">Beta</span>
+      <span v-if="platform.deprecatedAt" class="deprecated">
+        {{ $t('change-type.deprecated') }}
+      </span>
+      <span v-else-if="platform.beta" class="beta">{{ $t('kind.beta') }}</span>
     </Badge>
   </Section>
 </template>

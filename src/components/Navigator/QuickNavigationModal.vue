@@ -27,7 +27,7 @@
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          placeholder="Search symbols"
+          placeholder="filter.search-symbols"
           focusInputWhenCreated
           focusInputWhenEmpty
           selectInputOnFocus

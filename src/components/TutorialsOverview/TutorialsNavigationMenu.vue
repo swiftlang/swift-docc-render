@@ -21,7 +21,7 @@
     </button>
     <transition-expand>
       <div class="tutorials-navigation-menu-content" v-if="!collapsed">
-        <TutorialsNavigationList aria-label="Chapters">
+        <TutorialsNavigationList :aria-label="$t('tutorials.nav.chapters')">
           <slot />
         </TutorialsNavigationList>
       </div>

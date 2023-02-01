@@ -29,11 +29,11 @@
       @copy="handleCopy"
     >
       <span v-if="!isRemovableTag" class="visuallyhidden">
-        Add tag -
+        {{ $t('filter.add-tag') }} -
       </span>
       {{ name }}
       <span v-if="isRemovableTag" class="visuallyhidden">
-        – Tag. Select to remove from list.
+        – {{$t('filter.tag')}}. {{ $t('filter.select-remove') }}
       </span>
     </button>
   </li>

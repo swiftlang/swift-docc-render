@@ -74,7 +74,7 @@ describe('Relationships', () => {
     expect(table.exists()).toBe(true);
     expect(table.props()).toEqual({
       anchor: 'relationships',
-      title: 'Relationships',
+      title: 'sections.relationships',
     });
   });
 

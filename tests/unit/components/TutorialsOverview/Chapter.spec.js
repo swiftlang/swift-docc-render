@@ -79,12 +79,12 @@ describe('Chapter', () => {
     const name = wrapper.find('.name');
     expect(name.exists()).toBe(true);
     expect(name.is('H3')).toBe(true);
-    expect(name.text()).toMatch(/Chapter 1\s+Foo/);
-    expect(name.attributes('aria-label')).toEqual('Foo - Chapter 1');
+    expect(name.text()).toMatch(/tutorials\.sections\.chapter +1\s+Foo/);
+    expect(name.attributes('aria-label')).toEqual('Foo - tutorials.sections.chapter 1');
 
     const eyebrow = name.find('.eyebrow');
     expect(eyebrow.exists()).toBe(true);
-    expect(eyebrow.text()).toBe('Chapter 1');
+    expect(eyebrow.text()).toBe('tutorials.sections.chapter 1');
     expect(eyebrow.attributes('aria-hidden')).toBe('true');
   });
 

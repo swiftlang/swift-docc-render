@@ -1,0 +1,149 @@
+{
+  "language": "Language",
+  "video": {
+    "replay": "Replay",
+    "play": "Play",
+    "watch": "Watch intro video"
+  },
+  "tutorials": {
+    "title": "Tutorial | Tutorials",
+    "step": "Step {number}",
+    "submit": "Submit",
+    "next": "Next",
+    "preview": {
+      "title": "No Preview | Preview | Previews",
+      "no-preview-available-step": "No preview available for this step."
+    },
+    "nav": {
+      "chapters": "Chapters",
+      "current": "Current {thing}"
+    },
+    "assessment": {
+      "check-your-understanding": "Check Your Understanding",
+      "success-message": "Great job, you've answered all the questions for this tutorial.",
+      "answer-number-is": "Answer number {index} is",
+      "correct": "correct",
+      "incorrect": "incorrect",
+      "next-question": "Next question"
+    },
+    "project-files": "Project files",
+    "estimated-time": "Estimated Time",
+    "sections": { "chapter": "Chapter" },
+    "question-of": "Question {index} of {total}",
+    "section-of": "{number} of {total}",
+    "overriding-title": "{newTitle} with {title}",
+    "time": {
+      "minutes": {
+        "full": "minute | minutes | {count} minutes",
+        "short": "min | mins"
+      },
+      "hours": { "full": "hour | hours" }
+    }
+  },
+  "documentation": {
+    "title": "Documentation",
+    "navigator": "Documentation Navigator",
+    "nav": { "breadcrumbs": "Breadcrumbs", "menu": "Menu" },
+    "current-page": "Current page is {title}"
+  },
+  "kind": {
+    "beta": "Beta",
+    "experiment": "Experiment",
+    "important": "Important",
+    "note": "Note",
+    "tip": "Tip",
+    "warning": "Warning"
+  },
+  "change-type": {
+    "added": "Added",
+    "modified": "Modified",
+    "deprecated": "Deprecated"
+  },
+  "verbs": {
+    "hide": "Hide",
+    "show": "Show",
+    "close": "Close",
+    "reset": "Reset",
+    "open": "Open"
+  },
+  "sections": {
+    "title": "Section",
+    "on-this-page": "On this page",
+    "topics": "Topics",
+    "default-implementations": "Default Implementations",
+    "relationships": "Relationships",
+    "see-also": "See Also",
+    "declarations": "Declaration",
+    "details": "Details",
+    "parameters": "Parameters",
+    "possible-values": "Possible Values",
+    "parts": "Parts",
+    "availability": "Availability",
+    "resources": "Resources"
+  },
+  "metadata": {
+    "details": { "name": "Name", "key": "Key", "type": "Type" },
+    "beta": {
+      "legal": "This documentation refers to beta software and may be changed.",
+      "software": "Beta Software"
+    },
+    "default-implementation": "Default implementation provided. | Default implementations provided."
+  },
+  "availability": {
+    "introduced-and-deprecated": "Introduced in {name} {introducedAt} and deprecated in {name} {deprecatedAt}",
+    "available-on": "Available on {name} {introducedAt} and later"
+  },
+  "more": "More",
+  "less": "Less",
+  "api-reference": "API Reference",
+  "filter": {
+    "title": "Filter",
+    "search-symbols": "Search symbols",
+    "suggested": "Suggested",
+    "selected": "Selected",
+    "add-tag": "Add tag",
+    "tag": "Tag",
+    "select-remove": "Select to remove from list.",
+    "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
+    "containing-symbols": "containing one symbol | containing {number} symbols",
+    "symbols-inside": "{number} of {total} symbols inside"
+  },
+  "navigator": {
+    "no-results": "No results found.",
+    "no-children": "No data available.",
+    "error-fetching": "There was an error fetching the data.",
+    "items-found": "items were found. Tab back to navigate through them.",
+    "navigator-is": "Navigator is {state}"
+  },
+  "tab": { "request": "Request", "response": "Response" },
+  "required": "Required",
+  "parameters": {
+    "default": "Default",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
+    "possible-types": "Possible types",
+    "type": "Type",
+    "possible-values": "Possible Values",
+    "value": "Value"
+  },
+  "content-type": "Content-Type",
+  "read-only": "Read only",
+  "error": {
+    "unknown": "An unknown error occurred.",
+    "image": "Image failed to load"
+  },
+  "color-scheme": {
+    "select": "Select a color scheme preference",
+    "auto": "Auto",
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "accessibility": {
+    "strike": {
+      "start": "start of stricken text",
+      "end": "end of stricken text"
+    },
+    "skip-navigation": "Skip Navigation"
+  },
+  "select-language": "Select the language for this page"
+}

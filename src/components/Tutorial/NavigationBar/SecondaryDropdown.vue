@@ -11,7 +11,7 @@
 <template>
   <DropdownCustom
     :value="currentOption"
-    aria-label="Current section"
+    :aria-label="$t('tutorials.nav.current', { thing: $t('sections.title') })"
     class="tutorial-dropdown"
     isSmall
   >

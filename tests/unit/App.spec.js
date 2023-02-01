@@ -19,6 +19,7 @@ import { flushPromises } from '../../test-utils';
 jest.mock('docc-render/utils/theme-settings', () => ({
   fetchThemeSettings: jest.fn(),
   themeSettingsState: { theme: {} },
+  getSetting: jest.fn(() => {}),
 }));
 
 let App;
@@ -115,7 +116,7 @@ describe('App', () => {
   it('renders Skip Navigation', () => {
     const wrapper = createWrapper();
     const skipNavigation = wrapper.find('#skip-nav');
-    expect(skipNavigation.text()).toBe('Skip Navigation');
+    expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
     expect(skipNavigation.attributes('href')).toBe('#main');
   });
 
@@ -238,7 +239,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -251,7 +252,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -266,7 +267,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();

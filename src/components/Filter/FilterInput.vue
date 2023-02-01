@@ -57,14 +57,14 @@
             id="filter-label"
             :for="FilterInputId"
             :data-value="modelValue"
-            :aria-label="placeholder"
+            :aria-label="$t(placeholder)"
             class="filter__input-label"
           >
             <input
               :id="FilterInputId"
               ref="input"
               v-model="modelValue"
-              :placeholder="hasSelectedTags ? '' : placeholder"
+              :placeholder="hasSelectedTags ? '' : $t(placeholder)"
               :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
               :disabled="disabled"
               v-bind="AXinputProperties"
@@ -91,7 +91,7 @@
         <div class="filter__delete-button-wrapper">
           <button
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
-            aria-label="Reset Filter"
+            :aria-label="`${$t('verbs.reset')} ${$t('filter.title')}`"
             class="filter__delete-button"
             @click="resetFilters(true)"
             @keydown.enter.exact.stop="resetFilters(true)"
@@ -178,7 +178,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => 'Filter',
+      default: () => 'filter.title',
     },
     disabled: {
       type: Boolean,
@@ -226,8 +226,12 @@ export default {
         other: 'tags',
       },
     }, suggestedTags.length),
-    selectedTagsLabel: ({ tagsText }) => `Selected ${tagsText}`,
-    suggestedTagsLabel: ({ tagsText }) => `Suggested ${tagsText}`,
+    selectedTagsLabel() {
+      return `${this.$t('filter.selected')} ${this.tagsText}`;
+    },
+    suggestedTagsLabel() {
+      return `${this.$t('filter.suggested')} ${this.tagsText}`;
+    },
     hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
     hasSelectedTags: ({ selectedTags }) => selectedTags.length,
     inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,

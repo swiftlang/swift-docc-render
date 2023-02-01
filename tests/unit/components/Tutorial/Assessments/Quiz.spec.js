@@ -27,7 +27,7 @@ describe('Quiz', () => {
         inlineContent: [
           {
             type: 'text',
-            text: 'Check Your Understanding.',
+            text: 'tutorials.assessment.check-your-understanding.',
           },
         ],
       },
@@ -150,7 +150,7 @@ describe('Quiz', () => {
     it('does not enable the Submit button by default', () => {
       const check = wrapper.find('.check');
       expect(check.exists()).toBe(true);
-      expect(check.text()).toBe('Submit');
+      expect(check.text()).toBe('tutorials.submit');
       expect(check.attributes('disabled')).toBe('true');
     });
   });
@@ -203,13 +203,13 @@ describe('Quiz', () => {
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('Answer number 2 is incorrect');
+      expect(ariaLive.text()).toBe('assessment.answer-number assessment.incorrect');
 
       choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('Answer number 1 is correct');
+      expect(ariaLive.text()).toBe('assessment.answer-number assessment.correct');
     });
   });
 });

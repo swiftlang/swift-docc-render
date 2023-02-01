@@ -143,7 +143,7 @@ describe('Assessments', () => {
       anchor: 'Check-your-understanding',
       depth: 0,
       tag: 'div',
-      title: 'Check Your Understanding',
+      title: 'tutorials.assessment.check-your-understanding',
     });
   });
 
@@ -259,7 +259,7 @@ describe('success slot for completed assessment', () => {
           type: 'foo',
         },
       ],
-      title: 'Check Your Understanding',
+      title: 'tutorials.assessment.check-your-understanding',
     },
     provide: {
       navigationBarHeight: 52,

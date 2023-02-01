@@ -220,7 +220,7 @@ describe('RestBody', () => {
     it('renders an h3 for "Parts"', () => {
       const h3 = wrapper.find('h3');
       expect(h3.exists()).toBe(true);
-      expect(h3.text()).toBe('Parts');
+      expect(h3.text()).toBe('sections.parts');
     });
 
     it('renders 2 param tables, using the second to render parts', () => {

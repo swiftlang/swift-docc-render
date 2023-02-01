@@ -13,10 +13,10 @@
     <div class="betainfo-container">
       <GridRow>
         <GridColumn :span="{ large: 12 }">
-          <p class="betainfo-label">Beta Software</p>
+          <p class="betainfo-label">{{ $t('metadata.beta.software') }}</p>
           <div class="betainfo-content">
             <slot name="content">
-              <p>This documentation refers to beta software and may be changed.</p>
+              <p>{{ $t('metadata.beta.legal') }}</p>
             </slot>
           </div>
           <slot name="after" />

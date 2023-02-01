@@ -32,12 +32,10 @@ const {
   STORAGE_KEY,
   FILTER_TAGS,
   FILTER_TAGS_TO_LABELS,
-  NO_CHILDREN,
-  NO_RESULTS,
-  ERROR_FETCHING,
-  ITEMS_FOUND,
-  HIDE_DEPRECATED_TAG,
 } = NavigatorCard.constants;
+
+const HIDE_DEPRECATED_TAG = 'verbs.hide change-type.deprecated';
+const ITEMS_FOUND = 'navigator.items-found';
 
 const DynamicScrollerStub = {
   props: DynamicScroller.props,
@@ -239,7 +237,7 @@ describe('NavigatorCard', () => {
       minItemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
     });
-    expect(wrapper.find(DynamicScroller).attributes('aria-label')).toBe('Documentation Navigator');
+    expect(wrapper.find(DynamicScroller).attributes('aria-label')).toBe('documentation.navigator');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
     // assert CardItem
     const items = wrapper.findAll(NavigatorCardItem);
@@ -264,7 +262,7 @@ describe('NavigatorCard', () => {
       disabled: false,
       focusInputWhenCreated: false,
       focusInputWhenEmpty: false,
-      placeholder: 'Filter',
+      placeholder: 'filter.title',
       positionReversed: true,
       preventedBlur: false,
       selectedTags: [],
@@ -449,7 +447,7 @@ describe('NavigatorCard', () => {
     await wrapper.vm.$nextTick();
     expect(scroller.props('items')).toEqual([]);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_RESULTS);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe('navigator.no-results');
   });
 
   it('renders a message updating aria-live, if no children', async () => {
@@ -461,7 +459,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const scroller = wrapper.find(DynamicScroller);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_CHILDREN);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe('navigator.no-children');
   });
 
   it('renders an error message updating aria-live, when there is an error in fetching', async () => {
@@ -472,7 +470,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(ERROR_FETCHING);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe('navigator.error-fetching');
     expect(wrapper.find('.filter-wrapper').exists()).toBe(false);
   });
 
@@ -1681,9 +1679,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // assert there are no Articles for example
-      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED_TAG]);
+      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', 'verbs.hide change-type.deprecated']);
       // apply a filter
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      filter.vm.$emit('update:selectedTags', ['verbs.hide change-type.deprecated']);
       await flushPromises();
       // assert no other tags are shown now
       expect(filter.props('tags')).toEqual([]);

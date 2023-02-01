@@ -23,7 +23,7 @@
       <label
         :for="hasLanguages ? 'language-toggle' : null"
         class="nav-menu-setting-label"
-      >Language:</label>
+      >{{ $t('language') }}:</label>
       <select
         v-if="hasLanguages"
         id="language-toggle"

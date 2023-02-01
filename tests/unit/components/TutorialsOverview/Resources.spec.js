@@ -53,7 +53,7 @@ describe('Resources', () => {
   it('renders a VolumeName component', () => {
     const title = wrapper.find(VolumeName);
     expect(title.exists()).toBe(true);
-    expect(title.props('name')).toBe('Resources');
+    expect(title.props('name')).toBe('sections.resources');
     expect(title.props('content')).toEqual(propsData.content);
   });
 

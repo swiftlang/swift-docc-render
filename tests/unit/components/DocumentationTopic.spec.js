@@ -228,7 +228,7 @@ describe('DocumentationTopic', () => {
 
   it('renders an aria live that tells VO users which it is the current page content', () => {
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe(`Current page is ${propsData.title}`);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('documentation.current-page');
   });
 
   it('renders a `DocumentationHero`, enabled', () => {
@@ -372,7 +372,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('change-type.deprecated');
 
     // only beta
     wrapper.setProps({
@@ -381,7 +381,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('Beta');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('kind.beta');
 
     // only deprecated
     wrapper.setProps({
@@ -390,7 +390,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('change-type.deprecated');
   });
 
   it('renders an abstract', () => {

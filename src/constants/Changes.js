@@ -17,13 +17,13 @@ export const ChangeTypes = {
 export const ChangeTypesOrder = [ChangeTypes.modified, ChangeTypes.added, ChangeTypes.deprecated];
 
 export const ChangeNames = {
-  [ChangeTypes.modified]: 'Modified',
-  [ChangeTypes.added]: 'Added',
-  [ChangeTypes.deprecated]: 'Deprecated',
+  [ChangeTypes.modified]: 'change-type.modified',
+  [ChangeTypes.added]: 'change-type.added',
+  [ChangeTypes.deprecated]: 'change-type.deprecated',
 };
 
 export const ChangeNameToType = {
-  Modified: ChangeTypes.modified,
-  Added: ChangeTypes.added,
-  Deprecated: ChangeTypes.deprecated,
+  'change-type.modified': ChangeTypes.modified,
+  'change-type.added': ChangeTypes.added,
+  'change-type.deprecated': ChangeTypes.deprecated,
 };

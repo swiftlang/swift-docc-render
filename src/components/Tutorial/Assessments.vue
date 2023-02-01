@@ -58,7 +58,7 @@ import AssessmentsProgress from './AssessmentsProgress.vue';
 import Quiz from './Assessments/Quiz.vue';
 
 const additionalScrollOffset = 12;
-const SuccessMessage = 'Great job, you\'ve answered all the questions for this tutorial.';
+const SuccessMessage = 'tutorials.assessment.success-message';
 
 export default {
   name: 'Assessments',
@@ -118,7 +118,7 @@ export default {
     return {
       activeIndex: 0,
       completed: false,
-      SuccessMessage,
+      SuccessMessage: this.$t(SuccessMessage),
     };
   },
   computed: {
@@ -136,7 +136,7 @@ export default {
       };
     },
     title() {
-      return 'Check Your Understanding';
+      return this.$t('tutorials.assessment.check-your-understanding');
     },
   },
   methods: {

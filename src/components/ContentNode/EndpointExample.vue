@@ -13,8 +13,8 @@
     <Column class="example-code">
       <slot />
       <Tabnav v-model="currentTab">
-        <TabnavItem :value="Tab.request">{{ Tab.request }}</TabnavItem>
-        <TabnavItem :value="Tab.response">{{ Tab.response }}</TabnavItem>
+        <TabnavItem :value="Tab.request">{{ $t('tab.request') }}</TabnavItem>
+        <TabnavItem :value="Tab.response">{{ $t('tab.response') }}</TabnavItem>
       </Tabnav>
       <div class="output">
         <div v-if="isCurrent(Tab.request)" class="code">
@@ -35,11 +35,11 @@
       <div class="controls" v-if="isCollapsible">
         <a v-if="isCollapsed" href="#" class="toggle" @click.prevent="showMore">
           <InlinePlusCircleSolidIcon class="control-icon icon-inline" />
-          More
+          {{ $t('more') }}
         </a>
         <a v-else href="#" class="toggle" @click.prevent="showLess">
           <InlineMinusCircleSolidIcon class="control-icon icon-inline" />
-          Less
+          {{ $t('less') }}
         </a>
       </div>
     </Column>

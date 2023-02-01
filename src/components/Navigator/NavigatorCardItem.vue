@@ -27,7 +27,7 @@
         hidden
         :id="usageLabel"
       >
-        To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow
+        {{ $t('filter.navigate') }}
       </span>
       <button
         v-if="isParent"
@@ -65,12 +65,16 @@
         v-if="isParent"
         hidden
         :id="parentLabel"
-      >, containing {{ item.childUIDs.length }} symbols</span>
+      >, {{ $tc(
+        'filter.containing-symbols',
+        item.childUIDs.length,
+        { number: item.childUIDs.length }
+      ) }}</span>
       <span
         :id="siblingsLabel"
         hidden
       >
-        {{ item.index + 1 }} of {{ item.siblingsCount }} symbols inside
+        {{ $t('filter.symbols-inside', { number: item.index + 1, total: item.siblingsCount }) }}
       </span>
       <component
         :is="refComponent"

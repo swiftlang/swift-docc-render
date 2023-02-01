@@ -69,7 +69,7 @@ describe('Hero', () => {
     expect(btn.props('action')).toEqual(propsData.action);
     expect(btn.props('isDark')).toBe(true);
     expect(btn.attributes('aria-label'))
-      .toBe(`${propsData.action.overridingTitle} with ${propsData.title}`);
+      .toBe('tutorials.overriding-title');
   });
 
   it('renders an `Asset`', () => {
@@ -81,7 +81,7 @@ describe('Hero', () => {
   it('renders an estimated time', () => {
     const meta = wrapper.find('p.meta');
     expect(meta.exists()).toBe(true);
-    expect(meta.text()).toMatch(/4hr 2min\s+Estimated Time/);
+    expect(meta.text()).toMatch(/4hr 2min\s+tutorials\.estimated-time/);
 
     expect(meta.contains(TimerIcon)).toBe(true);
 

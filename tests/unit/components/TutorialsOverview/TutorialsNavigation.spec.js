@@ -99,6 +99,6 @@ describe('TutorialsNavigation', () => {
   it('renders TutorialsNavigationLink for Resource', () => {
     const link = wrapper.find('li.resource').find({ name: 'TutorialsNavigationLink' });
     expect(link.exists()).toBe(true);
-    expect(link.text()).toBe('Resources');
+    expect(link.text()).toBe('sections.resources');
   });
 });

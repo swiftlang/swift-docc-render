@@ -11,7 +11,7 @@
 <template>
   <ContentTable
     :anchor="contentSectionData.anchor"
-    :title="contentSectionData.title"
+    :title="$t(contentSectionData.title)"
   >
     <Section
       v-for="section in sectionsWithSymbols"

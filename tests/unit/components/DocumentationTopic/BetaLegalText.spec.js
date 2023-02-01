@@ -25,13 +25,13 @@ describe('BetaLegalText', () => {
   });
 
   it('renders a title', () => {
-    expect(wrapper.find('.betainfo-label').text()).toEqual('Beta Software');
+    expect(wrapper.find('.betainfo-label').text()).toEqual('metadata.beta.software');
   });
 
   it('renders default content in the content slot', () => {
     const content = wrapper.find('.betainfo-content');
     expect(content.exists()).toBe(true);
-    expect(content.text()).toContain('This documentation refers to beta software and may be changed.');
+    expect(content.text()).toContain('metadata.beta.legal');
   });
 
   it('exposes a content slot', () => {

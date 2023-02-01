@@ -202,7 +202,7 @@ describe('LanguageToggle', () => {
     expect(label.exists()).toBe(true);
     expect(label.attributes()).toHaveProperty('for', 'language-toggle');
     // textContent makes sure there are no new lines or empty spaces
-    expect(label.element.textContent).toEqual('Language:');
+    expect(label.element.textContent).toEqual('language:');
   });
 
   it('renders a `span.current-language` for the current language inside `language-list-container`', () => {

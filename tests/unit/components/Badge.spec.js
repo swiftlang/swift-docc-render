@@ -25,7 +25,7 @@ describe('Badge', () => {
       },
     });
     expect(wrapper.classes()).toEqual(['badge', 'badge-deprecated']);
-    expect(wrapper.text()).toBe('Deprecated');
+    expect(wrapper.text()).toBe('change-type.deprecated');
   });
 
   it('renders "Beta" when variant is "beta"', () => {
@@ -35,7 +35,7 @@ describe('Badge', () => {
       },
     });
     expect(wrapper.classes()).toEqual(['badge', 'badge-beta']);
-    expect(wrapper.text()).toBe('Beta');
+    expect(wrapper.text()).toBe('kind.beta');
   });
 
   it('renders a custom text, when variant is custom', () => {

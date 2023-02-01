@@ -186,7 +186,7 @@ describe('PropertyTable', () => {
         .findAll('.property-text')
         .at(0)
         .text(),
-    ).toBe('(Required)');
+    ).toBe('(required)');
   });
 
   describe('displays the `type` in proper place', () => {

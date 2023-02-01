@@ -24,7 +24,7 @@
       />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
-      <span v-if="change" class="visuallyhidden">- {{ changeName }}</span>
+      <span v-if="change" class="visuallyhidden">- {{ $t(changeName) }}</span>
     </component>
     <div
       v-if="hasAbstractElements"

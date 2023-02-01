@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <Section class="language" role="complementary" aria-label="Language">
-    <Title>Language: </Title>
+  <Section class="language" role="complementary" :aria-label="$t('language')">
+    <Title>{{ $t('language') }}:</Title>
     <div class="language-list">
       <LanguageSwitcherLink
         class="language-option swift"

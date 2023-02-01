@@ -25,7 +25,7 @@ describe('MobileCodePreviewToggle', () => {
 
     const span = wrapper.find('span');
     expect(span.exists()).toBe(true);
-    expect(span.text()).toBe('No preview');
+    expect(span.text()).toBe('tutorials.preview.title');
   });
 
   it('renders an anchor when `isActionable=true` and emits an event when clicked', () => {
@@ -33,7 +33,7 @@ describe('MobileCodePreviewToggle', () => {
 
     const link = wrapper.find('a');
     expect(link.exists()).toBe(true);
-    expect(link.text()).toBe('Preview');
+    expect(link.text()).toBe('tutorials.preview.title');
 
     link.trigger('click');
     expect(wrapper.emitted().click).toBeTruthy();

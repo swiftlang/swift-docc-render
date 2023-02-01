@@ -74,7 +74,7 @@ describe('NavigationBar', () => {
       url: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
     },
     'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment': {
-      title: 'Check your understanding',
+      title: 'tutorials.assessment.check-your-understanding',
       reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
       url: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
     },
@@ -163,7 +163,7 @@ describe('NavigationBar', () => {
       });
       TopicStore.addLinkableSection({
         anchor: 'check-your-understanding',
-        title: 'Check your understanding',
+        title: 'tutorials.assessment.check-your-understanding',
         depth: 0,
       });
 
@@ -230,7 +230,7 @@ describe('NavigationBar', () => {
           },
           {
             path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
-            title: 'Check your understanding',
+            title: 'tutorials.assessment.check-your-understanding',
             depth: 0,
           },
         ],
@@ -278,7 +278,7 @@ describe('NavigationBar', () => {
       });
 
       it('returns a `sectionIndicatorText` string', () => {
-        expect(wrapper.vm.sectionIndicatorText).toBe('(2 of 3)');
+        expect(wrapper.vm.sectionIndicatorText).toBe('section-of');
       });
     });
 
@@ -304,7 +304,7 @@ describe('NavigationBar', () => {
         },
         {
           path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
-          title: 'Check your understanding',
+          title: 'tutorials.assessment.check-your-understanding',
           depth: 0,
         },
       ]);

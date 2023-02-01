@@ -45,7 +45,7 @@ describe('PropertyKeyListDetails', () => {
   it('renders a title with "Details"', () => {
     const title = wrapper.find(LinkableHeading);
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Details');
+    expect(title.text()).toBe('sections.details');
     expect(title.props('anchor')).toBe('details');
   });
 
@@ -57,7 +57,7 @@ describe('PropertyKeyListDetails', () => {
   it('renders a <dt> with the name or key ', () => {
     let detailType = wrapper.find('dl dt.detail-type');
     expect(detailType.exists()).toBe(true);
-    expect(detailType.text()).toBe('Key');
+    expect(detailType.text()).toBe('metadata.details.key');
 
     wrapper.setProps({
       details: {
@@ -67,7 +67,7 @@ describe('PropertyKeyListDetails', () => {
     });
     detailType = wrapper.find('dl dt.detail-type');
     expect(detailType.exists()).toBe(true);
-    expect(detailType.text()).toBe('Name');
+    expect(detailType.text()).toBe('metadata.details.name');
   });
 
   it('only renders a single <dt> for type when there is no xcode title', () => {

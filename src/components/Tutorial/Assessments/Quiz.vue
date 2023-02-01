@@ -36,7 +36,7 @@
         @click.native="submit"
         :disabled="selectedIndex === null || showNextQuestion"
       >
-       Submit
+       {{ $t('tutorials.submit') }}
       </ButtonLink>
       <ButtonLink
         v-if="isLast"
@@ -44,7 +44,7 @@
         @click.native="seeResults"
         :disabled="!showNextQuestion"
       >
-        Next
+        {{ $t('tutorials.next') }}
       </ButtonLink>
       <ButtonLink
         v-else
@@ -52,7 +52,7 @@
         :disabled="!showNextQuestion"
         @click.native="advance"
       >
-        Next Question
+        {{ $t('tutorials.assessment.next-question') }}
       </ButtonLink>
     </div>
   </div>
@@ -114,10 +114,10 @@ export default {
         this.userChoices[correctChoice].checked
       ));
     },
-    ariaLiveText: ({ checkedIndex, choices }) => {
+    ariaLiveText: ({ checkedIndex, choices, $t }) => {
       if (checkedIndex === null) return '';
       const { isCorrect } = choices[checkedIndex];
-      return `Answer number ${checkedIndex + 1} is ${isCorrect ? 'correct' : 'incorrect'}`;
+      return `${$t('assessment.answer-number', { index: checkedIndex + 1 })} ${isCorrect ? $t('assessment.correct') : $t('assessment.incorrect')}`;
     },
   },
   methods: {

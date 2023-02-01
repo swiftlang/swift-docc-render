@@ -13,15 +13,19 @@
     <div class="row">
       <ColorSchemeToggle />
     </div>
+    <div class="row">
+      <LocaleSelector />
+    </div>
   </footer>
 </template>
 
 <script>
 import ColorSchemeToggle from 'docc-render/components/ColorSchemeToggle.vue';
+import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 
 export default {
   name: 'Footer',
-  components: { ColorSchemeToggle },
+  components: { ColorSchemeToggle, LocaleSelector },
 };
 </script>
 
@@ -36,10 +40,10 @@ export default {
   @include breakpoint-content;
   display: flex;
   flex-direction: row-reverse;
-  padding: 20px 0;
+  margin: 20px auto;
   @include breakpoint(small) {
     width: 100%;
-    padding: 20px $nav-padding-small;
+    padding: 0 $nav-padding-small;
     box-sizing: border-box;
   }
 }

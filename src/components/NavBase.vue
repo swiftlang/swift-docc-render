@@ -37,8 +37,12 @@
             @click.prevent="toggleNav"
           >
             <span class="visuallyhidden">
-              <template v-if="!isOpen">Open Menu</template>
-              <template v-else>Close Menu</template>
+              <template v-if="!isOpen">
+                {{ $t('verbs.open') }} {{ $t('documentation.nav.menu') }}
+              </template>
+              <template v-else>
+                {{ $t('verbs.close') }} {{ $t('documentation.nav.menu') }}
+              </template>
             </span>
           </a>
           <div

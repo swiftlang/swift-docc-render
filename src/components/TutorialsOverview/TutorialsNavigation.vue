@@ -30,7 +30,7 @@
         </li>
       </component>
       <TutorialsNavigationLink v-else-if="isResources(section)">
-        Resources
+        {{ $t('sections.resources') }}
       </TutorialsNavigationLink>
       </li>
     </TutorialsNavigationList>
