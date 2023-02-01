@@ -592,6 +592,8 @@ describe('ContentNode', () => {
           { title: '4', content },
           { title: '5', content },
           { title: '6', content },
+          { title: '7', content },
+          { title: '8', content },
         ],
       };
       const wrapper = mountWithItem(props);
