@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,33 +9,25 @@
 -->
 
 <template>
-  <ConditionalWrapper
-    ref="wrapper"
-    :tag="DeviceFrameComponent"
-    :should-wrap="!!deviceFrame"
-    :device="deviceFrame"
+  <video
+    :controls="showsControls"
+    :autoplay="autoplays"
+    :poster="normalisedPosterPath"
+    :muted="muted"
+    :width="optimalWidth"
+    playsinline
+    @playing="$emit('playing')"
+    @pause="$emit('pause')"
+    @ended="$emit('ended')"
   >
-    <video
-      ref="video"
-      :controls="showsControls"
-      :autoplay="autoplays"
-      :poster="normalisedPosterPath"
-      :muted="muted"
-      :width="optimalWidth"
-      playsinline
-      @playing="$emit('playing')"
-      @pause="$emit('pause')"
-      @ended="$emit('ended')"
-    >
-      <!--
-        Many browsers do not support the `media` attribute for `<source>` tags
-        within a video specifically, so this implementation for dark theme assets
-        is handled with JavaScript media query listeners unlike the `<source>`
-        based implementation being used for image assets.
-      -->
-      <source :src="normalizeAssetUrl(videoAttributes.url)">
-    </video>
-  </ConditionalWrapper>
+    <!--
+      Many browsers do not support the `media` attribute for `<source>` tags
+      within a video specifically, so this implementation for dark theme assets
+      is handled with JavaScript media query listeners unlike the `<source>`
+      based implementation being used for image assets.
+    -->
+    <source :src="normalizeAssetUrl(videoAttributes.url)">
+  </video>
 </template>
 
 <script>
@@ -47,12 +39,9 @@ import {
 } from 'docc-render/utils/assets';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
-import ConditionalWrapper from 'docc-render/components/ConditionalWrapper.vue';
-import DeviceFrame from 'docc-render/components/ContentNode/DeviceFrame.vue';
 
 export default {
   name: 'VideoAsset',
-  components: { ConditionalWrapper },
   props: {
     variants: {
       type: Array,
@@ -75,17 +64,12 @@ export default {
       type: Boolean,
       default: true,
     },
-    deviceFrame: {
-      type: String,
-      required: false,
-    },
   },
   data: () => ({
     appState: AppStore.state,
     optimalWidth: null,
   }),
   computed: {
-    DeviceFrameComponent: () => DeviceFrame,
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     systemColorScheme: ({ appState }) => appState.systemColorScheme,
     userPrefersDark: ({

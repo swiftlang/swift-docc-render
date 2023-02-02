@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -17,7 +17,6 @@
       :showsControls="showsControls"
       :muted="muted"
       :posterVariants="posterVariants"
-      :deviceFrame="deviceFrame"
       @pause="onPause"
       @playing="onVideoPlaying"
       @ended="onVideoEnd"
@@ -25,7 +24,7 @@
     <a
       class="replay-button"
       href="#"
-      :class="{ visible: showsReplayButton }"
+      :class="{ visible: this.showsReplayButton }"
       @click.prevent="replay"
     >
       {{ text }}
@@ -68,10 +67,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    deviceFrame: {
-      type: String,
-      required: false,
-    },
   },
   computed: {
     text: ({ played }) => (played ? 'Replay' : 'Play'),
@@ -84,7 +79,7 @@ export default {
   },
   methods: {
     async replay() {
-      const videoPlayer = this.$refs.asset.$refs.video;
+      const videoPlayer = this.$refs.asset.$el;
       if (videoPlayer) {
         await videoPlayer.play();
         this.showsReplayButton = false;
@@ -110,7 +105,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.video-replay-container .replay-button {
+.replay-button {
   display: flex;
   align-items: center;
   justify-content: center;

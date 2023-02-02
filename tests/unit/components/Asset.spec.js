@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -103,17 +103,6 @@ describe('Asset', () => {
     expect(videoAsset.props('posterVariants')).toEqual([]);
   });
 
-  it('passes down `deviceFrame` to `VideoAsset`', () => {
-    const wrapper = mountAsset('video', { video });
-    let videoAsset = wrapper.find(VideoAsset);
-    expect(videoAsset.props('deviceFrame')).toBeFalsy();
-    wrapper.setProps({
-      deviceFrame: 'phone',
-    });
-    videoAsset = wrapper.find(VideoAsset);
-    expect(videoAsset.props('deviceFrame')).toBe('phone');
-  });
-
   it('renders a `ReplayableVideoAsset` for video with `showsReplayButton=true`', () => {
     const wrapper = shallowMount(Asset, {
       propsData: {
@@ -128,28 +117,6 @@ describe('Asset', () => {
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('showsControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(true);
-  });
-
-  it('renders a `ReplayableVideoAsset` with deviceFrame', () => {
-    const wrapper = shallowMount(Asset, {
-      propsData: {
-        identifier: 'video',
-        showsReplayButton: true,
-        showsVideoControls: true,
-        deviceFrame: 'phone',
-      },
-      provide: { references: { video } },
-    });
-
-    const videoAsset = wrapper.find(ReplayableVideoAsset);
-    expect(videoAsset.props()).toEqual({
-      autoplays: true,
-      deviceFrame: 'phone',
-      muted: true,
-      posterVariants: [],
-      showsControls: true,
-      variants: video.variants,
-    });
   });
 
   it('renders a `VideoAsset`, without muting it', () => {
