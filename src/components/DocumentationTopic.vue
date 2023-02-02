@@ -372,10 +372,17 @@ export default {
     }) => (
       !!(objcPath && swiftPath && isTargetIDE) && !enableMinimized
     ),
-    enhanceBackground: ({ symbolKind, disableHeroBackground, topicSectionsStyle }) => {
+    enhanceBackground: ({
+      symbolKind,
+      disableHeroBackground,
+      topicSectionsStyle,
+      enableMinimized,
+    }) => {
       if (
         // if the hero bg is forcefully disabled
         disableHeroBackground
+        // or minimized view is enabled
+        || enableMinimized
         // or the topicSectionsStyle is a `grid` type
         || topicSectionsStyle === TopicSectionsStyle.compactGrid
         || topicSectionsStyle === TopicSectionsStyle.detailedGrid
