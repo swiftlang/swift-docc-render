@@ -33,7 +33,7 @@
           :id="scrollLockID"
           ref="scroller"
           class="scroller"
-          :aria-label="$t('documentation.navigator')"
+          :aria-label="$t('navigator.title')"
           :items="nodesToRender"
           :min-item-size="itemSize"
           emit-update
@@ -72,7 +72,7 @@
         </div>
         <div aria-live="assertive" class="no-items-wrapper">
           <p class="no-items">
-            {{ assertiveAriaLive }}
+            {{ $t(assertiveAriaLive) }}
           </p>
         </div>
       </div>
@@ -155,6 +155,11 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.project]: FILTER_TAGS.tutorials,
 };
 
+const NO_RESULTS = 'navigator.no-results';
+const NO_CHILDREN = 'navigator.no-children';
+const ERROR_FETCHING = 'navigator.error-fetching';
+const ITEMS_FOUND = 'navigator.items-found';
+
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
  * For performance reasons, the component uses watchers over computed, so we can more precisely
@@ -168,6 +173,8 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
+    ERROR_FETCHING,
+    ITEMS_FOUND,
   },
   components: {
     FilterInput,
@@ -231,21 +238,21 @@ export default {
       nodesToRender: Object.freeze([]),
       activeUID: null,
       lastFocusTarget: null,
-      NO_RESULTS: this.$t('navigator.no-results'),
-      NO_CHILDREN: this.$t('navigator.no-children'),
-      ERROR_FETCHING: this.$t('navigator.error-fetching'),
-      ITEMS_FOUND: this.$t('navigator.items-found'),
-      HIDE_DEPRECATED_TAG: `${this.$t('verbs.hide')} ${this.$t('change-type.deprecated')}`,
+      HIDE_DEPRECATED_TAG: `${this.$t('navigator.tags.hide-deprecated')}`,
       allNodesToggled: false,
     };
   },
   computed: {
-    politeAriaLive: ({ hasNodes, nodesToRender, ITEMS_FOUND }) => {
+    politeAriaLive: ({
+      hasNodes,
+      nodesToRender,
+      $tc,
+    }) => {
       if (!hasNodes) return '';
-      return [nodesToRender.length, ITEMS_FOUND].join(' ');
+      return $tc(ITEMS_FOUND, nodesToRender.length, { number: nodesToRender.length });
     },
     assertiveAriaLive: ({
-      hasNodes, hasFilter, errorFetching, NO_RESULTS, NO_CHILDREN, ERROR_FETCHING,
+      hasNodes, hasFilter, errorFetching,
     }) => {
       if (hasNodes) return '';
       if (hasFilter) return NO_RESULTS;

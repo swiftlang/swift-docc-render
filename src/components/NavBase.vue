@@ -38,10 +38,10 @@
           >
             <span class="visuallyhidden">
               <template v-if="!isOpen">
-                {{ $t('verbs.open') }} {{ $t('documentation.nav.menu') }}
+                {{ $t('documentation.nav.open-menu') }}
               </template>
               <template v-else>
-                {{ $t('verbs.close') }} {{ $t('documentation.nav.menu') }}
+                {{ $t('documentation.nav.close-menu') }}
               </template>
             </span>
           </a>

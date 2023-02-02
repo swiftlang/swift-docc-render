@@ -41,7 +41,7 @@
             :id="SelectedTagsId"
             :input="input"
             :tags="selectedTags"
-            :ariaLabel="selectedTagsLabel"
+            :ariaLabel="$t('filter.selected-tags', { tags: tagsText })"
             :activeTags="activeTags"
             v-bind="virtualKeyboardBind"
             class="filter__selected-tags"
@@ -91,7 +91,7 @@
         <div class="filter__delete-button-wrapper">
           <button
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
-            :aria-label="`${$t('verbs.reset')} ${$t('filter.title')}`"
+            :aria-label="$t('filter.reset-title')"
             class="filter__delete-button"
             @click="resetFilters(true)"
             @keydown.enter.exact.stop="resetFilters(true)"
@@ -105,7 +105,7 @@
         v-if="displaySuggestedTags"
         :id="SuggestedTagsId"
         ref="suggestedTags"
-        :ariaLabel="suggestedTagsLabel"
+        :ariaLabel="$t('filter.suggested-tags', { tags: tagsText })"
         :input="input"
         :tags="suggestedTags"
         v-bind="virtualKeyboardBind"
@@ -226,12 +226,6 @@ export default {
         other: 'tags',
       },
     }, suggestedTags.length),
-    selectedTagsLabel() {
-      return `${this.$t('filter.selected')} ${this.tagsText}`;
-    },
-    suggestedTagsLabel() {
-      return `${this.$t('filter.suggested')} ${this.tagsText}`;
-    },
     hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
     hasSelectedTags: ({ selectedTags }) => selectedTags.length,
     inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,

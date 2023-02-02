@@ -9,10 +9,10 @@
 -->
 
 <template>
-  <s>
-    <span class="visuallyhidden">{{ $t('accessibility.strike.start') }}</span>
+  <s
+    :before-text="$t('accessibility.strike.start')"
+    :after-text="$t('accessibility.strike.end')">
       <slot />
-    <span class="visuallyhidden">{{ $t('accessibility.strike.end') }}</span>
   </s>
 </template>
 
@@ -21,3 +21,18 @@ export default {
   name: 'StrikeThrough',
 };
 </script>
+<style scoped lang="scss">
+@import 'docc-render/styles/_core.scss';
+
+s {
+  &::before {
+    content: attr(before-text);
+  }
+  &::after {
+    content: attr(after-text);
+  }
+  &::before, &::after {
+    @include visuallyhidden()
+  }
+}
+</style>

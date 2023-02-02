@@ -28,7 +28,7 @@
             class="sidenav-toggle-wrapper"
           >
             <button
-              :aria-label="`${$t('verbs.open')} ${$t('documentation.navigator')}`"
+              :aria-label="$t('navigator.open-navigator')"
               :id="baseNavOpenSidenavButtonId"
               class="sidenav-toggle"
               :tabindex="isOpen ? -1 : null"

@@ -285,7 +285,7 @@ describe('DocumentationNav', () => {
     button.trigger('click');
     await flushPromises();
     // assert the button works and is rendered as expected
-    expect(button.attributes('aria-label')).toBe('verbs.open documentation.navigator');
+    expect(button.attributes('aria-label')).toBe('navigator.open-navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
     // assert the nav-hide button is focused
     expect(document.activeElement).toEqual(btn);

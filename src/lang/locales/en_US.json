@@ -42,8 +42,17 @@
   },
   "documentation": {
     "title": "Documentation",
-    "navigator": "Documentation Navigator",
-    "nav": { "breadcrumbs": "Breadcrumbs", "menu": "Menu" },
+    "navigator": {
+      "title": "Documentation Navigator",
+      "open-navigator": "Open Documentation Navigator",
+      "close-navigator": "Close Documentation Navigator"
+    },
+    "nav": {
+      "breadcrumbs": "Breadcrumbs",
+      "menu": "Menu",
+      "open-menu": "Open menu",
+      "close-menu": "Close menu"
+    },
     "current-page": "Current page is {title}"
   },
   "kind": {
@@ -62,9 +71,7 @@
   "verbs": {
     "hide": "Hide",
     "show": "Show",
-    "close": "Close",
-    "reset": "Reset",
-    "open": "Open"
+    "close": "Close"
   },
   "sections": {
     "title": "Section",
@@ -99,21 +106,32 @@
   "filter": {
     "title": "Filter",
     "search-symbols": "Search symbols",
-    "suggested": "Suggested",
-    "selected": "Selected",
+    "suggested-tags": "Suggested {tags}",
+    "selected-tags": "Selected {tags}",
     "add-tag": "Add tag",
     "tag": "Tag",
     "select-remove": "Select to remove from list.",
     "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
     "containing-symbols": "containing one symbol | containing {number} symbols",
-    "symbols-inside": "{number} of {total} symbols inside"
+    "symbols-inside": "{number} of {total} symbols inside",
+    "reset-filter": "Reset Filter"
   },
   "navigator": {
+    "title": "Documentation Navigator",
+    "open-navigator": "Open Documentation Navigator",
+    "close-navigator": "Close Documentation Navigator",
     "no-results": "No results found.",
     "no-children": "No data available.",
     "error-fetching": "There was an error fetching the data.",
-    "items-found": "items were found. Tab back to navigate through them.",
-    "navigator-is": "Navigator is {state}"
+    "items-found": "No items were found | 1 item was found | {number} items were found. Tab back to navigate through them.",
+    "navigator-is": "Navigator is {state}",
+    "state": {
+      "loading": "loading",
+      "ready": "ready"
+    },
+    "tags": {
+      "hide-deprecated": "Hide Deprecated"
+    }
   },
   "tab": { "request": "Request", "response": "Response" },
   "required": "Required",

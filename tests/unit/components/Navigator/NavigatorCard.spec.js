@@ -32,10 +32,10 @@ const {
   STORAGE_KEY,
   FILTER_TAGS,
   FILTER_TAGS_TO_LABELS,
+  ITEMS_FOUND,
 } = NavigatorCard.constants;
 
-const HIDE_DEPRECATED_TAG = 'verbs.hide change-type.deprecated';
-const ITEMS_FOUND = 'navigator.items-found';
+const HIDE_DEPRECATED_TAG = 'navigator.tags.hide-deprecated';
 
 const DynamicScrollerStub = {
   props: DynamicScroller.props,
@@ -237,7 +237,7 @@ describe('NavigatorCard', () => {
       minItemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
     });
-    expect(wrapper.find(DynamicScroller).attributes('aria-label')).toBe('documentation.navigator');
+    expect(wrapper.find(DynamicScroller).attributes('aria-label')).toBe('navigator.title');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
     // assert CardItem
     const items = wrapper.findAll(NavigatorCardItem);
@@ -480,13 +480,7 @@ describe('NavigatorCard', () => {
     const unopenedItem = wrapper.findAll(NavigatorCardItem).at(2);
     unopenedItem.vm.$emit('toggle', root0Child1);
     await wrapper.vm.$nextTick();
-    let message = [children.length, ITEMS_FOUND].join(' ');
-    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
-
-    wrapper.find(FilterInput).vm.$emit('input', root0.title);
-    await wrapper.vm.$nextTick();
-    message = [1, ITEMS_FOUND].join(' ');
-    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
+    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(ITEMS_FOUND);
   });
 
   describe('toggles a child, on @toggle', () => {
@@ -1679,9 +1673,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // assert there are no Articles for example
-      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', 'verbs.hide change-type.deprecated']);
+      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED_TAG]);
       // apply a filter
-      filter.vm.$emit('update:selectedTags', ['verbs.hide change-type.deprecated']);
+      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
       await flushPromises();
       // assert no other tags are shown now
       expect(filter.props('tags')).toEqual([]);
