@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -34,23 +34,11 @@ describe('Title', () => {
     const eyebrow = wrapper.find('.eyebrow');
     expect(eyebrow.exists()).toBe(true);
     expect(eyebrow.text()).toBe('Thing');
-
-    // Minimized view should not render eyebrow
-    wrapper.setProps({ enableMinimized: true });
-    expect(wrapper.find('.eyebrow').exists()).toBe(false);
   });
 
   it('renders <h1> tag for the default slot', () => {
     const h1 = wrapper.find('h1');
     expect(h1.classes('title')).toBe(true);
     expect(h1.text()).toBe('FooKit');
-  });
-
-  it('renders the right classes based on `enableMininized` prop', () => {
-    const h1 = wrapper.find('h1');
-    expect(h1.classes()).not.toContain('minimized');
-
-    wrapper.setProps({ enableMinimized: true });
-    expect(h1.classes()).toContain('minimized');
   });
 });

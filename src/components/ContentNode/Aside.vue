@@ -60,7 +60,7 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
   @include font-styles(aside-label);
 
   & + * {
-    margin-top: var(--stacked-margin-small);
+    margin-top: var(--spacing-stacked-margin-small);
   }
 
   @each $kind in $aside-kinds {

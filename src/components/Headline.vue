@@ -53,7 +53,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .headline {
-  margin-bottom: var(--stacked-margin-large);
+  margin-bottom: var(--spacing-stacked-margin-large);
 }
 
 .heading {
@@ -68,7 +68,7 @@ export default {
 .eyebrow {
   @include font-styles(eyebrow);
   display: block;
-  margin-bottom: var(--stacked-margin-small);
+  margin-bottom: var(--spacing-stacked-margin-small);
   color: var(--color-eyebrow);
 }
 </style>

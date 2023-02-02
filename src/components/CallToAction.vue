@@ -136,7 +136,7 @@ h2 {
 .label {
   display: block;
   @include font-styles(eyebrow-reduced);
-  margin-bottom: var(--stacked-margin-small);
+  margin-bottom: var(--spacing-stacked-margin-small);
   color: var(--color-eyebrow);
 }
 

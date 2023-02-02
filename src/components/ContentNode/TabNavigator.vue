@@ -74,7 +74,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .TabNavigator {
-  @include space-out-between-siblings(var(--stacked-margin-xlarge));
+  @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 
   .tabnav {
     overflow: auto;
@@ -108,10 +108,10 @@ export default {
   .tabs-content {
     flex: 1 1 auto;
     min-width: 0;
-    padding-right: var(--stacked-margin-xlarge);
+    padding-right: var(--spacing-stacked-margin-xlarge);
     @include breakpoint(small) {
       padding-right: 0;
-      padding-bottom: var(--stacked-margin-large);
+      padding-bottom: var(--spacing-stacked-margin-large);
     }
   }
 }

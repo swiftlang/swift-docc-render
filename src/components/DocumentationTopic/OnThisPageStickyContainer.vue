@@ -33,7 +33,7 @@ export default {
   width: $on-this-page-aside-width;
   padding-right: $nav-padding;
   box-sizing: border-box;
-  padding-bottom: var(--stacked-margin-small);
+  padding-bottom: var(--spacing-stacked-margin-small);
   max-height: calc(100vh - #{$top});
   overflow: auto;
 

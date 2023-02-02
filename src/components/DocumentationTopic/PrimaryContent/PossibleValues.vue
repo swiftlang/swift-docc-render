@@ -68,7 +68,7 @@ $left-padding: 1rem;
 
     font-weight: $font-weight-semibold;
     padding-left: $left-padding;
-    padding-top: var(--param-spacing);
+    padding-top: var(--spacing-param);
   }
 }
 </style>

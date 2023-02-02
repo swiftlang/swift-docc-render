@@ -108,7 +108,7 @@ export default {
     padding-left: 0;
 
     & + & {
-      margin-top: calc(var(--param-spacing)/2);
+      margin-top: calc(var(--spacing-param)/2);
     }
   }
 }
@@ -152,7 +152,7 @@ export default {
 }
 
 .param + .param {
-  margin-top: var(--param-spacing);
+  margin-top: var(--spacing-param);
 
   &:first-child {
     margin-top: 0;

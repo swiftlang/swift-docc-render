@@ -42,7 +42,7 @@ export default {
   margin-left: auto;
   margin-right: auto;
 
-  @include space-out-between-siblings(var(--stacked-margin-xlarge));
+  @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 }
 
 /deep/ video {

@@ -271,7 +271,7 @@ $content-margin: 4px;
 
   .floating-style & {
     bottom: unset;
-    margin-top: var(--stacked-margin-large);
+    margin-top: var(--spacing-stacked-margin-large);
     position: relative;
   }
 }

@@ -32,7 +32,10 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <Title :eyebrow="roleHeading" :enableMinimized="enableMinimized">
+        <Title
+          :eyebrow="enableMinimized ? '' : roleHeading"
+          :class="{ 'minimized-title': enableMinimized }"
+        >
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
             v-if="isSymbolDeprecated || isSymbolBeta"
@@ -79,11 +82,10 @@
             </div>
             <PrimaryContent
               v-if="primaryContentSections && primaryContentSections.length"
-              :class="{ 'with-border': !enhanceBackground }"
+              :class="{ 'with-border': !enhanceBackground, 'minimized-content': enableMinimized }"
               :conformance="conformance"
               :source="remoteSource"
               :sections="primaryContentSections"
-              :enableMinimized="enableMinimized"
             />
           </div>
           <Topics
@@ -499,6 +501,16 @@ export default {
   }
 }
 
+/deep/ .minimized-title {
+  font-size: 1.416rem;
+  font-weight: bold;
+  margin-bottom: 0.833rem;
+
+  & > small {
+    font-size: 1rem;
+  }
+}
+
 .minimized-abstract {
   @include font-styles(body);
 }
@@ -520,7 +532,7 @@ export default {
   }
 
   /deep/ .content + * {
-    margin-top: var(--stacked-margin-large);
+    margin-top: var(--spacing-stacked-margin-large);
   }
 }
 
@@ -528,10 +540,28 @@ export default {
   margin-bottom: 1.5em;
 }
 
-// remove border-top for first section of the page
 /deep/ {
   .no-primary-content {
+    // remove border-top for first section of the page
     --content-table-title-border-width: 0px;
+  }
+
+  .minimized-content {
+    & > * {
+      margin-bottom: 1.5em;
+      margin-top: 1.5em;
+      --spacing-stacked-margin-large: 0.667em;
+      --spacing-stacked-margin-xlarge: 1em;
+      --declaration-code-listing-margin: 1em 0;
+      --code-block-style-elements-padding: 7px 12px;
+      --code-border-radius: 10px;
+      --spacing-param: var(--spacing-stacked-margin-large);
+
+      & > h2 {
+        font-size: 1.083rem;
+        font-weight: bold;
+      }
+    }
   }
 }
 

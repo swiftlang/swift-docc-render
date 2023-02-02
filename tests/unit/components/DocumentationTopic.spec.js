@@ -333,6 +333,15 @@ describe('DocumentationTopic', () => {
     expect(title.find(WordBreak).exists()).toBe(false);
   });
 
+  it('renders the right classes for `Title` based on `enableMininized` prop', () => {
+    const hero = wrapper.find(DocumentationHero);
+    const title = hero.find(Title);
+    expect(title.classes()).not.toContain('minimized-title');
+
+    wrapper.setProps({ enableMinimized: true });
+    expect(title.classes()).toContain('minimized-title');
+  });
+
   it('uses `WordBreak` in the title for symbol pages', () => {
     wrapper.setProps({
       role: 'symbol',
@@ -413,6 +422,14 @@ describe('DocumentationTopic', () => {
     expect(primary.props('conformance')).toEqual(propsData.conformance);
     expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
     expect(primary.props('source')).toEqual(propsData.remoteSource);
+  });
+
+  it('renders the right classes for `PrimaryContent` based on `enableMininized` prop', () => {
+    const primary = wrapper.find(PrimaryContent);
+    expect(primary.classes()).not.toContain('minimized-content');
+
+    wrapper.setProps({ enableMinimized: true });
+    expect(primary.classes()).toContain('minimized-content');
   });
 
   it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', () => {

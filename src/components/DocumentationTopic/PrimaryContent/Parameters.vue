@@ -56,7 +56,7 @@ export default {
 .param-name {
   font-weight: $font-weight-semibold;
   padding-left: 1rem;
-  padding-top: var(--param-spacing);
+  padding-top: var(--spacing-param);
 
   &:first-child {
     padding-top: 0;

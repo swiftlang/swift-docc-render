@@ -63,11 +63,11 @@ $docs-code-listing-border-width: 1px !default;
   #{between-els('.inline-image-container')},
   #{between-els(figure)},
   #{between-els(aside)}, {
-    margin-top: var(--stacked-margin-xlarge);
+    margin-top: var(--spacing-stacked-margin-xlarge);
   }
 
   #{between-els(dl)} {
-    margin-top: var(--stacked-margin-large);
+    margin-top: var(--spacing-stacked-margin-large);
   }
 
   img {
@@ -78,10 +78,10 @@ $docs-code-listing-border-width: 1px !default;
 
   ol,
   ul {
-    margin-top: var(--stacked-margin-large);
+    margin-top: var(--spacing-stacked-margin-large);
 
     li:not(:first-child) {
-      margin-top: var(--stacked-margin-large);
+      margin-top: var(--spacing-stacked-margin-large);
     }
 
     @include breakpoint(small) {
@@ -90,7 +90,7 @@ $docs-code-listing-border-width: 1px !default;
   }
 
   dt:not(:first-child) {
-    margin-top: var(--stacked-margin-large);
+    margin-top: var(--spacing-stacked-margin-large);
   }
 
   dd {

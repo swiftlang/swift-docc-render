@@ -178,7 +178,7 @@ export default {
 .step-label {
   @include font-styles(step-number);
   color: var(--colors-text, var(--color-step-text));
-  margin-bottom: var(--stacked-margin-small);
+  margin-bottom: var(--spacing-stacked-margin-small);
 }
 
 .caption {

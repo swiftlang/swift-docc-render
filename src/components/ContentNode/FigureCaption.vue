@@ -37,7 +37,7 @@ export default {
   @include font-styles(documentation-figcaption);
 
   &:last-child {
-    margin-top: var(--stacked-margin-large);
+    margin-top: var(--spacing-stacked-margin-large);
   }
 
   &.centered {

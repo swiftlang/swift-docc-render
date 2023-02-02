@@ -59,7 +59,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .links-block + /deep/ * {
-  margin-top: var(--stacked-margin-xlarge);
+  margin-top: var(--spacing-stacked-margin-xlarge);
 }
 
 .topic-link-block {

@@ -75,7 +75,7 @@ export default {
   }
 
   /deep/ + * {
-    margin-top: var(--stacked-margin-large);
+    margin-top: var(--spacing-stacked-margin-large);
   }
 }
 </style>

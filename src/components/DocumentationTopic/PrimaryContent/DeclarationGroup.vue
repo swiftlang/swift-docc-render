@@ -91,7 +91,7 @@ export default {
   @include font-styles(body-reduced);
 
   margin-bottom: 0.45rem;
-  margin-top: var(--stacked-margin-xlarge);
+  margin-top: var(--spacing-stacked-margin-xlarge);
 
   .changed & {
     padding-left: $code-source-spacing;

@@ -232,7 +232,7 @@ export default {
 }
 
 .content + p {
-  margin-top: var(--stacked-margin-large);
+  margin-top: var(--spacing-stacked-margin-large);
   @include breakpoint(small) {
     margin-top: 8px;
   }

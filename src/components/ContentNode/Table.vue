@@ -34,7 +34,7 @@ export default {
 .table-wrapper {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  @include space-out-between-siblings(var(--stacked-margin-xlarge));
+  @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 }
 
 table {
