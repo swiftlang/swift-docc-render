@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -21,9 +21,8 @@ const defaultProps = {
   identifier: 'foo',
 };
 
-const createWrapper = ({ propsData, ...others } = {}) => shallowMount(BlockVideo, {
-  propsData: { ...defaultProps, ...propsData },
-  ...others,
+const createWrapper = () => shallowMount(BlockVideo, {
+  propsData: defaultProps,
 });
 
 describe('BlockVideo', () => {
@@ -35,22 +34,6 @@ describe('BlockVideo', () => {
       videoMuted: false,
       showsReplayButton: true,
       showsVideoControls: false,
-    });
-  });
-
-  it('passes deviceFrames down to child', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        deviceFrame: 'phone',
-      },
-    });
-    expect(wrapper.find(Asset).props()).toEqual({
-      identifier: defaultProps.identifier,
-      videoAutoplays: false,
-      videoMuted: false,
-      showsReplayButton: true,
-      showsVideoControls: false,
-      deviceFrame: 'phone',
     });
   });
 
