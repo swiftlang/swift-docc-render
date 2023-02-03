@@ -106,7 +106,7 @@ const TableColumnAlignments = {
 };
 
 // The point after which a TabNavigator turns to vertical mode.
-const TabNavigatorVerticalThreshold = 5;
+const TabNavigatorVerticalThreshold = 7;
 
 // Recursively call the passed `createElement` function for each content node
 // and any of its children by mapping each node `type` to a given Vue component
