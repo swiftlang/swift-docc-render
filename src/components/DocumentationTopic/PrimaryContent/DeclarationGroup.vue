@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -91,7 +91,7 @@ export default {
   @include font-styles(body-reduced);
 
   margin-bottom: 0.45rem;
-  margin-top: $stacked-margin-xlarge;
+  margin-top: var(--spacing-stacked-margin-xlarge);
 
   .changed & {
     padding-left: $code-source-spacing;
@@ -103,7 +103,7 @@ export default {
 }
 
 .source {
-  margin: $code-listing-with-numbers-padding;
+  margin: var(--declaration-code-listing-margin);
 
   .platforms + & {
     margin: 0;

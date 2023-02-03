@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -33,7 +33,7 @@ export default {
   width: $on-this-page-aside-width;
   padding-right: $nav-padding;
   box-sizing: border-box;
-  padding-bottom: $stacked-margin-small;
+  padding-bottom: var(--spacing-stacked-margin-small);
   max-height: calc(100vh - #{$top});
   overflow: auto;
 

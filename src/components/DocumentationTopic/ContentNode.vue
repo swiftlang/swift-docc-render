@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -46,7 +46,7 @@ $docs-code-listing-border-width: 1px !default;
     border-style: var(--code-border-style, solid);
 
     pre {
-      padding: $code-block-style-elements-padding;
+      padding: var(--code-block-style-elements-padding);
       // setting it to 0 prevents browsers from adding extra right spacing, when having scrollbar
       padding-right: 0;
 
@@ -63,11 +63,11 @@ $docs-code-listing-border-width: 1px !default;
   #{between-els('.inline-image-container')},
   #{between-els(figure)},
   #{between-els(aside)}, {
-    margin-top: $stacked-margin-xlarge;
+    margin-top: var(--spacing-stacked-margin-xlarge);
   }
 
   #{between-els(dl)} {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--spacing-stacked-margin-large);
   }
 
   img {
@@ -78,10 +78,10 @@ $docs-code-listing-border-width: 1px !default;
 
   ol,
   ul {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--spacing-stacked-margin-large);
 
     li:not(:first-child) {
-      margin-top: $stacked-margin-large;
+      margin-top: var(--spacing-stacked-margin-large);
     }
 
     @include breakpoint(small) {
@@ -90,7 +90,7 @@ $docs-code-listing-border-width: 1px !default;
   }
 
   dt:not(:first-child) {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--spacing-stacked-margin-large);
   }
 
   dd {

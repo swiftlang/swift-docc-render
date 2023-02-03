@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -187,8 +187,8 @@ $doc-hero-icon-dimension: 250px;
   }
 
   .minimized-hero {
-    padding-top: rem(20px);
-    padding-bottom: 0;
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
   }
 
   &__above-content {
