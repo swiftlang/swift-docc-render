@@ -33,7 +33,7 @@
           :swiftPath="swiftPath"
         />
         <Title
-          :eyebrow="enableMinimized ? '' : roleHeading"
+          :eyebrow="enableMinimized ? null : roleHeading"
           :class="{ 'minimized-title': enableMinimized }"
         >
           <component :is="titleBreakComponent">{{ title }}</component>
@@ -554,15 +554,20 @@ export default {
   }
 
   .minimized-content {
+    --spacing-stacked-margin-large: 0.667em;
+    --spacing-stacked-margin-xlarge: 1em;
+    --declaration-code-listing-margin: 1em 0;
+    --code-block-style-elements-padding: 7px 12px;
+    --code-border-radius: 10px;
+    --spacing-param: var(--spacing-stacked-margin-large);
+
     & > * {
       margin-bottom: 1.5em;
       margin-top: 1.5em;
-      --spacing-stacked-margin-large: 0.667em;
-      --spacing-stacked-margin-xlarge: 1em;
-      --declaration-code-listing-margin: 1em 0;
-      --code-block-style-elements-padding: 7px 12px;
-      --code-border-radius: 10px;
-      --spacing-param: var(--spacing-stacked-margin-large);
+
+      &:first-child {
+        margin-top: 1.5em;
+      }
 
       & > h2 {
         font-size: 1.083rem;
