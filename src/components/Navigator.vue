@@ -33,7 +33,9 @@
       @close="$emit('close')"
     />
     <div aria-live="polite" class="visuallyhidden">
-      {{ $t('navigator.navigator-is', { state: isFetching ? $t('loading') : $t('ready') }) }}
+      {{ $t('navigator.navigator-is', {
+        state: isFetching ? $t('navigator.state.loading') : $t('navigator.state.ready')
+      }) }}
     </div>
   </nav>
 </template>
