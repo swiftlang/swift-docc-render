@@ -86,7 +86,8 @@
     "possible-values": "Possible Values",
     "parts": "Parts",
     "availability": "Availability",
-    "resources": "Resources"
+    "resources": "Resources",
+    "summary": "Summary"
   },
   "metadata": {
     "details": { "name": "Name", "key": "Key", "type": "Type" },
@@ -163,5 +164,10 @@
     },
     "skip-navigation": "Skip Navigation"
   },
-  "select-language": "Select the language for this page"
+  "select-language": "Select the language for this page",
+  "icons": {
+    "clear": "Clear",
+    "web-service-endpoint": "Web Service Endpoint",
+    "search": "Search"
+  }
 }

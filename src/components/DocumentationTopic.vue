@@ -32,7 +32,9 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <LinkableHeading v-if="enableMinimized" class="minimized-summary">Summary</LinkableHeading>
+        <LinkableHeading v-if="enableMinimized" class="minimized-summary">
+          {{ $t('sections.summary') }}
+        </LinkableHeading>
         <Title v-else :eyebrow="roleHeading">
           <component :is="titleBreakComponent">{{ title }}</component>
           <small
