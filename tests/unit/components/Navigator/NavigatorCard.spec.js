@@ -20,6 +20,7 @@ import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
+import hardcodedTags from 'docc-render/constants/hardcodedTags';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -35,7 +36,7 @@ const {
   ITEMS_FOUND,
 } = NavigatorCard.constants;
 
-const HIDE_DEPRECATED_TAG = 'navigator.tags.hide-deprecated';
+const { HIDE_DEPRECATED } = hardcodedTags;
 
 const DynamicScrollerStub = {
   props: DynamicScroller.props,
@@ -1673,9 +1674,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // assert there are no Articles for example
-      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED_TAG]);
+      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED]);
       // apply a filter
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
       await flushPromises();
       // assert no other tags are shown now
       expect(filter.props('tags')).toEqual([]);
@@ -1794,7 +1795,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // apply a filter that matches an element
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
       await flushPromises();
       const items = wrapper.findAll(NavigatorCardItem);
       // parent
@@ -1827,7 +1828,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there is no 'Hide Deprecated' tag
-    expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED_TAG);
+    expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED);
   });
 
   describe('navigating', () => {
@@ -2161,7 +2162,7 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
     });
 
-    it('scrolls to item, if HIDE_DEPRECATED_TAG is picked', async () => {
+    it('scrolls to item, if HIDE_DEPRECATED is picked', async () => {
       attachDivWithID(root0Child0.uid);
       // simulate item is in viewport
       getChildPositionInScroller.mockReturnValueOnce(0);
@@ -2171,7 +2172,7 @@ describe('NavigatorCard', () => {
       // simulate item is below the viewport
       getChildPositionInScroller.mockReturnValueOnce(1);
       // add the "Hide Deprecated" tag
-      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
       await flushPromises();
       // assert current active item is still scrolled to
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);

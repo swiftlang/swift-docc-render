@@ -31,7 +31,7 @@
       <span v-if="!isRemovableTag" class="visuallyhidden">
         {{ $t('filter.add-tag') }} -
       </span>
-      {{ name }}
+      {{ name === HIDE_DEPRECATED ? $t(name) : name }}
       <span v-if="isRemovableTag" class="visuallyhidden">
         – {{$t('filter.tag')}}. {{ $t('filter.select-remove') }}
       </span>
@@ -40,6 +40,9 @@
 </template>
 <script>
 import { prepareDataForHTMLClipboard } from 'docc-render/utils/clipboard';
+import hardcodedTags from 'docc-render/constants/hardcodedTags';
+
+const { HIDE_DEPRECATED } = hardcodedTags;
 
 export default {
   name: 'Tag',
@@ -68,6 +71,11 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  data() {
+    return {
+      HIDE_DEPRECATED,
+    };
   },
   watch: {
     isFocused(newVal) {

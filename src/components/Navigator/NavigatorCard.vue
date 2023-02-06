@@ -116,6 +116,7 @@ import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
+import hardcodedTags from 'docc-render/constants/hardcodedTags';
 import {
   convertChildrenArrayToObject,
   getAllChildren,
@@ -123,6 +124,8 @@ import {
   getParents,
   getSiblings,
 } from 'docc-render/utils/navigatorData';
+
+const { HIDE_DEPRECATED } = hardcodedTags;
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -238,18 +241,14 @@ export default {
       nodesToRender: Object.freeze([]),
       activeUID: null,
       lastFocusTarget: null,
-      HIDE_DEPRECATED_TAG: `${this.$t('navigator.tags.hide-deprecated')}`,
       allNodesToggled: false,
     };
   },
   computed: {
-    politeAriaLive: ({
-      hasNodes,
-      nodesToRender,
-      $tc,
-    }) => {
+    politeAriaLive() {
+      const { hasNodes, nodesToRender } = this;
       if (!hasNodes) return '';
-      return $tc(ITEMS_FOUND, nodesToRender.length, { number: nodesToRender.length });
+      return this.$tc(ITEMS_FOUND, nodesToRender.length, { number: nodesToRender.length });
     },
     assertiveAriaLive: ({
       hasNodes, hasFilter, errorFetching,
@@ -263,17 +262,18 @@ export default {
      * Generates an array of tag labels for filtering.
      * Shows only tags, that have children matches.
      */
-    availableTags() {
-      const {
-        selectedTags, renderableChildNodesMap, apiChangesObject, HIDE_DEPRECATED_TAG,
-      } = this;
+    availableTags({
+      selectedTags,
+      renderableChildNodesMap,
+      apiChangesObject,
+    }) {
       if (selectedTags.length) return [];
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
       const tagLabelsSet = new Set(Object.values(FILTER_TAGS_TO_LABELS));
-      const generalTags = new Set([HIDE_DEPRECATED_TAG]);
-      // when API changes are available, remove the `HIDE_DEPRECATED_TAG` option
+      const generalTags = new Set([HIDE_DEPRECATED]);
+      // when API changes are available, remove the `HIDE_DEPRECATED` option
       if (apiChangesTypesSet.size) {
-        generalTags.delete(HIDE_DEPRECATED_TAG);
+        generalTags.delete(HIDE_DEPRECATED);
       }
 
       const availableTags = {
@@ -306,9 +306,9 @@ export default {
           availableTags.changes.push(this.$t(ChangeNames[changeType]));
           apiChangesTypesSet.delete(changeType);
         }
-        if (deprecated && generalTags.has(HIDE_DEPRECATED_TAG)) {
-          availableTags.other.push(HIDE_DEPRECATED_TAG);
-          generalTags.delete(HIDE_DEPRECATED_TAG);
+        if (deprecated && generalTags.has(HIDE_DEPRECATED)) {
+          availableTags.other.push(HIDE_DEPRECATED);
+          generalTags.delete(HIDE_DEPRECATED);
         }
       }
       return availableTags.type.concat(availableTags.changes, availableTags.other);
@@ -363,7 +363,7 @@ export default {
      * @returns NavigatorFlatItem[]
      */
     filteredChildren({
-      hasFilter, children, filterPattern, selectedTags, apiChanges, HIDE_DEPRECATED_TAG,
+      hasFilter, children, filterPattern, selectedTags, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
@@ -383,7 +383,7 @@ export default {
           if (apiChanges && !tagMatch) {
             tagMatch = tagsSet.has(apiChanges[path]);
           }
-          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
+          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED)) {
             tagMatch = true;
           }
         }
@@ -461,8 +461,8 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags, HIDE_DEPRECATED_TAG }) => (
-      selectedTags[0] === HIDE_DEPRECATED_TAG
+    deprecatedHidden: ({ selectedTags }) => (
+      selectedTags[0] === HIDE_DEPRECATED
     ),
     apiChangesObject() {
       return this.apiChanges || {};
