@@ -86,8 +86,7 @@
     "possible-values": "Possible Values",
     "parts": "Parts",
     "availability": "Availability",
-    "resources": "Resources",
-    "summary": "Summary"
+    "resources": "Resources"
   },
   "metadata": {
     "details": { "name": "Name", "key": "Key", "type": "Type" },
