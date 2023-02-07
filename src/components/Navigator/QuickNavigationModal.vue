@@ -416,7 +416,10 @@ $base-border-width: 1px;
     }
   }
   &__preview {
+    flex: 0 0 61.8%;
     overflow: auto;
+    position: sticky;
+    top: 0;
   }
   &__reference:hover {
     text-decoration: none;
