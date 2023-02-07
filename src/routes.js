@@ -28,19 +28,11 @@ export default [
     ),
   },
   {
-    path: '/:locale?',
+    path: '/documentation/*',
+    name: documentationTopicName,
     component: () => import(
       /* webpackChunkName: "documentation-topic" */ 'theme/views/DocumentationTopic.vue'
     ),
-    children: [
-      {
-        path: 'documentation/*',
-        name: documentationTopicName,
-        component: () => import(
-          /* webpackChunkName: "documentation-topic" */ 'theme/views/DocumentationTopic.vue'
-        ),
-      },
-    ],
   },
   {
     path: '*',

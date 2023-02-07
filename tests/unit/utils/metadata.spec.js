@@ -77,7 +77,7 @@ const assertMetadata = ({
       } else {
         expect(document.querySelector('meta[property="og:description"]')).toBeFalsy();
       }
-      expect(document.querySelector('meta[property="og:locale"]').content).toBe('en_US');
+      expect(document.querySelector('meta[property="og:locale"]').content).toBe(defaultLocale);
       expect(document.querySelector('meta[property="og:site_name"]').content).toBe(process.env.VUE_APP_TITLE);
       expect(document.querySelector('meta[property="og:type"]').content).toBe('website');
       expect(document.querySelector('meta[property="og:image"]').content).toBe('http://localhost/developer/developer-og.jpg');

@@ -11,10 +11,18 @@
 import { shallowMount } from '@vue/test-utils';
 import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 
-jest.mock('docc-render/lang/locales.json', () => ({
-  en_US: 'English',
-  es_ES: 'Spanish',
-}));
+jest.mock('docc-render/lang/locales.json', () => (
+  [
+    {
+      code: 'en',
+      name: 'English',
+    },
+    {
+      code: 'cn',
+      name: '简体中文',
+    },
+  ]
+));
 
 const { ChevronThickIcon } = LocaleSelector.components;
 
@@ -38,9 +46,9 @@ describe('LocaleSelector', () => {
     const options = wrapper.findAll('option');
     expect(options).toHaveLength(2);
     expect(options.at(0).text()).toBe('English');
-    expect(options.at(0).attributes('value')).toBe('en_US');
+    expect(options.at(0).attributes('value')).toBe('en');
 
-    expect(options.at(1).text()).toBe('Spanish');
-    expect(options.at(1).attributes('value')).toBe('es_ES');
+    expect(options.at(1).text()).toBe('简体中文');
+    expect(options.at(1).attributes('value')).toBe('cn');
   });
 });

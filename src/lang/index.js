@@ -11,8 +11,8 @@
 /* eslint-disable camelcase */
 
 // default locale
-export const defaultLocale = 'en_US';
+export const defaultLocale = 'en';
 // translated locales
-export { default as en_US } from './locales/en_US.json';
-export { default as zh_CN } from './locales/zh_CN.json';
-export { default as ja_JA } from './locales/ja_JA.json';
+export { default as en } from './locales/en.json';
+export { default as cn } from './locales/cn.json';
+export { default as ja } from './locales/ja.json';

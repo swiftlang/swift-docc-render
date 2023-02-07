@@ -123,8 +123,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
-import locales from 'docc-render/lang/locales.json';
-import { updateLangTag } from 'docc-render/utils/metadata';
+import { updateCurrentLocale } from 'docc-render/utils/i18n-utils';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -412,16 +411,8 @@ export default {
       return;
     }
 
-    const paramLocale = to.params.locale;
-
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
-      // Switch language
-      if (Object.keys(locales).includes(paramLocale)) {
-        // update locale
-        vm.$i18n.locale = paramLocale; // eslint-disable-line no-param-reassign
-        // modify html lang
-        updateLangTag(paramLocale);
-      }
+      updateCurrentLocale(to, vm);
 
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
@@ -441,6 +432,7 @@ export default {
         if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
           this.applyObjcOverrides();
         }
+        updateCurrentLocale(to, this);
         next();
       }).catch(next);
     } else {

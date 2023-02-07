@@ -16,6 +16,10 @@ import {
 } from 'docc-render/utils/router-utils';
 import routes from 'docc-render/routes';
 import { baseUrl } from 'docc-render/utils/theme-settings';
+import { addPrefixedRoutes } from '@/utils/route-utils';
+import { notFoundRouteName } from 'docc-render/constants/router';
+
+const defaultRoutes = [...addPrefixedRoutes(routes, [notFoundRouteName]), ...routes];
 
 export default function createRouterInstance(routerConfig = {}) {
   const router = new Router({
@@ -23,7 +27,7 @@ export default function createRouterInstance(routerConfig = {}) {
     base: baseUrl,
     scrollBehavior,
     ...routerConfig,
-    routes: routerConfig.routes || routes,
+    routes: routerConfig.routes || defaultRoutes,
   });
 
   router.onReady(() => {

@@ -16,11 +16,11 @@
       :aria-label="$t('select-language')"
     >
       <option
-        v-for="(lang, i) in langs"
-        :key="`lang-${i}`"
-        :value="lang"
+        v-for="{ code, name } in locales"
+        :key="`lang-${code}`"
+        :value="code"
       >
-        {{ getLanguageName(lang) }}
+        {{ name }}
       </option>
     </select>
     <ChevronThickIcon class="icon-inline" />
@@ -32,6 +32,7 @@ import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import locales from 'docc-render/lang/locales.json';
 import { defaultLocale } from 'docc-render/lang';
 import { updateLangTag } from 'docc-render/utils/metadata';
+import { localeIsValid } from 'docc-render/utils/i18n-utils';
 
 export default {
   name: 'LocaleSelector',
@@ -40,15 +41,13 @@ export default {
   },
   data() {
     return {
-      langs: Object.keys(locales),
+      locales,
     };
   },
   methods: {
-    getLanguageName(lang) {
-      return locales[lang];
-    },
     updateRouter() {
       const currentLocale = this.$i18n.locale;
+      if (!localeIsValid(currentLocale)) return;
       this.$router.push({
         params: {
           locale: currentLocale === defaultLocale ? null : currentLocale,
