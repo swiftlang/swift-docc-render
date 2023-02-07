@@ -291,6 +291,10 @@ export default {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
     async fetchSymbolData() {
+      if (!this.selectedSymbol) {
+        return;
+      }
+
       const data = await fetchDataForPreview(this.selectedSymbol.path);
       const {
         abstract,
