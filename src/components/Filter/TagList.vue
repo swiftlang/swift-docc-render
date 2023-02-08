@@ -42,6 +42,7 @@
           :isFocused="focusedIndex === index"
           :isRemovableTag="areTagsRemovable"
           :filterText="input"
+          :isTranslatableTag="translatableTags.includes(tag)"
           :isActiveTag="activeTags.includes(tag)"
           :activeTags="activeTags"
           :keyboardIsVirtual="keyboardIsVirtual"
@@ -74,6 +75,10 @@ export default {
       default: () => [],
     },
     activeTags: {
+      type: Array,
+      default: () => [],
+    },
+    translatableTags: {
       type: Array,
       default: () => [],
     },

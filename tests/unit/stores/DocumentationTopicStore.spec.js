@@ -53,6 +53,7 @@ describe('DocumentationTopicStore', () => {
         onThisPageSections: [
           {
             anchor: 'foo',
+            i18n: true,
             title: 'Foo',
           },
         ],
@@ -66,10 +67,12 @@ describe('DocumentationTopicStore', () => {
         onThisPageSections: [
           {
             anchor: 'foo',
+            i18n: true,
             title: 'Foo',
           },
           {
             anchor: 'bar',
+            i18n: true,
             title: 'Bar',
           },
         ],

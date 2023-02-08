@@ -20,7 +20,6 @@ import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
-import hardcodedTags from 'docc-render/constants/hardcodedTags';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -34,9 +33,8 @@ const {
   FILTER_TAGS,
   FILTER_TAGS_TO_LABELS,
   ITEMS_FOUND,
+  HIDE_DEPRECATED,
 } = NavigatorCard.constants;
-
-const { HIDE_DEPRECATED } = hardcodedTags;
 
 const DynamicScrollerStub = {
   props: DynamicScroller.props,
@@ -272,6 +270,9 @@ describe('NavigatorCard', () => {
         // Sample Code is missing, because no sample code in test data
         'Articles',
         'Tutorials',
+      ],
+      translatableTags: [
+        'navigator.tags.hide-deprecated',
       ],
       value: '',
       selectInputOnFocus: false,

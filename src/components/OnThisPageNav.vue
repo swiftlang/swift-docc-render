@@ -20,7 +20,8 @@
           class="base-link"
           @click.native="handleFocusAndScroll(item.anchor)"
         >
-          <WordBreak>{{ item.title }}</WordBreak>
+          <WordBreak v-if="item.i18n">{{ $t(item.title) }}</WordBreak>
+          <WordBreak v-else>{{ item.title }}</WordBreak>
         </router-link>
       </li>
     </ul>

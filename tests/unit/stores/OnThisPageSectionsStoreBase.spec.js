@@ -17,11 +17,11 @@ describe('OnThisPageSectionsStoreBase', () => {
   beforeEach(() => {
     jest.resetModules();
   });
-  it('adds sections to the state', () => {
+  it('adds sections to the state with i18n true by default', () => {
     OnThisPageSectionsStoreBase.addOnThisPageSection(section);
-    OnThisPageSectionsStoreBase.addOnThisPageSection(section2);
+    OnThisPageSectionsStoreBase.addOnThisPageSection(section2, { i18n: false });
     expect(OnThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      section, section2,
+      { ...section, i18n: true }, { ...section2, i18n: false },
     ]);
   });
 

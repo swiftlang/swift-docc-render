@@ -129,14 +129,21 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: AppTopID, level: 1, title: 'Foo' },
+      {
+        anchor: AppTopID,
+        i18n: false,
+        level: 1,
+        title: 'Foo',
+      },
       {
         anchor: 'provided-heading-anchor',
+        i18n: false,
         level: 2,
         title: 'Heading Level 2',
       },
       {
         anchor: 'heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Heading Level 3',
       },
@@ -173,19 +180,27 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: AppTopID, level: 1, title: 'Foo' },
+      {
+        anchor: AppTopID,
+        i18n: false,
+        level: 1,
+        title: 'Foo',
+      },
       {
         anchor: 'provided-heading-anchor',
+        i18n: false,
         level: 2,
         title: 'Heading Level 2',
       },
       {
         anchor: 'heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Heading Level 3',
       },
       {
         anchor: 'deep-heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Deep Heading Level 3',
       },
@@ -206,14 +221,21 @@ describe('OnThisPageRegistrator', () => {
     };
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: AppTopID, level: 1, title: 'Foo' },
+      {
+        anchor: AppTopID,
+        i18n: false,
+        level: 1,
+        title: 'Foo',
+      },
       {
         anchor: 'provided-heading-anchor',
+        i18n: false,
         level: 2,
         title: 'Heading Level 2',
       },
       {
         anchor: 'heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Heading Level 3',
       },

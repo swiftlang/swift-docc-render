@@ -43,6 +43,7 @@
             :tags="selectedTags"
             :ariaLabel="$t('filter.selected-tags', { tags: tagsText })"
             :activeTags="activeTags"
+            :translatableTags="translatableTags"
             v-bind="virtualKeyboardBind"
             class="filter__selected-tags"
             ref="selectedTags"
@@ -91,7 +92,7 @@
         <div class="filter__delete-button-wrapper">
           <button
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
-            :aria-label="$t('filter.reset-title')"
+            :aria-label="$t('filter.reset-filter')"
             class="filter__delete-button"
             @click="resetFilters(true)"
             @keydown.enter.exact.stop="resetFilters(true)"
@@ -108,6 +109,7 @@
         :ariaLabel="$t('filter.suggested-tags', { tags: tagsText })"
         :input="input"
         :tags="suggestedTags"
+        :translatableTags="translatableTags"
         v-bind="virtualKeyboardBind"
         class="filter__suggested-tags"
         @click-tags="selectTag($event.tagName)"
@@ -207,6 +209,10 @@ export default {
     clearFilterOnTagSelect: {
       type: Boolean,
       default: true,
+    },
+    translatableTags: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {

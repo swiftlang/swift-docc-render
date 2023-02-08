@@ -131,6 +131,7 @@ describe('QuickNavigationModal', () => {
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [],
+      translatableTags: [],
       selectInputOnFocus: true,
       clearFilterOnTagSelect: true,
     });

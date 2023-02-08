@@ -82,6 +82,7 @@
             <FilterInput
               v-model="filter"
               :tags="availableTags"
+              :translatableTags="translatableTags"
               :selected-tags.sync="selectedTagsModelValue"
               placeholder="filter.title"
               :should-keep-open-on-blur="false"
@@ -116,7 +117,6 @@ import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
-import hardcodedTags from 'docc-render/constants/hardcodedTags';
 import {
   convertChildrenArrayToObject,
   getAllChildren,
@@ -124,8 +124,6 @@ import {
   getParents,
   getSiblings,
 } from 'docc-render/utils/navigatorData';
-
-const { HIDE_DEPRECATED } = hardcodedTags;
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -162,6 +160,7 @@ const NO_RESULTS = 'navigator.no-results';
 const NO_CHILDREN = 'navigator.no-children';
 const ERROR_FETCHING = 'navigator.error-fetching';
 const ITEMS_FOUND = 'navigator.items-found';
+const HIDE_DEPRECATED = 'navigator.tags.hide-deprecated';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -178,6 +177,7 @@ export default {
     TOPIC_TYPE_TO_TAG,
     ERROR_FETCHING,
     ITEMS_FOUND,
+    HIDE_DEPRECATED,
   },
   components: {
     FilterInput,
@@ -242,6 +242,7 @@ export default {
       activeUID: null,
       lastFocusTarget: null,
       allNodesToggled: false,
+      translatableTags: [HIDE_DEPRECATED],
     };
   },
   computed: {

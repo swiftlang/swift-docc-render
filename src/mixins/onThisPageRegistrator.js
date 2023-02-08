@@ -49,7 +49,7 @@ export default {
         title,
         anchor: AppTopID,
         level: 1,
-      });
+      }, { i18n: false });
       if (primaryContentSections) {
         primaryContentSections.forEach((section) => {
           switch (section.kind) {
@@ -61,7 +61,7 @@ export default {
                   title: subSection.text,
                   anchor: subSection.anchor || anchorize(subSection.text),
                   level: subSection.level,
-                });
+                }, { i18n: false });
               }
             });
             break;

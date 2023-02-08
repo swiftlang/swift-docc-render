@@ -21,8 +21,8 @@ export default {
    * Register a section for the OnThisPage navigation
    * @param {{anchor: string, title:string, level: number}} section
    */
-  addOnThisPageSection(section) {
-    this.state.onThisPageSections.push(section);
+  addOnThisPageSection(section, { i18n = true } = {}) {
+    this.state.onThisPageSections.push({ ...section, i18n });
   },
   /**
    * Sets a section as current.
