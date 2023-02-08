@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -55,6 +55,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    deviceFrame: {
+      type: String,
+      required: false,
+    },
   },
   computed: {
     rawAsset() {
@@ -103,6 +107,7 @@ export default {
         muted: this.videoMuted,
         autoplays: this.prefersReducedMotion ? false : this.videoAutoplays,
         posterVariants: this.videoPoster ? this.videoPoster.variants : [],
+        deviceFrame: this.deviceFrame,
       };
     },
     assetListeners() {
