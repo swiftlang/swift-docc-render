@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -98,7 +98,7 @@ describe('ReplayableVideoAsset', () => {
     expect(replay.text()).toBe('video.play');
     expect(replay.classes()).not.toContain('visible');
     // now end the video
-    wrapper.find({ ref: 'asset' }).trigger('ended');
+    wrapper.find({ ref: 'asset' }).vm.$emit('ended');
     // assert text changed and its visible
     expect(replay.text()).toBe('video.replay');
     expect(replay.classes()).toContain('visible');
@@ -117,7 +117,7 @@ describe('ReplayableVideoAsset', () => {
     // assert button is hidden
     expect(replay.classes()).not.toContain('visible');
     // pause
-    wrapper.find({ ref: 'asset' }).trigger('pause');
+    wrapper.find({ ref: 'asset' }).vm.$emit('pause');
     // assert button is visible again
     expect(replay.classes()).toContain('visible');
   });
@@ -129,8 +129,17 @@ describe('ReplayableVideoAsset', () => {
     const replay = wrapper.find('.replay-button');
     expect(replay.classes()).toContain('visible');
     // Simulate browser starts playing
-    wrapper.find({ ref: 'asset' }).trigger('playing');
+    wrapper.find({ ref: 'asset' }).vm.$emit('playing');
     // assert button is hidden
     expect(replay.classes()).not.toContain('visible');
+  });
+
+  it('provides the DeviceFrame down to the Video', () => {
+    const wrapper = mountWithProps({
+      deviceFrame: 'phone',
+    });
+    expect(wrapper.find(VideoAsset).props()).toMatchObject({
+      deviceFrame: 'phone',
+    });
   });
 });
