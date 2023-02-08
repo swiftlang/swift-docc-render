@@ -132,6 +132,8 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
 
+const { extractProps } = DocumentationTopic.methods;
+
 export default {
   name: 'QuickNavigationModal',
   components: {
@@ -295,69 +297,8 @@ export default {
         return;
       }
 
-      const data = await fetchDataForPreview(this.selectedSymbol.path);
-      const {
-        abstract,
-        defaultImplementationsSections,
-        deprecationSummary,
-        downloadNotAvailableSummary,
-        diffAvailability,
-        hierarchy,
-        identifier: {
-          interfaceLanguage,
-          url: identifier,
-        },
-        metadata: {
-          conformance,
-          modules,
-          platforms,
-          required: isRequirement = false,
-          roleHeading,
-          title = '',
-          tags = [],
-          role,
-          symbolKind = '',
-          remoteSource,
-          images: pageImages = [],
-        } = {},
-        primaryContentSections,
-        relationshipsSections,
-        references = {},
-        sampleCodeDownload,
-        topicSectionsStyle,
-        topicSections,
-        seeAlsoSections,
-        variantOverrides,
-      } = data;
-      this.selectedSymbolData = {
-        abstract,
-        conformance,
-        defaultImplementationsSections,
-        deprecationSummary,
-        downloadNotAvailableSummary,
-        diffAvailability,
-        hierarchy,
-        role,
-        identifier,
-        interfaceLanguage,
-        isRequirement,
-        modules,
-        platforms,
-        primaryContentSections,
-        relationshipsSections,
-        references,
-        roleHeading,
-        sampleCodeDownload,
-        title,
-        topicSections,
-        topicSectionsStyle,
-        seeAlsoSections,
-        variantOverrides,
-        symbolKind,
-        tags: tags.slice(0, 1), // make sure we only show the first tag
-        remoteSource,
-        pageImages,
-      };
+      const json = await fetchDataForPreview(this.selectedSymbol.path);
+      this.selectedSymbolData = extractProps(json);
     },
   },
 };
