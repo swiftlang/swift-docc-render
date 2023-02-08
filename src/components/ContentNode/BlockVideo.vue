@@ -15,6 +15,7 @@
     :video-muted="false"
     :showsReplayButton="!isClientMobile"
     :showsVideoControls="isClientMobile"
+    :deviceFrame="deviceFrame"
   />
 </template>
 
@@ -30,6 +31,10 @@ export default {
     identifier: {
       type: String,
       required: true,
+    },
+    deviceFrame: {
+      type: String,
+      required: false,
     },
   },
 };
