@@ -9,26 +9,22 @@
 -->
 
 <template>
-  <IconOverrideProvider
-    :imageOverride="imageOverride"
-    #default="{ shouldUseOverride, themeId, iconUrl }"
-  >
-    <div class="TopicTypeIcon">
-      <SVGIcon
-        v-if="shouldUseOverride"
-        v-bind="{ themeId, iconUrl }"
-        :style="styles"
-        class="icon-inline"
-      />
-      <component
-        v-else
-        :is="icon"
-        v-bind="iconProps"
-        :style="styles"
-        class="icon-inline"
-      />
-    </div>
-  </IconOverrideProvider>
+  <div class="TopicTypeIcon">
+    <OverridableAsset
+      v-if="imageOverride"
+      :imageOverride="imageOverride"
+      :style="styles"
+      :shouldCalculateOptimalWidth="shouldCalculateOptimalWidth"
+      class="icon-inline"
+    />
+    <component
+      v-else
+      :is="icon"
+      v-bind="iconProps"
+      :style="styles"
+      class="icon-inline"
+    />
+  </div>
 </template>
 
 <script>
@@ -46,7 +42,7 @@ import SingleLetterSymbolIcon from 'theme/components/Icons/SingleLetterSymbolIco
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap } from 'docc-render/constants/HeroColors';
 import SVGIcon from 'docc-render/components/SVGIcon.vue';
-import IconOverrideProvider from 'docc-render/components/IconOverrideProvider.vue';
+import OverridableAsset from 'docc-render/components/OverridableAsset.vue';
 
 const TopicTypeIcons = {
   [TopicTypes.article]: ArticleIcon,
@@ -100,7 +96,7 @@ const TopicTypeProps = {
 
 export default {
   name: 'TopicTypeIcon',
-  components: { IconOverrideProvider, SVGIcon, SingleLetterSymbolIcon },
+  components: { OverridableAsset, SVGIcon, SingleLetterSymbolIcon },
   constants: { TopicTypeIcons, TopicTypeProps },
   props: {
     type: {
@@ -114,6 +110,10 @@ export default {
     imageOverride: {
       type: Object,
       default: null,
+    },
+    shouldCalculateOptimalWidth: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
@@ -135,13 +135,18 @@ export default {
 .TopicTypeIcon {
   width: 1em;
   height: 1em;
-  margin-right: 7px;
   flex: 0 0 auto;
   color: var(--color-figure-gray-secondary);
 
-  svg {
+  :deep(picture) {
+    flex: 1;
+  }
+
+  svg, :deep(img) {
+    display: block;
     width: 100%;
     height: 100%;
+    object-fit: contain;
   }
 }
 </style>

@@ -67,7 +67,7 @@ $-tabnav-top-margin: rem(15px);
 $-tabnav-bottom-margin: rem(25px);
 
 .tabnav {
-  margin: $-tabnav-top-margin 0 $-tabnav-bottom-margin 0;
+  margin: 0 0 $-tabnav-bottom-margin 0;
   display: flex;
 
   &--center {
@@ -88,6 +88,10 @@ $-tabnav-bottom-margin: rem(25px);
 
     :deep(.tabnav-item) {
       padding-left: 0;
+
+      .tabnav-link {
+        padding-top: 8px;
+      }
     }
   }
 }

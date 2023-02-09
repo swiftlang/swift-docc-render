@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -60,7 +60,7 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
   @include font-styles(aside-label);
 
   & + * {
-    margin-top: $stacked-margin-small;
+    margin-top: var(--spacing-stacked-margin-small);
   }
 
   @each $kind in $aside-kinds {
@@ -74,6 +74,7 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
 // on the fact that a "doc-topic" class is applied to an ancestor element of
 // the aside in question
 .doc-topic aside {
+  break-inside: avoid;
   border-radius: var(--aside-border-radius, $border-radius);
   border-style: var(--aside-border-style, solid);
   border-width: var(--aside-border-width,

@@ -20,7 +20,7 @@
           class="base-link"
           @click.native="handleFocusAndScroll(item.anchor)"
         >
-          {{ item.title }}
+          <WordBreak>{{ item.title }}</WordBreak>
         </router-link>
       </li>
     </ul>
@@ -32,9 +32,11 @@ import throttle from 'docc-render/utils/throttle';
 import { waitFrames } from 'docc-render/utils/loading';
 import ScrollToElement from 'docc-render/mixins/scrollToElement';
 import { buildUrl } from 'docc-render/utils/url-helper';
+import WordBreak from 'docc-render/components/WordBreak.vue';
 
 export default {
   name: 'OnThisPageNav',
+  components: { WordBreak },
   mixins: [ScrollToElement],
   inject: {
     store: {
@@ -115,7 +117,7 @@ export default {
     getItemClasses(item) {
       return {
         active: this.checkIsActive(item),
-        'parent-item': item.level === 2,
+        'parent-item': item.level <= 2,
         'child-item': item.level === 3,
       };
     },
@@ -141,6 +143,7 @@ ul {
   display: inline-block;
   margin-bottom: 5px;
   transition: color 0.15s ease-in;
+  max-width: 100%;
 }
 
 .active .base-link {

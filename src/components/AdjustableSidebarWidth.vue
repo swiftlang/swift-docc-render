@@ -143,6 +143,7 @@ export default {
       breakpoint,
       noTransition: false,
       isTransitioning: false,
+      isOpeningOnLarge: false,
       focusTrapInstance: null,
       mobileTopOffset: 0,
       topOffset: 0,
@@ -158,6 +159,8 @@ export default {
       Math.min(fixedWidth || windowWidth, calcWidthPercent(minWidthPercent, windowWidth))
     ),
     widthInPx: ({ width }) => `${width}px`,
+    // Point at which, the nav is hidden/shown for large, when dragging.
+    hiddenOnLargeThreshold: ({ minWidth }) => minWidth / 2,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideStyles: ({
       widthInPx, mobileTopOffset, topOffset, windowHeight,
@@ -168,11 +171,13 @@ export default {
       '--app-height': `${windowHeight}px`,
     }),
     asideClasses: ({
-      isDragging, shownOnMobile, noTransition, isTransitioning, hiddenOnLarge, mobileTopOffset,
+      isDragging, shownOnMobile, noTransition, isTransitioning,
+      hiddenOnLarge, mobileTopOffset, isOpeningOnLarge,
     }) => ({
       dragging: isDragging,
       'show-on-mobile': shownOnMobile,
       'hide-on-large': hiddenOnLarge,
+      'is-opening-on-large': isOpeningOnLarge,
       'no-transition': noTransition,
       'sidebar-transitioning': isTransitioning,
       'has-mobile-top-offset': mobileTopOffset,
@@ -209,9 +214,9 @@ export default {
     $route: 'closeMobileSidebar',
     width: {
       immediate: true,
-      handler: debounce(function widthHandler(value) {
+      handler: throttle(function widthHandler(value) {
         this.emitEventChange(value);
-      }, 250, true, true),
+      }, 150),
     },
     windowWidth: 'getWidthInCheck',
     async breakpoint(value) {
@@ -281,16 +286,15 @@ export default {
       if (newWidth > this.maxWidth) {
         newWidth = this.maxWidth;
       }
-      // calculate the forceClose cutoff point
-      const forceCloseCutoff = this.minWidth / 2;
       // if we are going beyond the cutoff point and we are closed, open the navigator
-      if (this.hiddenOnLarge && newWidth >= forceCloseCutoff) {
+      if (this.hiddenOnLarge && newWidth >= this.hiddenOnLargeThreshold) {
         this.$emit('update:hiddenOnLarge', false);
+        this.isOpeningOnLarge = true;
       }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);
       // if the new width is smaller than the cutoff point, force close the nav
-      if (newWidth <= forceCloseCutoff) {
+      if (newWidth <= this.hiddenOnLargeThreshold) {
         this.$emit('update:hiddenOnLarge', true);
       }
     },
@@ -357,6 +361,7 @@ export default {
     trackTransitionEnd({ propertyName }) {
       if (propertyName === 'width' || propertyName === 'transform') {
         this.isTransitioning = false;
+        this.isOpeningOnLarge = false;
       }
     },
   },
@@ -365,6 +370,12 @@ export default {
 
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
+
+@media print {
+  .sidebar {
+    display: none;
+  }
+}
 
 .adjustable-sidebar-width {
   display: flex;
@@ -400,18 +411,21 @@ export default {
   }
 
   @include breakpoints-from(large, nav) {
+    // apply a default transition
+    transition: width $adjustable-sidebar-hide-transition-duration ease-in,
+    visibility 0s linear var(--visibility-transition-time, 0s);
 
-    &:not(.dragging) {
-      transition: width $adjustable-sidebar-hide-transition-duration ease-in,
-      visibility 0s linear 0s;
+    // Remove the transition when dragging, except when hidden or exiting hidden state.
+    // This prevents lagging when dragging, because of the transition delay.
+    &.dragging:not(.is-opening-on-large):not(.hide-on-large) {
+      transition: none;
     }
 
     &.hide-on-large {
       width: 0 !important;
       visibility: hidden;
       pointer-events: none;
-      transition: width $adjustable-sidebar-hide-transition-duration ease-in,
-      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
+      --visibility-transition-time: #{$adjustable-sidebar-hide-transition-duration};
     }
   }
 

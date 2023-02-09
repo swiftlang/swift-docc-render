@@ -189,7 +189,7 @@ function duplicateMultilineNode(element) {
 
   // wrap each new line with the current element's class
   const result = getLines(element.innerHTML)
-    .reduce((all, lineText) => `${all}<span class="${className}">${lineText}</span>\n`, '');
+    .reduce((all, lineText) => `${all}<span class="${className}">${lineText || '\n\n'}</span>\n`, '');
 
   // return a list of newly wrapped HTML elements
   return htmlToElements(result.trim());

@@ -156,10 +156,9 @@ describe('NavBase', () => {
         },
       },
     });
-    const preTitle = wrapper.find('.pre-title');
-    expect(preTitle.exists()).toBe(true);
-    expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
+    expect(wrapper.find('.pre-title-slot').text()).toBe('Pre Title');
     expect(preTitleProps).toEqual({
+      className: 'pre-title',
       closeNav: expect.any(Function),
       isOpen: false,
       inBreakpoint: false,
@@ -168,6 +167,7 @@ describe('NavBase', () => {
     wrapper.find('a.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     expect(preTitleProps).toEqual({
+      className: 'pre-title',
       closeNav: expect.any(Function),
       isOpen: true,
       inBreakpoint: false,
@@ -176,6 +176,7 @@ describe('NavBase', () => {
     preTitleProps.closeNav();
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
     expect(preTitleProps).toEqual({
+      className: 'pre-title',
       closeNav: expect.any(Function),
       isOpen: false,
       inBreakpoint: false,
@@ -459,11 +460,26 @@ describe('NavBase', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
   });
 
-  it('focuses on the toggle on expand', async () => {
+  it('stays focus on axToggle, if nav expand is toggled from axToggle', async () => {
     wrapper = await createWrapper();
-    wrapper.find({ ref: 'axToggle' }).trigger('click');
-    // assert the toggle is focused
-    expect(document.activeElement).toEqual(wrapper.find({ ref: 'axToggle' }).element);
+    const axToggle = wrapper.find({ ref: 'axToggle' });
+    const focusSpy = jest.spyOn(axToggle.element, 'focus');
+    axToggle.trigger('click');
+
+    // assert focus is not moved
+    expect(focusSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('blurs active element, if nav expand is toggled by mouse click', async () => {
+    wrapper = await createWrapper();
+    const navToggle = wrapper.find('.nav-menucta');
+    const blurSpy = jest.spyOn(navToggle.element, 'blur');
+    // manually focus to fix JSDom issue
+    navToggle.element.focus();
+    navToggle.trigger('click');
+    expect(blurSpy).toHaveBeenCalledTimes(1);
+    // assert focus is on the body
+    expect(document.activeElement).toEqual(document.body);
   });
 
   it('changes the sibling visibility to `hidden` on expand', async () => {

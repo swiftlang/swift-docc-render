@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -29,8 +29,9 @@
     </div>
     <div
       class="documentation-hero__content"
-      :class="{ 'short-hero': shortHero, 'extra-bottom-padding': shouldShowLanguageSwitcher }"
-    >
+      :class="{ 'short-hero': shortHero,
+        'extra-bottom-padding': shouldShowLanguageSwitcher,
+        'minimized-hero': enableMinimized }">
       <slot />
     </div>
   </div>
@@ -54,6 +55,10 @@ export default {
     enhanceBackground: {
       type: Boolean,
       required: true,
+    },
+    enableMinimized: {
+      type: Boolean,
+      default: false,
     },
     shortHero: {
       type: Boolean,
@@ -112,6 +117,8 @@ $doc-hero-icon-dimension: 250px;
   overflow: hidden;
   text-align: left;
   position: relative;
+  // extra offset applied when OnThisPage component is rendered
+  padding-right: var(--doc-hero-right-offset);
 
   // gradient
   &:before {
@@ -165,7 +172,7 @@ $doc-hero-icon-dimension: 250px;
     transform: translateY(-50%);
     max-height: 100%;
 
-    :deep(svg) {
+    :deep(svg), :deep(img) {
       width: 100%;
       height: 100%;
     }
@@ -177,6 +184,11 @@ $doc-hero-icon-dimension: 250px;
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
+  }
+
+  .minimized-hero {
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
   }
 
   &__above-content {

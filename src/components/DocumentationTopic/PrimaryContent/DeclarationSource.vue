@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -114,9 +114,14 @@ export default {
             numUnclosedParens -= 1;
             // if this ")" balances out the number of "(" characters that have
             // been seen, this is the one that pairs up with the first one
-            if (openParenTokenIndex !== null && numUnclosedParens === 0) {
+            if (
+              openParenTokenIndex !== null
+              && closeParenTokenIndex == null
+              && numUnclosedParens === 0
+            ) {
               closeParenCharIndex = k;
               closeParenTokenIndex = i;
+              break;
             }
           }
         }
@@ -192,9 +197,14 @@ $docs-declaration-source-border-width: 1px !default;
   border-radius: $large-border-radius;
   border-style: solid;
   border-width: $docs-declaration-source-border-width;
-  padding: $code-block-style-elements-padding;
+  padding: var(--code-block-style-elements-padding);
   speak: literal-punctuation;
   line-height: 25px;
+  // this mask image is not actually used for any visual effect since there is
+  // no background being used on this element—however, we need this in order to
+  // establish a new stacking context, which resolves a Safari bug where the
+  // scrollbar is not clipped by this element depending on its border-radius
+  -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
 
   &.has-multiple-lines {
     border-radius: $border-radius;

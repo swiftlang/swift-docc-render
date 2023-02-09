@@ -77,6 +77,10 @@ export default {
   @include prefers-dark {
     --toggle-color-text: var(--color-figure-blue);
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 input {

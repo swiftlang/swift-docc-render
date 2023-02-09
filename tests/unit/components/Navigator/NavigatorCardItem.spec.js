@@ -21,6 +21,7 @@ jest.mock('docc-render/utils/loading');
 
 const {
   Badge,
+  BaseNavigatorCardItem,
 } = NavigatorCardItem.components;
 
 const defaultProps = {
@@ -49,6 +50,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     RouterLink: RouterLinkStub,
+    BaseNavigatorCardItem,
   },
   attachToDocument: true,
   ...others,
@@ -61,12 +63,14 @@ describe('NavigatorCardItem', () => {
   });
   it('renders the NavigatorCardItem', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.navigator-card-item').exists()).toBe(true);
+    const cardItem = wrapper.find('.navigator-card-item');
+    expect(cardItem.exists()).toBe(true);
     expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
     expect(wrapper.find(TopicTypeIcon).props()).toEqual({
       type: defaultProps.item.type,
       imageOverride: null,
       withColors: false,
+      shouldCalculateOptimalWidth: false,
     });
     const leafLink = wrapper.find('.leaf-link');
     expect(leafLink.is(Reference)).toBe(true);
@@ -76,8 +80,9 @@ describe('NavigatorCardItem', () => {
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
     });
-    expect(wrapper.find('.navigator-card-item').attributes('id'))
+    expect(cardItem.attributes('id'))
       .toBe(`container-${defaultProps.item.uid}`);
+    expect(cardItem.attributes('data-nesting-index')).toBe(String(defaultProps.item.depth));
   });
 
   it('renders the NavigationCardItem with an icon override', () => {

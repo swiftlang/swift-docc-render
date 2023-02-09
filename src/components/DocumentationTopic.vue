@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,11 +9,15 @@
 -->
 
 <template>
-  <div class="doc-topic">
+  <div
+    class="doc-topic"
+    :class="{ 'with-on-this-page': enableOnThisPageNav && isOnThisPageNavVisible }"
+  >
     <main class="main" id="main"  tabindex="0">
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
+        :enableMinimized="enableMinimized"
         :shortHero="shortHero"
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
         :iconOverride="references[pageIcon]"
@@ -28,7 +32,10 @@
           :objcPath="objcPath"
           :swiftPath="swiftPath"
         />
-        <Title :eyebrow="roleHeading">
+        <Title
+          :eyebrow="enableMinimized ? null : roleHeading"
+          :class="{ 'minimized-title': enableMinimized }"
+        >
           <component :is="titleBreakComponent">{{ title }}</component>
           <template #after v-if="isSymbolDeprecated || isSymbolBeta">
             <small
@@ -37,19 +44,28 @@
             />
           </template>
         </Title>
-        <Abstract v-if="abstract" :content="abstract" />
+        <Abstract
+          v-if="abstract"
+          :class="{ 'minimized-abstract': enableMinimized }"
+          :content="abstract"
+        />
         <div v-if="sampleCodeDownload">
           <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
         </div>
         <Availability
-          v-if="hasAvailability"
+          v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
       </DocumentationHero>
       <div class="doc-content-wrapper">
-        <div class="doc-content">
-          <div v-if="showContainer" class="container">
-            <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
+        <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
+          <div v-if="hasPrimaryContent" class="container">
+            <div class="description"
+              :class="{
+                'after-enhanced-hero': enhanceBackground,
+                'minimized-description': enableMinimized
+              }"
+            >
               <RequirementMetadata
                 v-if="isRequirement"
                 :defaultImplementationsCount="defaultImplementationsCount"
@@ -66,7 +82,7 @@
             </div>
             <PrimaryContent
               v-if="primaryContentSections && primaryContentSections.length"
-              :class="{ 'with-border': !enhanceBackground }"
+              :class="{ 'with-border': !enhanceBackground, 'minimized-content': enableMinimized }"
               :conformance="conformance"
               :source="remoteSource"
               :sections="primaryContentSections"
@@ -80,22 +96,27 @@
             :topicStyle="topicSectionsStyle"
           />
           <DefaultImplementations
-            v-if="defaultImplementationsSections"
+            v-if="defaultImplementationsSections && !enableMinimized"
             :sections="defaultImplementationsSections"
             :isSymbolDeprecated="isSymbolDeprecated"
             :isSymbolBeta="isSymbolBeta"
           />
-          <Relationships v-if="relationshipsSections" :sections="relationshipsSections" />
+          <Relationships
+            v-if="relationshipsSections && !enableMinimized"
+            :sections="relationshipsSections"
+          />
           <!-- NOTE: see also may contain information about other apis, so we cannot
           pass deprecation and beta information -->
           <SeeAlso
-            v-if="seeAlsoSections"
+            v-if="seeAlsoSections && !enableMinimized"
             :sections="seeAlsoSections"
           />
         </div>
-        <OnThisPageStickyContainer v-if="enableOnThisPageNav">
-          <OnThisPageNav />
-        </OnThisPageStickyContainer>
+        <template v-if="enableOnThisPageNav">
+          <OnThisPageStickyContainer v-show="isOnThisPageNavVisible">
+            <OnThisPageNav v-if="topicState.onThisPageSections.length > 2" />
+          </OnThisPageStickyContainer>
+        </template>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
@@ -129,9 +150,13 @@ import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
 
+// size above which, the OnThisPage container is visible
+const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
+
 export default {
   name: 'DocumentationTopic',
   mixins: [metadata],
+  constants: { ON_THIS_PAGE_CONTAINER_BREAKPOINT },
   inject: {
     isTargetIDE: {
       default() {
@@ -292,6 +317,10 @@ export default {
       type: Array,
       required: false,
     },
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
     enableOnThisPageNav: {
       type: Boolean,
       default: false,
@@ -324,8 +353,8 @@ export default {
         0,
       );
     },
-    hasAvailability: ({ platforms, technologies }) => (
-      (platforms || []).length || (technologies || []).length
+    shouldShowAvailability: ({ platforms, technologies, enableMinimized }) => (
+      ((platforms || []).length || (technologies || []).length) && !enableMinimized
     ),
     hasBetaContent:
       ({ platforms }) => platforms
@@ -335,13 +364,25 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
-    shouldShowLanguageSwitcher: ({ objcPath, swiftPath, isTargetIDE }) => (
-      !!(objcPath && swiftPath && isTargetIDE)
+    shouldShowLanguageSwitcher: ({
+      objcPath,
+      swiftPath,
+      isTargetIDE,
+      enableMinimized,
+    }) => (
+      !!(objcPath && swiftPath && isTargetIDE) && !enableMinimized
     ),
-    enhanceBackground: ({ symbolKind, disableHeroBackground, topicSectionsStyle }) => {
+    enhanceBackground: ({
+      symbolKind,
+      disableHeroBackground,
+      topicSectionsStyle,
+      enableMinimized,
+    }) => {
       if (
         // if the hero bg is forcefully disabled
         disableHeroBackground
+        // or minimized view is enabled
+        || enableMinimized
         // or the topicSectionsStyle is a `grid` type
         || topicSectionsStyle === TopicSectionsStyle.compactGrid
         || topicSectionsStyle === TopicSectionsStyle.detailedGrid
@@ -376,7 +417,7 @@ export default {
     titleBreakComponent: ({ enhanceBackground }) => (enhanceBackground
       ? 'span'
       : WordBreak),
-    showContainer: ({
+    hasPrimaryContent: ({
       isRequirement,
       deprecationSummary,
       downloadNotAvailableSummary,
@@ -400,7 +441,11 @@ export default {
     shouldRenderTopicSection: ({
       topicSectionsStyle,
       topicSections,
-    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden,
+      enableMinimized,
+    }) => topicSections && topicSectionsStyle !== TopicSectionsStyle.hidden && !enableMinimized,
+    isOnThisPageNavVisible: ({ topicState }) => (
+      topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
+    ),
   },
   methods: {
     normalizePath(path) {
@@ -441,6 +486,10 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  &.with-on-this-page {
+    --doc-hero-right-offset: #{$on-this-page-aside-width};
+  }
 }
 
 #main {
@@ -457,6 +506,20 @@ export default {
       flex: 1;
     }
   }
+}
+
+:deep(.minimized-title) {
+  font-size: 1.416rem;
+  font-weight: bold;
+  margin-bottom: 0.833rem;
+
+  & > small {
+    font-size: 1rem;
+  }
+}
+
+.minimized-abstract {
+  @include font-styles(body);
 }
 
 .container {
@@ -476,15 +539,40 @@ export default {
   }
 
   :deep(.content + *) {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--spacing-stacked-margin-large);
   }
 }
 
-// remove border-top for first section of the page
+.minimized-description {
+  margin-bottom: 1.5em;
+}
+
 :deep() {
-  .documentation-hero + .contenttable {
-    .container > .title {
-      border-top: none;
+  .no-primary-content {
+    // remove border-top for first section of the page
+    --content-table-title-border-width: 0px;
+  }
+
+  .minimized-content {
+    --spacing-stacked-margin-large: 0.667em;
+    --spacing-stacked-margin-xlarge: 1em;
+    --declaration-code-listing-margin: 1em 0;
+    --code-block-style-elements-padding: 7px 12px;
+    --code-border-radius: 10px;
+    --spacing-param: var(--spacing-stacked-margin-large);
+
+    & > * {
+      margin-bottom: 1.5em;
+      margin-top: 1.5em;
+
+      &:first-child {
+        margin-top: 1.5em;
+      }
+
+      & > h2 {
+        font-size: 1.083rem;
+        font-weight: bold;
+      }
     }
   }
 }
@@ -503,14 +591,25 @@ export default {
 
 .doc-content-wrapper {
   display: flex;
-
-  .sidebar-hidden & {
-    justify-content: center;
-  }
+  justify-content: center;
 
   .doc-content {
     min-width: 0;
     width: 100%;
+
+    .with-on-this-page & {
+      $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));
+
+      max-width: $large-max-width - 2*$large-viewport-dynamic-content-padding;
+
+      @include breakpoints-from(large) {
+        max-width: $large-max-width;
+      }
+
+      @media only screen and (min-width: 1500px) {
+        max-width: $large-max-width + 100;
+      }
+    }
   }
 }
 </style>

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -30,6 +30,7 @@ import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
+import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 
 const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
@@ -283,6 +284,36 @@ describe('ContentNode', () => {
       const paragraph = wrapper.find('.content p');
       expect(paragraph.exists()).toBe(true);
       expect(paragraph.text()).toBe('foobar');
+      expect(paragraph.classes()).toHaveLength(0);
+    });
+
+    it('renders a `<p> with a special class, if it has a single image inside', () => {
+      const references = {
+        'figure1.png': {
+          variants: [
+            {
+              traits: ['3x', 'light'],
+              url: '',
+              size: { width: 1202, height: 630 },
+            },
+          ],
+        },
+      };
+
+      const wrapper = mountWithItem({
+        type: 'paragraph',
+        inlineContent: [
+          {
+            type: 'image',
+            identifier: 'figure1.png',
+          },
+        ],
+      }, references);
+
+      const paragraph = wrapper.find('.content p');
+      expect(paragraph.classes()).toContain('inline-image-container');
+      const inlineImage = paragraph.find(InlineImage);
+      expect(inlineImage.exists()).toBe(true);
     });
   });
 
@@ -437,7 +468,51 @@ describe('ContentNode', () => {
       });
       const grid = wrapper.find(Row);
       expect(grid.props()).toEqual({
-        columns: 4,
+        columns: { large: 4 },
+      });
+      const columns = grid.findAll(Column);
+      expect(columns).toHaveLength(2);
+      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).find('p').text()).toBe('foo');
+      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).find('p').text()).toBe('bar');
+    });
+    it('renders a `<Row>` without column count specified', () => {
+      const wrapper = mountWithItem({
+        type: 'row',
+        columns: [
+          {
+            size: 2,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const grid = wrapper.find(Row);
+      expect(grid.props()).toEqual({
+        columns: undefined,
       });
       const columns = grid.findAll(Column);
       expect(columns).toHaveLength(2);
@@ -518,6 +593,8 @@ describe('ContentNode', () => {
           { title: '4', content },
           { title: '5', content },
           { title: '6', content },
+          { title: '7', content },
+          { title: '8', content },
         ],
       };
       const wrapper = mountWithItem(props);
@@ -729,6 +806,45 @@ describe('ContentNode', () => {
 
       expect(wrapper.find(FigureCaption).exists()).toBe(false);
     });
+
+    it('renders within a `DeviceFrame`', () => {
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata: {
+          deviceFrame: 'phone',
+        },
+      }, references);
+
+      const deviceFrame = wrapper.find('.content').find(DeviceFrame);
+      expect(deviceFrame.props()).toEqual({
+        device: 'phone',
+      });
+      const inlineImage = deviceFrame.find(InlineImage);
+      expect(inlineImage.exists()).toBe(true);
+      expect(inlineImage.props('variants').length).toBe(2);
+    });
+
+    it('renders a `Figure` with a `DeviceFrame`', () => {
+      const metadata = {
+        deviceFrame: 'phone',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.find(DeviceFrame).exists()).toBe(true);
+      expect(figure.find(InlineImage).exists()).toBe(true);
+    });
   });
 
   describe('with type="video"', () => {
@@ -824,6 +940,44 @@ describe('ContentNode', () => {
           </figurecaption-stub>
         </figure-stub>
       `);
+    });
+
+    it('passes the deviceFrame down to the BlockVideo`', () => {
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata: {
+          deviceFrame: 'phone',
+        },
+      }, references);
+
+      const blockVideo = wrapper.find('.content').find(BlockVideo);
+      expect(blockVideo.exists()).toBe(true);
+
+      expect(blockVideo.props()).toEqual({
+        identifier,
+        deviceFrame: 'phone',
+      });
+    });
+
+    it('renders a `Figure` with a BlockVideo, passing frames`', () => {
+      const metadata = {
+        deviceFrame: 'phone',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.find(BlockVideo).props('deviceFrame')).toBe('phone');
     });
   });
 
