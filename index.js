@@ -10,6 +10,9 @@
 
 import SwiftDocCRenderPlugin from './src/setup-utils/SwiftDocCRenderPlugin';
 import createRouterInstance from './src/setup-utils/SwiftDocCRenderRouter';
+import createi18nInstance from './src/setup-utils/SwiftDocCRenderi18n';
 import defaultRoutes from './src/routes';
 
-export { SwiftDocCRenderPlugin, createRouterInstance, defaultRoutes };
+export {
+  SwiftDocCRenderPlugin, createRouterInstance, createi18nInstance, defaultRoutes,
+};

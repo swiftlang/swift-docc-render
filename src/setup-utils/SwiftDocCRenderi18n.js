@@ -11,9 +11,9 @@
 import VueI18n from 'vue-i18n';
 import * as lang from 'docc-render/lang';
 
-const { defaultLocale, ...messages } = lang;
+export default function createi18nInstance(config = lang) {
+  const { defaultLocale, ...messages } = config;
 
-export default function createi18nInstance() {
   const i18n = new VueI18n({
     locale: defaultLocale,
     fallbackLocale: defaultLocale,
