@@ -215,8 +215,7 @@ describe('FilterInput', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    input = wrapper.find({ ref: 'input' });
-    expect(document.activeElement).toBe(input.element);
+    expect(document.activeElement.classList.contains('filter__input')).toBe(true);
   });
 
   it('adds character `/` as input value', async () => {
