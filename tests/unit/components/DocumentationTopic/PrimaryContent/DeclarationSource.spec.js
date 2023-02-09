@@ -281,6 +281,122 @@ describe('Swift function/initializer formatting', () => {
     expect(tokenComponents.at(15).props('text')).toBe('\n) -> ');
   });
 
+  it('breaks apart each param onto its own line for a tuple return type', () => {
+    // Before:
+    // func foo(_ a: A, _ b: B) -> (A, B)
+    //
+    // After:
+    // func foo(
+    //     _ a: A,
+    //     _ b: B,
+    // ) -> (A, B)
+    const tokens = [
+      {
+        kind: TokenKind.keyword,
+        text: 'func',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.identifier,
+        text: 'foo',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: '_',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.internalParam,
+        text: 'a',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        identifier: 'doc://com.example/documentation/blah/a',
+        text: 'A',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: '_',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.internalParam,
+        text: 'b',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        identifier: 'doc://com.example/documentation/blah/b',
+        text: 'B',
+      },
+      {
+        kind: TokenKind.text,
+        text: ') -> (',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        identifier: 'doc://com.example/documentation/blah/a',
+        text: 'A',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        identifier: 'doc://com.example/documentation/blah/b',
+        text: 'B',
+      },
+      {
+        kind: TokenKind.text,
+        text: ')',
+      },
+    ];
+    const wrapper = mountWithTokens(tokens);
+
+    const tokenComponents = wrapper.findAll(Token);
+    expect(tokenComponents.length).toBe(tokens.length);
+
+    const modifiedTokenIndexes = new Set([3, 9, 15]);
+    tokens.forEach((token, i) => {
+      const tokenComponent = tokenComponents.at(i);
+      expect(tokenComponent.props('kind')).toBe(token.kind);
+      if (modifiedTokenIndexes.has(i)) {
+        expect(tokenComponent.props('text')).not.toBe(token.text);
+      } else {
+        expect(tokenComponent.props('text')).toBe(token.text);
+      }
+    });
+
+    expect(tokenComponents.at(3).props('text')).toBe('(\n    ');
+    expect(tokenComponents.at(9).props('text')).toBe(',\n    ');
+    expect(tokenComponents.at(15).props('text')).toBe('\n) -> (');
+  });
+
   it('breaks apart parameters in functions with generic where clauses', () => {
     /* eslint-disable max-len */
     // Before:

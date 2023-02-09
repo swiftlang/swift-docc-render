@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -19,9 +19,13 @@
       </TabnavItem>
     </Tabnav>
     <div class="tabs-content">
-      <template v-for="title in titles">
-        <slot v-if="title === currentTitle" :name="title" />
-      </template>
+      <div class="tabs-content-container">
+        <transition name="fade">
+          <div :key="currentTitle">
+            <slot :name="currentTitle" />
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -70,11 +74,16 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .TabNavigator {
-  margin-bottom: $stacked-margin-large;
+  @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 
   .tabnav {
     overflow: auto;
     white-space: nowrap;
+  }
+
+  .tabs-content-container {
+    position: relative;
+    overflow: hidden;
   }
 }
 
@@ -87,7 +96,7 @@ export default {
   }
 
   .tabnav {
-    width: 20%;
+    width: 30%;
     flex: 0 0 auto;
     white-space: normal;
     margin: 0;
@@ -99,11 +108,27 @@ export default {
   .tabs-content {
     flex: 1 1 auto;
     min-width: 0;
-    padding-right: $stacked-margin-large;
+    padding-right: var(--spacing-stacked-margin-xlarge);
     @include breakpoint(small) {
       padding-right: 0;
-      padding-bottom: $stacked-margin-large;
+      padding-bottom: var(--spacing-stacked-margin-large);
     }
   }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+// prevent the animating-out element from taking space
+.fade-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 </style>

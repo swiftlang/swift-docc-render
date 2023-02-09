@@ -19,9 +19,11 @@
       <div class="nav__background" />
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
-        <div class="pre-title">
-          <slot name="pre-title" v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }" />
-        </div>
+        <slot
+          name="pre-title"
+          className="pre-title"
+          v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }"
+        />
         <div v-if="$slots.default" class="nav-title">
           <slot />
         </div>
@@ -54,6 +56,7 @@
         </div>
         <div class="nav-actions">
           <a
+            ref="toggle"
             href="#"
             class="nav-menucta"
             tabindex="-1"
@@ -315,6 +318,11 @@ export default {
       this.$emit('open');
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
+      if (document.activeElement === this.$refs.toggle) {
+        // move focus to body to prevent tabbing to links in body
+        // when toggle is triggered by mouse
+        document.activeElement.blur();
+      }
     },
     onClose() {
       this.$emit('close');
@@ -348,6 +356,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   height: $nav-height;
   z-index: $nav-z-index;
   --nav-padding: #{$nav-padding};
+
+  @media print {
+    position: relative;
+  }
 
   @include breakpoint(small, $scope: nav) {
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
@@ -660,6 +672,17 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 }
 
+.pre-title + .nav-title {
+  @include nav-in-breakpoint {
+    grid-area: title;
+
+    @include nav-is-wide-format(true) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
 .nav-title {
   height: $nav-height;
   @include font-styles(nav-title);
@@ -673,15 +696,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-top: 0;
     height: $nav-height-small;
     width: 90%;
-  }
-
-  @include nav-in-breakpoint {
-    grid-area: title;
-
-    @include nav-is-wide-format(true) {
-      width: 100%;
-      justify-content: center;
-    }
   }
 
   :deep(span) {

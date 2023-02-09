@@ -204,6 +204,39 @@ describe('FilterInput', () => {
     expect(document.activeElement).toBe(input.element);
   });
 
+  it('focuses input if `focusInputWhenEmpty` is on and input has no content', async () => {
+    wrapper = shallowMount(FilterInput, {
+      propsData: {
+        ...propsData,
+        focusInputWhenCreated: true,
+        focusInputWhenEmpty: true,
+      },
+    });
+    await wrapper.vm.$nextTick();
+    input = wrapper.find({ ref: 'input' });
+    expect(document.activeElement).toBe(input.element);
+  });
+
+  it('adds character `/` as input value', async () => {
+    input.setValue('/');
+    expect(wrapper.emitted('input')).toEqual([['/']]);
+  });
+
+  it('selects input on focus if `selectInputOnFocus` prop is true', async () => {
+    wrapper = shallowMount(FilterInput, {
+      propsData: {
+        ...propsData,
+        selectInputOnFocus: true,
+        value: inputValue,
+      },
+    });
+    input = wrapper.find('input');
+    jest.spyOn(wrapper.vm, 'selectInputAndTags').mockImplementation();
+    input.trigger('focus');
+    expect(wrapper.vm.selectInputAndTags).toHaveBeenCalledTimes(1);
+    expect(wrapper.vm.inputIsSelected()).toBeTruthy();
+  });
+
   describe('copy/paste', () => {
     let clipboardData = {};
 

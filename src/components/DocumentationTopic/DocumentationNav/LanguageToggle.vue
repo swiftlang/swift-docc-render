@@ -18,7 +18,7 @@
         aria-hidden="true"
         tabindex="-1"
       >
-        <option selected>{{ currentLanguage.name }}</option>
+        <option :key="currentLanguage.name" selected>{{ currentLanguage.name }}</option>
       </select>
       <label
         :for="hasLanguages ? 'language-toggle' : null"

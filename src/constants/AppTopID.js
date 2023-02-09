@@ -8,19 +8,5 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-export default {
-  state: {
-    showQuickNavigation: false,
-    flattenIndex: [],
-  },
-  reset() {
-    this.state.flattenIndex = [];
-  },
-  setFlattenIndex(flattenIndex) {
-    this.state.flattenIndex = flattenIndex;
-  },
-  toggleShowQuickNavigationModal() {
-    this.state.showQuickNavigation = !this.state.showQuickNavigation;
-  },
-
-};
+// eslint-disable-next-line import/prefer-default-export
+export const AppTopID = 'app-top';

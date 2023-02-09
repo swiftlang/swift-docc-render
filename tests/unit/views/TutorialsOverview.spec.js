@@ -19,24 +19,26 @@ describe('TutorialsOverview', () => {
   let wrapper;
 
   const mocks = {
-    $bridge: { send: jest.fn() },
+    $bridge: { send: jest.fn(), on: jest.fn(), off: jest.fn() },
     $route: { path: '/tutorials/swiftui', params: {} },
   };
 
+  const topicData = {
+    identifier: {
+      interfaceLanguage: 'swift',
+      url: '/tutorials/swiftui',
+    },
+    metadata: {},
+    references: {},
+    sections: [],
+  };
+
   beforeEach(() => {
+    jest.clearAllMocks();
     wrapper = shallowMount(TutorialsOverview, { mocks });
   });
 
   it('renders an `Overview` with data', () => {
-    const topicData = {
-      identifier: {
-        interfaceLanguage: 'swift',
-        url: '/tutorials/swiftui',
-      },
-      metadata: {},
-      references: {},
-      sections: [],
-    };
     wrapper.setData({ topicData });
 
     const overview = wrapper.find(Overview);
@@ -45,5 +47,15 @@ describe('TutorialsOverview', () => {
 
   it('uses the onPageLoadScrollToFragment mixin', () => {
     expect(onPageLoadScrollToFragment.mounted).toHaveBeenCalled();
+  });
+
+  it('updates the content on mounted', () => {
+    expect(mocks.$bridge.on).toHaveBeenCalledTimes(1);
+    expect(mocks.$bridge.on).toHaveBeenCalledWith('contentUpdate', expect.any(Function));
+    mocks.$bridge.on.mock.calls[0][1](topicData);
+    expect(wrapper.vm.topicData).toEqual(topicData);
+    wrapper.destroy();
+    expect(mocks.$bridge.off).toHaveBeenCalledTimes(1);
+    expect(mocks.$bridge.off).toHaveBeenCalledWith('contentUpdate', expect.any(Function));
   });
 });

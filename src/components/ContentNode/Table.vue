@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -28,23 +28,13 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import 'docc-render/styles/_core.scss';
-
-.table-wrapper {
-  & + *,
-  * + & {
-    margin-top: $stacked-margin-xlarge;
-  }
-}
-</style>
-
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
 .table-wrapper {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 }
 
 table {

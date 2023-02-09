@@ -9,7 +9,7 @@
 */
 
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
-import LoadingNavigatorItem from '@/components/Navigator/LoadingNavigatorItem.vue';
+import BaseNavigatorCard from '@/components/Navigator/BaseNavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { DynamicScroller } from 'vue-virtual-scroller';
@@ -17,12 +17,9 @@ import 'intersection-observer';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
-import Reference from '@/components/ContentNode/Reference.vue';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
-import Badge from 'docc-render/components/Badge.vue';
-import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -172,6 +169,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
       props: NavigatorCardItem.props,
       template: '<div><button></button></div>',
     },
+    BaseNavigatorCard,
   },
   sync: false,
   ...others,
@@ -228,10 +226,6 @@ describe('NavigatorCard', () => {
   it('renders the NavigatorCard', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    // assert link
-    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
-    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
-    expect(wrapper.find('.card-link').is('h2')).toBe(true);
     // assert scroller
     const scroller = wrapper.find(DynamicScroller);
     expect(wrapper.vm.activePathChildren).toHaveLength(2);
@@ -269,6 +263,7 @@ describe('NavigatorCard', () => {
     expect(filter.props()).toEqual({
       disabled: false,
       focusInputWhenCreated: false,
+      focusInputWhenEmpty: false,
       placeholder: 'Filter',
       positionReversed: true,
       preventedBlur: false,
@@ -280,8 +275,18 @@ describe('NavigatorCard', () => {
         'Tutorials',
       ],
       value: '',
+      selectInputOnFocus: false,
       clearFilterOnTagSelect: false,
     });
+  });
+
+  it('exposes a #post-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'post-head': '<div class="post-head">CustomPostHead</div>',
+      },
+    });
+    expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
   });
 
   it('focuses the current page', async () => {
@@ -300,16 +305,6 @@ describe('NavigatorCard', () => {
     });
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(0);
-  });
-
-  it('renders three loading navigator items, if is loading', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isLoading: true,
-      },
-    });
-    const items = wrapper.findAll(LoadingNavigatorItem);
-    expect(items.length).toBe(3);
   });
 
   it('allows the user to navigate through arrow keys', async () => {
@@ -1377,19 +1372,6 @@ describe('NavigatorCard', () => {
     expect(all.at(3).props('item')).toEqual(root1);
   });
 
-  it('emits a `close` event, and focuses the open toggle', async () => {
-    const btn = document.createElement('BUTTON');
-    btn.id = baseNavOpenSidenavButtonId;
-    document.body.appendChild(btn);
-    const wrapper = createWrapper();
-    const button = wrapper.find('.close-card');
-    button.trigger('click');
-    await flushPromises();
-    expect(button.attributes('aria-label')).toBe('Close documentation navigator');
-    expect(wrapper.emitted('close')).toHaveLength(1);
-    expect(document.activeElement).toEqual(btn);
-  });
-
   it('persists the filtered state, per technology path', async () => {
     const wrapper = createWrapper();
     await flushPromises();
@@ -1829,18 +1811,6 @@ describe('NavigatorCard', () => {
     });
   });
 
-  it('renders a Beta badge in the header', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isTechnologyBeta: true,
-      },
-    });
-    await flushPromises();
-    expect(wrapper.find('.navigator-head').find(Badge).props()).toMatchObject({
-      variant: 'beta',
-    });
-  });
-
   it('Does not show "Hide Deprecated" tag, if API changes are ON', async () => {
     const updatedChild = {
       ...root0Child0,
@@ -1866,15 +1836,6 @@ describe('NavigatorCard', () => {
     const filter = wrapper.find(FilterInput);
     // assert there is no 'Hide Deprecated' tag
     expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED_TAG);
-  });
-
-  it('hides the toggle button, if `allowHiding` is `false`', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        allowHiding: false,
-      },
-    });
-    expect(wrapper.find('.close-card').classes()).toContain('hide-on-large');
   });
 
   describe('navigating', () => {

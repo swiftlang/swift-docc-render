@@ -9,6 +9,7 @@
 */
 
 import ColorScheme from 'docc-render/constants/ColorScheme';
+import ImageLoadingStrategy from 'docc-render/constants/ImageLoadingStrategy';
 import Settings from 'docc-render/utils/settings';
 
 const supportsAutoColorScheme = (typeof window.matchMedia !== 'undefined') && [
@@ -21,9 +22,13 @@ const defaultColorScheme = supportsAutoColorScheme ? ColorScheme.auto : ColorSch
 
 export default {
   state: {
+    imageLoadingStrategy: ImageLoadingStrategy.lazy,
     preferredColorScheme: Settings.preferredColorScheme || defaultColorScheme.value,
     supportsAutoColorScheme,
     systemColorScheme: ColorScheme.light.value,
+  },
+  setImageLoadingStrategy(strategy) {
+    this.state.imageLoadingStrategy = strategy;
   },
   setPreferredColorScheme(value) {
     this.state.preferredColorScheme = value;

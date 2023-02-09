@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -38,7 +38,6 @@ $topic-link-icon-spacing: 1rem;
 $icon-size-default: 16px;
 
 // Code Block Style Elements
-$code-block-style-elements-padding: 8px 14px !default;
 $code-listing-with-numbers-padding: 14px 0;
 $code-number-padding-left: 8px;
 $code-number-padding: 0 1rem 0 $code-number-padding-left;
@@ -72,6 +71,9 @@ $nav-card-horizontal-spacing-small: $nav-card-horizontal-spacing * 0.5;
 
 // Small vp padding and width
 $small-viewport-content-padding: 20px !default;
+$large-viewport-dynamic-content-padding: 80px !default;
 
 // AdjustableSidebar
 $adjustable-sidebar-hide-transition-duration: 0.3s;
+// OnThisPage
+$on-this-page-aside-width: 192px;

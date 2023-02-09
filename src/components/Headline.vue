@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -53,7 +53,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .headline {
-  margin-bottom: $stacked-margin-large;
+  margin-bottom: var(--spacing-stacked-margin-large);
 }
 
 .heading {
@@ -68,7 +68,7 @@ export default {
 .eyebrow {
   @include font-styles(eyebrow);
   display: block;
-  margin-bottom: $stacked-margin-small;
+  margin-bottom: var(--spacing-stacked-margin-small);
   color: var(--color-eyebrow);
 }
 </style>
