@@ -111,7 +111,6 @@
               v-if="selectedSymbolData"
               enableMinimized
               v-bind="selectedSymbolData" />
-            <p v-else>:(</p>
           </div>
         </div>
       </div>
@@ -208,7 +207,7 @@ export default {
     selectedSymbol: ({
       filteredSymbols,
       focusedIndex,
-    }) => (focusedIndex ? filteredSymbols[focusedIndex] : null),
+    }) => (focusedIndex !== null ? filteredSymbols[focusedIndex] : null),
   },
   watch: {
     userInput: 'debounceInput',
@@ -294,6 +293,7 @@ export default {
     },
     async fetchSymbolData() {
       if (!this.selectedSymbol) {
+        this.selectedSymbolData = null;
         return;
       }
 
