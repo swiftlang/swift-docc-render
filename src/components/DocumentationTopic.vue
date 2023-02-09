@@ -508,7 +508,7 @@ export default {
   }
 }
 
-/deep/ .minimized-title {
+:deep(.minimized-title) {
   font-size: 1.416rem;
   font-weight: bold;
   margin-bottom: 0.833rem;

@@ -297,7 +297,7 @@
 }
 
 @mixin space-out-between-siblings($margin) {
-  * + &, & + /deep/ * {
+  * + &, & + :deep(*) {
     margin-top: $margin;
   }
 }

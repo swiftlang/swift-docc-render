@@ -92,7 +92,7 @@ export default {
     display: flex;
     justify-content: center;
 
-    /deep/ .icon-inline {
+    :deep(.icon-inline) {
       flex: 1 1 auto;
     }
   }

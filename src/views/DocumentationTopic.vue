@@ -451,7 +451,7 @@ export default {
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
 
-/deep/ {
+:deep() {
   .generic-modal {
     overflow-y: overlay;
   }

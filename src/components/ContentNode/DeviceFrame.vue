@@ -119,7 +119,7 @@ export default {
     flex: 1;
   }
 
-  /deep/ img {
+  :deep(img) {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -127,7 +127,7 @@ export default {
     margin: 0;
   }
 
-  /deep/ video {
+  :deep(video) {
     object-fit: contain;
     object-position: top;
     width: 100%;

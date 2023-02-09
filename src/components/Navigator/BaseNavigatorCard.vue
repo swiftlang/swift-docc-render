@@ -241,7 +241,7 @@ $close-icon-padding: 5px;
   }
 }
 
-/deep/ {
+:deep() {
   .card-body {
     // right padding is added by the items, so visually the scroller is stuck to the side
     padding-right: 0;
