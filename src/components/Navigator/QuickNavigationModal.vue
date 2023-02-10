@@ -115,6 +115,12 @@
             <p v-if="preview.error" class="quick-navigation__preview-unavailable">
               Preview unavailable
             </p>
+            <p
+              v-if="preview.loading && !preview.data && !preview.error"
+              class="quick-navigation__preview-loading"
+            >
+              Loading...
+            </p>
           </div>
         </div>
       </div>
@@ -137,6 +143,8 @@ import { fetchDataForPreview } from 'docc-render/utils/data';
 
 const { extractProps } = DocumentationTopic.methods;
 
+const LOADING_DELAY = 1000; // 1 second in milliseconds
+
 export default {
   name: 'QuickNavigationModal',
   components: {
@@ -158,6 +166,7 @@ export default {
       preview: {
         data: null,
         error: null,
+        loading: false,
       },
     };
   },
@@ -302,16 +311,28 @@ export default {
       this.preview = {
         data: null,
         error: null,
+        loading: false,
       };
       if (!this.selectedSymbol) {
         return;
       }
 
+      let timeout;
       try {
+        // only indicate that the preview is loading when it has taken some time
+        // to fetch data—otherwise, we don't want the loading UI to flicker if
+        // the data is loading quickly
+        timeout = setTimeout(() => {
+          this.preview.loading = true;
+        }, LOADING_DELAY);
+
         const json = await fetchDataForPreview(this.selectedSymbol.path);
         this.preview.data = extractProps(json);
       } catch (e) {
         this.preview.error = e;
+      } finally {
+        clearTimeout(timeout);
+        this.preview.loading = false;
       }
     },
   },
@@ -380,6 +401,7 @@ $base-border-width: 1px;
     position: sticky;
     top: 0;
 
+    &-loading,
     &-unavailable {
       font-size: 1.416rem;
       font-weight: bold;
