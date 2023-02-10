@@ -482,6 +482,9 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+$spacing-minimized-aside-padding-top: 0.667rem;
+$spacing-minimized-aside-padding-left: 1rem;
+
 .doc-topic {
   display: flex;
   flex-direction: column;
@@ -515,6 +518,7 @@ export default {
 
   & > small {
     font-size: 1rem;
+    padding-left: 0.416rem;
   }
 }
 
@@ -545,6 +549,10 @@ export default {
 
 .minimized-description {
   margin-bottom: 1.5em;
+
+  & > aside {
+    padding: $spacing-minimized-aside-padding-top $spacing-minimized-aside-padding-left;
+  }
 }
 
 /deep/ {
@@ -572,6 +580,10 @@ export default {
       & > h2 {
         font-size: 1.083rem;
         font-weight: bold;
+      }
+
+      & > aside {
+        padding: $spacing-minimized-aside-padding-top $spacing-minimized-aside-padding-left;
       }
     }
   }
