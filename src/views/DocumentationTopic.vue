@@ -23,6 +23,7 @@
             :interface-language="topicProps.interfaceLanguage"
             :technologyUrl="technology.url"
             :api-changes-version="store.state.selectedAPIChangesVersion"
+            :currentLocale="$i18n.locale"
             ref="NavigatorDataProvider"
           >
             <template #default="slotProps">
