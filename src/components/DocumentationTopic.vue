@@ -446,6 +446,7 @@ export default {
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
+    disableMetadata: ({ enableMinimized }) => enableMinimized,
   },
   methods: {
     normalizePath(path) {
