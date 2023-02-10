@@ -108,9 +108,13 @@
           </div>
           <div class="quick-navigation__preview">
             <DocumentationTopic
-              v-if="selectedSymbolData"
+              v-if="preview.data"
+              v-bind="preview.data"
               enableMinimized
-              v-bind="selectedSymbolData" />
+            />
+            <p v-if="preview.error" class="quick-navigation__preview-unavailable">
+              Preview unavailable
+            </p>
           </div>
         </div>
       </div>
@@ -151,7 +155,10 @@ export default {
     return {
       debouncedInput: '',
       userInput: '',
-      selectedSymbolData: null,
+      preview: {
+        data: null,
+        error: null,
+      },
     };
   },
   props: {
@@ -212,7 +219,7 @@ export default {
   watch: {
     userInput: 'debounceInput',
     focusedIndex: 'scrollIntoView',
-    selectedSymbol: 'fetchSymbolData',
+    selectedSymbol: 'fetchPreview',
   },
   methods: {
     closeQuickNavigationModal() {
@@ -291,14 +298,21 @@ export default {
     startingPointHook() {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
-    async fetchSymbolData() {
+    async fetchPreview() {
+      this.preview = {
+        data: null,
+        error: null,
+      };
       if (!this.selectedSymbol) {
-        this.selectedSymbolData = null;
         return;
       }
 
-      const json = await fetchDataForPreview(this.selectedSymbol.path);
-      this.selectedSymbolData = extractProps(json);
+      try {
+        const json = await fetchDataForPreview(this.selectedSymbol.path);
+        this.preview.data = extractProps(json);
+      } catch (e) {
+        this.preview.error = e;
+      }
     },
   },
 };
@@ -365,6 +379,13 @@ $base-border-width: 1px;
     overflow: auto;
     position: sticky;
     top: 0;
+
+    &-unavailable {
+      font-size: 1.416rem;
+      font-weight: bold;
+      line-height: 1.1;
+      padding: 1.5rem 80px;
+    }
   }
   &__reference:hover {
     text-decoration: none;
