@@ -31,27 +31,27 @@ describe('Aside', () => {
     });
     let label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('kind.experiment');
+    expect(label.text()).toBe('aside-kind.experiment');
 
     wrapper.setProps({ kind: 'important' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('kind.important');
+    expect(label.text()).toBe('aside-kind.important');
 
     wrapper.setProps({ kind: 'note' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('kind.note');
+    expect(label.text()).toBe('aside-kind.note');
 
     wrapper.setProps({ kind: 'tip' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('kind.tip');
+    expect(label.text()).toBe('aside-kind.tip');
 
     wrapper.setProps({ kind: 'warning' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('kind.warning');
+    expect(label.text()).toBe('aside-kind.warning');
 
     wrapper.setProps({ kind: 'note', name: 'Custom Name' });
     label = wrapper.find('.label');

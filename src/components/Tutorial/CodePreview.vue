@@ -161,11 +161,15 @@ export default {
       return this.hasRuntimePreview ? null : this.$t('tutorials.preview.no-preview-available-step');
     },
     togglePreviewText() {
-      return this.hasRuntimePreview ? this.$tc('tutorials.preview.title', 1) : this.$tc('tutorials.preview.title', 0);
+      return this.$tc('tutorials.preview.title', this.hasRuntimePreview ? 1 : 0);
     },
-    textAriaLabel: ({ shouldDisplayHideLabel, togglePreviewText, $t }) => (
-      `${togglePreviewText}, ${shouldDisplayHideLabel ? $t('verbs.hide') : $t('verbs.show')}`
-    ),
+    textAriaLabel() {
+      return `${this.togglePreviewText}, ${
+        this.shouldDisplayHideLabel
+          ? this.$t('verbs.hide')
+          : this.$t('verbs.show')
+        }`;
+    },
   },
   methods: {
     /**

@@ -10,8 +10,8 @@
 
 <template>
   <s
-    :before-text="$t('accessibility.strike.start')"
-    :after-text="$t('accessibility.strike.end')">
+    :data-before-text="$t('accessibility.strike.start')"
+    :data-after-text="$t('accessibility.strike.end')">
       <slot />
   </s>
 </template>
@@ -26,10 +26,10 @@ export default {
 
 s {
   &::before {
-    content: attr(before-text);
+    content: attr(data-before-text);
   }
   &::after {
-    content: attr(after-text);
+    content: attr(data-after-text);
   }
   &::before, &::after {
     @include visuallyhidden()

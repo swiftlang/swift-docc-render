@@ -41,10 +41,9 @@ export default {
         deprecatedAt,
         description,
         text,
-        $t,
       } = this;
       return [text]
-        .concat(deprecatedAt ? $t('change-type.deprecated') : [])
+        .concat(deprecatedAt ? this.$t('change-type.deprecated') : [])
         .concat(description)
         .join(', ');
     },

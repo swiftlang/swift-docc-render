@@ -11,8 +11,14 @@
 import { shallowMount } from '@vue/test-utils';
 import HeroMetadata from 'docc-render/components/Tutorial/HeroMetadata.vue';
 
+const i18nStub = {
+  name: 'i18n',
+  template: '<div><slot name="number"/><slot name="minutes"/></div>',
+};
+
 const mountWithProps = props => shallowMount(HeroMetadata, {
   propsData: props,
+  stubs: { i18n: i18nStub },
   provide: { isTargetIDE: false },
 });
 
@@ -56,9 +62,9 @@ describe('HeroMetadata', () => {
       estimatedTimeInMinutes,
     });
 
-    const span = wrapper.find('div.metadata div.item div.content div.duration');
-    expect(span.exists()).toBe(true);
-    expect(span.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*tutorials\\.time\\.minutes\\.short`));
+    const durationDiv = wrapper.find('div.metadata div.item div.content div.duration');
+    expect(durationDiv.exists()).toBe(true);
+    expect(durationDiv.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*tutorials\\.time\\.minutes\\.short`));
   });
 
   it('renders requirements icon if requirements present', () => {
@@ -104,6 +110,7 @@ describe('HeroMetadata', () => {
           title: 'Xcode',
         },
       },
+      stubs: { i18n: i18nStub },
       provide: { isTargetIDE: true },
     });
 

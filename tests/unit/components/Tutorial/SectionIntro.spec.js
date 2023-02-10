@@ -87,7 +87,7 @@ describe('SectionIntro', () => {
       query: $route.query,
     });
     // Starts with the eyebrow.
-    expect(eyebrowLink.text()).toMatch(/^sections\.title 42/);
+    expect(eyebrowLink.text()).toMatch(/^sections\.title/);
 
     // Ends with the h2.
     expect(headline.text()).toMatch(/Foobar$/);

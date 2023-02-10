@@ -92,6 +92,7 @@ describe('image preloading', () => {
     stubs: {
       'router-link': RouterLinkStub,
       BreakpointEmitter: true,
+      i18n: true,
     },
   };
 

@@ -49,9 +49,7 @@
       v-if="shouldRender(AttributeKind.allowedTypes)"
       v-bind="{ kind: AttributeKind.allowedTypes, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ fallbackToValues(attribute).length > 1
-          ? $t('parameters.possible-types')
-          : $t('parameters.type') }}:
+        {{ $tc('parameters.possible-types', fallbackToValues(attribute).length) }}
         <code>
           <template v-for="(possibleType, i) in fallbackToValues(attribute)">
             <template v-for="(token, j) in possibleType">
@@ -66,9 +64,7 @@
       v-if="shouldRender(AttributeKind.allowedValues)"
       v-bind="{ kind: AttributeKind.allowedValues, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ fallbackToValues(attribute).length > 1
-          ? $t('parameters.possible-values')
-          : $t('parameters.value') }}:
+        {{ $tc('parameters.possible-values', fallbackToValues(attribute).length > 1) }}
         <code>{{ fallbackToValues(attribute).join(', ') }}</code>
       </template>
     </ParameterMetaAttribute>

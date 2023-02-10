@@ -278,7 +278,7 @@ describe('NavigationBar', () => {
       });
 
       it('returns a `sectionIndicatorText` string', () => {
-        expect(wrapper.vm.sectionIndicatorText).toBe('section-of');
+        expect(wrapper.vm.sectionIndicatorText).toBe('tutorials.section-of');
       });
     });
 

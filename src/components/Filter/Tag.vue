@@ -38,7 +38,7 @@
         {{ name }}
       </template>
       <span v-if="isRemovableTag" class="visuallyhidden">
-        – {{$t('filter.tag')}}. {{ $t('filter.select-remove') }}
+        – {{ $t('filter.tag-select-remove') }}
       </span>
     </button>
   </li>

@@ -104,7 +104,7 @@ describe('Availability', () => {
     expect(badges.at(5).contains('.deprecated')).toBe(true);
 
     const deprecated = wrapper.find('.deprecated');
-    expect(deprecated.text()).toBe('change-type.deprecated');
+    expect(deprecated.text()).toBe('aside-kind.deprecated');
   });
 
   it('renders beta text', () => {
@@ -119,7 +119,7 @@ describe('Availability', () => {
     });
     const beta = wrapper.find('.beta');
     expect(beta.exists()).toBe(true);
-    expect(beta.text()).toBe('kind.beta');
+    expect(beta.text()).toBe('aside-kind.beta');
   });
 
   it('renders deprecated over beta badges', () => {

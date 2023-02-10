@@ -74,7 +74,9 @@ export default {
     },
   },
   computed: {
-    text: ({ played, $t }) => (played ? $t('video.replay') : $t('video.play')),
+    text() {
+      return this.played ? this.$t('video.replay') : this.$t('video.play');
+    },
   },
   data() {
     return {

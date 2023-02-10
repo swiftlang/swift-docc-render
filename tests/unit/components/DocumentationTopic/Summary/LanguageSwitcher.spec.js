@@ -60,7 +60,7 @@ describe('LanguageSwitcher', () => {
   it('renders a summary `Title` of "Language"', () => {
     const title = wrapper.find(Title);
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('language:');
+    expect(title.text()).toBe('language');
   });
 
   it('renders a `LanguageSwitcherLink` for swift and objc', () => {

@@ -168,7 +168,7 @@ export default {
       if (sectionNumber === 0) {
         return undefined;
       }
-      return this.$t('section-of', { number: sectionNumber, total: numberOfSections });
+      return this.$t('tutorials.section-of', { number: sectionNumber, total: numberOfSections });
     },
   },
   methods: {

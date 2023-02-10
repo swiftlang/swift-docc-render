@@ -31,9 +31,9 @@
         :platformName="platform.name"
       />
       <span v-if="platform.deprecatedAt" class="deprecated">
-        {{ $t('change-type.deprecated') }}
+        {{ $t('aside-kind.deprecated') }}
       </span>
-      <span v-else-if="platform.beta" class="beta">{{ $t('kind.beta') }}</span>
+      <span v-else-if="platform.beta" class="beta">{{ $t('aside-kind.beta') }}</span>
     </Badge>
   </Section>
 </template>

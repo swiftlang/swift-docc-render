@@ -1,5 +1,5 @@
 {
-  "language": "Language",
+  "language": "Language :",
   "video": {
     "replay": "Replay",
     "play": "Play",
@@ -28,11 +28,12 @@
     },
     "project-files": "Project files",
     "estimated-time": "Estimated Time",
-    "sections": { "chapter": "Chapter" },
+    "sections": { "chapter": "Chapter {number}" },
     "question-of": "Question {index} of {total}",
     "section-of": "{number} of {total}",
     "overriding-title": "{newTitle} with {title}",
     "time": {
+      "format": "{number} {minutes}",
       "minutes": {
         "full": "minute | minutes | {count} minutes",
         "short": "min | mins"
@@ -55,13 +56,14 @@
     },
     "current-page": "Current page is {title}"
   },
-  "kind": {
+  "aside-kind": {
     "beta": "Beta",
     "experiment": "Experiment",
     "important": "Important",
     "note": "Note",
     "tip": "Tip",
-    "warning": "Warning"
+    "warning": "Warning",
+    "deprecated": "Deprecated"
   },
   "change-type": {
     "added": "Added",
@@ -74,7 +76,7 @@
     "close": "Close"
   },
   "sections": {
-    "title": "Section",
+    "title": "Section {number}",
     "on-this-page": "On this page",
     "topics": "Topics",
     "default-implementations": "Default Implementations",
@@ -109,8 +111,7 @@
     "suggested-tags": "Suggested {tags}",
     "selected-tags": "Selected {tags}",
     "add-tag": "Add tag",
-    "tag": "Tag",
-    "select-remove": "Select to remove from list.",
+    "tag-select-remove": "Tag. Select to remove from list.",
     "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
     "containing-symbols": "containing one symbol | containing {number} symbols",
     "symbols-inside": "{number} of {total} symbols inside",
@@ -139,12 +140,10 @@
     "default": "Default",
     "minimum": "Minimum",
     "maximum": "Maximum",
-    "possible-types": "Possible types",
-    "type": "Type",
-    "possible-values": "Possible Values",
-    "value": "Value"
+    "possible-types": "Type: | Possible types:",
+    "possible-values": "Value: | Possible Values:"
   },
-  "content-type": "Content-Type",
+  "content-type": "Content-Type: {value}",
   "read-only": "Read only",
   "error": {
     "unknown": "An unknown error occurred.",

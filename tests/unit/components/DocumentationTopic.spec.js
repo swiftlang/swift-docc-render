@@ -369,7 +369,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('change-type.deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
 
     // only beta
     wrapper.setProps({
@@ -378,7 +378,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('kind.beta');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.beta');
 
     // only deprecated
     wrapper.setProps({
@@ -387,7 +387,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('change-type.deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
   });
 
   it('renders an abstract', () => {

@@ -27,16 +27,9 @@ import { getSetting } from 'docc-render/utils/theme-settings';
 export default {
   name: 'Footer',
   components: { ColorSchemeToggle, LocaleSelector },
-  inject: {
-    isTargetIDE: {
-      default() {
-        return false;
-      },
-    },
-  },
   computed: {
-    enablei18n: ({ isTargetIDE }) => (
-      !isTargetIDE && getSetting(['features', 'docs', 'i18n', 'enable'], false)
+    enablei18n: () => (
+      getSetting(['features', 'docs', 'i18n', 'enable'], false)
     ),
   },
 };

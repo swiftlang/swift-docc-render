@@ -11,7 +11,7 @@
 <template>
   <RenderChanged :changes="changeValues" :value="mimetype">
     <div slot-scope="{ value }" class="response-mimetype">
-      {{ $t('content-type') }}: {{ value }}
+      {{ $t('content-type', { value }) }}
     </div>
   </RenderChanged>
 </template>

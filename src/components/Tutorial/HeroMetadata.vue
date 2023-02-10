@@ -23,12 +23,17 @@
       <!-- Accessibility warning: if you remove the label above,
       also remove the aria-hidden="true" values below. -->
       <div class="content" aria-hidden="true">
-        <div class="duration">
-          {{ estimatedTimeInMinutes }}
-          <div class="minutes">{{ $tc(
-            'tutorials.time.minutes.short', estimatedTimeInMinutes
-          ) }}</div>
-        </div>
+        <i18n path="tutorials.time.format" tag="div" class="duration">
+          <template #number>
+            {{ estimatedTimeInMinutes }}
+          </template>
+          <template #minutes>
+            <div class="minutes">{{ $tc(
+              'tutorials.time.minutes.short', estimatedTimeInMinutes
+            ) }}
+            </div>
+          </template>
+        </i18n>
       </div>
       <div class="bottom" aria-hidden="true">{{ $t('tutorials.estimated-time') }}</div>
     </div>
