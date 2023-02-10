@@ -204,7 +204,9 @@ $docs-declaration-source-border-width: 1px !default;
   // no background being used on this element—however, we need this in order to
   // establish a new stacking context, which resolves a Safari bug where the
   // scrollbar is not clipped by this element depending on its border-radius
-  -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
+  @media screen {
+    -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
+  }
 
   &.has-multiple-lines {
     border-radius: $border-radius;
