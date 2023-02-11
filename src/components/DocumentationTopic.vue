@@ -59,7 +59,10 @@
       </DocumentationHero>
       <div class="doc-content-wrapper">
         <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
-          <div v-if="hasPrimaryContent" class="container">
+          <div
+            v-if="hasPrimaryContent"
+            :class="['container', { 'minimized-container': enableMinimized }]"
+          >
             <div class="description"
               :class="{
                 'after-enhanced-hero': enhanceBackground,
@@ -613,6 +616,11 @@ export default {
 
 .minimized-description {
   margin-bottom: 1.5em;
+}
+
+.full-width-container .minimized-container {
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 /deep/ {
