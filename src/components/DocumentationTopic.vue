@@ -507,11 +507,14 @@ export default {
 }
 
 /deep/ .minimized-title {
-  font-size: 1.416rem;
-  font-weight: bold;
   margin-bottom: 0.833rem;
 
-  & > small {
+  .title {
+    font-size: 1.416rem;
+    font-weight: bold;
+  }
+
+  small {
     font-size: 1rem;
     padding-left: 0.416rem;
   }
