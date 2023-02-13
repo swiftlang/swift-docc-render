@@ -59,7 +59,10 @@
       </DocumentationHero>
       <div class="doc-content-wrapper">
         <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
-          <div v-if="hasPrimaryContent" :class="['container', { 'minimized-container': enableMinimized }]">
+          <div
+            v-if="hasPrimaryContent"
+            :class="['container', { 'minimized-container': enableMinimized }]"
+          >
             <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
               <RequirementMetadata
                 v-if="isRequirement"
@@ -561,7 +564,6 @@ export default {
     }
   }
 }
-
 
 .description {
   margin-bottom: $contenttable-spacing-single-side;
