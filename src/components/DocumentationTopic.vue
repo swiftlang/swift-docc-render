@@ -59,13 +59,11 @@
       </DocumentationHero>
       <div class="doc-content-wrapper">
         <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
-          <div v-if="hasPrimaryContent" class="container">
-            <div class="description"
-              :class="{
-                'after-enhanced-hero': enhanceBackground,
-                'minimized-description': enableMinimized
-              }"
-            >
+          <div
+            v-if="hasPrimaryContent"
+            :class="['container', { 'minimized-container': enableMinimized }]"
+          >
+            <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
               <RequirementMetadata
                 v-if="isRequirement"
                 :defaultImplementationsCount="defaultImplementationsCount"
@@ -82,7 +80,7 @@
             </div>
             <PrimaryContent
               v-if="primaryContentSections && primaryContentSections.length"
-              :class="{ 'with-border': !enhanceBackground, 'minimized-content': enableMinimized }"
+              :class="{ 'with-border': !enhanceBackground }"
               :conformance="conformance"
               :source="remoteSource"
               :sections="primaryContentSections"
@@ -482,9 +480,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$spacing-minimized-aside-padding-top: 0.667rem;
-$spacing-minimized-aside-padding-left: 1rem;
-
 .doc-topic {
   display: flex;
   flex-direction: column;
@@ -512,11 +507,14 @@ $spacing-minimized-aside-padding-left: 1rem;
 }
 
 /deep/ .minimized-title {
-  font-size: 1.416rem;
-  font-weight: bold;
   margin-bottom: 0.833rem;
 
-  & > small {
+  .title {
+    font-size: 1.416rem;
+    font-weight: bold;
+  }
+
+  small {
     font-size: 1rem;
     padding-left: 0.416rem;
   }
@@ -529,6 +527,49 @@ $spacing-minimized-aside-padding-left: 1rem;
 .container {
   outline-style: none;
   @include dynamic-content-container;
+}
+
+/deep/ {
+  .minimized-container {
+    --spacing-stacked-margin-large: 0.667em;
+    --spacing-stacked-margin-xlarge: 1em;
+    --declaration-code-listing-margin: 1em 0;
+    --code-block-style-elements-padding: 7px 12px;
+    --code-border-radius: 10px;
+    --spacing-param: var(--spacing-stacked-margin-large);
+    --aside-border-radius: 6px;
+    --code-border-radius: 6px;
+
+    .description {
+      margin-bottom: 1.5em;
+    }
+
+    & > .primary-content > * {
+      margin-top: 1.5em;
+      margin-bottom: 1.5em;
+    }
+
+    .description {
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 1.083rem;
+      font-weight: bold;
+    }
+
+    aside {
+      padding: 0.667rem 1rem;
+    }
+
+    .source {
+      border-radius: var(--code-border-radius);
+    }
+
+    .single-line {
+      border-radius: var(--code-border-radius);
+    }
+  }
 }
 
 .description {
@@ -547,45 +588,10 @@ $spacing-minimized-aside-padding-left: 1rem;
   }
 }
 
-.minimized-description {
-  margin-bottom: 1.5em;
-
-  & > aside {
-    padding: $spacing-minimized-aside-padding-top $spacing-minimized-aside-padding-left;
-  }
-}
-
 /deep/ {
   .no-primary-content {
     // remove border-top for first section of the page
     --content-table-title-border-width: 0px;
-  }
-
-  .minimized-content {
-    --spacing-stacked-margin-large: 0.667em;
-    --spacing-stacked-margin-xlarge: 1em;
-    --declaration-code-listing-margin: 1em 0;
-    --code-block-style-elements-padding: 7px 12px;
-    --code-border-radius: 10px;
-    --spacing-param: var(--spacing-stacked-margin-large);
-
-    & > * {
-      margin-bottom: 1.5em;
-      margin-top: 1.5em;
-
-      &:first-child {
-        margin-top: 1.5em;
-      }
-
-      & > h2 {
-        font-size: 1.083rem;
-        font-weight: bold;
-      }
-
-      & > aside {
-        padding: $spacing-minimized-aside-padding-top $spacing-minimized-aside-padding-left;
-      }
-    }
   }
 }
 

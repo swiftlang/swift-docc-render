@@ -424,14 +424,6 @@ describe('DocumentationTopic', () => {
     expect(primary.props('source')).toEqual(propsData.remoteSource);
   });
 
-  it('renders the right classes for `PrimaryContent` based on `enableMininized` prop', () => {
-    const primary = wrapper.find(PrimaryContent);
-    expect(primary.classes()).not.toContain('minimized-content');
-
-    wrapper.setProps({ enableMinimized: true });
-    expect(primary.classes()).toContain('minimized-content');
-  });
-
   it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', () => {
     wrapper.setProps({ primaryContentSections: undefined });
     expect(wrapper.contains(PrimaryContent)).toBe(false);
@@ -451,14 +443,6 @@ describe('DocumentationTopic', () => {
         symbolKind: 'something-else',
       });
       expect(description.classes()).not.toContain('after-enhanced-hero');
-    });
-
-    it('renders the right classes based on `enableMininized` prop', () => {
-      const description = wrapper.find('.description');
-      expect(description.classes()).not.toContain('minimized-description');
-
-      wrapper.setProps({ enableMinimized: true });
-      expect(description.classes()).toContain('minimized-description');
     });
 
     it('renders a deprecated `Aside` when deprecated', () => {
