@@ -565,6 +565,10 @@ export default {
     .source {
       border-radius: var(--code-border-radius);
     }
+
+    .single-line {
+      border-radius: var(--code-border-radius);
+    }
   }
 }
 
