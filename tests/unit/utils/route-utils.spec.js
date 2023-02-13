@@ -26,7 +26,6 @@ const routes = [
 describe('route-utils', () => {
   it('transforms routes for each environment', () => {
     const result = addPrefixedRoutes(routes);
-    expect(result).toHaveLength(2);
     // assert extra route data is kept, `name` and `path` are changed
     expect(result).toEqual([
       { meta: { a: 'a' }, name: 'a-locale', path: '/:locale?/path/to/a' },
@@ -36,7 +35,6 @@ describe('route-utils', () => {
 
   it('allows you to ignore routes for transformation', () => {
     const result = addPrefixedRoutes(routes, ['b']);
-    expect(result).toHaveLength(1);
     expect(result).toEqual([
       { meta: { a: 'a' }, name: 'a-locale', path: '/:locale?/path/to/a' },
     ]);
@@ -47,7 +45,6 @@ describe('route-utils', () => {
       pathPrefix: '/foo/bar',
       nameSuffix: '-foo',
     }]);
-    expect(result).toHaveLength(2);
     expect(result).toEqual([
       { meta: { a: 'a' }, name: 'a-foo', path: '/foo/bar/path/to/a' },
       { meta: { b: 'b' }, name: 'b-foo', path: '/foo/bar/path/to/b' },

@@ -88,9 +88,6 @@ export default {
       ));
     },
   },
-  created() {
-    this.fetchIndexData();
-  },
   methods: {
     async fetchIndexData() {
       try {
@@ -108,10 +105,9 @@ export default {
     },
   },
   watch: {
-    currentLocale(newValue) {
-      if (newValue) {
-        this.fetchIndexData();
-      }
+    currentLocale: {
+      immediate: true,
+      handler: 'fetchIndexData',
     },
   },
   render() {

@@ -12,13 +12,15 @@ import appLocales from 'docc-render/lang/locales.json';
 import { defaultLocale } from 'docc-render/lang';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
+const localeCodes = new Set(appLocales.map(appLocale => appLocale.code));
+
 /**
  * Check if locale is valid
  * @param {String} localeCode - locale code
  * @param {{ code: String }[]} locales - locales available
  */
 export function localeIsValid(localeCode) {
-  return appLocales.map(appLocale => appLocale.code).includes(localeCode);
+  return localeCodes.has(localeCode);
 }
 
 /**
@@ -27,7 +29,7 @@ export function localeIsValid(localeCode) {
  * @param {Object{}} env - context
  * @param {{ code: String, name: String }[]} locales
  */
-export function updateCurrentLocale(to, env = this) {
+export function updateCurrentLocale(to, env) {
   const currentLocale = to.params.locale || defaultLocale;
   // exist if current locale is not supported
   if (!localeIsValid(currentLocale)) return;

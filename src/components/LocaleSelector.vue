@@ -11,9 +11,9 @@
 <template>
   <div class="locale-selector">
     <select
-      v-model="$i18n.locale"
-      @change="updateRouter"
+      :value="$i18n.locale"
       :aria-label="$t('select-language')"
+      @change="updateRouter"
     >
       <option
         v-for="{ code, name } in locales"
@@ -32,7 +32,6 @@ import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import locales from 'docc-render/lang/locales.json';
 import { defaultLocale } from 'docc-render/lang';
 import { updateLangTag } from 'docc-render/utils/metadata';
-import { localeIsValid } from 'docc-render/utils/i18n-utils';
 
 export default {
   name: 'LocaleSelector',
@@ -45,15 +44,14 @@ export default {
     };
   },
   methods: {
-    updateRouter() {
-      const currentLocale = this.$i18n.locale;
-      if (!localeIsValid(currentLocale)) return;
+    updateRouter({ target: { value: currentLocale } }) {
+      this.$i18n.locale = currentLocale;
       this.$router.push({
         params: {
           locale: currentLocale === defaultLocale ? null : currentLocale,
         },
       });
-      updateLangTag(currentLocale || defaultLocale);
+      updateLangTag(currentLocale);
     },
   },
 };
