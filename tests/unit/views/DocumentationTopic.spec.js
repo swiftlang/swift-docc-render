@@ -210,7 +210,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technologyUrl: technology.url,
-      currentLocale: defaultLocale,
+      currentLocale: '',
       apiChangesVersion: null,
     });
     // its rendered by default
@@ -294,6 +294,29 @@ describe('DocumentationTopic', () => {
     const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
     expect(magnifierIconComponent.exists()).toBe(false);
+  });
+
+  it('renders NavigatorDataProvider with currentLocale if enablei18n is true', async () => {
+    wrapper = createWrapper({
+      computed: {
+        enablei18n: () => true,
+      },
+    });
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+
+    const technology = topicData.references['topic://foo'];
+    expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
+      interfaceLanguage: Language.swift.key.url,
+      technologyUrl: technology.url,
+      currentLocale: defaultLocale,
+      apiChangesVersion: null,
+    });
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {
