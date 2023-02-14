@@ -1051,8 +1051,8 @@ export default {
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 // unfortunately we need to hard-code the filter height
-$filter-height: 73px;
-$filter-height-small: 62px;
+$filter-height: 71px;
+$filter-height-small: 60px;
 
 .navigator-card {
   &.filter-on-top {
@@ -1111,8 +1111,8 @@ $filter-height-small: 62px;
   }
 
   .filter-component {
-    --input-vertical-padding: 10px;
-    --input-height: 20px;
+    --input-vertical-padding: 8px;
+    --input-height: 22px;
     --input-border-color: var(--color-grid);
     --input-text: var(--color-figure-gray-secondary);
 
