@@ -6,13 +6,14 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 import { mount } from '@vue/test-utils';
 import Tabnav from '@/components/Tabnav.vue';
 import TabnavItem from '@/components/TabnavItem.vue';
 import { flushPromises } from '../../../../test-utils';
+import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 
 const titles = ['Long tab title', 'A Longer tab title'];
 const scopedSlots = {
@@ -45,6 +46,8 @@ describe('TabNavigator.spec', () => {
     });
     expect(wrapper.findAll(TabnavItem)).toHaveLength(2);
     expect(wrapper.find('.tabs-content').text()).toEqual('First');
+    // eslint-disable-next-line no-underscore-dangle
+    expect(wrapper.vm._provided).toHaveProperty('imageLoadingStrategy', ImageLoadingStrategy.eager);
   });
 
   it('sets the TabNavigator in `vertical` mode', async () => {

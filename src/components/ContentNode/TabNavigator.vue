@@ -33,6 +33,7 @@
 <script>
 import Tabnav from 'docc-render/components/Tabnav.vue';
 import TabnavItem from 'docc-render/components/TabnavItem.vue';
+import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 
 /**
  * Tab navigation component, that renders `ContentNode`,
@@ -45,6 +46,9 @@ export default {
   components: {
     TabnavItem,
     Tabnav,
+  },
+  provide: {
+    imageLoadingStrategy: ImageLoadingStrategy.eager,
   },
   props: {
     vertical: {

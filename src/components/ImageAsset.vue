@@ -93,6 +93,11 @@ function constructAttributes(sources) {
 export default {
   name: 'ImageAsset',
   mixins: [imageAsset],
+  inject: {
+    imageLoadingStrategy: {
+      default: null,
+    },
+  },
   data: () => ({
     appState: AppStore.state,
     fallbackImageSrcSet: null,
@@ -109,7 +114,10 @@ export default {
     }) => lightVariantAttributes || darkVariantAttributes,
     darkVariantAttributes: ({ darkVariants }) => constructAttributes(darkVariants),
     lightVariantAttributes: ({ lightVariants }) => constructAttributes(lightVariants),
-    loading: ({ appState }) => appState.imageLoadingStrategy,
+    loading: ({ appState, imageLoadingStrategy }) => (
+      // use an image loading strategy, injected by a parent component, or the default app one
+      imageLoadingStrategy || appState.imageLoadingStrategy
+    ),
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto.value,
     prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark.value,
