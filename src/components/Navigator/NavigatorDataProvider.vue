@@ -93,7 +93,7 @@ export default {
       try {
         this.isFetching = true;
         const { interfaceLanguages, references } = await fetchIndexPathsData(
-          { currentLocale: this.$i18n.locale },
+          { currentLocale: this.currentLocale },
         );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);

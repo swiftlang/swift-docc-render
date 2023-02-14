@@ -133,7 +133,7 @@ export function clone(jsonObject) {
   return JSON.parse(JSON.stringify(jsonObject));
 }
 
-export async function fetchIndexPathsData({ currentLocale = defaultLocale }) {
+export async function fetchIndexPathsData({ currentLocale }) {
   const path = new URL(`${pathJoin([baseUrl, 'index/', currentLocale, 'index.json'])}`, window.location.href);
   return fetchData(path);
 }

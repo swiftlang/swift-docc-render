@@ -23,7 +23,7 @@
             :interface-language="topicProps.interfaceLanguage"
             :technologyUrl="technology.url"
             :api-changes-version="store.state.selectedAPIChangesVersion"
-            :currentLocale="$i18n.locale"
+            :currentLocale="enablei18n ? $i18n.locale : ''"
             ref="NavigatorDataProvider"
           >
             <template #default="slotProps">
@@ -176,6 +176,9 @@ export default {
     },
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
+    ),
+    enablei18n: () => (
+      getSetting(['features', 'docs', 'i18n', 'enable'], false)
     ),
     topicData: {
       get() {
