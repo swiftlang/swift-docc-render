@@ -52,4 +52,8 @@ export default class LRUMap {
       this.map.delete(firstKey);
     }
   }
+
+  * [Symbol.iterator]() {
+    yield* this.map;
+  }
 }

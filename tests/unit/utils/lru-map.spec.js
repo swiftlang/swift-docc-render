@@ -76,4 +76,16 @@ describe('LRUMap', () => {
     expect(map.has('h')).toBe(true);
     expect(map.has('i')).toBe(true);
   });
+
+  it('is iterable similar to a normal map', () => {
+    const map = new LRUMap(2);
+    map.set('z', 'Z');
+    map.set('a', 'A');
+    map.set('b', 'B');
+
+    expect([...map]).toEqual([
+      ['a', 'A'],
+      ['b', 'B'],
+    ]);
+  });
 });
