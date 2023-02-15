@@ -221,6 +221,16 @@ export default {
       filteredSymbols,
       focusedIndex,
     }) => (focusedIndex !== null ? filteredSymbols[focusedIndex] : null),
+    nextSymbol: ({
+      filteredSymbols,
+      focusedIndex,
+    }) => {
+      if (focusedIndex === null) {
+        return null;
+      }
+      const nextIndex = focusedIndex + 1;
+      return nextIndex < filteredSymbols.length ? filteredSymbols[nextIndex] : null;
+    },
     previewResult: ({
       cachedSymbolResults,
       selectedSymbol,
@@ -313,28 +323,34 @@ export default {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
     async fetchSelectedSymbolData() {
-      const { $cachedSymbolResults, selectedSymbol } = this;
-      if (!selectedSymbol || $cachedSymbolResults.has(selectedSymbol.uid)) {
-        return;
-      }
+      const fetchSymbolData = async (symbol) => {
+        if (!symbol || this.$cachedSymbolResults.has(symbol.uid)) {
+          return;
+        }
 
-      try {
-        const json = await fetchDataForPreview(selectedSymbol.path);
-        $cachedSymbolResults.set(selectedSymbol.uid, {
-          success: true,
-          data: extractProps(json),
-        });
-      } catch {
-        $cachedSymbolResults.set(selectedSymbol.uid, {
-          success: false,
-        });
-      } finally {
-        // `LRUMap` is a custom object that is very similar to a builtin `Map`
-        // and since `Map` objects can't directly hook into the reactivity
-        // in Vue 2, we need to convert this object into a plain `Object` every
-        // time it is mutated to workaround this lack of reactivity
-        this.cachedSymbolResults = Object.fromEntries($cachedSymbolResults);
-      }
+        try {
+          const json = await fetchDataForPreview(symbol.path);
+          this.$cachedSymbolResults.set(symbol.uid, {
+            success: true,
+            data: extractProps(json),
+          });
+        } catch {
+          this.$cachedSymbolResults.set(symbol.uid, {
+            success: false,
+          });
+        } finally {
+          // `LRUMap` is a custom object that is very similar to a builtin `Map`
+          // and since `Map` objects can't directly hook into the reactivity
+          // in Vue 2, we need to convert this object into a plain `Object` every
+          // time it is mutated to workaround this lack of reactivity
+          this.cachedSymbolResults = Object.fromEntries(this.$cachedSymbolResults);
+        }
+      };
+
+      // fetch/cache render JSON for the currently selected symbol
+      await fetchSymbolData(this.selectedSymbol);
+      // pre-fetch/cache render JSON for the next symbol as optimization
+      await fetchSymbolData(this.nextSymbol);
     },
   },
 };
