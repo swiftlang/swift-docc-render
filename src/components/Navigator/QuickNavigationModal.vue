@@ -106,7 +106,7 @@
               </div>
             </Reference>
           </div>
-          <div class="quick-navigation__preview">
+          <div v-if="!noResultsWereFound" class="quick-navigation__preview">
             <DocumentationTopic
               v-if="previewResult && previewResult.success"
               v-bind="previewResult.data"
@@ -418,7 +418,7 @@ $base-border-width: 1px;
       font-size: 1.416rem;
       font-weight: bold;
       line-height: 1.1;
-      padding: 1.5rem 80px;
+      padding: 1.5rem 40px;
     }
   }
   &__reference:hover {
