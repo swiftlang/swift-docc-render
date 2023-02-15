@@ -38,11 +38,15 @@
           <PossiblyChangedTextAttribute
             :changes="changes.required"
             :value="required"
-          >({{ $t('required') }}) </PossiblyChangedTextAttribute>
+          >
+            {{ $t('formats.parenthesis', { content: $t('required') }) }}
+          </PossiblyChangedTextAttribute>
           <PossiblyChangedTextAttribute
             :changes="changes.readOnly"
             :value="readOnly"
-          >({{ $t('read-only') }}) </PossiblyChangedTextAttribute>
+          >
+            {{ $t('formats.parenthesis', { content: $t('read-only') }) }}
+          </PossiblyChangedTextAttribute>
           <ContentNode v-if="content" :content="content" />
           <ParameterAttributes :attributes="attributes" :changes="changes" />
         </div>

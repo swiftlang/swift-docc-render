@@ -10,7 +10,7 @@
 
 <template>
   <span class="badge" :class="{ [`badge-${variant}`]: variant }" role="presentation">
-    <slot>{{ $t(text) }}</slot>
+    <slot>{{ text ? $t(text) : '' }}</slot>
   </span>
 </template>
 

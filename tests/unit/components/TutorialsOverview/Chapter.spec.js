@@ -84,7 +84,7 @@ describe('Chapter', () => {
 
     const eyebrow = name.find('.eyebrow');
     expect(eyebrow.exists()).toBe(true);
-    expect(eyebrow.text()).toBe('tutorials.sections.chapter');
+    expect(eyebrow.text()).toBe('tutorials.sections.chapter 1');
     expect(eyebrow.attributes('aria-hidden')).toBe('true');
   });
 

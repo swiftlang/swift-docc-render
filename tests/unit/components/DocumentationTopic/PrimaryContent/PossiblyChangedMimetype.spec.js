@@ -39,15 +39,15 @@ function createWrapper(props) {
 describe('PossiblyChangedMimetype', () => {
   it('renders a mimetype with default value', () => {
     const wrapper = createWrapper({ changes: {} });
-    expect(wrapper.find('.response-mimetype').text()).toBe('content-type');
+    expect(wrapper.find('.response-mimetype').text()).toBe('content-type foo');
   });
 
   it('renders two mimetypes, one for each change', () => {
     const wrapper = createWrapper();
     const mimeTypes = wrapper.findAll('.response-mimetype');
     expect(mimeTypes).toHaveLength(2);
-    expect(mimeTypes.at(0).text()).toBe('content-type');
-    expect(mimeTypes.at(1).text()).toBe('content-type');
+    expect(mimeTypes.at(0).text()).toBe('content-type newVal');
+    expect(mimeTypes.at(1).text()).toBe('content-type oldVal');
   });
 
   it('does not render a mimetype change, if the change is not of type "modified"', () => {
@@ -56,7 +56,7 @@ describe('PossiblyChangedMimetype', () => {
     });
     const mimeTypes = wrapper.findAll('.response-mimetype');
     expect(mimeTypes).toHaveLength(1);
-    expect(mimeTypes.at(0).text()).toBe('content-type');
+    expect(mimeTypes.at(0).text()).toBe('content-type foo');
   });
 
   it('does not render a mimetype change, if a string is provided as changes, when `change` is not `modified`', () => {
@@ -65,7 +65,7 @@ describe('PossiblyChangedMimetype', () => {
       change: ChangeTypes.added,
     });
 
-    expect(wrapper.find('.response-mimetype').text()).toBe('content-type');
+    expect(wrapper.find('.response-mimetype').text()).toBe('content-type foo');
   });
 
   it('does not render a mimetype change, if change is `modified` but the changes are still a `string`.', () => {
@@ -74,6 +74,6 @@ describe('PossiblyChangedMimetype', () => {
       change: ChangeTypes.modified,
     });
 
-    expect(wrapper.find('.response-mimetype').text()).toBe('content-type');
+    expect(wrapper.find('.response-mimetype').text()).toBe('content-type foo');
   });
 });

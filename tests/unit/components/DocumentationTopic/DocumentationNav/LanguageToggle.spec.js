@@ -194,7 +194,7 @@ describe('LanguageToggle', () => {
     const label = wrapper.find('span.nav-menu-setting-label');
     expect(label.exists()).toBe(true);
     // textContent makes sure there are no new lines or empty spaces
-    expect(label.element.textContent).toEqual('language');
+    expect(label.element.textContent).toEqual('formats.colon language');
   });
 
   it('renders `.nav-menu-setting-label` in `language-list-container` without spaces', () => {
@@ -202,7 +202,7 @@ describe('LanguageToggle', () => {
     expect(label.exists()).toBe(true);
     expect(label.attributes()).toHaveProperty('for', 'language-toggle');
     // textContent makes sure there are no new lines or empty spaces
-    expect(label.element.textContent).toEqual('language');
+    expect(label.element.textContent).toEqual('formats.colon language');
   });
 
   it('renders a `span.current-language` for the current language inside `language-list-container`', () => {

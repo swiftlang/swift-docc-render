@@ -227,7 +227,7 @@ describe('DocumentationTopic', () => {
 
   it('renders an aria live that tells VO users which it is the current page content', () => {
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('documentation.current-page');
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('documentation.current-page FooKit');
   });
 
   it('renders a `DocumentationHero`, enabled', () => {

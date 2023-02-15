@@ -142,12 +142,12 @@ describe('Primary Dropdown', () => {
     expect(node.props()).toEqual({
       isSmall: true,
       value: tutorial,
-      ariaLabel: 'tutorials.nav.current',
+      ariaLabel: 'tutorials.nav.current tutorials.title',
     });
   });
 
   it('Renders a the correct label', () => {
-    expect(wrapper.find('.visuallyhidden').text()).toBe('tutorials.nav.current');
+    expect(wrapper.find('.visuallyhidden').text()).toBe('tutorials.nav.current tutorials.title');
   });
 
   it('renders chapters properly', () => {

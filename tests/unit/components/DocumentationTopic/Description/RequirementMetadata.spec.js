@@ -18,9 +18,9 @@ describe('RequirementMetadata', () => {
 
     const strong = wrapper.find('strong');
     expect(strong.exists()).toBe(true);
-    expect(strong.text()).toBe('required.');
+    expect(strong.text()).toBe('required');
 
-    expect(wrapper.text()).toBe('required.');
+    expect(wrapper.text()).toBe('required');
   });
 
   it('adds "Default implementation provided." text with a default implementation', () => {
@@ -43,7 +43,7 @@ describe('RequirementMetadata', () => {
         },
       },
     });
-    expect(wrapper.text().startsWith('required.')).toBe(true);
+    expect(wrapper.text().startsWith('required')).toBe(true);
     expect(wrapper.text().endsWith('metadata.default-implementation')).toBe(true);
   });
 });

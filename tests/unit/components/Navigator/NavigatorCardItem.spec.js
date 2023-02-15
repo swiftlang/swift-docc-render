@@ -27,6 +27,7 @@ const {
 const defaultProps = {
   item: {
     depth: 2,
+    index: 1,
     type: TopicTypes.func,
     childUIDs: [1, 2, 3],
     path: '/path/to/foo',
@@ -479,7 +480,7 @@ describe('NavigatorCardItem', () => {
       const label = wrapper.find(`#label-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text())
-        .toBe('filter.symbols-inside');
+        .toBe('filter.symbols-inside 2 5');
     });
 
     it('renders a hidden span telling the containing number of symbols', () => {

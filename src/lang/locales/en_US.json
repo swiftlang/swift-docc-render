@@ -1,5 +1,5 @@
 {
-  "language": "Language :",
+  "language": "Language",
   "video": {
     "replay": "Replay",
     "play": "Play",
@@ -82,7 +82,7 @@
     "default-implementations": "Default Implementations",
     "relationships": "Relationships",
     "see-also": "See Also",
-    "declarations": "Declaration",
+    "declaration": "Declaration",
     "details": "Details",
     "parameters": "Parameters",
     "possible-values": "Possible Values",
@@ -140,8 +140,8 @@
     "default": "Default",
     "minimum": "Minimum",
     "maximum": "Maximum",
-    "possible-types": "Type: | Possible types:",
-    "possible-values": "Value: | Possible Values:"
+    "possible-types": "Type | Possible types",
+    "possible-values": "Value | Possible Values"
   },
   "content-type": "Content-Type: {value}",
   "read-only": "Read only",
@@ -167,5 +167,9 @@
     "clear": "Clear",
     "web-service-endpoint": "Web Service Endpoint",
     "search": "Search"
+  },
+  "formats": {
+    "parenthesis": "({content})",
+    "colon": "{content}: "
   }
 }

@@ -114,10 +114,17 @@ export default {
         this.userChoices[correctChoice].checked
       ));
     },
-    ariaLiveText: ({ checkedIndex, choices, $t }) => {
-      if (checkedIndex === null) return '';
-      const { isCorrect } = choices[checkedIndex];
-      return `${$t('assessment.answer-number', { index: checkedIndex + 1 })} ${isCorrect ? $t('assessment.correct') : $t('assessment.incorrect')}`;
+    ariaLiveText() {
+      if (this.checkedIndex === null) return '';
+      const { isCorrect } = this.choices[this.checkedIndex];
+      return `${
+          this.$t('assessment.answer-number', { index: this.checkedIndex + 1 })
+        } ${
+          isCorrect
+            ? this.$t('assessment.correct')
+            : this.$t('assessment.incorrect')
+        }
+      `;
     },
   },
   methods: {

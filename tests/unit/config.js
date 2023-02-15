@@ -12,7 +12,7 @@ import { config } from '@vue/test-utils';
 import { defaultLocale } from 'docc-render/lang';
 
 config.mocks = {
-  $t: tKey => tKey,
+  $t: (tKey, secondParam) => (secondParam ? [tKey, ...Object.values(secondParam)].join(' ') : tKey),
   $tc: tKey => tKey,
   $i18n: {
     locale: defaultLocale,

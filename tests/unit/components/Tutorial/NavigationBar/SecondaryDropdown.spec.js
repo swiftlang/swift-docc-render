@@ -95,7 +95,7 @@ describe('SecondaryDropdown', () => {
     expect(node.props()).toEqual({
       isSmall: true,
       value: currentOption,
-      ariaLabel: 'tutorials.nav.current',
+      ariaLabel: 'tutorials.nav.current sections.title',
     });
   });
 

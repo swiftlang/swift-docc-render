@@ -76,7 +76,7 @@ describe('Declaration', () => {
   it('renders an h2 section title', () => {
     const sectionTitle = wrapper.find(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
-    expect(sectionTitle.text()).toEqual('sections.declarations');
+    expect(sectionTitle.text()).toEqual('sections.declaration');
   });
 
   it('renders 1 `DeclarationGroup` and 0 labels without multiple declarations', () => {
