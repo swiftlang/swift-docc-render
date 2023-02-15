@@ -118,12 +118,6 @@
             >
               Preview unavailable
             </p>
-            <p
-              v-else
-              class="quick-navigation__preview-loading"
-            >
-              Loading...
-            </p>
           </div>
         </div>
       </div>
@@ -171,11 +165,6 @@ export default {
       debouncedInput: '',
       userInput: '',
       cachedSymbolResults: {},
-      preview: {
-        data: null,
-        error: null,
-        loading: false,
-      },
     };
   },
   props: {
@@ -413,7 +402,6 @@ $base-border-width: 1px;
     position: sticky;
     top: 0;
 
-    &-loading,
     &-unavailable {
       font-size: 1.416rem;
       font-weight: bold;
