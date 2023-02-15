@@ -29,7 +29,7 @@ export default {
   components: { ColorSchemeToggle, LocaleSelector },
   computed: {
     enablei18n: () => (
-      getSetting(['features', 'docs', 'i18n', 'enable'], true)
+      getSetting(['features', 'docs', 'i18n', 'enable'], false)
     ),
   },
 };
