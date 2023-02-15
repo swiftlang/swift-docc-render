@@ -16,7 +16,7 @@ import {
 } from 'docc-render/utils/router-utils';
 import routes from 'docc-render/routes';
 import { baseUrl } from 'docc-render/utils/theme-settings';
-import { addPrefixedRoutes } from '@/utils/route-utils';
+import { addPrefixedRoutes } from 'docc-render/utils/route-utils';
 import { notFoundRouteName } from 'docc-render/constants/router';
 
 const defaultRoutes = [...addPrefixedRoutes(routes, [notFoundRouteName]), ...routes];
