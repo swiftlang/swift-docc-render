@@ -12,7 +12,7 @@ import VueI18n from 'vue-i18n';
 import * as lang from 'docc-render/lang';
 
 export default function createi18nInstance(config = lang) {
-  const { defaultLocale, ...messages } = config;
+  const { defaultLocale, messages } = config;
 
   const i18n = new VueI18n({
     locale: defaultLocale,

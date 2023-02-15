@@ -9,10 +9,15 @@
 */
 
 /* eslint-disable camelcase */
+import en_US from './locales/en-US.json';
+import zh_CN from './locales/zh-CN.json';
+import ja_JA from './locales/ja-JA.json';
 
 // default locale
-export const defaultLocale = 'en';
+export const defaultLocale = 'en-US';
 // translated locales
-export { default as en } from './locales/en.json';
-export { default as cn } from './locales/cn.json';
-export { default as ja } from './locales/ja.json';
+export const messages = {
+  'en-US': en_US,
+  'zh-CN': zh_CN,
+  'ja-JA': ja_JA,
+};

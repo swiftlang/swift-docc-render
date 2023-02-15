@@ -14,11 +14,11 @@ import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 jest.mock('docc-render/lang/locales.json', () => (
   [
     {
-      code: 'en',
+      code: 'en-US',
       name: 'English',
     },
     {
-      code: 'cn',
+      code: 'zh-CN',
       name: '简体中文',
     },
   ]
@@ -46,9 +46,9 @@ describe('LocaleSelector', () => {
     const options = wrapper.findAll('option');
     expect(options).toHaveLength(2);
     expect(options.at(0).text()).toBe('English');
-    expect(options.at(0).attributes('value')).toBe('en');
+    expect(options.at(0).attributes('value')).toBe('en-US');
 
     expect(options.at(1).text()).toBe('简体中文');
-    expect(options.at(1).attributes('value')).toBe('cn');
+    expect(options.at(1).attributes('value')).toBe('zh-CN');
   });
 });
