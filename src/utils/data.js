@@ -14,7 +14,7 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
-import { enablei18n, defaultLocale } from 'docc-render/lang';
+import { enablei18n, defaultLocale } from 'theme/lang/index.js';
 
 export async function fetchData(path, params = {}) {
   function isBadResponse(response) {

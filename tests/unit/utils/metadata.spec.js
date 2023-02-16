@@ -9,7 +9,7 @@
 */
 
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
-import { defaultLocale } from 'docc-render/lang';
+import { defaultLocale } from 'theme/lang/index.js';
 
 const fs = require('fs');
 const path = require('path');

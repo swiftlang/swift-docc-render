@@ -11,7 +11,7 @@
 import { localeIsValid, updateCurrentLocale } from '@/utils/i18n-utils';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
-jest.mock('docc-render/lang/locales.json', () => (
+jest.mock('theme/lang/locales.json', () => (
   [
     {
       code: 'en-US',

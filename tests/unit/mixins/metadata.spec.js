@@ -10,7 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
-import { defaultLocale } from 'docc-render/lang';
+import { defaultLocale } from 'theme/lang/index.js';
 import metadata from 'docc-render/mixins/metadata';
 
 jest.mock('docc-render/utils/metadata', () => ({

@@ -8,8 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import appLocales from 'docc-render/lang/locales.json';
-import { defaultLocale } from 'docc-render/lang';
+import appLocales from 'theme/lang/locales.json';
+import { defaultLocale } from 'theme/lang/index.js';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
 const localeCodes = new Set(appLocales.map(appLocale => appLocale.code));

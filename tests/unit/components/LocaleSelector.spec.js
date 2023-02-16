@@ -11,7 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 
-jest.mock('docc-render/lang/locales.json', () => (
+jest.mock('theme/lang/locales.json', () => (
   [
     {
       code: 'en-US',

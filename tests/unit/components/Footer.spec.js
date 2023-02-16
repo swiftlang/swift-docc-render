@@ -13,7 +13,7 @@ import Footer from 'docc-render/components/Footer.vue';
 
 const mockEnablei18n = jest.fn().mockReturnValue(false);
 
-jest.mock('docc-render/lang', () => ({
+jest.mock('theme/lang/index.js', () => ({
   get enablei18n() { return mockEnablei18n(); },
 }));
 
