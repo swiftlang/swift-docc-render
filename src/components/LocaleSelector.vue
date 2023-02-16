@@ -17,7 +17,7 @@
     >
       <option
         v-for="{ code, name } in locales"
-        :key="`lang-${code}`"
+        :key="code"
         :value="code"
       >
         {{ name }}

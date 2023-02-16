@@ -23,7 +23,6 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
-import { defaultLocale } from 'docc-render/lang';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
@@ -35,6 +34,14 @@ jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
+
+const mockEnablei18n = jest.fn().mockReturnValue(false);
+
+jest.mock('docc-render/lang', () => ({
+  get enablei18n() { return mockEnablei18n(); },
+}));
+
+const defaultLocale = 'en-US';
 
 const TechnologyWithChildren = {
   path: '/documentation/foo',
@@ -297,11 +304,9 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders NavigatorDataProvider with currentLocale if enablei18n is true', async () => {
-    wrapper = createWrapper({
-      computed: {
-        enablei18n: () => true,
-      },
-    });
+    mockEnablei18n.mockReturnValueOnce(true);
+
+    wrapper = createWrapper();
 
     wrapper.setData({
       topicData: {
