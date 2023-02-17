@@ -118,6 +118,12 @@
             >
               Preview unavailable
             </p>
+            <p
+              v-if="isLoadingPreview"
+              class="quick-navigation__preview-loading"
+            >
+              Loading preview
+            </p>
           </div>
         </div>
       </div>
@@ -138,6 +144,7 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
+import { documentationTopicName } from 'docc-render/constants/router';
 
 const { extractProps } = DocumentationTopic.methods;
 
@@ -158,13 +165,16 @@ export default {
     keyboardNavigation,
   ],
   created() {
+    this.abortController = null;
     this.$cachedSymbolResults = new LRUMap(MAX_RESULTS);
+    this.timeout = null;
   },
   data() {
     return {
       debouncedInput: '',
       userInput: '',
       cachedSymbolResults: {},
+      isLoadingPreview: false,
     };
   },
   props: {
@@ -228,8 +238,11 @@ export default {
       if (focusedIndex === null) {
         return null;
       }
-      const nextIndex = focusedIndex + 1;
-      return nextIndex < filteredSymbols.length ? filteredSymbols[nextIndex] : null;
+      let nextIndex = focusedIndex + 1;
+      if (nextIndex >= filteredSymbols.length) {
+        nextIndex = 0;
+      }
+      return filteredSymbols[nextIndex];
     },
     previewResult: ({
       cachedSymbolResults,
@@ -322,22 +335,51 @@ export default {
     startingPointHook() {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
+    isDocumentationTopicRoute(path) {
+      const { route: { name = '' } = {} } = this.$router.resolve(path);
+      return name.includes(documentationTopicName);
+    },
     async fetchSelectedSymbolData() {
+      this.timeout = setTimeout(() => {
+        if (!this.previewResult) {
+          this.isLoadingPreview = true;
+        }
+      }, 1000);
+
+      if (!this.selectedSymbol || this.$cachedSymbolResults.has(this.selectedSymbol.uid)) {
+        clearTimeout(this.timeout);
+        this.isLoadingPreview = false;
+        return;
+      }
+
       const fetchSymbolData = async (symbol) => {
         if (!symbol || this.$cachedSymbolResults.has(symbol.uid)) {
           return;
         }
 
         try {
-          const json = await fetchDataForPreview(symbol.path);
-          this.$cachedSymbolResults.set(symbol.uid, {
-            success: true,
-            data: extractProps(json),
-          });
-        } catch {
-          this.$cachedSymbolResults.set(symbol.uid, {
-            success: false,
-          });
+          if (this.isDocumentationTopicRoute(symbol.path)) {
+            const json = await fetchDataForPreview(symbol.path, {
+              signal: this.abortController.signal,
+            });
+            this.$cachedSymbolResults.set(symbol.uid, {
+              success: true,
+              data: extractProps(json),
+            });
+          } else {
+            this.$cachedSymbolResults.set(symbol.uid, {
+              success: false,
+            });
+          }
+        } catch (e) {
+          // errors triggered by the abort controller are safe to ignore since
+          // we are only aborting them for performance reasons and would like
+          // to later re-try them if possible
+          if (e.name !== 'AbortError') {
+            this.$cachedSymbolResults.set(symbol.uid, {
+              success: false,
+            });
+          }
         } finally {
           // `LRUMap` is a custom object that is very similar to a builtin `Map`
           // and since `Map` objects can't directly hook into the reactivity
@@ -347,10 +389,18 @@ export default {
         }
       };
 
-      // fetch/cache render JSON for the currently selected symbol
-      await fetchSymbolData(this.selectedSymbol);
-      // pre-fetch/cache render JSON for the next symbol as optimization
-      await fetchSymbolData(this.nextSymbol);
+      if (this.abortController) {
+        this.abortController.abort();
+      }
+      this.abortController = new AbortController();
+
+      await Promise.all([
+        fetchSymbolData(this.selectedSymbol).finally(() => {
+          clearTimeout(this.timeout);
+          this.isLoadingPreview = false;
+        }),
+        fetchSymbolData(this.nextSymbol),
+      ]);
     },
   },
 };
@@ -418,6 +468,7 @@ $base-border-width: 1px;
     position: sticky;
     top: 0;
 
+    &-loading,
     &-unavailable {
       font-size: 1.416rem;
       font-weight: bold;
