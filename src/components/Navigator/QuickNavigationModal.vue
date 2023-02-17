@@ -144,6 +144,7 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
+import { documentationTopicName } from 'docc-render/constants/router';
 
 const { extractProps } = DocumentationTopic.methods;
 
@@ -334,6 +335,10 @@ export default {
     startingPointHook() {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
+    isDocumentationTopicRoute(path) {
+      const { route: { name = '' } = {} } = this.$router.resolve(path);
+      return name.includes(documentationTopicName);
+    },
     async fetchSelectedSymbolData() {
       this.timeout = setTimeout(() => {
         if (!this.previewResult) {
@@ -353,13 +358,19 @@ export default {
         }
 
         try {
-          const json = await fetchDataForPreview(symbol.path, {
-            signal: this.abortController.signal,
-          });
-          this.$cachedSymbolResults.set(symbol.uid, {
-            success: true,
-            data: extractProps(json),
-          });
+          if (this.isDocumentationTopicRoute(symbol.path)) {
+            const json = await fetchDataForPreview(symbol.path, {
+              signal: this.abortController.signal,
+            });
+            this.$cachedSymbolResults.set(symbol.uid, {
+              success: true,
+              data: extractProps(json),
+            });
+          } else {
+            this.$cachedSymbolResults.set(symbol.uid, {
+              success: false,
+            });
+          }
         } catch (e) {
           // errors triggered by the abort controller are safe to ignore since
           // we are only aborting them for performance reasons and would like
