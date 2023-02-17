@@ -118,6 +118,12 @@
             >
               Preview unavailable
             </p>
+            <p
+              v-if="isLoadingPreview"
+              class="quick-navigation__preview-loading"
+            >
+              Loading preview
+            </p>
           </div>
         </div>
       </div>
@@ -160,12 +166,14 @@ export default {
   created() {
     this.abortController = null;
     this.$cachedSymbolResults = new LRUMap(MAX_RESULTS);
+    this.timeout = null;
   },
   data() {
     return {
       debouncedInput: '',
       userInput: '',
       cachedSymbolResults: {},
+      isLoadingPreview: false,
     };
   },
   props: {
@@ -327,7 +335,15 @@ export default {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
     async fetchSelectedSymbolData() {
+      this.timeout = setTimeout(() => {
+        if (!this.previewResult) {
+          this.isLoadingPreview = true;
+        }
+      }, 1000);
+
       if (!this.selectedSymbol || this.$cachedSymbolResults.has(this.selectedSymbol.uid)) {
+        clearTimeout(this.timeout);
+        this.isLoadingPreview = false;
         return;
       }
 
@@ -368,7 +384,10 @@ export default {
       this.abortController = new AbortController();
 
       await Promise.all([
-        fetchSymbolData(this.selectedSymbol),
+        fetchSymbolData(this.selectedSymbol).finally(() => {
+          clearTimeout(this.timeout);
+          this.isLoadingPreview = false;
+        }),
         fetchSymbolData(this.nextSymbol),
       ]);
     },
@@ -438,6 +457,7 @@ $base-border-width: 1px;
     position: sticky;
     top: 0;
 
+    &-loading,
     &-unavailable {
       font-size: 1.416rem;
       font-weight: bold;
