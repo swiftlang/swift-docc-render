@@ -488,6 +488,10 @@ $base-border-width: 1px;
     position: sticky;
     top: 0;
 
+    @include breakpoint(small) {
+      display: none;
+    }
+
     &-loading,
     &-unavailable {
       font-size: 1.416rem;
