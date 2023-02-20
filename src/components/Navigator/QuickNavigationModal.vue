@@ -148,7 +148,9 @@ import { documentationTopicName } from 'docc-render/constants/router';
 
 const { extractProps } = DocumentationTopic.methods;
 
+const ABORT_ERROR_NAME = 'AbortError';
 const MAX_RESULTS = 20;
+const SLOW_LOADING_DELAY = 1000; // 1 second in milliseconds
 
 export default {
   name: 'QuickNavigationModal',
@@ -167,7 +169,7 @@ export default {
   created() {
     this.abortController = null;
     this.$cachedSymbolResults = new LRUMap(MAX_RESULTS);
-    this.timeout = null;
+    this.loadingTimeout = null;
   },
   data() {
     return {
@@ -340,14 +342,20 @@ export default {
       return name.includes(documentationTopicName);
     },
     async fetchSelectedSymbolData() {
-      this.timeout = setTimeout(() => {
+      // start a timer: if a full second has elapsed and the network request for
+      // data hasn't completed yet, indicate that the data is still loading in
+      // the actual UI — without the delay, the constant flashing of this
+      // message would be too distracting
+      this.loadingTimeout = setTimeout(() => {
         if (!this.previewResult) {
           this.isLoadingPreview = true;
         }
-      }, 1000);
+      }, SLOW_LOADING_DELAY);
 
+      // exit early if the previwe data is already cached for this symbol as
+      // there is no additional work needed
       if (!this.selectedSymbol || this.$cachedSymbolResults.has(this.selectedSymbol.uid)) {
-        clearTimeout(this.timeout);
+        clearTimeout(this.loadingTimeout);
         this.isLoadingPreview = false;
         return;
       }
@@ -359,6 +367,7 @@ export default {
 
         try {
           if (this.isDocumentationTopicRoute(symbol.path)) {
+            // load render JSON for the selected /documentation/ page
             const json = await fetchDataForPreview(symbol.path, {
               signal: this.abortController.signal,
             });
@@ -367,6 +376,9 @@ export default {
               data: extractProps(json),
             });
           } else {
+            // the preview is only designed for documentation pages, so we
+            // should just show an error message for other page types (like
+            // tutorials) instead of trying to fetch data for that page
             this.$cachedSymbolResults.set(symbol.uid, {
               success: false,
             });
@@ -375,7 +387,7 @@ export default {
           // errors triggered by the abort controller are safe to ignore since
           // we are only aborting them for performance reasons and would like
           // to later re-try them if possible
-          if (e.name !== 'AbortError') {
+          if (e.name !== ABORT_ERROR_NAME) {
             this.$cachedSymbolResults.set(symbol.uid, {
               success: false,
             });
@@ -389,6 +401,12 @@ export default {
         }
       };
 
+      // the abort controller is useful for clients with slower networks—if it
+      // is taking a long time for page data to load, we don't want to create
+      // a bottleneck with many queued pending requests. this controller is used
+      // to cancel any pending requests that aren't for this symbol or the one
+      // immediately following it which can happen on a slow network if the
+      // user quickly scrolls through the list of results
       if (this.abortController) {
         this.abortController.abort();
       }
@@ -396,7 +414,9 @@ export default {
 
       await Promise.all([
         fetchSymbolData(this.selectedSymbol).finally(() => {
-          clearTimeout(this.timeout);
+          // the timeout for the loading message only applies to the currently
+          // selected symbol
+          clearTimeout(this.loadingTimeout);
           this.isLoadingPreview = false;
         }),
         fetchSymbolData(this.nextSymbol),
