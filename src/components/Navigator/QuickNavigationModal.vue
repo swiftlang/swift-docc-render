@@ -484,6 +484,7 @@ $base-border-width: 1px;
     }
   }
   &__preview {
+    border-left: $base-border-width solid var(--color-fill-gray);
     flex: 0 0 61.8%;
     overflow: auto;
     position: sticky;
