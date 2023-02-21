@@ -337,6 +337,7 @@ export default {
       languages: new Set(Object.keys(this.languagePaths)),
       interfaceLanguage: this.interfaceLanguage,
       symbolKind: this.symbolKind,
+      enableMinimized: this.enableMinimized,
     };
   },
   data() {
