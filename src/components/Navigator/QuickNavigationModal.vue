@@ -259,6 +259,7 @@ export default {
     userInput: 'debounceInput',
     focusedIndex: 'scrollIntoView',
     selectedSymbol: 'fetchSelectedSymbolData',
+    $route: 'closeQuickNavigationModal',
   },
   methods: {
     closeQuickNavigationModal() {
