@@ -112,18 +112,18 @@
               v-bind="previewResult.data"
               enableMinimized
             />
-            <p
+            <div
               v-if="previewResult && !previewResult.success"
-              class="quick-navigation__preview-unavailable"
+              class="quick-navigation__preview-message"
             >
-              Preview unavailable
-            </p>
-            <p
+              <p>Preview unavailable</p>
+            </div>
+            <div
               v-if="isLoadingPreview"
-              class="quick-navigation__preview-loading"
+              class="quick-navigation__preview-message"
             >
-              Loading preview
-            </p>
+              <p>Loading preview</p>
+            </div>
           </div>
         </div>
       </div>
@@ -494,12 +494,11 @@ $base-border-width: 1px;
       display: none;
     }
 
-    &-loading,
-    &-unavailable {
-      font-size: 1.416rem;
-      font-weight: bold;
-      line-height: 1.1;
-      padding: 1.5rem 40px;
+    &-message {
+      align-items: center;
+      display: flex;
+      height: 100%;
+      justify-content: center;
     }
   }
   &__reference:hover {
