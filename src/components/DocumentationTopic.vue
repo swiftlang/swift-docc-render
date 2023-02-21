@@ -619,9 +619,17 @@ export default {
       margin-top: 0;
     }
 
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
     h2 {
       font-size: 1.083rem;
-      font-weight: bold;
     }
 
     aside {
