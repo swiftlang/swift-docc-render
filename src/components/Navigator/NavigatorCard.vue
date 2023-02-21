@@ -865,6 +865,7 @@ export default {
      */
     getChildPositionInScroller(element) {
       if (!element) return 0;
+      element = typeof element === 'string' ? document.getElementById(element) : element;
       const { paddingTop, paddingBottom } = getComputedStyle(this.$refs.scroller.$el);
       // offset for better visibility
       const offset = {
@@ -875,9 +876,10 @@ export default {
       const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
       // get the position of the active element
       const { y: elY } = element.getBoundingClientRect();
-      const elHeight = element.offsetParent.offsetHeight;
+      const elHeight = (element.offsetParent || {}).offsetHeight || 0;
       // calculate where element starts from
       const elementStart = elY - areaY - offset.top;
+      console.log(areaY, areaHeight, elY, elHeight, elementStart);
       // element is above the scrollarea
       if (elementStart < 0) {
         return -1;
@@ -892,18 +894,23 @@ export default {
     isInsideScroller(element) {
       return this.$refs.scroller.$el.contains(element);
     },
-    handleFocusIn({ target }) {
+    async handleFocusIn({ target }) {
+      await waitFrames(10);
+      const { id } = target;
+      const el = document.getElementById(id);
+      console.log(el, target, el === target);
       this.lastFocusTarget = target;
       const positionIndex = this.getChildPositionInScroller(target);
       // if multiplier is 0, the item is inside the scrollarea, no need to scroll
       if (positionIndex === 0) return;
       // get the height of the closest positioned item.
       const { offsetHeight } = target.offsetParent;
+      console.log(target, offsetHeight * positionIndex);
       // scroll the area, up/down, based on position of child item
-      this.$refs.scroller.$el.scrollBy({
-        top: offsetHeight * positionIndex,
-        left: 0,
-      });
+      // this.$refs.scroller.$el.scrollBy({
+      //   top: offsetHeight * positionIndex,
+      //   left: 0,
+      // });
     },
     handleFocusOut(event) {
       if (!event.relatedTarget) return;
@@ -924,6 +931,7 @@ export default {
       ) {
         return;
       }
+      console.log('update', this.lastFocusTarget);
       this.lastFocusTarget.focus({
         preventScroll: true,
       });

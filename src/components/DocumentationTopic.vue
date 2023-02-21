@@ -56,6 +56,15 @@
           v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
+        <div class="declarations-container">
+          <Declaration
+            v-for="(declaration, index) in declarations"
+            :key="index"
+            :conformance="conformance"
+            :declarations="declaration.declarations"
+            :source="remoteSource"
+          />
+        </div>
       </DocumentationHero>
       <div class="doc-content-wrapper">
         <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
@@ -79,11 +88,11 @@
               </Aside>
             </div>
             <PrimaryContent
-              v-if="primaryContentSections && primaryContentSections.length"
+              v-if="primaryContentSectionsSanitized && primaryContentSectionsSanitized.length"
               :class="{ 'with-border': !enhanceBackground }"
               :conformance="conformance"
               :source="remoteSource"
-              :sections="primaryContentSections"
+              :sections="primaryContentSectionsSanitized"
             />
           </div>
           <Topics
@@ -135,6 +144,8 @@ import DocumentationHero from 'docc-render/components/DocumentationTopic/Documen
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
+import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -171,6 +182,7 @@ export default {
     },
   },
   components: {
+    Declaration,
     OnThisPageStickyContainer,
     OnThisPageNav,
     DocumentationHero,
@@ -395,9 +407,10 @@ export default {
       sampleCodeDownload,
       hasAvailability,
       shouldShowLanguageSwitcher,
+      declarations,
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
-      (!!roleHeading + !!abstract + !!sampleCodeDownload
+      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!declarations.length
         + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
@@ -419,12 +432,12 @@ export default {
       isRequirement,
       deprecationSummary,
       downloadNotAvailableSummary,
-      primaryContentSections,
+      primaryContentSectionsSanitized,
     }) => (
       isRequirement
       || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
-      || (primaryContentSections && primaryContentSections.length)
+      || (primaryContentSectionsSanitized.length)
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**
@@ -444,6 +457,12 @@ export default {
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
+    primaryContentSectionsSanitized({ primaryContentSections = [] }) {
+      return primaryContentSections.filter(({ kind }) => kind !== SectionKind.declarations);
+    },
+    declarations({ primaryContentSections = [] }) {
+      return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
+    },
   },
   methods: {
     normalizePath(path) {
@@ -596,6 +615,10 @@ export default {
 }
 
 .sample-download {
+  margin-top: 20px;
+}
+
+.declarations-container {
   margin-top: 20px;
 }
 
