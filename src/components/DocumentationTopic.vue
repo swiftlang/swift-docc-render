@@ -85,6 +85,12 @@
               :source="remoteSource"
               :sections="primaryContentSections"
             />
+            <SeeMore
+              v-if="enableMinimized"
+              :url="seeMoreLink"
+            >
+              {{ seeMoreLinkTitle }}
+            </SeeMore>
           </div>
           <Topics
             v-if="shouldRenderTopicSection"
@@ -144,6 +150,7 @@ import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
 import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
+import SeeMore from './DocumentationTopic/SeeMore.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
@@ -186,6 +193,7 @@ export default {
     RequirementMetadata,
     Availability,
     SeeAlso,
+    SeeMore,
     Title,
     Topics,
     WordBreak,
@@ -258,6 +266,11 @@ export default {
     title: {
       type: String,
       required: true,
+    },
+    seeMoreLinkTitle: {
+      type: String,
+      required: false,
+      default: () => 'See More',
     },
     topicSections: {
       type: Array,
@@ -425,6 +438,14 @@ export default {
       || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
+    ),
+    seeMoreLink: ({
+      references,
+      identifier,
+      objcPath,
+      swiftPath,
+    }) => (
+      references[identifier] ? references[identifier].url : (objcPath || swiftPath)
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**

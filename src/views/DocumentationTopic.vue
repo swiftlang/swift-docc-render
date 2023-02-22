@@ -89,6 +89,7 @@
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
           :enableMinimized="enableMinimized"
+          :seeMoreLinkTitle="seeMoreLinkTitle"
         />
       </component>
     </template>
@@ -147,6 +148,10 @@ export default {
     enableMinimized: {
       type: Boolean,
       default: false,
+    },
+    seeMoreLinkTitle: {
+      type: String,
+      required: false,
     },
   },
   data() {
