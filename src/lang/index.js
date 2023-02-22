@@ -12,7 +12,7 @@ import { getSetting } from 'docc-render/utils/theme-settings';
 /* eslint-disable camelcase */
 import en_US from './locales/en-US.json';
 import zh_CN from './locales/zh-CN.json';
-import ja_JA from './locales/ja-JA.json';
+import ja_JP from './locales/ja-JP.json';
 
 // default locale
 export const defaultLocale = 'en-US';
@@ -20,7 +20,7 @@ export const defaultLocale = 'en-US';
 export const messages = {
   'en-US': en_US,
   'zh-CN': zh_CN,
-  'ja-JA': ja_JA,
+  'ja-JP': ja_JP,
 };
 // enable i18n feature flag
 export const enablei18n = getSetting(['features', 'docs', 'i18n', 'enable'], false);
