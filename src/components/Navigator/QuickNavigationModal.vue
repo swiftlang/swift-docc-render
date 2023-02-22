@@ -107,23 +107,31 @@
             </Reference>
           </div>
           <div v-if="!noResultsWereFound" class="quick-navigation__preview">
-            <DocumentationTopic
-              v-if="previewResult && previewResult.success"
-              v-bind="previewResult.data"
-              enableMinimized
-            />
-            <div
-              v-if="previewResult && !previewResult.success"
-              class="quick-navigation__preview-message"
-            >
-              <p>Preview unavailable</p>
-            </div>
             <div
               v-if="isLoadingPreview"
-              class="quick-navigation__preview-message"
+              class="quick-navigation__preview-loading"
             >
-              <p>Loading preview</p>
+
+              <div
+                v-for="style in LOADER_ROW_STYLES"
+                class="quick-navigation__preview-loading-row"
+                :key="style['--index']"
+                :style="style"
+              />
             </div>
+            <template v-else>
+              <DocumentationTopic
+                v-if="previewResult && previewResult.success"
+                v-bind="previewResult.data"
+                enableMinimized
+              />
+              <div
+                v-if="previewResult && !previewResult.success"
+                class="quick-navigation__preview-message"
+              >
+                <p>Preview unavailable</p>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -254,6 +262,11 @@ export default {
     ) : (
       null
     )),
+    LOADER_ROW_STYLES: () => ([
+      { '--index': 0, width: '30%' },
+      { '--index': 1, width: '80%' },
+      { '--index': 2, width: '50%' },
+    ]),
   },
   watch: {
     userInput: 'debounceInput',
@@ -499,6 +512,30 @@ $base-border-width: 1px;
       display: flex;
       height: 100%;
       justify-content: center;
+    }
+
+    &-loading {
+      padding: 20px;
+
+      &-row {
+        animation: pulse 2.5s ease;
+        animation-delay: calc(1s + 0.3s * var(--index));
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        background-color: var(--color-fill-gray-tertiary);
+        border-radius: 4px;
+        height: 12px;
+        margin: 20px 0;
+        opacity: 0;
+
+        &:first-of-type {
+          margin-top: 0;
+        }
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+      }
     }
   }
   &__reference:hover {
