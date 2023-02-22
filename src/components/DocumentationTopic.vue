@@ -56,7 +56,11 @@
           v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
-        <div class="declarations-container" :class="{ 'minimized-container': enableMinimized }">
+        <div
+          v-if="declarations.length"
+          class="declarations-container"
+          :class="{ 'minimized-container': enableMinimized }"
+        >
           <Declaration
             v-for="(declaration, index) in declarations"
             :key="index"
