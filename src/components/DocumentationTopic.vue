@@ -56,7 +56,7 @@
           v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
-        <div class="declarations-container">
+        <div class="declarations-container" :class="{ 'minimized-container': enableMinimized }">
           <Declaration
             v-for="(declaration, index) in declarations"
             :key="index"
@@ -67,7 +67,10 @@
         </div>
       </DocumentationHero>
       <div class="doc-content-wrapper">
-        <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
+        <div
+          class="doc-content"
+          :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
+        >
           <div
             v-if="hasPrimaryContent"
             :class="['container', { 'minimized-container': enableMinimized }]"
@@ -619,7 +622,7 @@ export default {
 }
 
 .declarations-container {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 /deep/ {
