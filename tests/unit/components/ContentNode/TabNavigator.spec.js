@@ -12,8 +12,8 @@ import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 import { mount } from '@vue/test-utils';
 import Tabnav from '@/components/Tabnav.vue';
 import TabnavItem from '@/components/TabnavItem.vue';
-import { flushPromises } from '../../../../test-utils';
 import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
+import { flushPromises } from '../../../../test-utils';
 
 const titles = ['Long tab title', 'A Longer tab title'];
 const scopedSlots = {

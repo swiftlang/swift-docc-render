@@ -11,8 +11,8 @@
 import { shallowMount } from '@vue/test-utils';
 import ImageAsset from 'docc-render/components/ImageAsset.vue';
 
-import { flushPromises } from '../../../test-utils';
 import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
+import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/stores/AppStore', () => ({
   state: {
