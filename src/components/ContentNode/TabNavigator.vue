@@ -33,7 +33,7 @@
 <script>
 import Tabnav from 'docc-render/components/Tabnav.vue';
 import TabnavItem from 'docc-render/components/TabnavItem.vue';
-import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
+import ImageLoadingStrategy from 'docc-render/constants/ImageLoadingStrategy';
 
 /**
  * Tab navigation component, that renders `ContentNode`,

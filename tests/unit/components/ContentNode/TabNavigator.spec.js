@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
 import { mount } from '@vue/test-utils';
