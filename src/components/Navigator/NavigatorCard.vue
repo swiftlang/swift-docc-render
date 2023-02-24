@@ -47,7 +47,10 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
+          <DynamicScrollerItem
+            v-bind="{ active, item, dataIndex: index }"
+            :ref="`dynamicScroller_${item.uid}`"
+          >
             <NavigatorCardItem
               :item="item"
               :isRendered="active"
@@ -479,6 +482,14 @@ export default {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
       this.selectedTags = this.selectedTags.filter(t => !ChangeNames[t]);
+    },
+    async activeUID(newUid, oldUID) {
+      // update the dynamicScroller item's size, when we change the UID
+      await this.$nextTick();
+      const item = this.$refs[`dynamicScroller_${oldUID}`];
+      if (item && item.updateSize) {
+        item.updateSize();
+      }
     },
   },
   methods: {
