@@ -152,11 +152,11 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
-import { documentationTopicName } from 'docc-render/constants/router';
 
 const { extractProps } = DocumentationTopic.methods;
 
 const ABORT_ERROR_NAME = 'AbortError';
+const HERO_KIND = 'hero';
 const MAX_RESULTS = 20;
 const SLOW_LOADING_DELAY = 1000; // 1 second in milliseconds
 
@@ -351,10 +351,6 @@ export default {
     startingPointHook() {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
-    isDocumentationTopicRoute(path) {
-      const { route: { name = '' } = {} } = this.$router.resolve(path);
-      return name.includes(documentationTopicName);
-    },
     async fetchSelectedSymbolData() {
       // start a timer: if a full second has elapsed and the network request for
       // data hasn't completed yet, indicate that the data is still loading in
@@ -380,23 +376,14 @@ export default {
         }
 
         try {
-          if (this.isDocumentationTopicRoute(symbol.path)) {
-            // load render JSON for the selected /documentation/ page
-            const json = await fetchDataForPreview(symbol.path, {
-              signal: this.abortController.signal,
-            });
-            this.$cachedSymbolResults.set(symbol.uid, {
-              success: true,
-              data: extractProps(json),
-            });
-          } else {
-            // the preview is only designed for documentation pages, so we
-            // should just show an error message for other page types (like
-            // tutorials) instead of trying to fetch data for that page
-            this.$cachedSymbolResults.set(symbol.uid, {
-              success: false,
-            });
-          }
+          // load render JSON for the selected /documentation/ page
+          const json = await fetchDataForPreview(symbol.path, {
+            signal: this.abortController.signal,
+          });
+          this.$cachedSymbolResults.set(symbol.uid, {
+            success: true,
+            data: this.getPreviewProps(json),
+          });
         } catch (e) {
           // errors triggered by the abort controller are safe to ignore since
           // we are only aborting them for performance reasons and would like
@@ -435,6 +422,27 @@ export default {
         }),
         fetchSymbolData(this.nextSymbol),
       ]);
+    },
+    getPreviewProps(json) {
+      const props = extractProps(json);
+
+      // massage the render JSON for both /documentation/* and /tutorials/*
+      // pages into props that can be safely rendered using a minimized
+      // `DocumentationTopic` component
+      //
+      // for /tutorials/* pages, this means extracting the first `sections`
+      // hero item and using its content as the `abstract`
+      const { sections = [] } = json;
+      let { abstract } = props;
+      const hero = sections.find(({ kind }) => kind === HERO_KIND);
+      if (!abstract && hero) {
+        abstract = hero.content;
+      }
+
+      return {
+        ...props,
+        abstract,
+      };
     },
   },
 };
