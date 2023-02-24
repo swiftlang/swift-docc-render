@@ -85,12 +85,12 @@
               :source="remoteSource"
               :sections="primaryContentSections"
             />
-            <SeeMore
+            <ViewMore
               v-if="enableMinimized"
-              :url="seeMoreLink"
+              :url="viewMoreLink"
             >
-              {{ seeMoreLinkTitle }}
-            </SeeMore>
+              {{ viewMoreLinkTitle }}
+            </ViewMore>
           </div>
           <Topics
             v-if="shouldRenderTopicSection"
@@ -150,10 +150,10 @@ import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
 import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
-import SeeMore from './DocumentationTopic/SeeMore.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
+import ViewMore from './DocumentationTopic/ViewMore.vue';
 
 // size above which, the OnThisPage container is visible
 const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
@@ -193,9 +193,9 @@ export default {
     RequirementMetadata,
     Availability,
     SeeAlso,
-    SeeMore,
     Title,
     Topics,
+    ViewMore,
     WordBreak,
   },
   props: {
@@ -267,10 +267,10 @@ export default {
       type: String,
       required: true,
     },
-    seeMoreLinkTitle: {
+    viewMoreLinkTitle: {
       type: String,
       required: false,
-      default: () => 'See More',
+      default: () => 'View more',
     },
     topicSections: {
       type: Array,
@@ -439,7 +439,7 @@ export default {
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSections && primaryContentSections.length)
     ),
-    seeMoreLink: ({
+    viewMoreLink: ({
       references,
       identifier,
       objcPath,

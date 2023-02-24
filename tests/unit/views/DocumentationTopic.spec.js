@@ -668,6 +668,7 @@ describe('DocumentationTopic', () => {
       },
       enableOnThisPageNav: true, // enabled by default
       enableMinimized: false, // disabled by default
+      viewMoreLinkTitle: 'View more', // default value
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
     });

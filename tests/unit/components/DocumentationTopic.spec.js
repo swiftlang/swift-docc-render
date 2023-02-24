@@ -34,6 +34,7 @@ const {
   Topics,
   Title,
   BetaLegalText,
+  ViewMore,
   WordBreak,
 } = DocumentationTopic.components;
 
@@ -432,6 +433,16 @@ describe('DocumentationTopic', () => {
   it('does not render a `PrimaryContent` column when passed empty an PrimaryContent', () => {
     wrapper.setProps({ primaryContentSections: [] });
     expect(wrapper.contains(PrimaryContent)).toBe(false);
+  });
+
+  it('renders `ViewMore` if `enableMinimized`', () => {
+    wrapper.setProps({ enableMinimized: true });
+    const viewMore = wrapper.find(ViewMore);
+    expect(viewMore.exists()).toBe(true);
+
+    // should not render `ViewMore` in non-minimized mode
+    wrapper.setProps({ enableMinimized: false });
+    expect(wrapper.find(ViewMore).exists()).toBe(false);
   });
 
   describe('description column', () => {

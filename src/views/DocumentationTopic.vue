@@ -89,7 +89,7 @@
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
           :enableMinimized="enableMinimized"
-          :seeMoreLinkTitle="seeMoreLinkTitle"
+          :viewMoreLinkTitle="viewMoreLinkTitle"
         />
       </component>
     </template>
@@ -149,7 +149,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    seeMoreLinkTitle: {
+    viewMoreLinkTitle: {
       type: String,
       required: false,
     },

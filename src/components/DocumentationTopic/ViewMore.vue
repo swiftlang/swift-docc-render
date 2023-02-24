@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="see-more-link">
+  <div class="view-more-link">
     <router-link
       :to="url"
       class="base-link"
@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  name: 'SeeMore',
+  name: 'ViewMore',
   props: {
     url: {
       type: String,
