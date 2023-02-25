@@ -106,33 +106,12 @@
               </div>
             </Reference>
           </div>
-          <div v-if="!noResultsWereFound" class="quick-navigation__preview">
-            <div
-              v-if="isLoadingPreview"
-              class="quick-navigation__preview-loading"
-            >
-
-              <div
-                v-for="style in LOADER_ROW_STYLES"
-                class="quick-navigation__preview-loading-row"
-                :key="style['--index']"
-                :style="style"
-              />
-            </div>
-            <template v-else>
-              <DocumentationTopic
-                v-if="previewResult && previewResult.success"
-                v-bind="previewResult.data"
-                enableMinimized
-              />
-              <div
-                v-if="previewResult && !previewResult.success"
-                class="quick-navigation__preview-message"
-              >
-                <p>Preview unavailable</p>
-              </div>
-            </template>
-          </div>
+          <Preview
+            v-if="previewState && !noResultsWereFound"
+            class="quick-navigation__preview"
+            :json="previewJSON"
+            :state="previewState"
+          />
         </div>
       </div>
     </div>
@@ -146,17 +125,16 @@ import GenericModal from 'docc-render/components/GenericModal.vue';
 import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
-import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
+import QuickNavigationPreview from 'docc-render/components/Navigator/QuickNavigationPreview.vue';
 import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
 
-const { extractProps } = DocumentationTopic.methods;
+const { PreviewState } = QuickNavigationPreview.constants;
 
 const ABORT_ERROR_NAME = 'AbortError';
-const HERO_KIND = 'hero';
 const MAX_RESULTS = 20;
 const SLOW_LOADING_DELAY = 1000; // 1 second in milliseconds
 
@@ -169,7 +147,7 @@ export default {
     TopicTypeIcon,
     QuickNavigationHighlighter,
     Reference,
-    DocumentationTopic,
+    Preview: QuickNavigationPreview,
   },
   mixins: [
     keyboardNavigation,
@@ -184,7 +162,7 @@ export default {
       debouncedInput: '',
       userInput: '',
       cachedSymbolResults: {},
-      isLoadingPreview: false,
+      previewIsLoadingSlowly: false,
     };
   },
   props: {
@@ -254,19 +232,28 @@ export default {
       }
       return filteredSymbols[nextIndex];
     },
-    previewResult: ({
+    previewJSON: ({
       cachedSymbolResults,
       selectedSymbol,
-    }) => (selectedSymbol && Object.hasOwnProperty.call(cachedSymbolResults, selectedSymbol.uid) ? (
-      cachedSymbolResults[selectedSymbol.uid]
+    }) => (selectedSymbol ? (
+      (cachedSymbolResults[selectedSymbol.uid] || {}).json
     ) : (
       null
     )),
-    LOADER_ROW_STYLES: () => ([
-      { '--index': 0, width: '30%' },
-      { '--index': 1, width: '80%' },
-      { '--index': 2, width: '50%' },
-    ]),
+    previewState: ({
+      cachedSymbolResults,
+      previewIsLoadingSlowly,
+      selectedSymbol,
+      // eslint-disable-next-line no-nested-ternary
+    }) => (selectedSymbol && Object.hasOwnProperty.call(cachedSymbolResults, selectedSymbol.uid) ? (
+      cachedSymbolResults[selectedSymbol.uid].success
+        ? PreviewState.success
+        : PreviewState.error
+    ) : (
+      previewIsLoadingSlowly
+        ? PreviewState.loadingSlowly
+        : PreviewState.loading
+    )),
   },
   watch: {
     userInput: 'debounceInput',
@@ -357,8 +344,8 @@ export default {
       // the actual UI — without the delay, the constant flashing of this
       // message would be too distracting
       this.loadingTimeout = setTimeout(() => {
-        if (!this.previewResult) {
-          this.isLoadingPreview = true;
+        if (this.previewState === PreviewState.loading) {
+          this.previewIsLoadingSlowly = true;
         }
       }, SLOW_LOADING_DELAY);
 
@@ -366,7 +353,7 @@ export default {
       // there is no additional work needed
       if (!this.selectedSymbol || this.$cachedSymbolResults.has(this.selectedSymbol.uid)) {
         clearTimeout(this.loadingTimeout);
-        this.isLoadingPreview = false;
+        this.previewIsLoadingSlowly = false;
         return;
       }
 
@@ -382,7 +369,7 @@ export default {
           });
           this.$cachedSymbolResults.set(symbol.uid, {
             success: true,
-            data: this.getPreviewProps(json),
+            json,
           });
         } catch (e) {
           // errors triggered by the abort controller are safe to ignore since
@@ -418,31 +405,10 @@ export default {
           // the timeout for the loading message only applies to the currently
           // selected symbol
           clearTimeout(this.loadingTimeout);
-          this.isLoadingPreview = false;
+          this.previewIsLoadingSlowly = false;
         }),
         fetchSymbolData(this.nextSymbol),
       ]);
-    },
-    getPreviewProps(json) {
-      const props = extractProps(json);
-
-      // massage the render JSON for both /documentation/* and /tutorials/*
-      // pages into props that can be safely rendered using a minimized
-      // `DocumentationTopic` component
-      //
-      // for /tutorials/* pages, this means extracting the first `sections`
-      // hero item and using its content as the `abstract`
-      const { sections = [] } = json;
-      let { abstract } = props;
-      const hero = sections.find(({ kind }) => kind === HERO_KIND);
-      if (!abstract && hero) {
-        abstract = hero.content;
-      }
-
-      return {
-        ...props,
-        abstract,
-      };
     },
   },
 };
@@ -489,7 +455,6 @@ $base-border-width: 1px;
     height: 0px;
 
     & > * {
-      flex: 1;
       min-width: 0;
     }
     &.active {
@@ -504,47 +469,15 @@ $base-border-width: 1px;
       background-color: var(--color-navigator-item-hover);
     }
   }
+  &__refs {
+    flex: 1;
+  }
   &__preview {
-    border-left: $base-border-width solid var(--color-fill-gray);
+    border-left: $base-border-width solid var(--color-grid);
     flex: 0 0 61.8%;
     overflow: auto;
     position: sticky;
     top: 0;
-
-    @include breakpoint(small) {
-      display: none;
-    }
-
-    &-message {
-      align-items: center;
-      display: flex;
-      height: 100%;
-      justify-content: center;
-    }
-
-    &-loading {
-      padding: 20px;
-
-      &-row {
-        animation: pulse 2.5s ease;
-        animation-delay: calc(1s + 0.3s * var(--index));
-        animation-fill-mode: forwards;
-        animation-iteration-count: infinite;
-        background-color: var(--color-fill-gray-tertiary);
-        border-radius: 4px;
-        height: 12px;
-        margin: 20px 0;
-        opacity: 0;
-
-        &:first-of-type {
-          margin-top: 0;
-        }
-
-        &:last-of-type {
-          margin-bottom: 0;
-        }
-      }
-    }
   }
   &__reference:hover {
     text-decoration: none;
