@@ -212,6 +212,11 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm._provided.symbolKind).toEqual(propsData.symbolKind);
   });
 
+  it('provides the `enableMinimized` flag', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    expect(wrapper.vm._provided.enableMinimized).toBe(false);
+  });
+
   it('renders a root div', () => {
     expect(wrapper.is('div.doc-topic')).toBe(true);
   });
@@ -773,6 +778,12 @@ describe('DocumentationTopic', () => {
     });
     expect(container.isVisible()).toBe(true);
     expect(wrapper.classes()).toContain('with-on-this-page');
+  });
+
+  it('computes a `disableMetadata` property that mirrors `enableMinimized`', () => {
+    expect(wrapper.vm.disableMetadata).toBe(false);
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.vm.disableMetadata).toBe(true);
   });
 
   describe('lifecycle hooks', () => {
