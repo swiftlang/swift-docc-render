@@ -76,6 +76,19 @@ describe('fetchData', () => {
     await expect(data).toEqual(await goodFetchResponse.json());
   });
 
+  it('calls `fetch` with any passed options', async () => {
+    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+
+    const path = '/data/tutorials/augmented-reality/tutorials.json';
+    const options = { signal: AbortSignal.timeout(42) };
+    await fetchData(path);
+
+    expect(window.fetch).toHaveBeenCalledWith(new URL(
+      path,
+      window.location.href,
+    ).href, options);
+  });
+
   it('throws non "OK" responses', async () => {
     window.fetch = jest.fn().mockImplementation(() => badFetchResponse);
     try {
