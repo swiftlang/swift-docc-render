@@ -15,13 +15,12 @@ describe('ViewMore', () => {
   it('renders a <router-link>', () => {
     const wrapper = shallowMount(ViewMore, {
       propsData: { url: '/foo/bar' },
-      slots: { default: 'FooBar' },
       stubs: { 'router-link': RouterLinkStub },
     });
     const link = wrapper.find(RouterLinkStub);
     expect(link.exists()).toBe(true);
     expect(link.props('to')).toBe('/foo/bar');
-    expect(link.text()).toBe('FooBar');
+    expect(link.text()).toBe('View more');
     expect(link.classes()).toContain('base-link');
   });
 });

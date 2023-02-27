@@ -85,12 +85,7 @@
               :source="remoteSource"
               :sections="primaryContentSections"
             />
-            <ViewMore
-              v-if="enableMinimized"
-              :url="viewMoreLink"
-            >
-              {{ viewMoreLinkTitle }}
-            </ViewMore>
+            <ViewMore v-if="enableMinimized" :url="viewMoreLink" />
           </div>
           <Topics
             v-if="shouldRenderTopicSection"
@@ -137,6 +132,7 @@ import metadata from 'theme/mixins/metadata.js';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import ViewMore from 'theme/components/DocumentationTopic/ViewMore.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
@@ -153,7 +149,6 @@ import SeeAlso from './DocumentationTopic/SeeAlso.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
-import ViewMore from './DocumentationTopic/ViewMore.vue';
 
 // size above which, the OnThisPage container is visible
 const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
@@ -266,11 +261,6 @@ export default {
     title: {
       type: String,
       required: true,
-    },
-    viewMoreLinkTitle: {
-      type: String,
-      required: false,
-      default: () => 'View more',
     },
     topicSections: {
       type: Array,
@@ -440,12 +430,11 @@ export default {
       || (primaryContentSections && primaryContentSections.length)
     ),
     viewMoreLink: ({
-      references,
-      identifier,
+      interfaceLanguage,
       objcPath,
       swiftPath,
     }) => (
-      references[identifier] ? references[identifier].url : (objcPath || swiftPath)
+      interfaceLanguage === Language.objectiveC.key.api ? objcPath : swiftPath
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**
