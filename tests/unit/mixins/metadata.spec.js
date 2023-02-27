@@ -27,7 +27,12 @@ const expectedMetadata = {
   url: `http://localhost${pageData.path}`,
 };
 
-const createWrapper = ({ title, description, path }) => (
+const createWrapper = ({
+  description,
+  disableMetadata = false,
+  path,
+  title,
+}) => (
   shallowMount({
     name: 'TestComponent',
     mixins: [metadata],
@@ -35,6 +40,7 @@ const createWrapper = ({ title, description, path }) => (
       return '<div/>';
     },
     computed: {
+      disableMetadata: () => disableMetadata,
       pageTitle: () => title,
       pageDescription: () => description,
     },
@@ -48,10 +54,19 @@ const createWrapper = ({ title, description, path }) => (
 );
 
 describe('metadata', () => {
+  beforeEach(() => {
+    addOrUpdateMetadata.mockClear();
+  });
+
   it('calls addOrUpdateMetadata function when component is created', () => {
     createWrapper(pageData);
     expect(addOrUpdateMetadata).toHaveBeenCalledTimes(1);
     expect(addOrUpdateMetadata).toHaveBeenCalledWith(expectedMetadata);
+  });
+
+  it('does not call `addOrUpdateMetadata` when `disableMetadata` is true', () => {
+    createWrapper({ ...pageData, disableMetadata: true });
+    expect(addOrUpdateMetadata).not.toHaveBeenCalled();
   });
 
   describe('.extractFirstParagraphText', () => {
