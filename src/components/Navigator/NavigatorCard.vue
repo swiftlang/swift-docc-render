@@ -484,10 +484,14 @@ export default {
       this.selectedTags = this.selectedTags.filter(t => !ChangeNames[t]);
     },
     async activeUID(newUid, oldUID) {
-      // update the dynamicScroller item's size, when we change the UID
+      // Update the dynamicScroller item's size, when we change the UID,
+      // to fix cases where applying styling that changes
+      // the size of active items.
       await this.$nextTick();
       const item = this.$refs[`dynamicScroller_${oldUID}`];
       if (item && item.updateSize) {
+        // call the `updateSize` method on the `DynamicScrollerItem`, since it wont get triggered,
+        // on its own from changing the active item.
         item.updateSize();
       }
     },
