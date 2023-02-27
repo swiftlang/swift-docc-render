@@ -80,8 +80,8 @@ describe('fetchData', () => {
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const path = '/data/tutorials/augmented-reality/tutorials.json';
-    const options = { signal: AbortSignal.timeout(42) };
-    await fetchData(path);
+    const options = { signal: new AbortController().signal };
+    await fetchData(path, {}, options);
 
     expect(window.fetch).toHaveBeenCalledWith(new URL(
       path,
