@@ -433,8 +433,10 @@ export default {
       interfaceLanguage,
       objcPath,
       swiftPath,
+      normalizePath,
     }) => (
-      interfaceLanguage === Language.objectiveC.key.api ? objcPath : swiftPath
+      interfaceLanguage === Language.objectiveC.key.api
+        ? normalizePath(objcPath) : normalizePath(swiftPath)
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**
