@@ -35,7 +35,8 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .base-link {
-  float: right;
+  display: flex;
+  flex-flow: row-reverse;
   margin-bottom: 20px;
 }
 
