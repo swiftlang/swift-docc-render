@@ -11,6 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import ImageAsset from 'docc-render/components/ImageAsset.vue';
 
+import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/stores/AppStore', () => ({
@@ -430,5 +431,32 @@ describe('ImageAsset', () => {
     expect(console.error).toHaveBeenCalledWith('Unable to calculate optimal image width');
 
     consoleSpy.mockRestore();
+  });
+
+  it('allows setting the loading strategy by a parent component', async () => {
+    const url = 'https://www.example.com/image.png';
+    const wrapper = shallowMount(ImageAsset, {
+      provide: {
+        imageLoadingStrategy: ImageLoadingStrategy.eager,
+      },
+      propsData: {
+        variants: [
+          {
+            traits: [
+              '2x',
+              'light',
+            ],
+            url,
+            size: {
+              width: 1202,
+              height: 630,
+            },
+          },
+        ],
+      },
+    });
+
+    const image = wrapper.find('img');
+    expect(image.attributes('loading')).toBe(ImageLoadingStrategy.eager);
   });
 });
