@@ -227,6 +227,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideAvailableTags: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [
     keyboardNavigation,
@@ -270,8 +274,9 @@ export default {
       selectedTags,
       renderableChildNodesMap,
       apiChangesObject,
+      hideAvailableTags,
     }) {
-      if (selectedTags.length) return [];
+      if (hideAvailableTags || selectedTags.length) return [];
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
       const tagLabelsSet = new Set(Object.values(FILTER_TAGS_TO_LABELS));
       const generalTags = new Set([HIDE_DEPRECATED]);
