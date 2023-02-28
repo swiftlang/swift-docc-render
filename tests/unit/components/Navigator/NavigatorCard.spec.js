@@ -1170,6 +1170,19 @@ describe('NavigatorCard', () => {
     expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
   });
 
+  it('allows hiding all available tags', async () => {
+    attachDivWithID(root0Child0.uid);
+    const wrapper = createWrapper();
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props('tags')).toHaveLength(2);
+    wrapper.setProps({
+      hideAvailableTags: true,
+    });
+    await flushPromises();
+    expect(filter.props('tags')).toEqual([]);
+  });
+
   it('allows filtering the items using Tags, opening all items, that have matches in children', async () => {
     attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
