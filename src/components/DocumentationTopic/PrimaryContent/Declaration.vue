@@ -141,6 +141,6 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .conditional-constraints {
-  margin-top: 30px;
+  margin-top: var(--declaration-conditional-constraints-margin, 30px);
 }
 </style>

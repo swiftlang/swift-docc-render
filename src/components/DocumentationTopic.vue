@@ -559,9 +559,9 @@ export default {
   .minimized-container {
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;
-    --declaration-code-listing-margin: 1em 0;
+    --declaration-code-listing-margin: 1em 0 0 0;
+    --declaration-conditional-constraints-margin: 1em;
     --code-block-style-elements-padding: 7px 12px;
-    --code-border-radius: 10px;
     --spacing-param: var(--spacing-stacked-margin-large);
     --aside-border-radius: 6px;
     --code-border-radius: 6px;
@@ -627,6 +627,10 @@ export default {
 
 .declarations-container {
   margin-top: 30px;
+
+  &.minimized-container {
+    margin-top: 0;
+  }
 }
 
 /deep/ {
