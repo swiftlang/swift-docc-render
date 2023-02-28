@@ -12,7 +12,7 @@ import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import BaseNavigatorCard from '@/components/Navigator/BaseNavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
-import { DynamicScroller } from 'vue-virtual-scroller';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import 'intersection-observer';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
@@ -46,6 +46,16 @@ const DynamicScrollerStub = {
     scrollToItem: jest.fn(),
   },
 };
+
+const DynamicScrollerItemStub = {
+  name: DynamicScrollerItem.name,
+  props: DynamicScrollerItem.props,
+  template: '<div class="dynamic-scroller-item-stub"><slot/></div>',
+  methods: {
+    updateSize: jest.fn(),
+  },
+};
+
 const root0 = {
   type: TopicTypes.collection,
   path: '/documentation/testkit',
@@ -165,6 +175,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     DynamicScroller: DynamicScrollerStub,
+    DynamicScrollerItem: DynamicScrollerItemStub,
     NavigatorCardItem: {
       props: NavigatorCardItem.props,
       template: '<div><button></button></div>',
@@ -1998,6 +2009,20 @@ describe('NavigatorCard', () => {
         enableFocus: false,
         navigatorReferences,
       });
+    });
+
+    it('updates the size of the DynamicScrollerItem, for the previous UID item', async () => {
+      attachDivWithID(root0Child0.uid);
+      const wrapper = createWrapper();
+      await flushPromises();
+      const allItems = wrapper.findAll(NavigatorCardItem);
+      const allDynamicItems = wrapper.findAll(DynamicScrollerItemStub);
+      allItems.at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      expect(DynamicScrollerItemStub.methods.updateSize).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerItemStub.methods.updateSize.mock.instances[0]).toEqual(
+        allDynamicItems.at(1).vm,
+      );
     });
 
     it('allows going back/forward, relative to last opened item, ignoring foreign trees', async () => {
