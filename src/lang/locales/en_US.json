@@ -28,7 +28,9 @@
     },
     "project-files": "Project files",
     "estimated-time": "Estimated Time",
-    "sections": { "chapter": "Chapter {number}" },
+    "sections": {
+      "chapter": "Chapter {number}"
+    },
     "question-of": "Question {index} of {total}",
     "section-of": "{number} of {total}",
     "overriding-title": "{newTitle} with {title}",
@@ -38,21 +40,18 @@
         "full": "minute | minutes | {count} minutes",
         "short": "min | mins"
       },
-      "hours": { "full": "hour | hours" }
+      "hours": {
+        "full": "hour | hours"
+      }
     }
   },
   "documentation": {
     "title": "Documentation",
-    "navigator": {
-      "title": "Documentation Navigator",
-      "open-navigator": "Open Documentation Navigator",
-      "close-navigator": "Close Documentation Navigator"
-    },
     "nav": {
       "breadcrumbs": "Breadcrumbs",
       "menu": "Menu",
-      "open-menu": "Open menu",
-      "close-menu": "Close menu"
+      "open-menu": "Open @:documentation.nav.menu",
+      "close-menu": "Close @:documentation.nav.menu"
     },
     "current-page": "Current page is {title}"
   },
@@ -68,7 +67,7 @@
   "change-type": {
     "added": "Added",
     "modified": "Modified",
-    "deprecated": "Deprecated"
+    "deprecated": "@:aside-kind.deprecated"
   },
   "verbs": {
     "hide": "Hide",
@@ -91,7 +90,11 @@
     "resources": "Resources"
   },
   "metadata": {
-    "details": { "name": "Name", "key": "Key", "type": "Type" },
+    "details": {
+      "name": "Name",
+      "key": "Key",
+      "type": "Type"
+    },
     "beta": {
       "legal": "This documentation refers to beta software and may be changed.",
       "software": "Beta Software"
@@ -131,10 +134,13 @@
       "ready": "ready"
     },
     "tags": {
-      "hide-deprecated": "Hide Deprecated"
+      "hide-deprecated": "Hide @:aside-kind.deprecated"
     }
   },
-  "tab": { "request": "Request", "response": "Response" },
+  "tab": {
+    "request": "Request",
+    "response": "Response"
+  },
   "required": "Required",
   "parameters": {
     "default": "Default",
