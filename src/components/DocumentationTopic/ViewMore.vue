@@ -34,7 +34,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.base-link {
+.view-more-link {
   display: flex;
   flex-flow: row-reverse;
   margin-bottom: 20px;

@@ -128,6 +128,7 @@
 <script>
 import Language from 'docc-render/constants/Language';
 import metadata from 'theme/mixins/metadata.js';
+import { buildUrl } from 'docc-render/utils/url-helper';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
@@ -435,8 +436,8 @@ export default {
       swiftPath,
       normalizePath,
     }) => (
-      interfaceLanguage === Language.objectiveC.key.api
-        ? normalizePath(objcPath) : normalizePath(swiftPath)
+      buildUrl(normalizePath(interfaceLanguage === Language.objectiveC.key.api
+        ? objcPath : swiftPath), { language: interfaceLanguage })
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**
