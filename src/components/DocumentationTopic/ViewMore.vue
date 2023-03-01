@@ -14,7 +14,7 @@
       :to="url"
       class="base-link"
     >
-      View more
+      <slot>View more</slot>
     </router-link>
   </div>
 </template>
