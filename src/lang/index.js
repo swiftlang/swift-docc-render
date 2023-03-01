@@ -15,4 +15,4 @@ export const defaultLocale = 'en_US';
 // translated locales
 export { default as en_US } from './locales/en_US.json';
 export { default as zh_CN } from './locales/zh_CN.json';
-export { default as ja_JA } from './locales/ja_JA.json';
+export { default as ja_JP } from './locales/ja_JP.json';
