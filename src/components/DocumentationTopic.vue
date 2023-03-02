@@ -56,9 +56,25 @@
           v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
+        <div
+          v-if="declarations.length"
+          class="declarations-container"
+          :class="{ 'minimized-container': enableMinimized }"
+        >
+          <Declaration
+            v-for="(declaration, index) in declarations"
+            :key="index"
+            :conformance="conformance"
+            :declarations="declaration.declarations"
+            :source="remoteSource"
+          />
+        </div>
       </DocumentationHero>
       <div class="doc-content-wrapper">
-        <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
+        <div
+          class="doc-content"
+          :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
+        >
           <div
             v-if="hasPrimaryContent"
             :class="['container', { 'minimized-container': enableMinimized }]"
@@ -79,11 +95,11 @@
               </Aside>
             </div>
             <PrimaryContent
-              v-if="primaryContentSections && primaryContentSections.length"
+              v-if="primaryContentSectionsSanitized && primaryContentSectionsSanitized.length"
               :class="{ 'with-border': !enhanceBackground }"
               :conformance="conformance"
               :source="remoteSource"
-              :sections="primaryContentSections"
+              :sections="primaryContentSectionsSanitized"
             />
           </div>
           <Topics
@@ -135,6 +151,8 @@ import DocumentationHero from 'docc-render/components/DocumentationTopic/Documen
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
+import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -171,6 +189,7 @@ export default {
     },
   },
   components: {
+    Declaration,
     OnThisPageStickyContainer,
     OnThisPageNav,
     DocumentationHero,
@@ -395,9 +414,10 @@ export default {
       sampleCodeDownload,
       hasAvailability,
       shouldShowLanguageSwitcher,
+      declarations,
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
-      (!!roleHeading + !!abstract + !!sampleCodeDownload
+      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!declarations.length
         + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
@@ -419,12 +439,12 @@ export default {
       isRequirement,
       deprecationSummary,
       downloadNotAvailableSummary,
-      primaryContentSections,
+      primaryContentSectionsSanitized,
     }) => (
       isRequirement
       || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
-      || (primaryContentSections && primaryContentSections.length)
+      || (primaryContentSectionsSanitized.length)
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**
@@ -444,6 +464,12 @@ export default {
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
+    primaryContentSectionsSanitized({ primaryContentSections = [] }) {
+      return primaryContentSections.filter(({ kind }) => kind !== SectionKind.declarations);
+    },
+    declarations({ primaryContentSections = [] }) {
+      return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
+    },
   },
   methods: {
     normalizePath(path) {
@@ -533,9 +559,10 @@ export default {
   .minimized-container {
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;
-    --declaration-code-listing-margin: 1em 0;
+    --declaration-code-listing-margin: 1em 0 0 0;
+    --declaration-conditional-constraints-margin: 1em;
+    --declaration-source-link-margin: 0.833em;
     --code-block-style-elements-padding: 7px 12px;
-    --code-border-radius: 10px;
     --spacing-param: var(--spacing-stacked-margin-large);
     --aside-border-radius: 6px;
     --code-border-radius: 6px;
@@ -597,6 +624,14 @@ export default {
 
 .sample-download {
   margin-top: 20px;
+}
+
+.declarations-container {
+  margin-top: 30px;
+
+  &.minimized-container {
+    margin-top: 0;
+  }
 }
 
 /deep/ {
