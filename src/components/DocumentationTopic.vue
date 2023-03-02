@@ -561,6 +561,7 @@ export default {
     --spacing-stacked-margin-xlarge: 1em;
     --declaration-code-listing-margin: 1em 0 0 0;
     --declaration-conditional-constraints-margin: 1em;
+    --declaration-source-link-margin: 0.833em;
     --code-block-style-elements-padding: 7px 12px;
     --spacing-param: var(--spacing-stacked-margin-large);
     --aside-border-radius: 6px;
