@@ -101,6 +101,7 @@
               :source="remoteSource"
               :sections="primaryContentSectionsSanitized"
             />
+            <ViewMore v-if="enableMinimized" :url="viewMoreLink" />
           </div>
           <Topics
             v-if="shouldRenderTopicSection"
@@ -143,10 +144,12 @@
 <script>
 import Language from 'docc-render/constants/Language';
 import metadata from 'theme/mixins/metadata.js';
+import { buildUrl } from 'docc-render/utils/url-helper';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import ViewMore from 'theme/components/DocumentationTopic/ViewMore.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
@@ -207,6 +210,7 @@ export default {
     SeeAlso,
     Title,
     Topics,
+    ViewMore,
     WordBreak,
   },
   props: {
@@ -365,6 +369,15 @@ export default {
     };
   },
   computed: {
+    normalizedSwiftPath: ({ normalizePath, swiftPath }) => (normalizePath(swiftPath)),
+    normalizedObjcPath: ({
+      normalizePath,
+      objcPath,
+    }) => (
+      objcPath ? buildUrl(normalizePath(objcPath), {
+        language: Language.objectiveC.key.url,
+      }) : null
+    ),
     defaultImplementationsCount() {
       return (this.defaultImplementationsSections || []).reduce(
         (count, section) => count + section.identifiers.length,
@@ -446,6 +459,14 @@ export default {
       || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSectionsSanitized.length)
+    ),
+    viewMoreLink: ({
+      interfaceLanguage,
+      normalizedObjcPath,
+      normalizedSwiftPath,
+    }) => (
+      interfaceLanguage === Language.objectiveC.key.api
+        ? normalizedObjcPath : normalizedSwiftPath
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**
