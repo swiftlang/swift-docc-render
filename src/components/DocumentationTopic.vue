@@ -349,6 +349,22 @@ export default {
     };
   },
   computed: {
+    normalizedSwiftPath: ({
+      normalizePath,
+      swiftPath,
+    }) => (
+      swiftPath ? buildUrl(normalizePath(swiftPath), {
+        language: undefined,
+      }) : null
+    ),
+    normalizedObjcPath: ({
+      normalizePath,
+      objcPath,
+    }) => (
+      objcPath ? buildUrl(normalizePath(objcPath), {
+        language: Language.objectiveC.key.url,
+      }) : null
+    ),
     defaultImplementationsCount() {
       return (this.defaultImplementationsSections || []).reduce(
         (count, section) => count + section.identifiers.length,
@@ -432,12 +448,11 @@ export default {
     ),
     viewMoreLink: ({
       interfaceLanguage,
-      objcPath,
-      swiftPath,
-      normalizePath,
+      normalizedObjcPath,
+      normalizedSwiftPath,
     }) => (
-      buildUrl(normalizePath(interfaceLanguage === Language.objectiveC.key.api
-        ? objcPath : swiftPath), { language: interfaceLanguage })
+      interfaceLanguage === Language.objectiveC.key.api
+        ? normalizedObjcPath : normalizedSwiftPath
     ),
     tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
     /**
