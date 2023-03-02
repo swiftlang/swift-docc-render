@@ -662,7 +662,7 @@ export default {
   }
 }
 
-.full-width-container .minimized-container {
+.full-width-container .doc-content .minimized-container {
   padding-left: 20px;
   padding-right: 20px;
 }
