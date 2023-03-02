@@ -7,11 +7,12 @@
   },
   "tutorials": {
     "title": "教程",
-    "step": "第{number}步",
+    "step": "第 {number} 步",
     "submit": "提交",
     "next": "下一步",
     "preview": {
-      "title": "无预览 | 预览"
+      "title": "无预览 | 预览",
+      "no-preview-available-step": "这一步没有预览。"
     },
     "nav": {
       "chapters": "章节",
@@ -20,7 +21,7 @@
     "assessment": {
       "check-your-understanding": "检查你的理解程度",
       "success-message": "很棒，你回答了此教程的所有问题。",
-      "answer-number-is": "第{index}个答案",
+      "answer-number-is": "第 {index} 个答案",
       "correct": "正确",
       "incorrect": "错误",
       "next-question": "下一个问题"
@@ -28,14 +29,15 @@
     "project-files": "项目文件",
     "estimated-time": "预计时间",
     "sections": {
-      "chapter": "章节"
+      "chapter": "第 {number} 章"
     },
-    "question-of": "第{index}个问题（共{total}个）",
+    "question-of": "第 {index} 个问题（共 {total} 个）",
     "section-of": "{number}/{total}",
     "overriding-title": "{newTitle}{title}",
     "time": {
+      "format": "{number} {minutes}",
       "minutes": {
-        "full": "分钟 |{count}分钟",
+        "full": "分钟 | {count} 分钟",
         "short": "分钟"
       },
       "hours": {
@@ -45,35 +47,35 @@
   },
   "documentation": {
     "title": "文档",
-    "navigator": "文档导航器",
     "nav": {
       "breadcrumbs": "面包屑导航",
-      "menu": "菜单"
+      "menu": "菜单",
+      "open-menu": "打开@:documentation.nav.menu",
+      "close-menu": "关闭@:documentation.nav.menu"
     },
     "current-page": "当前页面为：{title}"
   },
-  "kind": {
+  "aside-kind": {
     "beta": "Beta 版",
     "experiment": "试验",
     "important": "重要事项",
     "note": "注",
     "tip": "提示",
-    "warning": "警告"
+    "warning": "警告",
+    "deprecated": "已弃用"
   },
   "change-type": {
     "added": "已添加",
     "modified": "已修改",
-    "deprecated": "已弃用"
+    "deprecated": "@:aside-kind.deprecated"
   },
   "verbs": {
     "hide": "隐藏",
     "show": "显示",
-    "close": "关闭",
-    "reset": "重设",
-    "open": "打开"
+    "close": "关闭"
   },
   "sections": {
-    "title": "部分",
+    "title": "第 {number} 部分",
     "on-this-page": "在此页面上",
     "topics": "主题",
     "default-implementations": "默认实现",
@@ -108,21 +110,32 @@
   "api-reference": "API 参考",
   "filter": {
     "title": "过滤",
-    "suggested": "建议",
-    "selected": "已选择",
+    "search-symbols": "搜索符号",
+    "suggested-tags": "建议{tags}",
+    "selected-tags": "所选{tags}",
     "add-tag": "添加标签",
-    "tag": "标签",
-    "select-remove": "选择以从列表中移除。",
+    "tag-select-remove": "标签。选择以从列表中移除。",
     "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
-    "containing-symbols": "包含 1 个符号 | 包含{number}个符号",
-    "symbols-inside": "内含{number}个符号（共{total}个）"
+    "containing-symbols": "包含 1 个符号 | 包含 {number} 个符号",
+    "symbols-inside": "内含 {number} 个符号（共 {total} 个）",
+    "reset-filter": "还原过滤条件"
   },
   "navigator": {
+    "title": "@:documentation.title 导航器",
+    "open-navigator": "打开@:navigator.title",
+    "close-navigator": "关闭@:navigator.title",
     "no-results": "未找到结果。",
     "no-children": "无可用数据。",
     "error-fetching": "获取数据时出错。",
-    "items-found": "找到项目。按下 Tab 键导航。",
-    "navigator-is": "导航器{state}"
+    "items-found": "未找到任何项目 | 找到 1 个项目 | 找到 {number} 个项目。按下 Tab 键导航。",
+    "navigator-is": "导航器{state}",
+    "state": {
+      "loading": "正在载入",
+      "ready": "准备就绪"
+    },
+    "tags": {
+      "hide-deprecated": "隐藏@:aside-kind.deprecated"
+    }
   },
   "tab": {
     "request": "请求",
@@ -134,11 +147,9 @@
     "minimum": "最小值",
     "maximum": "最大值",
     "possible-types": "可能类型",
-    "type": "类型",
-    "possible-values": "可能值",
-    "value": "值"
+    "possible-values": "可能值"
   },
-  "content-type": "内容类型",
+  "content-type": "内容类型：{value}",
   "read-only": "只读",
   "error": {
     "unknown": "出现未知错误。",
@@ -156,5 +167,15 @@
       "end": "删除线文本结束"
     },
     "skip-navigation": "跳过导航"
+  },
+  "select-language": "选择此页面的语言",
+  "icons": {
+    "clear": "清除",
+    "web-service-endpoint": "网络服务端点",
+    "search": "搜索"
+  },
+  "formats": {
+    "parenthesis": "（{content}）",
+    "colon": "{content}："
   }
 }

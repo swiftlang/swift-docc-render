@@ -47,7 +47,10 @@
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <DynamicScrollerItem v-bind="{ active, item, dataIndex: index }">
+          <DynamicScrollerItem
+            v-bind="{ active, item, dataIndex: index }"
+            :ref="`dynamicScroller_${item.uid}`"
+          >
             <NavigatorCardItem
               :item="item"
               :isRendered="active"
@@ -224,6 +227,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideAvailableTags: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [
     keyboardNavigation,
@@ -267,8 +274,9 @@ export default {
       selectedTags,
       renderableChildNodesMap,
       apiChangesObject,
+      hideAvailableTags,
     }) {
-      if (selectedTags.length) return [];
+      if (hideAvailableTags || selectedTags.length) return [];
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
       const tagLabelsSet = new Set(Object.values(FILTER_TAGS_TO_LABELS));
       const generalTags = new Set([HIDE_DEPRECATED]);
@@ -483,6 +491,18 @@ export default {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
       this.selectedTags = this.selectedTags.filter(t => !this.$t(ChangeNames[t]));
+    },
+    async activeUID(newUid, oldUID) {
+      // Update the dynamicScroller item's size, when we change the UID,
+      // to fix cases where applying styling that changes
+      // the size of active items.
+      await this.$nextTick();
+      const item = this.$refs[`dynamicScroller_${oldUID}`];
+      if (item && item.updateSize) {
+        // call the `updateSize` method on the `DynamicScrollerItem`, since it wont get triggered,
+        // on its own from changing the active item.
+        item.updateSize();
+      }
     },
   },
   methods: {
