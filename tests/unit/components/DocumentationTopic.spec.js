@@ -439,6 +439,7 @@ describe('DocumentationTopic', () => {
     wrapper.setProps({ enableMinimized: true });
     const viewMore = wrapper.find(ViewMore);
     expect(viewMore.exists()).toBe(true);
+    expect(viewMore.props('url')).toEqual('/documentation/swift'); // normalized path
 
     // should not render `ViewMore` in non-minimized mode
     wrapper.setProps({ enableMinimized: false });

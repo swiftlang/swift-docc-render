@@ -349,14 +349,7 @@ export default {
     };
   },
   computed: {
-    normalizedSwiftPath: ({
-      normalizePath,
-      swiftPath,
-    }) => (
-      swiftPath ? buildUrl(normalizePath(swiftPath), {
-        language: undefined,
-      }) : null
-    ),
+    normalizedSwiftPath: ({ normalizePath, swiftPath }) => (normalizePath(swiftPath)),
     normalizedObjcPath: ({
       normalizePath,
       objcPath,

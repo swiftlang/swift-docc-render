@@ -23,4 +23,14 @@ describe('ViewMore', () => {
     expect(link.text()).toBe('View more');
     expect(link.classes()).toContain('base-link');
   });
+
+  it('renders the default slot', () => {
+    const wrapper = shallowMount(ViewMore, {
+      propsData: { url: '/foo/bar' },
+      slots: {
+        default: '<div class="default">Default text</div>',
+      },
+    });
+    expect(wrapper.find('.default').text()).toBe('Default text');
+  });
 });
