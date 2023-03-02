@@ -350,9 +350,13 @@ describe('fetchAPIChangesForRoute', () => {
 describe('fetchIndexPathsData', () => {
   it('fetches the data for the index/index.json', async () => {
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
-
+    // fetch data with default locale
     const data = await fetchIndexPathsData({ currentLocale: defaultLocale });
-    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${defaultLocale}/index.json`);
+    expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json');
     expect(data).toEqual({ foobar: 'foobar' });
+    // fetch data with another locale
+    const locale = 'zh-CN';
+    await fetchIndexPathsData({ currentLocale: locale });
+    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${locale}/index.json`);
   });
 });
