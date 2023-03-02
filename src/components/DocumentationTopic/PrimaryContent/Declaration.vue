@@ -10,9 +10,6 @@
 
 <template>
   <section class="declaration">
-    <LinkableHeading :anchor="contentSectionData.anchor">
-      {{ contentSectionData.title }}
-    </LinkableHeading>
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
@@ -46,7 +43,6 @@
 <script>
 import ConditionalConstraints
   from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
-import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 import DeclarationGroup
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
@@ -57,8 +53,6 @@ import DeclarationSourceLink
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
-import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
-import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export default {
   name: 'Declaration',
@@ -67,7 +61,6 @@ export default {
     DeclarationGroup,
     DeclarationSourceLink,
     ConditionalConstraints,
-    LinkableHeading,
   },
   constants: { ChangeTypes, multipleLinesClass },
   inject: ['identifier', 'store'],
@@ -90,7 +83,6 @@ export default {
     },
   },
   computed: {
-    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.declarations],
     /**
      * Show the captions of DeclarationGroup without changes
      * when there are more than one declarations
@@ -149,6 +141,6 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .conditional-constraints {
-  margin: rem(20px) 0 3rem 0;
+  margin-top: var(--declaration-conditional-constraints-margin, 30px);
 }
 </style>

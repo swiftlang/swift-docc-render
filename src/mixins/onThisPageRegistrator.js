@@ -77,7 +77,9 @@ export default {
             });
             break;
           default:
-            this.store.addOnThisPageSection(PrimaryContentSectionAnchors[section.kind]);
+            if (PrimaryContentSectionAnchors[section.kind]) {
+              this.store.addOnThisPageSection(PrimaryContentSectionAnchors[section.kind]);
+            }
           }
         });
       }

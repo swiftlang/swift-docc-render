@@ -68,7 +68,7 @@ const topicData = () => ({
       kind: SectionKind.restResponses,
       title: 'restResponses Title',
     }, {
-      kind: SectionKind.declarations,
+      kind: SectionKind.declarations, // declarations should be intentionally skipped
       content: ['foo'],
     }, {
       kind: SectionKind.details,
@@ -194,7 +194,7 @@ describe('OnThisPageRegistrator', () => {
 
   it('watches for changes, clears the store and extracts sections again', async () => {
     const wrapper = createWrapper();
-    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(17);
+    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(16);
     wrapper.vm.topicData = {
       metadata: { title: 'Foo' },
       primaryContentSections: [
