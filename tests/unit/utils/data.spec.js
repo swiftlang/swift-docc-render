@@ -370,6 +370,6 @@ describe('fetchIndexPathsData', () => {
     // fetch data with another locale
     const locale = 'zh-CN';
     await fetchIndexPathsData({ currentLocale: locale });
-    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${locale}/index.json`);
+    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${locale}/index.json`, {});
   });
 });
