@@ -10,7 +10,6 @@
 
 import { shallowMount } from '@vue/test-utils';
 import { fetchDataForPreview } from '@/utils/data';
-import { getSetting } from '@/utils/theme-settings';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import TopicTypeIcon from '@/components/TopicTypeIcon.vue';
 import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHighlighter.vue';
@@ -20,9 +19,6 @@ import Reference from '@/components/ContentNode/Reference.vue';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('@/utils/data');
-jest.mock('@/utils/theme-settings', () => ({
-  getSetting: jest.fn((_, fallback) => fallback),
-}));
 
 describe('QuickNavigationModal', () => {
   let wrapper;
@@ -354,22 +350,20 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.vm.filteredSymbols.length).toBe(2);
   });
 
-  describe('preview', () => {
+  it('does not render a preview by default', () => {
+    expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+    wrapper.setData({ debouncedInput: inputValue });
+    expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+  });
+
+  describe('with preview enabled', () => {
     const { PreviewState } = QuickNavigationPreview.constants;
 
-    it('does not render by default', () => {
-      expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
-      wrapper.setData({ debouncedInput: inputValue });
-      expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+    beforeEach(() => {
+      wrapper.setProps({ previewEnabled: true });
     });
 
     it('renders with a default loading sate when enabled', () => {
-      // simulate the specific feature being enabled
-      getSetting.mockImplementation(keypath => (
-        keypath.join('.') === 'features.docs.quickNavigationPreview.enable'
-      ));
-
-      wrapper = shallowMount(QuickNavigationModal, config);
       wrapper.setData({ debouncedInput: inputValue });
 
       const preview = wrapper.find(QuickNavigationPreview);
@@ -378,11 +372,6 @@ describe('QuickNavigationModal', () => {
     });
 
     it('renders with a successful state and data when data is loaded', async () => {
-      // simulate the specific feature being enabled
-      getSetting.mockImplementation(keypath => (
-        keypath.join('.') === 'features.docs.quickNavigationPreview.enable'
-      ));
-
       // simulate data fetching successfully
       const json = {
         abstract: [{ type: 'text', text: 'a' }],
@@ -398,7 +387,6 @@ describe('QuickNavigationModal', () => {
       };
       fetchDataForPreview.mockResolvedValue(json);
 
-      wrapper = shallowMount(QuickNavigationModal, config);
       wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
@@ -409,15 +397,9 @@ describe('QuickNavigationModal', () => {
     });
 
     it('renders with an error state when data fails to load', async () => {
-      // simulate the specific feature being enabled
-      getSetting.mockImplementation(keypath => (
-        keypath.join('.') === 'features.docs.quickNavigationPreview.enable'
-      ));
-
       // simulate data fetching encountering error
       fetchDataForPreview.mockRejectedValue(new Error('!'));
 
-      wrapper = shallowMount(QuickNavigationModal, config);
       wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
@@ -427,14 +409,8 @@ describe('QuickNavigationModal', () => {
     });
 
     it('renders with a loading slowly state when data takes long to load', async () => {
-      // simulate the specific feature being enabled
-      getSetting.mockImplementation(keypath => (
-        keypath.join('.') === 'features.docs.quickNavigationPreview.enable'
-      ));
-
       // there is probably a more realistic way to simulate the timeout but not
       // exactly sure how just yet, sorry
-      wrapper = shallowMount(QuickNavigationModal, config);
       wrapper.setData({
         debouncedInput: inputValue,
         previewIsLoadingSlowly: true,
@@ -446,12 +422,6 @@ describe('QuickNavigationModal', () => {
     });
 
     it('does not render if no results were found', () => {
-      // simulate the specific feature being enabled
-      getSetting.mockImplementation(keypath => (
-        keypath.join('.') === 'features.docs.quickNavigationPreview.enable'
-      ));
-
-      wrapper = shallowMount(QuickNavigationModal, config);
       wrapper.setData({ debouncedInput: nonResultsInputValue });
 
       expect(wrapper.contains(QuickNavigationPreview)).toBe(false);

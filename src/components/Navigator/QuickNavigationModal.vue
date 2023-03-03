@@ -131,7 +131,6 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
-import { getSetting } from 'docc-render/utils/theme-settings';
 
 const { PreviewState } = QuickNavigationPreview.constants;
 
@@ -174,6 +173,10 @@ export default {
     showQuickNavigationModal: {
       type: Boolean,
       required: true,
+    },
+    previewEnabled: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -233,10 +236,6 @@ export default {
       }
       return filteredSymbols[nextIndex];
     },
-    previewEnabled: () => getSetting(
-      ['features', 'docs', 'quickNavigationPreview', 'enable'],
-      false,
-    ),
     previewJSON: ({
       cachedSymbolResults,
       selectedSymbol,
