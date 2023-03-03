@@ -187,8 +187,7 @@ $doc-hero-icon-dimension: 250px;
   }
 
   .minimized-hero {
-    padding-top: 1.5em;
-    padding-bottom: 1.5em;
+    padding: 1.5em 20px;
   }
 
   &__above-content {

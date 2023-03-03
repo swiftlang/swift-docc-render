@@ -360,6 +360,7 @@ export default {
       languages: new Set(Object.keys(this.languagePaths)),
       interfaceLanguage: this.interfaceLanguage,
       symbolKind: this.symbolKind,
+      enableMinimized: this.enableMinimized,
     };
   },
   data() {
@@ -487,6 +488,7 @@ export default {
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
+    disableMetadata: ({ enableMinimized }) => enableMinimized,
     primaryContentSectionsSanitized({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind !== SectionKind.declarations);
     },
@@ -499,6 +501,83 @@ export default {
       // Sometimes `paths` data from `variants` are prefixed with a leading
       // slash and sometimes they aren't
       return path.startsWith('/') ? path : `/${path}`;
+    },
+    extractProps(json) {
+      const {
+        abstract,
+        defaultImplementationsSections,
+        deprecationSummary,
+        downloadNotAvailableSummary,
+        diffAvailability,
+        hierarchy,
+        identifier: {
+          interfaceLanguage,
+          url: identifier,
+        },
+        metadata: {
+          conformance,
+          modules,
+          platforms,
+          required: isRequirement = false,
+          roleHeading,
+          title = '',
+          tags = [],
+          role,
+          symbolKind = '',
+          remoteSource,
+          images: pageImages = [],
+        } = {},
+        primaryContentSections,
+        relationshipsSections,
+        references = {},
+        sampleCodeDownload,
+        topicSectionsStyle,
+        topicSections,
+        seeAlsoSections,
+        variantOverrides,
+        variants = [],
+      } = json;
+      const languagePaths = variants.reduce((memo, variant) => (
+        variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
+          ..._memo,
+          [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
+        })), memo)
+      ), {});
+      const {
+        [Language.objectiveC.key.api]: [objcPath] = [],
+        [Language.swift.key.api]: [swiftPath] = [],
+      } = languagePaths;
+      return {
+        abstract,
+        conformance,
+        defaultImplementationsSections,
+        deprecationSummary,
+        downloadNotAvailableSummary,
+        diffAvailability,
+        hierarchy,
+        role,
+        identifier,
+        interfaceLanguage,
+        isRequirement,
+        modules,
+        platforms,
+        primaryContentSections,
+        relationshipsSections,
+        references,
+        roleHeading,
+        sampleCodeDownload,
+        title,
+        topicSections,
+        topicSectionsStyle,
+        seeAlsoSections,
+        variantOverrides,
+        symbolKind,
+        tags: tags.slice(0, 1), // make sure we only show the first tag
+        remoteSource,
+        pageImages,
+        objcPath,
+        swiftPath,
+      };
     },
   },
   created() {
@@ -603,9 +682,17 @@ export default {
       margin-top: 0;
     }
 
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
     h2 {
       font-size: 1.083rem;
-      font-weight: bold;
     }
 
     aside {
@@ -636,6 +723,11 @@ export default {
   /deep/ .content + * {
     margin-top: var(--spacing-stacked-margin-large);
   }
+}
+
+.full-width-container .doc-content .minimized-container {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 /deep/ {

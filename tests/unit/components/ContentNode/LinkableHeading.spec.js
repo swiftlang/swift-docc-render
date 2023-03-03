@@ -68,4 +68,17 @@ describe('LinkableHeading', () => {
     });
     expect(wrapper.find('.header-anchor').exists()).toBe(false);
   });
+
+  it('does not render anchor if `enableMinimized` is true', () => {
+    const wrapper = shallowMount(LinkableHeading, {
+      stubs,
+      propsData: {
+        anchor: 'title',
+      },
+      provide: {
+        enableMinimized: true,
+      },
+    });
+    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+  });
 });
