@@ -533,7 +533,18 @@ export default {
         topicSections,
         seeAlsoSections,
         variantOverrides,
+        variants = [],
       } = json;
+      const languagePaths = variants.reduce((memo, variant) => (
+        variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
+          ..._memo,
+          [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
+        })), memo)
+      ), {});
+      const {
+        [Language.objectiveC.key.api]: [objcPath] = [],
+        [Language.swift.key.api]: [swiftPath] = [],
+      } = languagePaths;
       return {
         abstract,
         conformance,
@@ -562,6 +573,8 @@ export default {
         tags: tags.slice(0, 1), // make sure we only show the first tag
         remoteSource,
         pageImages,
+        objcPath,
+        swiftPath,
       };
     },
   },
