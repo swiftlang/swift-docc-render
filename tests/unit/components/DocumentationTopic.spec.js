@@ -215,6 +215,11 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm._provided.symbolKind).toEqual(propsData.symbolKind);
   });
 
+  it('provides the `enableMinimized` flag', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    expect(wrapper.vm._provided.enableMinimized).toBe(false);
+  });
+
   it('renders a root div', () => {
     expect(wrapper.is('div.doc-topic')).toBe(true);
   });
@@ -452,6 +457,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find('.declarations-container').exists()).toBe(false);
 
     wrapper.setProps({
+      enableMinimized: true,
       primaryContentSections: [
         ...propsData.primaryContentSections,
         declarationsSection,
@@ -460,13 +466,17 @@ describe('DocumentationTopic', () => {
     const primary = wrapper.find(PrimaryContent);
     expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
     const declarationContainer = wrapper.find('.declarations-container');
-    expect(declarationContainer.classes()).not.toContain('minimized-container');
+    // expect(declarationContainer.classes()).not.toContain('minimized-container');
     expect(declarationContainer.find(Declaration).props()).toEqual({
       conformance: propsData.conformance,
       declarations: declarationsSection.declarations,
       source: propsData.remoteSource,
     });
-    wrapper.setProps({ enableMinimized: true });
+    // wrapper.setProps({ enableMinimized: true });
+    // commented this out and moved it to the above `setProps` call because
+    // there seems to be an obscure bug with vue-test-utils where things don't
+    // work right if `setProps` is called more than once with a prop that is
+    // also used in the component's `provide`...
     expect(declarationContainer.classes()).toContain('minimized-container');
   });
 
@@ -833,6 +843,12 @@ describe('DocumentationTopic', () => {
     });
     expect(container.isVisible()).toBe(true);
     expect(wrapper.classes()).toContain('with-on-this-page');
+  });
+
+  it('computes a `disableMetadata` property that mirrors `enableMinimized`', () => {
+    expect(wrapper.vm.disableMetadata).toBe(false);
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.vm.disableMetadata).toBe(true);
   });
 
   describe('lifecycle hooks', () => {

@@ -14,7 +14,7 @@
     :is="`h${level}`"
   >
     <router-link
-      v-if="anchor && !isTargetIDE"
+      v-if="shouldLink"
       :to="{ hash: `#${anchor}` }"
       class="header-anchor"
       aria-label="Scroll to section"
@@ -51,9 +51,19 @@ export default {
     },
   },
   inject: {
+    enableMinimized: {
+      default: () => false,
+    },
     isTargetIDE: {
       default: () => false,
     },
+  },
+  computed: {
+    shouldLink: ({
+      anchor,
+      enableMinimized,
+      isTargetIDE,
+    }) => !!anchor && !enableMinimized && !isTargetIDE,
   },
 };
 </script>
