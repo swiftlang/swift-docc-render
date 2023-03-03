@@ -32,6 +32,7 @@
                   v-if="enableQuickNavigation"
                   :children="slotProps.flatChildren"
                   :showQuickNavigationModal.sync="showQuickNavigationModal"
+                  :previewEnabled="enableQuickNavigationPreview"
                 />
                 <transition name="delay-hiding">
                   <Navigator
@@ -130,6 +131,8 @@ import { enablei18n } from 'theme/lang/index.js';
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
 
+const { extractProps } = DocumentationTopic.methods;
+
 export default {
   name: 'DocumentationTopicView',
   constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_HIDDEN_ON_LARGE_KEY },
@@ -179,6 +182,7 @@ export default {
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
     enablei18n: () => enablei18n,
+    enableQuickNavigationPreview: () => getSetting(['features', 'docs', 'quickNavigationPreview', 'enable'], false),
     topicData: {
       get() {
         return this.topicDataObjc ? this.topicDataObjc : this.topicDataDefault;
@@ -192,68 +196,7 @@ export default {
       topicProps.interfaceLanguage,
     ].join(),
     topicProps() {
-      const {
-        abstract,
-        defaultImplementationsSections,
-        deprecationSummary,
-        downloadNotAvailableSummary,
-        diffAvailability,
-        hierarchy,
-        identifier: {
-          interfaceLanguage,
-          url: identifier,
-        },
-        metadata: {
-          conformance,
-          modules,
-          platforms,
-          required: isRequirement = false,
-          roleHeading,
-          title = '',
-          tags = [],
-          role,
-          symbolKind = '',
-          remoteSource,
-          images: pageImages = [],
-        } = {},
-        primaryContentSections,
-        relationshipsSections,
-        references = {},
-        sampleCodeDownload,
-        topicSectionsStyle,
-        topicSections,
-        seeAlsoSections,
-        variantOverrides,
-      } = this.topicData;
-      return {
-        abstract,
-        conformance,
-        defaultImplementationsSections,
-        deprecationSummary,
-        downloadNotAvailableSummary,
-        diffAvailability,
-        hierarchy,
-        role,
-        identifier,
-        interfaceLanguage,
-        isRequirement,
-        modules,
-        platforms,
-        primaryContentSections,
-        relationshipsSections,
-        references,
-        roleHeading,
-        sampleCodeDownload,
-        title,
-        topicSections,
-        topicSectionsStyle,
-        seeAlsoSections,
-        variantOverrides,
-        symbolKind,
-        tags: tags.slice(0, 1), // make sure we only show the first tag
-        remoteSource,
-        pageImages,
-      };
+      return extractProps(this.topicData);
     },
     // The `hierarchy.paths` array will contain zero or more subarrays, each
     // representing a "path" of parent topic IDs that could be considered the
@@ -462,7 +405,7 @@ export default {
   .generic-modal {
     overflow-y: overlay;
   }
-  .modal-fullscreen .container {
+  .modal-fullscreen > .container {
     background-color: transparent;
     height: fit-content;
     flex: auto;

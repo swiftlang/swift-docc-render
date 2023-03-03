@@ -75,7 +75,7 @@
       v-bind="{ kind: AttributeKind.allowedValues, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
-          content: $tc('parameters.possible-values', fallbackToValues(attribute).length > 1)
+          content: $tc('parameters.possible-values', fallbackToValues(attribute).length)
         }) }}<code>{{ fallbackToValues(attribute).join(', ') }}</code>
       </template>
     </ParameterMetaAttribute>
