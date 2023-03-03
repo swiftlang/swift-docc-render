@@ -63,12 +63,6 @@ Array [
     "title": "restResponses Title",
   },
   Object {
-    "anchor": "declaration",
-    "i18n": true,
-    "level": 2,
-    "title": "sections.declaration",
-  },
-  Object {
     "anchor": "details",
     "i18n": true,
     "level": 2,
