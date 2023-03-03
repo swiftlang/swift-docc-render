@@ -389,7 +389,7 @@ export default {
           // and since `Map` objects can't directly hook into the reactivity
           // in Vue 2, we need to convert this object into a plain `Object` every
           // time it is mutated to workaround this lack of reactivity
-          this.cachedSymbolResults = Object.fromEntries(this.$cachedSymbolResults);
+          this.cachedSymbolResults = Object.freeze(Object.fromEntries(this.$cachedSymbolResults));
         }
       };
 
