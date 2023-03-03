@@ -14,6 +14,7 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
+import { defaultLocale } from 'theme/lang/index.js';
 
 export async function fetchData(path, params = {}, options = {}) {
   function isBadResponse(response) {
@@ -136,7 +137,8 @@ export function clone(jsonObject) {
   return JSON.parse(JSON.stringify(jsonObject));
 }
 
-export async function fetchIndexPathsData() {
-  const path = new URL(`${pathJoin([baseUrl, 'index/index.json'])}`, window.location.href);
+export async function fetchIndexPathsData({ currentLocale }) {
+  const locale = currentLocale === defaultLocale ? '' : currentLocale;
+  const path = new URL(`${pathJoin([baseUrl, 'index/', locale, 'index.json'])}`, window.location.href);
   return fetchData(path);
 }

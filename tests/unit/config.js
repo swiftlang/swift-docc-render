@@ -9,7 +9,7 @@
 */
 
 import { config } from '@vue/test-utils';
-import { defaultLocale } from 'docc-render/lang';
+import { defaultLocale } from 'theme/lang/index.js';
 
 config.mocks = {
   $t: (tKey, secondParam) => (secondParam ? [tKey, ...Object.values(secondParam)].join(' ') : tKey),

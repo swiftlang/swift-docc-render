@@ -8,11 +8,19 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { getSetting } from 'docc-render/utils/theme-settings';
 /* eslint-disable camelcase */
+import en_US from './locales/en-US.json';
+import zh_CN from './locales/zh-CN.json';
+import ja_JP from './locales/ja-JP.json';
 
 // default locale
-export const defaultLocale = 'en_US';
+export const defaultLocale = 'en-US';
 // translated locales
-export { default as en_US } from './locales/en_US.json';
-export { default as zh_CN } from './locales/zh_CN.json';
-export { default as ja_JP } from './locales/ja_JP.json';
+export const messages = {
+  'en-US': en_US,
+  'zh-CN': zh_CN,
+  'ja-JP': ja_JP,
+};
+// enable i18n feature flag
+export const enablei18n = getSetting(['features', 'docs', 'i18n', 'enable'], false);

@@ -23,6 +23,7 @@
             :interface-language="topicProps.interfaceLanguage"
             :technologyUrl="technology.url"
             :api-changes-version="store.state.selectedAPIChangesVersion"
+            :currentLocale="enablei18n ? $i18n.locale : ''"
             ref="NavigatorDataProvider"
           >
             <template #default="slotProps">
@@ -124,6 +125,8 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
+import { updateCurrentLocale } from 'docc-render/utils/i18n-utils';
+import { enablei18n } from 'theme/lang/index.js';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -178,6 +181,7 @@ export default {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
+    enablei18n: () => enablei18n,
     enableQuickNavigationPreview: () => getSetting(['features', 'docs', 'quickNavigationPreview', 'enable'], false),
     topicData: {
       get() {
@@ -354,6 +358,8 @@ export default {
     }
 
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
+      updateCurrentLocale(to, vm);
+
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
         vm.applyObjcOverrides();
@@ -372,6 +378,7 @@ export default {
         if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
           this.applyObjcOverrides();
         }
+        updateCurrentLocale(to, this);
         next();
       }).catch(next);
     } else {

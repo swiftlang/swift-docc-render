@@ -9,11 +9,13 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import Footer from 'docc-render/components/Footer.vue';
 
-jest.mock('docc-render/utils/theme-settings');
-getSetting.mockReturnValue(false);
+const mockEnablei18n = jest.fn().mockReturnValue(false);
+
+jest.mock('theme/lang/index.js', () => ({
+  get enablei18n() { return mockEnablei18n(); },
+}));
 
 const { ColorSchemeToggle, LocaleSelector } = Footer.components;
 
@@ -36,7 +38,7 @@ describe('Footer', () => {
     expect(wrapper.find(LocaleSelector).exists()).toBe(false);
 
     // set enablei18n to true
-    getSetting.mockReturnValueOnce(true);
+    mockEnablei18n.mockReturnValueOnce(true);
     wrapper = shallowMount(Footer);
 
     expect(wrapper.find(LocaleSelector).exists()).toBe(true);
