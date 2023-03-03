@@ -118,11 +118,11 @@ export default {
       if (this.checkedIndex === null) return '';
       const { isCorrect } = this.choices[this.checkedIndex];
       return `${
-          this.$t('assessment.answer-number', { index: this.checkedIndex + 1 })
+          this.$t('tutorials.assessment.answer-number-is', { index: this.checkedIndex + 1 })
         } ${
           isCorrect
-            ? this.$t('assessment.correct')
-            : this.$t('assessment.incorrect')
+            ? this.$t('tutorials.assessment.correct')
+            : this.$t('tutorials.assessment.incorrect')
         }
       `;
     },

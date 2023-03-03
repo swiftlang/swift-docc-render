@@ -203,13 +203,13 @@ describe('Quiz', () => {
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('assessment.answer-number 2 assessment.incorrect');
+      expect(ariaLive.text()).toBe('tutorials.assessment.answer-number-is 2 tutorials.assessment.incorrect');
 
       choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('assessment.answer-number 1 assessment.correct');
+      expect(ariaLive.text()).toBe('tutorials.assessment.answer-number-is 1 tutorials.assessment.correct');
     });
   });
 });
