@@ -34,11 +34,6 @@ export const MainContentSectionAnchors = {
 };
 
 export const PrimaryContentSectionAnchors = {
-  [SectionKind.declarations]: {
-    title: 'sections.declaration',
-    anchor: 'declaration',
-    level: 2,
-  },
   [SectionKind.details]: {
     title: 'sections.details',
     anchor: 'details',

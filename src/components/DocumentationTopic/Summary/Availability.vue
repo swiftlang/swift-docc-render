@@ -104,7 +104,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .badge {
