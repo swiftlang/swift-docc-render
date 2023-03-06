@@ -9,6 +9,7 @@
 */
 
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { defaultLocale } from 'theme/lang/index.js';
 
 const fs = require('fs');
 const path = require('path');
@@ -27,13 +28,16 @@ const pageWithTitleAndDescription = {
   params: {
     title,
     description,
+    currentLocale: defaultLocale,
   },
 };
 
 const pageWithoutTitleOrDescription = {
   name: 'Page without title and description',
   title: process.env.VUE_APP_TITLE,
-  params: {},
+  params: {
+    currentLocale: defaultLocale,
+  },
 };
 
 jest.mock('docc-render/utils/theme-settings', () => ({
@@ -73,7 +77,7 @@ const assertMetadata = ({
       } else {
         expect(document.querySelector('meta[property="og:description"]')).toBeFalsy();
       }
-      expect(document.querySelector('meta[property="og:locale"]').content).toBe('en_US');
+      expect(document.querySelector('meta[property="og:locale"]').content).toBe(defaultLocale);
       expect(document.querySelector('meta[property="og:site_name"]').content).toBe(process.env.VUE_APP_TITLE);
       expect(document.querySelector('meta[property="og:type"]').content).toBe('website');
       expect(document.querySelector('meta[property="og:image"]').content).toBe('http://localhost/developer/developer-og.jpg');

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -47,7 +47,7 @@ describe('ParameterAttributes', () => {
         defaultMetadata,
       ],
     });
-    expect(wrapper.find('.property-metadata').text()).toBe('Default: 3');
+    expect(wrapper.find('.property-metadata').text()).toBe('formats.colon Default3');
   });
 
   it('displays minimum/maximum metadata', () => {
@@ -62,12 +62,12 @@ describe('ParameterAttributes', () => {
       metadata
         .at(0)
         .text(),
-    ).toBe('Minimum Value: 20');
+    ).toBe('formats.colon Minimum Value20');
     expect(
       metadata
         .at(1)
         .text(),
-    ).toBe('Maximum Length: 50');
+    ).toBe('formats.colon Maximum Length50');
   });
 
   it('displays exclusive min/max metadata', () => {
@@ -82,12 +82,12 @@ describe('ParameterAttributes', () => {
       metadata
         .at(0)
         .text(),
-    ).toBe('Minimum: > 2');
+    ).toBe('formats.colon Minimum> 2');
     expect(
       metadata
         .at(1)
         .text(),
-    ).toBe('Maximum: < 5');
+    ).toBe('formats.colon Maximum< 5');
   });
 
   it('displays possible types/values metadata', () => {
@@ -103,19 +103,19 @@ describe('ParameterAttributes', () => {
         .at(0)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Possible types: string, number');
+    ).toBe('formats.colon parameters.possible-typesstring, number');
     expect(
       metadata
         .at(0)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Possible types: string, number');
+    ).toBe('formats.colon parameters.possible-typesstring, number');
     expect(
       metadata
         .at(1)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe("Possible values: 'one', 'two'");
+    ).toBe("formats.colon parameters.possible-values'one', 'two'");
   });
 
   it('displays only one possible type and value metadata', () => {
@@ -139,13 +139,13 @@ describe('ParameterAttributes', () => {
         .at(0)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Type: string');
+    ).toBe('formats.colon parameters.possible-typesstring');
     expect(
       metadata
         .at(1)
         .text()
         .replace(emptySpaceRE, ' '),
-    ).toBe('Value: \'one\'');
+    ).toBe('formats.colon parameters.possible-values\'one\'');
   });
 
   describe('with Changes', () => {
@@ -165,8 +165,8 @@ describe('ParameterAttributes', () => {
       expect(wrapper.find(ParameterMetaAttribute).props('changes')).toEqual(changes);
 
       const metadata = wrapper.findAll('.property-metadata');
-      expect(metadata.at(0).text()).toEqual('Default: 4');
-      expect(metadata.at(1).text()).toEqual('Default: 2');
+      expect(metadata.at(0).text()).toEqual('formats.colon Default4');
+      expect(metadata.at(1).text()).toEqual('formats.colon Default2');
     });
 
     it('passes changes to minimum/maximum metadata', () => {
@@ -196,15 +196,15 @@ describe('ParameterAttributes', () => {
         metadata
           .at(0)
           .text(),
-      ).toBe('Minimum: 4');
+      ).toBe('formats.colon Minimum4');
       expect(
         metadata
           .at(1)
           .text(),
-      ).toBe('Minimum: 2');
+      ).toBe('formats.colon Minimum2');
 
-      expect(metadata.at(2).text()).toBe('Maximum: 10');
-      expect(metadata.at(3).text()).toBe('Maximum: 7');
+      expect(metadata.at(2).text()).toBe('formats.colon Maximum10');
+      expect(metadata.at(3).text()).toBe('formats.colon Maximum7');
     });
 
     it('passes changes to exclusive minimum/maximum metadata', () => {
@@ -234,15 +234,15 @@ describe('ParameterAttributes', () => {
         metadata
           .at(0)
           .text(),
-      ).toBe('Minimum: > 4');
+      ).toBe('formats.colon Minimum> 4');
       expect(
         metadata
           .at(1)
           .text(),
-      ).toBe('Minimum: > 2');
+      ).toBe('formats.colon Minimum> 2');
 
-      expect(metadata.at(2).text()).toBe('Maximum: < 10');
-      expect(metadata.at(3).text()).toBe('Maximum: < 7');
+      expect(metadata.at(2).text()).toBe('formats.colon Maximum< 10');
+      expect(metadata.at(3).text()).toBe('formats.colon Maximum< 7');
     });
 
     it('displays possible types/values metadata', () => {
@@ -275,25 +275,25 @@ describe('ParameterAttributes', () => {
           .at(0)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible types: string, number');
+      ).toBe('formats.colon parameters.possible-typesstring, number');
       expect(
         metadata
           .at(1)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible types: boolean, string');
+      ).toBe('formats.colon parameters.possible-typesboolean, string');
       expect(
         metadata
           .at(2)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible values: \'one\', \'two\'');
+      ).toBe('formats.colon parameters.possible-values\'one\', \'two\'');
       expect(
         metadata
           .at(3)
           .text()
           .replace(emptySpaceRE, ' '),
-      ).toBe('Possible values: \'two\', \'one\'');
+      ).toBe('formats.colon parameters.possible-values\'two\', \'one\'');
     });
   });
 });

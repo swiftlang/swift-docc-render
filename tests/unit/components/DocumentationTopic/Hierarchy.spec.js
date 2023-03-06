@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -652,7 +652,7 @@ describe('Hierarchy', () => {
     const badges = HierarchyItems.at(HierarchyItems.length - 1).findAll(Badge);
     expect(badges).toHaveLength(3);
     expect(badges.at(0).props('variant')).toBe('deprecated');
-    expect(badges.at(0).text()).toBe('Deprecated');
+    expect(badges.at(0).text()).toBe('aside-kind.deprecated');
     expect(badges.at(1).props('variant')).toBe('foo');
     expect(badges.at(1).text()).toBe('Foo');
     expect(badges.at(2).props('variant')).toBe('custom');

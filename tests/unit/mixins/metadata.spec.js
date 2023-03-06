@@ -10,6 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { defaultLocale } from 'theme/lang/index.js';
 import metadata from 'docc-render/mixins/metadata';
 
 jest.mock('docc-render/utils/metadata', () => ({
@@ -25,6 +26,7 @@ const expectedMetadata = {
   title: pageData.title,
   description: pageData.description,
   url: `http://localhost${pageData.path}`,
+  currentLocale: defaultLocale,
 };
 
 const createWrapper = ({

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -33,7 +33,7 @@
           :id="scrollLockID"
           ref="scroller"
           class="scroller"
-          aria-label="Documentation Navigator"
+          :aria-label="$t('navigator.title')"
           :items="nodesToRender"
           :min-item-size="itemSize"
           emit-update
@@ -75,7 +75,7 @@
         </div>
         <div aria-live="assertive" class="no-items-wrapper">
           <p class="no-items">
-            {{ assertiveAriaLive }}
+            {{ $t(assertiveAriaLive) }}
           </p>
         </div>
       </div>
@@ -85,8 +85,9 @@
             <FilterInput
               v-model="filter"
               :tags="availableTags"
+              :translatableTags="translatableTags"
               :selected-tags.sync="selectedTagsModelValue"
-              placeholder="Filter"
+              placeholder="filter.title"
               :should-keep-open-on-blur="false"
               :position-reversed="!renderFilterOnTop"
               :clear-filter-on-tag-select="false"
@@ -129,11 +130,6 @@ import {
 
 const STORAGE_KEY = 'navigator.state';
 
-const NO_RESULTS = 'No results found.';
-const NO_CHILDREN = 'No data available.';
-const ERROR_FETCHING = 'There was an error fetching the data.';
-const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
-
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
   tutorials: 'tutorials',
@@ -163,7 +159,11 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.project]: FILTER_TAGS.tutorials,
 };
 
-const HIDE_DEPRECATED_TAG = 'Hide Deprecated';
+const NO_RESULTS = 'navigator.no-results';
+const NO_CHILDREN = 'navigator.no-children';
+const ERROR_FETCHING = 'navigator.error-fetching';
+const ITEMS_FOUND = 'navigator.items-found';
+const HIDE_DEPRECATED = 'navigator.tags.hide-deprecated';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -178,11 +178,9 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
-    NO_RESULTS,
-    NO_CHILDREN,
     ERROR_FETCHING,
     ITEMS_FOUND,
-    HIDE_DEPRECATED_TAG,
+    HIDE_DEPRECATED,
   },
   components: {
     FilterInput,
@@ -250,19 +248,19 @@ export default {
       nodesToRender: Object.freeze([]),
       activeUID: null,
       lastFocusTarget: null,
-      NO_RESULTS,
-      NO_CHILDREN,
-      ERROR_FETCHING,
-      ITEMS_FOUND,
       allNodesToggled: false,
+      translatableTags: [HIDE_DEPRECATED],
     };
   },
   computed: {
-    politeAriaLive: ({ hasNodes, nodesToRender }) => {
+    politeAriaLive() {
+      const { hasNodes, nodesToRender } = this;
       if (!hasNodes) return '';
-      return [nodesToRender.length, ITEMS_FOUND].join(' ');
+      return this.$tc(ITEMS_FOUND, nodesToRender.length, { number: nodesToRender.length });
     },
-    assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
+    assertiveAriaLive: ({
+      hasNodes, hasFilter, errorFetching,
+    }) => {
       if (hasNodes) return '';
       if (hasFilter) return NO_RESULTS;
       if (errorFetching) return ERROR_FETCHING;
@@ -272,16 +270,19 @@ export default {
      * Generates an array of tag labels for filtering.
      * Shows only tags, that have children matches.
      */
-    availableTags: ({
-      selectedTags, renderableChildNodesMap, apiChangesObject, hideAvailableTags,
-    }) => {
+    availableTags({
+      selectedTags,
+      renderableChildNodesMap,
+      apiChangesObject,
+      hideAvailableTags,
+    }) {
       if (hideAvailableTags || selectedTags.length) return [];
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
       const tagLabelsSet = new Set(Object.values(FILTER_TAGS_TO_LABELS));
-      const generalTags = new Set([HIDE_DEPRECATED_TAG]);
-      // when API changes are available, remove the `HIDE_DEPRECATED_TAG` option
+      const generalTags = new Set([HIDE_DEPRECATED]);
+      // when API changes are available, remove the `HIDE_DEPRECATED` option
       if (apiChangesTypesSet.size) {
-        generalTags.delete(HIDE_DEPRECATED_TAG);
+        generalTags.delete(HIDE_DEPRECATED);
       }
 
       const availableTags = {
@@ -311,20 +312,22 @@ export default {
           tagLabelsSet.delete(tagLabel);
         }
         if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.changes.push(ChangeNames[changeType]);
+          availableTags.changes.push(this.$t(ChangeNames[changeType]));
           apiChangesTypesSet.delete(changeType);
         }
-        if (deprecated && generalTags.has(HIDE_DEPRECATED_TAG)) {
-          availableTags.other.push(HIDE_DEPRECATED_TAG);
-          generalTags.delete(HIDE_DEPRECATED_TAG);
+        if (deprecated && generalTags.has(HIDE_DEPRECATED)) {
+          availableTags.other.push(HIDE_DEPRECATED);
+          generalTags.delete(HIDE_DEPRECATED);
         }
       }
       return availableTags.type.concat(availableTags.changes, availableTags.other);
     },
     selectedTagsModelValue: {
-      get: ({ selectedTags }) => selectedTags.map(tag => (
-        FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
-      )),
+      get() {
+        return this.selectedTags.map(tag => (
+          FILTER_TAGS_TO_LABELS[tag] || this.$t(ChangeNames[tag]) || tag
+        ));
+      },
       set(values) {
         // guard against accidental clearings
         if (!this.selectedTags.length && !values.length) return;
@@ -389,7 +392,7 @@ export default {
           if (apiChanges && !tagMatch) {
             tagMatch = tagsSet.has(apiChanges[path]);
           }
-          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
+          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED)) {
             tagMatch = true;
           }
         }
@@ -467,7 +470,9 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags }) => selectedTags[0] === HIDE_DEPRECATED_TAG,
+    deprecatedHidden: ({ selectedTags }) => (
+      selectedTags[0] === HIDE_DEPRECATED
+    ),
     apiChangesObject() {
       return this.apiChanges || {};
     },
@@ -485,7 +490,7 @@ export default {
     apiChanges(value) {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
-      this.selectedTags = this.selectedTags.filter(t => !ChangeNames[t]);
+      this.selectedTags = this.selectedTags.filter(t => !this.$t(ChangeNames[t]));
     },
     async activeUID(newUid, oldUID) {
       // Update the dynamicScroller item's size, when we change the UID,

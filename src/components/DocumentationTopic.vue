@@ -136,7 +136,7 @@
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
     <div aria-live="polite" class="visuallyhidden">
-      Current page is {{ pageTitle }}
+      {{ $t('documentation.current-page', { title: pageTitle }) }}
     </div>
   </div>
 </template>
@@ -468,7 +468,9 @@ export default {
       interfaceLanguage === Language.objectiveC.key.api
         ? normalizedObjcPath : normalizedSwiftPath
     ),
-    tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
+    tagName() {
+      return this.isSymbolDeprecated ? this.$t('aside-kind.deprecated') : this.$t('aside-kind.beta');
+    },
     /**
      * Finds the page icon in the `pageImages` array
      * @param {Array} pageImages

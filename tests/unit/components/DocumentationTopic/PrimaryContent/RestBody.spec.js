@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -220,7 +220,7 @@ describe('RestBody', () => {
     it('renders an h3 for "Parts"', () => {
       const h3 = wrapper.find('h3');
       expect(h3.exists()).toBe(true);
-      expect(h3.text()).toBe('Parts');
+      expect(h3.text()).toBe('sections.parts');
     });
 
     it('renders 2 param tables, using the second to render parts', () => {

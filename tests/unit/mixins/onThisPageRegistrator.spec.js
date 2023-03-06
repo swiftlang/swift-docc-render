@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -129,14 +129,21 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: AppTopID, level: 1, title: 'Foo' },
+      {
+        anchor: AppTopID,
+        i18n: false,
+        level: 1,
+        title: 'Foo',
+      },
       {
         anchor: 'provided-heading-anchor',
+        i18n: false,
         level: 2,
         title: 'Heading Level 2',
       },
       {
         anchor: 'heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Heading Level 3',
       },
@@ -173,19 +180,27 @@ describe('OnThisPageRegistrator', () => {
     });
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: AppTopID, level: 1, title: 'Foo' },
+      {
+        anchor: AppTopID,
+        i18n: false,
+        level: 1,
+        title: 'Foo',
+      },
       {
         anchor: 'provided-heading-anchor',
+        i18n: false,
         level: 2,
         title: 'Heading Level 2',
       },
       {
         anchor: 'heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Heading Level 3',
       },
       {
         anchor: 'deep-heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Deep Heading Level 3',
       },
@@ -206,14 +221,21 @@ describe('OnThisPageRegistrator', () => {
     };
     await flushPromises();
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      { anchor: AppTopID, level: 1, title: 'Foo' },
+      {
+        anchor: AppTopID,
+        i18n: false,
+        level: 1,
+        title: 'Foo',
+      },
       {
         anchor: 'provided-heading-anchor',
+        i18n: false,
         level: 2,
         title: 'Heading Level 2',
       },
       {
         anchor: 'heading-level-3',
+        i18n: false,
         level: 3,
         title: 'Heading Level 3',
       },

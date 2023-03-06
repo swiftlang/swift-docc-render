@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -23,7 +23,7 @@
       <label
         :for="hasLanguages ? 'language-toggle' : null"
         class="nav-menu-setting-label"
-      >Language:</label>
+      >{{ $t('formats.colon', { content: $t('language') }) }}</label>
       <select
         v-if="hasLanguages"
         id="language-toggle"
@@ -51,7 +51,9 @@
       v-if="hasLanguages"
       class="language-list-container"
     >
-      <span class="nav-menu-setting-label">Language:</span>
+      <span class="nav-menu-setting-label">{{ $t('formats.colon', {
+        content: $t('language')
+      }) }}</span>
       <ul class="language-list">
         <li
           v-for="language in languages"

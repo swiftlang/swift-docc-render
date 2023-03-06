@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -159,13 +159,13 @@ describe('Navigator', () => {
       },
     });
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is loading');
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.loading');
   });
 
   it('renders an aria live that tells VO users when navigator is ready', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is ready');
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.ready');
   });
 
   it('falls back to using the `technology.url` for the `technology-path`', () => {

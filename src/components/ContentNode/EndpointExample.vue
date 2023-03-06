@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,8 +13,8 @@
     <Column class="example-code">
       <slot />
       <Tabnav v-model="currentTab">
-        <TabnavItem :value="Tab.request">{{ Tab.request }}</TabnavItem>
-        <TabnavItem :value="Tab.response">{{ Tab.response }}</TabnavItem>
+        <TabnavItem :value="Tab.request">{{ $t('tab.request') }}</TabnavItem>
+        <TabnavItem :value="Tab.response">{{ $t('tab.response') }}</TabnavItem>
       </Tabnav>
       <div class="output">
         <div v-if="isCurrent(Tab.request)" class="code">
@@ -35,11 +35,11 @@
       <div class="controls" v-if="isCollapsible">
         <a v-if="isCollapsed" href="#" class="toggle" @click.prevent="showMore">
           <InlinePlusCircleSolidIcon class="control-icon icon-inline" />
-          More
+          {{ $t('more') }}
         </a>
         <a v-else href="#" class="toggle" @click.prevent="showLess">
           <InlineMinusCircleSolidIcon class="control-icon icon-inline" />
-          Less
+          {{ $t('less') }}
         </a>
       </div>
     </Column>

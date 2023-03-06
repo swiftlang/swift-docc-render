@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -25,7 +25,7 @@ describe('MobileCodePreviewToggle', () => {
 
     const span = wrapper.find('span');
     expect(span.exists()).toBe(true);
-    expect(span.text()).toBe('No preview');
+    expect(span.text()).toBe('tutorials.preview.title');
   });
 
   it('renders an anchor when `isActionable=true` and emits an event when clicked', () => {
@@ -33,7 +33,7 @@ describe('MobileCodePreviewToggle', () => {
 
     const link = wrapper.find('a');
     expect(link.exists()).toBe(true);
-    expect(link.text()).toBe('Preview');
+    expect(link.text()).toBe('tutorials.preview.title');
 
     link.trigger('click');
     expect(wrapper.emitted().click).toBeTruthy();

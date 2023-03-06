@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -130,7 +130,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
-      placeholder: 'Search symbols',
+      placeholder: 'filter.search-symbols',
       focusInputWhenCreated: true,
       focusInputWhenEmpty: true,
       positionReversed: false,
@@ -140,6 +140,7 @@ describe('QuickNavigationModal', () => {
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [],
+      translatableTags: [],
       selectInputOnFocus: true,
       clearFilterOnTagSelect: true,
     });

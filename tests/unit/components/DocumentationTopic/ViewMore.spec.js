@@ -27,6 +27,7 @@ describe('ViewMore', () => {
   it('renders the default slot', () => {
     const wrapper = shallowMount(ViewMore, {
       propsData: { url: '/foo/bar' },
+      stubs: { 'router-link': RouterLinkStub },
       slots: {
         default: '<div class="default">Default text</div>',
       },

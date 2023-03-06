@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -12,22 +12,22 @@ import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export const MainContentSectionAnchors = {
   topics: {
-    title: 'Topics',
+    title: 'sections.topics',
     anchor: 'topics',
     level: 2,
   },
   defaultImplementations: {
-    title: 'Default Implementations',
+    title: 'sections.default-implementations',
     anchor: 'default-implementations',
     level: 2,
   },
   relationships: {
-    title: 'Relationships',
+    title: 'sections.relationships',
     anchor: 'relationships',
     level: 2,
   },
   seeAlso: {
-    title: 'See Also',
+    title: 'sections.see-also',
     anchor: 'see-also',
     level: 2,
   },
@@ -35,17 +35,17 @@ export const MainContentSectionAnchors = {
 
 export const PrimaryContentSectionAnchors = {
   [SectionKind.details]: {
-    title: 'Details',
+    title: 'sections.details',
     anchor: 'details',
     level: 2,
   },
   [SectionKind.parameters]: {
-    title: 'Parameters',
+    title: 'sections.parameters',
     anchor: 'parameters',
     level: 2,
   },
   [SectionKind.possibleValues]: {
-    title: 'Possible Values',
+    title: 'sections.possible-values',
     anchor: 'possibleValues',
     level: 2,
   },
