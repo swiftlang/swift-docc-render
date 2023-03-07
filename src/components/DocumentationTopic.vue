@@ -454,11 +454,13 @@ export default {
       deprecationSummary,
       downloadNotAvailableSummary,
       primaryContentSectionsSanitized,
+      enableMinimized,
     }) => (
       isRequirement
       || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSectionsSanitized.length)
+      || enableMinimized // minimized mode always renders `ViewMore`
     ),
     viewMoreLink: ({
       interfaceLanguage,
