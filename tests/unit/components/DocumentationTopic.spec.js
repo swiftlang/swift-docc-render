@@ -498,7 +498,6 @@ describe('DocumentationTopic', () => {
       deprecationSummary: null,
       downloadNotAvailableSummary: null,
     });
-    console.log(wrapper.html());
     const viewMore = wrapper.find(ViewMore);
     expect(viewMore.exists()).toBe(true);
     expect(viewMore.props('url')).toEqual('/documentation/swift'); // normalized path
