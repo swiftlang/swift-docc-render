@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -44,8 +44,9 @@
             :id="SelectedTagsId"
             :input="input"
             :tags="selectedTags"
-            :ariaLabel="selectedTagsLabel"
+            :ariaLabel="$t('filter.selected-tags', { tags: tagsText })"
             :activeTags="activeTags"
+            :translatableTags="translatableTags"
             v-bind="virtualKeyboardBind"
             class="filter__selected-tags"
             ref="selectedTags"
@@ -60,14 +61,14 @@
             id="filter-label"
             :for="FilterInputId"
             :data-value="modelValue"
-            :aria-label="placeholder"
+            :aria-label="$t(placeholder)"
             class="filter__input-label"
           >
             <input
               :id="FilterInputId"
               ref="input"
               v-model="modelValue"
-              :placeholder="hasSelectedTags ? '' : placeholder"
+              :placeholder="hasSelectedTags ? '' : $t(placeholder)"
               :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
               :disabled="disabled"
               v-bind="AXinputProperties"
@@ -94,7 +95,7 @@
         <div class="filter__delete-button-wrapper">
           <button
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
-            aria-label="Reset Filter"
+            :aria-label="$t('filter.reset-filter')"
             class="filter__delete-button"
             @click="resetFilters(true)"
             @keydown.enter.exact.stop="resetFilters(true)"
@@ -108,9 +109,10 @@
         v-if="displaySuggestedTags"
         :id="SuggestedTagsId"
         ref="suggestedTags"
-        :ariaLabel="suggestedTagsLabel"
+        :ariaLabel="$t('filter.suggested-tags', { tags: tagsText })"
         :input="input"
         :tags="suggestedTags"
+        :translatableTags="translatableTags"
         v-bind="virtualKeyboardBind"
         class="filter__suggested-tags"
         @click-tags="selectTag($event.tagName)"
@@ -181,7 +183,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => 'Filter',
+      default: () => 'filter.title',
     },
     disabled: {
       type: Boolean,
@@ -215,6 +217,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    translatableTags: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -233,8 +239,6 @@ export default {
         other: 'tags',
       },
     }, suggestedTags.length),
-    selectedTagsLabel: ({ tagsText }) => `Selected ${tagsText}`,
-    suggestedTagsLabel: ({ tagsText }) => `Suggested ${tagsText}`,
     hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
     hasSelectedTags: ({ selectedTags }) => selectedTags.length,
     inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -27,6 +27,24 @@ body {
   color: var(--colors-text, var(--color-text));
   font-style: normal;
   word-wrap: break-word;
+
+  // Default margin for stacked elements.
+  --spacing-stacked-margin-small: 0.4em;
+
+  // Default margin-top for subsequent elements.
+  --spacing-stacked-margin-large: 0.8em;
+
+  // Default margin for elements that require extra spacing
+  --spacing-stacked-margin-xlarge: calc(var(--spacing-stacked-margin-large) * 2);
+
+  // Default param spacing
+  --spacing-param: #{rem(28px)};
+
+  // Default margin for Code Listing in Declaration
+  --declaration-code-listing-margin: 30px 0 0 0;
+
+  // Default padding for Code Blocks
+  --code-block-style-elements-padding: 8px 14px;
 }
 
 body,
@@ -55,7 +73,7 @@ h6 {
 
   // Add top margin to any element that immediately follows a heading.
   + * {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--spacing-stacked-margin-large);
   }
 
   // Add top margin to headings that immediately follow paragraphs and lists.
@@ -71,7 +89,7 @@ p,
 ul,
 ol {
   + * {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--spacing-stacked-margin-large);
   }
 }
 

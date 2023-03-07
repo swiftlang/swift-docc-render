@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -15,7 +15,9 @@ import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
-import OnThisPageStickyContainer from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
+import OnThisPageStickyContainer
+  from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
+import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 
 const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
@@ -33,8 +35,8 @@ const {
   SeeAlso,
   Topics,
   Title,
-  LinkableHeading,
   BetaLegalText,
+  ViewMore,
   WordBreak,
 } = DocumentationTopic.components;
 
@@ -213,6 +215,11 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm._provided.symbolKind).toEqual(propsData.symbolKind);
   });
 
+  it('provides the `enableMinimized` flag', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    expect(wrapper.vm._provided.enableMinimized).toBe(false);
+  });
+
   it('renders a root div', () => {
     expect(wrapper.is('div.doc-topic')).toBe(true);
   });
@@ -228,7 +235,7 @@ describe('DocumentationTopic', () => {
 
   it('renders an aria live that tells VO users which it is the current page content', () => {
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe(`Current page is ${propsData.title}`);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('documentation.current-page FooKit');
   });
 
   it('renders a `DocumentationHero`, enabled', () => {
@@ -332,17 +339,22 @@ describe('DocumentationTopic', () => {
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
     expect(title.find(WordBreak).exists()).toBe(false);
-
-    // Minimized view should not render Title
-    wrapper.setProps({ enableMinimized: true });
-    expect(wrapper.find(DocumentationHero).find(Title).exists()).toBe(false);
   });
 
-  it('renders a `LinkableHeading`, in minimized mode, if `enableMinimized` prop is `true`', () => {
-    const heading = wrapper.find(LinkableHeading);
-    expect(heading.exists()).toBe(false);
+  it('renders the right classes for `Title` based on `enableMininized` prop', () => {
+    const hero = wrapper.find(DocumentationHero);
+    const title = hero.find(Title);
+    expect(title.classes()).not.toContain('minimized-title');
+
     wrapper.setProps({ enableMinimized: true });
-    expect(wrapper.find(LinkableHeading).exists()).toBe(true);
+    expect(title.classes()).toContain('minimized-title');
+  });
+
+  it('renders a `minimized-container` class, when `enableMinimized` is true', () => {
+    const container = wrapper.find('.container');
+    expect(container.classes()).not.toContain('minimized-container');
+    wrapper.setProps({ enableMinimized: true });
+    expect(container.classes()).toContain('minimized-container');
   });
 
   it('uses `WordBreak` in the title for symbol pages', () => {
@@ -372,7 +384,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
 
     // only beta
     wrapper.setProps({
@@ -381,7 +393,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('Beta');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.beta');
 
     // only deprecated
     wrapper.setProps({
@@ -390,7 +402,7 @@ describe('DocumentationTopic', () => {
     });
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
-    expect(smalls.at(0).attributes('data-tag-name')).toBe('Deprecated');
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
   });
 
   it('renders an abstract', () => {
@@ -422,9 +434,50 @@ describe('DocumentationTopic', () => {
   it('renders a `PrimaryContent`', () => {
     const primary = wrapper.find(PrimaryContent);
     expect(primary.exists()).toBe(true);
-    expect(primary.props('conformance')).toEqual(propsData.conformance);
     expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
-    expect(primary.props('source')).toEqual(propsData.remoteSource);
+  });
+
+  it('renders a `PrimaryContent` with Declarations moved out and into the Hero section', () => {
+    const declarationsSection = {
+      kind: PrimaryContent.constants.SectionKind.declarations,
+      declarations: [
+        {
+          platforms: [
+            'macos',
+          ],
+          tokens: [
+            {
+              type: 'identifier',
+              text: 'Foo',
+            },
+          ],
+        },
+      ],
+    };
+    expect(wrapper.find('.declarations-container').exists()).toBe(false);
+
+    wrapper.setProps({
+      enableMinimized: true,
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        declarationsSection,
+      ],
+    });
+    const primary = wrapper.find(PrimaryContent);
+    expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
+    const declarationContainer = wrapper.find('.declarations-container');
+    // expect(declarationContainer.classes()).not.toContain('minimized-container');
+    expect(declarationContainer.find(Declaration).props()).toEqual({
+      conformance: propsData.conformance,
+      declarations: declarationsSection.declarations,
+      source: propsData.remoteSource,
+    });
+    // wrapper.setProps({ enableMinimized: true });
+    // commented this out and moved it to the above `setProps` call because
+    // there seems to be an obscure bug with vue-test-utils where things don't
+    // work right if `setProps` is called more than once with a prop that is
+    // also used in the component's `provide`...
+    expect(declarationContainer.classes()).toContain('minimized-container');
   });
 
   it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', () => {
@@ -435,6 +488,23 @@ describe('DocumentationTopic', () => {
   it('does not render a `PrimaryContent` column when passed empty an PrimaryContent', () => {
     wrapper.setProps({ primaryContentSections: [] });
     expect(wrapper.contains(PrimaryContent)).toBe(false);
+  });
+
+  it('renders `ViewMore` if `enableMinimized`', () => {
+    wrapper.setProps({
+      enableMinimized: true,
+      primaryContentSections: undefined,
+      isRequirement: false,
+      deprecationSummary: null,
+      downloadNotAvailableSummary: null,
+    });
+    const viewMore = wrapper.find(ViewMore);
+    expect(viewMore.exists()).toBe(true);
+    expect(viewMore.props('url')).toEqual('/documentation/swift'); // normalized path
+
+    // should not render `ViewMore` in non-minimized mode
+    wrapper.setProps({ enableMinimized: false });
+    expect(wrapper.find(ViewMore).exists()).toBe(false);
   });
 
   describe('description column', () => {
@@ -505,10 +575,14 @@ describe('DocumentationTopic', () => {
       isRequirement: false,
       deprecationSummary: null,
       downloadNotAvailableSummary: null,
+      enableMinimized: false,
     });
     expect(wrapper.find(PrimaryContent).exists()).toBe(false);
     expect(wrapper.find('.description').exists()).toBe(false);
     expect(docContent.classes()).toContain('no-primary-content');
+    // removes it if hero is not enhanced
+    wrapper.setProps({ disableHeroBackground: true });
+    expect(docContent.classes()).not.toContain('no-primary-content');
   });
 
   it('renders a `LanguageSwitcher` if TargetIDE', () => {
@@ -776,6 +850,12 @@ describe('DocumentationTopic', () => {
     });
     expect(container.isVisible()).toBe(true);
     expect(wrapper.classes()).toContain('with-on-this-page');
+  });
+
+  it('computes a `disableMetadata` property that mirrors `enableMinimized`', () => {
+    expect(wrapper.vm.disableMetadata).toBe(false);
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.vm.disableMetadata).toBe(true);
   });
 
   describe('lifecycle hooks', () => {

@@ -35,6 +35,14 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
+const mockEnablei18n = jest.fn().mockReturnValue(false);
+
+jest.mock('theme/lang/index.js', () => ({
+  get enablei18n() { return mockEnablei18n(); },
+}));
+
+const defaultLocale = 'en-US';
+
 const TechnologyWithChildren = {
   path: '/documentation/foo',
   children: [],
@@ -208,6 +216,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technologyUrl: technology.url,
+      currentLocale: '',
       apiChangesVersion: null,
     });
     // its rendered by default
@@ -289,7 +298,28 @@ describe('DocumentationTopic', () => {
     expect(quickNavigationModalComponent.exists()).toBe(false);
   });
 
-  it('does not render QuickNavigation if enableNavigation is false', () => {
+  it('renders NavigatorDataProvider with currentLocale if enablei18n is true', async () => {
+    mockEnablei18n.mockReturnValueOnce(true);
+
+    wrapper = createWrapper();
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+
+    const technology = topicData.references['topic://foo'];
+    expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
+      interfaceLanguage: Language.swift.key.url,
+      technologyUrl: technology.url,
+      currentLocale: defaultLocale,
+      apiChangesVersion: null,
+    });
+  });
+
+  it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {
     getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
@@ -999,7 +1029,7 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
     // now call without `skipFetchingData`
     const params = {
-      to: { name: 'foo', meta: {} },
+      to: { name: 'foo', meta: {}, params: { locale: defaultLocale } },
       from: { name: 'bar' },
       next: jest.fn(),
     };

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -31,27 +31,27 @@ describe('Aside', () => {
     });
     let label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('Experiment');
+    expect(label.text()).toBe('aside-kind.experiment');
 
     wrapper.setProps({ kind: 'important' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('Important');
+    expect(label.text()).toBe('aside-kind.important');
 
     wrapper.setProps({ kind: 'note' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('Note');
+    expect(label.text()).toBe('aside-kind.note');
 
     wrapper.setProps({ kind: 'tip' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('Tip');
+    expect(label.text()).toBe('aside-kind.tip');
 
     wrapper.setProps({ kind: 'warning' });
     label = wrapper.find('.label');
     expect(label.exists()).toBe(true);
-    expect(label.text()).toBe('Warning');
+    expect(label.text()).toBe('aside-kind.warning');
 
     wrapper.setProps({ kind: 'note', name: 'Custom Name' });
     label = wrapper.find('.label');

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -524,9 +524,9 @@ describe('FilterInput', () => {
 
     it('adds the correct aria label to `suggestedTags` component', () => {
       expect(suggestedTags.props()).toHaveProperty('id', SuggestedTagsId);
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'Suggested tags');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags tags');
       wrapper.setProps({ tags: ['1'] });
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'Suggested tag');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags tag');
     });
 
     it('keeps `suggestedTags` component when `suggestedTags` gets focus instead of `input`', () => {

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,11 +9,16 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
+import { fetchDataForPreview } from '@/utils/data';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import TopicTypeIcon from '@/components/TopicTypeIcon.vue';
 import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHighlighter.vue';
 import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vue';
+import QuickNavigationPreview from '@/components/Navigator/QuickNavigationPreview.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
+import { flushPromises } from '../../../../test-utils';
+
+jest.mock('@/utils/data');
 
 describe('QuickNavigationModal', () => {
   let wrapper;
@@ -40,21 +45,25 @@ describe('QuickNavigationModal', () => {
   };
   const symbols = [
     {
+      uid: 0,
       title: 'foo',
       path: '/foo',
       type: 'protocol',
     },
     {
+      uid: 1,
       title: 'fobaro',
       path: '/foo/bar/foobar/fobaro',
       type: 'method',
     },
     {
+      uid: 2,
       title: 'bar',
       path: '/foo/bar',
       type: 'init',
     },
     {
+      uid: 3,
       title: 'barfbarobarobar',
       path: '/barfbarobarobar',
       type: 'init',
@@ -131,7 +140,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
-      placeholder: 'Jump to page',
+      placeholder: 'filter.search-symbols',
       focusInputWhenCreated: true,
       focusInputWhenEmpty: true,
       positionReversed: false,
@@ -142,6 +151,7 @@ describe('QuickNavigationModal', () => {
       selectedTags: [],
       shouldTruncateTags: false,
       tags: [],
+      translatableTags: [],
       selectInputOnFocus: true,
       clearFilterOnTagSelect: true,
     });
@@ -350,5 +360,83 @@ describe('QuickNavigationModal', () => {
       debouncedInput: 'foo',
     });
     expect(wrapper.vm.filteredSymbols.length).toBe(2);
+  });
+
+  it('does not render a preview by default', () => {
+    expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+    wrapper.setData({ debouncedInput: inputValue });
+    expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+  });
+
+  describe('with preview enabled', () => {
+    const { PreviewState } = QuickNavigationPreview.constants;
+
+    beforeEach(() => {
+      wrapper.setProps({ previewEnabled: true });
+    });
+
+    it('renders with a default loading sate when enabled', () => {
+      wrapper.setData({ debouncedInput: inputValue });
+
+      const preview = wrapper.find(QuickNavigationPreview);
+      expect(preview.exists()).toBe(true);
+      expect(preview.props('state')).toBe(PreviewState.loading);
+    });
+
+    it('renders with a successful state and data when data is loaded', async () => {
+      // simulate data fetching successfully
+      const json = {
+        abstract: [{ type: 'text', text: 'a' }],
+        identifier: {
+          interfaceLanguage: 'swift',
+          url: 'doc://com.example.Test/foo',
+        },
+        kind: 'symbol',
+        metadata: {
+          role: 'symbol',
+          title: 'Foo',
+        },
+      };
+      fetchDataForPreview.mockResolvedValue(json);
+
+      wrapper.setData({ debouncedInput: inputValue });
+      await flushPromises();
+
+      const preview = wrapper.find(QuickNavigationPreview);
+      expect(preview.exists()).toBe(true);
+      expect(preview.props('state')).toBe(PreviewState.success);
+      expect(preview.props('json')).toBe(json);
+    });
+
+    it('renders with an error state when data fails to load', async () => {
+      // simulate data fetching encountering error
+      fetchDataForPreview.mockRejectedValue(new Error('!'));
+
+      wrapper.setData({ debouncedInput: inputValue });
+      await flushPromises();
+
+      const preview = wrapper.find(QuickNavigationPreview);
+      expect(preview.exists()).toBe(true);
+      expect(preview.props('state')).toBe(PreviewState.error);
+    });
+
+    it('renders with a loading slowly state when data takes long to load', async () => {
+      // there is probably a more realistic way to simulate the timeout but not
+      // exactly sure how just yet, sorry
+      wrapper.setData({
+        debouncedInput: inputValue,
+        previewIsLoadingSlowly: true,
+      });
+
+      const preview = wrapper.find(QuickNavigationPreview);
+      expect(preview.exists()).toBe(true);
+      expect(preview.props('state')).toBe(PreviewState.loadingSlowly);
+    });
+
+    it('does not render if no results were found', () => {
+      wrapper.setData({ debouncedInput: nonResultsInputValue });
+
+      expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+    });
   });
 });

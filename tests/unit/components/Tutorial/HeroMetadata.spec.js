@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -11,8 +11,14 @@
 import { shallowMount } from '@vue/test-utils';
 import HeroMetadata from 'docc-render/components/Tutorial/HeroMetadata.vue';
 
+const i18nStub = {
+  name: 'i18n',
+  template: '<div><slot name="number"/><slot name="minutes"/></div>',
+};
+
 const mountWithProps = props => shallowMount(HeroMetadata, {
   propsData: props,
+  stubs: { i18n: i18nStub },
   provide: { isTargetIDE: false },
 });
 
@@ -56,9 +62,9 @@ describe('HeroMetadata', () => {
       estimatedTimeInMinutes,
     });
 
-    const span = wrapper.find('div.metadata div.item div.content div.duration');
-    expect(span.exists()).toBe(true);
-    expect(span.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*min`));
+    const durationDiv = wrapper.find('div.metadata div.item div.content div.duration');
+    expect(durationDiv.exists()).toBe(true);
+    expect(durationDiv.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*tutorials\\.time\\.minutes\\.short`));
   });
 
   it('renders requirements icon if requirements present', () => {
@@ -89,9 +95,9 @@ describe('HeroMetadata', () => {
     expect(items.length).toBe(3);
 
     expect(items.at(0).text())
-      .toEqual(expect.stringContaining('Estimated Time'));
+      .toEqual(expect.stringContaining('tutorials.estimated-time'));
     expect(items.at(1).text())
-      .toEqual(expect.stringContaining('Project files'));
+      .toEqual(expect.stringContaining('tutorials.project-files'));
     expect(items.at(2).text())
       .toEqual(expect.stringContaining('Xcode'));
   });
@@ -104,6 +110,7 @@ describe('HeroMetadata', () => {
           title: 'Xcode',
         },
       },
+      stubs: { i18n: i18nStub },
       provide: { isTargetIDE: true },
     });
 

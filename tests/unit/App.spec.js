@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -19,6 +19,7 @@ import { flushPromises } from '../../test-utils';
 jest.mock('docc-render/utils/theme-settings', () => ({
   fetchThemeSettings: jest.fn(),
   themeSettingsState: { theme: {} },
+  getSetting: jest.fn(() => {}),
 }));
 
 let App;
@@ -115,7 +116,7 @@ describe('App', () => {
   it('renders Skip Navigation', () => {
     const wrapper = createWrapper();
     const skipNavigation = wrapper.find('#skip-nav');
-    expect(skipNavigation.text()).toBe('Skip Navigation');
+    expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
     expect(skipNavigation.attributes('href')).toBe('#main');
   });
 
@@ -238,7 +239,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -251,7 +252,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -266,7 +267,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();

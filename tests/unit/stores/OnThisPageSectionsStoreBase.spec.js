@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -17,11 +17,11 @@ describe('OnThisPageSectionsStoreBase', () => {
   beforeEach(() => {
     jest.resetModules();
   });
-  it('adds sections to the state', () => {
+  it('adds sections to the state with i18n true by default', () => {
     OnThisPageSectionsStoreBase.addOnThisPageSection(section);
-    OnThisPageSectionsStoreBase.addOnThisPageSection(section2);
+    OnThisPageSectionsStoreBase.addOnThisPageSection(section2, { i18n: false });
     expect(OnThisPageSectionsStoreBase.state.onThisPageSections).toEqual([
-      section, section2,
+      { ...section, i18n: true }, { ...section2, i18n: false },
     ]);
   });
 

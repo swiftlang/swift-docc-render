@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -79,12 +79,12 @@ describe('Chapter', () => {
     const name = wrapper.find('.name');
     expect(name.exists()).toBe(true);
     expect(name.is('H3')).toBe(true);
-    expect(name.text()).toMatch(/Chapter 1\s+Foo/);
-    expect(name.attributes('aria-label')).toEqual('Foo - Chapter 1');
+    expect(name.text()).toMatch(/tutorials\.sections\.chapter/);
+    expect(name.attributes('aria-label')).toEqual('Foo - tutorials.sections.chapter');
 
     const eyebrow = name.find('.eyebrow');
     expect(eyebrow.exists()).toBe(true);
-    expect(eyebrow.text()).toBe('Chapter 1');
+    expect(eyebrow.text()).toBe('tutorials.sections.chapter 1');
     expect(eyebrow.attributes('aria-hidden')).toBe('true');
   });
 
