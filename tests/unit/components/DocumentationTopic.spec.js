@@ -491,7 +491,14 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders `ViewMore` if `enableMinimized`', () => {
-    wrapper.setProps({ enableMinimized: true });
+    wrapper.setProps({
+      enableMinimized: true,
+      primaryContentSections: undefined,
+      isRequirement: false,
+      deprecationSummary: null,
+      downloadNotAvailableSummary: null,
+    });
+    console.log(wrapper.html());
     const viewMore = wrapper.find(ViewMore);
     expect(viewMore.exists()).toBe(true);
     expect(viewMore.props('url')).toEqual('/documentation/swift'); // normalized path
@@ -569,6 +576,7 @@ describe('DocumentationTopic', () => {
       isRequirement: false,
       deprecationSummary: null,
       downloadNotAvailableSummary: null,
+      enableMinimized: false,
     });
     expect(wrapper.find(PrimaryContent).exists()).toBe(false);
     expect(wrapper.find('.description').exists()).toBe(false);
