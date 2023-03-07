@@ -369,7 +369,9 @@ export default {
     };
   },
   computed: {
-    normalizedSwiftPath: ({ normalizePath, swiftPath }) => (normalizePath(swiftPath)),
+    normalizedSwiftPath: ({ normalizePath, swiftPath }) => (
+      swiftPath ? normalizePath(swiftPath) : null
+    ),
     normalizedObjcPath: ({
       normalizePath,
       objcPath,
