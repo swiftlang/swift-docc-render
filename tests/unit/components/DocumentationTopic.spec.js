@@ -507,6 +507,27 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(ViewMore).exists()).toBe(false);
   });
 
+  it('renders `ViewMore` with correct language path', () => {
+    wrapper.setProps({
+      enableMinimized: true,
+      swiftPath: null,
+      objcPath: 'documentation/objc',
+      interfaceLanguage: 'occ',
+    });
+    const objcViewMore = wrapper.find(ViewMore);
+    expect(objcViewMore.exists()).toBe(true);
+    expect(objcViewMore.props('url')).toEqual('/documentation/objc'); // normalized path
+
+    wrapper.setProps({
+      objcPath: null,
+      swiftPath: 'documentation/swift',
+      interfaceLanguage: 'swift',
+    });
+    const swiftViewMore = wrapper.find(ViewMore);
+    expect(swiftViewMore.exists()).toBe(true);
+    expect(swiftViewMore.props('url')).toEqual('/documentation/swift'); // normalized path
+  });
+
   describe('description column', () => {
     it('renders the description section', () => {
       const description = wrapper.find('.description');
