@@ -306,8 +306,9 @@ describe('NavigatorCard', () => {
   });
 
   it('renders Quick Navigation open container if enableQuickNavigation is true', () => {
-    getSetting.mockReturnValueOnce(true);
-    const wrapper = createWrapper();
+    const wrapper = createWrapper({
+      propsData: { enableQuickNavigation: true },
+    });
 
     const quickNavigationOpenContainer = wrapper.find('.quick-navigation-open-container');
     expect(quickNavigationOpenContainer.exists()).toBe(true);
@@ -317,7 +318,6 @@ describe('NavigatorCard', () => {
   });
 
   it('does not render Quick Navigation button if the feature is disabled', () => {
-    getSetting.mockReturnValueOnce(false);
     const wrapper = createWrapper();
     const button = wrapper.find('.quick-navigation-open-container');
     expect(button.exists()).toBe(false);

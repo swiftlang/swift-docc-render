@@ -135,7 +135,6 @@ import {
   getParents,
   getSiblings,
 } from 'docc-render/utils/navigatorData';
-import { getSetting } from 'docc-render/utils/theme-settings';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -237,6 +236,10 @@ export default {
       default: false,
     },
     hideAvailableTags: {
+      type: Boolean,
+      default: false,
+    },
+    enableQuickNavigation: {
       type: Boolean,
       default: false,
     },
@@ -488,9 +491,6 @@ export default {
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
-    enableQuickNavigation: () => (
-      getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
-    ),
   },
   created() {
     this.restorePersistedState();
