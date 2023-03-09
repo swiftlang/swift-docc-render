@@ -18,6 +18,7 @@ import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
+import QuickNavigationButton from '@/components/Navigator/QuickNavigationButton.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
 import { getSetting } from 'docc-render/utils/theme-settings';
@@ -305,15 +306,15 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
   });
 
-  it('renders Quick Navigation open container if enableQuickNavigation is true', () => {
+  it('renders `QuickNavigationButton if enableQuickNavigation is true', async () => {
     const wrapper = createWrapper({
       propsData: { enableQuickNavigation: true },
     });
 
-    const quickNavigationOpenContainer = wrapper.find('.quick-navigation-open-container');
-    expect(quickNavigationOpenContainer.exists()).toBe(true);
-    expect(quickNavigationOpenContainer.attributes('aria-label')).toBe('Open Quick Navigation');
-    quickNavigationOpenContainer.trigger('click');
+    const button = wrapper.find(QuickNavigationButton);
+    expect(button.exists()).toBe(true);
+    await button.trigger('click');
+    console.log('hi', wrapper.emitted());
     expect(wrapper.emitted('open-quick-navigator')).toHaveLength(1);
   });
 

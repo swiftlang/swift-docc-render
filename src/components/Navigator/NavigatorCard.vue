@@ -95,14 +95,7 @@
               @clear="clearFilters"
             />
           </div>
-          <button
-            v-if="enableQuickNavigation"
-            class="quick-navigation-open-container"
-            aria-label="Open Quick Navigation"
-            @click="$emit('open-quick-navigator')"
-          >
-            /
-          </button>
+          <QuickNavigationButton @click.native="$emit('open-quick-navigator')" />
         </div>
       </div>
     </template>
@@ -125,6 +118,7 @@ import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardIte
 import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCard.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
+import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
@@ -196,6 +190,7 @@ export default {
     DynamicScroller,
     DynamicScrollerItem,
     BaseNavigatorCard,
+    QuickNavigationButton,
   },
   props: {
     ...BaseNavigatorCard.props,
@@ -1191,28 +1186,8 @@ $filter-height-small: 62px;
   }
 }
 
-.quick-navigation-open-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.quick-navigation-open {
   margin-left: var(--nav-filter-horizontal-padding);
   width: calc(var(--nav-filter-horizontal-padding) * 2);
-  border: 1px solid var(--color-grid);
-  height: 100%;
-  border-radius: $border-radius;
-  transition: background-color .15s;
-  box-sizing: border-box;
-
-  &:hover {
-    background-color: var(--color-fill-tertiary);
-  }
-
-  @include breakpoint(medium, nav) {
-    display: none;
-  }
-
-  @include on-keyboard-focus() {
-    @include focus-shadow-form-element();
-  }
 }
 </style>
