@@ -177,5 +177,11 @@
   "formats": {
     "parenthesis": "({content})",
     "colon": "{content}: "
+  },
+  "quicknav": {
+    "button": {
+      "label": "Open Quick Navigation",
+      "title": "Click or type / for quick navigation"
+    }
   }
 }

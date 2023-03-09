@@ -10,8 +10,9 @@
 
 <template>
   <button
+    :aria-label="$t('quicknav.button.label')"
     class="quick-navigation-open"
-    aria-label="Open Quick Navigation"
+    :title="$t('quicknav.button.title')"
     v-on="$listeners"
   >
     /
