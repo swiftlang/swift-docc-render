@@ -50,7 +50,11 @@
                     :enable-quick-navigation="enableQuickNavigation"
                     @close="handleToggleSidenav(breakpoint)"
                     @open-quick-navigator="openQuickNavigationModal"
-                  />
+                  >
+                    <template #filter>
+                      <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                    </template>
+                  </Navigator>
                 </transition>
               </div>
             </template>
@@ -106,6 +110,7 @@ import Language from 'docc-render/constants/Language';
 import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
+import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
@@ -135,6 +140,7 @@ export default {
     Topic: DocumentationTopic,
     CodeTheme,
     Nav: DocumentationNav,
+    QuickNavigationButton,
     QuickNavigationModal,
     PortalTarget,
   },
@@ -402,6 +408,11 @@ export default {
     margin: rem(160px) 0;
     max-width: rem(800px);
     overflow: visible;
+  }
+
+  .navigator-filter .quick-navigation-open {
+    margin-left: var(--nav-filter-horizontal-padding);
+    width: calc(var(--nav-filter-horizontal-padding) * 2);
   }
 }
 

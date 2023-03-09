@@ -27,8 +27,9 @@
       :navigator-references="navigatorReferences"
       :enable-quick-navigation="enableQuickNavigation"
       @close="$emit('close')"
-      @open-quick-navigator="$emit('open-quick-navigator')"
-    />
+    >
+      <template #filter><slot name="filter" /></template>
+    </NavigatorCard>
     <LoadingNavigatorCard
       v-else
       v-bind="technologyProps"

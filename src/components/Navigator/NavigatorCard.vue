@@ -95,7 +95,7 @@
               @clear="clearFilters"
             />
           </div>
-          <QuickNavigationButton @click.native="$emit('open-quick-navigator')" />
+          <slot name="filter" />
         </div>
       </div>
     </template>
@@ -118,7 +118,6 @@ import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardIte
 import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCard.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
-import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
@@ -190,7 +189,6 @@ export default {
     DynamicScroller,
     DynamicScrollerItem,
     BaseNavigatorCard,
-    QuickNavigationButton,
   },
   props: {
     ...BaseNavigatorCard.props,
@@ -1184,10 +1182,5 @@ $filter-height-small: 62px;
       flex-basis: $filter-height-small;
     }
   }
-}
-
-.quick-navigation-open {
-  margin-left: var(--nav-filter-horizontal-padding);
-  width: calc(var(--nav-filter-horizontal-padding) * 2);
 }
 </style>

@@ -18,7 +18,6 @@ import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
-import QuickNavigationButton from '@/components/Navigator/QuickNavigationButton.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
 import { getSetting } from 'docc-render/utils/theme-settings';
@@ -306,22 +305,13 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
   });
 
-  it('renders `QuickNavigationButton if enableQuickNavigation is true', async () => {
+  it('exposes a #filter slot', () => {
     const wrapper = createWrapper({
-      propsData: { enableQuickNavigation: true },
+      scopedSlots: {
+        filter: '<div class="custom">Custom</div>',
+      },
     });
-
-    const button = wrapper.find(QuickNavigationButton);
-    expect(button.exists()).toBe(true);
-    await button.trigger('click');
-    console.log('hi', wrapper.emitted());
-    expect(wrapper.emitted('open-quick-navigator')).toHaveLength(1);
-  });
-
-  it('does not render Quick Navigation button if the feature is disabled', () => {
-    const wrapper = createWrapper();
-    const button = wrapper.find('.quick-navigation-open-container');
-    expect(button.exists()).toBe(false);
+    expect(wrapper.find('.custom').text()).toBe('Custom');
   });
 
   it('focuses the current page', async () => {
