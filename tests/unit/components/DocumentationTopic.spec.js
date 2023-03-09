@@ -508,6 +508,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders `ViewMore` with correct language path', () => {
+    // only objcPath
     wrapper.setProps({
       enableMinimized: true,
       swiftPath: null,
@@ -518,6 +519,7 @@ describe('DocumentationTopic', () => {
     expect(objcViewMore.exists()).toBe(true);
     expect(objcViewMore.props('url')).toEqual('/documentation/objc'); // normalized path
 
+    // only swiftPath
     wrapper.setProps({
       objcPath: null,
       swiftPath: 'documentation/swift',
@@ -526,6 +528,16 @@ describe('DocumentationTopic', () => {
     const swiftViewMore = wrapper.find(ViewMore);
     expect(swiftViewMore.exists()).toBe(true);
     expect(swiftViewMore.props('url')).toEqual('/documentation/swift'); // normalized path
+
+    // both paths exists, but on the objc variant
+    wrapper.setProps({
+      objcPath: 'documentation/objc',
+      swiftPath: 'documentation/swift',
+      interfaceLanguage: 'occ',
+    });
+    const viewMore = wrapper.find(ViewMore);
+    expect(viewMore.exists()).toBe(true);
+    expect(viewMore.props('url')).toEqual('/documentation/objc?language=objc'); // normalized path
   });
 
   describe('description column', () => {
