@@ -491,7 +491,13 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders `ViewMore` if `enableMinimized`', () => {
-    wrapper.setProps({ enableMinimized: true });
+    wrapper.setProps({
+      enableMinimized: true,
+      primaryContentSections: undefined,
+      isRequirement: false,
+      deprecationSummary: null,
+      downloadNotAvailableSummary: null,
+    });
     const viewMore = wrapper.find(ViewMore);
     expect(viewMore.exists()).toBe(true);
     expect(viewMore.props('url')).toEqual('/documentation/swift'); // normalized path
@@ -499,6 +505,39 @@ describe('DocumentationTopic', () => {
     // should not render `ViewMore` in non-minimized mode
     wrapper.setProps({ enableMinimized: false });
     expect(wrapper.find(ViewMore).exists()).toBe(false);
+  });
+
+  it('renders `ViewMore` with correct language path', () => {
+    // only objcPath
+    wrapper.setProps({
+      enableMinimized: true,
+      swiftPath: null,
+      objcPath: 'documentation/objc',
+      interfaceLanguage: 'occ',
+    });
+    const objcViewMore = wrapper.find(ViewMore);
+    expect(objcViewMore.exists()).toBe(true);
+    expect(objcViewMore.props('url')).toEqual('/documentation/objc'); // normalized path
+
+    // only swiftPath
+    wrapper.setProps({
+      objcPath: null,
+      swiftPath: 'documentation/swift',
+      interfaceLanguage: 'swift',
+    });
+    const swiftViewMore = wrapper.find(ViewMore);
+    expect(swiftViewMore.exists()).toBe(true);
+    expect(swiftViewMore.props('url')).toEqual('/documentation/swift'); // normalized path
+
+    // both paths exists, but on the objc variant
+    wrapper.setProps({
+      objcPath: 'documentation/objc',
+      swiftPath: 'documentation/swift',
+      interfaceLanguage: 'occ',
+    });
+    const viewMore = wrapper.find(ViewMore);
+    expect(viewMore.exists()).toBe(true);
+    expect(viewMore.props('url')).toEqual('/documentation/objc?language=objc'); // normalized path
   });
 
   describe('description column', () => {
@@ -569,6 +608,7 @@ describe('DocumentationTopic', () => {
       isRequirement: false,
       deprecationSummary: null,
       downloadNotAvailableSummary: null,
+      enableMinimized: false,
     });
     expect(wrapper.find(PrimaryContent).exists()).toBe(false);
     expect(wrapper.find('.description').exists()).toBe(false);
