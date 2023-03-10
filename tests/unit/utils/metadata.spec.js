@@ -8,8 +8,22 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { addOrUpdateMetadata, getISO, updateLangTag } from 'docc-render/utils/metadata';
 import { defaultLocale } from 'theme/lang/index.js';
+
+jest.mock('theme/lang/locales.json', () => (
+  [
+    {
+      code: 'en',
+      name: 'English',
+      iso: 'en-US',
+    },
+    {
+      code: 'zh-CN',
+      name: '简体中文',
+    },
+  ]
+));
 
 const fs = require('fs');
 const path = require('path');
@@ -104,5 +118,23 @@ describe('Metadata', () => {
     addOrUpdateMetadata({ description: differentDescription });
     expect(document.querySelector('meta[name="description"]').content).toBe(differentDescription);
     expect(document.querySelectorAll('meta[name="description"]')).toHaveLength(1);
+  });
+});
+
+describe('getISO', () => {
+  it('returns ISO code', () => {
+    expect(getISO('en')).toBe('en-US');
+  });
+});
+
+describe('updateLangTag', () => {
+  it('updates the lang tag on the HTML with ISO code if exist', () => {
+    updateLangTag('en');
+    expect(document.querySelector('html').getAttribute('lang')).toBe('en-US');
+  });
+
+  it('updates the lang tag on the HTML with code if ISO code does not exist', () => {
+    updateLangTag('zh-CN');
+    expect(document.querySelector('html').getAttribute('lang')).toBe('zh-CN');
   });
 });
