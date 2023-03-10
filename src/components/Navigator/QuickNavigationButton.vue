@@ -33,7 +33,7 @@ export default { name: 'QuickNavigationButton' };
   width: $icon-size-default;
   border: 1px solid var(--color-grid);
   height: 100%;
-  border-radius: $border-radius;
+  border-radius: $small-border-radius;
   transition: background-color .15s;
   box-sizing: border-box;
 
