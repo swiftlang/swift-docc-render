@@ -33,6 +33,7 @@
                   :children="slotProps.flatChildren"
                   :showQuickNavigationModal.sync="showQuickNavigationModal"
                   :previewEnabled="enableQuickNavigationPreview"
+                  :technology="technology.title"
                 />
                 <transition name="delay-hiding">
                   <Navigator

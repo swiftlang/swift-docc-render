@@ -29,7 +29,7 @@
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          placeholder="filter.search-symbols"
+          :placeholder="$t('filter.search-symbols', { technology })"
           focusInputWhenCreated
           focusInputWhenEmpty
           preventBorderStyle
@@ -188,6 +188,10 @@ export default {
     previewEnabled: {
       type: Boolean,
       default: false,
+    },
+    technology: {
+      type: String,
+      required: true,
     },
   },
   computed: {

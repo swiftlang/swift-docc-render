@@ -183,7 +183,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => 'filter.title',
+      default: () => '',
     },
     disabled: {
       type: Boolean,

@@ -101,6 +101,7 @@ describe('QuickNavigationModal', () => {
     propsData: {
       children: symbols,
       showQuickNavigationModal: true,
+      technology: 'FoobarKit',
     },
   };
 
@@ -140,7 +141,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
-      placeholder: 'filter.search-symbols',
+      placeholder: 'filter.search-symbols FoobarKit',
       focusInputWhenCreated: true,
       focusInputWhenEmpty: true,
       positionReversed: false,
@@ -279,6 +280,7 @@ describe('QuickNavigationModal', () => {
       propsData: {
         children: customSymbols,
         showQuickNavigationModal: true,
+        technology: 'Blah',
       },
     });
     wrapper.setData({
@@ -315,6 +317,7 @@ describe('QuickNavigationModal', () => {
           },
         ],
         showQuickNavigationModal: true,
+        technology: 'Blah',
       },
     });
     wrapper.setData({
@@ -354,6 +357,7 @@ describe('QuickNavigationModal', () => {
       propsData: {
         children: symbolsWithRepeatedPaths,
         showQuickNavigationModal: true,
+        technology: 'Blah',
       },
     });
     wrapper.setData({

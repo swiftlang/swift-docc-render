@@ -87,7 +87,7 @@
               :tags="availableTags"
               :translatableTags="translatableTags"
               :selected-tags.sync="selectedTagsModelValue"
-              placeholder="filter.title"
+              :placeholder="$t('filter.title')"
               :should-keep-open-on-blur="false"
               :position-reversed="!renderFilterOnTop"
               :clear-filter-on-tag-select="false"
