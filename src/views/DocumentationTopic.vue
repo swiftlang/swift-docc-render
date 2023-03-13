@@ -125,7 +125,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
-import { updateCurrentLocale } from 'docc-render/utils/i18n-utils';
+import { updateCurrentLocale } from 'theme/utils/i18n-utils.js';
 import { enablei18n } from 'theme/lang/index.js';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';

@@ -25,16 +25,24 @@ export function localeIsValid(localeCode) {
 
 /**
  * Updates i18n global var and html lang
+ * @param {String} locale - locale used
+ * @param {Object{}} env - context
+ */
+export function updateLocale(locale = defaultLocale, env) {
+  // exist if current locale is not supported
+  if (!localeIsValid(locale)) return;
+  // update locale global var
+  env.$i18n.locale = locale; // eslint-disable-line no-param-reassign
+  // update html lang
+  updateLangTag(locale);
+}
+
+/**
+ * Updates i18n global var and html lang
  * @param {{ params: { locale: String } }} to - where the route navigates to
  * @param {Object{}} env - context
- * @param {{ code: String, name: String }[]} locales
  */
 export function updateCurrentLocale(to, env) {
-  const currentLocale = to.params.locale || defaultLocale;
-  // exist if current locale is not supported
-  if (!localeIsValid(currentLocale)) return;
-  // update locale global var
-  env.$i18n.locale = currentLocale; // eslint-disable-line no-param-reassign
-  // update html lang
-  updateLangTag(currentLocale);
+  const currentLocale = to.params.locale;
+  updateLocale(currentLocale, env);
 }

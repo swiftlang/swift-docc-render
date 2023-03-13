@@ -9,7 +9,6 @@
 */
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
-import locales from 'theme/lang/locales.json';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
 
@@ -124,17 +123,9 @@ export function addOrUpdateMetadata({
 }
 
 /**
- * It returns the iso code of a language in case it exists
- * @param {String} code
- */
-export function getISO(code) {
-  return locales.find(locale => locale.code === code).iso;
-}
-
-/**
  * It updates the document setting a new lang attribute with the iso code or fallback on the locale
  * @param {String} locale
  */
 export function updateLangTag(locale) {
-  document.querySelector('html').setAttribute('lang', getISO(locale) || locale);
+  document.querySelector('html').setAttribute('lang', locale);
 }
