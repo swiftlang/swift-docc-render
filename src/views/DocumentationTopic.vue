@@ -76,8 +76,7 @@
           :displaySidenav="enableNavigator"
           :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
           @toggle-sidenav="handleToggleSidenav"
-        >
-        </Nav>
+        />
         <Topic
           v-bind="topicProps"
           :key="topicKey"
