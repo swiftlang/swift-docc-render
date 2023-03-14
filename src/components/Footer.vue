@@ -14,7 +14,7 @@
       <ColorSchemeToggle />
     </div>
     <div v-if="enablei18n" class="row">
-      <LocaleSelector @change="updateRouter"/>
+      <LocaleSelector/>
     </div>
   </footer>
 </template>
@@ -22,25 +22,13 @@
 <script>
 import ColorSchemeToggle from 'docc-render/components/ColorSchemeToggle.vue';
 import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
-import { enablei18n, defaultLocale } from 'theme/lang/index.js';
-import { updateLangTag } from 'docc-render/utils/metadata';
+import { enablei18n } from 'theme/lang/index.js';
 
 export default {
   name: 'Footer',
   components: { ColorSchemeToggle, LocaleSelector },
   computed: {
     enablei18n: () => enablei18n,
-  },
-  methods: {
-    updateRouter({ target: { value: currentLocale } }) {
-      this.$i18n.locale = currentLocale;
-      this.$router.push({
-        params: {
-          locale: currentLocale === defaultLocale ? null : currentLocale,
-        },
-      });
-      updateLangTag(currentLocale);
-    },
   },
 };
 </script>

@@ -13,7 +13,7 @@
     <select
       :value="$i18n.locale"
       :aria-label="$t('select-language')"
-      @change="$emit('change', $event)"
+      @change="updateRouter"
     >
       <option
         v-for="{ code, name } in locales"
@@ -30,6 +30,8 @@
 <script>
 import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import locales from 'theme/lang/locales.json';
+import { defaultLocale } from 'theme/lang/index.js';
+import { updateLangTag } from 'docc-render/utils/metadata';
 
 export default {
   name: 'LocaleSelector',
@@ -40,6 +42,18 @@ export default {
     return {
       locales,
     };
+  },
+  methods: {
+    updateRouter({ target: { value: currentLocale } }) {
+      const { slug } = locales.find(locale => locale.code === currentLocale);
+      this.$i18n.locale = currentLocale;
+      this.$router.push({
+        params: {
+          locale: currentLocale === defaultLocale ? null : slug,
+        },
+      });
+      updateLangTag(currentLocale);
+    },
   },
 };
 
