@@ -684,6 +684,7 @@ export default {
       margin-top: 0;
     }
 
+    h1,
     h2,
     h3,
     h4,
@@ -695,6 +696,10 @@ export default {
 
     h2 {
       font-size: 1.083rem;
+    }
+
+    h1 {
+      font-size: 1.416rem;
     }
 
     aside {
