@@ -32,6 +32,7 @@ import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
 import { updateLangTag } from 'docc-render/utils/metadata';
+import { getSlug } from 'docc-render/utils/i18n-utils';
 
 export default {
   name: 'LocaleSelector',
@@ -45,7 +46,7 @@ export default {
   },
   methods: {
     updateRouter({ target: { value: currentLocale } }) {
-      const { slug } = locales.find(locale => locale.code === currentLocale);
+      const slug = getSlug(currentLocale);
       this.$i18n.locale = currentLocale;
       this.$router.push({
         params: {

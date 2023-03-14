@@ -8,11 +8,11 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import appLocales from 'theme/lang/locales.json';
+import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
-const localeCodes = new Set(appLocales.map(appLocale => appLocale.code));
+const localeCodes = new Set(locales.map(appLocale => appLocale.code));
 
 /**
  * Check if locale is valid
@@ -45,4 +45,14 @@ export function updateLocale(locale = defaultLocale, env) {
 export function updateCurrentLocale(to, env) {
   const currentLocale = to.params.locale;
   updateLocale(currentLocale, env);
+}
+
+/**
+ * Get locale slug from locale code
+ * @param {String} localeCode - locale code
+ * @return {String}
+ */
+export function getSlug(localeCode) {
+  const locale = locales.find(({ code }) => code === localeCode);
+  return locale ? locale.slug : '';
 }

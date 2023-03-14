@@ -22,6 +22,10 @@ import { defaultLocale } from 'theme/lang/index.js';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
+jest.mock('docc-render/utils/metadata', () => ({
+  updateLangTag: jest.fn(),
+}));
+
 const mockBaseUrl = jest.fn().mockReturnValue('/');
 
 jest.mock('docc-render/utils/theme-settings', () => ({
