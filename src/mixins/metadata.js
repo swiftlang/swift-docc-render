@@ -28,12 +28,18 @@ export default {
   computed: {
     pagePath: ({ $route: { path = '/' } = {} }) => path,
     pageURL: ({ pagePath = '/' }) => resolveAbsoluteUrl(pagePath),
+    disableMetadata: () => false,
   },
   mounted() {
+    if (this.disableMetadata) {
+      return;
+    }
+
     addOrUpdateMetadata({
       title: this.pageTitle,
       description: this.pageDescription,
       url: this.pageURL,
+      currentLocale: this.$i18n.locale,
     });
   },
 };

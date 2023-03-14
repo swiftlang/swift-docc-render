@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -38,11 +38,15 @@
           <PossiblyChangedTextAttribute
             :changes="changes.required"
             :value="required"
-          >(Required) </PossiblyChangedTextAttribute>
+          >
+            {{ $t('formats.parenthesis', { content: $t('required') }) }}
+          </PossiblyChangedTextAttribute>
           <PossiblyChangedTextAttribute
             :changes="changes.readOnly"
             :value="readOnly"
-          >(Read only) </PossiblyChangedTextAttribute>
+          >
+            {{ $t('formats.parenthesis', { content: $t('read-only') }) }}
+          </PossiblyChangedTextAttribute>
           <ContentNode v-if="content" :content="content" />
           <ParameterAttributes :attributes="attributes" :changes="changes" />
         </div>

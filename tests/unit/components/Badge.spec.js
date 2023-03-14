@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -25,7 +25,7 @@ describe('Badge', () => {
       },
     });
     expect(wrapper.classes()).toEqual(['badge', 'badge-deprecated']);
-    expect(wrapper.text()).toBe('Deprecated');
+    expect(wrapper.text()).toBe('aside-kind.deprecated');
   });
 
   it('renders "Beta" when variant is "beta"', () => {
@@ -35,7 +35,7 @@ describe('Badge', () => {
       },
     });
     expect(wrapper.classes()).toEqual(['badge', 'badge-beta']);
-    expect(wrapper.text()).toBe('Beta');
+    expect(wrapper.text()).toBe('aside-kind.beta');
   });
 
   it('renders a custom text, when variant is custom', () => {

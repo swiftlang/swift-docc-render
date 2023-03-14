@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -11,9 +11,9 @@
 <template functional>
   <!-- because the component is functional we must mannually pass the classes -->
   <p class="requirement-metadata" :class="data.staticClass">
-    <strong>Required.</strong>
+    <strong>{{ parent.$t('required') }}</strong>
     <template v-if="props.defaultImplementationsCount">
-      Default implementation{{ props.defaultImplementationsCount > 1 ? 's' : '' }} provided.
+       {{ parent.$tc('metadata.default-implementation', props.defaultImplementationsCount) }}
     </template>
   </p>
 </template>

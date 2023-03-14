@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -27,6 +27,7 @@ const {
 const defaultProps = {
   item: {
     depth: 2,
+    index: 1,
     type: TopicTypes.func,
     childUIDs: [1, 2, 3],
     path: '/path/to/foo',
@@ -434,7 +435,7 @@ describe('NavigatorCardItem', () => {
       const label = wrapper.find(`#usage-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text())
-        .toBe('To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow');
+        .toBe('filter.navigate');
     });
 
     it('renders tabindex 0 on link when element is focused', () => {
@@ -479,14 +480,14 @@ describe('NavigatorCardItem', () => {
       const label = wrapper.find(`#label-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text())
-        .toBe(`${defaultProps.item.index + 1} of ${defaultProps.item.siblingsCount} symbols inside`);
+        .toBe('filter.symbols-inside 2 5');
     });
 
     it('renders a hidden span telling the containing number of symbols', () => {
       const wrapper = createWrapper();
       const label = wrapper.find(`#label-parent-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe(`, containing ${defaultProps.item.childUIDs.length} symbols`);
+      expect(label.text()).toBe(', filter.containing-symbols');
     });
 
     it('renders a aria-describedby without parent label if it is not a parent', () => {

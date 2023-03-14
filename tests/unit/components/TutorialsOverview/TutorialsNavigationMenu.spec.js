@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -49,7 +49,7 @@ describe('TutorialsNavigationMenu', () => {
     expect(navigation.exists()).toBe(true);
     expect(navigation.contains('li')).toBe(true);
     expect(navigation.text()).toBe('foo');
-    expect(navigation.attributes('aria-label')).toBe('Chapters');
+    expect(navigation.attributes('aria-label')).toBe('tutorials.nav.chapters');
   });
 
   it('does not render the List if collapsed is false', () => {

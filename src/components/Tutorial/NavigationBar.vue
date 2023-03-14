@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -21,7 +21,7 @@
           :to="urlWithParams"
         >
           <template slot="default">{{ technology }}</template>
-          <template slot="subhead">Tutorials</template>
+          <template slot="subhead">{{ $tc('tutorials.title', 2) }}</template>
         </NavTitleContainer>
       </ReferenceUrlProvider>
     </template>
@@ -168,7 +168,7 @@ export default {
       if (sectionNumber === 0) {
         return undefined;
       }
-      return `(${sectionNumber} of ${numberOfSections})`;
+      return this.$t('tutorials.section-of', { number: sectionNumber, total: numberOfSections });
     },
   },
   methods: {

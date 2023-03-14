@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -82,13 +82,16 @@ export default {
       [TopicKind.article]: TopicKindClass.article,
       [TopicKind.tutorial]: TopicKindClass.tutorial,
     }[kind]),
-    formatTime: time => time
-      .replace('min', ' minutes')
-      .replace('hrs', ' hours'),
-    ariaLabelFor({ title, estimatedTime, kind }) {
+    formatTime(time) {
+      return time
+        .replace('min', ` ${this.$t('tutorials.time.minutes.full')}`)
+        .replace('hrs', ` ${this.$t('tutorials.time.hours.full')}`);
+    },
+    ariaLabelFor(topic) {
+      const { title, estimatedTime, kind } = topic;
       const titleItems = [title, TopicKindIconLabel[kind]];
       if (estimatedTime) {
-        titleItems.push(`${this.formatTime(estimatedTime)} Estimated Time`);
+        titleItems.push(`${this.formatTime(estimatedTime)} ${this.$t('tutorials.estimated-time')}`);
       }
 
       return titleItems.join(' - ');

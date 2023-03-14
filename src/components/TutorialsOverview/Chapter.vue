@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -16,9 +16,11 @@
         <component
           :is="volumeHasName ? 'h3': 'h2'"
           class="name"
-          :aria-label="`${name} - Chapter ${number}`"
+          :aria-label="`${name} - ${$tc('tutorials.sections.chapter', { number })}`"
         >
-          <span class="eyebrow" aria-hidden="true">Chapter {{number}}</span>
+          <span class="eyebrow" aria-hidden="true">
+            {{ $t('tutorials.sections.chapter', { number }) }}
+          </span>
           <span aria-hidden="true" class="name-text">{{name}}</span>
         </component>
         <ContentNode v-if="content" :content="content" />

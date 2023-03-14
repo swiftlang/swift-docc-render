@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -11,6 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import ImageAsset from 'docc-render/components/ImageAsset.vue';
 
+import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 import { flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/stores/AppStore', () => ({
@@ -277,7 +278,7 @@ describe('ImageAsset', () => {
     expect(fallbackImg.exists()).toBe(true);
     expect(fallbackImg.classes('fallback')).toBe(true);
     expect(fallbackImg.attributes('alt')).toBe(alt);
-    expect(fallbackImg.attributes('title')).toBe('Image failed to load');
+    expect(fallbackImg.attributes('title')).toBe('error.image');
   });
 
   it('calculates an optimal width after image loads when no size is provided', async () => {
@@ -430,5 +431,32 @@ describe('ImageAsset', () => {
     expect(console.error).toHaveBeenCalledWith('Unable to calculate optimal image width');
 
     consoleSpy.mockRestore();
+  });
+
+  it('allows setting the loading strategy by a parent component', async () => {
+    const url = 'https://www.example.com/image.png';
+    const wrapper = shallowMount(ImageAsset, {
+      provide: {
+        imageLoadingStrategy: ImageLoadingStrategy.eager,
+      },
+      propsData: {
+        variants: [
+          {
+            traits: [
+              '2x',
+              'light',
+            ],
+            url,
+            size: {
+              width: 1202,
+              height: 630,
+            },
+          },
+        ],
+      },
+    });
+
+    const image = wrapper.find('img');
+    expect(image.attributes('loading')).toBe(ImageLoadingStrategy.eager);
   });
 });
