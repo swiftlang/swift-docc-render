@@ -373,7 +373,7 @@ describe('fetchIndexPathsData', () => {
     expect(data).toEqual({ foobar: 'foobar' });
     // fetch data with another locale
     const locale = 'zh-CN';
-    await fetchIndexPathsData({ currentLocale: locale });
+    await fetchIndexPathsData({ locale });
     expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${locale}/index.json`, {});
   });
 });

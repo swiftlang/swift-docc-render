@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { localeIsValid, updateCurrentLocale } from '@/utils/i18n-utils';
+import { localeIsValid, updateLocale } from '@/utils/i18n-utils';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
 jest.mock('theme/lang/locales.json', () => (
@@ -16,10 +16,12 @@ jest.mock('theme/lang/locales.json', () => (
     {
       code: 'en-US',
       name: 'English',
+      slug: 'en-US',
     },
     {
       code: 'zh-CN',
       name: '简体中文',
+      slug: 'zh-CN',
     },
   ]
 ));
@@ -47,9 +49,9 @@ describe('localeIsValid', () => {
   });
 });
 
-describe('updateCurrentLocale', () => {
+describe('updateLocale', () => {
   it('updates current global var for locale', () => {
-    updateCurrentLocale(to, env);
+    updateLocale(to.params.locale, env);
     expect(env.$i18n.locale).toBe('zh-CN');
     expect(updateLangTag).toHaveBeenCalledTimes(1);
   });

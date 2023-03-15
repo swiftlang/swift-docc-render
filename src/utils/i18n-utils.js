@@ -12,15 +12,29 @@ import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
-const localeCodes = new Set(locales.map(appLocale => appLocale.code));
+const localeSlug = new Set(locales.map(appLocale => appLocale.slug));
 
 /**
  * Check if locale is valid
  * @param {String} localeCode - locale code
  * @param {{ code: String }[]} locales - locales available
  */
-export function localeIsValid(localeCode) {
-  return localeCodes.has(localeCode);
+export function localeIsValid(slug) {
+  return localeSlug.has(slug);
+}
+
+const slugsForLocale = locales.reduce((map, locale) => ({
+  ...map,
+  [locale.slug]: locale.code,
+}), {});
+
+/**
+ * Get locale code from slug
+ * @param {String} slug
+ * @return {String}
+ */
+export function getCodeForSlug(slug) {
+  return slugsForLocale[slug];
 }
 
 /**
@@ -28,31 +42,13 @@ export function localeIsValid(localeCode) {
  * @param {String} locale - locale used
  * @param {Object{}} env - context
  */
-export function updateLocale(locale = defaultLocale, env) {
+export function updateLocale(slug = defaultLocale, env) {
   // exist if current locale is not supported
-  if (!localeIsValid(locale)) return;
+  if (!localeIsValid(slug)) return;
   // update locale global var
-  env.$i18n.locale = locale; // eslint-disable-line no-param-reassign
+  env.$i18n.locale = slug; // eslint-disable-line no-param-reassign
+  // get code
+  const code = getCodeForSlug(slug);
   // update html lang
-  updateLangTag(locale);
-}
-
-/**
- * Updates i18n global var and html lang
- * @param {{ params: { locale: String } }} to - where the route navigates to
- * @param {Object{}} env - context
- */
-export function updateCurrentLocale(to, env) {
-  const currentLocale = to.params.locale;
-  updateLocale(currentLocale, env);
-}
-
-/**
- * Get locale slug from locale code
- * @param {String} localeCode - locale code
- * @return {String}
- */
-export function getSlug(localeCode) {
-  const locale = locales.find(({ code }) => code === localeCode);
-  return locale ? locale.slug : '';
+  updateLangTag(code);
 }
