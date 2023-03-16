@@ -89,7 +89,7 @@ export default {
       try {
         this.isFetching = true;
         const { interfaceLanguages, references } = await fetchIndexPathsData(
-          { locale: this.$route.params.locale || '' },
+          { slug: this.$route.params.locale || '' },
         );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);
@@ -103,7 +103,6 @@ export default {
   watch: {
     '$route.params.locale': {
       handler: 'fetchIndexData',
-      deep: true,
       immediate: true,
     },
   },

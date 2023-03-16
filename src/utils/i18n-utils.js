@@ -12,17 +12,6 @@ import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
-const localeSlug = new Set(locales.map(appLocale => appLocale.slug));
-
-/**
- * Check if locale is valid
- * @param {String} localeCode - locale code
- * @param {{ code: String }[]} locales - locales available
- */
-export function localeIsValid(slug) {
-  return localeSlug.has(slug);
-}
-
 const slugsForLocale = locales.reduce((map, locale) => ({
   ...map,
   [locale.slug]: locale.code,
@@ -38,9 +27,17 @@ export function getCodeForSlug(slug) {
 }
 
 /**
+ * Check if locale is valid
+ * @param {String} slug - locale code
+ */
+export function localeIsValid(slug) {
+  return !!slugsForLocale[slug];
+}
+
+/**
  * Updates i18n global var and html lang
  * @param {String} locale - locale used
- * @param {Object{}} env - context
+ * @param {Object} env - context
  */
 export function updateLocale(slug = defaultLocale, env) {
   // exist if current locale is not supported
