@@ -12,6 +12,8 @@ const fs = require('fs');
 const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const ThemeResolverPlugin = require('webpack-theme-resolver-plugin');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const webpack = require('webpack');
 const themeUtils = require('./theme-build-utils');
 const { BannerPlugin, LICENSE_HEADER } = require('./license-header-built-files');
 
@@ -70,6 +72,16 @@ function baseChainWebpack(config) {
     .use(BannerPlugin, [{
       banner: LICENSE_HEADER,
     }]);
+
+  // Limit highlight.js to only the necessary languages
+  const builtinLanguages = 'bash|c|s?css|cpp|diff|http|java|llvm|perl|php|python|ruby|xml|javascript|json|markdown|objectivec|shell|swift';
+  const envLanguages = (process.env.VUE_APP_HLJS_LANGUAGES ?? '').split(',').join('|');
+  config
+    .plugin('LanguagesPlugin')
+    .use(webpack.ContextReplacementPlugin, [
+      /highlight\.js\/lib\/languages$/,
+      new RegExp(`/(${[builtinLanguages, envLanguages].join('|')})$`),
+    ]);
 }
 
 function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {}) {
