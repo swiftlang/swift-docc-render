@@ -188,6 +188,13 @@ $doc-hero-icon-dimension: 250px;
 
   .minimized-hero {
     padding: 1.5em 20px;
+
+    @include inTargetIde {
+      @include breakpoint(xsmall) {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
   }
 
   &__above-content {

@@ -730,6 +730,13 @@ export default {
 .full-width-container .doc-content .minimized-container {
   padding-left: 20px;
   padding-right: 20px;
+
+  @include inTargetIde {
+    @include breakpoint(xsmall) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
 }
 
 /deep/ {
