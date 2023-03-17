@@ -33,10 +33,6 @@ export default {
       type: String,
       required: true,
     },
-    currentLocale: {
-      type: String,
-      required: true,
-    },
     apiChangesVersion: {
       type: String,
       default: '',
@@ -93,7 +89,7 @@ export default {
       try {
         this.isFetching = true;
         const { interfaceLanguages, references } = await fetchIndexPathsData(
-          { currentLocale: this.currentLocale },
+          { slug: this.$route.params.locale || '' },
         );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);
@@ -105,9 +101,9 @@ export default {
     },
   },
   watch: {
-    currentLocale: {
-      immediate: true,
+    '$route.params.locale': {
       handler: 'fetchIndexData',
+      immediate: true,
     },
   },
   render() {
