@@ -16,12 +16,12 @@ jest.mock('theme/lang/locales.json', () => (
     {
       code: 'en-US',
       name: 'English',
-      slug: 'en-US',
+      slug: 'en',
     },
     {
       code: 'zh-CN',
       name: '简体中文',
-      slug: 'zh-CN',
+      slug: 'cn',
     },
   ]
 ));
@@ -48,11 +48,11 @@ describe('LocaleSelector', () => {
     const options = wrapper.findAll('option');
     expect(options).toHaveLength(2);
     expect(options.at(0).text()).toBe('English');
-    expect(options.at(0).attributes('value')).toBe('en-US');
+    expect(options.at(0).attributes('value')).toBe('en');
     expect(options.at(0).attributes('lang')).toBe('en-US');
 
     expect(options.at(1).text()).toBe('简体中文');
-    expect(options.at(1).attributes('value')).toBe('zh-CN');
+    expect(options.at(1).attributes('value')).toBe('cn');
     expect(options.at(1).attributes('lang')).toBe('zh-CN');
   });
 });

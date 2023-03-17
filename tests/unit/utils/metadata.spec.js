@@ -16,12 +16,12 @@ jest.mock('theme/lang/locales.json', () => (
     {
       code: 'en-US',
       name: 'English',
-      slug: 'en-US',
+      slug: 'en',
     },
     {
       code: 'zh-CN',
       name: '简体中文',
-      slug: 'zh-CN',
+      slug: 'cn',
     },
   ]
 ));

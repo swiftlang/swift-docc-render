@@ -16,12 +16,12 @@ jest.mock('theme/lang/locales.json', () => (
     {
       code: 'en-US',
       name: 'English',
-      slug: 'en-US',
+      slug: 'en',
     },
     {
       code: 'zh-CN',
       name: '简体中文',
-      slug: 'zh-CN',
+      slug: 'cn',
     },
   ]
 ));
@@ -32,19 +32,19 @@ jest.mock('docc-render/utils/metadata', () => ({
 
 const to = {
   params: {
-    locale: 'zh-CN',
+    locale: 'cn',
   },
 };
 
 const env = {
   $i18n: {
-    locale: 'en-US',
+    locale: 'en',
   },
 };
 
 describe('localeIsValid', () => {
   it('checks that locale is inside locales', () => {
-    expect(localeIsValid('en-US')).toBe(true);
+    expect(localeIsValid('en')).toBe(true);
     expect(localeIsValid('es-ES')).toBe(false);
   });
 });
@@ -52,7 +52,7 @@ describe('localeIsValid', () => {
 describe('updateLocale', () => {
   it('updates current global var for locale', () => {
     updateLocale(to.params.locale, env);
-    expect(env.$i18n.locale).toBe('zh-CN');
+    expect(env.$i18n.locale).toBe('cn');
     expect(updateLangTag).toHaveBeenCalledTimes(1);
   });
 });
