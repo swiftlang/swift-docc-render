@@ -12,7 +12,7 @@ import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
-const slugsForLocale = locales.reduce((map, locale) => ({
+const codeForSlug = locales.reduce((map, locale) => ({
   ...map,
   [locale.slug]: locale.code,
 }), {});
@@ -23,7 +23,7 @@ const slugsForLocale = locales.reduce((map, locale) => ({
  * @return {String}
  */
 export function getCodeForSlug(slug) {
-  return slugsForLocale[slug];
+  return codeForSlug[slug];
 }
 
 /**
@@ -31,7 +31,7 @@ export function getCodeForSlug(slug) {
  * @param {String} slug - locale code
  */
 export function localeIsValid(slug) {
-  return !!slugsForLocale[slug];
+  return !!codeForSlug[slug];
 }
 
 /**
