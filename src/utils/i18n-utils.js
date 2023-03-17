@@ -8,33 +8,44 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import appLocales from 'theme/lang/locales.json';
+import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
-const localeCodes = new Set(appLocales.map(appLocale => appLocale.code));
+const codeForSlug = locales.reduce((map, locale) => ({
+  ...map,
+  [locale.slug]: locale.code,
+}), {});
+
+/**
+ * Get locale code from slug
+ * @param {String} slug
+ * @return {String}
+ */
+export function getCodeForSlug(slug) {
+  return codeForSlug[slug];
+}
 
 /**
  * Check if locale is valid
- * @param {String} localeCode - locale code
- * @param {{ code: String }[]} locales - locales available
+ * @param {String} slug - locale code
  */
-export function localeIsValid(localeCode) {
-  return localeCodes.has(localeCode);
+export function localeIsValid(slug) {
+  return !!codeForSlug[slug];
 }
 
 /**
  * Updates i18n global var and html lang
- * @param {{ params: { locale: String } }} to - where the route navigates to
- * @param {Object{}} env - context
- * @param {{ code: String, name: String }[]} locales
+ * @param {String} locale - locale used
+ * @param {Object} env - context
  */
-export function updateCurrentLocale(to, env) {
-  const currentLocale = to.params.locale || defaultLocale;
+export function updateLocale(slug = defaultLocale, env) {
   // exist if current locale is not supported
-  if (!localeIsValid(currentLocale)) return;
+  if (!localeIsValid(slug)) return;
   // update locale global var
-  env.$i18n.locale = currentLocale; // eslint-disable-line no-param-reassign
+  env.$i18n.locale = slug; // eslint-disable-line no-param-reassign
+  // get code
+  const code = getCodeForSlug(slug);
   // update html lang
-  updateLangTag(currentLocale);
+  updateLangTag(code);
 }

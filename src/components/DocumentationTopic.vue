@@ -373,10 +373,12 @@ export default {
     normalizedObjcPath: ({
       normalizePath,
       objcPath,
+      swiftPath,
     }) => (
-      objcPath ? buildUrl(normalizePath(objcPath), {
+      // do not append language query parameter if no swiftPath exists
+      normalizePath((objcPath && swiftPath) ? buildUrl(objcPath, {
         language: Language.objectiveC.key.url,
-      }) : null
+      }) : objcPath)
     ),
     defaultImplementationsCount() {
       return (this.defaultImplementationsSections || []).reduce(
@@ -502,6 +504,7 @@ export default {
     normalizePath(path) {
       // Sometimes `paths` data from `variants` are prefixed with a leading
       // slash and sometimes they aren't
+      if (!path) return path;
       return path.startsWith('/') ? path : `/${path}`;
     },
     extractProps(json) {
