@@ -14,7 +14,7 @@
       <ColorSchemeToggle />
     </div>
     <div v-if="enablei18n" class="row">
-      <LocaleSelector />
+      <LocaleSelector/>
     </div>
   </footer>
 </template>

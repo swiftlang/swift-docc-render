@@ -11,7 +11,6 @@
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import { shallowMount } from '@vue/test-utils';
 import Language from 'docc-render/constants/Language';
-import { defaultLocale } from 'theme/lang/index.js';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { fetchIndexPathsData } from '@/utils/data';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
@@ -145,7 +144,6 @@ fetchIndexPathsData.mockResolvedValue(response);
 
 const defaultProps = {
   technologyUrl,
-  currentLocale: defaultLocale,
 };
 
 let props = {};
@@ -159,6 +157,13 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorD
     default: (p) => {
       props = p;
       return 'Text';
+    },
+  },
+  mocks: {
+    $route: {
+      params: {
+        locale: 'en-US',
+      },
     },
   },
   ...others,
