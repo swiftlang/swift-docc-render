@@ -11,14 +11,19 @@
 <template>
 <div v-if="displayi18nBanner" class="i18n-banner">
   <div class="i18n-banner__wrapper">
-    View in English
-    <a href="/" class="i18n-banner__link">
+    <router-link
+      :to="to"
+      class="i18n-banner__link"
+      replace
+    >
+      {{ $i18n.messages[`${preferredLocale}`]['view-in'] }}
       <InlineChevronRightIcon class="icon-inline" />
-    </a>
+    </router-link>
     <button
       class="i18n-banner__close-icon"
       aria-label="I do not want to change the language"
-      @click="dismissedBanner = true">
+      @click="dismissedBanner = true"
+    >
       <CloseIcon class="icon-inline" />
     </button>
   </div>
@@ -27,6 +32,10 @@
 <script>
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import CloseIcon from 'theme/components/Icons/CloseIcon.vue';
+import locales from 'theme/lang/locales.json';
+import { defaultLocale } from 'theme/lang/index.js';
+
+const navigatorLocale = window.navigator.language;
 
 export default {
   name: 'i18nBanner',
@@ -34,20 +43,41 @@ export default {
     InlineChevronRightIcon,
     CloseIcon,
   },
+  inject: {
+    store: {
+      default() {
+        return {
+          setPreferredLocale() {},
+        };
+      },
+    },
+  },
   data() {
     return {
       dismissedBanner: false,
+      preferredLocale: '',
     };
   },
   computed: {
     displayi18nBanner() {
-      return /^en\b/.test(navigator.language) && this.$i18n.locale !== 'en-US' && !this.dismissedBanner;
+      return locales.some((locale) => {
+        const language = locale.code.split('-')[0];
+        const preferredLocaleExists = navigatorLocale.includes(language);
+        if (!preferredLocaleExists
+          || this.$i18n.locale === locale.slug
+          || this.dismissedBanner) return false;
+        this.preferredLocale = locale.slug;
+        return true;
+      });
     },
-  },
-  props: {
-    enableThemeSettings: {
-      type: Boolean,
-      default: true,
+    to() {
+      const slug = this.preferredLocale;
+      this.store.setPreferredLocale(this.preferredLocale);
+      return {
+        params: {
+          locale: slug === defaultLocale ? null : slug,
+        },
+      };
     },
   },
 };

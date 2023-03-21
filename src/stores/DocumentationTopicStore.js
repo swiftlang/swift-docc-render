@@ -18,6 +18,7 @@ const { state: pageSectionsState, ...pageSectionsActions } = OnThisPageSectionsS
 export default {
   state: {
     preferredLanguage: Settings.preferredLanguage,
+    preferredLocale: Settings.preferredLocale,
     contentWidth: 0,
     ...changesState,
     ...pageSectionsState,
@@ -29,6 +30,10 @@ export default {
   setPreferredLanguage(language) {
     this.state.preferredLanguage = language;
     Settings.preferredLanguage = this.state.preferredLanguage;
+  },
+  setPreferredLocale(locale) {
+    this.state.preferredLocale = locale;
+    Settings.preferredLocale = this.state.preferredLocale;
   },
   setContentWidth(width) {
     this.state.contentWidth = width;
