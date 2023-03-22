@@ -1,6 +1,7 @@
 {
-  "language": "Language",
   "view-in": "View in English",
+  "continue-viewing": "Continue viewing in English",
+  "language": "Language",
   "video": {
     "replay": "Replay",
     "play": "Play",

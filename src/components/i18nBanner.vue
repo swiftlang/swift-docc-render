@@ -9,20 +9,20 @@
 -->
 
 <template>
-<div v-if="displayi18nBanner" class="i18n-banner">
+<div v-if="displayi18nBanner" class="i18n-banner" :lang="preferredLocale">
   <div class="i18n-banner__wrapper">
     <router-link
-      :to="to"
+      :to="link"
+      @click.native="setPreferredLocale(preferredLocale)"
       class="i18n-banner__link"
-      replace
     >
-      {{ $i18n.messages[`${preferredLocale}`]['view-in'] }}
+      {{ $i18n.messages[preferredLocale]['view-in'] }}
       <InlineChevronRightIcon class="icon-inline" />
     </router-link>
     <button
       class="i18n-banner__close-icon"
-      aria-label="I do not want to change the language"
-      @click="dismissedBanner = true"
+      :aria-label="$t('continue-viewing')"
+      @click="setPreferredLocale($i18n.locale)"
     >
       <CloseIcon class="icon-inline" />
     </button>
@@ -34,8 +34,7 @@ import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIco
 import CloseIcon from 'theme/components/Icons/CloseIcon.vue';
 import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
-
-const navigatorLocale = window.navigator.language;
+import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   name: 'i18nBanner',
@@ -43,41 +42,31 @@ export default {
     InlineChevronRightIcon,
     CloseIcon,
   },
-  inject: {
-    store: {
-      default() {
-        return {
-          setPreferredLocale() {},
-        };
-      },
-    },
-  },
-  data() {
-    return {
-      dismissedBanner: false,
-      preferredLocale: '',
-    };
-  },
   computed: {
-    displayi18nBanner() {
-      return locales.some((locale) => {
-        const language = locale.code.split('-')[0];
-        const preferredLocaleExists = navigatorLocale.includes(language);
-        if (!preferredLocaleExists
-          || this.$i18n.locale === locale.slug
-          || this.dismissedBanner) return false;
-        this.preferredLocale = locale.slug;
-        return true;
-      });
+    preferredLocale: () => {
+      const appPreferredLocale = AppStore.state.preferredLocale;
+      // if user has save a preferred locale, return it
+      if (appPreferredLocale) return appPreferredLocale;
+      // find if user's navigator preference is available with the locales we provide
+      // in case it is, that will be the preferred locale to display
+      return locales.find((locale) => {
+        const languageAvailable = locale.code.split('-')[0];
+        const navigatorLanguage = window.navigator.language;
+        return navigatorLanguage.includes(languageAvailable);
+      }).slug;
     },
-    to() {
-      const slug = this.preferredLocale;
-      this.store.setPreferredLocale(this.preferredLocale);
-      return {
-        params: {
-          locale: slug === defaultLocale ? null : slug,
-        },
-      };
+    displayi18nBanner: ({ preferredLocale, $i18n }) => (
+      preferredLocale && $i18n.locale !== preferredLocale
+    ),
+    link: ({ preferredLocale }) => ({
+      params: {
+        locale: preferredLocale === defaultLocale ? undefined : preferredLocale,
+      },
+    }),
+  },
+  methods: {
+    setPreferredLocale: (locale) => {
+      AppStore.setPreferredLocale(locale);
     },
   },
 };
@@ -89,7 +78,7 @@ export default {
   background: var(--color-fill-blue);
 
   &__wrapper {
-    max-width: 1920px;
+    max-width: var(--wrapper-max-width, 1920px);
     margin: 0 16px;
     position: relative;
     display: flex;

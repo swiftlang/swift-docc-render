@@ -10,6 +10,7 @@
 
 <template>
   <CodeTheme class="doc-topic-view">
+    <i18nBanner />
     <template v-if="topicData">
       <component
         :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
@@ -115,6 +116,7 @@ import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFra
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
+import i18nBanner from 'docc-render/components/i18nBanner.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
@@ -146,6 +148,7 @@ export default {
     QuickNavigationModal,
     PortalTarget,
     MagnifierIcon,
+    i18nBanner,
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
   props: {
