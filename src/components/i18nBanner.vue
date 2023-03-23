@@ -47,7 +47,7 @@ export default {
   computed: {
     preferredLocale: () => {
       const appPreferredLocale = AppStore.state.preferredLocale;
-      // if user has save a preferred locale, return it
+      // if user has a storaged preferred locale, return it
       if (appPreferredLocale) return appPreferredLocale;
       // find if user's navigator preference is available with the locales we provide
       // in case it is, that will be the preferred locale to display
