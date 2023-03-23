@@ -88,6 +88,7 @@
   --color-eyebrow: var(--color-figure-gray-secondary);
   --color-focus-border-color: var(--color-fill-blue);
   --color-focus-color: rgba(0, 125, 250, 0.6);
+  --color-focus-button: #{transparentize(light-color(fill), 0.6)};
   --color-form-error: var(--color-figure-red);
   --color-form-error-background: var(--color-fill-red-secondary);
   --color-form-valid: var(--color-figure-green);

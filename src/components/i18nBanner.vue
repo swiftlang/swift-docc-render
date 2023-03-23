@@ -16,17 +16,17 @@
       @click.native="setPreferredLocale(preferredLocale)"
       class="i18n-banner__link"
       :lang="getCodeForSlug(preferredLocale)"
-    >
-      {{ $i18n.messages[preferredLocale]['view-in'] }}
-      <InlineChevronRightIcon class="icon-inline" />
+    >{{ $i18n.messages[preferredLocale]['view-in'] }}<InlineChevronRightIcon class="icon-inline" />
     </router-link>
-    <button
-      class="i18n-banner__close-icon"
-      :aria-label="$t('continue-viewing')"
-      @click="setPreferredLocale($i18n.locale)"
-    >
-      <CloseIcon class="icon-inline" />
-    </button>
+    <div class="i18n-banner__close-icon-wrapper">
+      <button
+        class="i18n-banner__close-icon-button"
+        :aria-label="$t('continue-viewing')"
+        @click="setPreferredLocale($i18n.locale)"
+      >
+        <CloseIcon class="icon-inline" />
+      </button>
+    </div>
   </div>
 </div>
 </template>
@@ -79,12 +79,17 @@ export default {
 
 .i18n-banner {
   background: var(--color-fill-blue);
+  color: var(--color-button-text);
 
   &__wrapper {
-    max-width: var(--wrapper-max-width, 1920px);
-    margin: 0 16px;
-    position: relative;
     display: flex;
+    max-width: var(
+      --wrapper-max-width,
+      map-deep-get($breakpoint-attributes, (default, xlarge, min-width))
+    );
+    margin: 0 $nav-padding-small;
+    position: relative;
+    padding: $nav-padding-small 0;
 
     @include breakpoints-from(xlarge) {
       margin: 0 auto;
@@ -92,30 +97,39 @@ export default {
   }
 
   &__link {
-    justify-content: center;
-    padding: 16px 0;
-    margin: 0 auto;
-    color: var(--color-text);
     @include font-styles(body-reduced);
+    margin: 0 auto;
+    color: var(--color-button-text);
+
+    @include on-keyboard-focus() {
+      outline-color: var(--color-focus-button);
+    }
   }
 
-  &__close-icon {
-    height: 20px;
-    padding: 16px 0 16px 16px;
+  &__close-icon-wrapper {
     position: absolute;
     right: 0;
     top: 0;
+    height: 100%;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     z-index: 1;
   }
 
-  .close-icon {
-    width: 15px;
+  &__close-icon-button {
+    @include on-keyboard-focus() {
+      outline-color: var(--color-focus-button);
+    }
+
+    .close-icon {
+      width: $icon-size-default;
+    }
   }
 
   .inline-chevron-right-icon {
-    width: 8px;
+    padding-left: $nav-padding-small / 4;
+    width: $icon-size-default / 2;
   }
 }
 </style>
