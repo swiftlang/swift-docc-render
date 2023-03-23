@@ -77,6 +77,8 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+$banner-icon-padding: $nav-padding-small / 4;
+
 .i18n-banner {
   background: var(--color-fill-blue);
   color: var(--color-button-text);
@@ -107,7 +109,7 @@ export default {
 
   &__close-icon-wrapper {
     position: absolute;
-    right: 0;
+    right: - $banner-icon-padding;
     top: 0;
     height: 100%;
     box-sizing: border-box;
@@ -117,17 +119,20 @@ export default {
   }
 
   &__close-icon-button {
+    padding: $banner-icon-padding;
+
     @include on-keyboard-focus() {
       outline-color: var(--color-focus-button);
     }
 
     .close-icon {
       width: $tiny-icon-size;
+      display: block;
     }
   }
 
   .inline-chevron-right-icon {
-    padding-left: $nav-padding-small / 4;
+    padding-left: $banner-icon-padding;
     width: $tiny-icon-size;
   }
 }
