@@ -64,6 +64,7 @@ const {
   Topic,
   QuickNavigationModal,
   MagnifierIcon,
+  i18nBanner,
 } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
@@ -198,7 +199,7 @@ describe('DocumentationTopic', () => {
 
     const codeTheme = wrapper.find(CodeTheme);
     expect(codeTheme.exists()).toBe(true);
-    expect(codeTheme.isEmpty()).toBe(true);
+    expect(codeTheme.isEmpty()).toEqual(true);
   });
 
   it('renders the Navigator and AdjustableSidebarWidth when enabled', async () => {
@@ -323,6 +324,19 @@ describe('DocumentationTopic', () => {
       technologyUrl: technology.url,
       apiChangesVersion: null,
     });
+  });
+
+  it('renders i18nBanner if enablei18n is true', async () => {
+    mockEnablei18n.mockReturnValueOnce(true);
+
+    wrapper = createWrapper();
+
+    wrapper.setData({
+      topicData,
+    });
+
+    const i18nBannerComponent = wrapper.find(i18nBanner);
+    expect(i18nBannerComponent.exists()).toBe(true);
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {

@@ -9,12 +9,13 @@
 -->
 
 <template>
-<div v-if="displayi18nBanner" class="i18n-banner" :lang="preferredLocale">
+<div v-if="displayi18nBanner" class="i18n-banner">
   <div class="i18n-banner__wrapper">
     <router-link
       :to="link"
       @click.native="setPreferredLocale(preferredLocale)"
       class="i18n-banner__link"
+      :lang="getCodeForSlug(preferredLocale)"
     >
       {{ $i18n.messages[preferredLocale]['view-in'] }}
       <InlineChevronRightIcon class="icon-inline" />
@@ -35,6 +36,7 @@ import CloseIcon from 'theme/components/Icons/CloseIcon.vue';
 import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index.js';
 import AppStore from 'docc-render/stores/AppStore';
+import { getCodeForSlug } from 'docc-render/utils/i18n-utils';
 
 export default {
   name: 'i18nBanner',
@@ -68,6 +70,7 @@ export default {
     setPreferredLocale: (locale) => {
       AppStore.setPreferredLocale(locale);
     },
+    getCodeForSlug,
   },
 };
 </script>
