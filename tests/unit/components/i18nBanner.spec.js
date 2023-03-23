@@ -65,7 +65,7 @@ describe('i18nBanner', () => {
     });
 
     link = wrapper.find('.i18n-banner__link');
-    closeIcon = wrapper.find('.i18n-banner__close-icon');
+    closeIcon = wrapper.find('.i18n-banner__close-icon-button');
   });
 
   it('renders a <i18nBanner> if preferredLocale is different to currentLocale', () => {
