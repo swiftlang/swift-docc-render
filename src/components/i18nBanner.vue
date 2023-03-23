@@ -122,13 +122,13 @@ export default {
     }
 
     .close-icon {
-      width: $icon-size-default;
+      width: $tiny-icon-size;
     }
   }
 
   .inline-chevron-right-icon {
     padding-left: $nav-padding-small / 4;
-    width: $icon-size-default / 2;
+    width: $tiny-icon-size;
   }
 }
 </style>
