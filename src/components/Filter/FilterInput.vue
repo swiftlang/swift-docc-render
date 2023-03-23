@@ -61,14 +61,14 @@
             id="filter-label"
             :for="FilterInputId"
             :data-value="modelValue"
-            :aria-label="$t(placeholder)"
+            :aria-label="placeholder"
             class="filter__input-label"
           >
             <input
               :id="FilterInputId"
               ref="input"
               v-model="modelValue"
-              :placeholder="hasSelectedTags ? '' : $t(placeholder)"
+              :placeholder="hasSelectedTags ? '' : placeholder"
               :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
               :disabled="disabled"
               v-bind="AXinputProperties"
