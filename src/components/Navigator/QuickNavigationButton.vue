@@ -13,7 +13,6 @@
     :aria-label="$t('quicknav.button.label')"
     class="quick-navigation-open"
     :title="$t('quicknav.button.title')"
-    v-on="$listeners"
   >
     /
   </button>

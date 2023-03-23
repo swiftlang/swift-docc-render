@@ -20,14 +20,4 @@ describe('QuickNavigationButton', () => {
     expect(wrapper.attributes('title')).toBe('quicknav.button.title');
     expect(wrapper.text()).toBe('/');
   });
-
-  it('behaves like a button', async () => {
-    const click = jest.fn();
-    const wrapper = shallowMount(QuickNavigationButton, {
-      listeners: { click },
-    });
-
-    await wrapper.find('button').trigger('click');
-    expect(click).toHaveBeenCalled();
-  });
 });
