@@ -47,7 +47,6 @@
                     :navigator-references="slotProps.references"
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
-                    :enable-quick-navigation="enableQuickNavigation"
                     @close="handleToggleSidenav(breakpoint)"
                   >
                     <template v-if="enableQuickNavigation" #filter>

@@ -232,10 +232,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    enableQuickNavigation: {
-      type: Boolean,
-      default: false,
-    },
   },
   mixins: [
     keyboardNavigation,

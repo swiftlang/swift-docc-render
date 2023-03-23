@@ -238,7 +238,6 @@ describe('DocumentationTopic', () => {
       flatChildren: [],
       navigatorReferences: {},
       renderFilterOnTop: false,
-      enableQuickNavigation: false,
     });
     expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -254,7 +253,6 @@ describe('DocumentationTopic', () => {
       allowHiding: true,
       flatChildren: [],
       navigatorReferences,
-      enableQuickNavigation: false,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
