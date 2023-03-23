@@ -74,6 +74,9 @@ const mocks = {
   },
   $route: {
     path: '/documentation/somepath',
+    params: {
+      locale: 'en-US',
+    },
   },
 };
 
@@ -216,7 +219,6 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technologyUrl: technology.url,
-      currentLocale: '',
       apiChangesVersion: null,
     });
     // its rendered by default
@@ -316,7 +318,6 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technologyUrl: technology.url,
-      currentLocale: defaultLocale,
       apiChangesVersion: null,
     });
   });

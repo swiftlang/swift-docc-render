@@ -8,8 +8,23 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { addOrUpdateMetadata, updateLangTag } from 'docc-render/utils/metadata';
 import { defaultLocale } from 'theme/lang/index.js';
+
+jest.mock('theme/lang/locales.json', () => (
+  [
+    {
+      code: 'en-US',
+      name: 'English',
+      slug: 'en',
+    },
+    {
+      code: 'zh-CN',
+      name: '简体中文',
+      slug: 'cn',
+    },
+  ]
+));
 
 const fs = require('fs');
 const path = require('path');
@@ -104,5 +119,12 @@ describe('Metadata', () => {
     addOrUpdateMetadata({ description: differentDescription });
     expect(document.querySelector('meta[name="description"]').content).toBe(differentDescription);
     expect(document.querySelectorAll('meta[name="description"]')).toHaveLength(1);
+  });
+});
+
+describe('updateLangTag', () => {
+  it('updates the lang tag on the HTML with code', () => {
+    updateLangTag('zh-CN');
+    expect(document.querySelector('html').getAttribute('lang')).toBe('zh-CN');
   });
 });

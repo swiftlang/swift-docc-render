@@ -23,7 +23,6 @@
             :interface-language="topicProps.interfaceLanguage"
             :technologyUrl="technology.url"
             :api-changes-version="store.state.selectedAPIChangesVersion"
-            :currentLocale="enablei18n ? $i18n.locale : ''"
             ref="NavigatorDataProvider"
           >
             <template #default="slotProps">
@@ -121,7 +120,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
-import { updateCurrentLocale } from 'docc-render/utils/i18n-utils';
+import { updateLocale } from 'theme/utils/i18n-utils.js';
 import { enablei18n } from 'theme/lang/index.js';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
@@ -354,7 +353,7 @@ export default {
     }
 
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
-      updateCurrentLocale(to, vm);
+      updateLocale(to.params.locale, vm);
 
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
@@ -374,7 +373,7 @@ export default {
         if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
           this.applyObjcOverrides();
         }
-        updateCurrentLocale(to, this);
+        updateLocale(to.params.locale, this);
         next();
       }).catch(next);
     } else {

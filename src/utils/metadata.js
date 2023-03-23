@@ -122,6 +122,10 @@ export function addOrUpdateMetadata({
   );
 }
 
+/**
+ * It updates the document setting a new lang attribute with the iso code or fallback on the locale
+ * @param {String} locale
+ */
 export function updateLangTag(locale) {
-  return document.querySelector('html').setAttribute('lang', locale);
+  document.querySelector('html').setAttribute('lang', locale);
 }
