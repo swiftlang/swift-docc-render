@@ -596,19 +596,6 @@ describe('DocumentationTopic', () => {
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
-  it('shows the Quick Navigation Modal if open-quick-navigator is emitted in Navigator', async () => {
-    wrapper.setData({
-      topicData: {
-        ...topicData,
-        schemaVersion: schemaVersionWithSidebar,
-      },
-    });
-    await flushPromises();
-
-    wrapper.find(Navigator).vm.$emit('open-quick-navigator');
-    expect(wrapper.vm.showQuickNavigationModal).toBe(true);
-  });
-
   it('handles the `@close`, on Navigator, for Mobile breakpoints', async () => {
     wrapper.setData({
       topicData: {

@@ -49,7 +49,6 @@
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
                     :enable-quick-navigation="enableQuickNavigation"
                     @close="handleToggleSidenav(breakpoint)"
-                    @open-quick-navigator="openQuickNavigationModal"
                   >
                     <template v-if="enableQuickNavigation" #filter>
                       <QuickNavigationButton @click.native="openQuickNavigationModal" />
