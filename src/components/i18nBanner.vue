@@ -80,9 +80,12 @@ export default {
 .i18n-banner {
   background: var(--color-fill-blue);
   color: var(--color-button-text);
+  display: flex;
+  justify-content: center;
 
   &__wrapper {
     display: flex;
+    width: 100%;
     max-width: var(
       --wrapper-max-width,
       map-deep-get($breakpoint-attributes, (default, xlarge, min-width))
@@ -90,10 +93,6 @@ export default {
     margin: 0 $nav-padding-small;
     position: relative;
     padding: $nav-padding-small 0;
-
-    @include breakpoints-from(xlarge) {
-      margin: 0 auto;
-    }
   }
 
   &__link {
