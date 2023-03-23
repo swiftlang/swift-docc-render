@@ -475,7 +475,7 @@ $input-horizontal-spacing: rem(15px);
   }
   &__match-list {
     display: flex;
-    overflow: scroll;
+    overflow: auto;
     max-height: rem(450px);
     height: 0px;
 
