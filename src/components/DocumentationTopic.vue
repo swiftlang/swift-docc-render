@@ -687,6 +687,7 @@ export default {
       margin-top: 0;
     }
 
+    h1,
     h2,
     h3,
     h4,
@@ -698,6 +699,10 @@ export default {
 
     h2 {
       font-size: 1.083rem;
+    }
+
+    h1 {
+      font-size: 1.416rem;
     }
 
     aside {
@@ -733,6 +738,13 @@ export default {
 .full-width-container .doc-content .minimized-container {
   padding-left: 20px;
   padding-right: 20px;
+
+  @include inTargetIde {
+    @include breakpoint(xsmall) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
 }
 
 /deep/ {
