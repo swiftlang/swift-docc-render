@@ -49,15 +49,18 @@ export default {
       const appPreferredLocale = AppStore.state.preferredLocale;
       // if user has a storaged preferred locale, return it
       if (appPreferredLocale) return appPreferredLocale;
-      // find if user's navigator preference is available with the locales we provide
-      // in case it is, that will be the preferred locale to display
-      return locales.find((locale) => {
+      // find if user's navigator language preference matches any of the locales we provide
+      const matchingLocale = locales.find((locale) => {
         const languageAvailable = locale.code.split('-')[0];
-        const navigatorLanguage = window.navigator.language;
-        return navigatorLanguage.includes(languageAvailable);
-      }).slug;
+        const navigatorLanguage = window.navigator.language.split('-')[0];
+        return navigatorLanguage === languageAvailable;
+      });
+      // if matching locale is found, display it, if not, there is not preferred locale
+      return matchingLocale ? matchingLocale.slug : null;
     },
     displayi18nBanner: ({ preferredLocale, $i18n }) => (
+      // don't display banner if we don't have the preferred locale or
+      // if user is already on that locale
       preferredLocale && $i18n.locale !== preferredLocale
     ),
     link: ({ preferredLocale }) => ({
