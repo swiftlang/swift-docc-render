@@ -12,7 +12,7 @@
 <div v-if="displayi18nBanner" class="i18n-banner">
   <div class="i18n-banner__wrapper">
     <router-link
-      :to="link"
+      :to="getLocaleParam(preferredLocale)"
       @click.native="setPreferredLocale(preferredLocale)"
       class="i18n-banner__link"
       :lang="getCodeForSlug(preferredLocale)"
@@ -34,9 +34,8 @@
 import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import CloseIcon from 'theme/components/Icons/CloseIcon.vue';
 import locales from 'theme/lang/locales.json';
-import { defaultLocale } from 'theme/lang/index.js';
 import AppStore from 'docc-render/stores/AppStore';
-import { getCodeForSlug } from 'docc-render/utils/i18n-utils';
+import { getCodeForSlug, getLocaleParam } from 'docc-render/utils/i18n-utils';
 
 export default {
   name: 'i18nBanner',
@@ -63,17 +62,13 @@ export default {
       // if user is already on that locale
       preferredLocale && $i18n.locale !== preferredLocale
     ),
-    link: ({ preferredLocale }) => ({
-      params: {
-        locale: preferredLocale === defaultLocale ? undefined : preferredLocale,
-      },
-    }),
   },
   methods: {
     setPreferredLocale: (locale) => {
       AppStore.setPreferredLocale(locale);
     },
     getCodeForSlug,
+    getLocaleParam,
   },
 };
 </script>

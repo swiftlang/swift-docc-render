@@ -14,10 +14,13 @@ import {
 } from '@vue/test-utils';
 import i18nBanner from 'docc-render/components/i18nBanner.vue';
 import AppStore from 'docc-render/stores/AppStore';
-import { getCodeForSlug } from 'docc-render/utils/i18n-utils';
+import { getLocaleParam, getCodeForSlug } from 'docc-render/utils/i18n-utils';
 
 jest.mock('docc-render/utils/i18n-utils', () => ({
   getCodeForSlug: jest.fn(value => value),
+  getLocaleParam: jest.fn(() => ({
+    locale: undefined,
+  })),
 }));
 
 jest.mock('docc-render/stores/AppStore', () => ({
@@ -31,6 +34,10 @@ window.navigator = jest.fn().mockReturnValue({
   language: 'en-GB',
 });
 
+const params = {
+  locale: undefined,
+};
+
 const {
   InlineChevronRightIcon,
   CloseIcon,
@@ -40,10 +47,6 @@ const matchingLocale = 'en-US';
 
 const messages = {
   [matchingLocale]: { 'view-in': 'View in English' },
-};
-
-const params = {
-  locale: undefined,
 };
 
 const currentLocale = 'zh-CN';
@@ -87,7 +90,8 @@ describe('i18nBanner', () => {
   it('takes you to the preferredLocale url when clicking in router link', () => {
     link.trigger('click');
 
-    expect(link.props('to')).toEqual({ params });
+    expect(getLocaleParam).toHaveBeenCalledWith(matchingLocale);
+    expect(link.props('to')).toEqual(params);
   });
 
   it('renders a InlineChevronRightIcon', () => {
