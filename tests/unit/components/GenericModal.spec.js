@@ -193,10 +193,12 @@ describe('GenericModal', () => {
         propsData: {
           theme: 'code',
           codeBackgroundColorOverride: 'pink',
+          backdropBackgroundColorOverride: 'red',
         },
       });
       // cannot assert DOM, because `jsdom` does not support custom properties in this version.
-      expect(wrapper.vm.modalColors).toHaveProperty('--background', 'pink');
+      expect(wrapper.vm.modalColors).toHaveProperty('--code-background', 'pink');
+      expect(wrapper.vm.modalColors).toHaveProperty('--backdrop-background', 'red');
     });
   });
 
