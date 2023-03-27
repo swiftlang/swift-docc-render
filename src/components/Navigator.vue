@@ -26,7 +26,9 @@
       :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
-    />
+    >
+      <template #filter><slot name="filter" /></template>
+    </NavigatorCard>
     <LoadingNavigatorCard
       v-else
       v-bind="technologyProps"

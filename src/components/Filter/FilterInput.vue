@@ -14,11 +14,14 @@
     role="search"
     tabindex="0"
     :aria-labelledby="searchAriaLabelledBy"
-    :class="{ 'focus': showSuggestedTags }"
+    :class="{ 'focus': showSuggestedTags && !preventBorderStyle }"
     @blur.capture="handleBlur"
     @focus.capture="handleFocus"
   >
-    <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
+    <div :class="['filter__wrapper', {
+      'filter__wrapper--reversed': positionReversed,
+      'filter__wrapper--no-border-style': preventBorderStyle
+    }]">
       <div class="filter__top-wrapper">
         <button
           class="filter__filter-button"
@@ -58,14 +61,14 @@
             id="filter-label"
             :for="FilterInputId"
             :data-value="modelValue"
-            :aria-label="$t(placeholder)"
+            :aria-label="placeholder"
             class="filter__input-label"
           >
             <input
               :id="FilterInputId"
               ref="input"
               v-model="modelValue"
-              :placeholder="hasSelectedTags ? '' : $t(placeholder)"
+              :placeholder="hasSelectedTags ? '' : placeholder"
               :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
               :disabled="disabled"
               v-bind="AXinputProperties"
@@ -180,7 +183,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => 'filter.title',
+      default: () => '',
     },
     disabled: {
       type: Boolean,
@@ -209,6 +212,10 @@ export default {
     clearFilterOnTagSelect: {
       type: Boolean,
       default: true,
+    },
+    preventBorderStyle: {
+      type: Boolean,
+      default: false,
     },
     translatableTags: {
       type: Array,
@@ -385,6 +392,7 @@ export default {
         return;
       }
       this.showSuggestedTags = false;
+      this.$emit('blur');
     },
     downHandler($event) {
       const cb = () => this.$emit('focus-next', $event);
@@ -411,6 +419,7 @@ export default {
     },
     handleFocus() {
       this.showSuggestedTags = true;
+      this.$emit('focus');
     },
   },
   created() {
@@ -430,10 +439,12 @@ export default {
 
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
+$input-horizontal-spacing: rem(10px) !default;
 $input-height: rem(28px);
 
 .filter {
   --input-vertical-padding: #{$input-vertical-padding};
+  --input-horizontal-spacing:  #{$input-horizontal-spacing};
   --input-height: #{$input-height};
   --input-border-color: var(--color-fill-gray-secondary);
   --input-text: var(--color-fill-gray-secondary);
@@ -456,7 +467,7 @@ $input-height: rem(28px);
     position: relative;
     z-index: 1;
     cursor: text;
-    margin-left: rem(10px);
+    margin-left: var(--input-horizontal-spacing);
     margin-right: rem(3px);
 
     @include breakpoint(small) {
@@ -490,6 +501,10 @@ $input-height: rem(28px);
     &--reversed {
       display: flex;
       flex-direction: column-reverse;
+    }
+
+    &--no-border-style {
+      border: none;
     }
   }
 
@@ -558,7 +573,7 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding-right: rem(10px);
+    padding-right: var(--input-horizontal-spacing);
     padding-left: rem(3px);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;

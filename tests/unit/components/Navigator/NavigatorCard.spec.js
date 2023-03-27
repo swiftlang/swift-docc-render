@@ -20,11 +20,15 @@ import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/loading');
+jest.mock('docc-render/utils/theme-settings');
+
+getSetting.mockReturnValue(false);
 
 sessionStorage.get.mockImplementation((key, def) => def);
 
@@ -274,6 +278,7 @@ describe('NavigatorCard', () => {
       focusInputWhenEmpty: false,
       placeholder: 'filter.title',
       positionReversed: true,
+      preventBorderStyle: false,
       preventedBlur: false,
       selectedTags: [],
       shouldTruncateTags: false,
@@ -298,6 +303,15 @@ describe('NavigatorCard', () => {
       },
     });
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
+  });
+
+  it('exposes a #filter slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        filter: '<div class="custom">Custom</div>',
+      },
+    });
+    expect(wrapper.find('.custom').text()).toBe('Custom');
   });
 
   it('focuses the current page', async () => {

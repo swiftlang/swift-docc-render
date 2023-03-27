@@ -108,7 +108,7 @@ $close-icon-padding: 5px;
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
-  --nav-filter-horizontal-padding: 30px;
+  --nav-filter-horizontal-padding: 20px;
   --visibility-delay: 1s; // don't show spinner until this much time has passed
   display: flex;
   flex-direction: column;
