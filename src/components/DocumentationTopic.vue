@@ -780,6 +780,14 @@ export default {
 }
 
 /deep/ {
+  h1 {
+    @include font-styles(headline-reduced);
+  }
+
+  h2 {
+    @include font-styles(heading-2-reduced);
+  }
+
   @each $heading in (h3, h4, h5, h6) {
     #{$heading} {
       @include font-styles(documentation-#{$heading});
