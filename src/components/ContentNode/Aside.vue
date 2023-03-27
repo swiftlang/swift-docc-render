@@ -63,9 +63,10 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
   }
 }
 
-// this applies a specific styling for asides on documentation pages and relies
-// on the fact that a "doc-topic" class is applied to an ancestor element of
-// the aside in question
+// This applies a specific styling for asides on documentation pages and
+// tutorial-style articles. It relies on the "article" and "doc-topic" classes
+// applied to ancestor elements for these page types.
+.article aside,
 .doc-topic aside {
   break-inside: avoid;
   border-radius: var(--aside-border-radius, $border-radius);
