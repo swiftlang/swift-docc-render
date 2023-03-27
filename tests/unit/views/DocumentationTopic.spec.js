@@ -35,12 +35,6 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
-const mockEnablei18n = jest.fn().mockReturnValue(false);
-
-jest.mock('theme/lang/index.js', () => ({
-  get enablei18n() { return mockEnablei18n(); },
-}));
-
 const defaultLocale = 'en-US';
 
 const TechnologyWithChildren = {
@@ -64,7 +58,6 @@ const {
   Topic,
   QuickNavigationModal,
   MagnifierIcon,
-  i18nBanner,
 } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
@@ -304,39 +297,6 @@ describe('DocumentationTopic', () => {
     const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
     expect(magnifierIconComponent.exists()).toBe(false);
-  });
-
-  it('renders NavigatorDataProvider with currentLocale if enablei18n is true', async () => {
-    mockEnablei18n.mockReturnValueOnce(true);
-
-    wrapper = createWrapper();
-
-    wrapper.setData({
-      topicData: {
-        ...topicData,
-        schemaVersion: schemaVersionWithSidebar,
-      },
-    });
-
-    const technology = topicData.references['topic://foo'];
-    expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
-      interfaceLanguage: Language.swift.key.url,
-      technologyUrl: technology.url,
-      apiChangesVersion: null,
-    });
-  });
-
-  it('renders i18nBanner if enablei18n is true', async () => {
-    mockEnablei18n.mockReturnValueOnce(true);
-
-    wrapper = createWrapper();
-
-    wrapper.setData({
-      topicData,
-    });
-
-    const i18nBannerComponent = wrapper.find(i18nBanner);
-    expect(i18nBannerComponent.exists()).toBe(true);
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {

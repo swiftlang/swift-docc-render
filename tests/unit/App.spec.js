@@ -10,6 +10,7 @@
 
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
+import i18nBanner from 'docc-render/components/i18nBanner.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
@@ -30,6 +31,12 @@ const matchMedia = {
   addListener: jest.fn(),
   removeListener: jest.fn(),
 };
+
+const mockEnablei18n = jest.fn().mockReturnValue(false);
+
+jest.mock('theme/lang/index.js', () => ({
+  get enablei18n() { return mockEnablei18n(); },
+}));
 
 const setPropertySpy = jest.spyOn(document.body.style, 'setProperty');
 const removePropertySpy = jest.spyOn(document.body.style, 'removeProperty');
@@ -128,6 +135,15 @@ describe('App', () => {
     });
     const header = wrapper.find('.header');
     expect(header.text()).toBe('Header');
+  });
+
+  it('renders i18nBanner if enablei18n is true', async () => {
+    mockEnablei18n.mockReturnValueOnce(true);
+
+    const wrapper = createWrapper();
+
+    const i18nBannerComponent = wrapper.find(i18nBanner);
+    expect(i18nBannerComponent.exists()).toBe(true);
   });
 
   it('renders the `#nav-sticky-anchor` between the header and the content', () => {

@@ -17,6 +17,7 @@
     <a href="#main" id="skip-nav">{{ $t('accessibility.skip-navigation') }}</a>
     <InitialLoadingPlaceholder />
     <slot name="header" :isTargetIDE="isTargetIDE">
+      <i18nBanner v-if="enablei18n" />
       <!-- Render the custom header by default, if there is no content in the `header` slot -->
       <custom-header v-if="hasCustomHeader" :data-color-scheme="preferredColorScheme" />
     </slot>
@@ -40,12 +41,15 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { fetchThemeSettings, themeSettingsState } from 'docc-render/utils/theme-settings';
 import { objectToCustomProperties } from 'docc-render/utils/themes';
 import { AppTopID } from 'docc-render/constants/AppTopID';
+import i18nBanner from 'docc-render/components/i18nBanner.vue';
+import { enablei18n } from 'theme/lang/index.js';
 
 export default {
   name: 'CoreApp',
   components: {
     Footer,
     InitialLoadingPlaceholder,
+    i18nBanner,
   },
   provide() {
     return {
@@ -82,6 +86,7 @@ export default {
     ),
     hasCustomHeader: () => !!window.customElements.get('custom-header'),
     hasCustomFooter: () => !!window.customElements.get('custom-footer'),
+    enablei18n: () => enablei18n,
   },
   props: {
     enableThemeSettings: {
