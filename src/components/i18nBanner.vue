@@ -78,10 +78,11 @@ export default {
 $banner-icon-padding: $nav-padding-small / 4;
 
 .i18n-banner {
-  background: var(--color-fill-blue);
-  color: var(--color-button-text);
+  background: dark-color(fill);
+  color: light-color(fill);
   display: flex;
   justify-content: center;
+  border-bottom: 1px solid var(--color-grid);
 
   &__wrapper {
     display: flex;
@@ -98,11 +99,7 @@ $banner-icon-padding: $nav-padding-small / 4;
   &__link {
     @include font-styles(body-reduced);
     margin: 0 auto;
-    color: var(--color-button-text);
-
-    @include on-keyboard-focus() {
-      outline-color: var(--color-focus-button);
-    }
+    color: dark-color(figure-blue);
   }
 
   &__close-icon-wrapper {
@@ -118,10 +115,6 @@ $banner-icon-padding: $nav-padding-small / 4;
 
   &__close-icon-button {
     padding: $banner-icon-padding;
-
-    @include on-keyboard-focus() {
-      outline-color: var(--color-focus-button);
-    }
 
     .close-icon {
       width: $tiny-icon-size;
