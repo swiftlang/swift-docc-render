@@ -26,7 +26,6 @@ import RestEndpoint
   from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
-import Declaration from './PrimaryContent/Declaration.vue';
 import PropertyListKeyDetails from './PrimaryContent/PropertyListKeyDetails.vue';
 import Parameters from './PrimaryContent/Parameters.vue';
 import PropertyTable from './PrimaryContent/PropertyTable.vue';
@@ -37,7 +36,6 @@ import RestResponses from './PrimaryContent/RestResponses.vue';
 export default {
   name: 'PrimaryContent',
   components: {
-    Declaration,
     ContentNode,
     Parameters,
     PropertyListKeyDetails,
@@ -50,14 +48,6 @@ export default {
   },
   constants: { SectionKind },
   props: {
-    conformance: {
-      type: Object,
-      required: false,
-    },
-    source: {
-      type: Object,
-      required: false,
-    },
     sections: {
       type: Array,
       required: true,
@@ -79,7 +69,6 @@ export default {
     componentFor(section) {
       return {
         [SectionKind.content]: ContentNode,
-        [SectionKind.declarations]: Declaration,
         [SectionKind.details]: PropertyListKeyDetails,
         [SectionKind.parameters]: Parameters,
         [SectionKind.properties]: PropertyTable,
@@ -94,13 +83,8 @@ export default {
     },
     propsFor(section) {
       const {
-        conformance,
-        source,
-      } = this;
-      const {
         bodyContentType,
         content,
-        declarations,
         details,
         items,
         kind,
@@ -112,7 +96,6 @@ export default {
       } = section;
       return {
         [SectionKind.content]: { content },
-        [SectionKind.declarations]: { conformance, source, declarations },
         [SectionKind.details]: { details },
         [SectionKind.parameters]: { parameters },
         [SectionKind.possibleValues]: { values },
@@ -137,12 +120,6 @@ export default {
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
-
-/deep/ {
-  h2 {
-    @include font-styles(heading-2-reduced);
-  }
-}
 
 .primary-content {
   &.with-border::before {

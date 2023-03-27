@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -17,13 +17,13 @@
         <TimerIcon />
         <span class="meta-content">
           <strong class="time">{{estimatedTime}}</strong>
-          <span> Estimated Time</span>
+          <span> {{ $t('tutorials.estimated-time') }}</span>
         </span>
       </p>
       <CallToActionButton
         v-if="action"
         :action="action"
-        :aria-label="`${action.overridingTitle} with ${title}`"
+        :aria-label="$t('tutorials.overriding-title', { newTitle: action.overridingTitle, title } )"
         isDark
       />
     </div>

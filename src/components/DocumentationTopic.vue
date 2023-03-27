@@ -56,9 +56,25 @@
           v-if="shouldShowAvailability"
           :platforms="platforms" :technologies="technologies"
         />
+        <div
+          v-if="declarations.length"
+          class="declarations-container"
+          :class="{ 'minimized-container': enableMinimized }"
+        >
+          <Declaration
+            v-for="(declaration, index) in declarations"
+            :key="index"
+            :conformance="conformance"
+            :declarations="declaration.declarations"
+            :source="remoteSource"
+          />
+        </div>
       </DocumentationHero>
       <div class="doc-content-wrapper">
-        <div class="doc-content" :class="{ 'no-primary-content': !hasPrimaryContent }">
+        <div
+          class="doc-content"
+          :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
+        >
           <div
             v-if="hasPrimaryContent"
             :class="['container', { 'minimized-container': enableMinimized }]"
@@ -79,12 +95,13 @@
               </Aside>
             </div>
             <PrimaryContent
-              v-if="primaryContentSections && primaryContentSections.length"
+              v-if="primaryContentSectionsSanitized && primaryContentSectionsSanitized.length"
               :class="{ 'with-border': !enhanceBackground }"
               :conformance="conformance"
               :source="remoteSource"
-              :sections="primaryContentSections"
+              :sections="primaryContentSectionsSanitized"
             />
+            <ViewMore v-if="enableMinimized" :url="viewMoreLink" />
           </div>
           <Topics
             v-if="shouldRenderTopicSection"
@@ -119,7 +136,7 @@
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
     </main>
     <div aria-live="polite" class="visuallyhidden">
-      Current page is {{ pageTitle }}
+      {{ $t('documentation.current-page', { title: pageTitle }) }}
     </div>
   </div>
 </template>
@@ -127,14 +144,18 @@
 <script>
 import Language from 'docc-render/constants/Language';
 import metadata from 'theme/mixins/metadata.js';
+import { buildUrl } from 'docc-render/utils/url-helper';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
+import ViewMore from 'theme/components/DocumentationTopic/ViewMore.vue';
 import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
+import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -171,6 +192,7 @@ export default {
     },
   },
   components: {
+    Declaration,
     OnThisPageStickyContainer,
     OnThisPageNav,
     DocumentationHero,
@@ -188,6 +210,7 @@ export default {
     SeeAlso,
     Title,
     Topics,
+    ViewMore,
     WordBreak,
   },
   props: {
@@ -337,6 +360,7 @@ export default {
       languages: new Set(Object.keys(this.languagePaths)),
       interfaceLanguage: this.interfaceLanguage,
       symbolKind: this.symbolKind,
+      enableMinimized: this.enableMinimized,
     };
   },
   data() {
@@ -345,6 +369,17 @@ export default {
     };
   },
   computed: {
+    normalizedSwiftPath: ({ normalizePath, swiftPath }) => (normalizePath(swiftPath)),
+    normalizedObjcPath: ({
+      normalizePath,
+      objcPath,
+      swiftPath,
+    }) => (
+      // do not append language query parameter if no swiftPath exists
+      normalizePath((objcPath && swiftPath) ? buildUrl(objcPath, {
+        language: Language.objectiveC.key.url,
+      }) : objcPath)
+    ),
     defaultImplementationsCount() {
       return (this.defaultImplementationsSections || []).reduce(
         (count, section) => count + section.identifiers.length,
@@ -395,9 +430,10 @@ export default {
       sampleCodeDownload,
       hasAvailability,
       shouldShowLanguageSwitcher,
+      declarations,
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
-      (!!roleHeading + !!abstract + !!sampleCodeDownload
+      (!!roleHeading + !!abstract + !!sampleCodeDownload + !!declarations.length
         + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
@@ -419,14 +455,26 @@ export default {
       isRequirement,
       deprecationSummary,
       downloadNotAvailableSummary,
-      primaryContentSections,
+      primaryContentSectionsSanitized,
+      enableMinimized,
     }) => (
       isRequirement
       || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
-      || (primaryContentSections && primaryContentSections.length)
+      || (primaryContentSectionsSanitized.length)
+      || enableMinimized // minimized mode always renders `ViewMore`
     ),
-    tagName: ({ isSymbolDeprecated }) => (isSymbolDeprecated ? 'Deprecated' : 'Beta'),
+    viewMoreLink: ({
+      interfaceLanguage,
+      normalizedObjcPath,
+      normalizedSwiftPath,
+    }) => (
+      interfaceLanguage === Language.objectiveC.key.api
+        ? normalizedObjcPath : normalizedSwiftPath
+    ),
+    tagName() {
+      return this.isSymbolDeprecated ? this.$t('aside-kind.deprecated') : this.$t('aside-kind.beta');
+    },
     /**
      * Finds the page icon in the `pageImages` array
      * @param {Array} pageImages
@@ -444,12 +492,97 @@ export default {
     isOnThisPageNavVisible: ({ topicState }) => (
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
+    disableMetadata: ({ enableMinimized }) => enableMinimized,
+    primaryContentSectionsSanitized({ primaryContentSections = [] }) {
+      return primaryContentSections.filter(({ kind }) => kind !== SectionKind.declarations);
+    },
+    declarations({ primaryContentSections = [] }) {
+      return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
+    },
   },
   methods: {
     normalizePath(path) {
       // Sometimes `paths` data from `variants` are prefixed with a leading
       // slash and sometimes they aren't
+      if (!path) return path;
       return path.startsWith('/') ? path : `/${path}`;
+    },
+    extractProps(json) {
+      const {
+        abstract,
+        defaultImplementationsSections,
+        deprecationSummary,
+        downloadNotAvailableSummary,
+        diffAvailability,
+        hierarchy,
+        identifier: {
+          interfaceLanguage,
+          url: identifier,
+        },
+        metadata: {
+          conformance,
+          modules,
+          platforms,
+          required: isRequirement = false,
+          roleHeading,
+          title = '',
+          tags = [],
+          role,
+          symbolKind = '',
+          remoteSource,
+          images: pageImages = [],
+        } = {},
+        primaryContentSections,
+        relationshipsSections,
+        references = {},
+        sampleCodeDownload,
+        topicSectionsStyle,
+        topicSections,
+        seeAlsoSections,
+        variantOverrides,
+        variants = [],
+      } = json;
+      const languagePaths = variants.reduce((memo, variant) => (
+        variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
+          ..._memo,
+          [trait.interfaceLanguage]: (_memo[trait.interfaceLanguage] || []).concat(variant.paths),
+        })), memo)
+      ), {});
+      const {
+        [Language.objectiveC.key.api]: [objcPath] = [],
+        [Language.swift.key.api]: [swiftPath] = [],
+      } = languagePaths;
+      return {
+        abstract,
+        conformance,
+        defaultImplementationsSections,
+        deprecationSummary,
+        downloadNotAvailableSummary,
+        diffAvailability,
+        hierarchy,
+        role,
+        identifier,
+        interfaceLanguage,
+        isRequirement,
+        modules,
+        platforms,
+        primaryContentSections,
+        relationshipsSections,
+        references,
+        roleHeading,
+        sampleCodeDownload,
+        title,
+        topicSections,
+        topicSectionsStyle,
+        seeAlsoSections,
+        variantOverrides,
+        symbolKind,
+        tags: tags.slice(0, 1), // make sure we only show the first tag
+        remoteSource,
+        pageImages,
+        objcPath,
+        swiftPath,
+      };
     },
   },
   created() {
@@ -533,9 +666,10 @@ export default {
   .minimized-container {
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;
-    --declaration-code-listing-margin: 1em 0;
+    --declaration-code-listing-margin: 1em 0 0 0;
+    --declaration-conditional-constraints-margin: 1em;
+    --declaration-source-link-margin: 0.833em;
     --code-block-style-elements-padding: 7px 12px;
-    --code-border-radius: 10px;
     --spacing-param: var(--spacing-stacked-margin-large);
     --aside-border-radius: 6px;
     --code-border-radius: 6px;
@@ -553,9 +687,22 @@ export default {
       margin-top: 0;
     }
 
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
     h2 {
       font-size: 1.083rem;
-      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 1.416rem;
     }
 
     aside {
@@ -588,6 +735,18 @@ export default {
   }
 }
 
+.full-width-container .doc-content .minimized-container {
+  padding-left: 20px;
+  padding-right: 20px;
+
+  @include inTargetIde {
+    @include breakpoint(xsmall) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+}
+
 /deep/ {
   .no-primary-content {
     // remove border-top for first section of the page
@@ -599,7 +758,23 @@ export default {
   margin-top: 20px;
 }
 
+.declarations-container {
+  margin-top: 30px;
+
+  &.minimized-container {
+    margin-top: 0;
+  }
+}
+
 /deep/ {
+  h1 {
+    @include font-styles(headline-reduced);
+  }
+
+  h2 {
+    @include font-styles(heading-2-reduced);
+  }
+
   @each $heading in (h3, h4, h5, h6) {
     #{$heading} {
       @include font-styles(documentation-#{$heading});

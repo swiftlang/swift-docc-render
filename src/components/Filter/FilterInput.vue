@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,11 +14,14 @@
     role="search"
     tabindex="0"
     :aria-labelledby="searchAriaLabelledBy"
-    :class="{ 'focus': showSuggestedTags }"
+    :class="{ 'focus': showSuggestedTags && !preventBorderStyle }"
     @blur.capture="handleBlur"
     @focus.capture="handleFocus"
   >
-    <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
+    <div :class="['filter__wrapper', {
+      'filter__wrapper--reversed': positionReversed,
+      'filter__wrapper--no-border-style': preventBorderStyle
+    }]">
       <div class="filter__top-wrapper">
         <button
           class="filter__filter-button"
@@ -41,8 +44,9 @@
             :id="SelectedTagsId"
             :input="input"
             :tags="selectedTags"
-            :ariaLabel="selectedTagsLabel"
+            :ariaLabel="$t('filter.selected-tags', { tags: tagsText })"
             :activeTags="activeTags"
+            :translatableTags="translatableTags"
             v-bind="virtualKeyboardBind"
             class="filter__selected-tags"
             ref="selectedTags"
@@ -91,7 +95,7 @@
         <div class="filter__delete-button-wrapper">
           <button
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
-            aria-label="Reset Filter"
+            :aria-label="$t('filter.reset-filter')"
             class="filter__delete-button"
             @click="resetFilters(true)"
             @keydown.enter.exact.stop="resetFilters(true)"
@@ -105,9 +109,10 @@
         v-if="displaySuggestedTags"
         :id="SuggestedTagsId"
         ref="suggestedTags"
-        :ariaLabel="suggestedTagsLabel"
+        :ariaLabel="$t('filter.suggested-tags', { tags: tagsText })"
         :input="input"
         :tags="suggestedTags"
+        :translatableTags="translatableTags"
         v-bind="virtualKeyboardBind"
         class="filter__suggested-tags"
         @click-tags="selectTag($event.tagName)"
@@ -178,7 +183,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => 'Filter',
+      default: () => '',
     },
     disabled: {
       type: Boolean,
@@ -208,6 +213,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    preventBorderStyle: {
+      type: Boolean,
+      default: false,
+    },
+    translatableTags: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -226,8 +239,6 @@ export default {
         other: 'tags',
       },
     }, suggestedTags.length),
-    selectedTagsLabel: ({ tagsText }) => `Selected ${tagsText}`,
-    suggestedTagsLabel: ({ tagsText }) => `Suggested ${tagsText}`,
     hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
     hasSelectedTags: ({ selectedTags }) => selectedTags.length,
     inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,
@@ -381,6 +392,7 @@ export default {
         return;
       }
       this.showSuggestedTags = false;
+      this.$emit('blur');
     },
     downHandler($event) {
       const cb = () => this.$emit('focus-next', $event);
@@ -407,6 +419,7 @@ export default {
     },
     handleFocus() {
       this.showSuggestedTags = true;
+      this.$emit('focus');
     },
   },
   created() {
@@ -426,10 +439,12 @@ export default {
 
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
+$input-horizontal-spacing: rem(10px) !default;
 $input-height: rem(28px);
 
 .filter {
   --input-vertical-padding: #{$input-vertical-padding};
+  --input-horizontal-spacing:  #{$input-horizontal-spacing};
   --input-height: #{$input-height};
   --input-border-color: var(--color-fill-gray-secondary);
   --input-text: var(--color-fill-gray-secondary);
@@ -452,7 +467,7 @@ $input-height: rem(28px);
     position: relative;
     z-index: 1;
     cursor: text;
-    margin-left: rem(10px);
+    margin-left: var(--input-horizontal-spacing);
     margin-right: rem(3px);
 
     @include breakpoint(small) {
@@ -486,6 +501,10 @@ $input-height: rem(28px);
     &--reversed {
       display: flex;
       flex-direction: column-reverse;
+    }
+
+    &--no-border-style {
+      border: none;
     }
   }
 
@@ -554,7 +573,7 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding-right: rem(10px);
+    padding-right: var(--input-horizontal-spacing);
     padding-left: rem(3px);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;

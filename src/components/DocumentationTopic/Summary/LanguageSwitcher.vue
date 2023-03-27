@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <Section class="language" role="complementary" aria-label="Language">
-    <Title>Language: </Title>
+  <Section class="language" role="complementary" :aria-label="$t('language')">
+    <Title>{{ $t('formats.colon', { content: $t('language') }) }}</Title>
     <div class="language-list">
       <LanguageSwitcherLink
         class="language-option swift"

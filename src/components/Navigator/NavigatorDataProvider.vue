@@ -84,14 +84,13 @@ export default {
       ));
     },
   },
-  created() {
-    this.fetchIndexData();
-  },
   methods: {
     async fetchIndexData() {
       try {
         this.isFetching = true;
-        const { interfaceLanguages, references } = await fetchIndexPathsData();
+        const { interfaceLanguages, references } = await fetchIndexPathsData(
+          { slug: this.$route.params.locale || '' },
+        );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);
       } catch (e) {
@@ -99,6 +98,12 @@ export default {
       } finally {
         this.isFetching = false;
       }
+    },
+  },
+  watch: {
+    '$route.params.locale': {
+      handler: 'fetchIndexData',
+      immediate: true,
     },
   },
   render() {
