@@ -12,7 +12,7 @@ import {
   shallowMount,
   RouterLinkStub,
 } from '@vue/test-utils';
-import i18nBanner from 'docc-render/components/i18nBanner.vue';
+import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import AppStore from 'docc-render/stores/AppStore';
 import { getLocaleParam, getCodeForSlug } from 'docc-render/utils/i18n-utils';
 
@@ -41,7 +41,7 @@ const params = {
 const {
   InlineChevronRightIcon,
   CloseIcon,
-} = i18nBanner.components;
+} = SuggestLang.components;
 
 const matchingLocale = 'en-US';
 
@@ -51,13 +51,13 @@ const messages = {
 
 const currentLocale = 'zh-CN';
 
-describe('i18nBanner', () => {
+describe('SuggestLang', () => {
   let wrapper;
   let link;
   let closeIcon;
 
   beforeEach(() => {
-    wrapper = shallowMount(i18nBanner, {
+    wrapper = shallowMount(SuggestLang, {
       stubs: { 'router-link': RouterLinkStub },
       mocks: {
         $i18n: {
@@ -67,12 +67,12 @@ describe('i18nBanner', () => {
       },
     });
 
-    link = wrapper.find('.i18n-banner__link');
-    closeIcon = wrapper.find('.i18n-banner__close-icon-button');
+    link = wrapper.find('.suggest-lang__link');
+    closeIcon = wrapper.find('.suggest-lang__close-icon-button');
   });
 
-  it('renders a <i18nBanner> if preferredLocale is different to currentLocale', () => {
-    expect(wrapper.is('.i18n-banner')).toBe(true);
+  it('renders a <SuggestLang> if preferredLocale is different to currentLocale', () => {
+    expect(wrapper.is('.suggest-lang')).toBe(true);
   });
 
   it('renders a router link with the preferredLocale view-in text and lang tag using the matching locale', () => {

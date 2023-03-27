@@ -10,7 +10,7 @@
 
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
-import i18nBanner from 'docc-render/components/i18nBanner.vue';
+import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
@@ -137,13 +137,13 @@ describe('App', () => {
     expect(header.text()).toBe('Header');
   });
 
-  it('renders i18nBanner if enablei18n is true', async () => {
+  it('renders SuggestLang if enablei18n is true', async () => {
     mockEnablei18n.mockReturnValueOnce(true);
 
     const wrapper = createWrapper();
 
-    const i18nBannerComponent = wrapper.find(i18nBanner);
-    expect(i18nBannerComponent.exists()).toBe(true);
+    const SuggestLangComponent = wrapper.find(SuggestLang);
+    expect(SuggestLangComponent.exists()).toBe(true);
   });
 
   it('renders the `#nav-sticky-anchor` between the header and the content', () => {

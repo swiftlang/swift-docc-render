@@ -9,18 +9,18 @@
 -->
 
 <template>
-<div v-if="displayi18nBanner" class="i18n-banner">
-  <div class="i18n-banner__wrapper">
+<div v-if="displaySuggestLang" class="suggest-lang">
+  <div class="suggest-lang__wrapper">
     <router-link
       :to="getLocaleParam(preferredLocale)"
       @click.native="setPreferredLocale(preferredLocale)"
-      class="i18n-banner__link"
+      class="suggest-lang__link"
       :lang="getCodeForSlug(preferredLocale)"
     >{{ $i18n.messages[preferredLocale]['view-in'] }}<InlineChevronRightIcon class="icon-inline" />
     </router-link>
-    <div class="i18n-banner__close-icon-wrapper">
+    <div class="suggest-lang__close-icon-wrapper">
       <button
-        class="i18n-banner__close-icon-button"
+        class="suggest-lang__close-icon-button"
         :aria-label="$t('continue-viewing')"
         @click="setPreferredLocale($i18n.locale)"
       >
@@ -38,7 +38,7 @@ import AppStore from 'docc-render/stores/AppStore';
 import { getCodeForSlug, getLocaleParam } from 'docc-render/utils/i18n-utils';
 
 export default {
-  name: 'i18nBanner',
+  name: 'SuggestLang',
   components: {
     InlineChevronRightIcon,
     CloseIcon,
@@ -57,7 +57,7 @@ export default {
       // if matching locale is found, display it, if not, there is not preferred locale
       return matchingLocale ? matchingLocale.slug : null;
     },
-    displayi18nBanner: ({ preferredLocale, $i18n }) => (
+    displaySuggestLang: ({ preferredLocale, $i18n }) => (
       // don't display banner if we don't have the preferred locale or
       // if user is already on that locale
       preferredLocale && $i18n.locale !== preferredLocale
@@ -77,7 +77,7 @@ export default {
 
 $banner-icon-padding: $nav-padding-small / 4;
 
-.i18n-banner {
+.suggest-lang {
   background: dark-color(fill);
   color: light-color(fill);
   display: flex;
