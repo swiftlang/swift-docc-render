@@ -101,6 +101,7 @@ describe('QuickNavigationModal', () => {
     propsData: {
       children: symbols,
       showQuickNavigationModal: true,
+      technology: 'FoobarKit',
     },
   };
 
@@ -112,6 +113,16 @@ describe('QuickNavigationModal', () => {
 
   it('it renders the Quick navigation modal', () => {
     expect(wrapper.find('.quick-navigation').exists()).toBe(true);
+  });
+
+  it('add the focus class on container if filter input is focused', () => {
+    wrapper.find(FilterInput).vm.$emit('focus');
+    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(true);
+  });
+
+  it('removes the focus class on container if filter input is blur', () => {
+    wrapper.find(FilterInput).vm.$emit('blur');
+    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(false);
   });
 
   it('it filters the symbols according to debouncedInput value', async () => {
@@ -130,10 +141,11 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
-      placeholder: 'filter.search-symbols',
+      placeholder: 'filter.search-symbols FoobarKit',
       focusInputWhenCreated: true,
       focusInputWhenEmpty: true,
       positionReversed: false,
+      preventBorderStyle: true,
       disabled: false,
       value: '',
       preventedBlur: false,
@@ -268,6 +280,7 @@ describe('QuickNavigationModal', () => {
       propsData: {
         children: customSymbols,
         showQuickNavigationModal: true,
+        technology: 'Blah',
       },
     });
     wrapper.setData({
@@ -304,6 +317,7 @@ describe('QuickNavigationModal', () => {
           },
         ],
         showQuickNavigationModal: true,
+        technology: 'Blah',
       },
     });
     wrapper.setData({
@@ -343,6 +357,7 @@ describe('QuickNavigationModal', () => {
       propsData: {
         children: symbolsWithRepeatedPaths,
         showQuickNavigationModal: true,
+        technology: 'Blah',
       },
     });
     wrapper.setData({

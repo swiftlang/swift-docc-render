@@ -738,6 +738,13 @@ export default {
 .full-width-container .doc-content .minimized-container {
   padding-left: 20px;
   padding-right: 20px;
+
+  @include inTargetIde {
+    @include breakpoint(xsmall) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
 }
 
 /deep/ {
@@ -760,6 +767,14 @@ export default {
 }
 
 /deep/ {
+  h1 {
+    @include font-styles(headline-reduced);
+  }
+
+  h2 {
+    @include font-styles(heading-2-reduced);
+  }
+
   @each $heading in (h3, h4, h5, h6) {
     #{$heading} {
       @include font-styles(documentation-#{$heading});
