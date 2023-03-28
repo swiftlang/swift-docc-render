@@ -22,7 +22,8 @@ const defaultColorScheme = supportsAutoColorScheme ? ColorScheme.auto : ColorSch
 
 export default {
   state: {
-    imageLoadingStrategy: ImageLoadingStrategy.lazy,
+    imageLoadingStrategy: process.env.VUE_APP_TARGET === 'ide'
+      ? ImageLoadingStrategy.eager : ImageLoadingStrategy.lazy,
     preferredColorScheme: Settings.preferredColorScheme || defaultColorScheme,
     supportsAutoColorScheme,
     systemColorScheme: ColorScheme.light,
