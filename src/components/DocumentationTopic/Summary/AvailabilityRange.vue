@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -43,7 +43,7 @@ export default {
         text,
       } = this;
       return [text]
-        .concat(deprecatedAt ? 'Deprecated' : [])
+        .concat(deprecatedAt ? this.$t('change-type.deprecated') : [])
         .concat(description)
         .join(', ');
     },
@@ -54,9 +54,9 @@ export default {
         platformName: name,
       } = this;
       return deprecatedAt ? (
-        `Introduced in ${name} ${introducedAt} and deprecated in ${name} ${deprecatedAt}`
+        this.$t('availability.introduced-and-deprecated', { name, introducedAt, deprecatedAt })
       ) : (
-        `Available on ${name} ${introducedAt} and later`
+        this.$t('availability.available-on', { name, introducedAt })
       );
     },
     text() {

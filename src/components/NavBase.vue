@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -37,8 +37,12 @@
             @click.prevent="toggleNav"
           >
             <span class="visuallyhidden">
-              <template v-if="!isOpen">Open Menu</template>
-              <template v-else>Close Menu</template>
+              <template v-if="!isOpen">
+                {{ $t('documentation.nav.open-menu') }}
+              </template>
+              <template v-else>
+                {{ $t('documentation.nav.close-menu') }}
+              </template>
             </span>
           </a>
           <div

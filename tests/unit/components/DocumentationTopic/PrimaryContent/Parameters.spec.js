@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -54,7 +54,7 @@ describe('Parameters', () => {
     const h2 = wrapper.find(LinkableHeading);
     expect(h2.exists()).toBe(true);
     expect(h2.props('level')).toBe(2);
-    expect(h2.text()).toContain('Parameters');
+    expect(h2.text()).toContain('sections.parameters');
   });
 
   it('renders a <dl>', () => {

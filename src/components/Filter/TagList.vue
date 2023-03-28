@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -42,6 +42,7 @@
           :isFocused="focusedIndex === index"
           :isRemovableTag="areTagsRemovable"
           :filterText="input"
+          :isTranslatableTag="translatableTags.includes(tag)"
           :isActiveTag="activeTags.includes(tag)"
           :activeTags="activeTags"
           :keyboardIsVirtual="keyboardIsVirtual"
@@ -74,6 +75,10 @@ export default {
       default: () => [],
     },
     activeTags: {
+      type: Array,
+      default: () => [],
+    },
+    translatableTags: {
       type: Array,
       default: () => [],
     },

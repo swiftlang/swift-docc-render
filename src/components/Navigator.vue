@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -26,14 +26,18 @@
       :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
-    />
+    >
+      <template #filter><slot name="filter" /></template>
+    </NavigatorCard>
     <LoadingNavigatorCard
       v-else
       v-bind="technologyProps"
       @close="$emit('close')"
     />
     <div aria-live="polite" class="visuallyhidden">
-      Navigator is {{ isFetching ? 'loading' : 'ready' }}
+      {{ $t('navigator.navigator-is', {
+        state: isFetching ? $t('navigator.state.loading') : $t('navigator.state.ready')
+      }) }}
     </div>
   </nav>
 </template>

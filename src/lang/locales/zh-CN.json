@@ -1,0 +1,181 @@
+{
+  "language": "语言",
+  "video": {
+    "replay": "重新播放",
+    "play": "播放",
+    "watch": "观看介绍视频"
+  },
+  "tutorials": {
+    "title": "教程",
+    "step": "第 {number} 步",
+    "submit": "提交",
+    "next": "下一步",
+    "preview": {
+      "title": "无预览 | 预览",
+      "no-preview-available-step": "这一步没有预览。"
+    },
+    "nav": {
+      "chapters": "章节",
+      "current": "当前{thing}"
+    },
+    "assessment": {
+      "check-your-understanding": "检查你的理解程度",
+      "success-message": "很棒，你回答了此教程的所有问题。",
+      "answer-number-is": "第 {index} 个答案",
+      "correct": "正确",
+      "incorrect": "错误",
+      "next-question": "下一个问题"
+    },
+    "project-files": "项目文件",
+    "estimated-time": "预计时间",
+    "sections": {
+      "chapter": "第 {number} 章"
+    },
+    "question-of": "第 {index} 个问题（共 {total} 个）",
+    "section-of": "{number}/{total}",
+    "overriding-title": "{newTitle}{title}",
+    "time": {
+      "format": "{number} {minutes}",
+      "minutes": {
+        "full": "分钟 | {count} 分钟",
+        "short": "分钟"
+      },
+      "hours": {
+        "full": "小时"
+      }
+    }
+  },
+  "documentation": {
+    "title": "文档",
+    "nav": {
+      "breadcrumbs": "面包屑导航",
+      "menu": "菜单",
+      "open-menu": "打开@:documentation.nav.menu",
+      "close-menu": "关闭@:documentation.nav.menu"
+    },
+    "current-page": "当前页面为：{title}"
+  },
+  "aside-kind": {
+    "beta": "Beta 版",
+    "experiment": "试验",
+    "important": "重要事项",
+    "note": "注",
+    "tip": "提示",
+    "warning": "警告",
+    "deprecated": "已弃用"
+  },
+  "change-type": {
+    "added": "已添加",
+    "modified": "已修改",
+    "deprecated": "@:aside-kind.deprecated"
+  },
+  "verbs": {
+    "hide": "隐藏",
+    "show": "显示",
+    "close": "关闭"
+  },
+  "sections": {
+    "title": "第 {number} 部分",
+    "on-this-page": "在此页面上",
+    "topics": "主题",
+    "default-implementations": "默认实现",
+    "relationships": "关系",
+    "see-also": "另请参阅",
+    "declarations": "声明",
+    "details": "详细信息",
+    "parameters": "参数",
+    "possible-values": "可能值",
+    "parts": "部件",
+    "availability": "可用性",
+    "resources": "资源"
+  },
+  "metadata": {
+    "details": {
+      "name": "名称",
+      "key": "密钥",
+      "type": "类型"
+    },
+    "beta": {
+      "legal": "此文档涉及 Beta 版软件且可能会改动。",
+      "software": "Beta 版软件"
+    },
+    "default-implementation": "已提供默认实现。"
+  },
+  "availability": {
+    "introduced-and-deprecated": "{name}{introducedAt}中引入，{name}{deprecatedAt}中弃用",
+    "available-on": "{name}{introducedAt}及更高版本中可用"
+  },
+  "more": "更多",
+  "less": "更少",
+  "api-reference": "API 参考",
+  "filter": {
+    "title": "过滤",
+    "search-symbols": "搜索符号",
+    "suggested-tags": "建议{tags}",
+    "selected-tags": "所选{tags}",
+    "add-tag": "添加标签",
+    "tag-select-remove": "标签。选择以从列表中移除。",
+    "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
+    "containing-symbols": "包含 1 个符号 | 包含 {number} 个符号",
+    "symbols-inside": "内含 {number} 个符号（共 {total} 个）",
+    "reset-filter": "还原过滤条件"
+  },
+  "navigator": {
+    "title": "@:documentation.title 导航器",
+    "open-navigator": "打开@:navigator.title",
+    "close-navigator": "关闭@:navigator.title",
+    "no-results": "未找到结果。",
+    "no-children": "无可用数据。",
+    "error-fetching": "获取数据时出错。",
+    "items-found": "未找到任何项目 | 找到 1 个项目 | 找到 {number} 个项目。按下 Tab 键导航。",
+    "navigator-is": "导航器{state}",
+    "state": {
+      "loading": "正在载入",
+      "ready": "准备就绪"
+    },
+    "tags": {
+      "hide-deprecated": "隐藏@:aside-kind.deprecated"
+    }
+  },
+  "tab": {
+    "request": "请求",
+    "response": "回复"
+  },
+  "required": "必需",
+  "parameters": {
+    "default": "默认",
+    "minimum": "最小值",
+    "maximum": "最大值",
+    "possible-types": "可能类型",
+    "possible-values": "可能值"
+  },
+  "content-type": "内容类型：{value}",
+  "read-only": "只读",
+  "error": {
+    "unknown": "出现未知错误。",
+    "image": "图像无法载入"
+  },
+  "color-scheme": {
+    "select": "选择首选颜色方案",
+    "auto": "自动",
+    "dark": "深色",
+    "light": "浅色"
+  },
+  "accessibility": {
+    "strike": {
+      "start": "删除线文本开始",
+      "end": "删除线文本结束"
+    },
+    "skip-navigation": "跳过导航"
+  },
+  "select-language": "选择此页面的语言",
+  "icons": {
+    "clear": "清除",
+    "web-service-endpoint": "网络服务端点",
+    "search": "搜索"
+  },
+  "formats": {
+    "parenthesis": "（{content}）",
+    "colon": "{content}："
+  }
+}

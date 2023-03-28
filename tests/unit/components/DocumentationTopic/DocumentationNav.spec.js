@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -81,7 +81,7 @@ describe('DocumentationNav', () => {
   it('renders a `NavBase` at the root with appropriate attributes', () => {
     const nav = wrapper.find(NavBase);
     expect(nav.exists()).toBe(true);
-    expect(nav.attributes('aria-label')).toBe('API Reference');
+    expect(nav.attributes('aria-label')).toBe('api-reference');
     expect(nav.classes('nav-hero')).toBe(false);
     expect(nav.classes('theme-dark')).toBe(false);
     expect(nav.classes()).toContain('documentation-nav');
@@ -113,7 +113,7 @@ describe('DocumentationNav', () => {
     const title = wrapper.find('.nav-title-link');
     expect(title.classes()).toContain('inactive');
     expect(title.is('span')).toBe(true);
-    expect(title.text()).toBe('Documentation');
+    expect(title.text()).toBe('documentation.title');
   });
 
   it('renders the title "Documentation" link, when there is a Technology root', () => {
@@ -130,7 +130,7 @@ describe('DocumentationNav', () => {
       path: references[TechnologiesRootIdentifier].url,
       query: {},
     });
-    expect(title.text()).toBe('Documentation');
+    expect(title.text()).toBe('documentation.title');
   });
 
   it('renders the title "Documentation" link and preservers query params, using the root reference path', () => {
@@ -285,7 +285,7 @@ describe('DocumentationNav', () => {
     button.trigger('click');
     await flushPromises();
     // assert the button works and is rendered as expected
-    expect(button.attributes('aria-label')).toBe('Open documentation navigator');
+    expect(button.attributes('aria-label')).toBe('navigator.open-navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
     // assert the nav-hide button is focused
     expect(document.activeElement).toEqual(btn);

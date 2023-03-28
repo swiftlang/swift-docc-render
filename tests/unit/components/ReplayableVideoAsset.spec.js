@@ -90,17 +90,17 @@ describe('ReplayableVideoAsset', () => {
       autoplays: false,
     });
     const replay = wrapper.find('.replay-button');
-    expect(replay.text()).toBe('Play');
+    expect(replay.text()).toBe('video.play');
     expect(replay.classes()).toContain('visible');
     replay.trigger('click');
     await flushPromises();
     // text is not changed, but its invisible
-    expect(replay.text()).toBe('Play');
+    expect(replay.text()).toBe('video.play');
     expect(replay.classes()).not.toContain('visible');
     // now end the video
     wrapper.find({ ref: 'asset' }).vm.$emit('ended');
     // assert text changed and its visible
-    expect(replay.text()).toBe('Replay');
+    expect(replay.text()).toBe('video.replay');
     expect(replay.classes()).toContain('visible');
   });
 

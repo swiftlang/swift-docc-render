@@ -91,9 +91,9 @@ export default {
     userPrefersDark: ({
       preferredColorScheme,
       systemColorScheme,
-    }) => preferredColorScheme === ColorScheme.dark.value || (
-      preferredColorScheme === ColorScheme.auto.value
-      && systemColorScheme === ColorScheme.dark.value
+    }) => preferredColorScheme === ColorScheme.dark || (
+      preferredColorScheme === ColorScheme.auto
+      && systemColorScheme === ColorScheme.dark
     ),
     shouldShowDarkVariant: ({
       darkVideoVariantAttributes,

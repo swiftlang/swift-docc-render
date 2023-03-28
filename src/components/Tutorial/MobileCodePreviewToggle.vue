@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -16,11 +16,11 @@
       class="toggle-text"
       @click.prevent="$emit('click')"
     >
-      Preview
+      {{ $tc('tutorials.preview.title', 1) }}
       <InlinePlusCircleIcon class="toggle-icon icon-inline" />
     </a>
     <span class="toggle-text" v-else>
-      No preview
+      {{ $tc('tutorials.preview.title', 0) }}
     </span>
   </span>
 </template>

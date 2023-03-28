@@ -23,9 +23,9 @@ const getIntrinsicDimensionsSpy = jest.spyOn(assetUtils, 'getIntrinsicDimensions
 
 const data = () => ({
   appState: {
-    preferredColorScheme: ColorScheme.auto.value,
+    preferredColorScheme: ColorScheme.auto,
     supportsAutoColorScheme: true,
-    systemColorScheme: ColorScheme.light.value,
+    systemColorScheme: ColorScheme.light,
   },
 });
 
@@ -73,7 +73,7 @@ describe('VideoAsset', () => {
       width: '100',
     });
     wrapper.setData({
-      appState: { preferredColorScheme: ColorScheme.dark.value },
+      appState: { preferredColorScheme: ColorScheme.dark },
     });
     expect(wrapper.find('video').attributes('poster')).toEqual(propsData.posterVariants[1].url);
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(2);
@@ -92,7 +92,7 @@ describe('VideoAsset', () => {
       variants: [propsData.variants[0]],
     });
     wrapper.setData({
-      appState: { preferredColorScheme: ColorScheme.dark.value },
+      appState: { preferredColorScheme: ColorScheme.dark },
     });
     await flushPromises();
     // the poster did not change, so the function was not called again
@@ -169,7 +169,7 @@ describe('VideoAsset', () => {
 
     wrapper.setData({
       appState: {
-        preferredColorScheme: ColorScheme.light.value,
+        preferredColorScheme: ColorScheme.light,
       },
     });
     source = wrapper.find('source');
@@ -180,7 +180,7 @@ describe('VideoAsset', () => {
   it('renders a source for the dark variant when applicable', () => {
     wrapper.setData({
       appState: {
-        preferredColorScheme: ColorScheme.dark.value,
+        preferredColorScheme: ColorScheme.dark,
       },
     });
     let source = wrapper.find('source');
@@ -189,8 +189,8 @@ describe('VideoAsset', () => {
 
     wrapper.setData({
       appState: {
-        preferredColorScheme: ColorScheme.auto.value,
-        systemColorScheme: ColorScheme.dark.value,
+        preferredColorScheme: ColorScheme.auto,
+        systemColorScheme: ColorScheme.dark,
       },
     });
     source = wrapper.find('source');
