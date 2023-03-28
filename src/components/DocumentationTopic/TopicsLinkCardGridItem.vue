@@ -79,6 +79,20 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .reference-card-grid-item {
+  // ensures card covers are always a 16/9 aspect ratio
+  --card-cover-height: auto;
+
+  &.card.large {
+    --card-cover-height: auto;
+    // .large and .small cards have min/max sizes
+    min-width: 0;
+    max-width: none;
+  }
+
+  /deep/ .card-cover {
+    aspect-ratio: 16/9;
+  }
+
   &__image {
     display: flex;
     align-items: center;
