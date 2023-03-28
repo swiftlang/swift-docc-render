@@ -79,6 +79,10 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .reference-card-grid-item {
+  /deep/ .card-cover-wrap {
+    border: 1px solid var(--color-link-block-card-border);
+  }
+
   &__image {
     display: flex;
     align-items: center;

@@ -88,4 +88,5 @@
   --color-navigator-item-hover: #{change-color(dark-color(fill-blue), $alpha: 0.5)};
 
   --color-card-shadow: #{change-color(light-color(fill), $alpha: 0.04)};
+  --color-link-block-card-border: #{change-color(light-color(fill), $alpha: 0.25)};
 }
