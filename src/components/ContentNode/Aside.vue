@@ -49,25 +49,7 @@ export default {
 
 $aside-kinds: deprecated, experiment, important, note, tip, warning;
 
-.label {
-  @include font-styles(aside-label);
-
-  & + * {
-    margin-top: var(--spacing-stacked-margin-small);
-  }
-
-  @each $kind in $aside-kinds {
-    .#{$kind} & {
-      color: var(--color-aside-#{$kind});
-    }
-  }
-}
-
-// This applies a specific styling for asides on documentation pages and
-// tutorial-style articles. It relies on the "article" and "doc-topic" classes
-// applied to ancestor elements for these page types.
-.article aside,
-.doc-topic aside {
+aside {
   break-inside: avoid;
   border-radius: var(--aside-border-radius, $border-radius);
   border-style: var(--aside-border-style, solid);
@@ -78,6 +60,14 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
     $aside-width-left-border);
   padding: rem(16px);
 
+  .label {
+    @include font-styles(documentation-aside-name);
+
+    & + * {
+      margin-top: var(--spacing-stacked-margin-small);
+    }
+  }
+
   @each $kind in $aside-kinds {
     &.#{$kind} {
       background-color: var(--color-aside-#{$kind}-background);
@@ -85,11 +75,26 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
       // Anti-aliasing corners
       box-shadow: 0 0 $aside-width-border 0px var(--color-aside-#{$kind}-border) inset,
         0 0 $aside-width-border 0px var(--color-aside-#{$kind}-border);
+
+      .label {
+        color: var(--color-aside-#{$kind});
+      }
     }
   }
+}
 
-  .label {
-    @include font-styles(documentation-aside-name);
+// Apply a more compact styling for asides within a `@Steps` directive
+.steps {
+  aside {
+    background: unset;
+    border: unset;
+    box-shadow: unset;
+    break-inside: unset;
+    padding: unset;
+
+    .label {
+      @include font-styles(aside-label);
+    }
   }
 }
 </style>
