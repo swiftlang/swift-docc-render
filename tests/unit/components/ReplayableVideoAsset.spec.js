@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
 import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vue';
@@ -21,6 +21,7 @@ const posterVariants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/
 const propsData = {
   variants,
   posterVariants,
+  showsControls: false,
 };
 describe('ReplayableVideoAsset', () => {
   const mountWithProps = props => shallowMount(ReplayableVideoAsset, {
@@ -35,10 +36,12 @@ describe('ReplayableVideoAsset', () => {
   });
 
   const playMock = jest.fn().mockResolvedValue(undefined);
+  const pauseMock = jest.fn().mockResolvedValue(undefined);
 
   beforeAll(() => {
     window.matchMedia = () => ({ matches: false });
     window.HTMLMediaElement.prototype.play = playMock;
+    window.HTMLMediaElement.prototype.pause = pauseMock;
   });
   beforeEach(() => {
     jest.clearAllMocks();
@@ -50,88 +53,76 @@ describe('ReplayableVideoAsset', () => {
     const video = wrapper.find(VideoAsset);
     expect(video.props('variants')).toBe(variants);
     expect(video.props('posterVariants')).toBe(posterVariants);
-    expect(video.props('showsControls')).toBe(true);
+    expect(video.props('showsControls')).toBe(false);
     expect(video.props('autoplays')).toBe(true);
+    expect(wrapper.find('.control-button').exists()).toBe(true);
   });
 
-  it('displays the replay button when the video has ended', async () => {
+  it('does not show the `.control-button` if `showsControls` is `true`', () => {
+    const wrapper = mountWithProps({
+      showsControls: true,
+    });
+    const video = wrapper.find(VideoAsset);
+    expect(video.props('showsControls')).toBe(true);
+    expect(wrapper.find('.control-button').exists()).toBe(false);
+  });
+
+  it('changes the control button text, while the video is changing states', async () => {
     const wrapper = mountWithProps();
 
-    const replayButton = wrapper.find('.replay-button');
+    const replayButton = wrapper.find('.control-button');
 
-    // Initially, the replay button should not be displayed.
     expect(replayButton.exists()).toBe(true);
-    expect(replayButton.classes('visible')).toBe(false);
+    expect(replayButton.text()).toBe('video.play');
 
     expect(replayButton.find('.replay-icon').is(PlayIcon)).toBe(true);
     const video = wrapper.find(VideoAsset);
-    video.vm.$emit('ended');
+    await video.vm.$emit('ended');
 
-    expect(replayButton.classes('visible')).toBe(true);
     expect(wrapper.find('.replay-icon').is(InlineReplayIcon)).toBe(true);
+    expect(replayButton.text()).toBe('video.replay');
 
-    // When the video is playing, the replay button should be hidden.
-    replayButton.trigger('click');
+    // start playing
+    await replayButton.trigger('click');
+    await video.vm.$emit('playing');
     await flushPromises();
-    expect(replayButton.classes('visible')).toBe(false);
+    expect(replayButton.text()).toBe('video.pause');
+    await replayButton.trigger('click');
+    await video.vm.$emit('pause');
+    expect(replayButton.text()).toBe('video.play');
   });
 
   it('plays the video if replay button is clicked', async () => {
     const wrapper = mountWithProps();
 
     expect(playMock).toHaveBeenCalledTimes(0);
-    wrapper.find('.replay-button').trigger('click');
+    expect(pauseMock).toHaveBeenCalledTimes(0);
+    const button = wrapper.find('.control-button');
+    await button.trigger('click');
+    await wrapper.find(VideoAsset).vm.$emit('playing');
     await flushPromises();
+    expect(pauseMock).toHaveBeenCalledTimes(0);
     expect(playMock).toHaveBeenCalledTimes(1);
+    await button.trigger('click');
+    expect(pauseMock).toHaveBeenCalledTimes(1);
   });
 
   it('shows the Replay on first mount, if not set to autoplay', async () => {
     const wrapper = mountWithProps({
       autoplays: false,
     });
-    const replay = wrapper.find('.replay-button');
-    expect(replay.text()).toBe('video.play');
-    expect(replay.classes()).toContain('visible');
-    replay.trigger('click');
+    const video = wrapper.find({ ref: 'asset' });
+    const control = wrapper.find('.control-button');
+    expect(control.text()).toBe('video.play');
+    control.trigger('click');
+    video.vm.$emit('playing');
     await flushPromises();
-    // text is not changed, but its invisible
-    expect(replay.text()).toBe('video.play');
-    expect(replay.classes()).not.toContain('visible');
+    // text is changed
+    expect(control.text()).toBe('video.pause');
     // now end the video
-    wrapper.find({ ref: 'asset' }).vm.$emit('ended');
+    video.vm.$emit('ended');
     // assert text changed and its visible
-    expect(replay.text()).toBe('video.replay');
-    expect(replay.classes()).toContain('visible');
-  });
-
-  it('shows the Replay on `pause` if no `showsControls` is false', async () => {
-    const wrapper = mountWithProps({
-      autoplays: false,
-      showsControls: false,
-    });
-    const replay = wrapper.find('.replay-button');
-    expect(replay.classes()).toContain('visible');
-    // play
-    replay.trigger('click');
-    await flushPromises();
-    // assert button is hidden
-    expect(replay.classes()).not.toContain('visible');
-    // pause
-    wrapper.find({ ref: 'asset' }).vm.$emit('pause');
-    // assert button is visible again
-    expect(replay.classes()).toContain('visible');
-  });
-
-  it('hides the button when @playing fired', () => {
-    const wrapper = mountWithProps({
-      autoplays: false,
-    });
-    const replay = wrapper.find('.replay-button');
-    expect(replay.classes()).toContain('visible');
-    // Simulate browser starts playing
-    wrapper.find({ ref: 'asset' }).vm.$emit('playing');
-    // assert button is hidden
-    expect(replay.classes()).not.toContain('visible');
+    expect(control.text()).toBe('video.replay');
   });
 
   it('provides the DeviceFrame down to the Video', () => {

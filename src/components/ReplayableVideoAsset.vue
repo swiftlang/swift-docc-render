@@ -23,10 +23,10 @@
       @ended="onVideoEnd"
     />
     <a
-      class="replay-button"
+      v-if="!showsControls"
+      class="control-button"
       href="#"
-      :class="{ visible: showsReplayButton }"
-      @click.prevent="replay"
+      @click.prevent="togglePlayStatus"
     >
       {{ text }}
       <InlineReplayIcon v-if="played" class="replay-icon icon-inline" />
@@ -75,34 +75,38 @@ export default {
   },
   computed: {
     text() {
-      return this.played ? this.$t('video.replay') : this.$t('video.play');
+      if (this.played) return this.$t('video.replay');
+      return this.isPlaying ? this.$t('video.pause') : this.$t('video.play');
     },
   },
   data() {
     return {
-      showsReplayButton: !(this.autoplays && this.muted),
+      isPlaying: false,
       played: false,
     };
   },
   methods: {
-    async replay() {
+    async togglePlayStatus() {
       const videoPlayer = this.$refs.asset.$refs.video;
-      if (videoPlayer) {
+      if (!videoPlayer) return;
+      if (this.isPlaying) {
+        await videoPlayer.pause();
+      } else {
         await videoPlayer.play();
-        this.showsReplayButton = false;
       }
     },
     onVideoEnd() {
-      this.showsReplayButton = true;
+      this.isPlaying = false;
       this.played = true;
     },
     onVideoPlaying() {
-      this.showsReplayButton = false;
+      this.isPlaying = true;
+      this.played = false;
     },
     onPause() {
       // if the video pauses, and we are hiding the controls, show the replay button
-      if (!this.showsControls && !this.showsReplayButton) {
-        this.showsReplayButton = true;
+      if (!this.showsControls && this.isPlaying) {
+        this.isPlaying = false;
       }
     },
   },
@@ -112,18 +116,13 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.video-replay-container .replay-button {
+.video-replay-container .control-button {
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  visibility: hidden;
   margin-top: .5rem;
   -webkit-tap-highlight-color: transparent;
-
-  &.visible {
-    visibility: visible;
-  }
 
   svg.replay-icon {
     height: 12px;
