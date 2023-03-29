@@ -35,6 +35,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .view-more-link {
+  @include font-styles(body-reduced-tight);
   display: flex;
   flex-flow: row-reverse;
   margin-bottom: 20px;
