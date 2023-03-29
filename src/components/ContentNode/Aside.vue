@@ -59,6 +59,7 @@ aside {
     $aside-width-border
     $aside-width-left-border);
   padding: rem(16px);
+  text-align: start;
 
   .label {
     @include font-styles(documentation-aside-name);
