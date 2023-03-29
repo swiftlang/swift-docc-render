@@ -83,19 +83,4 @@ aside {
     }
   }
 }
-
-// Apply a more compact styling for asides within a `@Steps` directive
-.steps {
-  aside {
-    background: unset;
-    border: unset;
-    box-shadow: unset;
-    break-inside: unset;
-    padding: unset;
-
-    .label {
-      @include font-styles(aside-label);
-    }
-  }
-}
 </style>
