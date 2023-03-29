@@ -86,6 +86,7 @@ $banner-icon-padding: $nav-padding-small / 4;
 
   &__wrapper {
     display: flex;
+    align-items: center;
     width: 100%;
     max-width: var(
       --wrapper-max-width,
@@ -93,7 +94,7 @@ $banner-icon-padding: $nav-padding-small / 4;
     );
     margin: 0 $nav-padding-small;
     position: relative;
-    padding: $nav-padding-small 0;
+    height: $suggest-lang-height;
   }
 
   &__link {
