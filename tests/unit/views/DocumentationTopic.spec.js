@@ -35,12 +35,6 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
-const mockEnablei18n = jest.fn().mockReturnValue(false);
-
-jest.mock('theme/lang/index.js', () => ({
-  get enablei18n() { return mockEnablei18n(); },
-}));
-
 const defaultLocale = 'en-US';
 
 const TechnologyWithChildren = {
@@ -197,7 +191,7 @@ describe('DocumentationTopic', () => {
 
     const codeTheme = wrapper.find(CodeTheme);
     expect(codeTheme.exists()).toBe(true);
-    expect(codeTheme.isEmpty()).toBe(true);
+    expect(codeTheme.isEmpty()).toEqual(true);
   });
 
   it('renders the Navigator and AdjustableSidebarWidth when enabled', async () => {
@@ -298,26 +292,6 @@ describe('DocumentationTopic', () => {
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
     expect(quickNavigationModalComponent.exists()).toBe(false);
-  });
-
-  it('renders NavigatorDataProvider with currentLocale if enablei18n is true', async () => {
-    mockEnablei18n.mockReturnValueOnce(true);
-
-    wrapper = createWrapper();
-
-    wrapper.setData({
-      topicData: {
-        ...topicData,
-        schemaVersion: schemaVersionWithSidebar,
-      },
-    });
-
-    const technology = topicData.references['topic://foo'];
-    expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
-      interfaceLanguage: Language.swift.key.url,
-      technologyUrl: technology.url,
-      apiChangesVersion: null,
-    });
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {

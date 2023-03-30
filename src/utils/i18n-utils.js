@@ -28,10 +28,22 @@ export function getCodeForSlug(slug) {
 
 /**
  * Check if locale is valid
- * @param {String} slug - locale code
+ * @param {String} slug - locale slug
  */
 export function localeIsValid(slug) {
   return !!codeForSlug[slug];
+}
+
+/**
+ * Returns params object to update router according to the new locale
+ * @param {String} slug - locale slug
+ */
+export function getLocaleParam(slug) {
+  return {
+    params: {
+      locale: slug === defaultLocale ? undefined : slug,
+    },
+  };
 }
 
 /**
