@@ -16,7 +16,7 @@
     <dl>
       <template v-for="param in parameters">
         <dt class="param-name" :key="`${param.name}:name`">
-          <code>{{ param.name }}</code>
+          <code tabindex="0">{{ param.name }}</code>
         </dt>
         <dd class="param-content" :key="`${param.name}:content`">
           <ContentNode :content="param.content" />

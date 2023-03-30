@@ -23,7 +23,11 @@
     </Filename>
     <div class="container-general">
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-      <pre><code><span
+      <pre><code
+        tabindex="0"
+        :data-before-code="$t('accessibility.code.start')"
+        :data-after-code="$t('accessibility.code.end')"
+      ><span
         v-for="(line, index) in syntaxHighlightedLines"
         :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
         :key="index"
@@ -171,6 +175,16 @@ code {
   white-space: pre;
   word-wrap: normal;
   flex-grow: 9999;
+
+  &::before {
+    content: attr(data-before-code);
+  }
+  &::after {
+    content: attr(data-after-code);
+  }
+  &::before, &::after {
+    @include visuallyhidden()
+  }
 }
 
 .code-line-container {

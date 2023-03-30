@@ -10,7 +10,7 @@
 
 <template>
   <div v-if="type && type.length">
-    <code>
+    <code tabindex="0">
       <DeclarationToken v-for="(token, i) in type" v-bind="token" :key="i" />
     </code>
   </div>

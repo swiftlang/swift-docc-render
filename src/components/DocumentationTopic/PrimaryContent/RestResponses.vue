@@ -14,7 +14,7 @@
     <ParametersTable :parameters="responses" :changes="propertyChanges" key-by="status">
       <template slot="symbol" slot-scope="{ status, type, reason, content, changes }">
         <div class="response-name">
-          <code>
+          <code tabindex="0">
             {{ status }}
             <span class="reason">{{ reason }}</span>
           </code>

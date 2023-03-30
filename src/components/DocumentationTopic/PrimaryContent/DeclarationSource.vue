@@ -13,7 +13,7 @@
     ref="declarationGroup"
     class="source"
     :class="{ [multipleLinesClass]: hasMultipleLines }"
-  ><code ref="code"><Token
+  ><code ref="code" tabindex="0"><Token
     v-for="(token, i) in formattedTokens"
     :key="i"
     v-bind="propsFor(token)" /></code></pre>
