@@ -72,13 +72,20 @@ export default {
       type: Object,
       required: false,
     },
+    standardColorIdentifier: {
+      type: String,
+      required: false,
+    },
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
     color: ({ type }) => HeroColorsMap[TopicTypeAliases[type] || type] || HeroColors.teal,
-    styles: ({ color }) => ({
+    styles: ({ color, standardColorIdentifier }) => ({
       // use the color or fallback to the gray secondary, if not defined.
-      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${color}, var(--color-figure-gray-secondary)))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${color}))`,
+      // if a `standardColor` is provided, first try the more specific variant,
+      // falling back to the generic color variant.
+      '--standard-accent-color': standardColorIdentifier && `var(--color-standard-${standardColorIdentifier}-documentation-intro-fill, var(--color-standard-${standardColorIdentifier}))`,
     }),
     // This mapping is necessary to help create a consistent mapping for the
     // following kinds of things, which are represented as different strings
@@ -103,10 +110,18 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-$doc-hero-gradient-background: dark-color(fill-tertiary) !default;
+// if the page has a `standard` color, it must be used
+$doc-hero-gradient-background: var(
+    --standard-accent-color,
+    // then fallback to a theme-settings color
+    var(--color-documentation-intro-fill, #{dark-color(fill-tertiary)})
+) !default;
 $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
-$doc-hero-icon-color: dark-color(fill-secondary) !default;
+$doc-hero-icon-color: var(
+    --color-documentation-intro-accent,
+    #{dark-color(fill-secondary)}
+) !default;
 $doc-hero-icon-spacing: 25px;
 $doc-hero-icon-vertical-spacing: 10px;
 $doc-hero-icon-dimension: 250px;
@@ -123,7 +138,7 @@ $doc-hero-icon-dimension: 250px;
   // gradient
   &:before {
     content: '';
-    background: var(--color-documentation-intro-fill, $doc-hero-gradient-background);
+    background: $doc-hero-gradient-background;
     position: absolute;
     width: 100%;
     left: 0;
@@ -160,7 +175,7 @@ $doc-hero-icon-dimension: 250px;
   }
 
   .background-icon {
-    color: var(--color-documentation-intro-accent, $doc-hero-icon-color);
+    color: $doc-hero-icon-color;
     display: block;
     width: $doc-hero-icon-dimension;
     height: auto;

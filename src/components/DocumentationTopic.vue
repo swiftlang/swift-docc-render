@@ -21,6 +21,7 @@
         :shortHero="shortHero"
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
         :iconOverride="references[pageIcon]"
+        :standardColorIdentifier="standardColorIdentifier"
       >
         <template #above-content>
           <slot name="above-hero-content" />
@@ -354,6 +355,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    standardColorIdentifier: {
+      type: String,
+      required: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.references change, the provided value
@@ -543,6 +548,9 @@ export default {
           symbolKind = '',
           remoteSource,
           images: pageImages = [],
+          color: {
+            standardColorIdentifier,
+          } = {},
         } = {},
         primaryContentSections,
         relationshipsSections,
@@ -595,6 +603,7 @@ export default {
         pageImages,
         objcPath,
         swiftPath,
+        standardColorIdentifier,
       };
     },
   },

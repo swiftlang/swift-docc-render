@@ -9,11 +9,13 @@
 -->
 
 <template>
-  <div class="TopicTypeIcon">
+  <div
+    class="TopicTypeIcon"
+    :style="styles"
+  >
     <OverridableAsset
       v-if="imageOverride"
       :imageOverride="imageOverride"
-      :style="styles"
       :shouldCalculateOptimalWidth="shouldCalculateOptimalWidth"
       class="icon-inline"
     />
@@ -21,7 +23,6 @@
       v-else
       :is="icon"
       v-bind="iconProps"
-      :style="styles"
       class="icon-inline"
     />
   </div>
@@ -124,7 +125,7 @@ export default {
     styles: ({
       color,
       withColors,
-    }) => (withColors && color ? { color: `var(--color-type-icon-${color})` } : {}),
+    }) => (withColors && color ? { '--icon-color': `var(--color-type-icon-${color})` } : {}),
   },
 };
 </script>
@@ -136,7 +137,8 @@ export default {
   width: 1em;
   height: 1em;
   flex: 0 0 auto;
-  color: var(--color-figure-gray-secondary);
+  // use the `--icon-color` if `withColors` is true, otherwise just use gray.
+  color: var(--icon-color, var(--color-figure-gray-secondary));
 
   /deep/ picture {
     flex: 1;
