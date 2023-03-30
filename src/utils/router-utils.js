@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -48,6 +48,12 @@ export async function scrollBehavior(to, from, savedPosition) {
     await this.app.$nextTick();
     return savedPosition;
   }
+  if (areEquivalentLocations(to, from)
+    || (to.meta && to.meta.preventScrolling)) {
+    // Do not change the scroll position if the location hasn't changed
+    // or disabled from router meta field
+    return false;
+  }
   if (to.hash) {
     const { name, query, hash } = to;
     const isDocumentation = name.includes(documentationTopicName);
@@ -60,10 +66,6 @@ export async function scrollBehavior(to, from, savedPosition) {
 
     const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
     return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };
-  }
-  if (areEquivalentLocations(to, from)) {
-    // Do not change the scroll position if the location hasn't changed.
-    return false;
   }
   return { x: 0, y: 0 };
 }
