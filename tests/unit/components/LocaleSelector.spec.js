@@ -10,6 +10,8 @@
 
 import { shallowMount } from '@vue/test-utils';
 import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
+import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
+import AppStore from 'docc-render/stores/AppStore';
 
 jest.mock('theme/lang/locales.json', () => (
   [
@@ -26,18 +28,45 @@ jest.mock('theme/lang/locales.json', () => (
   ]
 ));
 
+jest.mock('docc-render/utils/i18n-utils', () => ({
+  updateLocale: jest.fn(),
+  getLocaleParam: jest.fn(),
+}));
+
+jest.mock('docc-render/stores/AppStore', () => ({
+  setPreferredLocale: jest.fn(),
+}));
+
 const { ChevronThickIcon } = LocaleSelector.components;
 
 describe('LocaleSelector', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(LocaleSelector);
+    wrapper = shallowMount(LocaleSelector, {
+      mocks: {
+        $router: {
+          push: jest.fn(),
+        },
+      },
+    });
   });
 
   it('renders the locale selector', () => {
     expect(wrapper.is('div.locale-selector')).toBe(true);
     expect(wrapper.find('select').exists()).toBe(true);
+  });
+
+  it('updates router when option is selected', () => {
+    const cnOption = wrapper.findAll('option').at(1);
+    const slug = cnOption.attributes('value');
+    cnOption.trigger('change');
+
+    expect(updateLocale).toHaveBeenCalledTimes(1);
+    expect(getLocaleParam).toHaveBeenCalledTimes(1);
+    expect(getLocaleParam).toHaveBeenCalledWith(slug);
+    expect(AppStore.setPreferredLocale).toHaveBeenCalledTimes(1);
+    expect(AppStore.setPreferredLocale).toHaveBeenCalledWith(slug);
   });
 
   it('renders the icon', () => {
