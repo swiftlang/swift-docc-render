@@ -20,6 +20,7 @@ describe('AppStore', () => {
       preferredColorScheme: ColorScheme.light,
       supportsAutoColorScheme: false,
       systemColorScheme: ColorScheme.light,
+      preferredLocale: null,
     });
   });
 
@@ -33,6 +34,7 @@ describe('AppStore', () => {
       preferredColorScheme: ColorScheme.light,
       supportsAutoColorScheme: false,
       systemColorScheme: ColorScheme.light,
+      preferredLocale: null,
     });
 
     // restore target
@@ -80,6 +82,7 @@ describe('AppStore', () => {
       preferredColorScheme: ColorScheme.auto,
       supportsAutoColorScheme: false,
       systemColorScheme: ColorScheme.light,
+      preferredLocale: null,
     });
   });
 });
