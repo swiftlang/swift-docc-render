@@ -22,11 +22,19 @@ const defaultColorScheme = supportsAutoColorScheme ? ColorScheme.auto : ColorSch
 
 export default {
   state: {
-    imageLoadingStrategy: ImageLoadingStrategy.lazy,
+    imageLoadingStrategy: process.env.VUE_APP_TARGET === 'ide'
+      ? ImageLoadingStrategy.eager : ImageLoadingStrategy.lazy,
     preferredColorScheme: Settings.preferredColorScheme || defaultColorScheme,
     preferredLocale: Settings.preferredLocale,
     supportsAutoColorScheme,
     systemColorScheme: ColorScheme.light,
+  },
+  reset() {
+    this.state.imageLoadingStrategy = process.env.VUE_APP_TARGET === 'ide'
+      ? ImageLoadingStrategy.eager : ImageLoadingStrategy.lazy;
+    this.state.preferredColorScheme = Settings.preferredColorScheme || defaultColorScheme;
+    this.state.supportsAutoColorScheme = supportsAutoColorScheme;
+    this.state.systemColorScheme = ColorScheme.light;
   },
   setImageLoadingStrategy(strategy) {
     this.state.imageLoadingStrategy = strategy;
