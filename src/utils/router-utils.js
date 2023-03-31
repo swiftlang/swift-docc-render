@@ -48,10 +48,8 @@ export async function scrollBehavior(to, from, savedPosition) {
     await this.app.$nextTick();
     return savedPosition;
   }
-  if (areEquivalentLocations(to, from)
-    || (to.meta && to.meta.preventScrolling)) {
-    // Do not change the scroll position if the location hasn't changed
-    // or disabled from router meta field
+  if (to.meta && to.meta.preventScrolling) {
+    // Do not change the scroll position if disabled from router meta field
     return false;
   }
   if (to.hash) {
@@ -66,6 +64,11 @@ export async function scrollBehavior(to, from, savedPosition) {
 
     const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
     return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };
+  }
+  if (areEquivalentLocations(to, from)) {
+    // Do not change the scroll position if the location hasn't changed
+    // Note: `areEquivalentLocations` doesn't detect hash differences
+    return false;
   }
   return { x: 0, y: 0 };
 }
