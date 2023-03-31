@@ -93,6 +93,10 @@ export default {
     aspect-ratio: 16/9;
   }
 
+  /deep/ .card-cover-wrap {
+    border: 1px solid var(--color-link-block-card-border);
+  }
+
   &__image {
     display: flex;
     align-items: center;

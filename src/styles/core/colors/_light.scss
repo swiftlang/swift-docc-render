@@ -195,4 +195,5 @@
   --color-card-content-text: var(--color-figure-gray);
   --color-card-eyebrow: var(--color-figure-gray-secondary-alt);
   --color-card-shadow: #{change-color(dark-color(fill), $alpha: 0.04)};
+  --color-link-block-card-border: #{change-color(dark-color(fill), $alpha: 0.04)};
 }
