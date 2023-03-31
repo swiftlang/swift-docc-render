@@ -23,7 +23,6 @@
       v-for="(line, index) in content.code"
       class="code-line-container"
       :key="index"
-      tabindex="0"
     >
       <div v-show="showLineNumbers" class="code-number" />
       <div class="code-line">{{ line }}</div>

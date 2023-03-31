@@ -172,16 +172,6 @@ code {
   white-space: pre;
   word-wrap: normal;
   flex-grow: 9999;
-
-  &::before {
-    content: attr(data-before-code);
-  }
-  &::after {
-    content: attr(data-after-code);
-  }
-  &::before, &::after {
-    @include visuallyhidden()
-  }
 }
 
 .code-line-container {
