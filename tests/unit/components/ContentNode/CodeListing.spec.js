@@ -80,7 +80,7 @@ describe('CodeListing', () => {
     const pre = wrapper.find('pre');
     expect(pre.exists()).toBe(true);
 
-    const codeLineContainers = wrapper.findAll('pre code span.code-line-container');
+    const codeLineContainers = wrapper.findAll('span.code-line-container');
     expect(codeLineContainers.length).toBe(content.length);
 
     content.forEach((line, index) => {

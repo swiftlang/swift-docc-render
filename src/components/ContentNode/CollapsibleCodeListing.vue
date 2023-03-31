@@ -19,7 +19,7 @@
       :class="['container-general',{ collapsible: content.collapsible === true },
     { collapsed: content.collapsible === true && collapsed }]"
       :key="index"
-    ><code
+    ><CodeBlock
       v-for="(line, index) in content.code"
       class="code-line-container"
       :key="index"
@@ -27,13 +27,18 @@
     >
       <div v-show="showLineNumbers" class="code-number" />
       <div class="code-line">{{ line }}</div>
-    </code></div></div></pre>
+    </CodeBlock></div></div></pre>
   </div>
 </template>
 
 <script>
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
+
 export default {
   name: 'CollapsibleCodeListing',
+  components: {
+    CodeBlock,
+  },
   props: {
     collapsed: {
       type: Boolean,

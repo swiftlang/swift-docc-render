@@ -18,7 +18,7 @@ import { indentDeclaration } from 'docc-render/utils/indentation';
 import Language from '@/constants/Language';
 import { flushPromises } from '../../../../../test-utils';
 
-const { Token } = DeclarationSource.components;
+const { Token, CodeBlock } = DeclarationSource.components;
 const { TokenKind } = Token.constants;
 
 jest.mock('@/utils/indentation');
@@ -64,8 +64,8 @@ describe('DeclarationSource', () => {
     expect(wrapper.is('pre.source')).toBe(true);
   });
 
-  it('renders a <code> with a `Token` for each token', () => {
-    const code = wrapper.find('pre.source code');
+  it('renders a CodeBlock with a `Token` for each token', () => {
+    const code = wrapper.find(CodeBlock);
     expect(code.exists()).toBe(true);
 
     const tokens = code.findAll(Token);
@@ -109,7 +109,7 @@ describe('DeclarationSource', () => {
     await flushPromises();
     expect(indentDeclaration).toHaveBeenCalledTimes(1);
     expect(indentDeclaration)
-      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).element, Language.objectiveC.key.api);
+      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm, Language.objectiveC.key.api);
     expect(callStack).toEqual(['indentDeclaration', 'hasMultipleLines']);
   });
 });

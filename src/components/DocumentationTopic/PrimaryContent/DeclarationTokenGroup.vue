@@ -10,18 +10,19 @@
 
 <template>
   <div v-if="type && type.length">
-    <code tabindex="0">
+    <CodeBlock>
       <DeclarationToken v-for="(token, i) in type" v-bind="token" :key="i" />
-    </code>
+    </CodeBlock>
   </div>
 </template>
 
 <script>
 import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 
 export default {
   name: 'DeclarationTokenGroup',
-  components: { DeclarationToken },
+  components: { DeclarationToken, CodeBlock },
   props: {
     type: {
       type: Array,

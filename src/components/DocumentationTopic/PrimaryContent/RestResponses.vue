@@ -14,10 +14,10 @@
     <ParametersTable :parameters="responses" :changes="propertyChanges" key-by="status">
       <template slot="symbol" slot-scope="{ status, type, reason, content, changes }">
         <div class="response-name">
-          <code tabindex="0">
+          <CodeBlock>
             {{ status }}
             <span class="reason">{{ reason }}</span>
-          </code>
+          </CodeBlock>
         </div>
         <PossiblyChangedType
           v-if="!shouldShiftType({ content, reason, status })"
@@ -35,7 +35,7 @@
           :changes="changes.type"
         />
         <div class="response-reason">
-          <code>{{ reason }}</code>
+          <CodeBlock>{{ reason }}</CodeBlock>
         </div>
         <ContentNode v-if="content" :content="content" />
         <PossiblyChangedMimetype
@@ -53,6 +53,7 @@
 import { anchorize } from 'docc-render/utils/strings';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 
 import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
 import ParametersTable from './ParametersTable.vue';
@@ -68,6 +69,7 @@ export default {
     ContentNode,
     ParametersTable,
     LinkableHeading,
+    CodeBlock,
   },
   props: {
     title: {

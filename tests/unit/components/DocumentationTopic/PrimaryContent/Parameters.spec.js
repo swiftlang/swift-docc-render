@@ -14,6 +14,7 @@ import Parameters from 'docc-render/components/DocumentationTopic/PrimaryContent
 const {
   ContentNode,
   LinkableHeading,
+  CodeBlock,
 } = Parameters.components;
 
 describe('Parameters', () => {
@@ -67,7 +68,7 @@ describe('Parameters', () => {
     expect(names.length).toBe(propsData.parameters.length);
 
     names.wrappers.forEach((name, i) => {
-      const code = name.find('code');
+      const code = name.find(CodeBlock);
       expect(code.exists()).toBe(true);
       expect(code.text()).toBe(propsData.parameters[i].name);
     });

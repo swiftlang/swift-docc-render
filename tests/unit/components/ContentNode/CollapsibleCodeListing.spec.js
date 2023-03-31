@@ -11,6 +11,10 @@
 import { shallowMount } from '@vue/test-utils';
 import CollapsibleCodeListing from 'docc-render/components/ContentNode/CollapsibleCodeListing.vue';
 
+const {
+  CodeBlock,
+} = CollapsibleCodeListing.components;
+
 describe('CollapsibleCodeListing', () => {
   let wrapper;
 
@@ -46,7 +50,7 @@ describe('CollapsibleCodeListing', () => {
     expect(wrapper.is('.collapsible-code-listing')).toBe(true);
     const pre = wrapper.find('pre');
     expect(pre.exists()).toBe(true);
-    expect(pre.contains('code')).toBe(true);
+    expect(pre.contains(CodeBlock)).toBe(true);
   });
 
   it('renders code in .code-line elements', () => {
@@ -64,19 +68,19 @@ describe('CollapsibleCodeListing', () => {
     const containers = wrapper.findAll('.container-general');
     expect(containers.length).toBe(propsData.content.length);
 
-    expect(containers.at(0).find('code').classes()).toContain('code-line-container');
+    expect(containers.at(0).find(CodeBlock).classes()).toContain('code-line-container');
     expect(containers.at(0).classes('collapsible')).toBe(false);
     expect(containers.at(0).classes('collapsed')).toBe(false);
     expect(containers.at(0).contains('.code-number')).toBe(true);
     expect(containers.at(0).contains('.code-line')).toBe(true);
 
-    expect(containers.at(1).find('code').classes()).toContain('code-line-container');
+    expect(containers.at(1).find(CodeBlock).classes()).toContain('code-line-container');
     expect(containers.at(1).classes('collapsible')).toBe(true);
     expect(containers.at(1).classes('collapsed')).toBe(false);
     expect(containers.at(1).contains('.code-number')).toBe(true);
     expect(containers.at(1).contains('.code-line')).toBe(true);
 
-    expect(containers.at(2).find('code').classes()).toContain('code-line-container');
+    expect(containers.at(2).find(CodeBlock).classes()).toContain('code-line-container');
     expect(containers.at(2).classes('collapsible')).toBe(false);
     expect(containers.at(2).classes('collapsed')).toBe(false);
     expect(containers.at(2).contains('.code-number')).toBe(true);

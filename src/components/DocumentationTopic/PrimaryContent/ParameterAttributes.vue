@@ -16,7 +16,7 @@
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.default')
-        }) }}<code>{{ attribute.value }}</code>
+        }) }}<CodeBlock>{{ attribute.value }}</CodeBlock>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
@@ -25,7 +25,7 @@
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.minimum')
-        }) }}<code>{{ attribute.value }}</code>
+        }) }}<CodeBlock>{{ attribute.value }}</CodeBlock>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
@@ -34,7 +34,7 @@
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.minimum')
-        }) }}<code>&gt; {{ attribute.value }}</code>
+        }) }}<CodeBlock>&gt; {{ attribute.value }}</CodeBlock>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
@@ -43,7 +43,7 @@
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.maximum')
-        }) }}<code>{{ attribute.value }}</code>
+        }) }}<CodeBlock>{{ attribute.value }}</CodeBlock>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
@@ -52,7 +52,7 @@
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.maximum')
-        }) }}<code>&lt; {{ attribute.value }}</code>
+        }) }}<CodeBlock>&lt; {{ attribute.value }}</CodeBlock>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
@@ -61,13 +61,13 @@
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
           content: $tc('parameters.possible-types', fallbackToValues(attribute).length)
-        }) }}<code><template v-for="(possibleType, i) in fallbackToValues(attribute)">
+        }) }}<CodeBlock><template v-for="(possibleType, i) in fallbackToValues(attribute)">
             <template v-for="(token, j) in possibleType">
               <DeclarationToken v-bind="token" :key="`${i}-${j}`"
               /><template v-if="i + 1 < fallbackToValues(attribute).length">, </template>
             </template>
           </template>
-        </code>
+        </CodeBlock>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
@@ -76,7 +76,7 @@
       <template slot-scope="{ attribute }">
         {{ $t('formats.colon', {
           content: $tc('parameters.possible-values', fallbackToValues(attribute).length)
-        }) }}<code>{{ fallbackToValues(attribute).join(', ') }}</code>
+        }) }}<CodeBlock>{{ fallbackToValues(attribute).join(', ') }}</CodeBlock>
       </template>
     </ParameterMetaAttribute>
   </div>
@@ -85,6 +85,7 @@
 <script>
 
 import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import ParameterMetaAttribute
   from 'docc-render/components/DocumentationTopic/PrimaryContent/ParameterMetaAttribute.vue';
 
@@ -104,7 +105,7 @@ const AttributeKind = {
  */
 export default {
   name: 'ParameterAttributes',
-  components: { ParameterMetaAttribute, DeclarationToken },
+  components: { ParameterMetaAttribute, DeclarationToken, CodeBlock },
   constants: { AttributeKind },
   props: {
     attributes: {

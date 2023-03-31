@@ -13,10 +13,10 @@
     ref="declarationGroup"
     class="source"
     :class="{ [multipleLinesClass]: hasMultipleLines }"
-  ><code ref="code" tabindex="0"><Token
+  ><CodeBlock ref="code"><Token
     v-for="(token, i) in formattedTokens"
     :key="i"
-    v-bind="propsFor(token)" /></code></pre>
+    v-bind="propsFor(token)" /></CodeBlock></pre>
 </template>
 
 <script>
@@ -25,6 +25,7 @@ import { hasMultipleLines } from 'docc-render/utils/multipleLines';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import Language from 'docc-render/constants/Language';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import DeclarationToken from './DeclarationToken.vue';
 
 const { TokenKind } = DeclarationToken.constants;
@@ -39,7 +40,7 @@ export default {
       multipleLinesClass,
     };
   },
-  components: { Token: DeclarationToken },
+  components: { Token: DeclarationToken, CodeBlock },
   props: {
     tokens: {
       type: Array,
