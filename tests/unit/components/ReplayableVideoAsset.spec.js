@@ -42,6 +42,10 @@ describe('ReplayableVideoAsset', () => {
     window.matchMedia = () => ({ matches: false });
     window.HTMLMediaElement.prototype.play = playMock;
     window.HTMLMediaElement.prototype.pause = pauseMock;
+    Object.defineProperty(window.HTMLMediaElement.prototype, 'paused', {
+      value: false,
+      writable: true,
+    });
   });
   beforeEach(() => {
     jest.clearAllMocks();
@@ -84,10 +88,13 @@ describe('ReplayableVideoAsset', () => {
 
     // start playing
     await replayButton.trigger('click');
+    const videoEl = video.find('video').element;
+    videoEl.paused = false;
     await video.vm.$emit('playing');
     await flushPromises();
     expect(replayButton.text()).toBe('video.pause');
     await replayButton.trigger('click');
+    videoEl.paused = true;
     await video.vm.$emit('pause');
     expect(replayButton.text()).toBe('video.play');
   });
@@ -107,7 +114,7 @@ describe('ReplayableVideoAsset', () => {
     expect(pauseMock).toHaveBeenCalledTimes(1);
   });
 
-  it('shows the Replay on first mount, if not set to autoplay', async () => {
+  it('shows the play button on first mount, if not set to autoplay', async () => {
     const wrapper = mountWithProps({
       autoplays: false,
     });

@@ -29,7 +29,7 @@
       @click.prevent="togglePlayStatus"
     >
       {{ text }}
-      <InlineReplayIcon v-if="played" class="replay-icon icon-inline" />
+      <InlineReplayIcon v-if="videoEnded" class="replay-icon icon-inline" />
       <PlayIcon v-else class="replay-icon icon-inline" />
     </a>
   </div>
@@ -75,21 +75,21 @@ export default {
   },
   computed: {
     text() {
-      if (this.played) return this.$t('video.replay');
+      if (this.videoEnded) return this.$t('video.replay');
       return this.isPlaying ? this.$t('video.pause') : this.$t('video.play');
     },
   },
   data() {
     return {
       isPlaying: false,
-      played: false,
+      videoEnded: false,
     };
   },
   methods: {
     async togglePlayStatus() {
       const videoPlayer = this.$refs.asset.$refs.video;
       if (!videoPlayer) return;
-      if (this.isPlaying) {
+      if (this.isPlaying && !this.videoEnded) {
         await videoPlayer.pause();
       } else {
         await videoPlayer.play();
@@ -97,17 +97,20 @@ export default {
     },
     onVideoEnd() {
       this.isPlaying = false;
-      this.played = true;
+      this.videoEnded = true;
     },
     onVideoPlaying() {
-      this.isPlaying = true;
-      this.played = false;
+      const { video } = this.$refs.asset.$refs;
+      this.isPlaying = !video.paused;
+      this.videoEnded = video.ended;
     },
     onPause() {
+      const { video } = this.$refs.asset.$refs;
       // if the video pauses, and we are hiding the controls, show the replay button
       if (!this.showsControls && this.isPlaying) {
         this.isPlaying = false;
       }
+      this.videoEnded = video.ended;
     },
   },
 };
