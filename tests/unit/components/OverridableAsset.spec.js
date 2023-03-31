@@ -42,13 +42,14 @@ describe('OverridableAsset', () => {
     const wrapper = createWrapper({
       propsData: {
         imageOverride: {
+          alt: 'someAlt',
           variants: [localVariantNoID],
         },
       },
     });
     expect(wrapper.find(ImageAsset).props()).toEqual({
       variants: [localVariantNoID],
-      alt: '',
+      alt: 'someAlt',
       shouldCalculateOptimalWidth: true,
     });
   });
@@ -57,11 +58,16 @@ describe('OverridableAsset', () => {
     const wrapper = createWrapper({
       propsData: {
         imageOverride: {
+          alt: 'someAlt',
           variants: [remoteDifferentVariant],
         },
       },
     });
-    expect(wrapper.find(ImageAsset).props('variants')).toEqual([remoteDifferentVariant]);
+    expect(wrapper.find(ImageAsset).props()).toEqual({
+      variants: [remoteDifferentVariant],
+      alt: 'someAlt',
+      shouldCalculateOptimalWidth: true,
+    });
   });
 
   it('renders an `SVGIcon` component, if icon has `svgID` and is from a local path', () => {
