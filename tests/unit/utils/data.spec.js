@@ -22,6 +22,10 @@ import { defaultLocale } from 'theme/lang/index.js';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
+jest.mock('docc-render/utils/metadata', () => ({
+  updateLangTag: jest.fn(),
+}));
+
 const mockBaseUrl = jest.fn().mockReturnValue('/');
 
 jest.mock('docc-render/utils/theme-settings', () => ({
@@ -368,8 +372,8 @@ describe('fetchIndexPathsData', () => {
     expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json', {});
     expect(data).toEqual({ foobar: 'foobar' });
     // fetch data with another locale
-    const locale = 'zh-CN';
-    await fetchIndexPathsData({ currentLocale: locale });
-    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${locale}/index.json`, {});
+    const slug = 'zh-CN';
+    await fetchIndexPathsData({ slug });
+    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${slug}/index.json`, {});
   });
 });

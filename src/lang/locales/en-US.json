@@ -1,4 +1,6 @@
 {
+  "view-in": "View in English",
+  "continue-viewing": "Continue viewing in English",
   "language": "Language",
   "video": {
     "replay": "Replay",
@@ -110,7 +112,7 @@
   "api-reference": "API Reference",
   "filter": {
     "title": "Filter",
-    "search-symbols": "Search symbols",
+    "search-symbols": "Search symbols in {technology}",
     "suggested-tags": "Suggested {tags}",
     "selected-tags": "Selected {tags}",
     "add-tag": "Add tag",
@@ -177,5 +179,11 @@
   "formats": {
     "parenthesis": "({content})",
     "colon": "{content}: "
+  },
+  "quicknav": {
+    "button": {
+      "label": "Open Quick Navigation",
+      "title": "Click or type / for quick navigation"
+    }
   }
 }

@@ -87,7 +87,7 @@
               :tags="availableTags"
               :translatableTags="translatableTags"
               :selected-tags.sync="selectedTagsModelValue"
-              placeholder="filter.title"
+              :placeholder="$t('filter.title')"
               :should-keep-open-on-blur="false"
               :position-reversed="!renderFilterOnTop"
               :clear-filter-on-tag-select="false"
@@ -95,6 +95,7 @@
               @clear="clearFilters"
             />
           </div>
+          <slot name="filter" />
         </div>
       </div>
     </template>
@@ -506,6 +507,11 @@ export default {
     },
   },
   methods: {
+    setUnlessEqual(property, data) {
+      if (isEqual(data, this[property])) return;
+
+      this[property] = Object.freeze(data);
+    },
     toggleAllNodes() {
       const parentNodes = this.children.filter(child => child.parent === INDEX_ROOT_KEY
         && child.type !== TopicTypes.groupMarker && child.childUIDs.length);
@@ -592,7 +598,7 @@ export default {
         all[current.uid] = true;
         return all;
       }, nodesToStartFrom);
-      this.openNodes = Object.freeze(newNodes);
+      this.setUnlessEqual('openNodes', newNodes);
 
       // merge in the new open nodes with the base nodes
       this.generateNodesToRender();
@@ -618,11 +624,11 @@ export default {
           delete openNodes[uid];
         });
         // set the new open nodes. Should be faster than iterating each and calling `this.$delete`.
-        this.openNodes = Object.freeze(openNodes);
+        this.setUnlessEqual('openNodes', openNodes);
         // exclude all items, but the first
         exclude = allChildren.slice(1);
       } else {
-        this.openNodes = Object.freeze({ ...this.openNodes, [node.uid]: true });
+        this.setUnlessEqual('openNodes', { ...this.openNodes, [node.uid]: true });
         // include all childUIDs to get opened
         include = getChildren(node.uid, this.childrenMap, this.children)
           .filter(child => this.renderableChildNodesMap[child.uid]);
@@ -652,7 +658,7 @@ export default {
       } else {
         include = allChildren.slice(1).filter(child => this.renderableChildNodesMap[child.uid]);
       }
-      this.openNodes = Object.freeze(openNodes);
+      this.setUnlessEqual('openNodes', openNodes);
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
     },
     toggleSiblings(node) {
@@ -681,7 +687,7 @@ export default {
           this.augmentRenderNodes({ uid, exclude: [], include: children });
         }
       });
-      this.openNodes = Object.freeze(openNodes);
+      this.setUnlessEqual('openNodes', openNodes);
       // persist all the open nodes, as we change the openNodes after the node augment runs
       this.persistState();
     },
@@ -706,7 +712,7 @@ export default {
 
       // create a set of all matches and their parents
       // generate the list of nodes to render
-      this.nodesToRender = Object.freeze(children
+      this.setUnlessEqual('nodesToRender', children
         .filter(child => (
           // make sure the item can be rendered
           renderableChildNodesMap[child.uid]
@@ -732,13 +738,11 @@ export default {
         const clonedNodes = this.nodesToRender.slice(0);
         // inject the nodes at the index
         clonedNodes.splice(index + 1, 0, ...duplicatesRemoved);
-        this.nodesToRender = Object.freeze(clonedNodes);
+        this.setUnlessEqual('nodesToRender', clonedNodes);
       } else if (exclude.length) {
         // if remove, filter out those items
         const excludeSet = new Set(exclude);
-        this.nodesToRender = Object.freeze(
-          this.nodesToRender.filter(item => !excludeSet.has(item)),
-        );
+        this.setUnlessEqual('nodesToRender', this.nodesToRender.filter(item => !excludeSet.has(item)));
       }
       this.persistState();
     },
@@ -847,10 +851,10 @@ export default {
         return;
       }
       // create the openNodes map
-      this.openNodes = Object.freeze(Object.fromEntries(openNodes.map(n => [n, true])));
+      this.setUnlessEqual('openNodes', Object.fromEntries(openNodes.map(n => [n, true])));
       // get all the nodes to render
       // generate the array of flat children objects to render
-      this.nodesToRender = Object.freeze(nodesToRender.map(uid => childrenMap[uid]));
+      this.setUnlessEqual('nodesToRender', nodesToRender.map(uid => childrenMap[uid]));
       // finally fetch any previously assigned filters or tags
       this.selectedTags = selectedTags;
       this.filter = filter;
@@ -1075,8 +1079,8 @@ export default {
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 // unfortunately we need to hard-code the filter height
-$filter-height: 73px;
-$filter-height-small: 62px;
+$filter-height: 71px;
+$filter-height-small: 60px;
 
 .navigator-card {
   &.filter-on-top {
@@ -1135,8 +1139,8 @@ $filter-height-small: 62px;
   }
 
   .filter-component {
-    --input-vertical-padding: 10px;
-    --input-height: 20px;
+    --input-vertical-padding: 8px;
+    --input-height: 22px;
     --input-border-color: var(--color-grid);
     --input-text: var(--color-figure-gray-secondary);
 

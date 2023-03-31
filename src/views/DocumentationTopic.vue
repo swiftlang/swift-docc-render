@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -23,7 +23,6 @@
             :interface-language="topicProps.interfaceLanguage"
             :technologyUrl="technology.url"
             :api-changes-version="store.state.selectedAPIChangesVersion"
-            :currentLocale="enablei18n ? $i18n.locale : ''"
             ref="NavigatorDataProvider"
           >
             <template #default="slotProps">
@@ -33,6 +32,7 @@
                   :children="slotProps.flatChildren"
                   :showQuickNavigationModal.sync="showQuickNavigationModal"
                   :previewEnabled="enableQuickNavigationPreview"
+                  :technology="technology.title"
                 />
                 <transition name="delay-hiding">
                   <Navigator
@@ -48,7 +48,11 @@
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
                     @close="handleToggleSidenav(breakpoint)"
-                  />
+                  >
+                    <template v-if="enableQuickNavigation" #filter>
+                      <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                    </template>
+                  </Navigator>
                 </transition>
               </div>
             </template>
@@ -69,18 +73,7 @@
           :displaySidenav="enableNavigator"
           :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
           @toggle-sidenav="handleToggleSidenav"
-        >
-          <template #menu-items>
-            <button
-              v-if="enableQuickNavigation && enableNavigator"
-              class="quick-navigation-open-container"
-              @click="openQuickNavigationModal"
-              @keydown.enter.exact="openQuickNavigationModal"
-            >
-              <MagnifierIcon />
-            </button>
-          </template>
-        </Nav>
+        />
         <Topic
           v-bind="topicProps"
           :key="topicKey"
@@ -114,9 +107,9 @@ import Language from 'docc-render/constants/Language';
 import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
+import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
-import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
@@ -125,8 +118,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
-import { updateCurrentLocale } from 'docc-render/utils/i18n-utils';
-import { enablei18n } from 'theme/lang/index.js';
+import { updateLocale } from 'theme/utils/i18n-utils.js';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -144,9 +136,9 @@ export default {
     Topic: DocumentationTopic,
     CodeTheme,
     Nav: DocumentationNav,
+    QuickNavigationButton,
     QuickNavigationModal,
     PortalTarget,
-    MagnifierIcon,
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
   props: {
@@ -181,7 +173,6 @@ export default {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    enablei18n: () => enablei18n,
     enableQuickNavigationPreview: () => getSetting(['features', 'docs', 'quickNavigationPreview', 'enable'], false),
     topicData: {
       get() {
@@ -358,7 +349,7 @@ export default {
     }
 
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
-      updateCurrentLocale(to, vm);
+      updateLocale(to.params.locale, vm);
 
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
@@ -378,7 +369,7 @@ export default {
         if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
           this.applyObjcOverrides();
         }
-        updateCurrentLocale(to, this);
+        updateLocale(to.params.locale, this);
         next();
       }).catch(next);
     } else {
@@ -413,6 +404,11 @@ export default {
     max-width: rem(800px);
     overflow: visible;
   }
+
+  .navigator-filter .quick-navigation-open {
+    margin-left: var(--nav-filter-horizontal-padding);
+    width: calc(var(--nav-filter-horizontal-padding) * 2);
+  }
 }
 
 .doc-topic-view {
@@ -439,18 +435,6 @@ export default {
     .sidebar-transitioning & {
       border-right: 1px solid var(--color-grid);
     }
-  }
-}
-
-.quick-navigation-open-container {
-  height: rem(15px);
-  width: rem(15px);
-  margin-left: rem(10px);
-  @include nav-in-breakpoint() {
-    display: none;
-  }
-  * {
-    fill: var(--color-text);
   }
 }
 

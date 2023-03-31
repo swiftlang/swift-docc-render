@@ -16,9 +16,10 @@
       @change="updateRouter"
     >
       <option
-        v-for="{ code, name } in locales"
-        :key="code"
-        :value="code"
+        v-for="{ slug, name, code } in locales"
+        :key="slug"
+        :value="slug"
+        :lang="code"
       >
         {{ name }}
       </option>
@@ -30,8 +31,8 @@
 <script>
 import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import locales from 'theme/lang/locales.json';
-import { defaultLocale } from 'theme/lang/index.js';
-import { updateLangTag } from 'docc-render/utils/metadata';
+import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
+import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   name: 'LocaleSelector',
@@ -44,14 +45,10 @@ export default {
     };
   },
   methods: {
-    updateRouter({ target: { value: currentLocale } }) {
-      this.$i18n.locale = currentLocale;
-      this.$router.push({
-        params: {
-          locale: currentLocale === defaultLocale ? null : currentLocale,
-        },
-      });
-      updateLangTag(currentLocale);
+    updateRouter({ target: { value: slug } }) {
+      this.$router.push(getLocaleParam(slug));
+      AppStore.setPreferredLocale(slug);
+      updateLocale(slug, this);
     },
   },
 };
