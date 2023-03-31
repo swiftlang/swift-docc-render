@@ -26,6 +26,7 @@ const variants = [lightVariant, darkVariant];
 
 const defaultProps = {
   variants,
+  alt: 'alt text',
 };
 
 const mountCover = ({ propsData, ...rest } = {}) => {
@@ -45,6 +46,7 @@ describe('CardCover', () => {
     const asset = wrapper.find(ImageAsset);
     expect(asset.classes()).toContain('card-cover');
     expect(asset.props('variants')).toEqual(defaultProps.variants);
+    expect(asset.props('alt')).toEqual(defaultProps.alt);
   });
 
   it('exposes a default slot', () => {
