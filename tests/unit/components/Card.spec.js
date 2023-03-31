@@ -26,6 +26,7 @@ describe('Card', () => {
   const references = {
     [image.identifier]: {
       variants: [{ url: 'image.com', traits: ['1x'] }],
+      alt: 'some Alt',
     },
   };
 
@@ -170,7 +171,11 @@ describe('Card', () => {
     });
     const cardCover = wrapper.find(CardCover);
     expect(cardCover.exists()).toBe(true);
-    expect(cardCover.props()).toHaveProperty('variants', references[propsData.image].variants);
+    expect(cardCover.props()).toEqual({
+      variants: references[propsData.image].variants,
+      rounded: false,
+      alt: 'some Alt',
+    });
   });
 
   it('renders a `.link` with appropriate classes and aria label in WEB', () => {
