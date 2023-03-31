@@ -74,8 +74,6 @@ export default {
     }
   }
 
-  /deep/ + * {
-    margin-top: var(--spacing-stacked-margin-large);
-  }
+  @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 }
 </style>
