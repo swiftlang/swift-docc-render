@@ -101,7 +101,7 @@
               :source="remoteSource"
               :sections="primaryContentSectionsSanitized"
             />
-            <ViewMore v-if="enableMinimized" :url="viewMoreLink" />
+            <ViewMore v-if="shouldShowViewMoreLink" :url="viewMoreLink" />
           </div>
           <Topics
             v-if="shouldRenderTopicSection"
@@ -240,6 +240,10 @@ export default {
     },
     modules: {
       type: Array,
+      required: false,
+    },
+    hasNoExpandedDocumentation: {
+      type: Boolean,
       required: false,
     },
     hierarchy: {
@@ -456,13 +460,13 @@ export default {
       deprecationSummary,
       downloadNotAvailableSummary,
       primaryContentSectionsSanitized,
-      enableMinimized,
+      shouldShowViewMoreLink,
     }) => (
       isRequirement
       || (deprecationSummary && deprecationSummary.length)
       || (downloadNotAvailableSummary && downloadNotAvailableSummary.length)
       || (primaryContentSectionsSanitized.length)
-      || enableMinimized // minimized mode always renders `ViewMore`
+      || shouldShowViewMoreLink
     ),
     viewMoreLink: ({
       interfaceLanguage,
@@ -471,6 +475,13 @@ export default {
     }) => (
       interfaceLanguage === Language.objectiveC.key.api
         ? normalizedObjcPath : normalizedSwiftPath
+    ),
+    shouldShowViewMoreLink: ({
+      enableMinimized,
+      hasNoExpandedDocumentation,
+      viewMoreLink,
+    }) => (
+      enableMinimized && !hasNoExpandedDocumentation && viewMoreLink
     ),
     tagName() {
       return this.isSymbolDeprecated ? this.$t('aside-kind.deprecated') : this.$t('aside-kind.beta');
@@ -521,6 +532,7 @@ export default {
         },
         metadata: {
           conformance,
+          hasNoExpandedDocumentation,
           modules,
           platforms,
           required: isRequirement = false,
@@ -559,6 +571,7 @@ export default {
         deprecationSummary,
         downloadNotAvailableSummary,
         diffAvailability,
+        hasNoExpandedDocumentation,
         hierarchy,
         role,
         identifier,

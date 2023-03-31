@@ -490,6 +490,18 @@ describe('DocumentationTopic', () => {
     expect(wrapper.contains(PrimaryContent)).toBe(false);
   });
 
+  it('does not render a `PrimaryContent` column when passed empty an PrimaryContent & no `ViewMore` link', () => {
+    wrapper.setProps({ primaryContentSections: [], enableMinimized: true });
+    expect(wrapper.contains(PrimaryContent)).toBe(true); // ViewMore link is present
+
+    wrapper.setProps({
+      primaryContentSections: [],
+      enableMinimized: true,
+      hasNoExpandedDocumentation: true,
+    });
+    expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
+  });
+
   it('renders `ViewMore` if `enableMinimized`', () => {
     wrapper.setProps({
       enableMinimized: true,
@@ -504,6 +516,10 @@ describe('DocumentationTopic', () => {
 
     // should not render `ViewMore` in non-minimized mode
     wrapper.setProps({ enableMinimized: false });
+    expect(wrapper.find(ViewMore).exists()).toBe(false);
+
+    // should not render `ViewMore` if `hasNoExpandedDocumentation`
+    wrapper.setProps({ enableMinimized: true, hasNoExpandedDocumentation: true });
     expect(wrapper.find(ViewMore).exists()).toBe(false);
   });
 
@@ -609,6 +625,7 @@ describe('DocumentationTopic', () => {
       deprecationSummary: null,
       downloadNotAvailableSummary: null,
       enableMinimized: false,
+      hasNoExpandedDocumentation: true,
     });
     expect(wrapper.find(PrimaryContent).exists()).toBe(false);
     expect(wrapper.find('.description').exists()).toBe(false);
