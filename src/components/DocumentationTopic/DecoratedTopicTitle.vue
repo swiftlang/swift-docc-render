@@ -9,19 +9,18 @@
 -->
 
 <template>
-  <CodeBlock class="decorated-title">
+  <code class="decorated-title">
     <component
       v-for="(token, i) in tokens"
       :class="[classFor(token), emptyTokenClass(token)]"
       :is="componentFor(token)"
       :key="i"
     >{{ token.text }}</component>
-  </CodeBlock>
+  </code>
 </template>
 
 <script>
 import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
-import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 
 const { TokenKind } = DeclarationToken.constants;
@@ -34,7 +33,7 @@ const TokenClass = {
 
 export default {
   name: 'DecoratedTopicTitle',
-  components: { WordBreak, CodeBlock },
+  components: { WordBreak },
   props: {
     tokens: {
       type: Array,

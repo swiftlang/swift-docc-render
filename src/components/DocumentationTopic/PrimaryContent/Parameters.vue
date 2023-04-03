@@ -16,7 +16,7 @@
     <dl>
       <template v-for="param in parameters">
         <dt class="param-name" :key="`${param.name}:name`">
-          <CodeBlock>{{ param.name }}</CodeBlock>
+          <code>{{ param.name }}</code>
         </dt>
         <dd class="param-content" :key="`${param.name}:content`">
           <ContentNode :content="param.content" />
@@ -29,7 +29,6 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
-import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 
@@ -38,7 +37,6 @@ export default {
   components: {
     ContentNode,
     LinkableHeading,
-    CodeBlock,
   },
   props: {
     parameters: {

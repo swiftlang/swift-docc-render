@@ -13,20 +13,20 @@
     class="collapsible-code-listing"
     :class="{ 'single-line': content[0].code.length === 1 }"
   >
-    <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-    <pre><div><div
-      v-for="(content, index) in this.content"
-      :class="['container-general',{ collapsible: content.collapsible === true },
-    { collapsed: content.collapsible === true && collapsed }]"
-      :key="index"
-    ><CodeBlock
-      v-for="(line, index) in content.code"
-      class="code-line-container"
-      :key="index"
-    >
-      <div v-show="showLineNumbers" class="code-number" />
-      <div class="code-line">{{ line }}</div>
-    </CodeBlock></div></div></pre>
+      <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
+      <pre><CodeBlock><div
+        v-for="(content, index) in this.content"
+        :class="['container-general',{ collapsible: content.collapsible === true },
+      { collapsed: content.collapsible === true && collapsed }]"
+        :key="index"
+      ><div
+        v-for="(line, index) in content.code"
+        class="code-line-container"
+        :key="index"
+      >
+        <div v-show="showLineNumbers" class="code-number" />
+        <div class="code-line">{{ line }}</div>
+      </div></div></CodeBlock></pre>
   </div>
 </template>
 
@@ -58,11 +58,6 @@ export default {
 <style scoped lang="scss">
 @import "docc-render/styles/_core.scss";
 
-code {
-  // ensure the code is at least as wide as the parent
-  width: 100%;
-}
-
 .container-general {
   display: flex;
   flex-flow: row wrap;
@@ -72,6 +67,8 @@ code {
 }
 
 .code-line-container {
+  // ensure the code is at least as wide as the parent
+  width: 100%;
   align-items: center;
   display: flex;
   border-left: 4px solid transparent;
