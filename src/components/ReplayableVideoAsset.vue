@@ -30,6 +30,7 @@
     >
       {{ text }}
       <InlineReplayIcon v-if="videoEnded" class="replay-icon icon-inline" />
+      <PauseIcon v-else-if="isPlaying" class="replay-icon icon-inline"></PauseIcon>
       <PlayIcon v-else class="replay-icon icon-inline" />
     </a>
   </div>
@@ -39,10 +40,12 @@
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
 import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
+import PauseIcon from 'theme/components/Icons/PauseIcon.vue';
 
 export default {
   name: 'ReplayableVideoAsset',
   components: {
+    PauseIcon,
     PlayIcon,
     InlineReplayIcon,
     VideoAsset,
