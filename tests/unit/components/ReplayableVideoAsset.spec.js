@@ -6,13 +6,14 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import { shallowMount } from '@vue/test-utils';
 import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vue';
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
 import PlayIcon from '@/components/Icons/PlayIcon.vue';
+import PauseIcon from '@/components/Icons/PauseIcon.vue';
 import { flushPromises } from '../../../test-utils';
 
 const variants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/myvideo.mp4' }];
@@ -42,9 +43,15 @@ describe('ReplayableVideoAsset', () => {
     window.matchMedia = () => ({ matches: false });
     window.HTMLMediaElement.prototype.play = playMock;
     window.HTMLMediaElement.prototype.pause = pauseMock;
-    Object.defineProperty(window.HTMLMediaElement.prototype, 'paused', {
-      value: false,
-      writable: true,
+    Object.defineProperties(window.HTMLMediaElement.prototype, {
+      paused: {
+        value: false,
+        writable: true,
+      },
+      ended: {
+        value: false,
+        writable: true,
+      },
     });
   });
   beforeEach(() => {
@@ -79,20 +86,22 @@ describe('ReplayableVideoAsset', () => {
     expect(replayButton.exists()).toBe(true);
     expect(replayButton.text()).toBe('video.play');
 
-    expect(replayButton.find('.replay-icon').is(PlayIcon)).toBe(true);
+    expect(replayButton.find('.control-icon').is(PlayIcon)).toBe(true);
     const video = wrapper.find(VideoAsset);
     await video.vm.$emit('ended');
 
-    expect(wrapper.find('.replay-icon').is(InlineReplayIcon)).toBe(true);
+    expect(wrapper.find('.control-icon').is(InlineReplayIcon)).toBe(true);
     expect(replayButton.text()).toBe('video.replay');
 
     // start playing
     await replayButton.trigger('click');
+    await video.vm.$emit('playing');
     const videoEl = video.find('video').element;
     videoEl.paused = false;
-    await video.vm.$emit('playing');
+    videoEl.ended = false;
     await flushPromises();
     expect(replayButton.text()).toBe('video.pause');
+    expect(wrapper.find('.control-icon').is(PauseIcon)).toBe(true);
     await replayButton.trigger('click');
     videoEl.paused = true;
     await video.vm.$emit('pause');

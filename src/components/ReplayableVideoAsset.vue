@@ -29,9 +29,9 @@
       @click.prevent="togglePlayStatus"
     >
       {{ text }}
-      <InlineReplayIcon v-if="videoEnded" class="replay-icon icon-inline" />
-      <PauseIcon v-else-if="isPlaying" class="replay-icon icon-inline"></PauseIcon>
-      <PlayIcon v-else class="replay-icon icon-inline" />
+      <InlineReplayIcon v-if="videoEnded" class="control-icon icon-inline" />
+      <PauseIcon v-else-if="isPlaying" class="control-icon icon-inline"></PauseIcon>
+      <PlayIcon v-else class="control-icon icon-inline" />
     </a>
   </div>
 </template>
@@ -130,7 +130,7 @@ export default {
   margin-top: .5rem;
   -webkit-tap-highlight-color: transparent;
 
-  svg.replay-icon {
+  svg.control-icon {
     height: 12px;
     width: 12px;
     margin-left: .3em;
