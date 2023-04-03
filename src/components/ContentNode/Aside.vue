@@ -49,24 +49,7 @@ export default {
 
 $aside-kinds: deprecated, experiment, important, note, tip, warning;
 
-.label {
-  @include font-styles(aside-label);
-
-  & + * {
-    margin-top: var(--spacing-stacked-margin-small);
-  }
-
-  @each $kind in $aside-kinds {
-    .#{$kind} & {
-      color: var(--color-aside-#{$kind});
-    }
-  }
-}
-
-// this applies a specific styling for asides on documentation pages and relies
-// on the fact that a "doc-topic" class is applied to an ancestor element of
-// the aside in question
-.doc-topic aside {
+aside {
   break-inside: avoid;
   border-radius: var(--aside-border-radius, $border-radius);
   border-style: var(--aside-border-style, solid);
@@ -76,6 +59,15 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
     $aside-width-border
     $aside-width-left-border);
   padding: rem(16px);
+  text-align: start;
+
+  .label {
+    @include font-styles(documentation-aside-name);
+
+    & + * {
+      margin-top: var(--spacing-stacked-margin-small);
+    }
+  }
 
   @each $kind in $aside-kinds {
     &.#{$kind} {
@@ -84,11 +76,11 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
       // Anti-aliasing corners
       box-shadow: 0 0 $aside-width-border 0px var(--color-aside-#{$kind}-border) inset,
         0 0 $aside-width-border 0px var(--color-aside-#{$kind}-border);
-    }
-  }
 
-  .label {
-    @include font-styles(documentation-aside-name);
+      .label {
+        color: var(--color-aside-#{$kind});
+      }
+    }
   }
 }
 </style>

@@ -297,6 +297,19 @@ $margin-transision-duration: 0.3s;
   }
 
   color: var(--colors-text, var(--color-text));
+
+  // Apply a more compact styling for asides within a `@Steps` directive
+  /deep/ aside {
+    background: unset;
+    border: unset;
+    box-shadow: unset;
+    break-inside: unset;
+    padding: unset;
+
+    .label {
+      @include font-styles(aside-label);
+    }
+  }
 }
 
 $lhs-col-width: calculate-column-width(4.5);
