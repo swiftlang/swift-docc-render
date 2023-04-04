@@ -74,13 +74,13 @@ describe('CollapsibleCodeListing', () => {
     expect(containers.at(0).contains('.code-number')).toBe(true);
     expect(containers.at(0).contains('.code-line')).toBe(true);
 
-    expect(containers.at(0).find('.code-line-container').exists()).toBe(true);
+    expect(containers.at(1).find('.code-line-container').exists()).toBe(true);
     expect(containers.at(1).classes('collapsible')).toBe(true);
     expect(containers.at(1).classes('collapsed')).toBe(false);
     expect(containers.at(1).contains('.code-number')).toBe(true);
     expect(containers.at(1).contains('.code-line')).toBe(true);
 
-    expect(containers.at(0).find('.code-line-container').exists()).toBe(true);
+    expect(containers.at(2).find('.code-line-container').exists()).toBe(true);
     expect(containers.at(2).classes('collapsible')).toBe(false);
     expect(containers.at(2).classes('collapsed')).toBe(false);
     expect(containers.at(2).contains('.code-number')).toBe(true);

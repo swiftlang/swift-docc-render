@@ -13,20 +13,20 @@
     class="collapsible-code-listing"
     :class="{ 'single-line': content[0].code.length === 1 }"
   >
-      <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-      <pre><CodeBlock><div
-        v-for="(content, index) in this.content"
-        :class="['container-general',{ collapsible: content.collapsible === true },
-      { collapsed: content.collapsible === true && collapsed }]"
-        :key="index"
-      ><div
-        v-for="(line, index) in content.code"
-        class="code-line-container"
-        :key="index"
-      >
-        <div v-show="showLineNumbers" class="code-number" />
-        <div class="code-line">{{ line }}</div>
-      </div></div></CodeBlock></pre>
+    <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
+    <pre><CodeBlock><div
+      v-for="(content, index) in this.content"
+      :class="['container-general',{ collapsible: content.collapsible === true },
+    { collapsed: content.collapsible === true && collapsed }]"
+      :key="index"
+    ><div
+      v-for="(line, index) in content.code"
+      class="code-line-container"
+      :key="index"
+    >
+      <div v-show="showLineNumbers" class="code-number" />
+      <div class="code-line">{{ line }}</div>
+    </div></div></CodeBlock></pre>
   </div>
 </template>
 
