@@ -142,7 +142,7 @@ export default {
   background-color: var(--color-step-background);
   overflow: hidden;
   // To hide overflow on rounded corner divs in Safari
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  @include new-stacking-context;
 
   &::before {
     content: "";
