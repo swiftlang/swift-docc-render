@@ -166,6 +166,10 @@
       "start": "取り消し線テキストの開始",
       "end": "取り消し線テキストの終了"
     },
+    "code": {
+      "start": "start of code block",
+      "end": "end of code block"
+    },
     "skip-navigation": "ナビゲーションをスキップ"
   },
   "select-language": "このページの言語を選択",

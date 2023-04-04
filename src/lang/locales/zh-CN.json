@@ -166,6 +166,10 @@
       "start": "删除线文本开始",
       "end": "删除线文本结束"
     },
+    "code": {
+      "start": "start of code block",
+      "end": "end of code block"
+    },
     "skip-navigation": "跳过导航"
   },
   "select-language": "选择此页面的语言",
