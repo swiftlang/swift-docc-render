@@ -11,7 +11,7 @@
 <template>
   <div class="card-cover-wrap" :class="{ rounded }">
     <slot classes="card-cover">
-      <ImageAsset :variants="variants" class="card-cover" />
+      <ImageAsset :variants="variants" :alt="alt" class="card-cover" />
     </slot>
   </div>
 </template>
@@ -30,6 +30,10 @@ export default {
     rounded: {
       type: Boolean,
       default: false,
+    },
+    alt: {
+      type: String,
+      default: null,
     },
   },
 };
@@ -57,6 +61,7 @@ export default {
     display: block;
     margin: 0;
   }
+
   // make sure we dont override the height for the fallback
   /deep/ img {
     height: 100%;
