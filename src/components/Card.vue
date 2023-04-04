@@ -18,6 +18,7 @@
     <CardCover
       :variants="imageVariants"
       :rounded="floatingStyle"
+      :alt="imageReference.alt"
       aria-hidden="true"
       #default="coverProps"
     >
