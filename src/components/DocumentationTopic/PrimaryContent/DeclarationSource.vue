@@ -201,13 +201,9 @@ $docs-declaration-source-border-width: 1px !default;
   padding: var(--code-block-style-elements-padding);
   speak: literal-punctuation;
   line-height: 25px;
-  // this mask image is not actually used for any visual effect since there is
-  // no background being used on this element—however, we need this in order to
-  // establish a new stacking context, which resolves a Safari bug where the
-  // scrollbar is not clipped by this element depending on its border-radius
-  @media screen {
-    -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
-  }
+  // we need to establish a new stacking context to resolve a Safari bug where
+  // the scrollbar is not clipped by this element depending on its border-radius
+  @include new-stacking-context;
 
   &.has-multiple-lines {
     border-radius: $border-radius;

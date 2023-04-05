@@ -189,14 +189,9 @@ code {
   min-height: 100%;
   border-radius: var(--code-border-radius, $border-radius);
   overflow: hidden;
-  // this mask image is not actually used for any visual effect since there is
-  // no background being used on this element—however, we need this in order to
-  // establish a new stacking context, which resolves a Safari bug where the
-  // scrollbar is not clipped by this element depending on its border-radius.
-  // It's inside a screen query, because it causes issues with printing to PDF.
-  @media screen {
-    -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
-  }
+  // we need to establish a new stacking context to resolve a Safari bug where
+  // the scrollbar is not clipped by this element depending on its border-radius
+  @include new-stacking-context;
 
   &.single-line {
     border-radius: $large-border-radius;
