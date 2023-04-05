@@ -1,4 +1,6 @@
 {
+  "view-in": "View in English",
+  "continue-viewing": "Continue viewing in English",
   "language": "Language",
   "video": {
     "replay": "Replay",
@@ -165,6 +167,10 @@
     "strike": {
       "start": "start of stricken text",
       "end": "end of stricken text"
+    },
+    "code": {
+      "start": "start of code block",
+      "end": "end of code block"
     },
     "skip-navigation": "Skip Navigation"
   },
