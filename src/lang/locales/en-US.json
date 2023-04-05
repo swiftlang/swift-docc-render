@@ -5,6 +5,7 @@
   "video": {
     "replay": "Replay",
     "play": "Play",
+    "pause": "Pause",
     "watch": "Watch intro video"
   },
   "tutorials": {
