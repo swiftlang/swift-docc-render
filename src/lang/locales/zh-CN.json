@@ -1,4 +1,6 @@
 {
+  "view-in": "以中文查看",
+  "continue-viewing": "继续以中文查看",
   "language": "语言",
   "video": {
     "replay": "重新播放",
@@ -165,6 +167,10 @@
     "strike": {
       "start": "删除线文本开始",
       "end": "删除线文本结束"
+    },
+    "code": {
+      "start": "start of code block",
+      "end": "end of code block"
     },
     "skip-navigation": "跳过导航"
   },
