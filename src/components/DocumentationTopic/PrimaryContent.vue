@@ -121,12 +121,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-/deep/ {
-  h2 {
-    @include font-styles(heading-2-reduced);
-  }
-}
-
 .primary-content {
   &.with-border::before {
     border-top-color: var(--colors-grid, var(--color-grid));

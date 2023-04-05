@@ -1,4 +1,6 @@
 {
+  "view-in": "日本語で表示",
+  "continue-viewing": "日本語で表示を続ける",
   "language": "言語",
   "video": {
     "replay": "リプレイ",
@@ -165,6 +167,10 @@
     "strike": {
       "start": "取り消し線テキストの開始",
       "end": "取り消し線テキストの終了"
+    },
+    "code": {
+      "start": "start of code block",
+      "end": "end of code block"
     },
     "skip-navigation": "ナビゲーションをスキップ"
   },

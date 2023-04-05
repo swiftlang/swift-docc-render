@@ -31,8 +31,8 @@
 <script>
 import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import locales from 'theme/lang/locales.json';
-import { defaultLocale } from 'theme/lang/index.js';
-import { updateLocale } from 'docc-render/utils/i18n-utils';
+import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
+import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   name: 'LocaleSelector',
@@ -46,11 +46,8 @@ export default {
   },
   methods: {
     updateRouter({ target: { value: slug } }) {
-      this.$router.push({
-        params: {
-          locale: slug === defaultLocale ? null : slug,
-        },
-      });
+      this.$router.push(getLocaleParam(slug));
+      AppStore.setPreferredLocale(slug);
       updateLocale(slug, this);
     },
   },
