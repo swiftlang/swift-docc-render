@@ -25,6 +25,7 @@ export default {
     imageLoadingStrategy: process.env.VUE_APP_TARGET === 'ide'
       ? ImageLoadingStrategy.eager : ImageLoadingStrategy.lazy,
     preferredColorScheme: Settings.preferredColorScheme || defaultColorScheme,
+    preferredLocale: Settings.preferredLocale,
     supportsAutoColorScheme,
     systemColorScheme: ColorScheme.light,
   },
@@ -41,6 +42,10 @@ export default {
   setPreferredColorScheme(value) {
     this.state.preferredColorScheme = value;
     Settings.preferredColorScheme = value;
+  },
+  setPreferredLocale(locale) {
+    this.state.preferredLocale = locale;
+    Settings.preferredLocale = this.state.preferredLocale;
   },
   setSystemColorScheme(value) {
     this.state.systemColorScheme = value;
