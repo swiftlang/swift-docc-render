@@ -168,6 +168,10 @@
       "start": "start of stricken text",
       "end": "end of stricken text"
     },
+    "code": {
+      "start": "start of code block",
+      "end": "end of code block"
+    },
     "skip-navigation": "Skip Navigation"
   },
   "select-language": "Select the language for this page",
