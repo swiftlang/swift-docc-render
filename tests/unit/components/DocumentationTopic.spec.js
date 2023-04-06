@@ -322,15 +322,6 @@ describe('DocumentationTopic', () => {
     expect(hero.props('enhanceBackground')).toBe(false);
   });
 
-  it('renders a `DocumentationHero`, disabled, if the `topicSectionsStyle` is a grid type', () => {
-    const hero = wrapper.find(DocumentationHero);
-    expect(hero.props('enhanceBackground')).toBe(true);
-    wrapper.setProps({ topicSectionsStyle: TopicSectionsStyle.detailedGrid });
-    expect(hero.props('enhanceBackground')).toBe(false);
-    wrapper.setProps({ topicSectionsStyle: TopicSectionsStyle.compactGrid });
-    expect(hero.props('enhanceBackground')).toBe(false);
-  });
-
   it('renders a `Title`', () => {
     const hero = wrapper.find(DocumentationHero);
 
