@@ -13,6 +13,7 @@
     isFullscreen
     :showClose="false"
     :visible.sync="isVisible"
+    backdropBackgroundColorOverride="rgba(0, 0, 0, 0.7)"
   >
     <div
       class="quick-navigation"
@@ -23,15 +24,19 @@
     >
       <div
         class="quick-navigation__container"
+        :class="{ 'focus' : focusedInput }"
       >
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          placeholder="filter.search-symbols"
+          :placeholder="$t('filter.search-symbols', { technology })"
           focusInputWhenCreated
           focusInputWhenEmpty
+          preventBorderStyle
           selectInputOnFocus
           @input="focusedIndex = 0"
+          @focus="focusedInput = true"
+          @blur="focusedInput = false"
         >
           <template #icon>
             <div
@@ -166,6 +171,7 @@ export default {
     return {
       debouncedInput: '',
       userInput: '',
+      focusedInput: false,
       cachedSymbolResults: {},
       previewIsLoadingSlowly: false,
     };
@@ -182,6 +188,10 @@ export default {
     previewEnabled: {
       type: Boolean,
       default: false,
+    },
+    technology: {
+      type: String,
+      required: true,
     },
   },
   computed: {
@@ -427,28 +437,38 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $base-border-width: 1px;
+$input-horizontal-spacing: rem(15px);
 
 .quick-navigation {
+  --input-border-color: var(--color-grid);
+
   input[type="text"] {
     @include font-styles(body-large);
   }
+
+  &__filter {
+    --input-horizontal-spacing: #{$input-horizontal-spacing};
+  }
+
+  /deep/ .filter__wrapper {
+    background-color: var(--color-fill-secondary);
+  }
+
   &__container {
-    background-color: var(--color-fill);
-    border: solid $base-border-width var(--color-fill-gray);
+    background-color: var(--color-fill-secondary);
+    border: solid $base-border-width var(--input-border-color);
     border-radius: $small-border-radius;
     margin: 0 rem(16px);
     > * {
       --input-text: var(--color-figure-gray-secondary);
     }
-  }
-  &__filter{
-    --input-border-color: var(--color-fill);
-  }
-  &__filter.focus + &__match-list {
-    border-top: 0;
+
+    &.focus {
+      @include focus-shadow-form-element();
+    }
   }
   &__magnifier-icon-container {
-    width: rem(18px);
+    width: rem(17px);
     > * {
       width: 100%;
     }
@@ -459,7 +479,7 @@ $base-border-width: 1px;
   }
   &__match-list {
     display: flex;
-    overflow: scroll;
+    overflow: auto;
     max-height: rem(450px);
     height: 0px;
 
@@ -468,7 +488,7 @@ $base-border-width: 1px;
     }
     &.active {
       height: auto;
-      border-top: 1px solid var(--color-fill-gray);
+      border-top: 1px solid var(--input-border-color);
     }
     .no-results {
       margin: rem(15px) auto;

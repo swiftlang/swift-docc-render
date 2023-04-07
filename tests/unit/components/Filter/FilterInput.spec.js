@@ -103,6 +103,25 @@ describe('FilterInput', () => {
     expect(filterLabel.attributes('for')).toBe(FilterInputId);
   });
 
+  it('renders focus class if showSuggestedTags is true and border style is not prevented', () => {
+    wrapper.setData({ showSuggestedTags: true });
+    wrapper.setProps({ preventBorderStyle: false });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(true);
+  });
+
+  it('does not render focus class if border style is not prevented', () => {
+    wrapper.setProps({ preventBorderStyle: true });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(false);
+  });
+
+  it('does not render focus class if showSuggestedTags is false', () => {
+    wrapper.setData({ showSuggestedTags: false });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(false);
+  });
+
   it('renders an `input` element', async () => {
     expect(input.exists()).toBe(true);
     expect(input.attributes('placeholder')).toBe(propsData.placeholder);
@@ -154,6 +173,7 @@ describe('FilterInput', () => {
     wrapper.find('.filter__filter-button').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['show-suggested-tags']).toBeTruthy();
+    expect(wrapper.emitted('focus')).toBeTruthy();
   });
 
   it('renders a filter button with an icon slot', () => {
@@ -584,6 +604,7 @@ describe('FilterInput', () => {
       await wrapper.vm.$nextTick();
       expect(suggestedTags.exists()).toBe(false);
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
+      expect(wrapper.emitted('blur')).toBeTruthy();
     });
 
     it('does not hide the tags, if `:preventedBlur=true`', async () => {
