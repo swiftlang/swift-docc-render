@@ -419,7 +419,6 @@ export default {
     enhanceBackground: ({
       symbolKind,
       disableHeroBackground,
-      topicSectionsStyle,
       enableMinimized,
     }) => {
       if (
@@ -427,9 +426,6 @@ export default {
         disableHeroBackground
         // or minimized view is enabled
         || enableMinimized
-        // or the topicSectionsStyle is a `grid` type
-        || topicSectionsStyle === TopicSectionsStyle.compactGrid
-        || topicSectionsStyle === TopicSectionsStyle.detailedGrid
       ) {
         return false;
       }
