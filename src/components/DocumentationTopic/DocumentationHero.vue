@@ -43,6 +43,7 @@ import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap, HeroColors } from 'docc-render/constants/HeroColors';
 import { TopicRole } from 'docc-render/constants/roles';
+import { StandardColors } from 'docc-render/constants/StandardColors';
 
 export default {
   name: 'DocumentationHero',
@@ -75,6 +76,7 @@ export default {
     standardColorIdentifier: {
       type: String,
       required: false,
+      validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
   },
   computed: {

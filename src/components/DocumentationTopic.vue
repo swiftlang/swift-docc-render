@@ -157,6 +157,7 @@ import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
+import { StandardColors } from 'docc-render/constants/StandardColors';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -358,6 +359,7 @@ export default {
     standardColorIdentifier: {
       type: String,
       required: false,
+      validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
   },
   provide() {
