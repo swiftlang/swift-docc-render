@@ -132,6 +132,10 @@ export default {
 ul {
   list-style-type: none;
   margin: 0;
+
+  li:first-child .base-link {
+    margin-top: 0;
+  }
 }
 
 .parent-item .base-link {
@@ -142,7 +146,7 @@ ul {
   color: var(--color-figure-gray-secondary);
   @include font-styles(body-reduced-tight);
   display: inline-block;
-  margin-bottom: 5px;
+  margin: 5px 0;
   transition: color 0.15s ease-in;
   max-width: 100%;
 }
