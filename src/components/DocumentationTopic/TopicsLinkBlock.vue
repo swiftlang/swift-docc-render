@@ -20,7 +20,7 @@
       <TopicLinkBlockIcon
         v-if="topic.role && !change"
         :role="topic.role"
-        :imageOverride="references[iconOverride]"
+        :imageOverride="store.state.references[iconOverride]"
       />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
@@ -103,7 +103,7 @@ export default {
     RequirementMetadata,
     ConditionalConstraints,
   },
-  inject: ['store', 'references'],
+  inject: ['store'],
   mixins: [getAPIChanges, APIChangesMultipleLines],
   constants: {
     ReferenceType,

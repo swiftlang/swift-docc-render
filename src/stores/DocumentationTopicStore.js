@@ -21,9 +21,11 @@ export default {
     contentWidth: 0,
     ...changesState,
     ...pageSectionsState,
+    references: [],
   },
   reset() {
     this.state.preferredLanguage = Settings.preferredLanguage;
+    this.state.references = [];
     this.resetApiChanges();
   },
   setPreferredLanguage(language) {
@@ -32,6 +34,9 @@ export default {
   },
   setContentWidth(width) {
     this.state.contentWidth = width;
+  },
+  setReferences(references) {
+    this.state.references = references;
   },
   ...changesActions,
   ...pageSectionsActions,

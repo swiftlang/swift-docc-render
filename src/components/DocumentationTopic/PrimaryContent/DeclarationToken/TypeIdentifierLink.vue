@@ -14,16 +14,10 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 export default {
   name: 'TypeIdentifierLink',
-  inject: {
-    references: {
-      default() {
-        return {};
-      },
-    },
-  },
+  inject: ['store'],
   render(createElement) {
     const klass = 'type-identifier-link';
-    const reference = this.references[this.identifier];
+    const reference = this.store.state.references[this.identifier];
     // internal and external link
     if (reference && reference.url) {
       return createElement(Reference, {

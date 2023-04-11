@@ -64,13 +64,7 @@ import TopicsLinkBlock from './TopicsLinkBlock.vue';
 
 export default {
   name: 'TopicsTable',
-  inject: {
-    references: {
-      default() {
-        return {};
-      },
-    },
-  },
+  inject: ['store'],
   components: {
     TopicsLinkCardGrid,
     WordBreak,
@@ -111,6 +105,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     shouldRenderList: ({ topicStyle }) => topicStyle === TopicSectionsStyle.list,
     sectionsWithTopics() {
       return this.sections.map(section => ({

@@ -32,13 +32,7 @@ import RelationshipsList from './RelationshipsList.vue';
 
 export default {
   name: 'Relationships',
-  inject: {
-    references: {
-      default() {
-        return {};
-      },
-    },
-  },
+  inject: ['store'],
   components: {
     ContentTable,
     List: RelationshipsList,
@@ -51,6 +45,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     contentSectionData: () => MainContentSectionAnchors.relationships,
     sectionsWithSymbols() {
       return this.sections.map(section => ({

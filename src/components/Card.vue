@@ -75,10 +75,9 @@ export default {
   constants: {
     CardSize,
   },
-  inject: {
-    references: { default: () => ({}) },
-  },
+  inject: ['store'],
   computed: {
+    references: ({ store }) => store.state.references,
     titleId: ({ _uid }) => `card_title_${_uid}`,
     contentId: ({ _uid }) => `card_content_${_uid}`,
     eyebrowId: ({ _uid }) => `card_eyebrow_${_uid}`,

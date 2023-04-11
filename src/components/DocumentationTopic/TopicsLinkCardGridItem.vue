@@ -52,7 +52,7 @@ export default {
     Card,
     ContentNode: () => import('docc-render/components/ContentNode.vue'),
   },
-  inject: ['references'],
+  inject: ['store'],
   props: {
     item: {
       type: Object,
@@ -64,6 +64,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     imageReferences: ({ item }) => (item.images || []).reduce((all, current) => {
       // eslint-disable-next-line no-param-reassign
       all[current.type] = current.identifier;

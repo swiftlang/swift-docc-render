@@ -468,14 +468,12 @@ export default {
     // Dynamically map each content item and any children to their
     // corresponding components, and wrap the whole tree in a <div>
     return createElement(this.tag, { class: 'content' }, (
-      this.content.map(renderNode(createElement, this.references), this)
+      this.content.map(renderNode(createElement, this.store.state.references), this)
     ));
   },
   inject: {
-    references: {
-      default() {
-        return {};
-      },
+    store: {
+      default: () => ({ state: {} }),
     },
   },
   props: {
