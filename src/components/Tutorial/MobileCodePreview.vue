@@ -61,7 +61,6 @@ import CodeTheme from './CodeTheme.vue';
 export default {
   name: 'MobileCodePreview',
   inject: [
-    'references',
     'isTargetIDE',
     'store',
   ],
@@ -80,6 +79,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     codeProps() {
       return this.references[this.code];
     },
