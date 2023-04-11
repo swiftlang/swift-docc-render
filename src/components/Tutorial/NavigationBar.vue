@@ -88,7 +88,7 @@ export default {
     ChevronIcon,
   },
   mixins: [scrollToElement],
-  inject: ['store', 'references'],
+  inject: ['store'],
   props: {
     chapters: {
       type: Array,
@@ -125,6 +125,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     currentProject() {
       return this.chapters
         // collect all the projects for all the chapters

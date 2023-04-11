@@ -103,7 +103,7 @@ export default {
     Asset,
     LinkableSection: LinkableElement,
   },
-  inject: ['references'],
+  inject: ['store'],
   props: {
     title: {
       type: String,
@@ -133,6 +133,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     backgroundImageUrl() {
       const reference = this.references[this.backgroundImage] || {};
       const { variants = [] } = reference;

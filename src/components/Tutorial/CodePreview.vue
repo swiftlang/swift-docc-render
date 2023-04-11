@@ -66,7 +66,6 @@ function scaledSize({ width, height }, scale = 1) {
 export default {
   name: 'CodePreview',
   inject: [
-    'references',
     'isTargetIDE',
     'store',
   ],
@@ -95,6 +94,7 @@ export default {
     };
   },
   computed: {
+    references: ({ store }) => store.state.references,
     currentBreakpoint() {
       return this.tutorialState.breakpoint;
     },
