@@ -473,7 +473,11 @@ export default {
   },
   inject: {
     store: {
-      default: () => ({ state: {} }),
+      default: () => ({
+        state: {
+          references: {},
+        },
+      }),
     },
   },
   props: {
