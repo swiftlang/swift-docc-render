@@ -58,7 +58,11 @@ const createWrapper = ({ propsData, ...others } = {}) => mount(TopicsLinkCardGri
     ...defaultProps,
     ...propsData,
   },
-  provide: { references },
+  provide: {
+    store: {
+      state: { references },
+    },
+  },
   ...others,
 });
 

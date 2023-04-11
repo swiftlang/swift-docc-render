@@ -18,6 +18,7 @@ describe('DocumentationTopicStore', () => {
     contentWidth: 0,
     ...ApiChangesStoreBase.state,
     ...OnThisPageSectionsStoreBase.state,
+    references: [],
   };
 
   beforeEach(() => {

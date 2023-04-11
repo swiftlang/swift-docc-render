@@ -30,7 +30,7 @@ import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 
 export default {
   name: 'LinksBlock',
-  inject: ['references'],
+  inject: ['store'],
   components: {
     // async import to overcome potential infinite loops from importing ContentNode inside.
     TopicsLinkBlock: () => import('docc-render/components/DocumentationTopic/TopicsLinkBlock.vue'),
@@ -47,6 +47,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     isListStyle: ({ blockStyle }) => blockStyle === TopicSectionsStyle.list,
     items: ({ identifiers, references }) => identifiers.reduce((all, identifier) => (
       references[identifier] ? all.concat(references[identifier]) : all

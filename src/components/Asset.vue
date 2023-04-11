@@ -33,7 +33,7 @@ export default {
   constants: {
     AssetTypes,
   },
-  inject: ['references'],
+  inject: ['store'],
   props: {
     identifier: {
       type: String,
@@ -61,6 +61,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => store.state.references,
     rawAsset() {
       return this.references[this.identifier] || {};
     },

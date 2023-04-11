@@ -58,10 +58,14 @@ describe('Relationships', () => {
   };
 
   const provide = {
-    references: {
-      [foo.identifier]: foo,
-      [bar.identifier]: bar,
-      [baz.identifier]: baz,
+    store: {
+      state: {
+        references: {
+          [foo.identifier]: foo,
+          [bar.identifier]: bar,
+          [baz.identifier]: baz,
+        },
+      },
     },
   };
 

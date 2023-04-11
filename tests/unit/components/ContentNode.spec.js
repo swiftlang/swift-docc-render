@@ -34,12 +34,19 @@ import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 
 const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
-const mountWithContent = (content = [], provide = { references: {} }) => (
-  shallowMount(ContentNode, {
-    propsData: { content },
-    provide,
-  })
-);
+const mountWithContent = ({
+  content = [],
+  provide = {
+    store: {
+      state: {
+        references: {},
+      },
+    },
+  },
+}) => shallowMount(ContentNode, {
+  propsData: { content },
+  provide,
+});
 
 const mountWithItem = (item, references) => mountWithContent([item], { references });
 
