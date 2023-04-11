@@ -6,13 +6,14 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
-*/
+ */
 
 import Vue from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import { AppTopID } from '@/constants/AppTopID';
 import WordBreak from '@/components/WordBreak.vue';
+import { TopicRole } from '@/constants/roles';
 import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
@@ -75,8 +76,9 @@ const $route = {
   },
 };
 
-const createWrapper = () => {
+const createWrapper = (propsData = {}) => {
   wrapper = shallowMount(OnThisPageNav, {
+    propsData,
     provide: {
       store,
     },
@@ -114,7 +116,8 @@ describe('OnThisPageNav', () => {
     // assert second parent
     const secondParent = parents.at(1);
     expect(secondParent.classes()).toContain('active');
-    expect(secondParent.find(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[1].anchor}`);
+    expect(secondParent.find(RouterLinkStub).props('to'))
+      .toEqual(`?language=objc#${sections[1].anchor}`);
     expect(secondParent.find(WordBreak).text()).toBe(sections[1].title);
     // assert "children" items
     const children = wrapper.findAll('.child-item');
@@ -127,8 +130,20 @@ describe('OnThisPageNav', () => {
     // assert third parent
     const thirdParent = parents.at(2);
     expect(thirdParent.classes()).not.toContain('active');
-    expect(thirdParent.find(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[3].anchor}`);
+    expect(thirdParent.find(RouterLinkStub).props('to'))
+      .toEqual(`?language=objc#${sections[3].anchor}`);
     expect(thirdParent.find('.children').exists()).toBe(false);
+  });
+
+  it('uses a `span` instead of a `WordBreak`, if an `article` or `collection`', () => {
+    createWrapper({
+      role: TopicRole.article,
+    });
+    expect(wrapper.find('.base-link span').text()).toEqual(sections[0].title);
+    expect(wrapper.find(WordBreak).exists()).toBe(false);
+    wrapper.setProps({ role: TopicRole.collection });
+    expect(wrapper.find(WordBreak).exists()).toBe(false);
+    expect(wrapper.find('.base-link span').text()).toEqual(sections[0].title);
   });
 
   it('sets the first item as active, if at the top', async () => {

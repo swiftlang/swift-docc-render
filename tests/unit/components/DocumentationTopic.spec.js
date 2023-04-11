@@ -870,7 +870,9 @@ describe('DocumentationTopic', () => {
         onThisPageSections: [{ anchor: 'foo' }, { anchor: 'bar' }, { anchor: 'baz' }],
       },
     });
-    expect(wrapper.find(OnThisPageNav).exists()).toBe(true);
+    expect(wrapper.find(OnThisPageNav).props()).toEqual({
+      role: propsData.role,
+    });
   });
 
   it('hides the `OnThisPageStickyContainer`, if the store.contentWidth is below a threshold', () => {

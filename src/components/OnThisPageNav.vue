@@ -20,8 +20,9 @@
           class="base-link"
           @click.native="handleFocusAndScroll(item.anchor)"
         >
-          <WordBreak v-if="item.i18n">{{ $t(item.title) }}</WordBreak>
-          <WordBreak v-else>{{ item.title }}</WordBreak>
+          <component :is="wordWrapComponent">
+            {{ item.i18n ? $t(item.title) : item.title }}
+          </component>
         </router-link>
       </li>
     </ul>
@@ -34,11 +35,18 @@ import { waitFrames } from 'docc-render/utils/loading';
 import ScrollToElement from 'docc-render/mixins/scrollToElement';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import { TopicRole } from '@/constants/roles';
 
 export default {
   name: 'OnThisPageNav',
   components: { WordBreak },
   mixins: [ScrollToElement],
+  props: {
+    role: {
+      type: String,
+      required: false,
+    },
+  },
   inject: {
     store: {
       default() {
@@ -54,6 +62,13 @@ export default {
       url: buildUrl(`#${item.anchor}`, $route.query),
     })),
     currentPageAnchor: ({ store }) => store.state.currentPageAnchor,
+    wordWrapComponent({ role }) {
+      // Articles and Collection pages normally dont need special wrapping for their titles.
+      if (role === TopicRole.collection || role === TopicRole.article) {
+        return 'span';
+      }
+      return 'WordBreak';
+    },
   },
   async mounted() {
     window.addEventListener('scroll', this.onScroll, false);

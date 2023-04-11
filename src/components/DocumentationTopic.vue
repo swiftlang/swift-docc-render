@@ -129,7 +129,7 @@
         </div>
         <template v-if="enableOnThisPageNav">
           <OnThisPageStickyContainer v-show="isOnThisPageNavVisible">
-            <OnThisPageNav v-if="topicState.onThisPageSections.length > 2" />
+            <OnThisPageNav v-if="topicState.onThisPageSections.length > 2" :role="role" />
           </OnThisPageStickyContainer>
         </template>
       </div>
