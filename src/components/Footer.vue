@@ -22,13 +22,15 @@
 <script>
 import ColorSchemeToggle from 'docc-render/components/ColorSchemeToggle.vue';
 import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
-import { enablei18n } from 'theme/lang/index.js';
 
 export default {
   name: 'Footer',
   components: { ColorSchemeToggle, LocaleSelector },
-  computed: {
-    enablei18n: () => enablei18n,
+  props: {
+    enablei18n: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
