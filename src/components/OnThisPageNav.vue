@@ -35,7 +35,7 @@ import { waitFrames } from 'docc-render/utils/loading';
 import ScrollToElement from 'docc-render/mixins/scrollToElement';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import WordBreak from 'docc-render/components/WordBreak.vue';
-import { TopicRole } from '@/constants/roles';
+import { TopicRole } from 'docc-render/constants/roles';
 
 export default {
   name: 'OnThisPageNav',
