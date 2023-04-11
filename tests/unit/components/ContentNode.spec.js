@@ -34,7 +34,7 @@ import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 
 const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
-const mountWithContent = ({
+const mountWithContent = (
   content = [],
   provide = {
     store: {
@@ -43,17 +43,15 @@ const mountWithContent = ({
       },
     },
   },
-}) => shallowMount(ContentNode, {
+) => shallowMount(ContentNode, {
   propsData: { content },
   provide,
 });
 
 const mountWithItem = (item, references) => mountWithContent([item], {
-  provide: {
-    store: {
-      state: {
-        references,
-      },
+  store: {
+    state: {
+      references,
     },
   },
 });
@@ -85,7 +83,6 @@ describe('ContentNode', () => {
           },
         ],
       });
-
       const aside = wrapper.find('.content').find(Aside);
       expect(aside.exists()).toBe(true);
       expect(aside.props('kind')).toBe('note');
