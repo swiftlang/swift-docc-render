@@ -48,7 +48,15 @@ const mountWithContent = ({
   provide,
 });
 
-const mountWithItem = (item, references) => mountWithContent([item], { references });
+const mountWithItem = (item, references) => mountWithContent([item], {
+  provide: {
+    store: {
+      state: {
+        references,
+      },
+    },
+  },
+});
 
 describe('ContentNode', () => {
   it('renders a div.content wrapper', () => {
