@@ -6,7 +6,7 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
 import Vue from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
