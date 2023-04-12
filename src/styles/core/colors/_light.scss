@@ -196,4 +196,12 @@
   --color-card-eyebrow: var(--color-figure-gray-secondary-alt);
   --color-card-shadow: #{change-color(dark-color(fill), $alpha: 0.04)};
   --color-link-block-card-border: #{change-color(dark-color(fill), $alpha: 0.04)};
+
+  --color-standard-red: #8B0000;
+  --color-standard-orange: #8B4000;
+  --color-standard-yellow: #8F7200;
+  --color-standard-blue: #002D75;
+  --color-standard-green: #023B2D;
+  --color-standard-purple: #512B55;
+  --color-standard-gray: #{dark-color(fill-tertiary)};
 }

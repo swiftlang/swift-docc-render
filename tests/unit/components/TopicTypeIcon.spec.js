@@ -41,7 +41,7 @@ describe('TopicTypeIcon', () => {
     expect(iconComponent.props()).toMatchObject(bindings);
     if (color) {
       // we cannot assert on component, because JSDOM does not work with custom CSS vars
-      expect(wrapper.vm.styles).toHaveProperty('color', `var(--color-type-icon-${color})`);
+      expect(wrapper.vm.styles).toHaveProperty('--icon-color', `var(--color-type-icon-${color})`);
     }
   });
 
@@ -52,7 +52,7 @@ describe('TopicTypeIcon', () => {
         withColors: false,
       },
     });
-    expect(wrapper.vm.styles).not.toHaveProperty('color');
+    expect(wrapper.vm.styles).not.toHaveProperty('--icon-color');
   });
 
   it('renders an icon override', () => {
