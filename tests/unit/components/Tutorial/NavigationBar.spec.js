@@ -15,10 +15,7 @@ import {
 import NavigationBar from 'docc-render/components/Tutorial/NavigationBar.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
-import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import { flushPromises } from '../../../../test-utils';
-
-const { BreakpointName } = BreakpointEmitter.constants;
 
 jest.mock('docc-render/mixins/scrollToElement');
 
