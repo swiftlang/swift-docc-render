@@ -119,8 +119,8 @@
     "add-tag": "Add tag",
     "tag-select-remove": "Tag. Select to remove from list.",
     "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
-    "containing-symbols": "containing one symbol | containing {number} symbols",
-    "symbols-inside": "{number} of {total} symbols inside",
+    "siblings-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings}",
+    "parent-label": "@:filter.siblings-label containing one symbol | @:filter.siblings-label containing {number-parent} symbols",
     "reset-filter": "Reset Filter"
   },
   "navigator": {

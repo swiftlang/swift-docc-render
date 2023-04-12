@@ -118,8 +118,8 @@
     "add-tag": "添加标签",
     "tag-select-remove": "标签。选择以从列表中移除。",
     "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
-    "containing-symbols": "包含 1 个符号 | 包含 {number} 个符号",
-    "symbols-inside": "内含 {number} 个符号（共 {total} 个）",
+    "siblings-label": "内含 {number-siblings} 个符号（共 {total-siblings} 个）{parent-siblings}",
+    "parent-label": "@:filter.siblings-label 包含 1 个符号 | @:filter.siblings-label 包含 {number-parent} 个符号",
     "reset-filter": "还原过滤条件"
   },
   "navigator": {
