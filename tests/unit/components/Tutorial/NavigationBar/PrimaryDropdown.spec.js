@@ -128,7 +128,9 @@ describe('Primary Dropdown', () => {
         ReferenceUrlProvider,
       },
       provide: {
-        references,
+        store: {
+          state: { references },
+        },
       },
     });
 

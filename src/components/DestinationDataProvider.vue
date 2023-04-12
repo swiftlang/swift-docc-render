@@ -30,8 +30,12 @@ export default {
     },
   },
   inject: {
-    references: {
-      default: () => ({}),
+    store: {
+      default: () => ({
+        state: {
+          references: {},
+        },
+      }),
     },
     isTargetIDE: {
       default: () => false,
@@ -58,7 +62,7 @@ export default {
      * @returns {boolean}
      */
     shouldAppendOpensInBrowser: ({ isExternal, isTargetIDE }) => isExternal && isTargetIDE,
-
+    references: ({ store }) => (store.state.references),
     reference: ({ references, destination }) => (references[destination.identifier] || {}),
 
     linkUrl: ({
