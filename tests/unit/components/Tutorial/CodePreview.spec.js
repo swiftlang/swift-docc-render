@@ -27,50 +27,60 @@ describe('CodePreview', () => {
     preview: 'mypreview',
     isRuntimePreviewVisible: true,
   };
+
+  const references = {
+    [propsData.code]: {
+      content,
+      fileName,
+      highlights,
+      syntax,
+    },
+    [propsData.preview]: {
+      variants: [
+        {
+          size: {
+            width: 600,
+            height: 1200,
+          },
+        },
+      ],
+    },
+  };
+
+  // const referencesWithVariant = {
+  //   ...references,
+  //   [propsData.preview]: {
+  //     variants,
+  //   },
+  // };
+
   const provide = {
     isTargetIDE: false,
-    references: {
-      [propsData.code]: {
-        content,
-        fileName,
-        highlights,
-        syntax,
-      },
-      [propsData.preview]: {
-        variants: [
-          {
-            size: {
-              width: 600,
-              height: 1200,
-            },
-          },
-        ],
-      },
-    },
     store: TopicStore,
   };
   const slots = {
     default: '<p>foo</p>',
   };
 
-  const mountWithVariant = variants => (
-    shallowMount(CodePreview, {
-      propsData,
-      provide: {
-        ...provide,
-        references: {
-          ...provide.references,
-          [propsData.preview]: {
-            variants,
-          },
-        },
-      },
-      slots,
-    })
-  );
+  // const mountWithVariant = variants => (
+  //   shallowMount(CodePreview, {
+  //     propsData,
+  //     provide: {
+  //       ...provide,
+  //       references: {
+  //         ...provide.references,
+  //         [propsData.preview]: {
+  //           variants,
+  //         },
+  //       },
+  //     },
+  //     slots,
+  //   })
+  // );
 
   beforeEach(() => {
     TopicStore.reset();
+    TopicStore.setReferences(references);
     wrapper = shallowMount(CodePreview, {
       propsData,
       provide,
@@ -137,8 +147,8 @@ describe('CodePreview', () => {
   });
 
   it('renders an image or video with a fallback size if size is not defined or it is empty', () => {
-    const variantSizeEmpty = [
-      {
+    const variantSizeEmpty = {
+      [propsData.preview]: {
         url: 'video.mp4',
         traits: [
           '1x',
@@ -146,24 +156,44 @@ describe('CodePreview', () => {
         ],
         size: {},
       },
-    ];
+    };
 
-    wrapper = mountWithVariant(variantSizeEmpty);
+    TopicStore.setReferences({
+      ...references,
+      variantSizeEmpty,
+    });
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide,
+      slots,
+    });
+    // wrapper = mountWithVariant(variantSizeEmpty);
 
     let runtimePreview = wrapper.find('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 300px;');
 
-    const variantNoSize = [
-      {
+    const variantNoSize = {
+      [propsData.preview]: {
         url: 'video.mp4',
         traits: [
           '1x',
           'light',
         ],
       },
-    ];
+    };
 
-    wrapper = mountWithVariant(variantNoSize);
+    TopicStore.setReferences({
+      ...references,
+      variantNoSize,
+    });
+
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide,
+      slots,
+    });
+
+    // wrapper = mountWithVariant(variantNoSize);
 
     runtimePreview = wrapper.find('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 300px;');
@@ -178,7 +208,17 @@ describe('CodePreview', () => {
       },
     ];
 
-    wrapper = mountWithVariant(variantWithOnlyWidth);
+    TopicStore.setReferences({
+      ...references,
+      variantWithOnlyWidth,
+    });
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide,
+      slots,
+    });
+
+    // wrapper = mountWithVariant(variantWithOnlyWidth);
 
     const runtimePreview = wrapper.find('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 400px;');
@@ -193,7 +233,17 @@ describe('CodePreview', () => {
       },
     ];
 
-    wrapper = mountWithVariant(variantWithOnlyHeight);
+    TopicStore.setReferences({
+      ...references,
+      variantWithOnlyHeight,
+    });
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide,
+      slots,
+    });
+
+    // wrapper = mountWithVariant(variantWithOnlyHeight);
 
     const runtimePreview = wrapper.find('.runtime-preview');
     // no height is defined at all
@@ -258,7 +308,17 @@ describe('CodePreview', () => {
         },
       ];
 
-      wrapper = mountWithVariant(variantSmallImage);
+      TopicStore.setReferences({
+        ...references,
+        variantSmallImage,
+      });
+      wrapper = shallowMount(CodePreview, {
+        propsData,
+        provide,
+        slots,
+      });
+
+      // wrapper = mountWithVariant(variantSmallImage);
     });
 
     describe('in breakpoint other than "medium"', () => {

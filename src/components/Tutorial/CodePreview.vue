@@ -94,7 +94,7 @@ export default {
     };
   },
   computed: {
-    references: ({ store }) => store.state.references,
+    references: ({ tutorialState }) => tutorialState.references,
     currentBreakpoint() {
       return this.tutorialState.breakpoint;
     },

@@ -21,11 +21,11 @@ export default {
     contentWidth: 0,
     ...changesState,
     ...pageSectionsState,
-    references: [],
+    references: {},
   },
   reset() {
     this.state.preferredLanguage = Settings.preferredLanguage;
-    this.state.references = [];
+    this.state.references = {};
     this.resetApiChanges();
   },
   setPreferredLanguage(language) {
