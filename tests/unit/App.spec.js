@@ -25,18 +25,13 @@ jest.mock('docc-render/utils/theme-settings', () => ({
 
 let App;
 let fetchThemeSettings = jest.fn();
+let getSetting = jest.fn(() => {});
 
 const matchMedia = {
   matches: false,
   addListener: jest.fn(),
   removeListener: jest.fn(),
 };
-
-const mockEnablei18n = jest.fn().mockReturnValue(false);
-
-jest.mock('theme/lang/index.js', () => ({
-  get enablei18n() { return mockEnablei18n(); },
-}));
 
 const setPropertySpy = jest.spyOn(document.body.style, 'setProperty');
 const removePropertySpy = jest.spyOn(document.body.style, 'removeProperty');
@@ -138,7 +133,8 @@ describe('App', () => {
   });
 
   it('renders SuggestLang if enablei18n is true', async () => {
-    mockEnablei18n.mockReturnValueOnce(true);
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
 
