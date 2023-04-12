@@ -105,13 +105,7 @@ describe('NavigationBar', () => {
       identifierUrl: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App',
     },
     provide: {
-      store: {
-        state: {
-          linkableSections: [],
-          breakpoint: BreakpointName.large,
-          references,
-        },
-      },
+      store: TopicStore,
     },
     mocks,
     stubs: {
@@ -122,6 +116,7 @@ describe('NavigationBar', () => {
   };
 
   beforeEach(() => {
+    TopicStore.setReferences(references);
     jest.clearAllMocks();
   });
 
