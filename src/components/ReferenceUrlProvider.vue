@@ -14,8 +14,12 @@ import { buildUrl } from 'docc-render/utils/url-helper';
 export default {
   name: 'ReferenceUrlProvider',
   inject: {
-    references: {
-      default: () => ({}),
+    store: {
+      default: () => ({
+        state: {
+          references: {},
+        },
+      }),
     },
   },
   props: {
@@ -25,6 +29,7 @@ export default {
     },
   },
   computed: {
+    references: ({ store }) => (store.state.references),
     resolvedReference: ({ references, reference }) => (references[reference] || {}),
     url: ({ resolvedReference }) => resolvedReference.url,
     title: ({ resolvedReference }) => resolvedReference.title,

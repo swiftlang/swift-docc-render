@@ -95,7 +95,9 @@ describe('MobileDropdown', () => {
       },
       stubs: { 'router-link': RouterLinkStub, ReferenceUrlProvider },
       provide: {
-        references,
+        store: {
+          state: { references },
+        },
       },
     });
   });

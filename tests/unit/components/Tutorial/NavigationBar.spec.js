@@ -15,7 +15,10 @@ import {
 import NavigationBar from 'docc-render/components/Tutorial/NavigationBar.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
+import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import { flushPromises } from '../../../../test-utils';
+
+const { BreakpointName } = BreakpointEmitter.constants;
 
 jest.mock('docc-render/mixins/scrollToElement');
 
@@ -102,8 +105,13 @@ describe('NavigationBar', () => {
       identifierUrl: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App',
     },
     provide: {
-      store: TopicStore,
-      references,
+      store: {
+        state: {
+          linkableSections: [],
+          breakpoint: BreakpointName.large,
+          references,
+        },
+      },
     },
     mocks,
     stubs: {
@@ -166,6 +174,7 @@ describe('NavigationBar', () => {
         title: 'tutorials.assessment.check-your-understanding',
         depth: 0,
       });
+      TopicStore.setReferences(references);
 
       wrapper = shallowMount(NavigationBar, mountOptions);
     });

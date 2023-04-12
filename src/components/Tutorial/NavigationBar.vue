@@ -125,7 +125,7 @@ export default {
     },
   },
   computed: {
-    references: ({ tutorialState }) => tutorialState.references,
+    references: ({ store }) => store.state.references,
     currentProject() {
       return this.chapters
         // collect all the projects for all the chapters
