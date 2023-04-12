@@ -615,14 +615,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include font-styles(nav-menu);
   flex: 1 1 auto;
   display: flex;
-  // padding centers it vertically for large resolutions
-  padding-top: 10px;
   min-width: 0;
 
   @include nav-in-breakpoint {
     @include font-styles(nav-menu-collapsible);
-    // it is collapsed, so we no longer need the offset
-    padding-top: 0;
     grid-area: menu;
   }
 }
