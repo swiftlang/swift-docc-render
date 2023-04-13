@@ -70,7 +70,7 @@ describe('nav', () => {
     expect(title.exists()).toBe(true);
     expect(title.props('to')).toEqual('/tutorials/swiftui?context=foo');
 
-    expect(title.text()).toBe('SwiftUI tutorials.title');
+    expect(title.text()).toMatch(/SwiftUI\s+tutorials.title/);
   });
 
   it('renders TutorialsNavigation and passes all sections to it', () => {

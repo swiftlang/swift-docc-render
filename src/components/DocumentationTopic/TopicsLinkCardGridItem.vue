@@ -89,11 +89,11 @@ export default {
     max-width: none;
   }
 
-  /deep/ .card-cover {
+  :deep(.card-cover) {
     aspect-ratio: 16/9;
   }
 
-  /deep/ .card-cover-wrap {
+  :deep(.card-cover-wrap) {
     border: 1px solid var(--color-link-block-card-border);
   }
 

@@ -682,7 +682,7 @@ export default {
   @include dynamic-content-container;
 }
 
-/deep/ {
+:deep() {
   .minimized-container {
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;

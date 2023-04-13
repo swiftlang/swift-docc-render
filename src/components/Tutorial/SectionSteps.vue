@@ -298,7 +298,7 @@ export default {
   color: var(--colors-text, var(--color-text));
 
   // Apply a more compact styling for asides within a `@Steps` directive
-  /deep/ aside {
+  :deep(aside) {
     background: unset;
     border: unset;
     box-shadow: unset;
