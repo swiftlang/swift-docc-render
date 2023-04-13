@@ -10,7 +10,7 @@
 <template>
   <ImageAsset
     v-if="shouldUseAsset"
-    v-bind="{ variants, loading: null, shouldCalculateOptimalWidth }"
+    v-bind="{ variants, loading: null, shouldCalculateOptimalWidth, alt }"
   />
   <SVGIcon v-else :icon-url="iconUrl" :themeId="themeId" />
 </template>
@@ -36,6 +36,7 @@ export default {
   },
   computed: {
     variants: ({ imageOverride }) => (imageOverride ? imageOverride.variants : []),
+    alt: ({ imageOverride }) => imageOverride.alt,
     firstVariant: ({ variants }) => (variants[0]),
     iconUrl: ({ firstVariant }) => firstVariant && firstVariant.url,
     themeId: ({ firstVariant }) => firstVariant && firstVariant.svgID,

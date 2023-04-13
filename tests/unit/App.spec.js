@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -10,6 +10,7 @@
 
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
+import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
@@ -19,10 +20,12 @@ import { flushPromises } from '../../test-utils';
 jest.mock('docc-render/utils/theme-settings', () => ({
   fetchThemeSettings: jest.fn(),
   themeSettingsState: { theme: {} },
+  getSetting: jest.fn(() => {}),
 }));
 
 let App;
 let fetchThemeSettings = jest.fn();
+let getSetting = jest.fn(() => {});
 
 const matchMedia = {
   matches: false,
@@ -110,7 +113,7 @@ describe('App', () => {
   it('renders Skip Navigation', () => {
     const wrapper = createWrapper();
     const skipNavigation = wrapper.find('#skip-nav');
-    expect(skipNavigation.text()).toBe('Skip Navigation');
+    expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
     expect(skipNavigation.attributes('href')).toBe('#main');
   });
 
@@ -122,6 +125,16 @@ describe('App', () => {
     });
     const header = wrapper.find('.header');
     expect(header.text()).toBe('Header');
+  });
+
+  it('renders SuggestLang if enablei18n is true', async () => {
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
+
+    const wrapper = createWrapper();
+
+    const SuggestLangComponent = wrapper.find(SuggestLang);
+    expect(SuggestLangComponent.exists()).toBe(true);
   });
 
   it('renders the `#nav-sticky-anchor` between the header and the content', () => {
@@ -233,7 +246,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -246,7 +259,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();
@@ -261,7 +274,7 @@ describe('App', () => {
       wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto.value,
+          preferredColorScheme: ColorScheme.auto,
         },
       });
       await flushPromises();

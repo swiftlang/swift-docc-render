@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -18,7 +18,7 @@
               :id="SIDEBAR_HIDE_BUTTON_ID"
               class="close-card"
               :class="{ 'hide-on-large': !allowHiding }"
-              aria-label="Close documentation navigator"
+              :aria-label="$t('navigator.close-navigator')"
               @click="handleHideClick"
             >
               <SidenavIcon class="icon-inline close-icon" />
@@ -108,7 +108,7 @@ $close-icon-padding: 5px;
 .navigator-card {
   --card-vertical-spacing: #{$navigator-card-vertical-spacing};
   --card-horizontal-spacing: #{$nav-card-horizontal-spacing-large};
-  --nav-filter-horizontal-padding: 30px;
+  --nav-filter-horizontal-padding: 20px;
   --visibility-delay: 1s; // don't show spinner until this much time has passed
   display: flex;
   flex-direction: column;

@@ -37,6 +37,12 @@ const Languages = {
   shell: ['console', 'shellsession'],
   swift: [],
   xml: ['html', 'xhtml', 'rss', 'atom', 'xjb', 'xsd', 'xsl', 'plist', 'wsf', 'svg'],
+  // load more languages from the environment
+  ...(
+    process.env.VUE_APP_HLJS_LANGUAGES
+      ? Object.fromEntries(process.env.VUE_APP_HLJS_LANGUAGES.split(',').map(l => [l, []]))
+      : undefined
+  ),
 };
 
 export const CustomLanguagesSet = new Set([
@@ -84,8 +90,6 @@ async function importHighlightFileForLanguage(language) {
         languageFile = await import(
           // See bug https://github.com/webpack/webpack/issues/13865
           /* webpackChunkName: "highlight-js-[request]" */
-          // eslint-disable-next-line max-len
-          /* webpackInclude: /\/(bash|c|s?css|cpp|diff|http|java|llvm|perl|php|python|ruby|xml|javascript|json|markdown|objectivec|shell|swift)\.js$/ */
           `@/../node_modules/highlight.js/lib/languages/${file}`
         );
       }

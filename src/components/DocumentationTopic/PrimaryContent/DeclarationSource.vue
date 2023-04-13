@@ -13,10 +13,10 @@
     ref="declarationGroup"
     class="source"
     :class="{ [multipleLinesClass]: hasMultipleLines }"
-  ><code ref="code"><Token
+  ><CodeBlock ref="code"><Token
     v-for="(token, i) in formattedTokens"
     :key="i"
-    v-bind="propsFor(token)" /></code></pre>
+    v-bind="propsFor(token)" /></CodeBlock></pre>
 </template>
 
 <script>
@@ -25,6 +25,7 @@ import { hasMultipleLines } from 'docc-render/utils/multipleLines';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import Language from 'docc-render/constants/Language';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import DeclarationToken from './DeclarationToken.vue';
 
 const { TokenKind } = DeclarationToken.constants;
@@ -39,7 +40,7 @@ export default {
       multipleLinesClass,
     };
   },
-  components: { Token: DeclarationToken },
+  components: { Token: DeclarationToken, CodeBlock },
   props: {
     tokens: {
       type: Array,
@@ -200,11 +201,9 @@ $docs-declaration-source-border-width: 1px !default;
   padding: var(--code-block-style-elements-padding);
   speak: literal-punctuation;
   line-height: 25px;
-  // this mask image is not actually used for any visual effect since there is
-  // no background being used on this element—however, we need this in order to
-  // establish a new stacking context, which resolves a Safari bug where the
-  // scrollbar is not clipped by this element depending on its border-radius
-  -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
+  // we need to establish a new stacking context to resolve a Safari bug where
+  // the scrollbar is not clipped by this element depending on its border-radius
+  @include new-stacking-context;
 
   &.has-multiple-lines {
     border-radius: $border-radius;

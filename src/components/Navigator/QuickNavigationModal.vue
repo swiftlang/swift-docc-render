@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,6 +13,7 @@
     isFullscreen
     :showClose="false"
     :visible.sync="isVisible"
+    backdropBackgroundColorOverride="rgba(0, 0, 0, 0.7)"
   >
     <div
       class="quick-navigation"
@@ -23,15 +24,19 @@
     >
       <div
         class="quick-navigation__container"
+        :class="{ 'focus' : focusedInput }"
       >
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          placeholder="Search symbols"
+          :placeholder="$t('filter.search-symbols', { technology })"
           focusInputWhenCreated
           focusInputWhenEmpty
+          preventBorderStyle
           selectInputOnFocus
           @input="focusedIndex = 0"
+          @focus="focusedInput = true"
+          @blur="focusedInput = false"
         >
           <template #icon>
             <div
@@ -54,56 +59,69 @@
               No results found.
             </p>
           </div>
-          <Reference
-            v-for="(symbol, index) in filteredSymbols"
-            class="quick-navigation__reference"
-            :key="symbol.uid"
-            :url="symbol.path"
-            @click.native="closeQuickNavigationModal"
-            @focus.native="focusIndex(index)"
-          >
-            <div
-              class="quick-navigation__symbol-match"
-              ref="match"
-              role="list"
-              :class="{ 'selected' : index == focusedIndex }"
-            >
-              <div class="symbol-info">
-                <div class="symbol-name">
-                  <TopicTypeIcon
-                    class="navigator-icon"
-                    :type="symbol.type"
-                  />
-                  <div class="symbol-title">
-                    <span v-text="formatSymbolTitle(symbol.title, 0, symbol.start)" />
-                    <QuickNavigationHighlighter
-                      :text="symbol.substring"
-                      :matcherText="processedUserInput"
-                    />
-                    <span
-                      v-text="formatSymbolTitle(symbol.title, symbol.start + symbol.matchLength)"
-                    />
+          <template v-else>
+            <div class="quick-navigation__refs">
+              <Reference
+                v-for="(symbol, index) in filteredSymbols"
+                class="quick-navigation__reference"
+                :key="symbol.uid"
+                :url="symbol.path"
+                @click.native="closeQuickNavigationModal"
+                @focus.native="focusIndex(index)"
+              >
+                <div
+                  class="quick-navigation__symbol-match"
+                  ref="match"
+                  role="list"
+                  :class="{ 'selected' : index == focusedIndex }"
+                >
+                  <div class="symbol-info">
+                    <div class="symbol-name">
+                      <TopicTypeIcon
+                        class="navigator-icon"
+                        :type="symbol.type"
+                      />
+                      <div class="symbol-title">
+                        <span v-text="formatSymbolTitle(symbol.title, 0, symbol.start)" />
+                        <QuickNavigationHighlighter
+                          :text="symbol.substring"
+                          :matcherText="processedUserInput"
+                        />
+                        <span
+                          v-text="formatSymbolTitle(
+                            symbol.title,
+                            symbol.start + symbol.matchLength
+                          )"
+                        />
+                      </div>
+                    </div>
+                    <div class="symbol-path">
+                      <div
+                        v-for="(parent, index) in symbol.parents"
+                        :key="parent.title"
+                      >
+                        <span
+                          v-text="parent.title"
+                          class="parent-path"
+                        />
+                        <span
+                          v-if="index !== symbol.parents.length - 1"
+                          class="parent-path"
+                          v-text="`/`"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="symbol-path">
-                  <div
-                    v-for="(parent, index) in symbol.parents"
-                    :key="parent.title"
-                  >
-                    <span
-                      v-text="parent.title"
-                      class="parent-path"
-                    />
-                    <span
-                      v-if="index !== symbol.parents.length - 1"
-                      class="parent-path"
-                      v-text="`/`"
-                    />
-                  </div>
-                </div>
-              </div>
+              </Reference>
             </div>
-          </Reference>
+            <Preview
+              v-if="previewEnabled && previewState"
+              class="quick-navigation__preview"
+              :json="previewJSON"
+              :state="previewState"
+            />
+          </template>
         </div>
       </div>
     </div>
@@ -117,9 +135,18 @@ import GenericModal from 'docc-render/components/GenericModal.vue';
 import QuickNavigationHighlighter from 'docc-render/components/Navigator/QuickNavigationHighlighter.vue';
 import MagnifierIcon from 'theme/components/Icons/MagnifierIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import QuickNavigationPreview from 'docc-render/components/Navigator/QuickNavigationPreview.vue';
 import debounce from 'docc-render/utils/debounce';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
+import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
+import { fetchDataForPreview } from 'docc-render/utils/data';
+
+const { PreviewState } = QuickNavigationPreview.constants;
+
+const ABORT_ERROR_NAME = 'AbortError';
+const MAX_RESULTS = 20;
+const SLOW_LOADING_DELAY = 1000; // 1 second in milliseconds
 
 export default {
   name: 'QuickNavigationModal',
@@ -130,14 +157,23 @@ export default {
     TopicTypeIcon,
     QuickNavigationHighlighter,
     Reference,
+    Preview: QuickNavigationPreview,
   },
   mixins: [
     keyboardNavigation,
   ],
+  created() {
+    this.abortController = null;
+    this.$cachedSymbolResults = new LRUMap(MAX_RESULTS);
+    this.loadingTimeout = null;
+  },
   data() {
     return {
       debouncedInput: '',
       userInput: '',
+      focusedInput: false,
+      cachedSymbolResults: {},
+      previewIsLoadingSlowly: false,
     };
   },
   props: {
@@ -147,6 +183,14 @@ export default {
     },
     showQuickNavigationModal: {
       type: Boolean,
+      required: true,
+    },
+    previewEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    technology: {
+      type: String,
       required: true,
     },
   },
@@ -175,7 +219,7 @@ export default {
       });
       // Filter repeated matches and return the first 20
       const uniqueMatches = [...new Map(matches.map(match => [match.path, match])).values()];
-      return orderSymbolsByPriority(uniqueMatches).slice(0, 20);
+      return orderSymbolsByPriority(uniqueMatches).slice(0, MAX_RESULTS);
     },
     isVisible: {
       get: ({ showQuickNavigationModal }) => showQuickNavigationModal,
@@ -190,10 +234,51 @@ export default {
     // Remove space-character
     processedUserInput: ({ debouncedInput }) => debouncedInput.replace(/\s/g, ''),
     totalItemsToNavigate: ({ filteredSymbols }) => filteredSymbols.length,
+    selectedSymbol: ({
+      filteredSymbols,
+      focusedIndex,
+    }) => (focusedIndex !== null ? filteredSymbols[focusedIndex] : null),
+    nextSymbol: ({
+      filteredSymbols,
+      focusedIndex,
+    }) => {
+      if (focusedIndex === null) {
+        return null;
+      }
+      let nextIndex = focusedIndex + 1;
+      if (nextIndex >= filteredSymbols.length) {
+        nextIndex = 0;
+      }
+      return filteredSymbols[nextIndex];
+    },
+    previewJSON: ({
+      cachedSymbolResults,
+      selectedSymbol,
+    }) => (selectedSymbol ? (
+      (cachedSymbolResults[selectedSymbol.uid] || {}).json
+    ) : (
+      null
+    )),
+    previewState: ({
+      cachedSymbolResults,
+      previewIsLoadingSlowly,
+      selectedSymbol,
+      // eslint-disable-next-line no-nested-ternary
+    }) => (selectedSymbol && Object.hasOwnProperty.call(cachedSymbolResults, selectedSymbol.uid) ? (
+      cachedSymbolResults[selectedSymbol.uid].success
+        ? PreviewState.success
+        : PreviewState.error
+    ) : (
+      previewIsLoadingSlowly
+        ? PreviewState.loadingSlowly
+        : PreviewState.loading
+    )),
   },
   watch: {
     userInput: 'debounceInput',
     focusedIndex: 'scrollIntoView',
+    selectedSymbol: 'fetchSelectedSymbolData',
+    $route: 'closeQuickNavigationModal',
   },
   methods: {
     closeQuickNavigationModal() {
@@ -272,6 +357,78 @@ export default {
     startingPointHook() {
       this.focusedIndex = this.totalItemsToNavigate - 1;
     },
+    async fetchSelectedSymbolData() {
+      // start a timer: if a full second has elapsed and the network request for
+      // data hasn't completed yet, indicate that the data is still loading in
+      // the actual UI — without the delay, the constant flashing of this
+      // message would be too distracting
+      this.loadingTimeout = setTimeout(() => {
+        if (this.previewState === PreviewState.loading) {
+          this.previewIsLoadingSlowly = true;
+        }
+      }, SLOW_LOADING_DELAY);
+
+      // exit early if the previwe data is already cached for this symbol as
+      // there is no additional work needed
+      if (!this.selectedSymbol || this.$cachedSymbolResults.has(this.selectedSymbol.uid)) {
+        clearTimeout(this.loadingTimeout);
+        this.previewIsLoadingSlowly = false;
+        return;
+      }
+
+      const fetchSymbolData = async (symbol) => {
+        if (!symbol || this.$cachedSymbolResults.has(symbol.uid)) {
+          return;
+        }
+
+        try {
+          // load render JSON for the selected /documentation/ page
+          const json = await fetchDataForPreview(symbol.path, {
+            signal: this.abortController.signal,
+          });
+          this.$cachedSymbolResults.set(symbol.uid, {
+            success: true,
+            json,
+          });
+        } catch (e) {
+          // errors triggered by the abort controller are safe to ignore since
+          // we are only aborting them for performance reasons and would like
+          // to later re-try them if possible
+          if (e.name !== ABORT_ERROR_NAME) {
+            this.$cachedSymbolResults.set(symbol.uid, {
+              success: false,
+            });
+          }
+        } finally {
+          // `LRUMap` is a custom object that is very similar to a builtin `Map`
+          // and since `Map` objects can't directly hook into the reactivity
+          // in Vue 2, we need to convert this object into a plain `Object` every
+          // time it is mutated to workaround this lack of reactivity
+          this.cachedSymbolResults = Object.freeze(Object.fromEntries(this.$cachedSymbolResults));
+        }
+      };
+
+      // the abort controller is useful for clients with slower networks—if it
+      // is taking a long time for page data to load, we don't want to create
+      // a bottleneck with many queued pending requests. this controller is used
+      // to cancel any pending requests that aren't for this symbol or the one
+      // immediately following it which can happen on a slow network if the
+      // user quickly scrolls through the list of results
+      if (this.abortController) {
+        this.abortController.abort();
+      }
+      this.abortController = new AbortController();
+
+      await Promise.all([
+        fetchSymbolData(this.selectedSymbol).finally(() => {
+          // the timeout for the loading message only applies to the currently
+          // selected symbol
+          clearTimeout(this.loadingTimeout);
+          this.previewIsLoadingSlowly = false;
+        }),
+        fetchSymbolData(this.nextSymbol),
+      ]);
+    },
   },
 };
 </script>
@@ -280,28 +437,38 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 $base-border-width: 1px;
+$input-horizontal-spacing: rem(15px);
 
 .quick-navigation {
+  --input-border-color: var(--color-grid);
+
   input[type="text"] {
     @include font-styles(body-large);
   }
+
+  &__filter {
+    --input-horizontal-spacing: #{$input-horizontal-spacing};
+  }
+
+  :deep(.filter__wrapper) {
+    background-color: var(--color-fill-secondary);
+  }
+
   &__container {
-    background-color: var(--color-fill);
-    border: solid $base-border-width var(--color-fill-gray);
+    background-color: var(--color-fill-secondary);
+    border: solid $base-border-width var(--input-border-color);
     border-radius: $small-border-radius;
     margin: 0 rem(16px);
     > * {
       --input-text: var(--color-figure-gray-secondary);
     }
-  }
-  &__filter{
-    --input-border-color: var(--color-fill);
-  }
-  &__filter.focus + &__match-list {
-    border-top: 0;
+
+    &.focus {
+      @include focus-shadow-form-element();
+    }
   }
   &__magnifier-icon-container {
-    width: rem(18px);
+    width: rem(17px);
     > * {
       width: 100%;
     }
@@ -311,12 +478,17 @@ $base-border-width: 1px;
     }
   }
   &__match-list {
-    overflow: scroll;
+    display: flex;
+    overflow: auto;
     max-height: rem(450px);
     height: 0px;
+
+    & > * {
+      min-width: 0;
+    }
     &.active {
       height: auto;
-      border-top: 1px solid var(--color-fill-gray);
+      border-top: 1px solid var(--input-border-color);
     }
     .no-results {
       margin: rem(15px) auto;
@@ -325,6 +497,16 @@ $base-border-width: 1px;
     .selected {
       background-color: var(--color-navigator-item-hover);
     }
+  }
+  &__refs {
+    flex: 1;
+  }
+  &__preview {
+    border-left: $base-border-width solid var(--color-grid);
+    flex: 0 0 61.8%;
+    overflow: auto;
+    position: sticky;
+    top: 0;
   }
   &__reference:hover {
     text-decoration: none;

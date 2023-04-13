@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -21,8 +21,8 @@ export default {
    * Register a section for the OnThisPage navigation
    * @param {{anchor: string, title:string, level: number}} section
    */
-  addOnThisPageSection(section) {
-    this.state.onThisPageSections.push(section);
+  addOnThisPageSection(section, { i18n = true } = {}) {
+    this.state.onThisPageSections.push({ ...section, i18n });
   },
   /**
    * Sets a section as current.

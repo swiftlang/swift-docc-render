@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -12,7 +12,7 @@
   <img
     v-if="fallbackImageSrcSet"
     class="fallback"
-    title="Image failed to load"
+    :title="$t('error.image')"
     decoding="async"
     :alt="alt"
     :srcset="fallbackImageSrcSet"
@@ -93,6 +93,11 @@ function constructAttributes(sources) {
 export default {
   name: 'ImageAsset',
   mixins: [imageAsset],
+  inject: {
+    imageLoadingStrategy: {
+      default: null,
+    },
+  },
   data: () => ({
     appState: AppStore.state,
     fallbackImageSrcSet: null,
@@ -109,10 +114,13 @@ export default {
     }) => lightVariantAttributes || darkVariantAttributes,
     darkVariantAttributes: ({ darkVariants }) => constructAttributes(darkVariants),
     lightVariantAttributes: ({ lightVariants }) => constructAttributes(lightVariants),
-    loading: ({ appState }) => appState.imageLoadingStrategy,
+    loading: ({ appState, imageLoadingStrategy }) => (
+      // use an image loading strategy, injected by a parent component, or the default app one
+      imageLoadingStrategy || appState.imageLoadingStrategy
+    ),
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
-    prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto.value,
-    prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark.value,
+    prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto,
+    prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark,
   },
   props: {
     alt: {

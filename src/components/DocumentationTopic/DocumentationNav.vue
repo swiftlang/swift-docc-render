@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -18,7 +18,7 @@
     isWideFormat
     hasFullWidthBorder
     class="documentation-nav"
-    aria-label="API Reference"
+    :aria-label="$t('api-reference')"
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint, className }" v-if="displaySidenav">
       <div :class="className">
@@ -28,7 +28,7 @@
             class="sidenav-toggle-wrapper"
           >
             <button
-              aria-label="Open documentation navigator"
+              :aria-label="$t('navigator.open-navigator')"
               :id="baseNavOpenSidenavButtonId"
               class="sidenav-toggle"
               :tabindex="isOpen ? -1 : null"
@@ -53,9 +53,9 @@
           :to="rootLink"
           class="nav-title-link"
         >
-          Documentation
+          {{ $t('documentation.title') }}
         </router-link>
-        <span v-else class="nav-title-link inactive">Documentation</span>
+        <span v-else class="nav-title-link inactive">{{ $t('documentation.title') }}</span>
       </slot>
     </template>
     <template #tray="{ closeNav }">
@@ -222,8 +222,6 @@ $sidenav-icon-padding-size: 5px;
 // overwrite the typography of menu items outside of breakpoint only
 :deep() .nav-menu {
   @include font-styles(documentation-nav);
-  // vertically align the items
-  padding-top: 0;
 
   &-settings {
     @include font-styles(nav-toggles);
@@ -275,10 +273,6 @@ $sidenav-icon-padding-size: 5px;
     // normalize the Title font with menu items
     .nav-title {
       @include font-styles(documentation-nav);
-
-      @include breakpoint(medium, $scope: nav) {
-        padding-top: 0;
-      }
 
       .nav-title-link.inactive {
         height: auto;

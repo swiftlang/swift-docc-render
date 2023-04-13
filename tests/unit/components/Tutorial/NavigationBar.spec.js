@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -74,7 +74,7 @@ describe('NavigationBar', () => {
       url: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
     },
     'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment': {
-      title: 'Check your understanding',
+      title: 'tutorials.assessment.check-your-understanding',
       reference: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
       url: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
     },
@@ -164,7 +164,7 @@ describe('NavigationBar', () => {
       });
       TopicStore.addLinkableSection({
         anchor: 'check-your-understanding',
-        title: 'Check your understanding',
+        title: 'tutorials.assessment.check-your-understanding',
         depth: 0,
       });
 
@@ -231,7 +231,7 @@ describe('NavigationBar', () => {
           },
           {
             path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
-            title: 'Check your understanding',
+            title: 'tutorials.assessment.check-your-understanding',
             depth: 0,
           },
         ],
@@ -279,7 +279,7 @@ describe('NavigationBar', () => {
       });
 
       it('returns a `sectionIndicatorText` string', () => {
-        expect(wrapper.vm.sectionIndicatorText).toBe('(2 of 3)');
+        expect(wrapper.vm.sectionIndicatorText).toBe('tutorials.section-of 2 3');
       });
     });
 
@@ -305,7 +305,7 @@ describe('NavigationBar', () => {
         },
         {
           path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
-          title: 'Check your understanding',
+          title: 'tutorials.assessment.check-your-understanding',
           depth: 0,
         },
       ]);

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -12,7 +12,7 @@ import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import BaseNavigatorCard from '@/components/Navigator/BaseNavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
-import { DynamicScroller } from 'vue-virtual-scroller';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import 'intersection-observer';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
@@ -20,11 +20,15 @@ import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/loading');
+jest.mock('docc-render/utils/theme-settings');
+
+getSetting.mockReturnValue(false);
 
 sessionStorage.get.mockImplementation((key, def) => def);
 Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
@@ -35,11 +39,8 @@ const {
   STORAGE_KEY,
   FILTER_TAGS,
   FILTER_TAGS_TO_LABELS,
-  NO_CHILDREN,
-  NO_RESULTS,
-  ERROR_FETCHING,
   ITEMS_FOUND,
-  HIDE_DEPRECATED_TAG,
+  HIDE_DEPRECATED,
 } = NavigatorCard.constants;
 
 const DynamicScrollerStub = {
@@ -49,6 +50,16 @@ const DynamicScrollerStub = {
     scrollToItem: jest.fn(),
   },
 };
+
+const DynamicScrollerItemStub = {
+  name: DynamicScrollerItem.name,
+  props: DynamicScrollerItem.props,
+  template: '<div class="dynamic-scroller-item-stub"><slot/></div>',
+  methods: {
+    updateSize: jest.fn(),
+  },
+};
+
 const root0 = {
   type: TopicTypes.collection,
   path: '/documentation/testkit',
@@ -168,6 +179,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   stubs: {
     DynamicScroller: DynamicScrollerStub,
+    DynamicScrollerItem: DynamicScrollerItemStub,
     NavigatorCardItem: {
       props: NavigatorCardItem.props,
       template: '<div><button></button></div>',
@@ -243,7 +255,7 @@ describe('NavigatorCard', () => {
       minItemSize: SIDEBAR_ITEM_SIZE,
       keyField: 'uid',
     });
-    expect(wrapper.find(DynamicScroller).attributes('aria-label')).toBe('Documentation Navigator');
+    expect(wrapper.find(DynamicScroller).attributes('aria-label')).toBe('navigator.title');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
     // assert CardItem
     const items = wrapper.findAll(NavigatorCardItem);
@@ -268,8 +280,9 @@ describe('NavigatorCard', () => {
       disabled: false,
       focusInputWhenCreated: false,
       focusInputWhenEmpty: false,
-      placeholder: 'Filter',
+      placeholder: 'filter.title',
       positionReversed: true,
+      preventBorderStyle: false,
       preventedBlur: false,
       selectedTags: [],
       shouldTruncateTags: false,
@@ -277,6 +290,9 @@ describe('NavigatorCard', () => {
         // Sample Code is missing, because no sample code in test data
         'Articles',
         'Tutorials',
+      ],
+      translatableTags: [
+        'navigator.tags.hide-deprecated',
       ],
       value: '',
       selectInputOnFocus: false,
@@ -291,6 +307,15 @@ describe('NavigatorCard', () => {
       },
     });
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
+  });
+
+  it('exposes a #filter slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        filter: '<div class="custom">Custom</div>',
+      },
+    });
+    expect(wrapper.find('.custom').text()).toBe('Custom');
   });
 
   it('focuses the current page', async () => {
@@ -453,7 +478,7 @@ describe('NavigatorCard', () => {
     await wrapper.vm.$nextTick();
     expect(scroller.props('items')).toEqual([]);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_RESULTS);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe('navigator.no-results');
   });
 
   it('renders a message updating aria-live, if no children', async () => {
@@ -465,7 +490,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const scroller = wrapper.find(DynamicScroller);
     expect(scroller.isVisible()).toBe(false);
-    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(NO_CHILDREN);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe('navigator.no-children');
   });
 
   it('renders an error message updating aria-live, when there is an error in fetching', async () => {
@@ -476,7 +501,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe(ERROR_FETCHING);
+    expect(wrapper.find('[aria-live="assertive"].no-items-wrapper').text()).toBe('navigator.error-fetching');
     expect(wrapper.find('.filter-wrapper').exists()).toBe(false);
   });
 
@@ -486,13 +511,7 @@ describe('NavigatorCard', () => {
     const unopenedItem = wrapper.findAll(NavigatorCardItem).at(2);
     unopenedItem.vm.$emit('toggle', root0Child1);
     await wrapper.vm.$nextTick();
-    let message = [children.length, ITEMS_FOUND].join(' ');
-    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
-
-    wrapper.find(FilterInput).vm.$emit('input', root0.title);
-    await wrapper.vm.$nextTick();
-    message = [1, ITEMS_FOUND].join(' ');
-    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(message);
+    expect(wrapper.find('[aria-live="polite"].visuallyhidden').text()).toBe(ITEMS_FOUND);
   });
 
   describe('toggles a child, on @toggle', () => {
@@ -1163,6 +1182,19 @@ describe('NavigatorCard', () => {
     expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
   });
 
+  it('allows hiding all available tags', async () => {
+    attachDivWithID(root0Child0.uid);
+    const wrapper = createWrapper();
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props('tags')).toHaveLength(2);
+    wrapper.setProps({
+      hideAvailableTags: true,
+    });
+    await flushPromises();
+    expect(filter.props('tags')).toEqual([]);
+  });
+
   it('allows filtering the items using Tags, opening all items, that have matches in children', async () => {
     attachDivWithID(root0Child0.uid);
     const wrapper = createWrapper();
@@ -1685,9 +1717,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // assert there are no Articles for example
-      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED_TAG]);
+      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED]);
       // apply a filter
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
       await flushPromises();
       // assert no other tags are shown now
       expect(filter.props('tags')).toEqual([]);
@@ -1806,7 +1838,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // apply a filter that matches an element
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
       await flushPromises();
       const items = wrapper.findAll(NavigatorCardItem);
       // parent
@@ -1839,7 +1871,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there is no 'Hide Deprecated' tag
-    expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED_TAG);
+    expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED);
   });
 
   describe('navigating', () => {
@@ -2002,6 +2034,20 @@ describe('NavigatorCard', () => {
         enableFocus: false,
         navigatorReferences,
       });
+    });
+
+    it('updates the size of the DynamicScrollerItem, for the previous UID item', async () => {
+      attachDivWithID(root0Child0.uid);
+      const wrapper = createWrapper();
+      await flushPromises();
+      const allItems = wrapper.findAll(NavigatorCardItem);
+      const allDynamicItems = wrapper.findAll(DynamicScrollerItemStub);
+      allItems.at(2).vm.$emit('navigate', root0Child1.uid);
+      await flushPromises();
+      expect(DynamicScrollerItemStub.methods.updateSize).toHaveBeenCalledTimes(1);
+      expect(DynamicScrollerItemStub.methods.updateSize.mock.instances[0]).toEqual(
+        allDynamicItems.at(1).vm,
+      );
     });
 
     it('allows going back/forward, relative to last opened item, ignoring foreign trees', async () => {
@@ -2173,7 +2219,7 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
     });
 
-    it('scrolls to item, if HIDE_DEPRECATED_TAG is picked', async () => {
+    it('scrolls to item, if HIDE_DEPRECATED is picked', async () => {
       attachDivWithID(root0Child0.uid);
       // simulate item is in viewport
       getChildPositionInScroller.mockReturnValueOnce(0);
@@ -2183,7 +2229,7 @@ describe('NavigatorCard', () => {
       // simulate item is below the viewport
       getChildPositionInScroller.mockReturnValueOnce(1);
       // add the "Hide Deprecated" tag
-      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED_TAG]);
+      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
       await flushPromises();
       // assert current active item is still scrolled to
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);

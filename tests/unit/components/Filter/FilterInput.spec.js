@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -104,6 +104,25 @@ describe('FilterInput', () => {
     expect(filterLabel.attributes('for')).toBe(FilterInputId);
   });
 
+  it('renders focus class if showSuggestedTags is true and border style is not prevented', () => {
+    wrapper.setData({ showSuggestedTags: true });
+    wrapper.setProps({ preventBorderStyle: false });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(true);
+  });
+
+  it('does not render focus class if border style is not prevented', () => {
+    wrapper.setProps({ preventBorderStyle: true });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(false);
+  });
+
+  it('does not render focus class if showSuggestedTags is false', () => {
+    wrapper.setData({ showSuggestedTags: false });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(false);
+  });
+
   it('renders an `input` element', async () => {
     expect(input.exists()).toBe(true);
     expect(input.attributes('placeholder')).toBe(propsData.placeholder);
@@ -155,6 +174,7 @@ describe('FilterInput', () => {
     wrapper.find('.filter__filter-button').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['show-suggested-tags']).toBeTruthy();
+    expect(wrapper.emitted('focus')).toBeTruthy();
   });
 
   it('renders a filter button with an icon slot', () => {
@@ -505,9 +525,9 @@ describe('FilterInput', () => {
 
     it('adds the correct aria label to `suggestedTags` component', () => {
       expect(suggestedTags.props()).toHaveProperty('id', SuggestedTagsId);
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'Suggested tags');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags tags');
       wrapper.setProps({ tags: ['1'] });
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'Suggested tag');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags tag');
     });
 
     it('keeps `suggestedTags` component when `suggestedTags` gets focus instead of `input`', () => {
@@ -585,6 +605,7 @@ describe('FilterInput', () => {
       await wrapper.vm.$nextTick();
       expect(suggestedTags.exists()).toBe(false);
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
+      expect(wrapper.emitted('blur')).toBeTruthy();
     });
 
     it('does not hide the tags, if `:preventedBlur=true`', async () => {

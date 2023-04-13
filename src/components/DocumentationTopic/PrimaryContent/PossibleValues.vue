@@ -11,7 +11,7 @@
 <template>
   <section>
     <LinkableHeading :anchor="contentSectionData.anchor">
-      {{ contentSectionData.title }}
+      {{ $t(contentSectionData.title) }}
     </LinkableHeading>
     <dl class="datalist">
       <template v-for="value in values">

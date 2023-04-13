@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,10 +13,10 @@
     <div class="betainfo-container">
       <GridRow>
         <GridColumn :span="{ large: 12 }">
-          <p class="betainfo-label">Beta Software</p>
+          <p class="betainfo-label">{{ $t('metadata.beta.software') }}</p>
           <div class="betainfo-content">
             <slot name="content">
-              <p>This documentation refers to beta software and may be changed.</p>
+              <p>{{ $t('metadata.beta.legal') }}</p>
             </slot>
           </div>
           <slot name="after" />

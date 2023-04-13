@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -129,7 +129,7 @@ describe('Tag', () => {
     const span = wrapper.findAll('span.visuallyhidden');
     expect(span.exists()).toBe(true);
     expect(span.length).toBe(1);
-    expect(span.at(0).text()).toEqual('Add tag -');
+    expect(span.at(0).text()).toEqual('filter.add-tag -');
   });
 
   it('adds extra text `– Tag` as a span inside button if `isRemovableTag: true`', () => {
@@ -138,7 +138,7 @@ describe('Tag', () => {
     });
     const span = wrapper.findAll('span.visuallyhidden');
     expect(span.length).toBe(1);
-    expect(span.at(0).text()).toEqual('– Tag. Select to remove from list.');
+    expect(span.at(0).text()).toEqual('– filter.tag-select-remove');
   });
 
   describe('copy/cut', () => {

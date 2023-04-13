@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -48,7 +48,7 @@ describe('SecondaryDropdown', () => {
       path: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
     },
     {
-      title: 'Check your understanding',
+      title: 'tutorials.assessment.check-your-understanding',
       identifier: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
       path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
       kind: '',
@@ -96,7 +96,7 @@ describe('SecondaryDropdown', () => {
     expect(node.props()).toEqual({
       isSmall: true,
       value: currentOption,
-      ariaLabel: 'Current section',
+      ariaLabel: 'tutorials.nav.current sections.title',
     });
   });
 

@@ -105,10 +105,14 @@ export default {
     @include change-highlight-target();
     // Move the responsibility of the left padding to the first element instead.
     // This is only for Large screens
-    padding-left: 0;
+
+    &.changed {
+      padding-left: 0;
+      padding-right: 0;
+    }
 
     & + & {
-      margin-top: calc(var(--spacing-param)/2);
+      margin-top: calc(var(--spacing-param) / 2);
     }
   }
 }
@@ -162,6 +166,10 @@ export default {
 .param-content {
   padding-left: 1rem;
   @include change-highlight-end-spacing();
+
+  .changed & {
+    padding-right: $change-highlight-horizontal-space-rem;
+  }
 
   @include breakpoint(small) {
     padding-left: 0;

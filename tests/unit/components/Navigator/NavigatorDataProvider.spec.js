@@ -159,6 +159,13 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorD
       return 'Text';
     },
   },
+  mocks: {
+    $route: {
+      params: {
+        locale: 'en-US',
+      },
+    },
+  },
   ...others,
 });
 

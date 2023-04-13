@@ -301,3 +301,16 @@
     margin-top: $margin;
   }
 }
+
+// introduces a new "stacking context" by applying a filter that doesn't do
+// anything as a way of resolving issues related to the stacking context in
+// certain browsers without altering the visual appearance of the element
+//
+// a possible alternative would be to set a z-index but the exact value might
+// need to change depending on where this is used
+//
+// see also:
+// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
+@mixin new-stacking-context() {
+  filter: blur(0px);
+}

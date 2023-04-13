@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -27,7 +27,7 @@ describe('Quiz', () => {
         inlineContent: [
           {
             type: 'text',
-            text: 'Check Your Understanding.',
+            text: 'tutorials.assessment.check-your-understanding.',
           },
         ],
       },
@@ -150,7 +150,7 @@ describe('Quiz', () => {
     it('does not enable the Submit button by default', () => {
       const check = wrapper.find('.check');
       expect(check.exists()).toBe(true);
-      expect(check.text()).toBe('Submit');
+      expect(check.text()).toBe('tutorials.submit');
       expect(check.attributes('disabled')).toBe('true');
     });
   });
@@ -203,13 +203,13 @@ describe('Quiz', () => {
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('Answer number 2 is incorrect');
+      expect(ariaLive.text()).toBe('tutorials.assessment.answer-number-is 2 tutorials.assessment.incorrect');
 
       choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('Answer number 1 is correct');
+      expect(ariaLive.text()).toBe('tutorials.assessment.answer-number-is 1 tutorials.assessment.correct');
     });
   });
 });

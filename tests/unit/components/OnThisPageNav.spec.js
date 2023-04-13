@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -18,10 +18,18 @@ import { createEvent, flushPromises } from '../../../test-utils';
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 jest.mock('docc-render/utils/loading', () => ({ waitFrames: jest.fn() }));
 const sections = [
-  { title: 'Title', level: 1, anchor: AppTopID },
-  { title: 'First', level: 2, anchor: 'first' },
-  { title: 'Second', level: 3, anchor: 'second' },
-  { title: 'Third', level: 2, anchor: 'third' },
+  {
+    title: 'Title', level: 1, anchor: AppTopID, i18n: false,
+  },
+  {
+    title: 'First', level: 2, anchor: 'first', i18n: false,
+  },
+  {
+    title: 'Second', level: 3, anchor: 'second', i18n: false,
+  },
+  {
+    title: 'Third', level: 2, anchor: 'third', i18n: false,
+  },
 ];
 const store = {
   state: Vue.observable({

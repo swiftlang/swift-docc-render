@@ -36,6 +36,7 @@ $topic-link-icon-spacing: 1rem;
 
 // Icons
 $icon-size-default: 16px;
+$tiny-icon-size: $icon-size-default * 0.5;
 
 // Code Block Style Elements
 $code-listing-with-numbers-padding: 14px 0;
@@ -77,3 +78,6 @@ $large-viewport-dynamic-content-padding: 80px !default;
 $adjustable-sidebar-hide-transition-duration: 0.3s;
 // OnThisPage
 $on-this-page-aside-width: 192px;
+
+// Suggest Lang
+$suggest-lang-height: 52px;

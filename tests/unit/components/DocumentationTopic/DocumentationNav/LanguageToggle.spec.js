@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -196,7 +196,7 @@ describe('LanguageToggle', () => {
     const label = wrapper.find('span.nav-menu-setting-label');
     expect(label.exists()).toBe(true);
     // textContent makes sure there are no new lines or empty spaces
-    expect(label.element.textContent).toEqual('Language:');
+    expect(label.element.textContent).toEqual('formats.colon language');
   });
 
   it('renders `.nav-menu-setting-label` in `language-list-container` without spaces', () => {
@@ -204,7 +204,7 @@ describe('LanguageToggle', () => {
     expect(label.exists()).toBe(true);
     expect(label.attributes()).toHaveProperty('for', 'language-toggle');
     // textContent makes sure there are no new lines or empty spaces
-    expect(label.element.textContent).toEqual('Language:');
+    expect(label.element.textContent).toEqual('formats.colon language');
   });
 
   it('renders a `span.current-language` for the current language inside `language-list-container`', () => {
