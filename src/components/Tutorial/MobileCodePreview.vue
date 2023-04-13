@@ -54,16 +54,15 @@
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import MobileCodeListing from 'docc-render/components/ContentNode/MobileCodeListing.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import MobileCodePreviewToggle from './MobileCodePreviewToggle.vue';
 import BackgroundTheme from './BackgroundTheme.vue';
 import CodeTheme from './CodeTheme.vue';
 
 export default {
   name: 'MobileCodePreview',
-  inject: [
-    'isTargetIDE',
-    'store',
-  ],
+  inject: ['isTargetIDE'],
+  mixins: [referencesProvider],
   components: {
     GenericModal,
     CodeListing,
@@ -79,7 +78,6 @@ export default {
     },
   },
   computed: {
-    references: ({ store }) => store.state.references,
     codeProps() {
       return this.references[this.code];
     },

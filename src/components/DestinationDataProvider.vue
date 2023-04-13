@@ -9,6 +9,8 @@
 -->
 
 <script>
+import referencesProvider from 'docc-render/mixins/referencesProvider';
+
 const DestinationType = {
   link: 'link',
   reference: 'reference',
@@ -22,6 +24,7 @@ const DestinationType = {
  */
 export default {
   name: 'DestinationDataProvider',
+  mixins: [referencesProvider],
   props: {
     destination: {
       type: Object,
@@ -30,13 +33,6 @@ export default {
     },
   },
   inject: {
-    store: {
-      default: () => ({
-        state: {
-          references: {},
-        },
-      }),
-    },
     isTargetIDE: {
       default: () => false,
     },
@@ -62,7 +58,6 @@ export default {
      * @returns {boolean}
      */
     shouldAppendOpensInBrowser: ({ isExternal, isTargetIDE }) => isExternal && isTargetIDE,
-    references: ({ store }) => (store.state.references),
     reference: ({ references, destination }) => (references[destination.identifier] || {}),
 
     linkUrl: ({

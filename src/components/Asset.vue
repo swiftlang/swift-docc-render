@@ -19,6 +19,8 @@ import ImageAsset from 'docc-render/components/ImageAsset.vue';
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vue';
 
+import referencesProvider from 'docc-render/mixins/referencesProvider';
+
 const AssetTypes = {
   video: 'video',
   image: 'image',
@@ -33,7 +35,7 @@ export default {
   constants: {
     AssetTypes,
   },
-  inject: ['store'],
+  mixins: [referencesProvider],
   props: {
     identifier: {
       type: String,
@@ -61,7 +63,6 @@ export default {
     },
   },
   computed: {
-    references: ({ store }) => store.state.references,
     rawAsset() {
       return this.references[this.identifier] || {};
     },

@@ -58,13 +58,14 @@ import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
 import TopicsLinkBlock from './TopicsLinkBlock.vue';
 
 export default {
   name: 'TopicsTable',
-  inject: ['store'],
+  mixins: [referencesProvider],
   components: {
     TopicsLinkCardGrid,
     WordBreak,
@@ -105,7 +106,6 @@ export default {
     },
   },
   computed: {
-    references: ({ store }) => store.state.references,
     shouldRenderList: ({ topicStyle }) => topicStyle === TopicSectionsStyle.list,
     sectionsWithTopics() {
       return this.sections.map(section => ({
