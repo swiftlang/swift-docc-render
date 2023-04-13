@@ -62,22 +62,6 @@ describe('CodePreview', () => {
     default: '<p>foo</p>',
   };
 
-  // const mountWithVariant = variants => (
-  //   shallowMount(CodePreview, {
-  //     propsData,
-  //     provide: {
-  //       ...provide,
-  //       references: {
-  //         ...provide.references,
-  //         [propsData.preview]: {
-  //           variants,
-  //         },
-  //       },
-  //     },
-  //     slots,
-  //   })
-  // );
-
   beforeEach(() => {
     TopicStore.setReferences(references);
     wrapper = shallowMount(CodePreview, {
