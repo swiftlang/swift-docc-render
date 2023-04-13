@@ -92,7 +92,7 @@ describe('NavigationBar', () => {
     },
   };
 
-  const mountOptions = {
+  const mountOptions = topicStore => ({
     propsData: {
       technology,
       chapters,
@@ -102,7 +102,7 @@ describe('NavigationBar', () => {
       identifierUrl: 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App',
     },
     provide: {
-      store: TopicStore,
+      store: topicStore,
     },
     mocks,
     stubs: {
@@ -110,7 +110,7 @@ describe('NavigationBar', () => {
       ReferenceUrlProvider,
       NavBase,
     },
-  };
+  });
 
   beforeEach(() => {
     TopicStore.setReferences(references);
@@ -118,7 +118,7 @@ describe('NavigationBar', () => {
   });
 
   it('renders the NavBase', () => {
-    wrapper = shallowMount(NavigationBar, mountOptions);
+    wrapper = shallowMount(NavigationBar, mountOptions(TopicStore));
 
     const container = wrapper.find(NavBase);
     expect(container.attributes()).toHaveProperty('aria-label', technology);
@@ -129,7 +129,7 @@ describe('NavigationBar', () => {
   it('renders a tray scoped slot', () => {
     let slotProps = {};
     wrapper = shallowMount(NavigationBar, {
-      ...mountOptions,
+      ...mountOptions(TopicStore),
       scopedSlots: {
         tray(props) {
           slotProps = props;
@@ -145,7 +145,11 @@ describe('NavigationBar', () => {
 
   describe('with a current section', () => {
     beforeEach(() => {
-      TopicStore.reset();
+      // TopicStore.reset();
+      // Why does calling `reset` here throw console errors?
+      TopicStore.state.linkableSections = [];
+      TopicStore.updateBreakpoint('large');
+      TopicStore.setReferences(references);
       TopicStore.addLinkableSection({
         anchor: 'introduction',
         title: 'Introduction',
@@ -166,9 +170,8 @@ describe('NavigationBar', () => {
         title: 'tutorials.assessment.check-your-understanding',
         depth: 0,
       });
-      TopicStore.setReferences(references);
 
-      wrapper = shallowMount(NavigationBar, mountOptions);
+      wrapper = shallowMount(NavigationBar, mountOptions(TopicStore));
     });
 
     it('renders a .nav-title-content with technology title', () => {
@@ -185,7 +188,7 @@ describe('NavigationBar', () => {
 
     it('appends already existing query params to the url', () => {
       wrapper = shallowMount(NavigationBar, {
-        ...mountOptions,
+        ...mountOptions(TopicStore),
         mocks: {
           ...mocks,
           $route: {
@@ -316,7 +319,7 @@ describe('NavigationBar', () => {
     it('renders a tray scoped slot', () => {
       let slotProps = {};
       wrapper = shallowMount(NavigationBar, {
-        ...mountOptions,
+        ...mountOptions(TopicStore),
         scopedSlots: {
           tray(props) {
             slotProps = props;
