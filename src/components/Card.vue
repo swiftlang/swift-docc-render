@@ -61,6 +61,7 @@ import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIco
 import DiagonalArrowIcon from 'theme/components/Icons/DiagonalArrowIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import CardSize from 'docc-render/constants/CardSize';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import CardCover from './CardCover.vue';
 
 export default {
@@ -75,9 +76,8 @@ export default {
   constants: {
     CardSize,
   },
-  inject: ['store'],
+  mixins: [referencesProvider],
   computed: {
-    references: ({ store }) => store.state.references,
     titleId: ({ _uid }) => `card_title_${_uid}`,
     contentId: ({ _uid }) => `card_content_${_uid}`,
     eyebrowId: ({ _uid }) => `card_eyebrow_${_uid}`,

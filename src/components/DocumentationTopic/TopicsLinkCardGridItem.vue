@@ -36,6 +36,7 @@ import Card from 'docc-render/components/Card.vue';
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
 import CardSize from 'docc-render/constants/CardSize';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 export const ROLE_LINK_TEXT = {
   [TopicRole.article]: 'Read article',
@@ -52,7 +53,7 @@ export default {
     Card,
     ContentNode: () => import('docc-render/components/ContentNode.vue'),
   },
-  inject: ['store'],
+  mixins: [referencesProvider],
   props: {
     item: {
       type: Object,
@@ -64,7 +65,6 @@ export default {
     },
   },
   computed: {
-    references: ({ store }) => store.state.references,
     imageReferences: ({ item }) => (item.images || []).reduce((all, current) => {
       // eslint-disable-next-line no-param-reassign
       all[current.type] = current.identifier;

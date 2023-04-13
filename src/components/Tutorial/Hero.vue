@@ -74,6 +74,7 @@ import LinkableElement from 'docc-render/components/LinkableElement.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
 import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
 import { normalizeAssetUrl, toCSSUrl } from 'docc-render/utils/assets';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import HeroMetadata from './HeroMetadata.vue';
 
 export default {
@@ -103,7 +104,7 @@ export default {
     Asset,
     LinkableSection: LinkableElement,
   },
-  inject: ['store'],
+  mixins: [referencesProvider],
   props: {
     title: {
       type: String,
@@ -133,7 +134,6 @@ export default {
     },
   },
   computed: {
-    references: ({ store }) => store.state.references,
     backgroundImageUrl() {
       const reference = this.references[this.backgroundImage] || {};
       const { variants = [] } = reference;

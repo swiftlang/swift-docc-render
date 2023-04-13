@@ -61,6 +61,7 @@
 <script>
 import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
 import ReferenceUrlProvider from 'docc-render/components/ReferenceUrlProvider.vue';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 import NavBase from 'docc-render/components/NavBase.vue';
 import NavTitleContainer from 'docc-render/components/NavTitleContainer.vue';
@@ -87,16 +88,7 @@ export default {
     MobileDropdown,
     ChevronIcon,
   },
-  mixins: [scrollToElement],
-  inject: {
-    store: {
-      default: () => ({
-        state: {
-          references: {},
-        },
-      }),
-    },
-  },
+  mixins: [scrollToElement, referencesProvider],
   props: {
     chapters: {
       type: Array,
@@ -133,7 +125,6 @@ export default {
     },
   },
   computed: {
-    references: ({ tutorialState }) => tutorialState.references,
     currentProject() {
       return this.chapters
         // collect all the projects for all the chapters

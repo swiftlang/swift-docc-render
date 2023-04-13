@@ -10,18 +10,11 @@
 
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 export default {
   name: 'ReferenceUrlProvider',
-  inject: {
-    store: {
-      default: () => ({
-        state: {
-          references: {},
-        },
-      }),
-    },
-  },
+  mixins: [referencesProvider],
   props: {
     reference: {
       type: String,
@@ -29,7 +22,6 @@ export default {
     },
   },
   computed: {
-    references: ({ store }) => (store.state.references),
     resolvedReference: ({ references, reference }) => (references[reference] || {}),
     url: ({ resolvedReference }) => resolvedReference.url,
     title: ({ resolvedReference }) => resolvedReference.title,

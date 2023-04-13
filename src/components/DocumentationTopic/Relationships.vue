@@ -26,13 +26,14 @@
 
 <script>
 import { MainContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
 import RelationshipsList from './RelationshipsList.vue';
 
 export default {
   name: 'Relationships',
-  inject: ['store'],
+  mixins: [referencesProvider],
   components: {
     ContentTable,
     List: RelationshipsList,
@@ -45,7 +46,6 @@ export default {
     },
   },
   computed: {
-    references: ({ store }) => store.state.references,
     contentSectionData: () => MainContentSectionAnchors.relationships,
     sectionsWithSymbols() {
       return this.sections.map(section => ({

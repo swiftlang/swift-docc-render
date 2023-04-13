@@ -20,7 +20,7 @@
       <TopicLinkBlockIcon
         v-if="topic.role && !change"
         :role="topic.role"
-        :imageOverride="store.state.references[iconOverride]"
+        :imageOverride="references[iconOverride]"
       />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
@@ -77,6 +77,7 @@ import RequirementMetadata
   from 'docc-render/components/DocumentationTopic/Description/RequirementMetadata.vue';
 
 import { getAPIChanges, APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 const TopicKind = {
   article: 'article',
@@ -103,8 +104,7 @@ export default {
     RequirementMetadata,
     ConditionalConstraints,
   },
-  inject: ['store'],
-  mixins: [getAPIChanges, APIChangesMultipleLines],
+  mixins: [getAPIChanges, APIChangesMultipleLines, referencesProvider],
   constants: {
     ReferenceType,
     TopicKind,
