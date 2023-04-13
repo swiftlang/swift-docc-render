@@ -26,9 +26,7 @@ export default {
   components: { Overview: TutorialsOverview },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment],
   data() {
-    return {
-      topicData: null,
-    };
+    return { topicData: null };
   },
   computed: {
     overviewProps: ({
