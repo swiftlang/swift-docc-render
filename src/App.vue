@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,9 +14,10 @@
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
     <div :id="AppTopID" />
-    <a href="#main" id="skip-nav">Skip Navigation</a>
+    <a href="#main" id="skip-nav">{{ $t('accessibility.skip-navigation') }}</a>
     <InitialLoadingPlaceholder />
     <slot name="header" :isTargetIDE="isTargetIDE">
+      <SuggestLang v-if="enablei18n" />
       <!-- Render the custom header by default, if there is no content in the `header` slot -->
       <custom-header v-if="hasCustomHeader" :data-color-scheme="preferredColorScheme" />
     </slot>
@@ -25,7 +26,7 @@
     <slot :isTargetIDE="isTargetIDE">
       <router-view class="router-content" />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
-      <Footer v-else-if="!isTargetIDE" />
+      <Footer v-else-if="!isTargetIDE" :enablei18n="enablei18n" />
     </slot>
     <slot name="footer" :isTargetIDE="isTargetIDE" />
   </div>
@@ -37,15 +38,17 @@ import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
-import { fetchThemeSettings, themeSettingsState } from 'docc-render/utils/theme-settings';
+import { fetchThemeSettings, themeSettingsState, getSetting } from 'docc-render/utils/theme-settings';
 import { objectToCustomProperties } from 'docc-render/utils/themes';
 import { AppTopID } from 'docc-render/constants/AppTopID';
+import SuggestLang from 'docc-render/components/SuggestLang.vue';
 
 export default {
   name: 'CoreApp',
   components: {
     Footer,
     InitialLoadingPlaceholder,
+    SuggestLang,
   },
   provide() {
     return {
@@ -75,13 +78,14 @@ export default {
       // preference to determine if "Light" or "Dark" colors should be used.
       // Otherwise, if "Light" or "Dark" has been explicitly chosen, that choice
       // should be used directly.
-      objectToCustomProperties(themeSettings.theme, (preferredColorScheme === ColorScheme.auto.value
+      objectToCustomProperties(themeSettings.theme, (preferredColorScheme === ColorScheme.auto
         ? currentColorScheme
         : preferredColorScheme
       ))
     ),
     hasCustomHeader: () => !!window.customElements.get('custom-header'),
     hasCustomFooter: () => !!window.customElements.get('custom-footer'),
+    enablei18n: () => getSetting(['features', 'docs', 'i18n', 'enable'], false),
   },
   props: {
     enableThemeSettings: {
@@ -170,7 +174,7 @@ export default {
     },
     onColorSchemePreferenceChange({ matches }) {
       const scheme = matches ? ColorScheme.dark : ColorScheme.light;
-      AppStore.setSystemColorScheme(scheme.value);
+      AppStore.setSystemColorScheme(scheme);
     },
     attachStylesToRoot(CSSCustomProperties) {
       const root = document.body;

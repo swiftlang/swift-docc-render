@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -69,7 +69,7 @@ describe('Hero', () => {
     expect(btn.props('action')).toEqual(propsData.action);
     expect(btn.props('isDark')).toBe(true);
     expect(btn.attributes('aria-label'))
-      .toBe(`${propsData.action.overridingTitle} with ${propsData.title}`);
+      .toBe('tutorials.overriding-title Get started Foo Bar');
   });
 
   it('renders an `Asset`', () => {
@@ -81,7 +81,7 @@ describe('Hero', () => {
   it('renders an estimated time', () => {
     const meta = wrapper.find('p.meta');
     expect(meta.exists()).toBe(true);
-    expect(meta.text()).toMatch(/4hr 2min\s+Estimated Time/);
+    expect(meta.text()).toMatch(/4hr 2min\s+tutorials\.estimated-time/);
 
     expect(meta.contains(TimerIcon)).toBe(true);
 

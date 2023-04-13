@@ -16,7 +16,7 @@
       :class="{ focused: isActive }"
       :data-index="index"
     >
-      <p class="step-label">Step {{ stepNumber }}</p>
+      <p class="step-label">{{ $t('tutorials.step', { number: stepNumber }) }}</p>
       <ContentNode :content="content" />
       <ContentNode v-if="caption && caption.length > 0" class="caption" :content="caption" />
     </div>
@@ -142,7 +142,7 @@ export default {
   background-color: var(--color-step-background);
   overflow: hidden;
   // To hide overflow on rounded corner divs in Safari
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  @include new-stacking-context;
 
   &::before {
     content: "";

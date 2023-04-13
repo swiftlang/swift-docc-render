@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -158,14 +158,18 @@ export default {
       return this.hasRuntimePreview && this.isRuntimePreviewVisible;
     },
     runtimePreviewTitle() {
-      return this.hasRuntimePreview ? null : 'No preview available for this step.';
+      return this.hasRuntimePreview ? null : this.$t('tutorials.preview.no-preview-available-step');
     },
     togglePreviewText() {
-      return this.hasRuntimePreview ? 'Preview' : 'No Preview';
+      return this.$tc('tutorials.preview.title', this.hasRuntimePreview ? 1 : 0);
     },
-    textAriaLabel: ({ shouldDisplayHideLabel, togglePreviewText }) => (
-      `${togglePreviewText}, ${shouldDisplayHideLabel ? 'Hide' : 'Show'}`
-    ),
+    textAriaLabel() {
+      return `${this.togglePreviewText}, ${
+        this.shouldDisplayHideLabel
+          ? this.$t('verbs.hide')
+          : this.$t('verbs.show')
+        }`;
+    },
   },
   methods: {
     /**

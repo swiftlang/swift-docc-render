@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -23,7 +23,7 @@
     </Filename>
     <div class="container-general">
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-      <pre><code><span
+      <pre><CodeBlock><span
         v-for="(line, index) in syntaxHighlightedLines"
         :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
         :key="index"
@@ -34,7 +34,7 @@
 <span
   class="code-line"
   v-html="line"
-/></span></code></pre>
+/></span></CodeBlock></pre>
     </div>
   </div>
 </template>
@@ -42,13 +42,14 @@
 <script>
 import { escapeHtml } from 'docc-render/utils/strings';
 import Language from 'docc-render/constants/Language';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import { highlightContent, registerHighlightLanguage } from 'docc-render/utils/syntax-highlight';
 
 import CodeListingFilename from './CodeListingFilename.vue';
 
 export default {
   name: 'CodeListing',
-  components: { Filename: CodeListingFilename },
+  components: { Filename: CodeListingFilename, CodeBlock },
   data() {
     return {
       syntaxHighlightedLines: [],
@@ -188,11 +189,9 @@ code {
   min-height: 100%;
   border-radius: var(--code-border-radius, $border-radius);
   overflow: hidden;
-  // this mask image is not actually used for any visual effect since there is
-  // no background being used on this element—however, we need this in order to
-  // establish a new stacking context, which resolves a Safari bug where the
-  // scrollbar is not clipped by this element depending on its border-radius
-  -webkit-mask-image: -webkit-radial-gradient(#fff, #000);
+  // we need to establish a new stacking context to resolve a Safari bug where
+  // the scrollbar is not clipped by this element depending on its border-radius
+  @include new-stacking-context;
 
   &.single-line {
     border-radius: $large-border-radius;

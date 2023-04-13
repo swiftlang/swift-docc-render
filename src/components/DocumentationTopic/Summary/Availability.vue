@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <Section class="availability" role="complementary" aria-label="Availability">
+  <Section class="availability" role="complementary" :aria-label="$t('sections.availability')">
     <Badge
       v-for="technology in technologies"
       class="technology"
@@ -30,8 +30,10 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-      <span v-if="platform.deprecatedAt" class="deprecated">Deprecated</span>
-      <span v-else-if="platform.beta" class="beta">Beta</span>
+      <span v-if="platform.deprecatedAt" class="deprecated">
+        {{ $t('aside-kind.deprecated') }}
+      </span>
+      <span v-else-if="platform.beta" class="beta">{{ $t('aside-kind.beta') }}</span>
     </Badge>
   </Section>
 </template>
@@ -102,7 +104,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .badge {

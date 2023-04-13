@@ -35,6 +35,8 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
+const defaultLocale = 'en-US';
+
 const TechnologyWithChildren = {
   path: '/documentation/foo',
   children: [],
@@ -55,7 +57,6 @@ const {
   Nav,
   Topic,
   QuickNavigationModal,
-  MagnifierIcon,
 } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
@@ -67,6 +68,9 @@ const mocks = {
   },
   $route: {
     path: '/documentation/somepath',
+    params: {
+      locale: 'en-US',
+    },
   },
 };
 
@@ -187,7 +191,7 @@ describe('DocumentationTopic', () => {
 
     const codeTheme = wrapper.find(CodeTheme);
     expect(codeTheme.exists()).toBe(true);
-    expect(codeTheme.isEmpty()).toBe(true);
+    expect(codeTheme.isEmpty()).toEqual(true);
   });
 
   it('renders the Navigator and AdjustableSidebarWidth when enabled', async () => {
@@ -249,7 +253,7 @@ describe('DocumentationTopic', () => {
     expect(nav.props('displaySidenav')).toBe(true);
   });
 
-  it('renders QuickNavigation and MagnifierIcon if enableQuickNavigation is true', () => {
+  it('renders QuickNavigation if enableQuickNavigation is true', () => {
     getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
@@ -267,12 +271,10 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(true);
-    expect(magnifierIconComponent.exists()).toBe(true);
   });
 
-  it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is false', () => {
+  it('does not render QuickNavigation if enableQuickNavigation is false', () => {
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -289,9 +291,7 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
-    expect(magnifierIconComponent.exists()).toBe(false);
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {
@@ -305,12 +305,10 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
-    expect(magnifierIconComponent.exists()).toBe(false);
   });
 
-  it('does not render QuickNavigation and MagnifierIcon if enableQuickNavigation is true but IDE is being targeted', () => {
+  it('does not render QuickNavigation if enableQuickNavigation is true but IDE is being targeted', () => {
     getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       provide: { isTargetIDE: true },
@@ -329,9 +327,7 @@ describe('DocumentationTopic', () => {
     });
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
-    const magnifierIconComponent = wrapper.find(MagnifierIcon);
     expect(quickNavigationModalComponent.exists()).toBe(false);
-    expect(magnifierIconComponent.exists()).toBe(false);
   });
 
   describe('if breakpoint is small', () => {
@@ -995,7 +991,7 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
     // now call without `skipFetchingData`
     const params = {
-      to: { name: 'foo', meta: {} },
+      to: { name: 'foo', meta: {}, params: { locale: defaultLocale } },
       from: { name: 'bar' },
       next: jest.fn(),
     };

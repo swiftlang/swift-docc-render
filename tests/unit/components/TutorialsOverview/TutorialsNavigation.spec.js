@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -99,6 +99,6 @@ describe('TutorialsNavigation', () => {
   it('renders TutorialsNavigationLink for Resource', () => {
     const link = wrapper.find('li.resource').find({ name: 'TutorialsNavigationLink' });
     expect(link.exists()).toBe(true);
-    expect(link.text()).toBe('Resources');
+    expect(link.text()).toBe('sections.resources');
   });
 });
