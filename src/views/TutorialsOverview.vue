@@ -17,7 +17,6 @@ import {
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
-import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import TutorialsOverview from 'theme/components/TutorialsOverview.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
@@ -29,12 +28,6 @@ export default {
   data() {
     return {
       topicData: null,
-      store: TutorialsOverviewStore,
-    };
-  },
-  provide() {
-    return {
-      store: this.store,
     };
   },
   computed: {
@@ -76,9 +69,6 @@ export default {
       next();
     }
   },
-  created() {
-    this.store.reset();
-  },
   mounted() {
     this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
   },
@@ -90,7 +80,6 @@ export default {
       this.$nextTick(() => {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
-        this.store.setReferences(this.overviewProps.references);
       });
     },
   },

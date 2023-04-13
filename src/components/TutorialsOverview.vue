@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 import Nav from 'theme/components/TutorialsOverview/Nav.vue';
 import metadata from 'theme/mixins/metadata.js';
 import Hero from './TutorialsOverview/Hero.vue';
@@ -55,18 +56,20 @@ export default {
   },
   mixins: [metadata],
   constants: { SectionKind },
+  data() {
+    return {
+      store: TutorialsOverviewStore,
+    };
+  },
   inject: {
     isTargetIDE: { default: false },
-    store: {
-      default: () => ({
-        state: {
-          references: {},
-        },
-      }),
-    },
   },
   props: {
     metadata: {
+      type: Object,
+      default: () => ({}),
+    },
+    references: {
       type: Object,
       default: () => ({}),
     },
@@ -94,6 +97,15 @@ export default {
     otherSections: ({ partitionedSections }) => partitionedSections[1],
     heroSection: ({ heroSections }) => heroSections[0],
     title: ({ metadata: { category = '' } }) => category,
+  },
+  provide() {
+    return {
+      store: this.store,
+    };
+  },
+  created() {
+    this.store.reset();
+    this.store.setReferences(this.references);
   },
 };
 </script>
