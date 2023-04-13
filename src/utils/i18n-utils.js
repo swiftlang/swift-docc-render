@@ -9,7 +9,7 @@
 */
 
 import locales from 'theme/lang/locales.json';
-import { defaultLocale } from 'theme/lang/index.js';
+import { defaultLocale } from 'theme/lang/index';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
 const codeForSlug = locales.reduce((map, locale) => ({
@@ -48,10 +48,10 @@ export function getLocaleParam(slug) {
 
 /**
  * Updates i18n global var and html lang
- * @param {String} locale - locale used
+ * @param {String} slug - locale used
  * @param {Object} env - context
  */
-export function updateLocale(slug = defaultLocale, env) {
+export function updateLocale(slug = defaultLocale, env = {}) {
   // exist if current locale is not supported
   if (!localeIsValid(slug)) return;
   // update locale global var
