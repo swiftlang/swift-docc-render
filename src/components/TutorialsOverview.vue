@@ -56,11 +56,6 @@ export default {
   },
   mixins: [metadata],
   constants: { SectionKind },
-  data() {
-    return {
-      store: TutorialsOverviewStore,
-    };
-  },
   inject: {
     isTargetIDE: { default: false },
   },
@@ -96,6 +91,7 @@ export default {
     heroSections: ({ partitionedSections }) => partitionedSections[0],
     otherSections: ({ partitionedSections }) => partitionedSections[1],
     heroSection: ({ heroSections }) => heroSections[0],
+    store: () => TutorialsOverviewStore,
     title: ({ metadata: { category = '' } }) => category,
   },
   provide() {
