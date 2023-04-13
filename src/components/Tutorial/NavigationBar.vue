@@ -88,7 +88,15 @@ export default {
     ChevronIcon,
   },
   mixins: [scrollToElement],
-  inject: ['store'],
+  inject: {
+    store: {
+      default: () => ({
+        state: {
+          references: {},
+        },
+      }),
+    },
+  },
   props: {
     chapters: {
       type: Array,
