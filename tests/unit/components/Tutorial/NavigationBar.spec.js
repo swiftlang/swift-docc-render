@@ -117,6 +117,10 @@ describe('NavigationBar', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
   it('renders the NavBase', () => {
     wrapper = shallowMount(NavigationBar, mountOptions(TopicStore));
 
@@ -145,9 +149,7 @@ describe('NavigationBar', () => {
 
   describe('with a current section', () => {
     beforeEach(() => {
-      // TopicStore.reset();
-      // Why does calling `reset` here throw console errors?
-      TopicStore.state.linkableSections = [];
+      TopicStore.reset();
       TopicStore.updateBreakpoint('large');
       TopicStore.setReferences(references);
       TopicStore.addLinkableSection({
@@ -187,6 +189,7 @@ describe('NavigationBar', () => {
     });
 
     it('appends already existing query params to the url', () => {
+      wrapper.destroy();
       wrapper = shallowMount(NavigationBar, {
         ...mountOptions(TopicStore),
         mocks: {
@@ -317,6 +320,8 @@ describe('NavigationBar', () => {
     });
 
     it('renders a tray scoped slot', () => {
+      wrapper.destroy();
+
       let slotProps = {};
       wrapper = shallowMount(NavigationBar, {
         ...mountOptions(TopicStore),
