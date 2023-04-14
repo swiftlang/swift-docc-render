@@ -8,19 +8,37 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import {
-  areEquivalentLocations,
-  buildUrl,
-  resolveAbsoluteUrl,
-} from 'docc-render/utils/url-helper';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
 
-const mockBaseUrl = jest.fn().mockReturnValue('/');
-jest.mock('@/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
-}));
+let areEquivalentLocations;
+let buildUrl;
+let resolveAbsoluteUrl;
+
+const normalizeUrlMock = jest.fn().mockImplementation(n => n);
+
+const mockAssets = {
+  normalizeUrl: normalizeUrlMock,
+};
+
+jest.mock('docc-render/utils/assets', () => (mockAssets));
+
+function importDeps() {
+  jest.resetModules();
+  // eslint-disable-next-line global-require
+  ({
+    areEquivalentLocations,
+    buildUrl,
+    resolveAbsoluteUrl,
+  // eslint-disable-next-line global-require
+  } = require('@/utils/url-helper'));
+}
 
 describe('areEquivalentLocations', () => {
+  beforeEach(() => {
+    importDeps();
+    jest.clearAllMocks();
+  });
+
   it('returns false for the same route with a different path', () => {
     expect(areEquivalentLocations({
       name: 'foo',
@@ -145,15 +163,16 @@ describe('resolveAbsoluteUrl', () => {
 
   it('resolves against the host and base path of the current environment', () => {
     const { location } = window;
-
-    mockBaseUrl.mockReturnValue('/foo');
+    normalizeUrlMock.mockImplementation(n => `/foo${n}`);
+    importDeps();
     Object.defineProperty(window, 'location', {
       value: new URL('https://example.com'),
     });
     expect(resolveAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
+
+    normalizeUrlMock.mockImplementation(n => n);
     expect(resolveAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
 
-    mockBaseUrl.mockReturnValue('/');
     Object.defineProperty(window, 'location', { value: location });
   });
 

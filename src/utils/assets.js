@@ -11,7 +11,7 @@
 /**
  * Utility functions for working with Assets
  */
-import { baseUrl } from 'docc-render/utils/theme-settings';
+const { baseUrl } = window;
 
 /**
  * Separate array of variants by light/dark mode
@@ -69,7 +69,8 @@ export function pathJoin(parts) {
  * @param {String} url
  * @return {String}
  */
-export function normalizeAssetUrl(url) {
+export function normalizeUrl(rawUrl) {
+  const url = Array.isArray(rawUrl) ? pathJoin(rawUrl) : rawUrl;
   if (!url || typeof url !== 'string' || url.startsWith(baseUrl) || !url.startsWith('/')) {
     return url;
   }
@@ -81,7 +82,7 @@ export function normalizeAssetUrl(url) {
  * @param {String} url
  * @returns {string|undefined}
  */
-export function toCSSUrl(url) { return url ? `url('${normalizeAssetUrl(url)}')` : undefined; }
+export function toCSSUrl(url) { return url ? `url('${normalizeUrl(url)}')` : undefined; }
 
 /**
  * Loads an image and gets its dimensions

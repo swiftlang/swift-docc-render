@@ -189,12 +189,11 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls `fetchData` with a configurable base url', async () => {
-    mockBaseUrl.mockReturnValueOnce('/base-prefix/');
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
-      '/base-prefix/data/tutorials/augmented-reality/tutorials.json',
+      '/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
     ).href, {});
     await expect(data).toEqual(await goodFetchResponse.json());
