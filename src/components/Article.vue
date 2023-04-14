@@ -59,9 +59,6 @@ export default {
     store: {
       default() {
         return {
-          state: {
-            references: {},
-          },
           reset() {},
           setReferences() {},
         };

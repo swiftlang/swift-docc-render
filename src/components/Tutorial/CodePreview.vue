@@ -65,10 +65,20 @@ function scaledSize({ width, height }, scale = 1) {
 
 export default {
   name: 'CodePreview',
-  inject: [
-    'isTargetIDE',
-    'store',
-  ],
+  inject: {
+    isTargetIDE: {
+      default: false,
+    },
+    store: {
+      default() {
+        return {
+          state: {
+            references: {},
+          },
+        };
+      },
+    },
+  },
   components: {
     DiagonalArrowIcon,
     CodeListing,

@@ -46,6 +46,9 @@ export default {
     store: {
       default: () => ({
         setActiveVolume() {},
+        state: {
+          references: {},
+        },
       }),
     },
   },

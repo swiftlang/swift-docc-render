@@ -18,7 +18,7 @@ export default {
   mixins: [referencesProvider],
   render(createElement) {
     const klass = 'type-identifier-link';
-    const reference = this.store.state.references[this.identifier];
+    const reference = this.references[this.identifier];
     // internal and external link
     if (reference && reference.url) {
       return createElement(Reference, {
