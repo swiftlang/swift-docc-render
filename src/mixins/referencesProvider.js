@@ -22,7 +22,7 @@ export default {
     },
   },
   computed: {
-    // exposes the apiChanges for the current page
+    // exposes the references for the current page
     references: ({ store }) => store.state.references,
   },
 };
