@@ -57,7 +57,7 @@ export async function fetchData(path, params = {}, options = {}) {
 
 function createDataPath(path) {
   const dataPath = path.replace(/\/$/, '');
-  return `${normalizeUrl(['data', dataPath])}.json`;
+  return `${normalizeUrl(['/data', dataPath])}.json`;
 }
 
 /**
