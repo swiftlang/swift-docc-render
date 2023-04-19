@@ -524,9 +524,9 @@ describe('FilterInput', () => {
 
     it('adds the correct aria label to `suggestedTags` component', () => {
       expect(suggestedTags.props()).toHaveProperty('id', SuggestedTagsId);
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags tags');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags');
       wrapper.setProps({ tags: ['1'] });
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags tag');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags');
     });
 
     it('keeps `suggestedTags` component when `suggestedTags` gets focus instead of `input`', () => {
