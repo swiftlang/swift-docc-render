@@ -14,10 +14,10 @@ let areEquivalentLocations;
 let buildUrl;
 let resolveAbsoluteUrl;
 
-const normalizeUrlMock = jest.fn().mockImplementation(n => n);
+const normalizePathMock = jest.fn().mockImplementation(n => n);
 
 const mockAssets = {
-  normalizeUrl: normalizeUrlMock,
+  normalizePath: normalizePathMock,
 };
 
 jest.mock('docc-render/utils/assets', () => (mockAssets));
@@ -163,14 +163,14 @@ describe('resolveAbsoluteUrl', () => {
 
   it('resolves against the host and base path of the current environment', () => {
     const { location } = window;
-    normalizeUrlMock.mockImplementation(n => `/foo${n}`);
+    normalizePathMock.mockImplementation(n => `/foo${n}`);
     importDeps();
     Object.defineProperty(window, 'location', {
       value: new URL('https://example.com'),
     });
     expect(resolveAbsoluteUrl('/bar/baz')).toBe('https://example.com/foo/bar/baz');
 
-    normalizeUrlMock.mockImplementation(n => n);
+    normalizePathMock.mockImplementation(n => n);
     expect(resolveAbsoluteUrl('foobar/baz')).toBe('https://example.com/foobar/baz');
 
     Object.defineProperty(window, 'location', { value: location });

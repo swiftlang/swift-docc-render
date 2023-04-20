@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { normalizeUrl } from 'docc-render/utils/assets';
+import { normalizePath } from 'docc-render/utils/assets';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
 
 export function queryStringForParams(params = {}) {
@@ -83,7 +83,7 @@ export function areEquivalentLocations(routeA, routeB) {
 // getAssetsAbsoluteUrl('/bar') // URL { href: http://localhost:8080/foo/bar }
 // getAssetsAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/foo/bar }
 export function getAbsoluteUrl(path, domainPath = window.location.href) {
-  return new URL(normalizeUrl(path), domainPath);
+  return new URL(normalizePath(path), domainPath);
 }
 // Resolve a given path into a full, absolute URL.
 //

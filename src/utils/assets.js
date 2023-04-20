@@ -65,16 +65,28 @@ export function pathJoin(parts) {
 }
 
 /**
- * Normalizes asset urls, by prefixing the baseUrl path to them.
+ * Normalizes paths, by prefixing the baseUrl path to them.
  * @param {String} url
  * @return {String}
  */
-export function normalizeUrl(rawUrl) {
-  const url = Array.isArray(rawUrl) ? pathJoin(rawUrl) : rawUrl;
-  if (!url || typeof url !== 'string' || url.startsWith(baseUrl) || !url.startsWith('/')) {
-    return url;
+export function normalizePath(rawPath) {
+  const path = Array.isArray(rawPath) ? pathJoin(rawPath) : rawPath;
+  if (!path || typeof path !== 'string' || path.startsWith(baseUrl) || !path.startsWith('/')) {
+    return path;
   }
-  return pathJoin([baseUrl, url]);
+  return pathJoin([baseUrl, path]);
+}
+
+/**
+ * Normalizes relative paths, by making them start with /.
+ * @param {String} url
+ * @return {String}
+ */
+export function normalizeRelativePath(path) {
+  // Sometimes `paths` data from `variants` are prefixed with a leading
+  // slash and sometimes they aren't
+  if (!path) return path;
+  return path.startsWith('/') ? path : `/${path}`;
 }
 
 /**
@@ -82,7 +94,7 @@ export function normalizeUrl(rawUrl) {
  * @param {String} url
  * @returns {string|undefined}
  */
-export function toCSSUrl(url) { return url ? `url('${normalizeUrl(url)}')` : undefined; }
+export function toCSSUrl(url) { return url ? `url('${normalizePath(url)}')` : undefined; }
 
 /**
  * Loads an image and gets its dimensions

@@ -7,15 +7,15 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
-import { pathJoin } from 'docc-render/utils/assets';
+import { pathJoin, normalizeRelativePath } from 'docc-render/utils/assets';
 
-let normalizeUrl;
+let normalizePath;
 const absoluteBaseUrl = 'https://foo.com';
 
 function importDeps() {
   jest.resetModules();
   // eslint-disable-next-line global-require
-  ({ normalizeUrl } = require('@/utils/assets'));
+  ({ normalizePath } = require('@/utils/assets'));
 }
 
 Object.defineProperty(window, 'location', {
@@ -41,46 +41,55 @@ describe('assets', () => {
       expect(pathJoin(params)).toEqual(expected);
     });
   });
-  describe('normalizeUrl', () => {
+  describe('normalizePath', () => {
     it('works correctly if baseurl is just a slash', () => {
       window.baseUrl = '/';
       importDeps();
-      expect(normalizeUrl('/foo')).toBe('/foo');
+      expect(normalizePath('/foo')).toBe('/foo');
     });
 
     it('works correctly with multiple urls', () => {
       window.baseUrl = '/';
       importDeps();
-      expect(normalizeUrl(['/foo', 'blah'])).toBe('/foo/blah');
+      expect(normalizePath(['/foo', 'blah'])).toBe('/foo/blah');
     });
 
     it('works when both have slashes leading', () => {
       window.baseUrl = '/base';
       importDeps();
-      expect(normalizeUrl('/foo')).toBe('/base/foo');
+      expect(normalizePath('/foo')).toBe('/base/foo');
     });
 
     it('does not change, if passed a url', () => {
-      expect(normalizeUrl('https://foo.com')).toBe('https://foo.com');
-      expect(normalizeUrl('http://foo.com')).toBe('http://foo.com');
+      expect(normalizePath('https://foo.com')).toBe('https://foo.com');
+      expect(normalizePath('http://foo.com')).toBe('http://foo.com');
     });
 
     it('does not change, if path is relative', () => {
       window.baseUrl = '/base';
       importDeps();
-      expect(normalizeUrl('foo/bar')).toBe('foo/bar');
+      expect(normalizePath('foo/bar')).toBe('foo/bar');
     });
 
     it('does not change, if the path is already prefixed', () => {
       window.baseUrl = '/base';
       importDeps();
-      expect(normalizeUrl('/base/foo')).toBe('/base/foo');
+      expect(normalizePath('/base/foo')).toBe('/base/foo');
     });
 
     it('returns empty, if nothing passed', () => {
-      expect(normalizeUrl('')).toBe('');
-      expect(normalizeUrl(undefined)).toBe(undefined);
-      expect(normalizeUrl(null)).toBe(null);
+      expect(normalizePath('')).toBe('');
+      expect(normalizePath(undefined)).toBe(undefined);
+      expect(normalizePath(null)).toBe(null);
+    });
+  });
+  describe('normalizeRelativePath', () => {
+    it('adds a `/` if path starts without it', () => {
+      expect(normalizeRelativePath('foo')).toBe('/foo');
+    });
+
+    it('does not add a `/` if path starts it', () => {
+      expect(normalizeRelativePath('/foo')).toBe('/foo');
     });
   });
 });

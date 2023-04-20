@@ -44,7 +44,7 @@ describe('theme-settings', () => {
 
   it('fetches the theme settings from a remote path', async () => {
     window.baseUrl = '/';
-    resolveAbsoluteUrlMock.mockReturnValue({ href: 'http://localhost/theme-settings.json' });
+    resolveAbsoluteUrlMock.mockReturnValue('http://localhost/theme-settings.json');
     importDeps();
     await fetchThemeSettings();
     expect(resolveAbsoluteUrlMock).toHaveBeenCalledWith('/theme-settings.json');
@@ -55,7 +55,7 @@ describe('theme-settings', () => {
 
   it('uses the window.baseUrl for the json path', async () => {
     window.baseUrl = '/bar/foo/';
-    resolveAbsoluteUrlMock.mockReturnValue({ href: `http://localhost${window.baseUrl}theme-settings.json` });
+    resolveAbsoluteUrlMock.mockReturnValue(`http://localhost${window.baseUrl}theme-settings.json`);
     importDeps();
     await fetchThemeSettings();
     expect(resolveAbsoluteUrlMock).toHaveBeenCalledWith('/theme-settings.json');

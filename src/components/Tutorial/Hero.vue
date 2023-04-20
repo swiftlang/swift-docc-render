@@ -73,7 +73,7 @@ import LinkableElement from 'docc-render/components/LinkableElement.vue';
 
 import GenericModal from 'docc-render/components/GenericModal.vue';
 import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
-import { normalizeUrl, toCSSUrl } from 'docc-render/utils/assets';
+import { normalizePath, toCSSUrl } from 'docc-render/utils/assets';
 import HeroMetadata from './HeroMetadata.vue';
 
 export default {
@@ -140,10 +140,10 @@ export default {
         variant.traits.includes('light')
       ));
 
-      return normalizeUrl((lightVariant || {}).url);
+      return normalizePath((lightVariant || {}).url);
     },
     projectFilesUrl() {
-      return this.projectFiles ? normalizeUrl(this.references[this.projectFiles].url) : null;
+      return this.projectFiles ? normalizePath(this.references[this.projectFiles].url) : null;
     },
     bgStyle() {
       return {

@@ -33,7 +33,7 @@
         is handled with JavaScript media query listeners unlike the `<source>`
         based implementation being used for image assets.
       -->
-      <source :src="normalizeUrl(videoAttributes.url)">
+      <source :src="normalizePath(videoAttributes.url)">
     </video>
   </ConditionalWrapper>
 </template>
@@ -41,7 +41,7 @@
 <script>
 import {
   separateVariantsByAppearance,
-  normalizeUrl,
+  normalizePath,
   getIntrinsicDimensions,
   extractDensities,
 } from 'docc-render/utils/assets';
@@ -142,7 +142,7 @@ export default {
       : variants.light[0] || {}
     ),
     normalisedPosterPath: ({ defaultPosterAttributes }) => (
-      normalizeUrl(defaultPosterAttributes.src)
+      normalizePath(defaultPosterAttributes.src)
     ),
     videoAttributes: ({
       darkVideoVariantAttributes,
@@ -160,7 +160,7 @@ export default {
     },
   },
   methods: {
-    normalizeUrl,
+    normalizePath,
     async getPosterDimensions(path) {
       if (!path) {
         this.optimalWidth = null;

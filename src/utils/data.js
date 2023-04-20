@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { normalizeUrl } from 'docc-render/utils/assets';
+import { normalizePath } from 'docc-render/utils/assets';
 import {
   queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
 } from 'docc-render/utils/url-helper';
@@ -57,7 +57,7 @@ export async function fetchData(path, params = {}, options = {}) {
 
 function createDataPath(path) {
   const dataPath = path.replace(/\/$/, '');
-  return `${normalizeUrl(['/data', dataPath])}.json`;
+  return `${normalizePath(['/data', dataPath])}.json`;
 }
 
 /**

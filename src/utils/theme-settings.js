@@ -29,7 +29,7 @@ export const { baseUrl } = window;
  */
 export async function fetchThemeSettings() {
   const url = resolveAbsoluteUrl('/theme-settings.json');
-  return fetch(url.href)
+  return fetch(url)
     .then(r => r.json())
     .catch(() => ({}));
 }
