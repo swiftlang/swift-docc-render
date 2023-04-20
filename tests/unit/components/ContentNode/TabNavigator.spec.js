@@ -80,14 +80,29 @@ describe('TabNavigator.spec', () => {
     expect(wrapper.vm.currentTitle).toEqual('added title');
   });
 
-  it('selects correct tab when deleting a tab', async () => {
-    const shorterTitles = ['Long tab title',
-      'A Longer tab title'];
+  it('selects first tab when deleting current tab', async () => {
+    const longerTitles = ['Long tab title',
+      'A Longer tab title', 'The Longest tab title', 'added title'];
 
     const wrapper = createWrapper();
-    wrapper.setProps({ titles: shorterTitles });
+    // current tab is on 'added title'
+    wrapper.setProps({ titles: longerTitles });
+    wrapper.setProps({ titles });
 
-    expect(wrapper.vm.currentTitle).toEqual('A Longer tab title');
+    expect(wrapper.vm.currentTitle).toEqual('Long tab title');
+  });
+
+  it('selects first tab when deleting current tab', async () => {
+    const longerTitles = ['Long tab title',
+      'A Longer tab title', 'The Longest tab title', 'added title'];
+    const removedTitles = ['Long tab title',
+      'A Longer tab title', 'added title'];
+    const wrapper = createWrapper();
+    // current tab is on 'added title'
+    wrapper.setProps({ titles: longerTitles });
+    wrapper.setProps({ titles: removedTitles });
+
+    expect(wrapper.vm.currentTitle).toEqual('added title');
   });
 
   it('selects correct tab when changing a tab', async () => {
