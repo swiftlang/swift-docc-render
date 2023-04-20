@@ -15,7 +15,7 @@ import TabnavItem from '@/components/TabnavItem.vue';
 import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 import { flushPromises } from '../../../../test-utils';
 
-const titles = ['Long tab title', 'A Longer tab title'];
+const titles = ['Long tab title', 'A Longer tab title', 'The Longest tab title'];
 const scopedSlots = {
   [titles[0]]: '<div>First</div>',
   [titles[1]]: '<div>Second</div>',
@@ -44,7 +44,7 @@ describe('TabNavigator.spec', () => {
       vertical: false,
       value: titles[0],
     });
-    expect(wrapper.findAll(TabnavItem)).toHaveLength(2);
+    expect(wrapper.findAll(TabnavItem)).toHaveLength(3);
     expect(wrapper.find('.tabs-content').text()).toEqual('First');
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided).toHaveProperty('imageLoadingStrategy', ImageLoadingStrategy.eager);
@@ -68,5 +68,35 @@ describe('TabNavigator.spec', () => {
     tabnav.vm.$emit('input', titles[1]);
     expect(wrapper.find('.tabs-content').text()).toBe('Second');
     expect(tabnav.props('value')).toEqual(titles[1]);
+  });
+
+  it('selects correct tab when adding a tab', async () => {
+    const longerTitles = ['Long tab title',
+      'A Longer tab title', 'The Longest tab title', 'added title'];
+
+    const wrapper = createWrapper();
+    wrapper.setProps({ titles: longerTitles });
+
+    expect(wrapper.vm.currentTitle).toEqual('added title');
+  });
+
+  it('selects correct tab when deleting a tab', async () => {
+    const shorterTitles = ['Long tab title',
+      'A Longer tab title'];
+
+    const wrapper = createWrapper();
+    wrapper.setProps({ titles: shorterTitles });
+
+    expect(wrapper.vm.currentTitle).toEqual('A Longer tab title');
+  });
+
+  it('selects correct tab when changing a tab', async () => {
+    const changedTitle = ['Long tab title',
+      'A Longer tab title', 'changed tab title'];
+
+    const wrapper = createWrapper();
+    wrapper.setProps({ titles: changedTitle });
+
+    expect(wrapper.vm.currentTitle).toEqual('changed tab title');
   });
 });

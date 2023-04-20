@@ -71,6 +71,28 @@ export default {
       currentTitle: this.titles[0],
     };
   },
+  watch: {
+    titles(newVal, oldVal) {
+      if (newVal.length === oldVal.length) {
+        // set to the tab with updated title
+        newVal.forEach((tab, index) => {
+          if (tab !== oldVal[index]) {
+            this.currentTitle = tab;
+          }
+        });
+      } else if (newVal.length > oldVal.length) {
+        // set to newly added tab, may not be the last tab
+        this.currentTitle = newVal.find(tab => !oldVal.includes(tab));
+      } else {
+        // set to the tab before the removed one
+        const removedTab = oldVal.find(tab => !newVal.includes(tab));
+        const removedTabIdx = oldVal.indexOf(removedTab);
+        const newTabIdx = (removedTabIdx === oldVal.length - 1)
+          ? (newVal.length - 1) : removedTabIdx;
+        this.currentTitle = newVal[newTabIdx];
+      }
+    },
+  },
 };
 </script>
 
