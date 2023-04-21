@@ -27,10 +27,11 @@
 <script>
 import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 export default {
   name: 'LinksBlock',
-  inject: ['references'],
+  mixins: [referencesProvider],
   components: {
     // async import to overcome potential infinite loops from importing ContentNode inside.
     TopicsLinkBlock: () => import('docc-render/components/DocumentationTopic/TopicsLinkBlock.vue'),

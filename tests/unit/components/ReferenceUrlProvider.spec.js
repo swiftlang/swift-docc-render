@@ -35,7 +35,11 @@ describe('ReferenceUrlProvider', () => {
 
     shallowMount(ReferenceUrlProvider, {
       propsData,
-      provide: { references },
+      provide: {
+        store: {
+          state: { references },
+        },
+      },
       scopedSlots: {
         default: (props) => {
           assertProps = props;

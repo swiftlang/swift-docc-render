@@ -42,7 +42,11 @@ describe('Asset', () => {
   const mountAsset = (identifier, references = {}) => (
     shallowMount(Asset, {
       propsData: { identifier },
-      provide: { references },
+      provide: {
+        store: {
+          state: { references },
+        },
+      },
     })
   );
 
@@ -121,7 +125,11 @@ describe('Asset', () => {
         showsReplayButton: true,
         showsVideoControls: true,
       },
-      provide: { references: { video } },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
     });
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
@@ -138,7 +146,11 @@ describe('Asset', () => {
         showsVideoControls: true,
         deviceFrame: 'phone',
       },
-      provide: { references: { video } },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
     });
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
@@ -160,7 +172,11 @@ describe('Asset', () => {
         videoAutoplays: true,
         videoMuted: false,
       },
-      provide: { references: { video } },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
     });
 
     expect(wrapper.find(ReplayableVideoAsset).exists()).toBe(false);
@@ -179,7 +195,11 @@ describe('Asset', () => {
         showsVideoControls: true,
         videoMuted: false,
       },
-      provide: { references: { video } },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
     });
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
