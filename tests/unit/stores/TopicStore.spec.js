@@ -13,6 +13,11 @@ import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
 const { BreakpointName } = BreakpointEmitter.constants;
 
+const references = {
+  foo: { identifier: 'foo' },
+  bar: { identifier: 'bar' },
+};
+
 describe('TopicStore', () => {
   beforeEach(() => {
     TopicStore.reset();
@@ -22,6 +27,7 @@ describe('TopicStore', () => {
     expect(TopicStore.state).toEqual({
       linkableSections: [],
       breakpoint: BreakpointName.large,
+      references: {},
     });
   });
 
@@ -32,12 +38,13 @@ describe('TopicStore', () => {
     });
 
     TopicStore.updateBreakpoint('my breakpoint');
-
+    TopicStore.setReferences(references);
     TopicStore.reset();
 
     expect(TopicStore.state).toEqual({
       linkableSections: [],
       breakpoint: BreakpointName.large,
+      references: {},
     });
   });
 
@@ -110,6 +117,13 @@ describe('TopicStore', () => {
           },
         ]);
       });
+    });
+  });
+
+  describe('setReferences', () => {
+    it('sets the `references` state', () => {
+      TopicStore.setReferences(references);
+      expect(TopicStore.state.references).toBe(references);
     });
   });
 });

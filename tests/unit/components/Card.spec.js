@@ -39,7 +39,11 @@ describe('Card', () => {
     hasButton: false,
   };
 
-  const provide = { references };
+  const provide = {
+    store: {
+      state: { references },
+    },
+  };
 
   const mountCard = options => shallowMount(Card, {
     propsData,
