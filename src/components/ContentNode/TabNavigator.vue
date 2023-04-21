@@ -75,8 +75,7 @@ export default {
     titles(newVal, oldVal) {
       if (newVal.length < oldVal.length) {
         // set to the first tab if selected tab was removed
-        const removedTab = oldVal.find((tab, i) => newVal[i] !== tab);
-        if (removedTab === this.currentTitle) {
+        if (!newVal.includes(this.currentTitle)) {
           // eslint-disable-next-line prefer-destructuring
           this.currentTitle = newVal[0];
         }
