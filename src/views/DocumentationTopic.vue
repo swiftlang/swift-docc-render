@@ -31,7 +31,6 @@
                   v-if="enableQuickNavigation"
                   :children="slotProps.flatChildren"
                   :showQuickNavigationModal.sync="showQuickNavigationModal"
-                  :previewEnabled="enableQuickNavigationPreview"
                   :technology="technology.title"
                 />
                 <transition name="delay-hiding">
@@ -173,7 +172,6 @@ export default {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    enableQuickNavigationPreview: () => getSetting(['features', 'docs', 'quickNavigationPreview', 'enable'], false),
     topicData: {
       get() {
         return this.topicDataObjc ? this.topicDataObjc : this.topicDataDefault;

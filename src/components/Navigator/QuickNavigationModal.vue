@@ -116,7 +116,7 @@
               </Reference>
             </div>
             <Preview
-              v-if="previewEnabled && previewState"
+              v-if="previewState"
               class="quick-navigation__preview"
               :json="previewJSON"
               :state="previewState"
@@ -184,10 +184,6 @@ export default {
     showQuickNavigationModal: {
       type: Boolean,
       required: true,
-    },
-    previewEnabled: {
-      type: Boolean,
-      default: false,
     },
     technology: {
       type: String,
