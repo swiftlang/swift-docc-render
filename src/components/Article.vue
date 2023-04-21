@@ -60,6 +60,7 @@ export default {
       default() {
         return {
           reset() {},
+          setReferences() {},
         };
       },
     },
@@ -164,13 +165,9 @@ export default {
       }[kind];
     },
   },
-  provide() {
-    return {
-      references: this.references,
-    };
-  },
   created() {
     this.store.reset();
+    this.store.setReferences(this.references);
   },
   SectionKind,
 };

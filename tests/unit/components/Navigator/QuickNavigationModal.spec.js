@@ -366,20 +366,10 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.vm.filteredSymbols.length).toBe(2);
   });
 
-  it('does not render a preview by default', () => {
-    expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
-    wrapper.setData({ debouncedInput: inputValue });
-    expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
-  });
-
-  describe('with preview enabled', () => {
+  describe('preview', () => {
     const { PreviewState } = QuickNavigationPreview.constants;
 
-    beforeEach(() => {
-      wrapper.setProps({ previewEnabled: true });
-    });
-
-    it('renders with a default loading sate when enabled', () => {
+    it('renders with a default loading state', () => {
       wrapper.setData({ debouncedInput: inputValue });
 
       const preview = wrapper.find(QuickNavigationPreview);
