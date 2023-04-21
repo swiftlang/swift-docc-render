@@ -26,10 +26,14 @@ describe('CallToActionButton', () => {
   let wrapper;
 
   const provide = {
-    references: {
-      [propsData.action.identifier]: {
-        title: 'Foo Bar',
-        url: '/foo/bar',
+    store: {
+      state: {
+        references: {
+          [propsData.action.identifier]: {
+            title: 'Foo Bar',
+            url: '/foo/bar',
+          },
+        },
       },
     },
   };
@@ -45,7 +49,8 @@ describe('CallToActionButton', () => {
   it('renders a `ButtonLink`', () => {
     const btn = wrapper.find(ButtonLink);
     expect(btn.exists()).toBe(true);
-    expect(btn.props('url')).toBe(provide.references[propsData.action.identifier].url);
+    expect(btn.props('url'))
+      .toBe(provide.store.state.references[propsData.action.identifier].url);
     expect(btn.props('isDark')).toBe(propsData.isDark);
     expect(btn.text()).toBe(propsData.action.overridingTitle);
   });
