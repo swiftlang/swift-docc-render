@@ -15,10 +15,19 @@ import TabnavItem from '@/components/TabnavItem.vue';
 import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 import { flushPromises } from '../../../../test-utils';
 
-const titles = ['Long tab title', 'A Longer tab title'];
+const titles = ['Long tab title', 'A Longer tab title', 'The Longest tab title'];
+const longerTitles = titles.concat('added title');
+const changedTitles = ['changed first tab',
+  'changed middle tab', 'changed last tab'];
+
 const scopedSlots = {
   [titles[0]]: '<div>First</div>',
   [titles[1]]: '<div>Second</div>',
+  [titles[2]]: '<div>Third</div>',
+  [longerTitles[3]]: '<div>Fourth</div>',
+  [changedTitles[0]]: '<div>First</div>',
+  [changedTitles[1]]: '<div>Middle</div>',
+  [changedTitles[2]]: '<div>Last</div>',
 };
 const defaultProps = {
   titles,
@@ -44,7 +53,7 @@ describe('TabNavigator.spec', () => {
       vertical: false,
       value: titles[0],
     });
-    expect(wrapper.findAll(TabnavItem)).toHaveLength(2);
+    expect(wrapper.findAll(TabnavItem)).toHaveLength(3);
     expect(wrapper.find('.tabs-content').text()).toEqual('First');
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided).toHaveProperty('imageLoadingStrategy', ImageLoadingStrategy.eager);
@@ -68,5 +77,64 @@ describe('TabNavigator.spec', () => {
     tabnav.vm.$emit('input', titles[1]);
     expect(wrapper.find('.tabs-content').text()).toBe('Second');
     expect(tabnav.props('value')).toEqual(titles[1]);
+  });
+
+  it('selects the added tab when adding a tab', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find('.tabs-content').text()).toBe('First');
+
+    wrapper.setProps({ titles: longerTitles });
+    expect(wrapper.find('.tabs-content').text()).toBe('Fourth');
+    const tabnav = wrapper.find(Tabnav);
+    expect(tabnav.props('value')).toEqual(longerTitles[3]);
+  });
+
+  it('selects first tab when deleting current tab', () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({ titles: longerTitles });
+    expect(wrapper.find('.tabs-content').text()).toBe('Fourth');
+
+    wrapper.setProps({ titles });
+    expect(wrapper.find('.tabs-content').text()).toBe('First');
+    const tabnav = wrapper.find(Tabnav);
+    expect(tabnav.props('value')).toEqual(titles[0]);
+  });
+
+  it('keep currently selected tab when deleting a tab', () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({ titles: longerTitles });
+    expect(wrapper.find('.tabs-content').text()).toBe('Fourth'); // Current tab
+
+    const removedTitles = ['Long tab title',
+      'A Longer tab title', 'added title'];
+    wrapper.setProps({ titles: removedTitles });
+    expect(wrapper.find('.tabs-content').text()).toBe('Fourth'); // Keeps current tab
+    const tabnav = wrapper.find(Tabnav);
+    expect(tabnav.props('value')).toEqual(longerTitles[3]);
+  });
+
+  it('selects correct tab when changing a tab', () => {
+    const changedLastTab = ['Long tab title',
+      'A Longer tab title', 'changed last tab'];
+    const wrapper = createWrapper();
+    expect(wrapper.find('.tabs-content').text()).toBe('First');
+    wrapper.setProps({ titles: changedLastTab });
+    expect(wrapper.find('.tabs-content').text()).toBe('Last');
+    let tabnav = wrapper.find(Tabnav);
+    expect(tabnav.props('value')).toEqual(changedLastTab[2]);
+
+    const changedFirstTab = ['changed first tab',
+      'A Longer tab title', 'changed last tab'];
+    wrapper.setProps({ titles: changedFirstTab });
+    expect(wrapper.find('.tabs-content').text()).toBe('First');
+    tabnav = wrapper.find(Tabnav);
+    expect(tabnav.props('value')).toEqual(changedFirstTab[0]);
+
+    const changedMidTab = ['changed first tab',
+      'changed middle tab', 'changed last tab'];
+    wrapper.setProps({ titles: changedMidTab });
+    expect(wrapper.find('.tabs-content').text()).toBe('Middle');
+    tabnav = wrapper.find(Tabnav);
+    expect(tabnav.props('value')).toEqual(changedMidTab[1]);
   });
 });
