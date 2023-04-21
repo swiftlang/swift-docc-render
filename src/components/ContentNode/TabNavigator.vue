@@ -76,8 +76,8 @@ export default {
       if (newVal.length < oldVal.length) {
         // set to the first tab if selected tab was removed
         if (!newVal.includes(this.currentTitle)) {
-          // eslint-disable-next-line prefer-destructuring
-          this.currentTitle = newVal[0];
+          const [firstTitle] = newVal;
+          this.currentTitle = firstTitle;
         }
       } else {
         // set to newly added/changed tab
