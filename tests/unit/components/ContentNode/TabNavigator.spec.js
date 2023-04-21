@@ -16,6 +16,8 @@ import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 import { flushPromises } from '../../../../test-utils';
 
 const titles = ['Long tab title', 'A Longer tab title', 'The Longest tab title'];
+const longerTitles = titles.concat('added title');
+
 const scopedSlots = {
   [titles[0]]: '<div>First</div>',
   [titles[1]]: '<div>Second</div>',
@@ -70,20 +72,14 @@ describe('TabNavigator.spec', () => {
     expect(tabnav.props('value')).toEqual(titles[1]);
   });
 
-  it('selects correct tab when adding a tab', async () => {
-    const longerTitles = ['Long tab title',
-      'A Longer tab title', 'The Longest tab title', 'added title'];
-
+  it('selects correct tab when adding a tab', () => {
     const wrapper = createWrapper();
     wrapper.setProps({ titles: longerTitles });
 
     expect(wrapper.vm.currentTitle).toEqual('added title');
   });
 
-  it('selects first tab when deleting current tab', async () => {
-    const longerTitles = ['Long tab title',
-      'A Longer tab title', 'The Longest tab title', 'added title'];
-
+  it('selects first tab when deleting current tab', () => {
     const wrapper = createWrapper();
     // current tab is on 'added title'
     wrapper.setProps({ titles: longerTitles });
@@ -92,26 +88,32 @@ describe('TabNavigator.spec', () => {
     expect(wrapper.vm.currentTitle).toEqual('Long tab title');
   });
 
-  it('selects first tab when deleting current tab', async () => {
-    const longerTitles = ['Long tab title',
-      'A Longer tab title', 'The Longest tab title', 'added title'];
-    const removedTitles = ['Long tab title',
-      'A Longer tab title', 'added title'];
+  it('keep currently selected tab when deleting a tab', () => {
     const wrapper = createWrapper();
     // current tab is on 'added title'
     wrapper.setProps({ titles: longerTitles });
+    const removedTitles = ['Long tab title',
+      'A Longer tab title', 'added title'];
     wrapper.setProps({ titles: removedTitles });
 
     expect(wrapper.vm.currentTitle).toEqual('added title');
   });
 
-  it('selects correct tab when changing a tab', async () => {
-    const changedTitle = ['Long tab title',
-      'A Longer tab title', 'changed tab title'];
-
+  it('selects correct tab when changing a tab', () => {
+    const changedLastTab = ['Long tab title',
+      'A Longer tab title', 'changed last tab'];
     const wrapper = createWrapper();
-    wrapper.setProps({ titles: changedTitle });
+    wrapper.setProps({ titles: changedLastTab });
+    expect(wrapper.vm.currentTitle).toEqual('changed last tab');
 
-    expect(wrapper.vm.currentTitle).toEqual('changed tab title');
+    const changedFirstTab = ['changed first tab',
+      'A Longer tab title', 'changed last tab'];
+    wrapper.setProps({ titles: changedFirstTab });
+    expect(wrapper.vm.currentTitle).toEqual('changed first tab');
+
+    const changedMidTab = ['changed first tab',
+      'changed middle tab', 'changed last tab'];
+    wrapper.setProps({ titles: changedMidTab });
+    expect(wrapper.vm.currentTitle).toEqual('changed middle tab');
   });
 });
