@@ -60,7 +60,9 @@ const createWrapper = (overrides) => {
       destination: Destinations.link,
     },
     provide: {
-      references,
+      store: {
+        state: { references },
+      },
     },
     scopedSlots: {
       default(params) {
@@ -146,7 +148,9 @@ describe('DestinationDataProvider', () => {
           destination: Destinations.referenceLink,
         },
         provide: {
-          references,
+          store: {
+            state: { references },
+          },
           isTargetIDE: true,
         },
       });

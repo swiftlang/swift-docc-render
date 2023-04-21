@@ -363,10 +363,9 @@ export default {
     },
   },
   provide() {
-    // NOTE: this is not reactive: if this.references change, the provided value
+    // NOTE: this is not reactive: if this.identifier change, the provided value
     // to children will stay the same
     return {
-      references: this.references,
       identifier: this.identifier,
       languages: new Set(Object.keys(this.languagePaths)),
       interfaceLanguage: this.interfaceLanguage,
