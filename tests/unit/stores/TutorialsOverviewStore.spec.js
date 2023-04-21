@@ -10,11 +10,17 @@
 
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 
+const references = {
+  foo: { identifier: 'foo' },
+  bar: { identifier: 'bar' },
+};
+
 describe('TutorialsOverviewStore', () => {
   it('has a default state', () => {
     expect(TutorialsOverviewStore.state).toEqual({
       activeTutorialLink: null,
       activeVolume: null,
+      references: {},
     });
   });
 
@@ -22,10 +28,12 @@ describe('TutorialsOverviewStore', () => {
     it('restores the default state', () => {
       TutorialsOverviewStore.state.activeTutorialLink = 'foobar';
       TutorialsOverviewStore.state.activeVolume = 'foobar';
+      TutorialsOverviewStore.state.references = references;
       TutorialsOverviewStore.reset();
       expect(TutorialsOverviewStore.state).toEqual({
         activeTutorialLink: null,
         activeVolume: null,
+        references: {},
       });
     });
   });
@@ -41,6 +49,13 @@ describe('TutorialsOverviewStore', () => {
     it('sets the `activeVolume` state', () => {
       TutorialsOverviewStore.setActiveVolume('foobar');
       expect(TutorialsOverviewStore.state.activeVolume).toBe('foobar');
+    });
+  });
+
+  describe('setReferences', () => {
+    it('sets the `references` state', () => {
+      TutorialsOverviewStore.setReferences(references);
+      expect(TutorialsOverviewStore.state.references).toBe(references);
     });
   });
 });

@@ -56,9 +56,13 @@ describe('TopicsTable', () => {
   };
 
   const provide = {
-    references: {
-      foo,
-      baz,
+    store: {
+      state: {
+        references: {
+          foo,
+          baz,
+        },
+      },
     },
   };
 
