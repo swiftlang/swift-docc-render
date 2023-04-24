@@ -30,7 +30,11 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(LinksBlock
     ...propsData,
   },
   stubs: { TopicsLinkBlock: { props: ['topic'], template: '<div/>' } },
-  provide: { references },
+  provide: {
+    store: {
+      state: { references },
+    },
+  },
   ...others,
 });
 

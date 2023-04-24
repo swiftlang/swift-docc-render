@@ -36,6 +36,13 @@ describe('TypeIdentifierLink', () => {
         query: {},
       },
     },
+    provide: {
+      store: {
+        state: {
+          references: {},
+        },
+      },
+    },
   };
 
   it('renders a span for unresolved references', () => {
@@ -48,8 +55,12 @@ describe('TypeIdentifierLink', () => {
     const wrapper = shallowMount(TypeIdentifierLink, {
       ...defaultOpts,
       provide: {
-        references: {
-          [foo.identifier]: foo,
+        store: {
+          state: {
+            references: {
+              [foo.identifier]: foo,
+            },
+          },
         },
       },
     });
