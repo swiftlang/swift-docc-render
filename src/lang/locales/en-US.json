@@ -53,8 +53,8 @@
     "nav": {
       "breadcrumbs": "Breadcrumbs",
       "menu": "Menu",
-      "open-menu": "Open @:documentation.nav.menu",
-      "close-menu": "Close @:documentation.nav.menu"
+      "open-menu": "Open Menu",
+      "close-menu": "Close Menu"
     },
     "current-page": "Current page is {title}"
   },
@@ -70,7 +70,7 @@
   "change-type": {
     "added": "Added",
     "modified": "Modified",
-    "deprecated": "@:aside-kind.deprecated"
+    "deprecated": "Deprecated"
   },
   "verbs": {
     "hide": "Hide",
@@ -119,8 +119,8 @@
     "add-tag": "Add tag",
     "tag-select-remove": "Tag. Select to remove from list.",
     "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
-    "containing-symbols": "containing one symbol | containing {number} symbols",
-    "symbols-inside": "{number} of {total} symbols inside",
+    "siblings-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings}",
+    "parent-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings} containing one symbol | {number-siblings} of {total-siblings} symbols inside {parent-siblings} containing {number-parent} symbols",
     "reset-filter": "Reset Filter"
   },
   "navigator": {
@@ -137,7 +137,7 @@
       "ready": "ready"
     },
     "tags": {
-      "hide-deprecated": "Hide @:aside-kind.deprecated"
+      "hide-deprecated": "Hide Deprecated"
     }
   },
   "tab": {
