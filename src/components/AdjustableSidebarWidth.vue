@@ -65,8 +65,9 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 export const STORAGE_KEY = 'sidebar';
 
 // the maximum width, after which the full-width content does not grow
-export const MAX_WIDTH = 1920;
+export const MAX_WIDTH = 1921;
 export const ULTRA_WIDE_DEFAULT = 543;
+export const LARGE_DEFAULT_WIDTH = 400;
 
 export const eventsMap = {
   touch: {
@@ -130,7 +131,7 @@ export default {
     // have a default width for very large screens, or use half of the min and max
     const defaultWidth = windowWidth >= MAX_WIDTH
       ? ULTRA_WIDE_DEFAULT
-      : Math.round((minWidth + maxWidth) / 2);
+      : LARGE_DEFAULT_WIDTH;
     // get the already stored data, fallback to a default one.
     const storedWidth = storage.get(STORAGE_KEY, defaultWidth);
     return {

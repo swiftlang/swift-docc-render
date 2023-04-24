@@ -13,6 +13,7 @@ import AdjustableSidebarWidth, {
   STORAGE_KEY,
   MAX_WIDTH,
   ULTRA_WIDE_DEFAULT,
+  LARGE_DEFAULT_WIDTH,
 } from '@/components/AdjustableSidebarWidth.vue';
 
 import store from '@/stores/DocumentationTopicStore';
@@ -105,9 +106,9 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   describe('on mount', () => {
-    it('sets the `width` to the middle between min and max for `large`, on mount', () => {
+    it('sets the `width` to the `large` default width, on mount', () => {
       const wrapper = createWrapper();
-      assertWidth(wrapper, 350); // 35% on large
+      assertWidth(wrapper, LARGE_DEFAULT_WIDTH);
     });
 
     it('changes the `width`, to the next closest max or min, on mount, as soon as the breakpoint gets changed', () => {
@@ -144,7 +145,7 @@ describe('AdjustableSidebarWidth', () => {
       assertWidth(wrapper, 450);
       // assert the storage was called with the key and the default size
       // 350 is half of min and max on Large
-      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, 350);
+      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, LARGE_DEFAULT_WIDTH);
     });
 
     it('sets the `width` to the `max width allowed`, if stored value is bigger', () => {
@@ -367,8 +368,8 @@ describe('AdjustableSidebarWidth', () => {
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.mouse.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toHaveLength(4);
-    expect(wrapper.emitted('width-change')[3]).toEqual([maxWidth]);
+    expect(wrapper.emitted('width-change')).toHaveLength(3);
+    expect(wrapper.emitted('width-change')[2]).toEqual([maxWidth]);
     // assert saved storage
     expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
@@ -405,8 +406,8 @@ describe('AdjustableSidebarWidth', () => {
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.touch.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toHaveLength(4);
-    expect(wrapper.emitted('width-change')[3]).toEqual([maxWidth]);
+    expect(wrapper.emitted('width-change')).toHaveLength(3);
+    expect(wrapper.emitted('width-change')[2]).toEqual([maxWidth]);
     // assert saved storage
     expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
