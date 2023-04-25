@@ -20,11 +20,13 @@
     </Tabnav>
     <div class="tabs-content">
       <div class="tabs-content-container">
-        <transition name="fade">
-          <div :key="currentTitle">
-            <slot :name="currentTitle" />
-          </div>
-        </transition>
+        <transition-group name="fade">
+          <template v-for="title in titles">
+            <div :key="title" v-show="title === currentTitle">
+              <slot :name="title" />
+            </div>
+          </template>
+        </transition-group>
       </div>
     </div>
   </div>
