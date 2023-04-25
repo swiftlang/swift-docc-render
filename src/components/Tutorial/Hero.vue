@@ -74,6 +74,7 @@ import LinkableElement from 'docc-render/components/LinkableElement.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
 import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
 import { normalizePath, toCSSUrl } from 'docc-render/utils/assets';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import HeroMetadata from './HeroMetadata.vue';
 
 export default {
@@ -103,7 +104,7 @@ export default {
     Asset,
     LinkableSection: LinkableElement,
   },
-  inject: ['references'],
+  mixins: [referencesProvider],
   props: {
     title: {
       type: String,

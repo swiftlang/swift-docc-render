@@ -65,11 +65,20 @@ function scaledSize({ width, height }, scale = 1) {
 
 export default {
   name: 'CodePreview',
-  inject: [
-    'references',
-    'isTargetIDE',
-    'store',
-  ],
+  inject: {
+    isTargetIDE: {
+      default: false,
+    },
+    store: {
+      default() {
+        return {
+          state: {
+            references: {},
+          },
+        };
+      },
+    },
+  },
   components: {
     DiagonalArrowIcon,
     CodeListing,
@@ -95,6 +104,7 @@ export default {
     };
   },
   computed: {
+    references: ({ tutorialState }) => tutorialState.references,
     currentBreakpoint() {
       return this.tutorialState.breakpoint;
     },
