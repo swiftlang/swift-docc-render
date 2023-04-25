@@ -19,17 +19,12 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 import FetchError from 'docc-render/errors/FetchError';
 import RedirectError from 'docc-render/errors/RedirectError';
 import { defaultLocale } from 'theme/lang/index.js';
+import * as urlHelpers from 'docc-render/utils/url-helper';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
 jest.mock('docc-render/utils/metadata', () => ({
   updateLangTag: jest.fn(),
-}));
-
-const mockBaseUrl = jest.fn().mockReturnValue('/');
-
-jest.mock('docc-render/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
 }));
 
 const badFetchResponse = {
@@ -189,11 +184,18 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls `fetchData` with a configurable base url', async () => {
+    const baseUrl = '/base-prefix';
+    jest.spyOn(urlHelpers, 'getAbsoluteUrl').mockImplementationOnce(
+      path => new URL(
+        baseUrl + path,
+        window.location.href,
+      ),
+    );
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
-      '/data/tutorials/augmented-reality/tutorials.json',
+      `${baseUrl}/data/tutorials/augmented-reality/tutorials.json`,
       window.location.href,
     ).href, {});
     await expect(data).toEqual(await goodFetchResponse.json());
