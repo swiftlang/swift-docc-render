@@ -57,7 +57,7 @@ const PreviewStore = {
 export default {
   name: 'QuickNavigationPreview',
   components: { DocumentationTopic },
-  constants: { PreviewState: STATE },
+  constants: { PreviewState: STATE, PreviewStore },
   data() {
     return {
       store: PreviewStore,
@@ -109,10 +109,13 @@ export default {
     },
   },
   watch: {
-    async json(json) {
-      const { references = {} } = json || {};
-      await this.$nextTick();
-      PreviewStore.setReferences(references);
+    json: {
+      immediate: true,
+      async handler(json) {
+        const { references = {} } = json || {};
+        await this.$nextTick();
+        PreviewStore.setReferences(references);
+      },
     },
   },
 };
