@@ -676,13 +676,15 @@ export default {
   @include font-styles(body);
 }
 
-.container {
+.container:not(.minimized-container) {
   outline-style: none;
   @include dynamic-content-container;
 }
 
 /deep/ {
   .minimized-container {
+    outline-style: none;
+
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;
     --declaration-code-listing-margin: 1em 0 0 0;
@@ -755,15 +757,8 @@ export default {
 }
 
 .full-width-container .doc-content .minimized-container {
-  padding-left: 20px;
-  padding-right: 20px;
-
-  @include inTargetIde {
-    @include breakpoint(xsmall) {
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-  }
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
 }
 
 /deep/ {
