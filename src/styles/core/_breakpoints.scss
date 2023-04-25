@@ -30,11 +30,6 @@ $breakpoint-attributes: (
       max-width: 735px,
       content-width: 280px,
     ),
-    xsmall: (
-      min-width: 245px,
-      max-width: 320px,
-      content-width: 215px,
-    ),
   ),
   nav: (
     large: (
@@ -182,7 +177,7 @@ $breakpoint-attributes: (
 
         // Use a fixed percentage width value for the small breakpoint.
         // The percentage is the ratio of the content-width/min-width sizes.
-        @if ($breakpoint == small or $breakpoint == xsmall) and $min-width {
+        @if ($breakpoint == small) and $min-width {
           $width: percentage($content-width / $min-width);
         }
 
