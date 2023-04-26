@@ -113,8 +113,8 @@
   "filter": {
     "title": "过滤",
     "search-symbols": "搜索符号",
-    "suggested-tags": "建议{tags}",
-    "selected-tags": "所选{tags}",
+    "suggested-tags": "建议标签",
+    "selected-tags": "所选标签",
     "add-tag": "添加标签",
     "tag-select-remove": "标签。选择以从列表中移除。",
     "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
