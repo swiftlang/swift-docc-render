@@ -686,4 +686,59 @@ describe('Swift function/initializer formatting', () => {
 
     themeSettingsState.theme = originalTheme;
   });
+
+  it('breaks attributes onto their own lines', () => {
+    // Before:
+    // @discardableResult @objc(baz) func foobarbaz() -> Int
+    //
+    // After:
+    // @discardableResult
+    // @objc(baz)
+    // func foobarbaz() -> Int
+    const tokens = [
+      {
+        kind: 'attribute',
+        text: '@discardableResult',
+      },
+      {
+        kind: 'text',
+        text: ' ',
+      },
+      {
+        kind: 'attribute',
+        text: '@objc',
+      },
+      {
+        kind: 'text',
+        text: '(baz) ',
+      },
+      {
+        kind: 'keyword',
+        text: 'func',
+      },
+      {
+        kind: 'text',
+        text: ' ',
+      },
+      {
+        kind: 'identifier',
+        text: 'foobarbaz',
+      },
+      {
+        kind: 'text',
+        text: '() -> ',
+      },
+      {
+        kind: 'typeIdentifier',
+        text: 'Int',
+        preciseIdentifier: 's:Si',
+      },
+    ];
+    const wrapper = mountWithTokens(tokens);
+
+    const tokenComponents = wrapper.findAll(Token);
+    expect(tokenComponents.length).toBe(tokens.length);
+    expect(tokenComponents.at(1).props('text')).toBe('\n');
+    expect(tokenComponents.at(3).props('text')).toBe('(baz)\n');
+  });
 });
