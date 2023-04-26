@@ -30,6 +30,11 @@ $breakpoint-attributes: (
       max-width: 735px,
       content-width: 280px,
     ),
+    xsmall: (
+      min-width: 245px,
+      max-width: 320px,
+      content-width: 215px,
+    ),
   ),
   nav: (
     large: (
