@@ -113,8 +113,8 @@
   "filter": {
     "title": "フィルタ",
     "search-symbols": "記号を検索",
-    "suggested-tags": "提案された{tags}",
-    "selected-tags": "選択した{tags}",
+    "suggested-tags": "提案されたタグ",
+    "selected-tags": "選択したタグ",
     "add-tag": "タグを追加",
     "tag-select-remove": "タグ。選択してリストから削除します。",
     "navigate": "シンボルを移動するには、上下左右の矢印キーを押します。",
