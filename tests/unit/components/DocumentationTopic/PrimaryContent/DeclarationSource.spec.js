@@ -741,4 +741,52 @@ describe('Swift function/initializer formatting', () => {
     expect(tokenComponents.at(1).props('text')).toBe('\n');
     expect(tokenComponents.at(3).props('text')).toBe('(baz)\n');
   });
+
+  it('does not add newlines to attributes within param clause', () => {
+    // func foo(bar: @escaping () -> ())
+    const tokens = [
+      {
+        kind: 'keyword',
+        text: 'func',
+      },
+      {
+        kind: 'text',
+        text: ' ',
+      },
+      {
+        kind: 'identifier',
+        text: 'foo',
+      },
+      {
+        kind: 'text',
+        text: '(',
+      },
+      {
+        kind: 'externalParam',
+        text: 'bar',
+      },
+      {
+        kind: 'text',
+        text: ': ',
+      },
+      {
+        kind: 'attribute',
+        text: '@escaping',
+      },
+      {
+        kind: 'text',
+        text: ' () -> ()',
+      },
+      {
+        kind: 'text',
+        text: ')',
+      },
+    ];
+    const wrapper = mountWithTokens(tokens);
+
+    const tokenComponents = wrapper.findAll(Token);
+    expect(tokenComponents.length).toBe(tokens.length);
+    expect(tokenComponents.at(6).props('text')).toBe(tokens[6].text);
+    expect(tokenComponents.at(7).props('text')).toBe(tokens[7].text);
+  });
 });
