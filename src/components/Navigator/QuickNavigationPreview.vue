@@ -36,6 +36,8 @@
 
 <script>
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
+import { clone } from 'docc-render/utils/data';
+import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 
 const { extractProps } = DocumentationTopic.methods;
 
@@ -47,10 +49,25 @@ const STATE = {
   success: 'success',
 };
 
+const PreviewStore = {
+  ...DocumentationTopicStore,
+  state: clone(DocumentationTopicStore.state),
+};
+
 export default {
   name: 'QuickNavigationPreview',
   components: { DocumentationTopic },
-  constants: { PreviewState: STATE },
+  constants: { PreviewState: STATE, PreviewStore },
+  data() {
+    return {
+      store: PreviewStore,
+    };
+  },
+  provide() {
+    return {
+      store: this.store,
+    };
+  },
   props: {
     json: {
       type: Object,
@@ -89,6 +106,16 @@ export default {
         ...props,
         abstract,
       };
+    },
+  },
+  watch: {
+    json: {
+      immediate: true,
+      async handler(json) {
+        const { references = {} } = json || {};
+        await this.$nextTick();
+        PreviewStore.setReferences(references);
+      },
     },
   },
 };
