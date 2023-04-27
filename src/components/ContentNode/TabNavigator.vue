@@ -71,6 +71,21 @@ export default {
       currentTitle: this.titles[0],
     };
   },
+  watch: {
+    titles(newVal, oldVal) {
+      if (newVal.length < oldVal.length) {
+        // set to the first tab if selected tab was removed
+        if (!newVal.includes(this.currentTitle)) {
+          const [firstTitle] = newVal;
+          this.currentTitle = firstTitle;
+        }
+      } else {
+        // set to newly added/changed tab
+        const newTab = newVal.find(tab => !oldVal.includes(tab));
+        this.currentTitle = newTab || this.currentTitle;
+      }
+    },
+  },
 };
 </script>
 

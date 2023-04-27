@@ -12,15 +12,20 @@ export default {
   state: {
     activeTutorialLink: null,
     activeVolume: null,
+    references: {},
   },
   reset() {
     this.state.activeTutorialLink = null;
     this.state.activeVolume = null;
+    this.state.references = {};
   },
   setActiveSidebarLink(link) {
     this.state.activeTutorialLink = link;
   },
   setActiveVolume(name) {
     this.state.activeVolume = name;
+  },
+  setReferences(references) {
+    this.state.references = references;
   },
 };

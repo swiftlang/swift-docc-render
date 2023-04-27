@@ -114,8 +114,8 @@
   "filter": {
     "title": "Filter",
     "search-symbols": "Search symbols in {technology}",
-    "suggested-tags": "Suggested {tags}",
-    "selected-tags": "Selected {tags}",
+    "suggested-tags": "Suggested tag | Suggested tags",
+    "selected-tags": "Selected tag | Selected tags",
     "add-tag": "Add tag",
     "tag-select-remove": "Tag. Select to remove from list.",
     "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",

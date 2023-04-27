@@ -41,12 +41,14 @@ describe('Volume', () => {
   };
 
   const provide = {
-    references: {
-      [topics.a.identifier]: topics.a,
-      [topics.b.identifier]: topics.b,
-      [topics.c.identifier]: topics.c,
-    },
     store: {
+      state: {
+        references: {
+          [topics.a.identifier]: topics.a,
+          [topics.b.identifier]: topics.b,
+          [topics.c.identifier]: topics.c,
+        },
+      },
       setActiveVolume: jest.fn(),
     },
   };
