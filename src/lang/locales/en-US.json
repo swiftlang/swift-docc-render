@@ -56,7 +56,15 @@
       "open-menu": "Open Menu",
       "close-menu": "Close Menu"
     },
-    "current-page": "Current page is {title}"
+    "current-page": "Current page is {title}",
+    "card": {
+      "learn-more": "Learn More",
+      "read-article": "Read article",
+      "start-tutorial": "Start tutorial",
+      "view-api": "View API collection",
+      "view-symbol": "View symbol",
+      "view-sample-code": "View sample code"
+    }
   },
   "aside-kind": {
     "beta": "Beta",
