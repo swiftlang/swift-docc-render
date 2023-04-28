@@ -20,11 +20,18 @@
     </Tabnav>
     <div class="tabs-content">
       <div class="tabs-content-container">
-        <transition name="fade">
-          <div :key="currentTitle">
-            <slot :name="currentTitle" />
-          </div>
-        </transition>
+        <transition-group name="fade">
+          <template v-for="title in titles">
+            <div
+              v-show="title === currentTitle"
+              :key="title"
+              :class="{ active: title === currentTitle }"
+              class="tab-container"
+            >
+              <slot :name="title" />
+            </div>
+          </template>
+        </transition-group>
       </div>
     </div>
   </div>
@@ -33,7 +40,6 @@
 <script>
 import Tabnav from 'docc-render/components/Tabnav.vue';
 import TabnavItem from 'docc-render/components/TabnavItem.vue';
-import ImageLoadingStrategy from 'docc-render/constants/ImageLoadingStrategy';
 
 /**
  * Tab navigation component, that renders `ContentNode`,
@@ -46,9 +52,6 @@ export default {
   components: {
     TabnavItem,
     Tabnav,
-  },
-  provide: {
-    imageLoadingStrategy: ImageLoadingStrategy.eager,
   },
   props: {
     vertical: {
