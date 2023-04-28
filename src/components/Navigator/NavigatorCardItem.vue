@@ -65,16 +65,26 @@
         v-if="isParent"
         hidden
         :id="parentLabel"
-      >, {{ $tc(
-        'filter.containing-symbols',
+      >{{ $tc(
+        'filter.parent-label',
         item.childUIDs.length,
-        { number: item.childUIDs.length }
+        {
+          'number-siblings': item.index + 1,
+          'total-siblings': item.siblingsCount,
+          'parent-siblings': item.parent,
+          'number-parent': item.childUIDs.length
+        }
       ) }}</span>
       <span
+        v-if="!isParent"
         :id="siblingsLabel"
         hidden
       >
-        {{ $t('filter.symbols-inside', { number: item.index + 1, total: item.siblingsCount }) }}
+        {{ $t('filter.siblings-label', {
+          'number-siblings': item.index + 1,
+          'total-siblings': item.siblingsCount,
+          'parent-siblings': item.parent
+        }) }}
       </span>
       <component
         :is="refComponent"
@@ -181,13 +191,11 @@ export default {
     parentLabel: ({ item }) => `label-parent-${item.uid}`,
     siblingsLabel: ({ item }) => `label-${item.uid}`,
     usageLabel: ({ item }) => `usage-${item.uid}`,
-    ariaDescribedBy({
-      item, siblingsLabel, parentLabel, isParent,
-    }) {
-      const baseLabel = `${siblingsLabel} ${item.parent}`;
-      if (!isParent) return `${baseLabel}`;
-      return `${baseLabel} ${parentLabel}`;
-    },
+    ariaDescribedBy: ({
+      isParent, parentLabel, siblingsLabel,
+    }) => (
+      isParent ? `${parentLabel}` : `${siblingsLabel}`
+    ),
     isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
     refComponent: ({ isGroupMarker }) => (isGroupMarker ? 'h3' : Reference),

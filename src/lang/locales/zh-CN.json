@@ -52,8 +52,8 @@
     "nav": {
       "breadcrumbs": "面包屑导航",
       "menu": "菜单",
-      "open-menu": "打开@:documentation.nav.menu",
-      "close-menu": "关闭@:documentation.nav.menu"
+      "open-menu": "打开菜单",
+      "close-menu": "关闭菜单"
     },
     "current-page": "当前页面为：{title}"
   },
@@ -69,7 +69,7 @@
   "change-type": {
     "added": "已添加",
     "modified": "已修改",
-    "deprecated": "@:aside-kind.deprecated"
+    "deprecated": "已弃用"
   },
   "verbs": {
     "hide": "隐藏",
@@ -118,14 +118,14 @@
     "add-tag": "添加标签",
     "tag-select-remove": "标签。选择以从列表中移除。",
     "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
-    "containing-symbols": "包含 1 个符号 | 包含 {number} 个符号",
-    "symbols-inside": "内含 {number} 个符号（共 {total} 个）",
+    "siblings-label": "内含 {number-siblings} 个符号（共 {total-siblings} 个）{parent-siblings}",
+    "parent-label": "@:filter.siblings-label 包含 1 个符号 | @:filter.siblings-label 包含 {number-parent} 个符号",
     "reset-filter": "还原过滤条件"
   },
   "navigator": {
-    "title": "@:documentation.title 导航器",
-    "open-navigator": "打开@:navigator.title",
-    "close-navigator": "关闭@:navigator.title",
+    "title": "文档 导航器",
+    "open-navigator": "打开文档 导航器",
+    "close-navigator": "关闭文档 导航器",
     "no-results": "未找到结果。",
     "no-children": "无可用数据。",
     "error-fetching": "获取数据时出错。",
@@ -136,7 +136,7 @@
       "ready": "准备就绪"
     },
     "tags": {
-      "hide-deprecated": "隐藏@:aside-kind.deprecated"
+      "hide-deprecated": "隐藏已弃用"
     }
   },
   "tab": {
