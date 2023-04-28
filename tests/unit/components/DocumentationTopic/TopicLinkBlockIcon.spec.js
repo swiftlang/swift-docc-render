@@ -12,6 +12,7 @@ import TopicLinkBlockIcon from '@/components/DocumentationTopic/TopicLinkBlockIc
 import { mount } from '@vue/test-utils';
 import { TopicRole } from '@/constants/roles';
 import ArticleIcon from '@/components/Icons/ArticleIcon.vue';
+import TechnologyIcon from '@/components/Icons/TechnologyIcon.vue';
 import OverridableAsset from '@/components/OverridableAsset.vue';
 
 const defaultProps = {
@@ -60,5 +61,11 @@ describe('TopicLinkBlockIcon', () => {
       },
     });
     expect(wrapper.html()).toBeFalsy();
+  });
+
+  it('uses the technology icon for collections', () => {
+    const propsData = { role: TopicRole.collection };
+    const wrapper = createWrapper({ propsData });
+    expect(wrapper.find('.topic-icon').is(TechnologyIcon)).toBe(true);
   });
 });
