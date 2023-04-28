@@ -118,8 +118,8 @@
     "add-tag": "タグを追加",
     "tag-select-remove": "タグ。選択してリストから削除します。",
     "navigate": "シンボルを移動するには、上下左右の矢印キーを押します。",
-    "containing-symbols": "1個のシンボルを含む | {number}個のシンボルを含む",
-    "symbols-inside": "{total}個中{number}個のシンボルが中にあります",
+    "siblings-label": "{number-siblings}個中{total-siblings} 個のシンボルが中にあります {parent-siblings}",
+    "parent-label": "@:filter.siblings-label 1個のシンボルを含む | @:filter.siblings-label {number-parent} 個のシンボルを含む",
     "reset-filter": "フィルタをリセット"
   },
   "navigator": {
