@@ -33,15 +33,6 @@ describe('TopicsLinkBlock', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
-  const store = {
-    reset: jest.fn(),
-    setAPIChanges: jest.fn(),
-    state: {
-      onThisPageSections: [],
-      apiChanges: null,
-    },
-  };
-
   const iconOverride = {
     type: 'icon',
     identifier: 'icon-override',
@@ -51,9 +42,18 @@ describe('TopicsLinkBlock', () => {
     [iconOverride.identifier]: { foo: 'bar' },
   };
 
+  const store = {
+    reset: jest.fn(),
+    setAPIChanges: jest.fn(),
+    state: {
+      onThisPageSections: [],
+      apiChanges: null,
+      references,
+    },
+  };
+
   const provide = {
     store,
-    references,
   };
 
   const propsData = {

@@ -52,8 +52,8 @@
     "nav": {
       "breadcrumbs": "パンくずリスト",
       "menu": "メニュー",
-      "open-menu": "@:documentation.nav.menuを開く",
-      "close-menu": "@:documentation.nav.menuを閉じる"
+      "open-menu": "メニューを開く",
+      "close-menu": "メニューを閉じる"
     },
     "current-page": "現在のページは{title}です"
   },
@@ -69,7 +69,7 @@
   "change-type": {
     "added": "追加",
     "modified": "変更",
-    "deprecated": "@:aside-kind.deprecated"
+    "deprecated": "非推奨"
   },
   "verbs": {
     "hide": "非表示",
@@ -113,8 +113,8 @@
   "filter": {
     "title": "フィルタ",
     "search-symbols": "記号を検索",
-    "suggested-tags": "提案された{tags}",
-    "selected-tags": "選択した{tags}",
+    "suggested-tags": "提案されたタグ",
+    "selected-tags": "選択したタグ",
     "add-tag": "タグを追加",
     "tag-select-remove": "タグ。選択してリストから削除します。",
     "navigate": "シンボルを移動するには、上下左右の矢印キーを押します。",
@@ -123,9 +123,9 @@
     "reset-filter": "フィルタをリセット"
   },
   "navigator": {
-    "title": "@:documentation.titleナビゲータ",
-    "open-navigator": "@:navigator.titleを開く",
-    "close-navigator": "@:navigator.titleを閉じる",
+    "title": "ドキュメントナビゲータ",
+    "open-navigator": "ドキュメントナビゲータを開く",
+    "close-navigator": "ドキュメントナビゲータを閉じる",
     "no-results": "結果が見つかりません。",
     "no-children": "使用できるデータがありません。",
     "error-fetching": "データを取得する際にエラーが起きました。",
@@ -136,7 +136,7 @@
       "ready": "準備完了"
     },
     "tags": {
-      "hide-deprecated": "@:aside-kind.deprecatedの項目を非表示"
+      "hide-deprecated": "非推奨の項目を非表示"
     }
   },
   "tab": {
