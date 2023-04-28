@@ -16,7 +16,7 @@
     :title="item.title"
     floating-style
     :size="cardSize"
-    :link-text="linkText"
+    :link-text="compact ? '' : $t(linkText)"
   >
     <template v-if="!imageReferences.card" #cover="{ classes }">
       <div :class="classes" class="reference-card-grid-item__image">
@@ -39,11 +39,11 @@ import CardSize from 'docc-render/constants/CardSize';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 export const ROLE_LINK_TEXT = {
-  [TopicRole.article]: 'Read article',
-  [TopicRole.overview]: 'Start tutorial',
-  [TopicRole.collection]: 'View API collection',
-  [TopicRole.symbol]: 'View symbol',
-  [TopicRole.sampleCode]: 'View sample code',
+  [TopicRole.article]: 'documentation.card.read-article',
+  [TopicRole.overview]: 'documentation.card.start-tutorial',
+  [TopicRole.collection]: 'documentation.card.view-api',
+  [TopicRole.symbol]: 'documentation.card.view-symbol',
+  [TopicRole.sampleCode]: 'documentation.card.view-sample-code',
 };
 
 export default {
@@ -70,7 +70,7 @@ export default {
       all[current.type] = current.identifier;
       return all;
     }, { icon: null, card: null }),
-    linkText: ({ compact, item }) => (compact ? '' : (ROLE_LINK_TEXT[item.role] || 'Learn more')),
+    linkText: ({ item }) => (ROLE_LINK_TEXT[item.role] || 'documentation.card.learn-more'),
     cardSize: ({ compact }) => (compact ? undefined : CardSize.large),
   },
 };
