@@ -184,6 +184,10 @@ button {
 body {
   $min-width: map-deep-get($breakpoint-attributes, ('default', small, 'min-width'), false);
 
+  @include inTargetIde() {
+    $min-width: map-deep-get($breakpoint-attributes, ('default', xsmall, 'min-width'), false);
+  }
+
   height: 100%;
 
   @if $min-width {
