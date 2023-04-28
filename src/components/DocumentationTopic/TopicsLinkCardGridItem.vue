@@ -70,7 +70,7 @@ export default {
       all[current.type] = current.identifier;
       return all;
     }, { icon: null, card: null }),
-    linkText: ({ item }) => (ROLE_LINK_TEXT[item.role] || 'Learn more'),
+    linkText: ({ item }) => (ROLE_LINK_TEXT[item.role] || 'documentation.card.learn-more'),
     cardSize: ({ compact }) => (compact ? undefined : CardSize.large),
   },
 };
