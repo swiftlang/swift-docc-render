@@ -38,7 +38,7 @@ export default {
   @include font-styles(body-reduced-tight);
   display: flex;
   flex-flow: row-reverse;
-  margin-bottom: 20px;
+  margin-bottom: 1.3rem;
 }
 
 </style>
