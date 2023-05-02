@@ -687,13 +687,12 @@ describe('Swift function/initializer formatting', () => {
     themeSettingsState.theme = originalTheme;
   });
 
-  it('breaks attributes onto their own lines', () => {
+  it('breaks attributes onto their own line', () => {
     // Before:
     // @discardableResult @objc(baz) func foobarbaz() -> Int
     //
     // After:
-    // @discardableResult
-    // @objc(baz)
+    // @discardableResult @objc(baz)
     // func foobarbaz() -> Int
     const tokens = [
       {
@@ -738,7 +737,6 @@ describe('Swift function/initializer formatting', () => {
 
     const tokenComponents = wrapper.findAll(Token);
     expect(tokenComponents.length).toBe(tokens.length);
-    expect(tokenComponents.at(1).props('text')).toBe('\n');
     expect(tokenComponents.at(3).props('text')).toBe('(baz)\n');
   });
 

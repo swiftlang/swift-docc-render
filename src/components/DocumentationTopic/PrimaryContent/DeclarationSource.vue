@@ -127,15 +127,14 @@ export default {
           }
         }
 
-        // check if this is a text token following an attribute token
-        // so we can insert a newline here and split each attribute onto its
-        // own line
-        //
-        // we want to avoid doing this when the attribute is encountered
-        // in a param clause for attributes like `@escaping`
-        if (token.kind === TokenKind.text && i > 0
-          && tokens[i - 1].kind === TokenKind.attribute
-          && numUnclosedParens === 0) {
+        // Find the text following the last attribute preceding the start of a
+        // declaration by determining if this is the text token in between an
+        // attribute and a keyword outside of any parameter clause. A newline
+        // will be added to break these attributes onto their own single line.
+        const prevToken = i > 0 ? tokens[i - 1] : undefined;
+        if (token.kind === TokenKind.text && numUnclosedParens === 0
+          && prevToken && prevToken.kind === TokenKind.attribute
+          && nextToken && nextToken.kind === TokenKind.keyword) {
           newToken.text = `${token.text.trimEnd()}\n`;
         }
 
