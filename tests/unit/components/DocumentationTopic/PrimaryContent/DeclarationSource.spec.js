@@ -126,6 +126,10 @@ describe('Swift function/initializer formatting', () => {
     },
   });
 
+  const getText = tokens => tokens.wrappers.reduce((txt, token) => (
+    `${txt}${token.props('text')}`
+  ), '');
+
   it('does not add any whitespace for single-param symbols', () => {
     // Before:
     // init(_ foo: Foo)
@@ -168,14 +172,8 @@ describe('Swift function/initializer formatting', () => {
       },
     ];
     const wrapper = mountWithTokens(tokens);
-
     const tokenComponents = wrapper.findAll(Token);
-    expect(tokenComponents.length).toBe(tokens.length);
-    tokens.forEach((token, i) => {
-      const tokenComponent = tokenComponents.at(i);
-      expect(tokenComponent.props('kind')).toBe(token.kind);
-      expect(tokenComponent.props('text')).toBe(token.text);
-    });
+    expect(getText(tokenComponents)).toBe('init(_ foo: Foo)');
   });
 
   it('breaks apart each param onto its own line for multi-param symbols', () => {
@@ -185,7 +183,7 @@ describe('Swift function/initializer formatting', () => {
     // After:
     // func foo(
     //     _ a: A,
-    //     _ b: B,
+    //     _ b: B
     // ) -> Bar
     const tokens = [
       {
@@ -263,22 +261,12 @@ describe('Swift function/initializer formatting', () => {
     const wrapper = mountWithTokens(tokens);
 
     const tokenComponents = wrapper.findAll(Token);
-    expect(tokenComponents.length).toBe(tokens.length);
-
-    const modifiedTokenIndexes = new Set([3, 9, 15]);
-    tokens.forEach((token, i) => {
-      const tokenComponent = tokenComponents.at(i);
-      expect(tokenComponent.props('kind')).toBe(token.kind);
-      if (modifiedTokenIndexes.has(i)) {
-        expect(tokenComponent.props('text')).not.toBe(token.text);
-      } else {
-        expect(tokenComponent.props('text')).toBe(token.text);
-      }
-    });
-
-    expect(tokenComponents.at(3).props('text')).toBe('(\n    ');
-    expect(tokenComponents.at(9).props('text')).toBe(',\n    ');
-    expect(tokenComponents.at(15).props('text')).toBe('\n) -> ');
+    expect(getText(tokenComponents)).toBe(
+`func foo(
+    _ a: A,
+    _ b: B
+) -> Bar`,
+    );
   });
 
   it('breaks apart each param onto its own line for a tuple return type', () => {
@@ -288,7 +276,7 @@ describe('Swift function/initializer formatting', () => {
     // After:
     // func foo(
     //     _ a: A,
-    //     _ b: B,
+    //     _ b: B
     // ) -> (A, B)
     const tokens = [
       {
@@ -379,34 +367,24 @@ describe('Swift function/initializer formatting', () => {
     const wrapper = mountWithTokens(tokens);
 
     const tokenComponents = wrapper.findAll(Token);
-    expect(tokenComponents.length).toBe(tokens.length);
-
-    const modifiedTokenIndexes = new Set([3, 9, 15]);
-    tokens.forEach((token, i) => {
-      const tokenComponent = tokenComponents.at(i);
-      expect(tokenComponent.props('kind')).toBe(token.kind);
-      if (modifiedTokenIndexes.has(i)) {
-        expect(tokenComponent.props('text')).not.toBe(token.text);
-      } else {
-        expect(tokenComponent.props('text')).toBe(token.text);
-      }
-    });
-
-    expect(tokenComponents.at(3).props('text')).toBe('(\n    ');
-    expect(tokenComponents.at(9).props('text')).toBe(',\n    ');
-    expect(tokenComponents.at(15).props('text')).toBe('\n) -> (');
+    expect(getText(tokenComponents)).toBe(
+`func foo(
+    _ a: A,
+    _ b: B
+) -> (A, B)`,
+    );
   });
 
   it('breaks apart parameters in functions with generic where clauses', () => {
     /* eslint-disable max-len */
     // Before:
-    // public func f(t: T, u: U) where T : Sequence, U : Sequence, T.Iterator.Element : Equatable, T.Iterator.Element == U.Iterator.Element
+    // public func f(t: T, u: U) where U : Sequence, T : Sequence, T.Element : Equatable, U.Element == T.Element
     //
     // After:
     // public func f(
     //     t: T,
-    //     u: U,
-    // ) where T : Sequence, U : Sequence, T.Iterator.Element : Equatable, T.Iterator.Element == U.Iterator.Element
+    //     u: U
+    // ) where U : Sequence, T : Sequence, T.Element : Equatable, U.Element == T.Element
     /* eslint-enable max-len */
     const tokens = [
       {
@@ -567,22 +545,12 @@ describe('Swift function/initializer formatting', () => {
     const wrapper = mountWithTokens(tokens);
 
     const tokenComponents = wrapper.findAll(Token);
-    expect(tokenComponents.length).toBe(tokens.length);
-
-    const modifiedTokenIndexes = new Set([5, 9, 13]);
-    tokens.forEach((token, i) => {
-      const tokenComponent = tokenComponents.at(i);
-      expect(tokenComponent.props('kind')).toBe(token.kind);
-      if (modifiedTokenIndexes.has(i)) {
-        expect(tokenComponent.props('text')).not.toBe(token.text);
-      } else {
-        expect(tokenComponent.props('text')).toBe(token.text);
-      }
-    });
-
-    expect(tokenComponents.at(5).props('text')).toBe('(\n    ');
-    expect(tokenComponents.at(9).props('text')).toBe(',\n    ');
-    expect(tokenComponents.at(13).props('text')).toBe('\n) ');
+    expect(getText(tokenComponents)).toBe(
+`public func f(
+    t: T,
+    u: U
+) where U : Sequence, T : Sequence, U.Element : Equatable, U.Element == T.Element`,
+    );
   });
 
   it('indents parameters using provided/customizable indentation width', () => {
@@ -600,7 +568,7 @@ describe('Swift function/initializer formatting', () => {
     // After:
     // func foo(
     //   _ a: A,
-    //   _ b: B,
+    //   _ b: B
     // ) -> Bar
     const tokens = [
       {
@@ -678,11 +646,12 @@ describe('Swift function/initializer formatting', () => {
     const wrapper = mountWithTokens(tokens);
 
     const tokenComponents = wrapper.findAll(Token);
-    expect(tokenComponents.length).toBe(tokens.length);
-    // should be indented with 2 spaces now instead of the default of 4 spaces
-    expect(tokenComponents.at(3).props('text')).toBe('(\n  ');
-    expect(tokenComponents.at(9).props('text')).toBe(',\n  ');
-    expect(tokenComponents.at(15).props('text')).toBe('\n) -> ');
+    expect(getText(tokenComponents)).toBe(
+`func foo(
+  _ a: A,
+  _ b: B
+) -> Bar`,
+    );
 
     themeSettingsState.theme = originalTheme;
   });
@@ -736,8 +705,10 @@ describe('Swift function/initializer formatting', () => {
     const wrapper = mountWithTokens(tokens);
 
     const tokenComponents = wrapper.findAll(Token);
-    expect(tokenComponents.length).toBe(tokens.length);
-    expect(tokenComponents.at(3).props('text')).toBe('(baz)\n');
+    expect(getText(tokenComponents)).toBe(
+`@discardableResult @objc(baz)
+func foobarbaz() -> Int`,
+    );
   });
 
   it('does not add newlines to attributes within param clause', () => {
@@ -780,11 +751,27 @@ describe('Swift function/initializer formatting', () => {
         text: ')',
       },
     ];
-    const wrapper = mountWithTokens(tokens);
+    let wrapper = mountWithTokens(tokens);
 
-    const tokenComponents = wrapper.findAll(Token);
-    expect(tokenComponents.length).toBe(tokens.length);
-    expect(tokenComponents.at(6).props('text')).toBe(tokens[6].text);
-    expect(tokenComponents.at(7).props('text')).toBe(tokens[7].text);
+    let tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe('func foo(bar: @escaping () -> ())');
+
+    // @discardableResult func foo(bar: @escaping () -> ()) -> Int
+    wrapper = mountWithTokens([
+      { kind: 'attribute', text: '@discardableResult' },
+      { kind: 'text', text: ' ' },
+      ...tokens,
+      { kind: 'text', text: ' -> ' },
+      {
+        kind: 'typeIdentifier',
+        identifier: 'doc://com.example/documentation/blah/int',
+        text: 'Int',
+      },
+    ]);
+    tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`@discardableResult
+func foo(bar: @escaping () -> ()) -> Int`,
+    );
   });
 });
