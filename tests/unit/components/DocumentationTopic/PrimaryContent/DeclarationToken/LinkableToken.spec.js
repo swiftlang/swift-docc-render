@@ -47,7 +47,7 @@ describe('LinkableToken', () => {
 
   it('renders a span for unresolved references', () => {
     const wrapper = shallowMount(LinkableToken, defaultOpts);
-    expect(wrapper.is('span.type-identifier-link')).toBe(true);
+    expect(wrapper.is('span')).toBe(true);
     expect(wrapper.text()).toBe(foo.title);
   });
 
@@ -65,10 +65,8 @@ describe('LinkableToken', () => {
       },
     });
 
-    expect(wrapper.is('.type-identifier-link')).toBe(true);
     const link = wrapper.find(Reference);
     expect(link.exists()).toBe(true);
-    expect(link.classes('type-identifier-link')).toBe(true);
     expect(link.props('url')).toBe(foo.url);
     expect(link.text()).toBe(foo.title);
   });

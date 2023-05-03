@@ -49,6 +49,7 @@ describe('DeclarationToken', () => {
     expect(link.props()).toEqual({ identifier: propsData.identifier });
     expect(link.contains(WordBreak)).toBe(true);
     expect(link.text()).toBe(propsData.text);
+    expect(link.classes()).toContain('type-identifier-link');
   });
 
   it('renders a `SyntaxToken` for other tokens', () => {
@@ -96,5 +97,32 @@ describe('DeclarationToken', () => {
     expect(token.exists()).toBe(true);
     expect(token.props('tokens')).toEqual(propsData.tokens);
     expect(token.props('kind')).toEqual(propsData.kind);
+  });
+
+  it('renders a `SyntaxToken` for basic `attribute` tokens', () => {
+    const propsData = {
+      kind: TokenKind.attribute,
+      text: '@foo',
+    };
+    const wrapper = mountToken({ propsData });
+    const token = wrapper.find(SyntaxToken);
+    expect(token.exists()).toBe(true);
+    expect(token.props('kind')).toBe(TokenKind.attribute);
+    expect(token.props('text')).toBe(propsData.text);
+  });
+
+  it('renders a `LinkableToken` for `attribute` tokens with an `identifier`', () => {
+    const propsData = {
+      kind: TokenKind.attribute,
+      identifier: '@foo',
+      text: '@foo',
+    };
+    const wrapper = mountToken({ propsData });
+    const link = wrapper.find(LinkableToken);
+    expect(link.exists()).toBe(true);
+    expect(link.props()).toEqual({ identifier: propsData.identifier });
+    expect(link.contains(WordBreak)).toBe(true);
+    expect(link.text()).toBe(propsData.text);
+    expect(link.classes()).toContain('attribute-link');
   });
 });

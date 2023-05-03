@@ -46,9 +46,19 @@ export default {
     }
     case TokenKind.typeIdentifier: {
       const props = { identifier: this.identifier };
-      return createElement(LinkableToken, { props }, [
+      return createElement(LinkableToken, { class: 'type-identifier-link', props }, [
         createElement(WordBreak, text),
       ]);
+    }
+    case TokenKind.attribute: {
+      const { identifier } = this;
+      return identifier ? (
+        createElement(LinkableToken, { class: 'attribute-link', props: { identifier } }, [
+          createElement(WordBreak, text),
+        ])
+      ) : (
+        createElement(SyntaxToken, { props: { kind, text } })
+      );
     }
     case TokenKind.added:
     case TokenKind.removed:
@@ -110,7 +120,8 @@ export default {
   color: var(--syntax-string, var(--color-syntax-strings));
 }
 
-.token-attribute {
+.token-attribute,
+.attribute-link {
   color: var(--syntax-attribute, var(--color-syntax-keywords));
 }
 
