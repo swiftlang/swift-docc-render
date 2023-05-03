@@ -15,8 +15,8 @@ import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryC
 import RawText from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/RawText.vue';
 import SyntaxToken
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/SyntaxToken.vue';
-import TypeIdentifierLink
-  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/TypeIdentifierLink.vue';
+import LinkableToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/LinkableToken.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 
 const { TokenKind } = DeclarationToken.constants;
@@ -36,7 +36,7 @@ describe('DeclarationToken', () => {
     expect(rawText.props()).toEqual({ text: propsData.text });
   });
 
-  it('renders a `TypeIdentifierLink` for `typeIdentifier` tokens', () => {
+  it('renders a `LinkableToken` for `typeIdentifier` tokens', () => {
     const propsData = {
       kind: TokenKind.typeIdentifier,
       identifier: 'foo',
@@ -44,7 +44,7 @@ describe('DeclarationToken', () => {
     };
     const wrapper = mountToken({ propsData });
 
-    const link = wrapper.find(TypeIdentifierLink);
+    const link = wrapper.find(LinkableToken);
     expect(link.exists()).toBe(true);
     expect(link.props()).toEqual({ identifier: propsData.identifier });
     expect(link.contains(WordBreak)).toBe(true);

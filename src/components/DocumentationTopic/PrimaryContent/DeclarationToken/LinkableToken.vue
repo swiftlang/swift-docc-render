@@ -14,7 +14,7 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 export default {
-  name: 'TypeIdentifierLink',
+  name: 'LinkableToken',
   mixins: [referencesProvider],
   render(createElement) {
     const klass = 'type-identifier-link';

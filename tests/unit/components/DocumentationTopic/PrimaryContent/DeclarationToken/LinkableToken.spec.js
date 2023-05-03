@@ -9,11 +9,11 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import TypeIdentifierLink
-  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/TypeIdentifierLink.vue';
+import LinkableToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/LinkableToken.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
-describe('TypeIdentifierLink', () => {
+describe('LinkableToken', () => {
   const foo = {
     identifier: 'foo',
     title: 'Foo',
@@ -46,13 +46,13 @@ describe('TypeIdentifierLink', () => {
   };
 
   it('renders a span for unresolved references', () => {
-    const wrapper = shallowMount(TypeIdentifierLink, defaultOpts);
+    const wrapper = shallowMount(LinkableToken, defaultOpts);
     expect(wrapper.is('span.type-identifier-link')).toBe(true);
     expect(wrapper.text()).toBe(foo.title);
   });
 
   it('renders a link for resolved references', () => {
-    const wrapper = shallowMount(TypeIdentifierLink, {
+    const wrapper = shallowMount(LinkableToken, {
       ...defaultOpts,
       provide: {
         store: {

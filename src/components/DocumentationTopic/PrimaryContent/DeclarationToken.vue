@@ -11,9 +11,9 @@
 <script>
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import ChangedToken from './DeclarationToken/ChangedToken.vue';
+import LinkableToken from './DeclarationToken/LinkableToken.vue';
 import RawText from './DeclarationToken/RawText.vue';
 import SyntaxToken from './DeclarationToken/SyntaxToken.vue';
-import TypeIdentifierLink from './DeclarationToken/TypeIdentifierLink.vue';
 
 const TokenKind = {
   attribute: 'attribute',
@@ -46,7 +46,7 @@ export default {
     }
     case TokenKind.typeIdentifier: {
       const props = { identifier: this.identifier };
-      return createElement(TypeIdentifierLink, { props }, [
+      return createElement(LinkableToken, { props }, [
         createElement(WordBreak, text),
       ]);
     }
