@@ -46,14 +46,20 @@ export default {
     }
     case TokenKind.typeIdentifier: {
       const props = { identifier: this.identifier };
-      return createElement(LinkableToken, { class: 'type-identifier-link', props }, [
+      return createElement(LinkableToken, {
+        class: 'type-identifier-link',
+        props,
+      }, [
         createElement(WordBreak, text),
       ]);
     }
     case TokenKind.attribute: {
       const { identifier } = this;
       return identifier ? (
-        createElement(LinkableToken, { class: 'attribute-link', props: { identifier } }, [
+        createElement(LinkableToken, {
+          class: 'attribute-link',
+          props: { identifier },
+        }, [
           createElement(WordBreak, text),
         ])
       ) : (
