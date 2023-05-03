@@ -11,6 +11,7 @@
 <template>
   <GenericModal
     isFullscreen
+    allowInnerScroll
     :showClose="false"
     :visible.sync="isVisible"
     backdropBackgroundColorOverride="rgba(0, 0, 0, 0.7)"

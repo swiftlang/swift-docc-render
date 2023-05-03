@@ -127,11 +127,12 @@ export default {
    * Locks the scrolling of the body, except for an element
    * @param {HTMLElement} targetElement
    */
-  lockScroll(targetElement) {
+  lockScroll(targetElement, allowInnerScroll) {
     // skip lock if already locked
     if (isLocked) return;
-    // iOS devices require a more advanced locking.
-    if (!isIosDevice()) {
+    // use simple lock if device is not iOS
+    // or it allows inner scrolling
+    if (!isIosDevice() || allowInnerScroll) {
       simpleLock();
     } else {
       advancedLock(targetElement);

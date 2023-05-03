@@ -91,6 +91,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    allowInnerScroll: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -168,7 +172,7 @@ export default {
       // make sure PortalVue is ready
       await this.$nextTick();
       // lock scroll
-      scrollLock.lockScroll(this.$refs.container);
+      scrollLock.lockScroll(this.$refs.container, this.allowInnerScroll);
       // remember last focus item
       await this.focusCloseButton();
       // update the focus container
