@@ -114,7 +114,7 @@ describe('DeclarationToken', () => {
   it('renders a `LinkableToken` for `attribute` tokens with an `identifier`', () => {
     const propsData = {
       kind: TokenKind.attribute,
-      identifier: '@foo',
+      identifier: 'foo',
       text: '@foo',
     };
     const wrapper = mountToken({ propsData });
