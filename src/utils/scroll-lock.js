@@ -11,6 +11,8 @@
 let isLocked = false;
 let initialClientY = -1;
 let scrolledClientY = 0;
+// Adds this attribute to an inner scrollable element to allow it to scroll
+export const SCROLL_LOCK_DISABLE_ATTR = 'data-scroll-lock-disable';
 
 const isIosDevice = () => window.navigator
   && window.navigator.platform
@@ -80,7 +82,7 @@ function advancedUnlock(targetElement) {
 function handleScroll(event, targetElement) {
   const clientY = event.targetTouches[0].clientY - initialClientY;
   // check if any parent has a scroll-lock disable, if not use the targetElement
-  const target = event.target.closest('[data-scroll-lock-disable]') || targetElement;
+  const target = event.target.closest(`[${SCROLL_LOCK_DISABLE_ATTR}]`) || targetElement;
   if (target.scrollTop === 0 && clientY > 0) {
     // element is at the top of its scroll.
     return preventDefault(event);

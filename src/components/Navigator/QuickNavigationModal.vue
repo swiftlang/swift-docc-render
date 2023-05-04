@@ -50,7 +50,7 @@
         <div
           class="quick-navigation__match-list"
           :class="{ 'active' : processedUserInput.length }"
-          data-scroll-lock-disable
+          v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
         >
           <div
             v-if="noResultsWereFound"
@@ -121,7 +121,7 @@
               class="quick-navigation__preview"
               :json="previewJSON"
               :state="previewState"
-              data-scroll-lock-disable
+              v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
             />
           </template>
         </div>
@@ -143,6 +143,7 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
+import { SCROLL_LOCK_DISABLE_ATTR } from '@/utils/scroll-lock';
 
 const { PreviewState } = QuickNavigationPreview.constants;
 
@@ -176,6 +177,7 @@ export default {
       focusedInput: false,
       cachedSymbolResults: {},
       previewIsLoadingSlowly: false,
+      SCROLL_LOCK_DISABLE_ATTR,
     };
   },
   props: {

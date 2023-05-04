@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import scrollLock from 'docc-render/utils/scroll-lock';
+import scrollLock, { SCROLL_LOCK_DISABLE_ATTR } from 'docc-render/utils/scroll-lock';
 import { createEvent, parseHTMLString } from '../../../test-utils';
 
 const { platform } = window.navigator;
@@ -71,7 +71,7 @@ describe('scroll-lock', () => {
       expect(preventDefault).toHaveBeenCalledTimes(1);
       expect(stopPropagation).toHaveBeenCalledTimes(0);
       expect(touchMoveEvent.target.closest).toHaveBeenCalledTimes(1);
-      expect(touchMoveEvent.target.closest).toHaveBeenCalledWith('[data-scroll-lock-disable]');
+      expect(touchMoveEvent.target.closest).toHaveBeenCalledWith(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
 
       // simulate scroll middle
       // simulate we have enough to scroll
