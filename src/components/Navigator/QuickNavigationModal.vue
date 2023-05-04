@@ -50,6 +50,7 @@
         <div
           class="quick-navigation__match-list"
           :class="{ 'active' : processedUserInput.length }"
+          data-scroll-lock-disable
         >
           <div
             v-if="noResultsWereFound"
@@ -120,6 +121,7 @@
               class="quick-navigation__preview"
               :json="previewJSON"
               :state="previewState"
+              data-scroll-lock-disable
             />
           </template>
         </div>

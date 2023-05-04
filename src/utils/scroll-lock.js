@@ -79,12 +79,14 @@ function advancedUnlock(targetElement) {
  */
 function handleScroll(event, targetElement) {
   const clientY = event.targetTouches[0].clientY - initialClientY;
-  if (targetElement.scrollTop === 0 && clientY > 0) {
+  // check if any parent has a scroll-lock disable, if not use the targetElement
+  const target = event.target.closest('[data-scroll-lock-disable]') || targetElement;
+  if (target.scrollTop === 0 && clientY > 0) {
     // element is at the top of its scroll.
     return preventDefault(event);
   }
 
-  if (isTargetElementTotallyScrolled(targetElement) && clientY < 0) {
+  if (isTargetElementTotallyScrolled(target) && clientY < 0) {
     // element is at the bottom of its scroll.
     return preventDefault(event);
   }

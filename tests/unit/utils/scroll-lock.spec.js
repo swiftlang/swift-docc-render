@@ -56,6 +56,9 @@ describe('scroll-lock', () => {
         preventDefault,
         stopPropagation,
         touches: [1],
+        target: {
+          closest: jest.fn(),
+        },
       };
       // init the scroll lock
       scrollLock.lockScroll(container);
@@ -67,6 +70,8 @@ describe('scroll-lock', () => {
       container.ontouchmove(touchMoveEvent);
       expect(preventDefault).toHaveBeenCalledTimes(1);
       expect(stopPropagation).toHaveBeenCalledTimes(0);
+      expect(touchMoveEvent.target.closest).toHaveBeenCalledTimes(1);
+      expect(touchMoveEvent.target.closest).toHaveBeenCalledWith('[data-scroll-lock-disable]');
 
       // simulate scroll middle
       // simulate we have enough to scroll
@@ -80,6 +85,21 @@ describe('scroll-lock', () => {
       container.ontouchmove({ ...touchMoveEvent, targetTouches: [{ clientY: -10 }] });
       expect(preventDefault).toHaveBeenCalledTimes(2);
       expect(stopPropagation).toHaveBeenCalledTimes(1);
+
+      // simulate there is a scroll-lock-disable target
+      container.ontouchmove({
+        ...touchMoveEvent,
+        targetTouches: [{ clientY: -10 }],
+        target: {
+          closest: jest.fn().mockReturnValue({
+            ...container,
+            clientHeight: 150,
+          }),
+        },
+      });
+      // assert scrolling was allowed
+      expect(preventDefault).toHaveBeenCalledTimes(2);
+      expect(stopPropagation).toHaveBeenCalledTimes(2);
 
       scrollLock.unlockScroll(container);
       expect(container.ontouchmove).toBeFalsy();
