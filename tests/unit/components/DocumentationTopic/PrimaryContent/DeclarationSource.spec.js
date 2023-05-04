@@ -774,4 +774,105 @@ func foobarbaz() -> Int`,
 func foo(bar: @escaping () -> ()) -> Int`,
     );
   });
+
+  it('adds newlines for params that start with attribute tokens', () => {
+    const param = name => ([
+      {
+        kind: TokenKind.externalParam,
+        text: name,
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+    ]);
+    const attributeParam = name => ([
+      {
+        kind: TokenKind.attribute,
+        text: '@StringBuilder',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: name,
+      },
+      {
+        kind: TokenKind.text,
+        text: ': () -> ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'String',
+      },
+    ]);
+    const tokens = (paramA, paramB) => ([
+      {
+        kind: TokenKind.keyword,
+        text: 'func',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.identifier,
+        text: 'qux',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      ...paramA,
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      ...paramB,
+      {
+        kind: TokenKind.text,
+        text: ')',
+      },
+    ]);
+
+    // Before:
+    // func qux(a: Int, @StringBuilder b: () -> String)
+    //
+    // After:
+    // func qux(
+    //     a: Int,
+    //     @StringBuilder b: () -> String
+    // )
+    const wrapper = mountWithTokens(tokens(param('a'), attributeParam('b')));
+    const tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`func qux(
+    a: Int,
+    @StringBuilder b: () -> String
+)`,
+    );
+
+    // Before:
+    // func qux(@StringBuilder a: () -> String, b: Int)
+    //
+    // After:
+    // func qux(
+    //     @StringBuilder a: () -> String,
+    //     b: Int
+    // )
+    const wrapper2 = mountWithTokens(tokens(attributeParam('a'), param('b')));
+    const tokenComponents2 = wrapper2.findAll(Token);
+    expect(getText(tokenComponents2)).toBe(
+`func qux(
+    @StringBuilder a: () -> String,
+    b: Int
+)`,
+    );
+  });
 });
