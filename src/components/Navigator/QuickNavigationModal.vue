@@ -50,7 +50,6 @@
         <div
           class="quick-navigation__match-list"
           :class="{ 'active' : processedUserInput.length }"
-          v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
         >
           <div
             v-if="noResultsWereFound"
@@ -61,7 +60,10 @@
             </p>
           </div>
           <template v-else>
-            <div class="quick-navigation__refs">
+            <div
+              v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
+              class="quick-navigation__refs"
+            >
               <Reference
                 v-for="(symbol, index) in filteredSymbols"
                 class="quick-navigation__reference"
