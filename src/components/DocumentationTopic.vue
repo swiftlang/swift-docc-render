@@ -732,6 +732,12 @@ export default {
 
     .source {
       border-radius: var(--code-border-radius);
+
+      > code {
+        @include inTargetIde() {
+          white-space: pre-wrap;
+        }
+      }
     }
 
     .single-line {
