@@ -195,7 +195,7 @@ $doc-hero-icon-dimension: 250px;
     }
   }
 
-  &__content {
+  &__content:not(.minimized-hero) {
     padding-top: rem(40px);
     padding-bottom: 40px;
     position: relative;
@@ -204,14 +204,9 @@ $doc-hero-icon-dimension: 250px;
   }
 
   .minimized-hero {
-    padding: 1.5em 20px;
-
-    @include inTargetIde {
-      @include breakpoint(xsmall) {
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-    }
+    padding: 1.3em 1.4em;
+    position: relative;
+    z-index: 1;
   }
 
   &__above-content {

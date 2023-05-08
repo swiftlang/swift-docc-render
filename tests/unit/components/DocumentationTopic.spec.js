@@ -167,8 +167,8 @@ describe('DocumentationTopic', () => {
       stubs: { Title },
       provide: {
         store: {
-          state: { onThisPageSections: [] },
-          reset() {},
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
         },
       },
     });
@@ -194,11 +194,6 @@ describe('DocumentationTopic', () => {
   it('provides the interface languages', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
-  });
-
-  it('provides `references', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.references).toEqual(propsData.references);
   });
 
   it('provides the languages', () => {
@@ -628,7 +623,15 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders a `LanguageSwitcher` if TargetIDE', () => {
-    const provide = { isTargetIDE: true };
+    const provide = {
+      isTargetIDE: true,
+      store: {
+        state: {
+          references: {},
+        },
+        reset: jest.fn(),
+      },
+    };
     wrapper = shallowMount(DocumentationTopic, { propsData, provide });
     const switcher = wrapper.find(LanguageSwitcher);
     expect(switcher.exists()).toBe(true);
@@ -761,6 +764,12 @@ describe('DocumentationTopic', () => {
         Relationships: stubSection('relationships'),
         SeeAlso: stubSection('see-also'),
       },
+      provide: {
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
+      },
     });
     const sections = wrapper.findAll('.section-stub');
     expect(sections.at(0).classes('relationships')).toBe(true);
@@ -840,6 +849,12 @@ describe('DocumentationTopic', () => {
       slots: {
         'above-title': '<div class="above-title">Above Title Content</div>',
       },
+      provide: {
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
+      },
     });
     expect(wrapper.find(DocumentationHero).contains('.above-title')).toBe(true);
   });
@@ -852,6 +867,12 @@ describe('DocumentationTopic', () => {
       },
       stubs: {
         DocumentationHero,
+      },
+      provide: {
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
       },
     });
     expect(wrapper.contains('.above-hero-content')).toBe(true);
@@ -904,7 +925,7 @@ describe('DocumentationTopic', () => {
     it('calls `store.reset()`', () => {
       const store = {
         reset: jest.fn(),
-        state: { onThisPageSections: [], apiChanges: null },
+        state: { onThisPageSections: [], apiChanges: null, references: {} },
       };
       wrapper = shallowMount(DocumentationTopic, {
         propsData,
@@ -922,6 +943,7 @@ describe('DocumentationTopic', () => {
           apiChanges: null,
           onThisPageSections: [],
           preferredLanguage: Language.objectiveC.key.url,
+          references: {},
         },
       };
       wrapper = shallowMount(DocumentationTopic, {

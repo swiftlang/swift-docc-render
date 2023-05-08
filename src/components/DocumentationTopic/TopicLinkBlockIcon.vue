@@ -21,6 +21,7 @@ import CurlyBracketsIcon from 'theme/components/Icons/CurlyBracketsIcon.vue';
 import ApiCollectionIcon from 'theme/components/Icons/APIReferenceIcon.vue';
 import EndpointIcon from 'theme/components/Icons/EndpointIcon.vue';
 import PathIcon from 'theme/components/Icons/PathIcon.vue';
+import TechnologyIcon from 'theme/components/Icons/TechnologyIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import SVGIcon from 'docc-render/components/SVGIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
@@ -28,6 +29,7 @@ import OverridableAsset from 'docc-render/components/OverridableAsset.vue';
 
 const TopicRoleIcons = {
   [TopicRole.article]: ArticleIcon,
+  [TopicRole.collection]: TechnologyIcon,
   [TopicRole.collectionGroup]: ApiCollectionIcon,
   [TopicRole.learn]: PathIcon,
   [TopicRole.overview]: PathIcon,

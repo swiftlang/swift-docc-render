@@ -184,7 +184,7 @@ $breakpoint-attributes: (
 
         // Use a fixed percentage width value for the small breakpoint.
         // The percentage is the ratio of the content-width/min-width sizes.
-        @if ($breakpoint == small or $breakpoint == xsmall) and $min-width {
+        @if ($breakpoint == small) and $min-width {
           $width: percentage(math.div($content-width, $min-width));
         }
 

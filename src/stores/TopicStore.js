@@ -16,6 +16,7 @@ export default {
   state: {
     linkableSections: [],
     breakpoint: BreakpointName.large,
+    references: {},
   },
   addLinkableSection(section) {
     const newLinkableSection = {
@@ -28,6 +29,7 @@ export default {
   reset() {
     this.state.linkableSections = [];
     this.state.breakpoint = BreakpointName.large;
+    this.state.references = {};
   },
   updateLinkableSection(section) {
     this.state.linkableSections = this.state.linkableSections.map(oldSection => (
@@ -41,5 +43,8 @@ export default {
   },
   updateBreakpoint(value) {
     this.state.breakpoint = value;
+  },
+  setReferences(references) {
+    this.state.references = references;
   },
 };

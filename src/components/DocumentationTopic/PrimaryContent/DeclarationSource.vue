@@ -127,6 +127,18 @@ export default {
           }
         }
 
+        // check if this is a text token following an attribute token
+        // so we can insert a newline here and split each attribute onto its
+        // own line
+        //
+        // we want to avoid doing this when the attribute is encountered
+        // in a param clause for attributes like `@escaping`
+        if (token.kind === TokenKind.text && i > 0
+          && tokens[i - 1].kind === TokenKind.attribute
+          && numUnclosedParens === 0) {
+          newToken.text = `${token.text.trimEnd()}\n`;
+        }
+
         // if we find some text ending with ", " and the next token is the start
         // of a new param, update this token text to replace the space with a
         // newline followed by 4 spaces
