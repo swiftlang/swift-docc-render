@@ -430,10 +430,12 @@ function renderNode(createElement, references) {
       const titleInlineContent = node.overridingTitleInlineContent
         || reference.titleInlineContent;
       const titlePlainText = node.overridingTitle || reference.title;
+      const kind = node.overridingTitleInlineContent
+        ? node.overridingTitleInlineContent[0].type : reference.kind;
       return createElement(Reference, {
         props: {
           url: reference.url,
-          kind: reference.kind,
+          kind,
           role: reference.role,
           isActive: node.isActive,
           ideTitle: reference.ideTitle,

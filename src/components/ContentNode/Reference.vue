@@ -43,7 +43,7 @@ export default {
       return name !== notFoundRouteName;
     },
     isSymbolReference() {
-      return this.kind === 'symbol'
+      return (this.kind === 'symbol' || this.kind === 'codeVoice')
         && (this.role === TopicRole.symbol || this.role === TopicRole.dictionarySymbol);
     },
     isDisplaySymbol({ isSymbolReference, titleStyle, ideTitle }) {

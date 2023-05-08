@@ -1254,11 +1254,41 @@ describe('ContentNode', () => {
       const reference = wrapper.find('.content').find(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
+      expect(reference.props('kind')).toBe('codeVoice');
 
       const codeVoice = reference.find(CodeVoice);
       expect(codeVoice.exists()).toBe(true);
       expect(codeVoice.text()).not.toBe('FooBar with Code Voice');
       expect(codeVoice.text()).toBe('Foo the Bar with Code Voice');
+    });
+
+    it('renders a `Reference` with an overwritten title of type="text"', () => {
+      const wrapper = mountWithItem({
+        type: 'reference',
+        identifier: 'foobar',
+        overridingTitle: 'Foo with Text',
+        overridingTitleInlineContent: [
+          {
+            type: 'text',
+            text: 'Foo the Bar with Text',
+          },
+        ],
+      }, {
+        foobar: {
+          title: 'FooBar',
+          url: '/foo/bar',
+          kind: 'bla',
+        },
+      });
+
+      const reference = wrapper.find('.content').find(Reference);
+      expect(reference.exists()).toBe(true);
+      expect(reference.props('kind')).toBe('text');
+
+      const codeVoice = reference.find(CodeVoice);
+      expect(codeVoice.exists()).toBe(false);
+      expect(reference.text()).not.toBe('FooBar with Code Voice');
+      expect(reference.text()).toBe('Foo the Bar with Text');
     });
 
     it('renders a reference as a none link when isActive is false', () => {
