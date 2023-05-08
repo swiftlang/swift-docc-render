@@ -20,7 +20,7 @@ import store from '@/stores/DocumentationTopicStore';
 import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
 import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
-import { waitFrames } from '@/utils/loading';
+import { waitFor, waitFrames } from '@/utils/loading';
 import FocusTrap from '@/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
@@ -30,6 +30,7 @@ import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/debounce');
 jest.mock('docc-render/utils/storage');
+jest.mock('docc-render/utils/loading');
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
@@ -289,7 +290,6 @@ describe('AdjustableSidebarWidth', () => {
     expect(aside.classes()).not.toContain('hide-on-large');
     expect(aside.classes()).not.toContain('sidebar-transitioning');
     wrapper.setProps({ hiddenOnLarge: true });
-    await wrapper.vm.$nextTick();
     expect(aside.classes()).toContain('hide-on-large');
     expect(aside.classes()).toContain('sidebar-transitioning');
     expect(aside.attributes()).toMatchObject({
@@ -298,6 +298,8 @@ describe('AdjustableSidebarWidth', () => {
     wrapper.setProps({ hiddenOnLarge: false });
     expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('hide-on-large');
     expect(aside.classes()).toContain('sidebar-transitioning');
+    await wrapper.vm.$nextTick();
+    expect(aside.classes()).not.toContain('sidebar-transitioning');
   });
 
   it('changes the sidebar width, if outside the min/max on orientation change', async () => {
@@ -531,7 +533,7 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, maxWidth);
   });
 
-  it('adds a transition detection', () => {
+  it('adds a transition detection', async () => {
     const oldEvent = window.Event;
     window.Event = null;
 
@@ -542,6 +544,12 @@ describe('AdjustableSidebarWidth', () => {
     expect(aside.classes()).toContain('sidebar-transitioning');
     aside.trigger('transitionend', { propertyName: 'width' });
     expect(aside.classes()).not.toContain('sidebar-transitioning');
+    // assert it stops transitioning after time
+    aside.trigger('transitionstart', { propertyName: 'width' });
+    expect(aside.classes()).toContain('sidebar-transitioning');
+    await flushPromises();
+    expect(aside.classes()).not.toContain('sidebar-transitioning');
+    expect(waitFor).toHaveBeenCalledWith(1000);
     window.Event = oldEvent;
   });
 
@@ -613,7 +621,6 @@ describe('AdjustableSidebarWidth', () => {
       setContentWidth(wrapper, 1099);
       wrapper.setProps({ hiddenOnLarge: false });
       aside.trigger('transitionstart', { propertyName: 'width' });
-      await flushPromises();
       // assert its the same, until transitions end
       expect(store.state.contentWidth).toBe(99);
       aside.trigger('transitionend', { propertyName: 'width' });

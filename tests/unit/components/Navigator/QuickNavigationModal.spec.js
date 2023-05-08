@@ -16,6 +16,7 @@ import QuickNavigationHighlighter from '@/components/Navigator/QuickNavigationHi
 import QuickNavigationModal from '@/components/Navigator/QuickNavigationModal.vue';
 import QuickNavigationPreview from '@/components/Navigator/QuickNavigationPreview.vue';
 import Reference from '@/components/ContentNode/Reference.vue';
+import { SCROLL_LOCK_DISABLE_ATTR } from '@/utils/scroll-lock';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('@/utils/data');
@@ -165,6 +166,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(filteredSymbols.length);
     expect(wrapper.find('.no-results').exists()).toBe(false);
+    expect(wrapper.find('.quick-navigation__refs').attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
   });
 
   it('it renders the `no results found` string when no symbols are found given an input', () => {
@@ -375,6 +377,7 @@ describe('QuickNavigationModal', () => {
       const preview = wrapper.find(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.loading);
+      expect(preview.attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
     });
 
     it('renders with a successful state and data when data is loaded', async () => {

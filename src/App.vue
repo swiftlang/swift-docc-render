@@ -14,7 +14,7 @@
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
     <div :id="AppTopID" />
-    <a href="#main" id="skip-nav">{{ $t('accessibility.skip-navigation') }}</a>
+    <a href="#main" id="skip-nav" v-if="!isTargetIDE">{{ $t('accessibility.skip-navigation') }}</a>
     <InitialLoadingPlaceholder />
     <slot name="header" :isTargetIDE="isTargetIDE">
       <SuggestLang v-if="enablei18n" />

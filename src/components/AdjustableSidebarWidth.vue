@@ -55,7 +55,7 @@ import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import { BreakpointName, BreakpointScopes } from 'docc-render/utils/breakpoints';
-import { waitFrames } from 'docc-render/utils/loading';
+import { waitFor, waitFrames } from 'docc-render/utils/loading';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
@@ -235,8 +235,15 @@ export default {
       this.noTransition = false;
     },
     shownOnMobile: 'handleExternalOpen',
-    isTransitioning(value) {
-      if (!value) this.updateContentWidthInStore();
+    async isTransitioning(value) {
+      if (!value) {
+        this.updateContentWidthInStore();
+      } else {
+        // transitionEnd is not guaranteed to fire, so we ensure we stop
+        // transitioning after some time
+        await waitFor(1000);
+        this.isTransitioning = false;
+      }
     },
     hiddenOnLarge() {
       this.isTransitioning = true;
@@ -354,7 +361,7 @@ export default {
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
     }, 60),
-    trackTransitionStart({ propertyName }) {
+    async trackTransitionStart({ propertyName }) {
       if (propertyName === 'width' || propertyName === 'transform') {
         this.isTransitioning = true;
       }
