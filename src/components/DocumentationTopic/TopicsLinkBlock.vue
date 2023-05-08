@@ -77,6 +77,7 @@ import RequirementMetadata
   from 'docc-render/components/DocumentationTopic/Description/RequirementMetadata.vue';
 
 import { getAPIChanges, APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 const TopicKind = {
   article: 'article',
@@ -103,8 +104,7 @@ export default {
     RequirementMetadata,
     ConditionalConstraints,
   },
-  inject: ['store', 'references'],
-  mixins: [getAPIChanges, APIChangesMultipleLines],
+  mixins: [getAPIChanges, APIChangesMultipleLines, referencesProvider],
   constants: {
     ReferenceType,
     TopicKind,

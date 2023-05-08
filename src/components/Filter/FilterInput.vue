@@ -44,7 +44,7 @@
             :id="SelectedTagsId"
             :input="input"
             :tags="selectedTags"
-            :ariaLabel="$t('filter.selected-tags', { tags: tagsText })"
+            :ariaLabel="$tc('filter.selected-tags', suggestedTags.length)"
             :activeTags="activeTags"
             :translatableTags="translatableTags"
             v-bind="virtualKeyboardBind"
@@ -109,7 +109,7 @@
         v-if="displaySuggestedTags"
         :id="SuggestedTagsId"
         ref="suggestedTags"
-        :ariaLabel="$t('filter.suggested-tags', { tags: tagsText })"
+        :ariaLabel="$tc('filter.suggested-tags', suggestedTags.length)"
         :input="input"
         :tags="suggestedTags"
         :translatableTags="translatableTags"
@@ -126,7 +126,6 @@
 
 <script>
 import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
-import { pluralize } from 'docc-render/utils/strings';
 import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
@@ -233,12 +232,6 @@ export default {
     };
   },
   computed: {
-    tagsText: ({ suggestedTags }) => pluralize({
-      en: {
-        one: 'tag',
-        other: 'tags',
-      },
-    }, suggestedTags.length),
     hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
     hasSelectedTags: ({ selectedTags }) => selectedTags.length,
     inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,

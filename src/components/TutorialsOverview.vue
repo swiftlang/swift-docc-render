@@ -36,7 +36,6 @@
 
 <script>
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
-
 import Nav from 'theme/components/TutorialsOverview/Nav.vue';
 import metadata from 'theme/mixins/metadata';
 import Hero from './TutorialsOverview/Hero.vue';
@@ -97,12 +96,12 @@ export default {
   },
   provide() {
     return {
-      references: this.references,
       store: this.store,
     };
   },
   created() {
     this.store.reset();
+    this.store.setReferences(this.references);
   },
 };
 </script>

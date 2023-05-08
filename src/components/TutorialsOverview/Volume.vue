@@ -39,13 +39,16 @@ export default {
     Chapter,
   },
   computed: {
+    references: ({ store }) => store.state.references,
     intersectionRootMargin: () => intersectionMargins.topOneThird,
   },
   inject: {
-    references: { default: () => ({}) },
     store: {
       default: () => ({
         setActiveVolume() {},
+        state: {
+          references: {},
+        },
       }),
     },
   },

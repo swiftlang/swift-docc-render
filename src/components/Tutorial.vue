@@ -136,6 +136,7 @@ export default {
   },
   created() {
     this.store.reset();
+    this.store.setReferences(this.references);
   },
   mounted() {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
@@ -143,7 +144,6 @@ export default {
   },
   provide() {
     return {
-      references: this.references,
       isClientMobile: this.isClientMobile,
     };
   },

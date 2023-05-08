@@ -60,7 +60,10 @@
             </p>
           </div>
           <template v-else>
-            <div class="quick-navigation__refs">
+            <div
+              v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
+              class="quick-navigation__refs"
+            >
               <Reference
                 v-for="(symbol, index) in filteredSymbols"
                 class="quick-navigation__reference"
@@ -116,10 +119,11 @@
               </Reference>
             </div>
             <Preview
-              v-if="previewEnabled && previewState"
+              v-if="previewState"
               class="quick-navigation__preview"
               :json="previewJSON"
               :state="previewState"
+              v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
             />
           </template>
         </div>
@@ -141,6 +145,7 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
+import { SCROLL_LOCK_DISABLE_ATTR } from '@/utils/scroll-lock';
 
 const { PreviewState } = QuickNavigationPreview.constants;
 
@@ -174,6 +179,7 @@ export default {
       focusedInput: false,
       cachedSymbolResults: {},
       previewIsLoadingSlowly: false,
+      SCROLL_LOCK_DISABLE_ATTR,
     };
   },
   props: {
@@ -184,10 +190,6 @@ export default {
     showQuickNavigationModal: {
       type: Boolean,
       required: true,
-    },
-    previewEnabled: {
-      type: Boolean,
-      default: false,
     },
     technology: {
       type: String,
@@ -479,7 +481,6 @@ $input-horizontal-spacing: rem(15px);
   }
   &__match-list {
     display: flex;
-    overflow: auto;
     max-height: rem(450px);
     height: 0px;
 
@@ -500,6 +501,7 @@ $input-horizontal-spacing: rem(15px);
   }
   &__refs {
     flex: 1;
+    overflow: auto;
   }
   &__preview {
     border-left: $base-border-width solid var(--color-grid);

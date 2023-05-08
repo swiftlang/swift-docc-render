@@ -49,9 +49,13 @@ const mountWithProps = (props, references = {}, others = {}) => {
       ...props,
     },
     provide: {
-      references: {
-        ...defaultReferences,
-        ...references,
+      store: {
+        state: {
+          references: {
+            ...defaultReferences,
+            ...references,
+          },
+        },
       },
     },
     ...others,

@@ -84,7 +84,6 @@ export default {
       let indentedParams = false;
       const newTokens = [];
       let i = 0;
-      let j = 1;
       let openParenTokenIndex = null;
       let openParenCharIndex = null;
       let closeParenTokenIndex = null;
@@ -96,7 +95,8 @@ export default {
         // keep track of the current token and the next one (if any)
         const token = tokens[i];
         const newToken = { ...token };
-        const nextToken = j < tokens.length ? tokens[j] : undefined;
+        const prevToken = tokens[i - 1];
+        const nextToken = tokens[i + 1];
 
         // loop through the token text to look for "(" and ")" characters
         const tokenLength = (token.text || '').length;
@@ -127,6 +127,16 @@ export default {
           }
         }
 
+        // Find the text following the last attribute preceding the start of a
+        // declaration by determining if this is the text token in between an
+        // attribute and a keyword outside of any parameter clause. A newline
+        // will be added to break these attributes onto their own single line.
+        if (token.kind === TokenKind.text && numUnclosedParens === 0
+          && prevToken && prevToken.kind === TokenKind.attribute
+          && nextToken && nextToken.kind === TokenKind.keyword) {
+          newToken.text = `${token.text.trimEnd()}\n`;
+        }
+
         // if we find some text ending with ", " and the next token is the start
         // of a new param, update this token text to replace the space with a
         // newline followed by 4 spaces
@@ -138,7 +148,6 @@ export default {
 
         newTokens.push(newToken);
         i += 1;
-        j += 1;
       }
 
       // if we indented some params, we want to find the opening "(" symbol

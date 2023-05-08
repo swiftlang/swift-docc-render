@@ -185,11 +185,6 @@ describe('Tutorial', () => {
     });
   });
 
-  it('provides `references`', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.references).toEqual(propsData.references);
-  });
-
   it('renders a div.tutorial', () => {
     expect(wrapper.is('div.tutorial')).toBe(true);
   });

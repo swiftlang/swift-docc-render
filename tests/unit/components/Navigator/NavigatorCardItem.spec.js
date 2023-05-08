@@ -464,7 +464,7 @@ describe('NavigatorCardItem', () => {
       expect(btn.attributes('tabindex')).toBe('-1');
       expect(btn.attributes('aria-labelledby')).toBe(`${defaultProps.item.uid}`);
       expect(btn.attributes('aria-describedby'))
-        .toBe(`label-${defaultProps.item.uid} Foo label-parent-${defaultProps.item.uid}`);
+        .toBe(`label-parent-${defaultProps.item.uid}`);
     });
 
     it('renders aria-expanded true in button when component is expanded', () => {
@@ -476,22 +476,14 @@ describe('NavigatorCardItem', () => {
       expect(wrapper.find('.tree-toggle').attributes('aria-expanded')).toBe('true');
     });
 
-    it('renders a hidden span telling the user the position of a symbol', () => {
-      const wrapper = createWrapper();
-      const label = wrapper.find(`#label-${defaultProps.item.uid}`);
-      expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text())
-        .toBe('filter.symbols-inside 2 5');
-    });
-
-    it('renders a hidden span telling the containing number of symbols', () => {
+    it('renders a aria-describedby with parent label if it is a parent', () => {
       const wrapper = createWrapper();
       const label = wrapper.find(`#label-parent-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe(', filter.containing-symbols');
+      expect(label.text()).toBe('filter.parent-label');
     });
 
-    it('renders a aria-describedby without parent label if it is not a parent', () => {
+    it('renders a aria-describedby with sibling label if it is not a parent', () => {
       const wrapper = createWrapper({
         propsData: {
           item: {
@@ -500,8 +492,13 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
+      const label = wrapper.find(`#label-${defaultProps.item.uid}`);
+      expect(label.attributes('hidden')).toBe('hidden');
+      expect(label.text())
+        .toBe('filter.siblings-label 2 5 Foo');
+
       expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
-        .toBe(`label-${defaultProps.item.uid} Foo usage-${defaultProps.item.uid}`);
+        .toBe(`label-${defaultProps.item.uid} usage-${defaultProps.item.uid}`);
     });
 
     it('focuses its link, if `isFocused`, `isRendered` and `enableFocus` is `true`', async () => {

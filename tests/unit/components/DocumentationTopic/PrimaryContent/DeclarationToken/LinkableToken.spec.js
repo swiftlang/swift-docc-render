@@ -9,11 +9,11 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import TypeIdentifierLink
-  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/TypeIdentifierLink.vue';
+import LinkableToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/LinkableToken.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
-describe('TypeIdentifierLink', () => {
+describe('LinkableToken', () => {
   const foo = {
     identifier: 'foo',
     title: 'Foo',
@@ -36,28 +36,37 @@ describe('TypeIdentifierLink', () => {
         query: {},
       },
     },
+    provide: {
+      store: {
+        state: {
+          references: {},
+        },
+      },
+    },
   };
 
   it('renders a span for unresolved references', () => {
-    const wrapper = shallowMount(TypeIdentifierLink, defaultOpts);
-    expect(wrapper.is('span.type-identifier-link')).toBe(true);
+    const wrapper = shallowMount(LinkableToken, defaultOpts);
+    expect(wrapper.is('span')).toBe(true);
     expect(wrapper.text()).toBe(foo.title);
   });
 
   it('renders a link for resolved references', () => {
-    const wrapper = shallowMount(TypeIdentifierLink, {
+    const wrapper = shallowMount(LinkableToken, {
       ...defaultOpts,
       provide: {
-        references: {
-          [foo.identifier]: foo,
+        store: {
+          state: {
+            references: {
+              [foo.identifier]: foo,
+            },
+          },
         },
       },
     });
 
-    expect(wrapper.is('.type-identifier-link')).toBe(true);
     const link = wrapper.find(Reference);
     expect(link.exists()).toBe(true);
-    expect(link.classes('type-identifier-link')).toBe(true);
     expect(link.props('url')).toBe(foo.url);
     expect(link.text()).toBe(foo.title);
   });
