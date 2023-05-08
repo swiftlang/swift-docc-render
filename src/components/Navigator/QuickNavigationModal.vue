@@ -145,7 +145,7 @@ import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import LRUMap from 'docc-render/utils/lru-map';
 import { convertChildrenArrayToObject, getParents } from 'docc-render/utils/navigatorData';
 import { fetchDataForPreview } from 'docc-render/utils/data';
-import { SCROLL_LOCK_DISABLE_ATTR } from '@/utils/scroll-lock';
+import { SCROLL_LOCK_DISABLE_ATTR } from 'docc-render/utils/scroll-lock';
 
 const { PreviewState } = QuickNavigationPreview.constants;
 
