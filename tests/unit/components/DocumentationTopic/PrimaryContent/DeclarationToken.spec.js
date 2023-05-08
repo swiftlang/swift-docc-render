@@ -15,8 +15,8 @@ import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryC
 import RawText from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/RawText.vue';
 import SyntaxToken
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/SyntaxToken.vue';
-import TypeIdentifierLink
-  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/TypeIdentifierLink.vue';
+import LinkableToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/LinkableToken.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 
 const { TokenKind } = DeclarationToken.constants;
@@ -36,7 +36,7 @@ describe('DeclarationToken', () => {
     expect(rawText.props()).toEqual({ text: propsData.text });
   });
 
-  it('renders a `TypeIdentifierLink` for `typeIdentifier` tokens', () => {
+  it('renders a `LinkableToken` for `typeIdentifier` tokens', () => {
     const propsData = {
       kind: TokenKind.typeIdentifier,
       identifier: 'foo',
@@ -44,11 +44,12 @@ describe('DeclarationToken', () => {
     };
     const wrapper = mountToken({ propsData });
 
-    const link = wrapper.find(TypeIdentifierLink);
+    const link = wrapper.find(LinkableToken);
     expect(link.exists()).toBe(true);
     expect(link.props()).toEqual({ identifier: propsData.identifier });
     expect(link.contains(WordBreak)).toBe(true);
     expect(link.text()).toBe(propsData.text);
+    expect(link.classes()).toContain('type-identifier-link');
   });
 
   it('renders a `SyntaxToken` for other tokens', () => {
@@ -96,5 +97,32 @@ describe('DeclarationToken', () => {
     expect(token.exists()).toBe(true);
     expect(token.props('tokens')).toEqual(propsData.tokens);
     expect(token.props('kind')).toEqual(propsData.kind);
+  });
+
+  it('renders a `SyntaxToken` for basic `attribute` tokens', () => {
+    const propsData = {
+      kind: TokenKind.attribute,
+      text: '@foo',
+    };
+    const wrapper = mountToken({ propsData });
+    const token = wrapper.find(SyntaxToken);
+    expect(token.exists()).toBe(true);
+    expect(token.props('kind')).toBe(TokenKind.attribute);
+    expect(token.props('text')).toBe(propsData.text);
+  });
+
+  it('renders a `LinkableToken` for `attribute` tokens with an `identifier`', () => {
+    const propsData = {
+      kind: TokenKind.attribute,
+      identifier: 'foo',
+      text: '@foo',
+    };
+    const wrapper = mountToken({ propsData });
+    const link = wrapper.find(LinkableToken);
+    expect(link.exists()).toBe(true);
+    expect(link.props()).toEqual({ identifier: propsData.identifier });
+    expect(link.contains(WordBreak)).toBe(true);
+    expect(link.text()).toBe(propsData.text);
+    expect(link.classes()).toContain('attribute-link');
   });
 });
