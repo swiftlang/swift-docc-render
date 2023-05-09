@@ -112,6 +112,24 @@ describe('Reference', () => {
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
 
+  it('renders a `ReferenceInternal` for a symbol with its own inline formatting', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: {
+        url: '/documentation/uikit/uiview',
+        kind: 'symbol',
+        role: TopicRole.symbol,
+        hasInlineFormatting: true,
+      },
+      slots: { default: 'custom text for UIView symbol' },
+    });
+    const ref = wrapper.find(ReferenceInternal);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+    expect(wrapper.find(ReferenceInternalSymbol).exists()).toBe(false);
+  });
+
   it('renders a `ReferenceInternal` for external "dictionarySymbol" kind references with a human readable name', () => {
     const wrapper = shallowMount(Reference, {
       localVue,
