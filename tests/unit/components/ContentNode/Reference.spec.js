@@ -127,6 +127,7 @@ describe('Reference', () => {
     const ref = wrapper.find(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+    expect(wrapper.find(ReferenceInternalSymbol).exists()).toBe(false);
   });
 
   it('renders a `ReferenceInternal` for external "dictionarySymbol" kind references with a human readable name', () => {
