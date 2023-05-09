@@ -140,8 +140,10 @@ export default {
         // if we find some text ending with ", " and the next token is the start
         // of a new param, update this token text to replace the space with a
         // newline followed by 4 spaces
-        if (token.text && token.text.endsWith(', ')
-          && nextToken && nextToken.kind === TokenKind.externalParam) {
+        const isStartOfParam = ({ kind }) => (
+          kind === TokenKind.attribute || kind === TokenKind.externalParam
+        );
+        if (token.text && token.text.endsWith(', ') && nextToken && isStartOfParam(nextToken)) {
           newToken.text = `${token.text.trimEnd()}\n${indent}`;
           indentedParams = true;
         }
