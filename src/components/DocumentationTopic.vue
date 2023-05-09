@@ -736,6 +736,10 @@ export default {
       > code {
         @include inTargetIde() {
           white-space: pre-wrap;
+
+          .token-identifier {
+            word-break: break-all;
+          }
         }
       }
     }
