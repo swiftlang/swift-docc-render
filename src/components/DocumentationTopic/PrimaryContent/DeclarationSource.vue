@@ -89,6 +89,7 @@ export default {
       let closeParenTokenIndex = null;
       let closeParenCharIndex = null;
       let numUnclosedParens = 0;
+      let identifierTokenIndex = null;
 
       // loop through every declaration token
       while (i < tokens.length) {
@@ -98,31 +99,39 @@ export default {
         const prevToken = tokens[i - 1];
         const nextToken = tokens[i + 1];
 
-        // loop through the token text to look for "(" and ")" characters
-        const tokenLength = (token.text || '').length;
-        // eslint-disable-next-line no-plusplus
-        for (let k = 0; k < tokenLength; k++) {
-          if (token.text.charAt(k) === '(') {
-            numUnclosedParens += 1;
-            // keep track of the token/character position of the first "("
-            if (openParenCharIndex == null) {
-              openParenCharIndex = k;
-              openParenTokenIndex = i;
-            }
-          }
+        // keep track of the index of the first identifier token
+        if (!identifierTokenIndex && token.kind === TokenKind.identifier) {
+          identifierTokenIndex = i;
+        }
 
-          if (token.text.charAt(k) === ')') {
-            numUnclosedParens -= 1;
-            // if this ")" balances out the number of "(" characters that have
-            // been seen, this is the one that pairs up with the first one
-            if (
-              openParenTokenIndex !== null
-              && closeParenTokenIndex == null
-              && numUnclosedParens === 0
-            ) {
-              closeParenCharIndex = k;
-              closeParenTokenIndex = i;
-              break;
+        // loop through the token text to look for "(" and ")" characters once
+        // we've already encountered the symbol identifier
+        if (identifierTokenIndex !== null) {
+          const tokenLength = (token.text || '').length;
+          // eslint-disable-next-line no-plusplus
+          for (let k = 0; k < tokenLength; k++) {
+            if (token.text.charAt(k) === '(') {
+              numUnclosedParens += 1;
+              // keep track of the token/character position of the first "("
+              if (openParenCharIndex == null) {
+                openParenCharIndex = k;
+                openParenTokenIndex = i;
+              }
+            }
+
+            if (token.text.charAt(k) === ')') {
+              numUnclosedParens -= 1;
+              // if this ")" balances out the number of "(" characters that have
+              // been seen, this is the one that pairs up with the first one
+              if (
+                openParenTokenIndex !== null
+                && closeParenTokenIndex == null
+                && numUnclosedParens === 0
+              ) {
+                closeParenCharIndex = k;
+                closeParenTokenIndex = i;
+                break;
+              }
             }
           }
         }
