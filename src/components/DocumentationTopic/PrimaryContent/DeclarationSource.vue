@@ -89,7 +89,7 @@ export default {
       let closeParenTokenIndex = null;
       let closeParenCharIndex = null;
       let numUnclosedParens = 0;
-      let identifierTokenIndex = null;
+      let firstKeywordTokenIndex = null;
 
       // loop through every declaration token
       while (i < tokens.length) {
@@ -99,14 +99,14 @@ export default {
         const prevToken = tokens[i - 1];
         const nextToken = tokens[i + 1];
 
-        // keep track of the index of the first identifier token
-        if (!identifierTokenIndex && token.kind === TokenKind.identifier) {
-          identifierTokenIndex = i;
+        // keep track of the index of the first keyword token
+        if (!firstKeywordTokenIndex && token.kind === TokenKind.keyword) {
+          firstKeywordTokenIndex = i;
         }
 
-        // loop through the token text to look for "(" and ")" characters once
-        // we've already encountered the symbol identifier
-        if (identifierTokenIndex !== null) {
+        // loop through the token text to look for "(" and ")" characters after
+        // we've already encountered the first keyword
+        if (firstKeywordTokenIndex !== null) {
           const tokenLength = (token.text || '').length;
           // eslint-disable-next-line no-plusplus
           for (let k = 0; k < tokenLength; k++) {
