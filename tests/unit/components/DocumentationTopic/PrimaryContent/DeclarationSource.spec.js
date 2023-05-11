@@ -876,7 +876,7 @@ func foo(bar: @escaping () -> ()) -> Int`,
     );
   });
 
-  it('indents params properly for symbols prefixed with attributes which take arguments', () => {
+  it('indents params properly for functions prefixed with attributes which take arguments', () => {
     const tokens = [
       {
         kind: TokenKind.attribute,
@@ -943,7 +943,7 @@ func foo(bar: @escaping () -> ()) -> Int`,
     // Before:
     // @objc(quxA:B:) func quxqux(a: Int, b: Int) -> Int
     //
-    // After
+    // After:
     // @objc(quxA:B:)
     // func quxqux(
     //     a: Int,
@@ -957,6 +957,78 @@ func quxqux(
     a: Int,
     b: Int
 ) -> Int`,
+    );
+  });
+
+  it('indents params properly for initializers prefixed with attributes which take arguments', () => {
+    const tokens = [
+      {
+        kind: TokenKind.attribute,
+        text: '@objc',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(initWithA:B:) ',
+      },
+      {
+        kind: TokenKind.keyword,
+        text: 'init',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'a',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'b',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ')',
+      },
+    ];
+
+    // Before:
+    // @objc(initWithA:B:) init(a: Int, b: Int)
+    //
+    // After:
+    // @objc(initWithA:B:)
+    // init(
+    //    a: Int,
+    //    b: Int
+    // )
+    const wrapper = mountWithTokens(tokens);
+    const tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`@objc(initWithA:B:)
+init(
+    a: Int,
+    b: Int
+)`,
     );
   });
 });
