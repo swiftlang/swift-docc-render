@@ -732,14 +732,14 @@ export default {
 
     .source {
       border-radius: var(--code-border-radius);
+    }
 
-      > code {
-        @include inTargetIde() {
-          white-space: pre-wrap;
+    .source:not(.has-multiple-lines) > code {
+      @include inTargetIde() {
+        white-space: pre-wrap;
 
-          .token-identifier {
-            word-break: break-all;
-          }
+        .token-identifier {
+          word-break: break-all;
         }
       }
     }
