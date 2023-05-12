@@ -44,6 +44,10 @@ table {
 /deep/ {
   th {
     font-weight: $font-weight-semibold;
+
+    > p {
+      word-break: keep-all;
+    }
   }
 
   td,
