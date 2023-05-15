@@ -21,7 +21,6 @@
 
 <script>
 import { indentDeclaration } from 'docc-render/utils/indentation';
-import { hasMultipleLines } from 'docc-render/utils/multipleLines';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import Language from 'docc-render/constants/Language';
@@ -36,7 +35,6 @@ export default {
   name: 'DeclarationSource',
   data() {
     return {
-      hasMultipleLines: false,
       multipleLinesClass,
     };
   },
@@ -173,6 +171,13 @@ export default {
 
       return newTokens;
     },
+    hasMultipleLines({ formattedSwiftTokens }) {
+      return formattedSwiftTokens.reduce((lineCount, tokens, idx) => {
+        let REGEXP = /\n/g;
+        if (idx === formattedSwiftTokens.length - 1) REGEXP = /\n(?!$)/g;
+        return lineCount + (tokens.text.match(REGEXP) || []).length;
+      }, 1) >= 2;
+    },
   },
   methods: {
     propsFor(token) {
@@ -189,7 +194,6 @@ export default {
       await this.$nextTick();
       indentDeclaration(this.$refs.code, this.language);
     }
-    if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
   },
 };
 </script>
