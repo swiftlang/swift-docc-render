@@ -35,7 +35,7 @@ from the community.
 ### Contributing Code and Documentation
 
 Before contributing code or documentation to Swift-DocC-Render
-we encourage you to first create an issue on [Swift JIRA](https://bugs.swift.org/)
+we encourage you to first create an issue on [GitHub](https://github.com/apple/swift-docc-render/issues/new)
 for a bug report or feature request.
 This will allow us to provide feedback on the proposed change.
 However, this is not a requirement. If your contribution is small in scope,
@@ -125,8 +125,8 @@ When you're ready to have your change reviewed, please make sure you've complete
 When opening a pull request, please make sure to fill out the pull request template
 and complete all tasks mentioned there.
 
-Your PR should mention the number of the [Swift JIRA](https://bugs.swift.org/)
-issue your work is addressing (SR-NNNNN).
+Your PR should mention the number of the [GitHub issue](https://github.com/apple/swift-docc-render/issues)
+issue your work is addressing (#NNN).
   
 Most PRs should be against the `main` branch. If your change is intended 
 for a specific release, you should also create a separate branch 
@@ -184,8 +184,8 @@ npm run lint:fix
 ## Your First Contribution
 
 Unsure of where to begin contributing to Swift-DocC-Render? You can start by looking at
-the bugs in the `Swift-DocC-Render` component with the `StarterBug` label on
-[Swift JIRA](https://bugs.swift.org/issues/?jql=project%20%3D%20SR%20AND%20status%20in%20(Open%2C%20Reopened)%20AND%20component%20%3D%20Swift-DocC-Render%20AND%20labels%20%3D%20StarterBug).
+the bugs in the `Swift-DocC-Render` issues list with the `StarterBug` label on
+[GitHub](https://github.com/apple/swift-docc-render/issues?q=is%3Aissue+is%3Aopen+label%3AStarterBug).
 
 Once you've found an issue to work on,
 follow the above instructions for [Building Swift-DocC-Render](#build-and-run-swift-docc-render).
