@@ -171,10 +171,10 @@ export default {
 
       return newTokens;
     },
-    hasMultipleLines({ formattedSwiftTokens }) {
-      return formattedSwiftTokens.reduce((lineCount, tokens, idx) => {
+    hasMultipleLines({ formattedTokens }) {
+      return formattedTokens.reduce((lineCount, tokens, idx) => {
         let REGEXP = /\n/g;
-        if (idx === formattedSwiftTokens.length - 1) REGEXP = /\n(?!$)/g;
+        if (idx === formattedTokens.length - 1) REGEXP = /\n(?!$)/g;
         return lineCount + (tokens.text.match(REGEXP) || []).length;
       }, 1) >= 2;
     },
