@@ -25,7 +25,10 @@
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
       <pre><CodeBlock><span
         v-for="(line, index) in syntaxHighlightedLines"
-        :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
+        :class="['code-line-container',
+        { highlighted: !isLastCodeListing && isHighlighted(index),
+          deleteHighlighted: isLastCodeListing && isDeleteHighlighted(index)
+        }]"
         :key="index"
       ><span
         v-show="showLineNumbers" class="code-number"
@@ -75,7 +78,15 @@ export default {
       type: Array,
       default: () => [],
     },
+    deleteHighlights: {
+      type: Array,
+      default: () => [],
+    },
     showLineNumbers: {
+      type: Boolean,
+      default: () => false,
+    },
+    isLastCodeListing: {
       type: Boolean,
       default: () => false,
     },
@@ -84,6 +95,9 @@ export default {
     escapedContent: ({ content }) => content.map(escapeHtml),
     highlightedLineNumbers() {
       return new Set(this.highlights.map(({ line }) => line));
+    },
+    deleteHighlightedLineNumbers() {
+      return new Set(this.deleteHighlights.map(({ line }) => line));
     },
     syntaxNameNormalized() {
       // `occ` is a legacy naming convention
@@ -100,6 +114,9 @@ export default {
   methods: {
     isHighlighted(index) {
       return this.highlightedLineNumbers.has(this.lineNumberFor(index));
+    },
+    isDeleteHighlighted(index) {
+      return this.deleteHighlightedLineNumbers.has(this.lineNumberFor(index));
     },
     // Returns the line number for the line at the given index in `content`.
     lineNumberFor(index) {
@@ -146,6 +163,16 @@ export default {
 .highlighted {
   background: var(--line-highlight, var(--color-code-line-highlight));
   border-left: $highlighted-border-width solid var(--color-code-line-highlight-border);
+
+  .code-number {
+    padding-left: $code-number-padding-left - $highlighted-border-width;
+  }
+}
+
+.deleteHighlighted {
+  text-decoration-line: line-through;
+  background: var(--line-delete-highlight, var(--color-code-line-delete-highlight));
+  border-left: $highlighted-border-width solid var(--color-code-line-delete-highlight-border);
 
   .code-number {
     padding-left: $code-number-padding-left - $highlighted-border-width;

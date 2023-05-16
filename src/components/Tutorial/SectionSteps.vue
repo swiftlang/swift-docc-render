@@ -44,6 +44,7 @@
         <CodePreview
           v-if="visibleAsset.code"
           :code="visibleAsset.code"
+          :lastCode="visibleAsset.lastCode"
           :preview="visibleAsset.runtimePreview"
           :isRuntimePreviewVisible="isRuntimePreviewVisible"
           @runtime-preview-toggle="onRuntimePreviewToggle"
@@ -99,11 +100,13 @@ export default {
       runtimePreview,
     } = this.content[firstStepIndex] || {};
 
+    const lastCode = '';
     return {
       tutorialState: this.store.state,
       visibleAsset: {
         media,
         code,
+        lastCode,
         runtimePreview,
       },
       activeStep: firstStepIndex,
@@ -190,9 +193,17 @@ export default {
         runtimePreview,
       } = this.content[key];
 
+      let lastCode;
+      if (key > 0) {
+        lastCode = this.content[key - 1].code;
+      } else {
+        lastCode = '';
+      }
+
       this.activeStep = key;
       this.visibleAsset = {
         code,
+        lastCode,
         media,
         runtimePreview,
       };
