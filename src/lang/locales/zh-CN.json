@@ -5,6 +5,7 @@
   "video": {
     "replay": "重新播放",
     "play": "播放",
+    "pause": "暂停",
     "watch": "观看介绍视频"
   },
   "tutorials": {
@@ -55,7 +56,15 @@
       "open-menu": "打开菜单",
       "close-menu": "关闭菜单"
     },
-    "current-page": "当前页面为：{title}"
+    "current-page": "当前页面为：{title}",
+    "card": {
+      "learn-more": "进一步了解",
+      "read-article": "阅读文章",
+      "start-tutorial": "开始教程",
+      "view-api": "查看 API 集合",
+      "view-symbol": "查看符号",
+      "view-sample-code": "查看示例代码"
+    }
   },
   "aside-kind": {
     "beta": "Beta 版",
@@ -83,7 +92,7 @@
     "default-implementations": "默认实现",
     "relationships": "关系",
     "see-also": "另请参阅",
-    "declarations": "声明",
+    "declaration": "声明",
     "details": "详细信息",
     "parameters": "参数",
     "possible-values": "可能值",
@@ -101,31 +110,31 @@
       "legal": "此文档涉及 Beta 版软件且可能会改动。",
       "software": "Beta 版软件"
     },
-    "default-implementation": "已提供默认实现。"
+    "default-implementation": "提供默认实现。| 提供默认实现方法。"
   },
   "availability": {
-    "introduced-and-deprecated": "{name}{introducedAt}中引入，{name}{deprecatedAt}中弃用",
-    "available-on": "{name}{introducedAt}及更高版本中可用"
+    "introduced-and-deprecated": "{name} {introducedAt} 中引入，{name} {deprecatedAt} 中弃用",
+    "available-on": "{name} {introducedAt} 及更高版本中可用"
   },
   "more": "更多",
   "less": "更少",
   "api-reference": "API 参考",
   "filter": {
     "title": "过滤",
-    "search-symbols": "搜索符号",
+    "search-symbols": "在 {technology} 搜索符号",
     "suggested-tags": "建议标签",
     "selected-tags": "所选标签",
     "add-tag": "添加标签",
     "tag-select-remove": "标签。选择以从列表中移除。",
     "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
-    "siblings-label": "内含 {number-siblings} 个符号（共 {total-siblings} 个）{parent-siblings}",
-    "parent-label": "@:filter.siblings-label 包含 1 个符号 | @:filter.siblings-label 包含 {number-parent} 个符号",
+    "siblings-label": "{parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）",
+    "parent-label": "{parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）包含一个符号 | {parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）包含 {number-parent} 个符号",
     "reset-filter": "还原过滤条件"
   },
   "navigator": {
-    "title": "文档 导航器",
-    "open-navigator": "打开文档 导航器",
-    "close-navigator": "关闭文档 导航器",
+    "title": "文档导航器",
+    "open-navigator": "打开文档导航器",
+    "close-navigator": "关闭文档导航器",
     "no-results": "未找到结果。",
     "no-children": "无可用数据。",
     "error-fetching": "获取数据时出错。",
@@ -148,8 +157,8 @@
     "default": "默认",
     "minimum": "最小值",
     "maximum": "最大值",
-    "possible-types": "可能类型",
-    "possible-values": "可能值"
+    "possible-types": "类型 | 可能类型",
+    "possible-values": "值 | 可能值"
   },
   "content-type": "内容类型：{value}",
   "read-only": "只读",
@@ -169,8 +178,8 @@
       "end": "删除线文本结束"
     },
     "code": {
-      "start": "start of code block",
-      "end": "end of code block"
+      "start": "代码块开头",
+      "end": "代码块结尾"
     },
     "skip-navigation": "跳过导航"
   },
@@ -181,7 +190,13 @@
     "search": "搜索"
   },
   "formats": {
-    "parenthesis": "（{content}）",
-    "colon": "{content}："
+    "parenthesis": "({content})",
+    "colon": "{content}： "
+  },
+  "quicknav": {
+    "button": {
+      "label": "打开快速导航",
+      "title": "点按或键入 / 进行快速导航"
+    }
   }
 }
