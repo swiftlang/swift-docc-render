@@ -63,7 +63,7 @@ that will help us track down the bug faster.
 ### Submitting a Feature Request
 
 For feature requests, please feel free to create an issue
-on [GitHub](https://github.com/apple/swift-docc-render/issues/new) with the `New Feature` type
+on [GitHub](https://github.com/apple/swift-docc-render/issues/new?assignees=&labels=New+Feature&projects=&template=FEATURE_REQUEST.yml) with the `New Feature` type
 or start a discussion on the [Swift Forums](https://forums.swift.org/c/development/swift-docc).
 
 Don't hesitate to submit a feature request if you see a way
