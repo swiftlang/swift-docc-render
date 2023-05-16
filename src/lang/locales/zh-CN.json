@@ -127,7 +127,7 @@
     "add-tag": "添加标签",
     "tag-select-remove": "标签。选择以从列表中移除。",
     "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
-    "siblings-label": "{Parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）",
+    "siblings-label": "{parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）",
     "parent-label": "{parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）包含一个符号 | {parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）包含 {number-parent} 个符号",
     "reset-filter": "还原过滤条件"
   },
