@@ -15,7 +15,7 @@
   >
     <component
       :is="isTargetIDE ? 'div' : 'main'"
-      class="main" id="main" tabindex="0"
+      class="main" id="main"
     >
       <DocumentationHero
         :role="role"
