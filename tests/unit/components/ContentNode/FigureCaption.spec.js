@@ -18,14 +18,16 @@ describe('FigureCaption', () => {
     const wrapper = shallowMount(FigureCaption, { propsData, slots });
 
     expect(wrapper.is('figcaption')).toBe(true);
-    expect(wrapper.text()).toMatch(/Figure 1\sBlah/);
+    expect(wrapper.text()).toBe('Figure 1\u00a0Blah');
   });
+
   it('renders a <figcaption> with slot content only', () => {
     const slots = { default: '<p>Blah</p>' };
     const wrapper = shallowMount(FigureCaption, { slots });
 
     expect(wrapper.is('figcaption')).toBe(true);
     expect(wrapper.text()).toBe('Blah');
+    expect(wrapper.text()).not.toBe('\u00a0Blah');
   });
 
   it('renders a <figcaption> centered', () => {
