@@ -5,6 +5,7 @@
   "video": {
     "replay": "リプレイ",
     "play": "再生",
+    "pause": "一時停止",
     "watch": "概要のビデオを観る"
   },
   "tutorials": {
@@ -55,7 +56,15 @@
       "open-menu": "メニューを開く",
       "close-menu": "メニューを閉じる"
     },
-    "current-page": "現在のページは{title}です"
+    "current-page": "現在のページは{title}です",
+    "card": {
+      "learn-more": "詳しい情報",
+      "read-article": "記事を読む",
+      "start-tutorial": "チュートリアルを開始",
+      "view-api": "APIのコレクションを表示",
+      "view-symbol": "記号を表示",
+      "view-sample-code": "サンプルコードを表示"
+    }
   },
   "aside-kind": {
     "beta": "ベータ版",
@@ -83,7 +92,7 @@
     "default-implementations": "デフォルト実装",
     "relationships": "関連項目",
     "see-also": "参照",
-    "declarations": "宣言",
+    "declaration": "宣言",
     "details": "詳細",
     "parameters": "パラメータ",
     "possible-values": "使用できる値",
@@ -104,22 +113,22 @@
     "default-implementation": "デフォルト実装あり。| デフォルト実装あり。"
   },
   "availability": {
-    "introduced-and-deprecated": "{name}{introducedAt}で導入され、{name}{deprecatedAt}で非推奨になりました",
-    "available-on": "{name}{introducedAt}以降で使用できます"
+    "introduced-and-deprecated": "{name} {introducedAt}で導入され、{name} {deprecatedAt}で非推奨になりました",
+    "available-on": "{name} {introducedAt}以降で使用できます"
   },
   "more": "さらに表示",
   "less": "表示を減らす",
   "api-reference": "APIリファレンス",
   "filter": {
     "title": "フィルタ",
-    "search-symbols": "記号を検索",
-    "suggested-tags": "提案されたタグ",
-    "selected-tags": "選択したタグ",
+    "search-symbols": "{technology}でシンボルを検索",
+    "suggested-tags": "提案されたタグ | 提案されたタグ",
+    "selected-tags": "選択したタグ | 選択したタグ",
     "add-tag": "タグを追加",
     "tag-select-remove": "タグ。選択してリストから削除します。",
     "navigate": "シンボルを移動するには、上下左右の矢印キーを押します。",
-    "siblings-label": "{number-siblings}個中{total-siblings} 個のシンボルが中にあります {parent-siblings}",
-    "parent-label": "@:filter.siblings-label 1個のシンボルを含む | @:filter.siblings-label {number-parent} 個のシンボルを含む",
+    "siblings-label": "{total-siblings}個中{number-siblings}個のシンボルが{parent-siblings}の中にあります",
+    "parent-label": "{total-siblings}個中{number-siblings}個のシンボルが1個のシンボルを含む{parent-siblings}の中にあります | {total-siblings}個中{number-siblings}個のシンボルが{number-parent}個のシンボルを含む{parent-siblings}の中にあります",
     "reset-filter": "フィルタをリセット"
   },
   "navigator": {
@@ -148,10 +157,10 @@
     "default": "デフォルト",
     "minimum": "最小",
     "maximum": "最大",
-    "possible-types": "使用できるタイプ",
-    "possible-values": "使用できる値"
+    "possible-types": "タイプ | 使用できるタイプ",
+    "possible-values": "値 | 使用できる値"
   },
-  "content-type": "コンテンツタイプ: {value}",
+  "content-type": "Content-Type: {value}",
   "read-only": "読み出し専用",
   "error": {
     "unknown": "原因不明のエラーが起きました。",
@@ -169,8 +178,8 @@
       "end": "取り消し線テキストの終了"
     },
     "code": {
-      "start": "start of code block",
-      "end": "end of code block"
+      "start": "コードブロックの開始",
+      "end": "コードブロックの終了"
     },
     "skip-navigation": "ナビゲーションをスキップ"
   },
@@ -183,5 +192,11 @@
   "formats": {
     "parenthesis": "（{content}）",
     "colon": "{content}: "
+  },
+  "quicknav": {
+    "button": {
+      "label": "クイックナビゲーションを開く",
+      "title": "クリックするか「/」を入力すると素早く移動します"
+    }
   }
 }
