@@ -45,6 +45,7 @@ table {
   th {
     font-weight: $font-weight-semibold;
     word-break: keep-all;
+    hyphens: auto;
   }
 
   td,
