@@ -13,13 +13,14 @@ import AdjustableSidebarWidth, {
   STORAGE_KEY,
   MAX_WIDTH,
   ULTRA_WIDE_DEFAULT,
+  LARGE_DEFAULT_WIDTH,
 } from '@/components/AdjustableSidebarWidth.vue';
 
 import store from '@/stores/DocumentationTopicStore';
 import { shallowMount } from '@vue/test-utils';
 import { storage } from 'docc-render/utils/storage';
 import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
-import { waitFrames } from '@/utils/loading';
+import { waitFor, waitFrames } from '@/utils/loading';
 import FocusTrap from '@/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
@@ -29,6 +30,7 @@ import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/debounce');
 jest.mock('docc-render/utils/storage');
+jest.mock('docc-render/utils/loading');
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
@@ -105,9 +107,9 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   describe('on mount', () => {
-    it('sets the `width` to the middle between min and max for `large`, on mount', () => {
+    it('sets the `width` to the `large` default width, on mount', () => {
       const wrapper = createWrapper();
-      assertWidth(wrapper, 350); // 35% on large
+      assertWidth(wrapper, LARGE_DEFAULT_WIDTH);
     });
 
     it('changes the `width`, to the next closest max or min, on mount, as soon as the breakpoint gets changed', () => {
@@ -144,7 +146,7 @@ describe('AdjustableSidebarWidth', () => {
       assertWidth(wrapper, 450);
       // assert the storage was called with the key and the default size
       // 350 is half of min and max on Large
-      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, 350);
+      expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, LARGE_DEFAULT_WIDTH);
     });
 
     it('sets the `width` to the `max width allowed`, if stored value is bigger', () => {
@@ -288,7 +290,6 @@ describe('AdjustableSidebarWidth', () => {
     expect(aside.classes()).not.toContain('hide-on-large');
     expect(aside.classes()).not.toContain('sidebar-transitioning');
     wrapper.setProps({ hiddenOnLarge: true });
-    await wrapper.vm.$nextTick();
     expect(aside.classes()).toContain('hide-on-large');
     expect(aside.classes()).toContain('sidebar-transitioning');
     expect(aside.attributes()).toMatchObject({
@@ -297,6 +298,8 @@ describe('AdjustableSidebarWidth', () => {
     wrapper.setProps({ hiddenOnLarge: false });
     expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('hide-on-large');
     expect(aside.classes()).toContain('sidebar-transitioning');
+    await wrapper.vm.$nextTick();
+    expect(aside.classes()).not.toContain('sidebar-transitioning');
   });
 
   it('changes the sidebar width, if outside the min/max on orientation change', async () => {
@@ -367,8 +370,8 @@ describe('AdjustableSidebarWidth', () => {
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.mouse.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toHaveLength(4);
-    expect(wrapper.emitted('width-change')[3]).toEqual([maxWidth]);
+    expect(wrapper.emitted('width-change')).toHaveLength(3);
+    expect(wrapper.emitted('width-change')[2]).toEqual([maxWidth]);
     // assert saved storage
     expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
@@ -405,8 +408,8 @@ describe('AdjustableSidebarWidth', () => {
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.touch.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toHaveLength(4);
-    expect(wrapper.emitted('width-change')[3]).toEqual([maxWidth]);
+    expect(wrapper.emitted('width-change')).toHaveLength(3);
+    expect(wrapper.emitted('width-change')[2]).toEqual([maxWidth]);
     // assert saved storage
     expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
@@ -530,7 +533,7 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, maxWidth);
   });
 
-  it('adds a transition detection', () => {
+  it('adds a transition detection', async () => {
     const oldEvent = window.Event;
     window.Event = null;
 
@@ -541,6 +544,12 @@ describe('AdjustableSidebarWidth', () => {
     expect(aside.classes()).toContain('sidebar-transitioning');
     aside.trigger('transitionend', { propertyName: 'width' });
     expect(aside.classes()).not.toContain('sidebar-transitioning');
+    // assert it stops transitioning after time
+    aside.trigger('transitionstart', { propertyName: 'width' });
+    expect(aside.classes()).toContain('sidebar-transitioning');
+    await flushPromises();
+    expect(aside.classes()).not.toContain('sidebar-transitioning');
+    expect(waitFor).toHaveBeenCalledWith(1000);
     window.Event = oldEvent;
   });
 
@@ -612,7 +621,6 @@ describe('AdjustableSidebarWidth', () => {
       setContentWidth(wrapper, 1099);
       wrapper.setProps({ hiddenOnLarge: false });
       aside.trigger('transitionstart', { propertyName: 'width' });
-      await flushPromises();
       // assert its the same, until transitions end
       expect(store.state.contentWidth).toBe(99);
       aside.trigger('transitionend', { propertyName: 'width' });

@@ -1027,6 +1027,7 @@ describe('ContentNode', () => {
       expect(reference.props('url')).toBe('/foo/bar');
       expect(reference.props('ideTitle')).toBe('IDETitle');
       expect(reference.props('titleStyle')).toBe('symbol');
+      expect(reference.props('hasInlineFormatting')).toBe(false);
       expect(reference.isEmpty()).toBe(false);
       expect(reference.text()).toBe('FooBar');
     });
@@ -1119,6 +1120,7 @@ describe('ContentNode', () => {
       const reference = wrapper.find('.content').find(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
+      expect(reference.props('hasInlineFormatting')).toBe(true);
 
       const emphasis = reference.find('em');
       expect(emphasis.exists()).toBe(true);
