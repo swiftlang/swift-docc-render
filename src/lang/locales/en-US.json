@@ -161,7 +161,7 @@
     "possible-values": "Value | Possible Values"
   },
   "content-type": "Content-Type: {value}",
-  "read-only": "Read only",
+  "read-only": "Read-only",
   "error": {
     "unknown": "An unknown error occurred.",
     "image": "Image failed to load"
