@@ -138,6 +138,6 @@ export function clone(jsonObject) {
 }
 
 export async function fetchIndexPathsData({ slug }) {
-  const path = getAbsoluteUrl(['index/', slug, 'index.json']);
+  const path = getAbsoluteUrl(['/index/', slug, 'index.json']);
   return fetchData(path);
 }

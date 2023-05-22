@@ -19,7 +19,6 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 import FetchError from 'docc-render/errors/FetchError';
 import RedirectError from 'docc-render/errors/RedirectError';
 import { defaultLocale } from 'theme/lang/index.js';
-import * as urlHelpers from 'docc-render/utils/url-helper';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
@@ -185,12 +184,7 @@ describe('fetchDataForRouteEnter', () => {
 
   it('calls `fetchData` with a configurable base url', async () => {
     const baseUrl = '/base-prefix';
-    jest.spyOn(urlHelpers, 'getAbsoluteUrl').mockImplementationOnce(
-      path => new URL(
-        baseUrl + path,
-        window.location.href,
-      ),
-    );
+    window.baseUrl = baseUrl;
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
@@ -201,6 +195,7 @@ describe('fetchDataForRouteEnter', () => {
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
+    window.baseUrl = '/';
   });
 
   it('calls `fetchData` with the right query string', async () => {
@@ -367,14 +362,21 @@ describe('fetchAPIChangesForRoute', () => {
 
 describe('fetchIndexPathsData', () => {
   it('fetches the data for the index/index.json', async () => {
+    // prepare the location object for the test
+    const backup = window.location;
+    delete window.location;
+    // change the location to a deep page
+    window.location = new URL('http://localhost/some/deep/path/');
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
     // fetch data with default locale
     const data = await fetchIndexPathsData({ currentLocale: defaultLocale });
+    // ensure the index was called at the root, not the deep page
     expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json', {});
     expect(data).toEqual({ foobar: 'foobar' });
     // fetch data with another locale
     const slug = 'zh-CN';
     await fetchIndexPathsData({ slug });
     expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${slug}/index.json`, {});
+    window.location = backup;
   });
 });

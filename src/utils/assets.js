@@ -9,11 +9,6 @@
 */
 
 /**
- * Utility functions for working with Assets
- */
-const { baseUrl } = window;
-
-/**
  * Separate array of variants by light/dark mode
  * @param {array} variants
  * @returns {{ light: [], dark: [] }}
@@ -66,10 +61,11 @@ export function pathJoin(parts) {
 
 /**
  * Normalizes paths, by prefixing the baseUrl path to them.
- * @param {String} url
- * @return {String}
+ * @param {string | string[]} rawPath
+ * @return {string}
  */
 export function normalizePath(rawPath) {
+  const { baseUrl } = window;
   const path = Array.isArray(rawPath) ? pathJoin(rawPath) : rawPath;
   if (!path || typeof path !== 'string' || path.startsWith(baseUrl) || !path.startsWith('/')) {
     return path;
@@ -79,8 +75,8 @@ export function normalizePath(rawPath) {
 
 /**
  * Normalizes relative paths, by making them start with /.
- * @param {String} url
- * @return {String}
+ * @param {string} path
+ * @return {string}
  */
 export function normalizeRelativePath(path) {
   // Sometimes `paths` data from `variants` are prefixed with a leading

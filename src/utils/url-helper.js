@@ -67,39 +67,44 @@ export function areEquivalentLocations(routeA, routeB) {
   }));
 }
 
-// Resolve a given path absolute URL object.
-//
-// @param {String} path A URL path.
-// @param {String} domainPath An optional base URL to resolve against. The default
-//   value will be the origin of the current website.
-// @return {Object} The absolute URL object resulting from resolving the given path
-//   with the current website origin.
-//
-// Examples:
-// if baseURL is '/'
-// getAbsoluteUrl('/bar') // URL { href: http://localhost:8080/bar }
-// getAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/bar }
-// if baseURL is '/foo/'
-// getAssetsAbsoluteUrl('/bar') // URL { href: http://localhost:8080/foo/bar }
-// getAssetsAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/foo/bar }
+/**
+ * Resolve a given path absolute URL object.
+ *
+ * @param {string | string[]} path - A URL path.
+ * @param {string} [domainPath] - An optional base URL to resolve against. The default
+ *   value will be the origin of the current website.
+ * @return {Object} The absolute URL object resulting from resolving the given path
+ *   with the current website origin.
+ *
+ * @example
+ * // if baseURL is '/'
+ * getAbsoluteUrl('/bar') // URL { href: http://localhost:8080/bar }
+ * getAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/bar }
+ * // if baseURL is '/foo/'
+ * getAssetsAbsoluteUrl('/bar') // URL { href: http://localhost:8080/foo/bar }
+ * getAssetsAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/foo/bar }
+ */
 export function getAbsoluteUrl(path, domainPath = window.location.href) {
   return new URL(normalizePath(path), domainPath);
 }
-// Resolve a given path into a full, absolute URL.
-//
-// @param {String} path A URL path.
-// @param {String} domainPath An optional base URL to resolve against. The default
-//   value will be the origin of the current website.
-// @return {String} The absolute URL resulting from resolving the given path
-//   with the current website origin.
-//
-// Examples:
-// if baseURL is '/'
-// getAbsoluteUrl('/bar') // http://localhost:8080/bar
-// getAbsoluteUrl('/bar', 'http://example.com') // http://example.com/bar
-// if baseURL is '/foo/'
-// resolveAssetsAbsoluteUrl('/bar') // http://localhost:8080/foo/bar
-// resolveAssetsAbsoluteUrl('/bar', 'http://example.com') // http://example.com/foo/bar
+
+/**
+ * Resolve a given path into a full, absolute URL.
+ *
+ * @param {string | string[]} path - A URL path.
+ * @param {string} [domainPath] - An optional base URL to resolve against. The default
+ *   value will be the origin of the current website.
+ * @return {string} The absolute URL resulting from resolving the given path
+ *   with the current website origin.
+ *
+ * @example
+ * // if baseURL is '/'
+ * getAbsoluteUrl('/bar') // http://localhost:8080/bar
+ * getAbsoluteUrl('/bar', 'http://example.com') // http://example.com/bar
+ * // if baseURL is '/foo/'
+ * resolveAssetsAbsoluteUrl('/bar') // http://localhost:8080/foo/bar
+ * resolveAssetsAbsoluteUrl('/bar', 'http://example.com') // http://example.com/foo/bar
+ */
 export function resolveAbsoluteUrl(path, domainPath) {
   return getAbsoluteUrl(path, domainPath).href;
 }
