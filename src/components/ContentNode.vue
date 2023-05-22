@@ -231,8 +231,8 @@ function renderNode(createElement, references) {
       // if there is a `title`, it should be above, otherwise below
       figureContent.splice(title ? 0 : 1, 0,
         createElement(Caption, {
-          props: { title, tag: 'figcaption', centered: !title }
-        }, renderChildren(abstract)))
+          props: { title, tag: 'figcaption', centered: !title },
+        }, renderChildren(abstract)));
     }
     return createElement(Figure, { props: { anchor } }, figureContent);
   };
