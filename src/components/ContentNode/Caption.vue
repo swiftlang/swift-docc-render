@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/_core.scss';
+@import 'docc-render/styles/_core.scss';
 
 .caption {
   @include font-styles(documentation-figcaption);
