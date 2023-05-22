@@ -84,61 +84,81 @@ export default {
       let indentedParams = false;
       const newTokens = [];
       let i = 0;
-      let j = 1;
       let openParenTokenIndex = null;
       let openParenCharIndex = null;
       let closeParenTokenIndex = null;
       let closeParenCharIndex = null;
       let numUnclosedParens = 0;
+      let firstKeywordTokenIndex = null;
 
       // loop through every declaration token
       while (i < tokens.length) {
         // keep track of the current token and the next one (if any)
         const token = tokens[i];
         const newToken = { ...token };
-        const nextToken = j < tokens.length ? tokens[j] : undefined;
+        const prevToken = tokens[i - 1];
+        const nextToken = tokens[i + 1];
 
-        // loop through the token text to look for "(" and ")" characters
-        const tokenLength = (token.text || '').length;
-        // eslint-disable-next-line no-plusplus
-        for (let k = 0; k < tokenLength; k++) {
-          if (token.text.charAt(k) === '(') {
-            numUnclosedParens += 1;
-            // keep track of the token/character position of the first "("
-            if (openParenCharIndex == null) {
-              openParenCharIndex = k;
-              openParenTokenIndex = i;
+        // keep track of the index of the first keyword token
+        if (!firstKeywordTokenIndex && token.kind === TokenKind.keyword) {
+          firstKeywordTokenIndex = i;
+        }
+
+        // loop through the token text to look for "(" and ")" characters after
+        // we've already encountered the first keyword
+        if (firstKeywordTokenIndex !== null) {
+          const tokenLength = (token.text || '').length;
+          // eslint-disable-next-line no-plusplus
+          for (let k = 0; k < tokenLength; k++) {
+            if (token.text.charAt(k) === '(') {
+              numUnclosedParens += 1;
+              // keep track of the token/character position of the first "("
+              if (openParenCharIndex == null) {
+                openParenCharIndex = k;
+                openParenTokenIndex = i;
+              }
+            }
+
+            if (token.text.charAt(k) === ')') {
+              numUnclosedParens -= 1;
+              // if this ")" balances out the number of "(" characters that have
+              // been seen, this is the one that pairs up with the first one
+              if (
+                openParenTokenIndex !== null
+                && closeParenTokenIndex == null
+                && numUnclosedParens === 0
+              ) {
+                closeParenCharIndex = k;
+                closeParenTokenIndex = i;
+                break;
+              }
             }
           }
+        }
 
-          if (token.text.charAt(k) === ')') {
-            numUnclosedParens -= 1;
-            // if this ")" balances out the number of "(" characters that have
-            // been seen, this is the one that pairs up with the first one
-            if (
-              openParenTokenIndex !== null
-              && closeParenTokenIndex == null
-              && numUnclosedParens === 0
-            ) {
-              closeParenCharIndex = k;
-              closeParenTokenIndex = i;
-              break;
-            }
-          }
+        // Find the text following the last attribute preceding the start of a
+        // declaration by determining if this is the text token in between an
+        // attribute and a keyword outside of any parameter clause. A newline
+        // will be added to break these attributes onto their own single line.
+        if (token.kind === TokenKind.text && numUnclosedParens === 0
+          && prevToken && prevToken.kind === TokenKind.attribute
+          && nextToken && nextToken.kind === TokenKind.keyword) {
+          newToken.text = `${token.text.trimEnd()}\n`;
         }
 
         // if we find some text ending with ", " and the next token is the start
         // of a new param, update this token text to replace the space with a
         // newline followed by 4 spaces
-        if (token.text && token.text.endsWith(', ')
-          && nextToken && nextToken.kind === TokenKind.externalParam) {
+        const isStartOfParam = ({ kind }) => (
+          kind === TokenKind.attribute || kind === TokenKind.externalParam
+        );
+        if (token.text && token.text.endsWith(', ') && nextToken && isStartOfParam(nextToken)) {
           newToken.text = `${token.text.trimEnd()}\n${indent}`;
           indentedParams = true;
         }
 
         newTokens.push(newToken);
         i += 1;
-        j += 1;
       }
 
       // if we indented some params, we want to find the opening "(" symbol

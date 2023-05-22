@@ -12,12 +12,18 @@ import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore'
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
 import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
 
+const references = {
+  foo: { identifier: 'foo' },
+  bar: { identifier: 'bar' },
+};
+
 describe('DocumentationTopicStore', () => {
   const defaultState = {
     preferredLanguage: null,
     contentWidth: 0,
     ...ApiChangesStoreBase.state,
     ...OnThisPageSectionsStoreBase.state,
+    references: {},
   };
 
   beforeEach(() => {
@@ -35,6 +41,7 @@ describe('DocumentationTopicStore', () => {
   describe('reset', () => {
     it('restores the default state', () => {
       DocumentationTopicStore.state.apiChanges = {};
+      DocumentationTopicStore.state.references = references;
       expect(DocumentationTopicStore.state).not.toEqual(defaultState);
       DocumentationTopicStore.reset();
       // assert all the state is reset
@@ -90,6 +97,11 @@ describe('DocumentationTopicStore', () => {
   it('sets the content width', () => {
     DocumentationTopicStore.setContentWidth(99);
     expect(DocumentationTopicStore.state.contentWidth).toBe(99);
+  });
+
+  it('sets `references`', () => {
+    DocumentationTopicStore.setReferences(references);
+    expect(DocumentationTopicStore.state.references).toBe(references);
   });
 
   describe('APIChanges', () => {

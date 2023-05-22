@@ -55,7 +55,7 @@ import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import { BreakpointName, BreakpointScopes } from 'docc-render/utils/breakpoints';
-import { waitFrames } from 'docc-render/utils/loading';
+import { waitFor, waitFrames } from 'docc-render/utils/loading';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
@@ -65,8 +65,9 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 export const STORAGE_KEY = 'sidebar';
 
 // the maximum width, after which the full-width content does not grow
-export const MAX_WIDTH = 1920;
+export const MAX_WIDTH = 1921;
 export const ULTRA_WIDE_DEFAULT = 543;
+export const LARGE_DEFAULT_WIDTH = 400;
 
 export const eventsMap = {
   touch: {
@@ -130,7 +131,7 @@ export default {
     // have a default width for very large screens, or use half of the min and max
     const defaultWidth = windowWidth >= MAX_WIDTH
       ? ULTRA_WIDE_DEFAULT
-      : Math.round((minWidth + maxWidth) / 2);
+      : LARGE_DEFAULT_WIDTH;
     // get the already stored data, fallback to a default one.
     const storedWidth = storage.get(STORAGE_KEY, defaultWidth);
     return {
@@ -234,8 +235,15 @@ export default {
       this.noTransition = false;
     },
     shownOnMobile: 'handleExternalOpen',
-    isTransitioning(value) {
-      if (!value) this.updateContentWidthInStore();
+    async isTransitioning(value) {
+      if (!value) {
+        this.updateContentWidthInStore();
+      } else {
+        // transitionEnd is not guaranteed to fire, so we ensure we stop
+        // transitioning after some time
+        await waitFor(1000);
+        this.isTransitioning = false;
+      }
     },
     hiddenOnLarge() {
       this.isTransitioning = true;
@@ -353,7 +361,7 @@ export default {
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
     }, 60),
-    trackTransitionStart({ propertyName }) {
+    async trackTransitionStart({ propertyName }) {
       if (propertyName === 'width' || propertyName === 'transform') {
         this.isTransitioning = true;
       }

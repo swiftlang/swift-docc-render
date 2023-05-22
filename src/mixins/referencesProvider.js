@@ -8,16 +8,21 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-/* eslint-disable camelcase */
-import en_US from './locales/en-US.json';
-import zh_CN from './locales/zh-CN.json';
-import ja_JP from './locales/ja-JP.json';
-
-// default locale
-export const defaultLocale = 'en-US';
-// translated locales
-export const messages = {
-  'en-US': en_US,
-  'zh-CN': zh_CN,
-  'ja-JP': ja_JP,
+export default {
+  // inject the `store`
+  inject: {
+    store: {
+      default: () => ({
+        state: {
+          references: {},
+        },
+        setReferences() {},
+        reset() {},
+      }),
+    },
+  },
+  computed: {
+    // exposes the references for the current page
+    references: ({ store }) => store.state.references,
+  },
 };

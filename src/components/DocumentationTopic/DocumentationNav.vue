@@ -222,8 +222,6 @@ $sidenav-icon-padding-size: 5px;
 // overwrite the typography of menu items outside of breakpoint only
 /deep/ .nav-menu {
   @include font-styles(documentation-nav);
-  // vertically align the items
-  padding-top: 0;
 
   &-settings {
     @include font-styles(nav-toggles);
@@ -275,10 +273,6 @@ $sidenav-icon-padding-size: 5px;
     // normalize the Title font with menu items
     .nav-title {
       @include font-styles(documentation-nav);
-
-      @include breakpoint(medium, $scope: nav) {
-        padding-top: 0;
-      }
 
       .nav-title-link.inactive {
         height: auto;

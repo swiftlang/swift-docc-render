@@ -9,6 +9,7 @@
 -->
 
 <script>
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
 import LinkableHeading from './ContentNode/LinkableHeading.vue';
@@ -437,6 +438,7 @@ function renderNode(createElement, references) {
           isActive: node.isActive,
           ideTitle: reference.ideTitle,
           titleStyle: reference.titleStyle,
+          hasInlineFormatting: !!titleInlineContent,
         },
       }, (
         titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText
@@ -464,19 +466,13 @@ function renderNode(createElement, references) {
 export default {
   name: 'ContentNode',
   constants: { TableHeaderStyle, TableColumnAlignments },
+  mixins: [referencesProvider],
   render: function render(createElement) {
     // Dynamically map each content item and any children to their
     // corresponding components, and wrap the whole tree in a <div>
     return createElement(this.tag, { class: 'content' }, (
       this.content.map(renderNode(createElement, this.references), this)
     ));
-  },
-  inject: {
-    references: {
-      default() {
-        return {};
-      },
-    },
   },
   props: {
     content: {

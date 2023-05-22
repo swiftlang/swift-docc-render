@@ -14,10 +14,10 @@
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
     <div :id="AppTopID" />
-    <a href="#main" id="skip-nav">{{ $t('accessibility.skip-navigation') }}</a>
+    <a href="#main" id="skip-nav" v-if="!isTargetIDE">{{ $t('accessibility.skip-navigation') }}</a>
     <InitialLoadingPlaceholder />
-    <SuggestLang v-if="enablei18n" />
     <slot name="header" :isTargetIDE="isTargetIDE">
+      <SuggestLang v-if="enablei18n" />
       <!-- Render the custom header by default, if there is no content in the `header` slot -->
       <custom-header v-if="hasCustomHeader" :data-color-scheme="preferredColorScheme" />
     </slot>
@@ -26,7 +26,7 @@
     <slot :isTargetIDE="isTargetIDE">
       <router-view class="router-content" />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
-      <Footer v-else-if="!isTargetIDE" />
+      <Footer v-else-if="!isTargetIDE" :enablei18n="enablei18n" />
     </slot>
     <slot name="footer" :isTargetIDE="isTargetIDE" />
   </div>
@@ -38,11 +38,10 @@ import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
-import { fetchThemeSettings, themeSettingsState } from 'docc-render/utils/theme-settings';
+import { fetchThemeSettings, themeSettingsState, getSetting } from 'docc-render/utils/theme-settings';
 import { objectToCustomProperties } from 'docc-render/utils/themes';
 import { AppTopID } from 'docc-render/constants/AppTopID';
 import SuggestLang from 'docc-render/components/SuggestLang.vue';
-import { enablei18n } from 'theme/lang/index.js';
 
 export default {
   name: 'CoreApp',
@@ -86,7 +85,7 @@ export default {
     ),
     hasCustomHeader: () => !!window.customElements.get('custom-header'),
     hasCustomFooter: () => !!window.customElements.get('custom-footer'),
-    enablei18n: () => enablei18n,
+    enablei18n: () => getSetting(['features', 'docs', 'i18n', 'enable'], false),
   },
   props: {
     enableThemeSettings: {

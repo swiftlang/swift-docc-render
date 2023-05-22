@@ -58,7 +58,11 @@ const createWrapper = ({ propsData, ...others } = {}) => mount(TopicsLinkCardGri
     ...defaultProps,
     ...propsData,
   },
-  provide: { references },
+  provide: {
+    store: {
+      state: { references },
+    },
+  },
   ...others,
 });
 
@@ -165,6 +169,6 @@ describe('TopicsLinkCardGridItem', () => {
     expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.sampleCode]);
     // other
     wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.link } });
-    expect(card.props('linkText')).toBe('Learn more');
+    expect(card.props('linkText')).toBe('documentation.card.learn-more');
   });
 });

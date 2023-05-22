@@ -21,6 +21,7 @@
         :shortHero="shortHero"
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
         :iconOverride="references[pageIcon]"
+        :standardColorIdentifier="standardColorIdentifier"
       >
         <template #above-content>
           <slot name="above-hero-content" />
@@ -156,6 +157,7 @@ import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
+import { StandardColors } from 'docc-render/constants/StandardColors';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -354,12 +356,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    standardColorIdentifier: {
+      type: String,
+      required: false,
+      validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
+    },
   },
   provide() {
-    // NOTE: this is not reactive: if this.references change, the provided value
+    // NOTE: this is not reactive: if this.identifier change, the provided value
     // to children will stay the same
     return {
-      references: this.references,
       identifier: this.identifier,
       languages: new Set(Object.keys(this.languagePaths)),
       interfaceLanguage: this.interfaceLanguage,
@@ -539,6 +545,9 @@ export default {
           symbolKind = '',
           remoteSource,
           images: pageImages = [],
+          color: {
+            standardColorIdentifier,
+          } = {},
         } = {},
         primaryContentSections,
         relationshipsSections,
@@ -591,6 +600,7 @@ export default {
         pageImages,
         objcPath,
         swiftPath,
+        standardColorIdentifier,
       };
     },
   },
@@ -666,13 +676,15 @@ export default {
   @include font-styles(body);
 }
 
-.container {
+.container:not(.minimized-container) {
   outline-style: none;
   @include dynamic-content-container;
 }
 
 /deep/ {
   .minimized-container {
+    outline-style: none;
+
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;
     --declaration-code-listing-margin: 1em 0 0 0;
@@ -745,15 +757,8 @@ export default {
 }
 
 .full-width-container .doc-content .minimized-container {
-  padding-left: 20px;
-  padding-right: 20px;
-
-  @include inTargetIde {
-    @include breakpoint(xsmall) {
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-  }
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
 }
 
 /deep/ {

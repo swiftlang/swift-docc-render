@@ -5,6 +5,7 @@
   "video": {
     "replay": "リプレイ",
     "play": "再生",
+    "pause": "一時停止",
     "watch": "概要のビデオを観る"
   },
   "tutorials": {
@@ -52,10 +53,18 @@
     "nav": {
       "breadcrumbs": "パンくずリスト",
       "menu": "メニュー",
-      "open-menu": "@:documentation.nav.menuを開く",
-      "close-menu": "@:documentation.nav.menuを閉じる"
+      "open-menu": "メニューを開く",
+      "close-menu": "メニューを閉じる"
     },
-    "current-page": "現在のページは{title}です"
+    "current-page": "現在のページは{title}です",
+    "card": {
+      "learn-more": "詳しい情報",
+      "read-article": "記事を読む",
+      "start-tutorial": "チュートリアルを開始",
+      "view-api": "APIのコレクションを表示",
+      "view-symbol": "記号を表示",
+      "view-sample-code": "サンプルコードを表示"
+    }
   },
   "aside-kind": {
     "beta": "ベータ版",
@@ -69,7 +78,7 @@
   "change-type": {
     "added": "追加",
     "modified": "変更",
-    "deprecated": "@:aside-kind.deprecated"
+    "deprecated": "非推奨"
   },
   "verbs": {
     "hide": "非表示",
@@ -83,7 +92,7 @@
     "default-implementations": "デフォルト実装",
     "relationships": "関連項目",
     "see-also": "参照",
-    "declarations": "宣言",
+    "declaration": "宣言",
     "details": "詳細",
     "parameters": "パラメータ",
     "possible-values": "使用できる値",
@@ -104,28 +113,28 @@
     "default-implementation": "デフォルト実装あり。| デフォルト実装あり。"
   },
   "availability": {
-    "introduced-and-deprecated": "{name}{introducedAt}で導入され、{name}{deprecatedAt}で非推奨になりました",
-    "available-on": "{name}{introducedAt}以降で使用できます"
+    "introduced-and-deprecated": "{name} {introducedAt}で導入され、{name} {deprecatedAt}で非推奨になりました",
+    "available-on": "{name} {introducedAt}以降で使用できます"
   },
   "more": "さらに表示",
   "less": "表示を減らす",
   "api-reference": "APIリファレンス",
   "filter": {
     "title": "フィルタ",
-    "search-symbols": "記号を検索",
-    "suggested-tags": "提案された{tags}",
-    "selected-tags": "選択した{tags}",
+    "search-symbols": "{technology}でシンボルを検索",
+    "suggested-tags": "提案されたタグ | 提案されたタグ",
+    "selected-tags": "選択したタグ | 選択したタグ",
     "add-tag": "タグを追加",
     "tag-select-remove": "タグ。選択してリストから削除します。",
     "navigate": "シンボルを移動するには、上下左右の矢印キーを押します。",
-    "containing-symbols": "1個のシンボルを含む | {number}個のシンボルを含む",
-    "symbols-inside": "{total}個中{number}個のシンボルが中にあります",
+    "siblings-label": "{total-siblings}個中{number-siblings}個のシンボルが{parent-siblings}の中にあります",
+    "parent-label": "{total-siblings}個中{number-siblings}個のシンボルが1個のシンボルを含む{parent-siblings}の中にあります | {total-siblings}個中{number-siblings}個のシンボルが{number-parent}個のシンボルを含む{parent-siblings}の中にあります",
     "reset-filter": "フィルタをリセット"
   },
   "navigator": {
-    "title": "@:documentation.titleナビゲータ",
-    "open-navigator": "@:navigator.titleを開く",
-    "close-navigator": "@:navigator.titleを閉じる",
+    "title": "ドキュメントナビゲータ",
+    "open-navigator": "ドキュメントナビゲータを開く",
+    "close-navigator": "ドキュメントナビゲータを閉じる",
     "no-results": "結果が見つかりません。",
     "no-children": "使用できるデータがありません。",
     "error-fetching": "データを取得する際にエラーが起きました。",
@@ -136,7 +145,7 @@
       "ready": "準備完了"
     },
     "tags": {
-      "hide-deprecated": "@:aside-kind.deprecatedの項目を非表示"
+      "hide-deprecated": "非推奨の項目を非表示"
     }
   },
   "tab": {
@@ -148,10 +157,10 @@
     "default": "デフォルト",
     "minimum": "最小",
     "maximum": "最大",
-    "possible-types": "使用できるタイプ",
-    "possible-values": "使用できる値"
+    "possible-types": "タイプ | 使用できるタイプ",
+    "possible-values": "値 | 使用できる値"
   },
-  "content-type": "コンテンツタイプ: {value}",
+  "content-type": "Content-Type: {value}",
   "read-only": "読み出し専用",
   "error": {
     "unknown": "原因不明のエラーが起きました。",
@@ -169,8 +178,8 @@
       "end": "取り消し線テキストの終了"
     },
     "code": {
-      "start": "start of code block",
-      "end": "end of code block"
+      "start": "コードブロックの開始",
+      "end": "コードブロックの終了"
     },
     "skip-navigation": "ナビゲーションをスキップ"
   },
@@ -183,5 +192,11 @@
   "formats": {
     "parenthesis": "（{content}）",
     "colon": "{content}: "
+  },
+  "quicknav": {
+    "button": {
+      "label": "クイックナビゲーションを開く",
+      "title": "クリックするか「/」を入力すると素早く移動します"
+    }
   }
 }
