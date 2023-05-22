@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { hasMultipleLines } from '@/utils/multipleLines';
+import { displaysMultipleLines } from '@/utils/multipleLines';
 
 const lineHeight = 25;
 
@@ -16,21 +16,21 @@ window.getComputedStyle = jest.fn().mockReturnValue({
   lineHeight: `${lineHeight}px`,
 });
 
-describe('hasMultipleLines', () => {
+describe('displaysMultipleLines', () => {
   it('returns false if element\'s height value is lower than the doble of its lineheight value', () => {
     const notMultilineElement = { offsetHeight: lineHeight };
     const notMultilineVueElement = { $el: { offsetHeight: lineHeight } };
 
-    expect(hasMultipleLines(notMultilineElement)).toBe(false);
-    expect(hasMultipleLines(notMultilineVueElement)).toBe(false);
+    expect(displaysMultipleLines(notMultilineElement)).toBe(false);
+    expect(displaysMultipleLines(notMultilineVueElement)).toBe(false);
   });
 
   it('returns true if element\'s height value is the doble or more than the doble of its lineheight value', () => {
     const multilineElement = { offsetHeight: lineHeight * 2 };
     const multilineVueElement = { $el: { offsetHeight: lineHeight * 2 } };
 
-    expect(hasMultipleLines(multilineElement)).toBe(true);
-    expect(hasMultipleLines(multilineVueElement)).toBe(true);
+    expect(displaysMultipleLines(multilineElement)).toBe(true);
+    expect(displaysMultipleLines(multilineVueElement)).toBe(true);
   });
 
   it('calculates internal height without paddings or borders heights if they exist', () => {
@@ -52,21 +52,21 @@ describe('hasMultipleLines', () => {
     const multilineElement = { offsetHeight: heightOfSingleLineWithExtraHeights };
     const multilineVueElement = { $el: { offsetHeight: heightOfSingleLineWithExtraHeights } };
 
-    expect(hasMultipleLines(multilineElement)).toBe(false);
-    expect(hasMultipleLines(multilineVueElement)).toBe(false);
+    expect(displaysMultipleLines(multilineElement)).toBe(false);
+    expect(displaysMultipleLines(multilineVueElement)).toBe(false);
   });
 
   it('returns false if element\'s height value is 0', () => {
     const notHeightElement = { offsetHeight: 0 };
     const notHeightVueElement = { $el: { offsetHeight: 0 } };
 
-    expect(hasMultipleLines(notHeightElement)).toBe(false);
-    expect(hasMultipleLines(notHeightVueElement)).toBe(false);
+    expect(displaysMultipleLines(notHeightElement)).toBe(false);
+    expect(displaysMultipleLines(notHeightVueElement)).toBe(false);
   });
 
   it('does not error out if element is null', () => {
     const element = null;
 
-    expect(hasMultipleLines(element)).toBe(false);
+    expect(displaysMultipleLines(element)).toBe(false);
   });
 });

@@ -250,12 +250,12 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.find(ContentNode).exists()).toBe(false);
   });
 
-  it('applies the `multipleLinesClass` class if `hasMultipleLinesAfterAPIChanges` is true', () => {
+  it('applies the `multipleLinesClass` class if `displaysMultipleLinesAfterAPIChanges` is true', () => {
     wrapper = shallowMount({
       ...TopicsLinkBlock,
       computed: {
         ...TopicsLinkBlock.computed,
-        hasMultipleLinesAfterAPIChanges: () => true,
+        displaysMultipleLinesAfterAPIChanges: () => true,
       },
     },
     {
