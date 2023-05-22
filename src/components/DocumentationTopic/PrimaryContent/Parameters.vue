@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,34 +9,34 @@
 -->
 
 <template>
-  <OnThisPageSection
-    anchor="parameters"
-    class="parameters"
-    title="Parameters"
-  >
-    <h2>Parameters</h2>
+  <section class="parameters">
+    <LinkableHeading :anchor="contentSectionData.anchor">
+      {{ $t(contentSectionData.title) }}
+    </LinkableHeading>
     <dl>
       <template v-for="param in parameters">
         <dt class="param-name" :key="`${param.name}:name`">
-          <code>{{param.name}}</code>
+          <code>{{ param.name }}</code>
         </dt>
         <dd class="param-content" :key="`${param.name}:content`">
           <ContentNode :content="param.content" />
         </dd>
       </template>
     </dl>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
+import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 
 export default {
   name: 'Parameters',
   components: {
     ContentNode,
-    OnThisPageSection,
+    LinkableHeading,
   },
   props: {
     parameters: {
@@ -44,18 +44,19 @@ export default {
       required: true,
     },
   },
+  computed: {
+    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.parameters],
+  },
 };
 </script>
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$param-spacing: rem(28px);
-
 .param-name {
   font-weight: $font-weight-semibold;
   padding-left: 1rem;
-  padding-top: $param-spacing;
+  padding-top: var(--spacing-param);
 
   &:first-child {
     padding-top: 0;

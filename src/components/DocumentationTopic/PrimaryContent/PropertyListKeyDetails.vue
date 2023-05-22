@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,48 +9,49 @@
 -->
 
 <template>
-  <OnThisPageSection
-    anchor="details"
-    class="details"
-    title="Details"
-  >
-    <h2>Details</h2>
+  <section class="details">
+    <LinkableHeading :anchor="contentSectionData.anchor">
+      {{ $t(contentSectionData.title) }}
+    </LinkableHeading>
     <dl>
       <template v-if="isSymbol">
         <dt class="detail-type" :key="`${details.name}:name`">
-          Name
+          {{ $t('metadata.details.name') }}
         </dt>
         <dd class="detail-content" :key="`${details.ideTitle}:content`">
-          {{details.ideTitle}}
+          {{ details.ideTitle }}
         </dd>
       </template>
       <template v-if="isTitle">
         <dt class="detail-type" :key="`${details.name}:key`">
-          Key
+          {{ $t('metadata.details.key') }}
         </dt>
         <dd class="detail-content" :key="`${details.ideTitle}:content`">
           {{ details.name }}
         </dd>
       </template>
       <dt class="detail-type" :key="`${details.name}:type`">
-        Type
+        {{ $t('metadata.details.type') }}
       </dt>
       <dd class="detail-content">
         <PropertyListKeyType :types="details.value" />
       </dd>
     </dl>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import PropertyListKeyType from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import PropertyListKeyType
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyType.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 
 export default {
   name: 'PropertyListKeyDetails',
   components: {
     PropertyListKeyType,
-    OnThisPageSection,
+    LinkableHeading,
   },
   props: {
     details: {
@@ -59,6 +60,7 @@ export default {
     },
   },
   computed: {
+    contentSectionData: () => PrimaryContentSectionAnchors[SectionKind.details],
     isTitle() {
       return this.details.titleStyle === 'title' && this.details.ideTitle;
     },
@@ -73,12 +75,10 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$param-spacing: rem(28px);
-
 .detail-type {
   font-weight: $font-weight-semibold;
   padding-left: 1rem;
-  padding-top: $param-spacing;
+  padding-top: var(--spacing-param);
 
   &:first-child {
     padding-top: 0;

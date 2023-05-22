@@ -18,7 +18,7 @@ here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 function replace_acceptable_years() {
     # this needs to replace all acceptable forms with 'YEARS'
-    sed -e 's/20[12][78901]-20[12][8901]/YEARS/' -e 's/20[12][8901]/YEARS/'
+    sed -e 's/20[12][789012]-20[12][890123]/YEARS/' -e 's/20[12][890123]/YEARS/'
 }
 
 printf "=> Checking license headers… "
@@ -61,7 +61,7 @@ EOF
 EOF
       ;;
       markup)
-        matching_files=( -name '*.html' -o -name '*.vue' -o -name '*.svg' )
+        matching_files=( -name '*.vue' -o -name '*.svg' )
         cat > "$tmp" <<"EOF"
 <!--
   This source file is part of the Swift.org open source project

@@ -8,6 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import 'css.escape';
+
 // characters that we want to replace by a dash to make them valid in the hash section
 // https://url.spec.whatwg.org/#fragment-percent-encode-set
 const NON_URL_CHARS_RE = /(?:\s+|[`"<>])/g;
@@ -54,71 +56,6 @@ export const PluralRuleType = {
   ordinal: 'ordinal',
 };
 
-// Returns the "pluralized" version of some provided text based on an integer
-// count and the user's resolved locale.
-//
-// Choices _must_ be provided for the en locale since that will be used as a
-// fallback in the scenario where no choices are provided or available for the
-// resolved locale of a given user.
-//
-// @param {Object} choices An object keyed by locales. Each value should itself
-//   be an object with keys for each plural category supported by the locale
-//   with the value representing the string to return.
-//
-// Examples:
-//
-//   const choices = {
-//     en: {
-//       one: 'day',
-//       other: 'days',
-//     },
-//     sl: {
-//       one: 'ura',
-//       two: 'uri',
-//       few: 'ure',
-//       other: 'ur',
-//     },
-//   };
-//
-//   // en
-//   pluralize(choices, 2); // 'days'
-//   pluralize({ en: { one: 'Technology, other: 'Technologies' } }, 1) // 'Technology'
-//   pluralize({}, 1) // throws error
-//
-//   // sl
-//   pluralize(choices, 2); // 'uri'
-//   pluralize({ sl }, 2); // throws error
-//   pluralize({ en }, 2); // 'days'
-export function pluralize(choices, count) {
-  const { cardinal } = PluralRuleType;
-  const { one, other } = PluralCategory;
-
-  const defaultLocale = 'en';
-  const defaultCategory = count === 1 ? one : other;
-
-  // at minimum, there should at least be a "one" and "other" choice for the
-  // "en" locale for use as fallback text in the case that a choice for the
-  // user's resolved locale category is not provided/available
-  if (!choices[defaultLocale] || !choices[defaultLocale][defaultCategory]) {
-    throw new Error(`No default choices provided to pluralize using default locale ${defaultLocale}`);
-  }
-
-  let locale = defaultLocale;
-  let category = defaultCategory;
-  if (('Intl' in window) && ('PluralRules' in window.Intl)) {
-    const preferredLocales = navigator.languages ? navigator.languages : [navigator.language];
-    const pluralRules = new Intl.PluralRules(preferredLocales, { type: cardinal });
-    const resolvedCategory = pluralRules.select(count);
-    const resolvedLocale = pluralRules.resolvedOptions().locale;
-    if (choices[resolvedLocale] && choices[resolvedLocale][resolvedCategory]) {
-      locale = resolvedLocale;
-      category = resolvedCategory;
-    }
-  }
-
-  return choices[locale][category];
-}
-
 // Escape URL hash fragments for use in CSS selectors, which is needed to
 // utilize vue-router support for linking to on-page elements when the ID value
 // is a number (or any string with a leading digit).
@@ -132,18 +69,7 @@ export function pluralize(choices, count) {
 //
 // Example: cssEscapeTopicIdHash('#42') => '#\34 2'
 export function cssEscapeTopicIdHash(hash) {
-  const match = /#(\d)(.*)/.exec(hash);
-  if (match === null) {
-    return hash;
-  }
-
-  const [leadingDigit, rest] = match.slice(1);
-  // Escape the leading digit by converting it to its unicode point escape
-  // character with a trailing space ("123" => "\000031 23 " => "\31 23 ").
-  // (The leading double slash is needed to encode the leading slash character)
-  const escapedLeadingDigit = `\\3${leadingDigit} `;
-
-  return `#${escapedLeadingDigit}${rest}`;
+  return hash.replace(/#(.*)/, (str, match) => `#${CSS.escape(match)}`);
 }
 
 // Escape a string for use in a `RegExp`, which will escape any special regular
@@ -186,11 +112,14 @@ export function whiteSpaceIgnorantRegex(stringToSanitize) {
     char = trimmedString[i];
     // if the character is an escape char, pass it and the next character
     if (char === '\\') {
+      // pass both escape char and char, with an empty space match before, only if not first char
+      collector.push(`${i === 0 ? '' : spaceMatch}${char}`);
+      collector.push(trimmedString[i + 1]);
       // skip one character in next iteration
       i += 1;
-      // pass both escape char and char, with an empty space match before
-      collector.push(`${spaceMatch}${char}`);
-      collector.push(trimmedString[i]);
+    } else if (i === 0) {
+      // skip the first character, if its not a `\`
+      collector.push(char);
       // add anything else, but empty spaces
     } else if (char !== singleSpace) {
       collector.push(`${spaceMatch}${char}`);
@@ -209,4 +138,18 @@ export function whiteSpaceIgnorantRegex(stringToSanitize) {
  */
 export function insertAt(str, sub, pos = 0) {
   return `${str.slice(0, pos)}${sub}${str.slice(pos)}`;
+}
+
+// Returns the first paragraph of the given text.
+//
+// @param {string} text - The full text.
+// @return {string} The first paragraph.
+//
+// Examples:
+//
+// firstParagraph("abcdefghi") // "abcdefghi"
+// firstParagraph("abc\ndef\nghi") // "abc"
+export function firstParagraph(text) {
+  const paragraphs = text.split(/(?:\r?\n)+/);
+  return paragraphs[0];
 }

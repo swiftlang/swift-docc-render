@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -17,7 +17,13 @@ export const ChangeTypes = {
 export const ChangeTypesOrder = [ChangeTypes.modified, ChangeTypes.added, ChangeTypes.deprecated];
 
 export const ChangeNames = {
-  [ChangeTypes.modified]: 'Modified',
-  [ChangeTypes.added]: 'Added',
-  [ChangeTypes.deprecated]: 'Deprecated',
+  [ChangeTypes.modified]: 'change-type.modified',
+  [ChangeTypes.added]: 'change-type.added',
+  [ChangeTypes.deprecated]: 'change-type.deprecated',
+};
+
+export const ChangeNameToType = {
+  'change-type.modified': ChangeTypes.modified,
+  'change-type.added': ChangeTypes.added,
+  'change-type.deprecated': ChangeTypes.deprecated,
 };

@@ -99,7 +99,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .tile {
-  background: dark-color(fill-secondary);
+  background: var(--color-tutorials-overview-fill-secondary, dark-color(fill-secondary));
   padding: 40px 30px;
   color: var(--color-tutorials-overview-content-alt);
 }
@@ -109,12 +109,12 @@ a, .content /deep/ a {
 }
 
 .icon {
-  $icon-size: rem(25px);
+  $icon-size-default: rem(25px);
   display: block;
-  height: $icon-size;
-  line-height: $icon-size;
+  height: $icon-size-default;
+  line-height: $icon-size-default;
   margin-bottom: rem(10px);
-  width: $icon-size;
+  width: $icon-size-default;
 
   /deep/ svg.svg-icon {
     width: 100%;

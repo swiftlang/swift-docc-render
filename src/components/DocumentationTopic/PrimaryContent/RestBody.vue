@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+  <section>
+    <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="[bodyParam]" :changes="bodyChanges" keyBy="key">
       <template slot="symbol" slot-scope="{ type, content, changes, name }">
         <PossiblyChangedType
@@ -35,7 +35,7 @@
       </template>
     </ParametersTable>
     <template v-if="parts.length">
-      <h3>Parts</h3>
+      <h3>{{ $t('sections.parts') }}</h3>
       <ParametersTable :parameters="parts" class="parts" :changes="partsChanges">
         <template slot="symbol" slot-scope="{ name, type, content, changes }">
           <div class="part-name">
@@ -49,7 +49,7 @@
         </template>
         <template
           slot="description"
-          slot-scope="{ content, mimeType, required, type, attributes, changes }"
+          slot-scope="{ content, mimeType, required, type, attributes, changes, readOnly }"
         >
           <div>
             <PossiblyChangedType
@@ -57,10 +57,14 @@
               :type="type"
               :changes="changes.type"
             />
-            <PossiblyChangedRequiredAttribute
-              :required="required"
+            <PossiblyChangedTextAttribute
               :changes="changes.required"
-            />
+              :value="required"
+            >(Required) </PossiblyChangedTextAttribute>
+            <PossiblyChangedTextAttribute
+              :changes="changes.readOnly"
+              :value="readOnly"
+            >(Read only) </PossiblyChangedTextAttribute>
             <ContentNode v-if="content" :content="content" />
             <PossiblyChangedMimetype
               v-if="mimeType"
@@ -73,13 +77,13 @@
         </template>
       </ParametersTable>
     </template>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
@@ -87,7 +91,7 @@ import ParametersTable from './ParametersTable.vue';
 import ParameterAttributes from './ParameterAttributes.vue';
 import PossiblyChangedType from './PossiblyChangedType.vue';
 import PossiblyChangedMimetype from './PossiblyChangedMimetype.vue';
-import PossiblyChangedRequiredAttribute from './PossiblyChangedRequiredAttribute.vue';
+import PossiblyChangedTextAttribute from './PossiblyChangedTextAttribute.vue';
 
 const ChangesKey = 'restRequestBody';
 
@@ -96,13 +100,13 @@ export default {
   mixins: [apiChangesProvider],
   components: {
     PossiblyChangedMimetype,
-    PossiblyChangedRequiredAttribute,
+    PossiblyChangedTextAttribute,
     PossiblyChangedType,
     WordBreak,
     ParameterAttributes,
     ContentNode,
-    OnThisPageSection,
     ParametersTable,
+    LinkableHeading,
   },
   constants: { ChangesKey },
   props: {

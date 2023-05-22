@@ -9,27 +9,35 @@
 */
 
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
+import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
 import Settings from 'docc-render/utils/settings';
 
 const { state: changesState, ...changesActions } = ApiChangesStoreBase;
+const { state: pageSectionsState, ...pageSectionsActions } = OnThisPageSectionsStoreBase;
 
 export default {
   state: {
-    onThisPageSections: [],
     preferredLanguage: Settings.preferredLanguage,
+    contentWidth: 0,
     ...changesState,
+    ...pageSectionsState,
+    references: {},
   },
   reset() {
-    this.state.onThisPageSections = [];
     this.state.preferredLanguage = Settings.preferredLanguage;
+    this.state.references = {};
     this.resetApiChanges();
-  },
-  addOnThisPageSection(section) {
-    this.state.onThisPageSections.push(section);
   },
   setPreferredLanguage(language) {
     this.state.preferredLanguage = language;
     Settings.preferredLanguage = this.state.preferredLanguage;
   },
+  setContentWidth(width) {
+    this.state.contentWidth = width;
+  },
+  setReferences(references) {
+    this.state.references = references;
+  },
   ...changesActions,
+  ...pageSectionsActions,
 };

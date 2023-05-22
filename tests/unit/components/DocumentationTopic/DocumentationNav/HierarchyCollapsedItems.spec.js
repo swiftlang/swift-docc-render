@@ -11,7 +11,6 @@
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import HierarchyCollapsedItems
   from 'docc-render/components/DocumentationTopic/DocumentationNav/HierarchyCollapsedItems.vue';
-import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 import EllipsisIcon from 'theme/components/Icons/EllipsisIcon.vue';
 
 const mocks = { $route: {} };
@@ -46,8 +45,8 @@ describe('HierarchyCollapsedItems', () => {
     expect(wrapper.is('li.hierarchy-collapsed-items')).toBe(true);
   });
 
-  it('renders a right chevron icon', () => {
-    expect(wrapper.find('.hierarchy-item-icon').is(InlineChevronRightIcon)).toBe(true);
+  it('renders a slash instead of an icon', () => {
+    expect(wrapper.find('.hierarchy-item-icon').text()).toBe('/');
   });
 
   it('renders a non-focused button', () => {

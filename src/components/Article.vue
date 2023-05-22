@@ -16,6 +16,7 @@
       :technology="metadata.category"
       :topic="heroTitle || ''"
       :rootReference="hierarchy.reference"
+      :identifierUrl="identifierUrl"
     />
     <main id="main" role="main" tabindex="0">
       <slot name="above-hero" />
@@ -33,8 +34,8 @@
 <script>
 import { PortalTarget } from 'portal-vue';
 
-import NavigationBar from 'docc-render/components/Tutorial/NavigationBar.vue';
-import pageTitle from 'docc-render/mixins/pageTitle';
+import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
+import metadata from 'theme/mixins/metadata.js';
 import Body from './Article/Body.vue';
 import CallToAction from './Article/CallToAction.vue';
 import Hero from './Article/Hero.vue';
@@ -50,7 +51,7 @@ const SectionKind = {
 export default {
   name: 'Article',
   components: { NavigationBar, PortalTarget },
-  mixins: [pageTitle],
+  mixins: [metadata],
   inject: {
     isTargetIDE: {
       default: false,
@@ -59,6 +60,7 @@ export default {
       default() {
         return {
           reset() {},
+          setReferences() {},
         };
       },
     },
@@ -83,6 +85,10 @@ export default {
         Object.prototype.hasOwnProperty.call(SectionKind, kind)
       )),
     },
+    identifierUrl: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     heroSection() {
@@ -98,6 +104,9 @@ export default {
         undefined
       );
     },
+    pageDescription: ({ heroSection, extractFirstParagraphText }) => (
+      heroSection ? extractFirstParagraphText(heroSection.content) : null
+    ),
   },
   methods: {
     componentFor(section) {
@@ -156,13 +165,9 @@ export default {
       }[kind];
     },
   },
-  provide() {
-    return {
-      references: this.references,
-    };
-  },
   created() {
     this.store.reset();
+    this.store.setReferences(this.references);
   },
   SectionKind,
 };

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,44 +14,54 @@
       v-if="shouldRender(AttributeKind.default)"
       v-bind="{ kind: AttributeKind.default, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ attribute.title || 'Default' }}: <code>{{ attribute.value }}</code>
+        {{ $t('formats.colon', {
+          content: attribute.title || $t('parameters.default')
+        }) }}<code>{{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.minimum)"
       v-bind="{ kind: AttributeKind.minimum, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ attribute.title || 'Minimum' }}: <code>{{ attribute.value }}</code>
+        {{ $t('formats.colon', {
+          content: attribute.title || $t('parameters.minimum')
+        }) }}<code>{{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.minimumExclusive)"
       v-bind="{ kind: AttributeKind.minimumExclusive, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ attribute.title || 'Minimum' }}: <code>&gt; {{ attribute.value }}</code>
+        {{ $t('formats.colon', {
+          content: attribute.title || $t('parameters.minimum')
+        }) }}<code>&gt; {{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.maximum)"
       v-bind="{ kind: AttributeKind.maximum, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ attribute.title || 'Maximum' }}: <code>{{ attribute.value }}</code>
+        {{ $t('formats.colon', {
+          content: attribute.title || $t('parameters.maximum')
+        }) }}<code>{{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.maximumExclusive)"
       v-bind="{ kind: AttributeKind.maximumExclusive, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ attribute.title || 'Maximum' }}: <code>&lt; {{ attribute.value }}</code>
+        {{ $t('formats.colon', {
+          content: attribute.title || $t('parameters.maximum')
+        }) }}<code>&lt; {{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.allowedTypes)"
       v-bind="{ kind: AttributeKind.allowedTypes, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ fallbackToValues(attribute).length > 1 ? 'Possible types' : 'Type' }}:
-        <code>
-          <template v-for="(possibleType, i) in fallbackToValues(attribute)">
+        {{ $t('formats.colon', {
+          content: $tc('parameters.possible-types', fallbackToValues(attribute).length)
+        }) }}<code><template v-for="(possibleType, i) in fallbackToValues(attribute)">
             <template v-for="(token, j) in possibleType">
               <DeclarationToken v-bind="token" :key="`${i}-${j}`"
               /><template v-if="i + 1 < fallbackToValues(attribute).length">, </template>
@@ -64,8 +74,9 @@
       v-if="shouldRender(AttributeKind.allowedValues)"
       v-bind="{ kind: AttributeKind.allowedValues, attributes: attributesObject, changes }">
       <template slot-scope="{ attribute }">
-        {{ fallbackToValues(attribute).length > 1 ? 'Possible values' : 'Value' }}:
-        <code>{{ fallbackToValues(attribute).join(', ') }}</code>
+        {{ $t('formats.colon', {
+          content: $tc('parameters.possible-values', fallbackToValues(attribute).length)
+        }) }}<code>{{ fallbackToValues(attribute).join(', ') }}</code>
       </template>
     </ParameterMetaAttribute>
   </div>

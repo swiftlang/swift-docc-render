@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -21,22 +21,17 @@ describe('BetaLegalText', () => {
   it('renders the BetaLegalText inside a grid', () => {
     expect(wrapper.find(GridRow).exists()).toBe(true);
     expect(wrapper.find(GridColumn).exists()).toBe(true);
-    expect(wrapper.find(GridColumn).props('span')).toEqual({ large: 8, medium: 8, small: 12 });
-    expect(wrapper.find(GridColumn).props('isCentered')).toEqual({
-      large: true,
-      medium: true,
-      small: true,
-    });
+    expect(wrapper.find(GridColumn).props('span')).toEqual({ large: 12 });
   });
 
   it('renders a title', () => {
-    expect(wrapper.find('.betainfo-label').text()).toEqual('Beta Software');
+    expect(wrapper.find('.betainfo-label').text()).toEqual('metadata.beta.software');
   });
 
   it('renders default content in the content slot', () => {
     const content = wrapper.find('.betainfo-content');
     expect(content.exists()).toBe(true);
-    expect(content.text()).toContain('This documentation refers to beta software and may be changed.');
+    expect(content.text()).toContain('metadata.beta.legal');
   });
 
   it('exposes a content slot', () => {

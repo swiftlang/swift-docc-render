@@ -1,0 +1,202 @@
+{
+  "view-in": "View in English",
+  "continue-viewing": "Continue viewing in English",
+  "language": "Language",
+  "video": {
+    "replay": "Replay",
+    "play": "Play",
+    "pause": "Pause",
+    "watch": "Watch intro video"
+  },
+  "tutorials": {
+    "title": "Tutorial | Tutorials",
+    "step": "Step {number}",
+    "submit": "Submit",
+    "next": "Next",
+    "preview": {
+      "title": "No Preview | Preview | Previews",
+      "no-preview-available-step": "No preview available for this step."
+    },
+    "nav": {
+      "chapters": "Chapters",
+      "current": "Current {thing}"
+    },
+    "assessment": {
+      "check-your-understanding": "Check Your Understanding",
+      "success-message": "Great job, you've answered all the questions for this tutorial.",
+      "answer-number-is": "Answer number {index} is",
+      "correct": "correct",
+      "incorrect": "incorrect",
+      "next-question": "Next question"
+    },
+    "project-files": "Project files",
+    "estimated-time": "Estimated Time",
+    "sections": {
+      "chapter": "Chapter {number}"
+    },
+    "question-of": "Question {index} of {total}",
+    "section-of": "{number} of {total}",
+    "overriding-title": "{newTitle} with {title}",
+    "time": {
+      "format": "{number} {minutes}",
+      "minutes": {
+        "full": "minute | minutes | {count} minutes",
+        "short": "min | mins"
+      },
+      "hours": {
+        "full": "hour | hours"
+      }
+    }
+  },
+  "documentation": {
+    "title": "Documentation",
+    "nav": {
+      "breadcrumbs": "Breadcrumbs",
+      "menu": "Menu",
+      "open-menu": "Open Menu",
+      "close-menu": "Close Menu"
+    },
+    "current-page": "Current page is {title}",
+    "card": {
+      "learn-more": "Learn More",
+      "read-article": "Read article",
+      "start-tutorial": "Start tutorial",
+      "view-api": "View API collection",
+      "view-symbol": "View symbol",
+      "view-sample-code": "View sample code"
+    }
+  },
+  "aside-kind": {
+    "beta": "Beta",
+    "experiment": "Experiment",
+    "important": "Important",
+    "note": "Note",
+    "tip": "Tip",
+    "warning": "Warning",
+    "deprecated": "Deprecated"
+  },
+  "change-type": {
+    "added": "Added",
+    "modified": "Modified",
+    "deprecated": "Deprecated"
+  },
+  "verbs": {
+    "hide": "Hide",
+    "show": "Show",
+    "close": "Close"
+  },
+  "sections": {
+    "title": "Section {number}",
+    "on-this-page": "On this page",
+    "topics": "Topics",
+    "default-implementations": "Default Implementations",
+    "relationships": "Relationships",
+    "see-also": "See Also",
+    "declaration": "Declaration",
+    "details": "Details",
+    "parameters": "Parameters",
+    "possible-values": "Possible Values",
+    "parts": "Parts",
+    "availability": "Availability",
+    "resources": "Resources"
+  },
+  "metadata": {
+    "details": {
+      "name": "Name",
+      "key": "Key",
+      "type": "Type"
+    },
+    "beta": {
+      "legal": "This documentation refers to beta software and may be changed.",
+      "software": "Beta Software"
+    },
+    "default-implementation": "Default implementation provided. | Default implementations provided."
+  },
+  "availability": {
+    "introduced-and-deprecated": "Introduced in {name} {introducedAt} and deprecated in {name} {deprecatedAt}",
+    "available-on": "Available on {name} {introducedAt} and later"
+  },
+  "more": "More",
+  "less": "Less",
+  "api-reference": "API Reference",
+  "filter": {
+    "title": "Filter",
+    "search-symbols": "Search symbols in {technology}",
+    "suggested-tags": "Suggested tag | Suggested tags",
+    "selected-tags": "Selected tag | Selected tags",
+    "add-tag": "Add tag",
+    "tag-select-remove": "Tag. Select to remove from list.",
+    "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
+    "siblings-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings}",
+    "parent-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings} containing one symbol | {number-siblings} of {total-siblings} symbols inside {parent-siblings} containing {number-parent} symbols",
+    "reset-filter": "Reset Filter"
+  },
+  "navigator": {
+    "title": "Documentation Navigator",
+    "open-navigator": "Open Documentation Navigator",
+    "close-navigator": "Close Documentation Navigator",
+    "no-results": "No results found.",
+    "no-children": "No data available.",
+    "error-fetching": "There was an error fetching the data.",
+    "items-found": "No items were found | 1 item was found | {number} items were found. Tab back to navigate through them.",
+    "navigator-is": "Navigator is {state}",
+    "state": {
+      "loading": "loading",
+      "ready": "ready"
+    },
+    "tags": {
+      "hide-deprecated": "Hide Deprecated"
+    }
+  },
+  "tab": {
+    "request": "Request",
+    "response": "Response"
+  },
+  "required": "Required",
+  "parameters": {
+    "default": "Default",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
+    "possible-types": "Type | Possible types",
+    "possible-values": "Value | Possible Values"
+  },
+  "content-type": "Content-Type: {value}",
+  "read-only": "Read only",
+  "error": {
+    "unknown": "An unknown error occurred.",
+    "image": "Image failed to load"
+  },
+  "color-scheme": {
+    "select": "Select a color scheme preference",
+    "auto": "Auto",
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "accessibility": {
+    "strike": {
+      "start": "start of stricken text",
+      "end": "end of stricken text"
+    },
+    "code": {
+      "start": "start of code block",
+      "end": "end of code block"
+    },
+    "skip-navigation": "Skip Navigation"
+  },
+  "select-language": "Select the language for this page",
+  "icons": {
+    "clear": "Clear",
+    "web-service-endpoint": "Web Service Endpoint",
+    "search": "Search"
+  },
+  "formats": {
+    "parenthesis": "({content})",
+    "colon": "{content}: "
+  },
+  "quicknav": {
+    "button": {
+      "label": "Open Quick Navigation",
+      "title": "Click or type / for quick navigation"
+    }
+  }
+}

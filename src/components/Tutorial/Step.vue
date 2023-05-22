@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -16,7 +16,7 @@
       :class="{ focused: isActive }"
       :data-index="index"
     >
-      <p class="step-label">Step {{ stepNumber }}</p>
+      <p class="step-label">{{ $t('tutorials.step', { number: stepNumber }) }}</p>
       <ContentNode :content="content" />
       <ContentNode v-if="caption && caption.length > 0" class="caption" :content="caption" />
     </div>
@@ -137,12 +137,12 @@ export default {
 
 .step {
   position: relative;
-  border-radius: $border-radius;
+  border-radius: var(--tutorial-step-border-radius, $border-radius);
   padding: 1rem $step-padding-horizontal;
   background-color: var(--color-step-background);
   overflow: hidden;
   // To hide overflow on rounded corner divs in Safari
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  @include new-stacking-context;
 
   &::before {
     content: "";
@@ -178,7 +178,7 @@ export default {
 .step-label {
   @include font-styles(step-number);
   color: var(--colors-text, var(--color-step-text));
-  margin-bottom: $stacked-margin-small;
+  margin-bottom: var(--spacing-stacked-margin-small);
 }
 
 .caption {

@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Settings from 'docc-render/utils/settings';
+let Settings;
 
 describe('Settings', () => {
   const getItem = jest.fn();
@@ -21,6 +21,8 @@ describe('Settings', () => {
         setItem,
       },
     });
+    // eslint-disable-next-line global-require
+    Settings = require('docc-render/utils/settings').default;
   });
 
   it('sets and gets `preferredColorScheme` from localStorage', () => {
@@ -58,26 +60,5 @@ describe('Settings', () => {
     // eslint-disable-next-line no-unused-expressions
     Settings.preferredLanguage;
     expect(getItem).toHaveBeenCalledWith('docs.setting.preferredLanguage');
-  });
-
-  describe('when localStorage throws exceptions', () => {
-    beforeEach(() => {
-      localStorage.getItem.mockImplementation(() => {
-        throw new Error('fake error for getItem');
-      });
-      localStorage.setItem.mockImplementation(() => {
-        throw new Error('fake error for setItem');
-      });
-    });
-
-    it('returns `null` for getting settings', () => {
-      expect(Settings.preferredLanguage).toBeNull();
-    });
-
-    it('does not throw exceptions for setting settings', () => {
-      expect(() => {
-        Settings.preferredLanguage = 'objc';
-      }).not.toThrow();
-    });
   });
 });

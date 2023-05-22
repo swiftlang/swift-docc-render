@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -12,8 +12,8 @@ import { shallowMount } from '@vue/test-utils';
 import PropertyListKeyDetails from 'docc-render/components/DocumentationTopic/PrimaryContent/PropertyListKeyDetails.vue';
 
 const {
-  OnThisPageSection,
   PropertyListKeyType,
+  LinkableHeading,
 } = PropertyListKeyDetails.components;
 
 describe('PropertyKeyListDetails', () => {
@@ -38,22 +38,15 @@ describe('PropertyKeyListDetails', () => {
     wrapper = shallowMount(PropertyListKeyDetails, { propsData });
   });
 
-  it('renders an `OnThisPageSection`', () => {
-    expect(wrapper.is('.details')).toBe(true);
-
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.classes('details')).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: 'details',
-      title: 'Details',
-    });
+  it('renders an `section.details`', () => {
+    expect(wrapper.is('section.details')).toBe(true);
   });
 
-  it('renders an h2 with "Details"', () => {
-    const h2 = wrapper.find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe('Details');
+  it('renders a title with "Details"', () => {
+    const title = wrapper.find(LinkableHeading);
+    expect(title.exists()).toBe(true);
+    expect(title.text()).toBe('sections.details');
+    expect(title.props('anchor')).toBe('details');
   });
 
   it('renders a <dl>', () => {
@@ -64,7 +57,7 @@ describe('PropertyKeyListDetails', () => {
   it('renders a <dt> with the name or key ', () => {
     let detailType = wrapper.find('dl dt.detail-type');
     expect(detailType.exists()).toBe(true);
-    expect(detailType.text()).toBe('Key');
+    expect(detailType.text()).toBe('metadata.details.key');
 
     wrapper.setProps({
       details: {
@@ -74,7 +67,7 @@ describe('PropertyKeyListDetails', () => {
     });
     detailType = wrapper.find('dl dt.detail-type');
     expect(detailType.exists()).toBe(true);
-    expect(detailType.text()).toBe('Name');
+    expect(detailType.text()).toBe('metadata.details.name');
   });
 
   it('only renders a single <dt> for type when there is no xcode title', () => {

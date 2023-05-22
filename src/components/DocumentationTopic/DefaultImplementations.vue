@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,8 +10,8 @@
 
 <template>
   <TopicsTable
-    anchor="default-implementations"
-    title="Default Implementations"
+    :anchor="contentSectionData.anchor"
+    :title="$t(contentSectionData.title)"
     :isSymbolDeprecated="isSymbolDeprecated"
     :isSymbolBeta="isSymbolBeta"
     :sections="sections"
@@ -20,11 +20,15 @@
 </template>
 
 <script>
+import { MainContentSectionAnchors } from 'docc-render/constants/ContentSectionAnchors';
 import TopicsTable from './TopicsTable.vue';
 
 export default {
   name: 'DefaultImplementations',
   components: { TopicsTable },
+  computed: {
+    contentSectionData: () => MainContentSectionAnchors.defaultImplementations,
+  },
   props: {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,

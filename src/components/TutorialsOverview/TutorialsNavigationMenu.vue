@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -21,7 +21,7 @@
     </button>
     <transition-expand>
       <div class="tutorials-navigation-menu-content" v-if="!collapsed">
-        <TutorialsNavigationList aria-label="Chapters">
+        <TutorialsNavigationList :aria-label="$t('tutorials.nav.chapters')">
           <slot />
         </TutorialsNavigationList>
       </div>

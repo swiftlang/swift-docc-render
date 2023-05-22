@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,12 +14,13 @@
       <template slot="default">
         <slot />
       </template>
-      <template slot="subhead">Tutorials</template>
+      <template slot="subhead">{{ $tc('tutorials.title', 2) }}</template>
     </NavTitleContainer>
     <template slot="menu-items">
-      <li>
+      <NavMenuItemBase class="in-page-navigation">
         <TutorialsNavigation :sections="sections" />
-      </li>
+      </NavMenuItemBase>
+      <slot name="menu-items" />
     </template>
   </NavBase>
 </template>
@@ -29,6 +30,7 @@ import NavBase from 'docc-render/components/NavBase.vue';
 import TutorialsNavigation from 'docc-render/components/TutorialsOverview/TutorialsNavigation.vue';
 import NavTitleContainer from 'docc-render/components/NavTitleContainer.vue';
 import { buildUrl } from 'docc-render/utils/url-helper';
+import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 
 const SectionKind = {
   resources: 'resources',
@@ -39,6 +41,7 @@ export default {
   name: 'Nav',
   constants: { SectionKind },
   components: {
+    NavMenuItemBase,
     NavTitleContainer,
     TutorialsNavigation,
     NavBase,
@@ -58,25 +61,21 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.tutorials-navigation {
-  display: none;
+.nav /deep/ .nav-menu {
+  padding-top: 0;
 
-  @include breakpoint(small, $scope: nav) {
-    display: block;
-  }
-}
+  .nav-menu-items {
+    margin-left: auto;
 
-.nav /deep/ .nav-menu .nav-menu-items {
-  padding: 12px 0 44px 0;
-  @include breakpoints-from(medium, $scope: nav) {
-    display: none;
-  }
-  @include breakpoint-exact(medium) {
-    padding-top: 25px;
-  }
-  @include breakpoint-exact(small) {
-    padding-top: 18px;
-    padding-bottom: 40px;
+    @include breakpoints-from(medium, $scope: nav) {
+      .in-page-navigation {
+        display: none;
+      }
+    }
+
+    @include breakpoint-exact(small) {
+      padding: 18px 0 40px;
+    }
   }
 }
 </style>

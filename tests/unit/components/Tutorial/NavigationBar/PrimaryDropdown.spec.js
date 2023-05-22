@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -128,7 +128,9 @@ describe('Primary Dropdown', () => {
         ReferenceUrlProvider,
       },
       provide: {
-        references,
+        store: {
+          state: { references },
+        },
       },
     });
 
@@ -142,12 +144,12 @@ describe('Primary Dropdown', () => {
     expect(node.props()).toEqual({
       isSmall: true,
       value: tutorial,
-      ariaLabel: 'Current tutorial',
+      ariaLabel: 'tutorials.nav.current tutorials.title',
     });
   });
 
   it('Renders a the correct label', () => {
-    expect(wrapper.find('.visuallyhidden').text()).toBe('Current tutorial');
+    expect(wrapper.find('.visuallyhidden').text()).toBe('tutorials.nav.current tutorials.title');
   });
 
   it('renders chapters properly', () => {

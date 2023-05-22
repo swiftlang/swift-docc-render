@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -19,6 +19,11 @@
       <div class="nav__background" />
       <div v-if="hasOverlay" class="nav-overlay" @click="closeNav" />
       <div class="nav-content">
+        <slot
+          name="pre-title"
+          className="pre-title"
+          v-bind="{ closeNav, inBreakpoint, currentBreakpoint, isOpen }"
+        />
         <div v-if="$slots.default" class="nav-title">
           <slot />
         </div>
@@ -32,8 +37,12 @@
             @click.prevent="toggleNav"
           >
             <span class="visuallyhidden">
-              <template v-if="!isOpen">Open Menu</template>
-              <template v-else>Close Menu</template>
+              <template v-if="!isOpen">
+                {{ $t('documentation.nav.open-menu') }}
+              </template>
+              <template v-else>
+                {{ $t('documentation.nav.close-menu') }}
+              </template>
             </span>
           </a>
           <div
@@ -42,7 +51,7 @@
             @transitionend.self="onTransitionEnd"
             @click="handleTrayClick"
           >
-            <slot name="tray">
+            <slot name="tray" :closeNav="closeNav">
               <NavMenuItems>
                 <slot name="menu-items" />
               </NavMenuItems>
@@ -51,6 +60,7 @@
         </div>
         <div class="nav-actions">
           <a
+            ref="toggle"
             href="#"
             class="nav-menucta"
             tabindex="-1"
@@ -72,29 +82,34 @@ import onIntersect from 'docc-render/mixins/onIntersect';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
-import FocusTrap from 'docc-render/utils/FocusTrap';
 import scrollLock from 'docc-render/utils/scroll-lock';
-import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { isBreakpointAbove } from 'docc-render/utils/breakpoints';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
+import { waitFrames } from 'docc-render/utils/loading';
 
+const { noClose } = MenuLinkModifierClasses;
 const { BreakpointName, BreakpointScopes } = BreakpointEmitter.constants;
+
+const NoBGTransitionFrames = 8;
 
 const NavStateClasses = {
   isDark: 'theme-dark',
   isOpen: 'nav--is-open',
   inBreakpoint: 'nav--in-breakpoint-range',
-  isTransitioning: 'nav--is-opening',
+  isTransitioning: 'nav--is-transitioning',
   isSticking: 'nav--is-sticking',
   hasSolidBackground: 'nav--solid-background',
   hasNoBorder: 'nav--noborder',
   hasFullWidthBorder: 'nav--fullwidth-border',
+  isWideFormat: 'nav--is-wide-format',
+  noBackgroundTransition: 'nav--no-bg-transition',
 };
 
 export default {
   name: 'NavBase',
   components: { NavMenuItems, BreakpointEmitter },
-  constants: { NavStateClasses },
+  constants: { NavStateClasses, NoBGTransitionFrames },
   props: {
     /**
      * At which breakpoint size should the nav transform to a mobile friendly navigation.
@@ -133,22 +148,29 @@ export default {
       type: Boolean,
       default: false,
     },
+    isWideFormat: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [onIntersect],
   data() {
     return {
       isOpen: false,
-      inBreakpoint: false,
       isTransitioning: false,
       isSticking: false,
-      focusTrapInstance: null,
+      noBackgroundTransition: true,
+      currentBreakpoint: BreakpointName.large,
     };
   },
   computed: {
     BreakpointScopes: () => BreakpointScopes,
+    inBreakpoint: ({ currentBreakpoint, breakpoint }) => (
+      !isBreakpointAbove(currentBreakpoint, breakpoint)
+    ),
     rootClasses: ({
       isOpen, inBreakpoint, isTransitioning, isSticking, hasSolidBackground,
-      hasNoBorder, hasFullWidthBorder, isDark,
+      hasNoBorder, hasFullWidthBorder, isDark, isWideFormat, noBackgroundTransition,
     }) => ({
       [NavStateClasses.isDark]: isDark,
       [NavStateClasses.isOpen]: isOpen,
@@ -158,6 +180,8 @@ export default {
       [NavStateClasses.hasSolidBackground]: hasSolidBackground,
       [NavStateClasses.hasNoBorder]: hasNoBorder,
       [NavStateClasses.hasFullWidthBorder]: hasFullWidthBorder,
+      [NavStateClasses.isWideFormat]: isWideFormat,
+      [NavStateClasses.noBackgroundTransition]: noBackgroundTransition,
     }),
   },
   watch: {
@@ -175,8 +199,8 @@ export default {
     window.addEventListener('popstate', this.closeNav);
     window.addEventListener('orientationchange', this.closeNav);
     document.addEventListener('click', this.handleClickOutside);
+    this.handleFlashOnMount();
     await this.$nextTick();
-    this.focusTrapInstance = new FocusTrap(this.$refs.wrapper);
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.onEscape);
@@ -186,7 +210,6 @@ export default {
     if (this.isOpen) {
       this.toggleScrollLock(false);
     }
-    this.focusTrapInstance.destroy();
   },
   methods: {
     getIntersectionTargets() {
@@ -197,7 +220,24 @@ export default {
       this.isTransitioning = true;
     },
     closeNav() {
+      const oldValue = this.isOpen;
+      // close the nav
       this.isOpen = false;
+      // return a promise, that resolves when transitions end
+      return this.resolveOnceTransitionsEnd(oldValue);
+    },
+    resolveOnceTransitionsEnd(oldIsOpen) {
+      // if outside the breakpoint, or was already closed, resolve as there is no tray animation
+      if (!oldIsOpen || !this.inBreakpoint) return Promise.resolve();
+      // enable the transitioning up tracking
+      this.isTransitioning = true;
+      // resolve a promise, when we stop transitioning
+      return new Promise((resolve) => {
+        const unwatch = this.$watch('isTransitioning', () => {
+          resolve();
+          unwatch();
+        });
+      });
     },
     /**
      * When the closing animation ends,
@@ -220,10 +260,9 @@ export default {
      * @param breakpoint
      */
     onBreakpointChange(breakpoint) {
-      const isOutsideBreakpoint = isBreakpointAbove(breakpoint, this.breakpoint);
-      this.inBreakpoint = !isOutsideBreakpoint;
+      this.currentBreakpoint = breakpoint;
       // close the nav if outside of the breakpoint
-      if (isOutsideBreakpoint) this.closeNav();
+      if (!this.inBreakpoint) this.closeNav();
     },
     /**
      * On every intersection change
@@ -254,8 +293,11 @@ export default {
      * @param {EventTarget} event.target
      */
     handleTrayClick({ target }) {
-      // if the target is a link and has a `href` property, close the nav
-      if (target.href) this.closeNav();
+      // If the target is a link and has a `href` property, close the nav.
+      // Targets can opt out of this default behavior with the "noclose" class.
+      if (target.href && !target.classList.contains(noClose)) {
+        this.closeNav();
+      }
     },
     /**
      * Closes the nav, if clicking outside of it.
@@ -278,17 +320,23 @@ export default {
     },
     onExpand() {
       this.$emit('open');
-      // lock focus
-      this.focusTrapInstance.start();
       // hide sibling elements from VO
       changeElementVOVisibility.hide(this.$refs.wrapper);
+      if (document.activeElement === this.$refs.toggle) {
+        // move focus to body to prevent tabbing to links in body
+        // when toggle is triggered by mouse
+        document.activeElement.blur();
+      }
     },
     onClose() {
       this.$emit('close');
       // stop the scroll lock
       this.toggleScrollLock(false);
-      this.focusTrapInstance.stop();
       changeElementVOVisibility.show(this.$refs.wrapper);
+    },
+    async handleFlashOnMount() {
+      await waitFrames(NoBGTransitionFrames);
+      this.noBackgroundTransition = false;
     },
   },
 };
@@ -310,7 +358,12 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   top: 0;
   width: 100%;
   height: $nav-height;
-  z-index: 9997;
+  z-index: $nav-z-index;
+  --nav-padding: #{$nav-padding};
+
+  @media print {
+    position: relative;
+  }
 
   @include breakpoint(small, $scope: nav) {
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
@@ -344,6 +397,12 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     z-index: 1;
     transition: background-color $nav-bg-color-transition;
 
+    // apply a no-transition, for cases where the nav is sticked at page load,
+    // removes a nasty flash in the background.
+    .nav--no-bg-transition & {
+      transition: none !important;
+    }
+
     // nav has a solid fill background
     @include unify-selector('.nav--solid-background') {
       background-color: var(--color-nav-solid-background);
@@ -369,7 +428,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     // nav is collapsed
     @include nav-in-breakpoint {
       min-height: $nav-height-small;
-      transition: background-color 0.5s ease 0.7s;
+      transition: background-color $nav-bg-transition-timing ease 0.7s;
     }
 
     // nav is sticky
@@ -377,7 +436,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {
@@ -400,7 +459,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       @include nav-keyline-color(var(--color-nav-sticking-expanded-keyline));
       background-color: var(--color-nav-expanded);
       max-height: none;
-      transition: background-color 0.5s ease;
+      transition: background-color $nav-bg-transition-timing ease;
       transition-property: background-color, backdrop-filter;
 
       @supports (backdrop-filter: initial) {
@@ -500,20 +559,42 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   z-index: 1;
 }
 
+.pre-title {
+  display: flex;
+  overflow: hidden;
+  padding-left: $nav-padding;
+  margin-left: -$nav-padding;
+
+  &:empty {
+    display: none;
+  }
+
+  @include nav-in-breakpoint() {
+    overflow: visible;
+    padding: 0;
+    margin-left: 0;
+  }
+}
+
 // Nav content (title and menus)
 .nav-content {
   display: flex;
-  padding: 0 $nav-padding;
+  padding: 0 var(--nav-padding);
   max-width: $content-max-width;
   margin: 0 auto;
   position: relative;
   z-index: 2;
   justify-content: space-between;
 
+  @include nav-is-wide-format() {
+    box-sizing: border-box;
+    @include breakpoint-full-width-container()
+  }
+
   // Fix iPhone Notch issues
   @supports (padding:calc(max(0px))) {
-    padding-left: calc(max(#{$nav-padding}, env(safe-area-inset-left)));
-    padding-right: calc(max(#{$nav-padding}, env(safe-area-inset-right)));
+    padding-left: calc(max(var(--nav-padding), env(safe-area-inset-left)));
+    padding-right: calc(max(var(--nav-padding), env(safe-area-inset-right)));
   }
 
   @include breakpoint(small, $scope: nav) {
@@ -522,11 +603,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
   @include nav-in-breakpoint {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     grid-auto-rows: minmax(min-content, max-content);
     grid-template-areas:
-      "title actions"
-      "menu menu";
+      "pre-title title actions"
+      "menu menu menu";
   }
 }
 
@@ -534,14 +615,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include font-styles(nav-menu);
   flex: 1 1 auto;
   display: flex;
-  // padding centers it vertically for large resolutions
-  padding-top: 10px;
   min-width: 0;
 
   @include nav-in-breakpoint {
     @include font-styles(nav-menu-collapsible);
-    // it is collapsed, so we no longer need the offset
-    padding-top: 0;
     grid-area: menu;
   }
 }
@@ -571,7 +648,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       visibility: visible;
       transition-delay: 0.2s, 0s;
 
-      @include unify-selector('.nav--is-opening', $nested: true) {
+      @include unify-selector('.nav--is-transitioning', $nested: true) {
         overflow-y: hidden;
       }
 
@@ -585,12 +662,24 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 .nav-actions {
   display: flex;
   align-items: center;
-  max-height: $nav-height-small;
-  padding-right: $nav-padding-small;
 
   @include nav-in-breakpoint {
     grid-area: actions;
     justify-content: flex-end;
+  }
+  @include breakpoint(small, nav) {
+    padding-right: $nav-padding-small;
+  }
+}
+
+.pre-title + .nav-title {
+  @include nav-in-breakpoint {
+    grid-area: title;
+
+    @include nav-is-wide-format(true) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 }
 
@@ -607,10 +696,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-top: 0;
     height: $nav-height-small;
     width: 90%;
-  }
-
-  @include nav-in-breakpoint {
-    grid-area: title;
   }
 
   /deep/ span {
@@ -696,7 +781,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     width: 100%;
     height: rem(12px);
     transition: $nav-chevron-transition;
-    margin-top: 2px;
 
     &::before,
     &::after {

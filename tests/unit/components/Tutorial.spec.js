@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -25,6 +25,17 @@ const sections = [
     estimatedTimeInMinutes: 42,
     backgroundImage: 'foo.jpg',
     projectFiles: 'download.zip',
+    content: [
+      {
+        type: 'paragraph',
+        inlineContent: [
+          {
+            type: 'text',
+            text: 'Property wrappers...',
+          },
+        ],
+      },
+    ],
   },
   {
     kind: 'tasks',
@@ -64,7 +75,7 @@ const hierarchy = {
               path: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
             },
             {
-              title: 'Check your understanding',
+              title: 'tutorials.assessment.check-your-understanding',
               identifier:
                 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
               path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
@@ -160,6 +171,7 @@ describe('Tutorial', () => {
     sections,
     hierarchy,
     metadata: { category: 'Blah' },
+    identifierUrl: 'foo',
   };
 
   beforeEach(() => {
@@ -171,11 +183,6 @@ describe('Tutorial', () => {
         store: TopicStore,
       },
     });
-  });
-
-  it('provides `references`', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.references).toEqual(propsData.references);
   });
 
   it('renders a div.tutorial', () => {
@@ -190,6 +197,7 @@ describe('Tutorial', () => {
       chapters: propsData.hierarchy.modules,
       topic: propsData.sections[0].title,
       rootReference: hierarchy.reference,
+      identifierUrl: propsData.identifierUrl,
     });
   });
 
@@ -207,9 +215,15 @@ describe('Tutorial', () => {
   });
 
   it('provides a page title using the hero section title', () => {
-    expect(wrapper.vm.pageTitle).toBe('Fooing the Bar — Blah Tutorials');
-    expect(document.title)
-      .toBe('Fooing the Bar — Blah Tutorials | Documentation');
+    const titleText = `${sections[0].title} — ${propsData.metadata.category} Tutorials | Documentation`;
+
+    expect(document.title).toBe(titleText);
+  });
+
+  it('provides a page description based on the hero content text', () => {
+    const { text: heroContentText } = propsData.sections[0].content[0].inlineContent[0];
+
+    expect(document.querySelector('meta[name="description"]').content).toBe(heroContentText);
   });
 
   it('renders a BreakpointEmitter and updates the breakpoint in the store', () => {
@@ -236,6 +250,7 @@ describe('Tutorial without hero section', () => {
         hierarchy,
         metadata: { category: 'Blah' },
         technologyNavigation: ['overview', 'tutorials', 'resources'],
+        identifierUrl: 'foo',
       },
       mocks,
       provide: {

@@ -15,10 +15,10 @@ import Badge from 'docc-render/components/Badge.vue';
 
 const {
   PossiblyChangedType,
-  OnThisPageSection,
   WordBreak,
   ParameterAttributes,
-  PossiblyChangedRequiredAttribute,
+  PossiblyChangedTextAttribute,
+  LinkableHeading,
 } = RestParameters.components;
 
 const { AttributeKind } = RestParameters.components.ParameterAttributes.constants;
@@ -47,7 +47,7 @@ describe('RestParameters', () => {
 
   function mountComponent({ propsData: props, ...others } = {}) {
     return mount(RestParameters, {
-      stubs: ['ContentNode'],
+      stubs: ['ContentNode', 'router-link'],
       propsData: {
         ...propsData,
         ...props,
@@ -57,17 +57,10 @@ describe('RestParameters', () => {
     });
   }
 
-  it('renders an `OnThisPageSection`', () => {
-    const section = mountComponent().find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.props('anchor')).toBe('title');
-    expect(section.props('title')).toBe(propsData.title);
-  });
-
-  it('renders an h2 title', () => {
-    const h2 = mountComponent().find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe(propsData.title);
+  it('renders an h2 section title', () => {
+    const sectionTitle = mountComponent().find(LinkableHeading);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('displays the parameters information', () => {
@@ -165,7 +158,7 @@ describe('RestParameters', () => {
       },
     });
     expect(wrapper.find('.param-name').text()).toBe('lastname');
-    expect(wrapper.find(PossiblyChangedRequiredAttribute).exists()).toBe(true);
+    expect(wrapper.find(PossiblyChangedTextAttribute).exists()).toBe(true);
     expect(wrapper.find(PossiblyChangedType).text()).toBe('string');
     expect(wrapper.find({ name: 'ContentNode' }).props('content')).toEqual(
       parameters[0].content,
@@ -222,7 +215,7 @@ describe('RestParameters', () => {
     });
 
     expect(wrapper.find(PossiblyChangedType).props()).toHaveProperty('changes', changes.name.type);
-    expect(wrapper.find(PossiblyChangedRequiredAttribute).props())
+    expect(wrapper.find(PossiblyChangedTextAttribute).props())
       .toHaveProperty('changes', changes.name.required);
     expect(wrapper.find(ParameterAttributes).props()).toHaveProperty('changes', changes.name);
   });

@@ -58,9 +58,11 @@ describe('TabnavItem', () => {
     const { wrapper, config } = createWrapper();
     const link = wrapper.find('a.tabnav-link');
     expect(link.classes()).not.toContain('active');
+    expect(link.attributes('aria-current')).toBe('false');
     wrapper.setProps({
       value: config.provide.tabnavData.activeTab,
     });
     expect(link.classes()).toContain('active');
+    expect(link.attributes('aria-current')).toBe('true');
   });
 });

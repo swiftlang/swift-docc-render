@@ -43,6 +43,10 @@ $base-colors: (
     light: rgb(240, 240, 240),
     dark: rgb(66, 66, 66)
   ),
+  fill-gray-quaternary: (
+    light: rgb(240, 240, 240),
+    dark: rgb(66, 66, 66)
+  ),
   figure-gray-tertiary: (
     light: rgb(102, 102, 102),
     dark: rgb(176, 176, 176)
@@ -90,6 +94,10 @@ $base-colors: (
   fill-blue: (
     light: rgb(0, 0, 255),
     dark: rgb(0, 102, 255)
+  ),
+  fill-light-blue-secondary: (
+    light: rgb(209, 209, 255),
+    dark: rgb(0, 78, 196)
   ),
   tutorials-teal: (
     light: rgb(0, 0, 0),

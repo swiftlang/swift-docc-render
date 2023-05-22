@@ -12,8 +12,10 @@ const fs = require('fs');
 const path = require('path');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const ThemeResolverPlugin = require('webpack-theme-resolver-plugin');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const webpack = require('webpack');
 const themeUtils = require('./theme-build-utils');
-const { BannerPlugin, HTMLBannerPlugin, LICENSE_HEADER } = require('./license-header-built-files');
+const { BannerPlugin, LICENSE_HEADER } = require('./license-header-built-files');
 
 function addENVDefaults() {
   if (typeof process.env.VUE_APP_TITLE === 'undefined') {
@@ -71,12 +73,15 @@ function baseChainWebpack(config) {
       banner: LICENSE_HEADER,
     }]);
 
-  // Add license header to HTML built files
-  if (process.env.NODE_ENV === 'production') {
-    config
-      .plugin('HTMLBannerPlugin')
-      .use(HTMLBannerPlugin, [LICENSE_HEADER]);
-  }
+  // Limit highlight.js to only the necessary languages
+  const builtinLanguages = 'bash|c|s?css|cpp|diff|http|java|llvm|perl|php|python|ruby|xml|javascript|json|markdown|objectivec|shell|swift';
+  const envLanguages = (process.env.VUE_APP_HLJS_LANGUAGES ?? '').split(',').join('|');
+  config
+    .plugin('LanguagesPlugin')
+    .use(webpack.ContextReplacementPlugin, [
+      /highlight\.js\/lib\/languages$/,
+      new RegExp(`/(${[builtinLanguages, envLanguages].join('|')})$`),
+    ]);
 }
 
 function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {}) {
@@ -102,7 +107,7 @@ function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {})
 
         res.sendFile(path.join(devServerProxy, directory, `${baseName}-${changes}${extension}`));
       });
-      app.get(/^\/(data|downloads|images|videos)/, (req, res) => {
+      app.get(/^\/(data|downloads|images|videos|index)/, (req, res) => {
         res.sendFile(path.join(devServerProxy, req.path));
       });
     },
@@ -112,7 +117,7 @@ function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {})
     //
     // Example: a localhost:[port] URL obtained from `docc preview`
     proxy: {
-      '^/(data|downloads|images|videos)': {
+      '^/(data|downloads|images|videos|index)': {
         target: devServerProxy,
       },
     },

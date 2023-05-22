@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -17,6 +17,7 @@ import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
 import { cssEscapeTopicIdHash } from 'docc-render/utils/strings';
 import { areEquivalentLocations } from 'docc-render/utils/url-helper';
+import getExtraScrollOffset from 'theme/utils/scroll-offset.js';
 
 /**
  * Returns the current absolute location, eg: '/tutorials/swiftui/something'
@@ -47,6 +48,10 @@ export async function scrollBehavior(to, from, savedPosition) {
     await this.app.$nextTick();
     return savedPosition;
   }
+  if (to.meta && to.meta.preventScrolling) {
+    // Do not change the scroll position if disabled from router meta field
+    return false;
+  }
   if (to.hash) {
     const { name, query, hash } = to;
     const isDocumentation = name.includes(documentationTopicName);
@@ -54,14 +59,15 @@ export async function scrollBehavior(to, from, savedPosition) {
     const baseNavOffset = getBaseNavOffset();
     // if on docs and have API changes enabled
     const apiChangesNavHeight = (isDocumentation && hasNavBarOpen) ? baseNavOffset : 0;
-    // compensate for the nav sticky height.
-    const offset = baseNavOffset + apiChangesNavHeight;
+    // compensate for the nav sticky height and add any extra scroll offset we may need
+    const offset = baseNavOffset + apiChangesNavHeight + getExtraScrollOffset(to);
 
     const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
     return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };
   }
   if (areEquivalentLocations(to, from)) {
-    // Do not change the scroll position if the location hasn't changed.
+    // Do not change the scroll position if the location hasn't changed
+    // Note: `areEquivalentLocations` doesn't detect hash differences
     return false;
   }
   return { x: 0, y: 0 };

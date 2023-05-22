@@ -26,10 +26,16 @@ export default {
   state: {
     apiChanges: null,
     apiChangesCounts: apiChangesCountsFactory(),
+    selectedAPIChangesVersion: null,
   },
   setAPIChanges(changes) {
     this.state.apiChanges = changes;
   },
+  setSelectedAPIChangesVersion(value) {
+    this.state.selectedAPIChangesVersion = value;
+  },
+  // Reset the API changes data, except for the `selectedAPIChangesVersion`.
+  // This method is called primarily on page navigation, to clear old changes data.
   resetApiChanges() {
     this.state.apiChanges = null;
     this.state.apiChangesCounts = apiChangesCountsFactory();

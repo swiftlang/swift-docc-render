@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,33 +9,35 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
+import { TopicTypes } from '@/constants/TopicTypes';
+import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import OnThisPageNav from '@/components/OnThisPageNav.vue';
+import OnThisPageStickyContainer
+  from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
+import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 
-jest.mock('docc-render/utils/theme-settings');
-getSetting.mockImplementation((_, fallback) => fallback);
+const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
 const {
   Abstract,
   ContentNode,
   DefaultImplementations,
   Aside,
-  Description,
   DownloadButton,
-  TechnologyList,
   LanguageSwitcher,
-  Nav,
-  OnThisPageNav,
   PrimaryContent,
   Relationships,
   RequirementMetadata,
   Availability,
   SeeAlso,
-  Summary,
   Topics,
   Title,
   BetaLegalText,
+  ViewMore,
+  WordBreak,
 } = DocumentationTopic.components;
 
 const foo = {
@@ -46,6 +48,11 @@ const foo = {
       text: 'foo',
     },
   ],
+};
+
+const abstract = {
+  type: 'text',
+  text: 'Abstract text',
 };
 
 const deprecationSummary = [
@@ -100,8 +107,8 @@ const sampleCodeDownload = {
 };
 
 const propsData = {
-  abstract: [foo],
-  conformance: { constraints: [], availabilityPrefx: [] },
+  abstract: [abstract],
+  conformance: { constraints: [], availabilityPrefix: [] },
   hierarchy: {
     paths: [
       [
@@ -112,6 +119,22 @@ const propsData = {
   },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
+  role: TopicTypes.collection,
+  symbolKind: TopicTypes.module,
+  objcPath: 'documentation/objc',
+  swiftPath: 'documentation/swift',
+  technology: { title: 'fookit' },
+  platforms: [
+    {
+      introducedAt: '1.0',
+      name: 'fooOS',
+    },
+    {
+      deprecatedAt: '2.0',
+      introducedAt: '1.0',
+      name: 'barOS',
+    },
+  ],
   primaryContentSections: [
     {
       kind: PrimaryContent.constants.SectionKind.content,
@@ -121,21 +144,17 @@ const propsData = {
   references: {},
   roleHeading: 'Thing',
   title: 'FooKit',
-  variants: [
-    {
-      traits: [{ interfaceLanguage: 'occ' }],
-      paths: ['documentation/foo'],
-    },
-    {
-      traits: [{ interfaceLanguage: 'swift' }],
-      paths: ['documentation/foo'],
-    },
-  ],
+  languagePaths: {
+    occ: ['documentation/objc'],
+    swift: ['documentation/swift'],
+  },
   tags: [
     {
       type: 'foo',
     },
   ],
+  remoteSource: { url: 'foo' },
+  pageImages: [{ identifier: 'foo', type: 'icon' }],
 };
 
 describe('DocumentationTopic', () => {
@@ -143,12 +162,27 @@ describe('DocumentationTopic', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(DocumentationTopic, { propsData });
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      provide: {
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
+      },
+    });
   });
 
-  it('provides a page title', () => {
-    expect(wrapper.vm.pageTitle).toBe(propsData.title);
-    expect(document.title).toBe('FooKit | Documentation');
+  it('provides a page title based on title prop', () => {
+    const titleText = `${propsData.title} | Documentation`;
+
+    expect(document.title).toBe(titleText);
+  });
+
+  it('provides a page description based on the abstract text', () => {
+    const abstractText = propsData.abstract[0].text;
+
+    expect(document.querySelector('meta[name="description"]').content).toBe(abstractText);
   });
 
   it('provides the languages', () => {
@@ -161,11 +195,6 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
   });
 
-  it('provides `references', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.references).toEqual(propsData.references);
-  });
-
   it('provides the languages', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided.languages).toEqual(new Set(['occ', 'swift']));
@@ -174,31 +203,20 @@ describe('DocumentationTopic', () => {
   it('provides the interface languages', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
+  });
+
+  it('provides the symbol kind', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    expect(wrapper.vm._provided.symbolKind).toEqual(propsData.symbolKind);
+  });
+
+  it('provides the `enableMinimized` flag', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    expect(wrapper.vm._provided.enableMinimized).toBe(false);
   });
 
   it('renders a root div', () => {
     expect(wrapper.is('div.doc-topic')).toBe(true);
-  });
-
-  it('renders a `Nav` with a `Hierarchy` and `LanguageToggle`', () => {
-    const nav = wrapper.find(Nav);
-    expect(nav.exists()).toBe(true);
-
-    expect(nav.props()).toEqual({
-      parentTopicIdentifiers: [
-        'topic://foo',
-        'topic://bar',
-      ],
-      title: 'FooKit',
-      isDark: false,
-      hasNoBorder: false,
-      currentTopicTags: propsData.tags,
-    });
-    expect(nav.attributes()).toMatchObject({
-      interfacelanguage: 'swift',
-      objcpath: 'documentation/foo',
-      swiftpath: 'documentation/foo',
-    });
   });
 
   it('renders a <main>', () => {
@@ -210,31 +228,242 @@ describe('DocumentationTopic', () => {
     expect(main.attributes('tabindex')).toBe('0');
   });
 
+  it('renders an aria live that tells VO users which it is the current page content', () => {
+    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('documentation.current-page FooKit');
+  });
+
+  it('renders a `DocumentationHero`, enabled', () => {
+    const iconOverride = { variants: [] };
+    wrapper.setProps({
+      references: {
+        [propsData.pageImages[0].identifier]: iconOverride,
+      },
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.exists()).toBe(true);
+    expect(hero.props()).toEqual({
+      role: propsData.role,
+      enhanceBackground: true,
+      enableMinimized: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+      iconOverride,
+    });
+  });
+
+  it('renders a `DocumentationHero` without an image override ', () => {
+    wrapper.setProps({
+      pageImages: [],
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.exists()).toBe(true);
+    expect(hero.props()).toEqual({
+      role: propsData.role,
+      enhanceBackground: true,
+      enableMinimized: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+      iconOverride: undefined,
+    });
+  });
+
+  it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props()).toEqual({
+      role: TopicTypes.collection,
+      enhanceBackground: true,
+      enableMinimized: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+    });
+  });
+
+  it('computes `shortHero correctly', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props('shortHero')).toBe(false);
+
+    wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
+    expect(hero.props('shortHero')).toBe(true);
+  });
+
+  it('render a `DocumentationHero`, disabled, if symbol page', () => {
+    /* wrapper.setProps({
+      symbolKind: 'protocol',
+    }); */
+
+    // setProps isn't working for some reason...
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData: {
+        ...propsData,
+        role: 'symbol',
+        symbolKind: 'protocol',
+      },
+    });
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props()).toEqual({
+      role: 'symbol',
+      enhanceBackground: false,
+      enableMinimized: false,
+      shortHero: false,
+      shouldShowLanguageSwitcher: false,
+    });
+  });
+
+  it('renders a `DocumentationHero`, disabled, if `disableHeroBackground` prop is `true`', () => {
+    const hero = wrapper.find(DocumentationHero);
+    expect(hero.props('enhanceBackground')).toBe(true);
+    wrapper.setProps({ disableHeroBackground: true });
+    expect(hero.props('enhanceBackground')).toBe(false);
+  });
+
   it('renders a `Title`', () => {
-    const title = wrapper.find(Title);
+    const hero = wrapper.find(DocumentationHero);
+
+    const title = hero.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toBe(propsData.title);
+    expect(title.find(WordBreak).exists()).toBe(false);
   });
 
-  it('renders a `.content-grid` with `Description`/`Summary and PrimaryContent` columns', () => {
-    const grid = wrapper.find('.content-grid.container');
-    expect(grid.exists()).toBe(true);
+  it('renders the right classes for `Title` based on `enableMininized` prop', () => {
+    const hero = wrapper.find(DocumentationHero);
+    const title = hero.find(Title);
+    expect(title.classes()).not.toContain('minimized-title');
 
-    const description = grid.find(Description);
-    expect(description.exists()).toBe(true);
+    wrapper.setProps({ enableMinimized: true });
+    expect(title.classes()).toContain('minimized-title');
+  });
 
-    const summary = grid.find(Summary);
-    expect(summary.exists()).toBe(true);
+  it('renders a `minimized-container` class, when `enableMinimized` is true', () => {
+    const container = wrapper.find('.container');
+    expect(container.classes()).not.toContain('minimized-container');
+    wrapper.setProps({ enableMinimized: true });
+    expect(container.classes()).toContain('minimized-container');
+  });
 
-    expect(grid.find(PrimaryContent).exists()).toBe(true);
+  it('uses `WordBreak` in the title for symbol pages', () => {
+    wrapper.setProps({
+      role: 'symbol',
+      symbolKind: 'protocol',
+    });
+
+    const title = wrapper.find(Title);
+    expect(title.exists()).toBe(true);
+
+    const wb = title.find(WordBreak);
+    expect(wb.exists()).toBe(true);
+    expect(wb.text()).toBe(propsData.title);
+  });
+
+  it('renders smaller "Beta" and "Deprecated" text in title when relevant', () => {
+    const title = wrapper.find(Title);
+    expect(title.exists()).toBe(true);
+    let smalls = title.findAll('small');
+    expect(smalls.length).toBe(0);
+
+    // both beta _and_ deprecated — deprecated has priority
+    wrapper.setProps({
+      isSymbolDeprecated: true,
+      isSymbolBeta: true,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
+
+    // only beta
+    wrapper.setProps({
+      isSymbolDeprecated: false,
+      isSymbolBeta: true,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.beta');
+
+    // only deprecated
+    wrapper.setProps({
+      isSymbolDeprecated: true,
+      isSymbolBeta: false,
+    });
+    smalls = title.findAll('small');
+    expect(smalls.length).toBe(1);
+    expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
+  });
+
+  it('renders an abstract', () => {
+    const hero = wrapper.find(DocumentationHero);
+    const abstractComponent = hero.find(Abstract);
+    expect(abstractComponent.exists()).toBe(true);
+    expect(abstractComponent.props('content')).toEqual(propsData.abstract);
+  });
+
+  it('renders an abstract, with an empty string inside', () => {
+    const emptyParagraph = [{
+      type: 'paragraph',
+      inlineContent: [
+        {
+          type: 'text',
+          text: '',
+        },
+      ],
+    }];
+    wrapper.setProps({
+      abstract: emptyParagraph,
+    });
+    const hero = wrapper.find(DocumentationHero);
+    const abstractComponent = hero.find(Abstract);
+    expect(abstractComponent.exists()).toBe(true);
+    expect(abstractComponent.props('content')).toEqual(emptyParagraph);
   });
 
   it('renders a `PrimaryContent`', () => {
     const primary = wrapper.find(PrimaryContent);
     expect(primary.exists()).toBe(true);
-    expect(primary.props('conformance')).toEqual(propsData.conformance);
     expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
+  });
+
+  it('renders a `PrimaryContent` with Declarations moved out and into the Hero section', () => {
+    const declarationsSection = {
+      kind: PrimaryContent.constants.SectionKind.declarations,
+      declarations: [
+        {
+          platforms: [
+            'macos',
+          ],
+          tokens: [
+            {
+              type: 'identifier',
+              text: 'Foo',
+            },
+          ],
+        },
+      ],
+    };
+    expect(wrapper.find('.declarations-container').exists()).toBe(false);
+
+    wrapper.setProps({
+      enableMinimized: true,
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        declarationsSection,
+      ],
+    });
+    const primary = wrapper.find(PrimaryContent);
+    expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
+    const declarationContainer = wrapper.find('.declarations-container');
+    // expect(declarationContainer.classes()).not.toContain('minimized-container');
+    expect(declarationContainer.find(Declaration).props()).toEqual({
+      conformance: propsData.conformance,
+      declarations: declarationsSection.declarations,
+      source: propsData.remoteSource,
+    });
+    // wrapper.setProps({ enableMinimized: true });
+    // commented this out and moved it to the above `setProps` call because
+    // there seems to be an obscure bug with vue-test-utils where things don't
+    // work right if `setProps` is called more than once with a prop that is
+    // also used in the component's `provide`...
+    expect(declarationContainer.classes()).toContain('minimized-container');
   });
 
   it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', () => {
@@ -247,17 +476,81 @@ describe('DocumentationTopic', () => {
     expect(wrapper.contains(PrimaryContent)).toBe(false);
   });
 
-  describe('description column', () => {
-    let description;
+  it('does not render a `PrimaryContent` column when passed empty an PrimaryContent & no `ViewMore` link', () => {
+    wrapper.setProps({ primaryContentSections: [], enableMinimized: true });
+    expect(wrapper.contains(PrimaryContent)).toBe(true); // ViewMore link is present
 
-    beforeEach(() => {
-      description = wrapper.find('main .container').find(Description);
+    wrapper.setProps({
+      primaryContentSections: [],
+      enableMinimized: true,
+      hasNoExpandedDocumentation: true,
     });
+    expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
+  });
 
-    it('renders an abstract', () => {
-      const abstract = description.find(Abstract);
-      expect(abstract.exists()).toBe(true);
-      expect(abstract.props('content')).toEqual(propsData.abstract);
+  it('renders `ViewMore` if `enableMinimized`', () => {
+    wrapper.setProps({
+      enableMinimized: true,
+      primaryContentSections: undefined,
+      isRequirement: false,
+      deprecationSummary: null,
+      downloadNotAvailableSummary: null,
+    });
+    const viewMore = wrapper.find(ViewMore);
+    expect(viewMore.exists()).toBe(true);
+    expect(viewMore.props('url')).toEqual('/documentation/swift'); // normalized path
+
+    // should not render `ViewMore` in non-minimized mode
+    wrapper.setProps({ enableMinimized: false });
+    expect(wrapper.find(ViewMore).exists()).toBe(false);
+
+    // should not render `ViewMore` if `hasNoExpandedDocumentation`
+    wrapper.setProps({ enableMinimized: true, hasNoExpandedDocumentation: true });
+    expect(wrapper.find(ViewMore).exists()).toBe(false);
+  });
+
+  it('renders `ViewMore` with correct language path', () => {
+    // only objcPath
+    wrapper.setProps({
+      enableMinimized: true,
+      swiftPath: null,
+      objcPath: 'documentation/objc',
+      interfaceLanguage: 'occ',
+    });
+    const objcViewMore = wrapper.find(ViewMore);
+    expect(objcViewMore.exists()).toBe(true);
+    expect(objcViewMore.props('url')).toEqual('/documentation/objc'); // normalized path
+
+    // only swiftPath
+    wrapper.setProps({
+      objcPath: null,
+      swiftPath: 'documentation/swift',
+      interfaceLanguage: 'swift',
+    });
+    const swiftViewMore = wrapper.find(ViewMore);
+    expect(swiftViewMore.exists()).toBe(true);
+    expect(swiftViewMore.props('url')).toEqual('/documentation/swift'); // normalized path
+
+    // both paths exists, but on the objc variant
+    wrapper.setProps({
+      objcPath: 'documentation/objc',
+      swiftPath: 'documentation/swift',
+      interfaceLanguage: 'occ',
+    });
+    const viewMore = wrapper.find(ViewMore);
+    expect(viewMore.exists()).toBe(true);
+    expect(viewMore.props('url')).toEqual('/documentation/objc?language=objc'); // normalized path
+  });
+
+  describe('description column', () => {
+    it('renders the description section', () => {
+      const description = wrapper.find('.description');
+      expect(description.exists()).toBe(true);
+      expect(description.classes()).toContain('after-enhanced-hero');
+      wrapper.setProps({
+        symbolKind: 'something-else',
+      });
+      expect(description.classes()).not.toContain('after-enhanced-hero');
     });
 
     it('renders a deprecated `Aside` when deprecated', () => {
@@ -298,118 +591,61 @@ describe('DocumentationTopic', () => {
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
     });
 
-    it('renders an abstract, with an empty string inside', () => {
-      const emptyParagraph = [{
-        type: 'paragraph',
-        inlineContent: [
-          {
-            type: 'text',
-            text: '',
-          },
-        ],
-      }];
-      wrapper.setProps({
-        abstract: emptyParagraph,
-      });
-      const abstract = description.find(Abstract);
-      expect(abstract.exists()).toBe(true);
-      expect(abstract.props('content')).toEqual(emptyParagraph);
-    });
-  });
-
-  describe('summary column', () => {
-    let summary;
-
-    beforeEach(() => {
-      summary = wrapper.find('main .container').find(Summary);
-    });
-
-    it('hides the Summary, if the global settings say so', () => {
-      // this should really only mock the resolved value for the specific flag,
-      // but this is fine for now
-      getSetting.mockResolvedValue(true);
-      wrapper = shallowMount(DocumentationTopic, { propsData });
-      expect(wrapper.find(Summary).exists()).toBe(false);
-      getSetting.mockReset();
-    });
-
     it('renders a `Availability` with platforms data', () => {
-      const platforms = [
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-        {
-          deprecatedAt: '2.0',
-          introducedAt: '1.0',
-          name: 'barOS',
-        },
-      ];
-      wrapper.setProps({ platforms });
-
-      const list = summary.find(Availability);
+      const list = wrapper.find(Availability);
       expect(list.exists()).toBe(true);
-      expect(list.props('platforms')).toEqual(platforms);
-    });
+      expect(list.props('platforms')).toEqual(propsData.platforms);
 
-    it('renders a `TechnologyList` with technologies data', () => {
-      const modules = ['FooKit', 'BarKit'];
-      wrapper.setProps({ modules });
-
-      const list = summary.find(TechnologyList);
-      expect(list.exists()).toBe(true);
-      expect(list.props('technologies')).toEqual(modules);
-    });
-
-    it('renders an `OnThisPageNav` with more than 1 section', () => {
-      const onThisPageSections = [
-        { anchor: 'foo', title: 'Foo' },
-        { anchor: 'bar', title: 'Bar' },
-      ];
-      wrapper.setData({ topicState: { onThisPageSections } });
-
-      const nav = summary.find(OnThisPageNav);
-      expect(nav.exists()).toBe(true);
-      expect(nav.props('sections')).toEqual(onThisPageSections);
-    });
-
-    it('does not render `OnThisPage` with 1 or fewer sections', () => {
-      const onThisPageSections = [{ anchor: 'foo', title: 'Foo' }];
-      wrapper.setData({ topicState: { onThisPageSections } });
-      expect(summary.contains(OnThisPageNav)).toBe(false);
-
-      wrapper.setData({ topicState: { onThisPageSections: [] } });
-      expect(summary.contains(OnThisPageNav)).toBe(false);
-    });
-
-    it('renders a `LanguageSwitcher`', () => {
-      const switcher = summary.find(LanguageSwitcher);
-      expect(switcher.exists()).toBe(true);
-      expect(switcher.props()).toEqual({
-        interfaceLanguage: propsData.interfaceLanguage,
-        objcPath: propsData.variants[0].paths[0],
-        swiftPath: propsData.variants[1].paths[0],
-      });
-    });
-
-    it('renders an `TechnologyList` component in the sidebar', () => {
-      expect(wrapper.find('.extends-technology').exists()).toBe(false);
-      const extendsTechnology = 'FooTechnology';
-
-      wrapper.setProps({
-        extendsTechnology,
-      });
-
-      const technologyList = wrapper.find('.extends-technology');
-      expect(technologyList.exists()).toBe(true);
-      expect(technologyList.props()).toEqual({
-        technologies: [{ name: extendsTechnology }],
-        title: 'Extends',
-      });
+      // Minimized view should not render Availability
+      wrapper.setProps({ enableMinimized: true });
+      expect(wrapper.find(Availability).exists()).toBe(false);
     });
   });
 
-  it('renders `Topics` if there are topic sections', () => {
+  it('does not render any primary content or related markup, if not provided', () => {
+    const docContent = wrapper.find('.doc-content');
+    expect(docContent.classes()).not.toContain('no-primary-content');
+    wrapper.setProps({
+      primaryContentSections: [],
+      isRequirement: false,
+      deprecationSummary: null,
+      downloadNotAvailableSummary: null,
+      enableMinimized: false,
+      hasNoExpandedDocumentation: true,
+    });
+    expect(wrapper.find(PrimaryContent).exists()).toBe(false);
+    expect(wrapper.find('.description').exists()).toBe(false);
+    expect(docContent.classes()).toContain('no-primary-content');
+    // removes it if hero is not enhanced
+    wrapper.setProps({ disableHeroBackground: true });
+    expect(docContent.classes()).not.toContain('no-primary-content');
+  });
+
+  it('renders a `LanguageSwitcher` if TargetIDE', () => {
+    const provide = {
+      isTargetIDE: true,
+      store: {
+        state: {
+          references: {},
+        },
+        reset: jest.fn(),
+      },
+    };
+    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
+    const switcher = wrapper.find(LanguageSwitcher);
+    expect(switcher.exists()).toBe(true);
+    expect(switcher.props()).toEqual({
+      interfaceLanguage: propsData.interfaceLanguage,
+      objcPath: propsData.languagePaths.occ[0],
+      swiftPath: propsData.languagePaths.swift[0],
+    });
+
+    // Minimized view should not render LanguageSwitcher
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(LanguageSwitcher).exists()).toBe(false);
+  });
+
+  it('renders `Topics` if there are topic sections, passing the `topicSectionsStyle` over', () => {
     expect(wrapper.contains(Topics)).toBe(false);
 
     const topicSections = [
@@ -425,11 +661,27 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ topicSections });
+    wrapper.setProps({ topicSections, topicSectionsStyle: TopicSectionsStyle.detailedGrid });
 
     const topics = wrapper.find(Topics);
     expect(topics.exists()).toBe(true);
     expect(topics.props('sections')).toBe(topicSections);
+    expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
+
+    // Minimized view should not render Topics
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Topics).exists()).toBe(false);
+  });
+
+  it('does not render the `Topics` if the `topicSectionsStyle` is `hidden`', () => {
+    const topicSections = [
+      {
+        title: 'Baz',
+        identifiers: ['baz'],
+      },
+    ];
+    wrapper.setProps({ topicSections, topicSectionsStyle: 'hidden' });
+    expect(wrapper.find(Topics).exists()).toBe(false);
   });
 
   it('renders `SeeAlso` if there are see also sections', () => {
@@ -453,6 +705,10 @@ describe('DocumentationTopic', () => {
     const seeAlso = wrapper.find(SeeAlso);
     expect(seeAlso.exists()).toBe(true);
     expect(seeAlso.props('sections')).toBe(seeAlsoSections);
+
+    // Minimized view should not render See Also
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(SeeAlso).exists()).toBe(false);
   });
 
   it('renders `Relationships` if there are relationship sections', () => {
@@ -478,6 +734,10 @@ describe('DocumentationTopic', () => {
     const relationships = wrapper.find(Relationships);
     expect(relationships.exists()).toBe(true);
     expect(relationships.props('sections')).toBe(relationshipsSections);
+
+    // Minimized view should not render Relationships
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Relationships).exists()).toBe(false);
   });
 
   it('renders `Relationships` before `SeeAlso`', () => {
@@ -502,6 +762,12 @@ describe('DocumentationTopic', () => {
       stubs: {
         Relationships: stubSection('relationships'),
         SeeAlso: stubSection('see-also'),
+      },
+      provide: {
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
       },
     });
     const sections = wrapper.findAll('.section-stub');
@@ -530,41 +796,22 @@ describe('DocumentationTopic', () => {
     const defaults = wrapper.find(DefaultImplementations);
     expect(defaults.exists()).toBe(true);
     expect(defaults.props('sections')).toEqual(defaultImplementationsSections);
+
+    // Minimized view should not render DefaultImplementations
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(DefaultImplementations).exists()).toBe(false);
   });
 
   it('computes isSymbolBeta', () => {
     const topicSections = [{}];
-    const platforms = [
-      {
-        introducedAt: '1.0',
-        beta: true,
-        name: 'fooOS',
-      },
-      {
-        deprecatedAt: '2.0',
-        introducedAt: '1.0',
-        beta: true,
-        name: 'barOS',
-      },
-    ];
-    wrapper.setProps({ platforms, topicSections });
+    wrapper.setProps({ topicSections, isSymbolBeta: true });
 
     const topics = wrapper.find(Topics);
     expect(topics.props('isSymbolBeta')).toBe(true);
 
     // should not if only one is beta
     wrapper.setProps({
-      platforms: [
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-          beta: true,
-        },
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-      ],
+      isSymbolBeta: false,
     });
     expect(topics.props('isSymbolBeta')).toBe(false);
   });
@@ -587,62 +834,97 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find(BetaLegalText).exists()).toBe(true);
   });
 
-  it('computes isSymbolDeprecated if there is a deprecationSummary', () => {
-    wrapper.setProps({ topicSections: [{}] });
+  it('sends isSymbolDeprecated down to the Topic', () => {
+    wrapper.setProps({ topicSections: [{}], isSymbolDeprecated: false });
     const topics = wrapper.find(Topics);
-    expect(topics.props('isSymbolDeprecated')).toBeFalsy();
-    wrapper.setProps({ deprecationSummary });
-    expect(topics.props('isSymbolDeprecated')).toBe(true);
-  });
-
-  it('computes isSymbolDeprecated', () => {
-    const topicSections = [{}];
-    const platforms = [
-      {
-        deprecatedAt: '1',
-        name: 'fooOS',
-      },
-      {
-        deprecatedAt: '1',
-        name: 'barOS',
-      },
-    ];
-    wrapper.setProps({ platforms, topicSections });
-
-    const topics = wrapper.find(Topics);
-    expect(topics.props('isSymbolDeprecated')).toBe(true);
-
-    // should not if only one is deprecated
-    wrapper.setProps({
-      platforms: [
-        {
-          name: 'fooOS',
-          deprecatedAt: '1',
-        },
-        {
-          introducedAt: '1.0',
-          name: 'fooOS',
-        },
-      ],
-    });
     expect(topics.props('isSymbolDeprecated')).toBe(false);
+    wrapper.setProps({ isSymbolDeprecated: true });
+    expect(topics.props('isSymbolDeprecated')).toBe(true);
   });
 
   it('renders content in the `above-title` slot', () => {
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
       slots: {
-        'above-title': 'Above Title Content',
+        'above-title': '<div class="above-title">Above Title Content</div>',
+      },
+      provide: {
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
       },
     });
-    expect(wrapper.text()).toContain('Above Title Content');
+    expect(wrapper.find(DocumentationHero).contains('.above-title')).toBe(true);
+  });
+
+  it('renders content in the `above-hero-content` slot', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      slots: {
+        'above-hero-content': '<div class="above-hero-content">Above Hero Content</div>',
+      },
+      stubs: {
+        DocumentationHero,
+      },
+      provide: {
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
+      },
+    });
+    expect(wrapper.contains('.above-hero-content')).toBe(true);
+  });
+
+  it('renders `OnThisPageNav` component, if enabled via prop', () => {
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(false);
+    expect(wrapper.find(OnThisPageStickyContainer).exists()).toBe(false);
+    // enable the nav
+    wrapper.setProps({ enableOnThisPageNav: true });
+    // assert container is visible, but not the nav
+    expect(wrapper.find(OnThisPageStickyContainer).exists()).toBe(true);
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(false);
+    // show the nav
+    wrapper.setData({
+      topicState: {
+        onThisPageSections: [{ anchor: 'foo' }, { anchor: 'bar' }, { anchor: 'baz' }],
+      },
+    });
+    expect(wrapper.find(OnThisPageNav).exists()).toBe(true);
+  });
+
+  it('hides the `OnThisPageStickyContainer`, if the store.contentWidth is below a threshold', () => {
+    expect(wrapper.classes()).not.toContain('with-on-this-page');
+    wrapper.setProps({ enableOnThisPageNav: true });
+    wrapper.setData({
+      topicState: {
+        contentWidth: 200,
+      },
+    });
+    const container = wrapper.find(OnThisPageStickyContainer);
+    expect(container.exists()).toBe(true);
+    expect(container.isVisible()).toBe(false);
+    wrapper.setData({
+      topicState: {
+        contentWidth: ON_THIS_PAGE_CONTAINER_BREAKPOINT + 10,
+      },
+    });
+    expect(container.isVisible()).toBe(true);
+    expect(wrapper.classes()).toContain('with-on-this-page');
+  });
+
+  it('computes a `disableMetadata` property that mirrors `enableMinimized`', () => {
+    expect(wrapper.vm.disableMetadata).toBe(false);
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.vm.disableMetadata).toBe(true);
   });
 
   describe('lifecycle hooks', () => {
     it('calls `store.reset()`', () => {
       const store = {
         reset: jest.fn(),
-        state: { onThisPageSections: [], apiChanges: null },
+        state: { onThisPageSections: [], apiChanges: null, references: {} },
       };
       wrapper = shallowMount(DocumentationTopic, {
         propsData,
@@ -660,6 +942,7 @@ describe('DocumentationTopic', () => {
           apiChanges: null,
           onThisPageSections: [],
           preferredLanguage: Language.objectiveC.key.url,
+          references: {},
         },
       };
       wrapper = shallowMount(DocumentationTopic, {
@@ -672,23 +955,9 @@ describe('DocumentationTopic', () => {
       });
       await wrapper.vm.$nextTick();
       expect($router.replace).toBeCalledWith({
-        path: `/${propsData.variants[0].paths[0]}`,
+        path: `/${propsData.languagePaths.occ[0]}`,
         query: { language: Language.objectiveC.key.url },
       });
     });
-  });
-});
-
-describe('isTargetIDE', () => {
-  let wrapper;
-
-  const provide = { isTargetIDE: true };
-
-  beforeEach(() => {
-    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
-  });
-
-  it('does not render a `Nav`', () => {
-    expect(wrapper.contains(Nav)).toBe(false);
   });
 });

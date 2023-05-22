@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -21,6 +21,7 @@ import { TopicRole } from '@/constants/roles';
 const router = createRouterInstance();
 const localVue = createLocalVue();
 localVue.use(Router);
+window.scrollTo = () => ({});
 
 describe('Reference', () => {
   it('renders a `ReferenceExternal` for external urls', () => {
@@ -109,6 +110,24 @@ describe('Reference', () => {
     const ref = wrapper.find(ReferenceInternalSymbol);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+  });
+
+  it('renders a `ReferenceInternal` for a symbol with its own inline formatting', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: {
+        url: '/documentation/uikit/uiview',
+        kind: 'symbol',
+        role: TopicRole.symbol,
+        hasInlineFormatting: true,
+      },
+      slots: { default: 'custom text for UIView symbol' },
+    });
+    const ref = wrapper.find(ReferenceInternal);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+    expect(wrapper.find(ReferenceInternalSymbol).exists()).toBe(false);
   });
 
   it('renders a `ReferenceInternal` for external "dictionarySymbol" kind references with a human readable name', () => {

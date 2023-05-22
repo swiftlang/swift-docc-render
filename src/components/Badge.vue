@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,14 +10,14 @@
 
 <template>
   <span class="badge" :class="{ [`badge-${variant}`]: variant }" role="presentation">
-    <slot>{{ text }}</slot>
+    <slot>{{ text ? $t(text) : '' }}</slot>
   </span>
 </template>
 
 <script>
 const VARIANT_TEXT = {
-  beta: 'Beta',
-  deprecated: 'Deprecated',
+  beta: 'aside-kind.beta',
+  deprecated: 'aside-kind.deprecated',
 };
 
 export default {
@@ -43,11 +43,9 @@ export default {
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
 
-$badge-border-radius: $border-radius - 1px !default;
-
 @mixin badge-variation($color) {
   --badge-color: var(--color-badge-#{$color});
-  --badge-dark-color: var(--color-badge-dark-#{$color})
+  --badge-dark-color: var(--color-badge-dark-#{$color});
 }
 
 .badge {
@@ -58,15 +56,17 @@ $badge-border-radius: $border-radius - 1px !default;
   padding: 2px 10px;
   white-space: nowrap;
   background: none;
-  border-radius: $badge-border-radius;
+  border-radius: var(--badge-border-radius, calc(#{$border-radius} - 1px));
+  border-style: var(--badge-border-style, solid);
+  border-width: var(--badge-border-width, 1px);
   margin-left: 10px;
-  border: 1px solid var(--badge-color);
   color: var(--badge-color);
 
   .theme-dark & {
     --badge-color: var(--badge-dark-color);
   }
 
+  /* nav bar badge */
   &-deprecated {
     @include badge-variation(deprecated);
   }

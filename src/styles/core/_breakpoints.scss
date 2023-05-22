@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -10,22 +10,30 @@
 
 // A map used to associate scoped breakpoint names with a map of attributes.
 // These attributes will be used to define the appropriate media queries for
-// the "large", "medium", and "small" breakpoints.
+// the "xlarge", "large", "medium", and "small" breakpoints.
 $breakpoint-attributes: (
   default: (
+    xlarge: (
+      min-width: 1920px
+    ),
     large: (
-      min-width: 1069px,
+      min-width: 1251px,
       content-width: 980px,
     ),
     medium: (
       min-width: 736px,
-      max-width: 1068px,
+      max-width: 1250px,
       content-width: 692px,
     ),
     small: (
       min-width: 320px,
       max-width: 735px,
       content-width: 280px,
+    ),
+    xsmall: (
+      min-width: 245px,
+      max-width: 320px,
+      content-width: 215px,
     ),
   ),
   nav: (
@@ -60,6 +68,22 @@ $breakpoint-attributes: (
 @function breakpoint-names($scope: default) {
   $attributes: map-get-default($breakpoint-attributes, $scope, ());
   @return map-keys($attributes);
+}
+
+/// Returns the width for the dynamic-sidebar-content in small viewport.
+/// This function allows overriding the small width in third party themes.
+///
+/// @param {Number} $content-width
+///   The width of the content
+///
+/// @param {Number} $min-width
+///   The min-width of the content
+///
+/// @returns {String | Number}
+///   Returns a width value
+///
+@function -calculate-small-dynamic-sidebar-content-width($content-width, $min-width) {
+  @return auto;
 }
 
 /// Injects the provided style block within a max-width media query so that the
@@ -158,7 +182,7 @@ $breakpoint-attributes: (
 
         // Use a fixed percentage width value for the small breakpoint.
         // The percentage is the ratio of the content-width/min-width sizes.
-        @if $breakpoint == small and $min-width {
+        @if ($breakpoint == small) and $min-width {
           $width: percentage($content-width / $min-width);
         }
 
@@ -307,5 +331,80 @@ $breakpoint-attributes: (
     @media only screen and (min-width: $min-width) and (max-width: $max-width) {
       @content;
     }
+  }
+}
+
+/// Applies a max-width container, in order to limit the adjustable sidebar content from
+/// growing too much on ultra-widescreens
+@mixin breakpoint-full-width-container {
+  max-width: map-deep-get($breakpoint-attributes, (default, xlarge, min-width));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/// Applies a content container, for cases with dynamic adjustable sidebars. In IDE mode uses the
+/// default breakpoint-content mixin.
+@mixin breakpoint-dynamic-sidebar-content {
+  $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));
+
+  @include inTargetWeb {
+    // 820px
+    max-width: $large-max-width - $large-viewport-dynamic-content-padding * 2;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: $large-viewport-dynamic-content-padding;
+    padding-right: $large-viewport-dynamic-content-padding;
+    box-sizing: border-box;
+
+    @media print {
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
+      max-width: none;
+    }
+
+    @include breakpoints-from(large) {
+      max-width: $large-max-width;
+    }
+
+    @media only screen and (min-width: 1500px) {
+      max-width: $large-max-width + 100;
+    }
+
+    @include breakpoint(small) {
+      $content-width: map-deep-get($breakpoint-attributes, (default, small, content-width));
+      $min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
+      width: -calculate-small-dynamic-sidebar-content-width($content-width, $min-width);
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
+    }
+  }
+
+  @include inTargetIde {
+    @include breakpoint-content()
+  }
+}
+
+/// Renders content only when we have the adjustable sidebar ENABLED
+@mixin with-adjustable-sidebar {
+  .full-width-container & {
+    @content
+  }
+}
+
+/// Renders content only when we have the adjustable sidebar DISABLED
+@mixin without-adjustable-sidebar {
+  .static-width-container & {
+    @content
+  }
+}
+
+/// Applies the correct breakpoint mixin, based on presence of a dynamic sidebar
+@mixin dynamic-content-container {
+  @include with-adjustable-sidebar {
+    @include breakpoint-dynamic-sidebar-content;
+  }
+
+  @include without-adjustable-sidebar {
+    @include breakpoint-content;
   }
 }

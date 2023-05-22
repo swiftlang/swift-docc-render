@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -19,6 +19,7 @@ import {
   restoreScrollOnReload,
   saveScrollOnReload,
 } from 'docc-render/utils/router-utils';
+import { EXTRA_DOCUMENTATION_OFFSET } from '@/utils/scroll-offset';
 
 const appTarget = process.env.VUE_APP_TARGET;
 
@@ -51,7 +52,9 @@ describe('router-utils', () => {
     const mockApp = { app: { $nextTick: jest.fn().mockResolvedValue({}) } };
     const scrollBehavior = originalScrollBehavior.bind(mockApp);
 
-    const createRoute = (name, query, hash) => ({ name, query, hash });
+    const createRoute = (name, query, hash, meta) => ({
+      name, query, hash, meta,
+    });
     const routeFoo = createRoute('foo', {}, 'foo');
     const routeBar = createRoute('bar', {}, 'bar');
 
@@ -63,6 +66,18 @@ describe('router-utils', () => {
       const savedPosition = { foo: 'foo' };
       const resolved = await scrollBehavior(routeFoo, routeBar, savedPosition);
       expect(resolved).toEqual(savedPosition);
+    });
+
+    it('resolves as false if two urls are the same and have no `hash`', async () => {
+      const noHashUrl = createRoute('foo', {});
+      const resolved = await scrollBehavior(noHashUrl, noHashUrl);
+      expect(resolved).toEqual(false);
+    });
+
+    it('resolves with pageOffset if `meta.preventScrolling` is `true`', async () => {
+      const routeNoScroll = createRoute('foo', {}, 'foo', { preventScrolling: true });
+      const resolved = await scrollBehavior(routeNoScroll, routeBar);
+      expect(resolved).toEqual(false);
     });
 
     it('resolves with a selector and `y:0` offset if passed `hash` but in IDE target', async () => {
@@ -77,7 +92,7 @@ describe('router-utils', () => {
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeight },
+        offset: { x: 0, y: baseNavHeight + EXTRA_DOCUMENTATION_OFFSET },
       });
     });
 
@@ -89,7 +104,7 @@ describe('router-utils', () => {
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeightSmallBreakpoint },
+        offset: { x: 0, y: baseNavHeightSmallBreakpoint + EXTRA_DOCUMENTATION_OFFSET },
       });
 
       window.innerWidth = innerWidth;
@@ -101,14 +116,8 @@ describe('router-utils', () => {
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeight * 2 },
+        offset: { x: 0, y: baseNavHeight * 2 + EXTRA_DOCUMENTATION_OFFSET },
       });
-    });
-
-    it('resolves as false if two urls are the same and have no `hash`', async () => {
-      const noHashUrl = createRoute('foo', {});
-      const resolved = await scrollBehavior(noHashUrl, noHashUrl);
-      expect(resolved).toEqual(false);
     });
 
     it('resolves with `{ x: 0, y: 0 }` if new url without hash', async () => {

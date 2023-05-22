@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -22,6 +22,6 @@ describe('AssessmentsProgress', () => {
   it('renders index/total in a p tag', () => {
     const title = wrapper.find('p.title');
     expect(title.exists()).toBe(true);
-    expect(title.text()).toBe('Question 1 of 3');
+    expect(title.text()).toBe('tutorials.question-of 1 3');
   });
 });

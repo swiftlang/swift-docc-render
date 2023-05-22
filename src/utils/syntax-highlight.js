@@ -10,6 +10,11 @@
 
 import hljs from 'highlight.js/lib/core';
 
+/** A map of custom aliases for supported languages (additions to default hljs aliases) */
+const CustomLanguageAliases = {
+  objectivec: ['objective-c'],
+};
+
 /** A map of supported languages and their aliases */
 const Languages = {
   bash: ['sh', 'zsh'],
@@ -23,7 +28,7 @@ const Languages = {
   json: [],
   llvm: [],
   markdown: ['md', 'mkdown', 'mkd'],
-  objectivec: ['mm', 'objc', 'obj-c'],
+  objectivec: ['mm', 'objc', 'obj-c'].concat(CustomLanguageAliases.objectivec),
   perl: ['pl', 'pm'],
   php: [],
   python: ['py', 'gyp', 'ipython'],
@@ -32,6 +37,12 @@ const Languages = {
   shell: ['console', 'shellsession'],
   swift: [],
   xml: ['html', 'xhtml', 'rss', 'atom', 'xjb', 'xsd', 'xsl', 'plist', 'wsf', 'svg'],
+  // load more languages from the environment
+  ...(
+    process.env.VUE_APP_HLJS_LANGUAGES
+      ? Object.fromEntries(process.env.VUE_APP_HLJS_LANGUAGES.split(',').map(l => [l, []]))
+      : undefined
+  ),
 };
 
 export const CustomLanguagesSet = new Set([
@@ -78,8 +89,6 @@ async function importHighlightFileForLanguage(language) {
       } else {
         languageFile = await import(
           /* webpackChunkName: "highlight-js-[request]" */
-          // eslint-disable-next-line max-len
-          /* webpackInclude: /\/(bash|c|s?css|cpp|diff|http|java|llvm|perl|php|python|ruby|xml|javascript|json|markdown|objectivec|shell|swift)\.js$/ */
           `highlight.js/lib/languages/${file}`
         );
       }
@@ -183,7 +192,7 @@ function duplicateMultilineNode(element) {
 
   // wrap each new line with the current element's class
   const result = getLines(element.innerHTML)
-    .reduce((all, lineText) => `${all}<span class="${className}">${lineText}</span>\n`, '');
+    .reduce((all, lineText) => `${all}<span class="${className}">${lineText || '\n\n'}</span>\n`, '');
 
   // return a list of newly wrapped HTML elements
   return htmlToElements(result.trim());
@@ -223,11 +232,14 @@ export function sanitizeMultilineNodes(element) {
  * @returns {string}
  */
 export function highlight(code, language) {
-  if (!hljs.getLanguage(language)) {
+  // normalize the language name in case it is a custom alias that highlight.js
+  // doesn't know about
+  const normalizedLang = getLanguageByAlias(language);
+  if (!hljs.getLanguage(normalizedLang)) {
     throw new Error(`Unsupported language for syntax highlighting: ${language}`);
   }
 
-  return hljs.highlight(code, { language, ignoreIllegals: true }).value;
+  return hljs.highlight(code, { language: normalizedLang, ignoreIllegals: true }).value;
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,7 +13,9 @@ import MobileCodePreview from 'docc-render/components/Tutorial/MobileCodePreview
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import MobileCodeListing from 'docc-render/components/ContentNode/MobileCodeListing.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
-import TopicStore from 'docc-render/stores/TopicStore';
+import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
+
+const { BreakpointName } = BreakpointEmitter.constants;
 
 describe('MobileCodePreview', () => {
   const { PreviewToggle } = MobileCodePreview.components;
@@ -38,7 +40,13 @@ describe('MobileCodePreview', () => {
     default: '<img src="media.jpg" />',
   };
 
-  const store = TopicStore;
+  const store = {
+    state: {
+      linkableSections: [],
+      breakpoint: BreakpointName.large,
+      references,
+    },
+  };
 
   beforeEach(() => {
     wrapper = shallowMount(MobileCodePreview, {
@@ -46,7 +54,6 @@ describe('MobileCodePreview', () => {
         code: 'mycode',
       },
       provide: {
-        references,
         isTargetIDE: false,
         store,
       },
@@ -93,7 +100,6 @@ describe('MobileCodePreview', () => {
           code: 'mycode',
         },
         provide: {
-          references,
           isTargetIDE: false,
           store,
         },
@@ -129,7 +135,7 @@ describe('MobileCodePreview', () => {
       expect(modal.props()).toHaveProperty('visible', true);
       expect(modal.contains('img')).toBe(true);
 
-      expect(modal.find('.runtime-preview-label').text()).toBe('Preview');
+      expect(modal.find('.runtime-preview-label').text()).toBe('tutorials.preview.title');
     });
   });
 
@@ -137,7 +143,7 @@ describe('MobileCodePreview', () => {
     const mountWithIDETarget = isTargetIDE => (
       shallowMount(MobileCodePreview, {
         propsData: { code: 'mycode' },
-        provide: { references, isTargetIDE, store },
+        provide: { isTargetIDE, store },
         slots: defaultSlots,
       })
     );

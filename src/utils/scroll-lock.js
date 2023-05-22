@@ -11,6 +11,8 @@
 let isLocked = false;
 let initialClientY = -1;
 let scrolledClientY = 0;
+// Adds this attribute to an inner scrollable element to allow it to scroll
+export const SCROLL_LOCK_DISABLE_ATTR = 'data-scroll-lock-disable';
 
 const isIosDevice = () => window.navigator
   && window.navigator.platform
@@ -63,8 +65,10 @@ function simpleLock() {
 function advancedUnlock(targetElement) {
   /* eslint-disable no-param-reassign */
   // remove the touch listeners on the target
-  targetElement.ontouchstart = null;
-  targetElement.ontouchmove = null;
+  if (targetElement) {
+    targetElement.ontouchstart = null;
+    targetElement.ontouchmove = null;
+  }
   // remove the body event listener
   document.removeEventListener('touchmove', preventDefault);
 }
@@ -77,12 +81,14 @@ function advancedUnlock(targetElement) {
  */
 function handleScroll(event, targetElement) {
   const clientY = event.targetTouches[0].clientY - initialClientY;
-  if (targetElement.scrollTop === 0 && clientY > 0) {
+  // check if any parent has a scroll-lock disable, if not use the targetElement
+  const target = event.target.closest(`[${SCROLL_LOCK_DISABLE_ATTR}]`) || targetElement;
+  if (target.scrollTop === 0 && clientY > 0) {
     // element is at the top of its scroll.
     return preventDefault(event);
   }
 
-  if (isTargetElementTotallyScrolled(targetElement) && clientY < 0) {
+  if (isTargetElementTotallyScrolled(target) && clientY < 0) {
     // element is at the bottom of its scroll.
     return preventDefault(event);
   }
@@ -97,6 +103,9 @@ function handleScroll(event, targetElement) {
  * @param targetElement
  */
 function advancedLock(targetElement) {
+  // add a scroll listener to the body
+  document.addEventListener('touchmove', preventDefault, { passive: false });
+  if (!targetElement) return;
   /* eslint-disable no-param-reassign */
   // add inline listeners to the target, for easier removal later.
   targetElement.ontouchstart = (event) => {
@@ -111,8 +120,6 @@ function advancedLock(targetElement) {
       handleScroll(event, targetElement);
     }
   };
-  // add a scroll listener to the body
-  document.addEventListener('touchmove', preventDefault, { passive: false });
 }
 
 /**
@@ -146,8 +153,11 @@ export default {
       // revert the old scroll position
       advancedUnlock(targetElement);
     } else {
-      // remove all inline styles
-      document.body.style.cssText = '';
+      // remove all inline styles added by the `simpleLock` function
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('top');
+      document.body.style.removeProperty('position');
+      document.body.style.removeProperty('width');
 
       // restore scrolled Y position after resetting the position property
       window.scrollTo(0, Math.abs(scrolledClientY));

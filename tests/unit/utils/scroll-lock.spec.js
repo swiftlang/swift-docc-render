@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import scrollLock from 'docc-render/utils/scroll-lock';
+import scrollLock, { SCROLL_LOCK_DISABLE_ATTR } from 'docc-render/utils/scroll-lock';
 import { createEvent, parseHTMLString } from '../../../test-utils';
 
 const { platform } = window.navigator;
@@ -56,6 +56,9 @@ describe('scroll-lock', () => {
         preventDefault,
         stopPropagation,
         touches: [1],
+        target: {
+          closest: jest.fn(),
+        },
       };
       // init the scroll lock
       scrollLock.lockScroll(container);
@@ -67,6 +70,8 @@ describe('scroll-lock', () => {
       container.ontouchmove(touchMoveEvent);
       expect(preventDefault).toHaveBeenCalledTimes(1);
       expect(stopPropagation).toHaveBeenCalledTimes(0);
+      expect(touchMoveEvent.target.closest).toHaveBeenCalledTimes(1);
+      expect(touchMoveEvent.target.closest).toHaveBeenCalledWith(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
 
       // simulate scroll middle
       // simulate we have enough to scroll
@@ -80,6 +85,21 @@ describe('scroll-lock', () => {
       container.ontouchmove({ ...touchMoveEvent, targetTouches: [{ clientY: -10 }] });
       expect(preventDefault).toHaveBeenCalledTimes(2);
       expect(stopPropagation).toHaveBeenCalledTimes(1);
+
+      // simulate there is a scroll-lock-disable target
+      container.ontouchmove({
+        ...touchMoveEvent,
+        targetTouches: [{ clientY: -10 }],
+        target: {
+          closest: jest.fn().mockReturnValue({
+            ...container,
+            clientHeight: 150,
+          }),
+        },
+      });
+      // assert scrolling was allowed
+      expect(preventDefault).toHaveBeenCalledTimes(2);
+      expect(stopPropagation).toHaveBeenCalledTimes(2);
 
       scrollLock.unlockScroll(container);
       expect(container.ontouchmove).toBeFalsy();
@@ -110,6 +130,17 @@ describe('scroll-lock', () => {
         touches: [1],
       }));
       expect(preventDefault).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not throw, if not passed an element', () => {
+      expect(() => scrollLock.lockScroll(null)).not.toThrow();
+      // assert body scroll is getting prevented when swiping up/down
+      document.dispatchEvent(createEvent('touchmove', {
+        preventDefault,
+        touches: [1],
+      }));
+      expect(preventDefault).toHaveBeenCalledTimes(1);
+      expect(() => scrollLock.unlockScroll(null)).not.toThrow();
     });
 
     it('attaches only once event listeners', () => {

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -14,11 +14,11 @@ import PropertyTable
 import Badge from 'docc-render/components/Badge.vue';
 
 const {
-  OnThisPageSection,
   PossiblyChangedType,
   ParameterAttributes,
   ParametersTable,
   WordBreak,
+  LinkableHeading,
 } = PropertyTable.components;
 
 const { AttributeKind } = PropertyTable.components.ParameterAttributes.constants;
@@ -114,24 +114,17 @@ describe('PropertyTable', () => {
 
   function mountComponent(options) {
     return mount(PropertyTable, {
-      stubs: ['ContentNode'],
+      stubs: ['ContentNode', 'router-link'],
       propsData,
       provide,
       ...options,
     });
   }
 
-  it('renders an `OnThisPageSection`', () => {
-    const section = mountComponent().find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.props('anchor')).toBe('title');
-    expect(section.props('title')).toBe(propsData.title);
-  });
-
-  it('renders an h2 title', () => {
-    const h2 = mountComponent().find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe(propsData.title);
+  it('renders an h2 section title', () => {
+    const sectionTitle = mountComponent().find(LinkableHeading);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('displays the property information', () => {
@@ -190,10 +183,10 @@ describe('PropertyTable', () => {
     const wrapper = mountComponent();
     expect(
       wrapper
-        .findAll('.property-required')
+        .findAll('.property-text')
         .at(0)
         .text(),
-    ).toBe('(Required)');
+    ).toBe('formats.parenthesis required');
   });
 
   describe('displays the `type` in proper place', () => {

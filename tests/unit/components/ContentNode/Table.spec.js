@@ -21,4 +21,15 @@ describe('Table', () => {
     expect(table.exists()).toBe(true);
     expect(table.contains('tbody tr td')).toBe(true);
   });
+
+  it('renders a table with `spanned` class', () => {
+    const wrapper = shallowMount(Table, {
+      slots: { default: '<tbody><tr><td>foo</td></tr></tbody>' },
+      propsData: {
+        spanned: true,
+      },
+    });
+    const table = wrapper.find('table');
+    expect(table.classes('spanned')).toBe(true);
+  });
 });

@@ -16,6 +16,7 @@
       :chapters="hierarchy.modules"
       :topic="tutorialTitle || ''"
       :rootReference="hierarchy.reference"
+      :identifierUrl="identifierUrl"
     />
     <main id="main" role="main" tabindex="0">
       <Section
@@ -33,10 +34,10 @@
 import { PortalTarget } from 'portal-vue';
 
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
-import pageTitle from 'docc-render/mixins/pageTitle';
+import metadata from 'theme/mixins/metadata.js';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
-import NavigationBar from './Tutorial/NavigationBar.vue';
+import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
 import Assessments from './Tutorial/Assessments.vue';
 import SectionList from './Tutorial/SectionList.vue';
 import CallToAction from './Tutorial/CallToAction.vue';
@@ -74,7 +75,7 @@ const TutorialSection = {
 
 export default {
   name: 'Tutorial',
-  mixins: [pageTitle, isClientMobile],
+  mixins: [metadata, isClientMobile],
   components: {
     NavigationBar,
     Section: TutorialSection,
@@ -99,6 +100,9 @@ export default {
         undefined
       );
     },
+    pageDescription: ({ heroSection, extractFirstParagraphText }) => (
+      heroSection ? extractFirstParagraphText(heroSection.content) : null
+    ),
   },
   props: {
     sections: {
@@ -117,6 +121,10 @@ export default {
       type: Object,
       required: true,
     },
+    identifierUrl: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
     handleBreakpointChange(breakpoint) {
@@ -128,6 +136,7 @@ export default {
   },
   created() {
     this.store.reset();
+    this.store.setReferences(this.references);
   },
   mounted() {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
@@ -135,7 +144,6 @@ export default {
   },
   provide() {
     return {
-      references: this.references,
       isClientMobile: this.isClientMobile,
     };
   },

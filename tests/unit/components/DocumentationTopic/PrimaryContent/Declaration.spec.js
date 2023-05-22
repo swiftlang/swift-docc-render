@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -10,12 +10,15 @@
 
 import { shallowMount } from '@vue/test-utils';
 import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
-import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
-import DeclarationDiff from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
+import DeclarationToken
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
+import DeclarationDiff
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
+import DeclarationSourceLink
+  from '@/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
 
 const {
   ConditionalConstraints,
-  OnThisPageSection,
   DeclarationGroup,
 } = Declaration.components;
 
@@ -65,22 +68,8 @@ describe('Declaration', () => {
     wrapper = shallowMount(Declaration, { propsData, provide: provideFactory() });
   });
 
-  it('renders an `OnThisPageSection`', () => {
-    expect(wrapper.is('.declaration')).toBe(true);
-
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.classes('declaration')).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: 'declaration',
-      title: 'Declaration',
-    });
-  });
-
-  it('renders an h2 title', () => {
-    const h2 = wrapper.find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe('Declaration');
+  it('renders an `section.declaration`', () => {
+    expect(wrapper.is('section.declaration')).toBe(true);
   });
 
   it('renders 1 `DeclarationGroup` and 0 labels without multiple declarations', () => {
@@ -93,6 +82,20 @@ describe('Declaration', () => {
     const group = wrapper.find(DeclarationGroup);
     expect(group.exists()).toBe(true);
     expect(group.props('declaration')).toEqual(propsData.declarations[0]);
+  });
+
+  it('renders a DeclarationSourceLink if `source` is available', () => {
+    expect(wrapper.find(DeclarationSourceLink).exists()).toBe(false);
+    wrapper.setProps({
+      source: {
+        url: 'foo.com',
+        fileName: 'Foo.swift',
+      },
+    });
+    expect(wrapper.find(DeclarationSourceLink).props()).toEqual({
+      url: 'foo.com',
+      fileName: 'Foo.swift',
+    });
   });
 
   it('renders a `ConditionalConstraints` for availability with `conformance` data', () => {

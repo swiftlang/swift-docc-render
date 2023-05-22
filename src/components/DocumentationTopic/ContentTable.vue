@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,24 +9,20 @@
 -->
 
 <template>
-  <OnThisPageSection
-    class="contenttable alt-light"
-    :anchor="anchor"
-    :title="title"
-  >
+  <section class="contenttable alt-light">
     <div class="container">
-      <h2 class="title">{{title}}</h2>
+      <LinkableHeading class="title" :anchor="anchor">{{ title }}</LinkableHeading>
       <slot />
     </div>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import OnThisPageSection from './OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 export default {
   name: 'ContentTable',
-  components: { OnThisPageSection },
+  components: { LinkableHeading },
   props: {
     anchor: {
       type: String,
@@ -43,16 +39,16 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.contenttable {
-  background: var(--color-content-table-content-color);
-  padding: $section-spacing-single-side 0;
-}
-
 .container {
-  @include breakpoint-content;
+  @include dynamic-content-container;
+  padding-bottom: $section-spacing-single-side;
 }
 
 .title {
   @include font-styles(heading-2-reduced);
+  padding-top: $section-spacing-single-side;
+  border-top-color: var(--color-grid);
+  border-top-style: solid;
+  border-top-width: var(--content-table-title-border-width, 1px);
 }
 </style>

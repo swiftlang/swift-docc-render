@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,25 +14,30 @@
     :class="{ 'single-line': content[0].code.length === 1 }"
   >
     <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-    <pre><div><div
+    <pre><CodeBlock><div
       v-for="(content, index) in this.content"
       :class="['container-general',{ collapsible: content.collapsible === true },
     { collapsed: content.collapsible === true && collapsed }]"
       :key="index"
-    ><code
+    ><div
       v-for="(line, index) in content.code"
       class="code-line-container"
       :key="index"
     >
       <div v-show="showLineNumbers" class="code-number" />
       <div class="code-line">{{ line }}</div>
-    </code></div></div></pre>
+    </div></div></CodeBlock></pre>
   </div>
 </template>
 
 <script>
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
+
 export default {
   name: 'CollapsibleCodeListing',
+  components: {
+    CodeBlock,
+  },
   props: {
     collapsed: {
       type: Boolean,
@@ -53,11 +58,6 @@ export default {
 <style scoped lang="scss">
 @import "docc-render/styles/_core.scss";
 
-code {
-  // ensure the code is at least as wide as the parent
-  width: 100%;
-}
-
 .container-general {
   display: flex;
   flex-flow: row wrap;
@@ -67,6 +67,8 @@ code {
 }
 
 .code-line-container {
+  // ensure the code is at least as wide as the parent
+  width: 100%;
   align-items: center;
   display: flex;
   border-left: 4px solid transparent;
@@ -115,7 +117,7 @@ pre {
   font-size: 15px;
 
   &.single-line {
-    border-radius: $big-border-radius;
+    border-radius: $large-border-radius;
   }
 }
 

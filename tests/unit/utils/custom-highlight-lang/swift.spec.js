@@ -18,6 +18,10 @@ describe('swift', () => {
     language = swift(hljs);
   });
 
+  it('recognizes the `distributed` keyword', () => {
+    expect(language.keywords.keyword.includes('distributed')).toBe(true);
+  });
+
   describe('class mode', () => {
     let mode;
 
@@ -33,7 +37,7 @@ describe('swift', () => {
 
     it('does have a new `begin` attribute', () => {
       expect(mode.begin)
-        .toEqual(/(struct|protocol|extension|enum|actor|class\b(?!.*\bfunc\b))/);
+        .toEqual(/\b(struct|protocol|extension|enum|actor|class\b(?!.*\bfunc))\b/);
     });
   });
 });

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -19,8 +19,6 @@
     </p>
     <Source
       :tokens="declaration.tokens"
-      :simple-indent="isSwift && !isCocoaApi"
-      :smart-indent="isCocoaApi"
       :language="interfaceLanguage"
     />
   </div>
@@ -46,6 +44,9 @@ export default {
     },
     interfaceLanguage: {
       default: () => Language.swift.key.api,
+    },
+    symbolKind: {
+      default: () => undefined,
     },
   },
   props: {
@@ -79,7 +80,6 @@ export default {
       return this.declaration.platforms.join(', ');
     },
     isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
-    isCocoaApi: ({ languages }) => languages.has(Language.objectiveC.key.api),
   },
 };
 </script>
@@ -91,7 +91,7 @@ export default {
   @include font-styles(body-reduced);
 
   margin-bottom: 0.45rem;
-  margin-top: $stacked-margin-xlarge;
+  margin-top: var(--spacing-stacked-margin-xlarge);
 
   .changed & {
     padding-left: $code-source-spacing;
@@ -103,7 +103,7 @@ export default {
 }
 
 .source {
-  margin: $code-listing-with-numbers-padding;
+  margin: var(--declaration-code-listing-margin);
 
   .platforms + & {
     margin: 0;
@@ -111,13 +111,16 @@ export default {
 }
 
 @include changedStyles {
+  &.declaration-group {
+    background: var(--background, var(--color-code-background));
+  }
   .source {
     background: none;
     border: none;
     margin-top: 0;
     margin-bottom: 0;
-    margin-right: $change-icon-width + $change-highlight-horizontal-space-rem;
-    padding-right: 0;
+    margin-left: $change-icon-occupied-space;
+    padding-left: 0;
   }
 }
 </style>

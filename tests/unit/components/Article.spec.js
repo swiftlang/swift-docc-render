@@ -99,6 +99,7 @@ const propsData = {
     assessmentsSection,
     ctaSection,
   ],
+  identifierUrl: 'foo',
 };
 
 describe('Article', () => {
@@ -117,12 +118,15 @@ describe('Article', () => {
   });
 
   it('provides a page title using the hero section title', () => {
-    expect(wrapper.vm.pageTitle).toBe(
-      'Swift Property Wrappers — Building iOS Apps Tutorials',
-    );
-    expect(document.title).toBe(
-      'Swift Property Wrappers — Building iOS Apps Tutorials | Documentation',
-    );
+    const titleText = `${heroSection.title} — ${propsData.metadata.category} Tutorials | Documentation`;
+
+    expect(document.title).toBe(titleText);
+  });
+
+  it('provides a page description based on the hero content text', () => {
+    const { text: heroContentText } = heroSection.content[0].inlineContent[0];
+
+    expect(document.querySelector('meta[name="description"]').content).toBe(heroContentText);
   });
 
   it('renders a `NavigationBar`', () => {
@@ -133,6 +137,7 @@ describe('Article', () => {
       technology: propsData.metadata.category,
       topic: heroSection.title,
       rootReference: hierarchy.reference,
+      identifierUrl: propsData.identifierUrl,
     });
   });
 

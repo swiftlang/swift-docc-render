@@ -13,10 +13,10 @@ import RestResponses from 'docc-render/components/DocumentationTopic/PrimaryCont
 import { ChangeTypes } from 'docc-render/constants/Changes';
 
 const {
-  OnThisPageSection,
   PossiblyChangedType,
   PossiblyChangedMimetype,
   ParametersTable,
+  LinkableHeading,
 } = RestResponses.components;
 
 describe('RestResponses', () => {
@@ -56,7 +56,7 @@ describe('RestResponses', () => {
 
   function mountComponent(options) {
     const wrapper = mount(RestResponses, {
-      stubs: ['ContentNode'],
+      stubs: ['ContentNode', 'router-link'],
       propsData,
       provide,
       ...options,
@@ -64,17 +64,10 @@ describe('RestResponses', () => {
     return wrapper;
   }
 
-  it('renders an `OnThisPageSection`', () => {
-    const section = mountComponent().find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.props('anchor')).toBe('title');
-    expect(section.props('title')).toBe(propsData.title);
-  });
-
-  it('renders an h2 title', () => {
-    const h2 = mountComponent().find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe(propsData.title);
+  it('renders an h2 section title', () => {
+    const sectionTitle = mountComponent().find(LinkableHeading);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('renders a `ParametersTable`', () => {

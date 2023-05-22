@@ -36,11 +36,10 @@
 
 <script>
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
-
-import pageTitle from 'docc-render/mixins/pageTitle';
+import Nav from 'theme/components/TutorialsOverview/Nav.vue';
+import metadata from 'theme/mixins/metadata.js';
 import Hero from './TutorialsOverview/Hero.vue';
 import LearningPath from './TutorialsOverview/LearningPath.vue';
-import Nav from './TutorialsOverview/Nav.vue';
 
 const SectionKind = {
   hero: 'hero',
@@ -55,7 +54,7 @@ export default {
     LearningPath,
     Nav,
   },
-  mixins: [pageTitle],
+  mixins: [metadata],
   constants: { SectionKind },
   inject: {
     isTargetIDE: { default: false },
@@ -78,7 +77,10 @@ export default {
     },
   },
   computed: {
-    pageTitle: ({ title }) => [title, 'Tutorials'].join(' '),
+    pageTitle: ({ title }) => [title, 'Tutorials'].filter(Boolean).join(' '),
+    pageDescription: ({ heroSection, extractFirstParagraphText }) => (
+      heroSection ? extractFirstParagraphText(heroSection.content) : null
+    ),
     partitionedSections: ({ sections }) => sections.reduce(([heroes, others], section) => (
       section.kind === SectionKind.hero ? (
         [heroes.concat(section), others]
@@ -94,12 +96,12 @@ export default {
   },
   provide() {
     return {
-      references: this.references,
       store: this.store,
     };
   },
   created() {
     this.store.reset();
+    this.store.setReferences(this.references);
   },
 };
 </script>
@@ -119,7 +121,8 @@ export default {
       padding-top: $nav-height-small;
     }
 
-    background: var(--color-tutorials-overview-background);
+    background: var(--color-tutorials-overview-fill-secondary,
+      var(--color-tutorials-overview-background));
   }
 
   // HACK - remove the gradient for firefox only

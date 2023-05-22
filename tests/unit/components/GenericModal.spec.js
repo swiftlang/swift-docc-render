@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -109,7 +109,7 @@ describe('GenericModal', () => {
     expect(close.exists()).toBe(true);
     // assert props
     expect(close.is('button')).toBe(true);
-    expect(close.attributes()).toHaveProperty('aria-label', 'Close');
+    expect(close.attributes()).toHaveProperty('aria-label', 'verbs.close');
     // assert clicking closes modal
     close.trigger('click');
     expect(wrapper.emitted(VisibleChangeEvent)).toEqual([[false]]);
@@ -193,10 +193,12 @@ describe('GenericModal', () => {
         propsData: {
           theme: 'code',
           codeBackgroundColorOverride: 'pink',
+          backdropBackgroundColorOverride: 'red',
         },
       });
       // cannot assert DOM, because `jsdom` does not support custom properties in this version.
-      expect(wrapper.vm.modalColors).toHaveProperty('--background', 'pink');
+      expect(wrapper.vm.modalColors).toHaveProperty('--code-background', 'pink');
+      expect(wrapper.vm.modalColors).toHaveProperty('--backdrop-background', 'red');
     });
   });
 
@@ -225,6 +227,37 @@ describe('GenericModal', () => {
     document.dispatchEvent(createEvent('Escape'));
     // assert
     expect(wrapper.emitted(VisibleChangeEvent)).toBeTruthy();
+  });
+
+  it('selects content when cmd+a or ctrl+a are typed', () => {
+    const selectAllChildren = jest.fn();
+    const preventDefault = jest.fn();
+    window.getSelection = () => ({
+      selectAllChildren,
+    });
+    const wrapper = createWrapper({ propsData: { visible: true } });
+    const type = (options) => {
+      const event = createBaseEvent('keydown', options);
+      event.preventDefault = preventDefault;
+      document.dispatchEvent(event);
+    };
+    // type cmd+a
+    type({ key: 'a', metaKey: true });
+    // assert that content is selected
+    expect(selectAllChildren).toHaveBeenCalledWith(wrapper.vm.$refs.content);
+    expect(preventDefault).toHaveBeenCalled();
+    jest.clearAllMocks();
+    // type a
+    type({ key: 'a' });
+    // assert that content is not selected
+    expect(selectAllChildren).not.toHaveBeenCalledWith(wrapper.vm.$refs.content);
+    expect(preventDefault).not.toHaveBeenCalled();
+    jest.clearAllMocks();
+    // type ctrl+a
+    type({ key: 'a', ctrlKey: true });
+    // assert that content is selected
+    expect(selectAllChildren).toHaveBeenCalledWith(wrapper.vm.$refs.content);
+    expect(preventDefault).toHaveBeenCalled();
   });
 
   it('locks scrolling on `show`, and unlocks scrolling on `hide`', async () => {

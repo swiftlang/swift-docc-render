@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -36,7 +36,7 @@
         @click.native="submit"
         :disabled="selectedIndex === null || showNextQuestion"
       >
-       Submit
+       {{ $t('tutorials.submit') }}
       </ButtonLink>
       <ButtonLink
         v-if="isLast"
@@ -44,7 +44,7 @@
         @click.native="seeResults"
         :disabled="!showNextQuestion"
       >
-        Next
+        {{ $t('tutorials.next') }}
       </ButtonLink>
       <ButtonLink
         v-else
@@ -52,7 +52,7 @@
         :disabled="!showNextQuestion"
         @click.native="advance"
       >
-        Next Question
+        {{ $t('tutorials.assessment.next-question') }}
       </ButtonLink>
     </div>
   </div>
@@ -114,10 +114,17 @@ export default {
         this.userChoices[correctChoice].checked
       ));
     },
-    ariaLiveText: ({ checkedIndex, choices }) => {
-      if (checkedIndex === null) return '';
-      const { isCorrect } = choices[checkedIndex];
-      return `Answer number ${checkedIndex + 1} is ${isCorrect ? 'correct' : 'incorrect'}`;
+    ariaLiveText() {
+      if (this.checkedIndex === null) return '';
+      const { isCorrect } = this.choices[this.checkedIndex];
+      return `${
+          this.$t('tutorials.assessment.answer-number-is', { index: this.checkedIndex + 1 })
+        } ${
+          isCorrect
+            ? this.$t('tutorials.assessment.correct')
+            : this.$t('tutorials.assessment.incorrect')
+        }
+      `;
     },
   },
   methods: {
@@ -270,6 +277,7 @@ input[type="radio"] {
 
 /deep/ .question  > .code-listing {
   padding: unset;
+  border-radius: 0;
 }
 
 /deep/ pre {

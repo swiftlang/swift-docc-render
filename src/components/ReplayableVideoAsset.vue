@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,18 +13,25 @@
     <VideoAsset
       ref="asset"
       :variants="variants"
-      @ended="onVideoEnd"
-      :showsControls="showsControls"
       :autoplays="autoplays"
+      :showsControls="showsControls"
+      :muted="muted"
+      :posterVariants="posterVariants"
+      :deviceFrame="deviceFrame"
+      @pause="onPause"
+      @playing="onVideoPlaying"
+      @ended="onVideoEnd"
     />
     <a
-      class="replay-button"
+      v-if="!showsControls"
+      class="control-button"
       href="#"
-      :class="{ visible: this.showsReplayButton }"
-      @click.prevent="replay"
+      @click.prevent="togglePlayStatus"
     >
-      Replay
-      <InlineReplayIcon class="replay-icon icon-inline" />
+      {{ text }}
+      <InlineReplayIcon v-if="videoEnded" class="control-icon icon-inline" />
+      <PauseIcon v-else-if="isPlaying" class="control-icon icon-inline"></PauseIcon>
+      <PlayIcon v-else class="control-icon icon-inline" />
     </a>
   </div>
 </template>
@@ -32,10 +39,14 @@
 <script>
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import InlineReplayIcon from 'theme/components/Icons/InlineReplayIcon.vue';
+import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
+import PauseIcon from 'theme/components/Icons/PauseIcon.vue';
 
 export default {
   name: 'ReplayableVideoAsset',
   components: {
+    PauseIcon,
+    PlayIcon,
     InlineReplayIcon,
     VideoAsset,
   },
@@ -52,24 +63,57 @@ export default {
       type: Boolean,
       default: () => true,
     },
+    muted: {
+      type: Boolean,
+      default: true,
+    },
+    posterVariants: {
+      type: Array,
+      default: () => [],
+    },
+    deviceFrame: {
+      type: String,
+      required: false,
+    },
+  },
+  computed: {
+    text() {
+      if (this.videoEnded) return this.$t('video.replay');
+      return this.isPlaying ? this.$t('video.pause') : this.$t('video.play');
+    },
   },
   data() {
     return {
-      showsReplayButton: false,
+      isPlaying: false,
+      videoEnded: false,
     };
   },
   methods: {
-    async replay() {
-      const videoPlayer = this.$refs.asset.$el;
-      if (videoPlayer) {
-        this.showsReplayButton = false;
-        // Start video playback from the beginning.
-        videoPlayer.currentTime = 0;
+    async togglePlayStatus() {
+      const videoPlayer = this.$refs.asset.$refs.video;
+      if (!videoPlayer) return;
+      if (this.isPlaying && !this.videoEnded) {
+        await videoPlayer.pause();
+      } else {
         await videoPlayer.play();
       }
     },
     onVideoEnd() {
-      this.showsReplayButton = true;
+      this.isPlaying = false;
+      this.videoEnded = true;
+    },
+    onVideoPlaying() {
+      const { video } = this.$refs.asset.$refs;
+      this.isPlaying = !video.paused;
+      this.videoEnded = video.ended;
+    },
+    onPause() {
+      const { video } = this.$refs.asset.$refs;
+      // if the video pauses, and we are hiding the controls, show the replay button
+      if (!this.showsControls && this.isPlaying) {
+        this.isPlaying = false;
+      }
+      this.videoEnded = video.ended;
     },
   },
 };
@@ -78,20 +122,15 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.replay-button {
+.video-replay-container .control-button {
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  visibility: hidden;
   margin-top: .5rem;
   -webkit-tap-highlight-color: transparent;
 
-  &.visible {
-    visibility: visible;
-  }
-
-  svg.replay-icon {
+  svg.control-icon {
     height: 12px;
     width: 12px;
     margin-left: .3em;

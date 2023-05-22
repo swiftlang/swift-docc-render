@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,6 +13,7 @@ import {
 } from '@vue/test-utils';
 import Nav from 'docc-render/components/TutorialsOverview/Nav.vue';
 import TutorialsNavigation from 'docc-render/components/TutorialsOverview/TutorialsNavigation.vue';
+import NavMenuItemBase from '@/components/NavMenuItemBase.vue';
 
 const { SectionKind } = Nav.constants;
 const {
@@ -63,11 +64,13 @@ describe('nav', () => {
     expect(title.exists()).toBe(true);
     expect(title.props('to')).toEqual('/tutorials/swiftui?context=foo');
 
-    expect(title.text()).toBe('SwiftUI Tutorials');
+    expect(title.text()).toBe('SwiftUI tutorials.title');
   });
 
   it('renders TutorialsNavigation and passes all sections to it', () => {
-    const navigation = wrapper.find(TutorialsNavigation);
+    const itemBase = wrapper.find(NavMenuItemBase);
+    expect(itemBase.classes()).toContain('in-page-navigation');
+    const navigation = itemBase.find(TutorialsNavigation);
     expect(navigation.props('sections')).toEqual(propsData.sections);
   });
 });

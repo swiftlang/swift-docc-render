@@ -30,7 +30,7 @@ import TopicStore from 'docc-render/stores/TopicStore';
 import Article from 'docc-render/components/Article.vue';
 import Tutorial from 'docc-render/components/Tutorial.vue';
 
-import performanceMetrics from 'docc-render/mixins/performanceMetrics';
+import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 
 const TopicKind = {
@@ -45,7 +45,7 @@ export default {
       default: false,
     },
   },
-  mixins: [performanceMetrics, onPageLoadScrollToFragment],
+  mixins: [communicationBridgeUtils, onPageLoadScrollToFragment],
   data() {
     return {
       topicData: null,
@@ -75,6 +75,10 @@ export default {
     ].join(),
   },
   beforeRouteEnter(to, from, next) {
+    if (to.meta.skipFetchingData) {
+      next(vm => vm.newContentMounted());
+      return;
+    }
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
       vm.topicData = data; // eslint-disable-line no-param-reassign
     })).catch(next);
@@ -93,9 +97,10 @@ export default {
     this.store.reset();
   },
   mounted() {
-    this.$bridge.on('contentUpdate', (data) => {
-      this.topicData = data;
-    });
+    this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
+  },
+  beforeDestroy() {
+    this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
   },
   methods: {
     componentFor(topic) {
@@ -112,6 +117,7 @@ export default {
         metadata,
         references,
         sections,
+        identifier,
       } = topic;
       return {
         [TopicKind.article]: {
@@ -119,12 +125,14 @@ export default {
           metadata,
           references,
           sections,
+          identifierUrl: identifier.url,
         },
         [TopicKind.tutorial]: {
           hierarchy,
           metadata,
           references,
           sections,
+          identifierUrl: identifier.url,
         },
       }[kind];
     },

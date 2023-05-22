@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <SVGIcon viewBox="0 0 14 14">
-    <title>Web Service Endpoint</title>
+  <SVGIcon viewBox="0 0 14 14" themeId="endpoint">
+    <title>{{ $t('icons.web-service-endpoint') }}</title>
     <path d="M4.052 8.737h-1.242l-1.878 5.263h1.15l0.364-1.081h1.939l0.339 1.081h1.193zM2.746 12.012l0.678-2.071 0.653 2.071z"></path>
     <path d="M11.969 8.737h1.093v5.263h-1.093v-5.263z"></path>
     <path d="M9.198 8.737h-2.295v5.263h1.095v-1.892h1.12c0.040 0.003 0.087 0.004 0.134 0.004 0.455 0 0.875-0.146 1.217-0.394l-0.006 0.004c0.296-0.293 0.48-0.699 0.48-1.148 0-0.060-0.003-0.118-0.010-0.176l0.001 0.007c0.003-0.039 0.005-0.085 0.005-0.131 0-0.442-0.183-0.842-0.476-1.128l-0-0c-0.317-0.256-0.724-0.41-1.168-0.41-0.034 0-0.069 0.001-0.102 0.003l0.005-0zM9.628 11.014c-0.15 0.118-0.341 0.188-0.548 0.188-0.020 0-0.040-0.001-0.060-0.002l0.003 0h-1.026v-1.549h1.026c0.017-0.001 0.037-0.002 0.058-0.002 0.206 0 0.396 0.066 0.551 0.178l-0.003-0.002c0.135 0.13 0.219 0.313 0.219 0.515 0 0.025-0.001 0.050-0.004 0.074l0-0.003c0.002 0.020 0.003 0.044 0.003 0.068 0 0.208-0.083 0.396-0.219 0.534l0-0z"></path>

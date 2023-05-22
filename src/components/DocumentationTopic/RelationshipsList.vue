@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -129,7 +129,8 @@ export default {
   list-style: none;
 
   &.column {
-    margin: 0;
+    margin-left: 0;
+    margin-top: 15px;
   }
 
   // The "inline" style displays items on a single line as a
@@ -137,11 +138,11 @@ export default {
   // not be used for a list that contains any items with availability
   // constraints information.
   &.inline {
-    columns: 1;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 0;
+    margin-top: 15px;
+    margin-left: 0;
 
     li:not(:last-child)::after {
       content: ",\00a0"
@@ -150,15 +151,15 @@ export default {
 
   &.changed {
     @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment();
 
     &:after {
       margin-top: $change-coin-y-offset-reduced;
     }
 
-    // ensure that column layout stays a block content
+     // ensure that column layout stays a block content
     &.column {
       display: block;
+      box-sizing: border-box;
     }
   }
 }

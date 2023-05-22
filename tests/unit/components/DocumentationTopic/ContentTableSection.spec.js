@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,9 +9,13 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import ContentTableSection from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
+import ContentTableSection, {
+  TITLE_CLASS_NAME,
+} from 'docc-render/components/DocumentationTopic/ContentTableSection.vue';
 
-const { Column, Row } = ContentTableSection.components;
+const {
+  LinkableHeading,
+} = ContentTableSection.components;
 
 describe('ContentTableSection', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
@@ -25,44 +29,51 @@ describe('ContentTableSection', () => {
     wrapper = shallowMount(ContentTableSection, { propsData, slots });
   });
 
-  it('renders a `Row` with two `Column`s', () => {
-    const row = wrapper.find(Row);
-    expect(row.exists()).toBe(true);
-    expect(row.classes('contenttable-section')).toBe(true);
+  it('renders the title as `h3.title` by default', () => {
+    const div = wrapper.findAll('.section-title').at(0);
 
-    const cols = row.findAll(Column);
-    expect(cols.length).toBe(2);
+    const title = div.find(LinkableHeading);
+    expect(title.exists()).toBe(true);
+    expect(title.props('level')).toBe(3);
+    expect(title.classes()).toContain(TITLE_CLASS_NAME);
+    expect(title.text()).toContain(propsData.title);
   });
 
-  it('renders the title as `h3.title` the first column by default', () => {
-    const col = wrapper.findAll(Column).at(0);
-    expect(col.classes('section-title')).toBe(true);
-    expect(col.exists()).toBe(true);
+  it('does not require a title', () => {
+    wrapper.setProps({
+      title: undefined,
+    });
 
-    const title = col.find('h3');
-    expect(title.exists()).toBe(true);
-    expect(title.classes('title')).toBe(true);
-    expect(title.text()).toBe(propsData.title);
+    const title = wrapper.find(LinkableHeading);
+    expect(title.exists()).toBe(false);
+  });
+
+  it('renders an `id` if `anchor` is provided', () => {
+    const title = wrapper.find(`.${TITLE_CLASS_NAME}`);
+    expect(title.attributes('id')).toBe(undefined);
+    wrapper.setProps({
+      anchor: 'foo-bar',
+    });
+    expect(title.props('anchor')).toBe('foo-bar');
   });
 
   it('renders a slot for a title', () => {
     wrapper = shallowMount(ContentTableSection, {
       propsData,
-      slots: {
-        title: '<div class="title">Title Text</div>',
+      scopedSlots: {
+        title: '<div :class="props.className">Title Text</div>',
       },
     });
-    const col = wrapper.findAll(Column).at(0);
-    const title = col.find('.title');
+    const div = wrapper.find('.section-title');
+    const title = div.find(`.${TITLE_CLASS_NAME}`);
     expect(title.text()).toEqual('Title Text');
   });
 
-  it('renders slot content in the last column', () => {
-    const col = wrapper.findAll(Column).at(1);
-    expect(col.classes('section-content')).toBe(true);
-    expect(col.exists()).toBe(true);
+  it('renders slot content', () => {
+    const div = wrapper.find('.section-content');
+    expect(div.exists()).toBe(true);
 
-    const p = col.find('p');
+    const p = div.find('p');
     expect(p.exists()).toBe(true);
     expect(p.html()).toBe(slots.default);
   });

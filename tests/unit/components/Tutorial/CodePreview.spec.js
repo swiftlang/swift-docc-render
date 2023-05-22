@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -27,53 +27,46 @@ describe('CodePreview', () => {
     preview: 'mypreview',
     isRuntimePreviewVisible: true,
   };
-  const provide = {
-    isTargetIDE: false,
-    references: {
-      [propsData.code]: {
-        content,
-        fileName,
-        highlights,
-        syntax,
-      },
-      [propsData.preview]: {
-        variants: [
-          {
-            size: {
-              width: 600,
-              height: 1200,
-            },
-          },
-        ],
-      },
+
+  const references = {
+    [propsData.code]: {
+      content,
+      fileName,
+      highlights,
+      syntax,
     },
-    store: TopicStore,
+    [propsData.preview]: {
+      variants: [
+        {
+          size: {
+            width: 600,
+            height: 1200,
+          },
+        },
+      ],
+    },
   };
+
+  const referencesWithVariant = variants => ({
+    ...references,
+    [propsData.preview]: {
+      variants,
+    },
+  });
+
+  const provide = topicStore => ({
+    isTargetIDE: false,
+    store: topicStore,
+  });
   const slots = {
     default: '<p>foo</p>',
   };
 
-  const mountWithVariant = variants => (
-    shallowMount(CodePreview, {
-      propsData,
-      provide: {
-        ...provide,
-        references: {
-          ...provide.references,
-          [propsData.preview]: {
-            variants,
-          },
-        },
-      },
-      slots,
-    })
-  );
-
   beforeEach(() => {
-    TopicStore.reset();
+    TopicStore.setReferences(references);
     wrapper = shallowMount(CodePreview, {
       propsData,
-      provide,
+      provide: provide(TopicStore),
       slots,
     });
   });
@@ -96,11 +89,11 @@ describe('CodePreview', () => {
       it('renders the media preview at 1/3 scale', () => {
         TopicStore.updateBreakpoint('large');
         let runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
 
         TopicStore.updateBreakpoint('small');
         runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
       });
     });
 
@@ -108,7 +101,7 @@ describe('CodePreview', () => {
       it('renders the preview at 80% of 1/3 scale', () => {
         TopicStore.updateBreakpoint('medium');
         const runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 160px; height: 352px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
     });
   });
@@ -148,7 +141,13 @@ describe('CodePreview', () => {
       },
     ];
 
-    wrapper = mountWithVariant(variantSizeEmpty);
+    TopicStore.updateBreakpoint('large');
+    TopicStore.setReferences(referencesWithVariant(variantSizeEmpty));
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide: provide(TopicStore),
+      slots,
+    });
 
     let runtimePreview = wrapper.find('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 300px;');
@@ -163,7 +162,12 @@ describe('CodePreview', () => {
       },
     ];
 
-    wrapper = mountWithVariant(variantNoSize);
+    TopicStore.setReferences(referencesWithVariant(variantNoSize));
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide: provide(TopicStore),
+      slots,
+    });
 
     runtimePreview = wrapper.find('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 300px;');
@@ -178,7 +182,12 @@ describe('CodePreview', () => {
       },
     ];
 
-    wrapper = mountWithVariant(variantWithOnlyWidth);
+    TopicStore.setReferences(referencesWithVariant(variantWithOnlyWidth));
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide: provide(TopicStore),
+      slots,
+    });
 
     const runtimePreview = wrapper.find('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 400px;');
@@ -193,11 +202,16 @@ describe('CodePreview', () => {
       },
     ];
 
-    wrapper = mountWithVariant(variantWithOnlyHeight);
+    TopicStore.setReferences(referencesWithVariant(variantWithOnlyHeight));
+    wrapper = shallowMount(CodePreview, {
+      propsData,
+      provide: provide(TopicStore),
+      slots,
+    });
 
     const runtimePreview = wrapper.find('.runtime-preview');
-    // 32px are added from the collapsedPreviewSize's height
-    expect(runtimePreview.attributes('style')).toBe('height: 432px;');
+    // no height is defined at all
+    expect(runtimePreview.attributes('style')).toBeFalsy();
   });
 
   describe('collapsed', () => {
@@ -208,7 +222,7 @@ describe('CodePreview', () => {
           isRuntimePreviewVisible,
           preview: hasRuntimePreview ? propsData.preview : undefined,
         },
-        provide,
+        provide: provide(TopicStore),
         slots,
       })
     );
@@ -243,7 +257,7 @@ describe('CodePreview', () => {
     it('renders the collapsed preview button at proper dimensions', () => {
       wrapper = mountWithPreviewVisible(false);
       const runtimePreview = wrapper.find('.runtime-preview');
-      expect(runtimePreview.attributes('style')).toBe('width: 102px; height: 32px;');
+      expect(runtimePreview.attributes('style')).toBe('width: 102px;');
     });
   });
 
@@ -258,18 +272,23 @@ describe('CodePreview', () => {
         },
       ];
 
-      wrapper = mountWithVariant(variantSmallImage);
+      TopicStore.setReferences(referencesWithVariant(variantSmallImage));
+      wrapper = shallowMount(CodePreview, {
+        propsData,
+        provide: provide(TopicStore),
+        slots,
+      });
     });
 
     describe('in breakpoint other than "medium"', () => {
       it('renders the preview at 1/1.75 scale', () => {
         TopicStore.updateBreakpoint('large');
         let runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
 
         TopicStore.updateBreakpoint('small');
         runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 200px; height: 432px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 200px;');
       });
     });
 
@@ -277,17 +296,18 @@ describe('CodePreview', () => {
       it('renders the preview at 80% of 1/1.75 scale', () => {
         TopicStore.updateBreakpoint('medium');
         const runtimePreview = wrapper.find('.runtime-preview');
-        expect(runtimePreview.attributes('style')).toBe('width: 160px; height: 352px;');
+        expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
     });
   });
 
   describe('with `isTargetIDE`', () => {
     beforeEach(() => {
+      TopicStore.setReferences(references);
       wrapper = shallowMount(CodePreview, {
         propsData,
         provide: {
-          ...provide,
+          ...provide(TopicStore),
           isTargetIDE: true,
         },
         slots,
@@ -307,11 +327,11 @@ describe('CodePreview', () => {
     it('renders the preview with a disabled state', () => {
       const preview = wrapper.find('.runtime-preview');
       expect(preview.classes('disabled')).toBe(true);
-      expect(preview.attributes('style')).toBe('width: 102px; height: 32px;');
+      expect(preview.attributes('style')).toBe('width: 102px;');
 
       const button = preview.find('button');
       expect(button.attributes('disabled')).toBe('disabled');
-      expect(button.attributes('title')).toBe('No preview available for this step.');
+      expect(button.attributes('title')).toBe('tutorials.preview.no-preview-available-step');
 
       expect(wrapper.contains('.preview-hide')).toBe(false);
       expect(wrapper.contains('.preview-show')).toBe(true);

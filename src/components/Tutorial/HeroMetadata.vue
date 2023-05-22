@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,17 +13,29 @@
     <div
       class="item"
       v-if="estimatedTimeInMinutes"
-      :aria-label="`${estimatedTimeInMinutes} minutes estimated time`"
+      :aria-label="`
+        ${$tc(
+          'tutorials.time.minutes.full', estimatedTimeInMinutes, { count: estimatedTimeInMinutes }
+        )}
+        ${$t('tutorials.estimated-time')}
+      `"
     >
       <!-- Accessibility warning: if you remove the label above,
       also remove the aria-hidden="true" values below. -->
       <div class="content" aria-hidden="true">
-        <div class="duration">
-          {{ estimatedTimeInMinutes }}
-          <div class="minutes">min</div>
-        </div>
+        <i18n path="tutorials.time.format" tag="div" class="duration">
+          <template #number>
+            {{ estimatedTimeInMinutes }}
+          </template>
+          <template #minutes>
+            <div class="minutes">{{ $tc(
+              'tutorials.time.minutes.short', estimatedTimeInMinutes
+            ) }}
+            </div>
+          </template>
+        </i18n>
       </div>
-      <div class="bottom" aria-hidden="true">Estimated Time</div>
+      <div class="bottom" aria-hidden="true">{{ $t('tutorials.estimated-time') }}</div>
     </div>
     <div class="item" v-if="projectFilesUrl">
       <DownloadIcon class="item-large-icon icon-inline" />
@@ -32,7 +44,7 @@
           class="content-link project-download"
           :href="projectFilesUrl"
         >
-          Project files
+          {{ $t('tutorials.project-files') }}
           <InlineDownloadIcon class="small-icon icon-inline" />
         </a>
       </div>

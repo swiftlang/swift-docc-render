@@ -12,6 +12,7 @@
   <SVGIcon
     class="article-icon"
     viewBox="0 0 14 14"
+    themeId="article"
   >
     <path d="M8.033 1l3.967 4.015v7.985h-10v-12zM7.615 2h-4.615v10h8v-6.574z"></path>
     <path d="M7 1h1v4h-1z"></path>

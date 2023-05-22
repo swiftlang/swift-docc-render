@@ -16,7 +16,7 @@
 ////
 .changed {
   border: $change-border-stroke-width solid var(--color-changes-modified);
-  border-radius: $big-border-radius;
+  border-radius: $large-border-radius;
   position: relative;
 
   &.has-multiple-lines, .has-multiple-lines & {
@@ -24,9 +24,9 @@
   }
 
   &::after {
-    right: 0;
+    left: $change-coin-x-offset;
     @include coin($modified-svg, $change-icon-width);
-    margin-top: rem($change-coin-y-offset-reduced);
+    margin-top: $change-coin-y-offset-reduced;
     // Workaround for a bug, where -webkit-backdrop-filter not working on iOS when <pre> has `overflow: auto`
     z-index: 2;
 
@@ -63,7 +63,7 @@
   @at-root .link-block &::after,
   &.link-block::after,
   &.relationships-item::after {
-    margin-top: 7px;
+    margin-top: 10px;
   }
 }
 

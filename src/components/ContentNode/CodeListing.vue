@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -23,7 +23,7 @@
     </Filename>
     <div class="container-general">
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-      <pre><code><span
+      <pre><CodeBlock><span
         v-for="(line, index) in syntaxHighlightedLines"
         :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
         :key="index"
@@ -34,7 +34,7 @@
 <span
   class="code-line"
   v-html="line"
-/></span></code></pre>
+/></span></CodeBlock></pre>
     </div>
   </div>
 </template>
@@ -42,13 +42,14 @@
 <script>
 import { escapeHtml } from 'docc-render/utils/strings';
 import Language from 'docc-render/constants/Language';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import { highlightContent, registerHighlightLanguage } from 'docc-render/utils/syntax-highlight';
 
 import CodeListingFilename from './CodeListingFilename.vue';
 
 export default {
   name: 'CodeListing',
-  components: { Filename: CodeListingFilename },
+  components: { Filename: CodeListingFilename, CodeBlock },
   data() {
     return {
       syntaxHighlightedLines: [],
@@ -154,7 +155,8 @@ export default {
 pre {
   padding: $code-listing-with-numbers-padding;
   display: flex;
-  overflow: auto;
+  // set as `unset` to fix a Safari issue, where the scrollbar is hidden until you resize window
+  overflow: unset;
   -webkit-overflow-scrolling: touch;
   white-space: pre;
   word-wrap: normal;
@@ -185,12 +187,19 @@ code {
 .code-listing {
   flex-direction: column;
   min-height: 100%;
-  border-radius: $border-radius;
-  overflow: auto;
+  border-radius: var(--code-border-radius, $border-radius);
+  overflow: hidden;
+  // we need to establish a new stacking context to resolve a Safari bug where
+  // the scrollbar is not clipped by this element depending on its border-radius
+  @include new-stacking-context;
 
   &.single-line {
-    border-radius: $big-border-radius;
+    border-radius: $large-border-radius;
   }
+}
+
+.container-general {
+  overflow: auto;
 }
 
 .container-general,

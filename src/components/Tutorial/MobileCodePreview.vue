@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -43,7 +43,7 @@
       :visible.sync="previewIsVisible"
     >
       <div class="runtime-preview-modal-content">
-        <span class="runtime-preview-label">Preview</span>
+        <span class="runtime-preview-label">{{ $tc('tutorials.preview.title', 1) }}</span>
         <slot />
       </div>
     </GenericModal>
@@ -54,17 +54,15 @@
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import MobileCodeListing from 'docc-render/components/ContentNode/MobileCodeListing.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import MobileCodePreviewToggle from './MobileCodePreviewToggle.vue';
 import BackgroundTheme from './BackgroundTheme.vue';
 import CodeTheme from './CodeTheme.vue';
 
 export default {
   name: 'MobileCodePreview',
-  inject: [
-    'references',
-    'isTargetIDE',
-    'store',
-  ],
+  inject: ['isTargetIDE'],
+  mixins: [referencesProvider],
   components: {
     GenericModal,
     CodeListing,
@@ -132,7 +130,6 @@ $-preview-padding: 60px;
   /deep/ img:not(.file-icon) {
     border-radius: $border-radius;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
-    min-height: 320px;
     max-height: 80vh;
     width: auto;
     display: block;

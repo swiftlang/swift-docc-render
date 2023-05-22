@@ -21,6 +21,21 @@ describe('Caption', () => {
     expect(wrapper.text()).toMatch(/Figure 1\sBlah/);
   });
 
+  it('renders a <figcaption> with slot content only', () => {
+    const slots = { default: '<p>Blah</p>' };
+    const wrapper = shallowMount(Caption, { slots });
+
+    expect(wrapper.is('caption')).toBe(true);
+    expect(wrapper.text()).toBe('Blah');
+    expect(wrapper.text()).not.toBe('\u00a0Blah');
+  });
+
+  it('renders a <figcaption> centered', () => {
+    const slots = { default: '<p>Blah</p>' };
+    const wrapper = shallowMount(Caption, { slots, propsData: { centered: true } });
+    expect(wrapper.classes()).toContain('centered');
+  });
+
   it('renders a <figcaption> if tag is `figcaption`', () => {
     const propsData = { title: 'Figure 1', tag: 'figcaption' };
     const wrapper = shallowMount(Caption, { propsData });
