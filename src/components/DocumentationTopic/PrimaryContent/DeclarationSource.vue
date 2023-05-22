@@ -196,7 +196,7 @@ export default {
   async mounted() {
     if (this.language === Language.objectiveC.key.api) {
       await this.$nextTick();
-      indentDeclaration(this.$refs.code, this.language);
+      indentDeclaration(this.$refs.code.$el, this.language);
     }
     if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
   },
