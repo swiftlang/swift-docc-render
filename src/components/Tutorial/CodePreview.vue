@@ -12,6 +12,7 @@
   <div :class="['code-preview', { ide: isTargetIDE }]">
     <CodeTheme>
       <CodeListing v-if="code" v-bind="codeProps" showLineNumbers />
+      <CodeListing v-if="lastCode" v-bind="lastCodeProps" showLineNumbers isLastCodeListing />
     </CodeTheme>
     <div
       class="runtime-preview"
@@ -89,6 +90,10 @@ export default {
       type: String,
       required: true,
     },
+    lastCode: {
+      type: String,
+      required: false,
+    },
     preview: {
       type: String,
       required: false,
@@ -156,6 +161,11 @@ export default {
     },
     codeProps() {
       return this.references[this.code];
+    },
+    lastCodeProps() {
+      const ref = this.references[this.lastCode];
+      ref.deleteHighlights = this.codeProps.deleteHighlights;
+      return ref;
     },
     runtimePreviewClasses() {
       return {

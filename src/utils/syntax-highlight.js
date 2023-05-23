@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -192,7 +192,7 @@ function duplicateMultilineNode(element) {
 
   // wrap each new line with the current element's class
   const result = getLines(element.innerHTML)
-    .reduce((all, lineText) => `${all}<span class="${className}">${lineText || '\n\n'}</span>\n`, '');
+    .reduce((all, lineText) => `${all}<span class="${className}">${lineText || ''}</span>\n`, '');
 
   // return a list of newly wrapped HTML elements
   return htmlToElements(result.trim());
