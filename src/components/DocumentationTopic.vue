@@ -146,6 +146,7 @@
 import Language from 'docc-render/constants/Language';
 import metadata from 'theme/mixins/metadata.js';
 import { buildUrl } from 'docc-render/utils/url-helper';
+import { normalizeRelativePath } from 'docc-render/utils/assets';
 
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
@@ -379,14 +380,13 @@ export default {
     };
   },
   computed: {
-    normalizedSwiftPath: ({ normalizePath, swiftPath }) => (normalizePath(swiftPath)),
+    normalizedSwiftPath: ({ swiftPath }) => (normalizeRelativePath(swiftPath)),
     normalizedObjcPath: ({
-      normalizePath,
       objcPath,
       swiftPath,
     }) => (
       // do not append language query parameter if no swiftPath exists
-      normalizePath((objcPath && swiftPath) ? buildUrl(objcPath, {
+      normalizeRelativePath((objcPath && swiftPath) ? buildUrl(objcPath, {
         language: Language.objectiveC.key.url,
       }) : objcPath)
     ),
@@ -514,12 +514,6 @@ export default {
     },
   },
   methods: {
-    normalizePath(path) {
-      // Sometimes `paths` data from `variants` are prefixed with a leading
-      // slash and sometimes they aren't
-      if (!path) return path;
-      return path.startsWith('/') ? path : `/${path}`;
-    },
     extractProps(json) {
       const {
         abstract,
@@ -615,7 +609,7 @@ export default {
 
       this.$nextTick().then(() => {
         this.$router.replace({
-          path: this.normalizePath(this.objcPath),
+          path: normalizeRelativePath(this.objcPath),
           query: {
             ...query,
             language: Language.objectiveC.key.url,
