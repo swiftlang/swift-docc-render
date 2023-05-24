@@ -55,9 +55,8 @@ describe('CodeListing', () => {
     expect(listing.attributes('data-syntax')).toBe('swift');
 
     const codeLineContainer = listing.find('span.code-line-container');
-    const codeNumber = codeLineContainer.find('.code-number');
-    // Code Number content should be empty to not get copied during user select
-    expect(codeNumber.text()).toBe('');
+    // Code Number content should not be rendered, if not needed
+    expect(codeLineContainer.find('.code-number').exists()).toBe(false);
 
     const codeLine = codeLineContainer.find('.code-line');
     expect(codeLine.text()).toBe('hello');
@@ -88,7 +87,6 @@ describe('CodeListing', () => {
       const shouldBeHighlighted = highlights.map(h => h.line).includes(index + 1);
 
       const codeNumber = codeLineContainer.find('.code-number');
-      // expect(codeNumber.text()).toBe(`${index + 1}`);
 
       expect(codeNumber.attributes('data-line-number')).toBe(`${index + 1}`);
 
