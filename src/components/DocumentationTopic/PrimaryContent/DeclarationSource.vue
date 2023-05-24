@@ -192,7 +192,7 @@ export default {
       };
     },
     handleWindowResize() {
-      if (displaysMultipleLines(this.$refs.declarationGroup)) this.displaysMultipleLines = true;
+      this.displaysMultipleLines = displaysMultipleLines(this.$refs.declarationGroup);
     },
   },
   async mounted() {
