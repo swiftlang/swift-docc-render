@@ -24,7 +24,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .OnThisPageStickyContainer {
-  $top: $nav-height + rem(10px);
+  $top: $nav-height + rem(13px);
   margin-top: $contenttable-spacing-single-side;
   position: sticky;
   top: $top;

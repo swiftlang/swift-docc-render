@@ -192,8 +192,8 @@ describe('DeclarationSource', () => {
     await flushPromises();
     expect(indentDeclaration).toHaveBeenCalledTimes(1);
     expect(indentDeclaration)
-      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm, Language.objectiveC.key.api);
-    expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
+      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
+    expect(callStack).toEqual(['indentDeclaration', 'hasMultipleLines']);
   });
 });
 
@@ -954,6 +954,162 @@ func foo(bar: @escaping () -> ()) -> Int`,
     expect(getText(tokenComponents2)).toBe(
 `func qux(
     @StringBuilder a: () -> String,
+    b: Int
+)`,
+    );
+  });
+
+  it('indents params properly for functions prefixed with attributes which take arguments', () => {
+    const tokens = [
+      {
+        kind: TokenKind.attribute,
+        text: '@objc',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(quxA:B:) ',
+      },
+      {
+        kind: TokenKind.keyword,
+        text: 'func',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.identifier,
+        text: 'quxqux',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'a',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'b',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ') -> ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+    ];
+
+    // Before:
+    // @objc(quxA:B:) func quxqux(a: Int, b: Int) -> Int
+    //
+    // After:
+    // @objc(quxA:B:)
+    // func quxqux(
+    //     a: Int,
+    //     b: Int
+    // ) -> Int
+    const wrapper = mountWithTokens(tokens);
+    const tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`@objc(quxA:B:)
+func quxqux(
+    a: Int,
+    b: Int
+) -> Int`,
+    );
+  });
+
+  it('indents params properly for initializers prefixed with attributes which take arguments', () => {
+    const tokens = [
+      {
+        kind: TokenKind.attribute,
+        text: '@objc',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(initWithA:B:) ',
+      },
+      {
+        kind: TokenKind.keyword,
+        text: 'init',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'a',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'b',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ')',
+      },
+    ];
+
+    // Before:
+    // @objc(initWithA:B:) init(a: Int, b: Int)
+    //
+    // After:
+    // @objc(initWithA:B:)
+    // init(
+    //    a: Int,
+    //    b: Int
+    // )
+    const wrapper = mountWithTokens(tokens);
+    const tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`@objc(initWithA:B:)
+init(
+    a: Int,
     b: Int
 )`,
     );
