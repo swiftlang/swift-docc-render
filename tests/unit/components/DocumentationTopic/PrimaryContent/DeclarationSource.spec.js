@@ -81,7 +81,7 @@ describe('DeclarationSource', () => {
     });
   });
 
-  it('applies the `multipleLinesClass` class if declaration group has multiple lines', async () => {
+  it('applies the `multipleLinesClass` class if declaration group displays multiple lines', async () => {
     expect(wrapper.vm.displaysMultipleLines).toBe(false);
 
     displaysMultipleLines.mockResolvedValue(true);
@@ -90,6 +90,89 @@ describe('DeclarationSource', () => {
 
     await wrapper.vm.$nextTick();
     expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain(multipleLinesClass);
+  });
+
+  it('applies the `has-multiple-lines` class if declaration group has multiple lines regardless of window width', async () => {
+    const multiLineDeclaration = {
+      tokens: [
+        {
+          kind: TokenKind.keyword,
+          text: 'func',
+        },
+        {
+          kind: TokenKind.text,
+          text: ' ',
+        },
+        {
+          kind: TokenKind.identifier,
+          text: 'Foo',
+        },
+        {
+          kind: TokenKind.text,
+          text: '(\n',
+        },
+        {
+          kind: TokenKind.externalParam,
+          text: '_',
+        },
+        {
+          kind: TokenKind.text,
+          text: ' ',
+        },
+        {
+          kind: TokenKind.internalParam,
+          text: 'Bar',
+        },
+        {
+          kind: TokenKind.text,
+          text: ': ',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Self',
+        },
+        {
+          kind: TokenKind.text,
+          text: '.',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'FooBar',
+        },
+        {
+          kind: TokenKind.text,
+          text: ',\n',
+        },
+        {
+          kind: TokenKind.externalParam,
+          text: 'context',
+        },
+        {
+          kind: TokenKind.text,
+          text: ': ',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Self',
+        },
+        {
+          kind: TokenKind.text,
+          text: '.',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Context',
+        },
+        {
+          kind: TokenKind.text,
+          text: ')',
+        },
+      ],
+    };
+
+    wrapper = shallowMount(DeclarationSource, { propsData: multiLineDeclaration });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain('has-multiple-lines');
   });
 
   it('runs the displaysMultipleLines, after `indentDeclaration` for ObjC code', async () => {
