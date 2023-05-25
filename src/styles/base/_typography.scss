@@ -21,7 +21,7 @@ html {
   quotes: "“" "”";
 
   @each $lang, $quotes in $localizedQuotes {
-    :lang(#{$lang}) {
+    &:lang(#{$lang}) {
       quotes: $quotes;
     }
   }
