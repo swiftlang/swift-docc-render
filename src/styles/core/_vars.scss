@@ -81,3 +81,10 @@ $on-this-page-aside-width: 192px;
 
 // Suggest Lang
 $suggest-lang-height: 52px;
+
+// Localized Quotes
+$localizedQuotes: (
+  en-US: "“" "”",
+  zh-CN: "“" "”",
+  ja-JP: "「" "」",
+);

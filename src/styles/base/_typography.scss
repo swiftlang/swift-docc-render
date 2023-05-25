@@ -18,7 +18,12 @@ html {
   @include inTargetWeb {
     font: var(--typography-html-font, $body-font-size $font-content);
   }
-  quotes: "“" "”";
+
+  @each $lang, $quotes in $localizedQuotes {
+    :lang(#{$lang}) {
+      quotes: $quotes;
+    }
+  }
 }
 
 body {
