@@ -19,6 +19,10 @@ const {
   Title,
 } = LanguageSwitcher.components;
 
+jest.mock('docc-render/utils/assets', () => ({
+  normalizeRelativePath: jest.fn(name => `/${name}`),
+}));
+
 describe('LanguageSwitcher', () => {
   let wrapper;
 

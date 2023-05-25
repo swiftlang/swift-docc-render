@@ -8,10 +8,11 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { pathJoin } from 'docc-render/utils/assets';
-import { queryStringForParams, areEquivalentLocations } from 'docc-render/utils/url-helper';
+import { normalizePath } from 'docc-render/utils/assets';
+import {
+  queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
+} from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
-import { baseUrl } from 'docc-render/utils/theme-settings';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
 
@@ -30,7 +31,7 @@ export async function fetchData(path, params = {}, options = {}) {
     return !response.ok;
   }
 
-  const url = new URL(path, window.location.href);
+  const url = getAbsoluteUrl(path);
   const queryString = queryStringForParams(params);
   if (queryString) {
     url.search = queryString;
@@ -56,7 +57,7 @@ export async function fetchData(path, params = {}, options = {}) {
 
 function createDataPath(path) {
   const dataPath = path.replace(/\/$/, '');
-  return `${pathJoin([baseUrl, 'data', dataPath])}.json`;
+  return `${normalizePath(['/data', dataPath])}.json`;
 }
 
 /**
@@ -137,6 +138,6 @@ export function clone(jsonObject) {
 }
 
 export async function fetchIndexPathsData({ slug }) {
-  const path = new URL(`${pathJoin([baseUrl, 'index/', slug, 'index.json'])}`, window.location.href);
+  const path = getAbsoluteUrl(['/index/', slug, 'index.json']);
   return fetchData(path);
 }

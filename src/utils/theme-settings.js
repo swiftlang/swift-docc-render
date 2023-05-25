@@ -9,6 +9,7 @@
 */
 
 import get from 'docc-render/utils/get';
+import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 
 /**
  * Theme settings state.
@@ -27,8 +28,8 @@ export const { baseUrl } = window;
  * @return {Promise<{}>}
  */
 export async function fetchThemeSettings() {
-  const url = new URL(`${baseUrl}theme-settings.json`, window.location.href);
-  return fetch(url.href)
+  const url = resolveAbsoluteUrl('/theme-settings.json');
+  return fetch(url)
     .then(r => r.json())
     .catch(() => ({}));
 }
