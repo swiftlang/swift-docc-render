@@ -60,6 +60,16 @@ $font-weight-bold: 700 !default;
   } @else {
     @warn 'The font style `#{$font-style-name}` is not defined.';
   }
+  //
+  // Add support for localized font families
+  //
+  @if ($localizedFonts) {
+    @each $lang, $fonts in $localizedFonts {
+      :lang(#{$lang}) & {
+        font-family: $fonts;
+      }
+    }
+  }
 }
 
 //
