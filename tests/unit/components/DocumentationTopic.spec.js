@@ -165,6 +165,7 @@ describe('DocumentationTopic', () => {
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
       provide: {
+        isTargetIDE: false,
         store: {
           state: { onThisPageSections: [], references: {} },
           reset: jest.fn(),
@@ -219,13 +220,29 @@ describe('DocumentationTopic', () => {
     expect(wrapper.is('div.doc-topic')).toBe(true);
   });
 
-  it('renders a <main>', () => {
+  it('renders a <main> in non-IDE mode', () => {
     const main = wrapper.find('main');
     expect(main.exists()).toBe(true);
     expect(main.classes('main')).toBe(true);
     expect(main.attributes('id')).toBe('main');
-    expect(main.attributes('role')).toBe('main');
-    expect(main.attributes('tabindex')).toBe('0');
+  });
+
+  it('renders a <div> instead of <main> in IDE mode', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      provide: {
+        isTargetIDE: true,
+        store: {
+          state: { onThisPageSections: [], references: {} },
+          reset: jest.fn(),
+        },
+      },
+    });
+
+    expect(wrapper.find('main').exists()).toBe(false);
+    const div = wrapper.find('.main');
+    expect(div.exists()).toBe(true);
+    expect(div.attributes('id')).toBe('main');
   });
 
   it('renders an aria live that tells VO users which it is the current page content', () => {

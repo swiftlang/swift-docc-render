@@ -109,7 +109,7 @@ describe('DeclarationSource', () => {
     await flushPromises();
     expect(indentDeclaration).toHaveBeenCalledTimes(1);
     expect(indentDeclaration)
-      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm, Language.objectiveC.key.api);
+      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
     expect(callStack).toEqual(['indentDeclaration', 'hasMultipleLines']);
   });
 });

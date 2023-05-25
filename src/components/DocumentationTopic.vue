@@ -13,7 +13,10 @@
     class="doc-topic"
     :class="{ 'with-on-this-page': enableOnThisPageNav && isOnThisPageNavVisible }"
   >
-    <main class="main" id="main" role="main" tabindex="0">
+    <component
+      :is="isTargetIDE ? 'div' : 'main'"
+      class="main" id="main"
+    >
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
@@ -135,7 +138,7 @@
         </template>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
-    </main>
+    </component>
     <div aria-live="polite" class="visuallyhidden">
       {{ $t('documentation.current-page', { title: pageTitle }) }}
     </div>
