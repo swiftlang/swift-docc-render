@@ -23,18 +23,20 @@
     </Filename>
     <div class="container-general">
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-      <pre><CodeBlock><span
+      <pre><CodeBlock><template
         v-for="(line, index) in syntaxHighlightedLines"
-        :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
-        :key="index"
       ><span
-        v-show="showLineNumbers" class="code-number"
+        :key="index"
+        :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
+      ><span
+        v-if="showLineNumbers"
+        class="code-number"
         :data-line-number="lineNumberFor(index)"
-      />
-<span
-  class="code-line"
-  v-html="line"
-/></span></CodeBlock></pre>
+      /><span
+        class="code-line"
+        v-html="line"
+      /></span><!-- This new line must stay -->
+</template></CodeBlock></pre>
     </div>
   </div>
 </template>
@@ -128,10 +130,13 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .code-line-container {
-  display: flex;
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .code-number {
+  display: inline-block;
   padding: $code-number-padding;
   text-align: right;
   min-width: 2em;
@@ -167,16 +172,9 @@ pre {
 }
 
 code {
-  display: flex;
-  flex-direction: column;
   white-space: pre;
   word-wrap: normal;
   flex-grow: 9999;
-}
-
-.code-line-container {
-  flex-shrink: 0;
-  padding-right: 14px;
 }
 
 .code-listing,
