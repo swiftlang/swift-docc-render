@@ -18,8 +18,9 @@ html {
   @include inTargetWeb {
     font: var(--typography-html-font, $body-font-size $font-content);
   }
+  /// The quotes CSS property sets how the browser should render quotation marks
+  /// added through a CSS content field or the HTML q element
   quotes: "“" "”";
-
   @each $lang, $quotes in $localizedQuotes {
     &:lang(#{$lang}) {
       quotes: $quotes;
