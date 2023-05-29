@@ -26,12 +26,6 @@ jest.mock('docc-render/utils/metadata', () => ({
   updateLangTag: jest.fn(),
 }));
 
-const mockBaseUrl = jest.fn().mockReturnValue('/');
-
-jest.mock('docc-render/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
-}));
-
 const badFetchResponse = {
   ok: false,
   status: 500,
@@ -189,17 +183,19 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls `fetchData` with a configurable base url', async () => {
-    mockBaseUrl.mockReturnValueOnce('/base-prefix/');
+    const baseUrl = '/base-prefix';
+    window.baseUrl = baseUrl;
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
-      '/base-prefix/data/tutorials/augmented-reality/tutorials.json',
+      `${baseUrl}/data/tutorials/augmented-reality/tutorials.json`,
       window.location.href,
     ).href, {});
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
+    window.baseUrl = '/';
   });
 
   it('calls `fetchData` with the right query string', async () => {
@@ -366,14 +362,21 @@ describe('fetchAPIChangesForRoute', () => {
 
 describe('fetchIndexPathsData', () => {
   it('fetches the data for the index/index.json', async () => {
+    // prepare the location object for the test
+    const backup = window.location;
+    delete window.location;
+    // change the location to a deep page
+    window.location = new URL('http://localhost/some/deep/path/');
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
     // fetch data with default locale
     const data = await fetchIndexPathsData({ currentLocale: defaultLocale });
+    // ensure the index was called at the root, not the deep page
     expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json', {});
     expect(data).toEqual({ foobar: 'foobar' });
     // fetch data with another locale
     const slug = 'zh-CN';
     await fetchIndexPathsData({ slug });
     expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${slug}/index.json`, {});
+    window.location = backup;
   });
 });
