@@ -7,15 +7,16 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import { pathJoin, normalizeRelativePath } from 'docc-render/utils/assets';
 
-import { normalizeAssetUrl, pathJoin } from 'docc-render/utils/assets';
-
-const mockBaseUrl = jest.fn().mockReturnValue('/');
+let normalizePath;
 const absoluteBaseUrl = 'https://foo.com';
 
-jest.mock('@/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
-}));
+function importDeps() {
+  jest.resetModules();
+  // eslint-disable-next-line global-require
+  ({ normalizePath } = require('@/utils/assets'));
+}
 
 Object.defineProperty(window, 'location', {
   value: {
@@ -40,36 +41,55 @@ describe('assets', () => {
       expect(pathJoin(params)).toEqual(expected);
     });
   });
-  describe('normalizeAssetUrl', () => {
+  describe('normalizePath', () => {
     it('works correctly if baseurl is just a slash', () => {
-      mockBaseUrl.mockReturnValue('/');
-      expect(normalizeAssetUrl('/foo')).toBe('/foo');
+      window.baseUrl = '/';
+      importDeps();
+      expect(normalizePath('/foo')).toBe('/foo');
+    });
+
+    it('works correctly with multiple urls', () => {
+      window.baseUrl = '/';
+      importDeps();
+      expect(normalizePath(['/foo', 'blah'])).toBe('/foo/blah');
     });
 
     it('works when both have slashes leading', () => {
-      mockBaseUrl.mockReturnValue('/base/');
-      expect(normalizeAssetUrl('/foo')).toBe('/base/foo');
+      window.baseUrl = '/base';
+      importDeps();
+      expect(normalizePath('/foo')).toBe('/base/foo');
     });
 
     it('does not change, if passed a url', () => {
-      expect(normalizeAssetUrl('https://foo.com')).toBe('https://foo.com');
-      expect(normalizeAssetUrl('http://foo.com')).toBe('http://foo.com');
+      expect(normalizePath('https://foo.com')).toBe('https://foo.com');
+      expect(normalizePath('http://foo.com')).toBe('http://foo.com');
     });
 
     it('does not change, if path is relative', () => {
-      mockBaseUrl.mockReturnValue('/base');
-      expect(normalizeAssetUrl('foo/bar')).toBe('foo/bar');
+      window.baseUrl = '/base';
+      importDeps();
+      expect(normalizePath('foo/bar')).toBe('foo/bar');
     });
 
     it('does not change, if the path is already prefixed', () => {
-      mockBaseUrl.mockReturnValue('/base');
-      expect(normalizeAssetUrl('/base/foo')).toBe('/base/foo');
+      window.baseUrl = '/base';
+      importDeps();
+      expect(normalizePath('/base/foo')).toBe('/base/foo');
     });
 
     it('returns empty, if nothing passed', () => {
-      expect(normalizeAssetUrl('')).toBe('');
-      expect(normalizeAssetUrl(undefined)).toBe(undefined);
-      expect(normalizeAssetUrl(null)).toBe(null);
+      expect(normalizePath('')).toBe('');
+      expect(normalizePath(undefined)).toBe(undefined);
+      expect(normalizePath(null)).toBe(null);
+    });
+  });
+  describe('normalizeRelativePath', () => {
+    it('adds a `/` if path starts without it', () => {
+      expect(normalizeRelativePath('foo')).toBe('/foo');
+    });
+
+    it('does not add a `/` if path starts it', () => {
+      expect(normalizeRelativePath('/foo')).toBe('/foo');
     });
   });
 });
