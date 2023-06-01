@@ -12,7 +12,7 @@ const path = require('path');
 const vueUtils = require('./src/setup-utils/vue-config-utils');
 const BASE_URL_PLACEHOLDER = require('./bin/baseUrlPlaceholder');
 
-const isDev =  process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = vueUtils({
   // we are setting a hard public path to the placeholder template.
