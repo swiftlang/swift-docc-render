@@ -57,18 +57,21 @@ $font-weight-bold: 700 !default;
       }
       $prevAttributes: $attributes;
     }
-  } @else {
-    @warn 'The font style `#{$font-style-name}` is not defined.';
-  }
-  //
-  // Add support for localized font families
-  //
-  @if ($localizedFonts) {
-    @each $lang, $fonts in $localizedFonts {
-      :lang(#{$lang}) & {
-        font-family: $fonts;
+
+    //
+    // Add support for localized font families
+    //
+    // Note: localized monospace font families are not yet supported
+    $-font-family: map-deep-get($font-attributes, (map-get($styles, large), font-family));
+    @if ($localizedFonts and $-font-family != $font-mono) {
+      @each $lang, $fonts in $localizedFonts {
+        :lang(#{$lang}) & {
+          font-family: $fonts;
+        }
       }
     }
+  } @else {
+    @warn 'The font style `#{$font-style-name}` is not defined.';
   }
 }
 
