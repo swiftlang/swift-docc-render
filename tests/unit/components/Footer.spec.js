@@ -28,15 +28,20 @@ describe('Footer', () => {
     expect(wrapper.contains(ColorSchemeToggle)).toBe(true);
   });
 
-  it('renders LocaleSelector if enablei18n is true', () => {
-    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
-
+  it('exposes a default slot', () => {
+    let slotProps = null;
     wrapper = shallowMount(Footer, {
-      propsData: {
-        enablei18n: true,
+      scopedSlots: {
+        default: (props) => {
+          slotProps = props;
+          return 'Slot Content';
+        },
       },
     });
-
-    expect(wrapper.find(LocaleSelector).exists()).toBe(true);
+    expect(wrapper.find('.row').exists()).toBe(true);
+    expect(slotProps).toEqual({
+      className: 'row',
+    });
+    expect(wrapper.text()).toBe('Slot Content');
   });
 });

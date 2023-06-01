@@ -30,7 +30,7 @@
 
 <script>
 import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
-import locales from 'theme/lang/locales.json';
+import appLocales from 'theme/lang/locales.json';
 import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
 import AppStore from 'docc-render/stores/AppStore';
 
@@ -39,10 +39,11 @@ export default {
   components: {
     ChevronThickIcon,
   },
-  data() {
-    return {
-      locales,
-    };
+  props: {
+    availableLocales: {
+      type: Array,
+      default: () => ([]),
+    },
   },
   methods: {
     updateRouter({ target: { value: slug } }) {
@@ -50,6 +51,11 @@ export default {
       AppStore.setPreferredLocale(slug);
       updateLocale(slug, this);
     },
+  },
+  computed: {
+    locales: ({ availableLocales }) => (
+      appLocales.filter(({ code }) => availableLocales.includes(code))
+    ),
   },
 };
 

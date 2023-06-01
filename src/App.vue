@@ -24,9 +24,18 @@
     <!-- The nav sticky anchor has to always be between the Header and the Content -->
     <div :id="baseNavStickyAnchorId" />
     <slot :isTargetIDE="isTargetIDE">
-      <router-view class="router-content" />
+      <router-view
+        @availableLocales="availableLocales = $event"
+        class="router-content"
+      />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
-      <Footer v-else-if="!isTargetIDE" :enablei18n="enablei18n" />
+      <Footer v-else-if="!isTargetIDE">
+        <template #default="{ className }">
+          <div v-if="enablei18n" :class="className">
+            <LocaleSelector :availableLocales="availableLocales" />
+          </div>
+        </template>
+      </Footer>
     </slot>
     <slot name="footer" :isTargetIDE="isTargetIDE" />
   </div>
@@ -42,6 +51,7 @@ import { fetchThemeSettings, themeSettingsState, getSetting } from 'docc-render/
 import { objectToCustomProperties } from 'docc-render/utils/themes';
 import { AppTopID } from 'docc-render/constants/AppTopID';
 import SuggestLang from 'docc-render/components/SuggestLang.vue';
+import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 
 export default {
   name: 'CoreApp',
@@ -49,6 +59,7 @@ export default {
     Footer,
     InitialLoadingPlaceholder,
     SuggestLang,
+    LocaleSelector,
   },
   provide() {
     return {
@@ -64,6 +75,7 @@ export default {
       isTargetIDE: process.env.VUE_APP_TARGET === 'ide',
       themeSettings: themeSettingsState,
       baseNavStickyAnchorId,
+      availableLocales: [],
     };
   },
   computed: {
@@ -85,7 +97,9 @@ export default {
     ),
     hasCustomHeader: () => !!window.customElements.get('custom-header'),
     hasCustomFooter: () => !!window.customElements.get('custom-footer'),
-    enablei18n: () => getSetting(['features', 'docs', 'i18n', 'enable'], false),
+    enablei18n: ({ availableLocales }) => (
+      getSetting(['features', 'docs', 'i18n', 'enable'], false) && availableLocales.length > 1
+    ),
   },
   props: {
     enableThemeSettings: {
@@ -100,6 +114,10 @@ export default {
         this.detachStylesFromRoot(CSSCustomProperties);
         this.attachStylesToRoot(CSSCustomProperties);
       },
+    },
+    $route() {
+      // resets available locales when route changes
+      this.availableLocales = [];
     },
   },
   async created() {

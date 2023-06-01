@@ -38,6 +38,7 @@ jest.mock('docc-render/stores/AppStore', () => ({
 }));
 
 const { ChevronThickIcon } = LocaleSelector.components;
+const availableLocales = ['en-US', 'zh-CN'];
 
 describe('LocaleSelector', () => {
   let wrapper;
@@ -48,6 +49,9 @@ describe('LocaleSelector', () => {
         $router: {
           push: jest.fn(),
         },
+      },
+      propsData: {
+        availableLocales,
       },
     });
   });
