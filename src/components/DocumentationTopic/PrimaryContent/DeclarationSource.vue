@@ -210,7 +210,7 @@ export default {
       await this.$nextTick();
       indentDeclaration(this.$refs.code.$el, this.language);
     }
-    if (displaysMultipleLines(this.$refs.declarationGroup)) this.displaysMultipleLines = true;
+    this.handleWindowResize();
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.handleWindowResize);
