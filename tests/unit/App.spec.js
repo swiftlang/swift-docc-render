@@ -159,6 +159,18 @@ describe('App', () => {
     expect(wrapper.find(LocaleSelector).props('availableLocales')).toEqual(availableLocales);
   });
 
+  it('does not render LocaleSelector if there is less than two available locales', () => {
+    const { LocaleSelector } = App.components;
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
+
+    const wrapper = createWrapper();
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    wrapper.setData({ availableLocales: ['en-US'] });
+
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+  });
+
   it('updates available locales when router-view emits available locales', () => {
     const { LocaleSelector } = App.components;
     ({ getSetting } = require('docc-render/utils/theme-settings'));

@@ -25,6 +25,11 @@ jest.mock('theme/lang/locales.json', () => (
       name: '简体中文',
       slug: 'cn',
     },
+    {
+      code: 'ja-JP',
+      name: '日本語',
+      slug: 'ja',
+    },
   ]
 ));
 
@@ -38,7 +43,7 @@ jest.mock('docc-render/stores/AppStore', () => ({
 }));
 
 const { ChevronThickIcon } = LocaleSelector.components;
-const availableLocales = ['en-US', 'zh-CN'];
+const availableLocales = ['en-US', 'zh-CN', 'ja-JP'];
 
 describe('LocaleSelector', () => {
   let wrapper;
@@ -78,6 +83,32 @@ describe('LocaleSelector', () => {
   });
 
   it('renders the options with locales\' values and names', () => {
+    const options = wrapper.findAll('option');
+    expect(options).toHaveLength(3);
+    expect(options.at(0).text()).toBe('English');
+    expect(options.at(0).attributes('value')).toBe('en');
+    expect(options.at(0).attributes('lang')).toBe('en-US');
+
+    expect(options.at(1).text()).toBe('简体中文');
+    expect(options.at(1).attributes('value')).toBe('cn');
+    expect(options.at(1).attributes('lang')).toBe('zh-CN');
+
+    expect(options.at(2).text()).toBe('日本語');
+    expect(options.at(2).attributes('value')).toBe('ja');
+    expect(options.at(2).attributes('lang')).toBe('ja-JP');
+  });
+
+  it('only renders available locales', () => {
+    wrapper = shallowMount(LocaleSelector, {
+      mocks: {
+        $router: {
+          push: jest.fn(),
+        },
+      },
+      propsData: {
+        availableLocales: ['en-US', 'zh-CN'],
+      },
+    });
     const options = wrapper.findAll('option');
     expect(options).toHaveLength(2);
     expect(options.at(0).text()).toBe('English');
