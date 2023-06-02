@@ -82,12 +82,10 @@ describe('DeclarationSource', () => {
   });
 
   it('applies the `multipleLinesClass` class if declaration group displays multiple lines', async () => {
-    expect(wrapper.vm.displaysMultipleLines).toBe(false);
+    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).not.toContain(multipleLinesClass);
 
     displaysMultipleLines.mockResolvedValue(true);
     wrapper = shallowMount(DeclarationSource, { propsData });
-    expect(wrapper.vm.displaysMultipleLines).toBe(true);
-
     await wrapper.vm.$nextTick();
     expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain(multipleLinesClass);
   });
@@ -193,7 +191,7 @@ describe('DeclarationSource', () => {
     expect(indentDeclaration).toHaveBeenCalledTimes(1);
     expect(indentDeclaration)
       .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
-    expect(callStack).toEqual(['indentDeclaration', 'hasMultipleLines']);
+    expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
   });
 });
 
