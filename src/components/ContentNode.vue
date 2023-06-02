@@ -17,7 +17,7 @@ import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
 import Figure from './ContentNode/Figure.vue';
-import Caption from './ContentNode/Caption.vue';
+import FigureCaption from './ContentNode/FigureCaption.vue';
 import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
@@ -230,8 +230,8 @@ function renderNode(createElement, references) {
     if ((title && abstract.length) || abstract.length) {
       // if there is a `title`, it should be above, otherwise below
       figureContent.splice(title ? 0 : 1, 0,
-        createElement(Caption, {
-          props: { title, tag: 'figcaption', centered: !title },
+        createElement(FigureCaption, {
+          props: { title, centered: !title },
         }, renderChildren(abstract)));
     }
     return createElement(Figure, { props: { anchor } }, figureContent);
@@ -297,27 +297,18 @@ function renderNode(createElement, references) {
         renderChildren(node.inlineContent)
       ));
     }
-    case BlockType.table: {
-      const tableChildren = [];
-      if (node.metadata && node.metadata.anchor && node.metadata.title) {
-        tableChildren.push(
-          createElement(Caption,
-            { props: { title: node.metadata.title } },
-            renderChildren(node.metadata.abstract)),
-        );
+    case BlockType.table:
+      if (node.metadata && node.metadata.anchor) {
+        return renderFigure(node);
       }
-      tableChildren.push(renderTableChildren(
-        node.rows, node.header, node.extendedData, node.alignments,
-      ));
-      return createElement(
-        Table,
-        {
-          attrs: { id: node.metadata && node.metadata.anchor },
-          props: { spanned: !!node.extendedData },
+
+      return createElement(Table, {
+        props: {
+          spanned: !!node.extendedData,
         },
-        tableChildren,
-      );
-    }
+      }, (
+        renderTableChildren(node.rows, node.header, node.extendedData, node.alignments)
+      ));
     case BlockType.termList:
       return createElement('dl', {}, node.items.map(({ term, definition }) => [
         createElement('dt', {}, (
