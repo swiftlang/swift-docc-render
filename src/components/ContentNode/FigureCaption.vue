@@ -9,19 +9,19 @@
 -->
 
 <template>
-  <component :is="tag" class="caption" :class="{ centered }">
+  <figcaption class="caption" :class="{ centered }">
     <template v-if="title">
       <strong>{{ title }}</strong>&nbsp;<slot />
     </template>
     <template v-else>
       <slot />
     </template>
-  </component>
+  </figcaption>
 </template>
 
 <script>
 export default {
-  name: 'Caption',
+  name: 'FigureCaption',
   props: {
     title: {
       type: String,
@@ -31,11 +31,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    tag: {
-      type: String,
-      required: false,
-      default: () => 'caption',
-    },
   },
 };
 </script>
@@ -44,7 +39,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .caption {
-  @include font-styles(documentation-caption);
+  @include font-styles(documentation-figcaption);
 
   &:last-child {
     margin-top: var(--spacing-stacked-margin-large);
@@ -57,9 +52,5 @@ export default {
 
 /deep/ p {
   display: inline-block;
-}
-
-caption {
-  margin: 1rem 0;
 }
 </style>
