@@ -365,6 +365,10 @@ export default {
       required: false,
       validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
+    availableLocales: {
+      type: Array,
+      required: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.identifier change, the provided value
