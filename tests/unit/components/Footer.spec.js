@@ -11,7 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Footer from 'docc-render/components/Footer.vue';
 
-const { ColorSchemeToggle, LocaleSelector } = Footer.components;
+const { ColorSchemeToggle } = Footer.components;
 
 describe('Footer', () => {
   let wrapper;

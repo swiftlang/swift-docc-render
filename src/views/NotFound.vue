@@ -20,5 +20,8 @@ import GenericError from 'theme/components/GenericError.vue';
 export default {
   name: 'NotFound',
   components: { GenericError },
+  created() {
+    this.$emit('availableLocales', []);
+  },
 };
 </script>

@@ -115,10 +115,6 @@ export default {
         this.attachStylesToRoot(CSSCustomProperties);
       },
     },
-    $route() {
-      // resets available locales when route changes
-      this.availableLocales = [];
-    },
   },
   async created() {
     // AX: Listen for mouseevents
