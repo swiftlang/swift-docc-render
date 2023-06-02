@@ -44,7 +44,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .caption {
-  @include font-styles(documentation-caption);
+  @include font-styles(documentation-figcaption);
 
   &:last-child {
     margin-top: var(--spacing-stacked-margin-large);
