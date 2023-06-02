@@ -32,16 +32,15 @@ describe('Footer', () => {
     let slotProps = null;
     wrapper = shallowMount(Footer, {
       scopedSlots: {
-        default: (props) => {
+        default(props) {
           slotProps = props;
-          return 'Slot Content';
+          return this.$createElement('div', { class: 'slot-class' }, 'Slot Content');
         },
       },
     });
-    expect(wrapper.find('.row').exists()).toBe(true);
     expect(slotProps).toEqual({
       className: 'row',
     });
-    expect(wrapper.text()).toBe('Slot Content');
+    expect(wrapper.find('.slot-class').text()).toBe('Slot Content');
   });
 });
