@@ -80,12 +80,12 @@ describe('DeclarationGroup', () => {
     expect(srcComponent.props('language')).toEqual('swift');
   });
 
-  it('applies the `multipleLinesClass` class if `hasMultipleLinesAfterAPIChanges` is true', () => {
+  it('applies the `multipleLinesClass` class if `displaysMultipleLinesAfterAPIChanges` is true', () => {
     const wrapper = shallowMount({
       ...DeclarationGroup,
       computed: {
         ...DeclarationGroup.computed,
-        hasMultipleLinesAfterAPIChanges: () => true,
+        displaysMultipleLinesAfterAPIChanges: () => true,
       },
     },
     {

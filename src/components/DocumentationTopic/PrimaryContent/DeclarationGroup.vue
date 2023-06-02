@@ -72,9 +72,9 @@ export default {
     },
   },
   computed: {
-    classes: ({ changeType, multipleLinesClass, hasMultipleLinesAfterAPIChanges }) => ({
+    classes: ({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) => ({
       [`declaration-group--changed declaration-group--${changeType}`]: changeType,
-      [multipleLinesClass]: hasMultipleLinesAfterAPIChanges,
+      [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
     }),
     caption() {
       return this.declaration.platforms.join(', ');
