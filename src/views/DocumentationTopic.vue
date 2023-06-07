@@ -118,6 +118,7 @@ import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils.js';
+import AppStore from 'docc-render/stores/AppStore';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -383,7 +384,7 @@ export default {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
         this.store.setReferences(this.topicProps.references);
-        this.$emit('availableLocales', this.topicProps.availableLocales || []);
+        AppStore.setAvailableLocales(this.topicProps.availableLocales || []);
       });
     },
   },

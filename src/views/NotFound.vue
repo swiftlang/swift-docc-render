@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <GenericError message='The page you’re looking for can’t be found.'>
+  <GenericError :message="$t('error.not-found')">
     <slot />
   </GenericError>
 </template>
@@ -20,8 +20,5 @@ import GenericError from 'theme/components/GenericError.vue';
 export default {
   name: 'NotFound',
   components: { GenericError },
-  created() {
-    this.$emit('availableLocales', []);
-  },
 };
 </script>

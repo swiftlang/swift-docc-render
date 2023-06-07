@@ -28,6 +28,7 @@ export default {
     preferredLocale: Settings.preferredLocale,
     supportsAutoColorScheme,
     systemColorScheme: ColorScheme.light,
+    availableLocales: [],
   },
   reset() {
     this.state.imageLoadingStrategy = process.env.VUE_APP_TARGET === 'ide'
@@ -42,6 +43,9 @@ export default {
   setPreferredColorScheme(value) {
     this.state.preferredColorScheme = value;
     Settings.preferredColorScheme = value;
+  },
+  setAvailableLocales(locales) {
+    this.state.availableLocales = locales;
   },
   setPreferredLocale(locale) {
     this.state.preferredLocale = locale;

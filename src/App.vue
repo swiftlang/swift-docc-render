@@ -24,15 +24,12 @@
     <!-- The nav sticky anchor has to always be between the Header and the Content -->
     <div :id="baseNavStickyAnchorId" />
     <slot :isTargetIDE="isTargetIDE">
-      <router-view
-        @availableLocales="availableLocales = $event"
-        class="router-content"
-      />
+      <router-view class="router-content" />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
       <Footer v-else-if="!isTargetIDE">
         <template #default="{ className }">
           <div v-if="enablei18n" :class="className">
-            <LocaleSelector :availableLocales="availableLocales" />
+            <LocaleSelector />
           </div>
         </template>
       </Footer>
@@ -75,12 +72,12 @@ export default {
       isTargetIDE: process.env.VUE_APP_TARGET === 'ide',
       themeSettings: themeSettingsState,
       baseNavStickyAnchorId,
-      availableLocales: [],
     };
   },
   computed: {
     currentColorScheme: ({ appState }) => appState.systemColorScheme,
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
+    availableLocales: ({ appState }) => appState.availableLocales,
     CSSCustomProperties: ({
       currentColorScheme,
       preferredColorScheme,

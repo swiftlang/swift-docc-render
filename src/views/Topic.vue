@@ -32,6 +32,7 @@ import Tutorial from 'docc-render/components/Tutorial.vue';
 
 import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import AppStore from 'docc-render/stores/AppStore';
 
 const TopicKind = {
   article: 'article',
@@ -148,7 +149,8 @@ export default {
       this.$nextTick(() => {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
-        this.$emit('availableLocales', this.topicData.metadata.availableLocales || []);
+        const { metadata } = this.topicData;
+        AppStore.setAvailableLocales(metadata ? metadata.availableLocales || [] : []);
       });
     },
   },

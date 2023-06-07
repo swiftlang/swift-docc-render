@@ -39,12 +39,6 @@ export default {
   components: {
     ChevronThickIcon,
   },
-  props: {
-    availableLocales: {
-      type: Array,
-      default: () => ([]),
-    },
-  },
   methods: {
     updateRouter({ target: { value: slug } }) {
       this.$router.push(getLocaleParam(slug));
@@ -53,6 +47,7 @@ export default {
     },
   },
   computed: {
+    availableLocales: () => AppStore.state.availableLocales,
     locales: ({ availableLocales }) => (
       appLocales.filter(({ code }) => availableLocales.includes(code))
     ),

@@ -140,7 +140,12 @@ describe('App', () => {
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
-    wrapper.setData({ availableLocales });
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales,
+      },
+    });
 
     const SuggestLangComponent = wrapper.find(SuggestLang);
     expect(SuggestLangComponent.exists()).toBe(true);
@@ -153,10 +158,14 @@ describe('App', () => {
 
     const wrapper = createWrapper();
     expect(wrapper.find(LocaleSelector).exists()).toBe(false);
-    wrapper.setData({ availableLocales });
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales,
+      },
+    });
 
     expect(wrapper.find(LocaleSelector).exists()).toBe(true);
-    expect(wrapper.find(LocaleSelector).props('availableLocales')).toEqual(availableLocales);
   });
 
   it('does not render LocaleSelector if there is less than two available locales', () => {
@@ -166,22 +175,14 @@ describe('App', () => {
 
     const wrapper = createWrapper();
     expect(wrapper.find(LocaleSelector).exists()).toBe(false);
-    wrapper.setData({ availableLocales: ['en-US'] });
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales: ['en-US'],
+      },
+    });
 
     expect(wrapper.find(LocaleSelector).exists()).toBe(false);
-  });
-
-  it('updates available locales when router-view emits available locales', () => {
-    const { LocaleSelector } = App.components;
-    ({ getSetting } = require('docc-render/utils/theme-settings'));
-    getSetting.mockReturnValue(true);
-
-    const wrapper = createWrapper();
-    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
-    wrapper.find('.router-content').vm.$emit('availableLocales', availableLocales);
-
-    expect(wrapper.find(LocaleSelector).exists()).toBe(true);
-    expect(wrapper.find(LocaleSelector).props('availableLocales')).toEqual(availableLocales);
   });
 
   it('renders the `#nav-sticky-anchor` between the header and the content', () => {
