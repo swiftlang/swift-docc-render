@@ -9,7 +9,7 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import Caption from '@/components/ContentNode/Caption.vue';
+import Caption from 'docc-render/components/ContentNode/Caption.vue';
 
 describe('Caption', () => {
   it('renders a <caption> with the title and slot content', () => {

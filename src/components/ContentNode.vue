@@ -213,9 +213,21 @@ function renderNode(createElement, references) {
     }
   };
 
+  const placeCaption = (rawContent, { abstract = [], title, ...others }) => {
+    const content = [rawContent];
+    if (!abstract.length) return content;
+
+    // if there is a `title`, it should be above, otherwise below
+    content.splice(title ? 0 : 1, 0,
+      createElement(Caption, {
+        props: { title, centered: !title, ...others },
+      }, renderChildren(abstract)));
+    return content;
+  };
+
   const renderFigure = ({
     metadata: {
-      abstract = [],
+      abstract,
       anchor,
       title,
       ...metadata
@@ -226,14 +238,12 @@ function renderNode(createElement, references) {
       ...rest,
       metadata,
     };
-    const figureContent = [renderChildren([node])];
-    if (abstract.length) {
-      // if there is a `title`, it should be above, otherwise below
-      figureContent.splice(title ? 0 : 1, 0,
-        createElement(Caption, {
-          props: { title, tag: 'figcaption', centered: !title },
-        }, renderChildren(abstract)));
-    }
+    const figureContent = placeCaption(renderChildren([node]), {
+      title,
+      abstract,
+      tag: 'figcaption',
+    });
+
     return createElement(Figure, { props: { anchor } }, figureContent);
   };
 
@@ -298,18 +308,19 @@ function renderNode(createElement, references) {
       ));
     }
     case BlockType.table: {
-      const tableContent = [renderTableChildren(
+      let tableContent = [renderTableChildren(
         node.rows, node.header, node.extendedData, node.alignments,
       )];
+
       if (node.metadata && node.metadata.anchor) {
-        const { title, abstract = [] } = node.metadata;
-        if (abstract.length) {
-          tableContent.splice(title ? 0 : 1, 0,
-            createElement(Caption,
-              { props: { title, centered: !title } },
-              renderChildren(abstract)));
-        }
+        tableContent = placeCaption(renderTableChildren(
+          node.rows, node.header, node.extendedData, node.alignments,
+        ), {
+          title: node.metadata.title,
+          abstract: node.metadata.abstract,
+        });
       }
+
       return createElement(
         Table,
         {

@@ -1421,7 +1421,7 @@ describe('ContentNode', () => {
       `);
     });
 
-    it('renders a abstract for `Table` using a caption at the bottom of the content and centered if there is no title', () => {
+    it('renders an abstract for `Table` using a caption at the bottom of the content and centered if there is no title', () => {
       const metadata = {
         anchor: '42',
         abstract: [{
