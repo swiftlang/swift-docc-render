@@ -213,14 +213,14 @@ function renderNode(createElement, references) {
     }
   };
 
-  const placeCaption = (rawContent, { abstract = [], title, ...others }) => {
+  const placeCaption = (rawContent, { abstract = [], title, tag }) => {
     const content = [rawContent];
     if (!abstract.length) return content;
 
     // if there is a `title`, it should be above, otherwise below
     content.splice(title ? 0 : 1, 0,
       createElement(Caption, {
-        props: { title, centered: !title, ...others },
+        props: { title, centered: !title, tag },
       }, renderChildren(abstract)));
     return content;
   };
@@ -308,16 +308,15 @@ function renderNode(createElement, references) {
       ));
     }
     case BlockType.table: {
-      let tableContent = [renderTableChildren(
+      let tableContent = renderTableChildren(
         node.rows, node.header, node.extendedData, node.alignments,
-      )];
+      );
 
       if (node.metadata && node.metadata.anchor) {
-        tableContent = placeCaption(renderTableChildren(
-          node.rows, node.header, node.extendedData, node.alignments,
-        ), {
+        tableContent = placeCaption(tableContent, {
           title: node.metadata.title,
           abstract: node.metadata.abstract,
+          tag: 'caption',
         });
       }
 
