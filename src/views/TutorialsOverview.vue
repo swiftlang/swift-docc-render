@@ -79,7 +79,7 @@ export default {
       this.$nextTick(() => {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
-        AppStore.setAvailableLocales(this.topicData.metadata.availableLocales || []);
+        AppStore.setAvailableLocales(this.topicData.metadata.availableLocales);
       });
     },
   },

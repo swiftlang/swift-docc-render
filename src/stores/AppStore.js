@@ -11,6 +11,7 @@
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import ImageLoadingStrategy from 'docc-render/constants/ImageLoadingStrategy';
 import Settings from 'docc-render/utils/settings';
+import appLocales from 'theme/lang/locales.json';
 
 const supportsAutoColorScheme = (typeof window.matchMedia !== 'undefined') && [
   ColorScheme.light,
@@ -44,7 +45,11 @@ export default {
     this.state.preferredColorScheme = value;
     Settings.preferredColorScheme = value;
   },
-  setAvailableLocales(locales) {
+  setAllLocalesAreAvailable() {
+    const allLocales = appLocales.map(locale => locale.code);
+    this.state.availableLocales = allLocales;
+  },
+  setAvailableLocales(locales = []) {
     this.state.availableLocales = locales;
   },
   setPreferredLocale(locale) {

@@ -384,7 +384,7 @@ export default {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
         this.store.setReferences(this.topicProps.references);
-        AppStore.setAvailableLocales(this.topicProps.availableLocales || []);
+        AppStore.setAvailableLocales(this.topicProps.availableLocales);
       });
     },
   },
