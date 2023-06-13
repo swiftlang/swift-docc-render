@@ -622,6 +622,7 @@ export default {
     }
 
     this.store.reset();
+    this.store.setReferences(this.references);
   },
 };
 </script>
