@@ -12,7 +12,7 @@
   <pre
     ref="declarationGroup"
     class="source"
-    :class="{ [multipleLinesClass]: hasMultipleLines }"
+    :class="{ [multipleLinesClass]: displaysMultipleLines, 'has-multiple-lines': hasMultipleLines }"
   ><CodeBlock ref="code"><Token
     v-for="(token, i) in formattedTokens"
     :key="i"
@@ -21,7 +21,7 @@
 
 <script>
 import { indentDeclaration } from 'docc-render/utils/indentation';
-import { hasMultipleLines } from 'docc-render/utils/multipleLines';
+import { displaysMultipleLines } from 'docc-render/utils/multipleLines';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import Language from 'docc-render/constants/Language';
@@ -36,7 +36,7 @@ export default {
   name: 'DeclarationSource',
   data() {
     return {
-      hasMultipleLines: false,
+      displaysMultipleLines: false,
       multipleLinesClass,
     };
   },
@@ -182,6 +182,14 @@ export default {
 
       return newTokens;
     },
+    hasMultipleLines({ formattedTokens }) {
+      return formattedTokens.reduce((lineCount, tokens, idx) => {
+        let REGEXP = /\n/g;
+        if (idx === formattedTokens.length - 1) REGEXP = /\n(?!$)/g;
+        if (!tokens.text) return lineCount; // handles TokenKind add & changed
+        return lineCount + (tokens.text.match(REGEXP) || []).length;
+      }, 1) >= 2;
+    },
   },
   methods: {
     propsFor(token) {
@@ -192,13 +200,20 @@ export default {
         tokens: token.tokens,
       };
     },
+    handleWindowResize() {
+      this.displaysMultipleLines = displaysMultipleLines(this.$refs.declarationGroup);
+    },
   },
   async mounted() {
+    window.addEventListener('resize', this.handleWindowResize);
     if (this.language === Language.objectiveC.key.api) {
       await this.$nextTick();
       indentDeclaration(this.$refs.code.$el, this.language);
     }
-    if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
+    this.handleWindowResize();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleWindowResize);
   },
 };
 </script>
@@ -225,7 +240,7 @@ $docs-declaration-source-border-width: 1px !default;
   // the scrollbar is not clipped by this element depending on its border-radius
   @include new-stacking-context;
 
-  &.has-multiple-lines {
+  &.displays-multiple-lines {
     border-radius: $border-radius;
   }
 
