@@ -234,6 +234,11 @@ $nav-menu-toggle-label-margin: 6px;
 }
 
 .language {
+  &-container {
+    // ensure the language picker is never crushed
+    flex: 1 0 auto;
+  }
+
   &-dropdown {
     -webkit-text-size-adjust: none;
     appearance: none;
