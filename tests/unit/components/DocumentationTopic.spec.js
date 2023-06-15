@@ -160,16 +160,18 @@ const propsData = {
 describe('DocumentationTopic', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
-
+  const mockStore = {
+    state: { onThisPageSections: [], references: {} },
+    reset: jest.fn(),
+    setReferences: jest.fn(),
+  };
   beforeEach(() => {
+    jest.clearAllMocks();
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
       provide: {
         isTargetIDE: false,
-        store: {
-          state: { onThisPageSections: [], references: {} },
-          reset: jest.fn(),
-        },
+        store: mockStore,
       },
     });
   });
@@ -232,10 +234,7 @@ describe('DocumentationTopic', () => {
       propsData,
       provide: {
         isTargetIDE: true,
-        store: {
-          state: { onThisPageSections: [], references: {} },
-          reset: jest.fn(),
-        },
+        store: mockStore,
       },
     });
 
@@ -315,6 +314,9 @@ describe('DocumentationTopic', () => {
         ...propsData,
         role: 'symbol',
         symbolKind: 'protocol',
+      },
+      provide: {
+        store: mockStore,
       },
     });
     const hero = wrapper.find(DocumentationHero);
@@ -641,12 +643,7 @@ describe('DocumentationTopic', () => {
   it('renders a `LanguageSwitcher` if TargetIDE', () => {
     const provide = {
       isTargetIDE: true,
-      store: {
-        state: {
-          references: {},
-        },
-        reset: jest.fn(),
-      },
+      store: mockStore,
     };
     wrapper = shallowMount(DocumentationTopic, { propsData, provide });
     const switcher = wrapper.find(LanguageSwitcher);
@@ -781,10 +778,7 @@ describe('DocumentationTopic', () => {
         SeeAlso: stubSection('see-also'),
       },
       provide: {
-        store: {
-          state: { onThisPageSections: [], references: {} },
-          reset: jest.fn(),
-        },
+        store: mockStore,
       },
     });
     const sections = wrapper.findAll('.section-stub');
@@ -866,10 +860,7 @@ describe('DocumentationTopic', () => {
         'above-title': '<div class="above-title">Above Title Content</div>',
       },
       provide: {
-        store: {
-          state: { onThisPageSections: [], references: {} },
-          reset: jest.fn(),
-        },
+        store: mockStore,
       },
     });
     expect(wrapper.find(DocumentationHero).contains('.above-title')).toBe(true);
@@ -885,10 +876,7 @@ describe('DocumentationTopic', () => {
         DocumentationHero,
       },
       provide: {
-        store: {
-          state: { onThisPageSections: [], references: {} },
-          reset: jest.fn(),
-        },
+        store: mockStore,
       },
     });
     expect(wrapper.contains('.above-hero-content')).toBe(true);
@@ -937,29 +925,38 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm.disableMetadata).toBe(true);
   });
 
+  it('sets the references, when they update in the store', () => {
+    expect(mockStore.setReferences).toHaveBeenCalledTimes(1);
+    const newReferences = {
+      foo: {},
+    };
+    wrapper.setProps({
+      references: newReferences,
+    });
+    expect(mockStore.setReferences).toHaveBeenCalledTimes(2);
+    expect(mockStore.setReferences).toHaveBeenCalledWith(newReferences);
+  });
+
   describe('lifecycle hooks', () => {
     it('calls `store.reset()`', () => {
-      const store = {
-        reset: jest.fn(),
-        state: { onThisPageSections: [], apiChanges: null, references: {} },
-      };
+      jest.clearAllMocks();
       wrapper = shallowMount(DocumentationTopic, {
         propsData,
-        provide: { store },
+        provide: { store: mockStore },
       });
-      expect(store.reset).toBeCalled();
+      expect(mockStore.reset).toBeCalled();
+      expect(mockStore.setReferences).toHaveBeenCalledTimes(1);
+      expect(mockStore.setReferences).toHaveBeenCalledWith(propsData.references);
     });
 
     it('routes to the objc variant of a page if that is the preferred language', async () => {
       const $route = { query: {} };
       const $router = { replace: jest.fn() };
       const store = {
-        reset: () => {},
+        ...mockStore,
         state: {
-          apiChanges: null,
-          onThisPageSections: [],
+          ...mockStore.state,
           preferredLanguage: Language.objectiveC.key.url,
-          references: {},
         },
       };
       wrapper = shallowMount(DocumentationTopic, {

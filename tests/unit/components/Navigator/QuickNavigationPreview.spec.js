@@ -11,7 +11,6 @@
 import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import QuickNavigationPreview from 'docc-render/components/Navigator/QuickNavigationPreview.vue';
-import { flushPromises } from '../../../../test-utils';
 
 const { PreviewState, PreviewStore } = QuickNavigationPreview.constants;
 
@@ -53,7 +52,7 @@ describe('QuickNavigationPreview', () => {
     expect(topic.props('abstract')).toEqual(json.abstract);
   });
 
-  it('provides a new store, setting the references when the JSON changes', async () => {
+  it('provides a PreviewStore', async () => {
     const json = {
       abstract: [{ type: 'text', text: 'a' }],
       identifier: {
@@ -76,18 +75,6 @@ describe('QuickNavigationPreview', () => {
     });
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided).toHaveProperty('store', PreviewStore);
-    await flushPromises();
-    expect(PreviewStore.state.references).toEqual(json.references);
-    wrapper.setProps({
-      json: {
-        ...json,
-        references: {
-          c: 'c',
-        },
-      },
-    });
-    await flushPromises();
-    expect(PreviewStore.state.references).toEqual({ c: 'c' });
   });
 
   it('renders a "Preview unavailable" message for errors', () => {
