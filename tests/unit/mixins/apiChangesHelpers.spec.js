@@ -29,31 +29,31 @@ describe('apiChangesHelpers', () => {
     });
   });
 
-  it('set `hasMultipleLinesAfterAPIChanges` to true if apiChangesDiff ref is multiline', () => {
+  it('set `displaysMultipleLinesAfterAPIChanges` to true if apiChangesDiff ref is multiline', () => {
     wrapper = createWrapper();
     wrapper.vm.$refs = { apiChangesDiff: { offsetHeight: 100 } };
 
     const apiChangesDiff = wrapper.find({ ref: 'apiChangesDiff' });
     expect(apiChangesDiff.exists()).toBe(true);
-    expect(wrapper.vm.hasMultipleLinesAfterAPIChanges).toBe(true);
+    expect(wrapper.vm.displaysMultipleLinesAfterAPIChanges).toBe(true);
     expect(window.getComputedStyle).toHaveBeenCalledTimes(1);
     expect(window.getComputedStyle).toHaveBeenCalledWith(wrapper.vm.$refs.apiChangesDiff);
   });
 
-  it('set `hasMultipleLinesAfterAPIChanges` to false if apiChangesDiff ref has only one line', () => {
+  it('set `displaysMultipleLinesAfterAPIChanges` to false if apiChangesDiff ref has only one line', () => {
     wrapper = createWrapper();
     wrapper.vm.$refs = { apiChangesDiff: { offsetHeight: 25 } };
 
-    expect(wrapper.vm.hasMultipleLinesAfterAPIChanges).toBe(false);
+    expect(wrapper.vm.displaysMultipleLinesAfterAPIChanges).toBe(false);
     expect(window.getComputedStyle).toHaveBeenCalledTimes(1);
     expect(window.getComputedStyle).toHaveBeenCalledWith(wrapper.vm.$refs.apiChangesDiff);
   });
 
-  it('set `hasMultipleLinesAfterAPIChanges` to false if apiChangesDiff ref is multiline but API Changes it not available', () => {
+  it('set `displaysMultipleLinesAfterAPIChanges` to false if apiChangesDiff ref is multiline but API Changes it not available', () => {
     wrapper = createWrapper(null);
     wrapper.vm.$refs = { apiChangesDiff: { offsetHeight: 100 } };
 
-    expect(wrapper.vm.hasMultipleLinesAfterAPIChanges).toBe(false);
+    expect(wrapper.vm.displaysMultipleLinesAfterAPIChanges).toBe(false);
     expect(window.getComputedStyle).toHaveBeenCalledTimes(0);
   });
 });

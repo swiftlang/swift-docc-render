@@ -738,6 +738,17 @@ export default {
       border-radius: var(--code-border-radius);
     }
 
+    /* wrap declaration only when not using smart wrapping */
+    .source:not(.has-multiple-lines) > code {
+      @include inTargetIde() {
+        white-space: pre-wrap;
+
+        .token-identifier {
+          word-break: break-all;
+        }
+      }
+    }
+
     .single-line {
       border-radius: var(--code-border-radius);
     }

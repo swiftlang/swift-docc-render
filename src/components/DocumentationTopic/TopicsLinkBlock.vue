@@ -148,11 +148,11 @@ export default {
     linkBlockClasses: ({
       changesClasses,
       hasAbstractElements,
-      hasMultipleLinesAfterAPIChanges,
+      displaysMultipleLinesAfterAPIChanges,
       multipleLinesClass,
     }) => ({
       'has-inline-element': !hasAbstractElements,
-      [multipleLinesClass]: hasMultipleLinesAfterAPIChanges,
+      [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
       /*
        * The following display the "changes" highlight styles
        * on the parent div (this one) when there is not an abstract
