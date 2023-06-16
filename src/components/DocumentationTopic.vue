@@ -622,6 +622,13 @@ export default {
     }
 
     this.store.reset();
+    this.store.setReferences(this.references);
+  },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
   },
 };
 </script>
@@ -729,6 +736,17 @@ export default {
 
     .source {
       border-radius: var(--code-border-radius);
+    }
+
+    /* wrap declaration only when not using smart wrapping */
+    .source:not(.has-multiple-lines) > code {
+      @include inTargetIde() {
+        white-space: pre-wrap;
+
+        .token-identifier {
+          word-break: break-all;
+        }
+      }
     }
 
     .single-line {

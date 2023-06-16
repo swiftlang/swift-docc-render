@@ -138,6 +138,12 @@ export default {
     this.store.reset();
     this.store.setReferences(this.references);
   },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
+  },
   mounted() {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
