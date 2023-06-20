@@ -9,24 +9,25 @@
 -->
 
 <template>
-  <component
-    :id="anchor"
-    :is="`h${level}`"
-  >
+  <div class="wrapper">
+    <component
+      :id="anchor"
+      :is="`h${level}`"
+      class="heading"
+    >
+      <slot />
+    </component>
     <router-link
       v-if="shouldLink"
       :to="{ hash: `#${anchor}` }"
-      class="header-anchor"
-      aria-label="Scroll to section"
+      class="anchor"
       @click="handleFocusAndScroll(anchor)"
+      :aria-labelledby="`${anchor} inPageLink`"
     >
-      <slot />
+      <span class="visuallyhidden" id="inPageLink" >{{ $t('accessibility.in-page-link') }}</span>
       <LinkIcon class="icon" aria-hidden="true" />
     </router-link>
-    <template v-else>
-      <slot />
-    </template>
-  </component>
+  </div>
 </template>
 
 <script>
@@ -73,18 +74,33 @@ export default {
 
 $icon-margin: 7px;
 
-.header-anchor {
+.wrapper {
+  display: flex;
+  align-items: baseline;
+}
+
+.heading {
+  &:hover + .anchor > .icon {
+    visibility: visible;
+  }
+}
+
+.anchor {
   color: inherit;
   text-decoration: none;
-  position: relative;
-  padding-right: $icon-size-default + $icon-margin;
-  display: inline-block;
+  margin: 0;
+  padding-right: $icon-margin;
+
+  &:hover > .icon {
+    visibility: visible;
+  }
+
+  &:focus > .icon {
+    visibility: visible;
+  }
 
   .icon {
-    position: absolute;
-    right: 0;
-    bottom: .2em;
-    display: none;
+    visibility: hidden;
     height: $icon-size-default;
     margin-left: $icon-margin;
   }

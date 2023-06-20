@@ -23,7 +23,7 @@ describe('LinkableHeading', () => {
       slots: { default: 'Title' },
     });
     expect(wrapper.text()).toBe('Title');
-    expect(wrapper.is('h2')).toBe(true);
+    expect(wrapper.find('h2').exists()).toBe(true);
   });
 
   it('renders a heading with a given level', () => {
@@ -33,10 +33,10 @@ describe('LinkableHeading', () => {
         level: 3,
       },
     });
-    expect(wrapper.is('h3')).toBe(true);
+    expect(wrapper.find('h3').exists()).toBe(true);
   });
 
-  it('renders a heading with a header anchor and an id on the wrapper', async () => {
+  it('renders a heading and an anchor inside a wrapper', async () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
       propsData: {
@@ -45,15 +45,14 @@ describe('LinkableHeading', () => {
       slots: { default: 'Title' },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.attributes('id')).toBe('title');
-    const headerAnchor = wrapper.find('.header-anchor');
-    expect(headerAnchor.props('to')).toEqual({ hash: '#title' });
-    expect(headerAnchor.text()).toBe('Title');
+    expect(wrapper.find('.heading').text()).toBe('Title');
+    expect(wrapper.find('.heading').attributes('id')).toBe('title');
+    expect(wrapper.find('.anchor').props('to')).toEqual({ hash: '#title' });
   });
 
   it('does not render anchor if there is no anchor', () => {
     const wrapper = shallowMount(LinkableHeading);
-    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+    expect(wrapper.find('.anchor').exists()).toBe(false);
   });
 
   it('does not render anchor if target ide is true', () => {
@@ -66,7 +65,7 @@ describe('LinkableHeading', () => {
         isTargetIDE: true,
       },
     });
-    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+    expect(wrapper.find('.anchor').exists()).toBe(false);
   });
 
   it('does not render anchor if `enableMinimized` is true', () => {
@@ -79,6 +78,6 @@ describe('LinkableHeading', () => {
         enableMinimized: true,
       },
     });
-    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+    expect(wrapper.find('.anchor').exists()).toBe(false);
   });
 });
