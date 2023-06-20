@@ -33,6 +33,7 @@
 <script>
 import { PortalTarget } from 'portal-vue';
 
+import AppStore from 'docc-render/stores/AppStore';
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import metadata from 'theme/mixins/metadata.js';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
@@ -135,8 +136,17 @@ export default {
     },
   },
   created() {
+    if (this.metadata.availableLocales) {
+      AppStore.setAvailableLocales(this.metadata.availableLocales);
+    }
     this.store.reset();
     this.store.setReferences(this.references);
+  },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
   },
   mounted() {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);

@@ -151,6 +151,7 @@ import metadata from 'theme/mixins/metadata.js';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
 
+import AppStore from 'docc-render/stores/AppStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
@@ -627,7 +628,17 @@ export default {
       });
     }
 
+    if (this.availableLocales) {
+      AppStore.setAvailableLocales(this.availableLocales);
+    }
     this.store.reset();
+    this.store.setReferences(this.references);
+  },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
   },
 };
 </script>

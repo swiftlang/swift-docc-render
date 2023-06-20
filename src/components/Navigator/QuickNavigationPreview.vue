@@ -108,16 +108,6 @@ export default {
       };
     },
   },
-  watch: {
-    json: {
-      immediate: true,
-      async handler(json) {
-        const { references = {} } = json || {};
-        await this.$nextTick();
-        PreviewStore.setReferences(references);
-      },
-    },
-  },
 };
 </script>
 

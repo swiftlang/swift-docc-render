@@ -20,7 +20,6 @@ import {
 import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import TutorialsOverview from 'theme/components/TutorialsOverview.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
-import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   name: 'TutorialsOverview',
@@ -79,7 +78,6 @@ export default {
       this.$nextTick(() => {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
-        AppStore.setAvailableLocales(this.topicData.metadata.availableLocales);
       });
     },
   },
