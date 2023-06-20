@@ -178,6 +178,9 @@ export default {
     references(references) {
       this.store.setReferences(references);
     },
+    'metadata.availableLocales': function availableLocalesWatcher(availableLocales) {
+      AppStore.setAvailableLocales(availableLocales);
+    },
   },
   SectionKind,
 };

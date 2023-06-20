@@ -639,6 +639,9 @@ export default {
     references(references) {
       this.store.setReferences(references);
     },
+    availableLocales(availableLocales) {
+      AppStore.setAvailableLocales(availableLocales);
+    },
   },
 };
 </script>
