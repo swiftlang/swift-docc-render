@@ -167,9 +167,7 @@ export default {
     },
   },
   created() {
-    if (this.metadata.availableLocales) {
-      AppStore.setAvailableLocales(this.metadata.availableLocales);
-    }
+    AppStore.setAvailableLocales(this.metadata.availableLocales);
     this.store.reset();
     this.store.setReferences(this.references);
   },

@@ -628,9 +628,7 @@ export default {
       });
     }
 
-    if (this.availableLocales) {
-      AppStore.setAvailableLocales(this.availableLocales);
-    }
+    AppStore.setAvailableLocales(this.availableLocales || []);
     this.store.reset();
     this.store.setReferences(this.references);
   },
