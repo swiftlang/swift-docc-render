@@ -11,7 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Footer from 'docc-render/components/Footer.vue';
 
-const { ColorSchemeToggle, LocaleSelector } = Footer.components;
+const { ColorSchemeToggle } = Footer.components;
 
 describe('Footer', () => {
   let wrapper;
@@ -28,15 +28,19 @@ describe('Footer', () => {
     expect(wrapper.contains(ColorSchemeToggle)).toBe(true);
   });
 
-  it('renders LocaleSelector if enablei18n is true', () => {
-    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
-
+  it('exposes a default slot', () => {
+    let slotProps = null;
     wrapper = shallowMount(Footer, {
-      propsData: {
-        enablei18n: true,
+      scopedSlots: {
+        default(props) {
+          slotProps = props;
+          return this.$createElement('div', { class: 'slot-class' }, 'Slot Content');
+        },
       },
     });
-
-    expect(wrapper.find(LocaleSelector).exists()).toBe(true);
+    expect(slotProps).toEqual({
+      className: 'row',
+    });
+    expect(wrapper.find('.slot-class').text()).toBe('Slot Content');
   });
 });
