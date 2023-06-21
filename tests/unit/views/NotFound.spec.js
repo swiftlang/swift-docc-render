@@ -18,7 +18,7 @@ describe('NotFound', () => {
     const wrapper = shallowMount(NotFound);
     const error = wrapper.find(GenericError);
     expect(error.exists()).toBe(true);
-    expect(error.props('message')).toBe('The page you’re looking for can’t be found.');
+    expect(error.props('message')).toBe('error.not-found');
   });
 
   it('exposes a default slot', () => {
