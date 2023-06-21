@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import AppStore from 'docc-render/stores/AppStore';
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 import Nav from 'theme/components/TutorialsOverview/Nav.vue';
 import metadata from 'theme/mixins/metadata.js';
@@ -100,6 +101,7 @@ export default {
     };
   },
   created() {
+    AppStore.setAvailableLocales(this.metadata.availableLocales);
     this.store.reset();
     this.store.setReferences(this.references);
   },
@@ -107,6 +109,9 @@ export default {
     // update the references in the store, in case they update, but the component is not re-created
     references(references) {
       this.store.setReferences(references);
+    },
+    'metadata.availableLocales': function availableLocalesWatcher(availableLocales) {
+      AppStore.setAvailableLocales(availableLocales);
     },
   },
 };
