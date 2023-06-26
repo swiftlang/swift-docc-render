@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import DeclarationSource
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
-import { hasMultipleLines } from 'docc-render/utils/multipleLines';
+import { displaysMultipleLines } from 'docc-render/utils/multipleLines';
 import { themeSettingsState } from 'docc-render/utils/theme-settings';
 import { indentDeclaration } from 'docc-render/utils/indentation';
 import Language from '@/constants/Language';
@@ -24,7 +24,7 @@ const { TokenKind } = Token.constants;
 jest.mock('@/utils/indentation');
 jest.mock('@/utils/multipleLines');
 
-hasMultipleLines.mockImplementation(() => false);
+displaysMultipleLines.mockImplementation(() => false);
 
 describe('DeclarationSource', () => {
   let wrapper;
@@ -81,21 +81,102 @@ describe('DeclarationSource', () => {
     });
   });
 
-  it('applies the `multipleLinesClass` class if declaration group has multiple lines', async () => {
-    expect(wrapper.vm.hasMultipleLines).toBe(false);
+  it('applies the `multipleLinesClass` class if declaration group displays multiple lines', async () => {
+    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).not.toContain(multipleLinesClass);
 
-    hasMultipleLines.mockResolvedValue(true);
+    displaysMultipleLines.mockResolvedValue(true);
     wrapper = shallowMount(DeclarationSource, { propsData });
-    expect(wrapper.vm.hasMultipleLines).toBe(true);
-
     await wrapper.vm.$nextTick();
     expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain(multipleLinesClass);
   });
 
-  it('runs the hasMultipleLines, after `indentDeclaration` for ObjC code', async () => {
+  it('applies the `has-multiple-lines` class if declaration group has multiple lines regardless of window width', async () => {
+    const multiLineDeclaration = {
+      tokens: [
+        {
+          kind: TokenKind.keyword,
+          text: 'func',
+        },
+        {
+          kind: TokenKind.text,
+          text: ' ',
+        },
+        {
+          kind: TokenKind.identifier,
+          text: 'Foo',
+        },
+        {
+          kind: TokenKind.text,
+          text: '(\n',
+        },
+        {
+          kind: TokenKind.externalParam,
+          text: '_',
+        },
+        {
+          kind: TokenKind.text,
+          text: ' ',
+        },
+        {
+          kind: TokenKind.internalParam,
+          text: 'Bar',
+        },
+        {
+          kind: TokenKind.text,
+          text: ': ',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Self',
+        },
+        {
+          kind: TokenKind.text,
+          text: '.',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'FooBar',
+        },
+        {
+          kind: TokenKind.text,
+          text: ',\n',
+        },
+        {
+          kind: TokenKind.externalParam,
+          text: 'context',
+        },
+        {
+          kind: TokenKind.text,
+          text: ': ',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Self',
+        },
+        {
+          kind: TokenKind.text,
+          text: '.',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Context',
+        },
+        {
+          kind: TokenKind.text,
+          text: ')',
+        },
+      ],
+    };
+
+    wrapper = shallowMount(DeclarationSource, { propsData: multiLineDeclaration });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain('has-multiple-lines');
+  });
+
+  it('runs the displaysMultipleLines, after `indentDeclaration` for ObjC code', async () => {
     const callStack = [];
-    hasMultipleLines.mockImplementationOnce(() => {
-      callStack.push('hasMultipleLines');
+    displaysMultipleLines.mockImplementationOnce(() => {
+      callStack.push('displaysMultipleLines');
       return true;
     });
     indentDeclaration.mockImplementationOnce(() => callStack.push('indentDeclaration'));
@@ -110,7 +191,7 @@ describe('DeclarationSource', () => {
     expect(indentDeclaration).toHaveBeenCalledTimes(1);
     expect(indentDeclaration)
       .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
-    expect(callStack).toEqual(['indentDeclaration', 'hasMultipleLines']);
+    expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
   });
 });
 

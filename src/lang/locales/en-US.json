@@ -164,7 +164,8 @@
   "read-only": "Read-only",
   "error": {
     "unknown": "An unknown error occurred.",
-    "image": "Image failed to load"
+    "image": "Image failed to load",
+    "not-found": "The page you're looking for can't be found."
   },
   "color-scheme": {
     "select": "Select a color scheme preference",

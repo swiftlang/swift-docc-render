@@ -5,6 +5,7 @@ Array [
   Object {
     "anchor": "app-top",
     "i18n": false,
+    "isSymbol": false,
     "level": 1,
     "title": "PageTitle",
   },
