@@ -36,6 +36,8 @@ code {
     content: attr(data-after-code);
   }
   &::before, &::after {
+    // ensure the pseudo elements dont fly off in space
+    display: block;
     @include visuallyhidden()
   }
 }
