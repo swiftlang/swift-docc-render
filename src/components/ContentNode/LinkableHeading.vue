@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="wrapper">
+  <div class="heading-wrapper">
     <component
       :id="anchor"
       :is="`h${level}`"
@@ -22,10 +22,10 @@
       :to="{ hash: `#${anchor}` }"
       class="anchor"
       @click="handleFocusAndScroll(anchor)"
-      :aria-labelledby="`${anchor} inPageLink`"
     >
-      <span class="visuallyhidden" id="inPageLink" >{{ $t('accessibility.in-page-link') }}</span>
       <LinkIcon class="icon" aria-hidden="true" />
+      <span :aria-labelledby="anchor" class="visuallyhidden" />
+      <span class="visuallyhidden" >{{ $t('accessibility.in-page-link') }}</span>
     </router-link>
   </div>
 </template>
@@ -74,7 +74,7 @@ export default {
 
 $icon-margin: 7px;
 
-.wrapper {
+.heading-wrapper {
   display: flex;
   align-items: baseline;
 }
