@@ -48,6 +48,9 @@ describe('LinkableHeading', () => {
     expect(wrapper.find('.heading').text()).toBe('Title');
     expect(wrapper.find('.heading').attributes('id')).toBe('title');
     expect(wrapper.find('.anchor').props('to')).toEqual({ hash: '#title' });
+    // assert screen readers description of title + in page link
+    expect(wrapper.find('[aria-labelledby="title"]').exists()).toBe(true);
+    expect(wrapper.find('.anchor').text()).toBe('accessibility.in-page-link');
   });
 
   it('does not render anchor if there is no anchor', () => {
