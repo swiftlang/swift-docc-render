@@ -9,25 +9,24 @@
 -->
 
 <template>
-  <div class="heading-wrapper">
-    <component
-      :id="anchor"
-      :is="`h${level}`"
-      class="heading"
-    >
-      <slot />
-    </component>
+  <component
+    :id="anchor"
+    :is="`h${level}`"
+  >
     <router-link
       v-if="shouldLink"
       :to="{ hash: `#${anchor}` }"
-      class="anchor"
+      class="header-anchor"
       @click="handleFocusAndScroll(anchor)"
     >
-      <LinkIcon class="icon" aria-hidden="true" />
-      <span :aria-labelledby="anchor" class="visuallyhidden" />
+      <slot />
       <span class="visuallyhidden" >{{ $t('accessibility.in-page-link') }}</span>
+      <LinkIcon class="icon" aria-hidden="true" />
     </router-link>
-  </div>
+    <template v-else>
+      <slot />
+    </template>
+  </component>
 </template>
 
 <script>
@@ -74,39 +73,26 @@ export default {
 
 $icon-margin: 7px;
 
-.heading-wrapper {
-  display: flex;
-  align-items: baseline;
-}
-
-.heading {
-  &:hover + .anchor > .icon {
-    visibility: visible;
-  }
-}
-
-.anchor {
+.header-anchor {
   color: inherit;
   text-decoration: none;
-  margin: 0;
-  padding-right: $icon-margin;
-
-  &:hover > .icon {
-    visibility: visible;
-  }
-
-  &:focus > .icon {
-    visibility: visible;
-  }
+  position: relative;
+  padding-right: $icon-size-default + $icon-margin;
+  display: inline-block;
 
   .icon {
-    visibility: hidden;
+    position: absolute;
+    right: 0;
+    bottom: .2em;
+    display: none;
     height: $icon-size-default;
     margin-left: $icon-margin;
   }
 
-  &:hover .icon {
-    display: inline;
+  &:hover, &:focus {
+    .icon {
+      display: inline;
+    }
   }
 }
 </style>

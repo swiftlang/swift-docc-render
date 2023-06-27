@@ -75,8 +75,7 @@ h2,
 h3,
 h4,
 h5,
-h6,
-.heading-wrapper {
+h6 {
   color: var(--colors-header-text, var(--color-header-text));
 
   // Add top margin to any element that immediately follows a heading.
