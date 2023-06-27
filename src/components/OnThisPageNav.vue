@@ -20,8 +20,9 @@
           class="base-link"
           @click.native="handleFocusAndScroll(item.anchor)"
         >
-          <WordBreak v-if="item.i18n">{{ $t(item.title) }}</WordBreak>
-          <WordBreak v-else>{{ item.title }}</WordBreak>
+          <component :is="getWrapperComponent(item)">
+            {{ getTextContent(item) }}
+          </component>
         </router-link>
       </li>
     </ul>
@@ -121,6 +122,12 @@ export default {
         'parent-item': item.level <= 2,
         'child-item': item.level === 3,
       };
+    },
+    getTextContent(item) {
+      return item.i18n ? this.$t(item.title) : item.title;
+    },
+    getWrapperComponent(item) {
+      return item.isSymbol ? WordBreak : 'span';
     },
   },
 };
