@@ -182,7 +182,8 @@
       "start": "start of code block",
       "end": "end of code block"
     },
-    "skip-navigation": "Skip Navigation"
+    "skip-navigation": "Skip Navigation",
+    "in-page-link": "in page link"
   },
   "select-language": "Select the language for this page",
   "icons": {
