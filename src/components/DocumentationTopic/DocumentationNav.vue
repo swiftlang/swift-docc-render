@@ -224,6 +224,9 @@ $sidenav-icon-padding-size: 5px;
   @include font-styles(documentation-nav);
 
   &-settings {
+    // ensure settings can get smaller if needed
+    min-width: 0;
+
     @include font-styles(nav-toggles);
 
     @include breakpoint-only-largenav() {
@@ -246,6 +249,7 @@ $sidenav-icon-padding-size: 5px;
       align-items: center;
       color: var(--color-nav-current-link);
       margin-left: 0;
+      min-width: 0;
 
       &:first-child:not(:only-child) {
         margin-right: $nav-space-between-elements;

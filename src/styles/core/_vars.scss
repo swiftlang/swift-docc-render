@@ -81,3 +81,11 @@ $on-this-page-aside-width: 192px;
 
 // Suggest Lang
 $suggest-lang-height: 52px;
+
+// Localized Quotes
+$localizedQuotes: (
+  ja-JP: "「" "」",
+) !default;
+
+// Localized Fonts
+$localizedFonts: () !default;

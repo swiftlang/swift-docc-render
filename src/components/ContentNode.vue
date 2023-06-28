@@ -438,6 +438,7 @@ function renderNode(createElement, references) {
           isActive: node.isActive,
           ideTitle: reference.ideTitle,
           titleStyle: reference.titleStyle,
+          hasInlineFormatting: !!titleInlineContent,
         },
       }, (
         titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText

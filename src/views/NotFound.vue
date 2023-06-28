@@ -9,16 +9,20 @@
 -->
 
 <template>
-  <GenericError message='The page you’re looking for can’t be found.'>
+  <GenericError :message="$t('error.not-found')">
     <slot />
   </GenericError>
 </template>
 
 <script>
 import GenericError from 'theme/components/GenericError.vue';
+import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   name: 'NotFound',
   components: { GenericError },
+  created() {
+    AppStore.setAllLocalesAreAvailable();
+  },
 };
 </script>

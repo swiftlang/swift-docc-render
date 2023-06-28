@@ -12,7 +12,7 @@
   <pre
     ref="declarationGroup"
     class="source"
-    :class="{ [multipleLinesClass]: hasMultipleLines }"
+    :class="{ [multipleLinesClass]: displaysMultipleLines, 'has-multiple-lines': hasMultipleLines }"
   ><CodeBlock ref="code"><Token
     v-for="(token, i) in formattedTokens"
     :key="i"
@@ -21,7 +21,7 @@
 
 <script>
 import { indentDeclaration } from 'docc-render/utils/indentation';
-import { hasMultipleLines } from 'docc-render/utils/multipleLines';
+import { displaysMultipleLines } from 'docc-render/utils/multipleLines';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import Language from 'docc-render/constants/Language';
@@ -36,7 +36,7 @@ export default {
   name: 'DeclarationSource',
   data() {
     return {
-      hasMultipleLines: false,
+      displaysMultipleLines: false,
       multipleLinesClass,
     };
   },
@@ -89,6 +89,7 @@ export default {
       let closeParenTokenIndex = null;
       let closeParenCharIndex = null;
       let numUnclosedParens = 0;
+      let firstKeywordTokenIndex = null;
 
       // loop through every declaration token
       while (i < tokens.length) {
@@ -98,31 +99,39 @@ export default {
         const prevToken = tokens[i - 1];
         const nextToken = tokens[i + 1];
 
-        // loop through the token text to look for "(" and ")" characters
-        const tokenLength = (token.text || '').length;
-        // eslint-disable-next-line no-plusplus
-        for (let k = 0; k < tokenLength; k++) {
-          if (token.text.charAt(k) === '(') {
-            numUnclosedParens += 1;
-            // keep track of the token/character position of the first "("
-            if (openParenCharIndex == null) {
-              openParenCharIndex = k;
-              openParenTokenIndex = i;
-            }
-          }
+        // keep track of the index of the first keyword token
+        if (!firstKeywordTokenIndex && token.kind === TokenKind.keyword) {
+          firstKeywordTokenIndex = i;
+        }
 
-          if (token.text.charAt(k) === ')') {
-            numUnclosedParens -= 1;
-            // if this ")" balances out the number of "(" characters that have
-            // been seen, this is the one that pairs up with the first one
-            if (
-              openParenTokenIndex !== null
-              && closeParenTokenIndex == null
-              && numUnclosedParens === 0
-            ) {
-              closeParenCharIndex = k;
-              closeParenTokenIndex = i;
-              break;
+        // loop through the token text to look for "(" and ")" characters after
+        // we've already encountered the first keyword
+        if (firstKeywordTokenIndex !== null) {
+          const tokenLength = (token.text || '').length;
+          // eslint-disable-next-line no-plusplus
+          for (let k = 0; k < tokenLength; k++) {
+            if (token.text.charAt(k) === '(') {
+              numUnclosedParens += 1;
+              // keep track of the token/character position of the first "("
+              if (openParenCharIndex == null) {
+                openParenCharIndex = k;
+                openParenTokenIndex = i;
+              }
+            }
+
+            if (token.text.charAt(k) === ')') {
+              numUnclosedParens -= 1;
+              // if this ")" balances out the number of "(" characters that have
+              // been seen, this is the one that pairs up with the first one
+              if (
+                openParenTokenIndex !== null
+                && closeParenTokenIndex == null
+                && numUnclosedParens === 0
+              ) {
+                closeParenCharIndex = k;
+                closeParenTokenIndex = i;
+                break;
+              }
             }
           }
         }
@@ -140,8 +149,10 @@ export default {
         // if we find some text ending with ", " and the next token is the start
         // of a new param, update this token text to replace the space with a
         // newline followed by 4 spaces
-        if (token.text && token.text.endsWith(', ')
-          && nextToken && nextToken.kind === TokenKind.externalParam) {
+        const isStartOfParam = ({ kind }) => (
+          kind === TokenKind.attribute || kind === TokenKind.externalParam
+        );
+        if (token.text && token.text.endsWith(', ') && nextToken && isStartOfParam(nextToken)) {
           newToken.text = `${token.text.trimEnd()}\n${indent}`;
           indentedParams = true;
         }
@@ -171,6 +182,14 @@ export default {
 
       return newTokens;
     },
+    hasMultipleLines({ formattedTokens }) {
+      return formattedTokens.reduce((lineCount, tokens, idx) => {
+        let REGEXP = /\n/g;
+        if (idx === formattedTokens.length - 1) REGEXP = /\n(?!$)/g;
+        if (!tokens.text) return lineCount; // handles TokenKind add & changed
+        return lineCount + (tokens.text.match(REGEXP) || []).length;
+      }, 1) >= 2;
+    },
   },
   methods: {
     propsFor(token) {
@@ -181,13 +200,20 @@ export default {
         tokens: token.tokens,
       };
     },
+    handleWindowResize() {
+      this.displaysMultipleLines = displaysMultipleLines(this.$refs.declarationGroup);
+    },
   },
   async mounted() {
+    window.addEventListener('resize', this.handleWindowResize);
     if (this.language === Language.objectiveC.key.api) {
       await this.$nextTick();
-      indentDeclaration(this.$refs.code, this.language);
+      indentDeclaration(this.$refs.code.$el, this.language);
     }
-    if (hasMultipleLines(this.$refs.declarationGroup)) this.hasMultipleLines = true;
+    this.handleWindowResize();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleWindowResize);
   },
 };
 </script>
@@ -214,7 +240,7 @@ $docs-declaration-source-border-width: 1px !default;
   // the scrollbar is not clipped by this element depending on its border-radius
   @include new-stacking-context;
 
-  &.has-multiple-lines {
+  &.displays-multiple-lines {
     border-radius: $border-radius;
   }
 

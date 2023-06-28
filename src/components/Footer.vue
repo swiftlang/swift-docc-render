@@ -13,25 +13,16 @@
     <div class="row">
       <ColorSchemeToggle />
     </div>
-    <div v-if="enablei18n" class="row">
-      <LocaleSelector/>
-    </div>
+    <slot className="row"/>
   </footer>
 </template>
 
 <script>
 import ColorSchemeToggle from 'docc-render/components/ColorSchemeToggle.vue';
-import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 
 export default {
   name: 'Footer',
-  components: { ColorSchemeToggle, LocaleSelector },
-  props: {
-    enablei18n: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  components: { ColorSchemeToggle },
 };
 </script>
 

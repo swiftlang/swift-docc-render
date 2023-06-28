@@ -161,10 +161,11 @@
     "possible-values": "Value | Possible Values"
   },
   "content-type": "Content-Type: {value}",
-  "read-only": "Read only",
+  "read-only": "Read-only",
   "error": {
     "unknown": "An unknown error occurred.",
-    "image": "Image failed to load"
+    "image": "Image failed to load",
+    "not-found": "The page you're looking for can't be found."
   },
   "color-scheme": {
     "select": "Select a color scheme preference",
@@ -181,7 +182,8 @@
       "start": "start of code block",
       "end": "end of code block"
     },
-    "skip-navigation": "Skip Navigation"
+    "skip-navigation": "Skip Navigation",
+    "in-page-link": "in page link"
   },
   "select-language": "Select the language for this page",
   "icons": {

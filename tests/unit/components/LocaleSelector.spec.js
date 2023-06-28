@@ -25,6 +25,11 @@ jest.mock('theme/lang/locales.json', () => (
       name: '简体中文',
       slug: 'cn',
     },
+    {
+      code: 'ja-JP',
+      name: '日本語',
+      slug: 'ja',
+    },
   ]
 ));
 
@@ -35,9 +40,11 @@ jest.mock('docc-render/utils/i18n-utils', () => ({
 
 jest.mock('docc-render/stores/AppStore', () => ({
   setPreferredLocale: jest.fn(),
+  state: { availableLocales: ['en-US', 'zh-CN'] },
 }));
 
 const { ChevronThickIcon } = LocaleSelector.components;
+const availableLocales = ['en-US', 'zh-CN', 'ja-JP'];
 
 describe('LocaleSelector', () => {
   let wrapper;
@@ -48,6 +55,9 @@ describe('LocaleSelector', () => {
         $router: {
           push: jest.fn(),
         },
+      },
+      propsData: {
+        availableLocales,
       },
     });
   });
@@ -73,7 +83,7 @@ describe('LocaleSelector', () => {
     expect(wrapper.find(ChevronThickIcon).exists()).toBe(true);
   });
 
-  it('renders the options with locales\' values and names', () => {
+  it('only renders available locales for options', () => {
     const options = wrapper.findAll('option');
     expect(options).toHaveLength(2);
     expect(options.at(0).text()).toBe('English');

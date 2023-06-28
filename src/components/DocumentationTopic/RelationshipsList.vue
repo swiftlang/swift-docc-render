@@ -68,13 +68,13 @@ export default {
     };
   },
   computed: {
-    classes({ changeType, multipleLinesClass, hasMultipleLinesAfterAPIChanges }) {
+    classes({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) {
       return [
         {
           inline: this.shouldDisplayInline,
           column: !this.shouldDisplayInline,
           [`changed changed-${changeType}`]: !!changeType,
-          [multipleLinesClass]: hasMultipleLinesAfterAPIChanges,
+          [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
         },
       ];
     },

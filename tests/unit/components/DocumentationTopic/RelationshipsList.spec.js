@@ -80,12 +80,12 @@ describe('RelationshipsList', () => {
     expect(wrapper.classes('inline')).toBe(false);
   });
 
-  it('applies the `multipleLinesClass` class if `hasMultipleLinesAfterAPIChanges` is true', () => {
+  it('applies the `multipleLinesClass` class if `displaysMultipleLinesAfterAPIChanges` is true', () => {
     wrapper = shallowMount({
       ...RelationshipsList,
       computed: {
         ...RelationshipsList.computed,
-        hasMultipleLinesAfterAPIChanges: () => true,
+        displaysMultipleLinesAfterAPIChanges: () => true,
       },
     },
     {

@@ -9,11 +9,6 @@
 */
 
 /**
- * Utility functions for working with Assets
- */
-import { baseUrl } from 'docc-render/utils/theme-settings';
-
-/**
  * Separate array of variants by light/dark mode
  * @param {array} variants
  * @returns {{ light: [], dark: [] }}
@@ -65,15 +60,29 @@ export function pathJoin(parts) {
 }
 
 /**
- * Normalizes asset urls, by prefixing the baseUrl path to them.
- * @param {String} url
- * @return {String}
+ * Normalizes paths, by prefixing the baseUrl path to them.
+ * @param {string | string[]} rawPath
+ * @return {string}
  */
-export function normalizeAssetUrl(url) {
-  if (!url || typeof url !== 'string' || url.startsWith(baseUrl) || !url.startsWith('/')) {
-    return url;
+export function normalizePath(rawPath) {
+  const { baseUrl } = window;
+  const path = Array.isArray(rawPath) ? pathJoin(rawPath) : rawPath;
+  if (!path || typeof path !== 'string' || path.startsWith(baseUrl) || !path.startsWith('/')) {
+    return path;
   }
-  return pathJoin([baseUrl, url]);
+  return pathJoin([baseUrl, path]);
+}
+
+/**
+ * Normalizes relative paths, by making them start with /.
+ * @param {string} path
+ * @return {string}
+ */
+export function normalizeRelativePath(path) {
+  // Sometimes `paths` data from `variants` are prefixed with a leading
+  // slash and sometimes they aren't
+  if (!path) return path;
+  return path.startsWith('/') ? path : `/${path}`;
 }
 
 /**
@@ -81,7 +90,7 @@ export function normalizeAssetUrl(url) {
  * @param {String} url
  * @returns {string|undefined}
  */
-export function toCSSUrl(url) { return url ? `url('${normalizeAssetUrl(url)}')` : undefined; }
+export function toCSSUrl(url) { return url ? `url('${normalizePath(url)}')` : undefined; }
 
 /**
  * Loads an image and gets its dimensions

@@ -13,7 +13,10 @@
     class="doc-topic"
     :class="{ 'with-on-this-page': enableOnThisPageNav && isOnThisPageNavVisible }"
   >
-    <main class="main" id="main" role="main" tabindex="0">
+    <component
+      :is="isTargetIDE ? 'div' : 'main'"
+      class="main" id="main"
+    >
       <DocumentationHero
         :role="role"
         :enhanceBackground="enhanceBackground"
@@ -135,7 +138,7 @@
         </template>
       </div>
       <BetaLegalText v-if="!isTargetIDE && hasBetaContent" />
-    </main>
+    </component>
     <div aria-live="polite" class="visuallyhidden">
       {{ $t('documentation.current-page', { title: pageTitle }) }}
     </div>
@@ -146,7 +149,9 @@
 import Language from 'docc-render/constants/Language';
 import metadata from 'theme/mixins/metadata.js';
 import { buildUrl } from 'docc-render/utils/url-helper';
+import { normalizeRelativePath } from 'docc-render/utils/assets';
 
+import AppStore from 'docc-render/stores/AppStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
@@ -361,6 +366,10 @@ export default {
       required: false,
       validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
+    availableLocales: {
+      type: Array,
+      required: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.identifier change, the provided value
@@ -379,14 +388,13 @@ export default {
     };
   },
   computed: {
-    normalizedSwiftPath: ({ normalizePath, swiftPath }) => (normalizePath(swiftPath)),
+    normalizedSwiftPath: ({ swiftPath }) => (normalizeRelativePath(swiftPath)),
     normalizedObjcPath: ({
-      normalizePath,
       objcPath,
       swiftPath,
     }) => (
       // do not append language query parameter if no swiftPath exists
-      normalizePath((objcPath && swiftPath) ? buildUrl(objcPath, {
+      normalizeRelativePath((objcPath && swiftPath) ? buildUrl(objcPath, {
         language: Language.objectiveC.key.url,
       }) : objcPath)
     ),
@@ -514,12 +522,6 @@ export default {
     },
   },
   methods: {
-    normalizePath(path) {
-      // Sometimes `paths` data from `variants` are prefixed with a leading
-      // slash and sometimes they aren't
-      if (!path) return path;
-      return path.startsWith('/') ? path : `/${path}`;
-    },
     extractProps(json) {
       const {
         abstract,
@@ -536,6 +538,7 @@ export default {
           conformance,
           hasNoExpandedDocumentation,
           modules,
+          availableLocales,
           platforms,
           required: isRequirement = false,
           roleHeading,
@@ -577,6 +580,7 @@ export default {
         downloadNotAvailableSummary,
         diffAvailability,
         hasNoExpandedDocumentation,
+        availableLocales,
         hierarchy,
         role,
         identifier,
@@ -615,7 +619,7 @@ export default {
 
       this.$nextTick().then(() => {
         this.$router.replace({
-          path: this.normalizePath(this.objcPath),
+          path: normalizeRelativePath(this.objcPath),
           query: {
             ...query,
             language: Language.objectiveC.key.url,
@@ -624,7 +628,18 @@ export default {
       });
     }
 
+    AppStore.setAvailableLocales(this.availableLocales || []);
     this.store.reset();
+    this.store.setReferences(this.references);
+  },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
+    availableLocales(availableLocales) {
+      AppStore.setAvailableLocales(availableLocales);
+    },
   },
 };
 </script>
@@ -732,6 +747,17 @@ export default {
 
     .source {
       border-radius: var(--code-border-radius);
+    }
+
+    /* wrap declaration only when not using smart wrapping */
+    .source:not(.has-multiple-lines) > code {
+      @include inTargetIde() {
+        white-space: pre-wrap;
+
+        .token-identifier {
+          word-break: break-all;
+        }
+      }
     }
 
     .single-line {

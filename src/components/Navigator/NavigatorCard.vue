@@ -1146,6 +1146,10 @@ $filter-height-small: 60px;
 
     :deep(.filter__input) {
       @include font-styles(body);
+
+      &-label::after {
+        min-width: 70px;
+      }
     }
   }
 }

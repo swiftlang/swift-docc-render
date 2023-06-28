@@ -10,7 +10,7 @@
 
 import { ChangeNames } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
-import { hasMultipleLines } from 'docc-render/utils/multipleLines';
+import { displaysMultipleLines } from 'docc-render/utils/multipleLines';
 
 const latestPrefix = 'latest_';
 
@@ -28,10 +28,10 @@ export const APIChangesMultipleLines = {
     };
   },
   computed: {
-    hasMultipleLinesAfterAPIChanges: ({ change, changeType, $refs }) => {
+    displaysMultipleLinesAfterAPIChanges: ({ change, changeType, $refs }) => {
       if (!change && !changeType) return false;
 
-      return hasMultipleLines($refs.apiChangesDiff);
+      return displaysMultipleLines($refs.apiChangesDiff);
     },
   },
 };

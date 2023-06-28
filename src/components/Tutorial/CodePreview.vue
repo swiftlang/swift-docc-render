@@ -178,7 +178,7 @@ export default {
         this.shouldDisplayHideLabel
           ? this.$t('verbs.hide')
           : this.$t('verbs.show')
-        }`;
+      }`;
     },
   },
   methods: {
@@ -227,6 +227,11 @@ $duration: 0.2s;
 
   :deep(.code-listing) {
     color: var(--text, var(--color-code-plain));
+
+    .code-line-container {
+      // add extra padding, so we have extra space on right when scrolling is needed
+      padding-right: 14px;
+    }
   }
 
   :deep(pre) {

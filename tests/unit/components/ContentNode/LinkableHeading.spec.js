@@ -48,7 +48,7 @@ describe('LinkableHeading', () => {
     expect(wrapper.attributes('id')).toBe('title');
     const headerAnchor = wrapper.find('.header-anchor');
     expect(headerAnchor.props('to')).toEqual({ hash: '#title' });
-    expect(headerAnchor.text()).toBe('Title');
+    expect(headerAnchor.text()).toBe('Title accessibility.in-page-link');
   });
 
   it('does not render anchor if there is no anchor', () => {
