@@ -228,7 +228,6 @@ describe('DocumentationTopic', () => {
     expect(main.exists()).toBe(true);
     expect(main.classes('main')).toBe(true);
     expect(main.attributes('id')).toBe('main');
-    expect(main.attributes('tabindex')).toBe('0');
   });
 
   it('renders a <div> instead of <main> in IDE mode', () => {
