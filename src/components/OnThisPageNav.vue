@@ -20,8 +20,9 @@
           class="base-link"
           @click.native="handleFocusAndScroll(item.anchor)"
         >
-          <WordBreak v-if="item.i18n">{{ $t(item.title) }}</WordBreak>
-          <WordBreak v-else>{{ item.title }}</WordBreak>
+          <component :is="getWrapperComponent(item)">
+            {{ getTextContent(item) }}
+          </component>
         </router-link>
       </li>
     </ul>
@@ -122,6 +123,12 @@ export default {
         'child-item': item.level === 3,
       };
     },
+    getTextContent(item) {
+      return item.i18n ? this.$t(item.title) : item.title;
+    },
+    getWrapperComponent(item) {
+      return item.isSymbol ? WordBreak : 'span';
+    },
   },
 };
 </script>
@@ -132,6 +139,10 @@ export default {
 ul {
   list-style-type: none;
   margin: 0;
+
+  li:first-child .base-link {
+    margin-top: 0;
+  }
 }
 
 .parent-item .base-link {
@@ -142,7 +153,7 @@ ul {
   color: var(--color-figure-gray-secondary);
   @include font-styles(body-reduced-tight);
   display: inline-block;
-  margin-bottom: 5px;
+  margin: 5px 0;
   transition: color 0.15s ease-in;
   max-width: 100%;
 }

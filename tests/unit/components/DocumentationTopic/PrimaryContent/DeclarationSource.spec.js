@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import DeclarationSource
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
-import { hasMultipleLines } from 'docc-render/utils/multipleLines';
+import { displaysMultipleLines } from 'docc-render/utils/multipleLines';
 import { themeSettingsState } from 'docc-render/utils/theme-settings';
 import { indentDeclaration } from 'docc-render/utils/indentation';
 import Language from '@/constants/Language';
@@ -24,7 +24,7 @@ const { TokenKind } = Token.constants;
 jest.mock('@/utils/indentation');
 jest.mock('@/utils/multipleLines');
 
-hasMultipleLines.mockImplementation(() => false);
+displaysMultipleLines.mockImplementation(() => false);
 
 describe('DeclarationSource', () => {
   let wrapper;
@@ -81,21 +81,102 @@ describe('DeclarationSource', () => {
     });
   });
 
-  it('applies the `multipleLinesClass` class if declaration group has multiple lines', async () => {
-    expect(wrapper.vm.hasMultipleLines).toBe(false);
+  it('applies the `multipleLinesClass` class if declaration group displays multiple lines', async () => {
+    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).not.toContain(multipleLinesClass);
 
-    hasMultipleLines.mockResolvedValue(true);
+    displaysMultipleLines.mockResolvedValue(true);
     wrapper = shallowMount(DeclarationSource, { propsData });
-    expect(wrapper.vm.hasMultipleLines).toBe(true);
-
     await wrapper.vm.$nextTick();
     expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain(multipleLinesClass);
   });
 
-  it('runs the hasMultipleLines, after `indentDeclaration` for ObjC code', async () => {
+  it('applies the `has-multiple-lines` class if declaration group has multiple lines regardless of window width', async () => {
+    const multiLineDeclaration = {
+      tokens: [
+        {
+          kind: TokenKind.keyword,
+          text: 'func',
+        },
+        {
+          kind: TokenKind.text,
+          text: ' ',
+        },
+        {
+          kind: TokenKind.identifier,
+          text: 'Foo',
+        },
+        {
+          kind: TokenKind.text,
+          text: '(\n',
+        },
+        {
+          kind: TokenKind.externalParam,
+          text: '_',
+        },
+        {
+          kind: TokenKind.text,
+          text: ' ',
+        },
+        {
+          kind: TokenKind.internalParam,
+          text: 'Bar',
+        },
+        {
+          kind: TokenKind.text,
+          text: ': ',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Self',
+        },
+        {
+          kind: TokenKind.text,
+          text: '.',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'FooBar',
+        },
+        {
+          kind: TokenKind.text,
+          text: ',\n',
+        },
+        {
+          kind: TokenKind.externalParam,
+          text: 'context',
+        },
+        {
+          kind: TokenKind.text,
+          text: ': ',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Self',
+        },
+        {
+          kind: TokenKind.text,
+          text: '.',
+        },
+        {
+          kind: TokenKind.typeIdentifier,
+          text: 'Context',
+        },
+        {
+          kind: TokenKind.text,
+          text: ')',
+        },
+      ],
+    };
+
+    wrapper = shallowMount(DeclarationSource, { propsData: multiLineDeclaration });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain('has-multiple-lines');
+  });
+
+  it('runs the displaysMultipleLines, after `indentDeclaration` for ObjC code', async () => {
     const callStack = [];
-    hasMultipleLines.mockImplementationOnce(() => {
-      callStack.push('hasMultipleLines');
+    displaysMultipleLines.mockImplementationOnce(() => {
+      callStack.push('displaysMultipleLines');
       return true;
     });
     indentDeclaration.mockImplementationOnce(() => callStack.push('indentDeclaration'));
@@ -109,8 +190,8 @@ describe('DeclarationSource', () => {
     await flushPromises();
     expect(indentDeclaration).toHaveBeenCalledTimes(1);
     expect(indentDeclaration)
-      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm, Language.objectiveC.key.api);
-    expect(callStack).toEqual(['indentDeclaration', 'hasMultipleLines']);
+      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
+    expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
   });
 });
 
@@ -772,6 +853,263 @@ func foobarbaz() -> Int`,
     expect(getText(tokenComponents)).toBe(
 `@discardableResult
 func foo(bar: @escaping () -> ()) -> Int`,
+    );
+  });
+
+  it('adds newlines for params that start with attribute tokens', () => {
+    const param = name => ([
+      {
+        kind: TokenKind.externalParam,
+        text: name,
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+    ]);
+    const attributeParam = name => ([
+      {
+        kind: TokenKind.attribute,
+        text: '@StringBuilder',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: name,
+      },
+      {
+        kind: TokenKind.text,
+        text: ': () -> ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'String',
+      },
+    ]);
+    const tokens = (paramA, paramB) => ([
+      {
+        kind: TokenKind.keyword,
+        text: 'func',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.identifier,
+        text: 'qux',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      ...paramA,
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      ...paramB,
+      {
+        kind: TokenKind.text,
+        text: ')',
+      },
+    ]);
+
+    // Before:
+    // func qux(a: Int, @StringBuilder b: () -> String)
+    //
+    // After:
+    // func qux(
+    //     a: Int,
+    //     @StringBuilder b: () -> String
+    // )
+    const wrapper = mountWithTokens(tokens(param('a'), attributeParam('b')));
+    const tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`func qux(
+    a: Int,
+    @StringBuilder b: () -> String
+)`,
+    );
+
+    // Before:
+    // func qux(@StringBuilder a: () -> String, b: Int)
+    //
+    // After:
+    // func qux(
+    //     @StringBuilder a: () -> String,
+    //     b: Int
+    // )
+    const wrapper2 = mountWithTokens(tokens(attributeParam('a'), param('b')));
+    const tokenComponents2 = wrapper2.findAll(Token);
+    expect(getText(tokenComponents2)).toBe(
+`func qux(
+    @StringBuilder a: () -> String,
+    b: Int
+)`,
+    );
+  });
+
+  it('indents params properly for functions prefixed with attributes which take arguments', () => {
+    const tokens = [
+      {
+        kind: TokenKind.attribute,
+        text: '@objc',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(quxA:B:) ',
+      },
+      {
+        kind: TokenKind.keyword,
+        text: 'func',
+      },
+      {
+        kind: TokenKind.text,
+        text: ' ',
+      },
+      {
+        kind: TokenKind.identifier,
+        text: 'quxqux',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'a',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'b',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ') -> ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+    ];
+
+    // Before:
+    // @objc(quxA:B:) func quxqux(a: Int, b: Int) -> Int
+    //
+    // After:
+    // @objc(quxA:B:)
+    // func quxqux(
+    //     a: Int,
+    //     b: Int
+    // ) -> Int
+    const wrapper = mountWithTokens(tokens);
+    const tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`@objc(quxA:B:)
+func quxqux(
+    a: Int,
+    b: Int
+) -> Int`,
+    );
+  });
+
+  it('indents params properly for initializers prefixed with attributes which take arguments', () => {
+    const tokens = [
+      {
+        kind: TokenKind.attribute,
+        text: '@objc',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(initWithA:B:) ',
+      },
+      {
+        kind: TokenKind.keyword,
+        text: 'init',
+      },
+      {
+        kind: TokenKind.text,
+        text: '(',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'a',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ', ',
+      },
+      {
+        kind: TokenKind.externalParam,
+        text: 'b',
+      },
+      {
+        kind: TokenKind.text,
+        text: ': ',
+      },
+      {
+        kind: TokenKind.typeIdentifier,
+        text: 'Int',
+      },
+      {
+        kind: TokenKind.text,
+        text: ')',
+      },
+    ];
+
+    // Before:
+    // @objc(initWithA:B:) init(a: Int, b: Int)
+    //
+    // After:
+    // @objc(initWithA:B:)
+    // init(
+    //    a: Int,
+    //    b: Int
+    // )
+    const wrapper = mountWithTokens(tokens);
+    const tokenComponents = wrapper.findAll(Token);
+    expect(getText(tokenComponents)).toBe(
+`@objc(initWithA:B:)
+init(
+    a: Int,
+    b: Int
+)`,
     );
   });
 });

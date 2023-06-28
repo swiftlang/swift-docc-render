@@ -107,17 +107,11 @@ describe("syntax-highlight", () => {
     expect(sanitizedCode).toMatchInlineSnapshot(`
       <span class="syntax-keyword">let</span> multiline = <span class="syntax-string">""</span><span class="syntax-string">"</span>
       <span class="syntax-string">Needs</span>
-      <span class="syntax-string">
-
-      </span>
+      <span class="syntax-string"></span>
       <span class="syntax-string">Spaces</span>
-      <span class="syntax-string">
-
-      </span>
+      <span class="syntax-string"></span>
       <span class="syntax-string">Between</span>
-      <span class="syntax-string">
-
-      </span>
+      <span class="syntax-string"></span>
       <span class="syntax-string">Lines</span>
       <span class="syntax-string">"</span><span class="syntax-string">""</span>
     `);

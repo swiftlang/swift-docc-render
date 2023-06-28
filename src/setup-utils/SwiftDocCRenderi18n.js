@@ -12,9 +12,10 @@ import VueI18n from 'vue-i18n';
 import * as lang from 'theme/lang/index';
 
 export default function createi18nInstance(config = lang) {
-  const { defaultLocale, messages } = config;
+  const { defaultLocale, messages, dateTimeFormats = {} } = config;
 
   const i18n = new VueI18n({
+    dateTimeFormats,
     locale: defaultLocale,
     fallbackLocale: defaultLocale,
     messages,

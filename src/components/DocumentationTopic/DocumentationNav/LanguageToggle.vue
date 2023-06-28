@@ -84,6 +84,7 @@
 
 <script>
 import { waitFrames } from 'docc-render/utils/loading';
+import { normalizeRelativePath } from 'docc-render/utils/assets';
 import Language from 'docc-render/constants/Language';
 import throttle from 'docc-render/utils/throttle';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
@@ -164,7 +165,7 @@ export default {
       return {
         // make sure we dont loose any extra query params on the way
         query: { ...this.$route.query, language },
-        path: this.isCurrentPath(route.path) ? null : this.normalizePath(route.path),
+        path: this.isCurrentPath(route.path) ? null : normalizeRelativePath(route.path),
       };
     },
     async pushRoute(route) {
@@ -181,11 +182,6 @@ export default {
       // the `.replace` call is needed since paths vended by the backend do not
       // include a leading slash, while the router provided path does
       return this.$route.path.replace(/^\//, '') === path;
-    },
-    normalizePath(path) {
-      // Sometimes `paths` data from `variants` are prefixed with a leading
-      // slash and sometimes they aren't
-      return path.startsWith('/') ? path : `/${path}`;
     },
     /**
      * Calculated the width of the select by fetching it from the faux select.
@@ -238,6 +234,11 @@ $nav-menu-toggle-label-margin: 6px;
 }
 
 .language {
+  &-container {
+    // ensure the language picker is never crushed
+    flex: 1 0 auto;
+  }
+
   &-dropdown {
     -webkit-text-size-adjust: none;
     appearance: none;

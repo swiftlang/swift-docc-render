@@ -53,11 +53,14 @@ const GenericCSSSettings = {
   },
 };
 
+const availableLocales = ['en-US', 'zh-CN'];
+
 const createWrapper = props => shallowMount(App, {
   stubs: {
     'custom-header': true,
     'router-view': true,
     'custom-footer': true,
+    Footer,
   },
   mocks: {
     $bridge: {
@@ -132,9 +135,49 @@ describe('App', () => {
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales,
+      },
+    });
 
     const SuggestLangComponent = wrapper.find(SuggestLang);
     expect(SuggestLangComponent.exists()).toBe(true);
+  });
+
+  it('renders LocaleSelector if enablei18n is true', () => {
+    const { LocaleSelector } = App.components;
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
+
+    const wrapper = createWrapper();
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales,
+      },
+    });
+
+    expect(wrapper.find(LocaleSelector).exists()).toBe(true);
+  });
+
+  it('does not render LocaleSelector if there is less than two available locales', () => {
+    const { LocaleSelector } = App.components;
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
+
+    const wrapper = createWrapper();
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales: ['en-US'],
+      },
+    });
+
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
   });
 
   it('renders the `#nav-sticky-anchor` between the header and the content', () => {
@@ -155,10 +198,10 @@ describe('App', () => {
   it('exposes a footer slot', () => {
     const wrapper = createWrapper({
       slots: {
-        footer: '<div class="footer">Footer</div>',
+        footer: '<div class="footer-slot">Footer</div>',
       },
     });
-    const footer = wrapper.find('.footer');
+    const footer = wrapper.find('.footer-slot');
     expect(footer.text()).toBe('Footer');
   });
 

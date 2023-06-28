@@ -10,7 +10,12 @@
 
 <template>
   <figcaption class="caption" :class="{ centered }">
-    <strong v-if="title">{{ title }}</strong>&nbsp;<slot />
+    <template v-if="title">
+      <strong>{{ title }}</strong>&nbsp;<slot />
+    </template>
+    <template v-else>
+      <slot />
+    </template>
   </figcaption>
 </template>
 

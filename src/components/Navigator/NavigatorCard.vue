@@ -1144,8 +1144,12 @@ $filter-height-small: 60px;
     --input-border-color: var(--color-grid);
     --input-text: var(--color-figure-gray-secondary);
 
-    :deep(.filter__input) {
+    :deep() .filter__input {
       @include font-styles(body);
+
+      &-label::after {
+        min-width: 70px;
+      }
     }
   }
 }
