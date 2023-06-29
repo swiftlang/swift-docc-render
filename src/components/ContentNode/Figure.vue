@@ -23,9 +23,8 @@ export default {
   },
 };
 </script>
-
 <style scoped lang="scss">
-/deep/ figcaption + * {
-  margin-top: 1rem;
+/deep/ figcaption {
+  --spacing-stacked-margin-large: 1rem;
 }
 </style>

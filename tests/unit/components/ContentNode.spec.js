@@ -112,6 +112,29 @@ describe('ContentNode', () => {
       expect(codeListing.props('content')).toEqual(listing.code);
       expect(codeListing.isEmpty()).toBe(true);
     });
+
+    it('renders a `Figure`/`Caption` with metadata', () => {
+      const metadata = {
+        anchor: '42',
+        title: 'Listing 42',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({ ...listing, metadata });
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBe(metadata.anchor);
+      expect(figure.contains(CodeListing)).toBe(true);
+
+      const caption = figure.find(Caption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.text()).toContain('blah');
+    });
   });
 
   describe('with type="endpointExample"', () => {
@@ -753,7 +776,7 @@ describe('ContentNode', () => {
       `);
     });
 
-    it('renders a `FigureCaption` before the image, if it has a title', () => {
+    it('renders a `Caption` before the image, if it has a title', () => {
       const metadata = {
         title: 'foo',
         abstract: [{
@@ -776,7 +799,7 @@ describe('ContentNode', () => {
       `);
     });
 
-    it('renders no `FigureCaption`, if there is a `title`, but no `abstract`', () => {
+    it('renders no `Caption`, if there is a `title`, but no `abstract`', () => {
       const metadata = {
         postTitle: true,
         title: 'Foo',

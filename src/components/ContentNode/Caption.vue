@@ -33,8 +33,8 @@ export default {
     },
     tag: {
       type: String,
-      required: false,
-      default: () => 'caption',
+      required: true,
+      validator: v => new Set(['caption', 'figcaption']).has(v),
     },
   },
 };
@@ -44,10 +44,14 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .caption {
-  @include font-styles(documentation-figcaption);
+  @include font-styles(documentation-caption);
 
   &:last-child {
     margin-top: var(--spacing-stacked-margin-large);
+  }
+
+  &:has(+ *) {
+    margin-bottom: var(--spacing-stacked-margin-large);
   }
 
   &.centered {
@@ -57,9 +61,5 @@ export default {
 
 /deep/ p {
   display: inline-block;
-}
-
-caption {
-  margin: 1rem 0;
 }
 </style>
