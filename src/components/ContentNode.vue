@@ -17,7 +17,7 @@ import CodeVoice from './ContentNode/CodeVoice.vue';
 import DictionaryExample from './ContentNode/DictionaryExample.vue';
 import EndpointExample from './ContentNode/EndpointExample.vue';
 import Figure from './ContentNode/Figure.vue';
-import FigureCaption from './ContentNode/FigureCaption.vue';
+import Caption from './ContentNode/Caption.vue';
 import InlineImage from './ContentNode/InlineImage.vue';
 import Reference from './ContentNode/Reference.vue';
 import Table from './ContentNode/Table.vue';
@@ -31,7 +31,7 @@ import TaskList from './ContentNode/TaskList.vue';
 import LinksBlock from './ContentNode/LinksBlock.vue';
 import DeviceFrame from './ContentNode/DeviceFrame.vue';
 
-const { CaptionTag } = FigureCaption.constants;
+const { CaptionTag } = Caption.constants;
 
 export const BlockType = {
   aside: 'aside',
@@ -232,7 +232,7 @@ function renderNode(createElement, references) {
     if ((title && abstract.length) || abstract.length) {
       // if there is a `title`, it should be above, otherwise below
       figureContent.splice(title ? 0 : 1, 0,
-        createElement(FigureCaption, {
+        createElement(Caption, {
           props: {
             title,
             centered: !title,
@@ -309,7 +309,7 @@ function renderNode(createElement, references) {
       );
 
       if (node.metadata && node.metadata.abstract) {
-        children.unshift(createElement(FigureCaption, {
+        children.unshift(createElement(Caption, {
           props: {
             centered: !node.metadata.title,
             tag: CaptionTag.caption,

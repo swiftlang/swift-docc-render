@@ -26,7 +26,7 @@ const CaptionTag = {
 };
 
 export default {
-  name: 'FigureCaption',
+  name: 'Caption',
   constants: { CaptionTag },
   props: {
     title: {
@@ -50,7 +50,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .caption {
-  @include font-styles(documentation-figcaption);
+  @include font-styles(documentation-caption);
 
   &.centered {
     text-align: center;

@@ -16,7 +16,7 @@ import ContentNode from 'docc-render/components/ContentNode.vue';
 import DictionaryExample from 'docc-render/components/ContentNode/DictionaryExample.vue';
 import EndpointExample from 'docc-render/components/ContentNode/EndpointExample.vue';
 import Figure from 'docc-render/components/ContentNode/Figure.vue';
-import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue';
+import Caption from 'docc-render/components/ContentNode/Caption.vue';
 import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
@@ -113,7 +113,7 @@ describe('ContentNode', () => {
       expect(codeListing.isEmpty()).toBe(true);
     });
 
-    it('renders a `Figure`/`Figcaption` with metadata', () => {
+    it('renders a `Figure`/`Caption` with metadata', () => {
       const metadata = {
         anchor: '42',
         title: 'Listing 42',
@@ -129,7 +129,7 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBe(metadata.anchor);
       expect(figure.contains(CodeListing)).toBe(true);
 
-      const caption = figure.find(FigureCaption);
+      const caption = figure.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.contains('p')).toBe(true);
@@ -714,7 +714,7 @@ describe('ContentNode', () => {
       }, {})).not.toThrow();
     });
 
-    it('renders a `Figure`/`FigureCaption` with metadata', () => {
+    it('renders a `Figure`/`Caption` with metadata', () => {
       const metadata = {
         anchor: '42',
         title: 'Figure 42',
@@ -734,14 +734,14 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBe(metadata.anchor);
       expect(figure.contains(InlineImage)).toBe(true);
 
-      const caption = wrapper.find(FigureCaption);
+      const caption = wrapper.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.text()).toContain('blah');
     });
 
-    it('renders a `Figure`/`FigureCaption` without an anchor, with text under the image', () => {
+    it('renders a `Figure`/`Caption` without an anchor, with text under the image', () => {
       const metadata = {
         abstract: [{
           type: 'paragraph',
@@ -759,24 +759,24 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBeFalsy();
       expect(figure.contains(InlineImage)).toBe(true);
 
-      const caption = wrapper.find(FigureCaption);
+      const caption = wrapper.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBeFalsy();
       expect(caption.props('centered')).toBe(true);
       expect(caption.text()).toContain('blah');
-      // assert figurerecaption is below the image
+      // assert figurercaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-          <figurecaption-stub centered="true" tag="figcaption">
+          <caption-stub centered="true" tag="figcaption">
             <p>blah</p>
-          </figurecaption-stub>
+          </caption-stub>
         </figure-stub>
       `);
     });
 
-    it('renders a `FigureCaption` before the image, if it has a title', () => {
+    it('renders a `Caption` before the image, if it has a title', () => {
       const metadata = {
         title: 'foo',
         abstract: [{
@@ -791,15 +791,15 @@ describe('ContentNode', () => {
       }, references);
       expect(wrapper.find(Figure).html()).toMatchInlineSnapshot(`
         <figure-stub>
-          <figurecaption-stub title="foo" tag="figcaption">
+          <caption-stub title="foo" tag="figcaption">
             <p>blah</p>
-          </figurecaption-stub>
+          </caption-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
         </figure-stub>
       `);
     });
 
-    it('renders no `FigureCaption`, if there is a `title`, but no `abstract`', () => {
+    it('renders no `Caption`, if there is a `title`, but no `abstract`', () => {
       const metadata = {
         postTitle: true,
         title: 'Foo',
@@ -816,7 +816,7 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBe('foo-figure');
       expect(figure.contains(InlineImage)).toBe(true);
 
-      expect(wrapper.find(FigureCaption).exists()).toBe(false);
+      expect(wrapper.find(Caption).exists()).toBe(false);
     });
 
     it('renders within a `DeviceFrame`', () => {
@@ -892,7 +892,7 @@ describe('ContentNode', () => {
       }, {})).not.toThrow();
     });
 
-    it('renders a `Figure`/`FigureCaption` with metadata', () => {
+    it('renders a `Figure`/`Caption` with metadata', () => {
       const metadata = {
         anchor: 'foo',
         abstract: [{
@@ -911,7 +911,7 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBe('foo');
       expect(figure.contains(BlockVideo)).toBe(true);
 
-      const caption = wrapper.find(FigureCaption);
+      const caption = wrapper.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
@@ -919,7 +919,7 @@ describe('ContentNode', () => {
       expect(caption.text()).toContain('blah');
     });
 
-    it('renders a `Figure`/`FigureCaption` without an anchor, with text under the video', () => {
+    it('renders a `Figure`/`Caption` without an anchor, with text under the video', () => {
       const metadata = {
         abstract: [{
           type: 'paragraph',
@@ -937,19 +937,19 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBeFalsy();
       expect(figure.contains(BlockVideo)).toBe(true);
 
-      const caption = wrapper.find(FigureCaption);
+      const caption = wrapper.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBeFalsy();
       expect(caption.props('centered')).toBe(true);
       expect(caption.text()).toContain('blah');
-      // assert figurerecaption is below the image
+      // assert figurecaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
-          <figurecaption-stub centered="true" tag="figcaption">
+          <caption-stub centered="true" tag="figcaption">
             <p>blah</p>
-          </figurecaption-stub>
+          </caption-stub>
         </figure-stub>
       `);
     });
@@ -1410,7 +1410,7 @@ describe('ContentNode', () => {
       expect(table.findAll('tbody tr td').length).toBe(2);
     });
 
-    it('renders a `Figure`/`FigureCaption` with metadata', () => {
+    it('renders a `Figure`/`Caption` with metadata', () => {
       const metadata = {
         anchor: '42',
         title: 'Table 42',
@@ -1430,7 +1430,7 @@ describe('ContentNode', () => {
       expect(table.exists()).toBe(true);
       expect(table.attributes('id')).toBe(metadata.anchor);
 
-      const caption = table.find(FigureCaption);
+      const caption = table.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.props('centered')).toBe(false);
