@@ -31,6 +31,8 @@ import TaskList from './ContentNode/TaskList.vue';
 import LinksBlock from './ContentNode/LinksBlock.vue';
 import DeviceFrame from './ContentNode/DeviceFrame.vue';
 
+const { CaptionTag } = FigureCaption.constants;
+
 export const BlockType = {
   aside: 'aside',
   codeListing: 'codeListing',
@@ -231,7 +233,11 @@ function renderNode(createElement, references) {
       // if there is a `title`, it should be above, otherwise below
       figureContent.splice(title ? 0 : 1, 0,
         createElement(FigureCaption, {
-          props: { title, centered: !title },
+          props: {
+            title,
+            centered: !title,
+            tag: CaptionTag.figcaption,
+          },
         }, renderChildren(abstract)));
     }
     return createElement(Figure, { props: { anchor } }, figureContent);
@@ -297,18 +303,34 @@ function renderNode(createElement, references) {
         renderChildren(node.inlineContent)
       ));
     }
-    case BlockType.table:
-      if (node.metadata && node.metadata.anchor) {
-        return renderFigure(node);
+    case BlockType.table: {
+      const children = renderTableChildren(
+        node.rows, node.header, node.extendedData, node.alignments,
+      );
+
+      if (node.metadata && node.metadata.abstract) {
+        children.unshift(createElement(FigureCaption, {
+          props: {
+            centered: !node.metadata.title,
+            tag: CaptionTag.caption,
+            title: node.metadata.title,
+          },
+        }, (
+          renderChildren(node.metadata.abstract)
+        )));
       }
 
       return createElement(Table, {
+        attrs: {
+          id: node.metadata && node.metadata.anchor,
+        },
         props: {
           spanned: !!node.extendedData,
         },
       }, (
-        renderTableChildren(node.rows, node.header, node.extendedData, node.alignments)
+        children
       ));
+    }
     case BlockType.termList:
       return createElement('dl', {}, node.items.map(({ term, definition }) => [
         createElement('dt', {}, (

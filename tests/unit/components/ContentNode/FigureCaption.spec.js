@@ -13,7 +13,7 @@ import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue'
 
 describe('FigureCaption', () => {
   it('renders a <figcaption> with the title and slot content', () => {
-    const propsData = { title: 'Figure 1' };
+    const propsData = { title: 'Figure 1', tag: 'figcaption' };
     const slots = { default: '<p>Blah</p>' };
     const wrapper = shallowMount(FigureCaption, { propsData, slots });
 
@@ -22,8 +22,9 @@ describe('FigureCaption', () => {
   });
 
   it('renders a <figcaption> with slot content only', () => {
+    const propsData = { tag: 'figcaption' };
     const slots = { default: '<p>Blah</p>' };
-    const wrapper = shallowMount(FigureCaption, { slots });
+    const wrapper = shallowMount(FigureCaption, { propsData, slots });
 
     expect(wrapper.is('figcaption')).toBe(true);
     expect(wrapper.text()).toBe('Blah');
@@ -31,8 +32,16 @@ describe('FigureCaption', () => {
   });
 
   it('renders a <figcaption> centered', () => {
+    const propsData = { centered: true, tag: 'figcaption' };
     const slots = { default: '<p>Blah</p>' };
-    const wrapper = shallowMount(FigureCaption, { slots, propsData: { centered: true } });
+    const wrapper = shallowMount(FigureCaption, { slots, propsData });
     expect(wrapper.classes()).toContain('centered');
+  });
+
+  it('renders a <caption>', () => {
+    const propsData = { tag: 'caption' };
+    const slots = { default: '<p>Blah</p>' };
+    const wrapper = shallowMount(FigureCaption, { slots, propsData });
+    expect(wrapper.is('caption')).toBe(true);
   });
 });

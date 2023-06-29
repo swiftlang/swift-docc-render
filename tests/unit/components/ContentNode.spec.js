@@ -769,7 +769,7 @@ describe('ContentNode', () => {
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-          <figurecaption-stub centered="true">
+          <figurecaption-stub centered="true" tag="figcaption">
             <p>blah</p>
           </figurecaption-stub>
         </figure-stub>
@@ -791,7 +791,7 @@ describe('ContentNode', () => {
       }, references);
       expect(wrapper.find(Figure).html()).toMatchInlineSnapshot(`
         <figure-stub>
-          <figurecaption-stub title="foo">
+          <figurecaption-stub title="foo" tag="figcaption">
             <p>blah</p>
           </figurecaption-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
@@ -947,7 +947,7 @@ describe('ContentNode', () => {
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
-          <figurecaption-stub centered="true">
+          <figurecaption-stub centered="true" tag="figcaption">
             <p>blah</p>
           </figurecaption-stub>
         </figure-stub>
@@ -1426,15 +1426,15 @@ describe('ContentNode', () => {
         metadata,
       });
 
-      const figure = wrapper.find(Figure);
-      expect(figure.exists()).toBe(true);
-      expect(figure.props('anchor')).toBe(metadata.anchor);
-      expect(figure.contains(Table)).toBe(true);
+      const table = wrapper.find('.content').find(Table);
+      expect(table.exists()).toBe(true);
+      expect(table.attributes('id')).toBe(metadata.anchor);
 
-      const caption = figure.find(FigureCaption);
+      const caption = table.find(FigureCaption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.props('centered')).toBe(false);
+      expect(caption.props('tag')).toBe('caption');
       expect(caption.contains('p')).toBe(true);
       expect(caption.text()).toContain('blah');
     });

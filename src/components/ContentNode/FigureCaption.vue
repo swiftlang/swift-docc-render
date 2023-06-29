@@ -9,19 +9,25 @@
 -->
 
 <template>
-  <figcaption class="caption" :class="{ centered }">
+  <component class="caption" :class="{ centered }" :is="tag">
     <template v-if="title">
       <strong>{{ title }}</strong>&nbsp;<slot />
     </template>
     <template v-else>
       <slot />
     </template>
-  </figcaption>
+  </component>
 </template>
 
 <script>
+const CaptionTag = {
+  caption: 'caption',
+  figcaption: 'figcaption',
+};
+
 export default {
   name: 'FigureCaption',
+  constants: { CaptionTag },
   props: {
     title: {
       type: String,
@@ -30,6 +36,11 @@ export default {
     centered: {
       type: Boolean,
       default: false,
+    },
+    tag: {
+      type: String,
+      required: true,
+      validator: v => Object.hasOwnProperty.call(CaptionTag, v),
     },
   },
 };
@@ -41,12 +52,32 @@ export default {
 .caption {
   @include font-styles(documentation-figcaption);
 
-  &:last-child {
-    margin-top: var(--spacing-stacked-margin-large);
-  }
-
   &.centered {
     text-align: center;
+  }
+}
+
+// `space-out-between-siblings` helper would normally be used, but it won't work
+// for certain things like <picture> or <thead>/<tbody> with different
+// display types, so the spacing is manually done here for both kinds of
+// captions
+figcaption {
+  &:first-child {
+    margin: 0 0 var(--spacing-stacked-margin-large) 0;
+  }
+  &:last-child {
+    margin: var(--spacing-stacked-margin-large) 0 0 0;
+  }
+}
+caption {
+  margin: 0 0 var(--spacing-stacked-margin-large) 0;
+
+  // `caption-side` must be used for the table version of <caption> to appear
+  // underneath the table since the element must always be the first element
+  // within the <table> in the DOM according to the spec
+  &.centered {
+    caption-side: bottom;
+    margin: var(--spacing-stacked-margin-large) 0 0 0;
   }
 }
 
