@@ -943,7 +943,7 @@ describe('ContentNode', () => {
       expect(caption.props('title')).toBeFalsy();
       expect(caption.props('centered')).toBe(true);
       expect(caption.text()).toContain('blah');
-      // assert figurecaption is below the image
+      // assert figcaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
