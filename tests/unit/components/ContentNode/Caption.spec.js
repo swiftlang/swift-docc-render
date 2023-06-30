@@ -31,11 +31,11 @@ describe('Caption', () => {
     expect(wrapper.text()).not.toBe('\u00a0Blah');
   });
 
-  it('renders a <figcaption> centered', () => {
-    const propsData = { centered: true, tag: 'figcaption' };
+  it('renders a trailing <figcaption>', () => {
+    const propsData = { position: 'trailing', tag: 'figcaption' };
     const slots = { default: '<p>Blah</p>' };
     const wrapper = shallowMount(Caption, { slots, propsData });
-    expect(wrapper.classes()).toContain('centered');
+    expect(wrapper.classes()).toContain('trailing');
   });
 
   it('renders a <caption>', () => {

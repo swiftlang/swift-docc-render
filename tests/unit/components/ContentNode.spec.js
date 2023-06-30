@@ -763,13 +763,13 @@ describe('ContentNode', () => {
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBeFalsy();
-      expect(caption.props('centered')).toBe(true);
+      expect(caption.props('position')).toBe('trailing');
       expect(caption.text()).toContain('blah');
       // assert figurercaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-          <caption-stub centered="true" tag="figcaption">
+          <caption-stub tag="figcaption" position="trailing">
             <p>blah</p>
           </caption-stub>
         </figure-stub>
@@ -791,7 +791,7 @@ describe('ContentNode', () => {
       }, references);
       expect(wrapper.find(Figure).html()).toMatchInlineSnapshot(`
         <figure-stub>
-          <caption-stub title="foo" tag="figcaption">
+          <caption-stub title="foo" tag="figcaption" position="leading">
             <p>blah</p>
           </caption-stub>
           <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
@@ -915,7 +915,7 @@ describe('ContentNode', () => {
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
-      expect(caption.props('centered')).toBe(true);
+      expect(caption.props('position')).toBe('trailing');
       expect(caption.text()).toContain('blah');
     });
 
@@ -941,13 +941,13 @@ describe('ContentNode', () => {
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBeFalsy();
-      expect(caption.props('centered')).toBe(true);
+      expect(caption.props('position')).toBe('trailing');
       expect(caption.text()).toContain('blah');
       // assert figcaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
         <figure-stub>
           <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
-          <caption-stub centered="true" tag="figcaption">
+          <caption-stub tag="figcaption" position="trailing">
             <p>blah</p>
           </caption-stub>
         </figure-stub>
@@ -1433,7 +1433,7 @@ describe('ContentNode', () => {
       const caption = table.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
-      expect(caption.props('centered')).toBe(false);
+      expect(caption.props('position')).toBe('leading');
       expect(caption.props('tag')).toBe('caption');
       expect(caption.contains('p')).toBe(true);
       expect(caption.text()).toContain('blah');

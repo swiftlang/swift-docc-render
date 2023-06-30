@@ -31,7 +31,7 @@ import TaskList from './ContentNode/TaskList.vue';
 import LinksBlock from './ContentNode/LinksBlock.vue';
 import DeviceFrame from './ContentNode/DeviceFrame.vue';
 
-const { CaptionTag } = Caption.constants;
+const { CaptionPosition, CaptionTag } = Caption.constants;
 
 export const BlockType = {
   aside: 'aside',
@@ -231,12 +231,15 @@ function renderNode(createElement, references) {
     const figureContent = [renderChildren([node])];
     if ((title && abstract.length) || abstract.length) {
       // if there is a `title`, it should be above, otherwise below
-      figureContent.splice(title ? 0 : 1, 0,
+      const position = title ? CaptionPosition.leading : CaptionPosition.trailing;
+      const index = position === CaptionPosition.trailing ? 1 : 0;
+      const tag = CaptionTag.figcaption;
+      figureContent.splice(index, 0,
         createElement(Caption, {
           props: {
             title,
-            centered: !title,
-            tag: CaptionTag.figcaption,
+            position,
+            tag,
           },
         }, renderChildren(abstract)));
     }
@@ -309,11 +312,14 @@ function renderNode(createElement, references) {
       );
 
       if (node.metadata && node.metadata.abstract) {
+        const { title } = node.metadata;
+        const position = title ? CaptionPosition.leading : CaptionPosition.trailing;
+        const tag = CaptionTag.caption;
         children.unshift(createElement(Caption, {
           props: {
-            centered: !node.metadata.title,
-            tag: CaptionTag.caption,
-            title: node.metadata.title,
+            title,
+            position,
+            tag,
           },
         }, (
           renderChildren(node.metadata.abstract)
