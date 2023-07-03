@@ -10,7 +10,6 @@
 
 <template>
   <code
-    tabindex="0"
     :data-before-code="$t('accessibility.code.start')"
     :data-after-code="$t('accessibility.code.end')"
   >
