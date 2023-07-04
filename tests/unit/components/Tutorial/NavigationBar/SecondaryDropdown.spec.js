@@ -83,6 +83,7 @@ describe('SecondaryDropdown', () => {
         },
       },
       stubs: { 'router-link': RouterLinkStub },
+      attachToDocument: true,
     });
     btn = wrapper.find('.form-dropdown-toggle');
     optionElements = wrapper.findAll(`.${OptionClass}`);

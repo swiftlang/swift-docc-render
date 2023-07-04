@@ -55,7 +55,6 @@
                 >
                   <li
                     :class="{ [OptionClass]: true, [ActiveOptionClass]: isActive }"
-                    role="option"
                     :value="title"
                     :aria-selected="isActive"
                     :aria-current="isActive ? 'tutorial': false"

@@ -31,6 +31,9 @@ jest.mock('docc-render/utils/theme-settings');
 getSetting.mockReturnValue(false);
 
 sessionStorage.get.mockImplementation((key, def) => def);
+Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+  get() { return this.parentNode; },
+});
 
 const {
   STORAGE_KEY,
@@ -184,6 +187,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
     BaseNavigatorCard,
   },
   sync: false,
+  attachToDocument: true,
   ...others,
 });
 

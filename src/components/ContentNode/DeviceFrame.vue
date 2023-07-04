@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import DeviceFrames from 'theme/constants/DeviceFrames.js';
+import DeviceFrames from 'theme/constants/DeviceFrames';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
 const isTruthy = val => val && val !== Infinity;

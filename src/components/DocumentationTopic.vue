@@ -147,7 +147,7 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
 

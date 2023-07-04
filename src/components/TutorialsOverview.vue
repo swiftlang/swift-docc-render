@@ -17,7 +17,7 @@
     >
       {{ title }}
     </Nav>
-    <main id="main" role="main" tabindex="0" class="main">
+    <main id="main" tabindex="0" class="main">
       <div class="radial-gradient">
         <slot name="above-hero" />
         <Hero
@@ -38,7 +38,7 @@
 import AppStore from 'docc-render/stores/AppStore';
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 import Nav from 'theme/components/TutorialsOverview/Nav.vue';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import Hero from './TutorialsOverview/Hero.vue';
 import LearningPath from './TutorialsOverview/LearningPath.vue';
 

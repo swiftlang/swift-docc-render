@@ -20,6 +20,7 @@ import { createEvent } from '../../../test-utils';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
+jest.mock('docc-render/utils/loading');
 
 const { BreakpointScopes, BreakpointName } = BreakpointEmitter.constants;
 const { NoBGTransitionFrames, NavStateClasses } = NavBase.constants;
@@ -33,6 +34,7 @@ const createWrapper = async ({ propsData, ...rest } = {}) => {
     propsData: {
       ...propsData,
     },
+    attachToDocument: true,
     ...rest,
   });
   await wrapper.vm.$nextTick();
@@ -437,10 +439,15 @@ describe('NavBase', () => {
   });
 
   it('renders with a no-transition class and removes it after a few frames', async () => {
-    jest.useFakeTimers();
+    let resolve;
+    waitFrames.mockImplementationOnce(() => new Promise((r) => {
+      resolve = r;
+    }));
     wrapper = await createWrapper();
     expect(wrapper.classes()).toContain(NavStateClasses.noBackgroundTransition);
-    await waitFrames(NoBGTransitionFrames);
+    resolve();
+    await wrapper.vm.$nextTick();
+    expect(waitFrames).toHaveBeenCalledWith(NoBGTransitionFrames);
     expect(wrapper.classes()).not.toContain(NavStateClasses.noBackgroundTransition);
   });
 
