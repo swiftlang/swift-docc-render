@@ -121,8 +121,22 @@ describe('App', () => {
   it('renders Skip Navigation', () => {
     const wrapper = createWrapper();
     const skipNavigation = wrapper.find('#skip-nav');
-    expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
+    expect(skipNavigation.text()).toBe('accessibility.skip-navigation accessibility.in-page-link');
     expect(skipNavigation.attributes('href')).toBe('#main');
+
+    const mainMock = {
+      focus: jest.fn(),
+      setAttribute: jest.fn(),
+      removeAttribute: jest.fn(),
+    };
+    const getElementSpy = jest.spyOn(document, 'getElementById').mockReturnValue(mainMock);
+    skipNavigation.trigger('click');
+
+    expect(getElementSpy).toHaveBeenCalledTimes(1);
+    expect(mainMock.setAttribute).toHaveBeenCalledWith('tabindex', '-1');
+    expect(mainMock.focus).toHaveBeenCalledTimes(1);
+    expect(mainMock.removeAttribute).toHaveBeenCalledWith('tabindex');
+    getElementSpy.mockRestore();
   });
 
   it('exposes a header slot', () => {

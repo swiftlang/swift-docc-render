@@ -14,7 +14,15 @@
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
     <div :id="AppTopID" />
-    <a href="#main" id="skip-nav" v-if="!isTargetIDE">{{ $t('accessibility.skip-navigation') }}</a>
+    <a
+      href="#main"
+      id="skip-nav"
+      v-if="!isTargetIDE"
+      @click="skipNavigation"
+    >
+      <span>{{ $t('accessibility.skip-navigation') }}</span>
+      <span class="visuallyhidden" >{{ $t('accessibility.in-page-link') }}</span>
+    </a>
     <InitialLoadingPlaceholder />
     <slot name="header" :isTargetIDE="isTargetIDE">
       <SuggestLang v-if="enablei18n" />
@@ -159,6 +167,14 @@ export default {
     this.detachStylesFromRoot(this.CSSCustomProperties);
   },
   methods: {
+    skipNavigation(event) {
+      const main = document.getElementById('main');
+      if (!main) return;
+      event.preventDefault();
+      main.setAttribute('tabindex', '-1');
+      main.focus();
+      main.removeAttribute('tabindex');
+    },
     onKeyDown() {
       this.fromKeyboard = true;
       window.addEventListener('mousedown', this.onMouseDown);
