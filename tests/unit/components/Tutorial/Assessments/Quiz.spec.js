@@ -160,12 +160,12 @@ describe('Quiz', () => {
     let submit;
 
     beforeEach(() => {
-      wrapper = shallowMount(Quiz, { propsData });
+      wrapper = shallowMount(Quiz, { propsData, attachToDocument: true });
       choices = wrapper.findAll('.choice');
       submit = wrapper.find('.check');
     });
 
-    it('adds "active" class when choice is clicked', () => {
+    it('adds "active" class when choice is clicked', async () => {
       const choice = choices.at(0);
 
       expect(choice.classes('active')).toBe(false);

@@ -9,9 +9,8 @@
 -->
 
 <template>
-  <DestinationDataProvider v-if="action" :destination="action">
+  <DestinationDataProvider v-if="action" :destination="action" v-slot="{ url, title }">
     <ButtonLink
-      slot-scope="{ url, title }"
       :url="url"
       :isDark="isDark"
     >

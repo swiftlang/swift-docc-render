@@ -88,8 +88,9 @@ async function importHighlightFileForLanguage(language) {
         );
       } else {
         languageFile = await import(
+          // See bug https://github.com/webpack/webpack/issues/13865
           /* webpackChunkName: "highlight-js-[request]" */
-          `highlight.js/lib/languages/${file}`
+          `@/../node_modules/highlight.js/lib/languages/${file}`
         );
       }
 

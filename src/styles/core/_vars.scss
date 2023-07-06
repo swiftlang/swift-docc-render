@@ -36,7 +36,7 @@ $topic-link-icon-spacing: 1rem;
 
 // Icons
 $icon-size-default: 16px;
-$tiny-icon-size: $icon-size-default / 2;
+$tiny-icon-size: $icon-size-default * 0.5;
 
 // Code Block Style Elements
 $code-listing-with-numbers-padding: 14px 0;
@@ -68,7 +68,7 @@ $total-columns: 12 !default;
 // Navigator
 $nav-card-horizontal-spacing: 10px;
 $nav-card-horizontal-spacing-large: $nav-card-horizontal-spacing * 2;
-$nav-card-horizontal-spacing-small: $nav-card-horizontal-spacing / 2;
+$nav-card-horizontal-spacing-small: $nav-card-horizontal-spacing * 0.5;
 
 // Small vp padding and width
 $small-viewport-content-padding: 20px !default;

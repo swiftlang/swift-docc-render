@@ -59,7 +59,7 @@ $tile-margin: $tutorials-overview-tile-margin-single-side;
     grid-template-columns: 1fr;
     text-align: center;
 
-    /deep/ .icon {
+    :deep(.icon) {
       margin-left: auto;
       margin-right: auto;
     }

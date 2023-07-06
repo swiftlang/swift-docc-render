@@ -159,7 +159,7 @@ $form-textbox-background-color: var(--color-dropdown-background) !default;
     z-index: 1;
   }
 
-  /deep/ option {
+  :deep(option) {
     color: $form-dropdown-text-color;
   }
 }

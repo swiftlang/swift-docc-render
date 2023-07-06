@@ -41,12 +41,12 @@
           :class="{ 'minimized-title': enableMinimized }"
         >
           <component :is="titleBreakComponent">{{ title }}</component>
+          <template #after v-if="isSymbolDeprecated || isSymbolBeta">
           <small
-            v-if="isSymbolDeprecated || isSymbolBeta"
-            slot="after"
-            :class="tagName"
-            :data-tag-name="tagName"
+          :class="tagName"
+          :data-tag-name="tagName"
           />
+          </template>
         </Title>
         <Abstract
           v-if="abstract"
@@ -147,7 +147,7 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
 
@@ -673,7 +673,7 @@ export default {
   }
 }
 
-/deep/ .minimized-title {
+:deep(.minimized-title) {
   margin-bottom: 0.833rem;
 
   .title {
@@ -696,7 +696,7 @@ export default {
   @include dynamic-content-container;
 }
 
-/deep/ {
+:deep() {
   .minimized-container {
     outline-style: none;
 
@@ -777,7 +777,7 @@ export default {
     margin-top: $contenttable-spacing-single-side;
   }
 
-  /deep/ .content + * {
+  :deep(.content + *) {
     margin-top: var(--spacing-stacked-margin-large);
   }
 }
@@ -787,7 +787,7 @@ export default {
   padding-right: 1.4rem;
 }
 
-/deep/ {
+:deep() {
   .no-primary-content {
     // remove border-top for first section of the page
     --content-table-title-border-width: 0px;
@@ -806,7 +806,7 @@ export default {
   }
 }
 
-/deep/ {
+:deep() {
   h1 {
     @include font-styles(headline-reduced);
   }

@@ -70,7 +70,7 @@ export default {
   }
 }
 
-/deep/ .contenttable-title {
+:deep(.contenttable-title) {
   @include font-styles(label);
 }
 
@@ -89,7 +89,7 @@ export default {
     }
   }
 
-  /deep/ .contenttable-title {
+  :deep(.contenttable-title) {
     margin: 0 0 $contenttable-spacing-single-side 0;
     padding-bottom: 0.5rem;
   }

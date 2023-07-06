@@ -169,6 +169,7 @@ describe('DocumentationTopic', () => {
     jest.clearAllMocks();
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
+      stubs: { Title },
       provide: {
         isTargetIDE: false,
         store: mockStore,
@@ -342,7 +343,7 @@ describe('DocumentationTopic', () => {
     const title = hero.find(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
-    expect(title.text()).toBe(propsData.title);
+    expect(title.text()).toContain(propsData.title);
     expect(title.find(WordBreak).exists()).toBe(false);
   });
 

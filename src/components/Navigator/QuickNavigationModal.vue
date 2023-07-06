@@ -452,7 +452,7 @@ $input-horizontal-spacing: rem(15px);
     --input-horizontal-spacing: #{$input-horizontal-spacing};
   }
 
-  /deep/ .filter__wrapper {
+  :deep(.filter__wrapper) {
     background-color: var(--color-fill-secondary);
   }
 

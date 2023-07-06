@@ -18,7 +18,7 @@
       :rootReference="hierarchy.reference"
       :identifierUrl="identifierUrl"
     />
-    <main id="main" role="main" tabindex="0">
+    <main id="main"  tabindex="0">
       <Section
         v-for="(section, index) in sections"
         :section="section"
@@ -35,7 +35,7 @@ import { PortalTarget } from 'portal-vue';
 
 import AppStore from 'docc-render/stores/AppStore';
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';

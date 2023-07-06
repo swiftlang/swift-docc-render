@@ -89,6 +89,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@use 'sass:math';
 @import 'docc-render/styles/_core.scss';
 
 $border-style: solid;
@@ -113,11 +114,13 @@ $dropdown-transition-duration: 250ms;
 $hierarchy-dropdown-border-width: 0px !default;
 $hierarchy-dropdown-box-shadow: 0 1px 4px -1px var(--color-figure-gray-secondary) !default;
 
-$tail-width: 1rem;
+$tail-width: 1rem * 0.5;
+
 $tail-offset: rem($nav-menu-item-left-margin)
   + rem($nav-space-hierarchy-elements)
-  - ($toggle-width / 2)
-  + ($tail-width / 2) + rem(4px);
+  - math.div($toggle-width, 2)
+  + $tail-width
+  + rem(4px);
 
 $dropdown-vertical-offset: rem(7px);
 
@@ -218,17 +221,17 @@ $dropdown-vertical-offset: rem(7px);
   &::before {
     border-bottom-color: $dropdown-bg-color;
     border-bottom-style: $border-style;
-    border-bottom-width: $tail-width / 2;
+    border-bottom-width: $tail-width;
     border-left-color: transparent;
     border-left-style: $border-style;
-    border-left-width: $tail-width / 2;
+    border-left-width: $tail-width;
     border-right-color: transparent;
     border-right-style: $border-style;
-    border-right-width: $tail-width / 2;
+    border-right-width: $tail-width;
     content: '';
     left: $tail-offset;
     position: absolute;
-    top: rem($border-width) - ($tail-width / 2);
+    top: rem($border-width) - $tail-width;
 
     @include nav-dark() {
       border-bottom-color: $dropdown-bg-color-dark;
