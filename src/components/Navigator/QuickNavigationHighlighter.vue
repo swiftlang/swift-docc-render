@@ -50,7 +50,7 @@ export default {
 .highlight {
   display: inline;
 
-  /deep/ .match {
+  :deep(.match) {
     font-weight: $font-weight-semibold;
     background: var(--color-fill-light-blue-secondary);
   }

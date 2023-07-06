@@ -32,12 +32,12 @@ $docs-code-listing-border-width: 1px !default;
 
 // Generates a selector to match $el, when its after an item, or when an item is after it.
 // This is different than `space-out-between-siblings`, as that used `&` selector for parents,
-// which does not work here, as we are already nested inside `/deep/`.
+// which does not work here, as we are already nested inside `:deep()`.
 @function between-els($el) {
   @return '* + #{$el}, #{$el} + *'
 }
 
-/deep/ {
+:deep() {
   .code-listing {
     background: var(--background, var(--color-code-background));
     color: var(--text, var(--color-code-plain));
@@ -55,7 +55,7 @@ $docs-code-listing-border-width: 1px !default;
   }
 
   // use a helper function to generate common selectors.
-  // Using `space-out-between-siblings` mixin does not work, because we are inside `/deep/`.
+  // Using `space-out-between-siblings` mixin does not work, because we are inside `:deep()`.
   #{between-els('.code-listing')},
   #{between-els('.endpoint-example')},
   #{between-els('.inline-image-container')},

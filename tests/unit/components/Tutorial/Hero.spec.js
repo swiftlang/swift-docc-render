@@ -15,7 +15,7 @@ import HeroMetadata from 'docc-render/components/Tutorial/HeroMetadata.vue';
 import Asset from 'docc-render/components/Asset.vue';
 import GenericModal from 'docc-render/components/GenericModal.vue';
 
-const mountWithProps = (props, references = {}, others) => {
+const mountWithProps = (props, references = {}, others = {}) => {
   const defaultProps = {
     backgroundImage: 'defaultBackground',
     title: 'defaultTitle',
@@ -77,6 +77,10 @@ describe('Hero', () => {
     const chapter = 'myChapter';
     const wrapper = mountWithProps({
       chapter,
+    }, {}, {
+      stubs: {
+        Headline,
+      },
     });
 
     const headline = wrapper.find(Headline);

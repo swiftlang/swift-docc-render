@@ -51,7 +51,7 @@ export default {
     font-size: rem(16px);
   }
 
-  &-content /deep/ p {
+  &-content :deep(p) {
     margin-bottom: 10px;
   }
 }

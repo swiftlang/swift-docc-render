@@ -698,7 +698,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     width: 90%;
   }
 
-  /deep/ span {
+  :deep(span) {
     height: 100%;
     line-height: initial;
   }
@@ -818,7 +818,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 }
 
 // Applies colors to any link inside the nav
-/deep/ .nav-menu-link {
+:deep(.nav-menu-link) {
   color: var(--color-nav-link-color);
 
   &:hover {

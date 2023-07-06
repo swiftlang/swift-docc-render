@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <ol class="tutorials-navigation-list" role="list">
+  <ol class="tutorials-navigation-list">
     <slot />
   </ol>
 </template>

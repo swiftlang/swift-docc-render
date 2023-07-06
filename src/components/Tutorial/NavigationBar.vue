@@ -14,21 +14,18 @@
     :aria-label="technology"
     hasSolidBackground
   >
-    <template slot="default">
-      <ReferenceUrlProvider :reference="rootReference">
-        <NavTitleContainer
-          slot-scope="{ urlWithParams }"
-          :to="urlWithParams"
-        >
-          <template slot="default">{{ technology }}</template>
-          <template slot="subhead">{{ $tc('tutorials.title', 2) }}</template>
+    <template #default>
+      <ReferenceUrlProvider :reference="rootReference" v-slot="{ urlWithParams }">
+        <NavTitleContainer :to="urlWithParams">
+          <template #default>{{ technology }}</template>
+          <template #subhead>{{ $tc('tutorials.title', 2) }}</template>
         </NavTitleContainer>
       </ReferenceUrlProvider>
     </template>
-    <template slot="after-title">
+    <template #after-title>
       <div class="separator"></div>
     </template>
-    <template slot="tray">
+    <template #tray>
       <div class="mobile-dropdown-container">
         <MobileDropdown
           :options="chapters"
@@ -194,7 +191,7 @@ export default {
 }
 
 @include breakpoints-from(medium, $scope: nav) {
-  .nav /deep/ {
+  .nav :deep() {
     .nav-content {
       display: grid;
       grid-template-columns: auto auto 3fr;
@@ -243,17 +240,17 @@ export default {
     .mobile-dropdown-container {
       display: block;
     }
-    /deep/ .nav-title {
+    :deep(.nav-title) {
       grid-area: title;
     }
 
-    /deep/ .pre-title {
+    :deep(.pre-title) {
       display: none;
     }
   }
 }
 
-.nav /deep/ .nav-title {
+.nav :deep(.nav-title) {
   grid-column: 1;
   width: 90%;
   padding-top: 0;
@@ -264,13 +261,13 @@ export default {
   background: var(--color-tutorial-navbar-dropdown-background);
   border-color: var(--color-tutorial-navbar-dropdown-border);
 
-  /deep/ .form-dropdown {
+  :deep(.form-dropdown) {
     &, &:focus {
       border-color: var(--color-tutorial-navbar-dropdown-border);
     }
   }
 
-  /deep/ .options {
+  :deep(.options) {
     background: var(--color-tutorial-navbar-dropdown-background);
     border-color: var(--color-tutorial-navbar-dropdown-border);
   }

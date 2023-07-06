@@ -34,6 +34,7 @@ describe('ColorSchemeToggle', () => {
           supportsAutoColorScheme: true,
         },
       }),
+      attachToDocument: true,
     });
   });
 

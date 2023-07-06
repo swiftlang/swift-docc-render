@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <RenderChanged :changes="changeValues" :value="mimetype">
-    <div slot-scope="{ value }" class="response-mimetype">
+  <RenderChanged :changes="changeValues" :value="mimetype" v-slot="{ value }">
+    <div class="response-mimetype">
       {{ $t('content-type', { value }) }}
     </div>
   </RenderChanged>

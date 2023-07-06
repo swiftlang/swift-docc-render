@@ -75,7 +75,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$banner-icon-padding: $nav-padding-small / 4;
+$banner-icon-padding: $nav-padding-small * 0.25;
 
 .suggest-lang {
   background: dark-color(fill);

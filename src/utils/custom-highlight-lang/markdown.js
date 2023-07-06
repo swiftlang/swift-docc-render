@@ -105,7 +105,7 @@ const DIRECTIVE = {
   ],
 };
 
-export default function (hljs) {
+export default function markdownOverride(hljs) {
   const basicMarkdown = markdown(hljs);
 
   // it prevents lines starting with 4 spaces or a tab from being code types

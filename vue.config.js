@@ -27,11 +27,16 @@ module.exports = vueUtils({
   chainWebpack(config) {
     config
       .plugin('copy')
-      .use('copy-webpack-plugin', [[{
-        from: path.resolve(__dirname, 'app/public'),
-        to: path.resolve(__dirname, 'dist'),
-        toType: 'dir',
-        ignore: ['.DS_Store'],
-      }]]);
+      .use('copy-webpack-plugin', [{
+        patterns: [
+          {
+            from: path.resolve(__dirname, 'app/public'),
+            to: path.resolve(__dirname, 'dist'),
+            globOptions: {
+              ignore: ['.DS_Store'],
+            },
+          },
+        ],
+      }]);
   },
 });

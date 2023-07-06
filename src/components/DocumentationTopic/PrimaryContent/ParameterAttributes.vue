@@ -13,7 +13,7 @@
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.default)"
       v-bind="{ kind: AttributeKind.default, attributes: attributesObject, changes }">
-      <template slot-scope="{ attribute }">
+      <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.default')
         }) }}<code>{{ attribute.value }}</code>
@@ -22,7 +22,7 @@
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.minimum)"
       v-bind="{ kind: AttributeKind.minimum, attributes: attributesObject, changes }">
-      <template slot-scope="{ attribute }">
+      <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.minimum')
         }) }}<code>{{ attribute.value }}</code>
@@ -31,7 +31,7 @@
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.minimumExclusive)"
       v-bind="{ kind: AttributeKind.minimumExclusive, attributes: attributesObject, changes }">
-      <template slot-scope="{ attribute }">
+      <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.minimum')
         }) }}<code>&gt; {{ attribute.value }}</code>
@@ -40,7 +40,7 @@
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.maximum)"
       v-bind="{ kind: AttributeKind.maximum, attributes: attributesObject, changes }">
-      <template slot-scope="{ attribute }">
+      <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.maximum')
         }) }}<code>{{ attribute.value }}</code>
@@ -49,7 +49,7 @@
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.maximumExclusive)"
       v-bind="{ kind: AttributeKind.maximumExclusive, attributes: attributesObject, changes }">
-      <template slot-scope="{ attribute }">
+      <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.maximum')
         }) }}<code>&lt; {{ attribute.value }}</code>
@@ -58,7 +58,7 @@
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.allowedTypes)"
       v-bind="{ kind: AttributeKind.allowedTypes, attributes: attributesObject, changes }">
-      <template slot-scope="{ attribute }">
+      <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
           content: $tc('parameters.possible-types', fallbackToValues(attribute).length)
         }) }}<code><template v-for="(possibleType, i) in fallbackToValues(attribute)">
@@ -73,7 +73,7 @@
     <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.allowedValues)"
       v-bind="{ kind: AttributeKind.allowedValues, attributes: attributesObject, changes }">
-      <template slot-scope="{ attribute }">
+      <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
           content: $tc('parameters.possible-values', fallbackToValues(attribute).length)
         }) }}<code>{{ fallbackToValues(attribute).join(', ') }}</code>

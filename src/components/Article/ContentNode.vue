@@ -48,7 +48,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-/deep/ {
+:deep() {
   aside,
   h2,
   h3,

@@ -10,7 +10,7 @@
 
 import swift from 'highlight.js/lib/languages/swift';
 
-export default function (hljs) {
+export default function swiftOverride(hljs) {
   const language = swift(hljs);
 
   // Temporarily patch the Swift language syntax to recognize `distributed` as

@@ -1144,13 +1144,11 @@ $filter-height-small: 60px;
     --input-border-color: var(--color-grid);
     --input-text: var(--color-figure-gray-secondary);
 
-    /deep/ {
-      .filter__input {
-        @include font-styles(body);
+    :deep() .filter__input {
+      @include font-styles(body);
 
-        &-label::after {
-          min-width: 70px;
-        }
+      &-label::after {
+        min-width: 70px;
       }
     }
   }
@@ -1170,7 +1168,7 @@ $filter-height-small: 60px;
   // The VueVirtualScroller scrollbar is not selectable and draggable in Safari,
   // which is most probably caused by the complicated styling of the component.
   // Adding translate3D causes the browser to use hardware acceleration and fixes the issue.
-  /deep/ .vue-recycle-scroller__item-wrapper {
+  :deep(.vue-recycle-scroller__item-wrapper) {
     transform: translate3d(0, 0, 0);
   }
 }

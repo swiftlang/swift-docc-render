@@ -8,6 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+@use "sass:math";
+
 @mixin overflow-y($value: auto) {
   overflow-y: $value;
   // Enables native-style scrolling on a touchscreen
@@ -165,7 +167,7 @@
 }
 
 @mixin backdrop-filter-uiblur($percentage: 100%) {
-  $percentage: $percentage / 100%;
+  $percentage: math.div($percentage, 100%);
 
   $saturate: 180% * $percentage;
   $blur: 20px * $percentage;
@@ -209,7 +211,7 @@
 // @returns {Number}
 //
 @function calculate-column-width($column-count: 1) {
-  @return ($column-count / $total-columns) * 100%;
+  @return math.div($column-count, $total-columns) * 100%;
 }
 
 @mixin custom-horizontal-scrollbar() {
@@ -295,7 +297,7 @@
 }
 
 @mixin space-out-between-siblings($margin) {
-  * + &, & + /deep/ * {
+  * + &, & + :deep(*) {
     margin-top: $margin;
   }
 }

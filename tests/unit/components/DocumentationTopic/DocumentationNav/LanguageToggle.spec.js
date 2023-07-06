@@ -8,13 +8,14 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { waitFrames } from 'docc-render/utils/loading';
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import Language from 'docc-render/constants/Language';
 import LanguageToggle
   from 'docc-render/components/DocumentationTopic/DocumentationNav/LanguageToggle.vue';
 import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.vue';
 import { createEvent, flushPromises } from '../../../../../test-utils';
+
+jest.mock('docc-render/utils/loading');
 
 const { NavMenuItemBase } = LanguageToggle.components;
 
@@ -56,6 +57,7 @@ describe('LanguageToggle', () => {
       propsData: props,
       provide,
       stubs,
+      attachToDocument: true,
     })
   );
 
@@ -118,7 +120,7 @@ describe('LanguageToggle', () => {
     const resizeEvent = createEvent('resize');
     window.dispatchEvent(resizeEvent);
     await wrapper.vm.$nextTick();
-    await waitFrames(3);
+    await flushPromises();
     expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
   });
 
@@ -132,7 +134,7 @@ describe('LanguageToggle', () => {
     expect(toggle.attributes()).toHaveProperty('style', 'width: 6px;');
     const orientationchangeEvent = createEvent('orientationchange');
     window.dispatchEvent(orientationchangeEvent);
-    await waitFrames(3);
+    await flushPromises();
     expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
   });
 
@@ -281,13 +283,15 @@ describe('LanguageToggle', () => {
       });
   });
 
-  it('changes the model, if the interfaceLanguage changes', () => {
+  it('changes the model, if the interfaceLanguage changes', async () => {
     // assert proper language name is shown
     expect(wrapper.find('.current-language').text()).toBe(Language.swift.name);
     // change the language from outside
     wrapper.setProps({
       interfaceLanguage: Language.objectiveC.key.api,
     });
+    await wrapper.vm.$nextTick();
+
     // assert the language changes as well
     expect(wrapper.find('.current-language').text()).toBe(Language.objectiveC.name);
   });
