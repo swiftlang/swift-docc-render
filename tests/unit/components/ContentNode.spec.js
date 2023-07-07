@@ -1344,6 +1344,15 @@ describe('ContentNode', () => {
       const content = wrapper.find('.content');
       expect(content.text()).toBe('foobar');
     });
+
+    it('renders a <br> if the text is a single newline', () => {
+      const wrapper = mountWithItem({
+        type: 'text',
+        text: '\n',
+      });
+      const br = wrapper.find('.content br');
+      expect(br.exists()).toBe(true);
+    });
   });
 
   describe('with type="table"', () => {
