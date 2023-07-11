@@ -478,7 +478,11 @@ function renderNode(createElement, references) {
         renderChildren(node.inlineContent)
       ));
     case InlineType.text:
-      return node.text;
+      return node.text === '\n' ? (
+        createElement('br')
+      ) : (
+        node.text
+      );
     case InlineType.superscript:
       return createElement('sup', renderChildren(node.inlineContent));
     case InlineType.subscript:
