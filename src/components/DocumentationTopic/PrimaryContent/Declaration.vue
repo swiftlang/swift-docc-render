@@ -53,6 +53,7 @@ import DeclarationSourceLink
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { isEqual } from 'docc-render/utils/arrays';
 
 export default {
   name: 'Declaration',
@@ -85,11 +86,18 @@ export default {
   computed: {
     /**
      * Show the captions of DeclarationGroup without changes
-     * when there are more than one declarations
+     * when there are multiple sets of platforms among the
+     * declarations.
      * @returns {boolean}
      */
     hasPlatformVariants() {
-      return this.declarations.length > 1;
+      const platforms = [];
+      for (let i = 0; i < this.declarations.length; i += 1) {
+        if (!platforms.some(platform => isEqual(platform, this.declarations[i].platforms))) {
+          platforms.push(this.declarations[i].platforms);
+        }
+      }
+      return platforms.length > 1;
     },
     /**
      * Returns whether there are declaration changes.
