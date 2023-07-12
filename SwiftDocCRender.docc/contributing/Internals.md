@@ -41,9 +41,8 @@ For the route `/documentation/path/to/something` DocC-Render will try to fetch D
 Links to pages in DocC-Render are generated using references coming from the render JSON. You can use `ReferenceUrlProvider` to get the URL and title from a reference.
 
 ```html
-<ReferenceUrlProvider :reference="someFooReference">
+<ReferenceUrlProvider :reference="someFooReference" v-slot="{ url, title }">
     <router-link 
-        slot-scope="{ url, title }"
         :to="url"
     >
         {{ title }}
@@ -177,6 +176,7 @@ DocC-Render has a few build-time environment flags, that allow you to set config
 
 * **VUE_APP_DEV_SERVER_PROXY** - The HTTP endpoint or  local filepath to read render JSON from when using the development server
 * **VUE_APP_TITLE** - An optional default page title to apply to pages
+* **VUE_APP_HLJS_LANGUAGES** - An optional comma-separated list of highlight.js languages to include in the build
 
 #### Available Scripts
 

@@ -11,15 +11,17 @@
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
-import NavigatorLeafIcon from '@/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { HeroColors, HeroColorsMap } from '@/constants/HeroColors';
 import { TopicRole } from '@/constants/roles';
 
 const defaultProps = {
   role: TopicTypes.class,
   enhanceBackground: true,
+  enableMinimized: false,
   shortHero: true,
   shouldShowLanguageSwitcher: true,
+  iconOverride: { variants: ['foo'] },
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -53,18 +55,21 @@ describe('DocumentationHero', () => {
 
   it('renders the DocumentationHero, enabled', () => {
     const wrapper = createWrapper();
-    const allIcons = wrapper.findAll(NavigatorLeafIcon);
+    const allIcons = wrapper.findAll(TopicTypeIcon);
     expect(allIcons).toHaveLength(1);
     expect(allIcons.at(0).props()).toEqual({
       withColors: true,
       type: defaultProps.role,
+      imageOverride: defaultProps.iconOverride,
+      shouldCalculateOptimalWidth: true,
     });
     expect(allIcons.at(0).classes()).toEqual(['background-icon', 'first-icon']);
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.find('.above-content-slot').text()).toBe('Above Content Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColorsMap[defaultProps.role]}))`,
+      '--standard-accent-color': undefined,
     });
   });
 
@@ -90,6 +95,18 @@ describe('DocumentationHero', () => {
     expect(content.classes()).not.toContain('extra-bottom-padding');
   });
 
+  it('renders the right classes based on `enableMininized` prop', () => {
+    const wrapper = createWrapper();
+    const content = wrapper.find('.documentation-hero__content');
+
+    expect(content.classes()).not.toContain('minimized-hero');
+
+    wrapper.setProps({
+      enableMinimized: true,
+    });
+    expect(content.classes()).toContain('minimized-hero');
+  });
+
   it('finds aliases, for the color', () => {
     const wrapper = createWrapper({
       propsData: {
@@ -98,7 +115,8 @@ describe('DocumentationHero', () => {
     });
     const color = HeroColorsMap[TopicTypeAliases[TopicTypes.init]];
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${color}))`,
+      '--standard-accent-color': undefined,
     });
   });
 
@@ -109,7 +127,8 @@ describe('DocumentationHero', () => {
       },
     });
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColors.teal}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColors.teal}))`,
+      '--standard-accent-color': undefined,
     });
   });
 
@@ -118,7 +137,7 @@ describe('DocumentationHero', () => {
       propsData: { role: TopicTypes.collection },
     });
     expect(wrapper.vm.styles['--accent-color'])
-      .toBe('var(--color-type-icon-sky, var(--color-figure-gray-secondary))');
+      .toBe('var(--color-documentation-intro-accent, var(--color-type-icon-sky))');
   });
 
   it('renders the DocumentationHero, disabled', () => {
@@ -127,12 +146,13 @@ describe('DocumentationHero', () => {
       enhanceBackground: false,
     });
     // assert no icon
-    const allIcons = wrapper.findAll(NavigatorLeafIcon);
+    const allIcons = wrapper.findAll(TopicTypeIcon);
     expect(allIcons).toHaveLength(0);
     // assert slot
     expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.vm.styles).toEqual({
-      '--accent-color': `var(--color-type-icon-${HeroColorsMap[defaultProps.role]}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColorsMap[defaultProps.role]}))`,
+      '--standard-accent-color': undefined,
     });
   });
 
@@ -143,7 +163,7 @@ describe('DocumentationHero', () => {
         role: TopicRole.collection,
       },
     });
-    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(TopicTypes.module);
+    expect(wrapper.find(TopicTypeIcon).props('type')).toBe(TopicTypes.module);
   });
 
   it('maps the "collectionGroup" role to the "collection" type', () => {
@@ -153,6 +173,20 @@ describe('DocumentationHero', () => {
         role: TopicRole.collectionGroup,
       },
     });
-    expect(wrapper.find(NavigatorLeafIcon).props('type')).toBe(TopicTypes.collection);
+    expect(wrapper.find(TopicTypeIcon).props('type')).toBe(TopicTypes.collection);
+  });
+
+  it('adds a standard-accent-color, if provided', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        enhanceBackground: true,
+        role: TopicTypes.section,
+        standardColorIdentifier: 'blue',
+      },
+    });
+    expect(wrapper.vm.styles).toEqual({
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColors.teal}))`,
+      '--standard-accent-color': 'var(--color-standard-blue-documentation-intro-fill, var(--color-standard-blue))',
+    });
   });
 });

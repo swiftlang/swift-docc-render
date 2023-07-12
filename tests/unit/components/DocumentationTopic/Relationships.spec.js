@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -47,6 +47,7 @@ describe('Relationships', () => {
           foo.identifier,
           bar.identifier,
         ],
+        anchor: 'inherits-from',
       },
       {
         type: 'conformsTo',
@@ -57,10 +58,14 @@ describe('Relationships', () => {
   };
 
   const provide = {
-    references: {
-      [foo.identifier]: foo,
-      [bar.identifier]: bar,
-      [baz.identifier]: baz,
+    store: {
+      state: {
+        references: {
+          [foo.identifier]: foo,
+          [bar.identifier]: bar,
+          [baz.identifier]: baz,
+        },
+      },
     },
   };
 
@@ -73,7 +78,7 @@ describe('Relationships', () => {
     expect(table.exists()).toBe(true);
     expect(table.props()).toEqual({
       anchor: 'relationships',
-      title: 'Relationships',
+      title: 'sections.relationships',
     });
   });
 
@@ -83,6 +88,7 @@ describe('Relationships', () => {
 
     const firstSection = sections.at(0);
     expect(firstSection.props('title')).toBe(propsData.sections[0].title);
+    expect(firstSection.props('anchor')).toBe(propsData.sections[0].anchor);
     const firstList = firstSection.find(List);
     expect(firstList.exists()).toBe(true);
     expect(firstList.props('symbols')).toEqual([
@@ -93,6 +99,7 @@ describe('Relationships', () => {
 
     const lastSection = sections.at(1);
     expect(lastSection.props('title')).toBe(propsData.sections[1].title);
+    expect(lastSection.props('anchor')).toBe(null);
     const lastList = lastSection.find(List);
     expect(lastList.exists()).toBe(true);
     expect(lastList.props('symbols')).toEqual([baz]);

@@ -20,37 +20,23 @@
 </template>
 
 <script>
-import PossibleValues from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
-import RestEndpoint from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
-import Declaration from './PrimaryContent/Declaration.vue';
+import PossibleValues
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
+import RestEndpoint
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/RestEndpoint.vue';
+import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
+import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import PropertyListKeyDetails from './PrimaryContent/PropertyListKeyDetails.vue';
-import GenericContent from './PrimaryContent/GenericContent.vue';
 import Parameters from './PrimaryContent/Parameters.vue';
 import PropertyTable from './PrimaryContent/PropertyTable.vue';
 import RestBody from './PrimaryContent/RestBody.vue';
 import RestParameters from './PrimaryContent/RestParameters.vue';
 import RestResponses from './PrimaryContent/RestResponses.vue';
 
-const SectionKind = {
-  content: 'content',
-  declarations: 'declarations',
-  details: 'details',
-  parameters: 'parameters',
-  possibleValues: 'possibleValues',
-  properties: 'properties',
-  restBody: 'restBody',
-  restCookies: 'restCookies',
-  restEndpoint: 'restEndpoint',
-  restHeaders: 'restHeaders',
-  restParameters: 'restParameters',
-  restResponses: 'restResponses',
-};
-
 export default {
   name: 'PrimaryContent',
   components: {
-    Declaration,
-    GenericContent,
+    ContentNode,
     Parameters,
     PropertyListKeyDetails,
     PropertyTable,
@@ -62,10 +48,6 @@ export default {
   },
   constants: { SectionKind },
   props: {
-    conformance: {
-      type: Object,
-      required: false,
-    },
     sections: {
       type: Array,
       required: true,
@@ -86,8 +68,7 @@ export default {
   methods: {
     componentFor(section) {
       return {
-        [SectionKind.content]: GenericContent,
-        [SectionKind.declarations]: Declaration,
+        [SectionKind.content]: ContentNode,
         [SectionKind.details]: PropertyListKeyDetails,
         [SectionKind.parameters]: Parameters,
         [SectionKind.properties]: PropertyTable,
@@ -101,11 +82,9 @@ export default {
       }[section.kind];
     },
     propsFor(section) {
-      const { conformance } = this;
       const {
         bodyContentType,
         content,
-        declarations,
         details,
         items,
         kind,
@@ -117,7 +96,6 @@ export default {
       } = section;
       return {
         [SectionKind.content]: { content },
-        [SectionKind.declarations]: { conformance, declarations },
         [SectionKind.details]: { details },
         [SectionKind.parameters]: { parameters },
         [SectionKind.possibleValues]: { values },
@@ -143,12 +121,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-/deep/ {
-  h2 {
-    @include font-styles(heading-2-reduced);
-  }
-}
-
 .primary-content {
   &.with-border::before {
     border-top-color: var(--colors-grid, var(--color-grid));
@@ -158,7 +130,7 @@ export default {
     display: block;
   }
 
-  /deep/ {
+  :deep() {
     & > * {
       margin-bottom: $section-spacing-single-side;
       margin-top: $section-spacing-single-side;

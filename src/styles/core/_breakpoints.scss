@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -11,6 +11,8 @@
 // A map used to associate scoped breakpoint names with a map of attributes.
 // These attributes will be used to define the appropriate media queries for
 // the "xlarge", "large", "medium", and "small" breakpoints.
+@use "sass:math";
+
 $breakpoint-attributes: (
   default: (
     xlarge: (
@@ -29,6 +31,11 @@ $breakpoint-attributes: (
       min-width: 320px,
       max-width: 735px,
       content-width: 280px,
+    ),
+    xsmall: (
+      min-width: 245px,
+      max-width: 320px,
+      content-width: 215px,
     ),
   ),
   nav: (
@@ -177,8 +184,8 @@ $breakpoint-attributes: (
 
         // Use a fixed percentage width value for the small breakpoint.
         // The percentage is the ratio of the content-width/min-width sizes.
-        @if $breakpoint == small and $min-width {
-          $width: percentage($content-width / $min-width);
+        @if ($breakpoint == small) and $min-width {
+          $width: percentage(math.div($content-width, $min-width));
         }
 
         width: $width;
@@ -340,21 +347,29 @@ $breakpoint-attributes: (
 /// Applies a content container, for cases with dynamic adjustable sidebars. In IDE mode uses the
 /// default breakpoint-content mixin.
 @mixin breakpoint-dynamic-sidebar-content {
+  $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));
+
   @include inTargetWeb {
-    max-width: 920px;
-    min-width: map-deep-get($breakpoint-attributes, (default, small, min-width));
+    // 820px
+    max-width: $large-max-width - $large-viewport-dynamic-content-padding * 2;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: $large-viewport-dynamic-content-padding;
+    padding-right: $large-viewport-dynamic-content-padding;
     box-sizing: border-box;
 
-    // make sure there is 120px space between the content and nav bar on xl and l
+    @media print {
+      padding-left: $small-viewport-content-padding;
+      padding-right: $small-viewport-content-padding;
+      max-width: none;
+    }
+
     @include breakpoints-from(large) {
-      box-sizing: unset;
-      padding-left: 120px;
-      padding-right: 120px;
-      margin-left: 0px;
+      max-width: $large-max-width;
+    }
+
+    @media only screen and (min-width: 1500px) {
+      max-width: $large-max-width + 100;
     }
 
     @include breakpoint(small) {

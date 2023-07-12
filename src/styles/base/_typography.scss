@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -15,8 +15,17 @@
 /// The base/default font-size for the html element in browsers is 16px.
 /// This makes the base font-size match our $-base-font-size.
 html {
-  font: var(--typography-html-font, $body-font-size $font-content);
+  @include inTargetWeb {
+    font: var(--typography-html-font, $body-font-size $font-content);
+  }
+  /// The quotes CSS property sets how the browser should render quotation marks
+  /// added through a CSS content field or the HTML q element
   quotes: "“" "”";
+  @each $lang, $quotes in $localizedQuotes {
+    &:lang(#{$lang}) {
+      quotes: $quotes;
+    }
+  }
 }
 
 body {
@@ -25,6 +34,24 @@ body {
   color: var(--colors-text, var(--color-text));
   font-style: normal;
   word-wrap: break-word;
+
+  // Default margin for stacked elements.
+  --spacing-stacked-margin-small: 0.4em;
+
+  // Default margin-top for subsequent elements.
+  --spacing-stacked-margin-large: 0.8em;
+
+  // Default margin for elements that require extra spacing
+  --spacing-stacked-margin-xlarge: calc(var(--spacing-stacked-margin-large) * 2);
+
+  // Default param spacing
+  --spacing-param: #{rem(28px)};
+
+  // Default margin for Code Listing in Declaration
+  --declaration-code-listing-margin: 30px 0 0 0;
+
+  // Default padding for Code Blocks
+  --code-block-style-elements-padding: 8px 14px;
 }
 
 body,
@@ -53,17 +80,7 @@ h6 {
 
   // Add top margin to any element that immediately follows a heading.
   + * {
-    margin-top: $stacked-margin-large;
-  }
-
-  // Add top margin to headings that immediately follow one another.
-  + h1,
-  + h2,
-  + h3,
-  + h4,
-  + h5,
-  + h6 {
-    margin-top: $stacked-margin-small;
+    margin-top: var(--spacing-stacked-margin-large);
   }
 
   // Add top margin to headings that immediately follow paragraphs and lists.
@@ -79,7 +96,7 @@ p,
 ul,
 ol {
   + * {
-    margin-top: $stacked-margin-large;
+    margin-top: var(--spacing-stacked-margin-large);
   }
 }
 

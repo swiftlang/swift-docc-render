@@ -12,15 +12,16 @@
   <SVGIcon
     class="two-letter-icon"
     width="16px" height="16px" viewBox="0 0 16 16"
+    themeId="two-letter"
   >
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g transform="translate(1.000000, 1.000000)">
         <rect stroke="currentColor" x="0.5" y="0.5" width="13" height="13"></rect>
         <text font-size="8" font-weight="bold" fill="currentColor">
-          <tspan x="9.08984375" y="11">{{ second }}</tspan>
+          <tspan x="8.2" y="11">{{ second }}</tspan>
         </text>
         <text font-size="11" font-weight="bold" fill="currentColor">
-          <tspan x="2" y="11">{{ first }}</tspan>
+          <tspan x="1.7" y="11">{{ first }}</tspan>
         </text>
       </g>
     </g>

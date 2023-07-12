@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,7 +10,7 @@
 
 <template>
   <aside :class="kind" :aria-label="kind">
-    <p class="label">{{ label }}</p>
+    <p class="label">{{ name || $t(label) }}</p>
     <slot />
   </aside>
 </template>
@@ -39,14 +39,7 @@ export default {
     },
   },
   computed: {
-    label: ({ kind, name }) => name || ({
-      [Kind.deprecated]: 'Deprecated',
-      [Kind.experiment]: 'Experiment',
-      [Kind.important]: 'Important',
-      [Kind.note]: 'Note',
-      [Kind.tip]: 'Tip',
-      [Kind.warning]: 'Warning',
-    }[kind]),
+    label: ({ kind }) => `aside-kind.${kind}`,
   },
 };
 </script>
@@ -56,28 +49,25 @@ export default {
 
 $aside-kinds: deprecated, experiment, important, note, tip, warning;
 
-.label {
-  @include font-styles(aside-label);
+aside {
+  break-inside: avoid;
+  border-radius: var(--aside-border-radius, $border-radius);
+  border-style: var(--aside-border-style, solid);
+  border-width: var(--aside-border-width,
+    $aside-width-border
+    $aside-width-border
+    $aside-width-border
+    $aside-width-left-border);
+  padding: rem(16px);
+  text-align: start;
 
-  & + * {
-    margin-top: $stacked-margin-small;
-  }
+  .label {
+    @include font-styles(documentation-aside-name);
 
-  @each $kind in $aside-kinds {
-    .#{$kind} & {
-      color: var(--color-aside-#{$kind});
+    & + * {
+      margin-top: var(--spacing-stacked-margin-small);
     }
   }
-}
-
-// this applies a specific styling for asides on documentation pages and relies
-// on the fact that a "doc-topic" class is applied to an ancestor element of
-// the aside in question
-.doc-topic aside {
-  border-radius: $border-radius;
-  padding: rem(16px);
-  border: $aside-width-border solid;
-  border-left-width: $aside-width-left-border;
 
   @each $kind in $aside-kinds {
     &.#{$kind} {
@@ -86,11 +76,11 @@ $aside-kinds: deprecated, experiment, important, note, tip, warning;
       // Anti-aliasing corners
       box-shadow: 0 0 $aside-width-border 0px var(--color-aside-#{$kind}-border) inset,
         0 0 $aside-width-border 0px var(--color-aside-#{$kind}-border);
-    }
-  }
 
-  .label {
-    @include font-styles(documentation-aside-name);
+      .label {
+        color: var(--color-aside-#{$kind});
+      }
+    }
   }
 }
 </style>

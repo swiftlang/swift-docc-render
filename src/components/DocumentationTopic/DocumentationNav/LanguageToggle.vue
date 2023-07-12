@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -18,12 +18,12 @@
         aria-hidden="true"
         tabindex="-1"
       >
-        <option selected>{{ currentLanguage.name }}</option>
+        <option :key="currentLanguage.name" selected>{{ currentLanguage.name }}</option>
       </select>
       <label
         :for="hasLanguages ? 'language-toggle' : null"
         class="nav-menu-setting-label"
-      >Language:</label>
+      >{{ $t('formats.colon', { content: $t('language') }) }}</label>
       <select
         v-if="hasLanguages"
         id="language-toggle"
@@ -51,7 +51,9 @@
       v-if="hasLanguages"
       class="language-list-container"
     >
-      <span class="nav-menu-setting-label">Language:</span>
+      <span class="nav-menu-setting-label">{{ $t('formats.colon', {
+        content: $t('language')
+      }) }}</span>
       <ul class="language-list">
         <li
           v-for="language in languages"
@@ -66,13 +68,14 @@
           >
             {{ language.name }}
           </span>
-          <router-link
+          <a
             v-else
+            href="#"
             class="nav-menu-link"
-            :to="getRoute(language.route)"
+            @click.prevent="pushRoute(language.route)"
           >
             {{ language.name }}
-          </router-link>
+          </a>
         </li>
       </ul>
     </div>
@@ -81,8 +84,9 @@
 
 <script>
 import { waitFrames } from 'docc-render/utils/loading';
+import { normalizeRelativePath } from 'docc-render/utils/assets';
 import Language from 'docc-render/constants/Language';
-import debounce from 'docc-render/utils/debounce';
+import throttle from 'docc-render/utils/throttle';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.vue';
 
@@ -111,6 +115,10 @@ export default {
       type: String,
       required: false,
     },
+    closeNav: {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -120,12 +128,12 @@ export default {
   },
   mounted() {
     // on resize, re-calculate the width of the select.
-    const cb = debounce(async () => {
+    const cb = throttle(async () => {
       // we wait for 3 frames, as that is the minimum it takes
       // for the browser orientation-change transitions to finish
       await waitFrames(3);
       this.calculateSelectWidth();
-    }, 150, true);
+    }, 150);
     window.addEventListener('resize', cb);
     window.addEventListener('orientationchange', cb);
     this.$once('hook:beforeDestroy', () => {
@@ -157,10 +165,11 @@ export default {
       return {
         // make sure we dont loose any extra query params on the way
         query: { ...this.$route.query, language },
-        path: this.isCurrentPath(route.path) ? null : this.normalizePath(route.path),
+        path: this.isCurrentPath(route.path) ? null : normalizeRelativePath(route.path),
       };
     },
-    pushRoute(route) {
+    async pushRoute(route) {
+      await this.closeNav();
       // Persist the selected language as a preference in the store (backed by
       // the browser's local storage so that it can be retrieved later for
       // subsequent navigation without the query parameter present)
@@ -173,11 +182,6 @@ export default {
       // the `.replace` call is needed since paths vended by the backend do not
       // include a leading slash, while the router provided path does
       return this.$route.path.replace(/^\//, '') === path;
-    },
-    normalizePath(path) {
-      // Sometimes `paths` data from `variants` are prefixed with a leading
-      // slash and sometimes they aren't
-      return path.startsWith('/') ? path : `/${path}`;
     },
     /**
      * Calculated the width of the select by fetching it from the faux select.
@@ -230,6 +234,11 @@ $nav-menu-toggle-label-margin: 6px;
 }
 
 .language {
+  &-container {
+    // ensure the language picker is never crushed
+    flex: 1 0 auto;
+  }
+
   &-dropdown {
     -webkit-text-size-adjust: none;
     appearance: none;
@@ -240,6 +249,9 @@ $nav-menu-toggle-label-margin: 6px;
     padding: 0 $dropdown-icon-padding 0 4px;
     margin-left: -4px;
     @include font-styles(nav-toggles);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
 
     // remove the default focus styles, and re-add them on keyboard navigation, only.
     &:focus {

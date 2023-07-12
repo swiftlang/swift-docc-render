@@ -14,9 +14,13 @@
 
 <script>
 import GenericError from 'theme/components/GenericError.vue';
+import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   name: 'ServerError',
   components: { GenericError },
+  created() {
+    AppStore.setAllLocalesAreAvailable();
+  },
 };
 </script>

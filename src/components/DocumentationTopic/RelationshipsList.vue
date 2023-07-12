@@ -68,13 +68,13 @@ export default {
     };
   },
   computed: {
-    classes({ changeType, multipleLinesClass, hasMultipleLinesAfterAPIChanges }) {
+    classes({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) {
       return [
         {
           inline: this.shouldDisplayInline,
           column: !this.shouldDisplayInline,
           [`changed changed-${changeType}`]: !!changeType,
-          [multipleLinesClass]: hasMultipleLinesAfterAPIChanges,
+          [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
         },
       ];
     },
@@ -151,7 +151,6 @@ export default {
 
   &.changed {
     @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment();
 
     &:after {
       margin-top: $change-coin-y-offset-reduced;

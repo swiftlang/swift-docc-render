@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,11 +14,14 @@
     role="search"
     tabindex="0"
     :aria-labelledby="searchAriaLabelledBy"
-    :class="{ 'focus': showSuggestedTags }"
+    :class="{ 'focus': showSuggestedTags && !preventBorderStyle }"
     @blur.capture="handleBlur"
-    @focus.capture="showSuggestedTags = true"
+    @focus.capture="handleFocus"
   >
-    <div :class="['filter__wrapper', { 'filter__wrapper--reversed': positionReversed }]">
+    <div :class="['filter__wrapper', {
+      'filter__wrapper--reversed': positionReversed,
+      'filter__wrapper--no-border-style': preventBorderStyle
+    }]">
       <div class="filter__top-wrapper">
         <button
           class="filter__filter-button"
@@ -41,8 +44,9 @@
             :id="SelectedTagsId"
             :input="input"
             :tags="selectedTags"
-            :ariaLabel="selectedTagsLabel"
+            :ariaLabel="$tc('filter.selected-tags', suggestedTags.length)"
             :activeTags="activeTags"
+            :translatableTags="translatableTags"
             v-bind="virtualKeyboardBind"
             class="filter__selected-tags"
             ref="selectedTags"
@@ -71,12 +75,13 @@
               type="text"
               class="filter__input"
               v-on="inputMultipleSelectionListeners"
+              @focus="selectInputOnFocus && selectInputAndTags()"
               @keydown.down.prevent="downHandler"
               @keydown.up.prevent="upHandler"
               @keydown.left="leftKeyInputHandler"
               @keydown.right="rightKeyInputHandler"
               @keydown.delete="deleteHandler"
-              @keydown.meta.a.prevent="selectInputAndTags"
+              @keydown.meta.a.prevent.stop="selectInputAndTags"
               @keydown.ctrl.a.prevent="selectInputAndTags"
               @keydown.exact="inputKeydownHandler"
               @keydown.enter.exact="enterHandler"
@@ -90,9 +95,10 @@
         <div class="filter__delete-button-wrapper">
           <button
             v-if="(input.length) || displaySuggestedTags || hasSelectedTags"
-            aria-label="Reset Filter"
+            :aria-label="$t('filter.reset-filter')"
             class="filter__delete-button"
             @click="resetFilters(true)"
+            @keydown.enter.exact.stop="resetFilters(true)"
             @mousedown.prevent
           >
             <ClearRoundedIcon />
@@ -103,9 +109,10 @@
         v-if="displaySuggestedTags"
         :id="SuggestedTagsId"
         ref="suggestedTags"
-        :ariaLabel="suggestedTagsLabel"
+        :ariaLabel="$tc('filter.suggested-tags', suggestedTags.length)"
         :input="input"
         :tags="suggestedTags"
+        :translatableTags="translatableTags"
         v-bind="virtualKeyboardBind"
         class="filter__suggested-tags"
         @click-tags="selectTag($event.tagName)"
@@ -119,7 +126,6 @@
 
 <script>
 import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
-import { pluralize } from 'docc-render/utils/strings';
 import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
@@ -176,7 +182,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => 'Filter',
+      default: () => '',
     },
     disabled: {
       type: Boolean,
@@ -194,9 +200,25 @@ export default {
       type: Boolean,
       default: false,
     },
+    focusInputWhenEmpty: {
+      type: Boolean,
+      default: false,
+    },
+    selectInputOnFocus: {
+      type: Boolean,
+      default: false,
+    },
     clearFilterOnTagSelect: {
       type: Boolean,
       default: true,
+    },
+    preventBorderStyle: {
+      type: Boolean,
+      default: false,
+    },
+    translatableTags: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
@@ -210,14 +232,6 @@ export default {
     };
   },
   computed: {
-    tagsText: ({ suggestedTags }) => pluralize({
-      en: {
-        one: 'tag',
-        other: 'tags',
-      },
-    }, suggestedTags.length),
-    selectedTagsLabel: ({ tagsText }) => `Selected ${tagsText}`,
-    suggestedTagsLabel: ({ tagsText }) => `Suggested ${tagsText}`,
     hasSuggestedTags: ({ suggestedTags }) => suggestedTags.length,
     hasSelectedTags: ({ selectedTags }) => selectedTags.length,
     inputIsNotEmpty: ({ input, hasSelectedTags }) => input.length || hasSelectedTags,
@@ -371,6 +385,7 @@ export default {
         return;
       }
       this.showSuggestedTags = false;
+      this.$emit('blur');
     },
     downHandler($event) {
       const cb = () => this.$emit('focus-next', $event);
@@ -395,12 +410,16 @@ export default {
         this.$emit('focus-prev');
       }
     },
+    handleFocus() {
+      this.showSuggestedTags = true;
+      this.$emit('focus');
+    },
   },
   created() {
     if (
       this.focusInputWhenCreated
       && document.activeElement !== this.$refs.input
-      && this.inputIsNotEmpty
+      && (this.inputIsNotEmpty || this.focusInputWhenEmpty)
     ) {
       this.focusInput();
     }
@@ -413,10 +432,12 @@ export default {
 
 $tag-outline-padding: 4px !default;
 $input-vertical-padding: rem(13px) !default;
+$input-horizontal-spacing: rem(10px) !default;
 $input-height: rem(28px);
 
 .filter {
   --input-vertical-padding: #{$input-vertical-padding};
+  --input-horizontal-spacing:  #{$input-horizontal-spacing};
   --input-height: #{$input-height};
   --input-border-color: var(--color-fill-gray-secondary);
   --input-text: var(--color-fill-gray-secondary);
@@ -426,7 +447,7 @@ $input-height: rem(28px);
   // Remove Gray Highlight When Tapping Links in Mobile Safari =>
   // https://css-tricks.com/snippets/css/remove-gray-highlight-when-tapping-links-in-mobile-safari/
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  border-radius: $small-border-radius + 1;
+  border-radius: calc(#{$small-border-radius} + 1px);
   @include on-keyboard-focus() {
     outline: none;
   }
@@ -437,9 +458,9 @@ $input-height: rem(28px);
 
   &__filter-button {
     position: relative;
-    margin-left: rem(10px);
     z-index: 1;
     cursor: text;
+    margin-left: var(--input-horizontal-spacing);
     margin-right: rem(3px);
 
     @include breakpoint(small) {
@@ -452,7 +473,7 @@ $input-height: rem(28px);
       height: 21px;
     }
 
-    &.blue /deep/ > * {
+    &.blue :deep(> *) {
       fill: var(--color-figure-blue);
       color: var(--color-figure-blue);
     }
@@ -474,6 +495,10 @@ $input-height: rem(28px);
       display: flex;
       flex-direction: column-reverse;
     }
+
+    &--no-border-style {
+      border: none;
+    }
   }
 
   &__suggested-tags {
@@ -481,17 +506,15 @@ $input-height: rem(28px);
     z-index: 1;
     overflow: hidden;
 
-    /deep/ ul {
+    :deep(ul) {
       padding: var(--input-vertical-padding) rem(9px);
       border: 1px solid transparent;
-      border-bottom-left-radius: $small-border-radius - 1;
-      border-bottom-right-radius: $small-border-radius - 1;
+      border-bottom-left-radius: calc(#{$small-border-radius} - 1px);
+      border-bottom-right-radius: calc(#{$small-border-radius} - 1px);
 
-      .fromkeyboard & {
-        &:focus {
-          outline: none;
-          box-shadow: 0 0 0 5px var(--color-focus-color);
-        }
+      @include on-keyboard-focus() {
+        outline: none;
+        box-shadow: 0 0 0 5px var(--color-focus-color);
       }
     }
 
@@ -510,7 +533,7 @@ $input-height: rem(28px);
       padding-left: 0;
     }
 
-    /deep/ {
+    :deep() {
       ul {
         padding: $tag-outline-padding;
 
@@ -533,8 +556,8 @@ $input-height: rem(28px);
     border-radius: 100%;
 
     .clear-rounded-icon {
-      height: rem(16px);
-      width: rem(16px);
+      height: rem(12px);
+      width: rem(12px);
       fill: var(--input-text);
       display: block;
     }
@@ -543,7 +566,8 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding-right: var(--input-horizontal-spacing);
+    padding-left: rem(3px);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;
   }

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -23,7 +23,7 @@
           v-if="showClose"
           class="close"
           ref="close"
-          aria-label="Close"
+          :aria-label="$t('verbs.close')"
           @click.prevent="closeModal"
         >
           <CloseIcon />
@@ -79,6 +79,10 @@ export default {
       type: String,
       default: '',
     },
+    backdropBackgroundColorOverride: {
+      type: String,
+      default: '',
+    },
     width: {
       type: String,
       default: null,
@@ -104,7 +108,8 @@ export default {
     },
     modalColors() {
       return {
-        '--background': this.codeBackgroundColorOverride,
+        '--code-background': this.codeBackgroundColorOverride,
+        '--backdrop-background': this.backdropBackgroundColorOverride,
       };
     },
     themeClass({ theme, prefersDarkStyle, isThemeDynamic }) {
@@ -223,6 +228,7 @@ export default {
         this.selectContent();
       }
       if (key !== 'Escape') return;
+      event.preventDefault();
       this.closeModal();
     },
     /**
@@ -313,7 +319,7 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
 
 .backdrop {
   overflow: auto;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--backdrop-background, rgba(0, 0, 0, 0.4));
   -webkit-overflow-scrolling: touch;
   width: 100%;
   height: 100%;
@@ -334,8 +340,8 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
   z-index: 9999;
   top: 22px;
   left: 22px;
-  width: 30px;
-  height: 30px;
+  width: 17px;
+  height: 17px;
   color: $modal-close-color;
   cursor: pointer;
   background: none;
@@ -365,7 +371,7 @@ $modal-close-color: light-color(figure-gray-tertiary) !default;
 
   &-code {
     .container {
-      background-color: var(--background, var(--color-code-background));
+      background-color: var(--code-background, var(--color-code-background));
     }
   }
 }

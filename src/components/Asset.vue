@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -19,6 +19,8 @@ import ImageAsset from 'docc-render/components/ImageAsset.vue';
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vue';
 
+import referencesProvider from 'docc-render/mixins/referencesProvider';
+
 const AssetTypes = {
   video: 'video',
   image: 'image',
@@ -33,7 +35,7 @@ export default {
   constants: {
     AssetTypes,
   },
-  inject: ['references'],
+  mixins: [referencesProvider],
   props: {
     identifier: {
       type: String,
@@ -50,6 +52,14 @@ export default {
     videoAutoplays: {
       type: Boolean,
       default: () => true,
+    },
+    videoMuted: {
+      type: Boolean,
+      default: true,
+    },
+    deviceFrame: {
+      type: String,
+      required: false,
     },
   },
   computed: {
@@ -96,8 +106,10 @@ export default {
       return {
         variants: this.asset.variants,
         showsControls: this.showsVideoControls,
+        muted: this.videoMuted,
         autoplays: this.prefersReducedMotion ? false : this.videoAutoplays,
         posterVariants: this.videoPoster ? this.videoPoster.variants : [],
+        deviceFrame: this.deviceFrame,
       };
     },
     assetListeners() {
@@ -114,8 +126,7 @@ export default {
 
 <style scoped lang="scss">
 
-/deep/ img,
-/deep/ video {
+:deep(img), :deep(video) {
   display: block;
   margin-left: auto;
   margin-right: auto;

@@ -1,14 +1,14 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import CodeVoice from 'docc-render/components/ContentNode/CodeVoice.vue';
@@ -16,22 +16,45 @@ import ContentNode from 'docc-render/components/ContentNode.vue';
 import DictionaryExample from 'docc-render/components/ContentNode/DictionaryExample.vue';
 import EndpointExample from 'docc-render/components/ContentNode/EndpointExample.vue';
 import Figure from 'docc-render/components/ContentNode/Figure.vue';
-import FigureCaption from 'docc-render/components/ContentNode/FigureCaption.vue';
+import Caption from 'docc-render/components/ContentNode/Caption.vue';
 import InlineImage from 'docc-render/components/ContentNode/InlineImage.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Table from 'docc-render/components/ContentNode/Table.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import StrikeThrough from 'docc-render/components/ContentNode/StrikeThrough.vue';
+import Small from '@/components/ContentNode/Small.vue';
+import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
+import Row from '@/components/ContentNode/Row.vue';
+import Column from '@/components/ContentNode/Column.vue';
+import TabNavigator from '@/components/ContentNode/TabNavigator.vue';
+import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
+import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
+import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
+import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 
-const { TableHeaderStyle } = ContentNode.constants;
+const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
-const mountWithContent = (content = [], provide = { references: {} }) => (
-  shallowMount(ContentNode, {
-    propsData: { content },
-    provide,
-  })
-);
+const mountWithContent = (
+  content = [],
+  provide = {
+    store: {
+      state: {
+        references: {},
+      },
+    },
+  },
+) => shallowMount(ContentNode, {
+  propsData: { content },
+  provide,
+});
 
-const mountWithItem = (item, references) => mountWithContent([item], { references });
+const mountWithItem = (item, references) => mountWithContent([item], {
+  store: {
+    state: {
+      references,
+    },
+  },
+});
 
 describe('ContentNode', () => {
   it('renders a div.content wrapper', () => {
@@ -60,7 +83,6 @@ describe('ContentNode', () => {
           },
         ],
       });
-
       const aside = wrapper.find('.content').find(Aside);
       expect(aside.exists()).toBe(true);
       expect(aside.props('kind')).toBe('note');
@@ -91,7 +113,7 @@ describe('ContentNode', () => {
       expect(codeListing.isEmpty()).toBe(true);
     });
 
-    it('renders a `Figure`/`Figcaption` with metadata', () => {
+    it('renders a `Figure`/`Caption` with metadata', () => {
       const metadata = {
         anchor: '42',
         title: 'Listing 42',
@@ -107,7 +129,7 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBe(metadata.anchor);
       expect(figure.contains(CodeListing)).toBe(true);
 
-      const caption = figure.find(FigureCaption);
+      const caption = figure.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.contains('p')).toBe(true);
@@ -160,11 +182,12 @@ describe('ContentNode', () => {
           text: 'heading',
         });
 
-        const heading = wrapper.find('.content').find(`h${level}`);
-        expect(heading.exists()).toBe(true);
-        expect(heading.attributes('id')).toBe('heading');
-        expect(heading.isEmpty()).toBe(false);
-        expect(heading.text()).toBe('heading');
+        const sectionTitle = wrapper.find('.content').find(LinkableHeading);
+        expect(sectionTitle.exists()).toBe(true);
+        expect(sectionTitle.props('level')).toBe(level);
+        expect(sectionTitle.attributes('anchor')).toBe('heading');
+        expect(sectionTitle.isEmpty()).toBe(false);
+        expect(sectionTitle.text()).toContain('heading');
       }
     });
   });
@@ -273,6 +296,36 @@ describe('ContentNode', () => {
       const paragraph = wrapper.find('.content p');
       expect(paragraph.exists()).toBe(true);
       expect(paragraph.text()).toBe('foobar');
+      expect(paragraph.classes()).toHaveLength(0);
+    });
+
+    it('renders a `<p> with a special class, if it has a single image inside', () => {
+      const references = {
+        'figure1.png': {
+          variants: [
+            {
+              traits: ['3x', 'light'],
+              url: '',
+              size: { width: 1202, height: 630 },
+            },
+          ],
+        },
+      };
+
+      const wrapper = mountWithItem({
+        type: 'paragraph',
+        inlineContent: [
+          {
+            type: 'image',
+            identifier: 'figure1.png',
+          },
+        ],
+      }, references);
+
+      const paragraph = wrapper.find('.content p');
+      expect(paragraph.classes()).toContain('inline-image-container');
+      const inlineImage = paragraph.find(InlineImage);
+      expect(inlineImage.exists()).toBe(true);
     });
   });
 
@@ -317,6 +370,262 @@ describe('ContentNode', () => {
       expect(items.length).toBe(2);
       expect(items.at(0).find('p').text()).toBe('foo');
       expect(items.at(1).find('p').text()).toBe('bar');
+    });
+
+    it('renders a `TaskList` for checked items', () => {
+      const items = [
+        {
+          checked: true,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'foo',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          checked: false,
+          content: [
+            {
+              type: 'paragraph',
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'bar',
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      const wrapper = mount(ContentNode, {
+        propsData: {
+          content: [
+            {
+              type: 'unorderedList',
+              items,
+            },
+          ],
+        },
+      });
+
+      const list = wrapper.find(TaskList);
+      expect(list.exists()).toBe(true);
+      expect(list.props('tasks')).toEqual(items);
+
+      const paragraphs = list.findAll('li p');
+      expect(paragraphs.length).toBe(items.length);
+      expect(paragraphs.at(0).text()).toBe('foo');
+      expect(paragraphs.at(1).text()).toBe('bar');
+    });
+  });
+
+  describe('with type="small"', () => {
+    it('renders a `<Small>`', () => {
+      const wrapper = mountWithItem({
+        type: 'small',
+        inlineContent: [
+          {
+            type: 'text',
+            text: 'foo',
+          },
+        ],
+      });
+      const paragraph = wrapper.find('p');
+      const small = paragraph.find(Small);
+      expect(small.exists()).toBe(true);
+      expect(small.text()).toBe('foo');
+    });
+  });
+
+  describe('with type="row"', () => {
+    it('renders a `<Row>` and `<Column>`', () => {
+      const wrapper = mountWithItem({
+        type: 'row',
+        numberOfColumns: 4,
+        columns: [
+          {
+            size: 2,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const grid = wrapper.find(Row);
+      expect(grid.props()).toEqual({
+        columns: { large: 4 },
+      });
+      const columns = grid.findAll(Column);
+      expect(columns).toHaveLength(2);
+      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).find('p').text()).toBe('foo');
+      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).find('p').text()).toBe('bar');
+    });
+    it('renders a `<Row>` without column count specified', () => {
+      const wrapper = mountWithItem({
+        type: 'row',
+        columns: [
+          {
+            size: 2,
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const grid = wrapper.find(Row);
+      expect(grid.props()).toEqual({
+        columns: undefined,
+      });
+      const columns = grid.findAll(Column);
+      expect(columns).toHaveLength(2);
+      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).find('p').text()).toBe('foo');
+      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).find('p').text()).toBe('bar');
+    });
+  });
+
+  describe('with type="tabNavigator"', () => {
+    it('renders a `<TabNavigator>`', () => {
+      const props = {
+        type: 'tabNavigator',
+        tabs: [
+          {
+            title: 'Foo',
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'foo',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            title: 'Bar',
+            content: [
+              {
+                type: 'paragraph',
+                inlineContent: [
+                  {
+                    type: 'text',
+                    text: 'bar',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+      const wrapper = mountWithItem(props);
+      const tabs = wrapper.find(TabNavigator);
+      expect(tabs.props()).toEqual({
+        titles: [props.tabs[0].title, props.tabs[1].title],
+        position: 'start',
+        vertical: false,
+      });
+      // assert we passed the correct scoped slots
+      expect(tabs.vm.$scopedSlots).toEqual({
+        Foo: expect.any(Function),
+        Bar: expect.any(Function),
+      });
+    });
+
+    it('renders a `<TabNavigator>` in vertcal mode, when tabs reach threshold', () => {
+      const content = [
+        {
+          type: 'paragraph',
+          inlineContent: [
+            {
+              type: 'text',
+              text: 'foo',
+            },
+          ],
+        },
+      ];
+      const props = {
+        type: 'tabNavigator',
+        tabs: [
+          { title: '1', content },
+          { title: '2', content },
+          { title: '3', content },
+          { title: '4', content },
+          { title: '5', content },
+          { title: '6', content },
+          { title: '7', content },
+          { title: '8', content },
+        ],
+      };
+      const wrapper = mountWithItem(props);
+      expect(wrapper.find(TabNavigator).props('vertical')).toBe(true);
+    });
+  });
+
+  describe('with type="links"', () => {
+    it('renders a `<LinksBlock>`', () => {
+      const wrapper = mountWithItem({
+        type: 'links',
+        style: TopicSectionsStyle.compactGrid,
+        items: [],
+      });
+      const links = wrapper.find(LinksBlock);
+      expect(links.props()).toEqual({
+        identifiers: [],
+        blockStyle: TopicSectionsStyle.compactGrid,
+      });
     });
   });
 
@@ -405,7 +714,7 @@ describe('ContentNode', () => {
       }, {})).not.toThrow();
     });
 
-    it('renders a `Figure`/`FigureCaption` with metadata', () => {
+    it('renders a `Figure`/`Caption` with metadata', () => {
       const metadata = {
         anchor: '42',
         title: 'Figure 42',
@@ -425,11 +734,262 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBe(metadata.anchor);
       expect(figure.contains(InlineImage)).toBe(true);
 
-      const caption = wrapper.find(FigureCaption);
+      const caption = wrapper.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.contains('p')).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.text()).toContain('blah');
+    });
+
+    it('renders a `Figure`/`Caption` without an anchor, with text under the image', () => {
+      const metadata = {
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.contains(InlineImage)).toBe(true);
+
+      const caption = wrapper.find(Caption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBeFalsy();
+      expect(caption.props('position')).toBe('trailing');
+      expect(caption.text()).toContain('blah');
+      // assert figurercaption is below the image
+      expect(figure.html()).toMatchInlineSnapshot(`
+        <figure-stub>
+          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
+          <caption-stub tag="figcaption" position="trailing">
+            <p>blah</p>
+          </caption-stub>
+        </figure-stub>
+      `);
+    });
+
+    it('renders a `Caption` before the image, if it has a title', () => {
+      const metadata = {
+        title: 'foo',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+      expect(wrapper.find(Figure).html()).toMatchInlineSnapshot(`
+        <figure-stub>
+          <caption-stub title="foo" tag="figcaption" position="leading">
+            <p>blah</p>
+          </caption-stub>
+          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
+        </figure-stub>
+      `);
+    });
+
+    it('renders no `Caption`, if there is a `title`, but no `abstract`', () => {
+      const metadata = {
+        postTitle: true,
+        title: 'Foo',
+        anchor: 'foo-figure',
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBe('foo-figure');
+      expect(figure.contains(InlineImage)).toBe(true);
+
+      expect(wrapper.find(Caption).exists()).toBe(false);
+    });
+
+    it('renders within a `DeviceFrame`', () => {
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata: {
+          deviceFrame: 'phone',
+        },
+      }, references);
+
+      const deviceFrame = wrapper.find('.content').find(DeviceFrame);
+      expect(deviceFrame.props()).toEqual({
+        device: 'phone',
+      });
+      const inlineImage = deviceFrame.find(InlineImage);
+      expect(inlineImage.exists()).toBe(true);
+      expect(inlineImage.props('variants').length).toBe(2);
+    });
+
+    it('renders a `Figure` with a `DeviceFrame`', () => {
+      const metadata = {
+        deviceFrame: 'phone',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'image',
+        identifier: 'figure1.png',
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.find(DeviceFrame).exists()).toBe(true);
+      expect(figure.find(InlineImage).exists()).toBe(true);
+    });
+  });
+
+  describe('with type="video"', () => {
+    const identifier = 'video.mp4';
+    const references = {
+      [identifier]: {
+        identifier,
+        variants: [
+          {
+            traits: ['2x', 'light'],
+            url: '',
+            size: { width: 1202, height: 630 },
+          },
+        ],
+      },
+    };
+
+    it('renders an `BlockVideo`', () => {
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+      }, references);
+
+      const inlineVideo = wrapper.find('.content').find(BlockVideo);
+      expect(inlineVideo.exists()).toBe(true);
+      expect(inlineVideo.props('identifier')).toEqual(identifier);
+    });
+
+    it('does not crash with missing video reference data', () => {
+      expect(() => mountWithItem({
+        type: 'video',
+        identifier,
+      }, {})).not.toThrow();
+    });
+
+    it('renders a `Figure`/`Caption` with metadata', () => {
+      const metadata = {
+        anchor: 'foo',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBe('foo');
+      expect(figure.contains(BlockVideo)).toBe(true);
+
+      const caption = wrapper.find(Caption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.props('position')).toBe('trailing');
+      expect(caption.text()).toContain('blah');
+    });
+
+    it('renders a `Figure`/`Caption` without an anchor, with text under the video', () => {
+      const metadata = {
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.contains(BlockVideo)).toBe(true);
+
+      const caption = wrapper.find(Caption);
+      expect(caption.exists()).toBe(true);
+      expect(caption.contains('p')).toBe(true);
+      expect(caption.props('title')).toBeFalsy();
+      expect(caption.props('position')).toBe('trailing');
+      expect(caption.text()).toContain('blah');
+      // assert figcaption is below the image
+      expect(figure.html()).toMatchInlineSnapshot(`
+        <figure-stub>
+          <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
+          <caption-stub tag="figcaption" position="trailing">
+            <p>blah</p>
+          </caption-stub>
+        </figure-stub>
+      `);
+    });
+
+    it('passes the deviceFrame down to the BlockVideo`', () => {
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata: {
+          deviceFrame: 'phone',
+        },
+      }, references);
+
+      const blockVideo = wrapper.find('.content').find(BlockVideo);
+      expect(blockVideo.exists()).toBe(true);
+
+      expect(blockVideo.props()).toEqual({
+        identifier,
+        deviceFrame: 'phone',
+      });
+    });
+
+    it('renders a `Figure` with a BlockVideo, passing frames`', () => {
+      const metadata = {
+        deviceFrame: 'phone',
+        abstract: [{
+          type: 'paragraph',
+          inlineContent: [{ type: 'text', text: 'blah' }],
+        }],
+      };
+      const wrapper = mountWithItem({
+        type: 'video',
+        identifier,
+        metadata,
+      }, references);
+
+      const figure = wrapper.find(Figure);
+      expect(figure.exists()).toBe(true);
+      expect(figure.props('anchor')).toBeFalsy();
+      expect(figure.find(BlockVideo).props('deviceFrame')).toBe('phone');
     });
   });
 
@@ -467,6 +1027,7 @@ describe('ContentNode', () => {
       expect(reference.props('url')).toBe('/foo/bar');
       expect(reference.props('ideTitle')).toBe('IDETitle');
       expect(reference.props('titleStyle')).toBe('symbol');
+      expect(reference.props('hasInlineFormatting')).toBe(false);
       expect(reference.isEmpty()).toBe(false);
       expect(reference.text()).toBe('FooBar');
     });
@@ -559,6 +1120,7 @@ describe('ContentNode', () => {
       const reference = wrapper.find('.content').find(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
+      expect(reference.props('hasInlineFormatting')).toBe(true);
 
       const emphasis = reference.find('em');
       expect(emphasis.exists()).toBe(true);
@@ -782,6 +1344,15 @@ describe('ContentNode', () => {
       const content = wrapper.find('.content');
       expect(content.text()).toBe('foobar');
     });
+
+    it('renders a <br> if the text is a single newline', () => {
+      const wrapper = mountWithItem({
+        type: 'text',
+        text: '\n',
+      });
+      const br = wrapper.find('.content br');
+      expect(br.exists()).toBe(true);
+    });
   });
 
   describe('with type="table"', () => {
@@ -804,6 +1375,7 @@ describe('ContentNode', () => {
       });
       const table = wrapper.find('.content').find(Table);
       expect(table.exists()).toBe(true);
+      expect(table.props('spanned')).toBe(false);
       expect(table.contains('thead')).toBe(false);
       expect(table.findAll('tbody tr').length).toBe(2);
       expect(table.findAll('tbody tr td').length).toBe(4);
@@ -847,7 +1419,7 @@ describe('ContentNode', () => {
       expect(table.findAll('tbody tr td').length).toBe(2);
     });
 
-    it('renders a `Figure`/`FigureCaption` with metadata', () => {
+    it('renders a `Figure`/`Caption` with metadata', () => {
       const metadata = {
         anchor: '42',
         title: 'Table 42',
@@ -863,87 +1435,388 @@ describe('ContentNode', () => {
         metadata,
       });
 
-      const figure = wrapper.find(Figure);
-      expect(figure.exists()).toBe(true);
-      expect(figure.props('anchor')).toBe(metadata.anchor);
-      expect(figure.contains(Table)).toBe(true);
+      const table = wrapper.find('.content').find(Table);
+      expect(table.exists()).toBe(true);
+      expect(table.attributes('id')).toBe(metadata.anchor);
 
-      const caption = figure.find(FigureCaption);
+      const caption = table.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
+      expect(caption.props('position')).toBe('leading');
+      expect(caption.props('tag')).toBe('caption');
       expect(caption.contains('p')).toBe(true);
       expect(caption.text()).toContain('blah');
     });
 
-    describe('with type="termList"', () => {
-      it('renders a <dl> with <dt>/<dd> pairs for each term/definition', () => {
+    describe('and column/row spanning', () => {
+      // <table>
+      //   <tr>
+      //     <td colspan="2">row0col0</td>
+      //     <td>row0col2</td>
+      //   </tr>
+      //   <tr>
+      //     <td>row1col0</td>
+      //     <td>row1col1</td>
+      //     <td rowspan="2">row1col2</td>
+      //   </tr>
+      //   <tr>
+      //     <td>row2col0</td>
+      //     <td>row2col1</td>
+      //   </tr>
+      // </table>
+      const rowsExtended = [
+        [
+          [{ type: 'text', text: 'row0col0' }],
+          [{ type: 'text', text: 'row0col1' }],
+          [{ type: 'text', text: 'row0col2' }],
+        ],
+        [
+          [{ type: 'text', text: 'row1col0' }],
+          [{ type: 'text', text: 'row1col1' }],
+          [{ type: 'text', text: 'row1col2' }],
+        ],
+        [
+          [{ type: 'text', text: 'row2col0' }],
+          [{ type: 'text', text: 'row2col1' }],
+          [{ type: 'text', text: 'row2col2' }],
+        ],
+      ];
+      const extendedData = {
+        '0_0': { colspan: 2 },
+        '0_1': { colspan: 0 },
+        '1_2': { rowspan: 2 },
+        '2_2': { rowspan: 0 },
+      };
+
+      it('renders header="none" style table, with spans', () => {
         const wrapper = mountWithItem({
-          type: 'termList',
-          items: [
-            {
-              term: {
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'Foo',
-                  },
-                ],
-              },
-              definition: {
-                content: [
-                  {
-                    type: 'paragraph',
-                    inlineContent: [
-                      {
-                        type: 'text',
-                        text: 'foo',
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-            {
-              term: {
-                inlineContent: [
-                  {
-                    type: 'text',
-                    text: 'Bar',
-                  },
-                ],
-              },
-              definition: {
-                content: [
-                  {
-                    type: 'paragraph',
-                    inlineContent: [
-                      {
-                        type: 'text',
-                        text: 'bar',
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-          ],
+          type: 'table',
+          header: TableHeaderStyle.none,
+          rows: rowsExtended,
+          extendedData,
         });
-        const dl = wrapper.find('.content dl');
-        expect(dl.exists()).toBe(true);
-
-        const terms = dl.findAll('dt');
-        expect(terms.length).toBe(2);
-
-        const definitions = dl.findAll('dd');
-        expect(definitions.length).toBe(2);
-
-        expect(terms.at(0).text()).toBe('Foo');
-        expect(definitions.at(0).contains('p')).toBe(true);
-        expect(definitions.at(0).text()).toBe('foo');
-        expect(terms.at(1).text()).toBe('Bar');
-        expect(definitions.at(1).contains('p')).toBe(true);
-        expect(definitions.at(1).text()).toBe('bar');
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <tbody>
+              <tr>
+                <td colspan="2">row0col0</td>
+                <td>row0col2</td>
+              </tr>
+              <tr>
+                <td>row1col0</td>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <td>row2col0</td>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
       });
+
+      it('renders header="both" style table, with spans', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.both,
+          rows: rowsExtended,
+          extendedData,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <thead>
+              <tr>
+                <th scope="col" colspan="2">row0col0</th>
+                <th scope="col">row0col2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">row1col0</th>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <th scope="row">row2col0</th>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="row" style table, with spans', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.row,
+          rows: rowsExtended,
+          extendedData,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <thead>
+              <tr>
+                <th scope="col" colspan="2">row0col0</th>
+                <th scope="col">row0col2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>row1col0</td>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <td>row2col0</td>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="column" style table, with spans', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.column,
+          rows: rowsExtended,
+          extendedData,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub spanned="true">
+            <tbody>
+              <tr>
+                <th scope="row" colspan="2">row0col0</th>
+                <td>row0col2</td>
+              </tr>
+              <tr>
+                <th scope="row">row1col0</th>
+                <td>row1col1</td>
+                <td rowspan="2">row1col2</td>
+              </tr>
+              <tr>
+                <th scope="row">row2col0</th>
+                <td>row2col1</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+    });
+
+    describe('and column alignments', () => {
+      const alignedRows = [
+        [
+          [{ type: 'text', text: 'row0col0' }],
+          [{ type: 'text', text: 'row0col1' }],
+          [{ type: 'text', text: 'row0col2' }],
+          [{ type: 'text', text: 'row0col3' }],
+        ],
+        [
+          [{ type: 'text', text: 'row1col0' }],
+          [{ type: 'text', text: 'row1col1' }],
+          [{ type: 'text', text: 'row1col2' }],
+          [{ type: 'text', text: 'row1col3' }],
+        ],
+      ];
+      const alignments = [
+        TableColumnAlignments.left,
+        TableColumnAlignments.right,
+        TableColumnAlignments.center,
+        TableColumnAlignments.unset,
+      ];
+
+      it('renders header="none" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.none,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <tbody>
+              <tr>
+                <td class="left-cell">row0col0</td>
+                <td class="right-cell">row0col1</td>
+                <td class="center-cell">row0col2</td>
+                <td>row0col3</td>
+              </tr>
+              <tr>
+                <td class="left-cell">row1col0</td>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="both" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.both,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <thead>
+              <tr>
+                <th scope="col" class="left-cell">row0col0</th>
+                <th scope="col" class="right-cell">row0col1</th>
+                <th scope="col" class="center-cell">row0col2</th>
+                <th scope="col">row0col3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" class="left-cell">row1col0</th>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="row" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.row,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <thead>
+              <tr>
+                <th scope="col" class="left-cell">row0col0</th>
+                <th scope="col" class="right-cell">row0col1</th>
+                <th scope="col" class="center-cell">row0col2</th>
+                <th scope="col">row0col3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="left-cell">row1col0</td>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+
+      it('renders header="column" style tables, with column alignments', () => {
+        const wrapper = mountWithItem({
+          type: 'table',
+          header: TableHeaderStyle.column,
+          alignments,
+          rows: alignedRows,
+        });
+        const table = wrapper.find('.content').find(Table);
+        expect(table.html()).toMatchInlineSnapshot(`
+          <table-stub>
+            <tbody>
+              <tr>
+                <th scope="row" class="left-cell">row0col0</th>
+                <td class="right-cell">row0col1</td>
+                <td class="center-cell">row0col2</td>
+                <td>row0col3</td>
+              </tr>
+              <tr>
+                <th scope="row" class="left-cell">row1col0</th>
+                <td class="right-cell">row1col1</td>
+                <td class="center-cell">row1col2</td>
+                <td>row1col3</td>
+              </tr>
+            </tbody>
+          </table-stub>
+        `);
+      });
+    });
+  });
+
+  describe('with type="termList"', () => {
+    it('renders a <dl> with <dt>/<dd> pairs for each term/definition', () => {
+      const wrapper = mountWithItem({
+        type: 'termList',
+        items: [
+          {
+            term: {
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'Foo',
+                },
+              ],
+            },
+            definition: {
+              content: [
+                {
+                  type: 'paragraph',
+                  inlineContent: [
+                    {
+                      type: 'text',
+                      text: 'foo',
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            term: {
+              inlineContent: [
+                {
+                  type: 'text',
+                  text: 'Bar',
+                },
+              ],
+            },
+            definition: {
+              content: [
+                {
+                  type: 'paragraph',
+                  inlineContent: [
+                    {
+                      type: 'text',
+                      text: 'bar',
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      });
+      const dl = wrapper.find('.content dl');
+      expect(dl.exists()).toBe(true);
+
+      const terms = dl.findAll('dt');
+      expect(terms.length).toBe(2);
+
+      const definitions = dl.findAll('dd');
+      expect(definitions.length).toBe(2);
+
+      expect(terms.at(0).text()).toBe('Foo');
+      expect(definitions.at(0).contains('p')).toBe(true);
+      expect(definitions.at(0).text()).toBe('foo');
+      expect(terms.at(1).text()).toBe('Bar');
+      expect(definitions.at(1).contains('p')).toBe(true);
+      expect(definitions.at(1).text()).toBe('bar');
     });
   });
 
@@ -1030,7 +1903,8 @@ describe('ContentNode', () => {
 
       const content = wrapper.find(StrikeThrough);
       // assert the `strong` tag is rendered
-      expect(content.html()).toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
+      expect(content.html())
+        .toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
     });
   });
 

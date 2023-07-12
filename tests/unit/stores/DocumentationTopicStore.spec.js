@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -10,12 +10,20 @@
 
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
+import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
+
+const references = {
+  foo: { identifier: 'foo' },
+  bar: { identifier: 'bar' },
+};
 
 describe('DocumentationTopicStore', () => {
   const defaultState = {
-    onThisPageSections: [],
     preferredLanguage: null,
+    contentWidth: 0,
     ...ApiChangesStoreBase.state,
+    ...OnThisPageSectionsStoreBase.state,
+    references: {},
   };
 
   beforeEach(() => {
@@ -23,6 +31,7 @@ describe('DocumentationTopicStore', () => {
     DocumentationTopicStore.reset();
     // force reset the api changes
     DocumentationTopicStore.setAPIChanges(null);
+    DocumentationTopicStore.state.contentWidth = 0;
   });
 
   it('has a default state', () => {
@@ -31,8 +40,8 @@ describe('DocumentationTopicStore', () => {
 
   describe('reset', () => {
     it('restores the default state', () => {
-      DocumentationTopicStore.state.onThisPageSections = null;
       DocumentationTopicStore.state.apiChanges = {};
+      DocumentationTopicStore.state.references = references;
       expect(DocumentationTopicStore.state).not.toEqual(defaultState);
       DocumentationTopicStore.reset();
       // assert all the state is reset
@@ -51,6 +60,7 @@ describe('DocumentationTopicStore', () => {
         onThisPageSections: [
           {
             anchor: 'foo',
+            i18n: true,
             title: 'Foo',
           },
         ],
@@ -64,10 +74,12 @@ describe('DocumentationTopicStore', () => {
         onThisPageSections: [
           {
             anchor: 'foo',
+            i18n: true,
             title: 'Foo',
           },
           {
             anchor: 'bar',
+            i18n: true,
             title: 'Bar',
           },
         ],
@@ -80,6 +92,16 @@ describe('DocumentationTopicStore', () => {
       DocumentationTopicStore.setPreferredLanguage('objc');
       expect(DocumentationTopicStore.state.preferredLanguage).toBe('objc');
     });
+  });
+
+  it('sets the content width', () => {
+    DocumentationTopicStore.setContentWidth(99);
+    expect(DocumentationTopicStore.state.contentWidth).toBe(99);
+  });
+
+  it('sets `references`', () => {
+    DocumentationTopicStore.setReferences(references);
+    expect(DocumentationTopicStore.state.references).toBe(references);
   });
 
   describe('APIChanges', () => {

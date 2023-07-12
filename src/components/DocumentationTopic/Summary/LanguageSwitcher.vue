@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <Section class="language" role="complementary" aria-label="Language">
-    <Title>Language: </Title>
+  <Section class="language" role="complementary" :aria-label="$t('language')">
+    <Title>{{ $t('formats.colon', { content: $t('language') }) }}</Title>
     <div class="language-list">
       <LanguageSwitcherLink
         class="language-option swift"
@@ -34,6 +34,7 @@
 
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
+import { normalizeRelativePath } from 'docc-render/utils/assets';
 import Language from 'docc-render/constants/Language';
 
 import LanguageSwitcherLink from './LanguageSwitcherLink.vue';
@@ -81,26 +82,24 @@ export default {
     // current URL.
     objc: ({
       interfaceLanguage,
-      normalizePath,
       objcPath,
       $route: { query },
     }) => ({
       ...Language.objectiveC,
       active: Language.objectiveC.key.api === interfaceLanguage,
-      url: buildUrl(normalizePath(objcPath), {
+      url: buildUrl(normalizeRelativePath(objcPath), {
         ...query,
         language: Language.objectiveC.key.url,
       }),
     }),
     swift: ({
       interfaceLanguage,
-      normalizePath,
       swiftPath,
       $route: { query },
     }) => ({
       ...Language.swift,
       active: Language.swift.key.api === interfaceLanguage,
-      url: buildUrl(normalizePath(swiftPath), {
+      url: buildUrl(normalizeRelativePath(swiftPath), {
         ...query,
         language: undefined,
       }),
@@ -113,11 +112,6 @@ export default {
       }
 
       this.$router.push(language.url);
-    },
-    normalizePath(path) {
-      // Sometimes `paths` data from `variants` are prefixed with a leading
-      // slash and sometimes they aren't
-      return path.startsWith('/') ? path : `/${path}`;
     },
   },
 };

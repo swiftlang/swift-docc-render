@@ -8,9 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-// we should consider moving `normalizeAssetUrl` here and renaming it since it
-// is more generic than its name implies (no asset-specific logic)
-import { normalizeAssetUrl as normalizePath } from 'docc-render/utils/assets';
+import { normalizePath } from 'docc-render/utils/assets';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
 
 export function queryStringForParams(params = {}) {
@@ -69,24 +67,44 @@ export function areEquivalentLocations(routeA, routeB) {
   }));
 }
 
-// Resolve a given path into a full, absolute URL.
-//
-// @param {String} path A URL path.
-// @param {String} baseUrl An optional base URL to resolve against. The default
-//   value will be the origin of the current website.
-// @return {String} The absolute URL resulting from resolving the given path
-//   with the current website origin.
-//
-// Note that the same call may result in different output for the same input
-// depending on where/how this instance of DocC-Render is being hosted.
-//
-// Examples:
-//
-// resolveAbsoluteUrl('/foo/bar') // http://localhost:8080/foo/bar
-// OR
-// resolveAbsoluteUrl('/foo/bar') // https://mportiz08.github.io/example/foo/bar
-//
-// resolveAbsoluteUrl('/foo/bar', 'http://example.com') // http://example.com/foo/bar
-export function resolveAbsoluteUrl(path, baseUrl = window.location.origin) {
-  return new URL(normalizePath(path), baseUrl).href;
+/**
+ * Resolve a given path absolute URL object.
+ *
+ * @param {string | string[]} path - A URL path.
+ * @param {string} [domainPath] - An optional base URL to resolve against. The default
+ *   value will be the origin of the current website.
+ * @return {Object} The absolute URL object resulting from resolving the given path
+ *   with the current website origin.
+ *
+ * @example
+ * // if baseURL is '/'
+ * getAbsoluteUrl('/bar') // URL { href: http://localhost:8080/bar }
+ * getAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/bar }
+ * // if baseURL is '/foo/'
+ * getAssetsAbsoluteUrl('/bar') // URL { href: http://localhost:8080/foo/bar }
+ * getAssetsAbsoluteUrl('/bar', 'http://example.com') // URL { href: http://example.com/foo/bar }
+ */
+export function getAbsoluteUrl(path, domainPath = window.location.href) {
+  return new URL(normalizePath(path), domainPath);
+}
+
+/**
+ * Resolve a given path into a full, absolute URL.
+ *
+ * @param {string | string[]} path - A URL path.
+ * @param {string} [domainPath] - An optional base URL to resolve against. The default
+ *   value will be the origin of the current website.
+ * @return {string} The absolute URL resulting from resolving the given path
+ *   with the current website origin.
+ *
+ * @example
+ * // if baseURL is '/'
+ * getAbsoluteUrl('/bar') // http://localhost:8080/bar
+ * getAbsoluteUrl('/bar', 'http://example.com') // http://example.com/bar
+ * // if baseURL is '/foo/'
+ * resolveAssetsAbsoluteUrl('/bar') // http://localhost:8080/foo/bar
+ * resolveAssetsAbsoluteUrl('/bar', 'http://example.com') // http://example.com/foo/bar
+ */
+export function resolveAbsoluteUrl(path, domainPath) {
+  return getAbsoluteUrl(path, domainPath).href;
 }

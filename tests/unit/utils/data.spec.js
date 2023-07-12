@@ -9,7 +9,6 @@
 */
 
 import {
-  FetchError,
   fetchData,
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
@@ -17,13 +16,14 @@ import {
   fetchIndexPathsData,
 } from 'docc-render/utils/data';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
+import FetchError from 'docc-render/errors/FetchError';
+import RedirectError from 'docc-render/errors/RedirectError';
+import { defaultLocale } from 'theme/lang/index';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
-const mockBaseUrl = jest.fn().mockReturnValue('/');
-
-jest.mock('docc-render/utils/theme-settings', () => ({
-  get baseUrl() { return mockBaseUrl(); },
+jest.mock('docc-render/utils/metadata', () => ({
+  updateLangTag: jest.fn(),
 }));
 
 const badFetchResponse = {
@@ -37,6 +37,11 @@ const goodFetchResponse = {
 const notFoundFetchResposne = {
   ok: false,
   status: 404,
+};
+const redirectResponse = {
+  redirected: true,
+  ok: true,
+  url: 'https://localhost:8080/data/documentation/foo/framework.json?language=objc',
 };
 
 const badIDEFetchResponse = {
@@ -70,6 +75,19 @@ describe('fetchData', () => {
     await expect(data).toEqual(await goodFetchResponse.json());
   });
 
+  it('calls `fetch` with any passed options', async () => {
+    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+
+    const path = '/data/tutorials/augmented-reality/tutorials.json';
+    const options = { signal: new AbortController().signal };
+    await fetchData(path, {}, options);
+
+    expect(window.fetch).toHaveBeenCalledWith(new URL(
+      path,
+      window.location.href,
+    ).href, options);
+  });
+
   it('throws non "OK" responses', async () => {
     window.fetch = jest.fn().mockImplementation(() => badFetchResponse);
     try {
@@ -87,6 +105,17 @@ describe('fetchData', () => {
     expect(emitWarningForSchemaVersionMismatch).toHaveBeenCalledTimes(1);
 
     expect(emitWarningForSchemaVersionMismatch).toHaveBeenCalledWith(schemaVersion);
+  });
+
+  it('throws a RedirectError, when a redirect response is present', async () => {
+    window.fetch = jest.fn().mockImplementation(() => redirectResponse);
+    try {
+      await fetchData('/data/tutorials/augmented-responses/tutorials.json');
+    } catch (err) {
+      expect(err).toBeInstanceOf(RedirectError);
+      expect(err.response).toEqual(redirectResponse);
+      expect(err.location).toEqual(redirectResponse.url);
+    }
   });
 
   describe('with an IDE target', () => {
@@ -124,6 +153,7 @@ describe('fetchDataForRouteEnter', () => {
   const to = {
     name: 'technology-tutorials',
     path: '/tutorials/augmented-reality/tutorials',
+    params: { locale: defaultLocale },
   };
   const from = {};
   const next = jest.fn();
@@ -146,24 +176,26 @@ describe('fetchDataForRouteEnter', () => {
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
       '/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
-    ).href);
+    ).href, {});
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
   });
 
   it('calls `fetchData` with a configurable base url', async () => {
-    mockBaseUrl.mockReturnValueOnce('/base-prefix/');
+    const baseUrl = '/base-prefix';
+    window.baseUrl = baseUrl;
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
-      '/base-prefix/data/tutorials/augmented-reality/tutorials.json',
+      `${baseUrl}/data/tutorials/augmented-reality/tutorials.json`,
       window.location.href,
-    ).href);
+    ).href, {});
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
+    window.baseUrl = '/';
   });
 
   it('calls `fetchData` with the right query string', async () => {
@@ -204,6 +236,16 @@ describe('fetchDataForRouteEnter', () => {
     process.env.VUE_APP_TARGET = '';
   });
 
+  it('throws with a new path, when `fetch` has been redirected', async () => {
+    window.fetch = jest.fn().mockResolvedValue(redirectResponse);
+
+    await expect(fetchDataForRouteEnter(to, from, next))
+      .rejects
+      .toBe('/documentation/foo/framework?language=objc');
+    expect(next).toHaveBeenCalledTimes(0);
+    window.fetch.mockRestore();
+  });
+
   it('calls the `next` fn with a `FetchError`', async () => {
     window.fetch = jest.fn().mockImplementation(() => badFetchResponse);
 
@@ -222,12 +264,13 @@ describe('fetchDataForRouteEnter', () => {
     const data = await fetchDataForRouteEnter({
       name: 'technology-tutorials',
       path: '/tutorials/augmented-reality/tutorials/',
+      params: { locale: defaultLocale },
     }, from, next);
 
     await expect(window.fetch).toHaveBeenLastCalledWith(new URL(
       '/data/tutorials/augmented-reality/tutorials.json',
       window.location.href,
-    ).href);
+    ).href, {});
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
@@ -319,10 +362,21 @@ describe('fetchAPIChangesForRoute', () => {
 
 describe('fetchIndexPathsData', () => {
   it('fetches the data for the index/index.json', async () => {
+    // prepare the location object for the test
+    const backup = window.location;
+    delete window.location;
+    // change the location to a deep page
+    window.location = new URL('http://localhost/some/deep/path/');
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
-
-    const data = await fetchIndexPathsData();
-    expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json');
+    // fetch data with default locale
+    const data = await fetchIndexPathsData({ currentLocale: defaultLocale });
+    // ensure the index was called at the root, not the deep page
+    expect(fetch).toHaveBeenLastCalledWith('http://localhost/index/index.json', {});
     expect(data).toEqual({ foobar: 'foobar' });
+    // fetch data with another locale
+    const slug = 'zh-CN';
+    await fetchIndexPathsData({ slug });
+    expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${slug}/index.json`, {});
+    window.location = backup;
   });
 });

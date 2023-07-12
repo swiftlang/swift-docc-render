@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -81,6 +81,7 @@ describe('FilterInput', () => {
     wrapper = shallowMount(FilterInput, {
       propsData,
       stubs: { TagList },
+      attachToDocument: true,
     });
 
     input = wrapper.find({ ref: 'input' });
@@ -101,6 +102,25 @@ describe('FilterInput', () => {
     expect(filterLabel.is('label')).toBe(true);
     // check that label is associated to filter input
     expect(filterLabel.attributes('for')).toBe(FilterInputId);
+  });
+
+  it('renders focus class if showSuggestedTags is true and border style is not prevented', () => {
+    wrapper.setData({ showSuggestedTags: true });
+    wrapper.setProps({ preventBorderStyle: false });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(true);
+  });
+
+  it('does not render focus class if border style is not prevented', () => {
+    wrapper.setProps({ preventBorderStyle: true });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(false);
+  });
+
+  it('does not render focus class if showSuggestedTags is false', () => {
+    wrapper.setData({ showSuggestedTags: false });
+
+    expect(wrapper.find('.filter.focus').exists()).toBe(false);
   });
 
   it('renders an `input` element', async () => {
@@ -154,6 +174,7 @@ describe('FilterInput', () => {
     wrapper.find('.filter__filter-button').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['show-suggested-tags']).toBeTruthy();
+    expect(wrapper.emitted('focus')).toBeTruthy();
   });
 
   it('renders a filter button with an icon slot', () => {
@@ -197,11 +218,44 @@ describe('FilterInput', () => {
         value: 'Change',
         focusInputWhenCreated: true,
       },
+      attachToDocument: true,
       stubs: { TagList },
     });
     await wrapper.vm.$nextTick();
     input = wrapper.find({ ref: 'input' });
     expect(document.activeElement).toBe(input.element);
+  });
+
+  it('focuses input if `focusInputWhenEmpty` is on and input has no content', async () => {
+    wrapper = shallowMount(FilterInput, {
+      propsData: {
+        ...propsData,
+        focusInputWhenCreated: true,
+        focusInputWhenEmpty: true,
+      },
+    });
+    await wrapper.vm.$nextTick();
+    expect(document.activeElement.classList.contains('filter__input')).toBe(true);
+  });
+
+  it('adds character `/` as input value', async () => {
+    input.setValue('/');
+    expect(wrapper.emitted('input')).toEqual([['/']]);
+  });
+
+  it('selects input on focus if `selectInputOnFocus` prop is true', async () => {
+    wrapper = shallowMount(FilterInput, {
+      propsData: {
+        ...propsData,
+        selectInputOnFocus: true,
+        value: inputValue,
+      },
+    });
+    input = wrapper.find('input');
+    jest.spyOn(wrapper.vm, 'selectInputAndTags').mockImplementation();
+    input.trigger('focus');
+    expect(wrapper.vm.selectInputAndTags).toHaveBeenCalledTimes(1);
+    expect(wrapper.vm.inputIsSelected()).toBeTruthy();
   });
 
   describe('copy/paste', () => {
@@ -471,9 +525,9 @@ describe('FilterInput', () => {
 
     it('adds the correct aria label to `suggestedTags` component', () => {
       expect(suggestedTags.props()).toHaveProperty('id', SuggestedTagsId);
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'Suggested tags');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags');
       wrapper.setProps({ tags: ['1'] });
-      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'Suggested tag');
+      expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags');
     });
 
     it('keeps `suggestedTags` component when `suggestedTags` gets focus instead of `input`', () => {
@@ -551,6 +605,7 @@ describe('FilterInput', () => {
       await wrapper.vm.$nextTick();
       expect(suggestedTags.exists()).toBe(false);
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
+      expect(wrapper.emitted('blur')).toBeTruthy();
     });
 
     it('does not hide the tags, if `:preventedBlur=true`', async () => {
@@ -853,7 +908,7 @@ describe('FilterInput', () => {
       expect(wrapper.vm.resetedTagsViaDeleteButton).toEqual(true);
 
       wrapper.setProps({ value: 'foo', selectedTags: tags });
-      deleteButton.trigger('click');
+      wrapper.find('.filter__delete-button').trigger('click');
 
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
       expect(wrapper.emitted('input')).toEqual([[''], ['']]);

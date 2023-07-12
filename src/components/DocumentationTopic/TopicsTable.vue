@@ -11,28 +11,42 @@
 <template>
   <ContentTable :anchor="anchor" :title="title">
     <ContentTableSection
-      v-for="section in sectionsWithTopics"
-      :key="section.title"
+      v-for="(section, i) in sectionsWithTopics"
+      :key="`${section.title}_${i}`"
       :title="section.title"
+      :anchor="section.anchor"
+      :class="{ 'no-title': !section.title }"
     >
-      <template v-if="wrapTitle" slot="title">
-        <WordBreak tag="h3" class="title">
-          {{ section.title }}
-        </WordBreak>
+      <template v-if="section.title && wrapTitle" #title="{ className }">
+        <LinkableHeading
+          :level="3"
+          :anchor="section.anchor"
+          :class="className"
+        >
+          <WordBreak>{{ section.title }}</WordBreak>
+        </LinkableHeading>
       </template>
-      <template v-if="section.abstract" slot="abstract">
+      <template v-if="section.abstract" #abstract>
         <ContentNode :content="section.abstract" />
       </template>
-      <template v-if="section.discussion" slot="discussion">
+      <template v-if="section.discussion" #discussion>
         <ContentNode :content="section.discussion.content" />
       </template>
-      <TopicsLinkBlock
-        v-for="topic in section.topics"
+      <template v-if="shouldRenderList">
+        <TopicsLinkBlock
+          v-for="topic in section.topics"
+          class="topic"
+          :key="topic.identifier"
+          :topic="topic"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+        />
+      </template>
+      <TopicsLinkCardGrid
+        v-else
+        :items="section.topics"
+        :topicStyle="topicStyle"
         class="topic"
-        :key="topic.identifier"
-        :topic="topic"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
       />
     </ContentTableSection>
   </ContentTable>
@@ -41,25 +55,25 @@
 <script>
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
+import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import ContentTable from './ContentTable.vue';
 import ContentTableSection from './ContentTableSection.vue';
 import TopicsLinkBlock from './TopicsLinkBlock.vue';
 
 export default {
   name: 'TopicsTable',
-  inject: {
-    references: {
-      default() {
-        return {};
-      },
-    },
-  },
+  mixins: [referencesProvider],
   components: {
+    TopicsLinkCardGrid,
     WordBreak,
     ContentTable,
     TopicsLinkBlock,
     ContentNode,
     ContentTableSection,
+    LinkableHeading,
   },
   props: {
     isSymbolDeprecated: Boolean,
@@ -86,8 +100,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    topicStyle: {
+      type: String,
+      default: TopicSectionsStyle.list,
+    },
   },
   computed: {
+    shouldRenderList: ({ topicStyle }) => topicStyle === TopicSectionsStyle.list,
     sectionsWithTopics() {
       return this.sections.map(section => ({
         ...section,
@@ -107,5 +126,10 @@ export default {
 .topic,
 .section-content > .content {
   margin-top: 15px;
+
+  // if there is no title, remove the top margin of the first item
+  .no-title &:first-child {
+    margin-top: 0;
+  }
 }
 </style>

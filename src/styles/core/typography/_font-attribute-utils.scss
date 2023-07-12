@@ -16,6 +16,8 @@
 //
 // @returns {String}
 //
+@use "sass:math";
+
 @function -get-font-family-for-size($size) {
   @return $default-fonts;
 }
@@ -50,7 +52,7 @@
 // @returns {Number}
 //
 @function -transform-line-height($size, $line-height) {
-  @return $line-height / $size;
+  @return math.div($line-height, $size);
 }
 
 // Create a CSS map for a given Font Attributes
@@ -94,7 +96,10 @@
 
   // generate font family
   $font-family: map-get($attributes, font-family);
-  $value: if($font-family, $font-family, -get-font-family-for-size($size));
+  $value: if($font-family,
+    $font-family,
+    var(--typography-html-font, -get-font-family-for-size($size))
+  );
 
   $style: map-merge($style, (font-family: $value));
 

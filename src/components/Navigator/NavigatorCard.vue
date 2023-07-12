@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,46 +9,47 @@
 -->
 
 <template>
-  <div class="navigator-card">
-    <div class="navigator-card-full-height">
-      <NavigatorCardInner>
-        <div class="head-wrapper">
-          <button
-            aria-label="Close documentation navigator"
-            class="close-card-mobile"
-            @click="$emit('close')"
-          >
-            <SidenavIcon class="icon-inline close-icon" />
-          </button>
-          <Reference :url="technologyPath" class="navigator-head" :id="INDEX_ROOT_KEY">
-            <h2 class="card-link">
-              {{ technology }}
-            </h2>
-          </Reference>
-        </div>
-        <slot name="post-head" />
-        <div
-          class="card-body"
+  <BaseNavigatorCard
+    :class="{ 'filter-on-top': renderFilterOnTop }"
+    v-bind="{
+      technology,
+      isTechnologyBeta,
+      technologyPath,
+    }"
+    @close="$emit('close')"
+    @head-click-alt="toggleAllNodes"
+  >
+    <template #body="{ className }">
+      <slot name="post-head" />
+      <div
+        :class="className"
+        @keydown.alt.up.capture.prevent="focusFirst"
+        @keydown.alt.down.capture.prevent="focusLast"
+        @keydown.up.exact.capture.prevent="focusPrev"
+        @keydown.down.exact.capture.prevent="focusNext"
+      >
+        <DynamicScroller
+          v-show="hasNodes"
+          :id="scrollLockID"
+          ref="scroller"
+          class="scroller"
+          :aria-label="$t('navigator.title')"
+          :items="nodesToRender"
+          :min-item-size="itemSize"
+          emit-update
+          key-field="uid"
+          v-slot="{ item, active, index }"
+          @focusin.native="handleFocusIn"
+          @focusout.native="handleFocusOut"
+          @update="handleScrollerUpdate"
           @keydown.alt.up.capture.prevent="focusFirst"
           @keydown.alt.down.capture.prevent="focusLast"
           @keydown.up.exact.capture.prevent="focusPrev"
           @keydown.down.exact.capture.prevent="focusNext"
         >
-          <RecycleScroller
-            v-show="hasNodes"
-            :id="scrollLockID"
-            ref="scroller"
-            class="scroller"
-            aria-label="Documentation Navigator"
-            :items="nodesToRender"
-            :item-size="itemSize"
-            :buffer="1000"
-            emit-update
-            key-field="uid"
-            v-slot="{ item, active, index }"
-            @focusin.native="handleFocusIn"
-            @focusout.native="handleFocusOut"
-            @update="handleScrollerUpdate"
+          <DynamicScrollerItem
+            v-bind="{ active, item, dataIndex: index }"
+            :ref="`dynamicScroller_${item.uid}`"
           >
             <NavigatorCardItem
               :item="item"
@@ -60,67 +61,75 @@
               :api-change="apiChangesObject[item.path]"
               :isFocused="focusedIndex === index"
               :enableFocus="!externalFocusChange"
+              :navigator-references="navigatorReferences"
               @toggle="toggle"
               @toggle-full="toggleFullTree"
               @toggle-siblings="toggleSiblings"
               @navigate="handleNavigationChange"
               @focus-parent="focusNodeParent"
             />
-          </RecycleScroller>
-          <div aria-live="polite" class="visuallyhidden">
-            {{ politeAriaLive }}
-          </div>
-          <div aria-live="assertive" class="no-items-wrapper">
-            {{ assertiveAriaLive }}
-          </div>
+          </DynamicScrollerItem>
+        </DynamicScroller>
+        <div aria-live="polite" class="visuallyhidden">
+          {{ politeAriaLive }}
         </div>
-      </NavigatorCardInner>
-    </div>
-    <div class="filter-wrapper" v-if="!errorFetching">
-      <div class="navigator-filter">
-        <div class="input-wrapper">
-          <FilterInput
-            v-model="filter"
-            :tags="availableTags"
-            :selected-tags.sync="selectedTagsModelValue"
-            placeholder="Filter"
-            :should-keep-open-on-blur="false"
-            :position-reversed="isLargeBreakpoint"
-            :clear-filter-on-tag-select="false"
-            class="filter-component"
-            @clear="clearFilters"
-          />
+        <div aria-live="assertive" class="no-items-wrapper">
+          <p class="no-items">
+            {{ $t(assertiveAriaLive) }}
+          </p>
         </div>
       </div>
-    </div>
-  </div>
+      <div class="filter-wrapper" v-if="!errorFetching">
+        <div class="navigator-filter">
+          <div class="input-wrapper">
+            <FilterInput
+              v-model="filter"
+              :tags="availableTags"
+              :translatableTags="translatableTags"
+              :selected-tags.sync="selectedTagsModelValue"
+              :placeholder="$t('filter.title')"
+              :should-keep-open-on-blur="false"
+              :position-reversed="!renderFilterOnTop"
+              :clear-filter-on-tag-select="false"
+              class="filter-component"
+              @clear="clearFilters"
+            />
+          </div>
+          <slot name="filter" />
+        </div>
+      </div>
+    </template>
+  </BaseNavigatorCard>
 </template>
 
 <script>
-import { RecycleScroller } from 'vue-virtual-scroller';
+/* eslint-disable prefer-destructuring,no-continue,no-param-reassign,no-restricted-syntax */
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import { clone } from 'docc-render/utils/data';
 import { waitFrames, waitFor } from 'docc-render/utils/loading';
 import debounce from 'docc-render/utils/debounce';
 import { sessionStorage } from 'docc-render/utils/storage';
-import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from 'docc-render/constants/sidebar';
+import {
+  INDEX_ROOT_KEY,
+  SIDEBAR_ITEM_SIZE,
+} from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorCardInner from 'docc-render/components/Navigator/NavigatorCardInner.vue';
 import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
-import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
-import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCard.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
+import {
+  convertChildrenArrayToObject,
+  getAllChildren,
+  getChildren,
+  getParents,
+  getSiblings,
+} from 'docc-render/utils/navigatorData';
 
 const STORAGE_KEY = 'navigator.state';
-
-const NO_RESULTS = 'No results found.';
-const NO_CHILDREN = 'No data available.';
-const ERROR_FETCHING = 'There was an error fetching the data.';
-const ITEMS_FOUND = 'items were found. Tab back to navigate through them.';
 
 const FILTER_TAGS = {
   sampleCode: 'sampleCode',
@@ -151,7 +160,11 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.project]: FILTER_TAGS.tutorials,
 };
 
-const HIDE_DEPRECATED_TAG = 'Hide Deprecated';
+const NO_RESULTS = 'navigator.no-results';
+const NO_CHILDREN = 'navigator.no-children';
+const ERROR_FETCHING = 'navigator.error-fetching';
+const ITEMS_FOUND = 'navigator.items-found';
+const HIDE_DEPRECATED = 'navigator.tags.hide-deprecated';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -166,25 +179,19 @@ export default {
     FILTER_TAGS_TO_LABELS,
     FILTER_LABELS_TO_TAGS,
     TOPIC_TYPE_TO_TAG,
-    NO_RESULTS,
-    NO_CHILDREN,
     ERROR_FETCHING,
     ITEMS_FOUND,
-    HIDE_DEPRECATED_TAG,
+    HIDE_DEPRECATED,
   },
   components: {
     FilterInput,
-    SidenavIcon,
-    NavigatorCardInner,
     NavigatorCardItem,
-    RecycleScroller,
-    Reference,
+    DynamicScroller,
+    DynamicScrollerItem,
+    BaseNavigatorCard,
   },
   props: {
-    technology: {
-      type: String,
-      required: true,
-    },
+    ...BaseNavigatorCard.props,
     children: {
       type: Array,
       required: true,
@@ -197,10 +204,6 @@ export default {
       type: String,
       required: true,
     },
-    technologyPath: {
-      type: String,
-      default: '',
-    },
     scrollLockID: {
       type: String,
       default: '',
@@ -209,13 +212,25 @@ export default {
       type: Boolean,
       default: false,
     },
-    breakpoint: {
-      type: String,
-      default: '',
-    },
     apiChanges: {
       type: Object,
       default: null,
+    },
+    isTechnologyBeta: {
+      type: Boolean,
+      default: false,
+    },
+    navigatorReferences: {
+      type: Object,
+      default: () => {},
+    },
+    renderFilterOnTop: {
+      type: Boolean,
+      default: false,
+    },
+    hideAvailableTags: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [
@@ -229,25 +244,24 @@ export default {
       debouncedFilter: '',
       selectedTags: [],
       /** @type {Object.<string, boolean>} */
-      openNodes: {},
+      openNodes: Object.freeze({}),
       /** @type {NavigatorFlatItem[]} */
-      nodesToRender: [],
+      nodesToRender: Object.freeze([]),
       activeUID: null,
-      resetScroll: false,
       lastFocusTarget: null,
-      NO_RESULTS,
-      NO_CHILDREN,
-      ERROR_FETCHING,
-      ITEMS_FOUND,
+      allNodesToggled: false,
+      translatableTags: [HIDE_DEPRECATED],
     };
   },
   computed: {
-    INDEX_ROOT_KEY: () => INDEX_ROOT_KEY,
-    politeAriaLive: ({ hasNodes, nodesToRender }) => {
+    politeAriaLive() {
+      const { hasNodes, nodesToRender } = this;
       if (!hasNodes) return '';
-      return [nodesToRender.length, ITEMS_FOUND].join(' ');
+      return this.$tc(ITEMS_FOUND, nodesToRender.length, { number: nodesToRender.length });
     },
-    assertiveAriaLive: ({ hasNodes, hasFilter, errorFetching }) => {
+    assertiveAriaLive: ({
+      hasNodes, hasFilter, errorFetching,
+    }) => {
       if (hasNodes) return '';
       if (hasFilter) return NO_RESULTS;
       if (errorFetching) return ERROR_FETCHING;
@@ -257,31 +271,37 @@ export default {
      * Generates an array of tag labels for filtering.
      * Shows only tags, that have children matches.
      */
-    availableTags: ({
-      selectedTags, renderableChildNodesMap, apiChangesObject,
-    }) => {
-      const tagLabels = selectedTags.length ? [] : Object.values(FILTER_TAGS_TO_LABELS);
-      if (!tagLabels.length) return tagLabels;
+    availableTags({
+      selectedTags,
+      renderableChildNodesMap,
+      apiChangesObject,
+      hideAvailableTags,
+    }) {
+      if (hideAvailableTags || selectedTags.length) return [];
       const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
+      const tagLabelsSet = new Set(Object.values(FILTER_TAGS_TO_LABELS));
+      const generalTags = new Set([HIDE_DEPRECATED]);
+      // when API changes are available, remove the `HIDE_DEPRECATED` option
+      if (apiChangesTypesSet.size) {
+        generalTags.delete(HIDE_DEPRECATED);
+      }
 
-      const tagLabelsSet = new Set(tagLabels);
-      const generalTags = new Set([HIDE_DEPRECATED_TAG]);
       const availableTags = {
         type: [],
         changes: [],
         other: [],
       };
-      const children = Object.values(renderableChildNodesMap);
-      const len = children.length;
-      let i;
       // iterate over the nodes to render
-      for (i = 0; i < len; i += 1) {
+      for (const childID in renderableChildNodesMap) {
+        if (!Object.hasOwnProperty.call(renderableChildNodesMap, childID)) {
+          continue;
+        }
         // if there are no more tags to iterate over, end early
         if (!tagLabelsSet.size && !apiChangesTypesSet.size && !generalTags.size) {
           break;
         }
-        // extract the type
-        const { type, path, deprecated } = children[i];
+        // extract props
+        const { type, path, deprecated } = renderableChildNodesMap[childID];
         // grab the tagLabel
         const tagLabel = FILTER_TAGS_TO_LABELS[TOPIC_TYPE_TO_TAG[type]];
         const changeType = apiChangesObject[path];
@@ -293,25 +313,28 @@ export default {
           tagLabelsSet.delete(tagLabel);
         }
         if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.changes.push(ChangeNames[changeType]);
+          availableTags.changes.push(this.$t(ChangeNames[changeType]));
           apiChangesTypesSet.delete(changeType);
         }
-        if (deprecated && generalTags.has(HIDE_DEPRECATED_TAG)) {
-          availableTags.other.push(HIDE_DEPRECATED_TAG);
-          generalTags.delete(HIDE_DEPRECATED_TAG);
+        if (deprecated && generalTags.has(HIDE_DEPRECATED)) {
+          availableTags.other.push(HIDE_DEPRECATED);
+          generalTags.delete(HIDE_DEPRECATED);
         }
       }
       return availableTags.type.concat(availableTags.changes, availableTags.other);
     },
     selectedTagsModelValue: {
-      get: ({ selectedTags }) => selectedTags.map(tag => (
-        FILTER_TAGS_TO_LABELS[tag] || ChangeNames[tag] || tag
-      )),
+      get() {
+        return this.selectedTags.map(tag => (
+          FILTER_TAGS_TO_LABELS[tag] || this.$t(ChangeNames[tag]) || tag
+        ));
+      },
       set(values) {
+        // guard against accidental clearings
+        if (!this.selectedTags.length && !values.length) return;
         this.selectedTags = values.map(label => (
           FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label] || label
         ));
-        this.resetScroll = true;
       },
     },
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
@@ -327,7 +350,7 @@ export default {
      * @return {Object.<string, NavigatorFlatItem>}
      */
     childrenMap({ children }) {
-      return this.convertChildrenArrayToObject(children);
+      return convertChildrenArrayToObject(children);
     },
     /**
      * Returns an array of {NavigatorFlatItem}, from the current active UUID
@@ -336,7 +359,7 @@ export default {
     activePathChildren({ activeUID, childrenMap }) {
       // if we have an activeUID and its not stale by any chance, fetch its parents
       return activeUID && childrenMap[activeUID]
-        ? this.getParents(activeUID)
+        ? getParents(activeUID, childrenMap)
         : [];
     },
     activePathMap: ({ activePathChildren }) => (
@@ -350,69 +373,86 @@ export default {
      * @returns NavigatorFlatItem[]
      */
     filteredChildren({
-      hasFilter, children, filterPattern, selectedTags,
-      apiChangesObject, apiChanges, deprecatedHidden,
+      hasFilter, children, filterPattern, selectedTags, apiChanges,
     }) {
       if (!hasFilter) return [];
       const tagsSet = new Set(selectedTags);
       // find children that match current filters
       return children.filter(({
-        title, path, type, deprecated,
+        title, path, type, deprecated, deprecatedChildrenCount, childUIDs,
       }) => {
+        // groupMarkers know how many children they have and how many are deprecated
+        const isDeprecated = deprecated || deprecatedChildrenCount === childUIDs.length;
         // check if `title` matches the pattern, if provided
         const titleMatch = filterPattern ? filterPattern.test(title) : true;
         // check if `type` matches any of the selected tags
         let tagMatch = true;
-        if (selectedTags.length) {
+        if (tagsSet.size) {
           tagMatch = tagsSet.has(TOPIC_TYPE_TO_TAG[type]);
           // if there are API changes and there is no tag match, try to match change types
           if (apiChanges && !tagMatch) {
-            tagMatch = tagsSet.has(apiChangesObject[path]);
+            tagMatch = tagsSet.has(apiChanges[path]);
           }
-          if (!deprecated && tagsSet.has(HIDE_DEPRECATED_TAG)) {
+          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED)) {
             tagMatch = true;
           }
         }
         // find items, that have API changes
-        const hasAPIChanges = apiChanges ? apiChangesObject[path] : true;
-        // group markers are hidden when filtering, unless "Hide Deprecated" is ON.
-        const isGroupMarker = deprecatedHidden ? false : type === TopicTypes.groupMarker;
+        const hasAPIChanges = apiChanges ? !!apiChanges[path] : true;
         // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges && !isGroupMarker;
+        return titleMatch && tagMatch && hasAPIChanges;
       });
     },
-    /**
-     * Returns a Set of all nodes that match a filter, along with their parents.
-     * @returns NavigatorFlatItem[]
-     */
-    filteredChildrenUpToRootSet: ({ filteredChildren, getParents }) => new Set(
-      filteredChildren.flatMap(({ uid }) => getParents(uid)),
-    ),
     /**
      * This generates a map of all the nodes we are allowed to render at a certain time.
      * This is used on both toggling, as well as on navigation and filtering.
      * @return {Object.<string, NavigatorFlatItem>}
      */
-    renderableChildNodesMap({ filteredChildrenUpToRootSet, childrenMap, hasFilter }) {
+    renderableChildNodesMap({
+      hasFilter, childrenMap, deprecatedHidden, filteredChildren, removeDeprecated,
+    }) {
       if (!hasFilter) return childrenMap;
-      let all = [];
-      // create a set of all matches and their parents
-      filteredChildrenUpToRootSet.forEach((current) => {
-        // if it has no children, just add it
-        if (!current.childUIDs.length) {
-          all.push(current);
-          return;
-        }
-        const noChildrenMatch = !current.childUIDs.some(uid => (
-          filteredChildrenUpToRootSet.has(childrenMap[uid])
-        ));
-        all = all.concat(noChildrenMatch ? this.getAllChildren(current.uid) : current);
-      });
 
-      return this.convertChildrenArrayToObject(all);
+      const childrenLength = filteredChildren.length - 1;
+      const filteredChildrenUpToRootSet = new Set([]);
+      // iterate backwards
+      for (let i = childrenLength; i >= 0; i -= 1) {
+        // get item
+        const child = filteredChildren[i];
+        const groupMarker = childrenMap[child.groupMarkerUID];
+        if (groupMarker) {
+          filteredChildrenUpToRootSet.add(groupMarker);
+        }
+        // check if item is already added to list,
+        // if yes, continue with next item, as this one is probably a parent of a prev match.
+        if (filteredChildrenUpToRootSet.has(child)) continue;
+
+        // if the current item's parent is already in the list, and its not a GroupMarker
+        // a sibling already did the heavy work, so we just add it and continue.
+        if (
+          filteredChildrenUpToRootSet.has(childrenMap[child.parent])
+          && child.type !== TopicTypes.groupMarker
+        ) {
+          filteredChildrenUpToRootSet.add(child);
+          continue;
+        }
+        let allChildren = [];
+        // check if it has children. This is for Parents and GroupMarkers
+        if (child.childUIDs.length) {
+          //   if yes, add them all, so we can expand to see them
+          allChildren = removeDeprecated(
+            getAllChildren(child.uid, childrenMap), deprecatedHidden,
+          );
+        }
+        // add item and all of it's parents + closest group marker
+        allChildren
+          .concat(getParents(child.uid, childrenMap))
+          .forEach(v => filteredChildrenUpToRootSet.add(v));
+      }
+      return convertChildrenArrayToObject([...filteredChildrenUpToRootSet]);
     },
     /**
-     * Creates a computed for the two items, that the openNodes calc depends on
+     * Creates a computed for the items, that the openNodes calc depends on
      */
     nodeChangeDeps: ({
       filteredChildren, activePathChildren, debouncedFilter, selectedTags,
@@ -431,13 +471,12 @@ export default {
      * If we enable multiple tags, this should be an include instead.
      * @returns boolean
      */
-    deprecatedHidden: ({ selectedTags, debouncedFilter }) => (
-      selectedTags[0] === HIDE_DEPRECATED_TAG && !debouncedFilter.length
+    deprecatedHidden: ({ selectedTags }) => (
+      selectedTags[0] === HIDE_DEPRECATED
     ),
     apiChangesObject() {
       return this.apiChanges || {};
     },
-    isLargeBreakpoint: ({ breakpoint }) => breakpoint === BreakpointName.large,
     hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
     totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
@@ -452,15 +491,45 @@ export default {
     apiChanges(value) {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
-      this.selectedTags = this.selectedTags.filter(t => !ChangeNames[t]);
+      this.selectedTags = this.selectedTags.filter(t => !this.$t(ChangeNames[t]));
+    },
+    async activeUID(newUid, oldUID) {
+      // Update the dynamicScroller item's size, when we change the UID,
+      // to fix cases where applying styling that changes
+      // the size of active items.
+      await this.$nextTick();
+      const item = this.$refs[`dynamicScroller_${oldUID}`];
+      if (item && item.updateSize) {
+        // call the `updateSize` method on the `DynamicScrollerItem`, since it wont get triggered,
+        // on its own from changing the active item.
+        item.updateSize();
+      }
     },
   },
   methods: {
+    setUnlessEqual(property, data) {
+      if (isEqual(data, this[property])) return;
+
+      this[property] = Object.freeze(data);
+    },
+    toggleAllNodes() {
+      const parentNodes = this.children.filter(child => child.parent === INDEX_ROOT_KEY
+        && child.type !== TopicTypes.groupMarker && child.childUIDs.length);
+      // make sure all nodes get either open or close
+      this.allNodesToggled = !this.allNodesToggled;
+      if (this.allNodesToggled) {
+        this.openNodes = {};
+        this.generateNodesToRender();
+      }
+
+      parentNodes.forEach((node) => {
+        this.toggleFullTree(node);
+      });
+    },
     clearFilters() {
       this.filter = '';
       this.debouncedFilter = '';
       this.selectedTags = [];
-      this.resetScroll = true;
     },
     scrollToFocus() {
       this.$refs.scroller.scrollToItem(this.focusedIndex);
@@ -468,11 +537,9 @@ export default {
     debounceInput: debounce(function debounceInput(value) {
       // store the new filter value
       this.debouncedFilter = value;
-      // note to the component, that we want to reset the scroll
-      this.resetScroll = true;
       // reset the last focus target
       this.lastFocusTarget = null;
-    }, 500),
+    }, 200),
     /**
      * Finds which nodes need to be opened.
      * Initiates a watcher, that reacts to filtering and page navigation.
@@ -495,20 +562,45 @@ export default {
 
       // if the activePath items change, we navigated to another page
       const pageChange = !isEqual(activePathChildrenBefore, activePathChildren);
+      // store the childrenMap into a var, so we dont register multiple deps to it
+      const { childrenMap } = this;
       // decide which items are open
       // if "Hide Deprecated" is picked, there is no filter,
       // or navigate to page while filtering, we open the items leading to the activeUID
-      const nodes = this.deprecatedHidden || (pageChange && this.hasFilter) || !this.hasFilter
-        ? activePathChildren
-        // get all parents of the current filter match, excluding it in the process
-        : filteredChildren.flatMap(({ uid }) => this.getParents(uid).slice(0, -1));
-      // create a map to track open items - `{ [UID]: true }`
-      const newOpenNodes = Object.fromEntries(nodes
-        .map(({ uid }) => [uid, true]));
+      let nodes = activePathChildren;
+
+      if (!((this.deprecatedHidden && !this.debouncedFilter.length)
+        || (pageChange && this.hasFilter)
+        || !this.hasFilter)) {
+        const nodesSet = new Set();
+        // gather all the parents of all the matches.
+        // we do this in reverse, so deep children do all the work.
+        const len = filteredChildren.length - 1;
+        for (let i = len; i >= 0; i -= 1) {
+          const child = filteredChildren[i];
+          // check if the parent or the child itself is already gathered
+          if (nodesSet.has(childrenMap[child.parent]) || nodesSet.has(child)) {
+            // if so, just skip iterating over them
+            continue;
+          }
+          // otherwise gather all the parents excluding the child itself, and add to the set
+          getParents(child.uid, childrenMap)
+            .slice(0, -1)
+            .forEach(c => nodesSet.add(c));
+        }
+        // dump the set into the nodes array
+        nodes = [...nodesSet];
+      }
       // if we navigate across pages, persist the previously open nodes
-      const baseNodes = pageChange ? this.openNodes : {};
+      const nodesToStartFrom = pageChange ? { ...this.openNodes } : {};
+      // generate a new list of open nodes
+      const newNodes = nodes.reduce((all, current) => {
+        all[current.uid] = true;
+        return all;
+      }, nodesToStartFrom);
+      this.setUnlessEqual('openNodes', newNodes);
+
       // merge in the new open nodes with the base nodes
-      this.openNodes = Object.assign(baseNodes, newOpenNodes);
       this.generateNodesToRender();
       // update the focus index, based on the activeUID
       this.updateFocusIndexExternally();
@@ -527,18 +619,18 @@ export default {
         // clone the open nodes map
         const openNodes = clone(this.openNodes);
         // remove current node and all of it's children, from the open list
-        const allChildren = this.getAllChildren(node.uid);
+        const allChildren = getAllChildren(node.uid, this.childrenMap);
         allChildren.forEach(({ uid }) => {
           delete openNodes[uid];
         });
         // set the new open nodes. Should be faster than iterating each and calling `this.$delete`.
-        this.openNodes = openNodes;
+        this.setUnlessEqual('openNodes', openNodes);
         // exclude all items, but the first
         exclude = allChildren.slice(1);
       } else {
-        this.$set(this.openNodes, node.uid, true);
+        this.setUnlessEqual('openNodes', { ...this.openNodes, [node.uid]: true });
         // include all childUIDs to get opened
-        include = this.getChildren(node.uid)
+        include = getChildren(node.uid, this.childrenMap, this.children)
           .filter(child => this.renderableChildNodesMap[child.uid]);
       }
       this.augmentRenderNodes({ uid: node.uid, include, exclude });
@@ -549,7 +641,7 @@ export default {
     toggleFullTree(node) {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
-      const allChildren = this.getAllChildren(node.uid);
+      const allChildren = getAllChildren(node.uid, this.childrenMap);
       let exclude = [];
       let include = [];
       allChildren.forEach(({ uid }) => {
@@ -566,17 +658,18 @@ export default {
       } else {
         include = allChildren.slice(1).filter(child => this.renderableChildNodesMap[child.uid]);
       }
-      this.openNodes = openNodes;
+      this.setUnlessEqual('openNodes', openNodes);
       this.augmentRenderNodes({ uid: node.uid, exclude, include });
     },
     toggleSiblings(node) {
       const isOpen = this.openNodes[node.uid];
       const openNodes = clone(this.openNodes);
-      const siblings = this.getSiblings(node.uid);
-      siblings.forEach(({ uid, childUIDs }) => {
-        if (!childUIDs.length) return;
+      const siblings = getSiblings(node.uid, this.childrenMap, this.children);
+      siblings.forEach(({ uid, childUIDs, type }) => {
+        // if the item has no children or is a groupMarker, exit early
+        if (!childUIDs.length || type === TopicTypes.groupMarker) return;
         if (isOpen) {
-          const children = this.getAllChildren(uid);
+          const children = getAllChildren(uid, this.childrenMap);
           // remove all children
           children.forEach((child) => {
             delete openNodes[child.uid];
@@ -588,89 +681,25 @@ export default {
         } else {
           // add it
           openNodes[uid] = true;
-          const children = this.getChildren(uid)
+          const children = getChildren(uid, this.childrenMap, this.children)
             .filter(child => this.renderableChildNodesMap[child.uid]);
           // augment the nodesToRender
           this.augmentRenderNodes({ uid, exclude: [], include: children });
         }
       });
-      this.openNodes = openNodes;
+      this.setUnlessEqual('openNodes', openNodes);
       // persist all the open nodes, as we change the openNodes after the node augment runs
       this.persistState();
     },
     /**
-     * Get all children of a node recursively
-     * @param {number} uid - the UID of the node
-     * @return {NavigatorFlatItem[]}
+     * Removes deprecated items from a list
+     * @param {NavigatorFlatItem[]} items
+     * @param {boolean} deprecatedHidden
+     * @returns {NavigatorFlatItem[]}
      */
-    getAllChildren(uid) {
-      const arr = [];
-      const stack = [uid];
-      let current = null;
-
-      // loop over the stack
-      while (stack.length) {
-        // get the top item
-        current = stack.shift();
-        // find the object
-        const obj = this.childrenMap[current];
-        // add it's uid
-        arr.push(obj);
-        // add all if it's children to the front of the stack
-        stack.unshift(...obj.childUIDs);
-      }
-
-      return arr;
-    },
-    /**
-     * Get all the parents of a node, up to the root.
-     * @param {number} uid
-     * @return {NavigatorFlatItem[]}
-     */
-    getParents(uid) {
-      const arr = [];
-      const stack = [uid];
-      let current = null;
-
-      // loop over the stack
-      while (stack.length) {
-        // get the top item
-        current = stack.pop();
-        // find the object
-        const obj = this.childrenMap[current];
-        if (!obj) {
-          return [];
-        }
-        // push the object to the results
-        arr.unshift(obj);
-        // if the current object has a parent and its not the root, add it to the stack
-        if (obj.parent && obj.parent !== INDEX_ROOT_KEY) {
-          stack.push(obj.parent);
-        }
-      }
-      return arr;
-    },
-    /**
-     * Get all sibling nodes of a node
-     * @return {NavigatorFlatItem[]}
-     */
-    getSiblings(uid) {
-      const item = this.childrenMap[uid];
-      if (!item) return [];
-      return this.getChildren(item.parent);
-    },
-    /**
-     * Get the direct child nodes of a node.
-     * @return {NavigatorFlatItem[]}
-     */
-    getChildren(uid) {
-      if (uid === INDEX_ROOT_KEY) {
-        return this.children.filter(node => node.parent === INDEX_ROOT_KEY);
-      }
-      const item = this.childrenMap[uid];
-      if (!item) return [];
-      return (item.childUIDs || [])
-        .map(child => this.childrenMap[child]);
+    removeDeprecated(items, deprecatedHidden) {
+      if (!deprecatedHidden) return items;
+      return items.filter(({ deprecated }) => !deprecated);
     },
     /**
      * Stores all the nodes we should render at this point.
@@ -683,13 +712,13 @@ export default {
 
       // create a set of all matches and their parents
       // generate the list of nodes to render
-      this.nodesToRender = children
+      this.setUnlessEqual('nodesToRender', children
         .filter(child => (
           // make sure the item can be rendered
           renderableChildNodesMap[child.uid]
           // and either its parent is open, or its a root item
           && (child.parent === INDEX_ROOT_KEY || openNodes[child.parent])
-        ));
+        )));
       // persist all the open nodes
       this.persistState();
       // wait a frame, so the scroller is ready, `nextTick` is not enough.
@@ -705,12 +734,15 @@ export default {
       if (include.length) {
         // remove duplicates
         const duplicatesRemoved = include.filter(i => !this.nodesToRender.includes(i));
-        // if add, find where to inject items
-        this.nodesToRender.splice(index + 1, 0, ...duplicatesRemoved);
+        // clone the nodes
+        const clonedNodes = this.nodesToRender.slice(0);
+        // inject the nodes at the index
+        clonedNodes.splice(index + 1, 0, ...duplicatesRemoved);
+        this.setUnlessEqual('nodesToRender', clonedNodes);
       } else if (exclude.length) {
         // if remove, filter out those items
         const excludeSet = new Set(exclude);
-        this.nodesToRender = this.nodesToRender.filter(item => !excludeSet.has(item));
+        this.setUnlessEqual('nodesToRender', this.nodesToRender.filter(item => !excludeSet.has(item)));
       }
       this.persistState();
     },
@@ -794,8 +826,9 @@ export default {
         this.handleActivePathChange(this.activePath);
         return;
       }
+      const { childrenMap } = this;
       // make sure all nodes exist in the childrenMap
-      const allNodesMatch = nodesToRender.every(uid => this.childrenMap[uid]);
+      const allNodesMatch = nodesToRender.every(uid => childrenMap[uid]);
       // check if activeUID node matches the current page path
       const activeUIDMatchesCurrentPath = activeUID
         ? ((this.childrenMap[activeUID] || {}).path === this.lastActivePathItem)
@@ -818,10 +851,10 @@ export default {
         return;
       }
       // create the openNodes map
-      this.openNodes = Object.fromEntries(openNodes.map(n => [n, true]));
+      this.setUnlessEqual('openNodes', Object.fromEntries(openNodes.map(n => [n, true])));
       // get all the nodes to render
       // generate the array of flat children objects to render
-      this.nodesToRender = nodesToRender.map(uid => this.childrenMap[uid]);
+      this.setUnlessEqual('nodesToRender', nodesToRender.map(uid => childrenMap[uid]));
       // finally fetch any previously assigned filters or tags
       this.selectedTags = selectedTags;
       this.filter = filter;
@@ -834,16 +867,17 @@ export default {
       await waitFrames(1);
       if (!this.$refs.scroller) return;
       // if we are filtering, it makes more sense to scroll to top of list
-      if (this.resetScroll) {
+      if (this.hasFilter && !this.deprecatedHidden) {
         this.$refs.scroller.scrollToItem(0);
         return;
       }
       // check if the current element is visible and needs scrolling into
       const element = document.getElementById(this.activeUID);
-      // check if item is inside scroller
-      if (this.getChildPositionInScroller(element) === 0) return;
-      // find the index of the current active UID in the newly added nodes
+      // check if there is such an item AND the item is inside scroller area
+      if (element && this.getChildPositionInScroller(element) === 0) return;
+      // find the index of the current active UID in the nodes to render
       const index = this.nodesToRender.findIndex(child => child.uid === this.activeUID);
+      if (index === -1) return;
       // check if the element is visible
       // call the scroll method on the `scroller` component.
       this.$refs.scroller.scrollToItem(index);
@@ -854,7 +888,7 @@ export default {
      * returns 0, if inside the viewport
      * returns 1, if below the viewport
      *
-     * @param {Element} element - child element
+     * @param {HTMLAnchorElement} element - child element
      * @return Number
      */
     getChildPositionInScroller(element) {
@@ -869,7 +903,7 @@ export default {
       const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
       // get the position of the active element
       const { y: elY } = element.getBoundingClientRect();
-      const elHeight = SIDEBAR_ITEM_SIZE;
+      const elHeight = element.offsetParent.offsetHeight;
       // calculate where element starts from
       const elementStart = elY - areaY - offset.top;
       // element is above the scrollarea
@@ -886,14 +920,16 @@ export default {
     isInsideScroller(element) {
       return this.$refs.scroller.$el.contains(element);
     },
-    handleFocusIn(event) {
-      this.lastFocusTarget = event.target;
-      const multiplier = this.getChildPositionInScroller(event.target);
-      // multiplier is 0  the item is in scrollarea
-      if (multiplier === 0) return;
+    handleFocusIn({ target }) {
+      this.lastFocusTarget = target;
+      const positionIndex = this.getChildPositionInScroller(target);
+      // if multiplier is 0, the item is inside the scrollarea, no need to scroll
+      if (positionIndex === 0) return;
+      // get the height of the closest positioned item.
+      const { offsetHeight } = target.offsetParent;
       // scroll the area, up/down, based on position of child item
       this.$refs.scroller.$el.scrollBy({
-        top: SIDEBAR_ITEM_SIZE * multiplier,
+        top: offsetHeight * positionIndex,
         left: 0,
       });
     },
@@ -925,7 +961,6 @@ export default {
      */
     setActiveUID(uid) {
       this.activeUID = uid;
-      this.resetScroll = false;
     },
     /**
      * Handles the `navigate` event from NavigatorCardItem, guarding from selecting an item,
@@ -946,6 +981,7 @@ export default {
     pathsToFlatChildren(paths) {
       // get the stack to iterate
       const stack = paths.slice(0).reverse();
+      const { childrenMap } = this;
       // the items to loop over. First iteration is over all items
       let childrenStack = this.children;
       const result = [];
@@ -960,7 +996,7 @@ export default {
         result.push(currentNode);
         if (stack.length) {
           // get the children, so we search in those
-          childrenStack = currentNode.childUIDs.map(c => this.childrenMap[c]);
+          childrenStack = currentNode.childUIDs.map(c => childrenMap[c]);
         }
       }
       return result;
@@ -979,9 +1015,9 @@ export default {
           return;
         }
         // Get the surrounding items
-        const siblings = this.getSiblings(this.activeUID);
-        const children = this.getChildren(this.activeUID);
-        const parents = this.getParents(this.activeUID);
+        const siblings = getSiblings(this.activeUID, this.childrenMap, this.children);
+        const children = getChildren(this.activeUID, this.childrenMap, this.children);
+        const parents = getParents(this.activeUID, this.childrenMap);
         // try to match if any of the `siblings`,`children` or any of the `parents`,
         // match the current open item
         const matchingItem = [...children, ...siblings, ...parents]
@@ -1024,13 +1060,6 @@ export default {
         this.focusIndex(0);
       }
     },
-    convertChildrenArrayToObject(children) {
-      return children.reduce((all, current) => {
-        // eslint-disable-next-line no-param-reassign
-        all[current.uid] = current;
-        return all;
-      }, {});
-    },
     /**
      * Focuses the parent of a child node.
      * @param {NavigatorFlatItem} item
@@ -1051,144 +1080,58 @@ export default {
 @import 'docc-render/styles/_core.scss';
 @import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
-$navigator-card-vertical-spacing: 8px !default;
 // unfortunately we need to hard-code the filter height
 $filter-height: 71px;
-$navigator-head-background: var(--color-fill-secondary) !default;
-$navigator-head-background-active: var(--color-fill-tertiary) !default;
+$filter-height-small: 60px;
 
 .navigator-card {
-  --card-vertical-spacing: #{$navigator-card-vertical-spacing};
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-
-  .navigator-card-full-height {
-    height: 100%;
-  }
-
-  .navigator-card-inner {
-    --nav-card-inner-vertical-offset: #{$filter-height};
-  }
-
-  .head-wrapper {
-    position: relative;
-  }
-
-  .navigator-head {
-    padding: 10px $card-horizontal-spacing-large;
-    background: $navigator-head-background;
-    border-bottom: 1px solid var(--color-grid);
-    display: flex;
-    align-items: baseline;
-    box-sizing: border-box;
-
-    &.router-link-exact-active {
-      background: $navigator-head-background-active;
-
-      .card-link {
-        font-weight: $font-weight-bold;
-      }
+  &.filter-on-top {
+    .filter-wrapper {
+      order: 1;
+      position: static;
     }
 
-    &:hover {
-      background: var(--color-navigator-item-hover);
-      text-decoration: none;
+    .card-body {
+      order: 2;
     }
-
-    @include breakpoint(medium, nav) {
-      justify-content: center;
-      height: $nav-height;
-      padding: 14px $card-horizontal-spacing-large;
-    }
-
-    @include breakpoint(small, nav) {
-      height: $nav-height-small;
-      padding: 12px $card-horizontal-spacing-large;
-    }
-
-    @include safe-area-left-set(padding-left, $card-horizontal-spacing-large);
-    @include safe-area-right-set(padding-right, $card-horizontal-spacing-large);
-  }
-
-  .card-icon {
-    width: 19px;
-    height: 19px;
   }
 }
 
 .no-items-wrapper {
+  overflow: hidden;
   color: var(--color-figure-gray-tertiary);
-  @include font-styles(body-reduced);
-  padding: var(--card-vertical-spacing) $card-horizontal-spacing-large;
-}
 
-.close-card-mobile {
-  display: none;
-  position: absolute;
-  z-index: 1;
-  color: var(--color-link);
-  align-items: center;
-  justify-content: center;
-
-  @include breakpoint(medium, nav) {
-    display: flex;
-    left: 0;
-    height: 100%;
-    padding-left: $nav-padding;
-    padding-right: $nav-padding;
-
-    @include safe-area-left-set(padding-left, $nav-padding);
+  .no-items {
+    @include font-styles(body-reduced);
+    padding: var(--card-vertical-spacing) var(--card-horizontal-spacing);
+    // make sure the text does not get weirdly cut
+    min-width: 200px;
+    box-sizing: border-box;
   }
-
-  @include breakpoint(small, nav) {
-    padding-left: $nav-padding-small;
-    padding-right: $nav-padding-small;
-  }
-
-  .close-icon {
-    width: 19px;
-    height: 19px;
-  }
-}
-
-.card-body {
-  // right padding is added by the items, so visually the scroller is stuck to the side
-  padding-right: 0;
-  flex: 1 1 auto;
-  min-height: 0;
-  @include breakpoint(medium, nav) {
-    --card-vertical-spacing: 0px;
-    padding-top: $filter-height;
-  }
-}
-
-.card-link {
-  color: var(--color-text);
-  @include font-styles(body-reduced);
-  font-weight: $font-weight-semibold;
 }
 
 .navigator-filter {
   box-sizing: border-box;
-  padding: 15px 30px;
+  padding: 15px var(--nav-filter-horizontal-padding);
   border-top: 1px solid var(--color-grid);
   height: $filter-height;
   display: flex;
   align-items: flex-end;
 
-  @include safe-area-left-set(padding-left, 30px);
-  @include safe-area-right-set(padding-right, 30px);
+  .filter-on-top & {
+    border-top: none;
+    align-items: flex-start;
+  }
+
+  @include safe-area-left-set(padding-left, var(--nav-filter-horizontal-padding));
+  @include safe-area-right-set(padding-right, var(--nav-filter-horizontal-padding));
 
   @include breakpoint(medium, nav) {
+    --nav-filter-horizontal-padding: 20px;
     border: none;
-    padding: 10px 20px;
-    align-items: flex-start;
-    height: 62px;
-
-    @include safe-area-left-set(padding-left, 20px);
-    @include safe-area-right-set(padding-right, 20px);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: $filter-height-small;
   }
 
   .input-wrapper {
@@ -1198,13 +1141,17 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   }
 
   .filter-component {
-    --input-vertical-padding: 10px;
-    --input-height: 20px;
+    --input-vertical-padding: 8px;
+    --input-height: 22px;
     --input-border-color: var(--color-grid);
     --input-text: var(--color-figure-gray-secondary);
 
-    /deep/ .filter__input {
+    :deep() .filter__input {
       @include font-styles(body);
+
+      &-label::after {
+        min-width: 70px;
+      }
     }
   }
 }
@@ -1223,7 +1170,7 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   // The VueVirtualScroller scrollbar is not selectable and draggable in Safari,
   // which is most probably caused by the complicated styling of the component.
   // Adding translate3D causes the browser to use hardware acceleration and fixes the issue.
-  /deep/ .vue-recycle-scroller__item-wrapper {
+  :deep(.vue-recycle-scroller__item-wrapper) {
     transform: translate3d(0, 0, 0);
   }
 }
@@ -1232,15 +1179,13 @@ $navigator-head-background-active: var(--color-fill-tertiary) !default;
   position: sticky;
   bottom: 0;
   background: var(--color-fill);
-  @include breakpoint(medium, nav) {
-    position: absolute;
-    top: $nav-height;
-    bottom: auto;
-    width: 100%;
-  }
-  @include breakpoint(small, nav) {
-    top: $nav-height-small;
+
+  .sidebar-transitioning & {
+    flex: 1 0 $filter-height;
+    overflow: hidden;
+    @include breakpoint(medium, nav) {
+      flex-basis: $filter-height-small;
+    }
   }
 }
-
 </style>

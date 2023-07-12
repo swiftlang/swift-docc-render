@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -55,9 +55,8 @@ describe('CodeListing', () => {
     expect(listing.attributes('data-syntax')).toBe('swift');
 
     const codeLineContainer = listing.find('span.code-line-container');
-    const codeNumber = codeLineContainer.find('.code-number');
-    // Code Number content should be empty to not get copied during user select
-    expect(codeNumber.text()).toBe('');
+    // Code Number content should not be rendered, if not needed
+    expect(codeLineContainer.find('.code-number').exists()).toBe(false);
 
     const codeLine = codeLineContainer.find('.code-line');
     expect(codeLine.text()).toBe('hello');
@@ -80,7 +79,7 @@ describe('CodeListing', () => {
     const pre = wrapper.find('pre');
     expect(pre.exists()).toBe(true);
 
-    const codeLineContainers = wrapper.findAll('pre code span.code-line-container');
+    const codeLineContainers = wrapper.findAll('span.code-line-container');
     expect(codeLineContainers.length).toBe(content.length);
 
     content.forEach((line, index) => {
@@ -88,7 +87,6 @@ describe('CodeListing', () => {
       const shouldBeHighlighted = highlights.map(h => h.line).includes(index + 1);
 
       const codeNumber = codeLineContainer.find('.code-number');
-      // expect(codeNumber.text()).toBe(`${index + 1}`);
 
       expect(codeNumber.attributes('data-line-number')).toBe(`${index + 1}`);
 

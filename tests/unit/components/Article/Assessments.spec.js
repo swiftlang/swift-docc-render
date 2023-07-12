@@ -25,13 +25,19 @@ describe('Assessments', () => {
     ],
   };
 
-  it('renders a `TutorialAssessments`', () => {
-    const wrapper = shallowMount(Assessments, { propsData });
+  it('renders a `TutorialAssessments`', async () => {
+    const wrapper = shallowMount(Assessments, {
+      propsData,
+      stubs: { TutorialAssessments },
+      provide: { navigationBarHeight: 10 },
+    });
 
     const assessments = wrapper.find(TutorialAssessments);
     expect(assessments.exists()).toBe(true);
     expect(assessments.props()).toEqual(propsData);
 
+    // hack to trigger TutorialAssessments to show success messages
+    assessments.vm.$children[0].completed = true;
     const message = assessments.find('p');
     expect(message.exists()).toBe(true);
     expect(message.text()).toBe(

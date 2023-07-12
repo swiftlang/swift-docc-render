@@ -7,8 +7,10 @@ SPAs are web apps that render dynamically at runtime entirely in the browser, us
 
 ## Getting Started
 
-> Note: requires [Node.js](https://nodejs.org/en/download/) v14
-> and [npm](https://www.npmjs.com/package/npm) v6.14
+> Note: requires [Node.js](https://nodejs.org/en/download/) v18
+> and [npm](https://www.npmjs.com/package/npm) v9.5. An easy way to set these up is to install
+> [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
+> repository. To use these versions as the default, add `--default` to the installation command.
 
 1. **Download this repository and go to its folder**
 
@@ -49,7 +51,7 @@ To build the docs, run `npm run docs:build`.
 
 ### Submitting a Bug Report
 
-Swift-DocC-Render tracks all bug reports with [Swift JIRA](https://bugs.swift.org/).
+Swift-DocC-Render tracks all bug reports with [GitHub](https://github.com/apple/swift-docc-render/issues).
 When you submit a bug report we ask that you follow the
 Swift [Bug Reporting](https://swift.org/contributing/#reporting-bugs) guidelines
 and provide as many details as possible.
@@ -61,7 +63,7 @@ that will help us track down the bug faster.
 ### Submitting a Feature Request
 
 For feature requests, please feel free to create an issue
-on [Swift JIRA](https://bugs.swift.org/) with the `New Feature` type
+on [GitHub](https://github.com/apple/swift-docc-render/issues/new?assignees=&labels=New+Feature&projects=&template=FEATURE_REQUEST.yml) with the `New Feature` type
 or start a discussion on the [Swift Forums](https://forums.swift.org/c/development/swift-docc).
 
 Don't hesitate to submit a feature request if you see a way

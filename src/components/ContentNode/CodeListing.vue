@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -23,18 +23,20 @@
     </Filename>
     <div class="container-general">
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
-      <pre><code><span
+      <pre><CodeBlock><template
         v-for="(line, index) in syntaxHighlightedLines"
-        :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
-        :key="index"
       ><span
-        v-show="showLineNumbers" class="code-number"
+        :key="index"
+        :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
+      ><span
+        v-if="showLineNumbers"
+        class="code-number"
         :data-line-number="lineNumberFor(index)"
-      />
-<span
-  class="code-line"
-  v-html="line"
-/></span></code></pre>
+      /><span
+        class="code-line"
+        v-html="line"
+      /></span><!-- This new line must stay -->
+</template></CodeBlock></pre>
     </div>
   </div>
 </template>
@@ -42,13 +44,14 @@
 <script>
 import { escapeHtml } from 'docc-render/utils/strings';
 import Language from 'docc-render/constants/Language';
+import CodeBlock from 'docc-render/components/CodeBlock.vue';
 import { highlightContent, registerHighlightLanguage } from 'docc-render/utils/syntax-highlight';
 
 import CodeListingFilename from './CodeListingFilename.vue';
 
 export default {
   name: 'CodeListing',
-  components: { Filename: CodeListingFilename },
+  components: { Filename: CodeListingFilename, CodeBlock },
   data() {
     return {
       syntaxHighlightedLines: [],
@@ -127,10 +130,13 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .code-line-container {
-  display: flex;
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .code-number {
+  display: inline-block;
   padding: $code-number-padding;
   text-align: right;
   min-width: 2em;
@@ -166,16 +172,9 @@ pre {
 }
 
 code {
-  display: flex;
-  flex-direction: column;
   white-space: pre;
   word-wrap: normal;
   flex-grow: 9999;
-}
-
-.code-line-container {
-  flex-shrink: 0;
-  padding-right: 14px;
 }
 
 .code-listing,
@@ -186,12 +185,19 @@ code {
 .code-listing {
   flex-direction: column;
   min-height: 100%;
-  border-radius: $border-radius;
-  overflow: auto;
+  border-radius: var(--code-border-radius, $border-radius);
+  overflow: hidden;
+  // we need to establish a new stacking context to resolve a Safari bug where
+  // the scrollbar is not clipped by this element depending on its border-radius
+  @include new-stacking-context;
 
   &.single-line {
     border-radius: $large-border-radius;
   }
+}
+
+.container-general {
+  overflow: auto;
 }
 
 .container-general,

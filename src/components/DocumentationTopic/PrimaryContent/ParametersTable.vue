@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -79,10 +79,8 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$param-spacing: rem(28px);
-
 .parameters-table {
-  /deep/ {
+  :deep() {
     .change-added,
     .change-removed {
       display: inline-block;
@@ -105,10 +103,16 @@ $param-spacing: rem(28px);
     flex-flow: row wrap;
     width: 100%;
     @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment-small();
+    // Move the responsibility of the left padding to the first element instead.
+    // This is only for Large screens
+
+    &.changed {
+      padding-left: 0;
+      padding-right: 0;
+    }
 
     & + & {
-      margin-top: $param-spacing/2;
+      margin-top: calc(var(--spacing-param) / 2);
     }
   }
 }
@@ -135,17 +139,24 @@ $param-spacing: rem(28px);
 .param-symbol {
   text-align: right;
 
-  @include breakpoint(small) {
-    text-align: left;
+  .changed & {
+    @include change-highlight-end-spacing()
   }
 
-  /deep/ .type-identifier-link {
+  @include breakpoint(small) {
+    text-align: left;
+    .changed & {
+      padding-left: 0;
+    }
+  }
+
+  :deep(.type-identifier-link) {
     color: var(--color-link);
   }
 }
 
 .param + .param {
-  margin-top: $param-spacing;
+  margin-top: var(--spacing-param);
 
   &:first-child {
     margin-top: 0;
@@ -155,6 +166,10 @@ $param-spacing: rem(28px);
 .param-content {
   padding-left: 1rem;
   @include change-highlight-end-spacing();
+
+  .changed & {
+    padding-right: $change-highlight-horizontal-space-rem;
+  }
 
   @include breakpoint(small) {
     padding-left: 0;

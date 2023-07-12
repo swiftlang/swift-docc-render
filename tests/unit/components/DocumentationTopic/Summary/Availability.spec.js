@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -70,7 +70,7 @@ describe('Availability', () => {
     const section = wrapper.find(Section);
     expect(section.exists()).toBe(true);
     expect(section.classes('availability')).toBe(true);
-    expect(section.attributes('aria-label')).toBe('Availability');
+    expect(section.attributes('aria-label')).toBe('sections.availability');
     expect(section.attributes('role')).toBe('complementary');
   });
 
@@ -104,7 +104,7 @@ describe('Availability', () => {
     expect(badges.at(5).contains('.deprecated')).toBe(true);
 
     const deprecated = wrapper.find('.deprecated');
-    expect(deprecated.text()).toBe('Deprecated');
+    expect(deprecated.text()).toBe('aside-kind.deprecated');
   });
 
   it('renders beta text', () => {
@@ -119,7 +119,7 @@ describe('Availability', () => {
     });
     const beta = wrapper.find('.beta');
     expect(beta.exists()).toBe(true);
-    expect(beta.text()).toBe('Beta');
+    expect(beta.text()).toBe('aside-kind.beta');
   });
 
   it('renders deprecated over beta badges', () => {

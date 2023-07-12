@@ -9,7 +9,13 @@
 -->
 
 <template>
-  <div class="adjustable-sidebar-width">
+  <div
+    class="adjustable-sidebar-width"
+    :class="{
+      dragging: isDragging,
+      'sidebar-hidden': hiddenOnLarge
+    }"
+  >
     <div
       ref="sidebar"
       class="sidebar"
@@ -19,8 +25,9 @@
         :style="asideStyles"
         class="aside"
         ref="aside"
-        @transitionstart="isTransitioning = true"
-        @transitionend="isTransitioning = false"
+        :aria-hidden="hiddenOnLarge ? 'true': null"
+        @transitionstart.self="trackTransitionStart"
+        @transitionend.self="trackTransitionEnd"
       >
         <slot
           name="aside"
@@ -30,12 +37,13 @@
         />
       </div>
       <div
+        v-if="!fixedWidth"
         class="resize-handle"
         @mousedown.prevent="startDrag"
         @touchstart.prevent="startDrag"
       />
     </div>
-    <div class="content">
+    <div class="content" ref="content">
       <slot />
     </div>
     <BreakpointEmitter :scope="BreakpointScopes.nav" @change="breakpoint = $event" />
@@ -47,7 +55,7 @@ import { storage } from 'docc-render/utils/storage';
 import debounce from 'docc-render/utils/debounce';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import { BreakpointName, BreakpointScopes } from 'docc-render/utils/breakpoints';
-import { waitFrames } from 'docc-render/utils/loading';
+import { waitFor, waitFrames } from 'docc-render/utils/loading';
 import scrollLock from 'docc-render/utils/scroll-lock';
 import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
@@ -57,8 +65,9 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 export const STORAGE_KEY = 'sidebar';
 
 // the maximum width, after which the full-width content does not grow
-export const MAX_WIDTH = 1920;
+export const MAX_WIDTH = 1921;
 export const ULTRA_WIDE_DEFAULT = 543;
+export const LARGE_DEFAULT_WIDTH = 400;
 
 export const eventsMap = {
   touch: {
@@ -96,10 +105,19 @@ export default {
   components: {
     BreakpointEmitter,
   },
+  inject: ['store'],
   props: {
-    openExternally: {
+    shownOnMobile: {
       type: Boolean,
       default: false,
+    },
+    hiddenOnLarge: {
+      type: Boolean,
+      default: false,
+    },
+    fixedWidth: {
+      type: Number,
+      default: null,
     },
   },
   data() {
@@ -113,19 +131,20 @@ export default {
     // have a default width for very large screens, or use half of the min and max
     const defaultWidth = windowWidth >= MAX_WIDTH
       ? ULTRA_WIDE_DEFAULT
-      : Math.round((minWidth + maxWidth) / 2);
+      : LARGE_DEFAULT_WIDTH;
     // get the already stored data, fallback to a default one.
     const storedWidth = storage.get(STORAGE_KEY, defaultWidth);
     return {
       isDragging: false,
       // limit the width to a range
-      width: Math.min(Math.max(storedWidth, minWidth), maxWidth),
+      width: this.fixedWidth || Math.min(Math.max(storedWidth, minWidth), maxWidth),
       isTouch: false,
       windowWidth,
       windowHeight,
       breakpoint,
       noTransition: false,
       isTransitioning: false,
+      isOpeningOnLarge: false,
       focusTrapInstance: null,
       mobileTopOffset: 0,
       topOffset: 0,
@@ -134,11 +153,15 @@ export default {
   computed: {
     minWidthPercent: ({ breakpoint }) => minWidthResponsivePercents[breakpoint] || 0,
     maxWidthPercent: ({ breakpoint }) => maxWidthResponsivePercents[breakpoint] || 100,
-    maxWidth: ({ maxWidthPercent, windowWidth }) => (
-      calcWidthPercent(maxWidthPercent, windowWidth)
+    maxWidth: ({ maxWidthPercent, windowWidth, fixedWidth }) => (
+      Math.max(fixedWidth, calcWidthPercent(maxWidthPercent, windowWidth))
     ),
-    minWidth: ({ minWidthPercent, windowWidth }) => calcWidthPercent(minWidthPercent, windowWidth),
+    minWidth: ({ minWidthPercent, windowWidth, fixedWidth }) => (
+      Math.min(fixedWidth || windowWidth, calcWidthPercent(minWidthPercent, windowWidth))
+    ),
     widthInPx: ({ width }) => `${width}px`,
+    // Point at which, the nav is hidden/shown for large, when dragging.
+    hiddenOnLargeThreshold: ({ minWidth }) => minWidth / 2,
     events: ({ isTouch }) => (isTouch ? eventsMap.touch : eventsMap.mouse),
     asideStyles: ({
       widthInPx, mobileTopOffset, topOffset, windowHeight,
@@ -149,12 +172,15 @@ export default {
       '--app-height': `${windowHeight}px`,
     }),
     asideClasses: ({
-      isDragging, openExternally, noTransition, isTransitioning, mobileTopOffset,
+      isDragging, shownOnMobile, noTransition, isTransitioning,
+      hiddenOnLarge, mobileTopOffset, isOpeningOnLarge,
     }) => ({
       dragging: isDragging,
-      'force-open': openExternally,
+      'show-on-mobile': shownOnMobile,
+      'hide-on-large': hiddenOnLarge,
+      'is-opening-on-large': isOpeningOnLarge,
       'no-transition': noTransition,
-      animating: isTransitioning,
+      'sidebar-transitioning': isTransitioning,
       'has-mobile-top-offset': mobileTopOffset,
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
@@ -175,7 +201,7 @@ export default {
       window.removeEventListener('resize', this.storeWindowSize);
       window.removeEventListener('orientationchange', this.storeWindowSize);
       window.removeEventListener('scroll', this.storeTopOffset);
-      if (this.openExternally) {
+      if (this.shownOnMobile) {
         this.toggleScrollLock(false);
       }
       if (this.focusTrapInstance) this.focusTrapInstance.destroy();
@@ -189,9 +215,9 @@ export default {
     $route: 'closeMobileSidebar',
     width: {
       immediate: true,
-      handler: debounce(function widthHandler(value) {
+      handler: throttle(function widthHandler(value) {
         this.emitEventChange(value);
-      }, 250, true, true),
+      }, 150),
     },
     windowWidth: 'getWidthInCheck',
     async breakpoint(value) {
@@ -208,7 +234,20 @@ export default {
       // re-apply transitions
       this.noTransition = false;
     },
-    openExternally: 'handleExternalOpen',
+    shownOnMobile: 'handleExternalOpen',
+    async isTransitioning(value) {
+      if (!value) {
+        this.updateContentWidthInStore();
+      } else {
+        // transitionEnd is not guaranteed to fire, so we ensure we stop
+        // transitioning after some time
+        await waitFor(1000);
+        this.isTransitioning = false;
+      }
+    },
+    hiddenOnLarge() {
+      this.isTransitioning = true;
+    },
   },
   methods: {
     getWidthInCheck: debounce(function getWidthInCheck() {
@@ -226,10 +265,11 @@ export default {
       await this.$nextTick();
       this.windowWidth = window.innerWidth;
       this.windowHeight = window.innerHeight;
+      this.updateContentWidthInStore();
     }, 100),
     closeMobileSidebar() {
-      if (!this.openExternally) return;
-      this.$emit('update:openExternally', false);
+      if (!this.shownOnMobile) return;
+      this.$emit('update:shownOnMobile', false);
     },
     startDrag({ type }) {
       this.isTouch = type === 'touchstart';
@@ -254,8 +294,17 @@ export default {
       if (newWidth > this.maxWidth) {
         newWidth = this.maxWidth;
       }
+      // if we are going beyond the cutoff point and we are closed, open the navigator
+      if (this.hiddenOnLarge && newWidth >= this.hiddenOnLargeThreshold) {
+        this.$emit('update:hiddenOnLarge', false);
+        this.isOpeningOnLarge = true;
+      }
       // prevent from shrinking too much
       this.width = Math.max(newWidth, this.minWidth);
+      // if the new width is smaller than the cutoff point, force close the nav
+      if (newWidth <= this.hiddenOnLargeThreshold) {
+        this.$emit('update:hiddenOnLarge', true);
+      }
     },
     /**
      * Stop the dragging upon mouse up
@@ -273,6 +322,7 @@ export default {
     },
     emitEventChange(width) {
       this.$emit('width-change', width);
+      this.updateContentWidthInStore();
     },
     getTopOffset() {
       const stickyNavAnchor = document.getElementById(baseNavStickyAnchorId);
@@ -285,6 +335,10 @@ export default {
         this.mobileTopOffset = this.getTopOffset();
       }
       this.toggleScrollLock(isOpen);
+    },
+    async updateContentWidthInStore() {
+      await this.$nextTick();
+      this.store.setContentWidth(this.$refs.content.offsetWidth);
     },
     /**
      * Toggles the scroll lock on/off
@@ -307,6 +361,17 @@ export default {
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
     }, 60),
+    async trackTransitionStart({ propertyName }) {
+      if (propertyName === 'width' || propertyName === 'transform') {
+        this.isTransitioning = true;
+      }
+    },
+    trackTransitionEnd({ propertyName }) {
+      if (propertyName === 'width' || propertyName === 'transform') {
+        this.isTransitioning = false;
+        this.isOpeningOnLarge = false;
+      }
+    },
   },
 };
 </script>
@@ -314,11 +379,25 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
+@media print {
+  .sidebar {
+    display: none;
+  }
+}
+
 .adjustable-sidebar-width {
   display: flex;
   @include breakpoint(medium, nav) {
     display: block;
     position: relative;
+  }
+
+  &.dragging :deep(*) {
+    cursor: col-resize !important;
+  }
+
+  &.sidebar-hidden.dragging :deep(*) {
+    cursor: e-resize !important;
   }
 }
 
@@ -339,6 +418,25 @@ export default {
     transition: none !important;
   }
 
+  @include breakpoints-from(large, nav) {
+    // apply a default transition
+    transition: width $adjustable-sidebar-hide-transition-duration ease-in,
+    visibility 0s linear var(--visibility-transition-time, 0s);
+
+    // Remove the transition when dragging, except when hidden or exiting hidden state.
+    // This prevents lagging when dragging, because of the transition delay.
+    &.dragging:not(.is-opening-on-large):not(.hide-on-large) {
+      transition: none;
+    }
+
+    &.hide-on-large {
+      width: 0 !important;
+      visibility: hidden;
+      pointer-events: none;
+      --visibility-transition-time: #{$adjustable-sidebar-hide-transition-duration};
+    }
+  }
+
   @include breakpoint(medium, nav) {
     width: 100% !important;
     overflow: hidden;
@@ -348,18 +446,20 @@ export default {
     position: fixed;
     top: var(--top-offset-mobile);
     bottom: 0;
-    z-index: $nav-z-index;
+    left: 0;
+    z-index: $nav-z-index + 1;
     transform: translateX(-100%);
     transition: transform 0.15s ease-in;
+    left: 0;
 
-    /deep/ .aside-animated-child {
+    :deep(.aside-animated-child) {
       opacity: 0;
     }
 
-    &.force-open {
+    &.show-on-mobile {
       transform: translateX(0);
 
-      /deep/ .aside-animated-child {
+      :deep(.aside-animated-child) {
         --index: 0;
         opacity: 1;
         transition: opacity 0.15s linear;

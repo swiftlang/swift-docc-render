@@ -8,19 +8,15 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { pathJoin } from 'docc-render/utils/assets';
-import { queryStringForParams, areEquivalentLocations } from 'docc-render/utils/url-helper';
+import { normalizePath } from 'docc-render/utils/assets';
+import {
+  queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
+} from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
-import { baseUrl } from 'docc-render/utils/theme-settings';
+import RedirectError from 'docc-render/errors/RedirectError';
+import FetchError from 'docc-render/errors/FetchError';
 
-export class FetchError extends Error {
-  constructor(route) {
-    super('Unable to fetch data');
-    this.route = route;
-  }
-}
-
-export async function fetchData(path, params = {}) {
+export async function fetchData(path, params = {}, options = {}) {
   function isBadResponse(response) {
     // When this is running in an IDE target, the `fetch` API will be used with
     // custom URL schemes. Right now, WebKit will return successful responses
@@ -35,15 +31,23 @@ export async function fetchData(path, params = {}) {
     return !response.ok;
   }
 
-  const url = new URL(path, window.location.href);
+  const url = getAbsoluteUrl(path);
   const queryString = queryStringForParams(params);
   if (queryString) {
     url.search = queryString;
   }
 
-  const response = await fetch(url.href);
+  const response = await fetch(url.href, options);
   if (isBadResponse(response)) {
     throw response;
+  }
+
+  // check if there was a redirect and `next` exists
+  if (response.redirected) {
+    throw new RedirectError({
+      location: response.url,
+      response,
+    });
   }
 
   const json = await response.json();
@@ -53,7 +57,20 @@ export async function fetchData(path, params = {}) {
 
 function createDataPath(path) {
   const dataPath = path.replace(/\/$/, '');
-  return `${pathJoin([baseUrl, 'data', dataPath])}.json`;
+  return `${normalizePath(['/data', dataPath])}.json`;
+}
+
+/**
+ * Transforms a data JSON path, to a route path
+ * @param {string} dataURL - the JSON path
+ * @returns {string}
+ */
+function transformDataPathToRoutePath(dataURL) {
+  const { pathname, search } = new URL(dataURL);
+  const RE = /\/data(\/.*).json$/;
+  const match = RE.exec(pathname);
+  if (!match) return pathname + search;
+  return match[1] + search;
 }
 
 export async function fetchDataForRouteEnter(to, from, next) {
@@ -69,6 +86,12 @@ export async function fetchDataForRouteEnter(to, from, next) {
       // so we stop the navigation by calling `next(false)`
       /* eslint-disable no-throw-literal */
       throw false;
+    }
+
+    if (error instanceof RedirectError) {
+      // throw the redirect location, so it's passed to the `next` error handler and
+      // vue router redirects to that location
+      throw transformDataPathToRoutePath(error.location);
     }
 
     if (error.status && error.status === 404) {
@@ -105,11 +128,16 @@ export async function fetchAPIChangesForRoute(route, changes) {
   return data;
 }
 
+export async function fetchDataForPreview(path, options = {}) {
+  const dataPath = createDataPath(path);
+  return fetchData(dataPath, {}, options);
+}
+
 export function clone(jsonObject) {
   return JSON.parse(JSON.stringify(jsonObject));
 }
 
-export async function fetchIndexPathsData() {
-  const path = new URL(`${pathJoin([baseUrl, 'index/index.json'])}`, window.location.href);
+export async function fetchIndexPathsData({ slug }) {
+  const path = getAbsoluteUrl(['/index/', slug, 'index.json']);
   return fetchData(path);
 }

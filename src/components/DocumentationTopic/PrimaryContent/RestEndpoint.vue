@@ -9,15 +9,15 @@
 -->
 
 <template>
-  <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+  <section>
+    <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <DeclarationSource :tokens="tokens" />
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 import DeclarationSource
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 
@@ -28,7 +28,7 @@ export default {
   name: 'RestEndpoint',
   components: {
     DeclarationSource,
-    OnThisPageSection,
+    LinkableHeading,
   },
   props: {
     title: {

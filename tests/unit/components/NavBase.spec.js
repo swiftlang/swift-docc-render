@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,7 +13,6 @@ import { shallowMount } from '@vue/test-utils';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import scrollLock from 'docc-render/utils/scroll-lock';
-import FocusTrap from 'docc-render/utils/FocusTrap';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { waitFrames } from 'docc-render/utils/loading';
@@ -21,7 +20,7 @@ import { createEvent } from '../../../test-utils';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
-jest.mock('docc-render/utils/FocusTrap');
+jest.mock('docc-render/utils/loading');
 
 const { BreakpointScopes, BreakpointName } = BreakpointEmitter.constants;
 const { NoBGTransitionFrames, NavStateClasses } = NavBase.constants;
@@ -35,6 +34,7 @@ const createWrapper = async ({ propsData, ...rest } = {}) => {
     propsData: {
       ...propsData,
     },
+    attachToDocument: true,
     ...rest,
   });
   await wrapper.vm.$nextTick();
@@ -156,24 +156,31 @@ describe('NavBase', () => {
         },
       },
     });
-    const preTitle = wrapper.find('.pre-title');
-    expect(preTitle.exists()).toBe(true);
-    expect(preTitle.find('.pre-title-slot').text()).toBe('Pre Title');
+    expect(wrapper.find('.pre-title-slot').text()).toBe('Pre Title');
     expect(preTitleProps).toEqual({
+      className: 'pre-title',
       closeNav: expect.any(Function),
       isOpen: false,
+      inBreakpoint: false,
+      currentBreakpoint: BreakpointName.large,
     });
     wrapper.find('a.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     expect(preTitleProps).toEqual({
+      className: 'pre-title',
       closeNav: expect.any(Function),
       isOpen: true,
+      inBreakpoint: false,
+      currentBreakpoint: BreakpointName.large,
     });
     preTitleProps.closeNav();
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
     expect(preTitleProps).toEqual({
+      className: 'pre-title',
       closeNav: expect.any(Function),
       isOpen: false,
+      inBreakpoint: false,
+      currentBreakpoint: BreakpointName.large,
     });
   });
 
@@ -198,20 +205,27 @@ describe('NavBase', () => {
     wrapper = await createWrapper();
     const toggle = wrapper.find({ ref: 'axToggle' });
     const label = toggle.find('.visuallyhidden');
-    expect(label.text()).toBe('Open Menu');
+    expect(label.text()).toBe('documentation.nav.open-menu');
     toggle.trigger('click');
-    expect(label.text()).toBe('Close Menu');
+    expect(label.text()).toBe('documentation.nav.close-menu');
   });
 
   it('renders the `tray` slot', async () => {
+    let slotProps = null;
     wrapper = await createWrapper({
-      slots: {
-        tray: '<div class="tray-slot">Tray slot content</div>',
+      scopedSlots: {
+        tray(props) {
+          slotProps = props;
+          return this.$createElement('div', { class: 'tray-slot' }, 'Tray slot content');
+        },
       },
     });
     const tray = wrapper.find({ ref: 'tray' });
     expect(tray.find('.tray-slot').text()).toBe('Tray slot content');
     expect(wrapper.find(NavMenuItems).exists()).toBe(false);
+    expect(slotProps).toEqual({
+      closeNav: expect.any(Function),
+    });
   });
 
   it('renders the `menu-items` slot', async () => {
@@ -384,7 +398,7 @@ describe('NavBase', () => {
 
   it('adds the breakpoint range class, when the breakpoint fits the breakpoint query', async () => {
     wrapper = await createWrapper({
-      data: () => ({ inBreakpoint: true, isOpen: true }),
+      data: () => ({ isOpen: true }),
       propsData: {
         breakpoint: BreakpointName.medium,
       },
@@ -425,10 +439,15 @@ describe('NavBase', () => {
   });
 
   it('renders with a no-transition class and removes it after a few frames', async () => {
-    jest.useFakeTimers();
+    let resolve;
+    waitFrames.mockImplementationOnce(() => new Promise((r) => {
+      resolve = r;
+    }));
     wrapper = await createWrapper();
     expect(wrapper.classes()).toContain(NavStateClasses.noBackgroundTransition);
-    await waitFrames(NoBGTransitionFrames);
+    resolve();
+    await wrapper.vm.$nextTick();
+    expect(waitFrames).toHaveBeenCalledWith(NoBGTransitionFrames);
     expect(wrapper.classes()).not.toContain(NavStateClasses.noBackgroundTransition);
   });
 
@@ -441,30 +460,26 @@ describe('NavBase', () => {
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
   });
 
-  it('locks the focus on expand', async () => {
+  it('stays focus on axToggle, if nav expand is toggled from axToggle', async () => {
     wrapper = await createWrapper();
-    expect(FocusTrap).toHaveBeenCalledTimes(1);
-    expect(FocusTrap).toHaveBeenCalledWith(wrapper.vm.$refs.wrapper);
-    wrapper.find({ ref: 'axToggle' }).trigger('click');
-    await wrapper.vm.$nextTick();
-    expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
+    const axToggle = wrapper.find({ ref: 'axToggle' });
+    const focusSpy = jest.spyOn(axToggle.element, 'focus');
+    axToggle.trigger('click');
+
+    // assert focus is not moved
+    expect(focusSpy).toHaveBeenCalledTimes(0);
   });
 
-  it('unlocks the focus on close', async () => {
+  it('blurs active element, if nav expand is toggled by mouse click', async () => {
     wrapper = await createWrapper();
-    wrapper.find({ ref: 'axToggle' }).trigger('click');
-    await wrapper.vm.$nextTick();
-    expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
-    expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
-    wrapper.find({ ref: 'axToggle' }).trigger('click');
-    expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(1);
-  });
-
-  it('destroys the focus instance on component destroy', async () => {
-    wrapper = await createWrapper();
-    expect(FocusTrap.mock.results[0].value.destroy).toHaveBeenCalledTimes(0);
-    wrapper.destroy();
-    expect(FocusTrap.mock.results[0].value.destroy).toHaveBeenCalledTimes(1);
+    const navToggle = wrapper.find('.nav-menucta');
+    const blurSpy = jest.spyOn(navToggle.element, 'blur');
+    // manually focus to fix JSDom issue
+    navToggle.element.focus();
+    navToggle.trigger('click');
+    expect(blurSpy).toHaveBeenCalledTimes(1);
+    // assert focus is on the body
+    expect(document.activeElement).toEqual(document.body);
   });
 
   it('changes the sibling visibility to `hidden` on expand', async () => {
@@ -538,7 +553,7 @@ describe('NavBase', () => {
 
     it('upon changing into a breakpoint outside of the breakpoint', async () => {
       wrapper = await createWrapper({
-        data: () => ({ inBreakpoint: true, isOpen: true }),
+        data: () => ({ isOpen: true }),
         propsData: {
           breakpoint: BreakpointName.medium,
         },
@@ -550,6 +565,30 @@ describe('NavBase', () => {
 
       wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
       expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+    });
+
+    it('resolves closeNav on transitionEnd, only when inside Breakpoint', async () => {
+      wrapper = await createWrapper({
+        data: () => ({ currentBreakpoint: BreakpointName.small, isOpen: true }),
+      });
+      expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
+      let resolved = false;
+      wrapper.vm.closeNav().then(() => {
+        resolved = true;
+      });
+      await wrapper.vm.$nextTick();
+      expect(resolved).toBe(false);
+      emitEndOfTrayTransition(wrapper);
+      await wrapper.vm.$nextTick();
+      expect(resolved).toBe(true);
+    });
+
+    it('resolves closeNav immediately, if already closed and in breakpoint', async () => {
+      wrapper = await createWrapper({
+        data: () => ({ currentBreakpoint: BreakpointName.small, isOpen: false }),
+      });
+      expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+      await expect(wrapper.vm.closeNav()).resolves.toBeUndefined();
     });
   });
 });

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -11,7 +11,6 @@
 import Navigator from '@/components/Navigator.vue';
 import { shallowMount } from '@vue/test-utils';
 import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
-import SpinnerIcon from '@/components/Icons/SpinnerIcon.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
@@ -22,10 +21,18 @@ const technology = {
   title: 'FooTechnology',
   children: [
     {
+      title: 'Group Marker',
+      type: TopicTypes.groupMarker,
+    },
+    {
       title: 'Child0',
       path: '/foo/child0',
       type: 'article',
       children: [
+        {
+          title: 'Group Marker, Child 0',
+          type: TopicTypes.groupMarker,
+        },
         {
           title: 'Child0_GrandChild0',
           path: '/foo/child0/grandchild0',
@@ -85,12 +92,18 @@ const mocks = {
   },
 };
 
+const navigatorReferences = {
+  foo: {},
+};
+
 const defaultProps = {
   parentTopicIdentifiers,
   technology,
   references,
   scrollLockID: 'foo',
-  breakpoint: 'large',
+  renderFilterOnTop: false,
+  navigatorReferences,
+  flatChildren: [],
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -124,30 +137,19 @@ describe('Navigator', () => {
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
-      children: expect.any(Array),
+      children: [],
       type: TopicTypes.module,
       technology: technology.title,
       technologyPath: technology.path,
+      isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      breakpoint: defaultProps.breakpoint,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
+      allowHiding: true,
+      navigatorReferences,
+      hideAvailableTags: false,
     });
-    expect(wrapper.find('.loading-placeholder').exists()).toBe(false);
-  });
-
-  it('renders a loading placeholder, if is fetching', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isFetching: true,
-      },
-    });
-    // assert Navigator card is rendered
-    expect(wrapper.find(NavigatorCard).exists()).toBe(false);
-
-    const placeholder = wrapper.find('.loading-placeholder');
-    expect(placeholder.exists()).toBe(true);
-    expect(placeholder.contains(SpinnerIcon)).toBe(true);
   });
 
   it('renders an aria live that tells VO users when navigator is loading', () => {
@@ -157,13 +159,13 @@ describe('Navigator', () => {
       },
     });
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is loading');
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.loading');
   });
 
   it('renders an aria live that tells VO users when navigator is ready', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('Navigator is ready');
+    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.ready');
   });
 
   it('falls back to using the `technology.url` for the `technology-path`', () => {
@@ -179,10 +181,14 @@ describe('Navigator', () => {
       type: TopicTypes.module,
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
+      isTechnologyBeta: false,
       scrollLockID: defaultProps.scrollLockID,
-      breakpoint: defaultProps.breakpoint,
+      renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
+      allowHiding: true,
+      navigatorReferences,
+      hideAvailableTags: false,
     });
   });
 
@@ -264,109 +270,5 @@ describe('Navigator', () => {
     const wrapper = createWrapper();
     wrapper.find(NavigatorCard).vm.$emit('close');
     expect(wrapper.emitted('close')).toHaveLength(1);
-  });
-
-  it('generates a unique hash', () => {
-    const wrapper = createWrapper();
-    // make sure hashCode returns a unique hash from a string
-    expect(wrapper.vm.hashCode('foo')).toBe(101574);
-    expect(wrapper.vm.hashCode('oof')).toBe(110214);
-    expect(wrapper.vm.hashCode('ofo')).toBe(109944);
-    expect(wrapper.vm.hashCode('foo1')).toBe(3148843);
-    // make sure hash is never too big
-    expect(wrapper.vm.hashCode('foo1'.repeat(10))).toBe(-1535108562);
-    expect(wrapper.vm.hashCode('foo1'.repeat(50))).toBe(-2107259162);
-  });
-
-  it('flattens deeply nested children and provides them to the NavigatorCard', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(NavigatorCard).props('children')).toEqual([
-      // root
-      {
-        childUIDs: [
-          745124197,
-          746047719,
-          746971241,
-        ],
-        depth: 0,
-        index: 0,
-        type: 'article',
-        siblingsCount: 2,
-        parent: INDEX_ROOT_KEY,
-        path: '/foo/child0',
-        title: 'Child0',
-        uid: 551503843,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        index: 0,
-        type: 'tutorial',
-        parent: 551503843,
-        siblingsCount: 3,
-        path: '/foo/child0/grandchild0',
-        title: 'Child0_GrandChild0',
-        uid: 745124197,
-      },
-      {
-        childUIDs: [
-          1489150959,
-        ],
-        depth: 1,
-        index: 1,
-        type: 'tutorial',
-        parent: 551503843,
-        siblingsCount: 3,
-        path: '/foo/child0/grandchild1',
-        title: 'Child0_GrandChild1',
-        uid: 746047719,
-      },
-      {
-        childUIDs: [],
-        depth: 2,
-        index: 0,
-        type: 'tutorial',
-        parent: 746047719,
-        siblingsCount: 1,
-        path: '/foo/child0/grandchild0/greatgrandchild0',
-        title: 'Child0_GrandChild0_GreatGrandChild0',
-        uid: 1489150959,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        index: 2,
-        type: 'tutorial',
-        parent: 551503843,
-        siblingsCount: 3,
-        path: '/foo/child0/grandchild2',
-        title: 'Child0_GrandChild2',
-        uid: 746971241,
-      },
-      {
-        childUIDs: [
-          -134251586,
-        ],
-        depth: 0,
-        index: 1,
-        type: 'tutorial',
-        parent: INDEX_ROOT_KEY,
-        siblingsCount: 2,
-        path: '/foo/child1/',
-        title: 'Child1',
-        uid: -97593392,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        index: 0,
-        type: 'method',
-        parent: -97593392,
-        siblingsCount: 1,
-        path: '/foo/child1/grandchild0',
-        title: 'Child1_GrandChild0',
-        uid: -134251586,
-      },
-    ]);
   });
 });

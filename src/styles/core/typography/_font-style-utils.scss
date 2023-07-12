@@ -11,10 +11,12 @@
 // Typography Utilities
 
 // List of common fonts to share in font groups.
+@use "sass:math";
+
 $default-fonts: ('Helvetica Neue', 'Helvetica', 'Arial', sans-serif) !default;
 
 $font-content:  $default-fonts !default;
-$font-mono: (Menlo, monospace) !default;
+$font-mono: var(--typography-html-font-mono, (Menlo, monospace)) !default;
 
 // Supported font-weight values
 $font-weight-semibold: 600 !default;
@@ -57,6 +59,19 @@ $font-weight-bold: 700 !default;
       }
       $prevAttributes: $attributes;
     }
+
+    //
+    // Add support for localized font families
+    //
+    // Note: localized monospace font families are not yet supported
+    $-font-family: map-deep-get($font-attributes, (map-get($styles, large), font-family));
+    @if ($localizedFonts and $-font-family != $font-mono) {
+      @each $lang, $fonts in $localizedFonts {
+        :lang(#{$lang}) & {
+          font-family: $fonts;
+        }
+      }
+    }
   } @else {
     @warn 'The font style `#{$font-style-name}` is not defined.';
   }
@@ -92,7 +107,7 @@ $font-weight-bold: 700 !default;
   }
   // set the unit on the `$number`
   // @see {https://sass-lang.com/documentation/values/numbers#units}
-  @return ($value / ($value * 0 + 1)) * $unitNumber;
+  @return math.div($value, $value * 0 + 1) * $unitNumber;
 }
 
 //
@@ -109,7 +124,7 @@ $font-weight-bold: 700 !default;
 @function em($value) {
   // convert the value, based on the type of unit
   @if unit($value) == 'px' {
-    $value: $value / $body-font-size;
+    $value: math.div($value, $body-font-size);
   }
 
   @return change-unit($value, em);

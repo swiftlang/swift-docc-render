@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -43,6 +43,7 @@ const createWrapper = ({ propsData, ...other } = {}) => {
     slots: {
       default: '<div class="default">Default</div>',
     },
+    attachToDocument: true,
     ...other,
   };
   return shallowMount(GenericModal, config);
@@ -109,7 +110,7 @@ describe('GenericModal', () => {
     expect(close.exists()).toBe(true);
     // assert props
     expect(close.is('button')).toBe(true);
-    expect(close.attributes()).toHaveProperty('aria-label', 'Close');
+    expect(close.attributes()).toHaveProperty('aria-label', 'verbs.close');
     // assert clicking closes modal
     close.trigger('click');
     expect(wrapper.emitted(VisibleChangeEvent)).toEqual([[false]]);
@@ -193,10 +194,12 @@ describe('GenericModal', () => {
         propsData: {
           theme: 'code',
           codeBackgroundColorOverride: 'pink',
+          backdropBackgroundColorOverride: 'red',
         },
       });
       // cannot assert DOM, because `jsdom` does not support custom properties in this version.
-      expect(wrapper.vm.modalColors).toHaveProperty('--background', 'pink');
+      expect(wrapper.vm.modalColors).toHaveProperty('--code-background', 'pink');
+      expect(wrapper.vm.modalColors).toHaveProperty('--backdrop-background', 'red');
     });
   });
 

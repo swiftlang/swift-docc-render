@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -20,7 +20,7 @@
       <Row>
         <Column>
           <Headline :level="1">
-            <template v-if="chapter" slot="eyebrow">{{ chapter }}</template>
+            <template v-if="chapter" #eyebrow>{{ chapter }}</template>
             {{ title }}
           </Headline>
           <div v-if="content || video" class="intro">
@@ -73,7 +73,8 @@ import LinkableElement from 'docc-render/components/LinkableElement.vue';
 
 import GenericModal from 'docc-render/components/GenericModal.vue';
 import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
-import { normalizeAssetUrl } from 'docc-render/utils/assets';
+import { normalizePath, toCSSUrl } from 'docc-render/utils/assets';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import HeroMetadata from './HeroMetadata.vue';
 
 export default {
@@ -103,7 +104,7 @@ export default {
     Asset,
     LinkableSection: LinkableElement,
   },
-  inject: ['references'],
+  mixins: [referencesProvider],
   props: {
     title: {
       type: String,
@@ -140,14 +141,14 @@ export default {
         variant.traits.includes('light')
       ));
 
-      return lightVariant ? normalizeAssetUrl(lightVariant.url) : '';
+      return normalizePath((lightVariant || {}).url);
     },
     projectFilesUrl() {
-      return this.projectFiles ? normalizeAssetUrl(this.references[this.projectFiles].url) : null;
+      return this.projectFiles ? normalizePath(this.references[this.projectFiles].url) : null;
     },
     bgStyle() {
       return {
-        backgroundImage: `url('${this.backgroundImageUrl}')`,
+        backgroundImage: toCSSUrl(this.backgroundImageUrl),
       };
     },
     xcodeRequirementData() {
@@ -217,7 +218,7 @@ export default {
   z-index: 1;
 }
 
-/deep/ .eyebrow {
+:deep(.eyebrow) {
   @include font-styles(eyebrow);
   color: var(--color-hero-eyebrow);
 }
@@ -232,7 +233,7 @@ export default {
 }
 
 .content + p {
-  margin-top: $stacked-margin-large;
+  margin-top: var(--spacing-stacked-margin-large);
   @include breakpoint(small) {
     margin-top: 8px;
   }
@@ -260,7 +261,7 @@ export default {
   place-items: center center;
 }
 
-.video-asset /deep/ video {
+.video-asset :deep(video) {
   max-width: 1280px;
   min-width: 320px;
   width: 100%;

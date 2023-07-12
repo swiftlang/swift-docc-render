@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -11,16 +11,15 @@
 <template>
   <DropdownCustom
     :value="currentOption"
-    aria-label="Current section"
+    :aria-label="$t('tutorials.nav.current', { thing: $t('sections.title') })"
     class="tutorial-dropdown"
     isSmall
   >
-    <template slot="toggle-post-content">
+    <template #toggle-post-content>
       <span class="section-tracker">{{ sectionTracker }}</span>
     </template>
     <template
-      slot="default"
-      slot-scope="{
+      #default="{
         closeAndFocusToggler,
         contentClasses,
         navigateOverOptions,
@@ -42,7 +41,6 @@
           v-slot="{ navigate }"
         >
           <li
-            role="option"
             :value="option.title"
             :class="[OptionClass, { [ActiveOptionClass] : currentOption === option.title }]"
             :aria-selected="currentOption === option.title"

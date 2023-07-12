@@ -90,6 +90,33 @@ describe("syntax-highlight", () => {
     `);
   });
 
+  it('adds extra line breaks to empty lines that wrap', async () => {
+    const content = [
+      'let multiline = """',
+      'Needs',
+      '',
+      'Spaces',
+      '',
+      'Between',
+      '',
+      'Lines',
+      '"""',
+    ];
+    const { highlightedCode, sanitizedCode } = await prepare(content, "js");
+    expect(sanitizedCode).not.toEqual(highlightedCode);
+    expect(sanitizedCode).toMatchInlineSnapshot(`
+      <span class="syntax-keyword">let</span> multiline = <span class="syntax-string">""</span><span class="syntax-string">"</span>
+      <span class="syntax-string">Needs</span>
+      <span class="syntax-string"></span>
+      <span class="syntax-string">Spaces</span>
+      <span class="syntax-string"></span>
+      <span class="syntax-string">Between</span>
+      <span class="syntax-string"></span>
+      <span class="syntax-string">Lines</span>
+      <span class="syntax-string">"</span><span class="syntax-string">""</span>
+    `);
+  });
+
   it("wraps multiline nested highlighted blocks", async () => {
     const content = [
       "function someName(foo,",

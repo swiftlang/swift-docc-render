@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -11,52 +11,68 @@
 <template>
   <CodeTheme class="doc-topic-view">
     <template v-if="topicData">
-      <Nav
-        v-if="!isTargetIDE"
-        :title="topicProps.title"
-        :diffAvailability="topicProps.diffAvailability"
-        :interfaceLanguage="topicProps.interfaceLanguage"
-        :objcPath="objcPath"
-        :swiftPath="swiftPath"
-        :parentTopicIdentifiers="parentTopicIdentifiers"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-        :currentTopicTags="topicProps.tags"
-        :references="topicProps.references"
-        :isWideFormat="enableNavigator"
-        @toggle-sidenav="isSideNavOpen = !isSideNavOpen"
-      />
       <component
-        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'div'"
+        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
         v-bind="sidebarProps"
         v-on="sidebarListeners"
+        class="full-width-container topic-wrapper"
       >
+        <PortalTarget name="modal-destination" multiple />
         <template #aside="{ scrollLockID, breakpoint }">
-          <div class="doc-topic-aside">
-            <NavigatorDataProvider
-              :interface-language="topicProps.interfaceLanguage"
-              :technology="technology"
-              :api-changes-version="store.state.selectedAPIChangesVersion"
-            >
-              <template #default="slotProps">
+          <NavigatorDataProvider
+            :interface-language="topicProps.interfaceLanguage"
+            :technologyUrl="technology.url"
+            :api-changes-version="store.state.selectedAPIChangesVersion"
+            ref="NavigatorDataProvider"
+          >
+            <template #default="slotProps">
+              <div class="doc-topic-aside">
+                <QuickNavigationModal
+                  v-if="enableQuickNavigation"
+                  :children="slotProps.flatChildren"
+                  :showQuickNavigationModal.sync="showQuickNavigationModal"
+                  :technology="technology.title"
+                />
                 <transition name="delay-hiding">
                   <Navigator
-                    v-show="isSideNavOpen || breakpoint === BreakpointName.large"
+                    v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
+                    :flatChildren="slotProps.flatChildren"
                     :parent-topic-identifiers="parentTopicIdentifiers"
                     :technology="slotProps.technology || technology"
                     :is-fetching="slotProps.isFetching"
                     :error-fetching="slotProps.errorFetching"
                     :api-changes="slotProps.apiChanges"
                     :references="topicProps.references"
+                    :navigator-references="slotProps.references"
                     :scrollLockID="scrollLockID"
-                    :breakpoint="breakpoint"
-                    @close="isSideNavOpen = false"
-                  />
+                    :render-filter-on-top="breakpoint !== BreakpointName.large"
+                    @close="handleToggleSidenav(breakpoint)"
+                  >
+                    <template v-if="enableQuickNavigation" #filter>
+                      <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                    </template>
+                  </Navigator>
                 </transition>
-              </template>
-            </NavigatorDataProvider>
-          </div>
+              </div>
+            </template>
+          </NavigatorDataProvider>
         </template>
+        <Nav
+          v-if="!isTargetIDE"
+          :title="topicProps.title"
+          :diffAvailability="topicProps.diffAvailability"
+          :interfaceLanguage="topicProps.interfaceLanguage"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :parentTopicIdentifiers="parentTopicIdentifiers"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :currentTopicTags="topicProps.tags"
+          :references="topicProps.references"
+          :displaySidenav="enableNavigator"
+          :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
+          @toggle-sidenav="handleToggleSidenav"
+        />
         <Topic
           v-bind="topicProps"
           :key="topicKey"
@@ -65,6 +81,8 @@
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"
           :languagePaths="languagePaths"
+          :enableOnThisPageNav="enableOnThisPageNav"
+          :enableMinimized="enableMinimized"
         />
       </component>
     </template>
@@ -79,39 +97,62 @@ import {
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
+import { PortalTarget } from 'portal-vue';
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import CodeTheme from 'docc-render/components/Tutorial/CodeTheme.vue';
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import Language from 'docc-render/constants/Language';
-import performanceMetrics from 'docc-render/mixins/performanceMetrics';
+import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
+import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
+import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
+import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
+import { storage } from 'docc-render/utils/storage';
+import { getSetting } from 'docc-render/utils/theme-settings';
+import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
+import { updateLocale } from 'theme/utils/i18n-utils';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
+const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
+
+const { extractProps } = DocumentationTopic.methods;
 
 export default {
   name: 'DocumentationTopicView',
-  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX },
+  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_HIDDEN_ON_LARGE_KEY },
   components: {
     Navigator,
     AdjustableSidebarWidth,
+    StaticContentWidth,
     NavigatorDataProvider,
     Topic: DocumentationTopic,
     CodeTheme,
     Nav: DocumentationNav,
+    QuickNavigationButton,
+    QuickNavigationModal,
+    PortalTarget,
   },
-  mixins: [performanceMetrics, onPageLoadScrollToFragment],
+  mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
+  props: {
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       topicDataDefault: null,
       topicDataObjc: null,
-      isSideNavOpen: false,
+      sidenavVisibleOnMobile: false,
+      sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
+      showQuickNavigationModal: false,
       store: DocumentationTopicStore,
       BreakpointName,
     };
@@ -128,6 +169,9 @@ export default {
       const objcVariant = variantOverrides.find(hasObjcTrait);
       return objcVariant ? objcVariant.patch : null;
     },
+    enableQuickNavigation: ({ isTargetIDE }) => (
+      !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
+    ),
     topicData: {
       get() {
         return this.topicDataObjc ? this.topicDataObjc : this.topicDataDefault;
@@ -141,62 +185,7 @@ export default {
       topicProps.interfaceLanguage,
     ].join(),
     topicProps() {
-      const {
-        abstract,
-        defaultImplementationsSections,
-        deprecationSummary,
-        downloadNotAvailableSummary,
-        diffAvailability,
-        hierarchy,
-        identifier: {
-          interfaceLanguage,
-          url: identifier,
-        },
-        metadata: {
-          conformance,
-          modules,
-          platforms,
-          required: isRequirement = false,
-          roleHeading,
-          title = '',
-          tags = [],
-          role,
-          symbolKind = '',
-        } = {},
-        primaryContentSections,
-        relationshipsSections,
-        references = {},
-        sampleCodeDownload,
-        topicSections,
-        seeAlsoSections,
-        variantOverrides,
-      } = this.topicData;
-      return {
-        abstract,
-        conformance,
-        defaultImplementationsSections,
-        deprecationSummary,
-        downloadNotAvailableSummary,
-        diffAvailability,
-        hierarchy,
-        role,
-        identifier,
-        interfaceLanguage,
-        isRequirement,
-        modules,
-        platforms,
-        primaryContentSections,
-        relationshipsSections,
-        references,
-        roleHeading,
-        sampleCodeDownload,
-        title,
-        topicSections,
-        seeAlsoSections,
-        variantOverrides,
-        symbolKind,
-        tags: tags.slice(0, 1), // make sure we only show the first tag
-      };
+      return extractProps(this.topicData);
     },
     // The `hierarchy.paths` array will contain zero or more subarrays, each
     // representing a "path" of parent topic IDs that could be considered the
@@ -271,14 +260,22 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
-    sidebarProps: ({ isSideNavOpen, enableNavigator }) => (
+    enableOnThisPageNav: ({ isTargetIDE }) => (
+      !getSetting(['features', 'docs', 'onThisPageNavigator', 'disable'], false)
+      && !isTargetIDE
+    ),
+    sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
       enableNavigator
-        ? { class: 'full-width-container topic-wrapper', openExternally: isSideNavOpen }
-        : { class: 'static-width-container topic-wrapper' }
+        ? {
+          shownOnMobile: sidenavVisibleOnMobile,
+          hiddenOnLarge: sidenavHiddenOnLarge,
+        }
+        : {}
     ),
     sidebarListeners() {
       return this.enableNavigator ? ({
-        'update:openExternally': (v) => { this.isSideNavOpen = v; },
+        'update:shownOnMobile': this.toggleMobileSidenav,
+        'update:hiddenOnLarge': this.toggleLargeSidenav,
       }) : {};
     },
   },
@@ -289,17 +286,45 @@ export default {
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
     },
+    handleToggleSidenav(breakpoint) {
+      if (breakpoint === BreakpointName.large) {
+        this.toggleLargeSidenav();
+      } else {
+        this.toggleMobileSidenav();
+      }
+    },
+    openQuickNavigationModal() {
+      if (this.sidenavVisibleOnMobile) return;
+      this.showQuickNavigationModal = true;
+    },
+    toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
+      this.sidenavHiddenOnLarge = value;
+      storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
+    },
+    toggleMobileSidenav(value = !this.sidenavVisibleOnMobile) {
+      this.sidenavVisibleOnMobile = value;
+    },
+    onQuickNavigationKeydown(event) {
+      // Open the modal only on `/` or `cmd+shift+o` key event
+      if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && event.metaKey)) return;
+      // Prevent modal from opening when the navigator is disabled
+      if (!this.enableNavigator) return;
+      // Prevent modal from opening if the event source element is an input
+      if (event.target.tagName.toLowerCase() === 'input') return;
+      this.openQuickNavigationModal();
+      event.preventDefault();
+    },
   },
   mounted() {
-    this.$bridge.on('contentUpdate', (data) => {
-      this.topicData = data;
-    });
-
+    this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
+    if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
   },
   provide() {
-    return { store: this.store };
+    return {
+      store: this.store,
+    };
   },
   inject: {
     isTargetIDE: {
@@ -309,10 +334,21 @@ export default {
     },
   },
   beforeDestroy() {
+    this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
+    if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   beforeRouteEnter(to, from, next) {
+    // skip fetching, and rely on data being provided via $bridge
+    if (to.meta.skipFetchingData) {
+      // notify the $bridge, the page is ready
+      next(vm => vm.newContentMounted());
+      return;
+    }
+
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
+      updateLocale(to.params.locale, vm);
+
       vm.topicData = data; // eslint-disable-line no-param-reassign
       if (to.query.language === Language.objectiveC.key.url && vm.objcOverrides) {
         vm.applyObjcOverrides();
@@ -331,6 +367,7 @@ export default {
         if (to.query.language === Language.objectiveC.key.url && this.objcOverrides) {
           this.applyObjcOverrides();
         }
+        updateLocale(to.params.locale, this);
         next();
       }).catch(next);
     } else {
@@ -353,6 +390,25 @@ export default {
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
 
+:deep() {
+  .generic-modal {
+    overflow-y: overlay;
+  }
+  .modal-fullscreen > .container {
+    background-color: transparent;
+    height: fit-content;
+    flex: auto;
+    margin: rem(160px) 0;
+    max-width: rem(800px);
+    overflow: visible;
+  }
+
+  .navigator-filter .quick-navigation-open {
+    margin-left: var(--nav-filter-horizontal-padding);
+    width: calc(var(--nav-filter-horizontal-padding) * 2);
+  }
+}
+
 .doc-topic-view {
   --delay: 1s;
   display: flex;
@@ -374,7 +430,7 @@ export default {
     background: var(--color-fill);
     border-right: none;
 
-    .animating & {
+    .sidebar-transitioning & {
       border-right: 1px solid var(--color-grid);
     }
   }
@@ -387,7 +443,12 @@ export default {
 
 .full-width-container {
   @include inTargetWeb {
-    @include breakpoint-full-width-container()
+    @include breakpoint-full-width-container();
+    @include breakpoints-from(xlarge) {
+      border-left: 1px solid var(--color-grid);
+      border-right: 1px solid var(--color-grid);
+      box-sizing: border-box;
+    }
   }
 }
 </style>

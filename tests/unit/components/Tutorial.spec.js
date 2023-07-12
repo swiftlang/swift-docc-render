@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -75,7 +75,7 @@ const hierarchy = {
               path: '/tutorials/augmented-reality/basic-augmented-reality-app#initiate-arkit-plane-detection',
             },
             {
-              title: 'Check your understanding',
+              title: 'tutorials.assessment.check-your-understanding',
               identifier:
                 'topic://com.example.ARKit.Building-Interactive-AR-Experiences.Basic-Augmented-Reality-App.Assessment',
               path: '/tutorials/augmented-reality/basic-augmented-reality-app#check-your-understanding',
@@ -171,6 +171,7 @@ describe('Tutorial', () => {
     sections,
     hierarchy,
     metadata: { category: 'Blah' },
+    identifierUrl: 'foo',
   };
 
   beforeEach(() => {
@@ -182,11 +183,6 @@ describe('Tutorial', () => {
         store: TopicStore,
       },
     });
-  });
-
-  it('provides `references`', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.references).toEqual(propsData.references);
   });
 
   it('renders a div.tutorial', () => {
@@ -201,6 +197,7 @@ describe('Tutorial', () => {
       chapters: propsData.hierarchy.modules,
       topic: propsData.sections[0].title,
       rootReference: hierarchy.reference,
+      identifierUrl: propsData.identifierUrl,
     });
   });
 
@@ -253,6 +250,7 @@ describe('Tutorial without hero section', () => {
         hierarchy,
         metadata: { category: 'Blah' },
         technologyNavigation: ['overview', 'tutorials', 'resources'],
+        identifierUrl: 'foo',
       },
       mocks,
       provide: {

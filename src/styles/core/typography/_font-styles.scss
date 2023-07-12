@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -73,6 +73,9 @@ $font-styles: (
   ),
   caption: (
     large: 12_16
+  ),
+  locale-selector: (
+    large: 12_16_semibold,
   ),
   // custom typography for /tutorials
   metadata-item: (
@@ -150,8 +153,11 @@ $font-styles: (
   documentation-code-listing-number: (
     large: 12_18_normal_compact_mono,
   ),
-  documentation-figcaption: (
+  documentation-caption: (
     large: 14_21,
+  ),
+  documentation-declaration-link: (
+    large: 17_25,
   ),
   // custom typography for /navigation
   nav-toggles: (
@@ -169,7 +175,7 @@ $font-styles: (
     large: 17_25
   ),
   tabnav-link: (
-    large: tabnav_link_17_17
+    large: nav_14_14
   ),
   badge: (
     large: 12_16
@@ -191,5 +197,31 @@ $font-styles: (
   ),
   nav-menu-collapsible: (
     large: (nav_14_14, nav)
-  )
+  ),
+  card-eyebrow-small: (
+    large: 14_18_semibold,
+  ),
+  card-eyebrow-large: (
+    large: 17_21_semibold,
+    medium: 14_18_semibold,
+    small: 14_18_semibold,
+  ),
+  card-title-small: (
+    large: 17_21_semibold,
+    medium: 14_18_semibold,
+    small: 17_21_semibold,
+  ),
+  card-title-large: (
+    large: 21_25_semibold,
+    medium: 17_21_semibold,
+    small: 17_21_semibold,
+  ),
+  card-content-small: (
+    large: 14_18,
+  ),
+  card-content-large: (
+    large: 17_25,
+    medium: 14_18,
+    small: 14_18,
+  ),
 ) !default;

@@ -12,10 +12,12 @@ const path = require('path');
 const vueUtils = require('./src/setup-utils/vue-config-utils');
 const BASE_URL_PLACEHOLDER = require('./bin/baseUrlPlaceholder');
 
+const isDev = process.env.NODE_ENV === 'development';
+
 module.exports = vueUtils({
   // we are setting a hard public path to the placeholder template.
   // after the build is done, we will replace this with the BASE_URL env the user specified.
-  publicPath: process.env.NODE_ENV === 'development' ? undefined : BASE_URL_PLACEHOLDER,
+  publicPath: isDev ? undefined : BASE_URL_PLACEHOLDER,
   pages: {
     index: {
       entry: 'app/main.js',
@@ -25,11 +27,16 @@ module.exports = vueUtils({
   chainWebpack(config) {
     config
       .plugin('copy')
-      .use('copy-webpack-plugin', [[{
-        from: path.resolve(__dirname, 'app/public'),
-        to: path.resolve(__dirname, 'dist'),
-        toType: 'dir',
-        ignore: ['.DS_Store'],
-      }]]);
+      .use('copy-webpack-plugin', [{
+        patterns: [
+          {
+            from: path.resolve(__dirname, 'app/public'),
+            to: path.resolve(__dirname, 'dist'),
+            globOptions: {
+              ignore: ['.DS_Store'],
+            },
+          },
+        ],
+      }]);
   },
 });

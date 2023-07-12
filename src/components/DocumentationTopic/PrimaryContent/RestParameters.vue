@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,10 +9,10 @@
 -->
 
 <template>
-  <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+  <section>
+    <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="parameters" :changes="parameterChanges">
-      <template slot="symbol" slot-scope="{ name, type, content, changes, deprecated }">
+      <template #symbol="{ name, type, content, changes, deprecated }">
         <div class="param-name" :class="{ deprecated: deprecated }">
           <WordBreak tag="code">{{ name }}</WordBreak>
         </div>
@@ -23,8 +23,7 @@
         />
       </template>
       <template
-        slot="description"
-        slot-scope="{ name, type, content, required, attributes, changes, deprecated, readOnly }"
+        #description="{ name, type, content, required, attributes, changes, deprecated, readOnly }"
       >
         <div>
           <PossiblyChangedType
@@ -38,23 +37,27 @@
           <PossiblyChangedTextAttribute
             :changes="changes.required"
             :value="required"
-          >(Required) </PossiblyChangedTextAttribute>
+          >
+            {{ $t('formats.parenthesis', { content: $t('required') }) }}
+          </PossiblyChangedTextAttribute>
           <PossiblyChangedTextAttribute
             :changes="changes.readOnly"
             :value="readOnly"
-          >(Read only) </PossiblyChangedTextAttribute>
+          >
+            {{ $t('formats.parenthesis', { content: $t('read-only') }) }}
+          </PossiblyChangedTextAttribute>
           <ContentNode v-if="content" :content="content" />
           <ParameterAttributes :attributes="attributes" :changes="changes" />
         </div>
       </template>
     </ParametersTable>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
@@ -74,8 +77,8 @@ export default {
     ParameterAttributes,
     WordBreak,
     ContentNode,
-    OnThisPageSection,
     ParametersTable,
+    LinkableHeading,
   },
   props: {
     title: {
@@ -117,7 +120,7 @@ export default {
 .content {
   display: inline;
 
-  /deep/ p:first-child {
+  :deep(p:first-child) {
     display: inline;
   }
 }

@@ -1,26 +1,31 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
+import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { AppTopID } from '@/constants/AppTopID';
 import { flushPromises } from '../../test-utils';
 
 jest.mock('docc-render/utils/theme-settings', () => ({
   fetchThemeSettings: jest.fn(),
   themeSettingsState: { theme: {} },
+  getSetting: jest.fn(() => {}),
 }));
 
 let App;
 let fetchThemeSettings = jest.fn();
+let getSetting = jest.fn(() => {});
 
 const matchMedia = {
   matches: false,
@@ -28,8 +33,8 @@ const matchMedia = {
   removeListener: jest.fn(),
 };
 
-const setPropertySpy = jest.spyOn(document.documentElement.style, 'setProperty');
-const removePropertySpy = jest.spyOn(document.documentElement.style, 'removeProperty');
+const setPropertySpy = jest.spyOn(document.body.style, 'setProperty');
+const removePropertySpy = jest.spyOn(document.body.style, 'removeProperty');
 
 const path = '/the/new/path';
 const pushMock = jest.fn();
@@ -48,11 +53,14 @@ const GenericCSSSettings = {
   },
 };
 
+const availableLocales = ['en-US', 'zh-CN'];
+
 const createWrapper = props => shallowMount(App, {
   stubs: {
     'custom-header': true,
     'router-view': true,
     'custom-footer': true,
+    Footer,
   },
   mocks: {
     $bridge: {
@@ -87,11 +95,6 @@ describe('App', () => {
 
     setThemeSetting({});
     window.matchMedia = jest.fn().mockReturnValue(matchMedia);
-
-    Object.defineProperty(window, 'customElements', {
-      writable: true,
-      value: { get: jest.fn().mockImplementation(() => false) },
-    });
   });
 
   it('does not render a <custom-header> or <custom-footer> if they have not been defined', () => {
@@ -113,7 +116,7 @@ describe('App', () => {
   it('renders Skip Navigation', () => {
     const wrapper = createWrapper();
     const skipNavigation = wrapper.find('#skip-nav');
-    expect(skipNavigation.text()).toBe('Skip Navigation');
+    expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
     expect(skipNavigation.attributes('href')).toBe('#main');
   });
 
@@ -125,6 +128,56 @@ describe('App', () => {
     });
     const header = wrapper.find('.header');
     expect(header.text()).toBe('Header');
+  });
+
+  it('renders SuggestLang if enablei18n is true', async () => {
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
+
+    const wrapper = createWrapper();
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales,
+      },
+    });
+
+    const SuggestLangComponent = wrapper.find(SuggestLang);
+    expect(SuggestLangComponent.exists()).toBe(true);
+  });
+
+  it('renders LocaleSelector if enablei18n is true', () => {
+    const { LocaleSelector } = App.components;
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
+
+    const wrapper = createWrapper();
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales,
+      },
+    });
+
+    expect(wrapper.find(LocaleSelector).exists()).toBe(true);
+  });
+
+  it('does not render LocaleSelector if there is less than two available locales', () => {
+    const { LocaleSelector } = App.components;
+    ({ getSetting } = require('docc-render/utils/theme-settings'));
+    getSetting.mockReturnValue(true);
+
+    const wrapper = createWrapper();
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    wrapper.setData({
+      appState: {
+        ...wrapper.vm.appState,
+        availableLocales: ['en-US'],
+      },
+    });
+
+    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
   });
 
   it('renders the `#nav-sticky-anchor` between the header and the content', () => {
@@ -145,10 +198,10 @@ describe('App', () => {
   it('exposes a footer slot', () => {
     const wrapper = createWrapper({
       slots: {
-        footer: '<div class="footer">Footer</div>',
+        footer: '<div class="footer-slot">Footer</div>',
       },
     });
-    const footer = wrapper.find('.footer');
+    const footer = wrapper.find('.footer-slot');
     expect(footer.text()).toBe('Footer');
   });
 
@@ -175,6 +228,11 @@ describe('App', () => {
 
     wrapper.setData({ isTargetIDE: true });
     expect(wrapper.contains(Footer)).toBe(false);
+  });
+
+  it('renders the app-top element', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(`#${AppTopID}`).exists()).toBe(true);
   });
 
   describe('Custom CSS Properties', () => {
@@ -222,18 +280,31 @@ describe('App', () => {
     });
 
     it('returns dark mode colors', async () => {
+      // if "Auto" is preferred and the system is "Dark":
       window.matchMedia.mockReturnValueOnce({
         ...matchMedia,
         matches: true,
       });
-      createWrapper();
+      const wrapper = createWrapper();
+      wrapper.setData({
+        appState: {
+          ...wrapper.vm.appState,
+          preferredColorScheme: ColorScheme.auto,
+        },
+      });
       await flushPromises();
       expect(setPropertySpy)
         .toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.dark);
     });
 
-    it('dynamically changes the data, upon color scheme change', async () => {
+    it('dynamically changes the data, upon color scheme change (in auto mode)', async () => {
       const wrapper = createWrapper();
+      wrapper.setData({
+        appState: {
+          ...wrapper.vm.appState,
+          preferredColorScheme: ColorScheme.auto,
+        },
+      });
       await flushPromises();
       expect(setPropertySpy).toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.light);
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
@@ -243,6 +314,12 @@ describe('App', () => {
 
     it('updates the values applied to the root, if the colors update', async () => {
       const wrapper = createWrapper();
+      wrapper.setData({
+        appState: {
+          ...wrapper.vm.appState,
+          preferredColorScheme: ColorScheme.auto,
+        },
+      });
       await flushPromises();
       expect(removePropertySpy).toHaveBeenCalledTimes(1);
       expect(setPropertySpy).toHaveBeenCalledTimes(1);
@@ -270,7 +347,7 @@ describe('App', () => {
       let wrapper;
 
       beforeEach(() => {
-        window.customElements.get.mockImplementation(name => name === 'custom-header');
+        jest.spyOn(window.customElements, 'get').mockImplementation(name => name === 'custom-header');
         wrapper = createWrapper();
       });
 

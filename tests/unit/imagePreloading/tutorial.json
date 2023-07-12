@@ -1311,7 +1311,7 @@
       "url": "https:\/\/developer.apple.com\/download"
     },
     "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Check-Your-Understanding": {
-      "title": "Check Your Understanding",
+      "title": "tutorials.assessment.check-your-understanding",
       "type": "link",
       "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial3#Check-Your-Understanding",
       "url": "\/tutorials\/technologyx\/tutorial3#Check-Your-Understanding"
@@ -1407,7 +1407,7 @@
       ]
     },
     "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Check-Your-Understanding": {
-      "title": "Check Your Understanding",
+      "title": "tutorials.assessment.check-your-understanding",
       "type": "link",
       "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial4#Check-Your-Understanding",
       "url": "\/tutorials\/technologyx\/tutorial4#Check-Your-Understanding"
@@ -1667,7 +1667,7 @@
       ]
     },
     "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Check-Your-Understanding": {
-      "title": "Check Your Understanding",
+      "title": "tutorials.assessment.check-your-understanding",
       "type": "link",
       "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial#Check-Your-Understanding",
       "url": "\/tutorials\/technologyx\/tutorial#Check-Your-Understanding"
@@ -1738,7 +1738,7 @@
       "url": "\/tutorials\/technologyx\/tutorial2#Initiate-ARKit-Plane-Detection"
     },
     "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Check-Your-Understanding": {
-      "title": "Check Your Understanding",
+      "title": "tutorials.assessment.check-your-understanding",
       "type": "link",
       "identifier": "doc:\/\/com.example.Test\/tutorials\/TechnologyX\/Tutorial2#Check-Your-Understanding",
       "url": "\/tutorials\/technologyx\/tutorial2#Check-Your-Understanding"

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,9 +13,11 @@
     <Row :class="['intro', `intro-${sectionNumber}`, { ide: isTargetIDE }]">
       <Column class="left">
         <Headline :level="2">
-          <router-link :to="sectionLink" slot="eyebrow">
-            Section {{ sectionNumber }}
-          </router-link>
+          <template #eyebrow>
+            <router-link :to="sectionLink">
+              {{ $t('sections.title', { number: sectionNumber }) }}
+            </router-link>
+          </template>
           {{ title }}
         </Headline>
         <ContentNode :content="content" />
@@ -140,7 +142,7 @@ export default {
   }
   &.ide {
     .media {
-      /deep/ img {
+      :deep(img) {
         background-color: var(--colors-text-background, var(--color-text-background));
       }
     }
@@ -182,7 +184,7 @@ export default {
 }
 
 .media {
-  /deep/ img {
+  :deep(img) {
     width: auto;
     max-height: 560px;
     min-height: rem(320px);
@@ -193,12 +195,12 @@ export default {
     margin: 0;
     margin-top: $section-spacing-single-side;
 
-    /deep/ img, /deep/ video {
+    :deep(image) , :deep(video) {
       max-height: 80vh;
     }
   }
 
-  /deep/ .asset {
+  :deep(.asset) {
     padding: 0 20px;
   }
 }
@@ -207,14 +209,14 @@ export default {
   color: var(--colors-header-text, var(--color-header-text));
 }
 
-/deep/ .eyebrow {
+:deep(.eyebrow) {
   @include font-styles(eyebrow-reduced);
   a {
     color: inherit;
   }
 }
 
-/deep/ .heading {
+:deep(.heading) {
   @include font-styles(heading-2);
 }
 
@@ -223,11 +225,11 @@ export default {
   margin-top: $article-stacked-margin-large;
 }
 
-/deep/ .cols-2 {
+:deep(.cols-2) {
   gap: $article-stacked-margin-small calculate-column-width(2);
 }
 
-/deep/ .cols-3 .column {
+:deep(.cols-3 .column) {
   gap: $article-stacked-margin-small calculate-column-width(1.5);
 }
 </style>

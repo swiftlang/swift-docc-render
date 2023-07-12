@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,21 +14,18 @@
     :aria-label="technology"
     hasSolidBackground
   >
-    <template slot="default">
-      <ReferenceUrlProvider :reference="rootReference">
-        <NavTitleContainer
-          slot-scope="{ urlWithParams }"
-          :to="urlWithParams"
-        >
-          <template slot="default">{{ technology }}</template>
-          <template slot="subhead">Tutorials</template>
+    <template #default>
+      <ReferenceUrlProvider :reference="rootReference" v-slot="{ urlWithParams }">
+        <NavTitleContainer :to="urlWithParams">
+          <template #default>{{ technology }}</template>
+          <template #subhead>{{ $tc('tutorials.title', 2) }}</template>
         </NavTitleContainer>
       </ReferenceUrlProvider>
     </template>
-    <template slot="after-title">
+    <template #after-title>
       <div class="separator"></div>
     </template>
-    <template slot="tray">
+    <template #tray>
       <div class="mobile-dropdown-container">
         <MobileDropdown
           :options="chapters"
@@ -61,12 +58,21 @@
 <script>
 import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
 import ReferenceUrlProvider from 'docc-render/components/ReferenceUrlProvider.vue';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 import NavBase from 'docc-render/components/NavBase.vue';
 import NavTitleContainer from 'docc-render/components/NavTitleContainer.vue';
 import MobileDropdown from './NavigationBar/MobileDropdown.vue';
 import SecondaryDropdown from './NavigationBar/SecondaryDropdown.vue';
 import PrimaryDropdown from './NavigationBar/PrimaryDropdown.vue';
+
+const FirstSectionItem = {
+  title: 'Introduction',
+  url: '#introduction',
+  reference: 'introduction',
+  sectionNumber: 0,
+  depth: 0,
+};
 
 export default {
   name: 'NavigationBar',
@@ -79,8 +85,7 @@ export default {
     MobileDropdown,
     ChevronIcon,
   },
-  mixins: [scrollToElement],
-  inject: ['store'],
+  mixins: [scrollToElement, referencesProvider],
   props: {
     chapters: {
       type: Array,
@@ -98,13 +103,14 @@ export default {
       type: String,
       required: true,
     },
+    identifierUrl: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      currentSection: {
-        sectionNumber: 0,
-        title: 'Introduction',
-      },
+      currentSection: FirstSectionItem,
       tutorialState: this.store.state,
     };
   },
@@ -116,12 +122,28 @@ export default {
     },
   },
   computed: {
+    currentProject() {
+      return this.chapters
+        // collect all the projects for all the chapters
+        .reduce((acc, { projects }) => acc.concat(projects), [])
+        // find the current project
+        .find(project => project.reference === this.identifierUrl);
+    },
     pageSections() {
-      const tutorialPath = this.$route.path.replace(/#$/, '');
-      return this.tutorialState.linkableSections.map(section => ({
-        ...section,
-        path: `${tutorialPath}#${section.anchor}`,
-      }));
+      if (!this.currentProject) return [];
+
+      const allSections = [FirstSectionItem].concat(this.currentProject.sections);
+
+      return this.tutorialState.linkableSections.map((linkableSection, index) => {
+        const singleSection = allSections[index];
+        const referenceObject = this.references[singleSection.reference];
+        const { url, title } = referenceObject || singleSection;
+        return {
+          ...linkableSection,
+          title,
+          path: url,
+        };
+      });
     },
     optionsForSections() {
       return this.pageSections.map(({ depth, path, title }) => ({ depth, path, title }));
@@ -143,14 +165,14 @@ export default {
       if (sectionNumber === 0) {
         return undefined;
       }
-      return `(${sectionNumber} of ${numberOfSections})`;
+      return this.$t('tutorials.section-of', { number: sectionNumber, total: numberOfSections });
     },
   },
   methods: {
     onSelectSection(path) {
       // Manually scroll to the section to work around a vue-router bug: https://github.com/vuejs/vue-router/issues/1668
-      const hash = `#${path.split('#')[1]}`;
-      this.scrollToElement(hash);
+      const hash = path.split('#')[1];
+      this.handleFocusAndScroll(hash);
     },
   },
 };
@@ -169,7 +191,7 @@ export default {
 }
 
 @include breakpoints-from(medium, $scope: nav) {
-  .nav /deep/ {
+  .nav :deep() {
     .nav-content {
       display: grid;
       grid-template-columns: auto auto 3fr;
@@ -218,17 +240,17 @@ export default {
     .mobile-dropdown-container {
       display: block;
     }
-    /deep/ .nav-title {
+    :deep(.nav-title) {
       grid-area: title;
     }
 
-    /deep/ .pre-title {
+    :deep(.pre-title) {
       display: none;
     }
   }
 }
 
-.nav /deep/ .nav-title {
+.nav :deep(.nav-title) {
   grid-column: 1;
   width: 90%;
   padding-top: 0;
@@ -239,13 +261,13 @@ export default {
   background: var(--color-tutorial-navbar-dropdown-background);
   border-color: var(--color-tutorial-navbar-dropdown-border);
 
-  /deep/ .form-dropdown {
+  :deep(.form-dropdown) {
     &, &:focus {
       border-color: var(--color-tutorial-navbar-dropdown-border);
     }
   }
 
-  /deep/ .options {
+  :deep(.options) {
     background: var(--color-tutorial-navbar-dropdown-background);
     border-color: var(--color-tutorial-navbar-dropdown-border);
   }

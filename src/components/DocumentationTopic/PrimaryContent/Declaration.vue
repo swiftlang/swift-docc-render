@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,12 +9,7 @@
 -->
 
 <template>
-  <OnThisPageSection
-    anchor="declaration"
-    class="declaration"
-    title="Declaration"
-  >
-    <h2>Declaration</h2>
+  <section class="declaration">
     <template v-if="hasModifiedChanges">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
@@ -32,21 +27,29 @@
         :changeType="changeType"
       />
     </template>
+    <DeclarationSourceLink
+      v-if="source"
+      :url="source.url"
+      :fileName="source.fileName"
+    />
     <ConditionalConstraints
       v-if="conformance"
       :constraints="conformance.constraints"
       :prefix="conformance.availabilityPrefix"
     />
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import ConditionalConstraints from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import ConditionalConstraints
+  from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
 
-import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
+import DeclarationGroup
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import DeclarationDiff
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
+import DeclarationSourceLink
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSourceLink.vue';
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
@@ -56,8 +59,8 @@ export default {
   components: {
     DeclarationDiff,
     DeclarationGroup,
+    DeclarationSourceLink,
     ConditionalConstraints,
-    OnThisPageSection,
   },
   constants: { ChangeTypes, multipleLinesClass },
   inject: ['identifier', 'store'],
@@ -67,6 +70,10 @@ export default {
   }),
   props: {
     conformance: {
+      type: Object,
+      required: false,
+    },
+    source: {
       type: Object,
       required: false,
     },
@@ -134,6 +141,6 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .conditional-constraints {
-  margin: rem(20px) 0 3rem 0;
+  margin-top: var(--declaration-conditional-constraints-margin, 20px);
 }
 </style>

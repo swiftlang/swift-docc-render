@@ -13,9 +13,9 @@
     :value="type"
     :wrapChanges="false"
     :changes="changes"
+    v-slot="{ value }"
   >
     <DeclarationTokenGroup
-      slot-scope="{ value }"
       :type="getValues(value)"
       class="property-metadata property-type"
     />

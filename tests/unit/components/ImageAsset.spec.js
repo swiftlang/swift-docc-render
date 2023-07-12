@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -11,8 +11,12 @@
 import { shallowMount } from '@vue/test-utils';
 import ImageAsset from 'docc-render/components/ImageAsset.vue';
 
+import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
+import { flushPromises } from '../../../test-utils';
+
 jest.mock('docc-render/stores/AppStore', () => ({
   state: {
+    imageLoadingStrategy: 'lazy',
     preferredColorScheme: 'auto',
     supportsAutoColorScheme: true,
     setPreferredColorScheme: jest.fn(),
@@ -52,6 +56,8 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe(alt);
+    expect(image.attributes('decoding')).toBe('async');
+    expect(image.attributes('loading')).toBe('lazy');
   });
 
   it('renders an image that has one variant with no appearance trait', () => {
@@ -83,6 +89,8 @@ describe('ImageAsset', () => {
     expect(image.attributes('width')).toBe('300');
     expect(image.attributes('height')).toBe('auto');
     expect(image.attributes('alt')).toBe('');
+    expect(image.attributes('decoding')).toBe('async');
+    expect(image.attributes('loading')).toBe('lazy');
   });
 
   it('renders an image that has two light variants', () => {
@@ -126,6 +134,8 @@ describe('ImageAsset', () => {
     expect(image.attributes('srcset')).toBe(`${url2x} 2x, ${url3x} 3x`);
     expect(image.attributes('width')).toBe('1202');
     expect(image.attributes('height')).toBe('auto');
+    expect(image.attributes('decoding')).toBe('async');
+    expect(image.attributes('loading')).toBe('lazy');
   });
 
   it('renders an image that has two dark variants', () => {
@@ -268,6 +278,185 @@ describe('ImageAsset', () => {
     expect(fallbackImg.exists()).toBe(true);
     expect(fallbackImg.classes('fallback')).toBe(true);
     expect(fallbackImg.attributes('alt')).toBe(alt);
-    expect(fallbackImg.attributes('title')).toBe('Image failed to load');
+    expect(fallbackImg.attributes('title')).toBe('error.image');
+  });
+
+  it('calculates an optimal width after image loads when no size is provided', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+    const intrinsicWidth = 84;
+    const intrinsicHeight = intrinsicWidth;
+    const optimalDisplayWidth = intrinsicWidth / 2;
+
+    Object.defineProperty(HTMLImageElement.prototype, 'currentSrc', {
+      get: () => url,
+    });
+
+    Object.defineProperty(Image.prototype, 'width', {
+      get: () => intrinsicWidth,
+    });
+    Object.defineProperty(Image.prototype, 'height', {
+      get: () => intrinsicHeight,
+    });
+    Object.defineProperty(Image.prototype, 'onload', {
+      get() {
+        return this.$onload;
+      },
+      set(fn) {
+        this.$onload = fn;
+        this.$onload(); // call immediately for unit test performance purposes
+      },
+    });
+
+    // describe the image with a 2x trait (since it has an intrinsic width of 84
+    // pixels wide, it should be displayed as 42 pixels wide)
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+      },
+    });
+
+    const img = wrapper.find('img');
+    expect(img.attributes('src')).toBe(url);
+    expect(img.attributes('srcset')).toBe(`${url} 2x`);
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBe(`${optimalDisplayWidth}`);
+    expect(img.attributes('height')).toBe('auto');
+  });
+
+  it('does not calculate widths, if the element unmounts just as it gets loaded', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+
+    // describe the image with a 2x trait (since it has an intrinsic width of 84
+    // pixels wide, it should be displayed as 42 pixels wide)
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+      },
+    });
+
+    const calculateOptimalWidthSpy = jest.spyOn(wrapper.vm, 'calculateOptimalWidth')
+      .mockReturnValue(99);
+    const img = wrapper.find('img');
+
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+
+    wrapper.destroy();
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+    expect(calculateOptimalWidthSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('allows disabling the optimal-width calculation', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+        shouldCalculateOptimalWidth: false,
+      },
+    });
+    const img = wrapper.find('img');
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBeFalsy();
+  });
+
+  it('logs an error when unable to calculate the optimal width for an image', async () => {
+    const url = 'https://www.example.com/image.png';
+    const traits = ['2x'];
+
+    Object.defineProperty(HTMLImageElement.prototype, 'currentSrc', {
+      get: () => url,
+    });
+
+    Object.defineProperty(Image.prototype, 'onerror', {
+      get() {
+        return this.$onerror;
+      },
+      set(fn) {
+        this.$onerror = fn;
+        this.$onerror(); // simulate an immediate error
+      },
+    });
+
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    const wrapper = shallowMount(ImageAsset, {
+      propsData: {
+        variants: [
+          {
+            traits,
+            url,
+          },
+        ],
+      },
+    });
+
+    const img = wrapper.find('img');
+    expect(img.attributes('src')).toBe(url);
+    expect(img.attributes('srcset')).toBe(`${url} 2x`);
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+
+    img.trigger('load');
+    await flushPromises();
+    expect(img.attributes('width')).toBeFalsy();
+    expect(img.attributes('height')).toBeFalsy();
+    expect(console.error).toHaveBeenCalledWith('Unable to calculate optimal image width');
+
+    consoleSpy.mockRestore();
+  });
+
+  it('allows setting the loading strategy by a parent component', async () => {
+    const url = 'https://www.example.com/image.png';
+    const wrapper = shallowMount(ImageAsset, {
+      provide: {
+        imageLoadingStrategy: ImageLoadingStrategy.eager,
+      },
+      propsData: {
+        variants: [
+          {
+            traits: [
+              '2x',
+              'light',
+            ],
+            url,
+            size: {
+              width: 1202,
+              height: 630,
+            },
+          },
+        ],
+      },
+    });
+
+    const image = wrapper.find('img');
+    expect(image.attributes('loading')).toBe(ImageLoadingStrategy.eager);
   });
 });

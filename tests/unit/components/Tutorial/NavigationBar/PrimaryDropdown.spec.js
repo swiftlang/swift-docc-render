@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -128,8 +128,11 @@ describe('Primary Dropdown', () => {
         ReferenceUrlProvider,
       },
       provide: {
-        references,
+        store: {
+          state: { references },
+        },
       },
+      attachToDocument: true,
     });
 
     btn = wrapper.find('.form-dropdown-toggle');
@@ -142,12 +145,12 @@ describe('Primary Dropdown', () => {
     expect(node.props()).toEqual({
       isSmall: true,
       value: tutorial,
-      ariaLabel: 'Current tutorial',
+      ariaLabel: 'tutorials.nav.current tutorials.title',
     });
   });
 
   it('Renders a the correct label', () => {
-    expect(wrapper.find('.visuallyhidden').text()).toBe('Current tutorial');
+    expect(wrapper.find('.visuallyhidden').text()).toBe('tutorials.nav.current tutorials.title');
   });
 
   it('renders chapters properly', () => {
@@ -165,7 +168,6 @@ describe('Primary Dropdown', () => {
     expect(options.at(0).props('to')).toEqual('/tutorials/technologyx/tutorial?context=foo');
     expect(options.at(0).find('li').attributes()).toEqual({
       class: 'option',
-      role: 'option',
       tabindex: '-1',
       value: 'Basic Augmented Reality App',
     });
@@ -173,7 +175,6 @@ describe('Primary Dropdown', () => {
       .toEqual('/tutorials/technologyx/testtutorialarticle?context=foo');
     expect(options.at(1).find('li').attributes()).toEqual({
       class: `option ${ActiveOptionClass}`,
-      role: 'option',
       tabindex: '-1',
       value: 'Making an Augmented Reality App',
       'aria-current': 'tutorial',
@@ -194,6 +195,7 @@ describe('Primary Dropdown', () => {
   it('focuses the next element, when `down` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
     btn.trigger('keydown.down');
+    expect(wrapper.classes('is-open')).toBe(true);
     // use the down key on the first link
     firstLink.trigger('keydown.down');
     await wrapper.vm.$nextTick();

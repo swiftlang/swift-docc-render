@@ -59,7 +59,11 @@ describe('ResourcesTile', () => {
     wrapper = shallowMount(ResourcesTile, {
       propsData,
       stubs,
-      provide: { references },
+      provide: {
+        store: {
+          state: { references },
+        },
+      },
     });
   });
 

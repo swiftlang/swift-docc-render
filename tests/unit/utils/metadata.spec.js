@@ -8,7 +8,23 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { addOrUpdateMetadata, updateLangTag } from 'docc-render/utils/metadata';
+import { defaultLocale } from 'theme/lang/index';
+
+jest.mock('theme/lang/locales.json', () => (
+  [
+    {
+      code: 'en-US',
+      name: 'English',
+      slug: 'en',
+    },
+    {
+      code: 'zh-CN',
+      name: '简体中文',
+      slug: 'cn',
+    },
+  ]
+));
 
 const fs = require('fs');
 const path = require('path');
@@ -19,7 +35,7 @@ const mockBaseUrl = 'developer';
 const title = 'Featured';
 const description = 'Browse the latest developer documentation, including tutorials, sample code, articles, and API reference.';
 const differentDescription = 'Some different description.';
-const pagePath = '/path';
+const pageURL = 'http://localhost/developer/path';
 const pageWithTitleAndDescription = {
   name: 'Page with title and description',
   title,
@@ -27,13 +43,16 @@ const pageWithTitleAndDescription = {
   params: {
     title,
     description,
+    currentLocale: defaultLocale,
   },
 };
 
 const pageWithoutTitleOrDescription = {
   name: 'Page without title and description',
   title: process.env.VUE_APP_TITLE,
-  params: {},
+  params: {
+    currentLocale: defaultLocale,
+  },
 };
 
 jest.mock('docc-render/utils/theme-settings', () => ({
@@ -41,7 +60,7 @@ jest.mock('docc-render/utils/theme-settings', () => ({
 }));
 
 jest.mock('docc-render/utils/assets', () => ({
-  normalizeAssetUrl: jest.fn(name => mockBaseUrl + name),
+  normalizePath: jest.fn(name => mockBaseUrl + name),
 }));
 
 document.documentElement.innerHTML = html.toString();
@@ -52,7 +71,7 @@ const assertMetadata = ({
   const expectedTitle = [...new Set([rawTitle, process.env.VUE_APP_TITLE])].filter(Boolean).join(' | ');
   describe(name, () => {
     beforeEach(() => {
-      addOrUpdateMetadata({ ...params, path: pagePath });
+      addOrUpdateMetadata({ ...params, url: pageURL });
     });
 
     it('adds title', () => {
@@ -73,7 +92,7 @@ const assertMetadata = ({
       } else {
         expect(document.querySelector('meta[property="og:description"]')).toBeFalsy();
       }
-      expect(document.querySelector('meta[property="og:locale"]').content).toBe('en_US');
+      expect(document.querySelector('meta[property="og:locale"]').content).toBe(defaultLocale);
       expect(document.querySelector('meta[property="og:site_name"]').content).toBe(process.env.VUE_APP_TITLE);
       expect(document.querySelector('meta[property="og:type"]').content).toBe('website');
       expect(document.querySelector('meta[property="og:image"]').content).toBe('http://localhost/developer/developer-og.jpg');
@@ -100,5 +119,12 @@ describe('Metadata', () => {
     addOrUpdateMetadata({ description: differentDescription });
     expect(document.querySelector('meta[name="description"]').content).toBe(differentDescription);
     expect(document.querySelectorAll('meta[name="description"]')).toHaveLength(1);
+  });
+});
+
+describe('updateLangTag', () => {
+  it('updates the lang tag on the HTML with code', () => {
+    updateLangTag('zh-CN');
+    expect(document.querySelector('html').getAttribute('lang')).toBe('zh-CN');
   });
 });

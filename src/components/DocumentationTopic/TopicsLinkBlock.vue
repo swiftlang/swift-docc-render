@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -17,10 +17,14 @@
       class="link"
       ref="apiChangesDiff"
     >
-      <TopicLinkBlockIcon v-if="topic.role" :role="topic.role" />
+      <TopicLinkBlockIcon
+        v-if="topic.role && !change"
+        :role="topic.role"
+        :imageOverride="references[iconOverride]"
+      />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
-      <span v-if="change" class="visuallyhidden">- {{ changeName }}</span>
+      <span v-if="change" class="visuallyhidden">- {{ $t(changeName) }}</span>
     </component>
     <div
       v-if="hasAbstractElements"
@@ -59,18 +63,21 @@
 </template>
 
 <script>
+import { TopicRole } from 'docc-render/constants/roles';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import Badge from 'docc-render/components/Badge.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import TopicLinkBlockIcon from 'docc-render/components/DocumentationTopic/TopicLinkBlockIcon.vue';
 import DecoratedTopicTitle from 'docc-render/components/DocumentationTopic/DecoratedTopicTitle.vue';
-import ConditionalConstraints from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
+import ConditionalConstraints
+  from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
 import RequirementMetadata
 
   from 'docc-render/components/DocumentationTopic/Description/RequirementMetadata.vue';
 
 import { getAPIChanges, APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 const TopicKind = {
   article: 'article',
@@ -97,8 +104,7 @@ export default {
     RequirementMetadata,
     ConditionalConstraints,
   },
-  inject: ['store'],
-  mixins: [getAPIChanges, APIChangesMultipleLines],
+  mixins: [getAPIChanges, APIChangesMultipleLines, referencesProvider],
   constants: {
     ReferenceType,
     TopicKind,
@@ -142,11 +148,11 @@ export default {
     linkBlockClasses: ({
       changesClasses,
       hasAbstractElements,
-      hasMultipleLinesAfterAPIChanges,
+      displaysMultipleLinesAfterAPIChanges,
       multipleLinesClass,
     }) => ({
       'has-inline-element': !hasAbstractElements,
-      [multipleLinesClass]: hasMultipleLinesAfterAPIChanges,
+      [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
       /*
        * The following display the "changes" highlight styles
        * on the parent div (this one) when there is not an abstract
@@ -179,6 +185,8 @@ export default {
       if (topic.titleStyle === TitleStyles.title) {
         return topic.ideTitle ? 'span' : 'code';
       }
+      // Framework name and property list links and should not be code voice
+      if (topic.role && (topic.role === TopicRole.collection || topic.role === TopicRole.dictionarySymbol)) return 'span';
 
       switch (topic.kind) {
       case TopicKind.symbol:
@@ -205,6 +213,10 @@ export default {
     ),
     // pick only the first available tag
     tags: ({ topic }) => (topic.tags || []).slice(0, 1),
+    iconOverride: ({ topic: { images = [] } }) => {
+      const icon = images.find(({ type }) => type === 'icon');
+      return icon ? icon.identifier : null;
+    },
   },
 };
 </script>
@@ -213,7 +225,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .abstract,
-.link-block /deep/ .badge {
+.link-block :deep(.badge) {
   margin-left: calc(#{$topic-link-icon-spacing} + #{$topic-link-icon-width});
 }
 
@@ -253,7 +265,6 @@ export default {
 
   &.changed {
     @include change-highlight-target();
-    @include change-highlight-horizontal-text-alignment();
     box-sizing: border-box;
   }
 }

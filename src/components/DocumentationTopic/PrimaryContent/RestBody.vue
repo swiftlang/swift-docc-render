@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,17 +9,17 @@
 -->
 
 <template>
-  <OnThisPageSection :anchor="anchor" :title="title">
-    <h2>{{ title }}</h2>
+  <section>
+    <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
     <ParametersTable :parameters="[bodyParam]" :changes="bodyChanges" keyBy="key">
-      <template slot="symbol" slot-scope="{ type, content, changes, name }">
+      <template #symbol="{ type, content, changes, name }">
         <PossiblyChangedType
           v-if="!shouldShiftType({ name, content })"
           :type="type"
           :changes="changes.type"
         />
       </template>
-      <template slot="description" slot-scope="{ name, content, mimeType, type, changes }">
+      <template #description="{ name, content, mimeType, type, changes }">
         <PossiblyChangedType
           v-if="shouldShiftType({ name, content })"
           :type="type"
@@ -35,9 +35,9 @@
       </template>
     </ParametersTable>
     <template v-if="parts.length">
-      <h3>Parts</h3>
+      <h3>{{ $t('sections.parts') }}</h3>
       <ParametersTable :parameters="parts" class="parts" :changes="partsChanges">
-        <template slot="symbol" slot-scope="{ name, type, content, changes }">
+        <template #symbol="{ name, type, content, changes }">
           <div class="part-name">
             <WordBreak tag="code">{{ name }}</WordBreak>
           </div>
@@ -48,8 +48,7 @@
           />
         </template>
         <template
-          slot="description"
-          slot-scope="{ content, mimeType, required, type, attributes, changes, readOnly }"
+          #description="{ content, mimeType, required, type, attributes, changes, readOnly }"
         >
           <div>
             <PossiblyChangedType
@@ -77,13 +76,13 @@
         </template>
       </ParametersTable>
     </template>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
 import { anchorize } from 'docc-render/utils/strings';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
-import OnThisPageSection from 'docc-render/components/DocumentationTopic/OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import apiChangesProvider from 'docc-render/mixins/apiChangesProvider';
@@ -105,8 +104,8 @@ export default {
     WordBreak,
     ParameterAttributes,
     ContentNode,
-    OnThisPageSection,
     ParametersTable,
+    LinkableHeading,
   },
   constants: { ChangesKey },
   props: {
@@ -165,7 +164,7 @@ export default {
 .content {
   display: inline;
 
-  /deep/ p:first-child {
+  :deep(p:first-child) {
     display: inline;
   }
 }

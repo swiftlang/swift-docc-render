@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -9,8 +9,8 @@
 -->
 
 <template>
-  <SVGIcon viewBox="0 0 14 14" class="api-reference-icon">
-    <title>API Reference</title>
+  <SVGIcon viewBox="0 0 14 14" class="api-reference-icon" themeId="api-reference">
+    <title>{{ $t('api-reference') }}</title>
     <path d="m1 1v12h12v-12zm11 11h-10v-10h10z"/>
     <path d="m3 4h8v1h-8zm0 2.5h8v1h-8zm0 2.5h8v1h-8z"/>
     <path d="m3 4h8v1h-8z"/>

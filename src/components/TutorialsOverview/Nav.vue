@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -11,12 +11,12 @@
 <template>
   <NavBase>
     <NavTitleContainer :to="buildUrl($route.path, $route.query)">
-      <template slot="default">
+      <template #default>
         <slot />
       </template>
-      <template slot="subhead">Tutorials</template>
+      <template #subhead>{{ $tc('tutorials.title', 2) }}</template>
     </NavTitleContainer>
-    <template slot="menu-items">
+    <template #menu-items>
       <NavMenuItemBase class="in-page-navigation">
         <TutorialsNavigation :sections="sections" />
       </NavMenuItemBase>
@@ -61,7 +61,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.nav /deep/ .nav-menu {
+.nav :deep(.nav-menu) {
   padding-top: 0;
 
   .nav-menu-items {

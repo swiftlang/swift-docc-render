@@ -10,6 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
+import { defaultLocale } from 'theme/lang/index';
 import metadata from 'docc-render/mixins/metadata';
 
 jest.mock('docc-render/utils/metadata', () => ({
@@ -21,8 +22,19 @@ const pageData = {
   description: 'Description',
   path: '/path',
 };
+const expectedMetadata = {
+  title: pageData.title,
+  description: pageData.description,
+  url: `http://localhost${pageData.path}`,
+  currentLocale: defaultLocale,
+};
 
-const createWrapper = ({ title, description, path }) => (
+const createWrapper = ({
+  description,
+  disableMetadata = false,
+  path,
+  title,
+}) => (
   shallowMount({
     name: 'TestComponent',
     mixins: [metadata],
@@ -30,6 +42,7 @@ const createWrapper = ({ title, description, path }) => (
       return '<div/>';
     },
     computed: {
+      disableMetadata: () => disableMetadata,
       pageTitle: () => title,
       pageDescription: () => description,
     },
@@ -43,10 +56,19 @@ const createWrapper = ({ title, description, path }) => (
 );
 
 describe('metadata', () => {
+  beforeEach(() => {
+    addOrUpdateMetadata.mockClear();
+  });
+
   it('calls addOrUpdateMetadata function when component is created', () => {
     createWrapper(pageData);
     expect(addOrUpdateMetadata).toHaveBeenCalledTimes(1);
-    expect(addOrUpdateMetadata).toHaveBeenCalledWith(pageData);
+    expect(addOrUpdateMetadata).toHaveBeenCalledWith(expectedMetadata);
+  });
+
+  it('does not call `addOrUpdateMetadata` when `disableMetadata` is true', () => {
+    createWrapper({ ...pageData, disableMetadata: true });
+    expect(addOrUpdateMetadata).not.toHaveBeenCalled();
   });
 
   describe('.extractFirstParagraphText', () => {

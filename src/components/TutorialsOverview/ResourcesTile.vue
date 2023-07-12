@@ -18,9 +18,9 @@
     <DestinationDataProvider
       v-if="action"
       :destination="action"
+      v-slot="{ url, title }"
     >
       <Reference
-        slot-scope="{ url, title }"
         class="link"
         :url="url"
       >
@@ -99,24 +99,24 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .tile {
-  background: dark-color(fill-secondary);
+  background: var(--color-tutorials-overview-fill-secondary, dark-color(fill-secondary));
   padding: 40px 30px;
   color: var(--color-tutorials-overview-content-alt);
 }
 
-a, .content /deep/ a {
+a, .content :deep(a) {
   color: var(--colors-link, var(--color-tutorials-overview-link));
 }
 
 .icon {
-  $icon-size: rem(25px);
+  $icon-size-default: rem(25px);
   display: block;
-  height: $icon-size;
-  line-height: $icon-size;
+  height: $icon-size-default;
+  line-height: $icon-size-default;
   margin-bottom: rem(10px);
-  width: $icon-size;
+  width: $icon-size-default;
 
-  /deep/ svg.svg-icon {
+  :deep(svg.svg-icon) {
     width: 100%;
     max-height: 100%;
 
@@ -153,7 +153,7 @@ a, .content /deep/ a {
   }
 }
 
-/deep/ .content {
+:deep(.content) {
   ul {
     list-style-type: none;
     margin-left: 0;

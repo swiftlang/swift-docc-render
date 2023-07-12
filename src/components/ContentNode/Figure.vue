@@ -18,14 +18,8 @@ export default {
   props: {
     anchor: {
       type: String,
-      required: true,
+      required: false,
     },
   },
 };
 </script>
-
-<style scoped lang="scss">
-/deep/ figcaption + * {
-  margin-top: 1rem;
-}
-</style>

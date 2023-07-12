@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -11,13 +11,12 @@
 <template>
   <DropdownCustom
     :value="currentOption"
-    aria-label="Current tutorial"
+    :aria-label="$t('tutorials.nav.current', { thing: $tc('tutorials.title', 1) })"
     class="tutorial-dropdown"
     isSmall
   >
     <template
-      slot="default"
-      slot-scope="{
+      #default="{
         closeAndFocusToggler,
         contentClasses,
         closeDropdown,
@@ -35,9 +34,9 @@
           v-for="chapterName in options"
           :key="chapterName.reference"
           :reference="chapterName.reference"
+          v-slot="{ title: chapterTitle }"
         >
           <li
-            slot-scope="{ title: chapterTitle }"
             class="chapter-list"
             role="group"
           >
@@ -56,7 +55,6 @@
                 >
                   <li
                     :class="{ [OptionClass]: true, [ActiveOptionClass]: isActive }"
-                    role="option"
                     :value="title"
                     :aria-selected="isActive"
                     :aria-current="isActive ? 'tutorial': false"

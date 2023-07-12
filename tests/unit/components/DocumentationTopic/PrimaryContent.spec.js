@@ -12,8 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import PrimaryContent from 'docc-render/components/DocumentationTopic/PrimaryContent.vue';
 
 const {
-  Declaration,
-  GenericContent,
+  ContentNode,
   Parameters,
   PossibleValues,
   PropertyListKeyDetails,
@@ -29,23 +28,6 @@ const genericContentSection = {
     {
       type: 'text',
       text: 'foo',
-    },
-  ],
-};
-
-const declarationsSection = {
-  kind: SectionKind.declarations,
-  declarations: [
-    {
-      platforms: [
-        'macos',
-      ],
-      tokens: [
-        {
-          type: 'identifier',
-          text: 'Foo',
-        },
-      ],
     },
   ],
 };
@@ -147,8 +129,8 @@ const restEndpointSection = {
 
 const propsData = {
   conformance: { availbilityPrefix: [], constraints: [] },
+  source: { url: 'foo.com' },
   sections: [
-    declarationsSection,
     detailsSection,
     genericContentSection,
     parametersSection,
@@ -183,12 +165,8 @@ describe('PrimaryContent', () => {
     });
   }
 
-  checkProps(Declaration, {
-    conformance: propsData.conformance,
-    declarations: declarationsSection.declarations,
-  });
   checkProps(PropertyListKeyDetails, { details: detailsSection.details });
-  checkProps(GenericContent, { content: genericContentSection.content, tag: 'div' });
+  checkProps(ContentNode, { content: genericContentSection.content, tag: 'div' });
   checkProps(Parameters, { parameters: parametersSection.parameters });
   checkProps(RestParameters, { parameters: restParametersSection.items, title: 'Title' });
   checkProps(

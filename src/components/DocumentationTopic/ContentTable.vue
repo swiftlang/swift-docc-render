@@ -9,24 +9,20 @@
 -->
 
 <template>
-  <OnThisPageSection
-    class="contenttable alt-light"
-    :anchor="anchor"
-    :title="title"
-  >
+  <section class="contenttable alt-light">
     <div class="container">
-      <h2 class="title">{{title}}</h2>
+      <LinkableHeading class="title" :anchor="anchor">{{ title }}</LinkableHeading>
       <slot />
     </div>
-  </OnThisPageSection>
+  </section>
 </template>
 
 <script>
-import OnThisPageSection from './OnThisPageSection.vue';
+import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
 
 export default {
   name: 'ContentTable',
-  components: { OnThisPageSection },
+  components: { LinkableHeading },
   props: {
     anchor: {
       type: String,
@@ -53,6 +49,6 @@ export default {
   padding-top: $section-spacing-single-side;
   border-top-color: var(--color-grid);
   border-top-style: solid;
-  border-top-width: 1px;
+  border-top-width: var(--content-table-title-border-width, 1px);
 }
 </style>

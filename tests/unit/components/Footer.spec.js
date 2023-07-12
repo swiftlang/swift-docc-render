@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -26,5 +26,21 @@ describe('Footer', () => {
 
   it('renders a `ColorSchemeToggle`', () => {
     expect(wrapper.contains(ColorSchemeToggle)).toBe(true);
+  });
+
+  it('exposes a default slot', () => {
+    let slotProps = null;
+    wrapper = shallowMount(Footer, {
+      scopedSlots: {
+        default(props) {
+          slotProps = props;
+          return this.$createElement('div', { class: 'slot-class' }, 'Slot Content');
+        },
+      },
+    });
+    expect(slotProps).toEqual({
+      className: 'row',
+    });
+    expect(wrapper.find('.slot-class').text()).toBe('Slot Content');
   });
 });

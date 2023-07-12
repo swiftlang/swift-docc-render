@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,13 +13,13 @@ import RestBody from 'docc-render/components/DocumentationTopic/PrimaryContent/R
 import { ChangeTypes } from 'docc-render/constants/Changes';
 
 const {
-  OnThisPageSection,
   ParametersTable,
   PossiblyChangedType,
   ParameterAttributes,
   PossiblyChangedMimetype,
   WordBreak,
   PossiblyChangedTextAttribute,
+  LinkableHeading,
 } = RestBody.components;
 
 const { ChangesKey } = RestBody.constants;
@@ -66,19 +66,10 @@ describe('RestBody', () => {
     });
   });
 
-  it('renders an `OnThisPageSection`', () => {
-    const section = wrapper.find(OnThisPageSection);
-    expect(section.exists()).toBe(true);
-    expect(section.props()).toEqual({
-      anchor: 'http-body',
-      title: propsData.title,
-    });
-  });
-
-  it('renders an h2 title', () => {
-    const h2 = wrapper.find('h2');
-    expect(h2.exists()).toBe(true);
-    expect(h2.text()).toBe(propsData.title);
+  it('renders an h2 section title', () => {
+    const sectionTitle = wrapper.find(LinkableHeading);
+    expect(sectionTitle.exists()).toBe(true);
+    expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('renders a single `ParametersTable`', () => {
@@ -229,7 +220,7 @@ describe('RestBody', () => {
     it('renders an h3 for "Parts"', () => {
       const h3 = wrapper.find('h3');
       expect(h3.exists()).toBe(true);
-      expect(h3.text()).toBe('Parts');
+      expect(h3.text()).toBe('sections.parts');
     });
 
     it('renders 2 param tables, using the second to render parts', () => {

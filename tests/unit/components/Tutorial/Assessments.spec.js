@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -143,7 +143,7 @@ describe('Assessments', () => {
       anchor: 'Check-your-understanding',
       depth: 0,
       tag: 'div',
-      title: 'Check Your Understanding',
+      title: 'tutorials.assessment.check-your-understanding',
     });
   });
 
@@ -207,7 +207,7 @@ describe('Assessments', () => {
       window.scrollBy = scrollByMock;
     });
 
-    it('scrolls the user on submit', async (done) => {
+    it('scrolls the user on submit', async () => {
       wrapper = mountWithNavigationBarHeight(52);
       const assessment = wrapper.find(Assessments.components.Quiz);
       assessment.vm.$emit('submit');
@@ -216,11 +216,9 @@ describe('Assessments', () => {
 
       expect(scrollIntoViewMock).toBeCalled();
       expect(scrollByMock).toBeCalledWith(0, -52 - 12);
-
-      done();
     });
 
-    it('scrolls the user on advance', async (done) => {
+    it('scrolls the user on advance', async () => {
       wrapper = mountWithNavigationBarHeight(0);
       const assessment = wrapper.find(Assessments.components.Quiz);
       assessment.vm.$emit('advance');
@@ -229,11 +227,9 @@ describe('Assessments', () => {
 
       expect(scrollIntoViewMock).toBeCalled();
       expect(scrollByMock).toBeCalledWith(0, -12);
-
-      done();
     });
 
-    it('scrolls the user on see-results', async (done) => {
+    it('scrolls the user on see-results', async () => {
       wrapper = mountWithNavigationBarHeight(40);
       const assessment = wrapper.find(Assessments.components.Quiz);
       assessment.vm.$emit('see-results');
@@ -242,8 +238,6 @@ describe('Assessments', () => {
 
       expect(scrollIntoViewMock).toBeCalled();
       expect(scrollByMock).toBeCalledWith(0, -52);
-
-      done();
     });
   });
 });
@@ -259,7 +253,7 @@ describe('success slot for completed assessment', () => {
           type: 'foo',
         },
       ],
-      title: 'Check Your Understanding',
+      title: 'tutorials.assessment.check-your-understanding',
     },
     provide: {
       navigationBarHeight: 52,

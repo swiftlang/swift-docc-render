@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -27,6 +27,7 @@ const router = createRouterInstance();
 jest.mock('docc-render/utils/theme-settings');
 
 const topicData = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'tutorial.json')));
+window.scrollTo = () => ({});
 
 const localVue = createLocalVue();
 localVue.directive('hide', hide);
@@ -91,13 +92,13 @@ describe('image preloading', () => {
     stubs: {
       'router-link': RouterLinkStub,
       BreakpointEmitter: true,
+      i18n: true,
     },
   };
 
-  it('has all the images in the DOM on load in tutorial pages', async (done) => {
+  it('has all the images in the DOM on load in tutorial pages', async () => {
     const wrapper = mount(Topic, mountOptions);
     wrapper.setData({ topicData });
     await assertHasAllImages(wrapper, topicData.references);
-    done();
   });
 });

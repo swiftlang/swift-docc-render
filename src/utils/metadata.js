@@ -12,14 +12,19 @@ import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
 
-const createMetaTags = ({ title, description, path }) => [
+const createMetaTags = ({
+  title,
+  description,
+  url,
+  currentLocale,
+}) => [
   {
     name: 'description',
     content: description,
   },
   {
     property: 'og:locale',
-    content: 'en_US',
+    content: currentLocale,
   },
   {
     property: 'og:site_name',
@@ -39,7 +44,7 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     property: 'og:url',
-    content: resolveAbsoluteUrl(path),
+    content: url,
   },
   {
     property: 'og:image',
@@ -63,7 +68,7 @@ const createMetaTags = ({ title, description, path }) => [
   },
   {
     name: 'twitter:url',
-    content: resolveAbsoluteUrl(path),
+    content: url,
   },
 ];
 
@@ -97,12 +102,30 @@ const addTitle = (title) => {
  * @param {Object} pageData
  */
 // eslint-disable-next-line import/prefer-default-export
-export function addOrUpdateMetadata({ title, description, path }) {
+export function addOrUpdateMetadata({
+  title,
+  description,
+  url,
+  currentLocale,
+}) {
   const formattedTitle = formatTitle(title);
   // add title
   addTitle(formattedTitle);
   // create and add metadata tags
-  createMetaTags({ title: formattedTitle, description, path }).forEach(
+  createMetaTags({
+    title: formattedTitle,
+    description,
+    url,
+    currentLocale,
+  }).forEach(
     metadata => addOrUpdateMetaTag(metadata),
   );
+}
+
+/**
+ * It updates the document setting a new lang attribute with the iso code or fallback on the locale
+ * @param {String} locale
+ */
+export function updateLangTag(locale) {
+  document.querySelector('html').setAttribute('lang', locale);
 }

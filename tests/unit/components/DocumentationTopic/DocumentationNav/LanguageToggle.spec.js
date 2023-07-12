@@ -1,22 +1,25 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { waitFrames } from 'docc-render/utils/loading';
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import Language from 'docc-render/constants/Language';
 import LanguageToggle
   from 'docc-render/components/DocumentationTopic/DocumentationNav/LanguageToggle.vue';
 import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.vue';
-import { createEvent } from '../../../../../test-utils';
+import { createEvent, flushPromises } from '../../../../../test-utils';
+
+jest.mock('docc-render/utils/loading');
 
 const { NavMenuItemBase } = LanguageToggle.components;
+
+const closeNav = jest.fn().mockResolvedValue('');
 
 describe('LanguageToggle', () => {
   let wrapper;
@@ -26,6 +29,7 @@ describe('LanguageToggle', () => {
     objcPath: 'documentation/foo',
     swiftPath: 'documentation/foo',
     breadcrumbCount: 1,
+    closeNav,
   };
 
   const mocks = {
@@ -53,11 +57,13 @@ describe('LanguageToggle', () => {
       propsData: props,
       provide,
       stubs,
+      attachToDocument: true,
     })
   );
 
   beforeEach(() => {
     wrapper = createWrapper();
+    jest.clearAllMocks();
   });
 
   it('renders `NavMenuItemBase` at the root', () => {
@@ -114,7 +120,7 @@ describe('LanguageToggle', () => {
     const resizeEvent = createEvent('resize');
     window.dispatchEvent(resizeEvent);
     await wrapper.vm.$nextTick();
-    await waitFrames(3);
+    await flushPromises();
     expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
   });
 
@@ -128,7 +134,7 @@ describe('LanguageToggle', () => {
     expect(toggle.attributes()).toHaveProperty('style', 'width: 6px;');
     const orientationchangeEvent = createEvent('orientationchange');
     window.dispatchEvent(orientationchangeEvent);
-    await waitFrames(3);
+    await flushPromises();
     expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
   });
 
@@ -161,13 +167,15 @@ describe('LanguageToggle', () => {
     expect(options.at(1).text()).toBe(Language.objectiveC.name);
   });
 
-  it('calls router and changes v-model when different option is selected', () => {
+  it('calls router and changes v-model when different option is selected', async () => {
     expect(wrapper.find('.current-language').text()).toBe(Language.swift.name);
 
     wrapper.findAll('#language-toggle option').at(1).element.selected = true;
     wrapper.find('#language-toggle').trigger('change');
 
     expect(wrapper.find('.current-language').text()).toBe(Language.objectiveC.name);
+    expect(closeNav).toHaveBeenCalledTimes(1);
+    await flushPromises();
     expect(mocks.$router.push).toHaveBeenCalledWith({ path: null, query: { language: 'objc' } });
     expect(provide.store.setPreferredLanguage).toHaveBeenCalledWith('objc');
   });
@@ -188,7 +196,7 @@ describe('LanguageToggle', () => {
     const label = wrapper.find('span.nav-menu-setting-label');
     expect(label.exists()).toBe(true);
     // textContent makes sure there are no new lines or empty spaces
-    expect(label.element.textContent).toEqual('Language:');
+    expect(label.element.textContent).toEqual('formats.colon language');
   });
 
   it('renders `.nav-menu-setting-label` in `language-list-container` without spaces', () => {
@@ -196,7 +204,7 @@ describe('LanguageToggle', () => {
     expect(label.exists()).toBe(true);
     expect(label.attributes()).toHaveProperty('for', 'language-toggle');
     // textContent makes sure there are no new lines or empty spaces
-    expect(label.element.textContent).toEqual('Language:');
+    expect(label.element.textContent).toEqual('formats.colon language');
   });
 
   it('renders a `span.current-language` for the current language inside `language-list-container`', () => {
@@ -205,21 +213,37 @@ describe('LanguageToggle', () => {
     expect(currentLanguage.text()).toBe(Language.swift.name);
   });
 
-  it('renders a link for the alternative language inside `language-list-container`', () => {
+  it('renders a link for the alternative language inside `language-list-container`', async () => {
     const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
     expect(link.exists()).toBe(true);
     expect(link.text()).toBe(Language.objectiveC.name);
-    expect(link.props('to').query).toEqual({ language: Language.objectiveC.key.url });
+    link.trigger('click');
+    expect(closeNav).toHaveBeenCalledTimes(1);
+    await flushPromises();
+    expect(mocks.$router.push)
+      .toHaveBeenCalledWith({
+        path: null,
+        query: { language: Language.objectiveC.key.url },
+      });
   });
 
-  it('clears out the language query if language is Swift', () => {
+  it('clears out the language query if language is Swift', async () => {
     wrapper.setData({ languageModel: Language.objectiveC.key.api });
 
     const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
-    expect(link.props('to').query).toEqual({ language: undefined });
+    link.trigger('click');
+    expect(closeNav).toHaveBeenCalledTimes(1);
+    await flushPromises();
+    expect(mocks.$router.push)
+      .toHaveBeenCalledWith({
+        path: null,
+        query: {
+          language: undefined,
+        },
+      });
   });
 
-  it('keeps extra query parameters when changing language', () => {
+  it('keeps extra query parameters when changing language', async () => {
     const query = {
       foo: 'foo',
       bar: 'bar',
@@ -234,24 +258,40 @@ describe('LanguageToggle', () => {
     wrapper = createWrapper(undefined, mocksWithQuery);
 
     const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
-    expect(link.props('to').query).toEqual(expect.objectContaining(query));
+    link.trigger('click');
+    expect(closeNav).toHaveBeenCalledTimes(1);
+    await flushPromises();
+    expect(mocks.$router.push)
+      .toHaveBeenCalledWith({
+        path: null,
+        query: { ...query, language: Language.objectiveC.key.url },
+      });
   });
 
-  it('renders different paths if languages have different paths', () => {
+  it('renders different paths if languages have different paths', async () => {
     // Re-mount component to be able to update data() through new props
     wrapper = createWrapper({ ...propsData, objcPath: 'documentation/bar' });
 
     const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
-    expect(link.props('to').path).toEqual('/documentation/bar');
+    link.trigger('click');
+    expect(closeNav).toHaveBeenCalledTimes(1);
+    await flushPromises();
+    expect(mocks.$router.push)
+      .toHaveBeenCalledWith({
+        path: '/documentation/bar',
+        query: { language: Language.objectiveC.key.url },
+      });
   });
 
-  it('changes the model, if the interfaceLanguage changes', () => {
+  it('changes the model, if the interfaceLanguage changes', async () => {
     // assert proper language name is shown
     expect(wrapper.find('.current-language').text()).toBe(Language.swift.name);
     // change the language from outside
     wrapper.setProps({
       interfaceLanguage: Language.objectiveC.key.api,
     });
+    await wrapper.vm.$nextTick();
+
     // assert the language changes as well
     expect(wrapper.find('.current-language').text()).toBe(Language.objectiveC.name);
   });

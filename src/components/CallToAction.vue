@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -125,7 +125,7 @@ export default {
   align-items: center;
 }
 
-/deep/ img, /deep/ video {
+:deep(img), :deep(video) {
   max-height: 560px;
 }
 
@@ -136,7 +136,7 @@ h2 {
 .label {
   display: block;
   @include font-styles(eyebrow-reduced);
-  margin-bottom: $stacked-margin-small;
+  margin-bottom: var(--spacing-stacked-margin-small);
   color: var(--color-eyebrow);
 }
 

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,6 +13,21 @@ import Asset from 'docc-render/components/Asset.vue';
 import ImageAsset from 'docc-render/components/ImageAsset.vue';
 import VideoAsset from 'docc-render/components/VideoAsset.vue';
 import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vue';
+
+const video = {
+  type: 'video',
+  poster: 'image',
+  variants: [
+    {
+      url: 'foo.mp4',
+      traits: ['2x'],
+      size: {
+        width: 42,
+        height: 42,
+      },
+    },
+  ],
+};
 
 describe('Asset', () => {
   beforeAll(() => {
@@ -27,7 +42,11 @@ describe('Asset', () => {
   const mountAsset = (identifier, references = {}) => (
     shallowMount(Asset, {
       propsData: { identifier },
-      provide: { references },
+      provide: {
+        store: {
+          state: { references },
+        },
+      },
     })
   );
 
@@ -60,20 +79,6 @@ describe('Asset', () => {
   });
 
   it('renders a `VideoAsset` for video', () => {
-    const foo = {
-      type: 'video',
-      poster: 'image',
-      variants: [
-        {
-          url: 'foo.mp4',
-          traits: ['2x'],
-          size: {
-            width: 42,
-            height: 42,
-          },
-        },
-      ],
-    };
     const image = {
       type: 'image',
       variants: [
@@ -83,10 +88,10 @@ describe('Asset', () => {
         },
       ],
     };
-    const wrapper = mountAsset('foo', { foo, image });
+    const wrapper = mountAsset('video', { video, image });
 
     const videoAsset = wrapper.find(VideoAsset);
-    expect(videoAsset.props('variants')).toBe(foo.variants);
+    expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toBe(image.variants);
     expect(videoAsset.props('showsControls')).toBe(true);
     expect(videoAsset.props('autoplays')).toBe(true);
@@ -97,68 +102,112 @@ describe('Asset', () => {
   });
 
   it('renders a `VideoAsset` without poster variants', () => {
-    const foo = {
-      type: 'video',
-      poster: 'image',
-      variants: [
-        {
-          url: 'foo.mp4',
-          traits: ['2x'],
-          size: {
-            width: 42,
-            height: 42,
-          },
-        },
-      ],
-    };
-    const videoAsset = mountAsset('foo', { foo }).find(VideoAsset);
-    expect(videoAsset.props('variants')).toBe(foo.variants);
+    const videoAsset = mountAsset('video', { video }).find(VideoAsset);
+    expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toEqual([]);
   });
 
+  it('passes down `deviceFrame` to `VideoAsset`', () => {
+    const wrapper = mountAsset('video', { video });
+    let videoAsset = wrapper.find(VideoAsset);
+    expect(videoAsset.props('deviceFrame')).toBeFalsy();
+    wrapper.setProps({
+      deviceFrame: 'phone',
+    });
+    videoAsset = wrapper.find(VideoAsset);
+    expect(videoAsset.props('deviceFrame')).toBe('phone');
+  });
+
   it('renders a `ReplayableVideoAsset` for video with `showsReplayButton=true`', () => {
-    const foo = {
-      type: 'video',
-      variants: [
-        {
-          url: 'foo.mp4',
-          traits: ['2x'],
-          size: {
-            width: 42,
-            height: 42,
-          },
-        },
-      ],
-    };
     const wrapper = shallowMount(Asset, {
       propsData: {
-        identifier: 'foo',
+        identifier: 'video',
         showsReplayButton: true,
         showsVideoControls: true,
       },
-      provide: { references: { foo } },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
     });
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
-    expect(videoAsset.props('variants')).toBe(foo.variants);
+    expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('showsControls')).toBe(true);
+    expect(videoAsset.props('muted')).toBe(true);
+  });
+
+  it('renders a `ReplayableVideoAsset` with deviceFrame', () => {
+    const wrapper = shallowMount(Asset, {
+      propsData: {
+        identifier: 'video',
+        showsReplayButton: true,
+        showsVideoControls: true,
+        deviceFrame: 'phone',
+      },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
+    });
+
+    const videoAsset = wrapper.find(ReplayableVideoAsset);
+    expect(videoAsset.props()).toEqual({
+      autoplays: true,
+      deviceFrame: 'phone',
+      muted: true,
+      posterVariants: [],
+      showsControls: true,
+      variants: video.variants,
+    });
+  });
+
+  it('renders a `VideoAsset`, without muting it', () => {
+    const wrapper = shallowMount(Asset, {
+      propsData: {
+        identifier: 'video',
+        showsVideoControls: true,
+        videoAutoplays: true,
+        videoMuted: false,
+      },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
+    });
+
+    expect(wrapper.find(ReplayableVideoAsset).exists()).toBe(false);
+    const videoAsset = wrapper.find(VideoAsset);
+    expect(videoAsset.props('variants')).toBe(video.variants);
+    expect(videoAsset.props('showsControls')).toBe(true);
+    expect(videoAsset.props('muted')).toBe(false);
+    expect(videoAsset.props('autoplays')).toBe(true);
+  });
+
+  it('renders a `ReplayableVideoAsset` without it being muted', () => {
+    const wrapper = shallowMount(Asset, {
+      propsData: {
+        identifier: 'video',
+        showsReplayButton: true,
+        showsVideoControls: true,
+        videoMuted: false,
+      },
+      provide: {
+        store: {
+          state: { references: { video } },
+        },
+      },
+    });
+
+    const videoAsset = wrapper.find(ReplayableVideoAsset);
+    expect(videoAsset.props('showsControls')).toBe(true);
+    expect(videoAsset.props('muted')).toBe(false);
   });
 
   describe('ReduceMotion aware', () => {
-    const video = {
-      type: 'video',
-      poster: 'image',
-      variants: [
-        {
-          url: 'foo.mp4',
-          traits: ['2x'],
-          size: {
-            width: 42,
-            height: 42,
-          },
-        },
-      ],
-    };
     const image = {
       type: 'image',
       alt: 'blah',
@@ -186,6 +235,7 @@ describe('Asset', () => {
       expect(asset.props()).toEqual({
         alt: image.alt,
         variants: image.variants,
+        shouldCalculateOptimalWidth: true,
       });
     });
 
@@ -195,6 +245,7 @@ describe('Asset', () => {
       expect(asset.props()).toEqual({
         alt: image.alt,
         variants: image.variants,
+        shouldCalculateOptimalWidth: true,
       });
     });
 

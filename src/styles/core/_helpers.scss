@@ -8,6 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+@use "sass:math";
+
 @mixin overflow-y($value: auto) {
   overflow-y: $value;
   // Enables native-style scrolling on a touchscreen
@@ -75,6 +77,17 @@
 @mixin on-keyboard-focus() {
   .fromkeyboard & {
     &:focus {
+      @content
+    }
+  }
+}
+
+////
+/// Apply styling only when focused via the keyboard in an element inside.
+////
+@mixin on-keyboard-focus-within() {
+  .fromkeyboard & {
+    &:focus-within {
       @content
     }
   }
@@ -154,7 +167,7 @@
 }
 
 @mixin backdrop-filter-uiblur($percentage: 100%) {
-  $percentage: $percentage / 100%;
+  $percentage: math.div($percentage, 100%);
 
   $saturate: 180% * $percentage;
   $blur: 20px * $percentage;
@@ -198,7 +211,7 @@
 // @returns {Number}
 //
 @function calculate-column-width($column-count: 1) {
-  @return ($column-count / $total-columns) * 100%;
+  @return math.div($column-count, $total-columns) * 100%;
 }
 
 @mixin custom-horizontal-scrollbar() {
@@ -270,7 +283,7 @@
 @mixin safe-area-set($inset, $property, $value) {
   // unquote is used to ensure that we are using the CSS Level 4 `max` function
   // instead of the builtin `max` function provided by the Sass preprocessor
-  @supports(padding: unquote('max(0px)')) {
+  @supports (padding: unquote('max(0px)')) {
     #{$property}: unquote('max(#{$value}, env(safe-area-inset-#{$inset}))');
   }
 }
@@ -281,4 +294,23 @@
 
 @mixin safe-area-right-set($property, $value) {
   @include safe-area-set(right, $property, $value);
+}
+
+@mixin space-out-between-siblings($margin) {
+  * + &, & + :deep(*) {
+    margin-top: $margin;
+  }
+}
+
+// introduces a new "stacking context" by applying a filter that doesn't do
+// anything as a way of resolving issues related to the stacking context in
+// certain browsers without altering the visual appearance of the element
+//
+// a possible alternative would be to set a z-index but the exact value might
+// need to change depending on where this is used
+//
+// see also:
+// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
+@mixin new-stacking-context() {
+  filter: blur(0px);
 }

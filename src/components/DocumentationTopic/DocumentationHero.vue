@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -17,8 +17,10 @@
     :style="styles"
   >
     <div class="icon">
-      <NavigatorLeafIcon
-        v-if="enhanceBackground" :type="type"
+      <TopicTypeIcon
+        v-if="enhanceBackground"
+        :type="type"
+        :image-override="iconOverride"
         key="first" class="background-icon first-icon" with-colors
       />
     </div>
@@ -27,8 +29,9 @@
     </div>
     <div
       class="documentation-hero__content"
-      :class="{ 'short-hero': shortHero, 'extra-bottom-padding': shouldShowLanguageSwitcher }"
-    >
+      :class="{ 'short-hero': shortHero,
+        'extra-bottom-padding': shouldShowLanguageSwitcher,
+        'minimized-hero': enableMinimized }">
       <slot />
     </div>
   </div>
@@ -36,14 +39,15 @@
 
 <script>
 
-import NavigatorLeafIcon from 'docc-render/components/Navigator/NavigatorLeafIcon.vue';
+import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicTypes, TopicTypeAliases } from 'docc-render/constants/TopicTypes';
 import { HeroColorsMap, HeroColors } from 'docc-render/constants/HeroColors';
 import { TopicRole } from 'docc-render/constants/roles';
+import { StandardColors } from 'docc-render/constants/StandardColors';
 
 export default {
   name: 'DocumentationHero',
-  components: { NavigatorLeafIcon },
+  components: { TopicTypeIcon },
   props: {
     role: {
       type: String,
@@ -53,6 +57,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    enableMinimized: {
+      type: Boolean,
+      default: false,
+    },
     shortHero: {
       type: Boolean,
       required: true,
@@ -61,13 +69,25 @@ export default {
       type: Boolean,
       required: true,
     },
+    iconOverride: {
+      type: Object,
+      required: false,
+    },
+    standardColorIdentifier: {
+      type: String,
+      required: false,
+      validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
+    },
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
     color: ({ type }) => HeroColorsMap[TopicTypeAliases[type] || type] || HeroColors.teal,
-    styles: ({ color }) => ({
+    styles: ({ color, standardColorIdentifier }) => ({
       // use the color or fallback to the gray secondary, if not defined.
-      '--accent-color': `var(--color-type-icon-${color}, var(--color-figure-gray-secondary))`,
+      '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${color}))`,
+      // if a `standardColor` is provided, first try the more specific variant,
+      // falling back to the generic color variant.
+      '--standard-accent-color': standardColorIdentifier && `var(--color-standard-${standardColorIdentifier}-documentation-intro-fill, var(--color-standard-${standardColorIdentifier}))`,
     }),
     // This mapping is necessary to help create a consistent mapping for the
     // following kinds of things, which are represented as different strings
@@ -92,20 +112,30 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-$doc-hero-gradient-background: dark-color(fill-tertiary) !default;
+// if the page has a `standard` color, it must be used
+$doc-hero-gradient-background: var(
+    --standard-accent-color,
+    // then fallback to a theme-settings color
+    var(--color-documentation-intro-fill, #{dark-color(fill-tertiary)})
+) !default;
 $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
-$doc-hero-icon-color: dark-color(fill-secondary) !default;
+$doc-hero-icon-color: var(
+    --color-documentation-intro-accent,
+    #{dark-color(fill-secondary)}
+) !default;
 $doc-hero-icon-spacing: 25px;
 $doc-hero-icon-vertical-spacing: 10px;
 $doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
   background: dark-color(fill);
-  color: dark-color(figure-gray);
+  color: var(--color-documentation-intro-figure, dark-color(figure-gray));
   overflow: hidden;
   text-align: left;
   position: relative;
+  // extra offset applied when OnThisPage component is rendered
+  padding-right: var(--doc-hero-right-offset);
 
   // gradient
   &:before {
@@ -159,18 +189,24 @@ $doc-hero-icon-dimension: 250px;
     transform: translateY(-50%);
     max-height: 100%;
 
-    /deep/ svg {
+    :deep(svg), :deep(img) {
       width: 100%;
       height: 100%;
     }
   }
 
-  &__content {
+  &__content:not(.minimized-hero) {
     padding-top: rem(40px);
     padding-bottom: 40px;
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
+  }
+
+  .minimized-hero {
+    padding: 1.3em 1.4em;
+    position: relative;
+    z-index: 1;
   }
 
   &__above-content {
@@ -203,7 +239,7 @@ $doc-hero-icon-dimension: 250px;
   padding-bottom: rem(65px);
 }
 
-.theme-dark /deep/ a:not(.button-cta) {
+.theme-dark :deep(a:not(.button-cta)) {
   color: dark-color(figure-blue);
 }
 </style>
