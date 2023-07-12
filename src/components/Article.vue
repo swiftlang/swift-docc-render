@@ -18,7 +18,7 @@
       :rootReference="hierarchy.reference"
       :identifierUrl="identifierUrl"
     />
-    <main id="main" role="main" tabindex="0">
+    <main id="main" tabindex="0">
       <slot name="above-hero" />
       <component
         v-for="(section, index) in sections"
@@ -34,8 +34,9 @@
 <script>
 import { PortalTarget } from 'portal-vue';
 
+import AppStore from 'docc-render/stores/AppStore';
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import Body from './Article/Body.vue';
 import CallToAction from './Article/CallToAction.vue';
 import Hero from './Article/Hero.vue';
@@ -166,8 +167,18 @@ export default {
     },
   },
   created() {
+    AppStore.setAvailableLocales(this.metadata.availableLocales);
     this.store.reset();
     this.store.setReferences(this.references);
+  },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
+    'metadata.availableLocales': function availableLocalesWatcher(availableLocales) {
+      AppStore.setAvailableLocales(availableLocales);
+    },
   },
   SectionKind,
 };

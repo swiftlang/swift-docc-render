@@ -15,12 +15,11 @@
     class="tutorial-dropdown"
     isSmall
   >
-    <template slot="toggle-post-content">
+    <template #toggle-post-content>
       <span class="section-tracker">{{ sectionTracker }}</span>
     </template>
     <template
-      slot="default"
-      slot-scope="{
+      #default="{
         closeAndFocusToggler,
         contentClasses,
         navigateOverOptions,
@@ -42,7 +41,6 @@
           v-slot="{ navigate }"
         >
           <li
-            role="option"
             :value="option.title"
             :class="[OptionClass, { [ActiveOptionClass] : currentOption === option.title }]"
             :aria-selected="currentOption === option.title"

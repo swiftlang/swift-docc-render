@@ -50,7 +50,7 @@ export default {
   @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 }
 
-/deep/ video {
+:deep(video) {
   display: block;
   margin-left: auto;
   margin-right: auto;

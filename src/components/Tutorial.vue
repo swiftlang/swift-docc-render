@@ -18,7 +18,7 @@
       :rootReference="hierarchy.reference"
       :identifierUrl="identifierUrl"
     />
-    <main id="main" role="main" tabindex="0">
+    <main id="main"  tabindex="0">
       <Section
         v-for="(section, index) in sections"
         :section="section"
@@ -33,8 +33,9 @@
 <script>
 import { PortalTarget } from 'portal-vue';
 
+import AppStore from 'docc-render/stores/AppStore';
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
@@ -135,8 +136,18 @@ export default {
     },
   },
   created() {
+    AppStore.setAvailableLocales(this.metadata.availableLocales);
     this.store.reset();
     this.store.setReferences(this.references);
+  },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
+    'metadata.availableLocales': function availableLocalesWatcher(availableLocales) {
+      AppStore.setAvailableLocales(availableLocales);
+    },
   },
   mounted() {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);

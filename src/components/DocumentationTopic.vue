@@ -41,12 +41,12 @@
           :class="{ 'minimized-title': enableMinimized }"
         >
           <component :is="titleBreakComponent">{{ title }}</component>
+          <template #after v-if="isSymbolDeprecated || isSymbolBeta">
           <small
-            v-if="isSymbolDeprecated || isSymbolBeta"
-            slot="after"
-            :class="tagName"
-            :data-tag-name="tagName"
+          :class="tagName"
+          :data-tag-name="tagName"
           />
+          </template>
         </Title>
         <Abstract
           v-if="abstract"
@@ -147,10 +147,11 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
-import metadata from 'theme/mixins/metadata.js';
+import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
 
+import AppStore from 'docc-render/stores/AppStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
@@ -365,6 +366,10 @@ export default {
       required: false,
       validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
+    availableLocales: {
+      type: Array,
+      required: false,
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.identifier change, the provided value
@@ -533,6 +538,7 @@ export default {
           conformance,
           hasNoExpandedDocumentation,
           modules,
+          availableLocales,
           platforms,
           required: isRequirement = false,
           roleHeading,
@@ -574,6 +580,7 @@ export default {
         downloadNotAvailableSummary,
         diffAvailability,
         hasNoExpandedDocumentation,
+        availableLocales,
         hierarchy,
         role,
         identifier,
@@ -621,7 +628,18 @@ export default {
       });
     }
 
+    AppStore.setAvailableLocales(this.availableLocales || []);
     this.store.reset();
+    this.store.setReferences(this.references);
+  },
+  watch: {
+    // update the references in the store, in case they update, but the component is not re-created
+    references(references) {
+      this.store.setReferences(references);
+    },
+    availableLocales(availableLocales) {
+      AppStore.setAvailableLocales(availableLocales);
+    },
   },
 };
 </script>
@@ -655,7 +673,7 @@ export default {
   }
 }
 
-/deep/ .minimized-title {
+:deep(.minimized-title) {
   margin-bottom: 0.833rem;
 
   .title {
@@ -678,7 +696,7 @@ export default {
   @include dynamic-content-container;
 }
 
-/deep/ {
+:deep() {
   .minimized-container {
     outline-style: none;
 
@@ -759,7 +777,7 @@ export default {
     margin-top: $contenttable-spacing-single-side;
   }
 
-  /deep/ .content + * {
+  :deep(.content + *) {
     margin-top: var(--spacing-stacked-margin-large);
   }
 }
@@ -769,7 +787,7 @@ export default {
   padding-right: 1.4rem;
 }
 
-/deep/ {
+:deep() {
   .no-primary-content {
     // remove border-top for first section of the page
     --content-table-title-border-width: 0px;
@@ -788,7 +806,7 @@ export default {
   }
 }
 
-/deep/ {
+:deep() {
   h1 {
     @include font-styles(headline-reduced);
   }

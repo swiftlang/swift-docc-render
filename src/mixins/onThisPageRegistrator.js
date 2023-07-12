@@ -18,6 +18,8 @@ import {
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import { AppTopID } from 'docc-render/constants/AppTopID';
 
+const SYMBOL_KIND = 'symbol';
+
 /**
  * Crawls the `topicData` of a page, and extracts onThisPage sections.
  */
@@ -44,11 +46,13 @@ export default {
         defaultImplementationsSections,
         relationshipsSections,
         seeAlsoSections,
+        kind,
       } = topicData;
       this.store.addOnThisPageSection({
         title,
         anchor: AppTopID,
         level: 1,
+        isSymbol: kind === SYMBOL_KIND,
       }, { i18n: false });
       if (primaryContentSections) {
         primaryContentSections.forEach((section) => {

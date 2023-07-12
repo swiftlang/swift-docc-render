@@ -17,10 +17,10 @@
       v-if="shouldLink"
       :to="{ hash: `#${anchor}` }"
       class="header-anchor"
-      aria-label="Scroll to section"
       @click="handleFocusAndScroll(anchor)"
     >
       <slot />
+      <span class="visuallyhidden" >{{ $t('accessibility.in-page-link') }}</span>
       <LinkIcon class="icon" aria-hidden="true" />
     </router-link>
     <template v-else>
@@ -89,8 +89,10 @@ $icon-margin: 7px;
     margin-left: $icon-margin;
   }
 
-  &:hover .icon {
-    display: inline;
+  &:hover, &:focus {
+    .icon {
+      display: inline;
+    }
   }
 }
 </style>

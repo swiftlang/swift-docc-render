@@ -392,11 +392,11 @@ export default {
     position: relative;
   }
 
-  &.dragging /deep/ * {
+  &.dragging :deep(*) {
     cursor: col-resize !important;
   }
 
-  &.sidebar-hidden.dragging /deep/ * {
+  &.sidebar-hidden.dragging :deep(*) {
     cursor: e-resize !important;
   }
 }
@@ -452,14 +452,14 @@ export default {
     transition: transform 0.15s ease-in;
     left: 0;
 
-    /deep/ .aside-animated-child {
+    :deep(.aside-animated-child) {
       opacity: 0;
     }
 
     &.show-on-mobile {
       transform: translateX(0);
 
-      /deep/ .aside-animated-child {
+      :deep(.aside-animated-child) {
         --index: 0;
         opacity: 1;
         transition: opacity 0.15s linear;

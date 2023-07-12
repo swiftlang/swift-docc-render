@@ -140,11 +140,11 @@ export default {
   // use the `--icon-color` if `withColors` is true, otherwise just use gray.
   color: var(--icon-color, var(--color-figure-gray-secondary));
 
-  /deep/ picture {
+  :deep(picture) {
     flex: 1;
   }
 
-  svg, /deep/ img {
+  svg, :deep(img) {
     display: block;
     width: 100%;
     height: 100%;

@@ -18,7 +18,7 @@ import {
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import FetchError from 'docc-render/errors/FetchError';
 import RedirectError from 'docc-render/errors/RedirectError';
-import { defaultLocale } from 'theme/lang/index.js';
+import { defaultLocale } from 'theme/lang/index';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 

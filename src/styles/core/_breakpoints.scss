@@ -11,6 +11,8 @@
 // A map used to associate scoped breakpoint names with a map of attributes.
 // These attributes will be used to define the appropriate media queries for
 // the "xlarge", "large", "medium", and "small" breakpoints.
+@use "sass:math";
+
 $breakpoint-attributes: (
   default: (
     xlarge: (
@@ -183,7 +185,7 @@ $breakpoint-attributes: (
         // Use a fixed percentage width value for the small breakpoint.
         // The percentage is the ratio of the content-width/min-width sizes.
         @if ($breakpoint == small) and $min-width {
-          $width: percentage($content-width / $min-width);
+          $width: percentage(math.div($content-width, $min-width));
         }
 
         width: $width;

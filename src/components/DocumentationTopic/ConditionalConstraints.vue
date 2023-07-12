@@ -39,7 +39,7 @@ export default {
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
 
-.conditional-constraints /deep/ code {
+.conditional-constraints :deep(code) {
   color: var(--colors-secondary-label, var(--color-secondary-label));
 }
 </style>

@@ -9,7 +9,7 @@
 */
 
 import { addOrUpdateMetadata, updateLangTag } from 'docc-render/utils/metadata';
-import { defaultLocale } from 'theme/lang/index.js';
+import { defaultLocale } from 'theme/lang/index';
 
 jest.mock('theme/lang/locales.json', () => (
   [

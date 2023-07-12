@@ -90,11 +90,11 @@ export default {
     max-width: none;
   }
 
-  /deep/ .card-cover {
+  :deep(.card-cover) {
     aspect-ratio: 16/9;
   }
 
-  /deep/ .card-cover-wrap {
+  :deep(.card-cover-wrap) {
     border: 1px solid var(--color-link-block-card-border);
   }
 
@@ -111,7 +111,7 @@ export default {
     display: flex;
     justify-content: center;
 
-    /deep/ .icon-inline {
+    :deep(.icon-inline) {
       flex: 1 1 auto;
     }
   }

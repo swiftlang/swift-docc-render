@@ -189,7 +189,7 @@ $doc-hero-icon-dimension: 250px;
     transform: translateY(-50%);
     max-height: 100%;
 
-    /deep/ svg, /deep/ img {
+    :deep(svg), :deep(img) {
       width: 100%;
       height: 100%;
     }
@@ -239,7 +239,7 @@ $doc-hero-icon-dimension: 250px;
   padding-bottom: rem(65px);
 }
 
-.theme-dark /deep/ a:not(.button-cta) {
+.theme-dark :deep(a:not(.button-cta)) {
   color: dark-color(figure-blue);
 }
 </style>

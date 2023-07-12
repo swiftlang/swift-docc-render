@@ -80,7 +80,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .parameters-table {
-  /deep/ {
+  :deep() {
     .change-added,
     .change-removed {
       display: inline-block;
@@ -150,7 +150,7 @@ export default {
     }
   }
 
-  /deep/ .type-identifier-link {
+  :deep(.type-identifier-link) {
     color: var(--color-link);
   }
 }

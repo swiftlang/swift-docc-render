@@ -62,13 +62,13 @@ export default {
     vertical-align: middle;
     fill: currentColor;
 
-    /deep/ .svg-icon-stroke {
+    :deep(.svg-icon-stroke) {
       stroke: currentColor;
     }
   }
 }
 
-/deep/ .svg-icon-stroke {
+:deep(.svg-icon-stroke) {
   stroke: var(--colors-svg-icon-fill-light, var(--color-svg-icon));
 
   .theme-dark & {

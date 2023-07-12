@@ -50,8 +50,8 @@ more details.
 
 ### Run Steps
 
-> Note: requires [Node.js](https://nodejs.org/en/download/) v14
-> and [npm](https://www.npmjs.com/package/npm) v6.14. An easy way to set these up is to install
+> Note: requires [Node.js](https://nodejs.org/en/download/) v18
+> and [npm](https://www.npmjs.com/package/npm) v9.5. An easy way to set these up is to install
 > [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
 > repository. To use these versions as the default, add `--default` to the installation command.
 

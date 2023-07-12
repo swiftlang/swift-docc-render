@@ -624,6 +624,9 @@ describe('Hierarchy', () => {
         parentTopicIdentifiers: [],
         isSymbolBeta: true,
       },
+      stubs: {
+        HierarchyItem,
+      },
     });
     expect(wrapper.find(Badge).props('variant')).toBe('beta');
   });
@@ -644,6 +647,10 @@ describe('Hierarchy', () => {
         }, {
           type: 'custom',
         }],
+      },
+      stubs: {
+        HierarchyItem,
+        Badge,
       },
     });
 

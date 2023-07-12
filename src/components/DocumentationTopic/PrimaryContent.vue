@@ -130,7 +130,7 @@ export default {
     display: block;
   }
 
-  /deep/ {
+  :deep() {
     & > * {
       margin-bottom: $section-spacing-single-side;
       margin-top: $section-spacing-single-side;

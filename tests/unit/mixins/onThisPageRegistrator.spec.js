@@ -112,6 +112,7 @@ describe('OnThisPageRegistrator', () => {
     wrapper.setData({
       topicData: {
         metadata: { title: 'Foo' },
+        kind: 'symbol',
         primaryContentSections: [
           {
             kind: SectionKind.content,
@@ -134,6 +135,7 @@ describe('OnThisPageRegistrator', () => {
         i18n: false,
         level: 1,
         title: 'Foo',
+        isSymbol: true,
       },
       {
         anchor: 'provided-heading-anchor',
@@ -185,6 +187,7 @@ describe('OnThisPageRegistrator', () => {
         i18n: false,
         level: 1,
         title: 'Foo',
+        isSymbol: false,
       },
       {
         anchor: 'provided-heading-anchor',
@@ -212,6 +215,7 @@ describe('OnThisPageRegistrator', () => {
     expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(16);
     wrapper.vm.topicData = {
       metadata: { title: 'Foo' },
+      kind: 'symbol',
       primaryContentSections: [
         {
           kind: SectionKind.content,
@@ -226,6 +230,7 @@ describe('OnThisPageRegistrator', () => {
         i18n: false,
         level: 1,
         title: 'Foo',
+        isSymbol: true,
       },
       {
         anchor: 'provided-heading-anchor',

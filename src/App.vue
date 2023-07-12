@@ -26,7 +26,13 @@
     <slot :isTargetIDE="isTargetIDE">
       <router-view class="router-content" />
       <custom-footer v-if="hasCustomFooter" :data-color-scheme="preferredColorScheme" />
-      <Footer v-else-if="!isTargetIDE" :enablei18n="enablei18n" />
+      <Footer v-else-if="!isTargetIDE">
+        <template #default="{ className }">
+          <div v-if="enablei18n" :class="className">
+            <LocaleSelector />
+          </div>
+        </template>
+      </Footer>
     </slot>
     <slot name="footer" :isTargetIDE="isTargetIDE" />
   </div>
@@ -42,6 +48,7 @@ import { fetchThemeSettings, themeSettingsState, getSetting } from 'docc-render/
 import { objectToCustomProperties } from 'docc-render/utils/themes';
 import { AppTopID } from 'docc-render/constants/AppTopID';
 import SuggestLang from 'docc-render/components/SuggestLang.vue';
+import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 
 export default {
   name: 'CoreApp',
@@ -49,6 +56,7 @@ export default {
     Footer,
     InitialLoadingPlaceholder,
     SuggestLang,
+    LocaleSelector,
   },
   provide() {
     return {
@@ -69,6 +77,7 @@ export default {
   computed: {
     currentColorScheme: ({ appState }) => appState.systemColorScheme,
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
+    availableLocales: ({ appState }) => appState.availableLocales,
     CSSCustomProperties: ({
       currentColorScheme,
       preferredColorScheme,
@@ -85,7 +94,9 @@ export default {
     ),
     hasCustomHeader: () => !!window.customElements.get('custom-header'),
     hasCustomFooter: () => !!window.customElements.get('custom-footer'),
-    enablei18n: () => getSetting(['features', 'docs', 'i18n', 'enable'], false),
+    enablei18n: ({ availableLocales }) => (
+      getSetting(['features', 'docs', 'i18n', 'enable'], false) && availableLocales.length > 1
+    ),
   },
   props: {
     enableThemeSettings: {
@@ -206,7 +217,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-/deep/ :focus:not(input):not(textarea):not(select) {
+:deep(:focus:not(input):not(textarea):not(select)) {
   outline: none;
 
   .fromkeyboard & {
@@ -219,7 +230,7 @@ export default {
   flex-flow: column;
   min-height: 100%;
 
-  > /deep/ * {
+  > :deep(*) {
     min-width: 0;
   }
 

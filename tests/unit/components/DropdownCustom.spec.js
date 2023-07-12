@@ -27,6 +27,7 @@ const createWrapper = ({ propsData, ...rest } = {}) => mount(DropdownCustom, {
     ...defaultProps,
     ...propsData,
   },
+  attachToDocument: true,
   scopedSlots: {
     default(props) {
       slotProps = props;
@@ -88,7 +89,6 @@ describe('DropdownCustom', () => {
       expect(toggle.classes()).toContain('form-dropdown');
       // aria + role
       const attrs = toggle.attributes();
-      expect(attrs).toHaveProperty('role', 'button');
       expect(attrs).toHaveProperty('aria-haspopup', 'true');
       expect(attrs).toHaveProperty('aria-expanded', 'false');
       expect(attrs)

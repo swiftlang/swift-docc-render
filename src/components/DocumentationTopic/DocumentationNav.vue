@@ -43,7 +43,7 @@
         </transition>
       </div>
     </template>
-    <template slot="default">
+    <template #default>
       <slot
         name="title"
         v-bind="{ rootLink, linkClass: 'nav-title-link', inactiveClass: 'inactive' }"
@@ -82,7 +82,7 @@
       </NavMenuItems>
       <slot name="tray-after" v-bind="{ breadcrumbCount }" />
     </template>
-    <template slot="after-content">
+    <template #after-content>
       <slot name="after-content" />
     </template>
   </NavBase>
@@ -220,7 +220,7 @@ $sidenav-icon-size: 19px;
 $sidenav-icon-padding-size: 5px;
 
 // overwrite the typography of menu items outside of breakpoint only
-/deep/ .nav-menu {
+:deep() .nav-menu {
   @include font-styles(documentation-nav);
 
   &-settings {
@@ -273,7 +273,7 @@ $sidenav-icon-padding-size: 5px;
 }
 
 .documentation-nav {
-  /deep/ {
+  :deep() {
     // normalize the Title font with menu items
     .nav-title {
       @include font-styles(documentation-nav);
@@ -316,7 +316,7 @@ $sidenav-icon-padding-size: 5px;
   align-self: center;
   color: var(--color-nav-link-color);
   position: relative;
-  margin: 0 -$sidenav-icon-padding-size;
+  margin: 0 (-$sidenav-icon-padding-size);
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);

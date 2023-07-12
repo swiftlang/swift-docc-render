@@ -10,7 +10,9 @@
 
 <template>
   <TutorialAssessments v-bind="$props">
-    <p slot="success">Great job, you've answered all the questions for this article.</p>
+    <template #success>
+      <p>Great job, you've answered all the questions for this article.</p>
+    </template>
   </TutorialAssessments>
 </template>
 

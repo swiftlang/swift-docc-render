@@ -142,9 +142,11 @@
   --color-step-focused: var(--color-figure-light-gray);
   --color-step-text: var(--color-figure-gray-secondary);
   --color-svg-icon: #{light-color(figure-gray-secondary)};
+  --color-syntax-addition: var(--color-figure-green);
   --color-syntax-attributes: rgb(148, 113, 0);
   --color-syntax-characters: rgb(39, 42, 216);
   --color-syntax-comments: rgb(112, 127, 140);
+  --color-syntax-deletion: var(--color-figure-red);
   --color-syntax-documentation-markup: rgb(80, 99, 117);
   --color-syntax-documentation-markup-keywords: rgb(80, 99, 117);
   --color-syntax-heading: rgb(186, 45, 162);

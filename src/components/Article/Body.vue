@@ -40,7 +40,7 @@ export default {
     transform: none;
   }
 
-  /deep/ {
+  :deep() {
     & ~ * {
       // needed to account for `translateY` shift from article body
       margin-top: -$article-stacked-margin-large;
