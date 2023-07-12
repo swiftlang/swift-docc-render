@@ -968,7 +968,7 @@ export default {
      */
     handleNavigationChange(uid) {
       // force-close the navigator on mobile
-      this.$emit('close');
+      this.$emit('navigate', uid);
       // if the path is outside of this technology tree, dont store the uid
       if (this.childrenMap[uid].path.startsWith(this.technologyPath)) {
         this.setActiveUID(uid);

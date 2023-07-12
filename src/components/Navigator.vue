@@ -26,6 +26,7 @@
       :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
+      @navigate="$emit('navigate', $event)"
     >
       <template #filter><slot name="filter" /></template>
     </NavigatorCard>

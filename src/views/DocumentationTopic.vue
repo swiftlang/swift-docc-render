@@ -47,6 +47,7 @@
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
                     @close="handleToggleSidenav(breakpoint)"
+                    @navigate="handleNavigate(breakpoint)"
                   >
                     <template v-if="enableQuickNavigation" #filter>
                       <QuickNavigationButton @click.native="openQuickNavigationModal" />
@@ -314,6 +315,15 @@ export default {
       this.openQuickNavigationModal();
       event.preventDefault();
     },
+    /**
+     * Closes the mobile nav, on each navigation. This is generally done when the route changes,
+     * but we also want to do that when any link is slicked in the navigator.
+     * @param {string} breakpoint
+     */
+    handleNavigate(breakpoint) {
+      if (breakpoint === BreakpointName.large) return;
+      this.toggleMobileSidenav(false);
+    },
   },
   mounted() {
     this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
@@ -394,6 +404,7 @@ export default {
   .generic-modal {
     overflow-y: overlay;
   }
+
   .modal-fullscreen > .container {
     background-color: transparent;
     height: fit-content;
