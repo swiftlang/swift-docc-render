@@ -121,6 +121,8 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .tutorials-overview {
+  background: dark-color(fill);
+  flex: 1;
   height: 100%;
 
   .radial-gradient {
