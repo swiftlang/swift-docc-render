@@ -184,7 +184,6 @@ code {
 
 .code-listing {
   flex-direction: column;
-  min-height: 100%;
   border-radius: var(--code-border-radius, $border-radius);
   overflow: hidden;
   // we need to establish a new stacking context to resolve a Safari bug where
