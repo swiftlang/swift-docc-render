@@ -136,6 +136,29 @@ describe("syntax-highlight", () => {
     `);
   });
 
+  it('keeps escaped newline tokens on the same line for multiline string literals', async () => {
+    const content = [
+      'let multiline = """',
+      'a \\',
+      'b',
+      '',
+      'c \\',
+      'd',
+      '"""',
+    ];
+    const { highlightedCode, sanitizedCode } = await prepare(content, 'swift');
+    expect(sanitizedCode).not.toEqual(highlightedCode);
+    expect(sanitizedCode).toMatchInlineSnapshot(`
+      <span class="syntax-keyword">let</span> multiline <span class="syntax-operator">=</span> <span class="syntax-string">"""</span>
+      <span class="syntax-string">a <span class="syntax-subst">\\</span></span>
+      <span class="syntax-string">b</span>
+      <span class="syntax-string"></span>
+      <span class="syntax-string">c <span class="syntax-subst">\\</span></span>
+      <span class="syntax-string">d</span>
+      <span class="syntax-string">"""</span>
+    `);
+  });
+
   it("wraps multiline nested html elements", () => {
     const code = document.createElement("CODE");
     code.innerHTML = `<span class="syntax-function">function <span class="syntax-title function_">someName</span>(<span class="syntax-params">foo,
