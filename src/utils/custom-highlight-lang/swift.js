@@ -41,5 +41,20 @@ export default function swiftOverride(hljs) {
     };
   }
 
+  const str = language.contains.find(({ className }) => className === 'string');
+  str.variants = str.variants.map(variant => ({
+    ...variant,
+    // omit the "ESCAPED_NEWLINE"/("subst") highlight.js tokenizers that
+    // highlight.js uses to syntax highlight backslash delimiters in multi-line
+    // string literals to prevent an issue where they interrupt the multi-line
+    // string literal tokenizer
+    contains: variant.contains.reduce((acc, c) => {
+      if (c.className === 'subst' && c.match) {
+        return acc;
+      }
+      return acc.concat(c);
+    }, []),
+  }));
+
   return language;
 }
