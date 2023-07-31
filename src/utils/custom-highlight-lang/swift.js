@@ -41,19 +41,36 @@ export default function swiftOverride(hljs) {
     };
   }
 
+  // Checks if a given language sub-mode matches the "ESCAPED_NEWLINE" from the
+  // built-in Swift parser from hljs
+  const isEscapedNewlineMode = (mode) => {
+    const { className, match } = mode;
+    if (className !== 'subst' || !match) {
+      return false;
+    }
+
+    const matchStr = match.toString();
+    return matchStr.startsWith('\\') && matchStr.endsWith('[\\t ]*(?:[\\r\\n]|\\r\\n)');
+  };
+
+  // replace the "ESCAPED_NEWLINE" sub-mode in the multiline string literal mode
+  // variants so that it doesn't include the actual newline characters in the
+  // span token that it generates, because this causes issues with our
+  // line-number + multi-line string literal logic when the span for the
+  // backslash token is split across multiple lines
   const str = language.contains.find(({ className }) => className === 'string');
   str.variants = str.variants.map(variant => ({
     ...variant,
-    // omit the "ESCAPED_NEWLINE"/("subst") highlight.js tokenizers that
-    // highlight.js uses to syntax highlight backslash delimiters in multi-line
-    // string literals to prevent an issue where they interrupt the multi-line
-    // string literal tokenizer
-    contains: variant.contains.reduce((acc, c) => {
-      if (c.className === 'subst' && c.match) {
-        return acc;
-      }
-      return acc.concat(c);
-    }, []),
+    contains: variant.contains.map(mode => (isEscapedNewlineMode(mode) ? ({
+      className: 'subst',
+      begin: /\\/,
+      end: /[\t ]*(?:[\r\n]|\r\n)/,
+      // same match as the original one but with an explicit start/end match so
+      // that the end one can be excluded from the resulting span
+      excludeEnd: true,
+    }) : (
+      mode
+    ))),
   }));
 
   return language;
