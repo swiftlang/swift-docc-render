@@ -65,7 +65,7 @@ export default function swiftOverride(hljs) {
       ...variant,
       contains: variant.contains.map(mode => (isEscapedNewlineMode(mode) ? ({
         className: 'subst',
-        begin: /\\/,
+        begin: /\\#{0,3}/,
         end: /[\t ]*(?:[\r\n]|\r\n)/,
         // same match as the original one but with an explicit start/end match so
         // that the end one can be excluded from the resulting span
