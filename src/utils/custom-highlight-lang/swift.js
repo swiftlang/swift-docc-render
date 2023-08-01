@@ -58,20 +58,23 @@ export default function swiftOverride(hljs) {
   // span token that it generates, because this causes issues with our
   // line-number + multi-line string literal logic when the span for the
   // backslash token is split across multiple lines
-  const str = language.contains.find(({ className }) => className === 'string');
-  str.variants = str.variants.map(variant => ({
-    ...variant,
-    contains: variant.contains.map(mode => (isEscapedNewlineMode(mode) ? ({
-      className: 'subst',
-      begin: /\\/,
-      end: /[\t ]*(?:[\r\n]|\r\n)/,
-      // same match as the original one but with an explicit start/end match so
-      // that the end one can be excluded from the resulting span
-      excludeEnd: true,
-    }) : (
-      mode
-    ))),
-  }));
+  const strIndex = language.contains.findIndex(({ className }) => className === 'string');
+  language.contains[strIndex] = {
+    ...language.contains[strIndex],
+    variants: language.contains[strIndex].variants.map(variant => ({
+      ...variant,
+      contains: variant.contains.map(mode => (isEscapedNewlineMode(mode) ? ({
+        className: 'subst',
+        begin: /\\/,
+        end: /[\t ]*(?:[\r\n]|\r\n)/,
+        // same match as the original one but with an explicit start/end match so
+        // that the end one can be excluded from the resulting span
+        excludeEnd: true,
+      }) : (
+        mode
+      ))),
+    })),
+  };
 
   return language;
 }
