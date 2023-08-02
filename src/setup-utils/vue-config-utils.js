@@ -69,7 +69,7 @@ function baseChainWebpack(config) {
     .plugin('LanguagesPlugin')
     .use(webpack.ContextReplacementPlugin, [
       /highlight\.js\/lib\/languages$/,
-      new RegExp(`^./(${[builtinLanguages, envLanguages].filter(Boolean).join('|')}).js$`),
+      new RegExp(`^./(${[builtinLanguages, envLanguages].filter(Boolean).join('|')})\\.js$`),
     ]);
 }
 
