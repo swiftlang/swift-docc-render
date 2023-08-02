@@ -14,6 +14,13 @@ import NotFound from 'theme/views/NotFound.vue';
 
 export default [
   {
+    path: '/documentation/tutorials/*',
+    name: documentationTopicName,
+    component: () => import(
+      /* webpackChunkName: "documentation-topic" */ 'theme/views/DocumentationTopic.vue'
+    ),
+  },
+  {
     path: '/tutorials/:id',
     name: 'tutorials-overview',
     component: () => import(
