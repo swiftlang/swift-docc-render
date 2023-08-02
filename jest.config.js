@@ -14,6 +14,7 @@ module.exports = {
   moduleNameMapper: {
     '^docc-render/(.*)$': '<rootDir>/src/$1',
     '^theme/(.*)$': '<rootDir>/src/$1',
+    '^highlight-js-alias/(.*)$': '<rootDir>/node_modules/highlight.js/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
   setupFiles: ['./tests/unit/config.js'],

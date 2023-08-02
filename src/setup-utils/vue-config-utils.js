@@ -53,6 +53,7 @@ function baseChainWebpack(config) {
   // Add theme fallback resolver
   config.resolve.alias.set('theme', themeUtils.getThemePaths());
   config.resolve.alias.set('docc-render', path.resolve(__dirname, '../'));
+  config.resolve.alias.set('highlight-js-alias', path.dirname(require.resolve('highlight.js/package.json')));
 
   // Add license header to built files
   config
@@ -68,7 +69,7 @@ function baseChainWebpack(config) {
     .plugin('LanguagesPlugin')
     .use(webpack.ContextReplacementPlugin, [
       /highlight\.js\/lib\/languages$/,
-      new RegExp(`/(${[builtinLanguages, envLanguages].join('|')})$`),
+      new RegExp(`^./(${[builtinLanguages, envLanguages].filter(Boolean).join('|')})\\.js$`),
     ]);
 }
 
