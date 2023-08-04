@@ -19,7 +19,7 @@ import { baseUrl } from 'docc-render/utils/theme-settings';
 import { addPrefixedRoutes } from 'docc-render/utils/route-utils';
 import { notFoundRouteName } from 'docc-render/constants/router';
 
-const defaultRoutes = [...addPrefixedRoutes(routes, [notFoundRouteName]), ...routes];
+const defaultRoutes = [...routes, ...addPrefixedRoutes(routes, [notFoundRouteName])];
 
 export default function createRouterInstance(routerConfig = {}) {
   const router = new Router({
