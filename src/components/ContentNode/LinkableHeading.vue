@@ -95,4 +95,8 @@ $icon-margin: 7px;
     }
   }
 }
+
+.visuallyhidden {
+  user-select: none;
+}
 </style>
