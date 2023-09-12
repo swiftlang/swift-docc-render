@@ -18,6 +18,7 @@ html {
   // enough that it does not actually exceed the breakpoint height.
   background-color: var(--colors-text-background, var(--color-text-background));
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 //============================================================
