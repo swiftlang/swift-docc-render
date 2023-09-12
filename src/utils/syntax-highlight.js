@@ -90,7 +90,7 @@ async function importHighlightFileForLanguage(language) {
         languageFile = await import(
           // See bug https://github.com/webpack/webpack/issues/13865
           /* webpackChunkName: "highlight-js-[request]" */
-          `highlight-js-alias/lib/languages/${file}`
+          `highlight-js-alias/lib/languages/${file}.js`
         );
       }
 
