@@ -933,6 +933,7 @@ export default {
       this.$refs.scroller.$el.scrollBy({
         top: offsetHeight * positionIndex,
         left: 0,
+        behavior: 'smooth',
       });
     },
     handleFocusOut(event) {
