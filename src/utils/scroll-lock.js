@@ -163,7 +163,6 @@ export default {
       window.scrollTo({
         top: Math.abs(scrolledClientY),
         left: 0,
-        behavior: 'smooth',
       });
     }
     isLocked = false;
