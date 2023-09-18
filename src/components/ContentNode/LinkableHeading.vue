@@ -16,11 +16,11 @@
     <router-link
       v-if="shouldLink"
       :to="{ hash: `#${anchor}` }"
+      :data-after-text="$t('accessibility.in-page-link')"
       class="header-anchor"
       @click="handleFocusAndScroll(anchor)"
     >
       <slot />
-      <span class="visuallyhidden" >{{ $t('accessibility.in-page-link') }}</span>
       <LinkIcon class="icon" aria-hidden="true" />
     </router-link>
     <template v-else>
@@ -79,6 +79,11 @@ $icon-margin: 7px;
   position: relative;
   padding-right: $icon-size-default + $icon-margin;
   display: inline-block;
+
+  &::after {
+    @include visuallyhidden;
+    content: attr(data-after-text);
+  }
 
   .icon {
     position: absolute;
