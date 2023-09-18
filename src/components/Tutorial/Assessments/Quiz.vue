@@ -36,13 +36,12 @@
         <template #answer>
           <ContentNode class="question" :content="choices[checkedIndex].content" />
         </template>
-        <template #result>
-          {{ choices[checkedIndex].isCorrect
-            ? $t('tutorials.assessment.correct')
-            : $t('tutorials.assessment.incorrect')
-          }}
-        </template>
+        <template #result>{{ choices[checkedIndex].isCorrect
+          ? $t('tutorials.assessment.correct')
+          : $t('tutorials.assessment.incorrect')
+        }}</template>
       </i18n>
+      <div v-else aria-live="assertive" class="visuallyhidden"></div>
     </div>
     <div class="controls">
       <ButtonLink
