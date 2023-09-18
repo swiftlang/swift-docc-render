@@ -26,9 +26,23 @@
             <p class="answer" v-if="choice.reaction">{{ choice.reaction }}</p>
           </template>
       </label>
-      <div aria-live="assertive" class="visuallyhidden">
-        {{ ariaLiveText }}
-      </div>
+      <i18n
+        v-if="checkedIndex != null"
+        path="tutorials.assessment.answer-result"
+        tag="div"
+        aria-live="assertive"
+        class="visuallyhidden"
+      >
+        <template #answer>
+          <ContentNode class="question" :content="choices[checkedIndex].content" />
+        </template>
+        <template #result>
+          {{ choices[checkedIndex].isCorrect
+            ? $t('tutorials.assessment.correct')
+            : $t('tutorials.assessment.incorrect')
+          }}
+        </template>
+      </i18n>
     </div>
     <div class="controls">
       <ButtonLink
@@ -113,18 +127,6 @@ export default {
       return Array.from(this.correctChoices).every(correctChoice => (
         this.userChoices[correctChoice].checked
       ));
-    },
-    ariaLiveText() {
-      if (this.checkedIndex === null) return '';
-      const { isCorrect } = this.choices[this.checkedIndex];
-      return `${
-          this.$t('tutorials.assessment.answer-number-is', { index: this.checkedIndex + 1 })
-        } ${
-          isCorrect
-            ? this.$t('tutorials.assessment.correct')
-            : this.$t('tutorials.assessment.incorrect')
-        }
-      `;
     },
   },
   methods: {
