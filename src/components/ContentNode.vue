@@ -468,6 +468,9 @@ function renderNode(createElement, references) {
           titleStyle: reference.titleStyle,
           hasInlineFormatting: !!titleInlineContent,
         },
+        // Inline links need to be underline under WCAG 2.2 compliance
+        // More info: https://www.w3.org/WAI/WCAG22/Techniques/failures/F73
+        class: 'underline',
       }, (
         titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText
       ));

@@ -137,8 +137,14 @@ a {
     text-decoration: none;
   }
 
-  &:hover {
+  &:hover, &:focus, &.underline {
     text-decoration: underline;
+  }
+
+  &.underline {
+    &:hover, &:focus {
+      text-decoration-thickness: 2px;
+    }
   }
 
   &:active {
