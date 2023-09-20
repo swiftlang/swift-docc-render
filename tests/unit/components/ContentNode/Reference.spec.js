@@ -247,4 +247,17 @@ describe('Reference', () => {
     // add query params to url
     expect(wrapper.find(ReferenceExternal).props('url')).toBe('http://website.com');
   });
+
+  it('renders a `ReferenceExternal` for /downloads/ URLs', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: { url: '/downloads/foo.zip' },
+      slots: { default: 'Foo' },
+    });
+    const ref = wrapper.find(ReferenceExternal);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('/downloads/foo.zip');
+    expect(ref.text()).toBe('Foo');
+  });
 });

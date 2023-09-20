@@ -10,6 +10,10 @@
 
 import Router from 'vue-router';
 import {
+  notFoundRouteName,
+  serverErrorRouteName,
+} from 'docc-render/constants/router';
+import {
   saveScrollOnReload,
   restoreScrollOnReload,
   scrollBehavior,
@@ -17,9 +21,14 @@ import {
 import routes from 'docc-render/routes';
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import { addPrefixedRoutes } from 'docc-render/utils/route-utils';
-import { notFoundRouteName } from 'docc-render/constants/router';
 
-const defaultRoutes = [...routes, ...addPrefixedRoutes(routes, [notFoundRouteName])];
+const defaultRoutes = [
+  ...routes,
+  ...addPrefixedRoutes(routes, [
+    notFoundRouteName,
+    serverErrorRouteName,
+  ]),
+];
 
 export default function createRouterInstance(routerConfig = {}) {
   const router = new Router({
