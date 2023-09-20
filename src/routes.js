@@ -8,7 +8,11 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { documentationTopicName, notFoundRouteName } from 'docc-render/constants/router';
+import {
+  documentationTopicName,
+  notFoundRouteName,
+  serverErrorRouteName,
+} from 'docc-render/constants/router';
 import ServerError from 'theme/views/ServerError.vue';
 import NotFound from 'theme/views/NotFound.vue';
 
@@ -41,7 +45,7 @@ export default [
   },
   {
     path: '*', // purposefully unreachable without a forced navigation
-    name: 'server-error',
+    name: serverErrorRouteName,
     component: ServerError,
   },
 ];
