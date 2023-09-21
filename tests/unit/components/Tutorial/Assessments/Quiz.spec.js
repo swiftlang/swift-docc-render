@@ -14,7 +14,7 @@ import Quiz from 'docc-render/components/Tutorial/Assessments/Quiz.vue';
 
 const i18nStub = {
   name: 'i18n',
-  template: '<div aria-live="assertive" class="visuallyhidden">Answer is <slot name="result"/></div>',
+  template: '<span>Answer is <slot name="result"/></span>',
 };
 
 const textContent = str => ([{
@@ -215,14 +215,14 @@ describe('Quiz', () => {
       choice.trigger('click');
       submit.trigger('click');
 
-      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.incorrect');
 
       choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
 
-      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.correct');
     });
   });

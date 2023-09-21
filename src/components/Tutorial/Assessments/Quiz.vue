@@ -26,22 +26,21 @@
             <p class="answer" v-if="choice.reaction">{{ choice.reaction }}</p>
           </template>
       </label>
-      <i18n
-        v-if="checkedIndex != null"
-        path="tutorials.assessment.answer-result"
-        tag="div"
-        aria-live="assertive"
-        class="visuallyhidden"
-      >
-        <template #answer>
-          <ContentNode class="question" :content="choices[checkedIndex].content" />
-        </template>
-        <template #result>{{ choices[checkedIndex].isCorrect
-          ? $t('tutorials.assessment.correct')
-          : $t('tutorials.assessment.incorrect')
-        }}</template>
-      </i18n>
-      <div v-else aria-live="assertive" class="visuallyhidden"></div>
+      <div aria-live="assertive" class="visuallyhidden">
+        <i18n
+          v-if="checkedIndex != null"
+          path="tutorials.assessment.answer-result"
+          tag="span"
+        >
+          <template #answer>
+            <ContentNode class="question" :content="choices[checkedIndex].content" />
+          </template>
+          <template #result>{{ choices[checkedIndex].isCorrect
+            ? $t('tutorials.assessment.correct')
+            : $t('tutorials.assessment.incorrect')
+          }}</template>
+        </i18n>
+      </div>
     </div>
     <div class="controls">
       <ButtonLink
