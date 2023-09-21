@@ -141,12 +141,6 @@ a {
     text-decoration: underline;
   }
 
-  &.underline {
-    &:hover, &:focus {
-      text-decoration-thickness: 2px;
-    }
-  }
-
   &:active {
     text-decoration: none;
   }
