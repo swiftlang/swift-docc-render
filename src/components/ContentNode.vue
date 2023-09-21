@@ -449,7 +449,12 @@ function renderNode(createElement, references) {
     }
     case InlineType.link:
       // Note: `InlineType.link` has been deprecated, but may still be found in old JSON.
-      return createElement('a', { attrs: { href: node.destination } }, (
+      return createElement('a', {
+        attrs: { href: node.destination },
+        // Inline links need to be underline under WCAG 2.2 compliance
+        // More info: https://www.w3.org/WAI/WCAG22/Techniques/failures/F73
+        class: 'underline',
+      }, (
         node.title
       ));
     case InlineType.reference: {
