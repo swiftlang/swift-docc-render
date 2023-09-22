@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-restricted-syntax, import/no-extraneous-dependencies */
+
+const fs = require('fs');
+const path = require('path');
+
+const Parser = require('tree-sitter');
+const Vue = require('tree-sitter-vue');
+
+const src = path.join(__dirname, '../src');
+const components = path.join(src, 'components');
+
+async function* find(filepath, predicate = () => true) {
+  const files = await fs.promises.readdir(filepath);
+
+  for await (const file of files) {
+    const fpath = path.join(filepath, file);
+    const fstat = await fs.promises.stat(fpath);
+
+    if (fstat.isDirectory()) {
+      yield* find(fpath, predicate);
+    } else if (predicate(fpath)) {
+      yield fpath;
+    }
+  }
+}
+
+async function* findVueFiles(filepath) {
+  const isVueFile = fpath => path.extname(fpath) === '.vue';
+  yield* find(filepath, isVueFile);
+}
+
+(async () => {
+  const parser = new Parser();
+  parser.setLanguage(Vue);
+
+  for await (const file of findVueFiles(components)) {
+    console.log(file);
+    const contents = await fs.promises.readFile(file, { encoding: 'utf8' });
+    const tree = parser.parse(contents);
+    console.log(tree.rootNode.toString());
+  }
+})();
