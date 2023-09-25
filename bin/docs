@@ -38,7 +38,7 @@ async function* findVueFiles(filepath) {
 
   const scriptTextQuery = new Parser.Query(
     Vue,
-    '(component (script_element (raw_text) @txt))',
+    '(script_element (raw_text) @txt)',
   );
 
   const src = path.join(__dirname, '../src');
