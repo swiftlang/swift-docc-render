@@ -6,10 +6,8 @@ const fs = require('fs');
 const path = require('path');
 
 const Parser = require('tree-sitter');
+const JavaScript = require('tree-sitter-javascript');
 const Vue = require('tree-sitter-vue');
-
-const src = path.join(__dirname, '../src');
-const components = path.join(src, 'components');
 
 async function* find(filepath, predicate = () => true) {
   const files = await fs.promises.readdir(filepath);
@@ -32,13 +30,28 @@ async function* findVueFiles(filepath) {
 }
 
 (async () => {
-  const parser = new Parser();
-  parser.setLanguage(Vue);
+  const vueParser = new Parser();
+  vueParser.setLanguage(Vue);
 
+  const jsParser = new Parser();
+  jsParser.setLanguage(JavaScript);
+
+  const scriptTextQuery = new Parser.Query(
+    Vue,
+    '(component (script_element (raw_text) @txt))',
+  );
+
+  const src = path.join(__dirname, '../src');
+  const components = path.join(src, 'components');
   for await (const file of findVueFiles(components)) {
     console.log(file);
     const contents = await fs.promises.readFile(file, { encoding: 'utf8' });
-    const tree = parser.parse(contents);
-    console.log(tree.rootNode.toString());
+    const vueTree = vueParser.parse(contents);
+
+    const [capture] = scriptTextQuery.captures(vueTree.rootNode);
+    if (capture) {
+      const jsTree = jsParser.parse(capture.node.text);
+      console.log(jsTree.rootNode.toString());
+    }
   }
 })();
