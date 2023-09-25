@@ -41,6 +41,11 @@ async function* findVueFiles(filepath) {
     '(script_element (raw_text) @txt)',
   );
 
+  const exportNameQuery = new Parser.Query(
+    JavaScript,
+    '(export_statement (object (pair (property_identifier) @prop (string) @val)))',
+  );
+
   const src = path.join(__dirname, '../src');
   const components = path.join(src, 'components');
   for await (const file of findVueFiles(components)) {
@@ -48,10 +53,15 @@ async function* findVueFiles(filepath) {
     const contents = await fs.promises.readFile(file, { encoding: 'utf8' });
     const vueTree = vueParser.parse(contents);
 
-    const [capture] = scriptTextQuery.captures(vueTree.rootNode);
-    if (capture) {
-      const jsTree = jsParser.parse(capture.node.text);
-      console.log(jsTree.rootNode.toString());
+    const [scriptCapture] = scriptTextQuery.captures(vueTree.rootNode);
+    if (scriptCapture) {
+      const jsTree = jsParser.parse(scriptCapture.node.text);
+
+      const [propCapture, valCapture] = exportNameQuery.captures(jsTree.rootNode);
+      if (propCapture && valCapture && propCapture.node.text === 'name') {
+        const componentName = valCapture.node.text;
+        console.log(componentName);
+      }
     }
   }
 })();
