@@ -43,9 +43,12 @@ async function* findVueFiles(dir) {
        (object
          (pair (property_identifier) @key (string) @strval)))`);
 
-  const componentsDir = path.join(__dirname, '../src/components');
+  const symbols = [];
+
+  const rootDir = path.join(__dirname, '..');
+  const componentsDir = path.join(rootDir, 'src/components');
   for await (const filepath of findVueFiles(componentsDir)) {
-    console.log(filepath);
+    const preciseIdentifier = filepath.replace(componentsDir, '');
     const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });
     const vueTree = vueParser.parse(contents);
 
@@ -56,8 +59,45 @@ async function* findVueFiles(dir) {
       const [key, strval] = exportNameQuery.captures(jsTree.rootNode);
       if (key && strval && key.node.text === 'name') {
         const componentName = strval.node.text;
-        console.log(componentName);
+        symbols.push({
+          accessLevel: 'public',
+          kind: {
+            identifier: 'vue.component',
+            displayName: 'Component',
+          },
+          names: {
+            title: componentName,
+          },
+          identifier: {
+            interfaceLanguage: 'vue',
+            precise: preciseIdentifier,
+          },
+        });
       }
     }
   }
+
+  const formatVersion = {
+    major: 0,
+    minor: 1,
+    patch: 0,
+  };
+  const metadata = {
+    formatVersion,
+    generator: 'Swift-DocC-Render',
+  };
+  const $module = {
+    name: 'Swift-DocC-Render',
+    platform: {},
+  };
+  const relationships = [];
+  const symbolGraph = {
+    metadata,
+    module: $module,
+    relationships,
+    symbols,
+  };
+  const symbolGraphJSON = JSON.stringify(symbolGraph);
+
+  console.log(symbolGraphJSON);
 })();
