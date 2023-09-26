@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+SCRIPT_DIR=$(dirname "$0")
+
+SGFS_TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'sgfs-tmp')
+DOCS_TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'docs-tmp')
+
+CATALOG="$SCRIPT_DIR/../SwiftDocCRender.docc"
+SGF="$SGFS_TMP_DIR/Swift-DocC-Render.symbols.json"
+
+$SCRIPT_DIR/generate-symbol-graph > $SGF
+echo "Generated symbol graph: $SGF"
+
+$SCRIPT_DIR/rundocc convert $CATALOG \
+  --fallback-display-name SwiftDocCRender \
+  --fallback-bundle-identifier org.swift.SwiftDocCRender \
+  --fallback-bundle-version 1.0.0 \
+  --additional-symbol-graph-dir $SGFS_TMP_DIR \
+  --output-path $DOCS_TMP_DIR
+echo "Generated docs: $DOCS_TMP_DIR"
