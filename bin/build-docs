@@ -6,7 +6,7 @@ SGFS_TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'sgfs-tmp')
 DOCS_TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'docs-tmp')
 
 CATALOG="$SCRIPT_DIR/../SwiftDocCRender.docc"
-SGF="$SGFS_TMP_DIR/Swift-DocC-Render.symbols.json"
+SGF="$SGFS_TMP_DIR/SwiftDocCRender.symbols.json"
 
 $SCRIPT_DIR/generate-symbol-graph > $SGF
 echo "Generated symbol graph: $SGF"

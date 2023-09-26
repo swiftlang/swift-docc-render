@@ -1,8 +1,4 @@
-# Swift-DocC-Render
-
-@Metadata {
-  @TechnologyRoot
-}
+# ``SwiftDocCRender``
 
 A web renderer for DocC Archives produced by DocC.
 

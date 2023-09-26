@@ -41,14 +41,15 @@ async function* findVueFiles(dir) {
   const exportNameQuery = new Parser.Query(JavaScript,
     `(export_statement
        (object
-         (pair (property_identifier) @key (string) @strval)))`);
+         (pair
+           (property_identifier) @key
+           (string) @strval)))`);
 
   const symbols = [];
 
   const rootDir = path.join(__dirname, '..');
   const componentsDir = path.join(rootDir, 'src/components');
   for await (const filepath of findVueFiles(componentsDir)) {
-    const preciseIdentifier = filepath.replace(componentsDir, '');
     const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });
     const vueTree = vueParser.parse(contents);
 
@@ -58,20 +59,29 @@ async function* findVueFiles(dir) {
 
       const [key, strval] = exportNameQuery.captures(jsTree.rootNode);
       if (key && strval && key.node.text === 'name') {
-        const componentName = strval.node.text;
+        const componentName = strval.node.text
+          .replace(/^['"]/, '')
+          .replace(/['"]$/, ''); // unwrap quotes
+        const pathComponents = filepath
+          .replace(componentsDir, '')
+          .split('/')
+          .filter(part => part.length)
+          .map(part => path.parse(part).name);
+        const preciseIdentifier = pathComponents.join('');
         symbols.push({
           accessLevel: 'public',
+          identifier: {
+            interfaceLanguage: 'swift', // FIXME
+            precise: preciseIdentifier,
+          },
           kind: {
-            identifier: 'vue.component',
+            identifier: 'class', // FIXME
             displayName: 'Component',
           },
           names: {
             title: componentName,
           },
-          identifier: {
-            interfaceLanguage: 'vue',
-            precise: preciseIdentifier,
-          },
+          pathComponents,
         });
       }
     }
@@ -84,10 +94,10 @@ async function* findVueFiles(dir) {
   };
   const metadata = {
     formatVersion,
-    generator: 'Swift-DocC-Render',
+    generator: 'SwiftDocCRender',
   };
   const $module = {
-    name: 'Swift-DocC-Render',
+    name: 'SwiftDocCRender',
     platform: {},
   };
   const relationships = [];
