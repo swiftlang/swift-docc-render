@@ -9,11 +9,11 @@ const Parser = require('tree-sitter');
 const JavaScript = require('tree-sitter-javascript');
 const Vue = require('tree-sitter-vue');
 
-async function* find(filepath, predicate = () => true) {
-  const files = await fs.promises.readdir(filepath);
+async function* find(dir, predicate = () => true) {
+  const files = await fs.promises.readdir(dir);
 
   for await (const file of files) {
-    const fpath = path.join(filepath, file);
+    const fpath = path.join(dir, file);
     const fstat = await fs.promises.stat(fpath);
 
     if (fstat.isDirectory()) {
@@ -24,42 +24,38 @@ async function* find(filepath, predicate = () => true) {
   }
 }
 
-async function* findVueFiles(filepath) {
+async function* findVueFiles(dir) {
   const isVueFile = fpath => path.extname(fpath) === '.vue';
-  yield* find(filepath, isVueFile);
+  yield* find(dir, isVueFile);
 }
 
 (async () => {
   const vueParser = new Parser();
   vueParser.setLanguage(Vue);
+  const scriptTextQuery = new Parser.Query(Vue,
+    `(script_element
+       (raw_text) @txt)`);
 
   const jsParser = new Parser();
   jsParser.setLanguage(JavaScript);
+  const exportNameQuery = new Parser.Query(JavaScript,
+    `(export_statement
+       (object
+         (pair (property_identifier) @key (string) @strval)))`);
 
-  const scriptTextQuery = new Parser.Query(
-    Vue,
-    '(script_element (raw_text) @txt)',
-  );
-
-  const exportNameQuery = new Parser.Query(
-    JavaScript,
-    '(export_statement (object (pair (property_identifier) @prop (string) @val)))',
-  );
-
-  const src = path.join(__dirname, '../src');
-  const components = path.join(src, 'components');
-  for await (const file of findVueFiles(components)) {
-    console.log(file);
-    const contents = await fs.promises.readFile(file, { encoding: 'utf8' });
+  const componentsDir = path.join(__dirname, '../src/components');
+  for await (const filepath of findVueFiles(componentsDir)) {
+    console.log(filepath);
+    const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });
     const vueTree = vueParser.parse(contents);
 
-    const [scriptCapture] = scriptTextQuery.captures(vueTree.rootNode);
-    if (scriptCapture) {
-      const jsTree = jsParser.parse(scriptCapture.node.text);
+    const [script] = scriptTextQuery.captures(vueTree.rootNode);
+    if (script) {
+      const jsTree = jsParser.parse(script.node.text);
 
-      const [propCapture, valCapture] = exportNameQuery.captures(jsTree.rootNode);
-      if (propCapture && valCapture && propCapture.node.text === 'name') {
-        const componentName = valCapture.node.text;
+      const [key, strval] = exportNameQuery.captures(jsTree.rootNode);
+      if (key && strval && key.node.text === 'name') {
+        const componentName = strval.node.text;
         console.log(componentName);
       }
     }
