@@ -29,21 +29,45 @@ async function* findVueFiles(dir) {
   yield* find(dir, isVueFile);
 }
 
+function execQuery(query, tree) {
+  const capturesArray = query.captures(tree.rootNode);
+  return capturesArray.reduce((obj, capture) => ({
+    ...obj,
+    [capture.name]: capture.node,
+  }), {});
+}
+
+function getCommentText(commentNode) {
+  // probably a better way to do this...
+  return commentNode.text
+    .replace(/^\/\*\*/, '')
+    .replace(/\*\/$/, '')
+    .split('\n')
+    .map(line => line.replace(/^\s*\*\s*/, ''))
+    .join('\n')
+    .trim();
+}
+
 (async () => {
   const vueParser = new Parser();
   vueParser.setLanguage(Vue);
   const scriptTextQuery = new Parser.Query(Vue,
     `(script_element
-       (raw_text) @txt)`);
+       (raw_text) @script)`);
 
   const jsParser = new Parser();
   jsParser.setLanguage(JavaScript);
   const exportNameQuery = new Parser.Query(JavaScript,
-    `(export_statement
-       (object
-         (pair
-           (property_identifier) @key
-           (string) @strval)))`);
+    `(
+       (comment)? @comment (#match? @comment "^/[*]{2}")
+       .
+       (export_statement
+         (object
+           (pair
+             (property_identifier) @key (#eq? @key "name")
+             .
+             (string (string_fragment) @component))))
+     )`);
 
   const symbols = [];
 
@@ -53,15 +77,18 @@ async function* findVueFiles(dir) {
     const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });
     const vueTree = vueParser.parse(contents);
 
-    const [script] = scriptTextQuery.captures(vueTree.rootNode);
+    const { script } = execQuery(scriptTextQuery, vueTree);
     if (script) {
-      const jsTree = jsParser.parse(script.node.text);
+      const jsTree = jsParser.parse(script.text);
 
-      const [key, strval] = exportNameQuery.captures(jsTree.rootNode);
-      if (key && strval && key.node.text === 'name') {
-        const componentName = strval.node.text
-          .replace(/^['"]/, '')
-          .replace(/['"]$/, ''); // unwrap quotes
+      const captures = execQuery(exportNameQuery, jsTree);
+      const { comment, component } = captures;
+      if (component) {
+        if (comment) {
+          console.log(filepath);
+          console.log(comment.text);
+          console.log(getCommentText(comment));
+        }
         const pathComponents = filepath
           .replace(componentsDir, '')
           .split('/')
@@ -79,7 +106,7 @@ async function* findVueFiles(dir) {
             displayName: 'Component',
           },
           names: {
-            title: componentName,
+            title: component.text,
           },
           pathComponents,
         });
