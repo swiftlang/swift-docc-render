@@ -37,15 +37,33 @@ function execQuery(query, tree) {
   }), {});
 }
 
-function getCommentText(commentNode) {
-  // probably a better way to do this...
-  return commentNode.text
-    .replace(/^\/\*\*/, '')
-    .replace(/\*\/$/, '')
-    .split('\n')
-    .map(line => line.replace(/^\s*\*\s*/, ''))
-    .join('\n')
-    .trim();
+function createDocComment(commentNode) {
+  const { text } = commentNode;
+
+  const bodyPattern = /\/\*+\s([\s\S]*?)\s\*+\//;
+  const bodyResult = bodyPattern.exec(text);
+  const body = bodyResult[1].trimEnd();
+
+  const lines = body.split('\n').map((line, i) => {
+    const linePattern = /^\s*\**\s+(.*)$/d;
+    const lineResult = linePattern.exec(line);
+    const text = lineResult[1];
+    return {
+      text,
+      range: {
+        start: {
+          line: i,
+          character: lineResult.indices[1][0],
+        },
+        end: {
+          line: i,
+          character: lineResult.indices[1][1],
+        },
+      },
+    };
+  });
+
+  return { lines };
 }
 
 (async () => {
@@ -84,17 +102,13 @@ function getCommentText(commentNode) {
       const captures = execQuery(exportNameQuery, jsTree);
       const { comment, component } = captures;
       if (component) {
-        if (comment) {
-          console.log(filepath);
-          console.log(comment.text);
-          console.log(getCommentText(comment));
-        }
         const pathComponents = filepath
           .replace(componentsDir, '')
           .split('/')
           .filter(part => part.length)
           .map(part => path.parse(part).name);
         const preciseIdentifier = pathComponents.join('');
+        const docComment = comment ? createDocComment(comment) : null;
         symbols.push({
           accessLevel: 'public',
           identifier: {
@@ -109,6 +123,7 @@ function getCommentText(commentNode) {
             title: component.text,
           },
           pathComponents,
+          docComment,
         });
       }
     }
