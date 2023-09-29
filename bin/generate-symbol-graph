@@ -45,7 +45,7 @@ function createDocComment(commentNode) {
   const body = bodyResult[1].trimEnd();
 
   const lines = body.split('\n').map((line, i) => {
-    const linePattern = /^\s*\**\s+(.*)$/d;
+    const linePattern = /^\s*\*+\s*(.*)$/d;
     const lineResult = linePattern.exec(line);
     const text = lineResult[1];
     return {
