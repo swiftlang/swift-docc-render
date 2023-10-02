@@ -7,6 +7,7 @@ const path = require('path');
 
 const Parser = require('tree-sitter');
 const JavaScript = require('tree-sitter-javascript');
+const JSDoc = require('tree-sitter-jsdoc');
 const Vue = require('tree-sitter-vue');
 
 async function* find(dir, predicate = () => true) {
@@ -37,27 +38,24 @@ function execQuery(query, tree) {
   }), {});
 }
 
-function createDocComment(commentNode) {
-  const { text } = commentNode;
-
-  const bodyPattern = /\/\*+\s([\s\S]*?)\s\*+\//;
-  const bodyResult = bodyPattern.exec(text);
-  const body = bodyResult[1].trimEnd();
-
-  const lines = body.split('\n').map((line, i) => {
-    const linePattern = /^\s*\*+\s*(.*)$/d;
-    const lineResult = linePattern.exec(line);
-    const text = lineResult[1];
+function createDocComment(descriptionNode) {
+  const lines = descriptionNode.text.split('\n').map((line, i) => {
     return {
-      text,
+      text: i === 0 ? (
+        line
+      ) : (
+        // this seems like a tree-sitter-jsdoc bug with handling
+        // multi-line descriptions
+        line.replace(/^\s*\*\s*/, '')
+      ),
       range: {
         start: {
           line: i,
-          character: lineResult.indices[1][0],
+          character: 0, // FIXME
         },
         end: {
           line: i,
-          character: lineResult.indices[1][1],
+          character: line.length, // FIXME
         },
       },
     };
@@ -87,6 +85,12 @@ function createDocComment(commentNode) {
              (string (string_fragment) @component))))
      )`);
 
+  const jsDocParser = new Parser();
+  jsDocParser.setLanguage(JSDoc);
+  const commentDescriptionQuery = new Parser.Query(JSDoc,
+    `(document
+       (description) @description)`);
+
   const symbols = [];
 
   const rootDir = path.join(__dirname, '..');
@@ -101,6 +105,7 @@ function createDocComment(commentNode) {
 
       const captures = execQuery(exportNameQuery, jsTree);
       const { comment, component } = captures;
+
       if (component) {
         const pathComponents = filepath
           .replace(componentsDir, '')
@@ -108,7 +113,17 @@ function createDocComment(commentNode) {
           .filter(part => part.length)
           .map(part => path.parse(part).name);
         const preciseIdentifier = pathComponents.join('');
-        const docComment = comment ? createDocComment(comment) : null;
+        let docComment;
+
+        if (comment) {
+          const jsDocTree = jsDocParser.parse(comment.text);
+          const { description = { text: '' } } = execQuery(commentDescriptionQuery, jsDocTree);
+
+          if (description) {
+            docComment = createDocComment(description);
+          }
+        }
+
         symbols.push({
           accessLevel: 'public',
           identifier: {
