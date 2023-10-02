@@ -107,14 +107,15 @@ function createDocComment(descriptionNode) {
       const { comment, component } = captures;
 
       if (component) {
+        const componentName = component.text;
         const pathComponents = filepath
           .replace(componentsDir, '')
           .split('/')
           .filter(part => part.length)
           .map(part => path.parse(part).name);
         const preciseIdentifier = pathComponents.join('');
-        let docComment;
 
+        let docComment;
         if (comment) {
           const jsDocTree = jsDocParser.parse(comment.text);
           const { description = { text: '' } } = execQuery(commentDescriptionQuery, jsDocTree);
@@ -123,6 +124,13 @@ function createDocComment(descriptionNode) {
             docComment = createDocComment(description);
           }
         }
+
+        const declarationFragments = [
+          {
+            kind: 'text',
+            spelling: `<${componentName} />`,
+          },
+        ];
 
         symbols.push({
           accessLevel: 'public',
@@ -135,10 +143,11 @@ function createDocComment(descriptionNode) {
             displayName: 'Component',
           },
           names: {
-            title: component.text,
+            title: componentName,
           },
           pathComponents,
           docComment,
+          declarationFragments,
         });
       }
     }
