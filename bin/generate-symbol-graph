@@ -38,7 +38,7 @@ function execQuery(query, tree) {
   }), {});
 }
 
-function createDocComment(descriptionNode) {
+function createDocComment(descriptionNode = { text: '' }, params = []) {
   const lines = descriptionNode.text.split('\n').map((line, i) => {
     return {
       text: i === 0 ? (
@@ -61,6 +61,54 @@ function createDocComment(descriptionNode) {
     };
   });
 
+  // generate automated parameter description content that just shows the name
+  // of each prop and its type
+  //
+  // TODO: allow for normal doc comment to override this
+  if (params.length) {
+    lines.push({
+      text: '',
+      range: {
+        start: {
+          line: 0,
+          character: 0,
+        },
+        end: {
+          line: 0,
+          character: 0,
+        },
+      },
+    });
+    lines.push({
+      text: '- Parameters:',
+      range: {
+        start: {
+          line: 0,
+          character: 0,
+        },
+        end: {
+          line: 0,
+          character: 0,
+        },
+      },
+    });
+    params.forEach(param => {
+      lines.push({
+        text: `  - ${param.name}: \`${param.type}\``,
+        range: {
+          start: {
+            line: 0,
+            character: 0,
+          },
+          end: {
+            line: 0,
+            character: 0,
+          },
+        },
+      });
+    });
+  }
+
   return { lines };
 }
 
@@ -82,8 +130,22 @@ function createDocComment(descriptionNode) {
            (pair
              (property_identifier) @key (#eq? @key "name")
              .
-             (string (string_fragment) @component))))
-     )`);
+             (string (string_fragment) @component)))))`);
+  const exportPropsQuery = new Parser.Query(JavaScript,
+    `(export_statement
+       (object
+         (pair
+           (property_identifier) @key (#eq? @key "props")
+           .
+           (object
+             (pair
+               (property_identifier) @prop.name
+               .
+               (object
+                 (pair
+                   (property_identifier) @key2 (#eq? @key2 "type")
+                   .
+                   (_) @prop.type)))))))`);
 
   const jsDocParser = new Parser();
   jsDocParser.setLanguage(JSDoc);
@@ -103,8 +165,7 @@ function createDocComment(descriptionNode) {
     if (script) {
       const jsTree = jsParser.parse(script.text);
 
-      const captures = execQuery(exportNameQuery, jsTree);
-      const { comment, component } = captures;
+      const { comment, component } = execQuery(exportNameQuery, jsTree);
 
       if (component) {
         const componentName = component.text;
@@ -115,22 +176,43 @@ function createDocComment(descriptionNode) {
           .map(part => path.parse(part).name);
         const preciseIdentifier = pathComponents.join('');
 
-        let docComment;
-        if (comment) {
-          const jsDocTree = jsDocParser.parse(comment.text);
-          const { description = { text: '' } } = execQuery(commentDescriptionQuery, jsDocTree);
-
-          if (description) {
-            docComment = createDocComment(description);
-          }
-        }
-
         const declarationFragments = [
           {
             kind: 'text',
             spelling: `<${componentName} />`,
           },
         ];
+
+        let functionSignature;
+        const captures = exportPropsQuery.captures(jsTree.rootNode);
+        const params = captures.reduce((memo, capture) => {
+          if (capture.name === 'prop.name') {
+            memo.push({ name: capture.node.text });
+          }
+          if (capture.name === 'prop.type') {
+            memo[memo.length - 1].type = capture.node.text;
+          }
+          return memo;
+        }, []);
+        if (params.length) {
+          // not sure if DocC actually uses `functionSignature` or not...
+          functionSignature = {
+            parameters: params.map(param => ({
+              name: param.name,
+              declarationFragments: [{ kind: 'text', spelling: param.type }],
+            })),
+          };
+        }
+
+        let docComment;
+        let description;
+        if (comment) {
+          const jsDocTree = jsDocParser.parse(comment.text);
+          description = execQuery(commentDescriptionQuery, jsDocTree).description;
+        }
+        if (!!description || params.length) {
+          docComment = createDocComment(description, params);
+        }
 
         symbols.push({
           accessLevel: 'public',
@@ -148,6 +230,7 @@ function createDocComment(descriptionNode) {
           pathComponents,
           docComment,
           declarationFragments,
+          functionSignature,
         });
       }
     }
