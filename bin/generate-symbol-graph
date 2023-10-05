@@ -30,7 +30,7 @@ async function* findVueFiles(dir) {
   yield* find(dir, isVueFile);
 }
 
-function execQuery(query, tree) {
+function uniqueCaptures(query, tree) {
   const capturesArray = query.captures(tree.rootNode);
   return capturesArray.reduce((obj, capture) => ({
     ...obj,
@@ -159,11 +159,11 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
     const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });
     const vueTree = vueParser.parse(contents);
 
-    const { script } = execQuery(scriptTextQuery, vueTree);
+    const { script } = uniqueCaptures(scriptTextQuery, vueTree);
     if (script) {
       const jsTree = jsParser.parse(script.text);
 
-      const { comment, component } = execQuery(exportNameQuery, jsTree);
+      const { comment, component } = uniqueCaptures(exportNameQuery, jsTree);
 
       if (component) {
         const componentName = component.text;
@@ -207,7 +207,7 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
         let description;
         if (comment) {
           const jsDocTree = jsDocParser.parse(comment.text);
-          description = execQuery(commentDescriptionQuery, jsDocTree).description;
+          description = uniqueCaptures(commentDescriptionQuery, jsDocTree).description;
         }
         if (!!description || params.length) {
           docComment = createDocComment(description, params);
