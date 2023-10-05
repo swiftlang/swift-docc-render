@@ -110,6 +110,23 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
   return { lines };
 }
 
+function createDeclaration(componentName, slots = []) {
+  if (!slots.length) {
+    return [{
+      kind: 'text',
+      spelling: `<${componentName} />`,
+    }];
+  }
+  return [{
+    kind: 'text',
+    spelling: `<${componentName}>\n${slots.map(({ name }) => name === 'default' ? (
+      `  <slot />\n`
+    ) : (
+      `  <slot name="${name}" />\n`
+    )).join('')}</${componentName}>`,
+  }];
+}
+
 (async () => {
   const vueParser = new Parser();
   vueParser.setLanguage(Vue);
@@ -150,6 +167,23 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
   const commentDescriptionQuery = new Parser.Query(JSDoc,
     `(document
        (description) @description)`);
+  const slotsQuery = new Parser.Query(Vue,
+    `[
+      (self_closing_tag
+        (tag_name) @tag
+        (attribute
+          (attribute_name) @attr.name
+          (quoted_attribute_value (attribute_value) @attr.value))?
+        (#eq? @tag "slot")
+        (#eq? @attr.name "name"))
+      (start_tag
+        (tag_name) @tag
+        (attribute
+          (attribute_name) @attr.name
+          (quoted_attribute_value (attribute_value) @attr.value))?
+        (#eq? @tag "slot")
+        (#eq? @attr.name "name"))
+     ]`);
 
   const symbols = [];
 
@@ -174,13 +208,6 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
           .map(part => path.parse(part).name);
         const preciseIdentifier = pathComponents.join('');
 
-        const declarationFragments = [
-          {
-            kind: 'text',
-            spelling: `<${componentName} />`,
-          },
-        ];
-
         let functionSignature;
         const captures = exportPropsQuery.captures(jsTree.rootNode);
         const params = captures.reduce((memo, capture) => {
@@ -202,6 +229,17 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
             })),
           };
         }
+
+        const slots = slotsQuery.captures(vueTree.rootNode).reduce((memo, capture) => {
+          if (capture.name === 'tag') {
+            memo.push({ name: 'default' });
+          }
+          if (capture.name === 'attr.value') {
+            memo[memo.length - 1].name = capture.node.text;
+          }
+          return memo;
+        }, []);
+        const declarationFragments = createDeclaration(componentName, slots);
 
         let docComment;
         let description;
