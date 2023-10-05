@@ -39,27 +39,25 @@ function execQuery(query, tree) {
 }
 
 function createDocComment(descriptionNode = { text: '' }, params = []) {
-  const lines = descriptionNode.text.split('\n').map((line, i) => {
-    return {
-      text: i === 0 ? (
-        line
-      ) : (
-        // this seems like a tree-sitter-jsdoc bug with handling
-        // multi-line descriptions
-        line.replace(/^\s*\*\s*/, '')
-      ),
-      range: {
-        start: {
-          line: i,
-          character: 0, // FIXME
-        },
-        end: {
-          line: i,
-          character: line.length, // FIXME
-        },
+  const lines = descriptionNode.text.split('\n').map((line, i) => ({
+    text: i === 0 ? (
+      line
+    ) : (
+      // this seems like a tree-sitter-jsdoc bug with handling
+      // multi-line descriptions
+      line.replace(/^\s*\*\s*/, '')
+    ),
+    range: {
+      start: {
+        line: i,
+        character: 0, // FIXME
       },
-    };
-  });
+      end: {
+        line: i,
+        character: line.length, // FIXME
+      },
+    },
+  }));
 
   // generate automated parameter description content that just shows the name
   // of each prop and its type
@@ -92,7 +90,7 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
         },
       },
     });
-    params.forEach(param => {
+    params.forEach((param) => {
       lines.push({
         text: `  - ${param.name}: \`${param.type}\``,
         range: {
@@ -190,6 +188,7 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
             memo.push({ name: capture.node.text });
           }
           if (capture.name === 'prop.type') {
+            // eslint-disable-next-line no-param-reassign
             memo[memo.length - 1].type = capture.node.text;
           }
           return memo;
