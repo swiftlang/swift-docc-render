@@ -1,20 +1,30 @@
 #!/usr/bin/env sh
 
+set -o errexit
+
 SCRIPT_DIR=$(dirname "$0")
+ROOT_DIR=$(dirname $SCRIPT_DIR)
 
-SGFS_TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'sgfs-tmp')
-DOCS_TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'docs-tmp')
+TMP_DIR="$ROOT_DIR/tmp"
+OUTPUT_DIR="$ROOT_DIR/docs"
 
-CATALOG="$SCRIPT_DIR/../SwiftDocCRender.docc"
-SGF="$SGFS_TMP_DIR/SwiftDocCRender.symbols.json"
+SGF="$TMP_DIR/SwiftDocCRender.symbols.json"
+CATALOG="$ROOT_DIR/SwiftDocCRender.docc"
 
+# Generate a symbol graph for the app as JSON and store it in a tmp directory
+rm -rf $SGF
+mkdir -p $TMP_DIR
 $SCRIPT_DIR/generate-symbol-graph > $SGF
 echo "Generated symbol graph: $SGF"
 
+# Build the doc catalog for the app with the symbol graph using DocC and store
+# the static output in a docs directory
+rm -rf $OUTPUT_DIR
+mkdir -p $OUTPUT_DIR
 $SCRIPT_DIR/rundocc convert $CATALOG \
   --fallback-display-name SwiftDocCRender \
   --fallback-bundle-identifier org.swift.SwiftDocCRender \
   --fallback-bundle-version 1.0.0 \
-  --additional-symbol-graph-dir $SGFS_TMP_DIR \
-  --output-path $DOCS_TMP_DIR
-echo "Generated docs: $DOCS_TMP_DIR"
+  --additional-symbol-graph-dir $TMP_DIR \
+  --output-path $OUTPUT_DIR
+echo "Generated docs at $OUTPUT_DIR"

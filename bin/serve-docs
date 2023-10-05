@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+set -o errexit
+
+SCRIPT_DIR=$(dirname "$0")
+ROOT_DIR=$(dirname $SCRIPT_DIR)
+DOCS_DIR="$ROOT_DIR/docs"
+PORT="${PORT:-8000}"
+
+if [ ! -f "$DOCS_DIR/data/documentation/swiftdoccrender.json" ]; then
+  echo "$DOCS_DIR does not exist. Build the docs with $SCRIPT_DIR/build-docs first."
+  exit 1
+fi
+
+cd "$DOCS_DIR"
+echo "Starting server: http://localhost:$PORT/documentation/swiftdoccrender"
+python3 -m http.server $PORT
