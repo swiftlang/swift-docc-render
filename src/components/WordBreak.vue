@@ -12,6 +12,12 @@
 /**
  * Indicate safe places to break apart words across multiple lines when necessary.
  *
+ * - Parameter safeBoundaryPattern: `Regexp` —
+ *    A regular expression to be used to determine the character boundaries
+ *    where the word break hints should be inserted.
+ * - Parameter tag: `String` —
+ *    A tag to be used to wrap the resulting HTML string (default: `<span>`).
+ *
  * This component can be used to inject `<wbr>` ("word break opportunity") HTML
  * elements at safe and readable boundaries within a word, which indicate to web
  * browsers where they can break a given word onto the next line. This is done

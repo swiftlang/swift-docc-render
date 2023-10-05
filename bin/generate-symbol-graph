@@ -61,9 +61,8 @@ function createDocComment(descriptionNode = { text: '' }, params = []) {
 
   // generate automated parameter description content that just shows the name
   // of each prop and its type
-  //
-  // TODO: allow for normal doc comment to override this
-  if (params.length) {
+  const hasParamContent = lines.some(line => line.text.startsWith('- Parameter'));
+  if (params.length && !hasParamContent) {
     lines.push({
       text: '',
       range: {
