@@ -11,8 +11,10 @@
     "test:unit": "vue-cli-service test:unit",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "lint": "vue-cli-service lint",
-    "docs:preview": "bin/rundocc preview SwiftDocCRender.docc",
-    "docs:build": "bin/rundocc convert SwiftDocCRender.docc"
+    "docs": "bin/build-and-serve-docs",
+    "docs:preview": "bin/build-and-serve-docs",
+    "docs:build": "bin/build-docs",
+    "docs:serve": "bin/serve-docs"
   },
   "files": [
     "src",

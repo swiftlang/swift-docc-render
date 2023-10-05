@@ -11,6 +11,8 @@ OUTPUT_DIR="$ROOT_DIR/docs"
 SGF="$TMP_DIR/SwiftDocCRender.symbols.json"
 CATALOG="$ROOT_DIR/SwiftDocCRender.docc"
 
+echo "Building docs for $CATALOG"
+
 # Generate a symbol graph for the app as JSON and store it in a tmp directory
 rm -rf $SGF
 mkdir -p $TMP_DIR
