@@ -207,6 +207,12 @@ function createDeclaration(componentName, slots = []) {
           .map(part => path.parse(part).name);
         const preciseIdentifier = pathComponents.join('');
 
+        const subHeading = [
+          { kind: 'text', spelling: '<' },
+          { kind: 'identifier', spelling: componentName },
+          { kind: 'text', spelling: '>' },
+        ];
+
         let functionSignature;
         const captures = exportPropsQuery.captures(jsTree.rootNode);
         const params = captures.reduce((memo, capture) => {
@@ -262,6 +268,7 @@ function createDeclaration(componentName, slots = []) {
           },
           names: {
             title: componentName,
+            subHeading,
           },
           pathComponents,
           docComment,
