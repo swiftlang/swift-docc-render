@@ -18,6 +18,7 @@ DocC-Render is a Single Page Application (SPA for short), powered by [Vue.js](ht
 
 ### Commonly used components
 
+- ``ContentNode``
 - ``ContentNode/Reference``
 - ``WordBreak``
 
