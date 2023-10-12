@@ -38,92 +38,71 @@ function uniqueCaptures(query, tree) {
   }), {});
 }
 
+const line = (
+  text,
+  range = { start: { // FIXME: use real ranges from parser in the future
+    line: 0,
+    character: 0,
+  }, end: {
+    line: 0,
+    character: 0,
+  }}
+) => ({ text, range });
+
 function createDocComment(descriptionNode = { text: '' }, params = []) {
-  const lines = descriptionNode.text.split('\n').map((line, i) => ({
-    text: i === 0 ? (
-      line
-    ) : (
-      // this seems like a tree-sitter-jsdoc bug with handling
-      // multi-line descriptions
-      line.replace(/^\s*\*/, '')
-    ),
-    range: {
-      start: {
-        line: i,
-        character: 0, // FIXME
-      },
-      end: {
-        line: i,
-        character: line.length, // FIXME
-      },
-    },
-  }));
+  const lines = descriptionNode.text.split('\n').map((txt, i) => line((i === 0 ? (
+    txt
+  ) : (
+    // this seems like a tree-sitter-jsdoc bug with handling
+    // multi-line descriptions
+    txt.replace(/^\s*\*/, '')
+  ))));
 
   // generate automated parameter description content that just shows the name
   // of each prop and its type
-  const hasParamContent = lines.some(line => /^\s*- Parameter/.test(line.text));
+  const hasParamContent = lines.some(l => /^\s*- Parameter/.test(l.text));
   if (params.length && !hasParamContent) {
-    lines.push({
-      text: '',
-      range: {
-        start: {
-          line: 0,
-          character: 0,
-        },
-        end: {
-          line: 0,
-          character: 0,
-        },
-      },
-    });
-    lines.push({
-      text: '- Parameters:',
-      range: {
-        start: {
-          line: 0,
-          character: 0,
-        },
-        end: {
-          line: 0,
-          character: 0,
-        },
-      },
-    });
+    lines.push(line(''));
+    lines.push(line('- Parameters:'));
     params.forEach((param) => {
-      lines.push({
-        text: `  - ${param.name}: \`${param.type}\``,
-        range: {
-          start: {
-            line: 0,
-            character: 0,
-          },
-          end: {
-            line: 0,
-            character: 0,
-          },
-        },
-      });
+      lines.push(line(`  - ${param.name}: \`${param.type}\``));
     });
   }
 
   return { lines };
 }
 
+const Token = {
+  identifier: spelling => ({ kind: 'identifier', spelling }),
+  string: spelling => ({ kind: 'string', spelling }),
+  text: spelling => ({ kind: 'text', spelling }),
+  typeIdentifier: spelling => ({ kind: 'typeIdentifier', spelling }),
+};
+
 function createDeclaration(componentName, slots = []) {
   if (!slots.length) {
-    return [{
-      kind: 'text',
-      spelling: `<${componentName} />`,
-    }];
+    return [
+      Token.text('<'),
+      Token.typeIdentifier(componentName),
+      Token.text(' />'),
+    ];
   }
-  return [{
-    kind: 'text',
-    spelling: `<${componentName}>\n${slots.map(({ name }) => name === 'default' ? (
-      `  <slot />\n`
-    ) : (
-      `  <slot name="${name}" />\n`
-    )).join('')}</${componentName}>`,
-  }];
+  const isDefault = slot => slot.name === 'default';
+  return [
+    Token.text('<'),
+    Token.typeIdentifier(componentName),
+    Token.text('>\n'),
+    ...slots.flatMap(slot => isDefault(slot) ? ([
+      Token.text('  <slot />\n'),
+    ]) : ([
+      Token.text('  <slot name='),
+      Token.string(`"${slot.name}"`),
+      Token.text(' />\n'),
+    ])),
+    Token.text('</'),
+    Token.typeIdentifier(componentName),
+    Token.text('>'),
+  ];
 }
 
 (async () => {
@@ -208,9 +187,9 @@ function createDeclaration(componentName, slots = []) {
         const preciseIdentifier = pathComponents.join('');
 
         const subHeading = [
-          { kind: 'text', spelling: '<' },
-          { kind: 'identifier', spelling: componentName },
-          { kind: 'text', spelling: '>' },
+          Token.text('<'),
+          Token.identifier(componentName),
+          Token.text('>'),
         ];
 
         let functionSignature;
@@ -230,7 +209,7 @@ function createDeclaration(componentName, slots = []) {
           functionSignature = {
             parameters: params.map(param => ({
               name: param.name,
-              declarationFragments: [{ kind: 'text', spelling: param.type }],
+              declarationFragments: [Token.text(param.type)],
             })),
           };
         }
