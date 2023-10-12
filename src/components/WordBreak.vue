@@ -62,7 +62,7 @@
  *
  * ```xml
  * <WordBreak :safeBoundaryPattern="/(\w(?=/.\w)|\w(?=\/))/g">
- * https://foo.bar/baz/qux
+ *   https://foo.bar/baz/qux
  * </WordBreak>
  *
  * <!-- https://foo .bar /baz /qux -->
