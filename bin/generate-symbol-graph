@@ -259,7 +259,7 @@ function createDeclaration(componentName, slots = []) {
         symbols.push({
           accessLevel: 'public',
           identifier: {
-            interfaceLanguage: 'swift', // FIXME
+            interfaceLanguage: 'vue',
             precise: preciseIdentifier,
           },
           kind: {
