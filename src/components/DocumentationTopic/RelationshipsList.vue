@@ -21,9 +21,7 @@
         :role="symbol.role"
         :kind="symbol.kind"
         :url="symbol.url"
-      >
-        {{symbol.title}}
-      </Reference>
+      >{{symbol.title}}</Reference>
       <WordBreak v-else tag="code">{{symbol.title}}</WordBreak>
       <ConditionalConstraints
         v-if="symbol.conformance"
