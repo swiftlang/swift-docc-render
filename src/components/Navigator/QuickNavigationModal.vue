@@ -69,14 +69,14 @@
                 class="quick-navigation__reference"
                 :key="symbol.uid"
                 :url="symbol.path"
+                :tabindex="focusedIndex === index ? '0' : '-1'"
                 @click.native="closeQuickNavigationModal"
                 @focus.native="focusIndex(index)"
+                ref="match"
               >
                 <div
                   class="quick-navigation__symbol-match"
-                  ref="match"
                   role="list"
-                  :class="{ 'selected' : index == focusedIndex }"
                 >
                   <div class="symbol-info">
                     <div class="symbol-name">
@@ -278,9 +278,13 @@ export default {
   },
   watch: {
     userInput: 'debounceInput',
-    focusedIndex: 'scrollIntoView',
     selectedSymbol: 'fetchSelectedSymbolData',
     $route: 'closeQuickNavigationModal',
+    async focusedIndex(newVal) {
+      await this.$nextTick();
+      this.scrollIntoView(newVal);
+      this.focusReference(newVal);
+    },
   },
   methods: {
     closeQuickNavigationModal() {
@@ -351,8 +355,11 @@ export default {
         return 0;
       });
     },
-    scrollIntoView() {
-      this.$refs.match[this.focusedIndex].scrollIntoView({
+    focusReference(index) {
+      this.$refs.match[index].$el.focus();
+    },
+    scrollIntoView(index) {
+      this.$refs.match[index].$el.scrollIntoView({
         block: 'nearest',
       });
     },
@@ -495,9 +502,6 @@ $input-horizontal-spacing: rem(15px);
       margin: rem(15px) auto;
       width: fit-content;
     }
-    .selected {
-      background-color: var(--color-navigator-item-hover);
-    }
   }
   &__refs {
     flex: 1;
@@ -510,17 +514,25 @@ $input-horizontal-spacing: rem(15px);
     position: sticky;
     top: 0;
   }
-  &__reference:hover {
-    text-decoration: none;
+  &__reference {
+    display: block;
+    padding: rem(10px) rem(15px);
+
+    &:hover {
+      text-decoration: none;
+      background-color: var(--color-navigator-item-hover);
+    }
+
+    &:focus {
+      margin: 0 rem(5px);
+      padding: rem(10px) rem(10px);
+      background-color: var(--color-navigator-item-hover);
+    }
   }
   &__symbol-match {
     display: flex;
     height: rem(40px);
-    padding: rem(10px) rem(15px);
     color: var(--color-figure-gray);
-    &:hover {
-      background-color: var(--color-navigator-item-hover);
-    }
     .symbol-info {
       margin: auto;
       width: 100%;
