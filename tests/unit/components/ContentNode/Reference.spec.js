@@ -10,6 +10,8 @@
 
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import ReferenceExternalSymbol
+  from 'docc-render/components/ContentNode/ReferenceExternalSymbol.vue';
 import ReferenceExternal from 'docc-render/components/ContentNode/ReferenceExternal.vue';
 import ReferenceInternalSymbol
   from 'docc-render/components/ContentNode/ReferenceInternalSymbol.vue';
@@ -181,6 +183,22 @@ describe('Reference', () => {
     const ref = wrapper.find(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
+  });
+
+  it('renders a `ReferenceExternalSymbol` for external symbols', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: {
+        url: 'https://example.com/foo',
+        kind: 'symbol',
+        role: TopicRole.symbol,
+      },
+      slots: { default: 'Foo' },
+    });
+    const ref = wrapper.find(ReferenceExternalSymbol);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('https://example.com/foo');
   });
 
   it('passes the isActive prop', () => {

@@ -19,6 +19,7 @@ import { buildUrl } from 'docc-render/utils/url-helper';
 import { TopicRole } from 'docc-render/constants/roles';
 
 import { notFoundRouteName } from 'docc-render/constants/router';
+import ReferenceExternalSymbol from './ReferenceExternalSymbol.vue';
 import ReferenceExternal from './ReferenceExternal.vue';
 import ReferenceInternalSymbol from './ReferenceInternalSymbol.vue';
 import ReferenceInternal from './ReferenceInternal.vue';
@@ -49,14 +50,11 @@ export default {
     isDisplaySymbol({ isSymbolReference, titleStyle, ideTitle }) {
       return ideTitle ? (isSymbolReference && titleStyle === 'symbol') : isSymbolReference;
     },
-    refComponent() {
-      if (!this.isInternal) {
-        return ReferenceExternal;
+    refComponent({ isInternal, isDisplaySymbol }) {
+      if (isInternal) {
+        return isDisplaySymbol ? ReferenceInternalSymbol : ReferenceInternal;
       }
-      if (this.isDisplaySymbol) {
-        return ReferenceInternalSymbol;
-      }
-      return ReferenceInternal;
+      return isDisplaySymbol ? ReferenceExternalSymbol : ReferenceExternal;
     },
     urlWithParams({ isInternal }) {
       return isInternal ? buildUrl(this.url, this.$route.query) : this.url;
