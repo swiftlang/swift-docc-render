@@ -69,7 +69,7 @@
                 class="quick-navigation__reference"
                 :key="symbol.uid"
                 :url="symbol.path"
-                :tabindex="focusedIndex === index ? '0' : '-1'"
+                :tabindex="isFocused(index) ? '0' : '-1'"
                 @click.native="closeQuickNavigationModal"
                 @focus.native="focusIndex(index)"
                 ref="match"
@@ -278,13 +278,9 @@ export default {
   },
   watch: {
     userInput: 'debounceInput',
+    focusedIndex: 'scrollIntoView',
     selectedSymbol: 'fetchSelectedSymbolData',
     $route: 'closeQuickNavigationModal',
-    async focusedIndex(newVal) {
-      await this.$nextTick();
-      this.scrollIntoView(newVal);
-      this.focusReference(newVal);
-    },
   },
   methods: {
     closeQuickNavigationModal() {
@@ -310,6 +306,11 @@ export default {
     },
     formatSymbolTitle(symbolTitle, symbolStart, symbolEnd) {
       return symbolTitle.slice(symbolStart, symbolEnd);
+    },
+    isFocused(index) {
+      if (this.focusedInput || this.focusedIndex !== index) return false;
+      this.focusReference(index);
+      return true;
     },
     fuzzyMatch({
       inputLength, symbols, processedInputRegex, childrenMap,
