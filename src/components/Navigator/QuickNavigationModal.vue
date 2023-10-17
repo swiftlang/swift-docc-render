@@ -17,10 +17,6 @@
   >
     <div
       class="quick-navigation"
-      @keydown.down.exact.prevent="focusNext"
-      @keydown.up.exact.prevent="focusPrev"
-      @keydown.enter.exact="handleKeyEnter"
-      @click.self="closeQuickNavigationModal"
     >
       <div
         class="quick-navigation__container"
@@ -34,7 +30,7 @@
           focusInputWhenEmpty
           preventBorderStyle
           selectInputOnFocus
-          @input="focusedIndex = 0"
+          @keydown.down.exact.native.prevent="handleDownKeyInput"
           @focus="focusedInput = true"
           @blur="focusedInput = false"
         >
@@ -63,6 +59,10 @@
             <div
               v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
               class="quick-navigation__refs"
+              @keydown.down.exact.prevent="focusNext"
+              @keydown.up.exact.prevent="focusPrev"
+              @keydown.enter.exact="handleKeyEnter"
+              @click.self="closeQuickNavigationModal"
             >
               <Reference
                 v-for="(symbol, index) in filteredSymbols"
@@ -358,6 +358,10 @@ export default {
     },
     focusReference(index) {
       this.$refs.match[index].$el.focus();
+    },
+    handleDownKeyInput() {
+      this.focusedIndex = 0;
+      this.focusReference(0);
     },
     scrollIntoView(index) {
       this.$refs.match[index].$el.scrollIntoView({
