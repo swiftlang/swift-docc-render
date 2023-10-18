@@ -15,9 +15,13 @@
       :key="symbol.identifier"
       class="relationships-item"
     >
-      <router-link v-if="symbol.url" class="link" :to="buildUrl(symbol.url, $route.query)">
-        <WordBreak tag="code">{{symbol.title}}</WordBreak>
-      </router-link>
+      <Reference
+        v-if="symbol.url"
+        class="link"
+        :role="symbol.role"
+        :kind="symbol.kind"
+        :url="symbol.url"
+      >{{symbol.title}}</Reference>
       <WordBreak v-else tag="code">{{symbol.title}}</WordBreak>
       <ConditionalConstraints
         v-if="symbol.conformance"
@@ -32,7 +36,7 @@
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { getAPIChanges, APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
 import { ChangeTypes } from 'docc-render/constants/Changes';
-import { buildUrl } from 'docc-render/utils/url-helper';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import ConditionalConstraints from './ConditionalConstraints.vue';
 
 const MaxInlineItems = 3;
@@ -48,6 +52,7 @@ export default {
   name: 'RelationshipsList',
   components: {
     ConditionalConstraints,
+    Reference,
     WordBreak,
   },
   inject: ['store', 'identifier'],
@@ -115,9 +120,6 @@ export default {
       const { hasAvailabilityConstraints, symbols } = this;
       return symbols.length <= MaxInlineItems && !hasAvailabilityConstraints;
     },
-  },
-  methods: {
-    buildUrl,
   },
 };
 </script>
