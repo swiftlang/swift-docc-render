@@ -31,6 +31,7 @@
           preventBorderStyle
           selectInputOnFocus
           @keydown.down.exact.native.prevent="handleDownKeyInput"
+          @keydown.enter.exact.native="handleKeyEnter"
           @focus="focusedInput = true"
           @blur="focusedInput = false"
         >
@@ -62,14 +63,13 @@
               @keydown.down.exact.prevent="focusNext"
               @keydown.up.exact.prevent="focusPrev"
               @keydown.enter.exact="handleKeyEnter"
-              @click.self="closeQuickNavigationModal"
             >
               <Reference
                 v-for="(symbol, index) in filteredSymbols"
                 class="quick-navigation__reference"
                 :key="symbol.uid"
                 :url="symbol.path"
-                :tabindex="isFocused(index) ? '0' : '-1'"
+                :tabindex="focusedIndex === index ? '0' : '-1'"
                 @click.native="closeQuickNavigationModal"
                 @focus.native="focusIndex(index)"
                 ref="match"
@@ -253,6 +253,7 @@ export default {
       }
       return filteredSymbols[nextIndex];
     },
+    focusedMatchElement: ({ $refs, focusedIndex }) => $refs.match[focusedIndex].$el,
     previewJSON: ({
       cachedSymbolResults,
       selectedSymbol,
@@ -278,7 +279,11 @@ export default {
   },
   watch: {
     userInput: 'debounceInput',
-    focusedIndex: 'scrollIntoView',
+    focusedIndex() {
+      if (this.focusedInput) return;
+      this.scrollIntoView();
+      this.focusReference();
+    },
     selectedSymbol: 'fetchSelectedSymbolData',
     $route: 'closeQuickNavigationModal',
   },
@@ -306,11 +311,6 @@ export default {
     },
     formatSymbolTitle(symbolTitle, symbolStart, symbolEnd) {
       return symbolTitle.slice(symbolStart, symbolEnd);
-    },
-    isFocused(index) {
-      if (this.focusedInput || this.focusedIndex !== index) return false;
-      this.focusReference(index);
-      return true;
     },
     fuzzyMatch({
       inputLength, symbols, processedInputRegex, childrenMap,
@@ -356,15 +356,15 @@ export default {
         return 0;
       });
     },
-    focusReference(index) {
-      this.$refs.match[index].$el.focus();
+    focusReference() {
+      return this.focusedMatchElement.focus();
     },
     handleDownKeyInput() {
       this.focusedIndex = 0;
-      this.focusReference(0);
+      this.focusReference();
     },
-    scrollIntoView(index) {
-      this.$refs.match[index].$el.scrollIntoView({
+    scrollIntoView() {
+      this.focusedMatchElement.scrollIntoView({
         block: 'nearest',
       });
     },

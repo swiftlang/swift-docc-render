@@ -38,11 +38,6 @@ describe('QuickNavigationModal', () => {
     $router: {
       push: jest.fn(),
     },
-    $refs: {
-      match: {
-        scrollIntoView: jest.fn(),
-      },
-    },
   };
   const symbols = [
     {
@@ -300,16 +295,13 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
   });
 
-  it('access a symbol on `enter` key', async () => {
+  it('access a symbol on `enter` key', () => {
     const handleKeyEnter = jest.spyOn(wrapper.vm, 'handleKeyEnter');
     wrapper.setData({
       debouncedInput: inputValue,
     });
-    await wrapper.find('.quick-navigation').trigger('keydown.enter');
-    wrapper.setData({
-      debouncedInput: inputValue,
-    });
-    await wrapper.find(FilterInput).trigger('keydown.enter');
+    wrapper.find('.quick-navigation__refs').trigger('keydown.enter');
+    wrapper.find(FilterInput).trigger('keydown.enter');
     expect(handleKeyEnter).toHaveBeenCalledTimes(2);
   });
 
