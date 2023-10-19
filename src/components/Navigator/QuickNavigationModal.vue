@@ -70,6 +70,7 @@
                 :key="symbol.uid"
                 :url="symbol.path"
                 :tabindex="focusedIndex === index ? '0' : '-1'"
+                :data-index="index"
                 @click.native="closeQuickNavigationModal"
                 ref="match"
               >
@@ -252,7 +253,12 @@ export default {
       }
       return filteredSymbols[nextIndex];
     },
-    focusedMatchElement: ({ $refs, focusedIndex }) => $refs.match[focusedIndex].$el,
+    focusedMatchElement: ({
+      $refs,
+      focusedIndex,
+      // We need to find the item with the same `data-index`,
+      // as the order of items in `$refs` is not guaranteed to match the DOM
+    }) => $refs.match.find(({ $el }) => parseInt($el.dataset.index, 10) === focusedIndex).$el,
     previewJSON: ({
       cachedSymbolResults,
       selectedSymbol,
