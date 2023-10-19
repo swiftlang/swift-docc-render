@@ -40,13 +40,16 @@ function uniqueCaptures(query, tree) {
 
 const line = (
   text,
-  range = { start: { // FIXME: use real ranges from parser in the future
-    line: 0,
-    character: 0,
-  }, end: {
-    line: 0,
-    character: 0,
-  }}
+  range = {
+    start: { // FIXME: use real ranges from parser in the future
+      line: 0,
+      character: 0,
+    },
+    end: {
+      line: 0,
+      character: 0,
+    },
+  },
 ) => ({ text, range });
 
 function createDocComment(descriptionNode = { text: '' }, params = []) {
@@ -92,13 +95,13 @@ function createDeclaration(componentName, slots = []) {
     Token.text('<'),
     Token.typeIdentifier(componentName),
     Token.text('>\n'),
-    ...slots.flatMap(slot => isDefault(slot) ? ([
+    ...slots.flatMap(slot => (isDefault(slot) ? ([
       Token.text('  <slot />\n'),
     ]) : ([
       Token.text('  <slot name='),
       Token.string(`"${slot.name}"`),
       Token.text(' />\n'),
-    ])),
+    ]))),
     Token.text('</'),
     Token.typeIdentifier(componentName),
     Token.text('>'),
@@ -219,6 +222,7 @@ function createDeclaration(componentName, slots = []) {
             memo.push({ name: 'default' });
           }
           if (capture.name === 'attr.value') {
+            // eslint-disable-next-line no-param-reassign
             memo[memo.length - 1].name = capture.node.text;
           }
           return memo;
