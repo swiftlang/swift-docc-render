@@ -71,7 +71,6 @@
                 :url="symbol.path"
                 :tabindex="focusedIndex === index ? '0' : '-1'"
                 @click.native="closeQuickNavigationModal"
-                @focus.native="focusIndex(index)"
                 ref="match"
               >
                 <div
@@ -357,7 +356,7 @@ export default {
       });
     },
     focusReference() {
-      return this.focusedMatchElement.focus();
+      this.focusedMatchElement.focus();
     },
     handleDownKeyInput() {
       this.focusedIndex = 0;
