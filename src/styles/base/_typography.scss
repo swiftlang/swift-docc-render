@@ -140,7 +140,7 @@ a {
   // Inline links need to be underline under WCAG 2.2 compliance
   // More info: https://www.w3.org/WAI/WCAG22/Techniques/failures/F73
   &:hover, &:focus, &.inline-link {
-    text-decoration: underline;
+    @include underline-text;
   }
 
   &:active {

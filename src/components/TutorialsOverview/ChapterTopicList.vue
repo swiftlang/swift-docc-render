@@ -178,7 +178,7 @@ $circle-diameter: $circle-radius * 2;
     text-decoration: none;
 
     .link {
-      text-decoration: underline;
+      @include underline-text;
     }
   }
 }
