@@ -24,7 +24,7 @@
     "assessment": {
       "check-your-understanding": "Check Your Understanding",
       "success-message": "Great job, you've answered all the questions for this tutorial.",
-      "answer-number-is": "Answer number {index} is",
+      "answer-result": "Answer {answer} is {result}",
       "correct": "correct",
       "incorrect": "incorrect",
       "next-question": "Next question"
