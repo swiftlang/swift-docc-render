@@ -17,6 +17,7 @@ import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 
 const {
   ConditionalConstraints,
+  Reference,
   WordBreak,
 } = RelationshipsList.components;
 
@@ -95,21 +96,15 @@ describe('RelationshipsList', () => {
     expect(wrapper.classes()).toContain(multipleLinesClass);
   });
 
-  it('renders a list item with word-break links for each resolved symbol', () => {
+  it('renders a list item with `Reference` links for each resolved symbol', () => {
     const items = wrapper.findAll('li');
     expect(items.length).toBe(propsData.symbols.length);
 
     items.wrappers.slice(0, items.length - 1).forEach((item, i) => {
-      const link = item.find(RouterLinkStub);
+      const link = item.find(Reference);
       expect(link.exists()).toBe(true);
       expect(link.classes('link')).toBe(true);
-      // prepends the existing query parameters as well
-      expect(link.props('to')).toBe(`${propsData.symbols[i].url}?language=objc`);
-
-      const wb = link.find(WordBreak);
-      expect(wb.exists()).toBe(true);
-      expect(wb.attributes('tag')).toBe('code');
-      expect(wb.text()).toBe(propsData.symbols[i].title);
+      expect(link.props('url')).toBe(propsData.symbols[i].url);
     });
   });
 
