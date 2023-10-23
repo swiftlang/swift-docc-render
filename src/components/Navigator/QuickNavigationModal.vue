@@ -17,10 +17,6 @@
   >
     <div
       class="quick-navigation"
-      @keydown.down.exact.prevent="focusNext"
-      @keydown.up.exact.prevent="focusPrev"
-      @keydown.enter.exact="handleKeyEnter"
-      @click.self="closeQuickNavigationModal"
     >
       <div
         class="quick-navigation__container"
@@ -34,7 +30,8 @@
           focusInputWhenEmpty
           preventBorderStyle
           selectInputOnFocus
-          @input="focusedIndex = 0"
+          @keydown.down.exact.native.prevent="handleDownKeyInput"
+          @keydown.enter.exact.native="handleKeyEnter"
           @focus="focusedInput = true"
           @blur="focusedInput = false"
         >
@@ -63,20 +60,22 @@
             <div
               v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
               class="quick-navigation__refs"
+              @keydown.down.exact.prevent="focusNext"
+              @keydown.up.exact.prevent="focusPrev"
+              @keydown.enter.exact="handleKeyEnter"
             >
               <Reference
                 v-for="(symbol, index) in filteredSymbols"
                 class="quick-navigation__reference"
                 :key="symbol.uid"
                 :url="symbol.path"
+                :tabindex="focusedIndex === index ? '0' : '-1'"
                 @click.native="closeQuickNavigationModal"
-                @focus.native="focusIndex(index)"
+                ref="match"
               >
                 <div
                   class="quick-navigation__symbol-match"
-                  ref="match"
                   role="list"
-                  :class="{ 'selected' : index == focusedIndex }"
                 >
                   <div class="symbol-info">
                     <div class="symbol-name">
@@ -253,6 +252,7 @@ export default {
       }
       return filteredSymbols[nextIndex];
     },
+    focusedMatchElement: ({ $refs, focusedIndex }) => $refs.match[focusedIndex].$el,
     previewJSON: ({
       cachedSymbolResults,
       selectedSymbol,
@@ -278,7 +278,11 @@ export default {
   },
   watch: {
     userInput: 'debounceInput',
-    focusedIndex: 'scrollIntoView',
+    focusedIndex() {
+      if (this.focusedInput) return;
+      this.scrollIntoView();
+      this.focusReference();
+    },
     selectedSymbol: 'fetchSelectedSymbolData',
     $route: 'closeQuickNavigationModal',
   },
@@ -351,8 +355,15 @@ export default {
         return 0;
       });
     },
+    focusReference() {
+      this.focusedMatchElement.focus();
+    },
+    handleDownKeyInput() {
+      this.focusedIndex = 0;
+      this.focusReference();
+    },
     scrollIntoView() {
-      this.$refs.match[this.focusedIndex].scrollIntoView({
+      this.focusedMatchElement.scrollIntoView({
         block: 'nearest',
       });
     },
@@ -495,9 +506,6 @@ $input-horizontal-spacing: rem(15px);
       margin: rem(15px) auto;
       width: fit-content;
     }
-    .selected {
-      background-color: var(--color-navigator-item-hover);
-    }
   }
   &__refs {
     flex: 1;
@@ -510,17 +518,25 @@ $input-horizontal-spacing: rem(15px);
     position: sticky;
     top: 0;
   }
-  &__reference:hover {
-    text-decoration: none;
+  &__reference {
+    display: block;
+    padding: rem(10px) rem(15px);
+
+    &:hover {
+      text-decoration: none;
+      background-color: var(--color-navigator-item-hover);
+    }
+
+    &:focus {
+      margin: 0 rem(5px);
+      padding: rem(10px) rem(10px);
+      background-color: var(--color-navigator-item-hover);
+    }
   }
   &__symbol-match {
     display: flex;
     height: rem(40px);
-    padding: rem(10px) rem(15px);
     color: var(--color-figure-gray);
-    &:hover {
-      background-color: var(--color-navigator-item-hover);
-    }
     .symbol-info {
       margin: auto;
       width: 100%;

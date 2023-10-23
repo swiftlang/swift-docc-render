@@ -38,11 +38,6 @@ describe('QuickNavigationModal', () => {
     $router: {
       push: jest.fn(),
     },
-    $refs: {
-      match: {
-        scrollIntoView: jest.fn(),
-      },
-    },
   };
   const symbols = [
     {
@@ -112,11 +107,11 @@ describe('QuickNavigationModal', () => {
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
   });
 
-  it('it renders the Quick navigation modal', () => {
+  it('renders the Quick navigation modal', () => {
     expect(wrapper.find('.quick-navigation').exists()).toBe(true);
   });
 
-  it('add the focus class on container if filter input is focused', () => {
+  it('adds the focus class on container if filter input is focused', () => {
     wrapper.find(FilterInput).vm.$emit('focus');
     expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(true);
   });
@@ -126,7 +121,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(false);
   });
 
-  it('it filters the symbols according to debouncedInput value', async () => {
+  it('filters the symbols according to debouncedInput value', async () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -138,7 +133,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.findAll(QuickNavigationHighlighter).length).toBe(filteredSymbols.length);
   });
 
-  it('it renders the filter input', () => {
+  it('renders the filter input', () => {
     expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
     const filter = wrapper.find(FilterInput);
     expect(filter.props()).toEqual({
@@ -159,7 +154,7 @@ describe('QuickNavigationModal', () => {
     });
   });
 
-  it('it renders the match list on user input', async () => {
+  it('renders the match list on user input', async () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -169,7 +164,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find('.quick-navigation__refs').attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
   });
 
-  it('it renders the `no results found` string when no symbols are found given an input', () => {
+  it('renders the `no results found` string when no symbols are found given an input', () => {
     wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
@@ -180,7 +175,7 @@ describe('QuickNavigationModal', () => {
     expect(noResultsWrapper.text()).toBe('No results found.');
   });
 
-  it('it renders symbol matches with the corresponding symbol icon', () => {
+  it('renders symbol matches with the corresponding symbol icon', () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -191,7 +186,7 @@ describe('QuickNavigationModal', () => {
     expect(matchWrapper.at(1).find(TopicTypeIcon).props().type).toBe(filteredSymbols[1].type);
   });
 
-  it('it renders a symbol match with the corresponding symbol title', () => {
+  it('renders a symbol match with the corresponding symbol title', () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -208,7 +203,7 @@ describe('QuickNavigationModal', () => {
     ).toBe(filteredSymbols[1].title);
   });
 
-  it('it redirects to the symbol path on symbol-match selection', async () => {
+  it('redirects to the symbol path on symbol-match selection', async () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -217,7 +212,7 @@ describe('QuickNavigationModal', () => {
     expect(referencesWrapper.at(1).props().url).toBe(filteredSymbols[1].path);
   });
 
-  it('it highlights the matching substring of the symbol title', async () => {
+  it('highlights the matching substring of the symbol title', async () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -242,7 +237,16 @@ describe('QuickNavigationModal', () => {
     ).toBe(symbolsMatchBlueprint[3].subMatchString);
   });
 
-  it('it debounces user input before filtering the symbols', () => {
+  it('adds tabindex="0" when reference index is equal to focusedIndex', () => {
+    wrapper.setData({
+      debouncedInput: inputValue,
+      focusedIndex: 1,
+    });
+    expect(wrapper.findAll({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
+    expect(wrapper.findAll({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
+  });
+
+  it('debounces user input before filtering the symbols', () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -253,7 +257,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
   });
 
-  it('it triggers new filtering on every debounce input change', () => {
+  it('triggers new filtering on every debounce input change', () => {
     const fuzzyMatch = jest.spyOn(wrapper.vm, 'fuzzyMatch');
     wrapper.setData({
       debouncedInput: inputValue,
@@ -270,7 +274,7 @@ describe('QuickNavigationModal', () => {
     expect(fuzzyMatch).toHaveBeenCalledTimes(4);
   });
 
-  it('it matches the smallest matching substring from a symbol title', () => {
+  it('matches the smallest matching substring from a symbol title', () => {
     const customSymbols = [
       {
         title: 'foofooxyzbarbar',
@@ -291,20 +295,17 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.find(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
   });
 
-  it('it access a symbol on `enter` key', async () => {
+  it('access a symbol on `enter` key', () => {
     const handleKeyEnter = jest.spyOn(wrapper.vm, 'handleKeyEnter');
     wrapper.setData({
       debouncedInput: inputValue,
     });
-    await wrapper.find('.quick-navigation').trigger('keydown.enter');
-    wrapper.setData({
-      debouncedInput: inputValue,
-    });
-    await wrapper.find(FilterInput).trigger('keydown.enter');
+    wrapper.find('.quick-navigation__refs').trigger('keydown.enter');
+    wrapper.find(FilterInput).trigger('keydown.enter');
     expect(handleKeyEnter).toHaveBeenCalledTimes(2);
   });
 
-  it('it renders the symbol tree of the resulting symbol', async () => {
+  it('renders the symbol tree of the resulting symbol', async () => {
     wrapper = shallowMount(QuickNavigationModal, {
       propsData: {
         children: [
@@ -331,13 +332,13 @@ describe('QuickNavigationModal', () => {
     expect(symbolTree.text()).toBe('bar');
   });
 
-  it('it removes space characters from the debounced input string', () => {
+  it('removes space characters from the debounced input string', () => {
     wrapper.setData({
       debouncedInput: 'bar foo',
     });
     expect(wrapper.vm.processedUserInput).toBe('barfoo');
   });
-  it('it removes filtered symbols with duplicate paths', () => {
+  it('removes filtered symbols with duplicate paths', () => {
     const symbolsWithRepeatedPaths = [
       {
         title: 'foo',
