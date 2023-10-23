@@ -12,7 +12,8 @@
   <div class="quiz">
     <ContentNode class="title" :content="title" />
     <ContentNode class="question-content" v-if="content" :content="content" />
-    <div class="choices">
+    <fieldset class="choices">
+      <legend class="visuallyhidden">{{ $t('tutorials.assessment.legend') }}</legend>
       <label
         v-for="(choice, index) in choices"
         :key="index"
@@ -26,21 +27,21 @@
             <p class="answer" v-if="choice.reaction">{{ choice.reaction }}</p>
           </template>
       </label>
-      <div aria-live="assertive" class="visuallyhidden">
-        <i18n
-          v-if="checkedIndex != null"
-          path="tutorials.assessment.answer-result"
-          tag="span"
-        >
-          <template #answer>
-            <ContentNode class="question" :content="choices[checkedIndex].content" />
-          </template>
-          <template #result>{{ choices[checkedIndex].isCorrect
-            ? $t('tutorials.assessment.correct')
-            : $t('tutorials.assessment.incorrect')
-          }}</template>
-        </i18n>
-      </div>
+    </fieldset>
+    <div aria-live="assertive" class="visuallyhidden">
+      <i18n
+        v-if="checkedIndex != null"
+        path="tutorials.assessment.answer-result"
+        tag="span"
+      >
+        <template #answer>
+          <ContentNode class="question" :content="choices[checkedIndex].content" />
+        </template>
+        <template #result>{{ choices[checkedIndex].isCorrect
+          ? $t('tutorials.assessment.correct')
+          : $t('tutorials.assessment.incorrect')
+        }}</template>
+      </i18n>
     </div>
     <div class="controls">
       <ButtonLink

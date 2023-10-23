@@ -27,7 +27,8 @@
       "answer-result": "Answer {answer} is {result}",
       "correct": "correct",
       "incorrect": "incorrect",
-      "next-question": "Next question"
+      "next-question": "Next question",
+      "legend": "Possible answers"
     },
     "project-files": "Project files",
     "estimated-time": "Estimated Time",
