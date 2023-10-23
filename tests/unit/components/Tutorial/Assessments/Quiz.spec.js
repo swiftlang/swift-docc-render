@@ -124,9 +124,13 @@ describe('Quiz', () => {
       expect(node.props('content')).toEqual(propsData.content);
     });
 
-    it('renders a ul.choices', () => {
-      const choices = wrapper.find('div.choices');
+    it('renders a fieldset element with choices', () => {
+      const choices = wrapper.find('fieldset.choices');
       expect(choices.exists()).toBe(true);
+
+      const legend = choices.find('legend');
+      expect(legend.exists()).toBe(true);
+      expect(legend.text()).toBe('tutorials.assessment.legend');
 
       const items = choices.findAll('label.choice');
       expect(items.length).toBe(propsData.choices.length);
