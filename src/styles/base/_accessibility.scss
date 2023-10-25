@@ -12,6 +12,8 @@ $-skip-nav-position: 0;
 $global-nav-height: 44px;
 
 #skip-nav {
+  text-decoration: none;
+
   @include showonfocus(
     $-skip-nav-position,
     $-skip-nav-position,

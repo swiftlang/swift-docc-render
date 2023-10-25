@@ -156,6 +156,7 @@ ul {
   margin: 5px 0;
   transition: color 0.15s ease-in;
   max-width: 100%;
+  text-decoration: none;
 }
 
 .active .base-link {
