@@ -10,7 +10,6 @@
 
 <template>
   <BaseNavigatorCardItem
-    class="navigator-card-item"
     :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
     :data-nesting-index="item.depth"
@@ -316,6 +315,7 @@ $chevron-width: $nav-card-horizontal-spacing;
 }
 
 .leaf-link {
+  text-decoration: none;
   color: var(--color-figure-gray);
   text-overflow: ellipsis;
   overflow: hidden;

@@ -67,6 +67,9 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
 
   @include on-keyboard-focus-within() {
     @include focus-outline(-4px);
+    &:not(.is-group) {
+      background: var(--color-navigator-item-hover);
+    }
   }
 
   &.active {
