@@ -177,7 +177,7 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.vm.debouncedInput).toBe(nonResultsInputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(0);
     expect(noResultsWrapper.exists()).toBe(true);
-    expect(noResultsWrapper.text()).toBe('No results found.');
+    expect(noResultsWrapper.text()).toBe('navigator.no-results');
   });
 
   it('it renders symbol matches with the corresponding symbol icon', () => {
