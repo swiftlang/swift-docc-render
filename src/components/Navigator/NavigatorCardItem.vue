@@ -315,7 +315,6 @@ $chevron-width: $nav-card-horizontal-spacing;
 }
 
 .leaf-link {
-  text-decoration: none;
   color: var(--color-figure-gray);
   text-overflow: ellipsis;
   overflow: hidden;

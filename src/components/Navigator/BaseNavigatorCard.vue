@@ -146,7 +146,6 @@ $close-icon-padding: 5px;
     align-items: center;
     height: $nav-height;
     white-space: nowrap;
-    text-decoration: none;
 
     .card-link {
       color: var(--color-text);
