@@ -108,3 +108,34 @@ export function getIntrinsicDimensions(src) {
     });
   });
 }
+
+/**
+ * Asset orientation can be:
+ * * "landscape" — width > height
+ * * "portrait" — width < height
+ * * "square" — width === height
+ */
+export const AssetOrientation = {
+  landscape: 'landscape',
+  portrait: 'portrait',
+  square: 'square',
+};
+
+/**
+ * Returns the orientation of an asset.
+ *
+ * The asset needs to be loaded to check its dimensions and determine this
+ * orientation.
+ *
+ * @param {String} src
+ * @return {AssetOrientation}
+ */
+export async function getOrientation(src) {
+  const { width, height } = await getIntrinsicDimensions(src);
+  if (width === height) {
+    return AssetOrientation.square;
+  }
+  return width > height
+    ? AssetOrientation.landscape
+    : AssetOrientation.portrait;
+}

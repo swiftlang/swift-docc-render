@@ -7,7 +7,12 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
-import { pathJoin, normalizeRelativePath } from 'docc-render/utils/assets';
+import {
+  AssetOrientation,
+  pathJoin,
+  normalizeRelativePath,
+  getOrientation,
+} from 'docc-render/utils/assets';
 
 let normalizePath;
 const absoluteBaseUrl = 'https://foo.com';
@@ -90,6 +95,39 @@ describe('assets', () => {
 
     it('does not add a `/` if path starts it', () => {
       expect(normalizeRelativePath('/foo')).toBe('/foo');
+    });
+  });
+
+  describe('getOrientation', () => {
+    // simulate immediately loading an image with the given dimensions for
+    // testing purposes
+    function mockLoadedImage(width, height) {
+      Object.defineProperty(global.Image.prototype, 'onload', {
+        set(onload) {
+          this.width = width;
+          this.height = height;
+          setTimeout(onload);
+        },
+        configurable: true,
+      });
+    }
+
+    it('returns landscape for assets that are wider than they are tall', async () => {
+      mockLoadedImage(300, 200);
+      const orientation = await getOrientation('foo');
+      expect(orientation).toBe(AssetOrientation.landscape);
+    });
+
+    it('returns portrait for assets that are taller than they are wide', async () => {
+      mockLoadedImage(200, 300);
+      const orientation = await getOrientation('foo');
+      expect(orientation).toBe(AssetOrientation.portrait);
+    });
+
+    it('returns square for assets with equal width and height', async () => {
+      mockLoadedImage(100, 100);
+      const orientation = await getOrientation('foo');
+      expect(orientation).toBe(AssetOrientation.square);
     });
   });
 });
