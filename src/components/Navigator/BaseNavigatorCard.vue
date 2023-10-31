@@ -14,15 +14,6 @@
       <div class="navigator-card-inner">
         <div class="head-wrapper">
           <div class="head-inner">
-            <button
-              :id="SIDEBAR_HIDE_BUTTON_ID"
-              class="close-card"
-              :class="{ 'hide-on-large': !allowHiding }"
-              :aria-label="$t('navigator.close-navigator')"
-              @click="handleHideClick"
-            >
-              <SidenavIcon class="icon-inline close-icon" />
-            </button>
             <Reference
               :id="INDEX_ROOT_KEY"
               :url="technologyPath"
@@ -34,6 +25,15 @@
               </h2>
               <Badge v-if="isTechnologyBeta" variant="beta" />
             </Reference>
+            <button
+              :id="SIDEBAR_HIDE_BUTTON_ID"
+              class="close-card"
+              :class="{ 'hide-on-large': !allowHiding }"
+              :aria-label="$t('navigator.close-navigator')"
+              @click="handleHideClick"
+            >
+              <SidenavIcon class="icon-inline close-icon" />
+            </button>
           </div>
         </div>
         <slot name="body" className="card-body"/>
@@ -170,6 +170,12 @@ $close-icon-padding: 5px;
     &:hover {
       background: var(--color-navigator-item-hover);
       text-decoration: none;
+    }
+
+    &:focus .card-link {
+      .fromkeyboard & {
+        @include focus-outline();
+      }
     }
 
     @include safe-area-left-set(padding-left, var(--card-horizontal-spacing));
