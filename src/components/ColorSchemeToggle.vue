@@ -9,11 +9,11 @@
 -->
 
 <template>
-  <div
-    :aria-label="$t('color-scheme.select')"
+  <fieldset
     class="color-scheme-toggle"
     role="radiogroup"
   >
+    <legend class="visuallyhidden">{{ $t('color-scheme.select') }}</legend>
     <label
       v-for="option in options"
       :key="option"
@@ -26,7 +26,7 @@
       />
       <div class="text">{{ $t(`color-scheme.${option}`) }}</div>
     </label>
-  </div>
+  </fieldset>
 </template>
 
 <script>
