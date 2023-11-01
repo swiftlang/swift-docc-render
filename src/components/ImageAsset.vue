@@ -90,6 +90,12 @@ function constructAttributes(sources) {
   return attrs;
 }
 
+const Orientation = {
+  landscape: 'landscape',
+  portrait: 'portrait',
+  square: 'square',
+};
+
 export default {
   name: 'ImageAsset',
   mixins: [imageAsset],
@@ -102,6 +108,7 @@ export default {
     appState: AppStore.state,
     fallbackImageSrcSet: null,
     optimalWidth: null,
+    optimalHeight: null,
   }),
   computed: {
     allVariants: ({
@@ -121,6 +128,21 @@ export default {
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto,
     prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark,
+    orientation: ({
+      optimalWidth,
+      optimalHeight,
+    }) => {
+      if (!optimalWidth || !optimalHeight) {
+        return null;
+      }
+      if (optimalWidth > optimalHeight) {
+        return Orientation.landscape;
+      }
+      if (optimalWidth < optimalHeight) {
+        return Orientation.portrait;
+      }
+      return Orientation.square;
+    },
   },
   props: {
     alt: {
@@ -142,7 +164,7 @@ export default {
       // image fails to load for any reason
       this.fallbackImageSrcSet = `${noImage} 2x`;
     },
-    async calculateOptimalWidth() {
+    async calculateOptimalDimensions() {
       // Find the URL for the image currently being displayed, which may vary
       // depending on the color scheme and pixel density of the display device,
       // and calculate its optimal width for HTML/CSS rendering purposes.
@@ -173,8 +195,9 @@ export default {
       // display purposes so that a `width` can be assigned to the `img` tag to
       // ensure that the image looks the same size for all devices
       const optimalWidth = intrinsicDimensions.width / currentVariantDensity;
+      const optimalHeight = intrinsicDimensions.height / currentVariantDensity;
 
-      return optimalWidth;
+      return { width: optimalWidth, height: optimalHeight };
     },
     // If the JSON data vended by the server already contains an optimal display
     // size for this image, no additional work needs to be done.
@@ -193,7 +216,9 @@ export default {
       }
 
       try {
-        this.optimalWidth = await this.calculateOptimalWidth();
+        const dimensions = await this.calculateOptimalDimensions();
+        this.optimalWidth = dimensions.width;
+        this.optimalHeight = dimensions.height;
       } catch {
         console.error('Unable to calculate optimal image width');
       }
@@ -202,6 +227,11 @@ export default {
   mounted() {
     if (!this.shouldCalculateOptimalWidth) return;
     this.$refs.img.addEventListener('load', this.optimizeImageSize);
+  },
+  watch: {
+    orientation(o) {
+      this.$emit('orientationUpdate', o);
+    },
   },
 };
 </script>

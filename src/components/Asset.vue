@@ -114,7 +114,9 @@ export default {
     },
     assetListeners() {
       return {
-        [AssetTypes.image]: null,
+        [AssetTypes.image]: {
+          orientationUpdate: orientation => this.$emit('orientationUpdate', orientation),
+        },
         [AssetTypes.video]: {
           ended: () => this.$emit('videoEnded'),
         },

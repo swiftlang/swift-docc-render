@@ -38,6 +38,7 @@
             :identifier="visibleAsset.media"
             showsReplayButton
             :showsVideoControls="false"
+            @orientationUpdate="handleOrientationUpdate"
             ref="asset"
           />
         </div>
@@ -105,6 +106,7 @@ export default {
         media,
         code,
         runtimePreview,
+        orientation: null,
       },
       activeStep: firstStepIndex,
     };
@@ -112,6 +114,7 @@ export default {
   computed: {
     assetContainerClasses() {
       return {
+        'for-landscape-media': !!this.visibleAsset.media && this.visibleAsset.orientation === 'landscape',
         'for-step-code': !!this.visibleAsset.code,
         ide: this.isTargetIDE,
       };
@@ -191,11 +194,9 @@ export default {
       } = this.content[key];
 
       this.activeStep = key;
-      this.visibleAsset = {
-        code,
-        media,
-        runtimePreview,
-      };
+      this.visibleAsset.code = code;
+      this.visibleAsset.media = media;
+      this.visibleAsset.runtimePreview = runtimePreview;
     },
     onRuntimePreviewToggle(value) {
       this.$emit('runtime-preview-toggle', value);
@@ -252,6 +253,9 @@ export default {
         this.onReverseIntoLastStep();
       }
       this.onFocus(index);
+    },
+    handleOrientationUpdate(orientation) {
+      this.visibleAsset.orientation = orientation;
     },
   },
   props: {
