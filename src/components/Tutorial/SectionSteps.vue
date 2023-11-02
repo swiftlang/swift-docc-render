@@ -430,8 +430,10 @@ $rhs-col-width-max: 921px;
     }
 
     :deep(img[data-orientation="landscape"]) {
-      // $rhs-col-width - $media-spacing
-      max-width: calc(50vw + #{$rhs-center-overlap} - #{$media-spacing});;
+      max-width: min(
+        #{$rhs-col-width-max - ($media-spacing * 2)},
+        calc(50vw + #{$rhs-center-overlap} - #{$media-spacing})
+      );
     }
 
     :deep(.video-replay-container) {
