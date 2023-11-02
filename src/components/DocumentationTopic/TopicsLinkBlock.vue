@@ -22,7 +22,7 @@
         :role="topic.role"
         :imageOverride="references[iconOverride]"
       />
-      <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
+      <DecoratedTopicTitle v-if="topic.fragments && hasHash" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
       <span v-if="change" class="visuallyhidden">- {{ $t(changeName) }}</span>
     </component>
@@ -175,6 +175,12 @@ export default {
       'has-adjacent-elements': hasAbstractElements,
       ...(hasAbstractElements && changesClasses),
     }),
+    hasHash({ topic }) {
+      // valid hash has less than 5 characters and contains only lower case letters or numbers
+      const { identifier } = topic;
+      const hash = identifier.split('-').pop();
+      return hash.length <= 5 ? /^[a-z0-9]*$/.test(hash) : false;
+    },
     /**
      * Returns object with classes for API changes,
      * if `changes` are present.
