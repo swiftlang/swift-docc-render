@@ -371,6 +371,13 @@ $rhs-col-width-max: 921px;
     top: 0;
   }
 
+  &.for-landscape-media {
+    .step-asset :deep(img) {
+      // $rhs-col-width - $media-spacing
+      max-width: calc(50vw + #{$rhs-center-overlap} - #{$media-spacing});;
+    }
+  }
+
   @include breakpoints-from(medium) {
     display: grid;
 
