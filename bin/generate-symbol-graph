@@ -92,24 +92,24 @@ const Token = {
   typeIdentifier: spelling => ({ kind: 'typeIdentifier', spelling }),
 };
 
-function createDeclaration(componentName, slots = []) {
-  if (!slots.length) {
+function createDeclaration(componentName, slotNames = []) {
+  if (!slotNames.length) {
     return [
       Token.text('<'),
       Token.typeIdentifier(componentName),
       Token.text(' />'),
     ];
   }
-  const isDefault = slot => slot.name === 'default';
+  const isDefault = name => name === 'default';
   return [
     Token.text('<'),
     Token.typeIdentifier(componentName),
     Token.text('>\n'),
-    ...slots.flatMap(slot => (isDefault(slot) ? ([
+    ...slotNames.flatMap(name => (isDefault(name) ? ([
       Token.text('  <slot />\n'),
     ]) : ([
       Token.text('  <slot name='),
-      Token.string(`"${slot.name}"`),
+      Token.string(`"${name}"`),
       Token.text(' />\n'),
     ]))),
     Token.text('</'),
@@ -237,7 +237,8 @@ function createDeclaration(componentName, slots = []) {
           }
           return memo;
         }, []);
-        const declarationFragments = createDeclaration(componentName, slots);
+        const slotNames = [...new Set(slots.map(slot => slot.name))];
+        const declarationFragments = createDeclaration(componentName, slotNames);
 
         let docComment;
         let description;
