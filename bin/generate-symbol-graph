@@ -227,6 +227,8 @@ function createDeclaration(componentName, slotNames = []) {
           };
         }
 
+        // TODO: eventually we should also capture slots that are expressed in
+        // a render function instead of the template
         const slots = slotsQuery.captures(vueTree.rootNode).reduce((memo, capture) => {
           if (capture.name === 'tag') {
             memo.push({ name: 'default' });
