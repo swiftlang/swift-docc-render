@@ -350,8 +350,8 @@ describe('ImageAsset', () => {
       },
     });
 
-    const calculateOptimalWidthSpy = jest.spyOn(wrapper.vm, 'calculateOptimalWidth')
-      .mockReturnValue(99);
+    const calculateOptimalDimensionsSpy = jest.spyOn(wrapper.vm, 'calculateOptimalDimensions')
+      .mockReturnValue({ width: 99 });
     const img = wrapper.find('img');
 
     expect(img.attributes('width')).toBeFalsy();
@@ -362,7 +362,7 @@ describe('ImageAsset', () => {
     await flushPromises();
     expect(img.attributes('width')).toBeFalsy();
     expect(img.attributes('height')).toBeFalsy();
-    expect(calculateOptimalWidthSpy).toHaveBeenCalledTimes(0);
+    expect(calculateOptimalDimensionsSpy).toHaveBeenCalledTimes(0);
   });
 
   it('allows disabling the optimal-width calculation', async () => {

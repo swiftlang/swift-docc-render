@@ -230,10 +230,5 @@ export default {
     if (!this.shouldCalculateOptimalWidth) return;
     this.$refs.img.addEventListener('load', this.optimizeImageSize);
   },
-  watch: {
-    orientation(o) {
-      this.$emit('orientationUpdate', o);
-    },
-  },
 };
 </script>
