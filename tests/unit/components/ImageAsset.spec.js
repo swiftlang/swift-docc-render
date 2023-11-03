@@ -58,6 +58,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('alt')).toBe(alt);
     expect(image.attributes('decoding')).toBe('async');
     expect(image.attributes('loading')).toBe('lazy');
+    expect(image.attributes('data-orientation')).toBeFalsy();
   });
 
   it('renders an image that has one variant with no appearance trait', () => {
@@ -331,6 +332,7 @@ describe('ImageAsset', () => {
     await flushPromises();
     expect(img.attributes('width')).toBe(`${optimalDisplayWidth}`);
     expect(img.attributes('height')).toBe('auto');
+    expect(img.attributes('data-orientation')).toBe('square');
   });
 
   it('does not calculate widths, if the element unmounts just as it gets loaded', async () => {
