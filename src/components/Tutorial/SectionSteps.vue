@@ -429,13 +429,6 @@ $rhs-col-width-max: 921px;
       min-height: $asset-min-height;
     }
 
-    :deep(img[data-orientation="landscape"]) {
-      max-width: min(
-        #{$rhs-col-width-max - ($media-spacing * 2)},
-        calc(50vw + #{$rhs-center-overlap} - #{$media-spacing})
-      );
-    }
-
     :deep(.video-replay-container) {
       min-height: $asset-min-height;
 
@@ -444,6 +437,13 @@ $rhs-col-width-max: 921px;
       video {
         min-height: $asset-min-height - 40px;
       }
+    }
+
+    :deep([data-orientation="landscape"]) {
+      max-width: min(
+         #{$rhs-col-width-max - ($media-spacing * 2)},
+         calc(50vw + #{$rhs-center-overlap} - #{$media-spacing})
+      );
     }
   }
 
@@ -464,6 +464,10 @@ $rhs-col-width-max: 921px;
         background-color: var(--background, var(--color-step-background));
       }
     }
+  }
+
+  &:has([data-orientation="landscape"]) {
+    width: unset;
   }
 }
 
