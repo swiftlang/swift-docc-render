@@ -24,7 +24,7 @@
       :muted="muted"
       :width="optimalWidth"
       playsinline
-      @loadedmetadata="getOrientation"
+      @loadedmetadata="setOrientation"
       @playing="$emit('playing')"
       @pause="$emit('pause')"
       @ended="$emit('ended')"
@@ -42,10 +42,10 @@
 
 <script>
 import {
-  Orientation,
   separateVariantsByAppearance,
   normalizePath,
   getIntrinsicDimensions,
+  getOrientation,
   extractDensities,
 } from 'docc-render/utils/assets';
 import AppStore from 'docc-render/stores/AppStore';
@@ -175,19 +175,9 @@ export default {
       const { width } = await getIntrinsicDimensions(path);
       this.optimalWidth = width / currentVariantDensity;
     },
-    getOrientation() {
+    setOrientation() {
       const { videoWidth: width, videoHeight: height } = this.$refs.video;
-      if (!width || !height) {
-        return;
-      }
-
-      if (width > height) {
-        this.orientation = Orientation.landscape;
-      } else if (width < height) {
-        this.orientation = Orientation.portrait;
-      } else {
-        this.orientation = Orientation.square;
-      }
+      this.orientation = getOrientation(width, height);
     },
   },
 };

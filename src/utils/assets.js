@@ -117,3 +117,24 @@ export const Orientation = {
   portrait: 'portrait',
   square: 'square',
 };
+
+/*
+ * Returns an orientation corresponding to width and height dimensions.
+ * @param {Number} width
+ * @param {Number} height
+ * @returns {Orientation}
+ */
+export function getOrientation(width, height) {
+  if (!width || !height) {
+    return null;
+  }
+
+  if (width < height) {
+    return Orientation.portrait;
+  }
+  if (width > height) {
+    return Orientation.landscape;
+  }
+
+  return Orientation.square;
+}

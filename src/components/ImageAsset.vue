@@ -65,8 +65,8 @@ import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
 import {
-  Orientation,
   getIntrinsicDimensions,
+  getOrientation,
   normalizePath,
 } from 'docc-render/utils/assets';
 
@@ -131,18 +131,7 @@ export default {
     orientation: ({
       optimalWidth,
       optimalHeight,
-    }) => {
-      if (!optimalWidth || !optimalHeight) {
-        return null;
-      }
-      if (optimalWidth > optimalHeight) {
-        return Orientation.landscape;
-      }
-      if (optimalWidth < optimalHeight) {
-        return Orientation.portrait;
-      }
-      return Orientation.square;
-    },
+    }) => getOrientation(optimalWidth, optimalHeight),
   },
   props: {
     alt: {
