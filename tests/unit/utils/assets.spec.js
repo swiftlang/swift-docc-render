@@ -7,7 +7,12 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
-import { pathJoin, normalizeRelativePath } from 'docc-render/utils/assets';
+import {
+  Orientation,
+  pathJoin,
+  normalizeRelativePath,
+  getOrientation,
+} from 'docc-render/utils/assets';
 
 let normalizePath;
 const absoluteBaseUrl = 'https://foo.com';
@@ -90,6 +95,28 @@ describe('assets', () => {
 
     it('does not add a `/` if path starts it', () => {
       expect(normalizeRelativePath('/foo')).toBe('/foo');
+    });
+  });
+  describe('getOrientation', () => {
+    it('returns "square" width/height are equal', () => {
+      expect(getOrientation(42, 42)).toBe(Orientation.square);
+    });
+
+    it('returns "portrait" when width is lower than height', () => {
+      expect(getOrientation(200, 300)).toBe(Orientation.portrait);
+    });
+
+    it('returns "landscape" when width is larger than height', () => {
+      expect(getOrientation(300, 200)).toBe(Orientation.landscape);
+    });
+
+    it('returns `null` if not passed a width or height', () => {
+      expect(getOrientation()).toBeNull();
+      expect(getOrientation(42)).toBeNull();
+      expect(getOrientation(42, null)).toBeNull();
+      expect(getOrientation(42, undefined)).toBeNull();
+      expect(getOrientation(undefined, 42)).toBeNull();
+      expect(getOrientation(null, 42)).toBeNull();
     });
   });
 });
