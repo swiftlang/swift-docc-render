@@ -64,7 +64,11 @@ import imageAsset from 'docc-render/mixins/imageAsset';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
-import { getIntrinsicDimensions, normalizePath } from 'docc-render/utils/assets';
+import {
+  Orientation,
+  getIntrinsicDimensions,
+  normalizePath,
+} from 'docc-render/utils/assets';
 
 const RADIX_DECIMAL = 10;
 
@@ -91,12 +95,6 @@ function constructAttributes(sources) {
 
   return attrs;
 }
-
-const Orientation = {
-  landscape: 'landscape',
-  portrait: 'portrait',
-  square: 'square',
-};
 
 export default {
   name: 'ImageAsset',

@@ -18,11 +18,13 @@
     <video
       ref="video"
       :controls="showsControls"
+      :data-orientation="orientation"
       :autoplay="autoplays"
       :poster="normalisedPosterPath"
       :muted="muted"
       :width="optimalWidth"
       playsinline
+      @loadedmetadata="getOrientation"
       @playing="$emit('playing')"
       @pause="$emit('pause')"
       @ended="$emit('ended')"
@@ -40,6 +42,7 @@
 
 <script>
 import {
+  Orientation,
   separateVariantsByAppearance,
   normalizePath,
   getIntrinsicDimensions,
@@ -83,6 +86,7 @@ export default {
   data: () => ({
     appState: AppStore.state,
     optimalWidth: null,
+    orientation: null,
   }),
   computed: {
     DeviceFrameComponent: () => DeviceFrame,
@@ -170,6 +174,20 @@ export default {
       const currentVariantDensity = parseInt(density.match(/\d+/)[0], 10);
       const { width } = await getIntrinsicDimensions(path);
       this.optimalWidth = width / currentVariantDensity;
+    },
+    getOrientation() {
+      const { videoWidth: width, videoHeight: height } = this.$refs.video;
+      if (!width || !height) {
+        return;
+      }
+
+      if (width > height) {
+        this.orientation = Orientation.landscape;
+      } else if (width < height) {
+        this.orientation = Orientation.portrait;
+      } else {
+        this.orientation = Orientation.square;
+      }
     },
   },
 };

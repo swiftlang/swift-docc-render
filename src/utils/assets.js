@@ -108,3 +108,12 @@ export function getIntrinsicDimensions(src) {
     });
   });
 }
+
+/**
+ * Represents the orientation of an asset.
+ */
+export const Orientation = {
+  landscape: 'landscape',
+  portrait: 'portrait',
+  square: 'square',
+};
