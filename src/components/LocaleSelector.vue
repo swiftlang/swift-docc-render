@@ -68,7 +68,7 @@ select {
   cursor: pointer;
 
   &:hover {
-    text-decoration: underline;
+    @include underline-text;
   }
 }
 
