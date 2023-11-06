@@ -153,6 +153,11 @@ a, .content :deep(a) {
   }
 }
 
+:deep(.inline-link) {
+  // prevent underline in Tile links
+  text-decoration: none;
+}
+
 :deep(.content) {
   ul {
     list-style-type: none;
