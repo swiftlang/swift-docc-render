@@ -449,7 +449,10 @@ function renderNode(createElement, references) {
     }
     case InlineType.link:
       // Note: `InlineType.link` has been deprecated, but may still be found in old JSON.
-      return createElement('a', { attrs: { href: node.destination } }, (
+      return createElement('a', {
+        attrs: { href: node.destination },
+        class: 'inline-link',
+      }, (
         node.title
       ));
     case InlineType.reference: {
@@ -468,6 +471,7 @@ function renderNode(createElement, references) {
           titleStyle: reference.titleStyle,
           hasInlineFormatting: !!titleInlineContent,
         },
+        class: 'inline-link',
       }, (
         titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText
       ));

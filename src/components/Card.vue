@@ -174,7 +174,7 @@ $content-margin: 4px;
     text-decoration: none;
 
     .link {
-      text-decoration: underline;
+      @include underline-text;
     }
   }
 
