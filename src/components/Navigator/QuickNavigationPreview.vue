@@ -29,7 +29,7 @@
     </div>
     <!-- error, unavailable message -->
     <div v-else-if="state === STATE.error" class="unavailable">
-      <p>Preview unavailable</p>
+      <p>{{ $t('quicknav.preview-unavailable') }}</p>
     </div>
   </div>
 </template>

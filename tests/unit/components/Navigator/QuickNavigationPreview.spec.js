@@ -83,7 +83,7 @@ describe('QuickNavigationPreview', () => {
     expect(wrapper.contains('.loading')).toBe(false);
 
     const unavailable = wrapper.find('.unavailable p');
-    expect(unavailable.text()).toBe('Preview unavailable');
+    expect(unavailable.text()).toBe('quicknav.preview-unavailable');
   });
 
   it('renders loading UI when loading slowly', () => {
