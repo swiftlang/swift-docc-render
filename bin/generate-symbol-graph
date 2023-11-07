@@ -282,14 +282,16 @@ function createDeclaration(componentName, slotNames = []) {
   // each symbol so that it only contains items that map to real symbols (TODO:
   // this could probably be done in the first loop depending on the order that
   // `find` traverses the filesystem (breadth vs depth))
-  symbols.forEach((symbol) => {
+  for (let i = 0; i < symbols.length; i += 1) {
+    const symbol = symbols[i];
     const {
       identifier: { precise: childIdentifier },
       pathComponents,
     } = symbol;
     const parentPathComponents = pathComponents.slice(0, pathComponents.length - 1);
     if (!parentPathComponents.length) {
-      return;
+      // eslint-disable-next-line no-continue
+      continue;
     }
 
     const parentIdentifier = parentPathComponents.join('');
@@ -300,11 +302,11 @@ function createDeclaration(componentName, slotNames = []) {
         kind: 'memberOf',
       });
     } else {
-      symbol.pathComponents = pathComponents.filter((pathComponent, i) => (
-        identifiers.has(pathComponents.slice(0, i + 1).join(''))
+      symbol.pathComponents = pathComponents.filter((_, j) => (
+        identifiers.has(pathComponents.slice(0, j + 1).join(''))
       ));
     }
-  });
+  }
 
   const formatVersion = {
     major: 0,
