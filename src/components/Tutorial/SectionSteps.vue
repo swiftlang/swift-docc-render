@@ -442,7 +442,7 @@ $rhs-col-width-max: 921px;
     :deep([data-orientation="landscape"]) {
       max-width: min(
          #{$rhs-col-width-max - ($media-spacing * 2)},
-         calc(50vw + #{$rhs-center-overlap} - #{$media-spacing})
+         calc(50vw + #{$rhs-center-overlap} - #{$media-spacing * 2})
       );
     }
   }
