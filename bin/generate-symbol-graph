@@ -177,6 +177,8 @@ function createDeclaration(componentName, slotNames = []) {
      ]`);
 
   const symbols = [];
+  const relationships = [];
+  const identifiers = new Set();
 
   const rootDir = path.join(__dirname, '..');
   const componentsDir = path.join(rootDir, 'src/components');
@@ -271,7 +273,38 @@ function createDeclaration(componentName, slotNames = []) {
           declarationFragments,
           functionSignature,
         });
+        identifiers.add(preciseIdentifier);
       }
+    }
+  }
+
+  // construct parent/child relationships and fixup the `pathComponents` for
+  // each symbol so that it only contains items that map to real symbols (TODO:
+  // this could probably be done in the first loop depending on the order that
+  // `find` traverses the filesystem (breadth vs depth))
+  for (let i = 0; i < symbols.length; i += 1) {
+    const symbol = symbols[i];
+    const {
+      identifier: { precise: childIdentifier },
+      pathComponents,
+    } = symbol;
+    const parentPathComponents = pathComponents.slice(0, pathComponents.length - 1);
+    if (!parentPathComponents.length) {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    const parentIdentifier = parentPathComponents.join('');
+    if (identifiers.has(parentIdentifier)) {
+      relationships.push({
+        source: childIdentifier,
+        target: parentIdentifier,
+        kind: 'memberOf',
+      });
+    } else {
+      symbol.pathComponents = pathComponents.filter((_, j) => (
+        identifiers.has(pathComponents.slice(0, j + 1).join(''))
+      ));
     }
   }
 
@@ -288,7 +321,6 @@ function createDeclaration(componentName, slotNames = []) {
     name: 'SwiftDocCRender',
     platform: {},
   };
-  const relationships = [];
   const symbolGraph = {
     metadata,
     module: $module,
