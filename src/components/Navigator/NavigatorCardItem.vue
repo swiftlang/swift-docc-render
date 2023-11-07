@@ -10,7 +10,6 @@
 
 <template>
   <BaseNavigatorCardItem
-    class="navigator-card-item"
     :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
     :data-nesting-index="item.depth"
