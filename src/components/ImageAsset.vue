@@ -33,6 +33,7 @@
       v-bind="darkVariantAttributes"
       ref="img"
       decoding="async"
+      :data-orientation="orientation"
       :loading="loading"
       :alt="alt"
       :width="darkVariantAttributes.width || optimalWidth"
@@ -47,6 +48,7 @@
       v-bind="defaultAttributes"
       ref="img"
       decoding="async"
+      :data-orientation="orientation"
       :loading="loading"
       :alt="alt"
       :width="defaultAttributes.width || optimalWidth"
@@ -62,7 +64,11 @@ import imageAsset from 'docc-render/mixins/imageAsset';
 import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import noImage from 'theme/assets/img/no-image@2x.png';
-import { getIntrinsicDimensions, normalizePath } from 'docc-render/utils/assets';
+import {
+  getIntrinsicDimensions,
+  getOrientation,
+  normalizePath,
+} from 'docc-render/utils/assets';
 
 const RADIX_DECIMAL = 10;
 
@@ -102,6 +108,7 @@ export default {
     appState: AppStore.state,
     fallbackImageSrcSet: null,
     optimalWidth: null,
+    optimalHeight: null,
   }),
   computed: {
     allVariants: ({
@@ -121,6 +128,10 @@ export default {
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     prefersAuto: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.auto,
     prefersDark: ({ preferredColorScheme }) => preferredColorScheme === ColorScheme.dark,
+    orientation: ({
+      optimalWidth,
+      optimalHeight,
+    }) => getOrientation(optimalWidth, optimalHeight),
   },
   props: {
     alt: {
@@ -142,7 +153,7 @@ export default {
       // image fails to load for any reason
       this.fallbackImageSrcSet = `${noImage} 2x`;
     },
-    async calculateOptimalWidth() {
+    async calculateOptimalDimensions() {
       // Find the URL for the image currently being displayed, which may vary
       // depending on the color scheme and pixel density of the display device,
       // and calculate its optimal width for HTML/CSS rendering purposes.
@@ -173,8 +184,9 @@ export default {
       // display purposes so that a `width` can be assigned to the `img` tag to
       // ensure that the image looks the same size for all devices
       const optimalWidth = intrinsicDimensions.width / currentVariantDensity;
+      const optimalHeight = intrinsicDimensions.height / currentVariantDensity;
 
-      return optimalWidth;
+      return { width: optimalWidth, height: optimalHeight };
     },
     // If the JSON data vended by the server already contains an optimal display
     // size for this image, no additional work needs to be done.
@@ -193,7 +205,9 @@ export default {
       }
 
       try {
-        this.optimalWidth = await this.calculateOptimalWidth();
+        const dimensions = await this.calculateOptimalDimensions();
+        this.optimalWidth = dimensions.width;
+        this.optimalHeight = dimensions.height;
       } catch {
         console.error('Unable to calculate optimal image width');
       }

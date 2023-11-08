@@ -219,4 +219,14 @@ describe('VideoAsset', () => {
     expect(video.exists()).toBe(true);
     expect(video.find('source').attributes('src')).toBe(propsData.variants[0].url);
   });
+
+  it('sets the orientation after the metadata is loaded', () => {
+    const video = wrapper.find('video');
+    expect(video.attributes('data-orientation')).toBeFalsy();
+
+    wrapper.vm.$refs.video = { videoWidth: 300, videoHeight: 200 };
+
+    video.trigger('loadedmetadata');
+    expect(video.attributes('data-orientation')).toBe('landscape');
+  });
 });
