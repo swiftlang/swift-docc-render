@@ -53,7 +53,7 @@
             class="no-results"
           >
             <p>
-              No results found.
+              {{ $t('navigator.no-results') }}
             </p>
           </div>
           <template v-else>
