@@ -79,23 +79,23 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DeviceFram
 const phoneStyles = {
   '--device-dark-url': null,
   '--device-light-url': 'url(path/to/phone.svg)',
-  '--frame-aspect': 0.4898,
+  '--frame-aspect': 0.4897959183673469,
   '--frame-width': '240px',
-  '--screen-aspect': 0.4565,
-  '--screen-height': '93.8776%',
+  '--screen-aspect': 0.45652173913043476,
+  '--screen-height': '93.87755102040816%',
   '--screen-left': '6.25%',
-  '--screen-top': '3.0612%',
+  '--screen-top': '3.061224489795918%',
   '--screen-width': '87.5%',
 };
 const tabletStyles = {
   '--device-dark-url': null,
   '--device-light-url': 'url(path/to/tablet.svg)',
-  '--frame-aspect': 1.3913,
+  '--frame-aspect': 1.391304347826087,
   '--frame-width': '640px',
-  '--screen-aspect': 1.439,
-  '--screen-height': '89.1304%',
-  '--screen-left': '3.4375%',
-  '--screen-top': '4.7826%',
+  '--screen-aspect': 1.4390243902439024,
+  '--screen-height': '89.13043478260869%',
+  '--screen-left': '3.4375000000000004%',
+  '--screen-top': '4.782608695652174%',
   '--screen-width': '92.1875%',
 };
 
