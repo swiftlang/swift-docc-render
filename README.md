@@ -43,7 +43,7 @@ Follow [these steps](https://github.com/apple/swift-docc#using-docc-to-build-and
 
 You need to have [DocC](https://swift.org/documentation/docc) installed, in order to preview and build documentation. Read [Getting Started with Swift](https://www.swift.org/getting-started/) to learn more.
 
-To preview the docs, run `npm run docs:preview`. This will spawn a preview server on http://localhost:8000/documentation/doccrender.
+To preview the docs, run `npm run docs:preview`. This will spawn a preview server on http://localhost:8000/documentation/swiftdoccrender.
 
 To build the docs, run `npm run docs:build`.
 

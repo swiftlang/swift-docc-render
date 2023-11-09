@@ -1,8 +1,4 @@
-# Swift-DocC-Render
-
-@Metadata {
-  @TechnologyRoot
-}
+# ``SwiftDocCRender``
 
 A web renderer for DocC Archives produced by DocC.
 
@@ -16,8 +12,14 @@ DocC-Render is a Single Page Application (SPA for short), powered by [Vue.js](ht
 
 ## Topics
 
-### Contributing and Internals
+### Contributing and internals
 
 - <doc:Internals>
+
+### Commonly used components
+
+- ``ContentNode``
+- ``ContentNode/Reference``
+- ``WordBreak``
 
 <!-- Copyright (c) 2021 Apple Inc and the Swift Project authors. All Rights Reserved. -->

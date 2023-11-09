@@ -40,7 +40,8 @@ import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.
 
 /**
  * A basic dropdown component to use when a simple `select` element is sufficient.
- * For more advanced usages, {@see DropdownCustom}
+ *
+ * For more advanced usages, see ``DropdownCustom``
  */
 export default {
   name: 'BaseDropdown',

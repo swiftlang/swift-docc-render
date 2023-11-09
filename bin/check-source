@@ -33,7 +33,7 @@ for language in js-or-scss dist-js-or-css markup markdown; do
   reader=head
   case "$language" in
       js-or-scss)
-        exceptions=( -path "./dist/*" )
+        exceptions=( -path "./dist/*" -o -path "./docs/*" )
         matching_files=( -name '*.js' -o -name '*.scss' )
         cat > "$tmp" <<"EOF"
 /**
