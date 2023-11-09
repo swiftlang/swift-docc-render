@@ -65,7 +65,8 @@
       "view-api": "View API collection",
       "view-symbol": "View symbol",
       "view-sample-code": "View sample code"
-    }
+    },
+    "view-more": "View more"
   },
   "aside-kind": {
     "beta": "Beta",
@@ -200,6 +201,7 @@
     "button": {
       "label": "Open Quick Navigation",
       "title": "Click or type / for quick navigation"
-    }
+    },
+    "preview-unavailable": "Preview unavailable"
   }
 }
