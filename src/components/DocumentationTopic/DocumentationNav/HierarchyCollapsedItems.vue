@@ -143,6 +143,10 @@ $dropdown-vertical-offset: rem(7px);
   @include nav-in-breakpoint() {
     display: none;
   }
+
+  @media (scripting: none) {
+    display: none;
+  }
 }
 
 .hierarchy-collapsed-items .toggle {

@@ -440,6 +440,12 @@ export default {
 .topic-wrapper {
   flex: 1 1 auto;
   width: 100%;
+
+  @media (scripting: none) {
+    :deep(.sidebar) {
+      display: none;
+    }
+  }
 }
 
 .full-width-container {
