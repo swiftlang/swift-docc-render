@@ -18,11 +18,13 @@
     <video
       ref="video"
       :controls="showsControls"
+      :data-orientation="orientation"
       :autoplay="autoplays"
       :poster="normalisedPosterPath"
       :muted="muted"
       :width="optimalWidth"
       playsinline
+      @loadedmetadata="setOrientation"
       @playing="$emit('playing')"
       @pause="$emit('pause')"
       @ended="$emit('ended')"
@@ -43,6 +45,7 @@ import {
   separateVariantsByAppearance,
   normalizePath,
   getIntrinsicDimensions,
+  getOrientation,
   extractDensities,
 } from 'docc-render/utils/assets';
 import AppStore from 'docc-render/stores/AppStore';
@@ -83,6 +86,7 @@ export default {
   data: () => ({
     appState: AppStore.state,
     optimalWidth: null,
+    orientation: null,
   }),
   computed: {
     DeviceFrameComponent: () => DeviceFrame,
@@ -170,6 +174,10 @@ export default {
       const currentVariantDensity = parseInt(density.match(/\d+/)[0], 10);
       const { width } = await getIntrinsicDimensions(path);
       this.optimalWidth = width / currentVariantDensity;
+    },
+    setOrientation() {
+      const { videoWidth: width, videoHeight: height } = this.$refs.video;
+      this.orientation = getOrientation(width, height);
     },
   },
 };

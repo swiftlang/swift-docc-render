@@ -20,7 +20,7 @@ describe('ViewMore', () => {
     const link = wrapper.find(RouterLinkStub);
     expect(link.exists()).toBe(true);
     expect(link.props('to')).toBe('/foo/bar');
-    expect(link.text()).toBe('View more');
+    expect(link.text()).toBe('documentation.view-more');
     expect(link.classes()).toContain('base-link');
   });
 

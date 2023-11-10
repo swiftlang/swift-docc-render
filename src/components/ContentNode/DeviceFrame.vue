@@ -26,7 +26,6 @@ import DeviceFrames from 'theme/constants/DeviceFrames';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
 const isTruthy = val => val && val !== Infinity;
-const round = (v, dec = 4) => (isTruthy(v) ? +(`${Math.round(`${v}e+${dec}`)}e-${dec}`) : null);
 
 export default {
   name: 'DeviceFrame',
@@ -42,7 +41,7 @@ export default {
   computed: {
     currentDeviceAttrs: ({ device }) => getSetting(['theme', 'device-frames', device], DeviceFrames[device]),
     styles: ({
-      toPixel, toUrl, toPct, currentDeviceAttrs: attrs = {},
+      toPixel, toUrl, toPct, currentDeviceAttrs: attrs = {}, toVal,
     }) => {
       const {
         screenTop, screenLeft, screenWidth, frameWidth,
@@ -54,10 +53,10 @@ export default {
         '--screen-left': toPct(screenLeft / frameWidth),
         '--screen-width': toPct(screenWidth / frameWidth),
         '--screen-height': toPct(screenHeight / frameHeight),
-        '--screen-aspect': round(screenWidth / screenHeight) || null,
+        '--screen-aspect': toVal(screenWidth / screenHeight),
 
         '--frame-width': toPixel(frameWidth),
-        '--frame-aspect': round(frameWidth / frameHeight) || null,
+        '--frame-aspect': toVal(frameWidth / frameHeight),
 
         '--device-light-url': toUrl(lightUrl),
         '--device-dark-url': toUrl(darkUrl),
@@ -70,7 +69,8 @@ export default {
   methods: {
     toPixel: val => (isTruthy(val) ? `${val}px` : null),
     toUrl: val => (isTruthy(val) ? `url(${val})` : null),
-    toPct: val => (isTruthy(val) ? `${round(val * 100)}%` : null),
+    toPct: val => (isTruthy(val) ? `${val * 100}%` : null),
+    toVal: val => (isTruthy(val) ? val : null),
   },
 };
 </script>

@@ -449,7 +449,10 @@ function renderNode(createElement, references) {
     }
     case InlineType.link:
       // Note: `InlineType.link` has been deprecated, but may still be found in old JSON.
-      return createElement('a', { attrs: { href: node.destination } }, (
+      return createElement('a', {
+        attrs: { href: node.destination },
+        class: 'inline-link',
+      }, (
         node.title
       ));
     case InlineType.reference: {
@@ -468,6 +471,7 @@ function renderNode(createElement, references) {
           titleStyle: reference.titleStyle,
           hasInlineFormatting: !!titleInlineContent,
         },
+        class: 'inline-link',
       }, (
         titleInlineContent ? renderChildren(titleInlineContent) : titlePlainText
       ));
@@ -495,6 +499,20 @@ function renderNode(createElement, references) {
   };
 }
 
+/**
+ * Render a tree of markdown content.
+ *
+ * This component represents a tree of content and is primarily used to render
+ * blocks of markdown text which may contain inline formatting. Most basic
+ * markdown components like paragraphs, lists, italics, etc can be rendered with
+ * `ContentNode` as well as some DocC specific markdown directives like
+ * ``ContentNode/TabNavigator`` and ``ContentNode/Row``.
+ *
+ * - Parameter content: `Array` (**required**) — A list of
+ *    [`RenderBlockContent`](https://github.com/apple/swift-docc/blob/5ad35a3107ca0443b81ada917b73b950d89bf396/Sources/SwiftDocC/SwiftDocC.docc/Resources/RenderNode.spec.json#L420).
+ * - Parameter tag: `String` — An optional HTML tag to wrap the
+ *    content in instead of the default `<div>`.
+ */
 export default {
   name: 'ContentNode',
   constants: { TableHeaderStyle, TableColumnAlignments },

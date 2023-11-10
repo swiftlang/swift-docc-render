@@ -9,24 +9,65 @@
 -->
 
 <script>
-// Injects a <wbr> ("Word break opportunity") HTML element at safe and readable
-// boundaries to hint at positions where web browsers should break apart words
-// when they need to wrap to the next line. This is done to prevent words from
-// randomly getting cut off at arbitrary characters.
-//
-// This is especially useful for very long symbol names that may not fit on a
-// single line on devices with small breakpoints and even some titles for symbols
-// on larger breakpoints.
-//
-// Examples (using real spaces to show where <wbr> tags will be injected):
-//
-//     <WordBreak>fooBarBaz</WordBreak>    // 'foo Bar Baz'
-//     <WordBreak>foo:bar:baz:</WordBreak> // 'foo: bar: baz:'
-//     <WordBreak>Foo.Bar.Baz</WordBreak>  // 'Foo .Bar .Baz'
-//     <WordBreak>foo_bar_baz</WordBreak>  // 'foo _bar _baz'
-//     <WordBreak>foobarbaz</WordBreak>    // 'foobarbaz'
-//
-// Note: This component should be used to wrap plaintext content.
+/**
+ * Indicate safe places to break apart words across multiple lines when necessary.
+ *
+ * - Parameter safeBoundaryPattern: `Regexp` —
+ *    A regular expression to be used to determine the character boundaries
+ *    where the word break hints should be inserted.
+ * - Parameter tag: `String` —
+ *    A tag to be used to wrap the resulting HTML string (default: `<span>`).
+ *
+ * This component can be used to inject `<wbr>` ("word break opportunity") HTML
+ * elements at safe and readable boundaries within a word, which indicate to web
+ * browsers where they can break a given word onto the next line. This is done
+ * to prevent long words from randomly getting cut off at arbitrary characters
+ * when they won't fit on a single line on a width constrainted viewport.
+ *
+ * > Warning:
+ * > Only raw text nodes may be provided as slotted content.
+ * >
+ * > ```xml
+ * > <WordBreak>fooBar</WordBreak>              <!-- ✅ Good -->
+ * > <WordBreak><span>fooBar</span></WordBreak> <!-- ❌ Bad  -->
+ * > ```
+ *
+ * Word break functionality is especially useful for very long symbol names that
+ * may not fit on a single line on smaller devices and even the page title for
+ * long symbols on larger devices.
+ *
+ * By _default_, the following patterns will be used to determine where to add
+ * word-break hints:
+ *
+ * * between lower/uppercase character pairs — **aA**
+ * * after colon characters — **a:b**
+ * * before dot characters — **a.b**
+ * * before underscore characters — **a_b**
+ *
+ * You can also provide a `RegExp` object that defines an alternate pattern if
+ * the default one doesn't fit your needs.
+ *
+ * ## Examples
+ *
+ * In the following examples, real space characters represent where the `<wbr>`
+ * tags would be injected in the resulting HTML.
+ *
+ * ```xml
+ * <WordBreak>fooBarBaz</WordBreak>    <!-- 'foo Bar Baz'    -->
+ * <WordBreak>foo:bar:baz:</WordBreak> <!-- 'foo: bar: baz:' -->
+ * <WordBreak>Foo.Bar.Baz</WordBreak>  <!-- 'Foo .Bar .Baz'  -->
+ * <WordBreak>foo_bar_baz</WordBreak>  <!-- 'foo _bar _baz'  -->
+ * <WordBreak>foobarbaz</WordBreak>    <!-- 'foobarbaz'      -->
+ * ```
+ *
+ * ```xml
+ * <WordBreak :safeBoundaryPattern="/(\w(?=/.\w)|\w(?=\/))/g">
+ *   https://foo.bar/baz/qux
+ * </WordBreak>
+ *
+ * <!-- https://foo .bar /baz /qux -->
+ * ```
+ */
 export default {
   functional: true,
   name: 'WordBreak',
