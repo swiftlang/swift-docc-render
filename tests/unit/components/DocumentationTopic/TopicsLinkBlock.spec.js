@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -400,7 +400,7 @@ describe('TopicsLinkBlock', () => {
     expect(badges.at(1).attributes('variant')).toBe('custom');
   });
 
-  it('renders a `DecoratedTopicTitle` when a topic has `fragments`', () => {
+  it('renders a `DecoratedTopicTitle` when a topic has `fragments` and valid hash', () => {
     const fragments = [
       {
         kind: TokenKind.keyword,
@@ -415,10 +415,44 @@ describe('TopicsLinkBlock', () => {
       topic: {
         ...propsData.topic,
         fragments,
+        identifier: 'doc://com.example.documentation/foo/bar/baz',
       },
     });
+    // no hash
+    let decoratedTitle = wrapper.find('.link').find(DecoratedTopicTitle);
+    expect(decoratedTitle.exists()).toBe(false);
+    expect(wrapper.contains(WordBreak)).toBe(true);
 
-    const decoratedTitle = wrapper.find('.link').find(DecoratedTopicTitle);
+    // hash longer than 5 characters
+    wrapper.setProps({
+      topic: {
+        ...wrapper.props().topic,
+        identifier: 'doc://com.example.documentation/foo/bar/baz-foobar',
+      },
+    });
+    decoratedTitle = wrapper.find('.link').find(DecoratedTopicTitle);
+    expect(decoratedTitle.exists()).toBe(false);
+    expect(wrapper.contains(WordBreak)).toBe(true);
+
+    // hash contains upper case letter
+    wrapper.setProps({
+      topic: {
+        ...wrapper.props().topic,
+        identifier: 'doc://com.example.documentation/foo/bar/baz-Foo',
+      },
+    });
+    decoratedTitle = wrapper.find('.link').find(DecoratedTopicTitle);
+    expect(decoratedTitle.exists()).toBe(false);
+    expect(wrapper.contains(WordBreak)).toBe(true);
+
+    // valid hash
+    wrapper.setProps({
+      topic: {
+        ...wrapper.props().topic,
+        identifier: 'doc://com.example.documentation/foo/bar/baz-foo12',
+      },
+    });
+    decoratedTitle = wrapper.find('.link').find(DecoratedTopicTitle);
     expect(decoratedTitle.exists()).toBe(true);
     expect(decoratedTitle.props('tokens')).toEqual(fragments);
     expect(wrapper.contains(WordBreak)).toBe(false);
