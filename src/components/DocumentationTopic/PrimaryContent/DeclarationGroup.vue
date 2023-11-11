@@ -17,17 +17,40 @@
     <p v-if="shouldCaption" class="platforms">
       <strong>{{ caption }}</strong>
     </p>
-    <Source
-      :tokens="declaration.tokens"
-      :language="interfaceLanguage"
-    />
+
+    <transition-expand
+      v-for="declaration in declarationTokens"
+      :key="declaration.identifier"
+    >
+      <div
+        v-if="!hasOtherDeclarations || declaration.identifier === selectedIdentifier || isExpanded"
+        :class="{
+          'declaration-overload': hasOtherDeclarations && isExpanded,
+        }"
+      >
+        <component
+          :is="getWrapperComponent(declaration)"
+          @click="handleSelectOverload(declaration.identifier)"
+        >
+          <Source
+            :tokens="declaration.tokens"
+            :language="interfaceLanguage"
+            :class="{
+              'selected-overload': isSelectedOverload(declaration.identifier),
+            }"
+          />
+        </component>
+      </div>
+    </transition-expand>
   </div>
 </template>
 
 <script>
 import DeclarationSource from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 import Language from 'docc-render/constants/Language';
+import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import { APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
+import { waitFor } from 'docc-render/utils/loading';
 
 /**
  * Renders a code source with an optional caption.
@@ -36,6 +59,12 @@ export default {
   name: 'DeclarationGroup',
   components: {
     Source: DeclarationSource,
+    TransitionExpand,
+  },
+  data() {
+    return {
+      selectedIdentifier: this.identifier,
+    };
   },
   mixins: [APIChangesMultipleLines],
   inject: {
@@ -46,6 +75,16 @@ export default {
       default: () => Language.swift.key.api,
     },
     symbolKind: {
+      default: () => undefined,
+    },
+    store: {
+      default: () => ({
+        state: {
+          references: {},
+        },
+      }),
+    },
+    identifier: {
       default: () => undefined,
     },
   },
@@ -70,8 +109,33 @@ export default {
       type: String,
       required: false,
     },
+    expandOverloads: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
+    hasOtherDeclarations: ({ declaration }) => declaration.otherDeclarations || null,
+    declarationTokens: ({
+      declaration,
+      hasOtherDeclarations,
+      identifier,
+    }) => {
+      if (!hasOtherDeclarations) return [declaration];
+      const {
+        otherDeclarations,
+        indexInOtherDeclarations,
+        tokens,
+      } = declaration;
+
+      // insert declaration into the correct position if has overloaded symbols
+      return [
+        ...otherDeclarations.slice(0, indexInOtherDeclarations),
+        { tokens, identifier },
+        ...otherDeclarations.slice(indexInOtherDeclarations),
+      ];
+    },
     classes: ({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) => ({
       [`declaration-group--changed declaration-group--${changeType}`]: changeType,
       [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
@@ -80,6 +144,33 @@ export default {
       return this.declaration.platforms.join(', ');
     },
     isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
+    references: ({ store }) => store.state.references,
+    isExpanded: {
+      get: ({ expandOverloads }) => expandOverloads,
+      set(value) {
+        this.$emit('update:expandOverloads', value);
+      },
+    },
+  },
+  methods: {
+    async handleSelectOverload(identifier) {
+      this.selectedIdentifier = identifier;
+      // enough time to update the just selected item
+      await waitFor(100);
+      this.isExpanded = false; // collapse the overloads
+      if (identifier === this.identifier) return;
+      // await animation finishes
+      setTimeout(() => {
+        this.$router.push(this.references[identifier].url);
+      }, 500);
+    },
+    getWrapperComponent(decl) {
+      return (!this.isExpanded || decl.identifier === this.identifier)
+        ? 'div' : 'button';
+    },
+    isSelectedOverload(identifier) {
+      return identifier === this.selectedIdentifier;
+    },
   },
 };
 </script>
@@ -102,8 +193,38 @@ export default {
   }
 }
 
+.declaration-overload {
+  transition-timing-function: linear;
+  transition-property: opacity, height;
+
+  > button {
+    display: block;
+    width: 100%;
+  }
+
+  .selected-overload {
+    border-color: var(--color-focus-border-color, var(--color-focus-border-color));
+  }
+
+  :not(.selected-overload) {
+    background: unset;
+  }
+
+  + .declaration-overload .source {
+    margin: var(--declaration-code-listing-margin);
+  }
+
+  &.expand-enter, &.expand-leave-to {
+    opacity: 0;
+
+    .source {
+      margin: 0;
+    }
+  }
+}
+
 .source {
-  margin: var(--declaration-code-listing-margin);
+  transition: margin 0.3s linear;
 
   .platforms + & {
     margin: 0;
