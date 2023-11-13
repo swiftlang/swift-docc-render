@@ -1006,6 +1006,13 @@ export default {
       const currentActiveItem = this.childrenMap[this.activeUID];
       // get the current path
       const lastActivePathItem = last(activePath);
+
+      // get hash
+      const hash = lastActivePathItem ? last(lastActivePathItem.split('-')) : '';
+      // valid hash is less than 5 char, lower case letter and number only
+      const validHash = hash.length <= 5 ? /^[a-z0-9]*$/.test(hash) : false;
+      const genericItem = (validHash && lastActivePathItem) ? lastActivePathItem.split('-')[0] : lastActivePathItem;
+
       // check if there is an active item to start looking from
       if (currentActiveItem) {
         // Return early, if the current path matches the current active node.
@@ -1014,27 +1021,31 @@ export default {
         if (lastActivePathItem === currentActiveItem.path) {
           return;
         }
-        // Get the surrounding items
-        const siblings = getSiblings(this.activeUID, this.childrenMap, this.children);
-        const children = getChildren(this.activeUID, this.childrenMap, this.children);
-        const parents = getParents(this.activeUID, this.childrenMap);
-        // try to match if any of the `siblings`,`children` or any of the `parents`,
-        // match the current open item
-        const matchingItem = [...children, ...siblings, ...parents]
-          .find(child => child.path === lastActivePathItem);
+        // try to match current open item in its surroundings
+        if (this.matchSurroundingItems(this.activeUID, lastActivePathItem)) return;
 
-        // set the match as an active item
-        if (matchingItem) {
-          this.setActiveUID(matchingItem.uid);
-          return;
+        // try to match with generic item
+        // needed for symbols curated in multiple places when selecting an overload from dropdown
+        if (validHash) {
+          if (this.matchSurroundingItems(this.activeUID, genericItem)) return;
         }
       }
       // There is no match to base upon, so we need to search
       // across the activePath for the active item.
       const activePathChildren = this.pathsToFlatChildren(activePath);
-      // if there are items, set the new active UID
+      // if there are items, set new active UID
       if (activePathChildren.length) {
-        this.setActiveUID(activePathChildren[activePathChildren.length - 1].uid);
+        // TODO: What exactly is `activePathChildren`??
+        const lastChildrenUID = last(activePathChildren).uid;
+
+        if (validHash) {
+          // try to match with generic item
+          if (this.matchSurroundingItems(lastChildrenUID, genericItem)) return;
+        }
+
+        // TODO: What exactly is `activePathChildren`??
+        // last resort: set last path as new active UID
+        this.setActiveUID(lastChildrenUID);
         return;
       }
       // if there is an activeUID, unset it, as we probably navigated back to the root
@@ -1044,6 +1055,26 @@ export default {
       }
       // Just track the open nodes, as setting the activeUID as null wont do anything.
       this.trackOpenNodes(this.nodeChangeDeps);
+    },
+    /**
+     * try to match if any of the `siblings`,`children` or any of the `parents`
+     * of the UID match the item
+     */
+    matchSurroundingItems(UID, item) {
+      // Get the surrounding items
+      const siblings = getSiblings(UID, this.childrenMap, this.children);
+      const children = getChildren(UID, this.childrenMap, this.children);
+      const parents = getParents(UID, this.childrenMap);
+
+      const matchingItem = [...children, ...siblings, ...parents]
+        .find(child => child.path === item);
+
+      // set the match as an active item
+      if (matchingItem) {
+        this.setActiveUID(matchingItem.uid);
+        return true;
+      }
+      return false;
     },
     /**
      * Updates the current focusIndex, based on where the activeUID is.
