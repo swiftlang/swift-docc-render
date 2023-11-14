@@ -25,6 +25,7 @@
       :api-changes="apiChanges"
       :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
+      :hasValidHash="hasValidHash"
       @close="$emit('close')"
     >
       <template #filter><slot name="filter" /></template>
@@ -47,6 +48,7 @@ import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import LoadingNavigatorCard from 'theme/components/Navigator/LoadingNavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
+import { last } from 'docc-render/utils/arrays';
 
 /**
  * @typedef NavigatorFlatItem
@@ -126,6 +128,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    symbolKind: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     // gets the paths for each parent in the breadcrumbs
@@ -151,6 +157,20 @@ export default {
         itemsToSlice = 2;
       }
       return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat(path);
+    },
+    /**
+     * Symbol pages always have a symbolKind
+     */
+    isSymbol: ({ symbolKind }) => !!symbolKind,
+    /**
+     * Only symbol pages can have a valid hash:
+     * less than 5 char, only lower case letter and number
+     */
+    hasValidHash({ $route: { path }, isSymbol }) {
+      // eslint-disable-next-line no-param-reassign
+      path = path.replace(/\/$/, '').toLowerCase();
+      const hash = isSymbol ? last(path.split('-')) : '';
+      return hash.length && hash.length <= 5 && /^[a-z0-9]*$/.test(hash);
     },
     /**
      * The root item is always a module

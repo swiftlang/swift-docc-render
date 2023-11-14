@@ -232,6 +232,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hasValidHash: {
+      type: Boolean,
+      default: false,
+    },
   },
   mixins: [
     keyboardNavigation,
@@ -1007,11 +1011,8 @@ export default {
       // get the current path
       const lastActivePathItem = last(activePath);
 
-      // get hash
-      const hash = lastActivePathItem ? last(lastActivePathItem.split('-')) : '';
-      // valid hash is less than 5 char, lower case letter and number only
-      const validHash = hash.length <= 5 ? /^[a-z0-9]*$/.test(hash) : false;
-      const genericItem = (validHash && lastActivePathItem) ? lastActivePathItem.split('-')[0] : lastActivePathItem;
+      const genericItem = (this.hasValidHash && lastActivePathItem)
+        ? lastActivePathItem.split('-')[0] : lastActivePathItem;
 
       // check if there is an active item to start looking from
       if (currentActiveItem) {
@@ -1026,7 +1027,7 @@ export default {
 
         // try to match with generic item
         // needed for symbols curated in multiple places when selecting an overload from dropdown
-        if (validHash) {
+        if (this.hasValidHash) {
           if (this.matchSurroundingItems(this.activeUID, genericItem)) return;
         }
       }
@@ -1038,7 +1039,7 @@ export default {
         // TODO: What exactly is `activePathChildren`??
         const lastChildrenUID = last(activePathChildren).uid;
 
-        if (validHash) {
+        if (this.hasValidHash) {
           // try to match with generic item
           if (this.matchSurroundingItems(lastChildrenUID, genericItem)) return;
         }
