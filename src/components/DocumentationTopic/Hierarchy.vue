@@ -14,6 +14,18 @@
     :class="{ 'has-badge': hasBadge }"
     class="hierarchy"
   >
+    <slot
+      name="title"
+      v-bind="{ rootLink }"
+    >
+      <HierarchyItem
+        v-if="rootLink"
+        :to="rootLink"
+      >
+        {{ $t('documentation.title') }}
+      </HierarchyItem>
+      <span v-else>{{ $t('documentation.title') }}</span>
+    </slot>
     <HierarchyItem
       v-if="root"
       :key="root.title"
@@ -120,6 +132,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    rootLink: {
+      type: Object,
+      required: false,
+    },
   },
   computed: {
     windowWidth: ({ store }) => store.state.contentWidth,
@@ -178,10 +194,10 @@ export default {
 
 .hierarchy {
   justify-content: flex-start;
+  margin: 0 80px 0 0;
   min-width: 0;
-  margin-right: 80px;
   @include nav-in-breakpoint() {
-    margin-right: 0;
+    margin: 0;
   }
 
   // make sure the root-hierarchy has a limit as well

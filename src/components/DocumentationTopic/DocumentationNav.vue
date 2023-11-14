@@ -22,25 +22,19 @@
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint, className }" v-if="displaySidenav">
       <div :class="className">
-        <transition name="sidenav-toggle">
-          <div
-            v-show="sidenavHiddenOnLarge"
-            class="sidenav-toggle-wrapper"
+        <div class="sidenav-toggle-wrapper">
+          <button
+            :aria-label="$t('navigator.open-navigator')"
+            :id="baseNavOpenSidenavButtonId"
+            class="sidenav-toggle"
+            :tabindex="isOpen ? -1 : null"
+            @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
           >
-            <button
-              :aria-label="$t('navigator.open-navigator')"
-              :id="baseNavOpenSidenavButtonId"
-              class="sidenav-toggle"
-              :tabindex="isOpen ? -1 : null"
-              @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
-            >
-            <span class="sidenav-icon-wrapper">
-              <SidenavIcon class="icon-inline sidenav-icon" />
-            </span>
-            </button>
-            <span class="sidenav-toggle__separator" />
-          </div>
-        </transition>
+          <span class="sidenav-icon-wrapper">
+            <SidenavIcon class="icon-inline sidenav-icon" />
+          </span>
+          </button>
+        </div>
       </div>
     </template>
     <template #default>
@@ -59,17 +53,8 @@
       </slot>
     </template>
     <template #tray="{ closeNav }">
-      <Hierarchy
-        :currentTopicTitle="title"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-        :parentTopicIdentifiers="hierarchyItems"
-        :currentTopicTags="currentTopicTags"
-        :references="references"
-      />
       <NavMenuItems
         class="nav-menu-settings"
-        :previousSiblingChildren="breadcrumbCount"
       >
         <LanguageToggle
           v-if="interfaceLanguage && (swiftPath || objcPath)"
@@ -80,7 +65,7 @@
         />
         <slot name="menu-items" />
       </NavMenuItems>
-      <slot name="tray-after" v-bind="{ breadcrumbCount }" />
+      <slot name="tray-after" />
     </template>
     <template #after-content>
       <slot name="after-content" />
@@ -95,7 +80,6 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import { SIDEBAR_HIDE_BUTTON_ID } from 'docc-render/constants/sidebar';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
-import Hierarchy from './DocumentationNav/Hierarchy.vue';
 import LanguageToggle from './DocumentationNav/LanguageToggle.vue';
 
 export default {
@@ -104,14 +88,9 @@ export default {
     SidenavIcon,
     NavBase,
     NavMenuItems,
-    Hierarchy,
     LanguageToggle,
   },
   props: {
-    title: {
-      type: String,
-      required: false,
-    },
     parentTopicIdentifiers: {
       type: Array,
       required: false,
@@ -131,10 +110,6 @@ export default {
     hasNoBorder: {
       type: Boolean,
       default: false,
-    },
-    currentTopicTags: {
-      type: Array,
-      required: true,
     },
     references: {
       type: Object,
@@ -160,42 +135,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    rootLink: {
+      type: Object,
+      required: false,
+    },
   },
   computed: {
     baseNavOpenSidenavButtonId: () => baseNavOpenSidenavButtonId,
     BreakpointName: () => BreakpointName,
-    breadcrumbCount: ({ hierarchyItems }) => hierarchyItems.length + 1,
-    /**
-     * Returns the first(root) hierarchy item reference
-     * @return {Object}
-     */
-    rootHierarchyReference: ({ parentTopicIdentifiers, references }) => (
-      references[parentTopicIdentifiers[0]] || {}
-    ),
-    /**
-     * Returns whether the root link is a technology page.
-     * @return {boolean}
-     */
-    isRootTechnologyLink: ({ rootHierarchyReference: { kind } }) => kind === 'technologies',
-    /**
-     * Returns the root url reference object, if is a `technologies` link.
-     * Otherwise returns a manual route query object.
-     * @return {Object}
-     */
-    rootLink: ({
-      isRootTechnologyLink, rootHierarchyReference, $route,
-    }) => (isRootTechnologyLink
-      ? {
-        path: rootHierarchyReference.url,
-        query: $route.query,
-      } : null),
-    /**
-     * Strips out the first link, if is the root Technologies link.
-     * @return {string[]}
-     */
-    hierarchyItems: ({ parentTopicIdentifiers, isRootTechnologyLink }) => (
-      isRootTechnologyLink ? parentTopicIdentifiers.slice(1) : parentTopicIdentifiers
-    ),
   },
   methods: {
     async handleSidenavToggle(closeNav, currentBreakpoint) {
@@ -275,16 +222,8 @@ $sidenav-icon-padding-size: 5px;
 .documentation-nav {
   :deep() {
     // normalize the Title font with menu items
-    .nav-title {
-      @include font-styles(documentation-nav);
-
-      .nav-title-link.inactive {
-        height: auto;
-        color: var(--color-figure-gray-secondary-alt);
-        @include nav-dark($nested: true) {
-          color: dark-color(figure-gray-secondary-alt);
-        }
-      }
+    .nav-title-link.inactive {
+      height: auto;
     }
   }
 }

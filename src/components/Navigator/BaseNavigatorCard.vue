@@ -25,15 +25,6 @@
               </h2>
               <Badge v-if="isTechnologyBeta" variant="beta" />
             </Reference>
-            <button
-              :id="SIDEBAR_HIDE_BUTTON_ID"
-              class="close-card"
-              :class="{ 'hide-on-large': !allowHiding }"
-              :aria-label="$t('navigator.close-navigator')"
-              @click="handleHideClick"
-            >
-              <SidenavIcon class="icon-inline close-icon" />
-            </button>
           </div>
         </div>
         <slot name="body" className="card-body"/>
@@ -47,7 +38,6 @@ import {
   INDEX_ROOT_KEY,
   SIDEBAR_HIDE_BUTTON_ID,
 } from 'docc-render/constants/sidebar';
-import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
@@ -55,7 +45,6 @@ import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 export default {
   name: 'BaseNavigatorCard',
   components: {
-    SidenavIcon,
     Reference,
     Badge,
   },
@@ -130,6 +119,7 @@ $close-icon-padding: 5px;
 
   .head-inner {
     overflow: hidden;
+    padding-top: var(--card-horizontal-spacing);
   }
 
   .head-wrapper {
@@ -139,12 +129,11 @@ $close-icon-padding: 5px;
 
   .navigator-head {
     --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
-    padding: 0 var(--navigator-head-padding-right) 0 var(--card-horizontal-spacing);
-    background: $navigator-head-background;
-    border-bottom: 1px solid var(--color-grid);
+    padding: calc(var(--card-horizontal-spacing) / 3);
+    background: var(--color-fill-gray-quaternary);
+    border-radius: 5px;
     display: flex;
     align-items: center;
-    height: $nav-height;
     white-space: nowrap;
 
     .card-link {
@@ -159,14 +148,6 @@ $close-icon-padding: 5px;
       margin-top: 0;
     }
 
-    &.router-link-exact-active {
-      background: $navigator-head-background-active;
-
-      .card-link {
-        font-weight: $font-weight-bold;
-      }
-    }
-
     &:hover {
       background: var(--color-navigator-item-hover);
       text-decoration: none;
@@ -178,8 +159,8 @@ $close-icon-padding: 5px;
       }
     }
 
-    @include safe-area-left-set(padding-left, var(--card-horizontal-spacing));
-    @include safe-area-right-set(padding-right, var(--navigator-head-padding-right));
+    @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
+    @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
 
     @include breakpoint(medium, nav) {
       justify-content: center;

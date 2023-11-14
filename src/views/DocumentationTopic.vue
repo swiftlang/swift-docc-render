@@ -11,6 +11,24 @@
 <template>
   <CodeTheme class="doc-topic-view">
     <template v-if="topicData">
+      <Nav
+        v-if="!isTargetIDE"
+        :title="topicProps.title"
+        :diffAvailability="topicProps.diffAvailability"
+        :interfaceLanguage="topicProps.interfaceLanguage"
+        :objcPath="objcPath"
+        :swiftPath="swiftPath"
+        :parentTopicIdentifiers="parentTopicIdentifiers"
+        :isSymbolDeprecated="isSymbolDeprecated"
+        :isSymbolBeta="isSymbolBeta"
+        :currentTopicTags="topicProps.tags"
+        :references="topicProps.references"
+        :displaySidenav="enableNavigator"
+        :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
+        :hierarchyItems="hierarchyItems"
+        :rootLink="rootLink"
+        @toggle-sidenav="handleToggleSidenav"
+      />
       <component
         :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
         v-bind="sidebarProps"
@@ -57,22 +75,6 @@
             </template>
           </NavigatorDataProvider>
         </template>
-        <Nav
-          v-if="!isTargetIDE"
-          :title="topicProps.title"
-          :diffAvailability="topicProps.diffAvailability"
-          :interfaceLanguage="topicProps.interfaceLanguage"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :parentTopicIdentifiers="parentTopicIdentifiers"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :currentTopicTags="topicProps.tags"
-          :references="topicProps.references"
-          :displaySidenav="enableNavigator"
-          :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
-          @toggle-sidenav="handleToggleSidenav"
-        />
         <Topic
           v-bind="topicProps"
           :key="topicKey"
@@ -83,6 +85,9 @@
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
           :enableMinimized="enableMinimized"
+          :currentTopicTags="topicProps.tags"
+          :hierarchyItems="hierarchyItems"
+          :rootLink="rootLink"
         />
       </component>
     </template>
@@ -278,6 +283,37 @@ export default {
         'update:hiddenOnLarge': this.toggleLargeSidenav,
       }) : {};
     },
+    /**
+     * Returns the first(root) hierarchy item reference
+     * @return {Object}
+     */
+    rootHierarchyReference: ({ parentTopicIdentifiers, topicProps: { references } }) => (
+      references[parentTopicIdentifiers[0]] || {}
+    ),
+    /**
+     * Returns whether the root link is a technology page.
+     * @return {boolean}
+     */
+    isRootTechnologyLink: ({ rootHierarchyReference: { kind } }) => kind === 'technologies',
+    /**
+     * Strips out the first link, if is the root Technologies link.
+     * @return {string[]}
+     */
+    hierarchyItems: ({ parentTopicIdentifiers, isRootTechnologyLink }) => (
+      isRootTechnologyLink ? parentTopicIdentifiers.slice(1) : parentTopicIdentifiers
+    ),
+    /**
+     * Returns the root url reference object, if is a `technologies` link.
+     * Otherwise returns a manual route query object.
+     * @return {Object}
+     */
+    rootLink: ({
+      isRootTechnologyLink, rootHierarchyReference, $route,
+    }) => (isRootTechnologyLink
+      ? {
+        path: rootHierarchyReference.url,
+        query: $route.query,
+      } : null),
   },
   methods: {
     applyObjcOverrides() {

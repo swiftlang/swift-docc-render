@@ -561,19 +561,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
 .pre-title {
   display: flex;
-  overflow: hidden;
-  padding-left: $nav-padding;
-  margin-left: -$nav-padding;
-
-  &:empty {
-    display: none;
-  }
-
-  @include nav-in-breakpoint() {
-    overflow: visible;
-    padding: 0;
-    margin-left: 0;
-  }
 }
 
 // Nav content (title and menus)
@@ -691,6 +678,8 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   align-items: center;
   white-space: nowrap;
   box-sizing: border-box;
+  width: 100%;
+  padding-left: $nav-padding / 2;
 
   @include breakpoint(small, $scope: nav) {
     padding-top: 0;

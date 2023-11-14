@@ -30,6 +30,15 @@
           <slot name="above-hero-content" />
         </template>
         <slot name="above-title" />
+        <Hierarchy
+          :currentTopicTitle="title"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :parentTopicIdentifiers="hierarchyItems"
+          :currentTopicTags="currentTopicTags"
+          :references="references"
+          :rootLink="rootLink"
+        />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
           :interfaceLanguage="interfaceLanguage"
@@ -175,6 +184,7 @@ import SeeAlso from './DocumentationTopic/SeeAlso.vue';
 import Title from './DocumentationTopic/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
+import Hierarchy from './DocumentationTopic/Hierarchy.vue';
 
 // size above which, the OnThisPage container is visible
 const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
@@ -219,6 +229,7 @@ export default {
     Topics,
     ViewMore,
     WordBreak,
+    Hierarchy,
   },
   props: {
     abstract: {
@@ -368,6 +379,18 @@ export default {
     },
     availableLocales: {
       type: Array,
+      required: false,
+    },
+    currentTopicTags: {
+      type: Array,
+      required: true,
+    },
+    hierarchyItems: {
+      type: Array,
+      required: false,
+    },
+    rootLink: {
+      type: Object,
       required: false,
     },
   },
