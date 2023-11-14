@@ -129,8 +129,7 @@ export default {
       default: true,
     },
     symbolKind: {
-      type: Boolean,
-      default: false,
+      default: () => undefined,
     },
   },
   computed: {

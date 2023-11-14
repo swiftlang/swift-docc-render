@@ -1011,9 +1011,6 @@ export default {
       // get the current path
       const lastActivePathItem = last(activePath);
 
-      const genericItem = (this.hasValidHash && lastActivePathItem)
-        ? lastActivePathItem.split('-')[0] : lastActivePathItem;
-
       // check if there is an active item to start looking from
       if (currentActiveItem) {
         // Return early, if the current path matches the current active node.
@@ -1028,6 +1025,7 @@ export default {
         // try to match with generic item
         // needed for symbols curated in multiple places when selecting an overload from dropdown
         if (this.hasValidHash) {
+          const genericItem = lastActivePathItem.split('-')[0];
           if (this.matchSurroundingItems(this.activeUID, genericItem)) return;
         }
       }
@@ -1039,8 +1037,9 @@ export default {
         // TODO: What exactly is `activePathChildren`??
         const lastChildrenUID = last(activePathChildren).uid;
 
-        if (this.hasValidHash) {
+        if (this.hasValidHash && last(activePathChildren).path !== lastActivePathItem) {
           // try to match with generic item
+          const genericItem = lastActivePathItem.split('-')[0];
           if (this.matchSurroundingItems(lastChildrenUID, genericItem)) return;
         }
 
