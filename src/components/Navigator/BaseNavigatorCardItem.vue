@@ -54,7 +54,7 @@ $depth-spacer-base-spacing: (
 $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-small;
 
 .navigator-card-item {
-  --nav-head-wrapper-left-space: #{$nav-card-horizontal-spacing};
+  --nav-head-wrapper-left-space: #{$nav-card-horizontal-spacing-large};
   --nav-head-wrapper-right-space: #{$nav-card-horizontal-spacing-large};
   --head-wrapper-vertical-space: 5px;
   --nav-depth-spacer: #{$depth-spacer-base-spacing};
@@ -64,6 +64,7 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   align-items: stretch;
   min-height: $item-height;
   box-sizing: border-box;
+  padding: 0 var(--nav-head-wrapper-right-space) 0 var(--nav-head-wrapper-left-space);
 
   @include on-keyboard-focus-within() {
     @include focus-outline(-4px);
@@ -73,12 +74,16 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   }
 
   &.active {
-    background: var(--color-fill-gray-quaternary);
+    .head-wrapper {
+      background: var(--color-fill-gray-quaternary);
+    }
   }
 
   &:not(.is-group) {
     .hover & {
-      background: var(--color-navigator-item-hover);
+      .head-wrapper {
+        background: var(--color-navigator-item-hover);
+      }
     }
   }
 }
@@ -102,17 +107,15 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
 }
 
 .head-wrapper {
-  padding: var(--head-wrapper-vertical-space)
-  var(--nav-head-wrapper-right-space)
-  var(--head-wrapper-vertical-space)
-  var(--nav-head-wrapper-left-space);
   position: relative;
   display: flex;
   align-items: center;
   flex: 1;
   min-width: 0;
+  border-radius: var(--border-radius, 4px);
 
-  @include safe-area-left-set(padding-left, var(--nav-head-wrapper-left-space));
+  padding: var(--head-wrapper-vertical-space) 0;
+
   @include safe-area-right-set(padding-right, var(--nav-head-wrapper-right-space));
 }
 </style>
