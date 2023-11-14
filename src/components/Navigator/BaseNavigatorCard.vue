@@ -138,7 +138,7 @@ $close-icon-padding: 5px;
 
     .card-link {
       color: var(--color-text);
-      @include font-styles(body-reduced);
+      @include font-styles(label-reduced);
       font-weight: $font-weight-semibold;
       overflow: hidden;
       text-overflow: ellipsis;
