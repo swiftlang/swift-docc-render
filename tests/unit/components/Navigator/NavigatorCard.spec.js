@@ -1041,19 +1041,20 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     wrapper.setProps({
       activePath: ['/documentation/testkit-ab1c2'],
+      hasValidHash: true,
     });
     await flushPromises();
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(4); // assert all are rendered, except the grandchild
     expect(all.at(0).props()).toMatchObject({
-      item: root0, // the first item
-      isBold: true,
+      item: root0,
+      isBold: true, // <- highlighted
       isActive: true,
       expanded: true,
     });
     expect(all.at(1).props()).toMatchObject({
       item: root0Child0,
-      isBold: false,
+      isBold: false, // <- not highlighted
       isActive: false,
     });
   });

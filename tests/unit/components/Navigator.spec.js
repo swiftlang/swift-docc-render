@@ -149,6 +149,7 @@ describe('Navigator', () => {
       allowHiding: true,
       navigatorReferences,
       hideAvailableTags: false,
+      hasValidHash: false,
     });
   });
 
@@ -189,6 +190,7 @@ describe('Navigator', () => {
       allowHiding: true,
       navigatorReferences,
       hideAvailableTags: false,
+      hasValidHash: false,
     });
   });
 
