@@ -1010,7 +1010,6 @@ export default {
       const currentActiveItem = this.childrenMap[this.activeUID];
       // get the current path
       const lastActivePathItem = last(activePath);
-
       // check if there is an active item to start looking from
       if (currentActiveItem) {
         // Return early, if the current path matches the current active node.
@@ -1019,36 +1018,38 @@ export default {
         if (lastActivePathItem === currentActiveItem.path) {
           return;
         }
-        // try to match current open item in its surroundings
+        // try to match current open item in its surroundings, starting with active item
         if (this.matchSurroundingItems(this.activeUID, lastActivePathItem)) return;
 
-        // try to match with generic item
-        // needed for symbols curated in multiple places when selecting an overload from dropdown
         if (this.hasValidHash) {
+          // if no match, try again to match with generic item
+          // Needed for continuing to highlight current generic page
+          // when selecting an overload from dropdown that's also specifically curated in elsewhere
           const genericItem = lastActivePathItem.split('-')[0];
           if (this.matchSurroundingItems(this.activeUID, genericItem)) return;
         }
       }
-      // There is no match to base upon, so we need to search
-      // across the activePath for the active item.
+      // There is no match to base upon, so we need to search the whole tree
+      // by matching each level of the hierachy in activePath
       const activePathChildren = this.pathsToFlatChildren(activePath);
       // if there are items, set new active UID
       if (activePathChildren.length) {
-        // TODO: What exactly is `activePathChildren`??
         const lastChildrenUID = last(activePathChildren).uid;
 
-        if (this.hasValidHash && last(activePathChildren).path !== lastActivePathItem) {
-          // try to match with generic item
+        if (last(activePathChildren).path !== lastActivePathItem && this.hasValidHash) {
+          // if item is not found in the tree and its a specific overloaded symbol page
+          // try to match with its generics page instead
           const genericItem = lastActivePathItem.split('-')[0];
           if (this.matchSurroundingItems(lastChildrenUID, genericItem)) return;
         }
 
-        // TODO: What exactly is `activePathChildren`??
-        // last resort: set last path as new active UID
+        // Set new active UID to the last matched item
+        // Note: if a match is not found, last matched ancestor is highlighted
         this.setActiveUID(lastChildrenUID);
         return;
       }
-      // if there is an activeUID, unset it, as we probably navigated back to the root
+      // if there is an activeUID, but still no match found in tree
+      // unset it, as we probably navigated back to the root
       if (this.activeUID) {
         this.setActiveUID(null);
         return;
