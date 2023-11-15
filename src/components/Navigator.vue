@@ -166,8 +166,9 @@ export default {
      * less than 5 char, only lower case letter and number
      */
     hasValidHash({ $route: { path }, isSymbol }) {
+      // Ensure the path does not have a trailing slash
       // eslint-disable-next-line no-param-reassign
-      path = path.replace(/\/$/, '').toLowerCase();
+      path = path.replace(/\/$/, '');
       const hash = isSymbol ? last(path.split('-')) : '';
       return !!hash.length && hash.length <= 5 && /^[a-z0-9]*$/.test(hash);
     },
