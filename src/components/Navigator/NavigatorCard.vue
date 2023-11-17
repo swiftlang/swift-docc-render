@@ -232,7 +232,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    hasValidHash: {
+    isSpecificOverload: {
       type: Boolean,
       default: false,
     },
@@ -1021,7 +1021,7 @@ export default {
         // try to match current open item in its surroundings, starting with active item
         if (this.matchSurroundingItems(this.activeUID, lastActivePathItem)) return;
 
-        if (this.hasValidHash) {
+        if (this.isSpecificOverload) {
           // if no match, try again to match with generic item
           // Needed for continuing to highlight current generic page
           // when selecting an overload from dropdown that's also specifically curated in elsewhere
@@ -1036,7 +1036,7 @@ export default {
       if (activePathChildren.length) {
         const lastChildrenUID = last(activePathChildren).uid;
 
-        if (last(activePathChildren).path !== lastActivePathItem && this.hasValidHash) {
+        if (last(activePathChildren).path !== lastActivePathItem && this.isSpecificOverload) {
           // if item is not found in the tree and its a specific overloaded symbol page
           // try to match with its generics page instead
           const genericItem = lastActivePathItem.slice(0, lastActivePathItem.lastIndexOf('-'));

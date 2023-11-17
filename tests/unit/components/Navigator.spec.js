@@ -150,7 +150,7 @@ describe('Navigator', () => {
       allowHiding: true,
       navigatorReferences,
       hideAvailableTags: false,
-      hasValidHash: false,
+      isSpecificOverload: false,
     });
   });
 
@@ -191,7 +191,7 @@ describe('Navigator', () => {
       allowHiding: true,
       navigatorReferences,
       hideAvailableTags: false,
-      hasValidHash: false,
+      isSpecificOverload: false,
     });
   });
 
@@ -251,18 +251,18 @@ describe('Navigator', () => {
     expect(errorSpy).toHaveBeenCalledWith(`Reference for "${identifier}" is missing`);
   });
 
-  it('correctly computes `hasValidHash` if hash does not exist', () => {
+  it('correctly computes `isSpecificOverload` if hash does not exist', () => {
     // non-symbol pages don't have valid hash
     const wrapper = createWrapper({
       propsData: {
         symbolKind: undefined,
       },
     });
-    expect(wrapper.find(NavigatorCard).props('hasValidHash')).toBe(false);
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(false);
 
     // symbol page with no hash
     wrapper.setProps({ symbolKind: 'method' });
-    expect(wrapper.find(NavigatorCard).props('hasValidHash')).toBe(false);
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(false);
   });
 
   it('correctly identifies whether a hash is valid', () => {
@@ -274,7 +274,7 @@ describe('Navigator', () => {
         },
       },
     });
-    expect(wrapper.find(NavigatorCard).props('hasValidHash')).toBe(true);
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(true);
 
     // capitalized letter, invalid hash
     wrapper = createWrapper({
@@ -284,7 +284,7 @@ describe('Navigator', () => {
         },
       },
     });
-    expect(wrapper.find(NavigatorCard).props('hasValidHash')).toBe(false);
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(false);
   });
 
   it('removes any parent topic identifiers, which dont have a reference', () => {

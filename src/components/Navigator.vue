@@ -25,7 +25,7 @@
       :api-changes="apiChanges"
       :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
-      :hasValidHash="hasValidHash"
+      :isSpecificOverload="isSpecificOverload"
       @close="$emit('close')"
     >
       <template #filter><slot name="filter" /></template>
@@ -165,7 +165,7 @@ export default {
      * Only symbol pages with overloads can have a valid hash:
      * less than 5 char, only lower case letter and number
      */
-    hasValidHash({ $route: { path }, isSymbol }) {
+    isSpecificOverload({ $route: { path }, isSymbol }) {
       // Ensure the path does not have a trailing slash
       // eslint-disable-next-line no-param-reassign
       path = path.replace(/\/$/, '');
