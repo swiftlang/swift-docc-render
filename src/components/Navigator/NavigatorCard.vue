@@ -1025,7 +1025,7 @@ export default {
           // if no match, try again to match with generic item
           // Needed for continuing to highlight current generic page
           // when selecting an overload from dropdown that's also specifically curated in elsewhere
-          const genericItem = lastActivePathItem.split('-')[0];
+          const genericItem = lastActivePathItem.slice(0, lastActivePathItem.lastIndexOf('-'));
           if (this.matchSurroundingItems(this.activeUID, genericItem)) return;
         }
       }
@@ -1039,7 +1039,7 @@ export default {
         if (last(activePathChildren).path !== lastActivePathItem && this.hasValidHash) {
           // if item is not found in the tree and its a specific overloaded symbol page
           // try to match with its generics page instead
-          const genericItem = lastActivePathItem.split('-')[0];
+          const genericItem = lastActivePathItem.slice(0, lastActivePathItem.lastIndexOf('-'));
           if (this.matchSurroundingItems(lastChildrenUID, genericItem)) return;
         }
 

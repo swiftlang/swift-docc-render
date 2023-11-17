@@ -162,7 +162,7 @@ export default {
      */
     isSymbol: ({ symbolKind }) => !!symbolKind,
     /**
-     * Only symbol pages can have a valid hash:
+     * Only symbol pages with overloads can have a valid hash:
      * less than 5 char, only lower case letter and number
      */
     hasValidHash({ $route: { path }, isSymbol }) {
@@ -170,7 +170,7 @@ export default {
       // eslint-disable-next-line no-param-reassign
       path = path.replace(/\/$/, '');
       const hash = isSymbol ? last(path.split('-')) : '';
-      return !!hash.length && hash.length <= 5 && /^[a-z0-9]*$/.test(hash);
+      return /^[a-z0-9]{1, 5}$/.test(hash);
     },
     /**
      * The root item is always a module
