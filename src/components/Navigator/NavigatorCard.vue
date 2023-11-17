@@ -1019,14 +1019,15 @@ export default {
           return;
         }
         // try to match current open item in its surroundings, starting with active item
-        if (this.matchSurroundingItems(this.activeUID, lastActivePathItem)) return;
+        // set found match as active item
+        if (this.matchInSurroundingItems(this.activeUID, lastActivePathItem)) return;
 
         if (this.isSpecificOverload) {
           // if no match, try again to match with generic item
           // Needed for continuing to highlight current generic page
           // when selecting an overload from dropdown that's also specifically curated in elsewhere
-          const genericItem = lastActivePathItem.slice(0, lastActivePathItem.lastIndexOf('-'));
-          if (this.matchSurroundingItems(this.activeUID, genericItem)) return;
+          const genericItem = this.getGenericPath(lastActivePathItem);
+          if (this.matchInSurroundingItems(this.activeUID, genericItem)) return;
         }
       }
       // There is no match to base upon, so we need to search the whole tree
@@ -1039,8 +1040,8 @@ export default {
         if (last(activePathChildren).path !== lastActivePathItem && this.isSpecificOverload) {
           // if item is not found in the tree and its a specific overloaded symbol page
           // try to match with its generics page instead
-          const genericItem = lastActivePathItem.slice(0, lastActivePathItem.lastIndexOf('-'));
-          if (this.matchSurroundingItems(lastChildrenUID, genericItem)) return;
+          const genericItem = this.getGenericPath(lastActivePathItem);
+          if (this.matchInSurroundingItems(lastChildrenUID, genericItem)) return;
         }
 
         // Set new active UID to the last matched item
@@ -1058,17 +1059,18 @@ export default {
       this.trackOpenNodes(this.nodeChangeDeps);
     },
     /**
-     * try to match if any of the `siblings`,`children` or any of the `parents`
-     * of the UID match the item
+     * Try to match if any of the `siblings`,`children`, `parents`
+     * of the given UID match the given path.
+     * Set active UID once a match is found
      */
-    matchSurroundingItems(UID, item) {
+    matchInSurroundingItems(UID, path) {
       // Get the surrounding items
       const siblings = getSiblings(UID, this.childrenMap, this.children);
       const children = getChildren(UID, this.childrenMap, this.children);
       const parents = getParents(UID, this.childrenMap);
 
       const matchingItem = [...children, ...siblings, ...parents]
-        .find(child => child.path === item);
+        .find(child => child.path === path);
 
       // set the match as an active item
       if (matchingItem) {
@@ -1076,6 +1078,13 @@ export default {
         return true;
       }
       return false;
+    },
+    /**
+     * Parse out the generic path given a
+     * specific overload path with a valid hash
+     */
+    getGenericPath(path) {
+      return path.slice(0, path.lastIndexOf('-'));
     },
     /**
      * Updates the current focusIndex, based on where the activeUID is.
