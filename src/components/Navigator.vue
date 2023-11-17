@@ -170,7 +170,7 @@ export default {
       // eslint-disable-next-line no-param-reassign
       path = path.replace(/\/$/, '');
       const hash = isSymbol ? last(path.split('-')) : '';
-      return /^[a-z0-9]{1, 5}$/.test(hash);
+      return /^[a-z0-9]{1,5}$/.test(hash);
     },
     /**
      * The root item is always a module
