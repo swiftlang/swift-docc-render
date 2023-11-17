@@ -1041,7 +1041,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     wrapper.setProps({
       activePath: ['/documentation/testkit-ab1c2'],
-      hasValidHash: true,
+      isSpecificOverload: true,
     });
     await flushPromises();
     const all = wrapper.findAll(NavigatorCardItem);
@@ -1077,7 +1077,7 @@ describe('NavigatorCard', () => {
           overloadedPage,
         ],
         activePath: ['/documentation/testkit-ab1c2'],
-        hasValidHash: true,
+        isSpecificOverload: true,
       },
     });
 
