@@ -276,6 +276,15 @@ describe('Navigator', () => {
     });
     expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(true);
 
+    wrapper = createWrapper({
+      mocks: {
+        $route: {
+          path: '/documentation/Foo-Bar-abc12',
+        },
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(true);
+
     // capitalized letter, invalid hash
     wrapper = createWrapper({
       mocks: {
