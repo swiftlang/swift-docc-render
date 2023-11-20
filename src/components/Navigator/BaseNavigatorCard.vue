@@ -14,6 +14,14 @@
       <div class="navigator-card-inner">
         <div class="head-wrapper">
           <div class="head-inner">
+            <button
+              :id="SIDEBAR_HIDE_BUTTON_ID"
+              class="close-card"
+              :aria-label="$t('navigator.close-navigator')"
+              @click="handleHideClick"
+            >
+              <SidenavIcon class="icon-inline close-icon" />
+            </button>
             <Reference
               :id="INDEX_ROOT_KEY"
               :url="technologyPath"
@@ -38,6 +46,7 @@ import {
   INDEX_ROOT_KEY,
   SIDEBAR_HIDE_BUTTON_ID,
 } from 'docc-render/constants/sidebar';
+import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
@@ -45,14 +54,11 @@ import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 export default {
   name: 'BaseNavigatorCard',
   components: {
+    SidenavIcon,
     Reference,
     Badge,
   },
   props: {
-    allowHiding: {
-      type: Boolean,
-      default: true,
-    },
     technologyPath: {
       type: String,
       default: '',
@@ -118,7 +124,11 @@ $close-icon-padding: 5px;
   }
 
   .head-inner {
-    padding-top: var(--card-horizontal-spacing);
+    padding-top: $navigator-card-vertical-spacing;
+    display: flex;
+    @include breakpoint(medium, nav) {
+      justify-content: center;
+    }
   }
 
   .head-wrapper {
@@ -130,7 +140,8 @@ $close-icon-padding: 5px;
     --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
     padding: calc(var(--card-horizontal-spacing) / 3);
     background: $navigator-head-background;
-    border-radius: 5px;
+    border-radius: $nano-border-radius;
+    width: 100%;
     display: flex;
     align-items: center;
     white-space: nowrap;
@@ -168,38 +179,25 @@ $close-icon-padding: 5px;
     }
 
     @include breakpoint(small, nav) {
-      height: $nav-height-small;
+      height: calc(#{$nav-height-small} - #{$navigator-card-vertical-spacing * 2});
       padding: 0 $nav-card-horizontal-spacing-large;
+      width: auto;
     }
   }
 }
 
 .close-card {
-  display: flex;
+  display: none;
   position: absolute;
   z-index: 1;
-  align-items: center;
-  justify-content: center;
-  right: $nav-padding - rem($close-icon-padding);
-  padding: $close-icon-padding;
-  margin-left: -$close-icon-padding;
-  top: calc(50% - #{$close-icon-size} + #{$close-icon-padding});
-  transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s, visibility 0s;
 
   @include breakpoint(medium, nav) {
-    right: unset;
-    top: 0;
+    display: flex;
+    align-items: center;
+    top: $navigator-card-vertical-spacing;
     left: 0;
-    margin: 0;
-    padding: 0 $nav-padding 0 $nav-card-horizontal-spacing-large;
-    height: 100%;
-    @include safe-area-left-set(padding-left, $nav-padding);
-  }
-
-  @include breakpoint(small, nav) {
-    padding-left: $nav-padding-small;
-    padding-right: $nav-padding-small;
-    @include safe-area-left-set(padding-left, $nav-padding-small);
+    height: calc(100% - #{$navigator-card-vertical-spacing});
+    @include safe-area-left-set(margin-left, $nav-padding);
   }
 
   .close-icon {
@@ -208,10 +206,6 @@ $close-icon-padding: 5px;
   }
 
   @include breakpoints-from(large, nav) {
-    &.hide-on-large {
-      display: none;
-    }
-
     &:hover {
       border-radius: $nano-border-radius;
       background: var(--color-fill-gray-quaternary);

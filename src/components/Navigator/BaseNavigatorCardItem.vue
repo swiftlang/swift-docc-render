@@ -105,7 +105,7 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   align-items: center;
   flex: 1;
   min-width: 0;
-  border-radius: var(--border-radius, 4px);
+  border-radius: $nano-border-radius;
 
   padding: var(--head-wrapper-vertical-space) 0;
 

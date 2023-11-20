@@ -248,6 +248,7 @@ $sidenav-icon-padding-size: 5px;
   color: var(--color-nav-link-color);
   position: relative;
   margin: 0 (-$sidenav-icon-padding-size);
+  border-radius: $nano-border-radius;
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);

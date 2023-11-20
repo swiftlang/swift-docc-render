@@ -23,7 +23,6 @@
       :error-fetching="errorFetching"
       :render-filter-on-top="renderFilterOnTop"
       :api-changes="apiChanges"
-      :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
       @close="$emit('close')"
     >
@@ -121,10 +120,6 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
-    },
-    allowHiding: {
-      type: Boolean,
-      default: true,
     },
   },
   computed: {
