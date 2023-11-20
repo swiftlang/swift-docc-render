@@ -13,19 +13,14 @@
     <template v-if="topicData">
       <Nav
         v-if="!isTargetIDE"
-        :title="topicProps.title"
         :diffAvailability="topicProps.diffAvailability"
         :interfaceLanguage="topicProps.interfaceLanguage"
         :objcPath="objcPath"
         :swiftPath="swiftPath"
-        :parentTopicIdentifiers="parentTopicIdentifiers"
         :isSymbolDeprecated="isSymbolDeprecated"
         :isSymbolBeta="isSymbolBeta"
-        :currentTopicTags="topicProps.tags"
-        :references="topicProps.references"
         :displaySidenav="enableNavigator"
         :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
-        :hierarchyItems="hierarchyItems"
         :rootLink="rootLink"
         @toggle-sidenav="handleToggleSidenav"
       />

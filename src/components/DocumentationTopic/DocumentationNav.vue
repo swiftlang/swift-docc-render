@@ -91,10 +91,6 @@ export default {
     LanguageToggle,
   },
   props: {
-    parentTopicIdentifiers: {
-      type: Array,
-      required: false,
-    },
     isSymbolBeta: {
       type: Boolean,
       required: false,
@@ -110,10 +106,6 @@ export default {
     hasNoBorder: {
       type: Boolean,
       default: false,
-    },
-    references: {
-      type: Object,
-      default: () => ({}),
     },
     interfaceLanguage: {
       type: String,

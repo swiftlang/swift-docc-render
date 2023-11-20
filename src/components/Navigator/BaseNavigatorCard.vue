@@ -90,7 +90,7 @@ export default {
 
 $navigator-card-vertical-spacing: 8px !default;
 $navigator-head-background: var(--color-fill) !default;
-$navigator-head-background-active: var(--color-fill) !default;
+$navigator-head-background-active: var(--color-fill-gray-quaternary) !default;
 $close-icon-size: 19px;
 $close-icon-padding: 5px;
 
@@ -118,7 +118,6 @@ $close-icon-padding: 5px;
   }
 
   .head-inner {
-    overflow: hidden;
     padding-top: var(--card-horizontal-spacing);
   }
 
@@ -130,7 +129,7 @@ $close-icon-padding: 5px;
   .navigator-head {
     --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
     padding: calc(var(--card-horizontal-spacing) / 3);
-    background: var(--color-fill-gray-quaternary);
+    background: $navigator-head-background;
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -148,15 +147,16 @@ $close-icon-padding: 5px;
       margin-top: 0;
     }
 
+    &.router-link-exact-active {
+      background: $navigator-head-background-active;
+      .card-link {
+        font-weight: $font-weight-bold;
+      }
+    }
+
     &:hover {
       background: var(--color-navigator-item-hover);
       text-decoration: none;
-    }
-
-    &:focus .card-link {
-      .fromkeyboard & {
-        @include focus-outline();
-      }
     }
 
     @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));

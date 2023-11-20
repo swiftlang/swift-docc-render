@@ -66,13 +66,6 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   box-sizing: border-box;
   padding: 0 var(--nav-head-wrapper-right-space) 0 var(--nav-head-wrapper-left-space);
 
-  @include on-keyboard-focus-within() {
-    @include focus-outline(-4px);
-    &:not(.is-group) {
-      background: var(--color-navigator-item-hover);
-    }
-  }
-
   &.active {
     .head-wrapper {
       background: var(--color-fill-gray-quaternary);
@@ -115,6 +108,10 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   border-radius: var(--border-radius, 4px);
 
   padding: var(--head-wrapper-vertical-space) 0;
+
+  @include on-keyboard-focus-within() {
+    @include focus-outline(-4px);
+  }
 
   @include safe-area-right-set(padding-right, var(--nav-head-wrapper-right-space));
 }
