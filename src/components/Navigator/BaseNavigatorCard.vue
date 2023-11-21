@@ -22,6 +22,7 @@
             >
               <SidenavIcon class="icon-inline close-icon" />
             </button>
+            <slot name="above-navigator-head"/>
             <Reference
               :id="INDEX_ROOT_KEY"
               :url="technologyPath"
@@ -126,8 +127,14 @@ $close-icon-padding: 5px;
   .head-inner {
     padding-top: $navigator-card-vertical-spacing;
     display: flex;
+    flex-direction: column;
+
+    @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
+    @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
+
     @include breakpoint(medium, nav) {
       justify-content: center;
+      align-items: center;
     }
   }
 
@@ -141,7 +148,6 @@ $close-icon-padding: 5px;
     padding: calc(var(--card-horizontal-spacing) / 3);
     background: $navigator-head-background;
     border-radius: $nano-border-radius;
-    width: 100%;
     display: flex;
     align-items: center;
     white-space: nowrap;
@@ -170,9 +176,6 @@ $close-icon-padding: 5px;
       text-decoration: none;
     }
 
-    @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
-    @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
-
     @include breakpoint(medium, nav) {
       justify-content: center;
       --navigator-head-padding-right: var(--card-horizontal-spacing);
@@ -181,7 +184,6 @@ $close-icon-padding: 5px;
     @include breakpoint(small, nav) {
       height: calc(#{$nav-height-small} - #{$navigator-card-vertical-spacing * 2});
       padding: 0 $nav-card-horizontal-spacing-large;
-      width: auto;
     }
   }
 }

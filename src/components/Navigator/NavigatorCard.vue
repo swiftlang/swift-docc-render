@@ -19,6 +19,9 @@
     @close="$emit('close')"
     @head-click-alt="toggleAllNodes"
   >
+    <template #above-navigator-head>
+      <slot name="above-navigator-head"/>
+    </template>
     <template #body="{ className }">
       <slot name="post-head" />
       <div
