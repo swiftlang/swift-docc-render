@@ -10,7 +10,7 @@
 
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import HierarchyCollapsedItems
-  from 'docc-render/components/DocumentationTopic/DocumentationNav/HierarchyCollapsedItems.vue';
+  from 'docc-render/components/DocumentationTopic/HierarchyCollapsedItems.vue';
 import EllipsisIcon from 'theme/components/Icons/EllipsisIcon.vue';
 
 const mocks = { $route: {} };

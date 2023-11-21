@@ -22,6 +22,7 @@ import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declarat
 const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
 const {
+  Hierarchy,
   Abstract,
   ContentNode,
   DefaultImplementations,
@@ -109,14 +110,6 @@ const sampleCodeDownload = {
 const propsData = {
   abstract: [abstract],
   conformance: { constraints: [], availabilityPrefix: [] },
-  hierarchy: {
-    paths: [
-      [
-        'topic://foo',
-        'topic://bar',
-      ],
-    ],
-  },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
   role: TopicTypes.collection,
@@ -155,6 +148,20 @@ const propsData = {
   ],
   remoteSource: { url: 'foo' },
   pageImages: [{ identifier: 'foo', type: 'icon' }],
+  currentTopicTags: [{
+    type: 'foo',
+    text: 'Foo',
+  }, {
+    type: 'custom',
+  }],
+  rootLink: {
+    path: 'foo',
+    query: {},
+  },
+  hierarchyItems: [
+    'topic://foo',
+    'topic://bar',
+  ],
 };
 
 describe('DocumentationTopic', () => {
@@ -282,6 +289,20 @@ describe('DocumentationTopic', () => {
       shortHero: false,
       shouldShowLanguageSwitcher: false,
       iconOverride: undefined,
+    });
+  });
+
+  it('renders a Hierarchy', () => {
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(true);
+    expect(hierarchy.props()).toEqual({
+      currentTopicTitle: propsData.title,
+      parentTopicIdentifiers: propsData.hierarchyItems,
+      isSymbolBeta: false,
+      isSymbolDeprecated: false,
+      currentTopicTags: propsData.currentTopicTags,
+      references: propsData.references,
+      rootLink: propsData.rootLink,
     });
   });
 

@@ -16,7 +16,6 @@ import { flushPromises } from '../../../../test-utils';
 const { Reference, Badge } = BaseNavigatorCard.components;
 
 const defaultProps = {
-  allowHiding: true,
   technology: 'Technology',
   technologyPath: '/path',
   isTechnologyBeta: false,
@@ -52,15 +51,6 @@ describe('BaseNavigatorCard', () => {
     expect(button.attributes('aria-label')).toBe('navigator.close-navigator');
     expect(wrapper.emitted('close')).toHaveLength(1);
     expect(document.activeElement).toEqual(btn);
-  });
-
-  it('hides the toggle button, if `allowHiding` is `false`', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        allowHiding: false,
-      },
-    });
-    expect(wrapper.find('.close-card').classes()).toContain('hide-on-large');
   });
 
   it('renders a Beta badge in the header', async () => {

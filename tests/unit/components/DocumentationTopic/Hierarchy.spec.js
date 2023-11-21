@@ -9,7 +9,7 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import Hierarchy from 'docc-render/components/DocumentationTopic/DocumentationNav/Hierarchy.vue';
+import Hierarchy from 'docc-render/components/DocumentationTopic/Hierarchy.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import Vue from 'vue';
 

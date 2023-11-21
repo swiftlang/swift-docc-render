@@ -72,6 +72,9 @@ const mocks = {
     params: {
       locale: 'en-US',
     },
+    query: {
+      changes: 'latest_minor',
+    },
   },
 };
 
@@ -229,7 +232,6 @@ describe('DocumentationTopic', () => {
       // assert we are passing the default technology, if we dont have the children yet
       technology,
       apiChanges: null,
-      allowHiding: true,
       flatChildren: [],
       navigatorReferences: {},
       renderFilterOnTop: false,
@@ -245,7 +247,6 @@ describe('DocumentationTopic', () => {
       references: topicData.references,
       technology: TechnologyWithChildren,
       apiChanges: null,
-      allowHiding: true,
       flatChildren: [],
       navigatorReferences,
     });
@@ -515,19 +516,16 @@ describe('DocumentationTopic', () => {
     // assert the Nav
     const nav = wrapper.find(Nav);
     expect(nav.props()).toEqual({
-      parentTopicIdentifiers: topicData.hierarchy.paths[0],
-      title: topicData.metadata.title,
       isDark: false,
       hasNoBorder: false,
-      currentTopicTags: [],
       displaySidenav: false,
-      references: topicData.references,
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       interfaceLanguage: topicData.identifier.interfaceLanguage,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
       sidenavHiddenOnLarge: false,
+      rootLink: null,
     });
     expect(nav.attributes()).toMatchObject({
       interfacelanguage: 'swift',
@@ -564,8 +562,6 @@ describe('DocumentationTopic', () => {
       },
     });
     expect(wrapper.find(Navigator).props('parentTopicIdentifiers'))
-      .toEqual(topicData.hierarchy.paths[1]);
-    expect(wrapper.find(Nav).props('parentTopicIdentifiers'))
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
@@ -667,6 +663,59 @@ describe('DocumentationTopic', () => {
       enableMinimized: false, // disabled by default
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
+      hierarchyItems: topicData.hierarchy.paths[0],
+      rootLink: null,
+      currentTopicTags: [],
+    });
+  });
+
+  it('renders a `Topic` with `topicData` without the first hierarchy item if there is root link', () => {
+    const TechnologiesRootIdentifier = 'topic://technologies';
+
+    const references = {
+      [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
+      'topic://foo': { title: 'FooTechnology', url: '/documentation/foo' },
+      'topic://bar': { title: 'BarTechnology', url: '/documentation/bar' },
+    };
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        hierarchy: {
+          paths: [
+            [TechnologiesRootIdentifier, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+        references,
+      },
+    });
+
+    const topic = wrapper.find(Topic);
+    expect(topic.exists()).toBe(true);
+    expect(topic.attributes('style')).toBeFalsy();
+    expect(topic.props()).toEqual({
+      ...wrapper.vm.topicProps,
+      isSymbolBeta: false,
+      isSymbolDeprecated: false,
+      objcPath: topicData.variants[0].paths[0],
+      swiftPath: topicData.variants[1].paths[0],
+      languagePaths: {
+        occ: ['documentation/objc'],
+        swift: ['documentation/swift'],
+      },
+      enableOnThisPageNav: true, // enabled by default
+      enableMinimized: false, // disabled by default
+      topicSectionsStyle: TopicSectionsStyle.list, // default value
+      disableHeroBackground: false,
+      hierarchyItems: topicData.hierarchy.paths[0],
+      rootLink: {
+        path: references[TechnologiesRootIdentifier].url,
+        query: {
+          // preservers query params
+          changes: 'latest_minor',
+        },
+      },
+      currentTopicTags: [],
     });
   });
 

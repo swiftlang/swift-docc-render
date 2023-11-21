@@ -10,7 +10,7 @@
 
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import HierarchyItem
-  from 'docc-render/components/DocumentationTopic/DocumentationNav/HierarchyItem.vue';
+  from 'docc-render/components/DocumentationTopic/HierarchyItem.vue';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 
 const mountWithProps = props => shallowMount(HierarchyItem, {

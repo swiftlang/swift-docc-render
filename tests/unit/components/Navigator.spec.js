@@ -146,7 +146,6 @@ describe('Navigator', () => {
       renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
-      allowHiding: true,
       navigatorReferences,
       hideAvailableTags: false,
     });
@@ -186,7 +185,6 @@ describe('Navigator', () => {
       renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
       apiChanges: null,
-      allowHiding: true,
       navigatorReferences,
       hideAvailableTags: false,
     });

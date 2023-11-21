@@ -383,7 +383,7 @@ export default {
     },
     currentTopicTags: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     hierarchyItems: {
       type: Array,

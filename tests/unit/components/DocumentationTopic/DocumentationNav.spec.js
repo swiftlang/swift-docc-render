@@ -23,7 +23,6 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/FocusTrap');
 
 const {
-  Hierarchy,
   NavBase,
   LanguageToggle,
   NavMenuItems,
@@ -34,12 +33,9 @@ const stubs = {
   NavBase,
 };
 
-const TechnologiesRootIdentifier = 'topic://technologies';
-
-const references = {
-  [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
-  'topic://foo': {},
-  'topic://bar': {},
+const rootLink = {
+  path: '/documentation/technologies',
+  query: {},
 };
 
 const mocks = {
@@ -60,14 +56,11 @@ describe('DocumentationNav', () => {
       'topic://foo',
       'topic://bar',
     ],
-    currentTopicTags: [{
-      type: 'foo',
-    }],
     interfaceLanguage: 'swift',
     swiftPath: 'documentation/foo',
     objcPath: 'documentation/bar',
-    references,
     displaySidenav: true,
+    rootLink: null,
   };
 
   beforeEach(() => {
@@ -118,90 +111,26 @@ describe('DocumentationNav', () => {
 
   it('renders the title "Documentation" link, when there is a Technology root', () => {
     wrapper.setProps({
-      parentTopicIdentifiers: [
-        TechnologiesRootIdentifier,
-        ...propsData.parentTopicIdentifiers,
-      ],
+      rootLink,
     });
     const title = wrapper.find('.nav-title-link');
     expect(title.exists()).toBe(true);
     expect(title.is(RouterLinkStub)).toBe(true);
-    expect(title.props('to')).toEqual({
-      path: references[TechnologiesRootIdentifier].url,
-      query: {},
-    });
+    expect(title.props('to')).toEqual(rootLink);
     expect(title.text()).toBe('documentation.title');
   });
 
-  it('renders the title "Documentation" link and preservers query params, using the root reference path', () => {
-    wrapper = shallowMount(DocumentationNav, {
-      stubs,
-      propsData: {
-        ...propsData,
-        parentTopicIdentifiers: [
-          TechnologiesRootIdentifier,
-          ...propsData.parentTopicIdentifiers,
-        ],
-      },
-      mocks: {
-        $route: {
-          query: {
-            changes: 'latest_minor',
-          },
-        },
-      },
-    });
-    expect(wrapper.find('.nav-title-link').props('to'))
-      .toEqual({
-        path: references[TechnologiesRootIdentifier].url,
-        query: { changes: 'latest_minor' },
-      });
-  });
-
-  it('renders a Hierarchy', () => {
-    const hierarchy = wrapper.find(Hierarchy);
-    expect(hierarchy.exists()).toBe(true);
-    expect(hierarchy.props()).toEqual({
-      currentTopicTitle: propsData.title,
-      parentTopicIdentifiers: propsData.parentTopicIdentifiers,
-      isSymbolBeta: false,
-      isSymbolDeprecated: false,
-      currentTopicTags: propsData.currentTopicTags,
-      references,
-    });
-  });
-
-  it('renders a Hierarchy with correct items, if first hierarchy item is the root link', () => {
-    const parentTopicIdentifiers = [
-      TechnologiesRootIdentifier,
-      ...propsData.parentTopicIdentifiers,
-    ];
-
-    wrapper.setProps({ parentTopicIdentifiers });
-    const hierarchy = wrapper.find(Hierarchy);
-    expect(hierarchy.props())
-      // passes all items, without the first one
-      .toHaveProperty('parentTopicIdentifiers', parentTopicIdentifiers.slice(1));
-  });
-
   it('exposes a `tray-after` scoped slot', () => {
-    let slotProps = null;
     const fooBar = 'Foo bar';
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
       mocks,
       scopedSlots: {
-        'tray-after': (props) => {
-          slotProps = props;
-          return fooBar;
-        },
+        'tray-after': () => fooBar,
       },
     });
     expect(wrapper.text()).toContain(fooBar);
-    expect(slotProps).toEqual({
-      breadcrumbCount: 3,
-    });
   });
 
   it('renders a LanguageToggle', () => {
@@ -273,11 +202,7 @@ describe('DocumentationNav', () => {
     const btn = document.createElement('button');
     btn.id = SIDEBAR_HIDE_BUTTON_ID;
     document.body.appendChild(btn);
-    // assert the wrapper is hidden
     const sidenavToggleWrapper = wrapper.find('.sidenav-toggle-wrapper');
-    expect(sidenavToggleWrapper.isVisible()).toBe(false);
-    // show the wrapper
-    wrapper.setProps({ sidenavHiddenOnLarge: true });
     // assert its visible
     expect(sidenavToggleWrapper.isVisible()).toBe(true);
     // interact with button
