@@ -11,6 +11,7 @@
 <template>
   <BaseNavigatorCard
     :class="{ 'filter-on-top': renderFilterOnTop }"
+    :hideNavigatorHeadOnLarge="hideNavigatorHeadOnLarge"
     v-bind="{
       technology,
       isTechnologyBeta,

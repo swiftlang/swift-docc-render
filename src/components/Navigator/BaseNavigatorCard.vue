@@ -26,6 +26,7 @@
             <Reference
               :id="INDEX_ROOT_KEY"
               :url="technologyPath"
+              :class="{ 'hide-on-large': hideNavigatorHeadOnLarge }"
               class="navigator-head"
               @click.alt.native.prevent="$emit('head-click-alt')"
             >
@@ -69,6 +70,10 @@ export default {
       required: true,
     },
     isTechnologyBeta: {
+      type: Boolean,
+      default: false,
+    },
+    hideNavigatorHeadOnLarge: {
       type: Boolean,
       default: false,
     },
@@ -184,6 +189,12 @@ $close-icon-padding: 5px;
     @include breakpoint(small, nav) {
       height: calc(#{$nav-height-small} - #{$navigator-card-vertical-spacing * 2});
       padding: 0 $nav-card-horizontal-spacing-large;
+    }
+
+    @include breakpoints-from(large, nav) {
+      &.hide-on-large {
+        display: none;
+      }
     }
   }
 }

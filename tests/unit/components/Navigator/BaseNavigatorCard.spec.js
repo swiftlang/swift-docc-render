@@ -16,6 +16,7 @@ import { flushPromises } from '../../../../test-utils';
 const { Reference, Badge } = BaseNavigatorCard.components;
 
 const defaultProps = {
+  hideNavigatorHeadOnLarge: false,
   technology: 'Technology',
   technologyPath: '/path',
   isTechnologyBeta: false,
@@ -63,6 +64,15 @@ describe('BaseNavigatorCard', () => {
     expect(wrapper.find('.navigator-head').find(Badge).props()).toMatchObject({
       variant: 'beta',
     });
+  });
+
+  it('hides navigator head on large viewport, if `hideNavigatorHeadOnLarge` is `true`', async () => {
+    const wrapper = createWrapper({
+      propsData: {
+        hideNavigatorHeadOnLarge: true,
+      },
+    });
+    expect(wrapper.find('.navigator-head').classes()).toContain('hide-on-large');
   });
 
   it('renders a card-link with the technology name', () => {

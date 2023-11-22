@@ -148,6 +148,7 @@ describe('Navigator', () => {
       apiChanges: null,
       navigatorReferences,
       hideAvailableTags: false,
+      hideNavigatorHeadOnLarge: false,
     });
   });
 
@@ -187,6 +188,7 @@ describe('Navigator', () => {
       apiChanges: null,
       navigatorReferences,
       hideAvailableTags: false,
+      hideNavigatorHeadOnLarge: false,
     });
   });
 
