@@ -12,6 +12,7 @@
   <BaseNavigatorCard
     v-bind="$props"
     @close="$emit('close')"
+    hideNavigatorHeadOnLarge
   >
     <template #body="{ className }">
       <transition name="delay-visibility">
@@ -65,6 +66,6 @@ export default {
 }
 
 .loading-navigator {
-  padding-top: var(--card-vertical-spacing);
+  padding-top: $nav-card-vertical-spacing;
 }
 </style>
