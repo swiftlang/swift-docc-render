@@ -43,6 +43,7 @@
                     :error-fetching="slotProps.errorFetching"
                     :api-changes="slotProps.apiChanges"
                     :references="topicProps.references"
+                    :symbolKind="topicProps.symbolKind"
                     :navigator-references="slotProps.references"
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
