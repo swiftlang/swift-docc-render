@@ -11,6 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
+import InlinePlusCircleIcon from 'docc-render/components/Icons/InlinePlusCircleIcon.vue';
 import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
@@ -155,6 +156,37 @@ const propsData = {
   ],
   remoteSource: { url: 'foo' },
   pageImages: [{ identifier: 'foo', type: 'icon' }],
+};
+
+const overloadedDeclarationsSection = {
+  kind: PrimaryContent.constants.SectionKind.declarations,
+  declarations: [
+    {
+      platforms: [
+        'macos',
+      ],
+      tokens: [
+        {
+          type: 'identifier',
+          text: 'Foo',
+        },
+      ],
+      otherDeclarations: {
+        declarations: [
+          {
+            identifier: 'doc://boo',
+            tokens: [
+              {
+                type: 'identifier',
+                text: 'Boo',
+              },
+            ],
+          },
+        ],
+        displayIndex: 1,
+      },
+    },
+  ],
 };
 
 describe('DocumentationTopic', () => {
@@ -509,6 +541,16 @@ describe('DocumentationTopic', () => {
     expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
   });
 
+  it('render a `PrimaryContent` column when passed empty an PrimaryContent but has overloads', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        overloadedDeclarationsSection,
+      ],
+    });
+    expect(wrapper.contains(PrimaryContent)).toBe(true); // has overload dropdown
+  });
+
   it('renders `ViewMore` if `enableMinimized`', () => {
     wrapper.setProps({
       enableMinimized: true,
@@ -574,6 +616,14 @@ describe('DocumentationTopic', () => {
       expect(description.classes()).not.toContain('after-enhanced-hero');
     });
 
+    it('does not render the description section if overloads are expanded', () => {
+      wrapper.setData({
+        expandOverloads: true,
+      });
+      const description = wrapper.find('.description');
+      expect(description.exists()).toBe(false);
+    });
+
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
@@ -621,6 +671,44 @@ describe('DocumentationTopic', () => {
       wrapper.setProps({ enableMinimized: true });
       expect(wrapper.find(Availability).exists()).toBe(false);
     });
+  });
+
+  it('render an overload menu if has overloads', () => {
+    let overloadButton = wrapper.find('.overload-menu');
+    expect(overloadButton.exists()).toBe(false);
+
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        overloadedDeclarationsSection,
+      ],
+    });
+    overloadButton = wrapper.find('.overload-menu');
+    expect(overloadButton.exists()).toBe(true);
+  });
+
+  it('renders correct overload toggle, text, and icon', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        overloadedDeclarationsSection,
+      ],
+    });
+    let overloadButton = wrapper.find('.overload-menu');
+    expect(overloadButton.text()).toContain('Show all declarations');
+    let icon = wrapper.find(InlinePlusCircleIcon);
+    expect(icon.exists()).toBe(true);
+
+    const toggle = wrapper.find('.overload-menu-trigger');
+    expect(toggle.exists()).toBe(true);
+    toggle.trigger('click');
+
+    overloadButton = wrapper.find('.overload-menu');
+    expect(overloadButton.exists()).toBe(true);
+    expect(overloadButton.text()).toContain('Hide other declarations');
+    icon = wrapper.find(InlinePlusCircleIcon);
+    expect(icon.exists()).toBe(true);
+    expect(icon.classes()).toContain('expand');
   });
 
   it('does not render any primary content or related markup, if not provided', () => {

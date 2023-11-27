@@ -109,11 +109,8 @@
                 @click="toggleOverloads"
               >
                 {{ overloadButtonText }}
-                <div
-                  class="overload-button"
-                  :class="{'expand': expandOverloads }"
-                >
-                  <InlinePlusCircleIcon />
+                <div class="overload-button">
+                  <InlinePlusCircleIcon :class="{'expand': expandOverloads }" />
                 </div>
               </button>
             </div>
@@ -546,7 +543,7 @@ export default {
     // hasDeclarationOverloads({ declarations = [{ declarations: [{}] }] }) {
     hasDeclarationOverloads({ declarations = [] }) {
       // there's always only 1 `declaration` at this level
-      return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'indexInOtherDeclarations')) : false;
+      return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations')) : false;
     },
     overloadButtonText({ expandOverloads }) {
       return expandOverloads ? 'Hide other declarations' : 'Show all declarations';
@@ -713,10 +710,10 @@ $space-size: 15px;
       width: $space-size;
       height: $space-size;
       fill: var(--colors-link, var(--color-tutorials-overview-link));
-    }
 
-    &.expand > svg {
-      transform: rotate(45deg);
+      &.expand {
+        transform: rotate(45deg);
+      }
     }
   }
 }

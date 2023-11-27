@@ -124,16 +124,18 @@ export default {
     }) => {
       if (!hasOtherDeclarations) return [declaration];
       const {
-        otherDeclarations,
-        indexInOtherDeclarations,
+        otherDeclarations: {
+          declarations,
+          displayIndex,
+        },
         tokens,
       } = declaration;
 
-      // insert declaration into the correct position if has overloaded symbols
+      // insert declaration into the correct position
       return [
-        ...otherDeclarations.slice(0, indexInOtherDeclarations),
+        ...declarations.slice(0, displayIndex),
         { tokens, identifier },
-        ...otherDeclarations.slice(indexInOtherDeclarations),
+        ...declarations.slice(displayIndex),
       ];
     },
     classes: ({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) => ({
