@@ -166,6 +166,12 @@ export default {
     }
   }
 
+  @media (scripting: none) {
+    &:focus::before, &.focused::before {
+      opacity: 0;
+    }
+  }
+
   @include breakpoint(small) {
     padding-left: 2rem;
 
