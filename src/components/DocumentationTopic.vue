@@ -539,8 +539,6 @@ export default {
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
     },
-    // WHY didn't this work without checking for length:
-    // hasOtherDeclarations({ declarations = [{ declarations: [{}] }] }) {
     hasOtherDeclarations({ declarations = [] }) {
       // there's always only 1 `declaration` at this level
       return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations')) : false;
