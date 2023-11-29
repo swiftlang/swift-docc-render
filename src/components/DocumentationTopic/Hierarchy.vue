@@ -20,7 +20,8 @@
     >
       <HierarchyItem
         v-if="rootLink"
-        :to="rootLink"
+        :url="rootLink"
+        :hasSlash="false"
       >
         {{ $t('documentation.title') }}
       </HierarchyItem>

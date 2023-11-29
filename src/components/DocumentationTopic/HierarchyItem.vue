@@ -14,7 +14,7 @@
     :class="[{ collapsed: props.isCollapsed }, data.staticClass]"
     class="hierarchy-item"
   >
-    <span class="hierarchy-item-icon icon-inline">/</span>
+    <span v-if="props.hasSlash" class="hierarchy-item-icon icon-inline">/</span>
     <router-link v-if="props.url" class="parent item nav-menu-link" :to="props.url">
       <slot />
     </router-link>
@@ -39,6 +39,10 @@ export default {
     url: {
       type: String,
       required: false,
+    },
+    hasSlash: {
+      type: Boolean,
+      default: () => true,
     },
   },
 };
