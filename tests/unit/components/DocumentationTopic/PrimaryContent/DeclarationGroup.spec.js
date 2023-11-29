@@ -12,22 +12,65 @@ import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryC
 import { shallowMount } from '@vue/test-utils';
 import DeclarationSource
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
+import { waitFor } from 'docc-render/utils/loading';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { flushPromises } from '../../../../../test-utils';
+
+jest.mock('docc-render/utils/loading');
+
+const mocks = {
+  $router: {
+    push: jest.fn(),
+  },
+};
+
+const basicDeclaration = {
+  platforms: ['iOS', 'tvOS', 'watchOS'],
+  tokens: [
+    { type: 'text', text: 'foo' },
+  ],
+};
 
 const propsData = {
-  declaration: {
-    platforms: ['iOS', 'tvOS', 'watchOS'],
-    tokens: [
-      { type: 'text', text: 'foo' },
-    ],
-  },
+  declaration: basicDeclaration,
   shouldCaption: true,
   change: '',
+};
+
+const withOtherDeclarations = {
+  declaration: {
+    ...basicDeclaration,
+    otherDeclarations: {
+      declarations: [
+        {
+          identifier: 'doc://boo',
+          tokens: [
+            {
+              type: 'identifier',
+              text: 'Boo',
+            },
+          ],
+        },
+      ],
+      displayIndex: 1,
+    },
+  },
+};
+
+const store = {
+  state: {
+    onThisPageSections: [],
+    apiChanges: null,
+    references: {
+      'doc://boo': { url: 'url-boo' },
+    },
+  },
 };
 
 const provide = {
   interfaceLanguage: 'swift',
   languages: new Set(['swift', 'occ']),
+  store,
 };
 
 const createWrapper = options => shallowMount(DeclarationGroup, {
@@ -94,5 +137,73 @@ describe('DeclarationGroup', () => {
     });
 
     expect(wrapper.classes()).toContain(multipleLinesClass);
+  });
+});
+
+describe('DeclarationGroup with otherDeclarations', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = createWrapper({
+      propsData: {
+        ...propsData,
+        ...withOtherDeclarations,
+        expandOverloads: true,
+      },
+      mocks,
+    });
+  });
+
+  it('renders only one `Source` when list is collapsed', () => {
+    wrapper.setProps({ expandOverloads: false });
+    const sources = wrapper.findAll(DeclarationSource);
+    expect(sources.length).toBe(1);
+    expect(sources.at(0).props('tokens')).toEqual(withOtherDeclarations.declaration.tokens);
+  });
+
+  it('renders one `Source` for each declaration in list in correct order when expanded', () => {
+    const sources = wrapper.findAll(DeclarationSource);
+    // second item is the currently selected declaration
+    expect(sources.length).toBe(2);
+    expect(sources.at(0).props('tokens')).toEqual(withOtherDeclarations.declaration.otherDeclarations.declarations[0].tokens);
+    expect(sources.at(1).props('tokens')).toEqual(withOtherDeclarations.declaration.tokens);
+  });
+
+  it('adds a `declaration-pill-expanded` class only when list is expanded', () => {
+    const declaration = wrapper.find('.declaration-pill');
+    expect(declaration.classes()).toContain('declaration-pill--expanded');
+
+    wrapper.setProps({ expandOverloads: false });
+    expect(wrapper.find('.declaration-pill').classes()).not.toContain('declaration-pill--expanded');
+  });
+
+  it('adds a `selected-declaration` class to the selected declaration', () => {
+    const sources = wrapper.findAll(DeclarationSource);
+    // second item is the currently selected declaration
+    expect(sources.at(0).classes()).not.toContain('selected-declaration');
+    expect(sources.at(1).classes()).toContain('selected-declaration');
+  });
+
+  it('renders a `div` for selected declaration, otherwise renders a `button`', () => {
+    const sourceWrapper = wrapper.findAll('.declaration-source-wrapper');
+    expect(sourceWrapper.at(0).find('div').exists()).toBe(false);
+    expect(sourceWrapper.at(0).find('button').exists()).toBe(true);
+    expect(sourceWrapper.at(1).find('div').exists()).toBe(true);
+    expect(sourceWrapper.at(1).find('button').exists()).toBe(false);
+  });
+
+  it('clicking on a pill from the expanded list selects that declaration', async () => {
+    const buttons = wrapper.findAll('.declaration-pill--expanded');
+    const button = buttons.at(0).find('button');
+    button.trigger('click');
+    await flushPromises();
+
+    const { identifier } = withOtherDeclarations.declaration.otherDeclarations.declarations[0];
+    expect(waitFor).toHaveBeenCalledTimes(2);
+    expect(waitFor).toHaveBeenCalledWith(100); // wait for selected identifier to be updated
+    expect(wrapper.vm.selectedIdentifier).toEqual(identifier);
+    expect(wrapper.emitted('update:expandOverloads')).toEqual([[false]]);
+    expect(waitFor).toHaveBeenLastCalledWith(500); // wait for animation to be finish
+    expect(mocks.$router.push).toHaveBeenCalledWith(store.state.references[identifier].url);
   });
 });

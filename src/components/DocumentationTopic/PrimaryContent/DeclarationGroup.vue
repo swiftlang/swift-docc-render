@@ -24,19 +24,21 @@
     >
       <div
         v-if="!hasOtherDeclarations || declaration.identifier === selectedIdentifier || isExpanded"
+        class="declaration-pill"
         :class="{
-          'declaration-overload': hasOtherDeclarations && isExpanded,
+          'declaration-pill--expanded': hasOtherDeclarations && isExpanded,
         }"
       >
         <component
           :is="getWrapperComponent(declaration)"
-          @click="handleSelectOverload(declaration.identifier)"
+          @click="selectDeclaration(declaration.identifier)"
+          class="declaration-source-wrapper"
         >
           <Source
             :tokens="declaration.tokens"
             :language="interfaceLanguage"
             :class="{
-              'selected-overload': isSelectedOverload(declaration.identifier),
+              'selected-declaration': isSelectedDeclaration(declaration.identifier),
             }"
           />
         </component>
@@ -155,22 +157,21 @@ export default {
     },
   },
   methods: {
-    async handleSelectOverload(identifier) {
+    async selectDeclaration(identifier) {
+      if (identifier === this.identifier) return;
       this.selectedIdentifier = identifier;
       // enough time to update the just selected item
       await waitFor(100);
-      this.isExpanded = false; // collapse the overloads
-      if (identifier === this.identifier) return;
-      // await animation finishes
-      setTimeout(() => {
-        this.$router.push(this.references[identifier].url);
-      }, 500);
+      this.isExpanded = false; // collapse the list
+      // await animation to finish
+      await waitFor(500);
+      this.$router.push(this.references[identifier].url);
     },
     getWrapperComponent(decl) {
       return (!this.isExpanded || decl.identifier === this.identifier)
         ? 'div' : 'button';
     },
-    isSelectedOverload(identifier) {
+    isSelectedDeclaration(identifier) {
       return identifier === this.selectedIdentifier;
     },
   },
@@ -195,7 +196,7 @@ export default {
   }
 }
 
-.declaration-overload {
+.declaration-pill--expanded {
   transition-timing-function: linear;
   transition-property: opacity, height;
 
@@ -204,15 +205,15 @@ export default {
     width: 100%;
   }
 
-  .selected-overload {
+  .selected-declaration {
     border-color: var(--color-focus-border-color, var(--color-focus-border-color));
   }
 
-  :not(.selected-overload) {
+  :not(.selected-declaration) {
     background: unset;
   }
 
-  + .declaration-overload .source {
+  + .declaration-pill--expanded .source {
     margin: var(--declaration-code-listing-margin);
   }
 
