@@ -40,13 +40,13 @@ describe('DeclarationDiff', () => {
       declaration: propsData.changes.declaration.new[0],
       shouldCaption: true,
       changeType: 'modified',
-      expandOverloads: false,
+      declListExpanded: false,
     });
     expect(currentGroups.at(1).props()).toEqual({
       declaration: propsData.changes.declaration.new[1],
       shouldCaption: true,
       changeType: 'modified',
-      expandOverloads: false,
+      declListExpanded: false,
     });
 
     const previousGroups = wrapper.find('.declaration-diff-previous').findAll(DeclarationGroup);
@@ -56,7 +56,7 @@ describe('DeclarationDiff', () => {
       declaration: propsData.changes.declaration.previous[0],
       shouldCaption: false, // false because we only have one declaration in the group
       changeType: 'modified',
-      expandOverloads: false,
+      declListExpanded: false,
     });
   });
 });

@@ -148,14 +148,14 @@ describe('DeclarationGroup with otherDeclarations', () => {
       propsData: {
         ...propsData,
         ...withOtherDeclarations,
-        expandOverloads: true,
+        declListExpanded: true,
       },
       mocks,
     });
   });
 
   it('renders only one `Source` when list is collapsed', () => {
-    wrapper.setProps({ expandOverloads: false });
+    wrapper.setProps({ declListExpanded: false });
     const sources = wrapper.findAll(DeclarationSource);
     expect(sources.length).toBe(1);
     expect(sources.at(0).props('tokens')).toEqual(withOtherDeclarations.declaration.tokens);
@@ -173,7 +173,7 @@ describe('DeclarationGroup with otherDeclarations', () => {
     const declaration = wrapper.find('.declaration-pill');
     expect(declaration.classes()).toContain('declaration-pill--expanded');
 
-    wrapper.setProps({ expandOverloads: false });
+    wrapper.setProps({ declListExpanded: false });
     expect(wrapper.find('.declaration-pill').classes()).not.toContain('declaration-pill--expanded');
   });
 
@@ -202,7 +202,7 @@ describe('DeclarationGroup with otherDeclarations', () => {
     expect(waitFor).toHaveBeenCalledTimes(2);
     expect(waitFor).toHaveBeenCalledWith(100); // wait for selected identifier to be updated
     expect(wrapper.vm.selectedIdentifier).toEqual(identifier);
-    expect(wrapper.emitted('update:expandOverloads')).toEqual([[false]]);
+    expect(wrapper.emitted('update:declListExpanded')).toEqual([[false]]);
     expect(waitFor).toHaveBeenLastCalledWith(500); // wait for animation to be finish
     expect(mocks.$router.push).toHaveBeenCalledWith(store.state.references[identifier].url);
   });

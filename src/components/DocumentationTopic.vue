@@ -71,7 +71,7 @@
             :conformance="conformance"
             :declarations="declaration.declarations"
             :source="remoteSource"
-            :expandOverloads.sync="expandOverloads"
+            :declListExpanded.sync="declListExpanded"
           />
         </div>
       </DocumentationHero>
@@ -81,13 +81,13 @@
           :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
         >
           <div
-            v-if="hasPrimaryContent || hasDeclarationOverloads"
+            v-if="hasPrimaryContent || hasOtherDeclarations"
             :class="['container', { 'minimized-container': enableMinimized }]"
           >
             <div
               class="description"
               :class="{ 'after-enhanced-hero': enhanceBackground }"
-              v-if="!expandOverloads"
+              v-if="!declListExpanded"
             >
               <RequirementMetadata
                 v-if="isRequirement"
@@ -103,14 +103,14 @@
                 <ContentNode :content="downloadNotAvailableSummary" />
               </Aside>
             </div>
-            <div v-if="hasDeclarationOverloads" class="overload-menu">
+            <div v-if="hasOtherDeclarations" class="declaration-list-menu">
               <button
-                class="overload-menu-trigger"
-                @click="toggleOverloads"
+                class="declaration-list-toggle"
+                @click="toggleDeclList"
               >
-                {{ overloadButtonText }}
-                <div class="overload-button">
-                  <InlinePlusCircleIcon :class="{'expand': expandOverloads }" />
+                {{ declListToggleText }}
+                <div class="icon">
+                  <InlinePlusCircleIcon :class="{'expand': declListExpanded }" />
                 </div>
               </button>
             </div>
@@ -403,7 +403,7 @@ export default {
   data() {
     return {
       topicState: this.store.state,
-      expandOverloads: false, // Show all overloads by default
+      declListExpanded: false, // Hide all other declarations by default
     };
   },
   computed: {
@@ -540,13 +540,13 @@ export default {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
     },
     // WHY didn't this work without checking for length:
-    // hasDeclarationOverloads({ declarations = [{ declarations: [{}] }] }) {
-    hasDeclarationOverloads({ declarations = [] }) {
+    // hasOtherDeclarations({ declarations = [{ declarations: [{}] }] }) {
+    hasOtherDeclarations({ declarations = [] }) {
       // there's always only 1 `declaration` at this level
       return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations')) : false;
     },
-    overloadButtonText({ expandOverloads }) {
-      return expandOverloads ? 'Hide other declarations' : 'Show all declarations';
+    declListToggleText({ declListExpanded }) {
+      return declListExpanded ? 'Hide other declarations' : 'Show all declarations';
     },
   },
   methods: {
@@ -635,8 +635,8 @@ export default {
         standardColorIdentifier,
       };
     },
-    toggleOverloads() {
-      this.expandOverloads = !this.expandOverloads;
+    toggleDeclList() {
+      this.declListExpanded = !this.declListExpanded;
     },
   },
   created() {
@@ -680,12 +680,12 @@ export default {
 
 $space-size: 15px;
 
-.overload-menu {
+.declaration-list-menu {
   position: relative;
   margin: 0 !important;
   width: 100%;
 
-  .overload-menu-trigger {
+  .declaration-list-toggle {
     display: flex;
     flex-direction: row;
     position: absolute;
@@ -698,7 +698,7 @@ $space-size: 15px;
     z-index: 1;
   }
 
-  .overload-button {
+  .icon {
     margin-left: 5px;
     margin-top: 2px !important;
 
@@ -901,9 +901,10 @@ $space-size: 15px;
     min-width: 0;
     width: 100%;
 
-    // only render border on overload menu when there's no content sections after overloads at all
+    // only render border on declaration list menu
+    // when there are no content sections afterwards at all
     .container:only-child {
-      .overload-menu:last-child::before {
+      .declaration-list-menu:last-child::before {
         border-top-color: var(--colors-grid, var(--color-grid));
         border-top-style: solid;
         border-top-width: var(--content-table-title-border-width, 1px);

@@ -82,12 +82,12 @@ describe('Declaration', () => {
     const group = wrapper.find(DeclarationGroup);
     expect(group.exists()).toBe(true);
     expect(group.props('declaration')).toEqual(propsData.declarations[0]);
-    expect(group.props()).toHaveProperty('expandOverloads', false);
+    expect(group.props()).toHaveProperty('declListExpanded', false);
 
     wrapper.setProps({
-      expandOverloads: true,
+      declListExpanded: true,
     });
-    expect(group.props()).toHaveProperty('expandOverloads', true);
+    expect(group.props()).toHaveProperty('declListExpanded', true);
   });
 
   it('renders a DeclarationSourceLink if `source` is available', () => {
@@ -104,7 +104,7 @@ describe('Declaration', () => {
     });
   });
 
-  it('does not render a DeclarationSourceLink if overload is expanded', () => {
+  it('does not render a DeclarationSourceLink if other declaration list is expanded', () => {
     wrapper.setProps({
       source: {
         url: 'foo.com',
@@ -114,7 +114,7 @@ describe('Declaration', () => {
     expect(wrapper.find(DeclarationSourceLink).exists()).toBe(true);
 
     wrapper.setProps({
-      expandOverloads: true,
+      declListExpanded: true,
     });
     expect(wrapper.find(DeclarationSourceLink).exists()).toBe(false);
   });

@@ -25,7 +25,7 @@
         :declaration="declaration"
         :shouldCaption="hasPlatformVariants"
         :changeType="changeType"
-        :expandOverloads.sync="isExpanded"
+        :declListExpanded.sync="isExpanded"
       />
     </template>
     <DeclarationSourceLink
@@ -82,7 +82,7 @@ export default {
       type: Array,
       required: true,
     },
-    expandOverloads: {
+    declListExpanded: {
       type: Boolean,
       required: false,
       default: false,
@@ -140,9 +140,9 @@ export default {
       [`changed changed-${changeType}`]: changeType,
     }),
     isExpanded: {
-      get: ({ expandOverloads }) => expandOverloads,
+      get: ({ declListExpanded }) => declListExpanded,
       set(value) {
-        this.$emit('update:expandOverloads', value);
+        this.$emit('update:declListExpanded', value);
       },
     },
   },

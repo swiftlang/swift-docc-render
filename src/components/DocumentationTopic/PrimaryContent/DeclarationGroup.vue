@@ -111,7 +111,7 @@ export default {
       type: String,
       required: false,
     },
-    expandOverloads: {
+    declListExpanded: {
       type: Boolean,
       required: false,
       default: false,
@@ -150,9 +150,9 @@ export default {
     isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
     references: ({ store }) => store.state.references,
     isExpanded: {
-      get: ({ expandOverloads }) => expandOverloads,
+      get: ({ declListExpanded }) => declListExpanded,
       set(value) {
-        this.$emit('update:expandOverloads', value);
+        this.$emit('update:declListExpanded', value);
       },
     },
   },

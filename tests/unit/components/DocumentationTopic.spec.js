@@ -158,7 +158,7 @@ const propsData = {
   pageImages: [{ identifier: 'foo', type: 'icon' }],
 };
 
-const overloadedDeclarationsSection = {
+const hasOtherDeclSection = {
   kind: PrimaryContent.constants.SectionKind.declarations,
   declarations: [
     {
@@ -509,7 +509,7 @@ describe('DocumentationTopic', () => {
       conformance: propsData.conformance,
       declarations: declarationsSection.declarations,
       source: propsData.remoteSource,
-      expandOverloads: false,
+      declListExpanded: false,
     });
     // wrapper.setProps({ enableMinimized: true });
     // commented this out and moved it to the above `setProps` call because
@@ -541,14 +541,14 @@ describe('DocumentationTopic', () => {
     expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
   });
 
-  it('render a `PrimaryContent` column when passed empty an PrimaryContent but has overloads', () => {
+  it('render a `PrimaryContent` column when passed empty an PrimaryContent but has otherDeclarations', () => {
     wrapper.setProps({
       primaryContentSections: [
         ...propsData.primaryContentSections,
-        overloadedDeclarationsSection,
+        hasOtherDeclSection,
       ],
     });
-    expect(wrapper.contains(PrimaryContent)).toBe(true); // has overload dropdown
+    expect(wrapper.contains(PrimaryContent)).toBe(true); // has otherDeclarations dropdown
   });
 
   it('renders `ViewMore` if `enableMinimized`', () => {
@@ -616,9 +616,9 @@ describe('DocumentationTopic', () => {
       expect(description.classes()).not.toContain('after-enhanced-hero');
     });
 
-    it('does not render the description section if overloads are expanded', () => {
+    it('does not render the description section if other declaration list iss expanded', () => {
       wrapper.setData({
-        expandOverloads: true,
+        declListExpanded: true,
       });
       const description = wrapper.find('.description');
       expect(description.exists()).toBe(false);
@@ -673,39 +673,39 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('render an overload menu if has overloads', () => {
-    let overloadButton = wrapper.find('.overload-menu');
-    expect(overloadButton.exists()).toBe(false);
+  it('render an declaration list menu if has other declarations', () => {
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(false);
 
     wrapper.setProps({
       primaryContentSections: [
         ...propsData.primaryContentSections,
-        overloadedDeclarationsSection,
+        hasOtherDeclSection,
       ],
     });
-    overloadButton = wrapper.find('.overload-menu');
-    expect(overloadButton.exists()).toBe(true);
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
   });
 
-  it('renders correct overload toggle, text, and icon', () => {
+  it('renders correct declaration list toggle, text, and icon', () => {
     wrapper.setProps({
       primaryContentSections: [
         ...propsData.primaryContentSections,
-        overloadedDeclarationsSection,
+        hasOtherDeclSection,
       ],
     });
-    let overloadButton = wrapper.find('.overload-menu');
-    expect(overloadButton.text()).toContain('Show all declarations');
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.text()).toContain('Show all declarations');
     let icon = wrapper.find(InlinePlusCircleIcon);
     expect(icon.exists()).toBe(true);
 
-    const toggle = wrapper.find('.overload-menu-trigger');
+    const toggle = wrapper.find('.declaration-list-toggle');
     expect(toggle.exists()).toBe(true);
     toggle.trigger('click');
 
-    overloadButton = wrapper.find('.overload-menu');
-    expect(overloadButton.exists()).toBe(true);
-    expect(overloadButton.text()).toContain('Hide other declarations');
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+    expect(declListMenu.text()).toContain('Hide other declarations');
     icon = wrapper.find(InlinePlusCircleIcon);
     expect(icon.exists()).toBe(true);
     expect(icon.classes()).toContain('expand');
