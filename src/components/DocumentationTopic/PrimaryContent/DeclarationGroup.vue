@@ -199,6 +199,11 @@ export default {
 .declaration-pill--expanded {
   transition-timing-function: linear;
   transition-property: opacity, height;
+  $docs-declaration-source-border-width: 1px;
+
+  .source {
+    border-width: $docs-declaration-source-border-width;
+  }
 
   > button {
     display: block;
