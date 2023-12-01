@@ -308,6 +308,10 @@ export default {
     .label {
       @include font-styles(aside-label);
     }
+
+    & + * {
+      margin-top: var(--spacing-stacked-margin-large);
+    }
   }
 }
 
