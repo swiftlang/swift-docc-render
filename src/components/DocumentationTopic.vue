@@ -85,9 +85,9 @@
             :class="['container', { 'minimized-container': enableMinimized }]"
           >
             <div
+              v-if="!declListExpanded"
               class="description"
               :class="{ 'after-enhanced-hero': enhanceBackground }"
-              v-if="!declListExpanded"
             >
               <RequirementMetadata
                 v-if="isRequirement"
