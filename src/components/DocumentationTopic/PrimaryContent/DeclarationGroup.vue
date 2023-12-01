@@ -203,6 +203,11 @@ export default {
 
   .source {
     border-width: $docs-declaration-source-border-width;
+
+    // ensure links are not clickable, when expanded
+    :deep(a) {
+      pointer-events: none;
+    }
   }
 
   > button {

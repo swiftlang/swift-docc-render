@@ -694,12 +694,13 @@ $space-size: 15px;
     padding: 5px 15px;
     color: var(--colors-link, var(--color-tutorials-overview-link));
     z-index: 1;
+    gap: 5px;
+    white-space: nowrap;
+    align-items: center;
   }
 
   .icon {
-    margin-left: 5px;
-    margin-top: 2px !important;
-
+    display: flex;
     svg {
       transition-duration: 400ms;
       transition-timing-function: linear;
