@@ -150,7 +150,7 @@ $close-icon-padding: 5px;
 
   .navigator-head {
     --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
-    padding: calc(var(--card-horizontal-spacing) / 3);
+    padding: calc(var(--card-horizontal-spacing) / 3) var(--card-horizontal-spacing);
     background: $navigator-head-background;
     border-radius: $nano-border-radius;
     display: flex;

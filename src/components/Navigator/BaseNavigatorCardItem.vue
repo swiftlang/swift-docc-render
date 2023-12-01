@@ -49,7 +49,7 @@ $item-height: 32px;
 $chevron-width: $nav-card-horizontal-spacing;
 $tree-toggle-padding: $nav-card-horizontal-spacing-small;
 $depth-spacer-base-spacing: (
-  $nav-card-horizontal-spacing + $chevron-width + $tree-toggle-padding
+  $nav-card-horizontal-spacing + $chevron-width
 );
 $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-small;
 
