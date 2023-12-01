@@ -135,12 +135,14 @@ const FILTER_TAGS = {
   sampleCode: 'sampleCode',
   tutorials: 'tutorials',
   articles: 'articles',
+  webServiceEndpoints: 'webServiceEndpoints',
 };
 
 const FILTER_TAGS_TO_LABELS = {
   [FILTER_TAGS.sampleCode]: 'Sample Code',
   [FILTER_TAGS.tutorials]: 'Tutorials',
   [FILTER_TAGS.articles]: 'Articles',
+  [FILTER_TAGS.webServiceEndpoints]: 'Web Service Endpoints',
 };
 
 const FILTER_LABELS_TO_TAGS = Object.fromEntries(
@@ -158,6 +160,7 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.section]: FILTER_TAGS.tutorials,
   [TopicTypes.tutorial]: FILTER_TAGS.tutorials,
   [TopicTypes.project]: FILTER_TAGS.tutorials,
+  [TopicTypes.httpRequest]: FILTER_TAGS.webServiceEndpoints,
 };
 
 const NO_RESULTS = 'navigator.no-results';
