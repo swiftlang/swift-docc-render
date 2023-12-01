@@ -179,7 +179,7 @@ import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import { StandardColors } from 'docc-render/constants/StandardColors';
-import InlinePlusCircleIcon from 'docc-render/components/Icons/InlinePlusCircleIcon.vue';
+import InlinePlusCircleIcon from 'theme/components/Icons/InlinePlusCircleIcon.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
