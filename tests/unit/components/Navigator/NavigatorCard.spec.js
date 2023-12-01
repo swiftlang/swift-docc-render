@@ -1775,6 +1775,30 @@ describe('NavigatorCard', () => {
     expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
   });
 
+  it('shows a "Web Service Endpoints" tag when relevant', async () => {
+    sessionStorage.get.mockImplementation((key, def) => def);
+    const httpReq = {
+      type: 'httpRequest',
+      path: '/documentation/footkit/blah',
+      title: 'GET /blah',
+      uid: 42,
+      parent: INDEX_ROOT_KEY,
+      depth: 0,
+      index: 0,
+      childUIDs: [],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        children: [httpReq],
+        activePath: [httpReq.path],
+      },
+    });
+
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props('tags')).toEqual(['Web Service Endpoints']);
+  });
+
   describe('with groupMarker', () => {
     it('shows "Hide Deprecated" tag, if there are deprecated items', async () => {
       const updatedChild = {
