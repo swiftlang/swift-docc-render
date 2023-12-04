@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style scoped>
-/deep/ img {
+:deep(img) {
   max-width: 100%;
 }
 </style>

@@ -14,14 +14,10 @@
     :class="{ [OpenedClass]: isOpen, 'dropdown-small': isSmall }"
     class="dropdown-custom"
   >
-    <template
-      slot="dropdown"
-      slot-scope="{ dropdownClasses }"
-    >
+    <template #dropdown="{ dropdownClasses }">
       <span :id="`DropdownLabel_${_uid}`" class="visuallyhidden">{{ ariaLabel }}</span>
       <button
         ref="dropdownToggle"
-        role="button"
         :id="`DropdownToggle_${_uid}`"
         :class="dropdownClasses"
         class="form-dropdown-toggle"
@@ -38,10 +34,10 @@
         <slot name="toggle-post-content" />
       </button>
     </template>
-    <template slot="eyebrow">
+    <template #eyebrow>
       <slot name="eyebrow" />
     </template>
-    <template slot="after">
+    <template #after>
       <slot
         v-bind="{
           value,
@@ -234,7 +230,7 @@ $focus-shadow: 0 0 0 2px var(--color-focus-color);
   text-overflow: ellipsis;
 }
 
-// the wrapping in `dropdown-custom` is needed to properly apply the /deep/ selector
+// the wrapping in `dropdown-custom` is needed to properly apply the :deep() selector
 .dropdown-custom {
   border-radius: $border-radius;
 
@@ -243,7 +239,7 @@ $focus-shadow: 0 0 0 2px var(--color-focus-color);
   }
 
   // style the dropdown content holder
-  /deep/ .form-dropdown-content {
+  :deep(.form-dropdown-content) {
     background: var(--color-fill);
     position: absolute;
     right: 0;
@@ -288,14 +284,14 @@ $focus-shadow: 0 0 0 2px var(--color-focus-color);
   }
 
   // style the options
-  /deep/ .options {
+  :deep(.options) {
     list-style: none;
     margin: 0;
     padding: 0 0 20px;
   }
 
   // style each option
-  /deep/ .option {
+  :deep(.option) {
     cursor: pointer;
     padding: 5px 20px;
     font-size: 12px;

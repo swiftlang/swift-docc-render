@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+#
+# This source file is part of the Swift.org open source project
+#
+# Copyright (c) 2023 Apple Inc. and the Swift project authors
+# Licensed under Apache License v2.0 with Runtime Library Exception
+#
+# See https://swift.org/LICENSE.txt for license information
+# See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+
+set -o errexit
+
+SCRIPT_DIR=$(dirname "$0")
+ROOT_DIR=$(dirname $SCRIPT_DIR)
+DOCS_DIR="$ROOT_DIR/docs"
+PORT="${PORT:-8000}"
+
+if [ ! -f "$DOCS_DIR/data/documentation/swiftdoccrender.json" ]; then
+  echo "$DOCS_DIR does not exist. Build the docs with $SCRIPT_DIR/build-docs first."
+  exit 1
+fi
+
+cd "$DOCS_DIR"
+echo "Starting server: http://localhost:$PORT/documentation/swiftdoccrender"
+python3 -m http.server $PORT

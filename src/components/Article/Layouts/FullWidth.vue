@@ -102,7 +102,7 @@ export default {
 // By default, content nodes of type "image" are treated as inline elements, so
 // this override styles images in "full-width" layouts to appear as centered
 // block elements within the full width container (same for videos)
-/deep/ {
+:deep() {
   img,
   video {
     display: block;

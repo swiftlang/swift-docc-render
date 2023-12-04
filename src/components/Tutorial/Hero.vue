@@ -20,7 +20,7 @@
       <Row>
         <Column>
           <Headline :level="1">
-            <template v-if="chapter" slot="eyebrow">{{ chapter }}</template>
+            <template v-if="chapter" #eyebrow>{{ chapter }}</template>
             {{ title }}
           </Headline>
           <div v-if="content || video" class="intro">
@@ -193,6 +193,20 @@ export default {
   background-color: var(--color-tutorial-hero-background);
   color: var(--color-tutorial-hero-text);
   position: relative;
+
+  &.dark {
+    @media screen {
+      // ensure dark colors are always used, regardless of the selected
+      // light/dark/auto color scheme preference
+      //
+      // unfortunately the order of the property declaration matters here due
+      // to the way that some properties refer to others, which is why both the
+      // light and the dark vars are included here, even though the dark ones
+      // override the light ones...
+      @include color-vars-light;
+      @include color-vars-dark;
+    }
+  }
 }
 
 .bg {
@@ -218,7 +232,7 @@ export default {
   z-index: 1;
 }
 
-/deep/ .eyebrow {
+:deep(.eyebrow) {
   @include font-styles(eyebrow);
   color: var(--color-hero-eyebrow);
 }
@@ -261,7 +275,7 @@ export default {
   place-items: center center;
 }
 
-.video-asset /deep/ video {
+.video-asset :deep(video) {
   max-width: 1280px;
   min-width: 320px;
   width: 100%;

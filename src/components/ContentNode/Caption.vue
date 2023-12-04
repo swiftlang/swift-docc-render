@@ -77,7 +77,7 @@ caption.trailing {
   caption-side: bottom;
 }
 
-/deep/ p {
+:deep(p) {
   display: inline-block;
 }
 </style>

@@ -16,6 +16,8 @@
 //
 // @returns {String}
 //
+@use "sass:math";
+
 @function -get-font-family-for-size($size) {
   @return $default-fonts;
 }
@@ -50,7 +52,7 @@
 // @returns {Number}
 //
 @function -transform-line-height($size, $line-height) {
-  @return $line-height / $size;
+  @return math.div($line-height, $size);
 }
 
 // Create a CSS map for a given Font Attributes

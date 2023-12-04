@@ -72,12 +72,3 @@ This product depends on PortalVue.
     * https://github.com/LinusBorg/portal-vue/blob/develop/LICENCE
   * HOMEPAGE:
     * https://github.com/LinusBorg/portal-vue
-
----
-
-This product depends on webpack-theme-resolver-plugin.
-
-  * LICENSE (MIT):
-    * https://github.com/russmediadigital/webpack-theme-resolver-plugin/blob/master/LICENSE
-  * HOMEPAGE
-    * https://github.com/russmediadigital/webpack-theme-resolver-plugin

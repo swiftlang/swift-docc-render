@@ -95,11 +95,6 @@ describe('App', () => {
 
     setThemeSetting({});
     window.matchMedia = jest.fn().mockReturnValue(matchMedia);
-
-    Object.defineProperty(window, 'customElements', {
-      writable: true,
-      value: { get: jest.fn().mockImplementation(() => false) },
-    });
   });
 
   it('does not render a <custom-header> or <custom-footer> if they have not been defined', () => {
@@ -366,7 +361,7 @@ describe('App', () => {
       let wrapper;
 
       beforeEach(() => {
-        window.customElements.get.mockImplementation(name => name === 'custom-header');
+        jest.spyOn(window.customElements, 'get').mockImplementation(name => name === 'custom-header');
         wrapper = createWrapper();
       });
 

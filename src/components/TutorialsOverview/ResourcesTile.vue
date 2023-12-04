@@ -18,9 +18,9 @@
     <DestinationDataProvider
       v-if="action"
       :destination="action"
+      v-slot="{ url, title }"
     >
       <Reference
-        slot-scope="{ url, title }"
         class="link"
         :url="url"
       >
@@ -104,7 +104,7 @@ export default {
   color: var(--color-tutorials-overview-content-alt);
 }
 
-a, .content /deep/ a {
+a, .content :deep(a) {
   color: var(--colors-link, var(--color-tutorials-overview-link));
 }
 
@@ -116,7 +116,7 @@ a, .content /deep/ a {
   margin-bottom: rem(10px);
   width: $icon-size-default;
 
-  /deep/ svg.svg-icon {
+  :deep(svg.svg-icon) {
     width: 100%;
     max-height: 100%;
 
@@ -153,7 +153,12 @@ a, .content /deep/ a {
   }
 }
 
-/deep/ .content {
+:deep(.inline-link) {
+  // prevent underline in Tile links
+  text-decoration: none;
+}
+
+:deep(.content) {
   ul {
     list-style-type: none;
     margin-left: 0;

@@ -11,14 +11,13 @@
 import CustomComponents from 'docc-render/plugins/CustomComponents';
 import { createLocalVue } from '@vue/test-utils';
 
-Object.defineProperty(window, 'customElements', {
-  value: { define: jest.fn() },
-});
+const defineSpy = jest.spyOn(window.customElements, 'define');
 
 describe('CustomComponents', () => {
   let localVue;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     localVue = createLocalVue();
   });
 
@@ -32,7 +31,7 @@ describe('CustomComponents', () => {
 
   it('does not utilize `customElements.define` when no templates exist', () => {
     localVue.use(CustomComponents);
-    expect(window.customElements.define).not.toBeCalled();
+    expect(defineSpy).not.toBeCalled();
   });
 
   it('utilizes `customElements.define` to register custom elements when templates exist', () => {
@@ -44,9 +43,9 @@ describe('CustomComponents', () => {
     document.body.appendChild(customFooter);
 
     localVue.use(CustomComponents);
-    expect(window.customElements.define).toHaveBeenCalledTimes(2);
+    expect(defineSpy).toHaveBeenCalledTimes(2);
 
-    const { mock: { calls } } = window.customElements.define;
+    const { mock: { calls } } = defineSpy;
     expect(calls[0][0]).toBe(customHeader.id);
     expect(calls[1][0]).toBe(customFooter.id);
     // eslint-disable-next-line no-prototype-builtins

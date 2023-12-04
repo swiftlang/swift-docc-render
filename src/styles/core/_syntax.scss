@@ -10,9 +10,15 @@
 
 // Map each color to the list of syntax highlighter tokens that use it
 $syntax-tokens-for-color: (
+  addition: (
+    addition,
+  ),
   comments: (
     comment,
     quote
+  ),
+  deletion: (
+    deletion,
   ),
   keywords: (
     keyword,

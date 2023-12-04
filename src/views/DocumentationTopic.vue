@@ -43,6 +43,7 @@
                     :error-fetching="slotProps.errorFetching"
                     :api-changes="slotProps.apiChanges"
                     :references="topicProps.references"
+                    :symbolKind="topicProps.symbolKind"
                     :navigator-references="slotProps.references"
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
@@ -117,7 +118,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
-import { updateLocale } from 'theme/utils/i18n-utils.js';
+import { updateLocale } from 'theme/utils/i18n-utils';
 
 const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -390,7 +391,7 @@ export default {
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
 
-/deep/ {
+:deep() {
   .generic-modal {
     overflow-y: overlay;
   }

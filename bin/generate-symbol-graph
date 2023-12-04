@@ -1,0 +1,333 @@
+#!/usr/bin/env node
+
+/**
+ * This source file is part of the Swift.org open source project
+ *
+ * Copyright (c) 2023 Apple Inc. and the Swift project authors
+ * Licensed under Apache License v2.0 with Runtime Library Exception
+ *
+ * See https://swift.org/LICENSE.txt for license information
+ * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
+*/
+
+/* eslint-disable no-restricted-syntax, import/no-extraneous-dependencies */
+
+const fs = require('fs');
+const path = require('path');
+
+const Parser = require('tree-sitter');
+const JavaScript = require('tree-sitter-javascript');
+const JSDoc = require('tree-sitter-jsdoc');
+const Vue = require('tree-sitter-vue');
+
+async function* find(dir, predicate = () => true) {
+  const files = await fs.promises.readdir(dir);
+
+  for await (const file of files) {
+    const fpath = path.join(dir, file);
+    const fstat = await fs.promises.stat(fpath);
+
+    if (fstat.isDirectory()) {
+      yield* find(fpath, predicate);
+    } else if (predicate(fpath)) {
+      yield fpath;
+    }
+  }
+}
+
+async function* findVueFiles(dir) {
+  const isVueFile = fpath => path.extname(fpath) === '.vue';
+  yield* find(dir, isVueFile);
+}
+
+function uniqueCaptures(query, tree) {
+  const capturesArray = query.captures(tree.rootNode);
+  return capturesArray.reduce((obj, capture) => ({
+    ...obj,
+    [capture.name]: capture.node,
+  }), {});
+}
+
+const line = (
+  text,
+  range = {
+    start: { // FIXME: use real ranges from parser in the future
+      line: 0,
+      character: 0,
+    },
+    end: {
+      line: 0,
+      character: 0,
+    },
+  },
+) => ({ text, range });
+
+function createDocComment(descriptionNode = { text: '' }, params = []) {
+  const lines = descriptionNode.text.split('\n').map((txt, i) => line((i === 0 ? (
+    txt
+  ) : (
+    // this seems like a tree-sitter-jsdoc bug with handling
+    // multi-line descriptions
+    txt.replace(/^\s*\*/, '')
+  ))));
+
+  // generate automated parameter description content that just shows the name
+  // of each prop and its type
+  const hasParamContent = lines.some(l => /^\s*- Parameter/.test(l.text));
+  if (params.length && !hasParamContent) {
+    lines.push(line(''));
+    lines.push(line('- Parameters:'));
+    params.forEach((param) => {
+      lines.push(line(`  - ${param.name}: \`${param.type}\``));
+    });
+  }
+
+  return { lines };
+}
+
+const Token = {
+  identifier: spelling => ({ kind: 'identifier', spelling }),
+  string: spelling => ({ kind: 'string', spelling }),
+  text: spelling => ({ kind: 'text', spelling }),
+  typeIdentifier: spelling => ({ kind: 'typeIdentifier', spelling }),
+};
+
+function createDeclaration(componentName, slotNames = []) {
+  if (!slotNames.length) {
+    return [
+      Token.text('<'),
+      Token.typeIdentifier(componentName),
+      Token.text(' />'),
+    ];
+  }
+  const isDefault = name => name === 'default';
+  return [
+    Token.text('<'),
+    Token.typeIdentifier(componentName),
+    Token.text('>\n'),
+    ...slotNames.flatMap(name => (isDefault(name) ? ([
+      Token.text('  <slot />\n'),
+    ]) : ([
+      Token.text('  <slot name='),
+      Token.string(`"${name}"`),
+      Token.text(' />\n'),
+    ]))),
+    Token.text('</'),
+    Token.typeIdentifier(componentName),
+    Token.text('>'),
+  ];
+}
+
+(async () => {
+  const vueParser = new Parser();
+  vueParser.setLanguage(Vue);
+  const scriptTextQuery = new Parser.Query(Vue,
+    `(script_element
+       (raw_text) @script)`);
+
+  const jsParser = new Parser();
+  jsParser.setLanguage(JavaScript);
+  const exportNameQuery = new Parser.Query(JavaScript,
+    `(
+       (comment)? @comment (#match? @comment "^/[*]{2}")
+       .
+       (export_statement
+         (object
+           (pair
+             (property_identifier) @key (#eq? @key "name")
+             .
+             (string (string_fragment) @component)))))`);
+  const exportPropsQuery = new Parser.Query(JavaScript,
+    `(export_statement
+       (object
+         (pair
+           (property_identifier) @key (#eq? @key "props")
+           .
+           (object
+             (pair
+               (property_identifier) @prop.name
+               .
+               (object
+                 (pair
+                   (property_identifier) @key2 (#eq? @key2 "type")
+                   .
+                   (_) @prop.type)))))))`);
+
+  const jsDocParser = new Parser();
+  jsDocParser.setLanguage(JSDoc);
+  const commentDescriptionQuery = new Parser.Query(JSDoc,
+    `(document
+       (description) @description)`);
+  const slotsQuery = new Parser.Query(Vue,
+    `[
+      (self_closing_tag
+        (tag_name) @tag
+        (attribute
+          (attribute_name) @attr.name
+          (quoted_attribute_value (attribute_value) @attr.value))?
+        (#eq? @tag "slot")
+        (#eq? @attr.name "name"))
+      (start_tag
+        (tag_name) @tag
+        (attribute
+          (attribute_name) @attr.name
+          (quoted_attribute_value (attribute_value) @attr.value))?
+        (#eq? @tag "slot")
+        (#eq? @attr.name "name"))
+     ]`);
+
+  const symbols = [];
+  const relationships = [];
+  const identifiers = new Set();
+
+  const rootDir = path.join(__dirname, '..');
+  const componentsDir = path.join(rootDir, 'src/components');
+  for await (const filepath of findVueFiles(componentsDir)) {
+    const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });
+    const vueTree = vueParser.parse(contents);
+
+    const { script } = uniqueCaptures(scriptTextQuery, vueTree);
+    if (script) {
+      const jsTree = jsParser.parse(script.text);
+
+      const { comment, component } = uniqueCaptures(exportNameQuery, jsTree);
+
+      if (component) {
+        const componentName = component.text;
+        const pathComponents = filepath
+          .replace(componentsDir, '')
+          .split('/')
+          .filter(part => part.length)
+          .map(part => path.parse(part).name);
+        const preciseIdentifier = pathComponents.join('');
+
+        const subHeading = [
+          Token.text('<'),
+          Token.identifier(componentName),
+          Token.text('>'),
+        ];
+
+        let functionSignature;
+        const captures = exportPropsQuery.captures(jsTree.rootNode);
+        const params = captures.reduce((memo, capture) => {
+          if (capture.name === 'prop.name') {
+            memo.push({ name: capture.node.text });
+          }
+          if (capture.name === 'prop.type') {
+            // eslint-disable-next-line no-param-reassign
+            memo[memo.length - 1].type = capture.node.text;
+          }
+          return memo;
+        }, []);
+        if (params.length) {
+          // not sure if DocC actually uses `functionSignature` or not...
+          functionSignature = {
+            parameters: params.map(param => ({
+              name: param.name,
+              declarationFragments: [Token.text(param.type)],
+            })),
+          };
+        }
+
+        // TODO: eventually we should also capture slots that are expressed in
+        // a render function instead of the template
+        const slots = slotsQuery.captures(vueTree.rootNode).reduce((memo, capture) => {
+          if (capture.name === 'tag') {
+            memo.push({ name: 'default' });
+          }
+          if (capture.name === 'attr.value') {
+            // eslint-disable-next-line no-param-reassign
+            memo[memo.length - 1].name = capture.node.text;
+          }
+          return memo;
+        }, []);
+        const slotNames = [...new Set(slots.map(slot => slot.name))];
+        const declarationFragments = createDeclaration(componentName, slotNames);
+
+        let docComment;
+        let description;
+        if (comment) {
+          const jsDocTree = jsDocParser.parse(comment.text);
+          description = uniqueCaptures(commentDescriptionQuery, jsDocTree).description;
+        }
+        if (!!description || params.length) {
+          docComment = createDocComment(description, params);
+        }
+
+        symbols.push({
+          accessLevel: 'public',
+          identifier: {
+            interfaceLanguage: 'vue',
+            precise: preciseIdentifier,
+          },
+          kind: {
+            identifier: 'class', // FIXME
+            displayName: 'Component',
+          },
+          names: {
+            title: componentName,
+            subHeading,
+          },
+          pathComponents,
+          docComment,
+          declarationFragments,
+          functionSignature,
+        });
+        identifiers.add(preciseIdentifier);
+      }
+    }
+  }
+
+  // construct parent/child relationships and fixup the `pathComponents` for
+  // each symbol so that it only contains items that map to real symbols (TODO:
+  // this could probably be done in the first loop depending on the order that
+  // `find` traverses the filesystem (breadth vs depth))
+  for (let i = 0; i < symbols.length; i += 1) {
+    const symbol = symbols[i];
+    const {
+      identifier: { precise: childIdentifier },
+      pathComponents,
+    } = symbol;
+    const parentPathComponents = pathComponents.slice(0, pathComponents.length - 1);
+    if (!parentPathComponents.length) {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    const parentIdentifier = parentPathComponents.join('');
+    if (identifiers.has(parentIdentifier)) {
+      relationships.push({
+        source: childIdentifier,
+        target: parentIdentifier,
+        kind: 'memberOf',
+      });
+    } else {
+      symbol.pathComponents = pathComponents.filter((_, j) => (
+        identifiers.has(pathComponents.slice(0, j + 1).join(''))
+      ));
+    }
+  }
+
+  const formatVersion = {
+    major: 0,
+    minor: 1,
+    patch: 0,
+  };
+  const metadata = {
+    formatVersion,
+    generator: 'SwiftDocCRender',
+  };
+  const $module = {
+    name: 'SwiftDocCRender',
+    platform: {},
+  };
+  const symbolGraph = {
+    metadata,
+    module: $module,
+    relationships,
+    symbols,
+  };
+  const symbolGraphJSON = JSON.stringify(symbolGraph);
+
+  console.log(symbolGraphJSON);
+})();

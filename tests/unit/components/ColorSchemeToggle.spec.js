@@ -34,11 +34,18 @@ describe('ColorSchemeToggle', () => {
           supportsAutoColorScheme: true,
         },
       }),
+      attachToDocument: true,
     });
   });
 
-  it('renders a .color-scheme-toggle', () => {
-    expect(wrapper.is('.color-scheme-toggle'));
+  it('renders a fieldset .color-scheme-toggle', () => {
+    expect(wrapper.is('fieldset.color-scheme-toggle'));
+  });
+
+  it('renders a legend for fieldset', () => {
+    const legend = wrapper.find('legend');
+    expect(legend.exists()).toBe(true);
+    expect(legend.text()).toBe('color-scheme.select');
   });
 
   it('renders a label for "Light/Dark/Auto"', () => {

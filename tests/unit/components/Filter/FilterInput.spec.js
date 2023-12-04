@@ -81,6 +81,7 @@ describe('FilterInput', () => {
     wrapper = shallowMount(FilterInput, {
       propsData,
       stubs: { TagList },
+      attachToDocument: true,
     });
 
     input = wrapper.find({ ref: 'input' });
@@ -217,6 +218,7 @@ describe('FilterInput', () => {
         value: 'Change',
         focusInputWhenCreated: true,
       },
+      attachToDocument: true,
       stubs: { TagList },
     });
     await wrapper.vm.$nextTick();
@@ -233,8 +235,7 @@ describe('FilterInput', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    input = wrapper.find({ ref: 'input' });
-    expect(document.activeElement).toBe(input.element);
+    expect(document.activeElement.classList.contains('filter__input')).toBe(true);
   });
 
   it('adds character `/` as input value', async () => {
@@ -907,7 +908,7 @@ describe('FilterInput', () => {
       expect(wrapper.vm.resetedTagsViaDeleteButton).toEqual(true);
 
       wrapper.setProps({ value: 'foo', selectedTags: tags });
-      deleteButton.trigger('click');
+      wrapper.find('.filter__delete-button').trigger('click');
 
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
       expect(wrapper.emitted('input')).toEqual([[''], ['']]);

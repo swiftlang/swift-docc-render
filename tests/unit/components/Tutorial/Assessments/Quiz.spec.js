@@ -12,6 +12,11 @@ import { shallowMount } from '@vue/test-utils';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 import Quiz from 'docc-render/components/Tutorial/Assessments/Quiz.vue';
 
+const i18nStub = {
+  name: 'i18n',
+  template: '<span>Answer is <slot name="result"/></span>',
+};
+
 const textContent = str => ([{
   type: 'text',
   text: str,
@@ -105,7 +110,10 @@ describe('Quiz', () => {
 
   describe('default', () => {
     beforeEach(() => {
-      wrapper = shallowMount(Quiz, { propsData });
+      wrapper = shallowMount(Quiz, {
+        propsData,
+        stubs: { i18n: i18nStub },
+      });
     });
 
     it('renders a div.quiz root', () => {
@@ -124,9 +132,13 @@ describe('Quiz', () => {
       expect(node.props('content')).toEqual(propsData.content);
     });
 
-    it('renders a ul.choices', () => {
-      const choices = wrapper.find('div.choices');
+    it('renders a fieldset element with choices', () => {
+      const choices = wrapper.find('fieldset.choices');
       expect(choices.exists()).toBe(true);
+
+      const legend = choices.find('legend');
+      expect(legend.exists()).toBe(true);
+      expect(legend.text()).toBe('tutorials.assessment.legend');
 
       const items = choices.findAll('label.choice');
       expect(items.length).toBe(propsData.choices.length);
@@ -160,12 +172,16 @@ describe('Quiz', () => {
     let submit;
 
     beforeEach(() => {
-      wrapper = shallowMount(Quiz, { propsData });
+      wrapper = shallowMount(Quiz, {
+        propsData,
+        stubs: { i18n: i18nStub },
+        attachToDocument: true,
+      });
       choices = wrapper.findAll('.choice');
       submit = wrapper.find('.check');
     });
 
-    it('adds "active" class when choice is clicked', () => {
+    it('adds "active" class when choice is clicked', async () => {
       const choice = choices.at(0);
 
       expect(choice.classes('active')).toBe(false);
@@ -195,7 +211,7 @@ describe('Quiz', () => {
     });
 
     it('updates the aria live text telling the user if the answer chosen is correct or incorrect', () => {
-      const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+      let ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
       expect(ariaLive.exists()).toBe(true);
       expect(ariaLive.text()).toBe('');
 
@@ -203,13 +219,15 @@ describe('Quiz', () => {
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('tutorials.assessment.answer-number-is 2 tutorials.assessment.incorrect');
+      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
+      expect(ariaLive.text()).toBe('Answer is tutorials.assessment.incorrect');
 
       choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
 
-      expect(ariaLive.text()).toBe('tutorials.assessment.answer-number-is 1 tutorials.assessment.correct');
+      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
+      expect(ariaLive.text()).toBe('Answer is tutorials.assessment.correct');
     });
   });
 });

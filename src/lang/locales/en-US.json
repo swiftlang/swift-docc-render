@@ -24,10 +24,11 @@
     "assessment": {
       "check-your-understanding": "Check Your Understanding",
       "success-message": "Great job, you've answered all the questions for this tutorial.",
-      "answer-number-is": "Answer number {index} is",
+      "answer-result": "Answer {answer} is {result}",
       "correct": "correct",
       "incorrect": "incorrect",
-      "next-question": "Next question"
+      "next-question": "Next question",
+      "legend": "Possible answers"
     },
     "project-files": "Project files",
     "estimated-time": "Estimated Time",
@@ -64,7 +65,8 @@
       "view-api": "View API collection",
       "view-symbol": "View symbol",
       "view-sample-code": "View sample code"
-    }
+    },
+    "view-more": "View more"
   },
   "aside-kind": {
     "beta": "Beta",
@@ -199,6 +201,7 @@
     "button": {
       "label": "Open Quick Navigation",
       "title": "Click or type / for quick navigation"
-    }
+    },
+    "preview-unavailable": "Preview unavailable"
   }
 }

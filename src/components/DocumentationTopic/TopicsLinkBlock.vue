@@ -44,11 +44,6 @@
         :defaultImplementationsCount="topic.defaultImplementations"
         class="topic-required"
       />
-      <ConditionalConstraints
-        v-if="topic.conformance"
-        :constraints="topic.conformance.constraints"
-        :prefix="topic.conformance.availabilityPrefix"
-      />
     </div>
     <Badge v-if="showDeprecatedBadge" variant="deprecated" />
     <Badge v-else-if="showBetaBadge" variant="beta" />
@@ -70,8 +65,6 @@ import WordBreak from 'docc-render/components/WordBreak.vue';
 import ContentNode from 'docc-render/components/DocumentationTopic/ContentNode.vue';
 import TopicLinkBlockIcon from 'docc-render/components/DocumentationTopic/TopicLinkBlockIcon.vue';
 import DecoratedTopicTitle from 'docc-render/components/DocumentationTopic/DecoratedTopicTitle.vue';
-import ConditionalConstraints
-  from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
 import RequirementMetadata
 
   from 'docc-render/components/DocumentationTopic/Description/RequirementMetadata.vue';
@@ -102,7 +95,6 @@ export default {
     TopicLinkBlockIcon,
     DecoratedTopicTitle,
     RequirementMetadata,
-    ConditionalConstraints,
   },
   mixins: [getAPIChanges, APIChangesMultipleLines, referencesProvider],
   constants: {
@@ -124,8 +116,7 @@ export default {
         && typeof topic.url === 'string'
         && (!('defaultImplementations' in topic)
           || typeof topic.defaultImplementations === 'number')
-        && (!('required' in topic) || typeof topic.required === 'boolean')
-        && (!('conformance' in topic) || typeof topic.conformance === 'object'),
+        && (!('required' in topic) || typeof topic.required === 'boolean'),
     },
   },
   data() {
@@ -206,10 +197,10 @@ export default {
     changeName: ({ change, getChangeName }) => getChangeName(change),
     hasAbstractElements: ({
       topic: {
-        abstract, conformance, required, defaultImplementations,
+        abstract, required, defaultImplementations,
       },
     } = {}) => (
-      (abstract && abstract.length > 0) || conformance || required || defaultImplementations
+      (abstract && abstract.length > 0) || required || defaultImplementations
     ),
     // pick only the first available tag
     tags: ({ topic }) => (topic.tags || []).slice(0, 1),
@@ -225,7 +216,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .abstract,
-.link-block /deep/ .badge {
+.link-block :deep(.badge) {
   margin-left: calc(#{$topic-link-icon-spacing} + #{$topic-link-icon-width});
 }
 
@@ -281,8 +272,4 @@ export default {
   text-decoration: line-through;
 }
 
-.conditional-constraints {
-  font-size: rem(14px);
-  margin-top: 4px;
-}
 </style>

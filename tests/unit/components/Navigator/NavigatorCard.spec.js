@@ -31,6 +31,9 @@ jest.mock('docc-render/utils/theme-settings');
 getSetting.mockReturnValue(false);
 
 sessionStorage.get.mockImplementation((key, def) => def);
+Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+  get() { return this.parentNode; },
+});
 
 const {
   STORAGE_KEY,
@@ -184,6 +187,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
     BaseNavigatorCard,
   },
   sync: false,
+  attachToDocument: true,
   ...others,
 });
 
@@ -224,6 +228,12 @@ function attachDivWithID(id) {
   const div = document.createElement('DIV');
   div.id = id;
   document.body.appendChild(div);
+}
+
+function detachDivWithID(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  document.body.removeChild(el);
 }
 
 describe('NavigatorCard', () => {
@@ -1027,6 +1037,73 @@ describe('NavigatorCard', () => {
     });
   });
 
+  it('highlights the generic page when an overloaded page is not in the tree', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      activePath: ['/documentation/testkit-ab1c2'],
+      isSpecificOverload: true,
+    });
+    await flushPromises();
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4); // assert all are rendered, except the grandchild
+    expect(all.at(0).props()).toMatchObject({
+      item: root0,
+      isBold: true,
+      isActive: true, // <- highlighted
+      expanded: true,
+    });
+  });
+
+  it('highlights the specific page when both generic and specific overloaded pages are in the tree', async () => {
+    const overloadedPage = {
+      type: TopicTypes.struct,
+      path: '/documentation/testkit-ab1c2',
+      title: 'Third Child, Depth 1',
+      uid: 100,
+      parent: INDEX_ROOT_KEY,
+      depth: 0,
+      index: 2,
+      childUIDs: [],
+    };
+
+    const wrapper = createWrapper({
+      propsData: {
+        children: [
+          root0,
+          root0Child0,
+          root0Child1,
+          root0Child1GrandChild0,
+          root1,
+          overloadedPage,
+        ],
+        activePath: ['/documentation/testkit-ab1c2'],
+        isSpecificOverload: true,
+      },
+    });
+
+    await flushPromises();
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3); // assert only first level pages are rendered
+    expect(all.at(0).props()).toMatchObject({
+      item: root0,
+      isBold: false,
+      isActive: false, // <- not highlighted
+      expanded: false,
+    });
+    expect(all.at(1).props()).toMatchObject({
+      item: root1,
+      isBold: false,
+      isActive: false, // <- not highlighted
+      expanded: false,
+    });
+    expect(all.at(2).props()).toMatchObject({
+      item: overloadedPage,
+      isBold: true,
+      isActive: true, // <- highlighted
+      expanded: true,
+    });
+  });
+
   it('keeps the open/closed state when navigating while filtering, except when the current page not visible, in which case we open those items', async () => {
     const wrapper = createWrapper();
     await flushPromises();
@@ -1104,11 +1181,11 @@ describe('NavigatorCard', () => {
     // item is not scrolled to
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     const filter = wrapper.find(FilterInput);
+    // the filter is on the grandchild of the current activeUID
     filter.vm.$emit('input', root0Child1GrandChild0.title);
     await flushPromises();
-    // assert list is scrolled to the top
-    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    // assert list is not scrolled, if item is in viewport or current activeUID is rendered
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(3);
@@ -1141,8 +1218,7 @@ describe('NavigatorCard', () => {
     // make sure we match at both the top item as well as one of its children
     filter.vm.$emit('input', 'Second');
     await flushPromises();
-    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
     const all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -1157,8 +1233,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     filter.vm.$emit('input', root0.title);
     await flushPromises();
-    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
-    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
     let all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(1);
@@ -1197,6 +1272,8 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    // this item is not an article
+    detachDivWithID(root0Child0.uid);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
@@ -1215,6 +1292,7 @@ describe('NavigatorCard', () => {
     const filter = wrapper.find(FilterInput);
     await flushPromises();
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
+    detachDivWithID(root0Child0.uid);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
@@ -1230,6 +1308,7 @@ describe('NavigatorCard', () => {
     const filter = wrapper.find(FilterInput);
     await flushPromises();
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    detachDivWithID(root0Child0.uid);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
@@ -1247,6 +1326,8 @@ describe('NavigatorCard', () => {
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
+    expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
   });
 
   it('allows opening an item, that has a filter match', async () => {
@@ -1692,6 +1773,30 @@ describe('NavigatorCard', () => {
     wrapper.setProps({ apiChanges });
     await flushPromises();
     expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
+  });
+
+  it('shows a "Web Service Endpoints" tag when relevant', async () => {
+    sessionStorage.get.mockImplementation((key, def) => def);
+    const httpReq = {
+      type: 'httpRequest',
+      path: '/documentation/footkit/blah',
+      title: 'GET /blah',
+      uid: 42,
+      parent: INDEX_ROOT_KEY,
+      depth: 0,
+      index: 0,
+      childUIDs: [],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        children: [httpReq],
+        activePath: [httpReq.path],
+      },
+    });
+
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props('tags')).toEqual(['Web Service Endpoints']);
   });
 
   describe('with groupMarker', () => {
@@ -2197,7 +2302,7 @@ describe('NavigatorCard', () => {
   });
 
   describe('scroll to item', () => {
-    it('resets the scroll position, if initiating a filter', async () => {
+    it('resets the scroll position, if filtering, current page is NOT in the results', async () => {
       attachDivWithID(root0Child0.uid);
       // simulate item is above the scrollarea
       getChildPositionInScroller.mockReturnValueOnce(1);
@@ -2206,10 +2311,14 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
       // initiate a filter
-      wrapper.find(FilterInput).vm.$emit('input', root0Child1.title);
+      wrapper.find(FilterInput).vm.$emit('input', root1.title);
+      // we have to manually remove it from the DOM, as we are mocking lots of stuff
+      detachDivWithID(root0Child0.uid);
       await wrapper.vm.$nextTick();
       // assert filter is applied
-      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+      const items = wrapper.findAll(NavigatorCardItem);
+      expect(items).toHaveLength(1);
+      expect(items.at(0).props('item')).toEqual(root1);
       // assert scroller has been reset
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(2);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);

@@ -49,7 +49,7 @@ export default {
 
 .hierarchy-item {
   // style the chevron icon
-  /deep/ .hierarchy-item-icon {
+ :deep(.hierarchy-item-icon) {
     width: 9px;
     height: 15px;
     margin-right: $nav-space-hierarchy-elements;

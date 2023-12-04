@@ -12,8 +12,9 @@
   <RenderChanged
     :value="attributes[kind]"
     :changes="changes[kind]"
+    v-slot="{ value }"
   >
-    <div slot-scope="{ value }" class="property-metadata">
+    <div class="property-metadata">
       <slot :attribute="value" />
     </div>
   </RenderChanged>

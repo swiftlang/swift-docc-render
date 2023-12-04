@@ -29,7 +29,7 @@ export default {
   @include font-styles(body-large);
 }
 
-/deep/ {
+:deep() {
   p:last-child {
     margin-bottom: 0;
   }
