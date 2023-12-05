@@ -113,7 +113,6 @@ export default {
     },
     declListExpanded: {
       type: Boolean,
-      required: false,
       default: false,
     },
   },
