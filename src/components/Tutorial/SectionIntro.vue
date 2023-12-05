@@ -28,9 +28,9 @@
           <Asset
             v-if="media"
             :identifier="media"
-            :showsReplayButton="!isClientMobile"
-            :showsVideoControls="isClientMobile"
-            :videoAutoplays="!isClientMobile"
+            :showsReplayButton="true"
+            :showsVideoControls="false"
+            :videoAutoplays="true"
           />
         </div>
       </Column>
@@ -54,9 +54,6 @@ import Headline from 'docc-render/components/Headline.vue';
 export default {
   name: 'SectionIntro',
   inject: {
-    isClientMobile: {
-      default: () => false,
-    },
     isTargetIDE: {
       default: () => false,
     },

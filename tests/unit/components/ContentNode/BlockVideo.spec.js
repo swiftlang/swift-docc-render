@@ -11,11 +11,6 @@
 import BlockVideo from '@/components/ContentNode/BlockVideo.vue';
 import { shallowMount } from '@vue/test-utils';
 import Asset from '@/components/Asset.vue';
-import isClientMobile from 'docc-render/mixins/isClientMobile';
-
-jest.mock('docc-render/mixins/isClientMobile');
-
-isClientMobile.computed.isClientMobile.mockReturnValue(false);
 
 const defaultProps = {
   identifier: 'foo',
@@ -27,7 +22,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(BlockVideo
 });
 
 describe('BlockVideo', () => {
-  it('renders an Asset on desktop', () => {
+  it('renders an Asset', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(Asset).props()).toEqual({
       identifier: defaultProps.identifier,
@@ -51,18 +46,6 @@ describe('BlockVideo', () => {
       showsReplayButton: true,
       showsVideoControls: false,
       deviceFrame: 'phone',
-    });
-  });
-
-  it('renders an Asset, on a mobile device', () => {
-    isClientMobile.computed.isClientMobile.mockReturnValue(true);
-    const wrapper = createWrapper();
-    expect(wrapper.find(Asset).props()).toEqual({
-      identifier: defaultProps.identifier,
-      videoAutoplays: false,
-      videoMuted: false,
-      showsReplayButton: false,
-      showsVideoControls: true,
     });
   });
 });
