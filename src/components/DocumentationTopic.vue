@@ -680,7 +680,6 @@ $space-size: 15px;
 
 .declaration-list-menu {
   position: relative;
-  margin: 0 !important;
   width: 100%;
 
   .declaration-list-toggle {
@@ -692,7 +691,7 @@ $space-size: 15px;
     transform: translate(-50%, -50%);
     background: var(--color-fill); // cover border line
     padding: 5px 15px;
-    color: var(--colors-link, var(--color-tutorials-overview-link));
+    color: var(--colors-link, var(--color-link));
     z-index: 1;
     gap: 5px;
     white-space: nowrap;
