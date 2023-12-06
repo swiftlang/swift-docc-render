@@ -199,11 +199,10 @@ describe('DeclarationGroup with otherDeclarations', () => {
     await flushPromises();
 
     const { identifier } = withOtherDeclarations.declaration.otherDeclarations.declarations[0];
-    expect(waitFor).toHaveBeenCalledTimes(2);
-    expect(waitFor).toHaveBeenCalledWith(100); // wait for selected identifier to be updated
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.selectedIdentifier).toEqual(identifier);
     expect(wrapper.emitted('update:declListExpanded')).toEqual([[false]]);
-    expect(waitFor).toHaveBeenLastCalledWith(500); // wait for animation to be finish
+    expect(waitFor).toHaveBeenCalledWith(500); // wait for animation to be finish
     expect(mocks.$router.push).toHaveBeenCalledWith(store.state.references[identifier].url);
   });
 });
