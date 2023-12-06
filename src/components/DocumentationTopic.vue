@@ -689,7 +689,7 @@ $space-size: 15px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--color-fill); // cover border line
+    background-color: var(--color-fill); // cover border line
     padding: 5px 15px;
     color: var(--colors-link, var(--color-link));
     z-index: 1;
@@ -707,7 +707,7 @@ $space-size: 15px;
 
       width: $space-size;
       height: $space-size;
-      fill: var(--colors-link, var(--color-tutorials-overview-link));
+      fill: var(--colors-link, var(--color-link));
 
       &.expand {
         transform: rotate(45deg);
@@ -816,6 +816,7 @@ $space-size: 15px;
 
     .source {
       border-radius: var(--code-border-radius);
+      margin: var(--declaration-code-listing-margin);
     }
 
     /* wrap declaration only when not using smart wrapping */
