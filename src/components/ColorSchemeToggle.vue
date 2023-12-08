@@ -82,7 +82,7 @@ export default {
     display: none;
   }
 
-  @media (scripting: none) {
+  :root.no-js & {
     visibility: hidden;
   }
 }

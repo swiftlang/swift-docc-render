@@ -26,3 +26,5 @@ new Vue({
   render: h => h(App),
   i18n: SwiftDocCRenderi18n(),
 }).$mount('#app');
+
+document.documentElement.classList.remove('no-js');

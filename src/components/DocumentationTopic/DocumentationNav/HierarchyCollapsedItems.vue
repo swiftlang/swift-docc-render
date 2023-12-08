@@ -144,7 +144,7 @@ $dropdown-vertical-offset: rem(7px);
     display: none;
   }
 
-  @media (scripting: none) {
+  :root.no-js & {
     display: none;
   }
 }

@@ -84,7 +84,7 @@ export default {
   &.collapsed {
     display: none;
 
-    @media (scripting: none) {
+    :root.no-js & {
       display: flex;
     }
 

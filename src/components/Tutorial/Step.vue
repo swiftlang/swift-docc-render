@@ -166,7 +166,7 @@ export default {
     }
   }
 
-  @media (scripting: none) {
+  :root.no-js & {
     &:focus::before, &.focused::before {
       opacity: 0;
     }

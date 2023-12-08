@@ -441,10 +441,8 @@ export default {
   flex: 1 1 auto;
   width: 100%;
 
-  @media (scripting: none) {
-    :deep(.sidebar) {
-      display: none;
-    }
+  :root.no-js &:deep(.sidebar) {
+    display: none;
   }
 }
 
