@@ -21,10 +21,10 @@ Vue.use(SwiftDocCRenderPlugin);
 Vue.use(Router);
 Vue.use(VueI18n);
 
+document.documentElement.classList.remove('no-js');
+
 new Vue({
   router: SwiftDocCRenderRouter(),
   render: h => h(App),
   i18n: SwiftDocCRenderi18n(),
 }).$mount('#app');
-
-document.documentElement.classList.remove('no-js');
