@@ -13,5 +13,10 @@
     "code": "ja-JP",
     "name": "日本語",
     "slug": "ja-JP"
+  },
+  {
+    "code": "ko-KR",
+    "name": "한국어",
+    "slug": "ko-KR"
   }
 ]
