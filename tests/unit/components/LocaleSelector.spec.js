@@ -30,6 +30,11 @@ jest.mock('theme/lang/locales.json', () => (
       name: '日本語',
       slug: 'ja',
     },
+    {
+      code: 'ko-KR',
+      name: '한국어',
+      slug: 'ko-KR',
+    },
   ]
 ));
 
@@ -44,7 +49,7 @@ jest.mock('docc-render/stores/AppStore', () => ({
 }));
 
 const { ChevronThickIcon } = LocaleSelector.components;
-const availableLocales = ['en-US', 'zh-CN', 'ja-JP'];
+const availableLocales = ['en-US', 'zh-CN', 'ja-JP', 'ko-KR'];
 
 describe('LocaleSelector', () => {
   let wrapper;
