@@ -24,13 +24,11 @@
       </Column>
       <Column class="right">
         <div class="media">
-          <!-- On mobile, show video controls instead of replay button. -->
           <Asset
             v-if="media"
+            videoAutoplays
+            videoMuted
             :identifier="media"
-            :showsReplayButton="true"
-            :showsVideoControls="false"
-            :videoAutoplays="true"
           />
         </div>
       </Column>

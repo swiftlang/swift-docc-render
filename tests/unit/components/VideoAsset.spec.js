@@ -51,7 +51,7 @@ describe('VideoAsset', () => {
   it('renders a video', () => {
     const video = wrapper.find('video');
     expect(video.exists()).toBe(true);
-    expect(video.element.muted).toBe(true);
+    expect(video.element.muted).toBe(false);
   });
 
   it('adds a poster to the `video`, using light by default', async () => {
@@ -150,16 +150,16 @@ describe('VideoAsset', () => {
   it('sets `autoplay` using `autoplays`', () => {
     const video = wrapper.find('video');
 
+    expect(video.attributes('autoplay')).toBeFalsy();
+    wrapper.setProps({ autoplays: true });
     expect(video.attributes('autoplay')).toBe('autoplay');
-    wrapper.setProps({ autoplays: false });
-    expect(video.attributes('autoplay')).toBe(undefined);
   });
 
   it('sets `controls` using `showsControls`', () => {
     const video = wrapper.find('video');
-    expect(video.attributes('controls')).toBe('controls');
-    wrapper.setProps({ showsControls: false });
     expect(video.attributes('controls')).toBe(undefined);
+    wrapper.setProps({ showsControls: true });
+    expect(video.attributes('controls')).toBe('controls');
   });
 
   it('renders a source for the light variant when applicable', () => {

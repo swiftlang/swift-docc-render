@@ -11,10 +11,6 @@
 <template>
   <Asset
     :identifier="identifier"
-    :video-autoplays="false"
-    :video-muted="false"
-    :showsReplayButton="true"
-    :showsVideoControls="false"
     :deviceFrame="deviceFrame"
   />
 </template>

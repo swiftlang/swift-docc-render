@@ -43,19 +43,19 @@ export default {
     },
     showsReplayButton: {
       type: Boolean,
-      default: () => false,
+      default: () => true,
     },
     showsVideoControls: {
       type: Boolean,
-      default: () => true,
+      default: () => false,
     },
     videoAutoplays: {
       type: Boolean,
-      default: () => true,
+      default: () => false,
     },
     videoMuted: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     deviceFrame: {
       type: String,
