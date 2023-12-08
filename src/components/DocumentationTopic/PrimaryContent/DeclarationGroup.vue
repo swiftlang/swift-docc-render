@@ -159,15 +159,10 @@ export default {
     async selectDeclaration(identifier) {
       if (identifier === this.identifier) return;
       this.selectedIdentifier = identifier;
-      // wait for identifier to update
-      this.$nextTick(() => {
-        this.isExpanded = false; // collapse the list
-        this.updateRoute(this.references[identifier].url);
-      });
-    },
-    async updateRoute(url) {
+      await this.$nextTick(); // wait for identifier to update
+      this.isExpanded = false; // collapse the list
       await waitFor(500); // wait for animation to finish
-      this.$router.push(url);
+      this.$router.push(this.references[identifier].url);
     },
     getWrapperComponent(decl) {
       return (!this.isExpanded || decl.identifier === this.identifier)
