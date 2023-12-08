@@ -35,9 +35,9 @@
         >
           <Asset
             class="step-asset"
+            videoAutoplays
+            videoMuted
             :identifier="visibleAsset.media"
-            showsReplayButton
-            :showsVideoControls="false"
             ref="asset"
           />
         </div>
