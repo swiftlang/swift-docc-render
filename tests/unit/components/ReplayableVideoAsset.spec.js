@@ -65,7 +65,7 @@ describe('ReplayableVideoAsset', () => {
     expect(video.props('variants')).toBe(variants);
     expect(video.props('posterVariants')).toBe(posterVariants);
     expect(video.props('showsControls')).toBe(false);
-    expect(video.props('autoplays')).toBe(true);
+    expect(video.props('autoplays')).toBe(false);
     expect(wrapper.find('.control-button').exists()).toBe(true);
   });
 

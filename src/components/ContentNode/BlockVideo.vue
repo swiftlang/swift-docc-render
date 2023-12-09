@@ -11,21 +11,15 @@
 <template>
   <Asset
     :identifier="identifier"
-    :video-autoplays="false"
-    :video-muted="false"
-    :showsReplayButton="!isClientMobile"
-    :showsVideoControls="isClientMobile"
     :deviceFrame="deviceFrame"
   />
 </template>
 
 <script>
 import Asset from 'docc-render/components/Asset.vue';
-import isClientMobile from 'docc-render/mixins/isClientMobile';
 
 export default {
   name: 'BlockVideo',
-  mixins: [isClientMobile],
   components: { Asset },
   props: {
     identifier: {

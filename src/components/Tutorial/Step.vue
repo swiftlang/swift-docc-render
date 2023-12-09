@@ -29,9 +29,8 @@
       <Asset
         v-if="media"
         :identifier="media"
-        :showsReplayButton="!isClientMobile"
-        :showsVideoControls="isClientMobile"
-        :videoAutoplays="!isClientMobile"
+        videoAutoplays
+        videoMuted
       />
       <MobileCodePreview v-if="code" :code="code">
         <Asset
@@ -61,7 +60,6 @@ export default {
   },
   inject: [
     'isTargetIDE',
-    'isClientMobile',
     'store',
   ],
   props: {
