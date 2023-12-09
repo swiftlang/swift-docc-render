@@ -164,6 +164,12 @@ export default {
     }
   }
 
+  :root.no-js & {
+    &:focus::before, &.focused::before {
+      opacity: 0;
+    }
+  }
+
   @include breakpoint(small) {
     padding-left: 2rem;
 
