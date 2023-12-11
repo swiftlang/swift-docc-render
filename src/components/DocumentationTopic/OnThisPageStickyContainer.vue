@@ -31,6 +31,7 @@ export default {
   align-self: flex-start;
   flex: 0 0 auto;
   width: $on-this-page-aside-width;
+  padding-left: $nav-padding;
   padding-right: $nav-padding;
   box-sizing: border-box;
   padding-bottom: var(--spacing-stacked-margin-small);
