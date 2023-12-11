@@ -8,7 +8,7 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="OnThisPageStickyContainer">
+  <div class="OnThisPageStickyContainer" :class="classes">
     <slot />
   </div>
 </template>
@@ -17,6 +17,14 @@
 
 export default {
   name: 'OnThisPageStickyContainer',
+  inject: {
+    isTargetIDE: {
+      default: false,
+    },
+  },
+  computed: {
+    classes: ({ isTargetIDE }) => ({ ide: isTargetIDE }),
+  },
 };
 </script>
 
@@ -31,12 +39,15 @@ export default {
   align-self: flex-start;
   flex: 0 0 auto;
   width: $on-this-page-aside-width;
-  padding-left: $nav-padding;
   padding-right: $nav-padding;
   box-sizing: border-box;
   padding-bottom: var(--spacing-stacked-margin-small);
   max-height: calc(100vh - #{$top});
   overflow: auto;
+
+  &.ide {
+    margin-left: $nav-padding;
+  }
 
   @media print {
     display: none;
