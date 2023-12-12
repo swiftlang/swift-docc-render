@@ -8,7 +8,7 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="OnThisPageStickyContainer" :class="classes">
+  <div class="OnThisPageStickyContainer">
     <slot />
   </div>
 </template>
@@ -17,14 +17,6 @@
 
 export default {
   name: 'OnThisPageStickyContainer',
-  inject: {
-    isTargetIDE: {
-      default: false,
-    },
-  },
-  computed: {
-    classes: ({ isTargetIDE }) => ({ ide: isTargetIDE }),
-  },
 };
 </script>
 
@@ -45,7 +37,7 @@ export default {
   max-height: calc(100vh - #{$top});
   overflow: auto;
 
-  &.ide {
+  @include inTargetIde {
     margin-left: $nav-padding;
   }
 
