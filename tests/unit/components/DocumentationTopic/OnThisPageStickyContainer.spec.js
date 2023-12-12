@@ -11,28 +11,16 @@
 import OnThisPageStickyContainer from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 import { shallowMount } from '@vue/test-utils';
 
-const createWrapper = ({ ...opts } = {}) => shallowMount(OnThisPageStickyContainer, {
+const createWrapper = ({ provide, ...others } = {}) => shallowMount(OnThisPageStickyContainer, {
   slots: {
     default: '<div class="default">Default Content</div>',
   },
-  ...opts,
+  ...others,
 });
 
 describe('OnThisPageStickyContainer', () => {
   it('renders the default slot', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('.default').text()).toBe('Default Content');
-  });
-
-  it('adds an "ide" class for IDE targets', () => {
-    let wrapper = createWrapper();
-    expect(wrapper.classes('ide')).toBe(false);
-
-    wrapper = createWrapper({
-      provide: {
-        isTargetIDE: true,
-      },
-    });
-    expect(wrapper.classes('ide')).toBe(true);
   });
 });
