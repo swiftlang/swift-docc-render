@@ -37,6 +37,10 @@ export default {
   max-height: calc(100vh - #{$top});
   overflow: auto;
 
+  @include inTargetIde {
+    margin-left: $nav-padding;
+  }
+
   @media print {
     display: none;
   }
