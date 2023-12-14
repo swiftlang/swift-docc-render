@@ -616,7 +616,7 @@ describe('DocumentationTopic', () => {
       expect(description.classes()).not.toContain('after-enhanced-hero');
     });
 
-    it('does not render the description section if other declaration list iss expanded', () => {
+    it('does not render the description section if other declaration list is expanded', () => {
       wrapper.setData({
         declListExpanded: true,
       });
@@ -695,7 +695,7 @@ describe('DocumentationTopic', () => {
       ],
     });
     let declListMenu = wrapper.find('.declaration-list-menu');
-    expect(declListMenu.text()).toContain('Show all declarations');
+    expect(declListMenu.text()).toContain('verbs.show declarations.all-declarations');
     let icon = wrapper.find(InlinePlusCircleIcon);
     expect(icon.exists()).toBe(true);
 
@@ -705,7 +705,7 @@ describe('DocumentationTopic', () => {
 
     declListMenu = wrapper.find('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(true);
-    expect(declListMenu.text()).toContain('Hide other declarations');
+    expect(declListMenu.text()).toContain('verbs.hide declarations.other-declarations');
     icon = wrapper.find(InlinePlusCircleIcon);
     expect(icon.exists()).toBe(true);
     expect(icon.classes()).toContain('expand');

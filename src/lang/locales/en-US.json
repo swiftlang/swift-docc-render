@@ -68,6 +68,10 @@
     },
     "view-more": "View more"
   },
+  "declarations": {
+    "other-declarations": "other declarations",
+    "all-declarations": "all declarations"
+  },
   "aside-kind": {
     "beta": "Beta",
     "experiment": "Experiment",
