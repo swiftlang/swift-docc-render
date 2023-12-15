@@ -544,8 +544,8 @@ export default {
       return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations')) : false;
     },
     declListToggleText({ declListExpanded }) {
-      return declListExpanded ? `${this.$t('verbs.hide')} ${this.$t('declarations.other-declarations')}`
-        : `${this.$t('verbs.show')} ${this.$t('declarations.all-declarations')}`;
+      return declListExpanded ? this.$t('declarations.hide-other-declarations')
+        : this.$t('declarations.show-all-declarations');
     },
   },
   methods: {

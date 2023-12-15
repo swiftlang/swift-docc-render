@@ -695,7 +695,7 @@ describe('DocumentationTopic', () => {
       ],
     });
     let declListMenu = wrapper.find('.declaration-list-menu');
-    expect(declListMenu.text()).toContain('verbs.show declarations.all-declarations');
+    expect(declListMenu.text()).toContain('declarations.show-all-declarations');
     let icon = wrapper.find(InlinePlusCircleIcon);
     expect(icon.exists()).toBe(true);
 
@@ -705,7 +705,7 @@ describe('DocumentationTopic', () => {
 
     declListMenu = wrapper.find('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(true);
-    expect(declListMenu.text()).toContain('verbs.hide declarations.other-declarations');
+    expect(declListMenu.text()).toContain('declarations.hide-other-declarations');
     icon = wrapper.find(InlinePlusCircleIcon);
     expect(icon.exists()).toBe(true);
     expect(icon.classes()).toContain('expand');

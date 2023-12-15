@@ -69,8 +69,8 @@
     "view-more": "View more"
   },
   "declarations": {
-    "other-declarations": "other declarations",
-    "all-declarations": "all declarations"
+    "hide-other-declarations": "Hide other declarations",
+    "show-all-declarations": "Show all declarations"
   },
   "aside-kind": {
     "beta": "Beta",
