@@ -27,6 +27,7 @@
       :navigator-references="navigatorReferences"
       :isSpecificOverload="isSpecificOverload"
       @close="$emit('close')"
+      @navigate="$emit('navigate', $event)"
     >
       <template #filter><slot name="filter" /></template>
     </NavigatorCard>

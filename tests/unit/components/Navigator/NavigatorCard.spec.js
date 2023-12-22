@@ -2114,6 +2114,8 @@ describe('NavigatorCard', () => {
       expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
+      // assert `navigate` event was emitted
+      expect(wrapper.emitted('navigate')).toHaveLength(1);
       // now simulate the router change
       wrapper.setProps({ activePath: [root0.path, root0Child1.path] });
       await flushPromises();

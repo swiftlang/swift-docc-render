@@ -601,6 +601,36 @@ describe('DocumentationTopic', () => {
     expect(storage.set).toHaveBeenCalledTimes(0);
   });
 
+  it('handles the `@navigate` event, only on Mobile breakpoints', async () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        schemaVersion: schemaVersionWithSidebar,
+      },
+    });
+    await flushPromises();
+    const navigator = wrapper.find(Navigator);
+    const nav = wrapper.find(Nav);
+    // toggle the navigator from the Nav component, in Small breakpoint
+    nav.vm.$emit('toggle-sidenav', BreakpointName.small);
+    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    // set the breakpoint to small on the sidebar
+    sidebar.vm.breakpoint = BreakpointName.small;
+    expect(sidebar.props('shownOnMobile')).toBe(true);
+    await flushPromises();
+    navigator.vm.$emit('navigate');
+    expect(sidebar.props('shownOnMobile')).toBe(false);
+    // Test that Medium works with the same set of props/events
+    // toggle the navigator from the Nav component, in Medium breakpoint
+    nav.vm.$emit('toggle-sidenav', BreakpointName.medium);
+    expect(sidebar.props('shownOnMobile')).toBe(true);
+    await flushPromises();
+    sidebar.vm.breakpoint = BreakpointName.medium;
+    navigator.vm.$emit('navigate');
+    expect(sidebar.props('shownOnMobile')).toBe(false);
+    expect(storage.set).toHaveBeenCalledTimes(0);
+  });
+
   it('handles the `@close`, on Navigator, for `Large` breakpoints', async () => {
     wrapper.setData({
       topicData: {
