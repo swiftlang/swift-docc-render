@@ -228,6 +228,7 @@ describe('DocumentationTopic', () => {
       // assert we are passing the first set of paths always
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
+      symbolKind: topicData.metadata.symbolKind,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
       // assert we are passing the default technology, if we dont have the children yet
       technology,
@@ -245,6 +246,7 @@ describe('DocumentationTopic', () => {
       renderFilterOnTop: false,
       parentTopicIdentifiers: topicData.hierarchy.paths[0],
       references: topicData.references,
+      symbolKind: topicData.metadata.symbolKind,
       technology: TechnologyWithChildren,
       apiChanges: null,
       flatChildren: [],

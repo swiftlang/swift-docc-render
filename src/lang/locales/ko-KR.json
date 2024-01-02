@@ -1,0 +1,207 @@
+{
+  "view-in": "한국어로 보기",
+  "continue-viewing": "한국어로 계속 보기",
+  "language": "언어",
+  "video": {
+    "replay": "다시 재생",
+    "play": "재생",
+    "pause": "일시 정지",
+    "watch": "소개 비디오 시청하기"
+  },
+  "tutorials": {
+    "title": "튜토리얼 | 튜토리얼",
+    "step": "{number}단계",
+    "submit": "제출",
+    "next": "다음",
+    "preview": {
+      "title": "미리보기 없음 | 미리보기 | 미리보기",
+      "no-preview-available-step": "이 단계에서는 사용 가능한 미리보기가 없습니다."
+    },
+    "nav": {
+      "chapters": "챕터",
+      "current": "현재 {thing}"
+    },
+    "assessment": {
+      "check-your-understanding": "얼마나 이해했는지 확인하기",
+      "success-message": "잘 하셨습니다. 이 튜토리얼에 대한 모든 질문에 답하셨습니다.",
+      "answer-result": "답 {answer}은(는) {result}입니다.",
+      "correct": "정답",
+      "incorrect": "오답",
+      "next-question": "다음 질문",
+      "legend": "가능한 답"
+    },
+    "project-files": "프로젝트 파일",
+    "estimated-time": "예상 시간",
+    "sections": {
+      "chapter": "{number}챕터"
+    },
+    "question-of": "총 {total}개 중 {index}번째 질문",
+    "section-of": "{total} 중 {number}",
+    "overriding-title": "{title}의 {newTitle}",
+    "time": {
+      "format": "{number}{minutes}",
+      "minutes": {
+        "full": "분 | 분 | {count}분",
+        "short": "분 | 분"
+      },
+      "hours": {
+        "full": "시간 | 시간"
+      }
+    }
+  },
+  "documentation": {
+    "title": "문서",
+    "nav": {
+      "breadcrumbs": "브레드크럼",
+      "menu": "메뉴",
+      "open-menu": "메뉴 열기",
+      "close-menu": "메뉴 닫기"
+    },
+    "current-page": "현재 {title} 페이지",
+    "card": {
+      "learn-more": "더 알아보기",
+      "read-article": "문서 읽기",
+      "start-tutorial": "튜토리얼 시작",
+      "view-api": "API 모음 보기",
+      "view-symbol": "기호 보기",
+      "view-sample-code": "샘플 코드 보기"
+    },
+    "view-more": "더 보기"
+  },
+  "aside-kind": {
+    "beta": "베타",
+    "experiment": "실험",
+    "important": "중요",
+    "note": "참고",
+    "tip": "팁",
+    "warning": "경고",
+    "deprecated": "제거됨"
+  },
+  "change-type": {
+    "added": "추가됨",
+    "modified": "수정됨",
+    "deprecated": "제거됨"
+  },
+  "verbs": {
+    "hide": "가리기",
+    "show": "보기",
+    "close": "닫기"
+  },
+  "sections": {
+    "title": "{number}섹션",
+    "on-this-page": "이 페이지에서",
+    "topics": "주제",
+    "default-implementations": "기본 구현",
+    "relationships": "관계",
+    "see-also": "추가 정보",
+    "declaration": "선언",
+    "details": "세부사항",
+    "parameters": "매개변수",
+    "possible-values": "가능한 값",
+    "parts": "파트",
+    "availability": "사용 가능 여부",
+    "resources": "리소스"
+  },
+  "metadata": {
+    "details": {
+      "name": "이름",
+      "key": "키",
+      "type": "유형"
+    },
+    "beta": {
+      "legal": "이 문서는 베타 소프트웨어에 대해서 다루고 있으며, 변경될 수 있습니다.",
+      "software": "베타 소프트웨어"
+    },
+    "default-implementation": "기본 구현 제공됨. | 기본 구현 제공됨."
+  },
+  "availability": {
+    "introduced-and-deprecated": "{name} {introducedAt}에서 소개되었고 {name} {deprecatedAt}에서 제거됨",
+    "available-on": "{name} {introducedAt} 이상에서 사용할 수 있음"
+  },
+  "more": "더 보기",
+  "less": "간략히",
+  "api-reference": "API 참조",
+  "filter": {
+    "title": "필터",
+    "search-symbols": "{technology}에서 기호 찾기",
+    "suggested-tags": "권장 태그 | 권장 태그",
+    "selected-tags": "선택한 태그 | 선택한 태그",
+    "add-tag": "태그 추가",
+    "tag-select-remove": "태그. 목록에서 제거하려면 선택하십시오.",
+    "navigate": "기호를 탐색하려면 위쪽 화살표, 아래쪽 화살표, 왼쪽 화살표 또는 오른쪽 화살표를 누르십시오.",
+    "siblings-label": "{parent-siblings} 내의 총 {total-siblings}개의 기호 중 {number-siblings}개",
+    "parent-label": "한 개의 기호를 포함하는 {parent-siblings} 내의 총 {total-siblings}개의 기호 중 {number-siblings}개 | {number-parent}개의 기호를 포함하는 {parent-siblings} 내의 총 {total-siblings}개의 기호 중 {number-siblings}개",
+    "reset-filter": "필터 재설정"
+  },
+  "navigator": {
+    "title": "문서 탐색기",
+    "open-navigator": "문서 탐색기 열기",
+    "close-navigator": "문서 탐색기 닫기",
+    "no-results": "결과 찾을 수 없습니다.",
+    "no-children": "사용 가능한 데이터가 없습니다.",
+    "error-fetching": "데이터를 가져오는 동안 오류가 발생했습니다.",
+    "items-found": "항목을 찾을 수 없음 | 1개의 항목 발견됨 | {number}개의 항목이 발견됨. 다시 탭하여 탐색하십시오.",
+    "navigator-is": "내비게이터가 {state}입니다.",
+    "state": {
+      "loading": "로드 중",
+      "ready": "준비 완료 상태"
+    },
+    "tags": {
+      "hide-deprecated": "제거된 항목 가리기"
+    }
+  },
+  "tab": {
+    "request": "요청",
+    "response": "응답"
+  },
+  "required": "필수 사항",
+  "parameters": {
+    "default": "기본",
+    "minimum": "최소",
+    "maximum": "최대",
+    "possible-types": "유형 | 가능한 유형",
+    "possible-values": "값 | 가능한 값"
+  },
+  "content-type": "콘텐츠 유형: {value}",
+  "read-only": "읽기 전용",
+  "error": {
+    "unknown": "알 수 없는 오류가 발생했습니다.",
+    "image": "이미지를 로드하는 데 실패함",
+    "not-found": "해당 페이지를 찾을 수 없습니다."
+  },
+  "color-scheme": {
+    "select": "색상 모드 환경설정 선택",
+    "auto": "자동",
+    "dark": "다크",
+    "light": "라이트"
+  },
+  "accessibility": {
+    "strike": {
+      "start": "취소선이 그어진 텍스트 시작",
+      "end": "취소선이 그어진 텍스트 종료"
+    },
+    "code": {
+      "start": "코드 블록 시작",
+      "end": "코드 블록 종료"
+    },
+    "skip-navigation": "탐색 건너뛰기",
+    "in-page-link": "페이지 링크에서"
+  },
+  "select-language": "이 페이지의 언어 선택",
+  "icons": {
+    "clear": "지우기",
+    "web-service-endpoint": "웹 서비스 엔드포인트",
+    "search": "검색"
+  },
+  "formats": {
+    "parenthesis": "({content})",
+    "colon": "{content}: "
+  },
+  "quicknav": {
+    "button": {
+      "label": "빠른 이동 열기",
+      "title": "클릭하거나 /를 입력하여 빠르게 이동"
+    },
+    "preview-unavailable": "미리보기 사용할 수 없음"
+  }
+}

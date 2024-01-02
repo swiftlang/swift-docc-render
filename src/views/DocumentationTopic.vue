@@ -56,6 +56,7 @@
                     :error-fetching="slotProps.errorFetching"
                     :api-changes="slotProps.apiChanges"
                     :references="topicProps.references"
+                    :symbolKind="topicProps.symbolKind"
                     :navigator-references="slotProps.references"
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
@@ -470,6 +471,10 @@ export default {
 .topic-wrapper {
   flex: 1 1 auto;
   width: 100%;
+
+  :root.no-js &:deep(.sidebar) {
+    display: none;
+  }
 }
 
 .full-width-container {

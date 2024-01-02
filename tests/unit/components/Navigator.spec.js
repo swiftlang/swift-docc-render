@@ -104,6 +104,7 @@ const defaultProps = {
   renderFilterOnTop: false,
   navigatorReferences,
   flatChildren: [],
+  symbolKind: 'method',
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -149,6 +150,7 @@ describe('Navigator', () => {
       navigatorReferences,
       hideAvailableTags: false,
       hideNavigatorHeadOnLarge: false,
+      isSpecificOverload: false,
     });
   });
 
@@ -189,6 +191,7 @@ describe('Navigator', () => {
       navigatorReferences,
       hideAvailableTags: false,
       hideNavigatorHeadOnLarge: false,
+      isSpecificOverload: false,
     });
   });
 
@@ -246,6 +249,51 @@ describe('Navigator', () => {
     expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
     expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(errorSpy).toHaveBeenCalledWith(`Reference for "${identifier}" is missing`);
+  });
+
+  it('correctly computes `isSpecificOverload` if hash does not exist', () => {
+    // non-symbol pages don't have valid hash
+    const wrapper = createWrapper({
+      propsData: {
+        symbolKind: undefined,
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(false);
+
+    // symbol page with no hash
+    wrapper.setProps({ symbolKind: 'method' });
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(false);
+  });
+
+  it('correctly identifies whether a hash is valid', () => {
+    // symbol with valid hash
+    let wrapper = createWrapper({
+      mocks: {
+        $route: {
+          path: '/documentation/Foo-abc12',
+        },
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(true);
+
+    wrapper = createWrapper({
+      mocks: {
+        $route: {
+          path: '/documentation/Foo-Bar-abc12',
+        },
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(true);
+
+    // capitalized letter, invalid hash
+    wrapper = createWrapper({
+      mocks: {
+        $route: {
+          path: '/documentation/Foo-Bar',
+        },
+      },
+    });
+    expect(wrapper.find(NavigatorCard).props('isSpecificOverload')).toBe(false);
   });
 
   it('removes any parent topic identifiers, which dont have a reference', () => {

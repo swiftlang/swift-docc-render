@@ -35,9 +35,9 @@
         >
           <Asset
             class="step-asset"
+            videoAutoplays
+            videoMuted
             :identifier="visibleAsset.media"
-            showsReplayButton
-            :showsVideoControls="false"
             ref="asset"
           />
         </div>
@@ -307,6 +307,10 @@ export default {
 
     .label {
       @include font-styles(aside-label);
+    }
+
+    & + * {
+      margin-top: var(--spacing-stacked-margin-large);
     }
   }
 }

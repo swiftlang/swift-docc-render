@@ -11,6 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
+import InlinePlusCircleIcon from 'docc-render/components/Icons/InlinePlusCircleIcon.vue';
 import { TopicTypes } from '@/constants/TopicTypes';
 import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
@@ -161,6 +162,37 @@ const propsData = {
   hierarchyItems: [
     'topic://foo',
     'topic://bar',
+  ],
+};
+
+const hasOtherDeclSection = {
+  kind: PrimaryContent.constants.SectionKind.declarations,
+  declarations: [
+    {
+      platforms: [
+        'macos',
+      ],
+      tokens: [
+        {
+          type: 'identifier',
+          text: 'Foo',
+        },
+      ],
+      otherDeclarations: {
+        declarations: [
+          {
+            identifier: 'doc://boo',
+            tokens: [
+              {
+                type: 'identifier',
+                text: 'Boo',
+              },
+            ],
+          },
+        ],
+        displayIndex: 1,
+      },
+    },
   ],
 };
 
@@ -498,6 +530,7 @@ describe('DocumentationTopic', () => {
       conformance: propsData.conformance,
       declarations: declarationsSection.declarations,
       source: propsData.remoteSource,
+      declListExpanded: false,
     });
     // wrapper.setProps({ enableMinimized: true });
     // commented this out and moved it to the above `setProps` call because
@@ -527,6 +560,16 @@ describe('DocumentationTopic', () => {
       hasNoExpandedDocumentation: true,
     });
     expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
+  });
+
+  it('render a `PrimaryContent` column when passed empty an PrimaryContent but has otherDeclarations', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    expect(wrapper.contains(PrimaryContent)).toBe(true); // has otherDeclarations dropdown
   });
 
   it('renders `ViewMore` if `enableMinimized`', () => {
@@ -594,6 +637,14 @@ describe('DocumentationTopic', () => {
       expect(description.classes()).not.toContain('after-enhanced-hero');
     });
 
+    it('does not render the description section if other declaration list is expanded', () => {
+      wrapper.setData({
+        declListExpanded: true,
+      });
+      const description = wrapper.find('.description');
+      expect(description.exists()).toBe(false);
+    });
+
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
@@ -641,6 +692,44 @@ describe('DocumentationTopic', () => {
       wrapper.setProps({ enableMinimized: true });
       expect(wrapper.find(Availability).exists()).toBe(false);
     });
+  });
+
+  it('render an declaration list menu if has other declarations', () => {
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(false);
+
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+  });
+
+  it('renders correct declaration list toggle, text, and icon', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.text()).toContain('declarations.show-all-declarations');
+    let icon = wrapper.find(InlinePlusCircleIcon);
+    expect(icon.exists()).toBe(true);
+
+    const toggle = wrapper.find('.declaration-list-toggle');
+    expect(toggle.exists()).toBe(true);
+    toggle.trigger('click');
+
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+    expect(declListMenu.text()).toContain('declarations.hide-other-declarations');
+    icon = wrapper.find(InlinePlusCircleIcon);
+    expect(icon.exists()).toBe(true);
+    expect(icon.classes()).toContain('expand');
   });
 
   it('does not render any primary content or related markup, if not provided', () => {

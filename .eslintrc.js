@@ -43,6 +43,10 @@ module.exports = {
     'vuejs-accessibility/aria-role': 'off',
     'vuejs-accessibility/click-events-have-key-events': 'off',
     'vuejs-accessibility/anchor-has-content': 'off',
+    'no-irregular-whitespace': ['error', {
+      skipStrings: true,
+      skipComments: true,
+    }],
   },
   overrides: [
     {
