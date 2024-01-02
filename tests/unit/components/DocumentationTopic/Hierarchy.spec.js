@@ -126,7 +126,7 @@ describe('Hierarchy', () => {
 
     const currentItem = items.at(items.length - 1);
     expect(currentItem.attributes()).toEqual({
-      url: undefined,
+      hasslash: 'true',
     });
     expect(currentItem.text()).toBe(baz.title);
 
@@ -205,20 +205,26 @@ describe('Hierarchy', () => {
         // next assert the collapsible items. Only one, as 3 can live outside at 1200
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         // assert the items outside of the collapse
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
         // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -242,22 +248,28 @@ describe('Hierarchy', () => {
 
         // assert the collapsible items. Two collapsed, as 2 can live outside between 1000 - 1200
         expect(items.at(1).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         // assert the items outside of the collapse
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
         // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -280,6 +292,7 @@ describe('Hierarchy', () => {
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[0]].url,
           iscollapsed: 'true',
         });
@@ -287,23 +300,28 @@ describe('Hierarchy', () => {
 
         // next assert the collapsible items. 3, as 1 can live between 800 and 1000
         expect(items.at(1).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         // assert the items outside of the collapse
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -334,6 +352,7 @@ describe('Hierarchy', () => {
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[0]].url,
           iscollapsed: 'true',
         });
@@ -341,23 +360,28 @@ describe('Hierarchy', () => {
 
         // next assert the collapsible items. 4, as 0 can live outside below 800
         expect(items.at(1).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -408,22 +432,27 @@ describe('Hierarchy', () => {
 
         // next assert the collapsible items. Two, as 2 can live outside at 1200 with tags
         expect(items.at(1).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         // assert the items outside of the collapse
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -454,23 +483,28 @@ describe('Hierarchy', () => {
 
         // assert the collapsible items. 3 collapsed, as 1 can live outside between 1000 - 1200
         expect(items.at(1).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         // assert the items outside of the collapse
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -501,6 +535,7 @@ describe('Hierarchy', () => {
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[0]].url,
           iscollapsed: 'true',
         });
@@ -508,23 +543,28 @@ describe('Hierarchy', () => {
 
         // next assert the collapsible items. 3, as 1 can live between 800 and 1000
         expect(items.at(1).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -563,6 +603,7 @@ describe('Hierarchy', () => {
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
+          hasslash: 'true',
           url: references[parentTopicIdentifiers[0]].url,
           iscollapsed: 'true',
         });
@@ -570,23 +611,28 @@ describe('Hierarchy', () => {
 
         // next assert the collapsible items. 3, as 1 can live between 800 and 1000
         expect(items.at(1).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
         });
         expect(items.at(2).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[2]].url,
         });
         expect(items.at(3).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[3]].url,
         });
         expect(items.at(4).attributes()).toEqual({
+          hasslash: 'true',
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          hasslash: 'true',
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
