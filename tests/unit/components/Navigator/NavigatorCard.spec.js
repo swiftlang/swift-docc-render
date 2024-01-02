@@ -315,6 +315,15 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
   });
 
+  it('exposes a #above-navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'above-navigator-head': '<div class="above-navigator-head">CustomAboveNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.above-navigator-head').text()).toBe('CustomAboveNavigatorHeadComponent');
+  });
+
   it('exposes a #filter slot', () => {
     const wrapper = createWrapper({
       scopedSlots: {
