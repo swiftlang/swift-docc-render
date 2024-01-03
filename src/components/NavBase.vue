@@ -602,6 +602,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include font-styles(nav-menu);
   flex: 1 1 auto;
   display: flex;
+  justify-content: flex-end;
   min-width: 0;
 
   @include nav-in-breakpoint {
@@ -611,8 +612,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 }
 
 .nav-menu-tray {
-  width: 100%;
-  max-width: 100%;
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -624,6 +623,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     visibility: hidden;
     max-height: 0;
     transition: $nav-menu-tray-transition;
+    width: 100%;
 
     @include nav-is-open($nested: true) {
       $max-height: calc(100vh - #{$nav-height-small} - #{$nav-height-small});
@@ -678,7 +678,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   align-items: center;
   white-space: nowrap;
   box-sizing: border-box;
-  width: 100%;
   padding-left: $nav-padding / 2;
 
   @include breakpoint(small, $scope: nav) {
