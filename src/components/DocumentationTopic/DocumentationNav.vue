@@ -217,6 +217,10 @@ $sidenav-icon-padding-size: 5px;
     .nav-title-link.inactive {
       height: auto;
     }
+
+    .nav-title {
+      @include font-styles(nav-title-large);
+    }
   }
 }
 

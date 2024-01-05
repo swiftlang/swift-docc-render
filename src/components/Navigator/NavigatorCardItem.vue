@@ -322,7 +322,7 @@ $chevron-width: $nav-card-horizontal-spacing;
   max-width: 100%;
   display: inline;
   vertical-align: middle;
-  @include font-styles(body-reduced-tight);
+  @include font-styles(body);
 
   @include on-keyboard-focus {
     outline: none;

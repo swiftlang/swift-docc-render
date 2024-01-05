@@ -69,7 +69,7 @@ $font-styles: (
     large: 14_20
   ),
   body-reduced-tight: (
-    large: 17_25
+    large: 14_18
   ),
   caption: (
     large: 12_16
@@ -182,6 +182,9 @@ $font-styles: (
   ),
   // nav typography
   nav-title: (
+    large: (19_27, nav),
+  ),
+  nav-title-large: (
     large: (21_25_semibold, nav),
   ),
   nav-title-compact: (
