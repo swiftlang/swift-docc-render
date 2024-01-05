@@ -10,7 +10,6 @@
 
 <template>
   <li class="hierarchy-collapsed-items">
-    <span class="hierarchy-item-icon icon-inline">/</span>
     <button
       class="toggle"
       ref="btn"
@@ -116,11 +115,10 @@ $hierarchy-dropdown-box-shadow: 0 1px 4px -1px var(--color-figure-gray-secondary
 
 $tail-width: 1rem * 0.5;
 
-$tail-offset: rem($nav-menu-item-left-margin)
-  + rem($nav-space-hierarchy-elements)
-  - math.div($toggle-width, 2)
-  + $tail-width
-  + rem(4px);
+$tail-offset:
+  + rem($nav-space-hierarchy-elements * 3)
+  + math.div($toggle-width, 2)
+  - $tail-width;
 
 $dropdown-vertical-offset: rem(7px);
 
@@ -128,16 +126,11 @@ $dropdown-vertical-offset: rem(7px);
   position: relative;
   display: inline-flex;
   align-items: center;
-  margin-left: $nav-space-hierarchy-elements;
 
-  .hierarchy-item-icon {
-    width: 9px;
-    height: 15px;
-    margin-right: $nav-space-hierarchy-elements;
-    display: flex;
-    justify-content: center;
-    font-size: 1em;
-    align-self: baseline;
+  &:before{
+    content: '/';
+    width: $nav-space-hierarchy-elements;
+    margin: 0 $nav-space-hierarchy-elements;
   }
 
   @include nav-in-breakpoint() {
@@ -186,6 +179,8 @@ $dropdown-vertical-offset: rem(7px);
 
 .dropdown {
   background: $dropdown-bg-color;
+  margin: 0;
+  list-style-type: none;
   border-color: $dropdown-border-color;
   border-radius: $border-radius;
   border-style: $border-style;

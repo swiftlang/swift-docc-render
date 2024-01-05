@@ -21,7 +21,6 @@
       <HierarchyItem
         v-if="rootLink"
         :url="rootLink"
-        :hasSlash="false"
       >
         {{ $t('documentation.title') }}
       </HierarchyItem>
@@ -204,6 +203,23 @@ export default {
   // make sure the root-hierarchy has a limit as well
   .root-hierarchy .item {
     @include truncate(10rem);
+  }
+}
+
+// Applies colors to any link inside the nav
+:deep(.nav-menu-link) {
+  color: var(--color-nav-link-color);
+
+  &:hover {
+    color: var(--color-nav-link-color-hover);
+  }
+
+  @include nav-dark {
+    color: var(--color-nav-dark-link-color);
+
+    &:hover {
+      color: var(--color-nav-dark-link-color-hover);
+    }
   }
 }
 </style>

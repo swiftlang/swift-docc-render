@@ -14,7 +14,6 @@
     :class="[{ collapsed: props.isCollapsed }, data.staticClass]"
     class="hierarchy-item"
   >
-    <span v-if="props.hasSlash" class="hierarchy-item-icon icon-inline">/</span>
     <router-link v-if="props.url" class="parent item nav-menu-link" :to="props.url">
       <slot />
     </router-link>
@@ -40,10 +39,6 @@ export default {
       type: String,
       required: false,
     },
-    hasSlash: {
-      type: Boolean,
-      default: () => true,
-    },
   },
 };
 </script>
@@ -52,24 +47,16 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .hierarchy-item {
-  // style the chevron icon
- :deep(.hierarchy-item-icon) {
-    width: 9px;
-    height: 15px;
-    margin-right: $nav-space-hierarchy-elements;
-    display: flex;
-    justify-content: center;
-    font-size: 1em;
-    align-self: baseline;
-    // hide on when collapsed
-    @include nav-in-breakpoint() {
-      display: none;
-    }
+  // applies "/" at the start of the item when the item is not the first child
+  &:not(:first-child):before{
+    content: '/';
+    width: $nav-space-hierarchy-elements;
+    margin: 0 $nav-space-hierarchy-elements;
   }
 
   display: flex;
   align-items: center;
-  margin-left: $nav-space-hierarchy-elements;
+  margin-left: 0;
 
   @include nav-in-breakpoint() {
     border-top: 1px solid var(--color-nav-hierarchy-item-borders);

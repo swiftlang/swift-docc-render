@@ -33,12 +33,6 @@ describe('HierarchyItem', () => {
     expect(wrapper.classes('collapsed')).toBe(true);
   });
 
-  it('renders a slash instead of an icon', () => {
-    const wrapper = mountWithProps({ url: 'foo.bar' });
-
-    expect(wrapper.find('.hierarchy-item-icon').text()).toBe('/');
-  });
-
   it('renders a .parent.item link if the URL exists', () => {
     const wrapper = mountWithProps({ url: 'foo.bar' });
     const item = wrapper.find('.item');
