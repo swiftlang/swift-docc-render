@@ -12,7 +12,6 @@
   <NavBase
     :breakpoint="BreakpointName.medium"
     :hasOverlay="false"
-    hasSolidBackground
     :hasNoBorder="hasNoBorder"
     :isDark="isDark"
     isWideFormat

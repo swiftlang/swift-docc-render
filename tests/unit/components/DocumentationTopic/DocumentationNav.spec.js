@@ -78,7 +78,7 @@ describe('DocumentationNav', () => {
     expect(nav.classes('nav-hero')).toBe(false);
     expect(nav.classes('theme-dark')).toBe(false);
     expect(nav.classes()).toContain('documentation-nav');
-    expect(nav.props()).toHaveProperty('hasSolidBackground', true);
+    expect(nav.props()).toHaveProperty('hasSolidBackground', false);
     expect(nav.props()).toHaveProperty('hasNoBorder', false);
     expect(nav.props()).toHaveProperty('hasFullWidthBorder', true);
     expect(nav.props()).toHaveProperty('hasOverlay', false);
