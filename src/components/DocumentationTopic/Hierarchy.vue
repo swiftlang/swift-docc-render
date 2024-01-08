@@ -194,7 +194,8 @@ export default {
 
 .hierarchy {
   justify-content: flex-start;
-  margin: 0 80px 0 0;
+  align-items: flex-start;
+  margin: 0;
   min-width: 0;
   @include nav-in-breakpoint() {
     margin: 0;
