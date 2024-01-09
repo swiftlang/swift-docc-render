@@ -54,6 +54,7 @@
     <template #tray="{ closeNav }">
       <NavMenuItems
         class="nav-menu-settings"
+        :previousSiblingChildren="1"
       >
         <LanguageToggle
           v-if="interfaceLanguage && (swiftPath || objcPath)"

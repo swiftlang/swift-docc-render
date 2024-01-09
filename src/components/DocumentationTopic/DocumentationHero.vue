@@ -238,8 +238,4 @@ $doc-hero-icon-dimension: 250px;
   // apply extra bottom padding when shouldShowLanguageSwitcher
   padding-bottom: rem(65px);
 }
-
-.theme-dark :deep(a:not(.button-cta)) {
-  color: dark-color(figure-blue);
-}
 </style>
