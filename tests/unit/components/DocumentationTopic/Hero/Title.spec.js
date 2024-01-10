@@ -9,7 +9,7 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import Title from 'docc-render/components/DocumentationTopic/Title.vue';
+import Title from 'docc-render/components/DocumentationTopic/Hero/Title.vue';
 
 describe('Title', () => {
   let wrapper;

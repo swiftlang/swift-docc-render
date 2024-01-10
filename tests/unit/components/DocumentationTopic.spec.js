@@ -13,7 +13,7 @@ import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import InlinePlusCircleIcon from 'docc-render/components/Icons/InlinePlusCircleIcon.vue';
 import { TopicTypes } from '@/constants/TopicTypes';
-import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import DocumentationHero from '@/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import OnThisPageStickyContainer

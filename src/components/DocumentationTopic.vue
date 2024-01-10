@@ -181,7 +181,7 @@ import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import ViewMore from 'theme/components/DocumentationTopic/ViewMore.vue';
-import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
+import DocumentationHero from 'docc-render/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
@@ -198,10 +198,10 @@ import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
 import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
-import Title from './DocumentationTopic/Title.vue';
+import Title from './DocumentationTopic/Hero/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
-import Hierarchy from './DocumentationTopic/Hierarchy.vue';
+import Hierarchy from './DocumentationTopic/Hero/Hierarchy.vue';
 
 // size above which, the OnThisPage container is visible
 const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
