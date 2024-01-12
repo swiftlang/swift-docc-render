@@ -42,10 +42,10 @@
         >
           <component :is="titleBreakComponent">{{ title }}</component>
           <template #after v-if="isSymbolDeprecated || isSymbolBeta">
-          <small
-          :class="tagName"
-          :data-tag-name="tagName"
-          />
+            <small
+              :class="tagName"
+              :data-tag-name="tagName"
+            />
           </template>
         </Title>
         <Abstract
@@ -71,6 +71,7 @@
             :conformance="conformance"
             :declarations="declaration.declarations"
             :source="remoteSource"
+            :declListExpanded.sync="declListExpanded"
           />
         </div>
       </DocumentationHero>
@@ -80,10 +81,14 @@
           :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
         >
           <div
-            v-if="hasPrimaryContent"
+            v-if="hasPrimaryContent || hasOtherDeclarations"
             :class="['container', { 'minimized-container': enableMinimized }]"
           >
-            <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
+            <div
+              v-if="!declListExpanded"
+              class="description"
+              :class="{ 'after-enhanced-hero': enhanceBackground }"
+            >
               <RequirementMetadata
                 v-if="isRequirement"
                 :defaultImplementationsCount="defaultImplementationsCount"
@@ -97,6 +102,17 @@
               >
                 <ContentNode :content="downloadNotAvailableSummary" />
               </Aside>
+            </div>
+            <div v-if="hasOtherDeclarations" class="declaration-list-menu">
+              <button
+                class="declaration-list-toggle"
+                @click="toggleDeclList"
+              >
+                {{ declListToggleText }}
+                <div class="icon">
+                  <InlinePlusCircleIcon :class="{'expand': declListExpanded }" />
+                </div>
+              </button>
             </div>
             <PrimaryContent
               v-if="primaryContentSectionsSanitized && primaryContentSectionsSanitized.length"
@@ -163,6 +179,7 @@ import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import { StandardColors } from 'docc-render/constants/StandardColors';
+import InlinePlusCircleIcon from 'theme/components/Icons/InlinePlusCircleIcon.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -219,6 +236,7 @@ export default {
     Topics,
     ViewMore,
     WordBreak,
+    InlinePlusCircleIcon,
   },
   props: {
     abstract: {
@@ -385,6 +403,7 @@ export default {
   data() {
     return {
       topicState: this.store.state,
+      declListExpanded: false, // Hide all other declarations by default
     };
   },
   computed: {
@@ -520,6 +539,14 @@ export default {
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
     },
+    hasOtherDeclarations({ declarations = [] }) {
+      // there's always only 1 `declaration` at this level
+      return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations')) : false;
+    },
+    declListToggleText({ declListExpanded }) {
+      return declListExpanded ? this.$t('declarations.hide-other-declarations')
+        : this.$t('declarations.show-all-declarations');
+    },
   },
   methods: {
     extractProps(json) {
@@ -607,6 +634,9 @@ export default {
         standardColorIdentifier,
       };
     },
+    toggleDeclList() {
+      this.declListExpanded = !this.declListExpanded;
+    },
   },
   created() {
     // Switch to the Objective-C variant of a page if the query parameter is not
@@ -646,6 +676,46 @@ export default {
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
+
+$space-size: 15px;
+
+.declaration-list-menu {
+  position: relative;
+  width: 100%;
+
+  .declaration-list-toggle {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-fill); // cover border line
+    padding: 5px 15px;
+    color: var(--colors-link, var(--color-link));
+    z-index: 1;
+    gap: 5px;
+    white-space: nowrap;
+    align-items: center;
+  }
+
+  .icon {
+    display: flex;
+    svg {
+      transition-duration: 400ms;
+      transition-timing-function: linear;
+      transition-property: transform;
+
+      width: $space-size;
+      height: $space-size;
+      fill: var(--colors-link, var(--color-link));
+
+      &.expand {
+        transform: rotate(45deg);
+      }
+    }
+  }
+}
 
 .doc-topic {
   display: flex;
@@ -747,6 +817,7 @@ export default {
 
     .source {
       border-radius: var(--code-border-radius);
+      margin: var(--declaration-code-listing-margin);
     }
 
     /* wrap declaration only when not using smart wrapping */
@@ -829,6 +900,18 @@ export default {
   .doc-content {
     min-width: 0;
     width: 100%;
+
+    // only render border on declaration list menu
+    // when there are no content sections afterwards at all
+    .container:only-child {
+      .declaration-list-menu:last-child::before {
+        border-top-color: var(--colors-grid, var(--color-grid));
+        border-top-style: solid;
+        border-top-width: var(--content-table-title-border-width, 1px);
+        content: '';
+        display: block;
+      }
+    }
 
     .with-on-this-page & {
       $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));

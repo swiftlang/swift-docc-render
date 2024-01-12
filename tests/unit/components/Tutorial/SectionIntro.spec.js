@@ -53,9 +53,6 @@ describe('SectionIntro', () => {
   beforeEach(() => {
     wrapper = shallowMount(SectionIntro, {
       propsData,
-      provide: {
-        isClientMobile: false,
-      },
       mocks: {
         $route,
       },
@@ -146,54 +143,6 @@ describe('SectionIntro', () => {
         content: expandedSections,
       });
     });
-  });
-});
-
-describe('on mobile', () => {
-  let wrapper;
-
-  const paragraph = {
-    type: 'paragraph',
-    inlineContent: [
-      {
-        type: 'text',
-        text: 'foo',
-      },
-    ],
-  };
-
-  const propsData = {
-    content: [paragraph],
-    media: 'foo.jpg',
-    title: 'Foobar',
-    sectionNumber: 42,
-    sectionAnchor: 'Initiate-ARKit-plane-detection',
-  };
-
-  beforeEach(() => {
-    wrapper = shallowMount(SectionIntro, {
-      propsData,
-      provide: {
-        isClientMobile: true,
-      },
-      mocks: {
-        $route: {
-          name: 'project-detail',
-          params: {},
-          path: '/tutorials/augmented-reality/basic-augmented-reality-app',
-        },
-      },
-      stubs: {
-        'router-link': RouterLinkStub,
-      },
-    });
-  });
-
-  it('renders an `Asset` with special video related props', () => {
-    const assetProps = wrapper.find(Asset).props();
-    expect(assetProps.showsReplayButton).toBe(false);
-    expect(assetProps.showsVideoControls).toBe(true);
-    expect(assetProps.videoAutoplays).toBe(false);
   });
 });
 

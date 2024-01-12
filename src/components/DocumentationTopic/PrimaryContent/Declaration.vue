@@ -25,10 +25,11 @@
         :declaration="declaration"
         :shouldCaption="hasPlatformVariants"
         :changeType="changeType"
+        :declListExpanded.sync="isExpanded"
       />
     </template>
     <DeclarationSourceLink
-      v-if="source"
+      v-if="source && !isExpanded"
       :url="source.url"
       :fileName="source.fileName"
     />
@@ -80,6 +81,10 @@ export default {
     declarations: {
       type: Array,
       required: true,
+    },
+    declListExpanded: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -133,6 +138,12 @@ export default {
     changeClasses: ({ changeType }) => ({
       [`changed changed-${changeType}`]: changeType,
     }),
+    isExpanded: {
+      get: ({ declListExpanded }) => declListExpanded,
+      set(value) {
+        this.$emit('update:declListExpanded', value);
+      },
+    },
   },
 };
 </script>

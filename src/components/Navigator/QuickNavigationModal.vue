@@ -485,6 +485,10 @@ $input-horizontal-spacing: rem(15px);
     &.focus {
       @include focus-shadow-form-element();
     }
+
+    :deep(.declaration-list-toggle) {
+      background-color: var(--color-fill-secondary);
+    }
   }
   &__magnifier-icon-container {
     width: rem(17px);

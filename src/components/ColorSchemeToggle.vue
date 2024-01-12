@@ -81,6 +81,10 @@ export default {
   @media print {
     display: none;
   }
+
+  :root.no-js & {
+    visibility: hidden;
+  }
 }
 
 input {

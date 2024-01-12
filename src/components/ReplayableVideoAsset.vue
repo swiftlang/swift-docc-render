@@ -57,15 +57,15 @@ export default {
     },
     showsControls: {
       type: Boolean,
-      default: () => true,
+      default: () => false,
     },
     autoplays: {
       type: Boolean,
-      default: () => true,
+      default: () => false,
     },
     muted: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     posterVariants: {
       type: Array,

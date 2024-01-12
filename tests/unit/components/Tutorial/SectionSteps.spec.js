@@ -173,7 +173,6 @@ describe('SectionSteps', () => {
       provide: {
         isTargetIDE: false,
         store: TopicStore,
-        isClientMobile: false,
         references: {},
       },
       stubs: {
@@ -208,7 +207,6 @@ describe('SectionSteps', () => {
       provide: {
         isTargetIDE: false,
         store: TopicStore,
-        isClientMobile: false,
         references: {},
       },
       stubs: {

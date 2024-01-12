@@ -36,7 +36,6 @@ import { PortalTarget } from 'portal-vue';
 import AppStore from 'docc-render/stores/AppStore';
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import metadata from 'theme/mixins/metadata';
-import isClientMobile from 'docc-render/mixins/isClientMobile';
 import Hero from 'theme/components/Tutorial/Hero.vue';
 import NavigationBar from 'theme/components/Tutorial/NavigationBar.vue';
 import Assessments from './Tutorial/Assessments.vue';
@@ -76,7 +75,7 @@ const TutorialSection = {
 
 export default {
   name: 'Tutorial',
-  mixins: [metadata, isClientMobile],
+  mixins: [metadata],
   components: {
     NavigationBar,
     Section: TutorialSection,
@@ -152,11 +151,6 @@ export default {
   mounted() {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
-  },
-  provide() {
-    return {
-      isClientMobile: this.isClientMobile,
-    };
   },
   beforeDestroy() {
     this.$bridge.off('codeColors', this.handleCodeColorsChange);

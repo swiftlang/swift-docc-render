@@ -24,13 +24,11 @@
       </Column>
       <Column class="right">
         <div class="media">
-          <!-- On mobile, show video controls instead of replay button. -->
           <Asset
             v-if="media"
+            videoAutoplays
+            videoMuted
             :identifier="media"
-            :showsReplayButton="!isClientMobile"
-            :showsVideoControls="isClientMobile"
-            :videoAutoplays="!isClientMobile"
           />
         </div>
       </Column>
@@ -54,9 +52,6 @@ import Headline from 'docc-render/components/Headline.vue';
 export default {
   name: 'SectionIntro',
   inject: {
-    isClientMobile: {
-      default: () => false,
-    },
     isTargetIDE: {
       default: () => false,
     },
