@@ -193,9 +193,10 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .hierarchy {
+  @include font-styles(hierarchy);
   justify-content: flex-start;
   align-items: flex-start;
-  margin: 0;
+  margin: 0 0 rem(20px) 0;
   min-width: 0;
   @include nav-in-breakpoint() {
     margin: 0;
@@ -210,17 +211,10 @@ export default {
 // Applies colors to any link inside the nav
 :deep(.nav-menu-link) {
   color: var(--color-nav-link-color);
-
-  &:hover {
-    color: var(--color-nav-link-color-hover);
-  }
+  @include underline-text;
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);
-
-    &:hover {
-      color: var(--color-nav-dark-link-color-hover);
-    }
   }
 }
 </style>

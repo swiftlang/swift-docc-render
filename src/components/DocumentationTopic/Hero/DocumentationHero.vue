@@ -197,7 +197,7 @@ $doc-hero-icon-dimension: 250px;
 
   &__content:not(.minimized-hero) {
     padding-top: rem(40px);
-    padding-bottom: 40px;
+    padding-bottom: rem(40px);
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
