@@ -210,11 +210,7 @@ export default {
 
 // Applies colors to any link inside the nav
 :deep(.nav-menu-link) {
-  color: var(--color-nav-link-color);
+  color: inherit;
   @include underline-text;
-
-  @include nav-dark {
-    color: var(--color-nav-dark-link-color);
-  }
 }
 </style>
