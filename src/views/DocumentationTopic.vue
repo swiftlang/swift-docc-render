@@ -83,7 +83,6 @@
           :enableMinimized="enableMinimized"
           :currentTopicTags="topicProps.tags"
           :hierarchyItems="hierarchyItems"
-          :rootLink="rootLink"
         />
       </component>
     </template>

@@ -37,7 +37,6 @@
           :parentTopicIdentifiers="hierarchyItems"
           :currentTopicTags="currentTopicTags"
           :references="references"
-          :rootLink="rootLink"
         />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
@@ -405,10 +404,6 @@ export default {
     },
     hierarchyItems: {
       type: Array,
-      required: false,
-    },
-    rootLink: {
-      type: Object,
       required: false,
     },
   },

@@ -666,7 +666,6 @@ describe('DocumentationTopic', () => {
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
       hierarchyItems: topicData.hierarchy.paths[0],
-      rootLink: null,
       currentTopicTags: [],
     });
   });
@@ -710,13 +709,6 @@ describe('DocumentationTopic', () => {
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
       hierarchyItems: topicData.hierarchy.paths[0],
-      rootLink: {
-        path: references[TechnologiesRootIdentifier].url,
-        query: {
-          // preservers query params
-          changes: 'latest_minor',
-        },
-      },
       currentTopicTags: [],
     });
   });

@@ -334,7 +334,6 @@ describe('DocumentationTopic', () => {
       isSymbolDeprecated: false,
       currentTopicTags: propsData.currentTopicTags,
       references: propsData.references,
-      rootLink: propsData.rootLink,
     });
   });
 

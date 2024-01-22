@@ -14,19 +14,7 @@
     :class="{ 'has-badge': hasBadge }"
     class="hierarchy"
   >
-    <slot
-      name="title"
-      v-bind="{ rootLink }"
-    >
-      <HierarchyItem
-        v-if="rootLink"
-        :url="rootLink"
-      >
-        {{ $t('documentation.title') }}
-      </HierarchyItem>
-      <span v-else>{{ $t('documentation.title') }}</span>
-    </slot>
-    <HierarchyItem
+     <HierarchyItem
       v-if="root"
       :key="root.title"
       class="root-hierarchy"
@@ -132,10 +120,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    rootLink: {
-      type: Object,
-      required: false,
-    },
   },
   computed: {
     windowWidth: ({ store }) => store.state.contentWidth,
@@ -150,11 +134,7 @@ export default {
         return all;
       }, []);
     },
-    /**
-     * Extract the root item from the parentTopics.
-     * Works only if above 1000px windowWidth
-     */
-    root: ({ parentTopics, windowWidth }) => (windowWidth <= 1000 ? null : parentTopics[0]),
+    root: ({ parentTopics }) => parentTopics[0],
     firstItemSlice: ({ root }) => (root ? 1 : 0),
     /**
      * Figure out how many items we can show, after the collapsed items,
