@@ -33,11 +33,6 @@ const stubs = {
   NavBase,
 };
 
-const rootLink = {
-  path: '/documentation/technologies',
-  query: {},
-};
-
 const mocks = {
   $router: {
     push: jest.fn(),
@@ -60,7 +55,6 @@ describe('DocumentationNav', () => {
     swiftPath: 'documentation/foo',
     objcPath: 'documentation/bar',
     displaySidenav: true,
-    rootLink: null,
   };
 
   beforeEach(() => {
@@ -100,24 +94,6 @@ describe('DocumentationNav', () => {
     });
     const nav = wrapper.find(NavBase);
     expect(nav.props()).toHaveProperty('hasNoBorder', true);
-  });
-
-  it('renders an inactive link, when no technologies root paths', () => {
-    const title = wrapper.find('.nav-title-link');
-    expect(title.classes()).toContain('inactive');
-    expect(title.is('span')).toBe(true);
-    expect(title.text()).toBe('documentation.title');
-  });
-
-  it('renders the title "Documentation" link, when there is a Technology root', () => {
-    wrapper.setProps({
-      rootLink,
-    });
-    const title = wrapper.find('.nav-title-link');
-    expect(title.exists()).toBe(true);
-    expect(title.is(RouterLinkStub)).toBe(true);
-    expect(title.props('to')).toEqual(rootLink);
-    expect(title.text()).toBe('documentation.title');
   });
 
   it('exposes a `tray-after` scoped slot', () => {
@@ -184,23 +160,16 @@ describe('DocumentationNav', () => {
   });
 
   it('exposes a `title` slot', () => {
-    let slotProps = null;
     const fooBar = 'Foo bar';
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
       mocks,
-      scopedSlots: {
-        title: (props) => {
-          slotProps = props;
-          return fooBar;
-        },
+      slots: {
+        title: fooBar,
       },
     });
     expect(wrapper.text()).toContain(fooBar);
-    expect(slotProps)
-      .toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
-    expect(wrapper.find('.nav-title-link').exists()).toBe(false);
   });
 
   it('renders a sidenav toggle, emitting `@toggle-sidenav` event', async () => {

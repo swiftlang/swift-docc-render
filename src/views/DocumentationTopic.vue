@@ -21,9 +21,18 @@
         :isSymbolBeta="isSymbolBeta"
         :displaySidenav="enableNavigator"
         :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
-        :rootLink="rootLink"
         @toggle-sidenav="handleToggleSidenav"
-      />
+      >
+        <template #title>
+          <component
+            :is="rootLink ? 'router-link' : 'span'"
+            :to="rootLink"
+            class="nav-title-link"
+          >
+            {{ $t('documentation.title') }}
+          </component>
+        </template>
+      </Nav>
       <component
         :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
         v-bind="sidebarProps"
@@ -64,6 +73,14 @@
                   >
                     <template v-if="enableQuickNavigation" #filter>
                       <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                    </template>
+                    <template #navigator-head>
+                      <component
+                        :is="rootLink ? 'router-link' : 'span'"
+                        :to="rootLink"
+                      >
+                        {{ $t('documentation.title') }}
+                      </component>
                     </template>
                   </Navigator>
                 </transition>

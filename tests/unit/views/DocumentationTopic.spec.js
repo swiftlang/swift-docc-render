@@ -9,7 +9,7 @@
 */
 
 import * as dataUtils from 'docc-render/utils/data';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
@@ -60,6 +60,21 @@ const {
   QuickNavigationModal,
 } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
+
+const rootLink = {
+  path: '/documentation/technologies',
+  query: {
+    changes: 'latest_minor',
+  },
+};
+
+const TechnologiesRootIdentifier = 'topic://technologies';
+
+const references = {
+  [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
+  'topic://foo': { title: 'FooTechnology', url: '/documentation/foo' },
+  'topic://bar': { title: 'BarTechnology', url: '/documentation/bar' },
+};
 
 const mocks = {
   $bridge: {
@@ -527,7 +542,6 @@ describe('DocumentationTopic', () => {
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
       sidenavHiddenOnLarge: false,
-      rootLink: null,
     });
     expect(nav.attributes()).toMatchObject({
       interfacelanguage: 'swift',
@@ -670,15 +684,51 @@ describe('DocumentationTopic', () => {
     });
   });
 
+  it('renders an inactive link, when no technologies root paths', () => {
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+
+    wrapper.setData({ topicData });
+
+    const title = wrapper.find('span.nav-title-link');
+    expect(title.exists()).toBe(true);
+    expect(title.text()).toBe('documentation.title');
+  });
+
+  it('renders the title "Documentation" link, if there is root link', () => {
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+        'router-link': RouterLinkStub,
+      },
+    });
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        hierarchy: {
+          paths: [
+            [TechnologiesRootIdentifier, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+        references,
+      },
+    });
+
+    const title = wrapper.find(RouterLinkStub);
+    expect(title.exists()).toBe(true);
+    expect(title.props('to')).toEqual(rootLink);
+    expect(title.text()).toBe('documentation.title');
+  });
+
   it('renders a `Topic` with `topicData` without the first hierarchy item if there is root link', () => {
-    const TechnologiesRootIdentifier = 'topic://technologies';
-
-    const references = {
-      [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
-      'topic://foo': { title: 'FooTechnology', url: '/documentation/foo' },
-      'topic://bar': { title: 'BarTechnology', url: '/documentation/bar' },
-    };
-
     wrapper.setData({
       topicData: {
         ...topicData,

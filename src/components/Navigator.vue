@@ -28,6 +28,9 @@
       @close="$emit('close')"
     >
       <template #filter><slot name="filter" /></template>
+      <template #navigator-head>
+        <slot name="navigator-head"/>
+      </template>
     </NavigatorCard>
     <LoadingNavigatorCard
       v-else

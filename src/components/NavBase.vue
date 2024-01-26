@@ -684,10 +684,10 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-top: 0;
     height: $nav-height-small;
     width: 90%;
+    padding-left: 0;
   }
 
   :deep(span) {
-    height: 100%;
     line-height: initial;
   }
 

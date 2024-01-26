@@ -43,6 +43,8 @@ const {
   HIDE_DEPRECATED,
 } = NavigatorCard.constants;
 
+const { Reference, Badge } = NavigatorCard.components;
+
 const DynamicScrollerStub = {
   props: DynamicScroller.props,
   template: '<div class="vue-recycle-scroller-stub"><template v-for="(item, index) in items"><slot v-bind="{ item, index, active: false }" /></template></div>',
@@ -339,6 +341,24 @@ describe('NavigatorCard', () => {
     expect(wrapper.vm.focusedIndex).toBe(1);
   });
 
+  it('renders a card-link with the technology name', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
+    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
+    expect(wrapper.find('.card-link').is('h2')).toBe(true);
+  });
+
+  it('renders a Beta badge in the technology title', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      isTechnologyBeta: true,
+    });
+    await flushPromises();
+    expect(wrapper.find('.technology-title').find(Badge).props()).toMatchObject({
+      variant: 'beta',
+    });
+  });
+
   it('focus the first item if there is no active item', async () => {
     const wrapper = createWrapper();
     await flushPromises();
@@ -423,7 +443,7 @@ describe('NavigatorCard', () => {
     // assert initial items are rendered
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
 
-    const navHead = wrapper.find('.navigator-head');
+    const navHead = wrapper.find('.technology-title');
 
     // open all children symbols
     navHead.trigger('click', { altKey: true });

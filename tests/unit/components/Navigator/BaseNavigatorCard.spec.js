@@ -13,8 +13,6 @@ import { shallowMount } from '@vue/test-utils';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 import { flushPromises } from '../../../../test-utils';
 
-const { Reference, Badge } = BaseNavigatorCard.components;
-
 const defaultProps = {
   hideNavigatorHeadOnLarge: false,
   technology: 'Technology',
@@ -52,34 +50,6 @@ describe('BaseNavigatorCard', () => {
     expect(button.attributes('aria-label')).toBe('navigator.close-navigator');
     expect(wrapper.emitted('close')).toHaveLength(1);
     expect(document.activeElement).toEqual(btn);
-  });
-
-  it('renders a Beta badge in the header', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isTechnologyBeta: true,
-      },
-    });
-    await flushPromises();
-    expect(wrapper.find('.navigator-head').find(Badge).props()).toMatchObject({
-      variant: 'beta',
-    });
-  });
-
-  it('hides navigator head on large viewport, if `hideNavigatorHeadOnLarge` is `true`', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        hideNavigatorHeadOnLarge: true,
-      },
-    });
-    expect(wrapper.find('.navigator-head').classes()).toContain('hide-on-large');
-  });
-
-  it('renders a card-link with the technology name', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
-    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
-    expect(wrapper.find('.card-link').is('h2')).toBe(true);
   });
 
   it('exposes a #body slot', () => {

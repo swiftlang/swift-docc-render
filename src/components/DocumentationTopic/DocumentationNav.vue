@@ -37,19 +37,7 @@
       </div>
     </template>
     <template #default>
-      <slot
-        name="title"
-        v-bind="{ rootLink, linkClass: 'nav-title-link', inactiveClass: 'inactive' }"
-      >
-        <router-link
-          v-if="rootLink"
-          :to="rootLink"
-          class="nav-title-link"
-        >
-          {{ $t('documentation.title') }}
-        </router-link>
-        <span v-else class="nav-title-link inactive">{{ $t('documentation.title') }}</span>
-      </slot>
+      <slot name="title" />
     </template>
     <template #tray="{ closeNav }">
       <NavMenuItems
@@ -126,10 +114,6 @@ export default {
     displaySidenav: {
       type: Boolean,
       default: false,
-    },
-    rootLink: {
-      type: Object,
-      required: false,
     },
   },
   computed: {
@@ -213,11 +197,6 @@ $sidenav-icon-padding-size: 5px;
 
 .documentation-nav {
   :deep() {
-    // normalize the Title font with menu items
-    .nav-title-link.inactive {
-      height: auto;
-    }
-
     .nav-title {
       @include font-styles(nav-title-large);
     }

@@ -13,15 +13,16 @@
     :class="{ 'filter-on-top': renderFilterOnTop }"
     :hideNavigatorHeadOnLarge="hideNavigatorHeadOnLarge"
     v-bind="{
-      technology,
       isTechnologyBeta,
       technologyPath,
     }"
     @close="$emit('close')"
-    @head-click-alt="toggleAllNodes"
   >
     <template #above-navigator-head>
       <slot name="above-navigator-head"/>
+    </template>
+    <template #navigator-head>
+      <slot name="navigator-head"/>
     </template>
     <template #body="{ className }">
       <slot name="post-head" />
@@ -32,6 +33,18 @@
         @keydown.up.exact.capture.prevent="focusPrev"
         @keydown.down.exact.capture.prevent="focusNext"
       >
+        <Reference
+          v-if="technology"
+          :id="INDEX_ROOT_KEY"
+          :url="technologyPath"
+          class="technology-title"
+          @click.alt.native.prevent="toggleAllNodes"
+        >
+          <h2 class="card-link">
+            {{ technology }}
+          </h2>
+          <Badge v-if="isTechnologyBeta" variant="beta" />
+        </Reference>
         <DynamicScroller
           v-show="hasNodes"
           :id="scrollLockID"
@@ -78,9 +91,7 @@
           {{ politeAriaLive }}
         </div>
         <div aria-live="assertive" class="no-items-wrapper">
-          <p class="no-items">
-            {{ $t(assertiveAriaLive) }}
-          </p>
+          <p class="no-items">{{ $t(assertiveAriaLive) }}</p>
         </div>
       </div>
       <div class="filter-wrapper" v-if="!errorFetching">
@@ -132,6 +143,8 @@ import {
   getParents,
   getSiblings,
 } from 'docc-render/utils/navigatorData';
+import Reference from 'docc-render/components/ContentNode/Reference.vue';
+import Badge from 'docc-render/components/Badge.vue';
 
 const STORAGE_KEY = 'navigator.state';
 
@@ -196,12 +209,18 @@ export default {
     DynamicScroller,
     DynamicScrollerItem,
     BaseNavigatorCard,
+    Reference,
+    Badge,
   },
   props: {
     ...BaseNavigatorCard.props,
     children: {
       type: Array,
       required: true,
+    },
+    technology: {
+      type: String,
+      required: false,
     },
     activePath: {
       type: Array,
@@ -262,6 +281,7 @@ export default {
       lastFocusTarget: null,
       allNodesToggled: false,
       translatableTags: [HIDE_DEPRECATED],
+      INDEX_ROOT_KEY,
     };
   },
   computed: {
@@ -1130,7 +1150,11 @@ export default {
 
 // unfortunately we need to hard-code the filter height
 $filter-height: 71px;
-$filter-height-small: 60px;
+$filter-height-small: 50px;
+$close-icon-size: 19px;
+$technology-title-background: var(--color-fill) !default;
+$technology-title-background-active: var(--color-fill-gray-quaternary) !default;
+$navigator-card-vertical-spacing: 8px !default;
 
 .navigator-card {
   &.filter-on-top {
@@ -1149,12 +1173,48 @@ $filter-height-small: 60px;
   overflow: hidden;
   color: var(--color-figure-gray-tertiary);
 
-  .no-items {
+  .no-items:not(:empty) {
     @include font-styles(body-reduced);
     padding: var(--card-vertical-spacing) var(--card-horizontal-spacing);
     // make sure the text does not get weirdly cut
     min-width: 200px;
     box-sizing: border-box;
+  }
+}
+
+.technology-title {
+  @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
+  @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
+  padding: $navigator-card-vertical-spacing $nav-card-horizontal-spacing;
+  padding-left: $nav-card-horizontal-spacing * 2;
+  background: $technology-title-background;
+  border-radius: $nano-border-radius;
+  display: flex;
+  white-space: nowrap;
+
+  @include breakpoint(small, nav) {
+    margin-top: 0;
+  }
+
+  .card-link {
+    color: var(--color-text);
+    @include font-styles(label-reduced);
+    font-weight: $font-weight-semibold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .badge {
+    margin-top: 0;
+  }
+
+  &.router-link-exact-active {
+    background: $technology-title-background-active;
+  }
+
+  &:hover {
+    background: var(--color-navigator-item-hover);
+    text-decoration: none;
   }
 }
 
@@ -1177,7 +1237,7 @@ $filter-height-small: 60px;
   @include breakpoint(medium, nav) {
     --nav-filter-horizontal-padding: 20px;
     border: none;
-    padding-top: 10px;
+    padding-top: 0px;
     padding-bottom: 10px;
     height: $filter-height-small;
   }
@@ -1207,7 +1267,6 @@ $filter-height-small: 60px;
 .scroller {
   height: 100%;
   box-sizing: border-box;
-  padding: var(--card-vertical-spacing) 0;
   padding-bottom: calc(var(--top-offset, 0px) + var(--card-vertical-spacing));
   transition: padding-bottom ease-in 0.15s;
 
