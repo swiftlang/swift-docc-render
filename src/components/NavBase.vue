@@ -649,13 +649,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 .nav-actions {
   display: flex;
   align-items: center;
+  @include safe-area-right-set(padding-right, $nav-card-horizontal-spacing-large);
 
   @include nav-in-breakpoint {
     grid-area: actions;
     justify-content: flex-end;
-  }
-  @include breakpoint(small, nav) {
-    padding-right: $nav-padding-small;
   }
 }
 

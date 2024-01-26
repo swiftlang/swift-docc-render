@@ -253,12 +253,12 @@ $sidenav-icon-padding-size: 5px;
     margin: 0 $nav-padding;
   }
 
+  @include safe-area-right-set(padding-left, $nav-card-horizontal-spacing-large);
+  @include safe-area-right-set(padding-right, $nav-card-horizontal-spacing-large);
+
   @include nav-in-breakpoint() {
-    $space: 14px;
-    margin-left: -$space;
-    margin-right: -$space;
-    padding-left: $space;
-    padding-right: $space;
+    margin-left: -$nav-card-horizontal-spacing-large - $sidenav-icon-padding-size;
+    margin-right: -$nav-card-horizontal-spacing-large;
     align-self: stretch;
 
     &__separator {

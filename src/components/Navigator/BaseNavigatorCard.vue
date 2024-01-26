@@ -118,7 +118,7 @@ $close-icon-padding: 5px;
       align-items: center;
     }
 
-    > a {
+    > a, span {
       color: var(--color-figure-gray);
       width: 100%;
     }
