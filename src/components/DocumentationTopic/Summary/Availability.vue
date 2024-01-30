@@ -122,7 +122,11 @@ export default {
   fill: var(--badge-color);
 
   .theme-dark & {
-    fill: var(--badge-color);
+    fill: var(--badge-dark-color);
+  }
+
+  @include prefers-dark {
+    fill: var(--badge-dark-color);
   }
 }
 
@@ -132,12 +136,20 @@ export default {
   .theme-dark & {
     color: var(--color-badge-dark-beta);
   }
+
+  @include prefers-dark {
+    color: var(--color-badge-dark-beta);
+  }
 }
 
 .deprecated {
   color: var(--color-badge-deprecated);
 
   .theme-dark & {
+    color: var(--color-badge-dark-deprecated);
+  }
+
+  @include prefers-dark {
     color: var(--color-badge-dark-deprecated);
   }
 }

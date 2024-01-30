@@ -12,7 +12,7 @@
   <div
     :class="['documentation-hero', {
       'documentation-hero--disabled': !enhanceBackground,
-      'theme-dark': enhanceBackground,
+      'theme-dark': enhanceBackground && isDark,
     }]"
     :style="styles"
   >
@@ -78,6 +78,10 @@ export default {
       required: false,
       validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
+    isDark: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
@@ -120,17 +124,20 @@ $doc-hero-gradient-background: var(
 ) !default;
 $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
+$doc-hero-text-color: var(--color-documentation-intro-figure, dark-color(figure-gray)) !default;
 $doc-hero-icon-color: var(
     --color-documentation-intro-accent,
     #{dark-color(fill-secondary)}
 ) !default;
+$doc-hero-icon-effect: normal !default;
+$doc-hero-icon-dark-effect: normal !default;
 $doc-hero-icon-spacing: 25px;
 $doc-hero-icon-vertical-spacing: 10px;
 $doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
-  background: dark-color(fill);
-  color: var(--color-documentation-intro-figure, dark-color(figure-gray));
+  // background: dark-color(fill);
+  color: $doc-hero-text-color;
   overflow: hidden;
   text-align: left;
   position: relative;
@@ -149,16 +156,20 @@ $doc-hero-icon-dimension: 250px;
     right: 0;
   }
 
-  // black overlay
+  // overlay
   &:after {
     background: $doc-hero-overlay-background;
-    opacity: 0.7;
+    opacity: 0.85;
     width: 100%;
     position: absolute;
     content: '';
     height: 100%;
     left: 0;
     top: 0;
+
+    @include prefers-dark {
+      opacity: 0.7;
+    }
   }
 
   .icon {
@@ -182,6 +193,7 @@ $doc-hero-icon-dimension: 250px;
     width: $doc-hero-icon-dimension;
     height: auto;
     opacity: $doc-hero-icon-opacity;
+    mix-blend-mode: $doc-hero-icon-effect;
     position: absolute;
     // center in icon box
     top: 50%;
@@ -192,6 +204,10 @@ $doc-hero-icon-dimension: 250px;
     :deep(svg), :deep(img) {
       width: 100%;
       height: 100%;
+    }
+
+    @include prefers-dark {
+      mix-blend-mode: $doc-hero-icon-dark-effect;
     }
   }
 

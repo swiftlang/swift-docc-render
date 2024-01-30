@@ -84,6 +84,7 @@
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
           :enableMinimized="enableMinimized"
+          :isHeroDark="isHeroDark"
         />
       </component>
     </template>

@@ -56,6 +56,10 @@ export default {
     fill: var(--colors-svg-icon-fill-dark, var(--color-svg-icon));
   }
 
+  @include prefers-dark {
+    fill: var(--colors-svg-icon-fill-dark, var(--color-svg-icon));
+  }
+
   // sets an icon as "inline", adding some common styles, like color and alignments.
   &.icon-inline {
     display: inline-block;
@@ -72,6 +76,10 @@ export default {
   stroke: var(--colors-svg-icon-fill-light, var(--color-svg-icon));
 
   .theme-dark & {
+    stroke: var(--colors-svg-icon-fill-dark, var(--color-svg-icon));
+  }
+
+  @include prefers-dark {
     stroke: var(--colors-svg-icon-fill-dark, var(--color-svg-icon));
   }
 }
