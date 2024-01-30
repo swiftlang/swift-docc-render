@@ -366,6 +366,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 
   @include breakpoint(small, $scope: nav) {
+    --nav-padding: #{$nav-padding-small};
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
     height: $nav-height-small;
   }
@@ -584,10 +585,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-right: calc(max(var(--nav-padding), env(safe-area-inset-right)));
   }
 
-  @include breakpoint(small, $scope: nav) {
-    padding: 0 0 0 $nav-padding-small;
-  }
-
   @include nav-in-breakpoint {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -602,7 +599,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include font-styles(nav-menu);
   flex: 1 1 auto;
   display: flex;
-  justify-content: flex-end;
   min-width: 0;
 
   @include nav-in-breakpoint {
@@ -649,7 +645,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 .nav-actions {
   display: flex;
   align-items: center;
-  @include safe-area-right-set(padding-right, $nav-card-horizontal-spacing-large);
 
   @include nav-in-breakpoint {
     grid-area: actions;
@@ -676,13 +671,17 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   align-items: center;
   white-space: nowrap;
   box-sizing: border-box;
-  padding-left: $nav-padding / 2;
+
+  @include breakpoints-from(large, nav) {
+    &:not(:first-child) {
+      padding-left: $nav-padding / 2;
+    }
+  }
 
   @include breakpoint(small, $scope: nav) {
     padding-top: 0;
     height: $nav-height-small;
     width: 90%;
-    padding-left: 0;
   }
 
   :deep(span) {

@@ -145,6 +145,7 @@ $sidenav-icon-padding-size: 5px;
 // overwrite the typography of menu items outside of breakpoint only
 :deep() .nav-menu {
   @include font-styles(documentation-nav);
+  justify-content: flex-end;
 
   &-settings {
     // ensure settings can get smaller if needed
@@ -253,14 +254,7 @@ $sidenav-icon-padding-size: 5px;
     margin: 0 $nav-padding;
   }
 
-  @include safe-area-right-set(padding-left, $nav-card-horizontal-spacing-large);
-  @include safe-area-right-set(padding-right, $nav-card-horizontal-spacing-large);
-
   @include nav-in-breakpoint() {
-    margin-left: -$nav-card-horizontal-spacing-large - $sidenav-icon-padding-size;
-    margin-right: -$nav-card-horizontal-spacing-large;
-    align-self: stretch;
-
     &__separator {
       display: none;
     }
