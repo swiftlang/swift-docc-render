@@ -45,10 +45,6 @@ export default {
       type: String,
       required: true,
     },
-    imageOverride: {
-      type: Object,
-      default: null,
-    },
   },
 
   computed: {
