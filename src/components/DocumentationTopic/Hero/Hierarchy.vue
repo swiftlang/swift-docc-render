@@ -182,6 +182,10 @@ export default {
     margin: 0;
   }
 
+  @include breakpoint(small) {
+    display: none;
+  }
+
   // make sure the root-hierarchy has a limit as well
   .root-hierarchy .item {
     @include truncate(10rem);

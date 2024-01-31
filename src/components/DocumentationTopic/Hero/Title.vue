@@ -33,6 +33,12 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+.topictitle {
+  @include breakpoint(small) {
+    margin: 0;
+  }
+}
+
 .eyebrow {
   @include font-styles(eyebrow-reduced);
   color: var(--color-documentation-intro-eyebrow, dark-color(figure-gray-secondary));
