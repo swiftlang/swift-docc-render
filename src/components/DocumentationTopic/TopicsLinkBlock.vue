@@ -20,7 +20,6 @@
       <TopicLinkBlockIcon
         v-if="topic.role && !change"
         :role="topic.role"
-        :imageOverride="references[iconOverride]"
       />
       <DecoratedTopicTitle v-if="topic.fragments" :tokens="topic.fragments" />
       <WordBreak v-else :tag="titleTag">{{ topic.title }}</WordBreak>
