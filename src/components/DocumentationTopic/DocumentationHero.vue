@@ -136,7 +136,6 @@ $doc-hero-icon-vertical-spacing: 10px;
 $doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
-  // background: dark-color(fill);
   color: $doc-hero-text-color;
   overflow: hidden;
   text-align: left;
