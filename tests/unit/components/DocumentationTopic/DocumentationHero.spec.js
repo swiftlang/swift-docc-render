@@ -22,6 +22,7 @@ const defaultProps = {
   shortHero: true,
   shouldShowLanguageSwitcher: true,
   iconOverride: { variants: ['foo'] },
+  isDark: true,
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(DocumentationHero, {
@@ -107,6 +108,17 @@ describe('DocumentationHero', () => {
     expect(content.classes()).toContain('minimized-hero');
   });
 
+  it('renders the right classes based on `isDark` prop', () => {
+    const wrapper = createWrapper();
+    const content = wrapper.find('.documentation-hero');
+
+    expect(content.classes()).toContain('theme-dark');
+
+    wrapper.setProps({
+      isDark: false,
+    });
+    expect(content.classes()).not.toContain('theme-dark');
+  });
   it('finds aliases, for the color', () => {
     const wrapper = createWrapper({
       propsData: {
