@@ -149,12 +149,6 @@ const propsData = {
   ],
   remoteSource: { url: 'foo' },
   pageImages: [{ identifier: 'foo', type: 'icon' }],
-  currentTopicTags: [{
-    type: 'foo',
-    text: 'Foo',
-  }, {
-    type: 'custom',
-  }],
   rootLink: {
     path: 'foo',
     query: {},
@@ -332,7 +326,7 @@ describe('DocumentationTopic', () => {
       parentTopicIdentifiers: propsData.hierarchyItems,
       isSymbolBeta: false,
       isSymbolDeprecated: false,
-      currentTopicTags: propsData.currentTopicTags,
+      currentTopicTags: propsData.tags,
     });
   });
 

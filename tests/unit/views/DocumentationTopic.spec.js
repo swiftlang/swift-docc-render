@@ -680,7 +680,6 @@ describe('DocumentationTopic', () => {
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
       hierarchyItems: topicData.hierarchy.paths[0],
-      currentTopicTags: [],
     });
   });
 
@@ -759,7 +758,6 @@ describe('DocumentationTopic', () => {
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
       hierarchyItems: topicData.hierarchy.paths[0],
-      currentTopicTags: [],
     });
   });
 

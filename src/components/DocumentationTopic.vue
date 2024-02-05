@@ -36,7 +36,7 @@
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"
           :parentTopicIdentifiers="hierarchyItems"
-          :currentTopicTags="currentTopicTags"
+          :currentTopicTags="tags"
         />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
@@ -397,10 +397,6 @@ export default {
     availableLocales: {
       type: Array,
       required: false,
-    },
-    currentTopicTags: {
-      type: Array,
-      default: () => [],
     },
     hierarchyItems: {
       type: Array,

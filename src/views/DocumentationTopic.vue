@@ -98,7 +98,6 @@
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
           :enableMinimized="enableMinimized"
-          :currentTopicTags="topicProps.tags"
           :hierarchyItems="hierarchyItems"
         />
       </component>
