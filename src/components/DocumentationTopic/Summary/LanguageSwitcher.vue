@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -144,11 +144,7 @@ export default {
 
   &.router-link-exact-active,
   &.active {
-    color: dark-color(figure-gray-secondary);
-
-    .documentation-hero--disabled & {
-      color: var(--colors-secondary-label, var(--color-secondary-label));
-    }
+    color: var(--colors-secondary-label, var(--color-secondary-label));
   }
 }
 </style>
