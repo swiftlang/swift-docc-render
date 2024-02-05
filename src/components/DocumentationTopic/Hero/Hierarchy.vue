@@ -93,6 +93,8 @@ import HierarchyItem from './HierarchyItem.vue';
 // they will be collapsed into a menu that users need to interact with to see.
 const MaxVisibleLinks = 3;
 
+const firstItemSlice = 1;
+
 export default {
   name: 'Hierarchy',
   components: {
@@ -136,7 +138,6 @@ export default {
       }, []);
     },
     root: ({ parentTopics }) => parentTopics[0],
-    firstItemSlice: ({ root }) => (root ? 1 : 0),
     /**
      * Figure out how many items we can show, after the collapsed items,
      * based on the content width
@@ -149,13 +150,13 @@ export default {
       if (windowWidth >= 800) return MaxVisibleLinks - 2 - extraItemsToRemove;
       return 0;
     },
-    collapsibleItems: ({ parentTopics, linksAfterCollapse, firstItemSlice }) => (
+    collapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
       // if there are links, slice all except those, otherwise get all but the root
       linksAfterCollapse
         ? parentTopics.slice(firstItemSlice, -linksAfterCollapse)
         : parentTopics.slice(firstItemSlice)
     ),
-    nonCollapsibleItems: ({ parentTopics, linksAfterCollapse, firstItemSlice }) => (
+    nonCollapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
       // if there are links to show, slice them out, otherwise return none
       linksAfterCollapse ? parentTopics.slice(firstItemSlice).slice(-linksAfterCollapse) : []
     ),
