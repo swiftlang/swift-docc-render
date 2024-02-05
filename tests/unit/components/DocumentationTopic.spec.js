@@ -333,7 +333,6 @@ describe('DocumentationTopic', () => {
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       currentTopicTags: propsData.currentTopicTags,
-      references: propsData.references,
     });
   });
 

@@ -64,6 +64,7 @@ const references = {
 const store = Vue.observable({
   state: {
     contentWidth: 1800,
+    references,
   },
 });
 
@@ -73,7 +74,6 @@ function changeSize(size) {
 
 const mountWithProps = ({ propsData, ...others } = {}) => shallowMount(Hierarchy, {
   propsData: {
-    references,
     ...propsData,
   },
   stubs: {
@@ -140,9 +140,16 @@ describe('Hierarchy', () => {
           foo.identifier,
           bar.identifier,
         ],
-        references: {
-          // include only one ref
-          [bar.identifier]: foo,
+      },
+      provide: {
+        store: {
+          state: {
+            contentWidth: 1800,
+            references: {
+              // include only one ref
+              [bar.identifier]: foo,
+            },
+          },
         },
       },
     });

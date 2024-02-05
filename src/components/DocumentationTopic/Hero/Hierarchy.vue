@@ -62,6 +62,7 @@
 import { buildUrl } from 'docc-render/utils/url-helper';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import Badge from 'docc-render/components/Badge.vue';
+import referencesProvider from 'docc-render/mixins/referencesProvider';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
@@ -104,10 +105,10 @@ export default {
     MaxVisibleLinks,
   },
   inject: ['store'],
+  mixins: [referencesProvider],
   props: {
     isSymbolDeprecated: Boolean,
     isSymbolBeta: Boolean,
-    references: Object,
     currentTopicTitle: {
       type: String,
       required: true,

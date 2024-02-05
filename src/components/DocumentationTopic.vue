@@ -37,7 +37,6 @@
           :isSymbolBeta="isSymbolBeta"
           :parentTopicIdentifiers="hierarchyItems"
           :currentTopicTags="currentTopicTags"
-          :references="references"
         />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
