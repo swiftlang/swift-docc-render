@@ -337,6 +337,24 @@ describe('DocumentationTopic', () => {
     });
   });
 
+  it('does not render a Hierarchy in IDE mode', () => {
+    const provide = {
+      isTargetIDE: true,
+      store: mockStore,
+    };
+    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
+
+    // Minimized view should not render LanguageSwitcher
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
+  });
+
+  it('does not render a Hierarchy in minimized view', () => {
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
+  });
+
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
     const hero = wrapper.find(DocumentationHero);
     expect(hero.props()).toEqual({
