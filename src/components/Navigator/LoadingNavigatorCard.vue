@@ -12,7 +12,6 @@
   <BaseNavigatorCard
     v-bind="$props"
     @close="$emit('close')"
-    hideNavigatorHeadOnLarge
   >
     <template #body="{ className }">
       <transition name="delay-visibility">

@@ -44,20 +44,6 @@ export default {
   components: {
     InlineCloseIcon,
   },
-  props: {
-    technologyPath: {
-      type: String,
-      default: '',
-    },
-    isTechnologyBeta: {
-      type: Boolean,
-      default: false,
-    },
-    hideNavigatorHeadOnLarge: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
       SIDEBAR_HIDE_BUTTON_ID,

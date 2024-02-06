@@ -14,7 +14,6 @@ import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 import { flushPromises } from '../../../../test-utils';
 
 const defaultProps = {
-  hideNavigatorHeadOnLarge: false,
   technology: 'Technology',
   technologyPath: '/path',
   isTechnologyBeta: false,

@@ -11,7 +11,6 @@
 <template>
   <BaseNavigatorCard
     :class="{ 'filter-on-top': renderFilterOnTop }"
-    :hideNavigatorHeadOnLarge="hideNavigatorHeadOnLarge"
     v-bind="{
       isTechnologyBeta,
       technologyPath,
@@ -213,7 +212,10 @@ export default {
     Badge,
   },
   props: {
-    ...BaseNavigatorCard.props,
+    technologyPath: {
+      type: String,
+      default: '',
+    },
     children: {
       type: Array,
       required: true,
