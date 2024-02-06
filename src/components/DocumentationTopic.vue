@@ -541,10 +541,9 @@ export default {
     },
     hasOtherDeclarations({ declarations = [], enableMinimized }) {
       // disable otherDeclarations in minimized mode
-      return declarations.length && !enableMinimized
+      return !enableMinimized && declarations.length
         // there's always only 1 `declaration` at this level
-        ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'))
-        : false;
+        && declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'));
     },
     declListToggleText({ declListExpanded }) {
       return declListExpanded ? this.$t('declarations.hide-other-declarations')
