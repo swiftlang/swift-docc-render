@@ -79,14 +79,6 @@ export default {
     LanguageToggle,
   },
   props: {
-    isSymbolBeta: {
-      type: Boolean,
-      required: false,
-    },
-    isSymbolDeprecated: {
-      type: Boolean,
-      required: false,
-    },
     isDark: {
       type: Boolean,
       default: false,
@@ -106,10 +98,6 @@ export default {
     swiftPath: {
       type: String,
       required: false,
-    },
-    sidenavHiddenOnLarge: {
-      type: Boolean,
-      default: false,
     },
     displaySidenav: {
       type: Boolean,

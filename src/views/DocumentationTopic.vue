@@ -17,10 +17,7 @@
         :interfaceLanguage="topicProps.interfaceLanguage"
         :objcPath="objcPath"
         :swiftPath="swiftPath"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
         :displaySidenav="enableNavigator"
-        :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
         @toggle-sidenav="handleToggleSidenav"
       >
         <template #title>

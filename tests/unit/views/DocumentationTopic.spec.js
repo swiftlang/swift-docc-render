@@ -536,12 +536,9 @@ describe('DocumentationTopic', () => {
       isDark: false,
       hasNoBorder: false,
       displaySidenav: false,
-      isSymbolBeta: false,
-      isSymbolDeprecated: false,
       interfaceLanguage: topicData.identifier.interfaceLanguage,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
-      sidenavHiddenOnLarge: false,
     });
     expect(nav.attributes()).toMatchObject({
       interfacelanguage: 'swift',
