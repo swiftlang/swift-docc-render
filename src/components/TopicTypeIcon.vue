@@ -63,6 +63,7 @@ const TopicTypeIcons = {
   [TopicTypes.method]: SingleLetterSymbolIcon,
   [TopicTypes.macro]: SingleLetterSymbolIcon,
   [TopicTypes.module]: TechnologyIcon,
+  [TopicTypes.namespace]: TechnologyIcon,
   [TopicTypes.overview]: PathIcon,
   [TopicTypes.protocol]: TwoLetterSymbolIcon,
   [TopicTypes.property]: SingleLetterSymbolIcon,
