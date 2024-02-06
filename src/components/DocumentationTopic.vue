@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -539,9 +539,12 @@ export default {
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
     },
-    hasOtherDeclarations({ declarations = [] }) {
-      // there's always only 1 `declaration` at this level
-      return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations')) : false;
+    hasOtherDeclarations({ declarations = [], enableMinimized }) {
+      // disable otherDeclarations in minimized mode
+      return declarations.length && !enableMinimized
+        // there's always only 1 `declaration` at this level
+        ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'))
+        : false;
     },
     declListToggleText({ declListExpanded }) {
       return declListExpanded ? this.$t('declarations.hide-other-declarations')
