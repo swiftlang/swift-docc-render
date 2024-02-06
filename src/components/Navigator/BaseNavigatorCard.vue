@@ -98,6 +98,7 @@ $close-icon-padding: 5px;
     @include font-styles(nav-title-large);
     height: $nav-height-small;
 
+    // display only in medium and small viewports
     @include breakpoint(medium, nav) {
       display: flex;
       justify-content: flex-end;

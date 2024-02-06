@@ -68,4 +68,13 @@ describe('BaseNavigatorCard', () => {
     });
     expect(wrapper.find('.above-navigator-head').text()).toBe('CustomAboveNavigatorHeadComponent');
   });
+
+  it('exposes a #navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'navigator-head': '<div class="navigator-head">CustomNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.navigator-head').text()).toBe('CustomNavigatorHeadComponent');
+  });
 });
