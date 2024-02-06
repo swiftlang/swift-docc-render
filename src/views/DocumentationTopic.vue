@@ -84,7 +84,6 @@
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
           :enableMinimized="enableMinimized"
-          :isHeroDark="isHeroDark"
         />
       </component>
     </template>
@@ -155,7 +154,6 @@ export default {
       sidenavVisibleOnMobile: false,
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
-      isHeroDark: true,
       store: DocumentationTopicStore,
       BreakpointName,
     };

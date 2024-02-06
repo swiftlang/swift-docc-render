@@ -12,7 +12,6 @@
   <div
     :class="['documentation-hero', {
       'documentation-hero--disabled': !enhanceBackground,
-      'theme-dark': enhanceBackground && isDark,
     }]"
     :style="styles"
   >
@@ -78,10 +77,6 @@ export default {
       required: false,
       validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
-    isDark: {
-      type: Boolean,
-      default: true,
-    },
   },
   computed: {
     // get the alias, if any, and fallback to the `teal` color
@@ -120,14 +115,14 @@ export default {
 $doc-hero-gradient-background: var(
     --standard-accent-color,
     // then fallback to a theme-settings color
-    var(--color-documentation-intro-fill, #{dark-color(fill-tertiary)})
+    var(--color-documentation-intro-fill, var(--color-fill-tertiary))
 ) !default;
 $doc-hero-overlay-background: transparent !default;
 $doc-hero-icon-opacity: 1 !default;
-$doc-hero-text-color: var(--color-documentation-intro-figure, dark-color(figure-gray)) !default;
+$doc-hero-text-color: var(--color-documentation-intro-figure, var(--color-figure-gray)) !default;
 $doc-hero-icon-color: var(
     --color-documentation-intro-accent,
-    #{dark-color(fill-secondary)}
+    var(--color-fill-secondary)
 ) !default;
 $doc-hero-icon-effect: normal !default;
 $doc-hero-icon-dark-effect: normal !default;

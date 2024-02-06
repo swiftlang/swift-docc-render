@@ -25,7 +25,6 @@
         :shouldShowLanguageSwitcher="shouldShowLanguageSwitcher"
         :iconOverride="references[pageIcon]"
         :standardColorIdentifier="standardColorIdentifier"
-        :isDark="isHeroDark"
       >
         <template #above-content>
           <slot name="above-hero-content" />
@@ -388,10 +387,6 @@ export default {
     availableLocales: {
       type: Array,
       required: false,
-    },
-    isHeroDark: {
-      type: Boolean,
-      default: true,
     },
   },
   provide() {

@@ -669,7 +669,6 @@ describe('DocumentationTopic', () => {
       enableMinimized: false, // disabled by default
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
-      isHeroDark: true,
     });
   });
 
