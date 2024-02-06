@@ -121,10 +121,6 @@ export default {
   padding-right: 5px;
   fill: var(--badge-color);
 
-  .theme-dark & {
-    fill: var(--badge-dark-color);
-  }
-
   @include prefers-dark {
     fill: var(--badge-dark-color);
   }
@@ -133,10 +129,6 @@ export default {
 .beta {
   color: var(--color-badge-beta);
 
-  .theme-dark & {
-    color: var(--color-badge-dark-beta);
-  }
-
   @include prefers-dark {
     color: var(--color-badge-dark-beta);
   }
@@ -144,10 +136,6 @@ export default {
 
 .deprecated {
   color: var(--color-badge-deprecated);
-
-  .theme-dark & {
-    color: var(--color-badge-dark-deprecated);
-  }
 
   @include prefers-dark {
     color: var(--color-badge-dark-deprecated);
@@ -169,10 +157,6 @@ export default {
     @include prefers-dark {
       background-image: $modified-dark-svg;
     }
-
-    .theme-dark & {
-      background-image: $modified-dark-svg;
-    }
   }
 
   &-added {
@@ -182,10 +166,6 @@ export default {
       background-image: $added-svg;
 
       @include prefers-dark {
-        background-image: $added-dark-svg;
-      }
-
-      .theme-dark & {
         background-image: $added-dark-svg;
       }
     }
@@ -198,10 +178,6 @@ export default {
       background-image: $deprecated-svg;
 
       @include prefers-dark {
-        background-image: $deprecated-dark-svg;
-      }
-
-      .theme-dark & {
         background-image: $deprecated-dark-svg;
       }
     }
