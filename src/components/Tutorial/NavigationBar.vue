@@ -200,6 +200,7 @@ export default {
 
     .nav-menu {
       padding: 0;
+      justify-content: flex-start;
       grid-column: 3/5;
     }
 

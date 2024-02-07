@@ -599,6 +599,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include font-styles(nav-menu);
   flex: 1 1 auto;
   display: flex;
+  justify-content: flex-end;
   min-width: 0;
 
   @include nav-in-breakpoint {

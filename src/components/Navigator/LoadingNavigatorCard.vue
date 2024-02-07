@@ -45,9 +45,6 @@ export default {
     BaseNavigatorCard,
     LoadingNavigatorItem,
   },
-  props: {
-    ...BaseNavigatorCard.props,
-  },
   data() {
     return {
       LOADER_ROWS,

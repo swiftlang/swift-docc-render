@@ -33,9 +33,8 @@
       </template>
     </NavigatorCard>
     <LoadingNavigatorCard
-      v-else
-      v-bind="technologyProps"
       @close="$emit('close')"
+      v-else
     />
     <div aria-live="polite" class="visuallyhidden">
       {{ $t('navigator.navigator-is', {
@@ -96,7 +95,7 @@ export default {
     },
     technology: {
       type: Object,
-      required: true,
+      required: false,
     },
     isFetching: {
       type: Boolean,
@@ -174,11 +173,13 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
-    technologyProps: ({ technology }) => ({
-      technology: technology.title,
-      technologyPath: technology.path || technology.url,
-      isTechnologyBeta: technology.beta,
-    }),
+    technologyProps: ({ technology }) => (
+      !technology ? null : {
+        technology: technology.title,
+        technologyPath: technology.path || technology.url,
+        isTechnologyBeta: technology.beta,
+      }
+    ),
   },
 };
 </script>

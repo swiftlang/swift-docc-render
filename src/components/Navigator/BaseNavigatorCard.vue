@@ -152,5 +152,9 @@ $close-icon-padding: 5px;
   @include breakpoint(medium, nav) {
     padding-top: 0;
   }
+
+  .filter-on-top & {
+    padding-top: 0;
+  }
 }
 </style>
