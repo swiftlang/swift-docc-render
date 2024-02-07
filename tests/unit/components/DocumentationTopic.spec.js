@@ -704,7 +704,7 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('render an declaration list menu if has other declarations', () => {
+  it('render a declaration list menu if has other declarations', () => {
     let declListMenu = wrapper.find('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(false);
 
@@ -716,6 +716,22 @@ describe('DocumentationTopic', () => {
     });
     declListMenu = wrapper.find('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(true);
+  });
+
+  it('does not render a declaration list menu in minimized mode', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+
+    wrapper.setProps({ enableMinimized: true });
+
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(false);
   });
 
   it('renders correct declaration list toggle, text, and icon', () => {
