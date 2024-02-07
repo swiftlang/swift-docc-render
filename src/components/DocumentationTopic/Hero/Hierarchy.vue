@@ -41,7 +41,7 @@
     >
       {{ topic.title }}
     </HierarchyItem>
-    <HierarchyItem>
+    <HierarchyItem v-if="windowWidth >= 800">
       {{ currentTopicTitle }}
       <template #tags>
         <Badge v-if="isSymbolDeprecated" variant="deprecated" />
@@ -150,12 +150,21 @@ export default {
       if (windowWidth >= 800) return MaxVisibleLinks - 2 - extraItemsToRemove;
       return 0;
     },
-    collapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
+    collapsibleItems: ({
+      windowWidth, parentTopics, linksAfterCollapse, currentTopicTitle,
+    }) => {
       // if there are links, slice all except those, otherwise get all but the root
-      linksAfterCollapse
+      const collapsibleItems = linksAfterCollapse
         ? parentTopics.slice(firstItemSlice, -linksAfterCollapse)
-        : parentTopics.slice(firstItemSlice)
-    ),
+        : parentTopics.slice(firstItemSlice);
+      if (windowWidth < 800) {
+        collapsibleItems.push({
+          title: currentTopicTitle,
+          url: '',
+        });
+      }
+      return collapsibleItems;
+    },
     nonCollapsibleItems: ({ parentTopics, linksAfterCollapse }) => (
       // if there are links to show, slice them out, otherwise return none
       linksAfterCollapse ? parentTopics.slice(firstItemSlice).slice(-linksAfterCollapse) : []
@@ -182,10 +191,6 @@ export default {
   min-width: 0;
   @include nav-in-breakpoint() {
     margin: 0;
-  }
-
-  @include breakpoint(small) {
-    display: none;
   }
 
   // make sure the root-hierarchy has a limit as well
