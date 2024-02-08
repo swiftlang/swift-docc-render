@@ -42,7 +42,6 @@
     <template #tray="{ closeNav }">
       <NavMenuItems
         class="nav-menu-settings"
-        :previousSiblingChildren="1"
       >
         <LanguageToggle
           v-if="interfaceLanguage && (swiftPath || objcPath)"
@@ -142,17 +141,6 @@ $sidenav-icon-padding-size: 5px;
 
     @include breakpoint-only-largenav() {
       margin-left: $nav-space-between-elements;
-    }
-
-    @include nav-in-breakpoint {
-      // do not apply border if no item are above setting links
-      &:not([data-previous-menu-children-count="0"]) {
-        .nav-menu-setting:first-child {
-          border-top: 1px solid dark-color(figure-gray-tertiary);
-          display: flex;
-          align-items: center;
-        }
-      }
     }
 
     .nav-menu-setting {

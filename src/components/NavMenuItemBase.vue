@@ -70,32 +70,5 @@ export default {
       transition-delay: $nav-menu-item-stagger-delay;
     }
   }
-  // create a staggered effect, only each settings element (language toggle, API changes)
-  @for $i from 0 to 8 {
-    // describes how many items the previous menu children had
-    [data-previous-menu-children-count='#{$i}'] & {
-      @for $j from 1 to 8 {
-        // each child should delay its removal
-        &:nth-child(#{$j}) {
-          // this is way down here, otherwise parent selectors get broken.
-          @include nav-in-breakpoint {
-            transition-delay: $nav-menu-item-stagger-delay * ($j + $i);
-          }
-        }
-      }
-      // when collapsed
-      @include nav-in-breakpoint {
-        // and expanded
-        @include nav-is-open($nested: true) {
-          @for $k from 1 to 8 {
-            // each child should delay its reveal
-            &:nth-child(#{$k}) {
-              transition-delay: $nav-menu-item-stagger-delay * (9 - ($k + $i));
-            }
-          }
-        }
-      }
-    }
-  }
 }
 </style>

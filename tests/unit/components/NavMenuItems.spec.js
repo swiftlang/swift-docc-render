@@ -20,15 +20,6 @@ describe('NavMenuItems', () => {
     expect(wrapper.classes()).toContain('nav-menu-items');
   });
 
-  it('adds the provided children count as a data prop', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        previousSiblingChildren: 5,
-      },
-    });
-    expect(wrapper.attributes()).toHaveProperty('data-previous-menu-children-count', '5');
-  });
-
   it('renders data in it`s default slot', () => {
     const wrapper = createWrapper({
       slots: {

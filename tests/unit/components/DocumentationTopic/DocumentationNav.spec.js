@@ -122,11 +122,6 @@ describe('DocumentationNav', () => {
     });
   });
 
-  it('provides the correct number of previous sibling children to `NavMenuItems`', async () => {
-    const menuItems = wrapper.find(NavMenuItems);
-    expect(menuItems.props()).toHaveProperty('previousSiblingChildren', 1);
-  });
-
   it('does not render a `LanguageToggle` when there is no swift nor objc path', () => {
     expect(wrapper.contains(LanguageToggle)).toBe(true);
     wrapper.setProps({ swiftPath: null, objcPath: null });

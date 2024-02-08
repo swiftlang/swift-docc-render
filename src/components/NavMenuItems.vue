@@ -9,10 +9,7 @@
 -->
 
 <template>
-  <ul
-    class="nav-menu-items"
-    :data-previous-menu-children-count="previousSiblingChildren"
-  >
+  <ul class="nav-menu-items">
     <slot />
   </ul>
 </template>
@@ -20,17 +17,6 @@
 <script>
 export default {
   name: 'NavMenuItems',
-  props: {
-    /**
-     * Defined the amount of children the previous sibling has.
-     * Used to help with staggering effects on children.
-     * @see NavMenuItem
-     */
-    previousSiblingChildren: {
-      type: Number,
-      default: 0,
-    },
-  },
 };
 </script>
 
