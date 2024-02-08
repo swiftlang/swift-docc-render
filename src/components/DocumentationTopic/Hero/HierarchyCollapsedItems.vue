@@ -19,8 +19,11 @@
       <span class="indicator"><EllipsisIcon class="icon-inline toggle-icon" /></span>
     </button>
     <ul class="dropdown" ref="dropdown" :class="{ collapsed }">
-      <li v-for="topic in topicsWithUrls" class="dropdown-item" :key="topic.title">
-        <router-link class="nav-menu-link" :to="topic.url">{{ topic.title }}</router-link>
+      <li v-for="topic in formattedTopics" class="dropdown-item" :key="topic.title">
+        <router-link v-if="topic.url" class="nav-menu-link" :to="topic.url">
+          {{ topic.title }}
+        </router-link>
+        <span class="nav-menu-link" v-else>{{ topic.title }}</span>
       </li>
     </ul>
   </li>
@@ -57,13 +60,15 @@ export default {
     document.removeEventListener('click', this.handleDocumentClick, false);
   },
   computed: {
-    topicsWithUrls: ({
+    formattedTopics: ({
       $route,
       topics,
-    }) => topics.map(topic => ({
-      ...topic,
-      url: buildUrl(topic.url, $route.query),
-    })),
+    }) => topics.map(topic => (
+      !topic.url ? topic : {
+        ...topic,
+        url: buildUrl(topic.url, $route.query),
+      }
+    )),
   },
   methods: {
     handleDocumentClick(event) {

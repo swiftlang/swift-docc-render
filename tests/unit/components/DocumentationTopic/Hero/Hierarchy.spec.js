@@ -330,7 +330,7 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `4 collapsed and no external links`, below 800', () => {
+      it('renders a list with `5 collapsed and no external links`, below 800', () => {
         changeSize(750);
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
@@ -358,6 +358,7 @@ describe('Hierarchy', () => {
           url: references[parentTopicIdentifiers[4]].url,
         });
         expect(items.at(5).attributes()).toEqual({
+          iscollapsed: 'true',
         });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
@@ -379,6 +380,9 @@ describe('Hierarchy', () => {
           {
             title: baw.title,
             url: baw.url,
+          },
+          {
+            title: qux.title,
           },
         ]);
       });
@@ -576,6 +580,7 @@ describe('Hierarchy', () => {
           url: references[parentTopicIdentifiers[4]].url,
         });
         expect(items.at(5).attributes()).toEqual({
+          iscollapsed: 'true',
         });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
@@ -597,6 +602,9 @@ describe('Hierarchy', () => {
           {
             title: baw.title,
             url: baw.url,
+          },
+          {
+            title: qux.title,
           },
         ]);
       });
@@ -640,9 +648,7 @@ describe('Hierarchy', () => {
       },
     });
 
-    const HierarchyItems = wrapper.findAll(HierarchyItem);
-    // The badges are rendered inside the last HierarchyItem slot
-    const badges = HierarchyItems.at(HierarchyItems.length - 1).findAll(Badge);
+    const badges = wrapper.findAll(Badge);
     expect(badges).toHaveLength(3);
     expect(badges.at(0).props('variant')).toBe('deprecated');
     expect(badges.at(0).text()).toBe('aside-kind.deprecated');

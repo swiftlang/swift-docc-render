@@ -26,7 +26,7 @@
       v-for="topic in collapsibleItems"
       :key="topic.title"
       isCollapsed
-      :url="addQueryParamsToUrl(topic.url)"
+      :url="topic.url ? addQueryParamsToUrl(topic.url) : null"
     >
       {{ topic.title }}
     </HierarchyItem>
@@ -41,20 +41,18 @@
     >
       {{ topic.title }}
     </HierarchyItem>
-    <HierarchyItem v-if="windowWidth >= 800">
+    <HierarchyItem v-if="!smallViewport">
       {{ currentTopicTitle }}
-      <template #tags>
-        <Badge v-if="isSymbolDeprecated" variant="deprecated" />
-        <Badge v-else-if="isSymbolBeta" variant="beta" />
-        <Badge
-          v-for="badge in currentTopicTags"
-          :key="`${badge.type}-${badge.text}`"
-          :variant="badge.type"
-        >
-          {{ badge.text }}
-        </Badge>
-      </template>
     </HierarchyItem>
+    <Badge v-if="isSymbolDeprecated" variant="deprecated" />
+    <Badge v-else-if="isSymbolBeta" variant="beta" />
+    <Badge
+      v-for="badge in currentTopicTags"
+      :key="`${badge.type}-${badge.text}`"
+      :variant="badge.type"
+    >
+      {{ badge.text }}
+    </Badge>
   </NavMenuItems>
 </template>
 
@@ -138,29 +136,29 @@ export default {
       }, []);
     },
     root: ({ parentTopics }) => parentTopics[0],
+    smallViewport: ({ windowWidth }) => (windowWidth < 800),
     /**
      * Figure out how many items we can show, after the collapsed items,
      * based on the content width
      */
-    linksAfterCollapse: ({ windowWidth, hasBadge }) => {
+    linksAfterCollapse: ({ windowWidth, smallViewport, hasBadge }) => {
       const extraItemsToRemove = hasBadge ? 1 : 0;
       // never show more than the `MaxVisibleLinks`
       if (windowWidth > 1200) return MaxVisibleLinks - extraItemsToRemove;
       if (windowWidth > 1000) return MaxVisibleLinks - 1 - extraItemsToRemove;
-      if (windowWidth >= 800) return MaxVisibleLinks - 2 - extraItemsToRemove;
+      if (!smallViewport) return MaxVisibleLinks - 2 - extraItemsToRemove;
       return 0;
     },
     collapsibleItems: ({
-      windowWidth, parentTopics, linksAfterCollapse, currentTopicTitle,
+      smallViewport, parentTopics, linksAfterCollapse, currentTopicTitle,
     }) => {
       // if there are links, slice all except those, otherwise get all but the root
       const collapsibleItems = linksAfterCollapse
         ? parentTopics.slice(firstItemSlice, -linksAfterCollapse)
         : parentTopics.slice(firstItemSlice);
-      if (windowWidth < 800) {
+      if (smallViewport) {
         collapsibleItems.push({
           title: currentTopicTitle,
-          url: '',
         });
       }
       return collapsibleItems;
@@ -186,7 +184,7 @@ export default {
 .hierarchy {
   @include font-styles(hierarchy);
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   margin: 0 0 rem(20px) 0;
   min-width: 0;
   @include nav-in-breakpoint() {
@@ -200,7 +198,7 @@ export default {
 }
 
 // Applies colors to any link inside the nav
-:deep(.nav-menu-link) {
+:deep(a.nav-menu-link) {
   color: inherit;
   @include underline-text;
 }
