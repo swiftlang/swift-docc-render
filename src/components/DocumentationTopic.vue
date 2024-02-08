@@ -539,9 +539,11 @@ export default {
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
     },
-    hasOtherDeclarations({ declarations = [] }) {
-      // there's always only 1 `declaration` at this level
-      return declarations.length ? declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations')) : false;
+    hasOtherDeclarations({ declarations = [], enableMinimized }) {
+      // disable otherDeclarations in minimized mode
+      return !enableMinimized && declarations.length
+        // there's always only 1 `declaration` at this level
+        && declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'));
     },
     declListToggleText({ declListExpanded }) {
       return declListExpanded ? this.$t('declarations.hide-other-declarations')
