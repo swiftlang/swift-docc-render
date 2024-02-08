@@ -281,7 +281,7 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `3 collapsed + max 1 item`, between 800 and 1000px', () => {
+      it('renders a list with `3 collapsed + max 1 item`, between 735 and 1000px', () => {
         changeSize(900);
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
@@ -291,7 +291,7 @@ describe('Hierarchy', () => {
           url: references[parentTopicIdentifiers[0]].url,
         });
 
-        // next assert the collapsible items. 3, as 1 can live between 800 and 1000
+        // next assert the collapsible items. 3, as 1 can live between 735 and 1000
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
@@ -330,8 +330,8 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external links`, below 800', () => {
-        changeSize(750);
+      it('renders a list with `5 collapsed and no external links`, below 735', () => {
+        changeSize(720);
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
@@ -340,7 +340,7 @@ describe('Hierarchy', () => {
           url: references[parentTopicIdentifiers[0]].url,
         });
 
-        // next assert the collapsible items. 4, as 0 can live outside below 800
+        // next assert the collapsible items. 5, as 0 can live outside below 735
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
@@ -492,7 +492,7 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`, with tags, between 800 and 1000px', () => {
+      it('renders a list with `5 collapsed and no external`, with tags, between 735 and 1000px', () => {
         changeSize(900);
         wrapper.setProps({
           isSymbolBeta: true,
@@ -505,7 +505,7 @@ describe('Hierarchy', () => {
           class: 'root-hierarchy',
           url: references[parentTopicIdentifiers[0]].url,
         });
-        // next assert the collapsible items. 3, as 1 can live between 800 and 1000
+        // next assert the collapsible items. 3, as 1 can live between 735 and 1000
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
@@ -548,7 +548,7 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`,with tags below 800', () => {
+      it('renders a list with `5 collapsed and no external`,with tags below 735', () => {
         changeSize(700);
         wrapper.setProps({
           isSymbolBeta: true,
@@ -562,7 +562,7 @@ describe('Hierarchy', () => {
           url: references[parentTopicIdentifiers[0]].url,
         });
 
-        // next assert the collapsible items. 3, as 1 can live between 800 and 1000
+        // next assert the collapsible items. 3, as 1 can live between 735 and 1000
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[1]].url,
@@ -612,6 +612,7 @@ describe('Hierarchy', () => {
   });
 
   it('renders a beta badge', () => {
+    changeSize(1250);
     const wrapper = mountWithProps({
       propsData: {
         currentTopicTitle: 'Foo',
@@ -648,7 +649,9 @@ describe('Hierarchy', () => {
       },
     });
 
-    const badges = wrapper.findAll(Badge);
+    const HierarchyItems = wrapper.findAll(HierarchyItem);
+    // The badges are rendered inside the last HierarchyItem slot
+    const badges = HierarchyItems.at(HierarchyItems.length - 1).findAll(Badge);
     expect(badges).toHaveLength(3);
     expect(badges.at(0).props('variant')).toBe('deprecated');
     expect(badges.at(0).text()).toBe('aside-kind.deprecated');

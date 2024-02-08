@@ -43,16 +43,18 @@
     </HierarchyItem>
     <HierarchyItem v-if="!smallViewport">
       {{ currentTopicTitle }}
+      <template #tags>
+        <Badge v-if="isSymbolDeprecated" variant="deprecated" />
+        <Badge v-else-if="isSymbolBeta" variant="beta" />
+        <Badge
+          v-for="badge in currentTopicTags"
+          :key="`${badge.type}-${badge.text}`"
+          :variant="badge.type"
+        >
+          {{ badge.text }}
+        </Badge>
+      </template>
     </HierarchyItem>
-    <Badge v-if="isSymbolDeprecated" variant="deprecated" />
-    <Badge v-else-if="isSymbolBeta" variant="beta" />
-    <Badge
-      v-for="badge in currentTopicTags"
-      :key="`${badge.type}-${badge.text}`"
-      :variant="badge.type"
-    >
-      {{ badge.text }}
-    </Badge>
   </NavMenuItems>
 </template>
 
@@ -61,6 +63,7 @@ import { buildUrl } from 'docc-render/utils/url-helper';
 import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
+import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
@@ -75,15 +78,15 @@ import HierarchyItem from './HierarchyItem.vue';
  * technology / link_1 / link_2 / link_3 / current_item - beyond 1200
  * technology / [...] / link_1 / link_2 / link_3 / current_item - beyond 1200 + more than 3 links
  * technology / [...] / link_2 / link_3 / current_item - 1000-1200, 3 or more links
- * technology / [...] / link_3 / current_item - 800-1000, 3 or more links
- * [...] / current_item - <= 800 - technology is also pushed to collapsable items
+ * technology / [...] / link_3 / current_item - 735-1000, 3 or more links
+ * [...] / current_item - <= 735 - technology is also pushed to collapsable items
  *
  * In cases where we have tags, like Deprecated or Beta, the max-items is reduced by 1
  * technology / link_2 / link_3 / current_item [Beta] - beyond 1200 with 2 links
  * technology / [...] / link_2 / link_3 / current_item [Beta] - beyond 1200 + more than 2 links
  * technology / [...] / link_2 / current_item [Beta] - 1000-1200, 2 or more links
- * technology / [...] / current_item [Beta] - 800-1000, 2 or more links
- * [...] / current_item - <= 800 - technology is also pushed to collapsable items
+ * technology / [...] / current_item [Beta] - 735-1000, 2 or more links
+ * [...] / current_item - <= 735 - technology is also pushed to collapsable items
  */
 
 // The max number of link items that will initially be visible and uncollapsed w/o
@@ -136,7 +139,7 @@ export default {
       }, []);
     },
     root: ({ parentTopics }) => parentTopics[0],
-    smallViewport: ({ windowWidth }) => (windowWidth < 800),
+    smallViewport: ({ windowWidth }) => (windowWidth < BreakpointAttributes.default.small.maxWidth),
     /**
      * Figure out how many items we can show, after the collapsed items,
      * based on the content width

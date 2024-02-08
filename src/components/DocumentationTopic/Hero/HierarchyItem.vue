@@ -55,6 +55,7 @@ export default {
   }
 
   display: flex;
+  align-items: center;
   margin-left: 0;
 
   @include nav-in-breakpoint() {
