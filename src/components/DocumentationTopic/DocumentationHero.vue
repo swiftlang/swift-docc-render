@@ -118,11 +118,12 @@ $doc-hero-gradient-background: var(
     var(--color-documentation-intro-fill, var(--color-fill-tertiary))
 ) !default;
 $doc-hero-overlay-background: transparent !default;
-$doc-hero-icon-opacity: 1 !default;
+$doc-hero-icon-opacity: 0.15 !default;
+$doc-hero-icon-dark-opacity: 0.15 !default;
 $doc-hero-text-color: var(--color-documentation-intro-figure, var(--color-figure-gray)) !default;
 $doc-hero-icon-color: var(
     --color-documentation-intro-accent,
-    var(--color-fill-secondary)
+    var(--color-figure-gray-secondary)
 ) !default;
 $doc-hero-icon-effect: normal !default;
 $doc-hero-icon-dark-effect: normal !default;
@@ -144,10 +145,7 @@ $doc-hero-icon-dimension: 250px;
     background: $doc-hero-gradient-background;
     position: absolute;
     width: 100%;
-    left: 0;
-    top: -50%;
-    height: 150%;
-    right: 0;
+    height: 100%;
   }
 
   // overlay
@@ -162,7 +160,7 @@ $doc-hero-icon-dimension: 250px;
     top: 0;
 
     @include prefers-dark {
-      opacity: 0.7;
+      opacity: 0.55;
     }
   }
 
@@ -202,6 +200,7 @@ $doc-hero-icon-dimension: 250px;
 
     @include prefers-dark {
       mix-blend-mode: $doc-hero-icon-dark-effect;
+      opacity: $doc-hero-icon-dark-opacity;
     }
   }
 

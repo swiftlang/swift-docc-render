@@ -199,11 +199,11 @@
   --color-card-shadow: #{change-color(dark-color(fill), $alpha: 0.04)};
   --color-link-block-card-border: #{change-color(dark-color(fill), $alpha: 0.04)};
 
-  --color-standard-red: #8B0000;
-  --color-standard-orange: #8B4000;
-  --color-standard-yellow: #8F7200;
-  --color-standard-blue: #002D75;
-  --color-standard-green: #023B2D;
-  --color-standard-purple: #512B55;
-  --color-standard-gray: #{dark-color(fill-tertiary)};
+  --color-standard-red: #FFC2C2;
+  --color-standard-orange: #FFCC99;
+  --color-standard-yellow: #FFE0A3;
+  --color-standard-blue: #99CCFF;
+  --color-standard-green: #99CCCC;
+  --color-standard-purple: #CCCCFF;
+  --color-standard-gray: #{light-color(fill-tertiary)};
 }
