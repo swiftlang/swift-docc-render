@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -673,7 +673,7 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('render an declaration list menu if has other declarations', () => {
+  it('render a declaration list menu if has other declarations', () => {
     let declListMenu = wrapper.find('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(false);
 
@@ -685,6 +685,22 @@ describe('DocumentationTopic', () => {
     });
     declListMenu = wrapper.find('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(true);
+  });
+
+  it('does not render a declaration list menu in minimized mode', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+
+    wrapper.setProps({ enableMinimized: true });
+
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(false);
   });
 
   it('renders correct declaration list toggle, text, and icon', () => {
