@@ -938,7 +938,11 @@ export default {
       const { y: areaY, height: areaHeight } = this.$refs.scroller.$el.getBoundingClientRect();
       // get the position of the active element
       const { y: elY } = element.getBoundingClientRect();
-      const elHeight = element.offsetParent.offsetHeight;
+      let elHeight = 0;
+      // get height from parent element if it's displayed
+      if (element.offsetParent) {
+        elHeight = element.offsetParent.offsetHeight;
+      }
       // calculate where element starts from
       const elementStart = elY - areaY - offset.top;
       // element is above the scrollarea
