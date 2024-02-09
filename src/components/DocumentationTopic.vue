@@ -400,7 +400,7 @@ export default {
     },
     hierarchyItems: {
       type: Array,
-      required: false,
+      default: () => ([]),
     },
   },
   provide() {
