@@ -135,16 +135,11 @@ export default {
 .language-option {
   &.swift {
     padding-right: 10px;
-    border-right: 1px solid var(--color-fill-gray-tertiary);
+    border-right: 1px solid var(--colors-secondary-label, var(--color-secondary-label));
   }
 
   &.objc {
     padding-left: 10px;
-  }
-
-  &.router-link-exact-active,
-  &.active {
-    color: var(--colors-secondary-label, var(--color-secondary-label));
   }
 }
 </style>
