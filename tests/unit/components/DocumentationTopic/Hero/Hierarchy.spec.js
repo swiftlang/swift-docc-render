@@ -52,6 +52,8 @@ const qux = {
   url: '/documentation/foo/bar/baz/qux',
 };
 
+const currentPath = '/foo';
+
 const references = {
   [foo.identifier]: foo,
   [bar.identifier]: bar,
@@ -81,6 +83,8 @@ const mountWithProps = ({ propsData, ...others } = {}) => shallowMount(Hierarchy
   },
   mocks: {
     $route: {
+      name: 'foo',
+      path: '/foo',
       query: { language: 'objc' },
     },
   },
@@ -183,6 +187,8 @@ describe('Hierarchy', () => {
         },
         mocks: {
           $route: {
+            name: 'foo',
+            path: currentPath,
             query: {},
           },
         },
@@ -223,8 +229,7 @@ describe('Hierarchy', () => {
           url: references[parentTopicIdentifiers[4]].url,
         });
         // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({
-        });
+        expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -263,8 +268,7 @@ describe('Hierarchy', () => {
           url: references[parentTopicIdentifiers[4]].url,
         });
         // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({
-        });
+        expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -308,8 +312,8 @@ describe('Hierarchy', () => {
         expect(items.at(4).attributes()).toEqual({
           url: references[parentTopicIdentifiers[4]].url,
         });
-        expect(items.at(5).attributes()).toEqual({
-        });
+        // assert the last item has no attributes
+        expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -359,6 +363,7 @@ describe('Hierarchy', () => {
         });
         expect(items.at(5).attributes()).toEqual({
           iscollapsed: 'true',
+          url: currentPath,
         });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
@@ -383,6 +388,7 @@ describe('Hierarchy', () => {
           },
           {
             title: qux.title,
+            url: currentPath,
           },
         ]);
       });
@@ -423,8 +429,8 @@ describe('Hierarchy', () => {
         expect(items.at(4).attributes()).toEqual({
           url: references[parentTopicIdentifiers[4]].url,
         });
-        expect(items.at(5).attributes()).toEqual({
-        });
+        // assert the last item has no attributes
+        expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -470,8 +476,8 @@ describe('Hierarchy', () => {
         expect(items.at(4).attributes()).toEqual({
           url: references[parentTopicIdentifiers[4]].url,
         });
-        expect(items.at(5).attributes()).toEqual({
-        });
+        // assert the last item has no attributes
+        expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -522,8 +528,8 @@ describe('Hierarchy', () => {
           iscollapsed: 'true',
           url: references[parentTopicIdentifiers[4]].url,
         });
-        expect(items.at(5).attributes()).toEqual({
-        });
+        // assert the last item has no attributes
+        expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
@@ -581,6 +587,7 @@ describe('Hierarchy', () => {
         });
         expect(items.at(5).attributes()).toEqual({
           iscollapsed: 'true',
+          url: currentPath,
         });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
@@ -605,6 +612,7 @@ describe('Hierarchy', () => {
           },
           {
             title: qux.title,
+            url: currentPath,
           },
         ]);
       });

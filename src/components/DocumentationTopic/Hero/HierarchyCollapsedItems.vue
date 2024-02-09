@@ -20,10 +20,9 @@
     </button>
     <ul class="dropdown" ref="dropdown" :class="{ collapsed }">
       <li v-for="topic in formattedTopics" class="dropdown-item" :key="topic.title">
-        <router-link v-if="topic.url" class="nav-menu-link" :to="topic.url">
+        <NavMenuLink :url="topic.url">
           {{ topic.title }}
-        </router-link>
-        <span class="nav-menu-link" v-else>{{ topic.title }}</span>
+        </NavMenuLink>
       </li>
     </ul>
   </li>
@@ -32,10 +31,11 @@
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
 import EllipsisIcon from 'theme/components/Icons/EllipsisIcon.vue';
+import NavMenuLink from 'docc-render/components/NavMenuLink.vue';
 
 export default {
   name: 'HierarchyCollapsedItems',
-  components: { EllipsisIcon },
+  components: { EllipsisIcon, NavMenuLink },
   data: () => ({ collapsed: true }),
   props: {
     topics: {
@@ -63,12 +63,10 @@ export default {
     formattedTopics: ({
       $route,
       topics,
-    }) => topics.map(topic => (
-      !topic.url ? topic : {
-        ...topic,
-        url: buildUrl(topic.url, $route.query),
-      }
-    )),
+    }) => topics.map(topic => ({
+      ...topic,
+      url: buildUrl(topic.url, $route.query),
+    })),
   },
   methods: {
     handleDocumentClick(event) {

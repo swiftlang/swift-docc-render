@@ -31,7 +31,7 @@
         </template>
         <slot name="above-title" />
         <Hierarchy
-          v-if="hierarchyItems && !enableMinimized && !isTargetIDE"
+          v-if="hierarchyItems.length && !enableMinimized && !isTargetIDE"
           :currentTopicTitle="title"
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"

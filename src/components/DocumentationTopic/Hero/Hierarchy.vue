@@ -26,7 +26,7 @@
       v-for="topic in collapsibleItems"
       :key="topic.title"
       isCollapsed
-      :url="topic.url ? addQueryParamsToUrl(topic.url) : null"
+      :url="addQueryParamsToUrl(topic.url)"
     >
       {{ topic.title }}
     </HierarchyItem>
@@ -153,7 +153,7 @@ export default {
       return 0;
     },
     collapsibleItems: ({
-      smallViewport, parentTopics, linksAfterCollapse, currentTopicTitle,
+      smallViewport, parentTopics, linksAfterCollapse, currentTopicTitle, $route,
     }) => {
       // if there are links, slice all except those, otherwise get all but the root
       const collapsibleItems = linksAfterCollapse
@@ -162,6 +162,7 @@ export default {
       if (smallViewport) {
         collapsibleItems.push({
           title: currentTopicTitle,
+          url: $route.path,
         });
       }
       return collapsibleItems;
