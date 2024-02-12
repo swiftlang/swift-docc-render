@@ -150,6 +150,10 @@ $sidenav-icon-padding-size: 5px;
       margin-left: 0;
       min-width: 0;
 
+      .nav-menu-link, .current-language, span {
+        font-weight: $font-weight-semibold;
+      }
+
       &:first-child:not(:only-child) {
         margin-right: $nav-space-between-elements;
 

@@ -98,8 +98,8 @@
   --color-hero-eyebrow: #{dark-color(figure-gray-secondary)};
   --color-link: var(--color-figure-blue);
   --color-loading-placeholder-background: var(--color-fill);
-  --color-nav-color: #{light-color(figure-gray-secondary-alt)};
-  --color-nav-current-link: #{change-color(light-color(figure-gray), $alpha: 0.6)};
+  --color-nav-color: #{light-color(figure-gray)};
+  --color-nav-current-link: #{change-color(light-color(figure-gray))};
   --color-nav-expanded: #{light-color(fill)};
   --color-nav-hierarchy-collapse-background: #{light-color(fill-gray-tertiary)};
   --color-nav-hierarchy-collapse-borders: #{dark-color(figure-gray-secondary)};
@@ -116,8 +116,8 @@
   --color-nav-uiblur-stuck: #{change-color(light-color(fill), $alpha: 0.7)};
   --color-nav-root-subhead: var(--color-tutorials-teal);
   --color-nav-dark-border-top-color: #{change-color(light-color(fill), $alpha: 0.4)};
-  --color-nav-dark-color: #{dark-color(figure-gray-secondary-alt)};
-  --color-nav-dark-current-link: #{change-color(dark-color(figure-gray), $alpha: 0.6)};
+  --color-nav-dark-color: #{dark-color(figure-gray)};
+  --color-nav-dark-current-link: #{change-color(dark-color(figure-gray))};
   --color-nav-dark-expanded: #{dark-color(fill-tertiary)};
   --color-nav-dark-hierarchy-collapse-background: #{dark-color(fill-gray-tertiary)};
   --color-nav-dark-hierarchy-collapse-borders: #{light-color(figure-gray-secondary)};
