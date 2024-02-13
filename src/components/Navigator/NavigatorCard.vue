@@ -957,6 +957,7 @@ export default {
       return 0;
     },
     isInsideScroller(element) {
+      if (!this.$refs.scroller) return false;
       return this.$refs.scroller.$el.contains(element);
     },
     handleFocusIn({ target }) {
