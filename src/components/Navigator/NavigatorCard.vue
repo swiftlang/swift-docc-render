@@ -1006,9 +1006,11 @@ export default {
      * that points to another technology.
      */
     handleNavigationChange(uid) {
+      const path = this.childrenMap[uid].path;
       // if the path is outside of this technology tree, dont store the uid
-      if (this.childrenMap[uid].path.startsWith(this.technologyPath)) {
+      if (path.startsWith(this.technologyPath)) {
         this.setActiveUID(uid);
+        this.$emit('navigate', path);
       }
     },
     /**

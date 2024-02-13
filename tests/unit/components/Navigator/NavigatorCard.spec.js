@@ -2133,6 +2133,7 @@ describe('NavigatorCard', () => {
           ],
           path: root0Child1.path,
         }));
+      expect(wrapper.emitted('navigate')).toEqual([[root0Child1.path]]);
       // assert all items are still there, even the new one is open
       expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
       // assert the target child is active
@@ -2336,6 +2337,7 @@ describe('NavigatorCard', () => {
       expect(sessionStorage.set).toHaveBeenCalledTimes(2);
       await wrapper.vm.$nextTick();
       expect(sessionStorage.set).toHaveBeenCalledTimes(2);
+      expect(wrapper.emitted('navigate')).toBeFalsy();
     });
   });
 
