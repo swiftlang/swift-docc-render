@@ -204,7 +204,9 @@ export default {
     // representing a "path" of parent topic IDs that could be considered the
     // hierarchy/breadcrumb for a given topic. We choose to render only the
     // one, that has the same path as the current URL.
-    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] }, references }, $route }) => {
+    parentTopicIdentifiers: ({ topicProps: { hierarchy, references }, $route }) => {
+      if (!hierarchy) return [];
+      const { paths = [] } = hierarchy;
       if (!paths.length) return [];
       return paths.find((identifiers) => {
         const rootIdentifier = identifiers.find(id => references[id] && references[id].kind !== 'technologies');

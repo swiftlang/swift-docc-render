@@ -330,12 +330,8 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('does not render a Hierarchy in IDE mode', () => {
-    const provide = {
-      isTargetIDE: true,
-      store: mockStore,
-    };
-    wrapper = shallowMount(DocumentationTopic, { propsData, provide });
+  it('does not render a Hierarchy if hierarchyItems is empty or enableMinimized is true', () => {
+    wrapper.setProps({ hierarchyItems: [] });
     expect(wrapper.find(Hierarchy).exists()).toBe(false);
 
     // Minimized view should not render LanguageSwitcher
