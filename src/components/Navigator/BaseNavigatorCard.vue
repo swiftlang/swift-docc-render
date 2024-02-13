@@ -148,6 +148,7 @@ $close-icon-padding: 5px;
   flex-flow: column;
   height: 100%;
   padding-top: $navigator-card-vertical-spacing;
+  box-sizing: border-box;
 
   @include breakpoint(medium, nav) {
     padding-top: 0;
