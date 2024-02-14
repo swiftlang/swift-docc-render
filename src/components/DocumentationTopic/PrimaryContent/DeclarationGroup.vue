@@ -17,17 +17,42 @@
     <p v-if="shouldCaption" class="platforms">
       <strong>{{ caption }}</strong>
     </p>
-    <Source
-      :tokens="declaration.tokens"
-      :language="interfaceLanguage"
-    />
+
+    <transition-expand
+      v-for="declaration in declarationTokens"
+      :key="declaration.identifier"
+    >
+      <div
+        v-if="!hasOtherDeclarations || declaration.identifier === selectedIdentifier || isExpanded"
+        class="declaration-pill"
+        :class="{
+          'declaration-pill--expanded': hasOtherDeclarations && isExpanded,
+        }"
+      >
+        <component
+          :is="getWrapperComponent(declaration)"
+          @click="selectDeclaration(declaration.identifier)"
+          class="declaration-source-wrapper"
+        >
+          <Source
+            :tokens="declaration.tokens"
+            :language="interfaceLanguage"
+            :class="{
+              'selected-declaration': isSelectedDeclaration(declaration.identifier),
+            }"
+          />
+        </component>
+      </div>
+    </transition-expand>
   </div>
 </template>
 
 <script>
 import DeclarationSource from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
 import Language from 'docc-render/constants/Language';
+import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import { APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
+import { waitFor } from 'docc-render/utils/loading';
 
 /**
  * Renders a code source with an optional caption.
@@ -36,6 +61,12 @@ export default {
   name: 'DeclarationGroup',
   components: {
     Source: DeclarationSource,
+    TransitionExpand,
+  },
+  data() {
+    return {
+      selectedIdentifier: this.identifier,
+    };
   },
   mixins: [APIChangesMultipleLines],
   inject: {
@@ -46,6 +77,16 @@ export default {
       default: () => Language.swift.key.api,
     },
     symbolKind: {
+      default: () => undefined,
+    },
+    store: {
+      default: () => ({
+        state: {
+          references: {},
+        },
+      }),
+    },
+    identifier: {
       default: () => undefined,
     },
   },
@@ -70,8 +111,34 @@ export default {
       type: String,
       required: false,
     },
+    declListExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
+    hasOtherDeclarations: ({ declaration }) => declaration.otherDeclarations || null,
+    declarationTokens: ({
+      declaration,
+      hasOtherDeclarations,
+      identifier,
+    }) => {
+      if (!hasOtherDeclarations) return [declaration];
+      const {
+        otherDeclarations: {
+          declarations,
+          displayIndex,
+        },
+        tokens,
+      } = declaration;
+
+      // insert declaration into the correct position
+      return [
+        ...declarations.slice(0, displayIndex),
+        { tokens, identifier },
+        ...declarations.slice(displayIndex),
+      ];
+    },
     classes: ({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) => ({
       [`declaration-group--changed declaration-group--${changeType}`]: changeType,
       [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
@@ -80,6 +147,30 @@ export default {
       return this.declaration.platforms.join(', ');
     },
     isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
+    references: ({ store }) => store.state.references,
+    isExpanded: {
+      get: ({ declListExpanded }) => declListExpanded,
+      set(value) {
+        this.$emit('update:declListExpanded', value);
+      },
+    },
+  },
+  methods: {
+    async selectDeclaration(identifier) {
+      if (identifier === this.identifier) return;
+      this.selectedIdentifier = identifier;
+      await this.$nextTick(); // wait for identifier to update
+      this.isExpanded = false; // collapse the list
+      await waitFor(500); // wait for animation to finish
+      this.$router.push(this.references[identifier].url);
+    },
+    getWrapperComponent(decl) {
+      return (!this.isExpanded || decl.identifier === this.identifier)
+        ? 'div' : 'button';
+    },
+    isSelectedDeclaration(identifier) {
+      return identifier === this.selectedIdentifier;
+    },
   },
 };
 </script>
@@ -102,8 +193,48 @@ export default {
   }
 }
 
+.declaration-pill--expanded {
+  transition-timing-function: linear;
+  transition-property: opacity, height;
+  $docs-declaration-source-border-width: 1px;
+
+  .source {
+    border-width: $docs-declaration-source-border-width;
+
+    // ensure links are not clickable, when expanded
+    :deep(a) {
+      pointer-events: none;
+    }
+  }
+
+  > button {
+    display: block;
+    width: 100%;
+  }
+
+  .selected-declaration {
+    border-color: var(--color-focus-border-color, var(--color-focus-border-color));
+  }
+
+  :not(.selected-declaration) {
+    background: unset;
+  }
+
+  + .declaration-pill--expanded .source {
+    margin: var(--declaration-code-listing-margin);
+  }
+
+  &.expand-enter, &.expand-leave-to {
+    opacity: 0;
+
+    .source {
+      margin: 0;
+    }
+  }
+}
+
 .source {
-  margin: var(--declaration-code-listing-margin);
+  transition: margin 0.3s linear;
 
   .platforms + & {
     margin: 0;

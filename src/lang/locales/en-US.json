@@ -68,6 +68,10 @@
     },
     "view-more": "View more"
   },
+  "declarations": {
+    "hide-other-declarations": "Hide other declarations",
+    "show-all-declarations": "Show all declarations"
+  },
   "aside-kind": {
     "beta": "Beta",
     "experiment": "Experiment",
@@ -203,5 +207,6 @@
       "title": "Click or type / for quick navigation"
     },
     "preview-unavailable": "Preview unavailable"
-  }
+  },
+  "mentioned-in": "Mentioned in"
 }

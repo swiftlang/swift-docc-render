@@ -84,6 +84,10 @@ export default {
   &.collapsed {
     display: none;
 
+    :root.no-js & {
+      display: flex;
+    }
+
     @include nav-in-breakpoint() {
       display: inline-block;
     }

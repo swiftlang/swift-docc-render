@@ -1037,6 +1037,73 @@ describe('NavigatorCard', () => {
     });
   });
 
+  it('highlights the generic page when an overloaded page is not in the tree', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      activePath: ['/documentation/testkit-ab1c2'],
+      isSpecificOverload: true,
+    });
+    await flushPromises();
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(4); // assert all are rendered, except the grandchild
+    expect(all.at(0).props()).toMatchObject({
+      item: root0,
+      isBold: true,
+      isActive: true, // <- highlighted
+      expanded: true,
+    });
+  });
+
+  it('highlights the specific page when both generic and specific overloaded pages are in the tree', async () => {
+    const overloadedPage = {
+      type: TopicTypes.struct,
+      path: '/documentation/testkit-ab1c2',
+      title: 'Third Child, Depth 1',
+      uid: 100,
+      parent: INDEX_ROOT_KEY,
+      depth: 0,
+      index: 2,
+      childUIDs: [],
+    };
+
+    const wrapper = createWrapper({
+      propsData: {
+        children: [
+          root0,
+          root0Child0,
+          root0Child1,
+          root0Child1GrandChild0,
+          root1,
+          overloadedPage,
+        ],
+        activePath: ['/documentation/testkit-ab1c2'],
+        isSpecificOverload: true,
+      },
+    });
+
+    await flushPromises();
+    const all = wrapper.findAll(NavigatorCardItem);
+    expect(all).toHaveLength(3); // assert only first level pages are rendered
+    expect(all.at(0).props()).toMatchObject({
+      item: root0,
+      isBold: false,
+      isActive: false, // <- not highlighted
+      expanded: false,
+    });
+    expect(all.at(1).props()).toMatchObject({
+      item: root1,
+      isBold: false,
+      isActive: false, // <- not highlighted
+      expanded: false,
+    });
+    expect(all.at(2).props()).toMatchObject({
+      item: overloadedPage,
+      isBold: true,
+      isActive: true, // <- highlighted
+      expanded: true,
+    });
+  });
+
   it('keeps the open/closed state when navigating while filtering, except when the current page not visible, in which case we open those items', async () => {
     const wrapper = createWrapper();
     await flushPromises();
@@ -1706,6 +1773,30 @@ describe('NavigatorCard', () => {
     wrapper.setProps({ apiChanges });
     await flushPromises();
     expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
+  });
+
+  it('shows a "Web Service Endpoints" tag when relevant', async () => {
+    sessionStorage.get.mockImplementation((key, def) => def);
+    const httpReq = {
+      type: 'httpRequest',
+      path: '/documentation/footkit/blah',
+      title: 'GET /blah',
+      uid: 42,
+      parent: INDEX_ROOT_KEY,
+      depth: 0,
+      index: 0,
+      childUIDs: [],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        children: [httpReq],
+        activePath: [httpReq.path],
+      },
+    });
+
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props('tags')).toEqual(['Web Service Endpoints']);
   });
 
   describe('with groupMarker', () => {

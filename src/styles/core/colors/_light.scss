@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -53,7 +53,7 @@
   --color-aside-warning: var(--color-figure-gray);
   --color-aside-warning-background: var(--color-fill-red-secondary);
   --color-aside-warning-border: var(--color-figure-red);
-  --color-badge-default: var(--color-figure-light-gray);
+  --color-badge-default: var(--color-figure-gray);
   --color-badge-beta: var(--color-figure-gray-tertiary);
   --color-badge-deprecated: var(--color-figure-orange);
   --color-badge-dark-default: #{dark-color(figure-gray)};
@@ -199,11 +199,11 @@
   --color-card-shadow: #{change-color(dark-color(fill), $alpha: 0.04)};
   --color-link-block-card-border: #{change-color(dark-color(fill), $alpha: 0.04)};
 
-  --color-standard-red: #8B0000;
-  --color-standard-orange: #8B4000;
-  --color-standard-yellow: #8F7200;
-  --color-standard-blue: #002D75;
-  --color-standard-green: #023B2D;
-  --color-standard-purple: #512B55;
-  --color-standard-gray: #{dark-color(fill-tertiary)};
+  --color-standard-red: #FFC2C2;
+  --color-standard-orange: #FFCC99;
+  --color-standard-yellow: #FFE0A3;
+  --color-standard-blue: #99CCFF;
+  --color-standard-green: #99CCCC;
+  --color-standard-purple: #CCCCFF;
+  --color-standard-gray: #{light-color(fill-tertiary)};
 }

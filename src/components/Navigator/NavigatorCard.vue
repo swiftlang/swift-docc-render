@@ -135,12 +135,14 @@ const FILTER_TAGS = {
   sampleCode: 'sampleCode',
   tutorials: 'tutorials',
   articles: 'articles',
+  webServiceEndpoints: 'webServiceEndpoints',
 };
 
 const FILTER_TAGS_TO_LABELS = {
   [FILTER_TAGS.sampleCode]: 'Sample Code',
   [FILTER_TAGS.tutorials]: 'Tutorials',
   [FILTER_TAGS.articles]: 'Articles',
+  [FILTER_TAGS.webServiceEndpoints]: 'Web Service Endpoints',
 };
 
 const FILTER_LABELS_TO_TAGS = Object.fromEntries(
@@ -158,6 +160,7 @@ const TOPIC_TYPE_TO_TAG = {
   [TopicTypes.section]: FILTER_TAGS.tutorials,
   [TopicTypes.tutorial]: FILTER_TAGS.tutorials,
   [TopicTypes.project]: FILTER_TAGS.tutorials,
+  [TopicTypes.httpRequest]: FILTER_TAGS.webServiceEndpoints,
 };
 
 const NO_RESULTS = 'navigator.no-results';
@@ -229,6 +232,10 @@ export default {
       default: false,
     },
     hideAvailableTags: {
+      type: Boolean,
+      default: false,
+    },
+    isSpecificOverload: {
       type: Boolean,
       default: false,
     },
@@ -1014,36 +1021,73 @@ export default {
         if (lastActivePathItem === currentActiveItem.path) {
           return;
         }
-        // Get the surrounding items
-        const siblings = getSiblings(this.activeUID, this.childrenMap, this.children);
-        const children = getChildren(this.activeUID, this.childrenMap, this.children);
-        const parents = getParents(this.activeUID, this.childrenMap);
-        // try to match if any of the `siblings`,`children` or any of the `parents`,
-        // match the current open item
-        const matchingItem = [...children, ...siblings, ...parents]
-          .find(child => child.path === lastActivePathItem);
+        // try to match current open item in its surroundings, starting with active item
+        // set found match as active item
+        if (this.matchInSurroundingItems(this.activeUID, lastActivePathItem)) return;
 
-        // set the match as an active item
-        if (matchingItem) {
-          this.setActiveUID(matchingItem.uid);
-          return;
+        if (this.isSpecificOverload) {
+          // if no match, try again to match with generic item
+          // Needed for continuing to highlight current generic page
+          // when selecting an overload from dropdown that's also specifically curated in elsewhere
+          const genericItem = this.getGenericPath(lastActivePathItem);
+          if (this.matchInSurroundingItems(this.activeUID, genericItem)) return;
         }
       }
-      // There is no match to base upon, so we need to search
-      // across the activePath for the active item.
+      // There is no match to base upon, so we need to search the whole tree
+      // by matching each level of the hierachy in activePath
       const activePathChildren = this.pathsToFlatChildren(activePath);
-      // if there are items, set the new active UID
+      // if there are items, set new active UID
       if (activePathChildren.length) {
-        this.setActiveUID(activePathChildren[activePathChildren.length - 1].uid);
+        const lastChildrenUID = last(activePathChildren).uid;
+
+        if (last(activePathChildren).path !== lastActivePathItem && this.isSpecificOverload) {
+          // if item is not found in the tree and its a specific overloaded symbol page
+          // try to match with its generics page instead
+          const genericItem = this.getGenericPath(lastActivePathItem);
+          if (this.matchInSurroundingItems(lastChildrenUID, genericItem)) return;
+        }
+
+        // Set new active UID to the last matched item
+        // Note: if a match is not found, last matched ancestor is highlighted
+        this.setActiveUID(lastChildrenUID);
         return;
       }
-      // if there is an activeUID, unset it, as we probably navigated back to the root
+      // if there is an activeUID, but still no match found in tree
+      // unset it, as we probably navigated back to the root
       if (this.activeUID) {
         this.setActiveUID(null);
         return;
       }
       // Just track the open nodes, as setting the activeUID as null wont do anything.
       this.trackOpenNodes(this.nodeChangeDeps);
+    },
+    /**
+     * Try to match if any of the `siblings`,`children`, `parents`
+     * of the given UID match the given path.
+     * Set active UID once a match is found
+     */
+    matchInSurroundingItems(UID, path) {
+      // Get the surrounding items
+      const siblings = getSiblings(UID, this.childrenMap, this.children);
+      const children = getChildren(UID, this.childrenMap, this.children);
+      const parents = getParents(UID, this.childrenMap);
+
+      const matchingItem = [...children, ...siblings, ...parents]
+        .find(child => child.path === path);
+
+      // set the match as an active item
+      if (matchingItem) {
+        this.setActiveUID(matchingItem.uid);
+        return true;
+      }
+      return false;
+    },
+    /**
+     * Parse out the generic path given a
+     * specific overload path with a valid hash
+     */
+    getGenericPath(path) {
+      return path.slice(0, path.lastIndexOf('-'));
     },
     /**
      * Updates the current focusIndex, based on where the activeUID is.

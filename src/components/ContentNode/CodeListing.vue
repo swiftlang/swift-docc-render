@@ -166,6 +166,7 @@ pre {
   white-space: pre;
   word-wrap: normal;
   height: 100%;
+  tab-size: var(--code-indentationWidth, 4);
   @include breakpoint(small) {
     padding-top: rem(14px);
   }

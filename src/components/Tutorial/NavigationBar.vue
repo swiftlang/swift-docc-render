@@ -217,6 +217,9 @@ export default {
   @include breakpoint(medium, $scope: nav) {
     grid-template-columns: minmax(173px, 216px) auto minmax(173px, 1fr);
   }
+  @media (scripting: none) {
+    display: none;
+  }
 }
 
 .separator {
@@ -225,6 +228,9 @@ export default {
   border-color: var(--color-nav-outlines);
   margin: 0 20px;
   grid-column: 2;
+  @media (scripting: none) {
+    display: none;
+  }
 }
 
 .mobile-dropdown-container {

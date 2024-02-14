@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -41,7 +41,6 @@ describe('DocumentationHero', () => {
     const withBackground = createWrapper();
     expect(withBackground.classes('documentation-hero')).toBe(true);
     expect(withBackground.classes('documentation-hero--disabled')).toBe(false);
-    expect(withBackground.classes('theme-dark')).toBe(true);
 
     const withoutBackground = createWrapper({
       propsData: {
@@ -50,7 +49,6 @@ describe('DocumentationHero', () => {
     });
     expect(withoutBackground.classes('documentation-hero')).toBe(true);
     expect(withoutBackground.classes('documentation-hero--disabled')).toBe(true);
-    expect(withoutBackground.classes('theme-dark')).toBe(false);
   });
 
   it('renders the DocumentationHero, enabled', () => {
