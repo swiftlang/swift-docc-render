@@ -41,23 +41,17 @@ export default {
 
 .eyebrow {
   @include font-styles(eyebrow-reduced);
-  color: var(--color-documentation-intro-eyebrow, dark-color(figure-gray-secondary));
+  color: var(--color-documentation-intro-eyebrow,
+    var(--colors-secondary-label, var(--color-secondary-label)));
   display: block;
   margin-bottom: rem(20px);
-
-  .documentation-hero--disabled & {
-    color: var(--colors-secondary-label, var(--color-secondary-label));
-  }
 }
 
 .title {
   @include font-styles(headline-reduced);
-  color: var(--color-documentation-intro-title, dark-color(figure-gray));
+  color: var(--color-documentation-intro-title,
+    var(--colors-header-text, var(--color-header-text)));
   margin-bottom: rem(12px);
-
-  .documentation-hero--disabled & {
-    color: var(--colors-header-text, var(--color-header-text));
-  }
 }
 
 small {
@@ -71,7 +65,7 @@ small {
   &.Beta {
     color: var(--color-badge-beta);
 
-    .theme-dark & {
+    @include prefers-dark {
       color: var(--color-badge-dark-beta);
     }
   }
@@ -79,7 +73,7 @@ small {
   &.Deprecated {
     color: var(--color-badge-deprecated);
 
-    .theme-dark & {
+    @include prefers-dark {
       color: var(--color-badge-dark-deprecated);
     }
   }

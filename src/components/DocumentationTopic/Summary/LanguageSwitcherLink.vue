@@ -21,3 +21,13 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+@import 'docc-render/styles/_core.scss';
+
+  a {
+    @include underline-text;
+    color: inherit;
+    font-weight: $font-weight-semibold;
+  }
+</style>

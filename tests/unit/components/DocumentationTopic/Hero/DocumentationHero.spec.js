@@ -41,7 +41,6 @@ describe('DocumentationHero', () => {
     const withBackground = createWrapper();
     expect(withBackground.classes('documentation-hero')).toBe(true);
     expect(withBackground.classes('documentation-hero--disabled')).toBe(false);
-    expect(withBackground.classes('theme-dark')).toBe(true);
 
     const withoutBackground = createWrapper({
       propsData: {
@@ -50,7 +49,6 @@ describe('DocumentationHero', () => {
     });
     expect(withoutBackground.classes('documentation-hero')).toBe(true);
     expect(withoutBackground.classes('documentation-hero--disabled')).toBe(true);
-    expect(withoutBackground.classes('theme-dark')).toBe(false);
   });
 
   it('renders the DocumentationHero, enabled', () => {
