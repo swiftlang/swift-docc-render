@@ -63,6 +63,10 @@ export default {
   margin-top: var(--spacing-stacked-margin-xlarge);
 }
 
+* + .links-block {
+  margin-top: var(--spacing-stacked-margin-xlarge);
+}
+
 .topic-link-block {
   margin-top: 15px; // make sure its the same as in the TopicsTable
 }

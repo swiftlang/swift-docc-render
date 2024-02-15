@@ -13,3 +13,13 @@ export const last = array => array[array.length - 1];
 export const isEqual = (first, second) => (
   JSON.stringify(first) === JSON.stringify(second)
 );
+
+function* chunk(list, chunkSize) {
+  for (let i = 0; i < list.length; i += chunkSize) {
+    yield list.slice(i, i + chunkSize);
+  }
+}
+
+export function page(list, pageSize) {
+  return [...chunk(list, pageSize)];
+}

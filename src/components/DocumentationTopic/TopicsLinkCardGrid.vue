@@ -9,30 +9,41 @@
 -->
 
 <template>
-  <div class="TopicsLinkCardGrid">
-    <Row :columns="{
-      large: compactCards ? 3 : 2,
-      medium: 2,
-    }">
-      <Column
-        v-for="item in items"
-        :key="item.title"
-      >
-        <TopicsLinkCardGridItem :item="item" :compact="compactCards" />
-      </Column>
-    </Row>
-  </div>
+  <Pager class="TopicsLinkCardGrid" :pages="pages">
+    <template #page="{ page }">
+      <Row :columns="{
+        large: compactCards ? 3 : 2,
+        medium: 2,
+      }">
+        <Column
+          v-for="item in page"
+          :key="item.title"
+        >
+          <TopicsLinkCardGridItem :item="item" :compact="compactCards" />
+        </Column>
+      </Row>
+    </template>
+  </Pager>
 </template>
 
 <script>
-import Row from 'docc-render/components/ContentNode/Row.vue';
 import Column from 'docc-render/components/ContentNode/Column.vue';
+import Pager from 'docc-render/components/Pager.vue';
+import Row from 'docc-render/components/ContentNode/Row.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
+import { page } from 'docc-render/utils/arrays';
 import TopicsLinkCardGridItem from './TopicsLinkCardGridItem.vue';
+
+const ItemsPerPage = 6;
 
 export default {
   name: 'TopicsLinkCardGrid',
-  components: { TopicsLinkCardGridItem, Column, Row },
+  components: {
+    Column,
+    Pager,
+    Row,
+    TopicsLinkCardGridItem,
+  },
   props: {
     items: {
       type: Array,
@@ -46,6 +57,7 @@ export default {
   },
   computed: {
     compactCards: ({ topicStyle }) => topicStyle === TopicSectionsStyle.compactGrid,
+    pages: ({ items }) => page(items, ItemsPerPage),
   },
 };
 </script>
