@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -19,6 +19,7 @@ const {
   RestEndpoint,
   RestParameters,
   RestResponses,
+  Mentions,
 } = PrimaryContent.components;
 const { SectionKind } = PrimaryContent.constants;
 
@@ -127,6 +128,13 @@ const restEndpointSection = {
   tokens: [{ kind: 'method', text: 'POST' }, { kind: 'text', text: ' ' }],
 };
 
+const mentions = {
+  kind: 'mentions',
+  mentions: [
+    'topic://url',
+  ],
+};
+
 const propsData = {
   conformance: { availbilityPrefix: [], constraints: [] },
   source: { url: 'foo.com' },
@@ -140,6 +148,7 @@ const propsData = {
     restResponsesSection,
     possibleValuesSection,
     restEndpointSection,
+    mentions,
   ],
 };
 
@@ -182,4 +191,5 @@ describe('PrimaryContent', () => {
   );
   checkProps(RestResponses, { responses: restResponsesSection.items, title: 'Title' });
   checkProps(PossibleValues, { values: possibleValuesSection.values });
+  checkProps(Mentions, { mentions: ['topic://url'] });
 });
