@@ -1,19 +1,29 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { RouterLinkStub, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import HierarchyCollapsedItems
-  from 'docc-render/components/DocumentationTopic/DocumentationNav/HierarchyCollapsedItems.vue';
+  from 'docc-render/components/DocumentationTopic/Hero/HierarchyCollapsedItems.vue';
 import EllipsisIcon from 'theme/components/Icons/EllipsisIcon.vue';
 
-const mocks = { $route: {} };
+const mocks = {
+  $route: {
+    name: 'foo',
+    path: '/foo',
+    query: {
+      foo: 'bar',
+    },
+  },
+};
+
+const { NavMenuLink } = HierarchyCollapsedItems.components;
 
 const propsData = {
   topics: [
@@ -28,7 +38,7 @@ const propsData = {
   ],
 };
 
-const stubs = { 'router-link': RouterLinkStub };
+const stubs = { NavMenuLink };
 
 describe('HierarchyCollapsedItems', () => {
   let wrapper;
@@ -45,10 +55,6 @@ describe('HierarchyCollapsedItems', () => {
     expect(wrapper.is('li.hierarchy-collapsed-items')).toBe(true);
   });
 
-  it('renders a slash instead of an icon', () => {
-    expect(wrapper.find('.hierarchy-item-icon').text()).toBe('/');
-  });
-
   it('renders a non-focused button', () => {
     const btn = wrapper.find('button.toggle');
     expect(btn.exists()).toBe(true);
@@ -63,9 +69,9 @@ describe('HierarchyCollapsedItems', () => {
 
     const items = dropdown.findAll('li.dropdown-item');
     propsData.topics.forEach((topic, i) => {
-      const link = items.at(i).find(RouterLinkStub);
+      const link = items.at(i).find(NavMenuLink);
       expect(link.exists()).toBe(true);
-      expect(link.props('to')).toBe(topic.url);
+      expect(link.props('url')).toBe(topic.url);
       expect(link.text()).toBe(topic.title);
     });
   });
@@ -91,15 +97,17 @@ describe('HierarchyCollapsedItems', () => {
     const wrapper2 = shallowMount(HierarchyCollapsedItems, {
       mocks: {
         $route: {
+          name: 'foo',
+          path: '/foo',
           query: { language: 'objc' },
         },
       },
       propsData,
       stubs,
     });
-    const link = wrapper2.find(RouterLinkStub);
+    const link = wrapper2.find(NavMenuLink);
     expect(link.exists()).toBe(true);
-    expect(link.props('to')).toBe('/documentation/foo?language=objc');
+    expect(link.props('url')).toBe('/documentation/foo?language=objc');
     expect(link.classes()).toContain('nav-menu-link');
   });
 });

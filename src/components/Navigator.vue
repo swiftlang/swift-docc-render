@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -23,17 +23,18 @@
       :error-fetching="errorFetching"
       :render-filter-on-top="renderFilterOnTop"
       :api-changes="apiChanges"
-      :allow-hiding="allowHiding"
       :navigator-references="navigatorReferences"
       :isSpecificOverload="isSpecificOverload"
       @close="$emit('close')"
     >
       <template #filter><slot name="filter" /></template>
+      <template #navigator-head>
+        <slot name="navigator-head"/>
+      </template>
     </NavigatorCard>
     <LoadingNavigatorCard
-      v-else
-      v-bind="technologyProps"
       @close="$emit('close')"
+      v-else
     />
     <div aria-live="polite" class="visuallyhidden">
       {{ $t('navigator.navigator-is', {
@@ -94,7 +95,7 @@ export default {
     },
     technology: {
       type: Object,
-      required: true,
+      required: false,
     },
     isFetching: {
       type: Boolean,
@@ -123,10 +124,6 @@ export default {
     apiChanges: {
       type: Object,
       default: null,
-    },
-    allowHiding: {
-      type: Boolean,
-      default: true,
     },
     symbolKind: {
       default: () => undefined,
@@ -176,11 +173,13 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
-    technologyProps: ({ technology }) => ({
-      technology: technology.title,
-      technologyPath: technology.path || technology.url,
-      isTechnologyBeta: technology.beta,
-    }),
+    technologyProps: ({ technology }) => (
+      !technology ? null : {
+        technology: technology.title,
+        technologyPath: technology.path || technology.url,
+        isTechnologyBeta: technology.beta,
+      }
+    ),
   },
 };
 </script>

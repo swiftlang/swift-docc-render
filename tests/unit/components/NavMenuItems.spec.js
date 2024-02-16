@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -18,15 +18,6 @@ describe('NavMenuItems', () => {
     const wrapper = createWrapper();
     expect(wrapper.is('ul'));
     expect(wrapper.classes()).toContain('nav-menu-items');
-  });
-
-  it('adds the provided children count as a data prop', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        previousSiblingChildren: 5,
-      },
-    });
-    expect(wrapper.attributes()).toHaveProperty('data-previous-menu-children-count', '5');
   });
 
   it('renders data in it`s default slot', () => {

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -184,6 +184,10 @@ $font-styles: (
   nav-title: (
     large: (19_27, nav),
   ),
+  nav-title-large: (
+    large: (21_25_semibold, nav),
+    small: (nav_17_17_semibold, nav),
+  ),
   nav-title-compact: (
     small: (nav_17_17_semibold, nav)
   ),
@@ -200,6 +204,9 @@ $font-styles: (
   ),
   card-eyebrow-small: (
     large: 14_18_semibold,
+  ),
+  hierarchy: (
+    large: 14_18,
   ),
   card-eyebrow-large: (
     large: 17_21_semibold,
