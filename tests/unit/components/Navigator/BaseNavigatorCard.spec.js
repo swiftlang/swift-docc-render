@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -13,10 +13,7 @@ import { shallowMount } from '@vue/test-utils';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 import { flushPromises } from '../../../../test-utils';
 
-const { Reference, Badge } = BaseNavigatorCard.components;
-
 const defaultProps = {
-  allowHiding: true,
   technology: 'Technology',
   technologyPath: '/path',
   isTechnologyBeta: false,
@@ -54,34 +51,6 @@ describe('BaseNavigatorCard', () => {
     expect(document.activeElement).toEqual(btn);
   });
 
-  it('hides the toggle button, if `allowHiding` is `false`', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        allowHiding: false,
-      },
-    });
-    expect(wrapper.find('.close-card').classes()).toContain('hide-on-large');
-  });
-
-  it('renders a Beta badge in the header', async () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isTechnologyBeta: true,
-      },
-    });
-    await flushPromises();
-    expect(wrapper.find('.navigator-head').find(Badge).props()).toMatchObject({
-      variant: 'beta',
-    });
-  });
-
-  it('renders a card-link with the technology name', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
-    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
-    expect(wrapper.find('.card-link').is('h2')).toBe(true);
-  });
-
   it('exposes a #body slot', () => {
     const wrapper = createWrapper({
       scopedSlots: {
@@ -89,5 +58,23 @@ describe('BaseNavigatorCard', () => {
       },
     });
     expect(wrapper.find('.card-body').text()).toBe('CustomBody');
+  });
+
+  it('exposes a #above-navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'above-navigator-head': '<div class="above-navigator-head">CustomAboveNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.above-navigator-head').text()).toBe('CustomAboveNavigatorHeadComponent');
+  });
+
+  it('exposes a #navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'navigator-head': '<div class="navigator-head">CustomNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.navigator-head').text()).toBe('CustomNavigatorHeadComponent');
   });
 });

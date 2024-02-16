@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -23,7 +23,6 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/FocusTrap');
 
 const {
-  Hierarchy,
   NavBase,
   LanguageToggle,
   NavMenuItems,
@@ -32,14 +31,6 @@ const {
 const stubs = {
   'router-link': RouterLinkStub,
   NavBase,
-};
-
-const TechnologiesRootIdentifier = 'topic://technologies';
-
-const references = {
-  [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
-  'topic://foo': {},
-  'topic://bar': {},
 };
 
 const mocks = {
@@ -60,13 +51,9 @@ describe('DocumentationNav', () => {
       'topic://foo',
       'topic://bar',
     ],
-    currentTopicTags: [{
-      type: 'foo',
-    }],
     interfaceLanguage: 'swift',
     swiftPath: 'documentation/foo',
     objcPath: 'documentation/bar',
-    references,
     displaySidenav: true,
   };
 
@@ -85,7 +72,7 @@ describe('DocumentationNav', () => {
     expect(nav.classes('nav-hero')).toBe(false);
     expect(nav.classes('theme-dark')).toBe(false);
     expect(nav.classes()).toContain('documentation-nav');
-    expect(nav.props()).toHaveProperty('hasSolidBackground', true);
+    expect(nav.props()).toHaveProperty('hasSolidBackground', false);
     expect(nav.props()).toHaveProperty('hasNoBorder', false);
     expect(nav.props()).toHaveProperty('hasFullWidthBorder', true);
     expect(nav.props()).toHaveProperty('hasOverlay', false);
@@ -109,99 +96,17 @@ describe('DocumentationNav', () => {
     expect(nav.props()).toHaveProperty('hasNoBorder', true);
   });
 
-  it('renders an inactive link, when no technologies root paths', () => {
-    const title = wrapper.find('.nav-title-link');
-    expect(title.classes()).toContain('inactive');
-    expect(title.is('span')).toBe(true);
-    expect(title.text()).toBe('documentation.title');
-  });
-
-  it('renders the title "Documentation" link, when there is a Technology root', () => {
-    wrapper.setProps({
-      parentTopicIdentifiers: [
-        TechnologiesRootIdentifier,
-        ...propsData.parentTopicIdentifiers,
-      ],
-    });
-    const title = wrapper.find('.nav-title-link');
-    expect(title.exists()).toBe(true);
-    expect(title.is(RouterLinkStub)).toBe(true);
-    expect(title.props('to')).toEqual({
-      path: references[TechnologiesRootIdentifier].url,
-      query: {},
-    });
-    expect(title.text()).toBe('documentation.title');
-  });
-
-  it('renders the title "Documentation" link and preservers query params, using the root reference path', () => {
-    wrapper = shallowMount(DocumentationNav, {
-      stubs,
-      propsData: {
-        ...propsData,
-        parentTopicIdentifiers: [
-          TechnologiesRootIdentifier,
-          ...propsData.parentTopicIdentifiers,
-        ],
-      },
-      mocks: {
-        $route: {
-          query: {
-            changes: 'latest_minor',
-          },
-        },
-      },
-    });
-    expect(wrapper.find('.nav-title-link').props('to'))
-      .toEqual({
-        path: references[TechnologiesRootIdentifier].url,
-        query: { changes: 'latest_minor' },
-      });
-  });
-
-  it('renders a Hierarchy', () => {
-    const hierarchy = wrapper.find(Hierarchy);
-    expect(hierarchy.exists()).toBe(true);
-    expect(hierarchy.props()).toEqual({
-      currentTopicTitle: propsData.title,
-      parentTopicIdentifiers: propsData.parentTopicIdentifiers,
-      isSymbolBeta: false,
-      isSymbolDeprecated: false,
-      currentTopicTags: propsData.currentTopicTags,
-      references,
-    });
-  });
-
-  it('renders a Hierarchy with correct items, if first hierarchy item is the root link', () => {
-    const parentTopicIdentifiers = [
-      TechnologiesRootIdentifier,
-      ...propsData.parentTopicIdentifiers,
-    ];
-
-    wrapper.setProps({ parentTopicIdentifiers });
-    const hierarchy = wrapper.find(Hierarchy);
-    expect(hierarchy.props())
-      // passes all items, without the first one
-      .toHaveProperty('parentTopicIdentifiers', parentTopicIdentifiers.slice(1));
-  });
-
   it('exposes a `tray-after` scoped slot', () => {
-    let slotProps = null;
     const fooBar = 'Foo bar';
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
       mocks,
       scopedSlots: {
-        'tray-after': (props) => {
-          slotProps = props;
-          return fooBar;
-        },
+        'tray-after': () => fooBar,
       },
     });
     expect(wrapper.text()).toContain(fooBar);
-    expect(slotProps).toEqual({
-      breadcrumbCount: 3,
-    });
   });
 
   it('renders a LanguageToggle', () => {
@@ -250,34 +155,23 @@ describe('DocumentationNav', () => {
   });
 
   it('exposes a `title` slot', () => {
-    let slotProps = null;
     const fooBar = 'Foo bar';
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
       mocks,
-      scopedSlots: {
-        title: (props) => {
-          slotProps = props;
-          return fooBar;
-        },
+      slots: {
+        title: fooBar,
       },
     });
     expect(wrapper.text()).toContain(fooBar);
-    expect(slotProps)
-      .toEqual({ inactiveClass: 'inactive', linkClass: 'nav-title-link', rootLink: null });
-    expect(wrapper.find('.nav-title-link').exists()).toBe(false);
   });
 
   it('renders a sidenav toggle, emitting `@toggle-sidenav` event', async () => {
     const btn = document.createElement('button');
     btn.id = SIDEBAR_HIDE_BUTTON_ID;
     document.body.appendChild(btn);
-    // assert the wrapper is hidden
     const sidenavToggleWrapper = wrapper.find('.sidenav-toggle-wrapper');
-    expect(sidenavToggleWrapper.isVisible()).toBe(false);
-    // show the wrapper
-    wrapper.setProps({ sidenavHiddenOnLarge: true });
     // assert its visible
     expect(sidenavToggleWrapper.isVisible()).toBe(true);
     // interact with button

@@ -1,14 +1,14 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import DocumentationHero from '@/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
@@ -41,7 +41,6 @@ describe('DocumentationHero', () => {
     const withBackground = createWrapper();
     expect(withBackground.classes('documentation-hero')).toBe(true);
     expect(withBackground.classes('documentation-hero--disabled')).toBe(false);
-    expect(withBackground.classes('theme-dark')).toBe(true);
 
     const withoutBackground = createWrapper({
       propsData: {
@@ -50,7 +49,6 @@ describe('DocumentationHero', () => {
     });
     expect(withoutBackground.classes('documentation-hero')).toBe(true);
     expect(withoutBackground.classes('documentation-hero--disabled')).toBe(true);
-    expect(withoutBackground.classes('theme-dark')).toBe(false);
   });
 
   it('renders the DocumentationHero, enabled', () => {

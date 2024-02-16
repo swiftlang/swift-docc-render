@@ -13,7 +13,7 @@ import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import InlinePlusCircleIcon from 'docc-render/components/Icons/InlinePlusCircleIcon.vue';
 import { TopicTypes } from '@/constants/TopicTypes';
-import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import DocumentationHero from '@/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import OnThisPageStickyContainer
@@ -23,6 +23,7 @@ import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declarat
 const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
 const {
+  Hierarchy,
   Abstract,
   ContentNode,
   DefaultImplementations,
@@ -110,14 +111,6 @@ const sampleCodeDownload = {
 const propsData = {
   abstract: [abstract],
   conformance: { constraints: [], availabilityPrefix: [] },
-  hierarchy: {
-    paths: [
-      [
-        'topic://foo',
-        'topic://bar',
-      ],
-    ],
-  },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
   role: TopicTypes.collection,
@@ -156,6 +149,14 @@ const propsData = {
   ],
   remoteSource: { url: 'foo' },
   pageImages: [{ identifier: 'foo', type: 'icon' }],
+  rootLink: {
+    path: 'foo',
+    query: {},
+  },
+  hierarchyItems: [
+    'topic://foo',
+    'topic://bar',
+  ],
 };
 
 const hasOtherDeclSection = {
@@ -315,6 +316,32 @@ describe('DocumentationTopic', () => {
       shouldShowLanguageSwitcher: false,
       iconOverride: undefined,
     });
+  });
+
+  it('renders a Hierarchy', () => {
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(true);
+    expect(hierarchy.props()).toEqual({
+      currentTopicTitle: propsData.title,
+      parentTopicIdentifiers: propsData.hierarchyItems,
+      isSymbolBeta: false,
+      isSymbolDeprecated: false,
+      currentTopicTags: propsData.tags,
+    });
+  });
+
+  it('does not render a Hierarchy if hierarchyItems is empty or enableMinimized is true', () => {
+    wrapper.setProps({ hierarchyItems: [] });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
+
+    // Minimized view should not render LanguageSwitcher
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
+  });
+
+  it('does not render a Hierarchy in minimized view', () => {
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
   });
 
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
