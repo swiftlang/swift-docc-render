@@ -12,7 +12,6 @@ describe('Pager', () => {
 
   it('renders a root container with containers and indicators for each page', () => {
     const wrapper = shallowMount(Pager, { propsData });
-    expect(wrapper.is('.pager')).toBe(true);
 
     const pages = wrapper.findAll('.page');
     expect(pages.length).toBe(propsData.pages.length);

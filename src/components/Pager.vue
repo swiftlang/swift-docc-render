@@ -1,3 +1,53 @@
+<script setup>
+import { ref } from 'vue';
+
+defineProps({
+  pages: {
+    type: Array,
+    required: true,
+    validator: value => value.length > 0,
+  },
+});
+
+const activePageIndex = ref(0);
+
+function isActivePage(n) {
+  return n === activePageIndex.value;
+}
+
+function setActivePage(n) {
+  activePageIndex.value = n;
+}
+</script>
+
+<script>
+/**
+ * Provides a way of viewing one of many pages of content at a time.
+ *
+ * This component is similar to what is sometimes referred to as a "carousel"
+ * of content. Users of this component specify an array of "pages" and can
+ * specify how individual pages are presented through slots.
+ *
+ * ### Example
+ *
+ * As an example, this is how you could present a pager, which pages between
+ * a few different paragraphs. Only one will be shown at a time, and there
+ * will be controls to select which paragraph is currently showing.
+ *
+ * ```html
+ * <Pager :pages="['a', 'b', 'c']">
+ *   <template #page="{ page }">
+ *     <p>{{ page }}</p>
+ *   </template>
+ * </Pager>
+ * ```
+ *
+ * - Parameter pages: `Array` (**required**) - An non-empty array of any kind of
+ *     content—each individual item will be provided as a prop to `page` slots.
+ */
+export default { name: 'Pager' };
+</script>
+
 <!--
   This source file is part of the Swift.org open source project
 
@@ -26,54 +76,6 @@
     </div>
   </div>
 </template>
-
-<script>
-/**
- * Provides a way of viewing one of many pages of content at a time.
- *
- * This component is similar to what is sometimes referred to as a "carousel"
- * of content. Users of this component specify an array of "pages" and can
- * specify how individual pages are presented through slots.
- *
- * ### Example
- *
- * As an example, this is how you could present a pager, which pages between
- * a few different paragraphs. Only one will be shown at a time, and there
- * will be controls to select which paragraph is currently showing.
- *
- * ```html
- * <Pager :pages="['a', 'b', 'c']">
- *   <template #page="{ page }">
- *     <p>{{ page }}</p>
- *   </template>
- * </Pager>
- * ```
- *
- * - Parameter pages: `Array` (**required**) - An non-empty array of any kind of
- *     content—each individual item will be provided as a prop to `page` slots.
- */
-export default {
-  name: 'Pager',
-  data: () => ({
-    activePageIndex: 0,
-  }),
-  props: {
-    pages: {
-      type: Array,
-      required: true,
-      validator: arr => arr.length > 0,
-    },
-  },
-  methods: {
-    isActivePage(index) {
-      return this.activePageIndex === index;
-    },
-    setActivePage(index) {
-      this.activePageIndex = index;
-    },
-  },
-};
-</script>
 
 <style scoped lang="scss">
 .page {
