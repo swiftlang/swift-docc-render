@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -42,6 +42,8 @@ const {
   ITEMS_FOUND,
   HIDE_DEPRECATED,
 } = NavigatorCard.constants;
+
+const { Reference, Badge } = NavigatorCard.components;
 
 const DynamicScrollerStub = {
   props: DynamicScroller.props,
@@ -315,6 +317,24 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
   });
 
+  it('exposes a #above-navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'above-navigator-head': '<div class="above-navigator-head">CustomAboveNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.above-navigator-head').text()).toBe('CustomAboveNavigatorHeadComponent');
+  });
+
+  it('exposes a #navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'navigator-head': '<div class="navigator-head">CustomNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.navigator-head').text()).toBe('CustomNavigatorHeadComponent');
+  });
+
   it('exposes a #filter slot', () => {
     const wrapper = createWrapper({
       scopedSlots: {
@@ -328,6 +348,24 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(1);
+  });
+
+  it('renders a card-link with the technology name', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
+    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
+    expect(wrapper.find('.card-link').is('h2')).toBe(true);
+  });
+
+  it('renders a Beta badge in the technology title', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      isTechnologyBeta: true,
+    });
+    await flushPromises();
+    expect(wrapper.find('.technology-title').find(Badge).props()).toMatchObject({
+      variant: 'beta',
+    });
   });
 
   it('focus the first item if there is no active item', async () => {
@@ -414,7 +452,7 @@ describe('NavigatorCard', () => {
     // assert initial items are rendered
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
 
-    const navHead = wrapper.find('.navigator-head');
+    const navHead = wrapper.find('.technology-title');
 
     // open all children symbols
     navHead.trigger('click', { altKey: true });
@@ -2095,6 +2133,7 @@ describe('NavigatorCard', () => {
           ],
           path: root0Child1.path,
         }));
+      expect(wrapper.emitted('navigate')).toEqual([[root0Child1.path]]);
       // assert all items are still there, even the new one is open
       expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
       // assert the target child is active
@@ -2298,6 +2337,7 @@ describe('NavigatorCard', () => {
       expect(sessionStorage.set).toHaveBeenCalledTimes(2);
       await wrapper.vm.$nextTick();
       expect(sessionStorage.set).toHaveBeenCalledTimes(2);
+      expect(wrapper.emitted('navigate')).toBeFalsy();
     });
   });
 

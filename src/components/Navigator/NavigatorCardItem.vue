@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -322,7 +322,7 @@ $chevron-width: $nav-card-horizontal-spacing;
   max-width: 100%;
   display: inline;
   vertical-align: middle;
-  @include font-styles(body-reduced-tight);
+  @include font-styles(body);
 
   @include on-keyboard-focus {
     outline: none;

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -366,6 +366,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 
   @include breakpoint(small, $scope: nav) {
+    --nav-padding: #{$nav-padding-small};
     min-width: map-deep-get($breakpoint-attributes, (nav, small, min-width));
     height: $nav-height-small;
   }
@@ -561,19 +562,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
 .pre-title {
   display: flex;
-  overflow: hidden;
-  padding-left: $nav-padding;
-  margin-left: -$nav-padding;
-
-  &:empty {
-    display: none;
-  }
-
-  @include nav-in-breakpoint() {
-    overflow: visible;
-    padding: 0;
-    margin-left: 0;
-  }
 }
 
 // Nav content (title and menus)
@@ -597,10 +585,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     padding-right: calc(max(var(--nav-padding), env(safe-area-inset-right)));
   }
 
-  @include breakpoint(small, $scope: nav) {
-    padding: 0 0 0 $nav-padding-small;
-  }
-
   @include nav-in-breakpoint {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -615,6 +599,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include font-styles(nav-menu);
   flex: 1 1 auto;
   display: flex;
+  justify-content: flex-end;
   min-width: 0;
 
   @include nav-in-breakpoint {
@@ -624,8 +609,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 }
 
 .nav-menu-tray {
-  width: 100%;
-  max-width: 100%;
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -637,6 +620,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     visibility: hidden;
     max-height: 0;
     transition: $nav-menu-tray-transition;
+    width: 100%;
 
     @include nav-is-open($nested: true) {
       $max-height: calc(100vh - #{$nav-height-small} - #{$nav-height-small});
@@ -667,9 +651,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     grid-area: actions;
     justify-content: flex-end;
   }
-  @include breakpoint(small, nav) {
-    padding-right: $nav-padding-small;
-  }
 }
 
 .pre-title + .nav-title {
@@ -692,6 +673,12 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   white-space: nowrap;
   box-sizing: border-box;
 
+  @include breakpoints-from(large, nav) {
+    &:not(:first-child) {
+      padding-left: $nav-padding / 2;
+    }
+  }
+
   @include breakpoint(small, $scope: nav) {
     padding-top: 0;
     height: $nav-height-small;
@@ -699,7 +686,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 
   :deep(span) {
-    height: 100%;
     line-height: initial;
   }
 
