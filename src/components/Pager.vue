@@ -8,7 +8,10 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <script setup>
-import { ref } from 'vue';
+import {
+  computed,
+  ref,
+} from 'vue';
 
 defineProps({
   pages: {
@@ -19,14 +22,33 @@ defineProps({
 });
 
 const activePageIndex = ref(0);
+const prevActivePageIndex = ref(null);
 
 function isActivePage(n) {
   return n === activePageIndex.value;
 }
 
 function setActivePage(n) {
+  prevActivePageIndex.value = activePageIndex.value;
   activePageIndex.value = n;
 }
+
+function pageStates(n) {
+  return { active: isActivePage(n) };
+}
+
+const didAdvance = computed(() => prevActivePageIndex.value !== null && (
+  activePageIndex.value > prevActivePageIndex.value
+));
+
+const didRetreat = computed(() => prevActivePageIndex.value !== null && (
+  activePageIndex.value < prevActivePageIndex.value
+));
+
+const pagerStates = computed(() => ({
+  advanced: didAdvance.value,
+  retreated: didRetreat.value,
+}));
 </script>
 
 <script>
@@ -58,19 +80,21 @@ export default { name: 'Pager' };
 </script>
 
 <template>
-  <div class="pager">
-    <div
-      v-for="(page, n) in pages"
-      :key="n"
-      :class="['page', { active: isActivePage(n) }]"
-    >
-      <slot name="page" :page="page" />
+  <div :class="['pager', pagerStates]">
+    <div class="pages">
+      <div
+        v-for="(page, n) in pages"
+        :key="n"
+        :class="['page', pageStates(n)]"
+      >
+        <slot name="page" :page="page" />
+      </div>
     </div>
     <div class="indicators">
       <button
         v-for="(_, n) in pages"
         :key="n"
-        :class="['indicator', { active: isActivePage(n) }]"
+        :class="['indicator', pageStates(n)]"
         @click="setActivePage(n)"
       />
     </div>
@@ -78,11 +102,30 @@ export default { name: 'Pager' };
 </template>
 
 <style scoped lang="scss">
+.pager {
+  position: relative;
+}
+
+.pages {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
 .page {
-  display: none;
+  backface-visibility: hidden;
+  float: left;
+  margin-right: -100%;
+  opacity: 0;
+  position: relative;
+  transition: all .6s ease-in-out;
+  transform: translateX(100%);
+  width: 100%;
 
   &.active {
-    display: block;
+    margin-right: 0%;
+    opacity: 1;
+    transform: translateX(0%);
   }
 }
 
@@ -94,10 +137,10 @@ export default { name: 'Pager' };
 }
 
 .indicator {
+  border: 1px solid currentColor;
   border-radius: 50%;
   display: block;
   height: 1em;
-  outline: 1px solid currentColor;
   width: 1em;
 
   &.active {
