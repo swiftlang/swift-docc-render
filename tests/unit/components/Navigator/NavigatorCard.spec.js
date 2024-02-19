@@ -21,6 +21,9 @@ import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
 import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import {
+  FILTER_TAGS,
+} from 'docc-render/constants/Tags';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -37,8 +40,6 @@ Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
 
 const {
   STORAGE_KEY,
-  FILTER_TAGS,
-  FILTER_TAGS_TO_LABELS,
   ITEMS_FOUND,
   HIDE_DEPRECATED,
 } = NavigatorCard.constants;
@@ -296,11 +297,13 @@ describe('NavigatorCard', () => {
       shouldTruncateTags: false,
       tags: [
         // Sample Code is missing, because no sample code in test data
-        'Articles',
-        'Tutorials',
+        FILTER_TAGS.articles,
+        FILTER_TAGS.tutorials,
       ],
       translatableTags: [
         'navigator.tags.hide-deprecated',
+        FILTER_TAGS.articles,
+        FILTER_TAGS.tutorials,
       ],
       value: '',
       selectInputOnFocus: false,
@@ -1309,7 +1312,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     const filter = wrapper.find(FilterInput);
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     // this item is not an article
     detachDivWithID(root0Child0.uid);
     await flushPromises();
@@ -1329,7 +1332,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.tutorials]);
     detachDivWithID(root0Child0.uid);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
@@ -1345,7 +1348,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     detachDivWithID(root0Child0.uid);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
@@ -1533,7 +1536,7 @@ describe('NavigatorCard', () => {
       .toHaveBeenCalledWith(STORAGE_KEY, DEFAULT_STORED_STATE);
     await flushPromises();
     wrapper.find(FilterInput).vm.$emit('input', root0Child1GrandChild0.title);
-    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     await flushPromises();
     expect(sessionStorage.set).toHaveBeenCalledTimes(3);
     expect(sessionStorage.set)
@@ -1565,7 +1568,7 @@ describe('NavigatorCard', () => {
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(wrapper.find(FilterInput).props('selectedTags'))
-      .toEqual([FILTER_TAGS_TO_LABELS.tutorials]);
+      .toEqual([FILTER_TAGS.tutorials]);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
   });
 
@@ -1773,7 +1776,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     expect(filter.props('tags')).toHaveLength(2);
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     await flushPromises();
     expect(filter.props('tags')).toEqual([]);
   });
@@ -1803,14 +1806,14 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there are no Articles for example
-    expect(filter.props('tags')).toEqual(['Tutorials', 'Sample Code']);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.tutorials, FILTER_TAGS.sampleCode]);
     // apply a filter
     filter.vm.$emit('input', sampleCode.title);
     await flushPromises();
-    expect(filter.props('tags')).toEqual(['Sample Code']);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode]);
     wrapper.setProps({ apiChanges });
     await flushPromises();
-    expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode, ChangeNames.modified]);
   });
 
   it('shows a "Web Service Endpoints" tag when relevant', async () => {
@@ -1834,7 +1837,7 @@ describe('NavigatorCard', () => {
 
     await flushPromises();
     const filter = wrapper.find(FilterInput);
-    expect(filter.props('tags')).toEqual(['Web Service Endpoints']);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.webServiceEndpoints]);
   });
 
   describe('with groupMarker', () => {
@@ -1856,7 +1859,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // assert there are no Articles for example
-      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED]);
+      expect(filter.props('tags')).toEqual([FILTER_TAGS.articles, FILTER_TAGS.tutorials, HIDE_DEPRECATED]);
       // apply a filter
       filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
       await flushPromises();

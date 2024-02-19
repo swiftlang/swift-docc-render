@@ -135,7 +135,13 @@
     "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
     "siblings-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings}",
     "parent-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings} containing one symbol | {number-siblings} of {total-siblings} symbols inside {parent-siblings} containing {number-parent} symbols",
-    "reset-filter": "Reset Filter"
+    "reset-filter": "Reset Filter",
+    "tags": {
+      "sample-code": "Sample Code",
+      "tutorials": "Tutorials",
+      "articles": "Articles",
+      "web-service-endpoints": "Web Service Endpoints"
+    }
   },
   "navigator": {
     "title": "Documentation Navigator",
