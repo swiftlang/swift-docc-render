@@ -118,12 +118,15 @@ export default { name: 'Pager' };
   margin-right: -100%;
   opacity: 0;
   position: relative;
-  transition: all .6s ease-in-out;
-  transform: translateX(100%);
+  transition: all 0.5s ease-in-out;
+  transform: translateX(-100%);
   width: 100%;
 
+  .active ~ & {
+    transform: translateX(100%);
+  }
+
   &.active {
-    margin-right: 0%;
     opacity: 1;
     transform: translateX(0%);
   }
@@ -137,11 +140,13 @@ export default { name: 'Pager' };
 }
 
 .indicator {
+  --indicator-size: 0.75em;
+
   border: 1px solid currentColor;
   border-radius: 50%;
   display: block;
-  height: 1em;
-  width: 1em;
+  height: var(--indicator-size);
+  width: var(--indicator-size);
 
   &.active {
     background: currentColor;
