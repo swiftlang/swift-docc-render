@@ -86,6 +86,10 @@ export default { name: 'Pager' };
 
 <style scoped lang="scss">
 .pager {
+  --indicator-size: 0.65em;
+  --indicator-color-active: currentColor;
+  --indicator-color-inactive: var(--color-fill-tertiary);
+
   position: relative;
 }
 
@@ -103,6 +107,10 @@ export default { name: 'Pager' };
   transition: all 0.5s ease-in-out;
   transform: translateX(-100%);
   width: 100%;
+
+  @media (prefers-reduced-motion) {
+    transition: none;
+  }
 
   .active ~ & {
     transform: translateX(100%);
@@ -123,9 +131,8 @@ export default { name: 'Pager' };
 }
 
 .indicator {
-  --indicator-size: 0.75em;
-
-  border: 1px solid currentColor;
+  background: var(--indicator-color-inactive);
+  border: 1px solid var(--indicator-color-inactive);
   border-radius: 50%;
   display: block;
   flex: 0 0 auto;
@@ -133,7 +140,8 @@ export default { name: 'Pager' };
   width: var(--indicator-size);
 
   &.active {
-    background: currentColor;
+    background: var(--indicator-color-active);
+    border-color: var(--indicator-color-active);
   }
 }
 </style>
