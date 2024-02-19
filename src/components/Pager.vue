@@ -8,10 +8,7 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <script setup>
-import {
-  computed,
-  ref,
-} from 'vue';
+import { ref } from 'vue';
 
 defineProps({
   pages: {
@@ -22,33 +19,18 @@ defineProps({
 });
 
 const activePageIndex = ref(0);
-const prevActivePageIndex = ref(null);
 
 function isActivePage(n) {
   return n === activePageIndex.value;
 }
 
 function setActivePage(n) {
-  prevActivePageIndex.value = activePageIndex.value;
   activePageIndex.value = n;
 }
 
 function pageStates(n) {
   return { active: isActivePage(n) };
 }
-
-const didAdvance = computed(() => prevActivePageIndex.value !== null && (
-  activePageIndex.value > prevActivePageIndex.value
-));
-
-const didRetreat = computed(() => prevActivePageIndex.value !== null && (
-  activePageIndex.value < prevActivePageIndex.value
-));
-
-const pagerStates = computed(() => ({
-  advanced: didAdvance.value,
-  retreated: didRetreat.value,
-}));
 </script>
 
 <script>
