@@ -95,7 +95,6 @@ export default { name: 'Pager' };
 }
 
 .page {
-  backface-visibility: hidden;
   float: left;
   margin-right: -100%;
   opacity: 0;
