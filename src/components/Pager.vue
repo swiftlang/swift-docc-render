@@ -9,6 +9,7 @@
 -->
 <script setup>
 import { ref } from 'vue';
+import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
 
 defineProps({
   pages: {
@@ -63,13 +64,33 @@ export default { name: 'Pager' };
 
 <template>
   <div class="pager">
-    <div class="pages">
-      <div
-        v-for="(page, n) in pages"
-        :key="n"
-        :class="['page', pageStates(n)]"
-      >
-        <slot name="page" :page="page" />
+    <div class="container">
+      <div class="gutter left">
+        <button
+          class="control"
+          :disabled="activePageIndex < 1"
+          @click="setActivePage(activePageIndex - 1)"
+        >
+          <ChevronIcon class="icon-retreat" />
+        </button>
+      </div>
+      <div class="viewport">
+        <div
+          v-for="(page, n) in pages"
+          :key="n"
+          :class="['page', pageStates(n)]"
+        >
+          <slot name="page" :page="page" />
+        </div>
+      </div>
+      <div class="gutter right">
+        <button
+          class="control"
+          :disabled="activePageIndex >= (pages.length - 1)"
+          @click="setActivePage(activePageIndex + 1)"
+        >
+          <ChevronIcon class="icon-advance" />
+        </button>
       </div>
     </div>
     <div v-if="pages.length > 1" class="indicators">
@@ -85,18 +106,83 @@ export default { name: 'Pager' };
 </template>
 
 <style scoped lang="scss">
+@import 'docc-render/styles/_core.scss';
+
 .pager {
+  --control-size: 3em;
+  --control-color-fill: var(--color-fill-tertiary);
+  --control-color-figure: currentColor;
+
   --indicator-size: 0.65em;
-  --indicator-color-active: currentColor;
-  --indicator-color-inactive: var(--color-fill-tertiary);
+  --indicator-color-fill-active: currentColor;
+  --indicator-color-fill-inactive: var(--color-fill-tertiary);
+
+  --gutter-width: #{$large-viewport-dynamic-content-padding};
 
   position: relative;
 }
 
-.pages {
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.viewport {
   overflow: hidden;
   position: relative;
   width: 100%;
+}
+
+.gutter {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  width: var(--gutter-width);
+  z-index: 42;
+
+  @include breakpoint(small) {
+    display: none;
+  }
+
+  &.left {
+    left: calc(var(--gutter-width) * -1);
+  }
+
+  &.right {
+    right: calc(var(--gutter-width) * -1);
+  }
+}
+
+.control {
+  align-items: center;
+  background: var(--control-color-fill);
+  border: 1px solid var(--control-color-fill);
+  border-radius: 50%;
+  display: flex;
+  height: var(--control-size);
+  justify-content: center;
+  width: var(--control-size);
+
+  &[disabled] {
+    display: none;
+  }
+
+  .icon-advance,
+  .icon-retreat {
+    height: 65%;
+    width: 65%;
+  }
+
+  .icon-advance {
+    transform: scale(1, 1);
+  }
+
+  .icon-retreat {
+    transform: scale(-1, 1);
+  }
 }
 
 .page {
@@ -131,8 +217,8 @@ export default { name: 'Pager' };
 }
 
 .indicator {
-  background: var(--indicator-color-inactive);
-  border: 1px solid var(--indicator-color-inactive);
+  background: var(--indicator-color-fill-inactive);
+  border: 1px solid var(--indicator-color-fill-inactive);
   border-radius: 50%;
   display: block;
   flex: 0 0 auto;
@@ -140,8 +226,8 @@ export default { name: 'Pager' };
   width: var(--indicator-size);
 
   &.active {
-    background: var(--indicator-color-active);
-    border-color: var(--indicator-color-active);
+    background: var(--indicator-color-fill-active);
+    border-color: var(--indicator-color-fill-active);
   }
 }
 </style>
