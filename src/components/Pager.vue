@@ -62,7 +62,7 @@ export default { name: 'Pager' };
 </script>
 
 <template>
-  <div :class="['pager', pagerStates]">
+  <div class="pager">
     <div class="pages">
       <div
         v-for="(page, n) in pages"
