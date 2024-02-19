@@ -76,3 +76,14 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.pager :deep(.control) {
+  // adjust the flex-centered control by an amount that offsets the space
+  // between individual cards within each grid row to visually center the
+  // control
+  //
+  // TODO: make this not hardcoded and account for varying number of rows
+  margin-top: -54px;
+}
+</style>
