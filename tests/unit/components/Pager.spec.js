@@ -70,4 +70,16 @@ describe('Pager', () => {
     expect(pages.at(1).classes('active')).toBe(false);
     expect(pages.at(2).classes('active')).toBe(true);
   });
+
+  it('renders page with no indicators with only a single page', () => {
+    const wrapper = shallowMount(Pager, {
+      propsData: {
+        pages: ['foobar'],
+      },
+    });
+
+    expect(wrapper.findAll('.page').length).toBe(1);
+    expect(wrapper.findAll('.page.active').length).toBe(1);
+    expect(wrapper.findAll('.indicator').length).toBe(0);
+  });
 });

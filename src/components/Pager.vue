@@ -72,7 +72,7 @@ export default { name: 'Pager' };
         <slot name="page" :page="page" />
       </div>
     </div>
-    <div class="indicators">
+    <div v-if="pages.length > 1" class="indicators">
       <button
         v-for="(_, n) in pages"
         :key="n"
