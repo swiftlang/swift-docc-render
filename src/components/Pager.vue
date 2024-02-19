@@ -80,6 +80,7 @@ export default { name: 'Pager' };
         @click="setActivePage(n)"
       />
     </div>
+    <slot />
   </div>
 </template>
 
@@ -115,7 +116,8 @@ export default { name: 'Pager' };
 
 .indicators {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 1em;
   justify-content: center;
   margin-top: 1rem;
 }
@@ -126,6 +128,7 @@ export default { name: 'Pager' };
   border: 1px solid currentColor;
   border-radius: 50%;
   display: block;
+  flex: 0 0 auto;
   height: var(--indicator-size);
   width: var(--indicator-size);
 
