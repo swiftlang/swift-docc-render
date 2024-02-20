@@ -7,61 +7,6 @@
   See https://swift.org/LICENSE.txt for license information
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
-<script setup>
-import { ref } from 'vue';
-import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
-
-defineProps({
-  pages: {
-    type: Array,
-    required: true,
-    validator: value => value.length > 0,
-  },
-});
-
-const activePageIndex = ref(0);
-
-function isActivePage(n) {
-  return n === activePageIndex.value;
-}
-
-function setActivePage(n) {
-  activePageIndex.value = n;
-}
-
-function pageStates(n) {
-  return { active: isActivePage(n) };
-}
-</script>
-
-<script>
-/**
- * Provides a way of viewing one of many pages of content at a time.
- *
- * This component is similar to what is sometimes referred to as a "carousel"
- * of content. Users of this component specify an array of "pages" and can
- * specify how individual pages are presented through slots.
- *
- * ### Example
- *
- * As an example, this is how you could present a pager, which pages between
- * a few different paragraphs. Only one will be shown at a time, and there
- * will be controls to select which paragraph is currently showing.
- *
- * ```html
- * <Pager :pages="['a', 'b', 'c']">
- *   <template #page="{ page }">
- *     <p>{{ page }}</p>
- *   </template>
- * </Pager>
- * ```
- *
- * - Parameter pages: `Array` (**required**) - An non-empty array of any kind of
- *     content—each individual item will be provided as a prop to `page` slots.
- */
-export default { name: 'Pager' };
-</script>
-
 <template>
   <div class="pager">
     <div class="container">
@@ -104,6 +49,60 @@ export default { name: 'Pager' };
     <slot />
   </div>
 </template>
+
+<script>
+import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
+
+/**
+ * Provides a way of viewing one of many pages of content at a time.
+ *
+ * This component is similar to what is sometimes referred to as a "carousel"
+ * of content. Users of this component specify an array of "pages" and can
+ * specify how individual pages are presented through slots.
+ *
+ * ### Example
+ *
+ * As an example, this is how you could present a pager, which pages between
+ * a few different paragraphs. Only one will be shown at a time, and there
+ * will be controls to select which paragraph is currently showing.
+ *
+ * ```html
+ * <Pager :pages="['a', 'b', 'c']">
+ *   <template #page="{ page }">
+ *     <p>{{ page }}</p>
+ *   </template>
+ * </Pager>
+ * ```
+ *
+ * - Parameter pages: `Array` (**required**) - An non-empty array of any kind of
+ *     content—each individual item will be provided as a prop to `page` slots.
+ */
+export default {
+  name: 'Pager',
+  components: { ChevronIcon },
+  props: {
+    pages: {
+      type: Array,
+      required: true,
+      validator: value => value.length > 0,
+    },
+  },
+  data: () => ({
+    activePageIndex: 0,
+  }),
+  methods: {
+    isActivePage(index) {
+      return index === this.activePageIndex;
+    },
+    pageStates(index) {
+      return { active: this.isActivePage(index) };
+    },
+    setActivePage(index) {
+      this.activePageIndex = index;
+    },
+  },
+};
+</script>
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
