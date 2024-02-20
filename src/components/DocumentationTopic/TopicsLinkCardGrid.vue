@@ -62,11 +62,18 @@ export default {
   },
   computed: {
     compactCards: ({ topicStyle }) => topicStyle === TopicSectionsStyle.compactGrid,
-    pageSize: ({ breakpoint }) => ({
-      [BreakpointName.large]: 6,
-      [BreakpointName.medium]: 4,
-      [BreakpointName.small]: 1,
-    }[breakpoint]),
+    pageSize: ({ breakpoint, topicStyle }) => ({
+      [TopicSectionsStyle.compactGrid]: {
+        [BreakpointName.large]: 6,
+        [BreakpointName.medium]: 4,
+        [BreakpointName.small]: 1,
+      },
+      [TopicSectionsStyle.detailedGrid]: {
+        [BreakpointName.large]: 4,
+        [BreakpointName.medium]: 2,
+        [BreakpointName.small]: 1,
+      },
+    }[topicStyle][breakpoint]),
     pages: ({ items, pageSize }) => page(items, pageSize),
   },
   methods: {
