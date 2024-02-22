@@ -164,40 +164,29 @@ export default {
   }
 
   &::before {
-    @include coin($modified-svg, $icon-size-default);
+    @include coin($modified-rounded-svg, $icon-size-default);
     left: $-coin-spacer;
 
     @include prefers-dark {
-      background-image: $modified-dark-svg;
+      background-image: $modified-dark-rounded-svg;
     }
   }
 
-  &-added {
-    border-color: var(--color-changes-added);
-
-    &::before {
-      background-image: $added-svg;
+  &-added::before {
+      background-image: $added-rounded-svg;
 
       @include prefers-dark {
-        background-image: $added-dark-svg;
+        background-image: $added-dark-rounded-svg;
       }
     }
   }
 
-  &-deprecated {
-    border-color: var(--color-changes-deprecated);
+  &-deprecated::before {
+    background-image: $deprecated-rounded-svg;
 
-    &::before {
-      background-image: $deprecated-svg;
-
-      @include prefers-dark {
-        background-image: $deprecated-dark-svg;
-      }
+    @include prefers-dark {
+      background-image: $deprecated-dark-rounded-svg;
     }
-  }
-
-  &-modified {
-    border-color: var(--color-changes-modified);
   }
 }
 </style>
