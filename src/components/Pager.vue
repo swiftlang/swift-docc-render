@@ -122,7 +122,21 @@ export default {
         block: 'nearest',
         inline: 'start',
       });
-      this.startObservingPages();
+
+      let lastLeft = null;
+      let numFramesWaited = 0;
+      const maxFramesToWait = 60;
+      const waitForScrollToEnd = () => {
+        const currentLeft = ref.getBoundingClientRect().left;
+        if (currentLeft === lastLeft || numFramesWaited >= maxFramesToWait) {
+          this.startObservingPages();
+        } else {
+          lastLeft = currentLeft;
+          numFramesWaited += 1;
+          requestAnimationFrame(waitForScrollToEnd);
+        }
+      };
+      requestAnimationFrame(waitForScrollToEnd);
     },
     observePages(entries) {
       const visibleKey = entries.find(entry => entry.isIntersecting)?.target?.id;
