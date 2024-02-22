@@ -14,16 +14,18 @@
         <button
           class="control"
           :disabled="activePageIndex < 1"
-          @click="setActivePage(activePageIndex - 1)"
+          @click="setActivePage($event, activePageIndex - 1)"
         >
           <ChevronIcon class="icon-retreat" />
         </button>
       </div>
-      <div class="viewport">
+      <div class="viewport" ref="viewport">
         <div
-          v-for="(page, n) in pages"
-          :key="n"
+          v-for="({ page, key }, n) in keyedPages"
+          ref="pages"
           :class="['page', pageStates(n)]"
+          :id="key"
+          :key="key"
         >
           <slot name="page" :page="page" />
         </div>
@@ -31,19 +33,20 @@
       <div class="gutter right">
         <button
           class="control"
-          :disabled="activePageIndex >= (pages.length - 1)"
-          @click="setActivePage(activePageIndex + 1)"
+          :disabled="activePageIndex >= (keyedPages.length - 1)"
+          @click="setActivePage($event, activePageIndex + 1)"
         >
           <ChevronIcon class="icon-advance" />
         </button>
       </div>
     </div>
-    <div v-if="pages.length > 1" class="indicators">
-      <button
-        v-for="(_, n) in pages"
-        :key="n"
+    <div v-if="keyedPages.length > 1" class="indicators">
+      <a
+        v-for="({ key }, n) in keyedPages"
+        :href="`#${key}`"
+        :key="key"
         :class="['indicator', pageStates(n)]"
-        @click="setActivePage(n)"
+        @click="setActivePage($event, n)"
       />
     </div>
     <slot />
@@ -52,6 +55,54 @@
 
 <script>
 import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
+
+function waitForScrollIntoView(element) {
+  // call `scrollIntoView` to start asynchronously scrollling the off-screen
+  // page element into the viewport area (would be sync if the behavior is
+  // instant, but there is an async animation for "smooth" behavior)
+  element.scrollIntoView({
+    behavior: 'auto',
+    block: 'nearest',
+    inline: 'start',
+  });
+
+  // until the "scrollend" event is more widely supported, we need to manually
+  // poll every animation frame to manually check if the element is still being
+  // scrolled or not
+  return new Promise((resolve) => {
+    // scroll animation shouldn't realistically take longer than this, so this
+    // will be used as a timeout to exit early and avoid looping forever if
+    // something goes wrong down below
+    const maxFramesToWait = 60;
+    // shouldn't realistically go quicker than a couple frames either
+    const minFramesToWait = 2;
+
+    // since the scroll animation is not necessarily immediate, we'll utilize
+    // `requestAnimationFrame` to poll every frame and check if the element
+    // has finished scrolling and wait to finish the promise until it has
+    // finished (or we reach a timeout expressed as a maximum number of frames
+    // to wait for)
+    let prevLeftPosition = null;
+    let numFramesWaited = 0;
+    function waitForScrollEnd() {
+      const currentLeftPosition = element.getBoundingClientRect().left;
+      // stop waiting and resolve the promise if the timeout is reached or the
+      // scroll has finished as calculated from the element position
+      if ((numFramesWaited > minFramesToWait)
+           && ((currentLeftPosition === prevLeftPosition)
+               || (numFramesWaited >= maxFramesToWait))) {
+        resolve(); // done waiting
+      } else {
+        // otherwise, advance to the next frame to check again by recursively
+        // calling this function
+        prevLeftPosition = currentLeftPosition;
+        numFramesWaited += 1;
+        requestAnimationFrame(waitForScrollEnd); // continue waiting
+      }
+    }
+    requestAnimationFrame(waitForScrollEnd); // start waiting
+  });
+}
 
 /**
  * Provides a way of viewing one of many pages of content at a time.
@@ -90,6 +141,16 @@ export default {
   data: () => ({
     activePageIndex: 0,
   }),
+  computed: {
+    indices: ({ keyedPages }) => keyedPages.reduce((obj, item, i) => ({
+      ...obj,
+      [item.key]: i,
+    }), {}),
+    keyedPages: ({ _uid, pages }) => pages.map((page, i) => ({
+      key: `pager-${_uid}-page-${i}`,
+      page,
+    })),
+  },
   methods: {
     isActivePage(index) {
       return index === this.activePageIndex;
@@ -97,9 +158,52 @@ export default {
     pageStates(index) {
       return { active: this.isActivePage(index) };
     },
-    setActivePage(index) {
+    async setActivePage(event, index) {
+      event.preventDefault();
+      if ((index === this.activePageIndex)
+        || (index < 0)
+        || (index >= this.$refs.pages.length)) {
+        return;
+      }
+
+      const ref = this.$refs.pages[index];
+      // stop observing page elements visibility while scrolling to the active
+      // one so that the indicators for pages in between the previous and
+      // currently active one don't activate
+      this.pauseObservingPages();
+      await waitForScrollIntoView(ref);
+      this.startObservingPages();
+
       this.activePageIndex = index;
     },
+    observePages(entries) {
+      // observe page visibility so that we can activate the indicator for the
+      // right one as the user scrolls through the viewport
+      const visibleKey = entries.find(entry => entry.isIntersecting)?.target?.id;
+      if (visibleKey) {
+        this.activePageIndex = this.indices[visibleKey];
+      }
+    },
+    startObservingPages() {
+      this.$refs.pages.forEach((page) => {
+        this.observer?.observe(page);
+      });
+    },
+    pauseObservingPages() {
+      this.$refs.pages.forEach((page) => {
+        this.observer?.unobserve(page);
+      });
+    },
+  },
+  mounted() {
+    this.observer = new IntersectionObserver(this.observePages, {
+      root: this.$refs.viewport,
+      threshold: 0.5,
+    });
+    this.startObservingPages();
+  },
+  beforeDestroy() {
+    this.observer?.disconnect();
   },
 };
 </script>
@@ -117,19 +221,24 @@ export default {
   --indicator-color-fill-inactive: var(--color-fill-tertiary);
 
   --gutter-width: #{$large-viewport-dynamic-content-padding};
+}
 
-  position: relative;
+.viewport {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 0;
+    width: 0;
+  }
 }
 
 .container {
   position: relative;
-  width: 100%;
-}
-
-.viewport {
-  overflow: hidden;
-  position: relative;
-  width: 100%;
 }
 
 .gutter {
@@ -163,10 +272,12 @@ export default {
   display: flex;
   height: var(--control-size);
   justify-content: center;
+  opacity: 1;
+  transition: opacity 0.15s ease-in-out;
   width: var(--control-size);
 
   &[disabled] {
-    display: none;
+    opacity: 0;
   }
 
   .icon-advance,
@@ -185,25 +296,22 @@ export default {
 }
 
 .page {
-  float: left;
-  margin-right: -100%;
-  opacity: 0;
+  flex-shrink: 0;
+  margin-right: var(--gutter-width);
   position: relative;
-  transition: all 0.5s ease-in-out;
-  transform: translateX(-100%);
+  scroll-snap-align: start;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.5s ease-in-out;
+  user-select: none;
   width: 100%;
 
   @media (prefers-reduced-motion) {
     transition: none;
   }
 
-  .active ~ & {
-    transform: translateX(100%);
-  }
-
   &.active {
-    opacity: 1;
-    transform: translateX(0%);
+    user-select: auto;
   }
 }
 
@@ -219,6 +327,7 @@ export default {
   background: var(--indicator-color-fill-inactive);
   border: 1px solid var(--indicator-color-fill-inactive);
   border-radius: 50%;
+  color: currentColor;
   display: block;
   flex: 0 0 auto;
   height: var(--indicator-size);
