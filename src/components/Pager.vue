@@ -14,16 +14,18 @@
         <button
           class="control"
           :disabled="activePageIndex < 1"
-          @click="setActivePage(activePageIndex - 1)"
+          @click="setActivePage($event, activePageIndex - 1)"
         >
           <ChevronIcon class="icon-retreat" />
         </button>
       </div>
       <div class="viewport">
         <div
-          v-for="(page, n) in pages"
-          :key="n"
+          v-for="({ page, key }, n) in keyedPages"
+          ref="page"
           :class="['page', pageStates(n)]"
+          :id="key"
+          :key="key"
         >
           <slot name="page" :page="page" />
         </div>
@@ -31,19 +33,20 @@
       <div class="gutter right">
         <button
           class="control"
-          :disabled="activePageIndex >= (pages.length - 1)"
-          @click="setActivePage(activePageIndex + 1)"
+          :disabled="activePageIndex >= (keyedPages.length - 1)"
+          @click="setActivePage($event, activePageIndex + 1)"
         >
           <ChevronIcon class="icon-advance" />
         </button>
       </div>
     </div>
-    <div v-if="pages.length > 1" class="indicators">
-      <button
-        v-for="(_, n) in pages"
-        :key="n"
+    <div v-if="keyedPages.length > 1" class="indicators">
+      <a
+        v-for="({ key }, n) in keyedPages"
+        :href="`#${key}`"
+        :key="key"
         :class="['indicator', pageStates(n)]"
-        @click="setActivePage(n)"
+        @click="setActivePage($event, n)"
       />
     </div>
     <slot />
@@ -90,6 +93,12 @@ export default {
   data: () => ({
     activePageIndex: 0,
   }),
+  computed: {
+    keyedPages: ({ _uid, pages }) => pages.map((page, i) => ({
+      key: `pager-${_uid}-page-${i}`,
+      page,
+    })),
+  },
   methods: {
     isActivePage(index) {
       return index === this.activePageIndex;
@@ -97,8 +106,17 @@ export default {
     pageStates(index) {
       return { active: this.isActivePage(index) };
     },
-    setActivePage(index) {
+    setActivePage(event, index) {
+      event.preventDefault();
+
       this.activePageIndex = index;
+
+      const ref = this.$refs.page[index];
+      ref?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'start',
+      });
     },
   },
 };
@@ -117,19 +135,18 @@ export default {
   --indicator-color-fill-inactive: var(--color-fill-tertiary);
 
   --gutter-width: #{$large-viewport-dynamic-content-padding};
+}
 
-  position: relative;
+.viewport {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
 .container {
   position: relative;
-  width: 100%;
-}
-
-.viewport {
-  overflow: hidden;
-  position: relative;
-  width: 100%;
 }
 
 .gutter {
@@ -185,25 +202,17 @@ export default {
 }
 
 .page {
-  float: left;
-  margin-right: -100%;
-  opacity: 0;
+  flex-shrink: 0;
+  margin-right: var(--gutter-width);
   position: relative;
-  transition: all 0.5s ease-in-out;
-  transform: translateX(-100%);
+  scroll-snap-align: start;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.5s ease-in-out;
   width: 100%;
 
   @media (prefers-reduced-motion) {
     transition: none;
-  }
-
-  .active ~ & {
-    transform: translateX(100%);
-  }
-
-  &.active {
-    opacity: 1;
-    transform: translateX(0%);
   }
 }
 
@@ -219,6 +228,7 @@ export default {
   background: var(--indicator-color-fill-inactive);
   border: 1px solid var(--indicator-color-fill-inactive);
   border-radius: 50%;
+  color: currentColor;
   display: block;
   flex: 0 0 auto;
   height: var(--indicator-size);
