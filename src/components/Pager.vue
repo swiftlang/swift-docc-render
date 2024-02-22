@@ -272,10 +272,12 @@ export default {
   display: flex;
   height: var(--control-size);
   justify-content: center;
+  opacity: 1;
+  transition: opacity 0.15s ease-in-out;
   width: var(--control-size);
 
   &[disabled] {
-    display: none;
+    opacity: 0;
   }
 
   .icon-advance,
