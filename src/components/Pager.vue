@@ -118,7 +118,7 @@ export default {
       this.pauseObservingPages();
       const ref = this.$refs.pages[index];
       ref?.scrollIntoView({
-        behavior: 'smooth',
+        behavior: 'auto',
         block: 'nearest',
         inline: 'start',
       });
