@@ -56,6 +56,54 @@
 <script>
 import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
 
+function waitForScrollIntoView(element) {
+  // call `scrollIntoView` to start asynchronously scrollling the off-screen
+  // page element into the viewport area (would be sync if the behavior is
+  // instant, but there is an async animation for "smooth" behavior)
+  element.scrollIntoView({
+    behavior: 'auto',
+    block: 'nearest',
+    inline: 'start',
+  });
+
+  // until the "scrollend" event is more widely supported, we need to manually
+  // poll every animation frame to manually check if the element is still being
+  // scrolled or not
+  return new Promise((resolve) => {
+    // scroll animation shouldn't realistically take longer than this, so this
+    // will be used as a timeout to exit early and avoid looping forever if
+    // something goes wrong down below
+    const maxFramesToWait = 60;
+    // shouldn't realistically go quicker than a couple frames either
+    const minFramesToWait = 2;
+
+    // since the scroll animation is not necessarily immediate, we'll utilize
+    // `requestAnimationFrame` to poll every frame and check if the element
+    // has finished scrolling and wait to finish the promise until it has
+    // finished (or we reach a timeout expressed as a maximum number of frames
+    // to wait for)
+    let prevLeftPosition = null;
+    let numFramesWaited = 0;
+    function waitForScrollEnd() {
+      const currentLeftPosition = element.getBoundingClientRect().left;
+      // stop waiting and resolve the promise if the timeout is reached or the
+      // scroll has finished as calculated from the element position
+      if ((numFramesWaited > minFramesToWait)
+           && ((currentLeftPosition === prevLeftPosition)
+               || (numFramesWaited >= maxFramesToWait))) {
+        resolve(); // done waiting
+      } else {
+        // otherwise, advance to the next frame to check again by recursively
+        // calling this function
+        prevLeftPosition = currentLeftPosition;
+        numFramesWaited += 1;
+        requestAnimationFrame(waitForScrollEnd); // continue waiting
+      }
+    }
+    requestAnimationFrame(waitForScrollEnd); // start waiting
+  });
+}
+
 /**
  * Provides a way of viewing one of many pages of content at a time.
  *
@@ -110,35 +158,27 @@ export default {
     pageStates(index) {
       return { active: this.isActivePage(index) };
     },
-    setActivePage(event, index) {
+    async setActivePage(event, index) {
       event.preventDefault();
+      if ((index === this.activePageIndex)
+        || (index < 0)
+        || (index >= this.$refs.pages.length)) {
+        return;
+      }
+
+      const ref = this.$refs.pages[index];
+      // stop observing page elements visibility while scrolling to the active
+      // one so that the indicators for pages in between the previous and
+      // currently active one don't activate
+      this.pauseObservingPages();
+      await waitForScrollIntoView(ref);
+      this.startObservingPages();
 
       this.activePageIndex = index;
-
-      this.pauseObservingPages();
-      const ref = this.$refs.pages[index];
-      ref?.scrollIntoView({
-        behavior: 'auto',
-        block: 'nearest',
-        inline: 'start',
-      });
-
-      let lastLeft = null;
-      let numFramesWaited = 0;
-      const maxFramesToWait = 60;
-      const waitForScrollToEnd = () => {
-        const currentLeft = ref.getBoundingClientRect().left;
-        if (currentLeft === lastLeft || numFramesWaited >= maxFramesToWait) {
-          this.startObservingPages();
-        } else {
-          lastLeft = currentLeft;
-          numFramesWaited += 1;
-          requestAnimationFrame(waitForScrollToEnd);
-        }
-      };
-      requestAnimationFrame(waitForScrollToEnd);
     },
     observePages(entries) {
+      // observe page visibility so that we can activate the indicator for the
+      // right one as the user scrolls through the viewport
       const visibleKey = entries.find(entry => entry.isIntersecting)?.target?.id;
       if (visibleKey) {
         this.activePageIndex = this.indices[visibleKey];
