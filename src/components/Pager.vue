@@ -19,10 +19,10 @@
           <ChevronIcon class="icon-retreat" />
         </button>
       </div>
-      <div class="viewport">
+      <div class="viewport" ref="viewport">
         <div
           v-for="({ page, key }, n) in keyedPages"
-          ref="page"
+          ref="pages"
           :class="['page', pageStates(n)]"
           :id="key"
           :key="key"
@@ -94,6 +94,10 @@ export default {
     activePageIndex: 0,
   }),
   computed: {
+    indices: ({ keyedPages }) => keyedPages.reduce((obj, item, i) => ({
+      ...obj,
+      [item.key]: i,
+    }), {}),
     keyedPages: ({ _uid, pages }) => pages.map((page, i) => ({
       key: `pager-${_uid}-page-${i}`,
       page,
@@ -111,13 +115,41 @@ export default {
 
       this.activePageIndex = index;
 
-      const ref = this.$refs.page[index];
+      this.pauseObservingPages();
+      const ref = this.$refs.pages[index];
       ref?.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
         inline: 'start',
       });
+      this.startObservingPages();
     },
+    observePages(entries) {
+      const visibleKey = entries.find(entry => entry.isIntersecting)?.target?.id;
+      if (visibleKey) {
+        this.activePageIndex = this.indices[visibleKey];
+      }
+    },
+    startObservingPages() {
+      this.$refs.pages.forEach((page) => {
+        this.observer?.observe(page);
+      });
+    },
+    pauseObservingPages() {
+      this.$refs.pages.forEach((page) => {
+        this.observer?.unobserve(page);
+      });
+    },
+  },
+  mounted() {
+    this.observer = new IntersectionObserver(this.observePages, {
+      root: this.$refs.viewport,
+      threshold: 0.5,
+    });
+    this.startObservingPages();
+  },
+  beforeDestroy() {
+    this.observer?.disconnect();
   },
 };
 </script>
