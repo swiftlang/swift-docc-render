@@ -301,10 +301,15 @@ export default {
   transform: scale(1);
   transform-origin: center center;
   transition: transform 0.5s ease-in-out;
+  user-select: none;
   width: 100%;
 
   @media (prefers-reduced-motion) {
     transition: none;
+  }
+
+  &.active {
+    user-select: auto;
   }
 }
 
