@@ -59,10 +59,19 @@ export default {
       default: TopicSectionsStyle.compactGrid,
       validator: v => v === TopicSectionsStyle.compactGrid || v === TopicSectionsStyle.detailedGrid,
     },
+    usePager: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     compactCards: ({ topicStyle }) => topicStyle === TopicSectionsStyle.compactGrid,
-    pageSize: ({ breakpoint, topicStyle }) => ({
+    pageSize: ({
+      breakpoint,
+      items,
+      topicStyle,
+      usePager,
+    }) => (usePager ? {
       [TopicSectionsStyle.compactGrid]: {
         [BreakpointName.large]: 6,
         [BreakpointName.medium]: 4,
@@ -73,7 +82,9 @@ export default {
         [BreakpointName.medium]: 2,
         [BreakpointName.small]: 1,
       },
-    }[topicStyle][breakpoint]),
+    }[topicStyle][breakpoint] : (
+      items.length
+    )),
     pages: ({ items, pageSize }) => page(items, pageSize),
   },
   methods: {

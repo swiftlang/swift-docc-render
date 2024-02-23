@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import TopicsLinkCardGrid from 'docc-render/components/DocumentationTopic/TopicsLinkCardGrid.vue';
+import TopicsLinkCardGrid from 'theme/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 

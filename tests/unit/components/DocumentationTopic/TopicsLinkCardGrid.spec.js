@@ -29,9 +29,25 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(TopicsLink
 });
 
 describe('TopicsLinkCardGrid', () => {
-  describe('compactGrid', () => {
+  it('renders only a single page with every item by default', () => {
+    const wrapper = createWrapper();
+
+    const pager = wrapper.find(Pager);
+    expect(pager.exists()).toBe(true);
+
+    const pages = pager.props('pages');
+    expect(pages.length).toBe(1);
+    expect(pages[0]).toEqual(defaultProps.items);
+  });
+
+  describe('compactGrid with pages', () => {
     it('renders a pager with right number of pages per breakpoint', () => {
-      const wrapper = createWrapper();
+      const wrapper = createWrapper({
+        propsData: {
+          topicStyle: TopicSectionsStyle.compactGrid,
+          usePager: true,
+        },
+      });
 
       // 10 items => 2 pages at large breakpoint (6 links per page)
       let pager = wrapper.find(Pager);
@@ -52,10 +68,13 @@ describe('TopicsLinkCardGrid', () => {
     });
   });
 
-  describe('detailedGrid', () => {
+  describe('detailedGrid with pages', () => {
     it('renders a pager with the right number of pages per breakpoint', () => {
       const wrapper = createWrapper({
-        propsData: { topicStyle: TopicSectionsStyle.detailedGrid },
+        propsData: {
+          topicStyle: TopicSectionsStyle.detailedGrid,
+          usePager: true,
+        },
       });
 
       // 10 items => 3 pages at large breakpoint (4 links per page)
