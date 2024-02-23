@@ -9,8 +9,11 @@
 -->
 <template>
   <div class="pager">
-    <div class="container">
-      <div class="gutter left">
+    <template v-if="pages.length === 1">
+      <slot name="page" :page="pages[0]" />
+    </template>
+    <div v-else class="container">
+      <Gutter class="left">
         <button
           class="control"
           :disabled="activePageIndex < 1"
@@ -18,7 +21,7 @@
         >
           <ChevronIcon class="icon-retreat" />
         </button>
-      </div>
+      </Gutter>
       <div class="viewport" ref="viewport">
         <div
           v-for="({ page, key }, n) in keyedPages"
@@ -30,7 +33,7 @@
           <slot name="page" :page="page" />
         </div>
       </div>
-      <div class="gutter right">
+      <Gutter class="right">
         <button
           class="control"
           :disabled="activePageIndex >= (keyedPages.length - 1)"
@@ -38,7 +41,7 @@
         >
           <ChevronIcon class="icon-advance" />
         </button>
-      </div>
+      </Gutter>
     </div>
     <div v-if="keyedPages.length > 1" class="indicators">
       <a
@@ -130,7 +133,16 @@ function waitForScrollIntoView(element) {
  */
 export default {
   name: 'Pager',
-  components: { ChevronIcon },
+  components: {
+    ChevronIcon,
+    Gutter: {
+      render(createElement) {
+        return createElement('div', { class: 'gutter' }, (
+          this.$slots.default
+        ));
+      },
+    },
+  },
   props: {
     pages: {
       type: Array,
@@ -184,6 +196,13 @@ export default {
         this.activePageIndex = this.indices[visibleKey];
       }
     },
+    setupObserver() {
+      this.observer = new IntersectionObserver(this.observePages, {
+        root: this.$refs.viewport,
+        threshold: 0.5,
+      });
+      this.startObservingPages();
+    },
     startObservingPages() {
       this.$refs.pages.forEach((page) => {
         this.observer?.observe(page);
@@ -196,11 +215,9 @@ export default {
     },
   },
   mounted() {
-    this.observer = new IntersectionObserver(this.observePages, {
-      root: this.$refs.viewport,
-      threshold: 0.5,
-    });
-    this.startObservingPages();
+    if (this.pages.length > 1) {
+      this.setupObserver();
+    }
   },
   beforeDestroy() {
     this.observer?.disconnect();

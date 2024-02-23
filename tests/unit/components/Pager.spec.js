@@ -85,15 +85,24 @@ describe('Pager', () => {
     expect(pages.at(2).classes('active')).toBe(true);
   });
 
-  it('renders page with no indicators with only a single page', () => {
+  it('renders only the page slot with a single page', () => {
     const wrapper = shallowMount(Pager, {
       propsData: {
         pages: ['foobar'],
       },
+      scopedSlots: {
+        page: `
+          <p>test: {{props.page}}</p>
+        `,
+      },
     });
 
-    expect(wrapper.findAll('.page').length).toBe(1);
-    expect(wrapper.findAll('.page.active').length).toBe(1);
+    expect(wrapper.findAll('.page').length).toBe(0);
+    expect(wrapper.findAll('.page.active').length).toBe(0);
     expect(wrapper.findAll('.indicator').length).toBe(0);
+
+    const p = wrapper.find('.pager p');
+    expect(p.exists()).toBe(true);
+    expect(p.text()).toBe('test: foobar');
   });
 });
