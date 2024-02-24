@@ -12,52 +12,58 @@
     <template v-if="pages.length === 1">
       <slot name="page" :page="pages[0]" />
     </template>
-    <div v-else class="container">
-      <Gutter class="left">
-        <button
-          class="control"
-          :disabled="activePageIndex < 1"
-          @click="setActivePage($event, activePageIndex - 1)"
-        >
-          <ChevronIcon class="icon-retreat" />
-        </button>
-      </Gutter>
-      <div class="viewport" ref="viewport">
-        <div
-          v-for="({ page, key }, n) in keyedPages"
-          ref="pages"
-          :class="['page', pageStates(n)]"
-          :id="key"
-          :key="key"
-        >
-          <slot name="page" :page="page" />
+    <template v-else>
+      <div class="container">
+        <Gutter class="left">
+          <ControlPrevious
+            :disabled="!hasPreviousPage"
+            @click.native="previous"
+          />
+        </Gutter>
+        <div class="viewport" ref="viewport">
+          <div
+            v-for="({ page, key }, n) in keyedPages"
+            ref="pages"
+            :class="['page', pageStates(n)]"
+            :id="key"
+            :key="key"
+          >
+            <slot name="page" :page="page" />
+          </div>
         </div>
+        <Gutter class="right">
+          <ControlNext
+            :disabled="!hasNextPage"
+            @click.native="next"
+          />
+        </Gutter>
       </div>
-      <Gutter class="right">
-        <button
-          class="control"
-          :disabled="activePageIndex >= (keyedPages.length - 1)"
-          @click="setActivePage($event, activePageIndex + 1)"
-        >
-          <ChevronIcon class="icon-advance" />
-        </button>
-      </Gutter>
-    </div>
-    <div v-if="keyedPages.length > 1" class="indicators">
-      <a
-        v-for="({ key }, n) in keyedPages"
-        :href="`#${key}`"
-        :key="key"
-        :class="['indicator', pageStates(n)]"
-        @click="setActivePage($event, n)"
-      />
-    </div>
+      <div class="compact-controls">
+        <ControlPrevious
+          :disabled="!hasPreviousPage"
+          @click.native="previous"
+        />
+        <ControlNext
+          :disabled="!hasNextPage"
+          @click.native="next"
+        />
+      </div>
+      <div class="indicators">
+        <a
+          v-for="({ key }, n) in keyedPages"
+          :href="`#${key}`"
+          :key="key"
+          :class="['indicator', pageStates(n)]"
+          @click="setActivePage($event, n)"
+        />
+      </div>
+    </template>
     <slot />
   </div>
 </template>
 
 <script>
-import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
+import PagerControl from 'docc-render/components/PagerControl.vue';
 
 function waitForScrollIntoView(element) {
   // call `scrollIntoView` to start asynchronously scrollling the off-screen
@@ -134,7 +140,20 @@ function waitForScrollIntoView(element) {
 export default {
   name: 'Pager',
   components: {
-    ChevronIcon,
+    ControlNext: {
+      render(createElement) {
+        return createElement(PagerControl, {
+          props: { action: PagerControl.Action.next },
+        });
+      },
+    },
+    ControlPrevious: {
+      render(createElement) {
+        return createElement(PagerControl, {
+          props: { action: PagerControl.Action.previous },
+        });
+      },
+    },
     Gutter: {
       render(createElement) {
         return createElement('div', { class: 'gutter' }, (
@@ -162,6 +181,8 @@ export default {
       key: `pager-${_uid}-page-${i}`,
       page,
     })),
+    hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),
+    hasPreviousPage: ({ activePageIndex }) => activePageIndex > 0,
   },
   methods: {
     isActivePage(index) {
@@ -187,6 +208,12 @@ export default {
       this.startObservingPages();
 
       this.activePageIndex = index;
+    },
+    next(event) {
+      this.setActivePage(event, this.activePageIndex + 1);
+    },
+    previous(event) {
+      this.setActivePage(event, this.activePageIndex - 1);
     },
     observePages(entries) {
       // observe page visibility so that we can activate the indicator for the
@@ -281,37 +308,6 @@ export default {
   }
 }
 
-.control {
-  align-items: center;
-  background: var(--control-color-fill);
-  border: 1px solid var(--control-color-fill);
-  border-radius: 50%;
-  display: flex;
-  height: var(--control-size);
-  justify-content: center;
-  opacity: 1;
-  transition: opacity 0.15s ease-in-out;
-  width: var(--control-size);
-
-  &[disabled] {
-    opacity: 0;
-  }
-
-  .icon-advance,
-  .icon-retreat {
-    height: 65%;
-    width: 65%;
-  }
-
-  .icon-advance {
-    transform: scale(1, 1);
-  }
-
-  .icon-retreat {
-    transform: scale(-1, 1);
-  }
-}
-
 .page {
   flex-shrink: 0;
   margin-right: var(--gutter-width);
@@ -338,6 +334,10 @@ export default {
   gap: 1em;
   justify-content: center;
   margin-top: 1rem;
+
+  @include breakpoint(small) {
+    display: none;
+  }
 }
 
 .indicator {
@@ -353,6 +353,16 @@ export default {
   &.active {
     background: var(--indicator-color-fill-active);
     border-color: var(--indicator-color-fill-active);
+  }
+}
+
+.compact-controls {
+  display: none;
+
+  @include breakpoint(small) {
+    display: flex;
+    gap: 1em;
+    justify-content: flex-end;
   }
 }
 </style>
