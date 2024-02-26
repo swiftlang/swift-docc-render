@@ -157,15 +157,17 @@ export default {
 
 .changed {
   $-coin-spacer: 5px;
-  padding-left: $icon-size-default + ($-coin-spacer * 2);
+  padding-left: $icon-size-default + $-coin-spacer;
+  border: none;
 
   &::after {
-    content: none;
+    // unset the global .changed style
+    all: unset;
   }
 
   &::before {
     @include coin($modified-rounded-svg, $icon-size-default);
-    left: $-coin-spacer;
+    left: 0;
 
     @include prefers-dark {
       background-image: $modified-dark-rounded-svg;
