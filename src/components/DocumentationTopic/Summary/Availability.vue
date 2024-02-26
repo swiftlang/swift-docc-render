@@ -173,11 +173,10 @@ export default {
   }
 
   &-added::before {
-      background-image: $added-rounded-svg;
+    background-image: $added-rounded-svg;
 
-      @include prefers-dark {
-        background-image: $added-dark-rounded-svg;
-      }
+    @include prefers-dark {
+      background-image: $added-dark-rounded-svg;
     }
   }
 
