@@ -10,16 +10,16 @@
 
 <template>
   <Section class="availability" role="complementary" :aria-label="$t('sections.availability')">
-    <Badge
+    <div
       v-for="technology in technologies"
       class="technology"
       :key="technology"
     >
       <TechnologyIcon class="tech-icon" />
       {{ technology }}
-    </Badge>
+    </div>
 
-    <Badge
+    <div
       v-for="platform in platforms"
       class="platform"
       :class="changesClassesFor(platform.name)"
@@ -30,11 +30,8 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-      <span v-if="platform.deprecatedAt" class="deprecated">
-        {{ $t('aside-kind.deprecated') }}
-      </span>
-      <span v-else-if="platform.beta" class="beta">{{ $t('aside-kind.beta') }}</span>
-    </Badge>
+      <Badge v-if=badgeFor(platform) :variant="badgeFor(platform)"> </Badge>
+    </div>
   </Section>
 </template>
 
@@ -72,6 +69,9 @@ export default {
     };
   },
   methods: {
+    badgeFor(platform) {
+      return platform.deprecatedAt ? 'deprecated' : (platform.beta && 'beta');
+    },
     changeFor(platform) {
       const { identifier, state: { apiChanges } } = this;
       const { availability = {} } = (apiChanges || {})[identifier] || {};
@@ -106,6 +106,12 @@ export default {
   gap: 10px;
   margin-top: rem(15px);
   @include font-styles(body-reduced);
+}
+
+.platform:not(:first-child):before {
+  content: " ";
+  border-left: 1px solid;
+  padding-right: 10px;
 }
 
 .badge {
