@@ -42,6 +42,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
+$border-radius: 1px;
 
 @mixin badge-variation($color) {
   --badge-color: var(--color-badge-#{$color});
@@ -53,20 +54,17 @@ export default {
 
   @include font-styles(badge);
   display: inline-block;
-  padding: 2px 10px;
+  padding: 2px 4px;
   white-space: nowrap;
-  background: none;
-  border-radius: var(--badge-border-radius, calc(#{$border-radius} - 1px));
-  border-style: var(--badge-border-style, solid);
-  border-width: var(--badge-border-width, 1px);
-  margin-left: 10px;
-  color: var(--badge-color);
-
-  .theme-dark & {
-    --badge-color: var(--badge-dark-color);
+  border-radius: var(--badge-border-radius, $border-radius);
+  border: none;
+  margin-left: 5px;
+  color: var(--colors-button-text, var(--color-button-text));
+  background-color: var(--badge-color);
+  @include prefers-dark {
+    background-color: var(--badge-dark-color);
   }
 
-  /* nav bar badge */
   &-deprecated {
     @include badge-variation(deprecated);
   }

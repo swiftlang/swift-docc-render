@@ -30,7 +30,8 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-      <Badge v-if=badgeFor(platform) :variant="badgeFor(platform)"> </Badge>
+      <Badge v-if=platform.deprecatedAt variant="deprecated"> </Badge>
+      <Badge v-else-if=platform.beta variant="beta"> </Badge>
     </div>
   </Section>
 </template>
@@ -69,9 +70,6 @@ export default {
     };
   },
   methods: {
-    badgeFor(platform) {
-      return platform.deprecatedAt ? 'deprecated' : (platform.beta && 'beta');
-    },
     changeFor(platform) {
       const { identifier, state: { apiChanges } } = this;
       const { availability = {} } = (apiChanges || {})[identifier] || {};
@@ -125,34 +123,7 @@ export default {
 .tech-icon {
   height: 12px;
   padding-right: 5px;
-  fill: var(--badge-color);
-
-  @include prefers-dark {
-    fill: var(--badge-dark-color);
-  }
-}
-
-.beta, .deprecated {
-  border-radius: 3px;
-  padding: 2px 4px;
-  border: none;
-  color: var(--colors-button-text, var(--color-button-text));
-}
-
-.beta {
-  background-color: var(--color-badge-beta);
-
-  @include prefers-dark {
-    background-color: var(--color-badge-dark-beta);
-  }
-}
-
-.deprecated {
-  background-color:var(--color-badge-deprecated);
-
-  @include prefers-dark {
-    background-color: var(--color-badge-dark-deprecated);
-  }
+  fill: var(--color-figure-gray);
 }
 
 .changed {
