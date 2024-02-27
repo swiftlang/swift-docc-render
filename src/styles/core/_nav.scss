@@ -62,7 +62,7 @@ $nav-z-index: 9997;
 $nav-chevron-angle: 40deg;
 $nav-chevron-thickness: 1.5;
 $nav-chevron-transition: 0.3s linear transform;
-$nav-menu-label-margin: rem(6px);
+$nav-menu-label-margin: rem(5px);
 
 // Apply styles to animate the nav chevron downwards
 @mixin nav-chevron-animation {

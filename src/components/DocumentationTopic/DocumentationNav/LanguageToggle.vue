@@ -229,6 +229,7 @@ $dropdown-icon-padding: 11px;
 $nav-menu-toggle-label-margin: 6px;
 
 .nav-menu-setting-label {
+  display: inline-block;
   margin-right: $nav-menu-label-margin;
   white-space: nowrap;
 }
@@ -315,7 +316,7 @@ $nav-menu-toggle-label-margin: 6px;
     display: inline-block;
 
     &:not(:first-child) {
-      border-left: 1px solid dark-color(fill-gray-tertiary);
+      border-left: 1px solid var(--color-fill-gray-tertiary);
       margin-left: $nav-menu-toggle-label-margin;
       padding-left: $nav-menu-toggle-label-margin;
     }
