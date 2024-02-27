@@ -328,6 +328,10 @@ export default {
   }
 }
 
+.gutter .pager-control {
+  margin-top: calc(-1 * var(--control-size));
+}
+
 .indicators {
   display: flex;
   flex-wrap: wrap;
