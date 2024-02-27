@@ -97,6 +97,7 @@ export default {
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
+$icon-size-default: 20px;
 
 .availability {
   display: flex;
@@ -128,7 +129,7 @@ export default {
 
 .changed {
   $-coin-spacer: 5px;
-  padding-left: $icon-size-default + $-coin-spacer;
+  padding-left: $icon-size-default - $-coin-spacer + 2;
   border: none;
 
   &::after {
@@ -137,27 +138,28 @@ export default {
   }
 
   &::before {
-    @include coin($modified-rounded-svg, $icon-size-default);
-    left: 0;
+    @include coin($modified-svg, $icon-size-default);
+    margin: 0;
+    left: -$-coin-spacer;
 
     @include prefers-dark {
-      background-image: $modified-dark-rounded-svg;
+      background-image: $modified-dark-svg;
     }
   }
 
   &-added::before {
-    background-image: $added-rounded-svg;
+    background-image: $added-svg;
 
     @include prefers-dark {
-      background-image: $added-dark-rounded-svg;
+      background-image: $added-dark-svg;
     }
   }
 
   &-deprecated::before {
-    background-image: $deprecated-rounded-svg;
+    background-image: $deprecated-svg;
 
     @include prefers-dark {
-      background-image: $deprecated-dark-rounded-svg;
+      background-image: $deprecated-dark-svg;
     }
   }
 }
