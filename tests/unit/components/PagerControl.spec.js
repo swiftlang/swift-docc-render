@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 import { shallowMount } from '@vue/test-utils';
-import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
+import ChevronRoundedIcon from 'theme/components/Icons/ChevronRoundedIcon.vue';
 import PagerControl from 'docc-render/components/PagerControl.vue';
 
 describe('PagerControl', () => {
@@ -20,7 +20,7 @@ describe('PagerControl', () => {
     });
     expect(wrapper.classes()).toEqual(['pager-control', 'next']);
 
-    const icon = wrapper.find(ChevronIcon);
+    const icon = wrapper.find(ChevronRoundedIcon);
     expect(icon.exists()).toBe(true);
 
     wrapper.setProps({ action: PagerControl.Action.previous });
