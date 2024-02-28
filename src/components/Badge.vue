@@ -58,6 +58,7 @@ $border-radius: 1px;
   white-space: nowrap;
   border-radius: var(--badge-border-radius, $border-radius);
   border: none;
+  margin: auto;
   margin-left: 5px;
   color: var(--colors-button-text, var(--color-button-text));
   background-color: var(--badge-color);
