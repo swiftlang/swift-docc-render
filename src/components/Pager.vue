@@ -297,7 +297,7 @@ export default {
   width: var(--gutter-width);
   z-index: 42;
 
-  @include breakpoint(small) {
+  @include breakpoint(medium) {
     display: none;
   }
 
@@ -365,7 +365,7 @@ export default {
 .compact-controls {
   display: none;
 
-  @include breakpoint(small) {
+  @include breakpoint(medium) {
     display: flex;
     gap: 1em;
     justify-content: flex-end;
