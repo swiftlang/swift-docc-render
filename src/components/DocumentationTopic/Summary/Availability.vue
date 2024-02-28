@@ -30,8 +30,8 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-      <Badge v-if=platform.deprecatedAt variant="deprecated"> </Badge>
-      <Badge v-else-if=platform.beta variant="beta"> </Badge>
+      <Badge v-if="platform.deprecatedAt" variant="deprecated" />
+      <Badge v-else-if="platform.beta" variant="beta" />
     </div>
   </Section>
 </template>
@@ -124,7 +124,7 @@ $icon-size-default: 20px;
 .tech-icon {
   height: 12px;
   padding-right: 5px;
-  fill: var(--color-figure-gray);
+  fill: var(--color-figure-gray) !important;
 }
 
 .changed {

@@ -26,6 +26,7 @@ describe('Availability', () => {
       {
         introducedAt: '1.0',
         name: 'fooOS',
+        beta: true,
       },
       {
         deprecatedAt: '2.0',
@@ -74,52 +75,45 @@ describe('Availability', () => {
     expect(section.attributes('role')).toBe('complementary');
   });
 
-  it('renders a `Badge` for technologies, a `Badge` and `AvailabilityRange` for each platform', () => {
+  it('renders a `div` for technologies, a `AvailabilityRange` and a `Badge` if applicable for each platform', () => {
     const { platforms, technologies } = propsData;
-    const badges = wrapper.findAll(Badge);
-    expect(badges.length).toBe(technologies.length + platforms.length);
+    const pills = wrapper.findAll('.technology, .platform');
+    expect(pills.length).toBe(technologies.length + platforms.length);
 
     for (let i = 0; i < technologies.length; i += 1) {
-      const badge = badges.at(i);
-      expect(badge.exists()).toBe(true);
+      const pill = pills.at(i);
+      expect(pill.exists()).toBe(true);
     }
 
     for (let i = technologies.length; i < platforms.length; i += 1) {
-      const badge = badges.at(i);
-      const range = badge.find(AvailabilityRange);
+      const {
+        deprecatedAt, introducedAt, name, beta,
+      } = platforms[i - technologies.length];
+      const pill = pills.at(i);
+
+      const badge = pill.find(Badge);
+      if (deprecatedAt || beta) {
+        expect(badge.exists()).toBe(true);
+      } else {
+        expect(badge.exists()).toBe(false);
+      }
+
+      const range = pill.find(AvailabilityRange);
       expect(range.exists()).toBe(true);
       expect(range.props()).toEqual({
-        deprecatedAt: platforms[i - technologies.length].deprecatedAt,
-        introducedAt: platforms[i - technologies.length].introducedAt,
-        platformName: platforms[i - technologies.length].name,
+        deprecatedAt,
+        introducedAt,
+        platformName: name,
       });
     }
   });
 
-  it('renders deprecated text', () => {
+  it('renders correct beta and deprecated badge', () => {
     const badges = wrapper.findAll(Badge);
-    expect(badges.at(2).contains('.deprecated')).toBe(false);
-    expect(badges.at(3).contains('.deprecated')).toBe(true);
-    expect(badges.at(4).contains('.deprecated')).toBe(true);
-    expect(badges.at(5).contains('.deprecated')).toBe(true);
-
-    const deprecated = wrapper.find('.deprecated');
-    expect(deprecated.text()).toBe('aside-kind.deprecated');
-  });
-
-  it('renders beta text', () => {
-    wrapper.setProps({
-      platforms: [
-        {
-          introducedAt: '1.0',
-          beta: true,
-          name: 'fooOS',
-        },
-      ],
-    });
-    const beta = wrapper.find('.beta');
-    expect(beta.exists()).toBe(true);
-    expect(beta.text()).toBe('aside-kind.beta');
+    expect(badges.at(0).props('variant')).toBe('beta');
+    expect(badges.at(1).props('variant')).toBe('deprecated');
+    expect(badges.at(2).props('variant')).toBe('deprecated');
+    expect(badges.at(3).props('variant')).toBe('deprecated');
   });
 
   it('renders deprecated over beta badges', () => {
@@ -133,10 +127,10 @@ describe('Availability', () => {
         },
       ],
     });
-    const beta = wrapper.find('.beta');
-    const deprecated = wrapper.find('.deprecated');
-    expect(beta.exists()).toBe(false);
-    expect(deprecated.exists()).toBe(true);
+    const badge = wrapper.findAll(Badge);
+    expect(badge.exists()).toBe(true);
+    expect(badge.length).toBe(1);
+    expect(badge.at(0).props('variant')).toBe('deprecated');
   });
 
   it('renders no beta/deprecated text if not relevant', () => {
@@ -181,12 +175,12 @@ describe('Availability', () => {
         },
       };
 
-      const badges = wrapper.findAll(Badge);
+      const pills = wrapper.findAll('.technology, .platform');
 
-      expect(badges.at(2).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
-      expect(badges.at(3).classes()).toEqual(['platform', 'changed', 'changed-added']);
-      expect(badges.at(4).classes()).toEqual(['platform', 'changed', 'changed-modified']);
-      expect(badges.at(5).classes()).toEqual(['platform']);
+      expect(pills.at(2).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
+      expect(pills.at(3).classes()).toEqual(['platform', 'changed', 'changed-added']);
+      expect(pills.at(4).classes()).toEqual(['platform', 'changed', 'changed-modified']);
+      expect(pills.at(5).classes()).toEqual(['platform']);
     });
   });
 });
