@@ -9,12 +9,12 @@
 -->
 <template>
   <button :class="['pager-control', action]">
-    <ChevronIcon class="icon" />
+    <ChevronRoundedIcon class="icon" />
   </button>
 </template>
 
 <script>
-import ChevronIcon from 'theme/components/Icons/ChevronIcon.vue';
+import ChevronRoundedIcon from 'theme/components/Icons/ChevronRoundedIcon.vue';
 
 const Action = {
   previous: 'previous',
@@ -23,7 +23,7 @@ const Action = {
 
 export default {
   name: 'PagerControl',
-  components: { ChevronIcon },
+  components: { ChevronRoundedIcon },
   props: {
     action: {
       type: String,
@@ -56,8 +56,8 @@ export default {
 }
 
 .icon {
-  height: var(--control-icon-size, 65%);
-  width: var(--control-icon-size, 65%);
+  height: var(--control-icon-size, 50%);
+  width: var(--control-icon-size, 50%);
 
   .pager-control.next & {
     transform: scale(1, 1);

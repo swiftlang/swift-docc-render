@@ -264,6 +264,8 @@ export default {
   --indicator-color-fill-active: currentColor;
   --indicator-color-fill-inactive: var(--color-fill-tertiary);
 
+  --color-svg-icon: currentColor;
+
   --gutter-width: #{$large-viewport-dynamic-content-padding};
 }
 
