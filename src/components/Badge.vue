@@ -42,7 +42,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'docc-render/styles/_core.scss';
-$border-radius: 1px;
 
 @mixin badge-variation($color) {
   --badge-color: var(--color-badge-#{$color});
@@ -56,8 +55,9 @@ $border-radius: 1px;
   display: inline-block;
   padding: 2px 4px;
   white-space: nowrap;
-  border-radius: var(--badge-border-radius, $border-radius);
-  border: none;
+  border-radius: var(--badge-border-radius, 1px);
+  border-style: var(--badge-border-style, none);
+  border-width: var(--badge-border-width, 1px);
   margin: auto;
   margin-left: 5px;
   color: var(--colors-button-text, var(--color-button-text));
