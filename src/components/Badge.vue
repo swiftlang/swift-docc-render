@@ -60,7 +60,7 @@ export default {
   border-width: var(--badge-border-width, 1px);
   margin: auto;
   margin-left: 5px;
-  color: var(--colors-button-text, var(--color-button-text));
+  color: var(--colors-badge-text, var(--color-badge-text));
   background-color: var(--badge-color);
   @include prefers-dark {
     background-color: var(--badge-dark-color);
