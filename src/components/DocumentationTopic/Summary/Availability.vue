@@ -16,12 +16,12 @@
       :key="technology"
     >
       <TechnologyIcon class="tech-icon" />
-      <span>{{ technology }}</span>
+      <span class="availability-info">{{ technology }}</span>
     </div>
 
     <div
       v-for="platform in platforms"
-      class="platform"
+      class="platform availability-info"
       :class="changesClassesFor(platform.name)"
       :key="platform.name"
     >
@@ -106,13 +106,11 @@ $icon-size-default: 20px;
   margin-top: rem(15px);
   @include font-styles(body-reduced);
 
-  div:not(:last-child) {
+  &:not(:last-child) .availability-info::after {
     // apply on the span of technology class to ensure same separator height
-    &.platform:after, &.technology > span:after {
-      content: " ";
-      border-right: 1px solid;
-      padding-left: 10px;
-    }
+    content: " ";
+    border-right: 1px solid;
+    padding-left: 10px;
   }
 }
 
