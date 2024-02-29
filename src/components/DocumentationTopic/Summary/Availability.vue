@@ -122,7 +122,7 @@ $icon-size-default: 20px;
 .tech-icon {
   height: 12px;
   padding-right: 5px;
-  fill: var(--color-figure-gray) !important;
+  --color-svg-icon: var(--color-figure-gray);
 }
 
 .changed {
