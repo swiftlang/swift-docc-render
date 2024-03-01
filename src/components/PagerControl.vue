@@ -8,7 +8,10 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <button :class="['pager-control', action]">
+  <button
+    :class="['pager-control', action]"
+    :aria-label="$t(`pager.control.navigate-${action}`)"
+  >
     <ChevronRoundedIcon class="icon" />
   </button>
 </template>

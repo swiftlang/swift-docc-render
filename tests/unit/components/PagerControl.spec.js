@@ -19,11 +19,13 @@ describe('PagerControl', () => {
       },
     });
     expect(wrapper.classes()).toEqual(['pager-control', 'next']);
+    expect(wrapper.attributes('aria-label')).toBe('pager.control.navigate-next');
 
     const icon = wrapper.find(ChevronRoundedIcon);
     expect(icon.exists()).toBe(true);
 
     wrapper.setProps({ action: PagerControl.Action.previous });
     expect(wrapper.classes()).toEqual(['pager-control', 'previous']);
+    expect(wrapper.attributes('aria-label')).toBe('pager.control.navigate-previous');
   });
 });
