@@ -16,12 +16,12 @@
       :key="technology"
     >
       <TechnologyIcon class="tech-icon" />
-      <span class="availability-info">{{ technology }}</span>
+      <span>{{ technology }}</span>
     </div>
 
     <div
       v-for="platform in platforms"
-      class="platform availability-info"
+      class="platform"
       :class="changesClassesFor(platform.name)"
       :key="platform.name"
     >
@@ -99,22 +99,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 $icon-size-default: 20px;
 
-.availability {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 10px;
-  margin-top: rem(15px);
-  @include font-styles(body-reduced);
-
-  &:not(:last-child) .availability-info::after {
-    // apply on the span of technology class to ensure same separator height
-    content: " ";
-    border-right: 1px solid;
-    padding-left: 10px;
-  }
-}
-
-.technology {
+.technology, .platform {
   display: inline-flex;
   align-items: center;
 }
@@ -158,6 +143,29 @@ $icon-size-default: 20px;
 
     @include prefers-dark {
       background-image: $deprecated-dark-svg;
+    }
+  }
+}
+
+.availability {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  margin-top: rem(15px);
+
+  & > * {
+    @include font-styles(body-reduced);
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 1px;
+      height: 14px;
+      background: black;
+      margin-left: 10px;
+    }
+
+    &:last-child::after {
+      content: none;
     }
   }
 }

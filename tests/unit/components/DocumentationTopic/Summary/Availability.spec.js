@@ -177,10 +177,10 @@ describe('Availability', () => {
 
       const pills = wrapper.findAll('.technology, .platform');
 
-      expect(pills.at(2).classes()).toEqual(['platform', 'availability-info', 'changed', 'changed-deprecated']);
-      expect(pills.at(3).classes()).toEqual(['platform', 'availability-info', 'changed', 'changed-added']);
-      expect(pills.at(4).classes()).toEqual(['platform', 'availability-info', 'changed', 'changed-modified']);
-      expect(pills.at(5).classes()).toEqual(['platform', 'availability-info']);
+      expect(pills.at(2).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
+      expect(pills.at(3).classes()).toEqual(['platform', 'changed', 'changed-added']);
+      expect(pills.at(4).classes()).toEqual(['platform', 'changed', 'changed-modified']);
+      expect(pills.at(5).classes()).toEqual(['platform']);
     });
   });
 });
