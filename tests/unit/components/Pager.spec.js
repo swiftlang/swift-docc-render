@@ -63,26 +63,37 @@ describe('Pager', () => {
 
   it('renders with the first page active, which can be changed using indicators', async () => {
     const wrapper = shallowMount(Pager, { propsData });
-    const indicators = wrapper.findAll('.indicator');
 
     let pages = wrapper.findAll('.page');
+    let indicators = wrapper.findAll('.indicator');
     expect(pages.at(0).classes('active')).toBe(true);
+    expect(indicators.at(0).attributes('aria-current')).toBeTruthy();
     expect(pages.at(1).classes('active')).toBe(false);
+    expect(indicators.at(1).attributes('aria-current')).toBeFalsy();
     expect(pages.at(2).classes('active')).toBe(false);
+    expect(indicators.at(2).attributes('aria-current')).toBeFalsy();
 
     await indicators.at(1).trigger('click');
 
     pages = wrapper.findAll('.page');
+    indicators = wrapper.findAll('.indicator');
     expect(pages.at(0).classes('active')).toBe(false);
+    expect(indicators.at(0).attributes('aria-current')).toBeFalsy();
     expect(pages.at(1).classes('active')).toBe(true);
+    expect(indicators.at(1).attributes('aria-current')).toBeTruthy();
     expect(pages.at(2).classes('active')).toBe(false);
+    expect(indicators.at(2).attributes('aria-current')).toBeFalsy();
 
     await indicators.at(2).trigger('click');
 
     pages = wrapper.findAll('.page');
+    indicators = wrapper.findAll('.indicator');
     expect(pages.at(0).classes('active')).toBe(false);
+    expect(indicators.at(0).attributes('aria-current')).toBeFalsy();
     expect(pages.at(1).classes('active')).toBe(false);
+    expect(indicators.at(1).attributes('aria-current')).toBeFalsy();
     expect(pages.at(2).classes('active')).toBe(true);
+    expect(indicators.at(2).attributes('aria-current')).toBeTruthy();
   });
 
   it('renders only the page slot with a single page', () => {

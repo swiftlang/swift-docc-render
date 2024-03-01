@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <Pager class="TopicsLinkCardGrid" :pages="pages">
+  <Pager class="TopicsLinkCardGrid" :pages="pages" :aria-label="$t('links-grid.label')">
     <template #page="{ page }">
       <Row :columns="{
         large: compactCards ? 3 : 2,

@@ -8,7 +8,7 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="pager">
+  <div class="pager" role="region" :aria-roledescription="$t('pager.roledescription')">
     <template v-if="pages.length === 1">
       <slot name="page" :page="pages[0]" />
     </template>
@@ -20,10 +20,11 @@
             @click.native="previous"
           />
         </Gutter>
-        <div class="viewport" ref="viewport">
+        <div class="viewport" ref="viewport" role="group">
           <div
             v-for="({ page, key }, n) in keyedPages"
             ref="pages"
+            :aria-label="$t('pager.page.label', { index: n + 1, count: keyedPages.length })"
             :class="['page', pageStates(n)]"
             :id="key"
             :key="key"
@@ -38,7 +39,7 @@
           />
         </Gutter>
       </div>
-      <div class="compact-controls">
+      <div class="compact-controls" role="group" aria-label="Controls">
         <ControlPrevious
           :disabled="!hasPreviousPage"
           @click.native="previous"
@@ -51,6 +52,7 @@
       <div class="indicators">
         <a
           v-for="({ key }, n) in keyedPages"
+          :aria-current="isActivePage(n)"
           :href="`#${key}`"
           :key="key"
           :class="['indicator', pageStates(n)]"
