@@ -98,6 +98,7 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 $icon-size-default: 20px;
+$availability-info-spacing: 10px;
 
 .technology, .platform {
   display: inline-flex;
@@ -150,7 +151,7 @@ $icon-size-default: 20px;
 .availability {
   display: flex;
   flex-flow: row wrap;
-  gap: 10px;
+  gap: $availability-info-spacing;
   margin-top: rem(15px);
 
   & > * {
@@ -161,7 +162,7 @@ $icon-size-default: 20px;
       width: 1px;
       height: 14px;
       background: black;
-      margin-left: 10px;
+      margin-left: $availability-info-spacing;
     }
 
     &:last-child::after {
