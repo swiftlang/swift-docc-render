@@ -34,6 +34,8 @@ describe('TopicsLinkCardGrid', () => {
 
     const pager = wrapper.find(Pager);
     expect(pager.exists()).toBe(true);
+    expect(pager.classes('TopicsLinkCardGrid')).toBe(true);
+    expect(pager.classes('compactGrid')).toBe(true);
 
     const pages = pager.props('pages');
     expect(pages.length).toBe(1);
@@ -79,6 +81,7 @@ describe('TopicsLinkCardGrid', () => {
 
       // 10 items => 3 pages at large breakpoint (4 links per page)
       let pager = wrapper.find(Pager);
+      expect(pager.classes('detailedGrid')).toBe(true);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(3);
 
