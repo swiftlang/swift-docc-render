@@ -58,6 +58,10 @@ export default {
       type: Array,
       required: true,
     },
+    pageSize: {
+      type: Number,
+      required: false,
+    },
     topicStyle: {
       type: String,
       default: TopicSectionsStyle.compactGrid,
@@ -70,7 +74,7 @@ export default {
   },
   computed: {
     compactCards: ({ topicStyle }) => topicStyle === TopicSectionsStyle.compactGrid,
-    pageSize: ({
+    defaultPageSize: ({
       breakpoint,
       items,
       topicStyle,
@@ -89,7 +93,11 @@ export default {
     }[topicStyle][breakpoint] : (
       items.length
     )),
-    pages: ({ items, pageSize }) => page(items, pageSize),
+    pages: ({
+      items,
+      defaultPageSize,
+      pageSize,
+    }) => page(items, (pageSize || defaultPageSize)),
   },
   methods: {
     handleBreakpointChange(breakpoint) {
