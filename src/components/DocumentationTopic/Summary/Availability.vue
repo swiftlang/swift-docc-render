@@ -153,15 +153,15 @@ $availability-info-spacing: 10px;
   flex-flow: row wrap;
   gap: $availability-info-spacing;
   margin-top: rem(15px);
+  @include font-styles(body-reduced);
 
   & > * {
-    @include font-styles(body-reduced);
     &::after {
       content: '';
       display: inline-block;
       width: 1px;
-      height: 14px;
-      background: black;
+      height: rem(14px);
+      background: currentColor;
       margin-left: $availability-info-spacing;
     }
 
