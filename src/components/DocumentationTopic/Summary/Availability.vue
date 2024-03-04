@@ -10,16 +10,16 @@
 
 <template>
   <Section class="availability" role="complementary" :aria-label="$t('sections.availability')">
-    <div
+    <span
       v-for="technology in technologies"
       class="technology"
       :key="technology"
     >
       <TechnologyIcon class="tech-icon" />
       <span>{{ technology }}</span>
-    </div>
+    </span>
 
-    <div
+    <span
       v-for="platform in platforms"
       class="platform"
       :class="changesClassesFor(platform.name)"
@@ -32,7 +32,7 @@
       />
       <Badge v-if="platform.deprecatedAt" variant="deprecated" />
       <Badge v-else-if="platform.beta" variant="beta" />
-    </div>
+    </span>
   </Section>
 </template>
 
