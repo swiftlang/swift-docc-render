@@ -21,6 +21,12 @@ export default {
   constants: {
     TOPIC_TYPE_TO_TAG,
   },
+  props: {
+    shouldTruncateTags: {
+      type: Boolean,
+      default: false,
+    },
+  },
   computed: {
     /**
      * Generates an array of tag labels for filtering.
