@@ -160,7 +160,7 @@ $availability-info-spacing: 10px;
       content: '';
       display: inline-block;
       width: 1px;
-      height: rem(14px);
+      height: 1em;
       background: currentColor;
       margin-left: $availability-info-spacing;
     }
