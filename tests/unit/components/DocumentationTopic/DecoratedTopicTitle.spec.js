@@ -74,6 +74,11 @@ describe('DecoratedTopicTitle', () => {
     expect(spans.at(1).is('span')).toBeTruthy();
   });
 
+  it('renders wbrs for each token', () => {
+    const wbrs = wrapper.findAll('wbr');
+    expect(wbrs.length).toBe(6);
+  });
+
   it('renders an .identifier for each identifier token', () => {
     expect(wrapper.findAll('.identifier').length).toBe(1);
   });
