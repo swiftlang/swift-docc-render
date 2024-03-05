@@ -73,7 +73,7 @@ export default {
         // extract props
         const { type, path, deprecated } = nodes[childID];
 
-        // add type tag
+        // add type tag if not already added
         const tag = TOPIC_TYPE_TO_TAG[type];
         if (tag && possibleTags.has(tag)) {
           // if we have a match, store it

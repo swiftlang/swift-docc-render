@@ -26,6 +26,8 @@ export default {
   },
   methods: {
     filterChildren(children, selectedTags, apiChanges, filterPattern) {
+      // use Set over Array for better performance
+      const selectedTagSet = new Set(selectedTags);
       // find children that match current filters
       return children.filter(({
         title, path, type, deprecated, deprecatedChildrenCount, childUIDs,
@@ -35,14 +37,14 @@ export default {
         // groupMarkers know how many children they have and how many are deprecated
         const isDeprecated = deprecated || deprecatedChildrenCount === childUIDs.length;
         let tagMatch = true;
-        if (selectedTags.length) {
-          tagMatch = selectedTags.includes(TOPIC_TYPE_TO_TAG[type]);
+        if (selectedTagSet.size) {
+          tagMatch = selectedTagSet.has(TOPIC_TYPE_TO_TAG[type]);
           // if there are API changes and there is no tag match, try to match change types
           if (apiChanges && !tagMatch) {
             const change = apiChanges[path];
-            tagMatch = selectedTags.includes(FILTER_TAGS[change]);
+            tagMatch = selectedTagSet.has(FILTER_TAGS[change]);
           }
-          if (selectedTags.includes(FILTER_TAGS.hideDeprecated)) {
+          if (selectedTagSet.has(FILTER_TAGS.hideDeprecated)) {
             tagMatch = !isDeprecated;
           }
         }
