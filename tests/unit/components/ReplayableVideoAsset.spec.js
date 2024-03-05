@@ -82,6 +82,18 @@ describe('ReplayableVideoAsset', () => {
     expect(wrapper.find('.control-button').exists()).toBe(false);
   });
 
+  it('adds a description reference to `.control-button` if id is provided', () => {
+    const wrapper = mountWithProps();
+    const controlButton = wrapper.find('.control-button');
+    expect(controlButton.attributes('aria-describedby')).toBe(propsData.id);
+  });
+
+  it('does not add a description reference to `.control-button` if id is not provided', () => {
+    const wrapper = mountWithProps({ id: null });
+    const controlButton = wrapper.find('.control-button');
+    expect(controlButton.attributes()).not.toHaveProperty('aria-describedby');
+  });
+
   it('changes the control button text, while the video is changing states', async () => {
     const wrapper = mountWithProps();
 

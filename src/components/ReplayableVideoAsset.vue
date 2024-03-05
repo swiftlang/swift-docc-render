@@ -28,6 +28,7 @@
       v-if="!showsControls"
       class="control-button"
       href="#"
+      :aria-describedby="id || null"
       @click.prevent="togglePlayStatus"
     >
       {{ text }}
