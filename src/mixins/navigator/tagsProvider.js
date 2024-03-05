@@ -9,9 +9,7 @@
 */
 
 /* eslint-disable no-restricted-syntax */
-import { ChangeNames } from 'docc-render/constants/Changes';
 import {
-  HIDE_DEPRECATED,
   FILTER_TAGS,
   TOPIC_TYPE_TO_TAG,
 } from 'docc-render/constants/Tags';
@@ -45,24 +43,23 @@ export default {
       if (hideAvailableTags || selectedTags.length) return [];
       return availableTags;
     },
-    translatableTags: ({ availableTags }) => [HIDE_DEPRECATED, ...availableTags],
+    translatableTags: ({ availableTags }) => [FILTER_TAGS.hideDeprecated, ...availableTags],
   },
   methods: {
     extractTags(nodes, apiChanges) {
-      // extract tags from child nodes
-      const apiChangesTypesSet = new Set(Object.values(apiChanges));
-      const tagsSet = new Set(Object.values(FILTER_TAGS));
-      const generalTags = new Set([HIDE_DEPRECATED]);
-      // when API changes are available, remove the `HIDE_DEPRECATED` option
-      if (apiChangesTypesSet.size) {
-        generalTags.delete(HIDE_DEPRECATED);
-      }
-
+      const possibleTags = new Set(Object.values(FILTER_TAGS));
+      // create categories to order the availableTags
       const availableTags = {
         type: [],
         changes: [],
         other: [],
       };
+
+      // when API changes are available, remove the hide deprecated option
+      if (apiChanges && Object.values(apiChanges).length) {
+        possibleTags.delete(FILTER_TAGS.hideDeprecated);
+      }
+
       // iterate over the nodes to render
       for (const childID in nodes) {
         if (!Object.hasOwnProperty.call(nodes, childID)) {
@@ -70,28 +67,33 @@ export default {
           continue;
         }
         // if there are no more tags to iterate over, end early
-        if (!tagsSet.size && !apiChangesTypesSet.size && !generalTags.size) {
+        if (!possibleTags.size) {
           break;
         }
         // extract props
         const { type, path, deprecated } = nodes[childID];
-        // grab the tagLabel
+
+        // add type tag
         const tag = TOPIC_TYPE_TO_TAG[type];
-        const changeType = apiChanges[path];
-        // try to match a tag
-        if (tagsSet.has(tag)) {
+        if (tag && possibleTags.has(tag)) {
           // if we have a match, store it
           availableTags.type.push(tag);
           // remove the match, so we can end the filter early
-          tagsSet.delete(tag);
+          possibleTags.delete(tag);
         }
-        if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.changes.push(ChangeNames[changeType]);
-          apiChangesTypesSet.delete(changeType);
+
+        // add change tag
+        const changeType = apiChanges[path];
+        if (changeType && FILTER_TAGS[changeType]) {
+          availableTags.changes.push(FILTER_TAGS[changeType]);
+          possibleTags.delete(FILTER_TAGS[changeType]);
         }
-        if (deprecated && generalTags.has(HIDE_DEPRECATED)) {
-          availableTags.other.push(HIDE_DEPRECATED);
-          generalTags.delete(HIDE_DEPRECATED);
+
+        // add hide deprecated tag if there exists deprecated symbols
+        // and API change is off
+        if (deprecated && possibleTags.has(FILTER_TAGS.hideDeprecated)) {
+          availableTags.other.push(FILTER_TAGS.hideDeprecated);
+          possibleTags.delete(FILTER_TAGS.hideDeprecated);
         }
       }
       return Object.values(availableTags).flat();
