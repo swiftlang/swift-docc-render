@@ -38,6 +38,8 @@ const propsData = {
     { traits: ['light', '1x'], url: 'https://www.example.com/video.mp4' },
     { traits: ['dark', '1x'], url: 'https://www.example.com/video~dark.mp4' },
   ],
+  alt: 'Text describing this video',
+  id: 'video.mp4',
 };
 
 describe('VideoAsset', () => {
@@ -52,6 +54,13 @@ describe('VideoAsset', () => {
     const video = wrapper.find('video');
     expect(video.exists()).toBe(true);
     expect(video.element.muted).toBe(false);
+  });
+
+  it('renders a hidden description with unique id for AX purposes if video provides an alt text', () => {
+    const hiddenDesc = wrapper.find('span.visuallyhidden');
+    expect(hiddenDesc.exists()).toBe(true);
+    expect(hiddenDesc.attributes('id')).toMatch(propsData.id);
+    expect(hiddenDesc.text()).toBe(propsData.alt);
   });
 
   it('adds a poster to the `video`, using light by default', async () => {

@@ -17,6 +17,7 @@ import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vu
 const video = {
   type: 'video',
   poster: 'image',
+  alt: 'Text describing this video',
   variants: [
     {
       url: 'foo.mp4',
@@ -102,9 +103,17 @@ describe('Asset', () => {
   });
 
   it('renders a `ReplayableVideoAsset` without poster variants', () => {
-    const videoAsset = mountAsset('video', { video }).find(ReplayableVideoAsset);
+    const identifier = 'video';
+    const videoAsset = mountAsset(identifier, { video }).find(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toEqual([]);
+    expect(videoAsset.props('id')).toBe(identifier);
+    expect(videoAsset.props('alt')).toBe(video.alt);
+  });
+
+  it('renders a `ReplayableVideoAsset` without id if video does not provides an alt text', () => {
+    const videoAsset = mountAsset('video', { video: { ...video, alt: null } }).find(ReplayableVideoAsset);
+    expect(videoAsset.props('id')).not.toBe(video.id);
   });
 
   it('passes down `deviceFrame` to `ReplayableVideoAsset`', () => {
@@ -119,29 +128,57 @@ describe('Asset', () => {
   });
 
   it('renders a `VideoAsset` for video with `showsReplayButton=false`', () => {
+    const identifier = 'video';
+
     const wrapper = shallowMount(Asset, {
       propsData: {
-        identifier: 'video',
+        identifier,
         showsReplayButton: false,
         showsVideoControls: true,
       },
       provide: {
         store: {
-          state: { references: { video } },
+          state: { references: { [identifier]: video } },
         },
       },
     });
 
     const videoAsset = wrapper.find(VideoAsset);
-    expect(videoAsset.props('variants')).toBe(video.variants);
-    expect(videoAsset.props('showsControls')).toBe(true);
-    expect(videoAsset.props('muted')).toBe(false);
+    expect(videoAsset.props()).toEqual(expect.objectContaining({
+      variants: video.variants,
+      showsControls: true,
+      muted: false,
+      id: identifier,
+      alt: video.alt,
+    }));
+  });
+
+  it('renders a `VideoAsset` without id if video does not provides an alt text', () => {
+    const identifier = 'video';
+
+    const wrapper = shallowMount(Asset, {
+      propsData: {
+        identifier,
+        showsReplayButton: false,
+        showsVideoControls: true,
+      },
+      provide: {
+        store: {
+          state: { references: { [identifier]: { ...video, alt: null } } },
+        },
+      },
+    });
+
+    const videoAsset = wrapper.find(VideoAsset);
+    expect(videoAsset.props('id')).not.toBe(identifier);
   });
 
   it('renders a `ReplayableVideoAsset` with deviceFrame', () => {
+    const identifier = 'video';
+
     const wrapper = shallowMount(Asset, {
       propsData: {
-        identifier: 'video',
+        identifier,
         showsReplayButton: true,
         showsVideoControls: true,
         deviceFrame: 'phone',
@@ -161,6 +198,8 @@ describe('Asset', () => {
       posterVariants: [],
       showsControls: true,
       variants: video.variants,
+      id: identifier,
+      alt: video.alt,
     });
   });
 

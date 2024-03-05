@@ -23,6 +23,8 @@ const propsData = {
   variants,
   posterVariants,
   showsControls: false,
+  alt: 'Text describing this video',
+  id: 'video.mp4',
 };
 describe('ReplayableVideoAsset', () => {
   const mountWithProps = props => shallowMount(ReplayableVideoAsset, {
@@ -66,6 +68,8 @@ describe('ReplayableVideoAsset', () => {
     expect(video.props('posterVariants')).toBe(posterVariants);
     expect(video.props('showsControls')).toBe(false);
     expect(video.props('autoplays')).toBe(false);
+    expect(video.props('id')).toBe(propsData.id);
+    expect(video.props('alt')).toBe(propsData.alt);
     expect(wrapper.find('.control-button').exists()).toBe(true);
   });
 

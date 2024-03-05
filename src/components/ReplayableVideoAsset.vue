@@ -18,6 +18,8 @@
       :muted="muted"
       :posterVariants="posterVariants"
       :deviceFrame="deviceFrame"
+      :alt="alt"
+      :id="id"
       @pause="onPause"
       @playing="onVideoPlaying"
       @ended="onVideoEnd"
@@ -54,6 +56,14 @@ export default {
     variants: {
       type: Array,
       required: true,
+    },
+    alt: {
+      type: String,
+      required: false,
+    },
+    id: {
+      type: String,
+      required: false,
     },
     showsControls: {
       type: Boolean,

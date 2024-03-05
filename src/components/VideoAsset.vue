@@ -15,28 +15,37 @@
     :should-wrap="!!deviceFrame"
     :device="deviceFrame"
   >
-    <video
-      ref="video"
-      :controls="showsControls"
-      :data-orientation="orientation"
-      :autoplay="autoplays"
-      :poster="normalisedPosterPath"
-      :muted="muted"
-      :width="optimalWidth"
-      playsinline
-      @loadedmetadata="setOrientation"
-      @playing="$emit('playing')"
-      @pause="$emit('pause')"
-      @ended="$emit('ended')"
-    >
-      <!--
-        Many browsers do not support the `media` attribute for `<source>` tags
-        within a video specifically, so this implementation for dark theme assets
-        is handled with JavaScript media query listeners unlike the `<source>`
-        based implementation being used for image assets.
-      -->
-      <source :src="normalizePath(videoAttributes.url)">
-    </video>
+    <div>
+      <span
+        v-if="alt"
+        :id="id || null"
+        class="visuallyhidden"
+      >
+        {{ alt }}
+      </span>
+      <video
+        ref="video"
+        :controls="showsControls"
+        :data-orientation="orientation"
+        :autoplay="autoplays"
+        :poster="normalisedPosterPath"
+        :muted="muted"
+        :width="optimalWidth"
+        playsinline
+        @loadedmetadata="setOrientation"
+        @playing="$emit('playing')"
+        @pause="$emit('pause')"
+        @ended="$emit('ended')"
+      >
+        <!--
+          Many browsers do not support the `media` attribute for `<source>` tags
+          within a video specifically, so this implementation for dark theme assets
+          is handled with JavaScript media query listeners unlike the `<source>`
+          based implementation being used for image assets.
+        -->
+        <source :src="normalizePath(videoAttributes.url)">
+      </video>
+    </div>
   </ConditionalWrapper>
 </template>
 
@@ -79,6 +88,14 @@ export default {
       default: false,
     },
     deviceFrame: {
+      type: String,
+      required: false,
+    },
+    alt: {
+      type: String,
+      required: false,
+    },
+    id: {
       type: String,
       required: false,
     },

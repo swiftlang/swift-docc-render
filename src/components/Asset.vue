@@ -110,6 +110,8 @@ export default {
         autoplays: this.prefersReducedMotion ? false : this.videoAutoplays,
         posterVariants: this.videoPoster ? this.videoPoster.variants : [],
         deviceFrame: this.deviceFrame,
+        alt: this.asset.alt,
+        id: this.asset.alt ? this.identifier : null,
       };
     },
     assetListeners() {
