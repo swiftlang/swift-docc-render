@@ -31,6 +31,7 @@
         :poster="normalisedPosterPath"
         :muted="muted"
         :width="optimalWidth"
+        :aria-describedby="id || null"
         playsinline
         @loadedmetadata="setOrientation"
         @playing="$emit('playing')"

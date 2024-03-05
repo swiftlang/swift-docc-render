@@ -63,6 +63,17 @@ describe('VideoAsset', () => {
     expect(hiddenDesc.text()).toBe(propsData.alt);
   });
 
+  it('adds a description reference to the `video` if id is provided', () => {
+    const video = wrapper.find('video');
+    expect(video.attributes('aria-describedby')).toBe(propsData.id);
+  });
+
+  it('does not add a description reference to the `video` if id is not provided', () => {
+    wrapper.setProps({ id: null });
+    const video = wrapper.find('video');
+    expect(video.attributes()).not.toHaveProperty('aria-describedby');
+  });
+
   it('adds a poster to the `video`, using light by default', async () => {
     const video = wrapper.find('video');
     expect(video.attributes('poster')).toEqual(propsData.posterVariants[0].url);
