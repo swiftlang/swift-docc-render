@@ -75,7 +75,7 @@ describe('Availability', () => {
     expect(section.attributes('role')).toBe('complementary');
   });
 
-  it('renders a `div` for technologies, a `AvailabilityRange` and a `Badge` if applicable for each platform', () => {
+  it('renders a `span` for technologies, a `span`, `AvailabilityRange` and a `Badge` if applicable for each platform', () => {
     const { platforms, technologies } = propsData;
     const pills = wrapper.findAll('.technology, .platform');
     expect(pills.length).toBe(technologies.length + platforms.length);
