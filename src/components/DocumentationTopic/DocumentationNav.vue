@@ -152,6 +152,7 @@ $sidenav-icon-padding-size: 5px;
 
       .nav-menu-link {
         font-weight: $font-weight-semibold;
+        @include underline-text;
       }
 
       &:first-child:not(:only-child) {
@@ -169,12 +170,6 @@ $sidenav-icon-padding-size: 5px;
       @include nav-in-breakpoint() {
         &:not(:first-child) {
           border-top: 1px solid var(--color-fill-gray-tertiary);
-        }
-        // apply to links of the language list in small viewports
-        // if page has multiple languages to select from
-        .language-list-item > .nav-menu-link {
-          @include underline-text;
-          font-weight: $font-weight-semibold;
         }
       }
     }
