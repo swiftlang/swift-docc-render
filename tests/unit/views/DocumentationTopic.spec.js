@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,7 +9,7 @@
 */
 
 import * as dataUtils from 'docc-render/utils/data';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
@@ -61,6 +61,21 @@ const {
 } = DocumentationTopic.components;
 const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationTopic.constants;
 
+const rootLink = {
+  path: '/documentation/technologies',
+  query: {
+    changes: 'latest_minor',
+  },
+};
+
+const TechnologiesRootIdentifier = 'topic://technologies';
+
+const references = {
+  [TechnologiesRootIdentifier]: { kind: 'technologies', url: '/documentation/technologies' },
+  'topic://foo': { title: 'FooTechnology', url: '/documentation/foo' },
+  'topic://bar': { title: 'BarTechnology', url: '/documentation/bar' },
+};
+
 const mocks = {
   $bridge: {
     on: jest.fn(),
@@ -71,6 +86,9 @@ const mocks = {
     path: '/documentation/somepath',
     params: {
       locale: 'en-US',
+    },
+    query: {
+      changes: 'latest_minor',
     },
   },
 };
@@ -230,7 +248,6 @@ describe('DocumentationTopic', () => {
       // assert we are passing the default technology, if we dont have the children yet
       technology,
       apiChanges: null,
-      allowHiding: true,
       flatChildren: [],
       navigatorReferences: {},
       renderFilterOnTop: false,
@@ -247,7 +264,6 @@ describe('DocumentationTopic', () => {
       symbolKind: topicData.metadata.symbolKind,
       technology: TechnologyWithChildren,
       apiChanges: null,
-      allowHiding: true,
       flatChildren: [],
       navigatorReferences,
     });
@@ -517,19 +533,12 @@ describe('DocumentationTopic', () => {
     // assert the Nav
     const nav = wrapper.find(Nav);
     expect(nav.props()).toEqual({
-      parentTopicIdentifiers: topicData.hierarchy.paths[0],
-      title: topicData.metadata.title,
       isDark: false,
       hasNoBorder: false,
-      currentTopicTags: [],
       displaySidenav: false,
-      references: topicData.references,
-      isSymbolBeta: false,
-      isSymbolDeprecated: false,
       interfaceLanguage: topicData.identifier.interfaceLanguage,
       objcPath: topicData.variants[0].paths[0],
       swiftPath: topicData.variants[1].paths[0],
-      sidenavHiddenOnLarge: false,
     });
     expect(nav.attributes()).toMatchObject({
       interfacelanguage: 'swift',
@@ -566,8 +575,6 @@ describe('DocumentationTopic', () => {
       },
     });
     expect(wrapper.find(Navigator).props('parentTopicIdentifiers'))
-      .toEqual(topicData.hierarchy.paths[1]);
-    expect(wrapper.find(Nav).props('parentTopicIdentifiers'))
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
@@ -669,6 +676,85 @@ describe('DocumentationTopic', () => {
       enableMinimized: false, // disabled by default
       topicSectionsStyle: TopicSectionsStyle.list, // default value
       disableHeroBackground: false,
+      hierarchyItems: topicData.hierarchy.paths[0],
+    });
+  });
+
+  it('renders an inactive link, when no technologies root paths', () => {
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+
+    wrapper.setData({ topicData });
+
+    const title = wrapper.find('span.nav-title-link');
+    expect(title.exists()).toBe(true);
+    expect(title.text()).toBe('documentation.title');
+  });
+
+  it('renders the title "Documentation" link, if there is root link', () => {
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+        'router-link': RouterLinkStub,
+      },
+    });
+
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        hierarchy: {
+          paths: [
+            [TechnologiesRootIdentifier, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+        references,
+      },
+    });
+
+    const title = wrapper.find(RouterLinkStub);
+    expect(title.exists()).toBe(true);
+    expect(title.props('to')).toEqual(rootLink);
+    expect(title.text()).toBe('documentation.title');
+  });
+
+  it('renders a `Topic` with `topicData` without the first hierarchy item if there is root link', () => {
+    wrapper.setData({
+      topicData: {
+        ...topicData,
+        hierarchy: {
+          paths: [
+            [TechnologiesRootIdentifier, ...topicData.hierarchy.paths[0]],
+          ],
+        },
+        references,
+      },
+    });
+
+    const topic = wrapper.find(Topic);
+    expect(topic.exists()).toBe(true);
+    expect(topic.attributes('style')).toBeFalsy();
+    expect(topic.props()).toEqual({
+      ...wrapper.vm.topicProps,
+      isSymbolBeta: false,
+      isSymbolDeprecated: false,
+      objcPath: topicData.variants[0].paths[0],
+      swiftPath: topicData.variants[1].paths[0],
+      languagePaths: {
+        occ: ['documentation/objc'],
+        swift: ['documentation/swift'],
+      },
+      enableOnThisPageNav: true, // enabled by default
+      enableMinimized: false, // disabled by default
+      topicSectionsStyle: TopicSectionsStyle.list, // default value
+      disableHeroBackground: false,
+      hierarchyItems: topicData.hierarchy.paths[0],
     });
   });
 

@@ -206,7 +206,7 @@ $doc-hero-icon-dimension: 250px;
 
   &__content:not(.minimized-hero) {
     padding-top: rem(40px);
-    padding-bottom: 40px;
+    padding-bottom: rem(40px);
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
@@ -247,5 +247,4 @@ $doc-hero-icon-dimension: 250px;
   // apply extra bottom padding when shouldShowLanguageSwitcher
   padding-bottom: rem(65px);
 }
-
 </style>

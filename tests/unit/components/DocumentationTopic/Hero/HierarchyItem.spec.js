@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -10,7 +10,7 @@
 
 import { RouterLinkStub, shallowMount } from '@vue/test-utils';
 import HierarchyItem
-  from 'docc-render/components/DocumentationTopic/DocumentationNav/HierarchyItem.vue';
+  from 'docc-render/components/DocumentationTopic/Hero/HierarchyItem.vue';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 
 const mountWithProps = props => shallowMount(HierarchyItem, {
@@ -31,12 +31,6 @@ describe('HierarchyItem', () => {
 
     wrapper = mountWithProps({ ...propsData, isCollapsed: true });
     expect(wrapper.classes('collapsed')).toBe(true);
-  });
-
-  it('renders a slash instead of an icon', () => {
-    const wrapper = mountWithProps({ url: 'foo.bar' });
-
-    expect(wrapper.find('.hierarchy-item-icon').text()).toBe('/');
   });
 
   it('renders a .parent.item link if the URL exists', () => {

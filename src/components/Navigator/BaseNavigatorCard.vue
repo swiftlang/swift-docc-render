@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,26 +13,16 @@
     <div class="navigator-card-full-height">
       <div class="navigator-card-inner">
         <div class="head-wrapper">
+          <slot name="above-navigator-head"/>
           <div class="head-inner">
-            <Reference
-              :id="INDEX_ROOT_KEY"
-              :url="technologyPath"
-              class="navigator-head"
-              @click.alt.native.prevent="$emit('head-click-alt')"
-            >
-              <h2 class="card-link">
-                {{ technology }}
-              </h2>
-              <Badge v-if="isTechnologyBeta" variant="beta" />
-            </Reference>
+            <slot name="navigator-head"/>
             <button
               :id="SIDEBAR_HIDE_BUTTON_ID"
               class="close-card"
-              :class="{ 'hide-on-large': !allowHiding }"
               :aria-label="$t('navigator.close-navigator')"
               @click="handleHideClick"
             >
-              <SidenavIcon class="icon-inline close-icon" />
+              <InlineCloseIcon class="icon-inline close-icon" />
             </button>
           </div>
         </div>
@@ -44,43 +34,19 @@
 
 <script>
 import {
-  INDEX_ROOT_KEY,
   SIDEBAR_HIDE_BUTTON_ID,
 } from 'docc-render/constants/sidebar';
-import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
-import Reference from 'docc-render/components/ContentNode/Reference.vue';
-import Badge from 'docc-render/components/Badge.vue';
+import InlineCloseIcon from 'theme/components/Icons/InlineCloseIcon.vue';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 
 export default {
   name: 'BaseNavigatorCard',
   components: {
-    SidenavIcon,
-    Reference,
-    Badge,
-  },
-  props: {
-    allowHiding: {
-      type: Boolean,
-      default: true,
-    },
-    technologyPath: {
-      type: String,
-      default: '',
-    },
-    technology: {
-      type: String,
-      required: true,
-    },
-    isTechnologyBeta: {
-      type: Boolean,
-      default: false,
-    },
+    InlineCloseIcon,
   },
   data() {
     return {
       SIDEBAR_HIDE_BUTTON_ID,
-      INDEX_ROOT_KEY,
     };
   },
   methods: {
@@ -99,9 +65,7 @@ export default {
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
 
-$navigator-card-vertical-spacing: 8px !default;
-$navigator-head-background: var(--color-fill) !default;
-$navigator-head-background-active: var(--color-fill) !default;
+$navigator-card-vertical-spacing: 10px !default;
 $close-icon-size: 19px;
 $close-icon-padding: 5px;
 
@@ -113,9 +77,9 @@ $close-icon-padding: 5px;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: calc(var(--app-height) - var(--nav-height, 0px));
+  height: calc(var(--app-height) - $nav-height);
   position: sticky;
-  top: var(--nav-height, 0px);
+  top: $nav-height;
 
   @include breakpoint(medium, nav) {
     height: 100%;
@@ -129,126 +93,45 @@ $close-icon-padding: 5px;
   }
 
   .head-inner {
-    overflow: hidden;
+    display: none;
+    width: 100%;
+    @include font-styles(nav-title-large);
+    height: $nav-height-small;
+
+    // display only in medium and small viewports
+    @include breakpoint(medium, nav) {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    > a, span {
+      color: var(--color-figure-gray);
+      width: 100%;
+    }
   }
 
   .head-wrapper {
-    position: relative;
-    flex: 1 0 auto;
-  }
-
-  .navigator-head {
-    --navigator-head-padding-right: calc(var(--card-horizontal-spacing) * 2 + #{$close-icon-size});
-    padding: 0 var(--navigator-head-padding-right) 0 var(--card-horizontal-spacing);
-    background: $navigator-head-background;
-    border-bottom: 1px solid var(--color-grid);
+    @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
+    @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
     display: flex;
-    align-items: center;
-    height: $nav-height;
-    white-space: nowrap;
-
-    .card-link {
-      color: var(--color-text);
-      @include font-styles(body-reduced);
-      font-weight: $font-weight-semibold;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .badge {
-      margin-top: 0;
-    }
-
-    &.router-link-exact-active {
-      background: $navigator-head-background-active;
-
-      .card-link {
-        font-weight: $font-weight-bold;
-      }
-    }
-
-    &:hover {
-      background: var(--color-navigator-item-hover);
-      text-decoration: none;
-    }
-
-    &:focus .card-link {
-      .fromkeyboard & {
-        @include focus-outline();
-      }
-    }
-
-    @include safe-area-left-set(padding-left, var(--card-horizontal-spacing));
-    @include safe-area-right-set(padding-right, var(--navigator-head-padding-right));
-
-    @include breakpoint(medium, nav) {
-      justify-content: center;
-      --navigator-head-padding-right: var(--card-horizontal-spacing);
-    }
-
-    @include breakpoint(small, nav) {
-      height: $nav-height-small;
-      padding: 0 $nav-card-horizontal-spacing-large;
-    }
+    justify-content: space-between;
+    flex: 1 0 auto;
   }
 }
 
 .close-card {
-  display: flex;
-  position: absolute;
-  z-index: 1;
-  align-items: center;
-  justify-content: center;
-  right: $nav-padding - rem($close-icon-padding);
-  padding: $close-icon-padding;
-  margin-left: -$close-icon-padding;
-  top: calc(50% - #{$close-icon-size} + #{$close-icon-padding});
-  transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s, visibility 0s;
-
-  @include breakpoint(medium, nav) {
-    right: unset;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 0 $nav-padding 0 $nav-card-horizontal-spacing-large;
-    height: 100%;
-    @include safe-area-left-set(padding-left, $nav-padding);
-  }
-
-  @include breakpoint(small, nav) {
-    padding-left: $nav-padding-small;
-    padding-right: $nav-padding-small;
-    @include safe-area-left-set(padding-left, $nav-padding-small);
-  }
 
   .close-icon {
     width: $close-icon-size;
     height: $close-icon-size;
   }
-
-  @include breakpoints-from(large, nav) {
-    &.hide-on-large {
-      display: none;
-    }
-
-    &:hover {
-      border-radius: $nano-border-radius;
-      background: var(--color-fill-gray-quaternary);
-    }
-    // when the navigator is closed on desktop,
-    // move the button so it looks like its going to the nav
-    .sidebar-hidden & {
-      transition: transform $adjustable-sidebar-hide-transition-duration ease-in 0s,
-      visibility 0s linear $adjustable-sidebar-hide-transition-duration;
-      visibility: hidden;
-      // 2x the nav padding, 1px border, and the size of the icon
-      transform: translateX(rem($close-icon-size + 1px) + $nav-padding * 2);
-    }
-  }
 }
 
 :deep() {
   .card-body {
+    display: flex;
+    flex-direction: column;
     // right padding is added by the items, so visually the scroller is stuck to the side
     padding-right: 0;
     flex: 1 1 auto;
@@ -264,5 +147,15 @@ $close-icon-padding: 5px;
   display: flex;
   flex-flow: column;
   height: 100%;
+  padding-top: $navigator-card-vertical-spacing;
+  box-sizing: border-box;
+
+  @include breakpoint(medium, nav) {
+    padding-top: 0;
+  }
+
+  .filter-on-top & {
+    padding-top: 0;
+  }
 }
 </style>

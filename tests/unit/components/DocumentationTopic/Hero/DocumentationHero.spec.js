@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import DocumentationHero from '@/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes, TopicTypeAliases } from '@/constants/TopicTypes';
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
