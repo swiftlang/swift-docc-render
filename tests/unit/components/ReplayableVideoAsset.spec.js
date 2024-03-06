@@ -22,7 +22,7 @@ const posterVariants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/
 const propsData = {
   variants,
   posterVariants,
-  showsControls: false,
+  showsDefaultControls: false,
   alt: 'Text describing this video',
   id: 'video.mp4',
 };
@@ -66,30 +66,30 @@ describe('ReplayableVideoAsset', () => {
     const video = wrapper.find(VideoAsset);
     expect(video.props('variants')).toBe(variants);
     expect(video.props('posterVariants')).toBe(posterVariants);
-    expect(video.props('showsControls')).toBe(false);
+    expect(video.props('showsDefaultControls')).toBe(false);
     expect(video.props('autoplays')).toBe(false);
     expect(video.props('id')).toBe(propsData.id);
     expect(video.props('alt')).toBe(propsData.alt);
     expect(wrapper.find('.control-button').exists()).toBe(true);
   });
 
-  it('does not show the `.control-button` if `showsControls` is `true`', () => {
+  it('does not show the `.control-button` if `showsDefaultControls` is `true`', () => {
     const wrapper = mountWithProps({
-      showsControls: true,
+      showsDefaultControls: true,
     });
     const video = wrapper.find(VideoAsset);
-    expect(video.props('showsControls')).toBe(true);
+    expect(video.props('showsDefaultControls')).toBe(true);
     expect(wrapper.find('.control-button').exists()).toBe(false);
   });
 
-  it('adds a description reference to `.control-button` if id is provided', () => {
+  it('adds an aria-controls referring to the video id in `.control-button`', () => {
     const wrapper = mountWithProps();
     const controlButton = wrapper.find('.control-button');
-    expect(controlButton.attributes('aria-describedby')).toBe(propsData.id);
+    expect(controlButton.attributes('aria-controls')).toBe(propsData.id);
   });
 
-  it('does not add a description reference to `.control-button` if id is not provided', () => {
-    const wrapper = mountWithProps({ id: null });
+  it('does not add a description reference to `.control-button` if alt is not provided', () => {
+    const wrapper = mountWithProps({ alt: null });
     const controlButton = wrapper.find('.control-button');
     expect(controlButton.attributes()).not.toHaveProperty('aria-describedby');
   });

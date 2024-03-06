@@ -105,13 +105,13 @@ export default {
     videoProps() {
       return {
         variants: this.asset.variants,
-        showsControls: this.showsVideoControls,
+        showsDefaultControls: this.showsVideoControls,
         muted: this.videoMuted,
         autoplays: this.prefersReducedMotion ? false : this.videoAutoplays,
         posterVariants: this.videoPoster ? this.videoPoster.variants : [],
         deviceFrame: this.deviceFrame,
         alt: this.asset.alt,
-        id: this.asset.alt ? this.identifier : null,
+        id: this.identifier,
       };
     },
     assetListeners() {

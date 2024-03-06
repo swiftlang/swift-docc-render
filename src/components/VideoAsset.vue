@@ -18,20 +18,25 @@
     <div>
       <span
         v-if="alt"
-        :id="alt ? id : null"
+        :id="alt ? altTextId : null"
         class="visuallyhidden"
       >
-        {{ alt }}
+        {{ $t('formats.colon', {
+          content: $t('video.description')
+        }) + alt }}
       </span>
       <video
         ref="video"
-        :controls="showsControls"
+        :id="id"
+        :controls="showsDefaultControls"
         :data-orientation="orientation"
         :autoplay="autoplays"
         :poster="normalisedPosterPath"
         :muted="muted"
         :width="optimalWidth"
-        :aria-describedby="alt ? id : null"
+        :aria-roledescription="$t('video.title')"
+        :aria-label="!showsDefaultControls ? $t('video.custom-controls') : null"
+        :aria-describedby="alt ? altTextId : null"
         playsinline
         @loadedmetadata="setOrientation"
         @playing="$emit('playing')"
@@ -71,7 +76,7 @@ export default {
       type: Array,
       required: true,
     },
-    showsControls: {
+    showsDefaultControls: {
       type: Boolean,
       default: () => false,
     },
@@ -98,7 +103,7 @@ export default {
     },
     id: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   data: () => ({
@@ -110,6 +115,7 @@ export default {
     DeviceFrameComponent: () => DeviceFrame,
     preferredColorScheme: ({ appState }) => appState.preferredColorScheme,
     systemColorScheme: ({ appState }) => appState.systemColorScheme,
+    altTextId: ({ id }) => `${id}-alt`,
     userPrefersDark: ({
       preferredColorScheme,
       systemColorScheme,

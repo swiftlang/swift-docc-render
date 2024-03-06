@@ -14,7 +14,7 @@
       ref="asset"
       :variants="variants"
       :autoplays="autoplays"
-      :showsControls="showsControls"
+      :showsDefaultControls="showsDefaultControls"
       :muted="muted"
       :posterVariants="posterVariants"
       :deviceFrame="deviceFrame"
@@ -25,10 +25,10 @@
       @ended="onVideoEnd"
     />
     <a
-      v-if="!showsControls"
+      v-if="!showsDefaultControls"
       class="control-button"
       href="#"
-      :aria-describedby="alt ? id : null"
+      :aria-controls="id"
       @click.prevent="togglePlayStatus"
     >
       {{ text }}
@@ -64,9 +64,9 @@ export default {
     },
     id: {
       type: String,
-      required: false,
+      required: true,
     },
-    showsControls: {
+    showsDefaultControls: {
       type: Boolean,
       default: () => false,
     },
@@ -121,7 +121,7 @@ export default {
     onPause() {
       const { video } = this.$refs.asset.$refs;
       // if the video pauses, and we are hiding the controls, show the replay button
-      if (!this.showsControls && this.isPlaying) {
+      if (!this.showsDefaultControls && this.isPlaying) {
         this.isPlaying = false;
       }
       this.videoEnded = video.ended;

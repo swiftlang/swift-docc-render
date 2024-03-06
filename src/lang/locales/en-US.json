@@ -3,10 +3,13 @@
   "continue-viewing": "Continue viewing in English",
   "language": "Language",
   "video": {
+    "title": "Video",
     "replay": "Replay",
     "play": "Play",
     "pause": "Pause",
-    "watch": "Watch intro video"
+    "watch": "Watch intro video",
+    "description": "Content description of this video",
+    "custom-controls": "Custom replay button is available below"
   },
   "tutorials": {
     "title": "Tutorial | Tutorials",

@@ -94,7 +94,7 @@ describe('Asset', () => {
     const videoAsset = wrapper.find(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toBe(image.variants);
-    expect(videoAsset.props('showsControls')).toBe(false);
+    expect(videoAsset.props('showsDefaultControls')).toBe(false);
     expect(videoAsset.props('autoplays')).toBe(false);
 
     // Check that 'ended' events emitted by a `VideoAsset` are re-emitted.
@@ -146,31 +146,11 @@ describe('Asset', () => {
     const videoAsset = wrapper.find(VideoAsset);
     expect(videoAsset.props()).toEqual(expect.objectContaining({
       variants: video.variants,
-      showsControls: true,
+      showsDefaultControls: true,
       muted: false,
       id: identifier,
       alt: video.alt,
     }));
-  });
-
-  it('renders a `VideoAsset` without id if video does not provides an alt text', () => {
-    const identifier = 'video';
-
-    const wrapper = shallowMount(Asset, {
-      propsData: {
-        identifier,
-        showsReplayButton: false,
-        showsVideoControls: true,
-      },
-      provide: {
-        store: {
-          state: { references: { [identifier]: { ...video, alt: null } } },
-        },
-      },
-    });
-
-    const videoAsset = wrapper.find(VideoAsset);
-    expect(videoAsset.props('id')).not.toBe(identifier);
   });
 
   it('renders a `ReplayableVideoAsset` with deviceFrame', () => {
@@ -196,7 +176,7 @@ describe('Asset', () => {
       deviceFrame: 'phone',
       muted: false,
       posterVariants: [],
-      showsControls: true,
+      showsDefaultControls: true,
       variants: video.variants,
       id: identifier,
       alt: video.alt,
@@ -220,7 +200,7 @@ describe('Asset', () => {
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
-    expect(videoAsset.props('showsControls')).toBe(true);
+    expect(videoAsset.props('showsDefaultControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(false);
     expect(videoAsset.props('autoplays')).toBe(true);
   });
@@ -241,7 +221,7 @@ describe('Asset', () => {
     });
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
-    expect(videoAsset.props('showsControls')).toBe(true);
+    expect(videoAsset.props('showsDefaultControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(false);
   });
 
