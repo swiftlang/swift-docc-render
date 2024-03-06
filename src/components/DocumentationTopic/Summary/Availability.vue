@@ -10,16 +10,16 @@
 
 <template>
   <Section class="availability" role="complementary" :aria-label="$t('sections.availability')">
-    <Badge
+    <span
       v-for="technology in technologies"
       class="technology"
       :key="technology"
     >
       <TechnologyIcon class="tech-icon" />
-      {{ technology }}
-    </Badge>
+      <span>{{ technology }}</span>
+    </span>
 
-    <Badge
+    <span
       v-for="platform in platforms"
       class="platform"
       :class="changesClassesFor(platform.name)"
@@ -30,11 +30,9 @@
         :introducedAt="platform.introducedAt"
         :platformName="platform.name"
       />
-      <span v-if="platform.deprecatedAt" class="deprecated">
-        {{ $t('aside-kind.deprecated') }}
-      </span>
-      <span v-else-if="platform.beta" class="beta">{{ $t('aside-kind.beta') }}</span>
-    </Badge>
+      <Badge v-if="platform.deprecatedAt" variant="deprecated" />
+      <Badge v-else-if="platform.beta" variant="beta" />
+    </span>
   </Section>
 </template>
 
@@ -99,19 +97,10 @@ export default {
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
+$icon-size-default: 20px;
+$availability-info-spacing: 10px;
 
-.availability {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 10px;
-  margin-top: 25px;
-}
-
-.badge {
-  margin: 0;
-}
-
-.technology {
+.technology, .platform {
   display: inline-flex;
   align-items: center;
 }
@@ -119,72 +108,66 @@ export default {
 .tech-icon {
   height: 12px;
   padding-right: 5px;
-  fill: var(--badge-color);
-
-  @include prefers-dark {
-    fill: var(--badge-dark-color);
-  }
-}
-
-.beta {
-  color: var(--color-badge-beta);
-
-  @include prefers-dark {
-    color: var(--color-badge-dark-beta);
-  }
-}
-
-.deprecated {
-  color: var(--color-badge-deprecated);
-
-  @include prefers-dark {
-    color: var(--color-badge-dark-deprecated);
-  }
+  --color-svg-icon: var(--color-figure-gray);
 }
 
 .changed {
   $-coin-spacer: 5px;
-  padding-left: $icon-size-default + ($-coin-spacer * 2);
+  padding-left: $icon-size-default - $-coin-spacer + 2;
+  border: none;
 
   &::after {
-    content: none;
+    // unset the global .changed style
+    all: unset;
   }
 
   &::before {
     @include coin($modified-svg, $icon-size-default);
-    left: $-coin-spacer;
+    margin: 0;
+    left: -$-coin-spacer;
 
     @include prefers-dark {
       background-image: $modified-dark-svg;
     }
   }
 
-  &-added {
-    border-color: var(--color-changes-added);
+  &-added::before {
+    background-image: $added-svg;
 
-    &::before {
-      background-image: $added-svg;
-
-      @include prefers-dark {
-        background-image: $added-dark-svg;
-      }
+    @include prefers-dark {
+      background-image: $added-dark-svg;
     }
   }
 
-  &-deprecated {
-    border-color: var(--color-changes-deprecated);
+  &-deprecated::before {
+    background-image: $deprecated-svg;
 
-    &::before {
-      background-image: $deprecated-svg;
-
-      @include prefers-dark {
-        background-image: $deprecated-dark-svg;
-      }
+    @include prefers-dark {
+      background-image: $deprecated-dark-svg;
     }
   }
+}
 
-  &-modified {
-    border-color: var(--color-changes-modified);
+.availability {
+  display: flex;
+  flex-flow: row wrap;
+  gap: $availability-info-spacing;
+  margin-top: rem(15px);
+  @include font-styles(body-reduced);
+
+  & > * {
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 1px;
+      height: 1em;
+      background: currentColor;
+      margin-left: $availability-info-spacing;
+    }
+
+    &:last-child::after {
+      content: none;
+    }
   }
 }
 </style>
