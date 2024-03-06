@@ -18,7 +18,7 @@
     <div>
       <span
         v-if="alt"
-        :id="id || null"
+        :id="alt ? id : null"
         class="visuallyhidden"
       >
         {{ alt }}
@@ -31,7 +31,7 @@
         :poster="normalisedPosterPath"
         :muted="muted"
         :width="optimalWidth"
-        :aria-describedby="id || null"
+        :aria-describedby="alt ? id : null"
         playsinline
         @loadedmetadata="setOrientation"
         @playing="$emit('playing')"
