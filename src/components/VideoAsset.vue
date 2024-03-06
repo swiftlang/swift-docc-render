@@ -17,6 +17,7 @@
   >
     <video
       ref="video"
+      :key="videoAttributes.url"
       :controls="showsControls"
       :data-orientation="orientation"
       :autoplay="autoplays"
