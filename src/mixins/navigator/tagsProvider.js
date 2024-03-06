@@ -10,6 +10,7 @@
 
 /* eslint-disable no-restricted-syntax */
 import {
+  TYPE_TAGS,
   FILTER_TAGS,
   TOPIC_TYPE_TO_TAG,
 } from 'docc-render/constants/Tags';
@@ -47,7 +48,7 @@ export default {
   },
   methods: {
     extractTags(nodes, apiChanges) {
-      const possibleTags = new Set(Object.values(FILTER_TAGS));
+      const possibleTags = new Set(Object.values(TYPE_TAGS));
       // create categories to order the availableTags
       const availableTags = {
         type: [],
@@ -55,9 +56,15 @@ export default {
         other: [],
       };
 
-      // when API changes are available, remove the hide deprecated option
-      if (apiChanges && Object.values(apiChanges).length) {
-        possibleTags.delete(FILTER_TAGS.hideDeprecated);
+      const availableApiChanges = new Set(Object.values(apiChanges));
+      if (availableApiChanges.size) {
+        // only add change tag option if it's present
+        availableApiChanges.forEach((changeType) => {
+          possibleTags.add(FILTER_TAGS[changeType]);
+        });
+      } else {
+        // when API changes are not available, add hide deprecated option
+        possibleTags.add(FILTER_TAGS.hideDeprecated);
       }
 
       // iterate over the nodes to render
