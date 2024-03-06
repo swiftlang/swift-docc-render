@@ -33,6 +33,7 @@
   --color-tutorials-teal: #{dark-color(tutorials-teal)};
 
   --color-article-body-background: rgb(17, 17, 17);
+  --color-badge-text: #{light-color(figure-gray)};
   --color-badge-default: var(--color-badge-dark-default);
   --color-button-background-active: #{dark-color(fill-blue)};
   --color-code-line-highlight: #{change-color(dark-color(figure-blue), $alpha: 0.08)};

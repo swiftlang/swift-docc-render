@@ -53,20 +53,19 @@ export default {
 
   @include font-styles(badge);
   display: inline-block;
-  padding: 2px 10px;
+  padding: 2px 4px;
   white-space: nowrap;
-  background: none;
-  border-radius: var(--badge-border-radius, calc(#{$border-radius} - 1px));
-  border-style: var(--badge-border-style, solid);
+  border-radius: var(--badge-border-radius, 1px);
+  border-style: var(--badge-border-style, none);
   border-width: var(--badge-border-width, 1px);
-  margin-left: 10px;
-  color: var(--badge-color);
-
-  .theme-dark & {
-    --badge-color: var(--badge-dark-color);
+  margin: auto;
+  margin-left: 5px;
+  color: var(--colors-badge-text, var(--color-badge-text));
+  background-color: var(--badge-color);
+  @include prefers-dark {
+    background-color: var(--badge-dark-color);
   }
 
-  /* nav bar badge */
   &-deprecated {
     @include badge-variation(deprecated);
   }
