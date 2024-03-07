@@ -1213,10 +1213,6 @@ $navigator-card-vertical-spacing: 8px !default;
     text-overflow: ellipsis;
   }
 
-  .badge {
-    margin-top: 0;
-  }
-
   &.router-link-exact-active {
     background: $technology-title-background-active;
   }

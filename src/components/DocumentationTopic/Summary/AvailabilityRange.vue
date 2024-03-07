@@ -13,9 +13,7 @@
     role="text"
     :aria-label="ariaLabel"
     :title="description"
-  >
-    {{text}}
-  </span>
+  >{{text}}</span>
 </template>
 
 <script>

@@ -886,7 +886,7 @@ $space-size: 15px;
 }
 
 .declarations-container {
-  margin-top: 30px;
+  margin-top: 40px;
 
   &.minimized-container {
     margin-top: 0;
