@@ -104,7 +104,7 @@ describe('VideoAsset', () => {
     expect(getIntrinsicDimensionsSpy).toHaveBeenNthCalledWith(2, propsData.posterVariants[1].url);
     await flushPromises();
     // dark image is 2x, so the width is half
-    expect(video.attributes()).toMatchObject({
+    expect(wrapper.find('video').attributes()).toMatchObject({
       width: '50',
     });
   });
