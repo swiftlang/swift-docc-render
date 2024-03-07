@@ -16,13 +16,6 @@
     :device="deviceFrame"
   >
     <div>
-      <span
-        v-if="alt"
-        :id="altTextId"
-        class="visuallyhidden"
-      >
-        {{ $t('video.description', { alt }) }}
-      </span>
       <video
         ref="video"
         :key="videoAttributes.url"
@@ -50,6 +43,13 @@
         -->
         <source :src="normalizePath(videoAttributes.url)">
       </video>
+      <span
+        v-if="alt"
+        :id="altTextId"
+        class="visuallyhidden"
+      >
+        {{ $t('video.description', { alt }) }}
+      </span>
     </div>
   </ConditionalWrapper>
 </template>
