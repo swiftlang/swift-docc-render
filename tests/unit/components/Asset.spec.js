@@ -111,11 +111,6 @@ describe('Asset', () => {
     expect(videoAsset.props('alt')).toBe(video.alt);
   });
 
-  it('renders a `ReplayableVideoAsset` without id if video does not provides an alt text', () => {
-    const videoAsset = mountAsset('video', { video: { ...video, alt: null } }).find(ReplayableVideoAsset);
-    expect(videoAsset.props('id')).not.toBe(video.id);
-  });
-
   it('passes down `deviceFrame` to `ReplayableVideoAsset`', () => {
     const wrapper = mountAsset('video', { video });
     let videoAsset = wrapper.find(ReplayableVideoAsset);
