@@ -25,6 +25,7 @@
       </span>
       <video
         ref="video"
+        :key="videoAttributes.url"
         :id="id"
         :controls="showsDefaultControls"
         :data-orientation="orientation"
