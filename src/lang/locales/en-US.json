@@ -9,7 +9,7 @@
     "pause": "Pause",
     "watch": "Watch intro video",
     "description": "Content description of this video: {alt}",
-    "custom-controls": "Custom replay button is available below"
+    "custom-controls": "Custom controls are available below"
   },
   "tutorials": {
     "title": "Tutorial | Tutorials",
