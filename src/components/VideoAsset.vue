@@ -18,12 +18,10 @@
     <div>
       <span
         v-if="alt"
-        :id="alt ? altTextId : null"
+        :id="altTextId"
         class="visuallyhidden"
       >
-        {{ $t('formats.colon', {
-          content: $t('video.description')
-        }) + alt }}
+        {{ $t('video.description', { alt }) }}
       </span>
       <video
         ref="video"

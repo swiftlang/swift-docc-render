@@ -64,8 +64,7 @@ describe('VideoAsset', () => {
     const hiddenDesc = wrapper.find('span.visuallyhidden');
     expect(hiddenDesc.exists()).toBe(true);
     expect(hiddenDesc.attributes('id')).toBe(altTextId);
-    const preDescription = 'formats.colon video.description';
-    expect(hiddenDesc.text()).toBe(preDescription + propsData.alt);
+    expect(hiddenDesc.text()).toBe(`video.description ${propsData.alt}`);
   });
 
   it('adds a description reference to the `video` with altTextId', () => {
