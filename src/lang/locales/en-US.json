@@ -208,5 +208,18 @@
     },
     "preview-unavailable": "Preview unavailable"
   },
-  "mentioned-in": "Mentioned in"
+  "mentioned-in": "Mentioned in",
+  "pager": {
+    "roledescription": "content slider",
+    "page": {
+      "label": "content page {index} of {count}"
+    },
+    "control": {
+      "navigate-previous": "navigate to previous page of content",
+      "navigate-next": "navigate to next page of content"
+    }
+  },
+  "links-grid": {
+    "label": "grid of links"
+  }
 }

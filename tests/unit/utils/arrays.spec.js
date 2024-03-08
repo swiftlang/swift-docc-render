@@ -8,7 +8,11 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { isEqual, last } from '@/utils/arrays';
+import {
+  isEqual,
+  last,
+  page,
+} from '@/utils/arrays';
 
 describe('arrays', () => {
   describe('last', () => {
@@ -45,6 +49,44 @@ describe('arrays', () => {
         [{ foo: 'foo' }],
         [{ foo: 'foo' }],
       )).toBe(true);
+    });
+  });
+
+  describe('page', () => {
+    it('returns a nested array of "pages", each having the max specified size', () => {
+      expect(page([
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+      ], 2)).toEqual([
+        ['a', 'b'],
+        ['c', 'd'],
+        ['e'],
+      ]);
+    });
+
+    it('returns an empty array when given an empty array, regardless of valid page size', () => {
+      expect(page([], 1));
+      expect(page([], 2));
+      expect(page([], 42));
+    });
+
+    it('returns nested arrays of length 1 if page size is 1', () => {
+      expect(page(['foo', 'bar', 'baz'], 1)).toEqual([
+        ['foo'],
+        ['bar'],
+        ['baz'],
+      ]);
+    });
+
+    it('throws an error if `pageSize` is less than 1', () => {
+      [-42, -1, 0].forEach((n) => {
+        expect(() => {
+          page(['a', 'b', 'c'], n);
+        }).toThrowError();
+      });
     });
   });
 });
