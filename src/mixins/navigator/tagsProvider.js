@@ -91,7 +91,7 @@ export default {
 
         // add change tag
         const changeType = apiChanges[path];
-        if (changeType && FILTER_TAGS[changeType]) {
+        if (changeType && possibleTags.has(FILTER_TAGS[changeType])) {
           availableTags.changes.push(FILTER_TAGS[changeType]);
           possibleTags.delete(FILTER_TAGS[changeType]);
         }
