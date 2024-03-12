@@ -190,7 +190,7 @@ export default {
     async calculateSelectWidth() {
       // await next tick, so we are sure the element is rendered.
       await this.$nextTick();
-      this.adjustedWidth = this.$refs['language-sizer'].clientWidth + 6;
+      this.adjustedWidth = this.$refs['language-sizer'].clientWidth + 8;
     },
   },
   computed: {
