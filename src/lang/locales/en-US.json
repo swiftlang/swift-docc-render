@@ -140,7 +140,8 @@
       "sample-code": "Sample Code",
       "tutorials": "Tutorials",
       "articles": "Articles",
-      "web-service-endpoints": "Web Service Endpoints"
+      "web-service-endpoints": "Web Service Endpoints",
+      "hide-deprecated": "Hide Deprecated"
     }
   },
   "navigator": {
@@ -155,9 +156,6 @@
     "state": {
       "loading": "loading",
       "ready": "ready"
-    },
-    "tags": {
-      "hide-deprecated": "Hide Deprecated"
     }
   },
   "tab": {

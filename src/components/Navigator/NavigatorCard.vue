@@ -136,9 +136,9 @@ import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
 import filteredChildrenMixin from 'theme/mixins/navigator/filteredChildren';
 import tagsProvider from 'theme/mixins/navigator/tagsProvider';
+import { FILTER_TAGS } from 'docc-render/constants/Tags';
 import { isEqual, last } from 'docc-render/utils/arrays';
 import { ChangeNameToType } from 'docc-render/constants/Changes';
-import { HIDE_DEPRECATED } from 'docc-render/constants/Tags';
 import {
   convertChildrenArrayToObject,
   getAllChildren,
@@ -167,7 +167,6 @@ export default {
     STORAGE_KEY,
     ERROR_FETCHING,
     ITEMS_FOUND,
-    HIDE_DEPRECATED,
   },
   components: {
     FilterInput,
@@ -366,7 +365,7 @@ export default {
      * @returns boolean
      */
     deprecatedHidden: ({ selectedTags }) => (
-      selectedTags[0] === HIDE_DEPRECATED
+      selectedTags[0] === FILTER_TAGS.hideDeprecated
     ),
     apiChangesObject() {
       return this.apiChanges || {};

@@ -19,7 +19,7 @@ import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
-import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
+import { ChangeTypes } from 'docc-render/constants/Changes';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import {
   FILTER_TAGS,
@@ -41,7 +41,6 @@ Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
 const {
   STORAGE_KEY,
   ITEMS_FOUND,
-  HIDE_DEPRECATED,
 } = NavigatorCard.constants;
 
 const { Reference, Badge } = NavigatorCard.components;
@@ -301,7 +300,7 @@ describe('NavigatorCard', () => {
         FILTER_TAGS.tutorials,
       ],
       translatableTags: [
-        'navigator.tags.hide-deprecated',
+        'filter.tags.hide-deprecated',
         FILTER_TAGS.articles,
         FILTER_TAGS.tutorials,
       ],
@@ -1473,7 +1472,7 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child0);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     // filter
-    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [ChangeNames.added]);
+    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.added]);
     await flushPromises();
     all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -1496,7 +1495,7 @@ describe('NavigatorCard', () => {
     expect(all).toHaveLength(3);
     // filter
     const filter = wrapper.find(FilterInput);
-    filter.vm.$emit('update:selectedTags', [ChangeNames.added]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.added]);
     await flushPromises();
     all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -1813,7 +1812,7 @@ describe('NavigatorCard', () => {
     expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode]);
     wrapper.setProps({ apiChanges });
     await flushPromises();
-    expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode, ChangeNames.modified]);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode, FILTER_TAGS.modified]);
   });
 
   it('shows a "Web Service Endpoints" tag when relevant', async () => {
@@ -1859,9 +1858,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // assert there are no Articles for example
-      expect(filter.props('tags')).toEqual([FILTER_TAGS.articles, FILTER_TAGS.tutorials, HIDE_DEPRECATED]);
+      expect(filter.props('tags')).toEqual([FILTER_TAGS.articles, FILTER_TAGS.tutorials, FILTER_TAGS.hideDeprecated]);
       // apply a filter
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
+      filter.vm.$emit('update:selectedTags', [FILTER_TAGS.hideDeprecated]);
       await flushPromises();
       // assert no other tags are shown now
       expect(filter.props('tags')).toEqual([]);
@@ -1980,7 +1979,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // apply a filter that matches an element
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
+      filter.vm.$emit('update:selectedTags', [FILTER_TAGS.hideDeprecated]);
       await flushPromises();
       const items = wrapper.findAll(NavigatorCardItem);
       // parent
@@ -2013,7 +2012,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there is no 'Hide Deprecated' tag
-    expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED);
+    expect(filter.props('tags')).not.toContain(FILTER_TAGS.hideDeprecated);
   });
 
   describe('navigating', () => {
@@ -2377,7 +2376,7 @@ describe('NavigatorCard', () => {
       // simulate item is below the viewport
       getChildPositionInScroller.mockReturnValueOnce(1);
       // add the "Hide Deprecated" tag
-      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
+      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.hideDeprecated]);
       await flushPromises();
       // assert current active item is still scrolled to
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);

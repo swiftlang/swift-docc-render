@@ -9,14 +9,19 @@
 */
 
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
+import { ChangeNames } from 'docc-render/constants/Changes';
 
-export const HIDE_DEPRECATED = 'navigator.tags.hide-deprecated';
-
-export const FILTER_TAGS = {
+export const TYPE_TAGS = {
   sampleCode: 'filter.tags.sample-code',
   tutorials: 'filter.tags.tutorials',
   articles: 'filter.tags.articles',
   webServiceEndpoints: 'filter.tags.web-service-endpoints',
+};
+
+export const FILTER_TAGS = {
+  ...TYPE_TAGS,
+  ...ChangeNames,
+  hideDeprecated: 'filter.tags.hide-deprecated',
 };
 
 export const TOPIC_TYPE_TO_TAG = {
