@@ -495,7 +495,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
       content: "";
       display: block;
       position: absolute;
-      top: 100%;
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
       width: $content-max-width;
