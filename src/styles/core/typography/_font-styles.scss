@@ -180,6 +180,10 @@ $font-styles: (
   badge: (
     large: 12_16
   ),
+  intro: (
+    large: 21_29,
+    small: 19_27
+  ),
   // nav typography
   nav-title: (
     large: (19_27, nav),
@@ -204,9 +208,6 @@ $font-styles: (
   ),
   card-eyebrow-small: (
     large: 14_18_semibold,
-  ),
-  hierarchy: (
-    large: 14_18,
   ),
   card-eyebrow-large: (
     large: 17_21_semibold,
