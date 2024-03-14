@@ -246,7 +246,7 @@ export default {
 }
 
 .link {
-  bottom: 17px;
+  bottom: $details-padding-card;
   display: flex;
   align-items: center;
   position: absolute;
