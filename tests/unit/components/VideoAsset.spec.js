@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -38,7 +38,11 @@ const propsData = {
     { traits: ['light', '1x'], url: 'https://www.example.com/video.mp4' },
     { traits: ['dark', '1x'], url: 'https://www.example.com/video~dark.mp4' },
   ],
+  alt: 'Text describing this video',
+  id: 'video.mp4',
 };
+
+const altTextId = `${propsData.id}-alt`;
 
 describe('VideoAsset', () => {
   let wrapper;
@@ -52,6 +56,26 @@ describe('VideoAsset', () => {
     const video = wrapper.find('video');
     expect(video.exists()).toBe(true);
     expect(video.element.muted).toBe(false);
+    expect(video.attributes('id')).toBe(propsData.id);
+    expect(video.attributes('aria-roledescription')).toBe('video.title');
+  });
+
+  it('renders a hidden description with unique id for AX purposes if video provides an alt text', () => {
+    const hiddenDesc = wrapper.find('span.visuallyhidden');
+    expect(hiddenDesc.exists()).toBe(true);
+    expect(hiddenDesc.attributes('id')).toBe(altTextId);
+    expect(hiddenDesc.text()).toBe(`video.description ${propsData.alt}`);
+  });
+
+  it('adds a description reference to the `video` with altTextId', () => {
+    const video = wrapper.find('video');
+    expect(video.attributes('aria-describedby')).toBe(altTextId);
+  });
+
+  it('does not add a description reference to the `video` if alt is not provided', () => {
+    wrapper.setProps({ alt: null });
+    const video = wrapper.find('video');
+    expect(video.attributes()).not.toHaveProperty('aria-describedby');
   });
 
   it('adds a poster to the `video`, using light by default', async () => {
@@ -80,7 +104,7 @@ describe('VideoAsset', () => {
     expect(getIntrinsicDimensionsSpy).toHaveBeenNthCalledWith(2, propsData.posterVariants[1].url);
     await flushPromises();
     // dark image is 2x, so the width is half
-    expect(video.attributes()).toMatchObject({
+    expect(wrapper.find('video').attributes()).toMatchObject({
       width: '50',
     });
   });
@@ -126,12 +150,20 @@ describe('VideoAsset', () => {
     expect(wrapper.attributes('height')).toBeFalsy();
   });
 
-  it('does not show controls when `showsControls=false`', () => {
+  it('does not show controls when `showsDefaultControls=false`', () => {
     wrapper.setProps({
       showControls: false,
     });
     const source = wrapper.find('video source');
     expect(source.attributes('controls')).toBe(undefined);
+  });
+
+  it('renders an aria-label to indicate how the user should interact with custom controls when `showsDefaultControls=false`', () => {
+    wrapper.setProps({
+      showControls: false,
+    });
+    const video = wrapper.find('video');
+    expect(video.attributes('aria-label')).toBe('video.custom-controls');
   });
 
   it('forwards `playing`, `pause` and `ended` events', () => {
@@ -155,10 +187,10 @@ describe('VideoAsset', () => {
     expect(video.attributes('autoplay')).toBe('autoplay');
   });
 
-  it('sets `controls` using `showsControls`', () => {
+  it('sets `controls` using `showsDefaultControls`', () => {
     const video = wrapper.find('video');
     expect(video.attributes('controls')).toBe(undefined);
-    wrapper.setProps({ showsControls: true });
+    wrapper.setProps({ showsDefaultControls: true });
     expect(video.attributes('controls')).toBe('controls');
   });
 
