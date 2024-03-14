@@ -54,7 +54,11 @@ export default {
   width: var(--control-size, 1rem);
 
   &[disabled] {
-    opacity: 0;
+    opacity: 0.6;
+
+    @include breakpoints-from(large) {
+      opacity: 0;
+    }
   }
 }
 
