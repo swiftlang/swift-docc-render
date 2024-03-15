@@ -150,8 +150,9 @@ $sidenav-icon-padding-size: 5px;
       margin-left: 0;
       min-width: 0;
 
-      .nav-menu-link, .current-language, span {
+      .nav-menu-link {
         font-weight: $font-weight-semibold;
+        @include underline-text;
       }
 
       &:first-child:not(:only-child) {
@@ -168,7 +169,7 @@ $sidenav-icon-padding-size: 5px;
 
       @include nav-in-breakpoint() {
         &:not(:first-child) {
-          border-top: 1px solid dark-color(fill-gray-tertiary);
+          border-top: 1px solid var(--color-fill-gray-tertiary);
         }
       }
     }
