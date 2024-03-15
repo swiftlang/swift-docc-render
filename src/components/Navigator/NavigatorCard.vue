@@ -138,7 +138,6 @@ import filteredChildrenMixin from 'theme/mixins/navigator/filteredChildren';
 import tagsProvider from 'theme/mixins/navigator/tagsProvider';
 import { FILTER_TAGS } from 'docc-render/constants/Tags';
 import { isEqual, last } from 'docc-render/utils/arrays';
-import { ChangeNameToType } from 'docc-render/constants/Changes';
 import {
   convertChildrenArrayToObject,
   getAllChildren,
@@ -384,7 +383,7 @@ export default {
     apiChanges(value) {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
-      this.selectedTags = this.selectedTags.filter(t => !ChangeNameToType[t]);
+      this.selectedTags = this.selectedTags.filter(t => !Object.values(FILTER_TAGS).includes(t));
     },
     async activeUID(newUid, oldUID) {
       // Update the dynamicScroller item's size, when we change the UID,
