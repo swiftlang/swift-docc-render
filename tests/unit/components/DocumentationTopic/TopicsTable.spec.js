@@ -142,6 +142,7 @@ describe('TopicsTable', () => {
     expect(firstGrid.props()).toEqual({
       topicStyle: TopicSectionsStyle.compactGrid,
       items: [foo],
+      usePager: false,
     });
 
     const secondGrid = sections.at(1).find(TopicsLinkCardGrid);
@@ -149,6 +150,7 @@ describe('TopicsTable', () => {
     expect(secondGrid.props()).toEqual({
       topicStyle: TopicSectionsStyle.compactGrid,
       items: [baz],
+      usePager: false,
     });
   });
 

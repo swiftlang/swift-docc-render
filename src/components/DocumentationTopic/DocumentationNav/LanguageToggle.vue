@@ -190,7 +190,7 @@ export default {
     async calculateSelectWidth() {
       // await next tick, so we are sure the element is rendered.
       await this.$nextTick();
-      this.adjustedWidth = this.$refs['language-sizer'].clientWidth + 6;
+      this.adjustedWidth = this.$refs['language-sizer'].clientWidth + 8;
     },
   },
   computed: {
@@ -229,6 +229,7 @@ $dropdown-icon-padding: 11px;
 $nav-menu-toggle-label-margin: 6px;
 
 .nav-menu-setting-label {
+  display: inline-block;
   margin-right: $nav-menu-label-margin;
   white-space: nowrap;
 }
@@ -315,7 +316,7 @@ $nav-menu-toggle-label-margin: 6px;
     display: inline-block;
 
     &:not(:first-child) {
-      border-left: 1px solid dark-color(fill-gray-tertiary);
+      border-left: 1px solid var(--color-grid);
       margin-left: $nav-menu-toggle-label-margin;
       padding-left: $nav-menu-toggle-label-margin;
     }

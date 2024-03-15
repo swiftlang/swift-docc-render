@@ -44,6 +44,7 @@ describe('LinksBlock', () => {
     expect(wrapper.find(TopicsLinkCardGrid).props()).toEqual({
       items: [references.foo, references.bar],
       topicStyle: defaultProps.blockStyle,
+      usePager: false,
     });
   });
 

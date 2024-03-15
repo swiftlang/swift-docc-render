@@ -3,10 +3,13 @@
   "continue-viewing": "Continue viewing in English",
   "language": "Language",
   "video": {
+    "title": "Video",
     "replay": "Replay",
     "play": "Play",
     "pause": "Pause",
-    "watch": "Watch intro video"
+    "watch": "Watch intro video",
+    "description": "Content description of this video: {alt}",
+    "custom-controls": "Custom controls are available below"
   },
   "tutorials": {
     "title": "Tutorial | Tutorials",
@@ -212,5 +215,18 @@
     },
     "preview-unavailable": "Preview unavailable"
   },
-  "mentioned-in": "Mentioned in"
+  "mentioned-in": "Mentioned in",
+  "pager": {
+    "roledescription": "content slider",
+    "page": {
+      "label": "content page {index} of {count}"
+    },
+    "control": {
+      "navigate-previous": "navigate to previous page of content",
+      "navigate-next": "navigate to next page of content"
+    }
+  },
+  "links-grid": {
+    "label": "grid of links"
+  }
 }

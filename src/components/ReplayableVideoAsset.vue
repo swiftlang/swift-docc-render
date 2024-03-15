@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -14,18 +14,21 @@
       ref="asset"
       :variants="variants"
       :autoplays="autoplays"
-      :showsControls="showsControls"
+      :showsDefaultControls="showsDefaultControls"
       :muted="muted"
       :posterVariants="posterVariants"
       :deviceFrame="deviceFrame"
+      :alt="alt"
+      :id="id"
       @pause="onPause"
       @playing="onVideoPlaying"
       @ended="onVideoEnd"
     />
     <a
-      v-if="!showsControls"
+      v-if="!showsDefaultControls"
       class="control-button"
       href="#"
+      :aria-controls="id"
       @click.prevent="togglePlayStatus"
     >
       {{ text }}
@@ -55,7 +58,15 @@ export default {
       type: Array,
       required: true,
     },
-    showsControls: {
+    alt: {
+      type: String,
+      required: false,
+    },
+    id: {
+      type: String,
+      required: true,
+    },
+    showsDefaultControls: {
       type: Boolean,
       default: () => false,
     },
@@ -110,7 +121,7 @@ export default {
     onPause() {
       const { video } = this.$refs.asset.$refs;
       // if the video pauses, and we are hiding the controls, show the replay button
-      if (!this.showsControls && this.isPlaying) {
+      if (!this.showsDefaultControls && this.isPlaying) {
         this.isPlaying = false;
       }
       this.videoEnded = video.ended;

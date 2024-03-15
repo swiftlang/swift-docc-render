@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -17,6 +17,7 @@ import ReplayableVideoAsset from 'docc-render/components/ReplayableVideoAsset.vu
 const video = {
   type: 'video',
   poster: 'image',
+  alt: 'Text describing this video',
   variants: [
     {
       url: 'foo.mp4',
@@ -93,7 +94,7 @@ describe('Asset', () => {
     const videoAsset = wrapper.find(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toBe(image.variants);
-    expect(videoAsset.props('showsControls')).toBe(false);
+    expect(videoAsset.props('showsDefaultControls')).toBe(false);
     expect(videoAsset.props('autoplays')).toBe(false);
 
     // Check that 'ended' events emitted by a `VideoAsset` are re-emitted.
@@ -102,9 +103,12 @@ describe('Asset', () => {
   });
 
   it('renders a `ReplayableVideoAsset` without poster variants', () => {
-    const videoAsset = mountAsset('video', { video }).find(ReplayableVideoAsset);
+    const identifier = 'video';
+    const videoAsset = mountAsset(identifier, { video }).find(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toEqual([]);
+    expect(videoAsset.props('id')).toBe(identifier);
+    expect(videoAsset.props('alt')).toBe(video.alt);
   });
 
   it('passes down `deviceFrame` to `ReplayableVideoAsset`', () => {
@@ -119,29 +123,37 @@ describe('Asset', () => {
   });
 
   it('renders a `VideoAsset` for video with `showsReplayButton=false`', () => {
+    const identifier = 'video';
+
     const wrapper = shallowMount(Asset, {
       propsData: {
-        identifier: 'video',
+        identifier,
         showsReplayButton: false,
         showsVideoControls: true,
       },
       provide: {
         store: {
-          state: { references: { video } },
+          state: { references: { [identifier]: video } },
         },
       },
     });
 
     const videoAsset = wrapper.find(VideoAsset);
-    expect(videoAsset.props('variants')).toBe(video.variants);
-    expect(videoAsset.props('showsControls')).toBe(true);
-    expect(videoAsset.props('muted')).toBe(false);
+    expect(videoAsset.props()).toEqual(expect.objectContaining({
+      variants: video.variants,
+      showsDefaultControls: true,
+      muted: false,
+      id: identifier,
+      alt: video.alt,
+    }));
   });
 
   it('renders a `ReplayableVideoAsset` with deviceFrame', () => {
+    const identifier = 'video';
+
     const wrapper = shallowMount(Asset, {
       propsData: {
-        identifier: 'video',
+        identifier,
         showsReplayButton: true,
         showsVideoControls: true,
         deviceFrame: 'phone',
@@ -159,8 +171,10 @@ describe('Asset', () => {
       deviceFrame: 'phone',
       muted: false,
       posterVariants: [],
-      showsControls: true,
+      showsDefaultControls: true,
       variants: video.variants,
+      id: identifier,
+      alt: video.alt,
     });
   });
 
@@ -181,7 +195,7 @@ describe('Asset', () => {
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
-    expect(videoAsset.props('showsControls')).toBe(true);
+    expect(videoAsset.props('showsDefaultControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(false);
     expect(videoAsset.props('autoplays')).toBe(true);
   });
@@ -202,7 +216,7 @@ describe('Asset', () => {
     });
 
     const videoAsset = wrapper.find(ReplayableVideoAsset);
-    expect(videoAsset.props('showsControls')).toBe(true);
+    expect(videoAsset.props('showsDefaultControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(false);
   });
 

@@ -44,7 +44,7 @@ export default {
   color: var(--color-documentation-intro-eyebrow,
     var(--colors-secondary-label, var(--color-secondary-label)));
   display: block;
-  margin-bottom: rem(20px);
+  margin-bottom: rem(15px);
 }
 
 .title {
