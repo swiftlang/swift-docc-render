@@ -98,11 +98,12 @@
           <div class="input-wrapper">
             <FilterInput
               v-model="filter"
-              :tags="availableTags"
+              :tags="suggestedTags"
               :translatableTags="translatableTags"
-              :selected-tags.sync="selectedTagsModelValue"
+              :selected-tags.sync="selectedTags"
               :placeholder="$t('filter.title')"
               :should-keep-open-on-blur="false"
+              :shouldTruncateTags="shouldTruncateTags"
               :position-reversed="!renderFilterOnTop"
               :clear-filter-on-tag-select="false"
               class="filter-component"
@@ -133,8 +134,10 @@ import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCar
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
+import filteredChildrenMixin from 'theme/mixins/navigator/filteredChildren';
+import tagsProvider from 'theme/mixins/navigator/tagsProvider';
+import { FILTER_TAGS, CHANGES_TAGS } from 'docc-render/constants/Tags';
 import { isEqual, last } from 'docc-render/utils/arrays';
-import { ChangeNames, ChangeNameToType } from 'docc-render/constants/Changes';
 import {
   convertChildrenArrayToObject,
   getAllChildren,
@@ -147,43 +150,10 @@ import Badge from 'docc-render/components/Badge.vue';
 
 const STORAGE_KEY = 'navigator.state';
 
-const FILTER_TAGS = {
-  sampleCode: 'sampleCode',
-  tutorials: 'tutorials',
-  articles: 'articles',
-  webServiceEndpoints: 'webServiceEndpoints',
-};
-
-const FILTER_TAGS_TO_LABELS = {
-  [FILTER_TAGS.sampleCode]: 'Sample Code',
-  [FILTER_TAGS.tutorials]: 'Tutorials',
-  [FILTER_TAGS.articles]: 'Articles',
-  [FILTER_TAGS.webServiceEndpoints]: 'Web Service Endpoints',
-};
-
-const FILTER_LABELS_TO_TAGS = Object.fromEntries(
-  Object
-    .entries(FILTER_TAGS_TO_LABELS)
-    .map(([key, value]) => [value, key]),
-);
-
-const TOPIC_TYPE_TO_TAG = {
-  [TopicTypes.article]: FILTER_TAGS.articles,
-  [TopicTypes.learn]: FILTER_TAGS.tutorials,
-  [TopicTypes.overview]: FILTER_TAGS.tutorials,
-  [TopicTypes.resources]: FILTER_TAGS.tutorials,
-  [TopicTypes.sampleCode]: FILTER_TAGS.sampleCode,
-  [TopicTypes.section]: FILTER_TAGS.tutorials,
-  [TopicTypes.tutorial]: FILTER_TAGS.tutorials,
-  [TopicTypes.project]: FILTER_TAGS.tutorials,
-  [TopicTypes.httpRequest]: FILTER_TAGS.webServiceEndpoints,
-};
-
 const NO_RESULTS = 'navigator.no-results';
 const NO_CHILDREN = 'navigator.no-children';
 const ERROR_FETCHING = 'navigator.error-fetching';
 const ITEMS_FOUND = 'navigator.items-found';
-const HIDE_DEPRECATED = 'navigator.tags.hide-deprecated';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -194,13 +164,8 @@ export default {
   name: 'NavigatorCard',
   constants: {
     STORAGE_KEY,
-    FILTER_TAGS,
-    FILTER_TAGS_TO_LABELS,
-    FILTER_LABELS_TO_TAGS,
-    TOPIC_TYPE_TO_TAG,
     ERROR_FETCHING,
     ITEMS_FOUND,
-    HIDE_DEPRECATED,
   },
   components: {
     FilterInput,
@@ -266,7 +231,7 @@ export default {
     },
   },
   mixins: [
-    keyboardNavigation,
+    keyboardNavigation, filteredChildrenMixin, tagsProvider,
   ],
   data() {
     return {
@@ -282,7 +247,6 @@ export default {
       activeUID: null,
       lastFocusTarget: null,
       allNodesToggled: false,
-      translatableTags: [HIDE_DEPRECATED],
       INDEX_ROOT_KEY,
     };
   },
@@ -299,76 +263,6 @@ export default {
       if (hasFilter) return NO_RESULTS;
       if (errorFetching) return ERROR_FETCHING;
       return NO_CHILDREN;
-    },
-    /**
-     * Generates an array of tag labels for filtering.
-     * Shows only tags, that have children matches.
-     */
-    availableTags({
-      selectedTags,
-      renderableChildNodesMap,
-      apiChangesObject,
-      hideAvailableTags,
-    }) {
-      if (hideAvailableTags || selectedTags.length) return [];
-      const apiChangesTypesSet = new Set(Object.values(apiChangesObject));
-      const tagLabelsSet = new Set(Object.values(FILTER_TAGS_TO_LABELS));
-      const generalTags = new Set([HIDE_DEPRECATED]);
-      // when API changes are available, remove the `HIDE_DEPRECATED` option
-      if (apiChangesTypesSet.size) {
-        generalTags.delete(HIDE_DEPRECATED);
-      }
-
-      const availableTags = {
-        type: [],
-        changes: [],
-        other: [],
-      };
-      // iterate over the nodes to render
-      for (const childID in renderableChildNodesMap) {
-        if (!Object.hasOwnProperty.call(renderableChildNodesMap, childID)) {
-          continue;
-        }
-        // if there are no more tags to iterate over, end early
-        if (!tagLabelsSet.size && !apiChangesTypesSet.size && !generalTags.size) {
-          break;
-        }
-        // extract props
-        const { type, path, deprecated } = renderableChildNodesMap[childID];
-        // grab the tagLabel
-        const tagLabel = FILTER_TAGS_TO_LABELS[TOPIC_TYPE_TO_TAG[type]];
-        const changeType = apiChangesObject[path];
-        // try to match a tag
-        if (tagLabelsSet.has(tagLabel)) {
-          // if we have a match, store it
-          availableTags.type.push(tagLabel);
-          // remove the match, so we can end the filter early
-          tagLabelsSet.delete(tagLabel);
-        }
-        if (changeType && apiChangesTypesSet.has(changeType)) {
-          availableTags.changes.push(this.$t(ChangeNames[changeType]));
-          apiChangesTypesSet.delete(changeType);
-        }
-        if (deprecated && generalTags.has(HIDE_DEPRECATED)) {
-          availableTags.other.push(HIDE_DEPRECATED);
-          generalTags.delete(HIDE_DEPRECATED);
-        }
-      }
-      return availableTags.type.concat(availableTags.changes, availableTags.other);
-    },
-    selectedTagsModelValue: {
-      get() {
-        return this.selectedTags.map(tag => (
-          FILTER_TAGS_TO_LABELS[tag] || this.$t(ChangeNames[tag]) || tag
-        ));
-      },
-      set(values) {
-        // guard against accidental clearings
-        if (!this.selectedTags.length && !values.length) return;
-        this.selectedTags = values.map(label => (
-          FILTER_LABELS_TO_TAGS[label] || ChangeNameToType[label] || label
-        ));
-      },
     },
     filterPattern: ({ debouncedFilter }) => (!debouncedFilter
       ? null
@@ -401,41 +295,6 @@ export default {
     activeIndex: ({ activeUID, nodesToRender }) => (
       nodesToRender.findIndex(node => node.uid === activeUID)
     ),
-    /**
-     * Returns a list of the child nodes, that match the filter pattern.
-     * @returns NavigatorFlatItem[]
-     */
-    filteredChildren({
-      hasFilter, children, filterPattern, selectedTags, apiChanges,
-    }) {
-      if (!hasFilter) return [];
-      const tagsSet = new Set(selectedTags);
-      // find children that match current filters
-      return children.filter(({
-        title, path, type, deprecated, deprecatedChildrenCount, childUIDs,
-      }) => {
-        // groupMarkers know how many children they have and how many are deprecated
-        const isDeprecated = deprecated || deprecatedChildrenCount === childUIDs.length;
-        // check if `title` matches the pattern, if provided
-        const titleMatch = filterPattern ? filterPattern.test(title) : true;
-        // check if `type` matches any of the selected tags
-        let tagMatch = true;
-        if (tagsSet.size) {
-          tagMatch = tagsSet.has(TOPIC_TYPE_TO_TAG[type]);
-          // if there are API changes and there is no tag match, try to match change types
-          if (apiChanges && !tagMatch) {
-            tagMatch = tagsSet.has(apiChanges[path]);
-          }
-          if (!isDeprecated && tagsSet.has(HIDE_DEPRECATED)) {
-            tagMatch = true;
-          }
-        }
-        // find items, that have API changes
-        const hasAPIChanges = apiChanges ? !!apiChanges[path] : true;
-        // make sure groupMarker's dont get matched
-        return titleMatch && tagMatch && hasAPIChanges;
-      });
-    },
     /**
      * This generates a map of all the nodes we are allowed to render at a certain time.
      * This is used on both toggling, as well as on navigation and filtering.
@@ -505,7 +364,7 @@ export default {
      * @returns boolean
      */
     deprecatedHidden: ({ selectedTags }) => (
-      selectedTags[0] === HIDE_DEPRECATED
+      selectedTags[0] === FILTER_TAGS.hideDeprecated
     ),
     apiChangesObject() {
       return this.apiChanges || {};
@@ -524,7 +383,7 @@ export default {
     apiChanges(value) {
       if (value) return;
       // if we remove APIChanges, remove all related tags as well
-      this.selectedTags = this.selectedTags.filter(t => !this.$t(ChangeNames[t]));
+      this.selectedTags = this.selectedTags.filter(t => !Object.values(CHANGES_TAGS).includes(t));
     },
     async activeUID(newUid, oldUID) {
       // Update the dynamicScroller item's size, when we change the UID,
