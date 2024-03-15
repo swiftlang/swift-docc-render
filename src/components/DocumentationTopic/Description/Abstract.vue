@@ -26,7 +26,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .abstract {
-  @include font-styles(body-large);
+  @include font-styles(intro);
 }
 
 :deep() {

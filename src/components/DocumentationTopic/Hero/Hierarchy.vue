@@ -186,7 +186,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .hierarchy {
-  @include font-styles(hierarchy);
+  @include font-styles(body-reduced);
   justify-content: flex-start;
   align-items: center;
   margin: 0 0 rem(20px) 0;
