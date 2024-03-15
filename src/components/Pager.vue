@@ -343,7 +343,7 @@ export default {
   justify-content: center;
   margin-top: 1rem;
 
-  @include breakpoint(small) {
+  @include breakpoint(medium) {
     display: none;
   }
 }
