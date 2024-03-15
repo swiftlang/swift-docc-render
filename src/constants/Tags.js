@@ -18,9 +18,11 @@ export const TYPE_TAGS = {
   webServiceEndpoints: 'filter.tags.web-service-endpoints',
 };
 
+export const CHANGES_TAGS = ChangeNames;
+
 export const FILTER_TAGS = {
   ...TYPE_TAGS,
-  ...ChangeNames,
+  ...CHANGES_TAGS,
   hideDeprecated: 'filter.tags.hide-deprecated',
 };
 
