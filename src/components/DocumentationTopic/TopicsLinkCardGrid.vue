@@ -17,7 +17,7 @@
     <template #page="{ page }">
       <Row :columns="{
         large: compactCards ? 3 : 2,
-        medium: 2,
+        medium: compactCards ? 3 : 2,
       }">
         <Column
           v-for="item in page"
@@ -82,7 +82,7 @@ export default {
     }) => (usePager ? {
       [TopicSectionsStyle.compactGrid]: {
         [BreakpointName.large]: 6,
-        [BreakpointName.medium]: 4,
+        [BreakpointName.medium]: 6,
         [BreakpointName.small]: 1,
       },
       [TopicSectionsStyle.detailedGrid]: {
