@@ -56,7 +56,7 @@ describe('TopicsLinkCardGrid', () => {
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(2);
 
-      // 10 items => 2 pages at large breakpoint (6 links per page)
+      // 10 items => 2 pages at medium breakpoint (6 links per page)
       wrapper.setData({ breakpoint: BreakpointName.medium });
       pager = wrapper.find(Pager);
       expect(pager.exists()).toBe(true);
