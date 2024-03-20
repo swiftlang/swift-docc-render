@@ -71,6 +71,7 @@
               :item="item"
               :isRendered="active"
               :filter-pattern="filterPattern"
+              :filter-text="debouncedFilter"
               :is-active="item.uid === activeUID"
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
