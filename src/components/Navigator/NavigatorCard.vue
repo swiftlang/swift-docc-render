@@ -130,7 +130,7 @@ import {
   SIDEBAR_ITEM_SIZE,
 } from 'docc-render/constants/sidebar';
 import { safeHighlightPattern } from 'docc-render/utils/search-utils';
-import NavigatorCardItem from 'docc-render/components/Navigator/NavigatorCardItem.vue';
+import NavigatorCardItem from 'theme/components/Navigator/NavigatorCardItem.vue';
 import BaseNavigatorCard from 'docc-render/components/Navigator/BaseNavigatorCard.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import FilterInput from 'docc-render/components/Filter/FilterInput.vue';
