@@ -24,7 +24,6 @@
       :render-filter-on-top="renderFilterOnTop"
       :api-changes="apiChanges"
       :navigator-references="navigatorReferences"
-      :isSpecificOverload="isSpecificOverload"
       @close="$emit('close')"
     >
       <template #filter><slot name="filter" /></template>
@@ -49,7 +48,6 @@ import NavigatorCard from 'theme/components/Navigator/NavigatorCard.vue';
 import LoadingNavigatorCard from 'theme/components/Navigator/LoadingNavigatorCard.vue';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
-import { last } from 'docc-render/utils/arrays';
 
 /**
  * @typedef NavigatorFlatItem
@@ -128,6 +126,10 @@ export default {
     symbolKind: {
       default: () => undefined,
     },
+    allowHiding: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     // gets the paths for each parent in the breadcrumbs
@@ -153,21 +155,6 @@ export default {
         itemsToSlice = 2;
       }
       return parentTopicReferences.slice(itemsToSlice).map(r => r.url).concat(path);
-    },
-    /**
-     * Symbol pages always have a symbolKind
-     */
-    isSymbol: ({ symbolKind }) => !!symbolKind,
-    /**
-     * Only symbol pages with overloads can have a valid hash:
-     * less than 5 char, only lower case letter and number
-     */
-    isSpecificOverload({ $route: { path }, isSymbol }) {
-      // Ensure the path does not have a trailing slash
-      // eslint-disable-next-line no-param-reassign
-      path = path.replace(/\/$/, '');
-      const hash = isSymbol ? last(path.split('-')) : '';
-      return /^[a-z0-9]{1,5}$/.test(hash);
     },
     /**
      * The root item is always a module
