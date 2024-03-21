@@ -64,6 +64,7 @@ import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
+import { last } from 'docc-render/utils/arrays';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
@@ -124,11 +125,15 @@ export default {
       type: Array,
       default: () => [],
     },
+    hasOtherDeclarations: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     windowWidth: ({ store }) => store.state.contentWidth,
-    parentTopics() {
-      return this.parentTopicIdentifiers.reduce((all, id) => {
+    parentTopics({ hasOtherDeclarations, currentTopicTitle }) {
+      const parentTopics = this.parentTopicIdentifiers.reduce((all, id) => {
         const reference = this.references[id];
         if (reference) {
           const { title, url } = reference;
@@ -137,6 +142,10 @@ export default {
         console.error(`Reference for "${id}" is missing`);
         return all;
       }, []);
+      const hideImmediateParent = last(parentTopics).title === currentTopicTitle
+        && hasOtherDeclarations;
+      if (hideImmediateParent) parentTopics.pop();
+      return parentTopics;
     },
     root: ({ parentTopics }) => parentTopics[0],
     smallViewport: ({ windowWidth }) => (windowWidth < BreakpointAttributes.default.small.maxWidth),

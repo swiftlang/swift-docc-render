@@ -37,6 +37,7 @@
           :isSymbolBeta="isSymbolBeta"
           :parentTopicIdentifiers="hierarchyItems"
           :currentTopicTags="tags"
+          :hasOtherDeclarations="hasOtherDeclarations"
         />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
@@ -89,7 +90,7 @@
           :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
         >
           <div
-            v-if="hasPrimaryContent || hasOtherDeclarations"
+            v-if="hasPrimaryContent || showOtherDeclarations"
             :class="['container', { 'minimized-container': enableMinimized }]"
           >
             <div
@@ -111,7 +112,7 @@
                 <ContentNode :content="downloadNotAvailableSummary" />
               </Aside>
             </div>
-            <div v-if="hasOtherDeclarations" class="declaration-list-menu">
+            <div v-if="showOtherDeclarations" class="declaration-list-menu">
               <button
                 class="declaration-list-toggle"
                 @click="toggleDeclList"
@@ -553,9 +554,12 @@ export default {
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
     },
-    hasOtherDeclarations({ declarations = [], enableMinimized }) {
+    showOtherDeclarations({ enableMinimized, hasOtherDeclarations }) {
       // disable otherDeclarations in minimized mode
-      return !enableMinimized && declarations.length
+      return !enableMinimized && hasOtherDeclarations;
+    },
+    hasOtherDeclarations({ declarations = [] }) {
+      return declarations.length
         // there's always only 1 `declaration` at this level
         && declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'));
     },
