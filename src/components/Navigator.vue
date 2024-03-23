@@ -126,10 +126,6 @@ export default {
     symbolKind: {
       default: () => undefined,
     },
-    allowHiding: {
-      type: Boolean,
-      default: true,
-    },
   },
   computed: {
     // gets the paths for each parent in the breadcrumbs

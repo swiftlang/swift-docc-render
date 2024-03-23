@@ -142,7 +142,8 @@ export default {
         console.error(`Reference for "${id}" is missing`);
         return all;
       }, []);
-      const hideImmediateParent = last(parentTopics).title === currentTopicTitle
+      const immediateParent = last(parentTopics);
+      const hideImmediateParent = immediateParent && immediateParent.title === currentTopicTitle
         && hasOtherDeclarations;
       if (hideImmediateParent) parentTopics.pop();
       return parentTopics;

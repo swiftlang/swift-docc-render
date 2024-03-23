@@ -327,6 +327,7 @@ describe('DocumentationTopic', () => {
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       currentTopicTags: propsData.tags,
+      hasOtherDeclarations: false,
     });
   });
 

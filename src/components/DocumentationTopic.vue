@@ -559,7 +559,7 @@ export default {
       return !enableMinimized && hasOtherDeclarations;
     },
     hasOtherDeclarations({ declarations = [] }) {
-      return declarations.length
+      return !!declarations.length
         // there's always only 1 `declaration` at this level
         && declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'));
     },
