@@ -135,6 +135,29 @@ describe('Hierarchy', () => {
     expect(wrapper.contains(HierarchyCollapsedItems)).toBe(false);
   });
 
+  it('renders list of `HierarchyItems` without its immediate parent if its an overload', () => {
+    const wrapper = mountWithProps({
+      propsData: {
+        currentTopicTitle: bar.title,
+        parentTopicIdentifiers: [
+          foo.identifier,
+          bar.identifier,
+        ],
+      },
+    });
+    let items = wrapper.findAll(HierarchyItem);
+    expect(items.length).toBe(3);
+
+    // Hide immediate parent if has same title as parent and other declarations
+    wrapper.setProps({ hasOtherDeclarations: true });
+    items = wrapper.findAll(HierarchyItem);
+    expect(items.length).toBe(2);
+    // Don't hide if different titles
+    wrapper.setProps({ currentTopicTitle: baz.title });
+    items = wrapper.findAll(HierarchyItem);
+    expect(items.length).toBe(3);
+  });
+
   it('continues working, if a reference is missing', () => {
     const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
     const wrapper = mountWithProps({
