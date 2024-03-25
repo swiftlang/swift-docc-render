@@ -31,7 +31,7 @@ export default {
      */
     technologyUrl: {
       type: String,
-      required: true,
+      default: '',
     },
     apiChangesVersion: {
       type: String,

@@ -130,6 +130,7 @@
   "api-reference": "API Reference",
   "filter": {
     "title": "Filter",
+    "search": "Search",
     "search-symbols": "Search symbols in {technology}",
     "suggested-tags": "Suggested tag | Suggested tags",
     "selected-tags": "Selected tag | Selected tags",

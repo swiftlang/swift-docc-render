@@ -25,7 +25,7 @@
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          :placeholder="$t('filter.search-symbols', { technology })"
+          :placeholder="placeholderText"
           focusInputWhenCreated
           focusInputWhenEmpty
           preventBorderStyle
@@ -193,7 +193,7 @@ export default {
     },
     technology: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   computed: {
@@ -222,6 +222,10 @@ export default {
       // Filter repeated matches and return the first 20
       const uniqueMatches = [...new Map(matches.map(match => [match.path, match])).values()];
       return orderSymbolsByPriority(uniqueMatches).slice(0, MAX_RESULTS);
+    },
+    placeholderText() {
+      if (!this.technology) return this.$t('filter.search');
+      return this.$t('filter.search-symbols', { technology: this.technology });
     },
     isVisible: {
       get: ({ showQuickNavigationModal }) => showQuickNavigationModal,
