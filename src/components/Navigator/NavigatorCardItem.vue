@@ -105,6 +105,9 @@
       <Badge v-if="isDeprecated" variant="deprecated" />
       <Badge v-else-if="isBeta" variant="beta" />
     </template>
+    <template #content-container>
+      <slot name="card-item-content" />
+    </template>
   </BaseNavigatorCardItem>
 </template>
 
@@ -151,6 +154,10 @@ export default {
     filterPattern: {
       type: RegExp,
       default: undefined,
+    },
+    filterText: {
+      type: String,
+      default: null,
     },
     isActive: {
       type: Boolean,
@@ -263,7 +270,7 @@ $chevron-width: $nav-card-horizontal-spacing;
 
 .is-group {
   .leaf-link {
-    color: var(--color-figure-gray-secondary);
+    color: var(--color-figure-gray-tertiary);
     font-weight: $font-weight-semibold;
     // groups dont need the overlay
     &:after {

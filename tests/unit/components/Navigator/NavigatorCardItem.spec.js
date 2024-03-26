@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -537,6 +537,15 @@ describe('NavigatorCardItem', () => {
       expect(waitFrames).toHaveBeenCalledTimes(1);
       expect(waitFrames).toHaveBeenCalledWith(8);
       expect(document.activeElement).not.toEqual(wrapper.element);
+    });
+
+    it('exposes a #card-item-content slot', () => {
+      const wrapper = createWrapper({
+        scopedSlots: {
+          'card-item-content': '<div class="card-item-content">CustomNavigatorCardItemContentComponent</div>',
+        },
+      });
+      expect(wrapper.find('.card-item-content').text()).toBe('CustomNavigatorCardItemContentComponent');
     });
   });
 });
