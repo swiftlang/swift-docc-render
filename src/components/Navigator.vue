@@ -123,9 +123,6 @@ export default {
       type: Object,
       default: null,
     },
-    symbolKind: {
-      default: () => undefined,
-    },
   },
   computed: {
     // gets the paths for each parent in the breadcrumbs
