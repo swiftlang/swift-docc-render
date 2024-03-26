@@ -65,6 +65,7 @@ import Badge from 'docc-render/components/Badge.vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { last } from 'docc-render/utils/arrays';
+import { PortalTarget } from 'portal-vue';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
@@ -142,10 +143,13 @@ export default {
         console.error(`Reference for "${id}" is missing`);
         return all;
       }, []);
+
+      // Overloaded symbols are auto-grouped under a group page with the same title
+      // We should omit showing their immediate parent to avoid confusion and duplication
       const immediateParent = last(parentTopics);
-      const hideImmediateParent = immediateParent && immediateParent.title === currentTopicTitle
-        && hasOtherDeclarations;
-      if (hideImmediateParent) parentTopics.pop();
+      if (hasOtherDeclarations && immediateParent?.title === currentTopicTitle) {
+        parentTopics.pop();
+      }
       return parentTopics;
     },
     root: ({ parentTopics }) => parentTopics[0],
