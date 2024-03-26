@@ -11,15 +11,7 @@
 <template>
   <BaseNavigatorView
     v-if="topicData"
-    :diffAvailability="topicProps.diffAvailability"
-    :interfaceLanguage="topicProps.interfaceLanguage"
-    :references="topicProps.references"
-    :symbolKind="topicProps.symbolKind"
-    :enableNavigator="enableNavigator"
-    :technology="technology"
-    :parentTopicIdentifiers="parentTopicIdentifiers"
-    :objcPath="objcPath"
-    :swiftPath="swiftPath"
+    v-bind="baseViewProps"
   >
     <template #default>
       <Topic
@@ -91,6 +83,29 @@ export default {
     };
   },
   computed: {
+    baseViewProps: ({
+      topicProps: {
+        diffAvailability,
+        interfaceLanguage,
+        references,
+        symbolKind,
+      },
+      enableNavigator,
+      technology,
+      parentTopicIdentifiers,
+      objcPath,
+      swiftPath,
+    }) => ({
+      diffAvailability,
+      interfaceLanguage,
+      references,
+      symbolKind,
+      enableNavigator,
+      technology,
+      parentTopicIdentifiers,
+      objcPath,
+      swiftPath,
+    }),
     objcOverrides: ({ topicData }) => {
       const { variantOverrides = [] } = topicData || {};
 
