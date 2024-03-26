@@ -64,7 +64,6 @@ import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
-import { last } from 'docc-render/utils/arrays';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
@@ -117,7 +116,7 @@ export default {
       type: String,
       required: true,
     },
-    parentTopicIdentifiers: {
+    parentTopics: {
       type: Array,
       default: () => [],
     },
@@ -125,32 +124,9 @@ export default {
       type: Array,
       default: () => [],
     },
-    hasOtherDeclarations: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     windowWidth: ({ store }) => store.state.contentWidth,
-    parentTopics({ hasOtherDeclarations, currentTopicTitle }) {
-      const parentTopics = this.parentTopicIdentifiers.reduce((all, id) => {
-        const reference = this.references[id];
-        if (reference) {
-          const { title, url } = reference;
-          return all.concat({ title, url });
-        }
-        console.error(`Reference for "${id}" is missing`);
-        return all;
-      }, []);
-
-      // Overloaded symbols are auto-grouped under a group page with the same title
-      // We should omit showing their immediate parent to avoid confusion and duplication
-      const immediateParent = last(parentTopics);
-      if (hasOtherDeclarations && immediateParent?.title === currentTopicTitle) {
-        parentTopics.pop();
-      }
-      return parentTopics;
-    },
     root: ({ parentTopics }) => parentTopics[0],
     smallViewport: ({ windowWidth }) => (windowWidth < BreakpointAttributes.default.small.maxWidth),
     /**

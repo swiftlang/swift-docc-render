@@ -31,13 +31,12 @@
         </template>
         <slot name="above-title" />
         <Hierarchy
-          v-if="hierarchyItems.length && !enableMinimized"
+          v-if="parentTopics.length && !enableMinimized"
           :currentTopicTitle="title"
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"
-          :parentTopicIdentifiers="hierarchyItems"
+          :parentTopics="parentTopics"
           :currentTopicTags="tags"
-          :hasOtherDeclarations="hasOtherDeclarations"
         />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
@@ -175,6 +174,7 @@ import Language from 'docc-render/constants/Language';
 import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
+import { last } from 'docc-render/utils/arrays';
 
 import AppStore from 'docc-render/stores/AppStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
@@ -449,6 +449,30 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
+    parentTopics: ({
+      hierarchyItems,
+      references,
+      hasOtherDeclarations,
+      pageTitle,
+    }) => {
+      const parentTopics = hierarchyItems.reduce((all, id) => {
+        const reference = references[id];
+        if (reference) {
+          const { title, url } = reference;
+          return all.concat({ title, url });
+        }
+        console.error(`Reference for "${id}" is missing`);
+        return all;
+      }, []);
+
+      // Overloaded symbols are auto-grouped under a group page with the same title
+      // We should omit showing their immediate parent to avoid confusion and duplication
+      const immediateParent = last(parentTopics);
+      if (hasOtherDeclarations && immediateParent?.title === pageTitle) {
+        parentTopics.pop();
+      }
+      return parentTopics;
+    },
     shouldShowLanguageSwitcher: ({
       objcPath,
       swiftPath,
