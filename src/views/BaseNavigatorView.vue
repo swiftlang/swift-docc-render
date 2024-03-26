@@ -90,6 +90,7 @@ import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidt
 import Navigator from 'docc-render/components/Navigator.vue';
 import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
@@ -113,6 +114,7 @@ export default {
     QuickNavigationModal,
     PortalTarget,
   },
+  mixins: [onPageLoadScrollToFragment],
   props: {
     enableNavigator: Boolean,
     diffAvailability: {

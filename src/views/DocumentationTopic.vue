@@ -60,7 +60,6 @@ import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
 import BaseNavigatorView from 'docc-render/views/BaseNavigatorView.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import Language from 'docc-render/constants/Language';
-import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
@@ -77,7 +76,7 @@ export default {
     Topic: DocumentationTopic,
     BaseNavigatorView,
   },
-  mixins: [onPageLoadScrollToFragment, OnThisPageRegistrator, communicationBridgeUtils],
+  mixins: [OnThisPageRegistrator, communicationBridgeUtils],
   props: {
     enableMinimized: {
       type: Boolean,

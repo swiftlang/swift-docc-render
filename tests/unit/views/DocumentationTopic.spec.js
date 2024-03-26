@@ -11,7 +11,6 @@
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
-import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import NavBase from 'docc-render/components/NavBase.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
@@ -20,7 +19,6 @@ import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/mixins/onThisPageRegistrator');
 jest.mock('docc-render/utils/theme-settings');
 
@@ -156,10 +154,6 @@ describe('DocumentationTopic', () => {
 
   afterEach(() => {
     window.renderedTimes = null;
-  });
-
-  it('calls the onPageLoadScrollToFragment mixin', () => {
-    expect(onPageLoadScrollToFragment.mounted).toHaveBeenCalled();
   });
 
   it('sets enableNavigator to true if schemaVersion is compatible', async () => {

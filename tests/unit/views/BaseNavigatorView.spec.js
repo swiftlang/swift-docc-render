@@ -11,6 +11,7 @@
 import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import NavBase from 'docc-render/components/NavBase.vue';
 import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
@@ -24,6 +25,7 @@ import BaseNavigatorView from 'docc-render/views/BaseNavigatorView.vue';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
+jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('docc-render/utils/FocusTrap');
 jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
@@ -128,6 +130,10 @@ describe('BaseNavigatorView', () => {
 
   afterEach(() => {
     window.renderedTimes = null;
+  });
+
+  it('calls the onPageLoadScrollToFragment mixin', () => {
+    expect(onPageLoadScrollToFragment.mounted).toHaveBeenCalled();
   });
 
   it('provides a global store', () => {
