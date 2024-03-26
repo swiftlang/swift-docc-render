@@ -16,6 +16,8 @@
 
 .thematic-break {
   @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
-  border-color: var(--color-grid, currentColor);
+  border-top-color: var(--color-grid, currentColor);
+  border-top-style: solid;
+  border-width: 1px 0 0 0;
 }
 </style>
