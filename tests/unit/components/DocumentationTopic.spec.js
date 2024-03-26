@@ -351,6 +351,23 @@ describe('DocumentationTopic', () => {
     });
   });
 
+  it('does not render `Hierarchy` in IDE', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData: {
+        ...propsData,
+        references: hierarchyItemsReferences,
+        hierarchyItems,
+      },
+      provide: {
+        isTargetIDE: true,
+        store: mockStore,
+      },
+    });
+
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(false);
+  });
+
   it('renders `Hierarchy` without its immediate parent if its within overload group', () => {
     wrapper.setProps({
       references: hierarchyItemsReferences,
