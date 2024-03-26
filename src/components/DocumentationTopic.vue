@@ -31,11 +31,11 @@
         </template>
         <slot name="above-title" />
         <Hierarchy
-          v-if="hierarchyItems.length && !enableMinimized"
+          v-if="parentTopics.length && !enableMinimized && !isTargetIDE"
           :currentTopicTitle="title"
           :isSymbolDeprecated="isSymbolDeprecated"
           :isSymbolBeta="isSymbolBeta"
-          :parentTopicIdentifiers="hierarchyItems"
+          :parentTopics="parentTopics"
           :currentTopicTags="tags"
         />
         <LanguageSwitcher
@@ -89,7 +89,7 @@
           :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
         >
           <div
-            v-if="hasPrimaryContent || hasOtherDeclarations"
+            v-if="hasPrimaryContent || showOtherDeclarations"
             :class="['container', { 'minimized-container': enableMinimized }]"
           >
             <div
@@ -111,7 +111,7 @@
                 <ContentNode :content="downloadNotAvailableSummary" />
               </Aside>
             </div>
-            <div v-if="hasOtherDeclarations" class="declaration-list-menu">
+            <div v-if="showOtherDeclarations" class="declaration-list-menu">
               <button
                 class="declaration-list-toggle"
                 @click="toggleDeclList"
@@ -174,6 +174,7 @@ import Language from 'docc-render/constants/Language';
 import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
+import { last } from 'docc-render/utils/arrays';
 
 import AppStore from 'docc-render/stores/AppStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
@@ -448,6 +449,30 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
+    parentTopics: ({
+      hierarchyItems,
+      references,
+      hasOtherDeclarations,
+      pageTitle,
+    }) => {
+      const parentTopics = hierarchyItems.reduce((all, id) => {
+        const reference = references[id];
+        if (reference) {
+          const { title, url } = reference;
+          return all.concat({ title, url });
+        }
+        console.error(`Reference for "${id}" is missing`);
+        return all;
+      }, []);
+
+      // Overloaded symbols are auto-grouped under a group page with the same title
+      // We should omit showing their immediate parent to avoid confusion and duplication
+      const immediateParent = last(parentTopics);
+      if (hasOtherDeclarations && immediateParent?.title === pageTitle) {
+        parentTopics.pop();
+      }
+      return parentTopics;
+    },
     shouldShowLanguageSwitcher: ({
       objcPath,
       swiftPath,
@@ -553,9 +578,12 @@ export default {
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
     },
-    hasOtherDeclarations({ declarations = [], enableMinimized }) {
+    showOtherDeclarations({ enableMinimized, hasOtherDeclarations }) {
       // disable otherDeclarations in minimized mode
-      return !enableMinimized && declarations.length
+      return !enableMinimized && hasOtherDeclarations;
+    },
+    hasOtherDeclarations({ declarations = [] }) {
+      return !!declarations.length
         // there's always only 1 `declaration` at this level
         && declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'));
     },
