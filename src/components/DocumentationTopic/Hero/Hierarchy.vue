@@ -65,7 +65,6 @@ import Badge from 'docc-render/components/Badge.vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { last } from 'docc-render/utils/arrays';
-import { PortalTarget } from 'portal-vue';
 import HierarchyCollapsedItems from './HierarchyCollapsedItems.vue';
 import HierarchyItem from './HierarchyItem.vue';
 
