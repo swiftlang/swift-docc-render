@@ -108,6 +108,26 @@ const sampleCodeDownload = {
   },
 };
 
+const itemFoo = {
+  title: 'Foo',
+  url: '/documentation/foo',
+};
+
+const itemBar = {
+  title: 'Bar',
+  url: '/documentation/bar',
+};
+
+const hierarchyItems = [
+  'topic://foo',
+  'topic://bar',
+];
+
+const hierarchyItemsReferences = {
+  'topic://foo': itemFoo,
+  'topic://bar': itemBar,
+};
+
 const propsData = {
   abstract: [abstract],
   conformance: { constraints: [], availabilityPrefix: [] },
@@ -153,10 +173,7 @@ const propsData = {
     path: 'foo',
     query: {},
   },
-  hierarchyItems: [
-    'topic://foo',
-    'topic://bar',
-  ],
+  hierarchyItems: [],
 };
 
 const hasOtherDeclSection = {
@@ -319,15 +336,69 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders a Hierarchy', () => {
+    wrapper.setProps({
+      references: hierarchyItemsReferences,
+      hierarchyItems,
+    });
     const hierarchy = wrapper.find(Hierarchy);
     expect(hierarchy.exists()).toBe(true);
     expect(hierarchy.props()).toEqual({
       currentTopicTitle: propsData.title,
-      parentTopicIdentifiers: propsData.hierarchyItems,
+      parentTopics: [itemFoo, itemBar],
       isSymbolBeta: false,
       isSymbolDeprecated: false,
       currentTopicTags: propsData.tags,
     });
+  });
+
+  it('does not render `Hierarchy` in IDE', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData: {
+        ...propsData,
+        references: hierarchyItemsReferences,
+        hierarchyItems,
+      },
+      provide: {
+        isTargetIDE: true,
+        store: mockStore,
+      },
+    });
+
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(false);
+  });
+
+  it('renders `Hierarchy` without its immediate parent if its within overload group', () => {
+    wrapper.setProps({
+      references: hierarchyItemsReferences,
+      hierarchyItems,
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+
+    let hierarchy = wrapper.find(Hierarchy);
+    // Don't hide immediate parent yet if has other declarations but different titles
+    expect(hierarchy.props()).toHaveProperty('parentTopics', [itemFoo, itemBar]);
+
+    // Hide immediate parent if has same title as parent and has other declarations
+    wrapper.setProps({ title: itemBar.title });
+    hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.props()).toHaveProperty('parentTopics', [itemFoo]);
+  });
+
+  it('`Hierarchy` continues working, if a reference is missing', () => {
+    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+    wrapper.setProps({
+      references: { 'topic://foo': itemFoo }, // set without `Bar` reference data
+      hierarchyItems,
+    });
+
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(true);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith('Reference for "topic://bar" is missing');
   });
 
   it('does not render a Hierarchy if hierarchyItems is empty or enableMinimized is true', () => {

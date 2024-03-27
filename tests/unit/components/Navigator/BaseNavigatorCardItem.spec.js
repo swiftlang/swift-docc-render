@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -78,5 +78,16 @@ describe('BaseNavigatorCardItem', () => {
 
     expect(wrapper.find('.title-container').exists()).toBe(true);
     expect(wrapper.find('.title-container-slot').exists()).toBe(true);
+  });
+
+  it('renders a slot for content-container', () => {
+    wrapper = shallowMount(BaseNavigatorCardItem, {
+      slots: {
+        'content-container': '<div class="content-container-slot"></div>',
+      },
+    });
+
+    expect(wrapper.find('.content-container').exists()).toBe(true);
+    expect(wrapper.find('.content-container-slot').exists()).toBe(true);
   });
 });
