@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -30,6 +30,7 @@ import TabNavigator from './ContentNode/TabNavigator.vue';
 import TaskList from './ContentNode/TaskList.vue';
 import LinksBlock from './ContentNode/LinksBlock.vue';
 import DeviceFrame from './ContentNode/DeviceFrame.vue';
+import ThematicBreak from './ContentNode/ThematicBreak.vue';
 
 const { CaptionPosition, CaptionTag } = Caption.constants;
 
@@ -49,6 +50,7 @@ export const BlockType = {
   row: 'row',
   tabNavigator: 'tabNavigator',
   links: 'links',
+  thematicBreak: 'thematicBreak',
 };
 
 const InlineType = {
@@ -421,6 +423,8 @@ function renderNode(createElement, references) {
         },
       });
     }
+    case BlockType.thematicBreak:
+      return createElement(ThematicBreak);
     case InlineType.codeVoice:
       return createElement(CodeVoice, {}, (
         node.code
