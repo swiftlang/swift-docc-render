@@ -56,7 +56,6 @@
                     :error-fetching="slotProps.errorFetching"
                     :api-changes="slotProps.apiChanges"
                     :references="references"
-                    :symbolKind="symbolKind"
                     :navigator-references="slotProps.references"
                     :scrollLockID="scrollLockID"
                     :render-filter-on-top="breakpoint !== BreakpointName.large"
@@ -128,10 +127,6 @@ export default {
     references: {
       type: Object,
       default: () => {},
-    },
-    symbolKind: {
-      type: String,
-      default: '',
     },
     objcPath: {
       type: String,

@@ -86,7 +86,6 @@ const propsData = {
     'topic://foo',
     'topic://bar',
   ],
-  symbolKind: 'foo-type',
   references,
   technology: references['topic://foo'],
   enableNavigator: false,
@@ -162,7 +161,6 @@ describe('BaseNavigatorView', () => {
     const {
       technology,
       parentTopicIdentifiers,
-      symbolKind,
     } = propsData;
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
@@ -178,7 +176,6 @@ describe('BaseNavigatorView', () => {
       // assert we are passing the first set of paths always
       parentTopicIdentifiers,
       references,
-      symbolKind,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
       // assert we are passing the default technology, if we dont have the children yet
       technology,
@@ -196,7 +193,6 @@ describe('BaseNavigatorView', () => {
       renderFilterOnTop: false,
       parentTopicIdentifiers,
       references,
-      symbolKind,
       technology: TechnologyWithChildren,
       apiChanges: null,
       flatChildren: [],

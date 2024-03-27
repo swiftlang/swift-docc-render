@@ -273,6 +273,7 @@ describe('NavigatorCard', () => {
       isActive: false,
       isRendered: false,
       filterPattern: null,
+      filterText: '',
       isFocused: false,
       isBold: true,
       item: root0,
@@ -574,6 +575,7 @@ describe('NavigatorCard', () => {
         isFocused: false,
         item,
         filterPattern: null,
+        filterText: '',
         isRendered: false,
         apiChange: null,
         enableFocus: false,
@@ -1074,73 +1076,6 @@ describe('NavigatorCard', () => {
       item: root0Child0,
       isBold: true,
       isActive: true,
-    });
-  });
-
-  it('highlights the generic page when an overloaded page is not in the tree', async () => {
-    const wrapper = createWrapper();
-    wrapper.setProps({
-      activePath: ['/documentation/testkit-ab1c2'],
-      isSpecificOverload: true,
-    });
-    await flushPromises();
-    const all = wrapper.findAll(NavigatorCardItem);
-    expect(all).toHaveLength(4); // assert all are rendered, except the grandchild
-    expect(all.at(0).props()).toMatchObject({
-      item: root0,
-      isBold: true,
-      isActive: true, // <- highlighted
-      expanded: true,
-    });
-  });
-
-  it('highlights the specific page when both generic and specific overloaded pages are in the tree', async () => {
-    const overloadedPage = {
-      type: TopicTypes.struct,
-      path: '/documentation/testkit-ab1c2',
-      title: 'Third Child, Depth 1',
-      uid: 100,
-      parent: INDEX_ROOT_KEY,
-      depth: 0,
-      index: 2,
-      childUIDs: [],
-    };
-
-    const wrapper = createWrapper({
-      propsData: {
-        children: [
-          root0,
-          root0Child0,
-          root0Child1,
-          root0Child1GrandChild0,
-          root1,
-          overloadedPage,
-        ],
-        activePath: ['/documentation/testkit-ab1c2'],
-        isSpecificOverload: true,
-      },
-    });
-
-    await flushPromises();
-    const all = wrapper.findAll(NavigatorCardItem);
-    expect(all).toHaveLength(3); // assert only first level pages are rendered
-    expect(all.at(0).props()).toMatchObject({
-      item: root0,
-      isBold: false,
-      isActive: false, // <- not highlighted
-      expanded: false,
-    });
-    expect(all.at(1).props()).toMatchObject({
-      item: root1,
-      isBold: false,
-      isActive: false, // <- not highlighted
-      expanded: false,
-    });
-    expect(all.at(2).props()).toMatchObject({
-      item: overloadedPage,
-      isBold: true,
-      isActive: true, // <- highlighted
-      expanded: true,
     });
   });
 
@@ -2143,6 +2078,7 @@ describe('NavigatorCard', () => {
         apiChange: null,
         expanded: true,
         filterPattern: null,
+        filterText: '',
         isActive: true,
         isBold: true,
         isFocused: true,
@@ -2168,6 +2104,7 @@ describe('NavigatorCard', () => {
         apiChange: null,
         expanded: true,
         filterPattern: null,
+        filterText: '',
         isActive: true,
         isBold: true,
         isFocused: true,

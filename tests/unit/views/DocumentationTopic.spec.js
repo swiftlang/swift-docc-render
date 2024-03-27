@@ -83,7 +83,6 @@ const topicData = {
         name: 'barOS',
       },
     ],
-    symbolKind: 'foo-type',
   },
   primaryContentSections: [],
   references: {
