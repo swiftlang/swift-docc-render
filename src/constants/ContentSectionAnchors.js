@@ -34,6 +34,11 @@ export const MainContentSectionAnchors = {
 };
 
 export const PrimaryContentSectionAnchors = {
+  [SectionKind.attributes]: {
+    title: 'sections.attributes',
+    anchor: 'attributes',
+    level: 2,
+  },
   [SectionKind.details]: {
     title: 'sections.details',
     anchor: 'details',
