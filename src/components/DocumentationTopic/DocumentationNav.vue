@@ -186,6 +186,7 @@ $sidenav-icon-padding-size: 5px;
 
 .sidenav-toggle-wrapper {
   display: flex;
+  margin-right: $nav-padding / 2;
   margin-top: 1px;
 
   // This is a hack to enforce the toggle to be visible when in breakpoint,
