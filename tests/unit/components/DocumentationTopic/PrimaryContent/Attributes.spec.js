@@ -4,8 +4,22 @@ import { PrimaryContentSectionAnchors } from 'docc-render/constants/ContentSecti
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Attributes from 'docc-render/components/DocumentationTopic/PrimaryContent/Attributes.vue';
 import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.vue';
+import ParameterAttributes from 'docc-render/components/DocumentationTopic/PrimaryContent/ParameterAttributes.vue';
 
-const createWrapper = (opts = {}) => shallowMount(Attributes, opts);
+const propsData = {
+  attributes: [
+    {
+      kind: 'default',
+      title: 'Default',
+      value: 'foobar',
+    },
+  ],
+};
+
+const createWrapper = (opts = {}) => shallowMount(Attributes, {
+  propsData,
+  ...opts,
+});
 
 describe('Attributes', () => {
   it('renders a section', () => {
@@ -27,5 +41,12 @@ describe('Attributes', () => {
     expect(heading.props('anchor')).toBe(anchor);
     expect(heading.props('level')).toBe(level);
     expect(heading.text()).toBe(title);
+  });
+
+  it('renders a `ParameterAttributes`', () => {
+    const wrapper = createWrapper();
+    const attrs = wrapper.find(ParameterAttributes);
+    expect(attrs.exists()).toBe(true);
+    expect(attrs.props('attributes')).toEqual(propsData.attributes);
   });
 });
