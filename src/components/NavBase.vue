@@ -673,12 +673,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   white-space: nowrap;
   box-sizing: border-box;
 
-  @include breakpoints-from(large, nav) {
-    &:not(:first-child) {
-      padding-left: $nav-padding / 2;
-    }
-  }
-
   @include breakpoint(small, $scope: nav) {
     padding-top: 0;
     height: $nav-height-small;
