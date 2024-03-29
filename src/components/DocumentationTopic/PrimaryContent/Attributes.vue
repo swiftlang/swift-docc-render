@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/_core.scss';
+@import 'docc-render/styles/_core.scss';
 
 .parameter-attributes {
   margin-left: 1rem;
