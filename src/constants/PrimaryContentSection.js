@@ -10,6 +10,7 @@
 
 // eslint-disable-next-line import/prefer-default-export
 export const SectionKind = {
+  attributes: 'attributes',
   content: 'content',
   declarations: 'declarations',
   mentions: 'mentions',

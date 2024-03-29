@@ -12,6 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import PrimaryContent from 'docc-render/components/DocumentationTopic/PrimaryContent.vue';
 
 const {
+  Attributes,
   ContentNode,
   Parameters,
   PossibleValues,
@@ -22,6 +23,17 @@ const {
   Mentions,
 } = PrimaryContent.components;
 const { SectionKind } = PrimaryContent.constants;
+
+const attributesSection = {
+  kind: SectionKind.attributes,
+  attributes: [
+    {
+      kind: 'default',
+      title: 'Default',
+      value: 'foobar',
+    },
+  ],
+};
 
 const genericContentSection = {
   kind: SectionKind.content,
@@ -139,6 +151,7 @@ const propsData = {
   conformance: { availbilityPrefix: [], constraints: [] },
   source: { url: 'foo.com' },
   sections: [
+    attributesSection,
     detailsSection,
     genericContentSection,
     parametersSection,
@@ -174,6 +187,7 @@ describe('PrimaryContent', () => {
     });
   }
 
+  checkProps(Attributes, { attributes: attributesSection.attributes });
   checkProps(PropertyListKeyDetails, { details: detailsSection.details });
   checkProps(ContentNode, { content: genericContentSection.content, tag: 'div' });
   checkProps(Parameters, { parameters: parametersSection.parameters });

@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import Attributes
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/Attributes.vue';
 import PossibleValues
   from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
 import RestEndpoint
@@ -37,6 +39,7 @@ import Mentions from './PrimaryContent/Mentions.vue';
 export default {
   name: 'PrimaryContent',
   components: {
+    Attributes,
     ContentNode,
     Parameters,
     PropertyListKeyDetails,
@@ -70,6 +73,7 @@ export default {
   methods: {
     componentFor(section) {
       return {
+        [SectionKind.attributes]: Attributes,
         [SectionKind.content]: ContentNode,
         [SectionKind.details]: PropertyListKeyDetails,
         [SectionKind.parameters]: Parameters,
@@ -86,6 +90,7 @@ export default {
     },
     propsFor(section) {
       const {
+        attributes,
         bodyContentType,
         content,
         details,
@@ -99,6 +104,7 @@ export default {
         mentions,
       } = section;
       return {
+        [SectionKind.attributes]: { attributes },
         [SectionKind.content]: { content },
         [SectionKind.details]: { details },
         [SectionKind.parameters]: { parameters },

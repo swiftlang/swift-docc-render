@@ -95,6 +95,7 @@
     "close": "Close"
   },
   "sections": {
+    "attributes": "Attributes",
     "title": "Section {number}",
     "on-this-page": "On this page",
     "topics": "Topics",
