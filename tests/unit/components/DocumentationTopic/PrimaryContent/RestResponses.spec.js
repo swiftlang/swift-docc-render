@@ -28,7 +28,7 @@ describe('RestResponses', () => {
       {
         status: '200',
         reason: 'OK',
-        mimetype: 'application/json',
+        mimeType: 'application/json',
         type: [
           {
             kind: 'identifier',
@@ -99,7 +99,7 @@ describe('RestResponses', () => {
   });
 
   it('hides mime-type if absent', () => {
-    const { mimetype, ...otherProps } = propsData.responses[0];
+    const { mimeType, ...otherProps } = propsData.responses[0];
     const wrapper = mountComponent({
       propsData: {
         ...propsData,
@@ -261,5 +261,24 @@ describe('RestResponses', () => {
     });
     expect(wrapper.find(PossiblyChangedType).props()).toHaveProperty('changes', changes['200'].type);
     expect(wrapper.find(PossiblyChangedMimetype).props()).toMatchObject({ changes: changes['200'].mimetype, change: changes['200'].change });
+  });
+
+  it('handles data where `mimetype` spelling is used instead of `mimeType`', () => {
+    const { mimetype, mimeType, ...firstResponse } = propsData.responses[0];
+
+    expect(mimeType).not.toBeUndefined();
+    expect(mimetype).toBeUndefined();
+    const wrapper = mountComponent({
+      propsData: {
+        ...propsData,
+        responses: [
+          {
+            ...firstResponse,
+            mimetype: mimeType,
+          },
+        ],
+      },
+    });
+    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(true);
   });
 });
