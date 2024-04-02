@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -648,16 +648,6 @@ describe('FilterInput', () => {
       suggestedTags.vm.$emit('click-tags', { tagName: selectedTag });
       expect(wrapper.emitted('update:selectedTags')).toEqual([[[selectedTag]]]);
       expect(wrapper.emitted('input')).toEqual([['']]);
-    });
-
-    it('adds tag to `selectedTags` when it is clicked, without clearing the filter', () => {
-      wrapper.setProps({
-        clearFilterOnTagSelect: false,
-      });
-      const selectedTag = 'Tag1';
-      suggestedTags.vm.$emit('click-tags', { tagName: selectedTag });
-      expect(wrapper.emitted('update:selectedTags')).toEqual([[[selectedTag]]]);
-      expect(wrapper.emitted('input')).toBeFalsy();
     });
 
     describe('when a tag is selected', () => {

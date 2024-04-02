@@ -106,7 +106,6 @@
               :should-keep-open-on-blur="false"
               :shouldTruncateTags="shouldTruncateTags"
               :position-reversed="!renderFilterOnTop"
-              :clear-filter-on-tag-select="false"
               class="filter-component"
               @clear="clearFilters"
             />

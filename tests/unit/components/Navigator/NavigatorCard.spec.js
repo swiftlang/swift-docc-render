@@ -307,7 +307,6 @@ describe('NavigatorCard', () => {
       ],
       value: '',
       selectInputOnFocus: false,
-      clearFilterOnTagSelect: false,
     });
   });
 
