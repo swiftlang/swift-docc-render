@@ -116,7 +116,7 @@ export default {
       type: String,
       required: true,
     },
-    parentTopicIdentifiers: {
+    parentTopics: {
       type: Array,
       default: () => [],
     },
@@ -127,17 +127,6 @@ export default {
   },
   computed: {
     windowWidth: ({ store }) => store.state.contentWidth,
-    parentTopics() {
-      return this.parentTopicIdentifiers.reduce((all, id) => {
-        const reference = this.references[id];
-        if (reference) {
-          const { title, url } = reference;
-          return all.concat({ title, url });
-        }
-        console.error(`Reference for "${id}" is missing`);
-        return all;
-      }, []);
-    },
     root: ({ parentTopics }) => parentTopics[0],
     smallViewport: ({ windowWidth }) => (windowWidth < BreakpointAttributes.default.small.maxWidth),
     /**
