@@ -11,7 +11,7 @@
 <template>
   <section>
     <LinkableHeading :anchor="anchor">{{ title }}</LinkableHeading>
-    <ParametersTable :parameters="responses" :changes="propertyChanges" key-by="status">
+    <ParametersTable :parameters="sanitizedResponses" :changes="propertyChanges" key-by="status">
       <template #symbol="{ status, type, reason, content, changes }">
         <div class="response-name">
           <code>
@@ -26,7 +26,7 @@
         />
       </template>
       <template
-        #description="{ content, mimetype, reason, type, status, changes }"
+        #description="{ content, mimeType, reason, type, status, changes }"
       >
         <PossiblyChangedType
           v-if="shouldShiftType({content, reason, status})"
@@ -38,8 +38,8 @@
         </div>
         <ContentNode v-if="content" :content="content" />
         <PossiblyChangedMimetype
-          v-if="mimetype"
-          :mimetype="mimetype"
+          v-if="mimeType"
+          :mimetype="mimeType"
           :changes="changes.mimetype"
           :change="changes.change"
         />
@@ -81,8 +81,15 @@ export default {
   computed: {
     anchor: ({ title }) => anchorize(title),
     propertyChanges: ({ apiChanges }) => ((apiChanges || {}).restResponses),
+    sanitizedResponses: ({ responses, sanitizeResponse }) => responses.map(sanitizeResponse),
   },
   methods: {
+    // ensure that mimetype data gets handled correctly, regardless of its
+    // spelling in the JSON (`mimeType` is the expected spelling, but some
+    // data sources may be encoded as `mimetype` at present)
+    sanitizeResponse: ({ mimetype, ...response }) => (mimetype
+      ? ({ ...response, mimeType: mimetype })
+      : response),
     shouldShiftType:
       ({ content = [], reason, status }) => (!(content.length || reason) && status),
   },
