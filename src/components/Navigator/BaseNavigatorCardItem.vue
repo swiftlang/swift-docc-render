@@ -26,6 +26,9 @@
       <div class="title-container">
         <slot name="title-container" />
       </div>
+      <div class="content-container">
+        <slot name="content-container" />
+      </div>
     </div>
   </div>
 </template>
