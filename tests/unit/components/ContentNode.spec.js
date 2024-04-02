@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -31,6 +31,7 @@ import TaskList from 'docc-render/components/ContentNode/TaskList.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
 import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
+import ThematicBreak from 'docc-render/components/ContentNode/ThematicBreak.vue';
 
 const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
@@ -1817,6 +1818,14 @@ describe('ContentNode', () => {
       expect(terms.at(1).text()).toBe('Bar');
       expect(definitions.at(1).contains('p')).toBe(true);
       expect(definitions.at(1).text()).toBe('bar');
+    });
+  });
+
+  describe('with type="thematicBreak"', () => {
+    it('renders a `ThematicBreak`', () => {
+      const wrapper = mountWithItem({ type: ContentNode.BlockType.thematicBreak });
+      const tbreak = wrapper.find(ThematicBreak);
+      expect(tbreak.exists()).toBe(true);
     });
   });
 
