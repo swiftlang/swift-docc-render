@@ -9,7 +9,18 @@
 -->
 
 <template>
-  <div class="video-replay-container">
+  <div
+    class="video-replay-container"
+    role="group"
+    :aria-roledescription="$t('video.title')"
+    :aria-labelledby="!showsDefaultControls ? ariaLabelledByContainer : null"
+  >
+    <span
+      id="custom-controls"
+      hidden
+    >
+      {{ $t('video.custom-controls') }}
+    </span>
     <VideoAsset
       ref="asset"
       :variants="variants"
@@ -92,6 +103,7 @@ export default {
       if (this.videoEnded) return this.$t('video.replay');
       return this.isPlaying ? this.$t('video.pause') : this.$t('video.play');
     },
+    ariaLabelledByContainer: ({ id }) => `custom-controls ${id}-alt`,
   },
   data() {
     return {

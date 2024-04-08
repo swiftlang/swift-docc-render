@@ -73,6 +73,30 @@ describe('ReplayableVideoAsset', () => {
     expect(wrapper.find('.control-button').exists()).toBe(true);
   });
 
+  it('renders a video-replay-container as a group with AX aria tags', () => {
+    const wrapper = mountWithProps();
+    const ariaLabelledByContainer = `custom-controls ${propsData.id}-alt`;
+
+    const container = wrapper.find('.video-replay-container');
+    expect(container.attributes('role')).toBe('group');
+    expect(container.attributes('aria-labelledby')).toBe(ariaLabelledByContainer);
+
+    const customControlsDescription = wrapper.find('#custom-controls');
+    expect(customControlsDescription.exists()).toBe(true);
+    expect(customControlsDescription.attributes('hidden')).toBe('hidden');
+    expect(customControlsDescription.text()).toBe('video.custom-controls');
+  });
+
+  it('renders a video-replay-container without "aria-labelledby" if showsDefaultControls is true', () => {
+    const wrapper = mountWithProps({
+      showsDefaultControls: true,
+    });
+    const ariaLabelledByContainer = `custom-controls ${propsData.id}-alt`;
+
+    const container = wrapper.find('.video-replay-container');
+    expect(container.attributes('aria-labelledby')).not.toBe(ariaLabelledByContainer);
+  });
+
   it('does not show the `.control-button` if `showsDefaultControls` is `true`', () => {
     const wrapper = mountWithProps({
       showsDefaultControls: true,
