@@ -19,6 +19,12 @@ import { flushPromises } from '../../../../../test-utils';
 jest.mock('docc-render/utils/loading');
 
 const mocks = {
+  $route: {
+    path: '/documentation/foo',
+    query: {
+      context: 'foo',
+    },
+  },
   $router: {
     push: jest.fn(),
   },
@@ -192,7 +198,7 @@ describe('DeclarationGroup with otherDeclarations', () => {
     expect(sourceWrapper.at(1).find('button').exists()).toBe(false);
   });
 
-  it('clicking on a pill from the expanded list selects that declaration', async () => {
+  it('clicking on a pill from the expanded list selects that declaration with query param', async () => {
     const buttons = wrapper.findAll('.declaration-pill--expanded');
     const button = buttons.at(0).find('button');
     button.trigger('click');
@@ -203,6 +209,7 @@ describe('DeclarationGroup with otherDeclarations', () => {
     expect(wrapper.vm.selectedIdentifier).toEqual(identifier);
     expect(wrapper.emitted('update:declListExpanded')).toEqual([[false]]);
     expect(waitFor).toHaveBeenCalledWith(500); // wait for animation to be finish
-    expect(mocks.$router.push).toHaveBeenCalledWith(store.state.references[identifier].url);
+    const url = `${store.state.references[identifier].url}?context=foo`;
+    expect(mocks.$router.push).toHaveBeenCalledWith(url);
   });
 });
