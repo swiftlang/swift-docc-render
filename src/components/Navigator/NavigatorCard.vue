@@ -1044,7 +1044,7 @@ $navigator-card-vertical-spacing: 8px !default;
 .navigator-filter {
   box-sizing: border-box;
   padding: 15px var(--nav-filter-horizontal-padding);
-  border-top: 1px solid var(--color-grid);
+  border-top: $generic-border-style;
   height: $filter-height;
   display: flex;
   align-items: flex-end;
