@@ -17,4 +17,5 @@ export default {
   protocol: 'protocol',
   struct: 'struct',
   uid: 'uid',
+  module: 'module',
 };
