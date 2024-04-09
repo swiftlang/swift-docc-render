@@ -111,6 +111,12 @@ describe('Asset', () => {
     expect(videoAsset.props('alt')).toBe(video.alt);
   });
 
+  it('delete dots from the video identifier', () => {
+    const identifier = 'video.mp4';
+    const videoAsset = mountAsset(identifier, { [identifier]: video }).find(ReplayableVideoAsset);
+    expect(videoAsset.props('id')).toBe('videomp4');
+  });
+
   it('passes down `deviceFrame` to `ReplayableVideoAsset`', () => {
     const wrapper = mountAsset('video', { video });
     let videoAsset = wrapper.find(ReplayableVideoAsset);
