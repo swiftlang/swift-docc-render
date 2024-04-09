@@ -16,7 +16,7 @@
     :aria-labelledby="!showsDefaultControls ? ariaLabelledByContainer : null"
   >
     <span
-      id="custom-controls"
+      :id="`${id}-custom-controls`"
       hidden
     >
       {{ $t('video.custom-controls') }}
@@ -103,7 +103,7 @@ export default {
       if (this.videoEnded) return this.$t('video.replay');
       return this.isPlaying ? this.$t('video.pause') : this.$t('video.play');
     },
-    ariaLabelledByContainer: ({ id }) => `custom-controls ${id}-alt`,
+    ariaLabelledByContainer: ({ id }) => `${id}-custom-controls ${id}-alt`,
   },
   data() {
     return {

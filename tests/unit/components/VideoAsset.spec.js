@@ -39,7 +39,7 @@ const propsData = {
     { traits: ['dark', '1x'], url: 'https://www.example.com/video~dark.mp4' },
   ],
   alt: 'Text describing this video',
-  id: 'video.mp4',
+  id: 'videomp4',
   showsDefaultControls: false,
 };
 

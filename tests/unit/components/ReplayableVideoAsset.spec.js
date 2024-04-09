@@ -24,7 +24,7 @@ const propsData = {
   posterVariants,
   showsDefaultControls: false,
   alt: 'Text describing this video',
-  id: 'video.mp4',
+  id: 'videomp4',
 };
 describe('ReplayableVideoAsset', () => {
   const mountWithProps = props => shallowMount(ReplayableVideoAsset, {
@@ -75,13 +75,13 @@ describe('ReplayableVideoAsset', () => {
 
   it('renders a video-replay-container as a group with AX aria tags', () => {
     const wrapper = mountWithProps();
-    const ariaLabelledByContainer = `custom-controls ${propsData.id}-alt`;
+    const ariaLabelledByContainer = `${propsData.id}-custom-controls ${propsData.id}-alt`;
 
     const container = wrapper.find('.video-replay-container');
     expect(container.attributes('role')).toBe('group');
     expect(container.attributes('aria-labelledby')).toBe(ariaLabelledByContainer);
 
-    const customControlsDescription = wrapper.find('#custom-controls');
+    const customControlsDescription = wrapper.find(`#${propsData.id}-custom-controls`);
     expect(customControlsDescription.exists()).toBe(true);
     expect(customControlsDescription.attributes('hidden')).toBe('hidden');
     expect(customControlsDescription.text()).toBe('video.custom-controls');
@@ -91,10 +91,9 @@ describe('ReplayableVideoAsset', () => {
     const wrapper = mountWithProps({
       showsDefaultControls: true,
     });
-    const ariaLabelledByContainer = `custom-controls ${propsData.id}-alt`;
 
     const container = wrapper.find('.video-replay-container');
-    expect(container.attributes('aria-labelledby')).not.toBe(ariaLabelledByContainer);
+    expect(container.attributes()).not.toHaveProperty('aria-labelledby');
   });
 
   it('does not show the `.control-button` if `showsDefaultControls` is `true`', () => {
