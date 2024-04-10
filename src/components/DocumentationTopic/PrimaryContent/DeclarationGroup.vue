@@ -53,6 +53,7 @@ import Language from 'docc-render/constants/Language';
 import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
 import { APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
 import { waitFor } from 'docc-render/utils/loading';
+import { buildUrl } from 'docc-render/utils/url-helper';
 
 /**
  * Renders a code source with an optional caption.
@@ -162,7 +163,8 @@ export default {
       await this.$nextTick(); // wait for identifier to update
       this.isExpanded = false; // collapse the list
       await waitFor(500); // wait for animation to finish
-      this.$router.push(this.references[identifier].url);
+      const url = buildUrl(this.references[identifier].url, this.$route.query);
+      this.$router.push(url);
     },
     getWrapperComponent(decl) {
       return (!this.isExpanded || decl.identifier === this.identifier)

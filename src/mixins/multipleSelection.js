@@ -537,11 +537,15 @@ export default {
       }
 
       this.setFilterInput(input.trim());
-      if (this.allSelectedTagsAreActive) {
-        this.setSelectedTags(tags);
-      } else {
-        this.updateSelectedTags(tags);
+
+      if (tags.length) {
+        if (this.allSelectedTagsAreActive) {
+          this.setSelectedTags(tags);
+        } else {
+          this.updateSelectedTags(tags);
+        }
       }
+
       this.resetActiveTags();
     },
     /**

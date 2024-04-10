@@ -414,8 +414,20 @@ describe('FilterInput', () => {
       // assert the input and tags are emitted
       expect(wrapper.emitted('input')).toHaveLength(1);
       expect(wrapper.emitted('input')[0]).toEqual(['Title']);
-      expect(wrapper.emitted('update:selectedTags')).toHaveLength(1);
-      expect(wrapper.emitted('update:selectedTags')[0]).toEqual([[]]);
+    });
+
+    it('on paste, do not emit selectedTags if there are no tags to paste', () => {
+      clipboardData.getData = jest.fn((param) => {
+        if (param === 'text/plain') return 'Title';
+        return prepareDataForHTMLClipboard({
+          input: 'baz',
+          tags: [],
+        });
+      });
+      clipboardData.types.push('text/html');
+
+      input.trigger('paste', { clipboardData });
+      expect(wrapper.emitted('update:selectedTags')).toBeFalsy();
     });
 
     it('on paste, reads directly from plain text, if json is not available', () => {
@@ -428,8 +440,6 @@ describe('FilterInput', () => {
       // assert the input and tags are emitted
       expect(wrapper.emitted('input')).toHaveLength(1);
       expect(wrapper.emitted('input')[0]).toEqual(['[tag1][tag2] string']);
-      expect(wrapper.emitted('update:selectedTags')).toHaveLength(1);
-      expect(wrapper.emitted('update:selectedTags')[0]).toEqual([[]]);
     });
 
     it('on paste, overwrites all the tags if they are selected', () => {
