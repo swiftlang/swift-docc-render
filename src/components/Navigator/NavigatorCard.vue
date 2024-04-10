@@ -977,7 +977,7 @@ export default {
 
 // unfortunately we need to hard-code the filter height
 $filter-height: 71px;
-$filter-height-small: 50px;
+$filter-height-small: 60px;
 $close-icon-size: 19px;
 $technology-title-background: var(--color-fill) !default;
 $technology-title-background-active: var(--color-fill-gray-quaternary) !default;
@@ -1044,7 +1044,7 @@ $navigator-card-vertical-spacing: 8px !default;
 .navigator-filter {
   box-sizing: border-box;
   padding: 15px var(--nav-filter-horizontal-padding);
-  border-top: 1px solid var(--color-grid);
+  border-top: $generic-border-style;
   height: $filter-height;
   display: flex;
   align-items: flex-end;
@@ -1060,7 +1060,7 @@ $navigator-card-vertical-spacing: 8px !default;
   @include breakpoint(medium, nav) {
     --nav-filter-horizontal-padding: 20px;
     border: none;
-    padding-top: 0px;
+    padding-top: 10px;
     padding-bottom: 10px;
     height: $filter-height-small;
   }

@@ -469,14 +469,14 @@ export default {
 .doc-topic-aside {
   height: 100%;
   box-sizing: border-box;
-  border-right: 1px solid var(--color-grid);
+  border-right: $generic-border-style;
 
   @include breakpoint(medium, nav) {
     background: var(--color-fill);
     border-right: none;
 
     .sidebar-transitioning & {
-      border-right: 1px solid var(--color-grid);
+      border-right: $generic-border-style;
     }
   }
 }
@@ -494,8 +494,8 @@ export default {
   @include inTargetWeb {
     @include breakpoint-full-width-container();
     @include breakpoints-from(xlarge) {
-      border-left: 1px solid var(--color-grid);
-      border-right: 1px solid var(--color-grid);
+      border-left: $generic-border-style;
+      border-right: $generic-border-style;
       box-sizing: border-box;
     }
   }
