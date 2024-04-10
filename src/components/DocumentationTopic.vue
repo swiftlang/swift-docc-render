@@ -171,6 +171,7 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
+import SymbolKind from 'docc-render/constants/SymbolKind';
 import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
@@ -494,7 +495,7 @@ export default {
       ) {
         return false;
       }
-      return symbolKind ? (symbolKind === 'module') : true;
+      return symbolKind ? (symbolKind === SymbolKind.module) : true;
     },
     shortHero: ({
       roleHeading,
@@ -572,8 +573,13 @@ export default {
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
     disableMetadata: ({ enableMinimized }) => enableMinimized,
-    primaryContentSectionsSanitized({ primaryContentSections = [] }) {
-      return primaryContentSections.filter(({ kind }) => kind !== SectionKind.declarations);
+    primaryContentSectionsSanitized({ primaryContentSections = [], symbolKind }) {
+      return primaryContentSections.filter(({ kind }) => {
+        if (kind === SectionKind.mentions) {
+          return symbolKind !== SymbolKind.module;
+        }
+        return kind !== SectionKind.declarations;
+      });
     },
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
