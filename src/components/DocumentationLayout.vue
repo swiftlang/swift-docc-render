@@ -24,8 +24,7 @@
           <slot name="title" />
         </template>
       </Nav>
-      <component
-        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
+      <AdjustableSidebarWidth
         v-bind="sidebarProps"
         v-on="sidebarListeners"
         class="full-width-container topic-wrapper"
@@ -73,8 +72,8 @@
             </template>
           </NavigatorDataProvider>
         </template>
-        <slot/>
-      </component>
+        <slot />
+      </AdjustableSidebarWidth>
     </template>
   </CodeTheme>
 </template>
@@ -87,7 +86,6 @@ import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigat
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
-import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
@@ -100,12 +98,11 @@ import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationN
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
 
 export default {
-  name: 'BaseNavigatorView',
+  name: 'DocumentationLayout',
   constants: { NAVIGATOR_HIDDEN_ON_LARGE_KEY },
   components: {
     Navigator,
     AdjustableSidebarWidth,
-    StaticContentWidth,
     NavigatorDataProvider,
     CodeTheme,
     Nav: DocumentationNav,
@@ -169,7 +166,9 @@ export default {
           shownOnMobile: sidenavVisibleOnMobile,
           hiddenOnLarge: sidenavHiddenOnLarge,
         }
-        : {}
+        : {
+          enableNavigator,
+        }
     ),
     sidebarListeners() {
       return this.enableNavigator ? ({

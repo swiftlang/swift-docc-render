@@ -9,10 +9,19 @@
 -->
 
 <template>
-  <BaseNavigatorView
+  <DocumentationLayout
     v-if="topicData"
     v-bind="baseViewProps"
   >
+    <template #title>
+      <component
+        :is="rootLink ? 'router-link' : 'span'"
+        :to="rootLink"
+        class="nav-title-link"
+      >
+        {{ $t('documentation.title') }}
+      </component>
+    </template>
     <template #default>
       <Topic
         v-bind="topicProps"
@@ -27,16 +36,8 @@
         :hierarchyItems="hierarchyItems"
       />
     </template>
-    <template #title>
-      <component
-        :is="rootLink ? 'router-link' : 'span'"
-        :to="rootLink"
-        class="nav-title-link"
-      >
-        {{ $t('documentation.title') }}
-      </component>
-    </template>
-  </BaseNavigatorView>
+
+  </DocumentationLayout>
 </template>
 
 <script>
@@ -49,7 +50,7 @@ import {
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
-import BaseNavigatorView from 'docc-render/views/BaseNavigatorView.vue';
+import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import Language from 'docc-render/constants/Language';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
@@ -66,7 +67,7 @@ export default {
   constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX },
   components: {
     Topic: DocumentationTopic,
-    BaseNavigatorView,
+    DocumentationLayout,
   },
   mixins: [OnThisPageRegistrator, communicationBridgeUtils],
   props: {

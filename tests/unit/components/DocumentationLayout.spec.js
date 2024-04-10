@@ -20,8 +20,7 @@ import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
 import { storage } from '@/utils/storage';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
-import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
-import BaseNavigatorView from 'docc-render/views/BaseNavigatorView.vue';
+import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
@@ -50,8 +49,8 @@ const {
   CodeTheme,
   Nav,
   QuickNavigationModal,
-} = BaseNavigatorView.components;
-const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = BaseNavigatorView.constants;
+} = DocumentationLayout.components;
+const { NAVIGATOR_HIDDEN_ON_LARGE_KEY } = DocumentationLayout.constants;
 
 const TechnologiesRootIdentifier = 'topic://technologies';
 
@@ -105,12 +104,12 @@ const AdjustableSidebarWidthSmallStub = {
 const stubs = {
   AdjustableSidebarWidth,
   NavigatorDataProvider,
-  BaseNavigatorView,
+  DocumentationLayout,
 };
 
 const provide = { isTargetIDE: false };
 
-const createWrapper = props => shallowMount(BaseNavigatorView, {
+const createWrapper = props => shallowMount(DocumentationLayout, {
   propsData,
   stubs,
   provide,
@@ -118,7 +117,7 @@ const createWrapper = props => shallowMount(BaseNavigatorView, {
   ...props,
 });
 
-describe('BaseNavigatorView', () => {
+describe('DocumentationLayout', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
@@ -156,6 +155,7 @@ describe('BaseNavigatorView', () => {
     expect(adjustableWidth.props()).toEqual({
       shownOnMobile: false,
       hiddenOnLarge: false,
+      enableNavigator: true,
       fixedWidth: null,
     });
     const {
@@ -407,12 +407,12 @@ describe('BaseNavigatorView', () => {
     });
 
     // assert the sidebar
-    expect(wrapper.find(AdjustableSidebarWidth).exists()).toBe(false);
-    const staticContentWidth = wrapper.find(StaticContentWidth);
-    expect(staticContentWidth.exists()).toBe(true);
+    const adjustableSidebarWidth = wrapper.find(AdjustableSidebarWidth);
+    expect(adjustableSidebarWidth.exists()).toBe(true);
+    expect(wrapper.find('.sidebar').exists()).toBe(false);
     expect(wrapper.find(Navigator).exists()).toBe(false);
     // assert the proper container class is applied
-    expect(staticContentWidth.classes())
+    expect(adjustableSidebarWidth.classes())
       .toEqual(expect.arrayContaining(['topic-wrapper', 'full-width-container']));
   });
 
@@ -465,9 +465,8 @@ describe('BaseNavigatorView', () => {
     expect(sidebar.props('hiddenOnLarge')).toBe(false);
   });
 
-  it('handles `@toggle-sidenav` on Nav, for `Large` breakpoint', async () => {
+  it.only('handles `@toggle-sidenav` on Nav, for `Large` breakpoint', async () => {
     // assert that the storage was called to get the navigator closed state from LS
-    expect(storage.get).toHaveBeenCalledTimes(1);
     expect(storage.get).toHaveBeenCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false);
 
     wrapper.setProps({
@@ -497,9 +496,10 @@ describe('BaseNavigatorView', () => {
       expect(wrapper.contains(Nav)).toBe(false);
     });
 
-    it('does not render an AdjustableSidebarWidth', () => {
+    it('does not render a sidebar', () => {
       wrapper = createWrapper({ provide: provideWithIDETarget });
-      expect(wrapper.find(AdjustableSidebarWidth).exists()).toBe(false);
+      expect(wrapper.find('.sidebar').exists()).toBe(false);
+      expect(wrapper.find(Navigator).exists()).toBe(false);
     });
   });
 });

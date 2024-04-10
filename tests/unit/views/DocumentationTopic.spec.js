@@ -14,7 +14,7 @@ import DocumentationTopic from 'docc-render/views/DocumentationTopic.vue';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import NavBase from 'docc-render/components/NavBase.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
-import BaseNavigatorView from 'docc-render/views/BaseNavigatorView.vue';
+import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
@@ -132,7 +132,7 @@ const schemaVersionWithSidebar = {
 const stubs = {
   Nav: DocumentationNav,
   NavBase,
-  BaseNavigatorView,
+  DocumentationLayout,
   'router-link': RouterLinkStub,
 };
 
@@ -159,7 +159,7 @@ describe('DocumentationTopic', () => {
     wrapper = createWrapper();
     wrapper.setData({ topicData });
 
-    expect(wrapper.find(BaseNavigatorView).props('enableNavigator')).toBe(false);
+    expect(wrapper.find(DocumentationLayout).props('enableNavigator')).toBe(false);
 
     wrapper.setData({
       topicData: {
@@ -168,10 +168,10 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    expect(wrapper.find(BaseNavigatorView).props('enableNavigator')).toBe(true);
+    expect(wrapper.find(DocumentationLayout).props('enableNavigator')).toBe(true);
   });
 
-  it('passes a technology to the BaseNavigatorView when no reference is found for a top-level collection', () => {
+  it('passes a technology to the DocumentationLayout when no reference is found for a top-level collection', () => {
     const technologies = {
       id: 'topic://technologies',
       title: 'Technologies',
@@ -198,10 +198,10 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const baseNavigatorViewComponent = wrapper.find(BaseNavigatorView);
-    expect(baseNavigatorViewComponent.exists()).toBe(true);
+    const documentationLayoutComponent = wrapper.find(DocumentationLayout);
+    expect(documentationLayoutComponent.exists()).toBe(true);
     // assert the technology is the last fallback
-    expect(baseNavigatorViewComponent.props('technology')).toEqual({
+    expect(documentationLayoutComponent.props('technology')).toEqual({
       title: topicData.metadata.title,
       url: mocks.$route.path,
     });
@@ -219,7 +219,7 @@ describe('DocumentationTopic', () => {
         },
       },
     });
-    expect(wrapper.find(BaseNavigatorView).props('parentTopicIdentifiers'))
+    expect(wrapper.find(DocumentationLayout).props('parentTopicIdentifiers'))
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
