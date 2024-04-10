@@ -82,7 +82,7 @@ $banner-icon-padding: $nav-padding-small * 0.25;
   color: light-color(fill);
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid var(--color-grid);
+  border-bottom: $generic-border-style;
 
   &__wrapper {
     display: flex;
