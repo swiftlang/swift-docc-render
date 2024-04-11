@@ -30,7 +30,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .footer {
-  border-top: 1px solid var(--color-grid);
+  border-top: $generic-border-style;
 }
 
 .row {

@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -11,8 +11,10 @@
 import { shallowMount } from '@vue/test-utils';
 import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
+import InlinePlusCircleIcon from 'docc-render/components/Icons/InlinePlusCircleIcon.vue';
 import { TopicTypes } from '@/constants/TopicTypes';
-import DocumentationHero from '@/components/DocumentationTopic/DocumentationHero.vue';
+import SymbolKind from '@/constants/SymbolKind';
+import DocumentationHero from '@/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import OnThisPageStickyContainer
@@ -22,6 +24,7 @@ import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declarat
 const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
 const {
+  Hierarchy,
   Abstract,
   ContentNode,
   DefaultImplementations,
@@ -106,17 +109,29 @@ const sampleCodeDownload = {
   },
 };
 
+const itemFoo = {
+  title: 'Foo',
+  url: '/documentation/foo',
+};
+
+const itemBar = {
+  title: 'Bar',
+  url: '/documentation/bar',
+};
+
+const hierarchyItems = [
+  'topic://foo',
+  'topic://bar',
+];
+
+const hierarchyItemsReferences = {
+  'topic://foo': itemFoo,
+  'topic://bar': itemBar,
+};
+
 const propsData = {
   abstract: [abstract],
   conformance: { constraints: [], availabilityPrefix: [] },
-  hierarchy: {
-    paths: [
-      [
-        'topic://foo',
-        'topic://bar',
-      ],
-    ],
-  },
   identifier: 'doc://fookit',
   interfaceLanguage: 'swift',
   role: TopicTypes.collection,
@@ -155,6 +170,42 @@ const propsData = {
   ],
   remoteSource: { url: 'foo' },
   pageImages: [{ identifier: 'foo', type: 'icon' }],
+  rootLink: {
+    path: 'foo',
+    query: {},
+  },
+  hierarchyItems: [],
+};
+
+const hasOtherDeclSection = {
+  kind: PrimaryContent.constants.SectionKind.declarations,
+  declarations: [
+    {
+      platforms: [
+        'macos',
+      ],
+      tokens: [
+        {
+          type: 'identifier',
+          text: 'Foo',
+        },
+      ],
+      otherDeclarations: {
+        declarations: [
+          {
+            identifier: 'doc://boo',
+            tokens: [
+              {
+                type: 'identifier',
+                text: 'Boo',
+              },
+            ],
+          },
+        ],
+        displayIndex: 1,
+      },
+    },
+  ],
 };
 
 describe('DocumentationTopic', () => {
@@ -283,6 +334,117 @@ describe('DocumentationTopic', () => {
       shouldShowLanguageSwitcher: false,
       iconOverride: undefined,
     });
+  });
+
+  it('renders a Hierarchy', () => {
+    wrapper.setProps({
+      references: hierarchyItemsReferences,
+      hierarchyItems,
+    });
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(true);
+    expect(hierarchy.props()).toEqual({
+      currentTopicTitle: propsData.title,
+      parentTopics: [itemFoo, itemBar],
+      isSymbolBeta: false,
+      isSymbolDeprecated: false,
+      currentTopicTags: propsData.tags,
+    });
+  });
+
+  it('does not render `Hierarchy` in IDE', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData: {
+        ...propsData,
+        references: hierarchyItemsReferences,
+        hierarchyItems,
+      },
+      provide: {
+        isTargetIDE: true,
+        store: mockStore,
+      },
+    });
+
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(false);
+  });
+
+  it('only creates a "Mentioned In" section for non-module pages', () => {
+    const mentionSection = {
+      kind: PrimaryContent.constants.SectionKind.mentions,
+      mentions: [
+        'topic://foo',
+        'topic://bar',
+      ],
+    };
+
+    wrapper.setProps({
+      references: hierarchyItemsReferences,
+      role: TopicTypes.symbol,
+      symbolKind: SymbolKind.protocol,
+      primaryContentSections: [
+        mentionSection,
+        foo,
+      ],
+    });
+
+    expect(wrapper.find(PrimaryContent).props()).toHaveProperty('sections', [
+      mentionSection,
+      foo,
+    ]);
+
+    wrapper.setProps({
+      symbolKind: SymbolKind.module,
+    });
+
+    expect(wrapper.find(PrimaryContent).props()).toHaveProperty('sections', [foo]);
+  });
+
+  it('renders `Hierarchy` without its immediate parent if its within overload group', () => {
+    wrapper.setProps({
+      references: hierarchyItemsReferences,
+      hierarchyItems,
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+
+    let hierarchy = wrapper.find(Hierarchy);
+    // Don't hide immediate parent yet if has other declarations but different titles
+    expect(hierarchy.props()).toHaveProperty('parentTopics', [itemFoo, itemBar]);
+
+    // Hide immediate parent if has same title as parent and has other declarations
+    wrapper.setProps({ title: itemBar.title });
+    hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.props()).toHaveProperty('parentTopics', [itemFoo]);
+  });
+
+  it('`Hierarchy` continues working, if a reference is missing', () => {
+    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+    wrapper.setProps({
+      references: { 'topic://foo': itemFoo }, // set without `Bar` reference data
+      hierarchyItems,
+    });
+
+    const hierarchy = wrapper.find(Hierarchy);
+    expect(hierarchy.exists()).toBe(true);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith('Reference for "topic://bar" is missing');
+  });
+
+  it('does not render a Hierarchy if hierarchyItems is empty or enableMinimized is true', () => {
+    wrapper.setProps({ hierarchyItems: [] });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
+
+    // Minimized view should not render LanguageSwitcher
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
+  });
+
+  it('does not render a Hierarchy in minimized view', () => {
+    wrapper.setProps({ enableMinimized: true });
+    expect(wrapper.find(Hierarchy).exists()).toBe(false);
   });
 
   it('render a `DocumentationHero`, enabled, if top-level technology page', () => {
@@ -477,6 +639,7 @@ describe('DocumentationTopic', () => {
       conformance: propsData.conformance,
       declarations: declarationsSection.declarations,
       source: propsData.remoteSource,
+      declListExpanded: false,
     });
     // wrapper.setProps({ enableMinimized: true });
     // commented this out and moved it to the above `setProps` call because
@@ -506,6 +669,16 @@ describe('DocumentationTopic', () => {
       hasNoExpandedDocumentation: true,
     });
     expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
+  });
+
+  it('render a `PrimaryContent` column when passed empty an PrimaryContent but has otherDeclarations', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    expect(wrapper.contains(PrimaryContent)).toBe(true); // has otherDeclarations dropdown
   });
 
   it('renders `ViewMore` if `enableMinimized`', () => {
@@ -573,6 +746,14 @@ describe('DocumentationTopic', () => {
       expect(description.classes()).not.toContain('after-enhanced-hero');
     });
 
+    it('does not render the description section if other declaration list is expanded', () => {
+      wrapper.setData({
+        declListExpanded: true,
+      });
+      const description = wrapper.find('.description');
+      expect(description.exists()).toBe(false);
+    });
+
     it('renders a deprecated `Aside` when deprecated', () => {
       expect(wrapper.contains(Aside)).toBe(false);
       wrapper.setProps({ deprecationSummary });
@@ -620,6 +801,60 @@ describe('DocumentationTopic', () => {
       wrapper.setProps({ enableMinimized: true });
       expect(wrapper.find(Availability).exists()).toBe(false);
     });
+  });
+
+  it('render a declaration list menu if has other declarations', () => {
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(false);
+
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+  });
+
+  it('does not render a declaration list menu in minimized mode', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+
+    wrapper.setProps({ enableMinimized: true });
+
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(false);
+  });
+
+  it('renders correct declaration list toggle, text, and icon', () => {
+    wrapper.setProps({
+      primaryContentSections: [
+        ...propsData.primaryContentSections,
+        hasOtherDeclSection,
+      ],
+    });
+    let declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.text()).toContain('declarations.show-all-declarations');
+    let icon = wrapper.find(InlinePlusCircleIcon);
+    expect(icon.exists()).toBe(true);
+
+    const toggle = wrapper.find('.declaration-list-toggle');
+    expect(toggle.exists()).toBe(true);
+    toggle.trigger('click');
+
+    declListMenu = wrapper.find('.declaration-list-menu');
+    expect(declListMenu.exists()).toBe(true);
+    expect(declListMenu.text()).toContain('declarations.hide-other-declarations');
+    icon = wrapper.find(InlinePlusCircleIcon);
+    expect(icon.exists()).toBe(true);
+    expect(icon.classes()).toContain('expand');
   });
 
   it('does not render any primary content or related markup, if not provided', () => {

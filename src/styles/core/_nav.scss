@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -24,7 +24,7 @@ $nav-menu-item-stagger-delay: 0s !default;
 $nav-bg-transition-timing: 0s !default;
 $nav-bg-color-transition: $nav-bg-transition-timing $nav-timingfunction !default;
 $nav-space-between-elements: rem(10px);
-$nav-space-hierarchy-elements: rem(3px);
+$nav-space-hierarchy-elements: rem(5px);
 $nav-z-index: 9997;
 
 @mixin nav-in-breakpoint($nested: false) {
@@ -62,7 +62,7 @@ $nav-z-index: 9997;
 $nav-chevron-angle: 40deg;
 $nav-chevron-thickness: 1.5;
 $nav-chevron-transition: 0.3s linear transform;
-$nav-menu-label-margin: rem(6px);
+$nav-menu-label-margin: rem(5px);
 
 // Apply styles to animate the nav chevron downwards
 @mixin nav-chevron-animation {

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -200,6 +200,7 @@ export default {
 
     .nav-menu {
       padding: 0;
+      justify-content: flex-start;
       grid-column: 3/5;
     }
 
@@ -217,6 +218,9 @@ export default {
   @include breakpoint(medium, $scope: nav) {
     grid-template-columns: minmax(173px, 216px) auto minmax(173px, 1fr);
   }
+  @media (scripting: none) {
+    display: none;
+  }
 }
 
 .separator {
@@ -225,6 +229,9 @@ export default {
   border-color: var(--color-nav-outlines);
   margin: 0 20px;
   grid-column: 2;
+  @media (scripting: none) {
+    display: none;
+  }
 }
 
 .mobile-dropdown-container {

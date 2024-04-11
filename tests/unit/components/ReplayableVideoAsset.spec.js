@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -22,7 +22,9 @@ const posterVariants = [{ traits: ['dark', '1x'], url: 'https://www.example.com/
 const propsData = {
   variants,
   posterVariants,
-  showsControls: false,
+  showsDefaultControls: false,
+  alt: 'Text describing this video',
+  id: 'video.mp4',
 };
 describe('ReplayableVideoAsset', () => {
   const mountWithProps = props => shallowMount(ReplayableVideoAsset, {
@@ -64,18 +66,32 @@ describe('ReplayableVideoAsset', () => {
     const video = wrapper.find(VideoAsset);
     expect(video.props('variants')).toBe(variants);
     expect(video.props('posterVariants')).toBe(posterVariants);
-    expect(video.props('showsControls')).toBe(false);
-    expect(video.props('autoplays')).toBe(true);
+    expect(video.props('showsDefaultControls')).toBe(false);
+    expect(video.props('autoplays')).toBe(false);
+    expect(video.props('id')).toBe(propsData.id);
+    expect(video.props('alt')).toBe(propsData.alt);
     expect(wrapper.find('.control-button').exists()).toBe(true);
   });
 
-  it('does not show the `.control-button` if `showsControls` is `true`', () => {
+  it('does not show the `.control-button` if `showsDefaultControls` is `true`', () => {
     const wrapper = mountWithProps({
-      showsControls: true,
+      showsDefaultControls: true,
     });
     const video = wrapper.find(VideoAsset);
-    expect(video.props('showsControls')).toBe(true);
+    expect(video.props('showsDefaultControls')).toBe(true);
     expect(wrapper.find('.control-button').exists()).toBe(false);
+  });
+
+  it('adds an aria-controls referring to the video id in `.control-button`', () => {
+    const wrapper = mountWithProps();
+    const controlButton = wrapper.find('.control-button');
+    expect(controlButton.attributes('aria-controls')).toBe(propsData.id);
+  });
+
+  it('does not add a description reference to `.control-button` if alt is not provided', () => {
+    const wrapper = mountWithProps({ alt: null });
+    const controlButton = wrapper.find('.control-button');
+    expect(controlButton.attributes()).not.toHaveProperty('aria-describedby');
   });
 
   it('changes the control button text, while the video is changing states', async () => {

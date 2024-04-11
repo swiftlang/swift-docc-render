@@ -28,6 +28,7 @@ export const TopicTypes = {
   macro: 'macro',
   method: 'method',
   module: 'module',
+  namespace: 'namespace',
   op: 'op',
   overview: 'overview',
   project: 'project',

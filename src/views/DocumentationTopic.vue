@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -11,6 +11,25 @@
 <template>
   <CodeTheme class="doc-topic-view">
     <template v-if="topicData">
+      <Nav
+        v-if="!isTargetIDE"
+        :diffAvailability="topicProps.diffAvailability"
+        :interfaceLanguage="topicProps.interfaceLanguage"
+        :objcPath="objcPath"
+        :swiftPath="swiftPath"
+        :displaySidenav="enableNavigator"
+        @toggle-sidenav="handleToggleSidenav"
+      >
+        <template #title>
+          <component
+            :is="rootLink ? 'router-link' : 'span'"
+            :to="rootLink"
+            class="nav-title-link"
+          >
+            {{ $t('documentation.title') }}
+          </component>
+        </template>
+      </Nav>
       <component
         :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
         v-bind="sidebarProps"
@@ -51,28 +70,20 @@
                     <template v-if="enableQuickNavigation" #filter>
                       <QuickNavigationButton @click.native="openQuickNavigationModal" />
                     </template>
+                    <template #navigator-head>
+                      <component
+                        :is="rootLink ? 'router-link' : 'span'"
+                        :to="rootLink"
+                      >
+                        {{ $t('documentation.title') }}
+                      </component>
+                    </template>
                   </Navigator>
                 </transition>
               </div>
             </template>
           </NavigatorDataProvider>
         </template>
-        <Nav
-          v-if="!isTargetIDE"
-          :title="topicProps.title"
-          :diffAvailability="topicProps.diffAvailability"
-          :interfaceLanguage="topicProps.interfaceLanguage"
-          :objcPath="objcPath"
-          :swiftPath="swiftPath"
-          :parentTopicIdentifiers="parentTopicIdentifiers"
-          :isSymbolDeprecated="isSymbolDeprecated"
-          :isSymbolBeta="isSymbolBeta"
-          :currentTopicTags="topicProps.tags"
-          :references="topicProps.references"
-          :displaySidenav="enableNavigator"
-          :sidenavHiddenOnLarge="sidenavHiddenOnLarge"
-          @toggle-sidenav="handleToggleSidenav"
-        />
         <Topic
           v-bind="topicProps"
           :key="topicKey"
@@ -83,6 +94,7 @@
           :languagePaths="languagePaths"
           :enableOnThisPageNav="enableOnThisPageNav"
           :enableMinimized="enableMinimized"
+          :hierarchyItems="hierarchyItems"
         />
       </component>
     </template>
@@ -191,7 +203,9 @@ export default {
     // representing a "path" of parent topic IDs that could be considered the
     // hierarchy/breadcrumb for a given topic. We choose to render only the
     // one, that has the same path as the current URL.
-    parentTopicIdentifiers: ({ topicProps: { hierarchy: { paths = [] }, references }, $route }) => {
+    parentTopicIdentifiers: ({ topicProps: { hierarchy, references }, $route }) => {
+      if (!hierarchy) return [];
+      const { paths = [] } = hierarchy;
       if (!paths.length) return [];
       return paths.find((identifiers) => {
         const rootIdentifier = identifiers.find(id => references[id] && references[id].kind !== 'technologies');
@@ -278,6 +292,37 @@ export default {
         'update:hiddenOnLarge': this.toggleLargeSidenav,
       }) : {};
     },
+    /**
+     * Returns the first(root) hierarchy item reference
+     * @return {Object}
+     */
+    rootHierarchyReference: ({ parentTopicIdentifiers, topicProps: { references } }) => (
+      references[parentTopicIdentifiers[0]] || {}
+    ),
+    /**
+     * Returns whether the root link is a technology page.
+     * @return {boolean}
+     */
+    isRootTechnologyLink: ({ rootHierarchyReference: { kind } }) => kind === 'technologies',
+    /**
+     * Strips out the first link, if is the root Technologies link.
+     * @return {string[]}
+     */
+    hierarchyItems: ({ parentTopicIdentifiers, isRootTechnologyLink }) => (
+      isRootTechnologyLink ? parentTopicIdentifiers.slice(1) : parentTopicIdentifiers
+    ),
+    /**
+     * Returns the root url reference object, if is a `technologies` link.
+     * Otherwise returns a manual route query object.
+     * @return {Object}
+     */
+    rootLink: ({
+      isRootTechnologyLink, rootHierarchyReference, $route,
+    }) => (isRootTechnologyLink
+      ? {
+        path: rootHierarchyReference.url,
+        query: $route.query,
+      } : null),
   },
   methods: {
     applyObjcOverrides() {
@@ -424,14 +469,14 @@ export default {
 .doc-topic-aside {
   height: 100%;
   box-sizing: border-box;
-  border-right: 1px solid var(--color-grid);
+  border-right: $generic-border-style;
 
   @include breakpoint(medium, nav) {
     background: var(--color-fill);
     border-right: none;
 
     .sidebar-transitioning & {
-      border-right: 1px solid var(--color-grid);
+      border-right: $generic-border-style;
     }
   }
 }
@@ -439,14 +484,18 @@ export default {
 .topic-wrapper {
   flex: 1 1 auto;
   width: 100%;
+
+  :root.no-js &:deep(.sidebar) {
+    display: none;
+  }
 }
 
 .full-width-container {
   @include inTargetWeb {
     @include breakpoint-full-width-container();
     @include breakpoints-from(xlarge) {
-      border-left: 1px solid var(--color-grid);
-      border-right: 1px solid var(--color-grid);
+      border-left: $generic-border-style;
+      border-right: $generic-border-style;
       box-sizing: border-box;
     }
   }

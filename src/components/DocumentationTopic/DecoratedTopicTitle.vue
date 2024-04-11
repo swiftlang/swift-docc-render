@@ -10,12 +10,16 @@
 
 <template>
   <code class="decorated-title">
-    <component
+    <template
       v-for="(token, i) in tokens"
-      :class="[classFor(token), emptyTokenClass(token)]"
-      :is="componentFor(token)"
-      :key="i"
-    >{{ token.text }}</component>
+    >
+       <component
+        :class="[classFor(token), emptyTokenClass(token)]"
+        :is="componentFor(token)"
+        :key="i"
+      >{{ token.text }}</component>
+      <wbr :key="`wbr-${i}`"/>
+    </template>
   </code>
 </template>
 
@@ -89,5 +93,9 @@ export default {
     content: '\00a0';
     font-size: 1rem;
   }
+}
+
+.decorated-title {
+  @include underline-text;
 }
 </style>

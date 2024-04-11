@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -19,8 +19,11 @@ import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
 import FilterInput from '@/components/Filter/FilterInput.vue';
 import { waitFor } from '@/utils/loading';
-import { ChangeNames, ChangeTypes } from 'docc-render/constants/Changes';
+import { ChangeTypes } from 'docc-render/constants/Changes';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import {
+  FILTER_TAGS,
+} from 'docc-render/constants/Tags';
 import { flushPromises } from '../../../../test-utils';
 
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
@@ -37,11 +40,10 @@ Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
 
 const {
   STORAGE_KEY,
-  FILTER_TAGS,
-  FILTER_TAGS_TO_LABELS,
   ITEMS_FOUND,
-  HIDE_DEPRECATED,
 } = NavigatorCard.constants;
+
+const { Reference, Badge } = NavigatorCard.components;
 
 const DynamicScrollerStub = {
   props: DynamicScroller.props,
@@ -271,6 +273,7 @@ describe('NavigatorCard', () => {
       isActive: false,
       isRendered: false,
       filterPattern: null,
+      filterText: '',
       isFocused: false,
       isBold: true,
       item: root0,
@@ -294,15 +297,16 @@ describe('NavigatorCard', () => {
       shouldTruncateTags: false,
       tags: [
         // Sample Code is missing, because no sample code in test data
-        'Articles',
-        'Tutorials',
+        FILTER_TAGS.articles,
+        FILTER_TAGS.tutorials,
       ],
       translatableTags: [
-        'navigator.tags.hide-deprecated',
+        'filter.tags.hide-deprecated',
+        FILTER_TAGS.articles,
+        FILTER_TAGS.tutorials,
       ],
       value: '',
       selectInputOnFocus: false,
-      clearFilterOnTagSelect: false,
     });
   });
 
@@ -313,6 +317,24 @@ describe('NavigatorCard', () => {
       },
     });
     expect(wrapper.find('.post-head').text()).toBe('CustomPostHead');
+  });
+
+  it('exposes a #above-navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'above-navigator-head': '<div class="above-navigator-head">CustomAboveNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.above-navigator-head').text()).toBe('CustomAboveNavigatorHeadComponent');
+  });
+
+  it('exposes a #navigator-head slot', () => {
+    const wrapper = createWrapper({
+      scopedSlots: {
+        'navigator-head': '<div class="navigator-head">CustomNavigatorHeadComponent</div>',
+      },
+    });
+    expect(wrapper.find('.navigator-head').text()).toBe('CustomNavigatorHeadComponent');
   });
 
   it('exposes a #filter slot', () => {
@@ -328,6 +350,24 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(1);
+  });
+
+  it('renders a card-link with the technology name', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(Reference).props('url')).toEqual(defaultProps.technologyPath);
+    expect(wrapper.find('.card-link').text()).toBe(defaultProps.technology);
+    expect(wrapper.find('.card-link').is('h2')).toBe(true);
+  });
+
+  it('renders a Beta badge in the technology title', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      isTechnologyBeta: true,
+    });
+    await flushPromises();
+    expect(wrapper.find('.technology-title').find(Badge).props()).toMatchObject({
+      variant: 'beta',
+    });
   });
 
   it('focus the first item if there is no active item', async () => {
@@ -414,7 +454,7 @@ describe('NavigatorCard', () => {
     // assert initial items are rendered
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
 
-    const navHead = wrapper.find('.navigator-head');
+    const navHead = wrapper.find('.technology-title');
 
     // open all children symbols
     navHead.trigger('click', { altKey: true });
@@ -534,6 +574,7 @@ describe('NavigatorCard', () => {
         isFocused: false,
         item,
         filterPattern: null,
+        filterText: '',
         isRendered: false,
         apiChange: null,
         enableFocus: false,
@@ -1204,7 +1245,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     const filter = wrapper.find(FilterInput);
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     // this item is not an article
     detachDivWithID(root0Child0.uid);
     await flushPromises();
@@ -1224,7 +1265,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.tutorials]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.tutorials]);
     detachDivWithID(root0Child0.uid);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
@@ -1240,7 +1281,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.find(FilterInput);
     await flushPromises();
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     detachDivWithID(root0Child0.uid);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
@@ -1365,7 +1406,7 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child0);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     // filter
-    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [ChangeNames.added]);
+    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.added]);
     await flushPromises();
     all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -1388,7 +1429,7 @@ describe('NavigatorCard', () => {
     expect(all).toHaveLength(3);
     // filter
     const filter = wrapper.find(FilterInput);
-    filter.vm.$emit('update:selectedTags', [ChangeNames.added]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.added]);
     await flushPromises();
     all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -1428,7 +1469,7 @@ describe('NavigatorCard', () => {
       .toHaveBeenCalledWith(STORAGE_KEY, DEFAULT_STORED_STATE);
     await flushPromises();
     wrapper.find(FilterInput).vm.$emit('input', root0Child1GrandChild0.title);
-    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     await flushPromises();
     expect(sessionStorage.set).toHaveBeenCalledTimes(3);
     expect(sessionStorage.set)
@@ -1460,7 +1501,7 @@ describe('NavigatorCard', () => {
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(wrapper.find(FilterInput).props('selectedTags'))
-      .toEqual([FILTER_TAGS_TO_LABELS.tutorials]);
+      .toEqual([FILTER_TAGS.tutorials]);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
   });
 
@@ -1668,7 +1709,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     expect(filter.props('tags')).toHaveLength(2);
-    filter.vm.$emit('update:selectedTags', [FILTER_TAGS_TO_LABELS.articles]);
+    filter.vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     await flushPromises();
     expect(filter.props('tags')).toEqual([]);
   });
@@ -1698,14 +1739,38 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there are no Articles for example
-    expect(filter.props('tags')).toEqual(['Tutorials', 'Sample Code']);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.tutorials, FILTER_TAGS.sampleCode]);
     // apply a filter
     filter.vm.$emit('input', sampleCode.title);
     await flushPromises();
-    expect(filter.props('tags')).toEqual(['Sample Code']);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode]);
     wrapper.setProps({ apiChanges });
     await flushPromises();
-    expect(filter.props('tags')).toEqual(['Sample Code', ChangeNames.modified]);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode, FILTER_TAGS.modified]);
+  });
+
+  it('shows a "Web Service Endpoints" tag when relevant', async () => {
+    sessionStorage.get.mockImplementation((key, def) => def);
+    const httpReq = {
+      type: 'httpRequest',
+      path: '/documentation/footkit/blah',
+      title: 'GET /blah',
+      uid: 42,
+      parent: INDEX_ROOT_KEY,
+      depth: 0,
+      index: 0,
+      childUIDs: [],
+    };
+    const wrapper = createWrapper({
+      propsData: {
+        children: [httpReq],
+        activePath: [httpReq.path],
+      },
+    });
+
+    await flushPromises();
+    const filter = wrapper.find(FilterInput);
+    expect(filter.props('tags')).toEqual([FILTER_TAGS.webServiceEndpoints]);
   });
 
   describe('with groupMarker', () => {
@@ -1727,9 +1792,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // assert there are no Articles for example
-      expect(filter.props('tags')).toEqual(['Articles', 'Tutorials', HIDE_DEPRECATED]);
+      expect(filter.props('tags')).toEqual([FILTER_TAGS.articles, FILTER_TAGS.tutorials, FILTER_TAGS.hideDeprecated]);
       // apply a filter
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
+      filter.vm.$emit('update:selectedTags', [FILTER_TAGS.hideDeprecated]);
       await flushPromises();
       // assert no other tags are shown now
       expect(filter.props('tags')).toEqual([]);
@@ -1848,7 +1913,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.find(FilterInput);
       // apply a filter that matches an element
-      filter.vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
+      filter.vm.$emit('update:selectedTags', [FILTER_TAGS.hideDeprecated]);
       await flushPromises();
       const items = wrapper.findAll(NavigatorCardItem);
       // parent
@@ -1881,7 +1946,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.find(FilterInput);
     // assert there is no 'Hide Deprecated' tag
-    expect(filter.props('tags')).not.toContain(HIDE_DEPRECATED);
+    expect(filter.props('tags')).not.toContain(FILTER_TAGS.hideDeprecated);
   });
 
   describe('navigating', () => {
@@ -2004,6 +2069,7 @@ describe('NavigatorCard', () => {
           ],
           path: root0Child1.path,
         }));
+      expect(wrapper.emitted('navigate')).toEqual([[root0Child1.path]]);
       // assert all items are still there, even the new one is open
       expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
       // assert the target child is active
@@ -2011,6 +2077,7 @@ describe('NavigatorCard', () => {
         apiChange: null,
         expanded: true,
         filterPattern: null,
+        filterText: '',
         isActive: true,
         isBold: true,
         isFocused: true,
@@ -2036,6 +2103,7 @@ describe('NavigatorCard', () => {
         apiChange: null,
         expanded: true,
         filterPattern: null,
+        filterText: '',
         isActive: true,
         isBold: true,
         isFocused: true,
@@ -2207,6 +2275,7 @@ describe('NavigatorCard', () => {
       expect(sessionStorage.set).toHaveBeenCalledTimes(2);
       await wrapper.vm.$nextTick();
       expect(sessionStorage.set).toHaveBeenCalledTimes(2);
+      expect(wrapper.emitted('navigate')).toBeFalsy();
     });
   });
 
@@ -2243,7 +2312,7 @@ describe('NavigatorCard', () => {
       // simulate item is below the viewport
       getChildPositionInScroller.mockReturnValueOnce(1);
       // add the "Hide Deprecated" tag
-      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [HIDE_DEPRECATED]);
+      wrapper.find(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.hideDeprecated]);
       await flushPromises();
       // assert current active item is still scrolled to
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);

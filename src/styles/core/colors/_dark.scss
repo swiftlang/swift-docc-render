@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -33,6 +33,7 @@
   --color-tutorials-teal: #{dark-color(tutorials-teal)};
 
   --color-article-body-background: rgb(17, 17, 17);
+  --color-badge-text: #{light-color(figure-gray)};
   --color-badge-default: var(--color-badge-dark-default);
   --color-button-background-active: #{dark-color(fill-blue)};
   --color-code-line-highlight: #{change-color(dark-color(figure-blue), $alpha: 0.08)};
@@ -89,4 +90,12 @@
 
   --color-card-shadow: #{change-color(light-color(fill), $alpha: 0.04)};
   --color-link-block-card-border: #{change-color(light-color(fill), $alpha: 0.25)};
+
+  --color-standard-red: #8B0000;
+  --color-standard-orange: #8B4000;
+  --color-standard-yellow: #8F7200;
+  --color-standard-blue: #002D75;
+  --color-standard-green: #023B2D;
+  --color-standard-purple: #512B55;
+  --color-standard-gray: #{dark-color(fill-tertiary)};
 }

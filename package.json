@@ -11,8 +11,10 @@
     "test:unit": "vue-cli-service test:unit",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "lint": "vue-cli-service lint",
-    "docs:preview": "bin/rundocc preview SwiftDocCRender.docc",
-    "docs:build": "bin/rundocc convert SwiftDocCRender.docc"
+    "docs": "bin/build-and-serve-docs",
+    "docs:preview": "bin/build-and-serve-docs",
+    "docs:build": "bin/build-docs",
+    "docs:serve": "bin/serve-docs"
   },
   "files": [
     "src",
@@ -48,6 +50,10 @@
     "jest": "^27.0.5",
     "sass": "^1.55.0",
     "sass-loader": "^12.0.0",
+    "tree-sitter": "^0.20.5",
+    "tree-sitter-javascript": "^0.20.1",
+    "tree-sitter-jsdoc": "^0.19.0",
+    "tree-sitter-vue": "^0.2.1",
     "vue": "^2.7.10",
     "vue-router": "^3.5.2",
     "vue-template-compiler": "^2.7.10"

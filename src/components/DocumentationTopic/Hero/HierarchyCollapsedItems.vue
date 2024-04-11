@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,7 +10,6 @@
 
 <template>
   <li class="hierarchy-collapsed-items">
-    <span class="hierarchy-item-icon icon-inline">/</span>
     <button
       class="toggle"
       ref="btn"
@@ -20,8 +19,10 @@
       <span class="indicator"><EllipsisIcon class="icon-inline toggle-icon" /></span>
     </button>
     <ul class="dropdown" ref="dropdown" :class="{ collapsed }">
-      <li v-for="topic in topicsWithUrls" class="dropdown-item" :key="topic.title">
-        <router-link class="nav-menu-link" :to="topic.url">{{ topic.title }}</router-link>
+      <li v-for="topic in formattedTopics" class="dropdown-item" :key="topic.title">
+        <NavMenuLink :url="topic.url">
+          {{ topic.title }}
+        </NavMenuLink>
       </li>
     </ul>
   </li>
@@ -30,10 +31,11 @@
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
 import EllipsisIcon from 'theme/components/Icons/EllipsisIcon.vue';
+import NavMenuLink from 'docc-render/components/NavMenuLink.vue';
 
 export default {
   name: 'HierarchyCollapsedItems',
-  components: { EllipsisIcon },
+  components: { EllipsisIcon, NavMenuLink },
   data: () => ({ collapsed: true }),
   props: {
     topics: {
@@ -58,7 +60,7 @@ export default {
     document.removeEventListener('click', this.handleDocumentClick, false);
   },
   computed: {
-    topicsWithUrls: ({
+    formattedTopics: ({
       $route,
       topics,
     }) => topics.map(topic => ({
@@ -116,11 +118,10 @@ $hierarchy-dropdown-box-shadow: 0 1px 4px -1px var(--color-figure-gray-secondary
 
 $tail-width: 1rem * 0.5;
 
-$tail-offset: rem($nav-menu-item-left-margin)
-  + rem($nav-space-hierarchy-elements)
-  - math.div($toggle-width, 2)
-  + $tail-width
-  + rem(4px);
+$tail-offset:
+  + rem($nav-space-hierarchy-elements * 3)
+  + math.div($toggle-width, 2)
+  - $tail-width;
 
 $dropdown-vertical-offset: rem(7px);
 
@@ -128,19 +129,18 @@ $dropdown-vertical-offset: rem(7px);
   position: relative;
   display: inline-flex;
   align-items: center;
-  margin-left: $nav-space-hierarchy-elements;
 
-  .hierarchy-item-icon {
-    width: 9px;
-    height: 15px;
-    margin-right: $nav-space-hierarchy-elements;
-    display: flex;
-    justify-content: center;
-    font-size: 1em;
-    align-self: baseline;
+  &:before{
+    content: '/';
+    width: $nav-space-hierarchy-elements;
+    margin: 0 $nav-space-hierarchy-elements;
   }
 
   @include nav-in-breakpoint() {
+    display: none;
+  }
+
+  :root.no-js & {
     display: none;
   }
 }
@@ -182,6 +182,8 @@ $dropdown-vertical-offset: rem(7px);
 
 .dropdown {
   background: $dropdown-bg-color;
+  margin: 0;
+  list-style-type: none;
   border-color: $dropdown-border-color;
   border-radius: $border-radius;
   border-style: $border-style;

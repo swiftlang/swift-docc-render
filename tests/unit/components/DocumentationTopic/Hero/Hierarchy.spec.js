@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,7 +9,7 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import Hierarchy from 'docc-render/components/DocumentationTopic/DocumentationNav/Hierarchy.vue';
+import Hierarchy from 'docc-render/components/DocumentationTopic/Hero/Hierarchy.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import Vue from 'vue';
 
@@ -20,46 +20,33 @@ const {
 } = Hierarchy.components;
 
 const foo = {
-  identifier: 'topic://foo',
   title: 'Foo',
   url: '/documentation/foo',
 };
 const bar = {
-  identifier: 'topic://foo/bar',
   title: 'Bar',
   url: '/documentation/foo/bar',
 };
 const baz = {
-  identifier: 'topic://foo/bar/baz/',
   title: 'Baz',
   url: '/documentation/foo/bar/baz',
 };
 const baq = {
-  identifier: 'topic://foo/bar/baz/baq/',
   title: 'Baq',
   url: '/documentation/foo/bar/baz/baq',
 };
 
 const baw = {
-  identifier: 'topic://foo/bar/baz/baq/baw/',
   title: 'Baw',
   url: '/documentation/foo/bar/baz/baq/baw',
 };
 
 const qux = {
-  identifier: 'topic://foo/bar/baz/qux',
   title: 'Qux',
   url: '/documentation/foo/bar/baz/qux',
 };
 
-const references = {
-  [foo.identifier]: foo,
-  [bar.identifier]: bar,
-  [baz.identifier]: baz,
-  [baq.identifier]: baq,
-  [baw.identifier]: baw,
-  [qux.identifier]: qux,
-};
+const currentPath = '/foo';
 
 const store = Vue.observable({
   state: {
@@ -73,7 +60,6 @@ function changeSize(size) {
 
 const mountWithProps = ({ propsData, ...others } = {}) => shallowMount(Hierarchy, {
   propsData: {
-    references,
     ...propsData,
   },
   stubs: {
@@ -81,6 +67,8 @@ const mountWithProps = ({ propsData, ...others } = {}) => shallowMount(Hierarchy
   },
   mocks: {
     $route: {
+      name: 'foo',
+      path: '/foo',
       query: { language: 'objc' },
     },
   },
@@ -101,9 +89,9 @@ describe('Hierarchy', () => {
     const wrapper = mountWithProps({
       propsData: {
         currentTopicTitle: baz.title,
-        parentTopicIdentifiers: [
-          foo.identifier,
-          bar.identifier,
+        parentTopics: [
+          foo,
+          bar,
         ],
       },
     });
@@ -125,59 +113,31 @@ describe('Hierarchy', () => {
     expect(barItem.text()).toBe(bar.title);
 
     const currentItem = items.at(items.length - 1);
-    expect(currentItem.attributes()).toEqual({
-      url: undefined,
-    });
+    expect(currentItem.attributes()).toEqual({});
     expect(currentItem.text()).toBe(baz.title);
 
     expect(wrapper.contains(HierarchyCollapsedItems)).toBe(false);
   });
 
-  it('continues working, if a reference is missing', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
-    const wrapper = mountWithProps({
-      propsData: {
-        currentTopicTitle: baz.title,
-        parentTopicIdentifiers: [
-          foo.identifier,
-          bar.identifier,
-        ],
-        references: {
-          // include only one ref
-          [bar.identifier]: foo,
-        },
-      },
-    });
-
-    const list = wrapper.find(NavMenuItems);
-    expect(list.exists()).toBe(true);
-
-    const items = list.findAll(HierarchyItem);
-    // assert that the invalid item is not rendered
-    expect(items.length).toBe(2);
-    expect(items.at(0).text()).toBe(foo.title);
-    expect(items.at(1).text()).toBe(baz.title);
-    expect(errorSpy).toHaveBeenCalledTimes(1);
-    expect(errorSpy).toHaveBeenCalledWith(`Reference for "${foo.identifier}" is missing`);
-  });
-
   describe('with more than 3 hierarchy items', () => {
-    const parentTopicIdentifiers = [
-      foo.identifier,
-      bar.identifier,
-      baz.identifier,
-      baq.identifier,
-      baw.identifier,
+    const parentTopics = [
+      foo,
+      bar,
+      baz,
+      baq,
+      baw,
     ];
     let wrapper;
     beforeEach(() => {
       wrapper = mountWithProps({
         propsData: {
           currentTopicTitle: qux.title,
-          parentTopicIdentifiers,
+          parentTopics,
         },
         mocks: {
           $route: {
+            name: 'foo',
+            path: currentPath,
             query: {},
           },
         },
@@ -194,28 +154,28 @@ describe('Hierarchy', () => {
 
         const items = list.findAll(HierarchyItem);
         // all parentTopicIdentifiers + the last item
-        expect(items.length).toBe(parentTopicIdentifiers.length + 1);
+        expect(items.length).toBe(parentTopics.length + 1);
 
         // assert what items are shown
         // assert root item
-        expect(items.at(0).attributes('url')).toEqual(references[parentTopicIdentifiers[0]].url);
+        expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
         expect(items.at(0).attributes('iscollapsed')).toBeFalsy();
         expect(items.at(0).classes()).toContain('root-hierarchy');
 
         // next assert the collapsible items. Only one, as 3 can live outside at 1200
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         // assert the items outside of the collapse
         expect(items.at(2).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         expect(items.at(3).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         expect(items.at(4).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
         // assert the last item has no attributes
         expect(items.at(5).attributes()).toEqual({});
@@ -237,24 +197,24 @@ describe('Hierarchy', () => {
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert root item
-        expect(items.at(0).attributes('url')).toEqual(references[parentTopicIdentifiers[0]].url);
+        expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
         expect(items.at(0).classes()).toContain('root-hierarchy');
 
         // assert the collapsible items. Two collapsed, as 2 can live outside between 1000 - 1200
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         expect(items.at(2).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         // assert the items outside of the collapse
         expect(items.at(3).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         expect(items.at(4).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
         // assert the last item has no attributes
         expect(items.at(5).attributes()).toEqual({});
@@ -274,33 +234,32 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `3 collapsed + max 1 item`, between 800 and 1000px', () => {
+      it('renders a list with `3 collapsed + max 1 item`, between 735 and 1000px', () => {
         changeSize(900);
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[0]].url,
-          iscollapsed: 'true',
+          class: 'root-hierarchy',
+          url: parentTopics[0].url,
         });
-        expect(items.at(0).classes()).not.toContain('root-hierarchy');
 
-        // next assert the collapsible items. 3, as 1 can live between 800 and 1000
+        // next assert the collapsible items. 3, as 1 can live between 735 and 1000
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         expect(items.at(2).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         expect(items.at(3).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         // assert the items outside of the collapse
         expect(items.at(4).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
         // assert the last item has no attributes
         expect(items.at(5).attributes()).toEqual({});
@@ -309,10 +268,6 @@ describe('Hierarchy', () => {
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
-          {
-            title: foo.title,
-            url: foo.url,
-          },
           {
             title: bar.title,
             url: bar.url,
@@ -328,45 +283,42 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `4 collapsed and no external links`, below 800', () => {
-        changeSize(750);
+      it('renders a list with `5 collapsed and no external links`, below 735', () => {
+        changeSize(720);
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[0]].url,
-          iscollapsed: 'true',
+          class: 'root-hierarchy',
+          url: parentTopics[0].url,
         });
-        expect(items.at(0).classes()).not.toContain('root-hierarchy');
 
-        // next assert the collapsible items. 4, as 0 can live outside below 800
+        // next assert the collapsible items. 5, as 0 can live outside below 735
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         expect(items.at(2).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         expect(items.at(3).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         expect(items.at(4).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          iscollapsed: 'true',
+          url: currentPath,
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
-          {
-            title: foo.title,
-            url: foo.url,
-          },
           {
             title: bar.title,
             url: bar.url,
@@ -383,6 +335,10 @@ describe('Hierarchy', () => {
             title: baw.title,
             url: baw.url,
           },
+          {
+            title: qux.title,
+            url: currentPath,
+          },
         ]);
       });
     });
@@ -398,29 +354,29 @@ describe('Hierarchy', () => {
 
         const items = list.findAll(HierarchyItem);
         // all parentTopicIdentifiers + the last item
-        expect(items.length).toBe(parentTopicIdentifiers.length + 1);
+        expect(items.length).toBe(parentTopics.length + 1);
 
         // assert what items are shown
         // assert root item
-        expect(items.at(0).attributes('url')).toEqual(references[parentTopicIdentifiers[0]].url);
+        expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
         expect(items.at(0).attributes('iscollapsed')).toBeFalsy();
         expect(items.at(0).classes()).toContain('root-hierarchy');
 
         // next assert the collapsible items. Two, as 2 can live outside at 1200 with tags
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         expect(items.at(2).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         // assert the items outside of the collapse
         expect(items.at(3).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         expect(items.at(4).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
         // assert the last item has no attributes
         expect(items.at(5).attributes()).toEqual({});
@@ -449,25 +405,25 @@ describe('Hierarchy', () => {
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert root item
-        expect(items.at(0).attributes('url')).toEqual(references[parentTopicIdentifiers[0]].url);
+        expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
         expect(items.at(0).classes()).toContain('root-hierarchy');
 
         // assert the collapsible items. 3 collapsed, as 1 can live outside between 1000 - 1200
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         expect(items.at(2).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         expect(items.at(3).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         // assert the items outside of the collapse
         expect(items.at(4).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
         // assert the last item has no attributes
         expect(items.at(5).attributes()).toEqual({});
@@ -491,7 +447,7 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`, with tags, between 800 and 1000px', () => {
+      it('renders a list with `5 collapsed and no external`, with tags, between 735 and 1000px', () => {
         changeSize(900);
         wrapper.setProps({
           isSymbolBeta: true,
@@ -501,27 +457,25 @@ describe('Hierarchy', () => {
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[0]].url,
-          iscollapsed: 'true',
+          class: 'root-hierarchy',
+          url: parentTopics[0].url,
         });
-        expect(items.at(0).classes()).not.toContain('root-hierarchy');
-
-        // next assert the collapsible items. 3, as 1 can live between 800 and 1000
+        // next assert the collapsible items. 3, as 1 can live between 735 and 1000
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         expect(items.at(2).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         expect(items.at(3).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         expect(items.at(4).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
         // assert the last item has no attributes
         expect(items.at(5).attributes()).toEqual({});
@@ -530,10 +484,6 @@ describe('Hierarchy', () => {
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
-          {
-            title: foo.title,
-            url: foo.url,
-          },
           {
             title: bar.title,
             url: bar.url,
@@ -553,7 +503,7 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`,with tags below 800', () => {
+      it('renders a list with `5 collapsed and no external`,with tags below 735', () => {
         changeSize(700);
         wrapper.setProps({
           isSymbolBeta: true,
@@ -563,39 +513,36 @@ describe('Hierarchy', () => {
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
-          url: references[parentTopicIdentifiers[0]].url,
-          iscollapsed: 'true',
+          class: 'root-hierarchy',
+          url: parentTopics[0].url,
         });
-        expect(items.at(0).classes()).not.toContain('root-hierarchy');
 
-        // next assert the collapsible items. 3, as 1 can live between 800 and 1000
+        // next assert the collapsible items. 3, as 1 can live between 735 and 1000
         expect(items.at(1).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[1]].url,
+          url: parentTopics[1].url,
         });
         expect(items.at(2).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[2]].url,
+          url: parentTopics[2].url,
         });
         expect(items.at(3).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[3]].url,
+          url: parentTopics[3].url,
         });
         expect(items.at(4).attributes()).toEqual({
           iscollapsed: 'true',
-          url: references[parentTopicIdentifiers[4]].url,
+          url: parentTopics[4].url,
         });
-        // assert the last item has no attributes
-        expect(items.at(5).attributes()).toEqual({});
+        expect(items.at(5).attributes()).toEqual({
+          iscollapsed: 'true',
+          url: currentPath,
+        });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
         const collapsedItems = wrapper.find(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
-          {
-            title: foo.title,
-            url: foo.url,
-          },
           {
             title: bar.title,
             url: bar.url,
@@ -612,12 +559,17 @@ describe('Hierarchy', () => {
             title: baw.title,
             url: baw.url,
           },
+          {
+            title: qux.title,
+            url: currentPath,
+          },
         ]);
       });
     });
   });
 
   it('renders a beta badge', () => {
+    changeSize(1250);
     const wrapper = mountWithProps({
       propsData: {
         currentTopicTitle: 'Foo',

@@ -14,7 +14,7 @@
       :to="url"
       class="base-link"
     >
-      <slot>View more</slot>
+      <slot>{{ $t('documentation.view-more')}}</slot>
     </router-link>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -12,7 +12,6 @@
   <NavBase
     :breakpoint="BreakpointName.medium"
     :hasOverlay="false"
-    hasSolidBackground
     :hasNoBorder="hasNoBorder"
     :isDark="isDark"
     isWideFormat
@@ -22,54 +21,27 @@
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint, className }" v-if="displaySidenav">
       <div :class="className">
-        <transition name="sidenav-toggle">
-          <div
-            v-show="sidenavHiddenOnLarge"
-            class="sidenav-toggle-wrapper"
+        <div class="sidenav-toggle-wrapper">
+          <button
+            :aria-label="$t('navigator.open-navigator')"
+            :id="baseNavOpenSidenavButtonId"
+            class="sidenav-toggle"
+            :tabindex="isOpen ? -1 : null"
+            @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
           >
-            <button
-              :aria-label="$t('navigator.open-navigator')"
-              :id="baseNavOpenSidenavButtonId"
-              class="sidenav-toggle"
-              :tabindex="isOpen ? -1 : null"
-              @click.prevent="handleSidenavToggle(closeNav, currentBreakpoint)"
-            >
-            <span class="sidenav-icon-wrapper">
-              <SidenavIcon class="icon-inline sidenav-icon" />
-            </span>
-            </button>
-            <span class="sidenav-toggle__separator" />
-          </div>
-        </transition>
+          <span class="sidenav-icon-wrapper">
+            <SidenavIcon class="icon-inline sidenav-icon" />
+          </span>
+          </button>
+        </div>
       </div>
     </template>
     <template #default>
-      <slot
-        name="title"
-        v-bind="{ rootLink, linkClass: 'nav-title-link', inactiveClass: 'inactive' }"
-      >
-        <router-link
-          v-if="rootLink"
-          :to="rootLink"
-          class="nav-title-link"
-        >
-          {{ $t('documentation.title') }}
-        </router-link>
-        <span v-else class="nav-title-link inactive">{{ $t('documentation.title') }}</span>
-      </slot>
+      <slot name="title" />
     </template>
     <template #tray="{ closeNav }">
-      <Hierarchy
-        :currentTopicTitle="title"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-        :parentTopicIdentifiers="hierarchyItems"
-        :currentTopicTags="currentTopicTags"
-        :references="references"
-      />
       <NavMenuItems
         class="nav-menu-settings"
-        :previousSiblingChildren="breadcrumbCount"
       >
         <LanguageToggle
           v-if="interfaceLanguage && (swiftPath || objcPath)"
@@ -80,7 +52,7 @@
         />
         <slot name="menu-items" />
       </NavMenuItems>
-      <slot name="tray-after" v-bind="{ breadcrumbCount }" />
+      <slot name="tray-after" />
     </template>
     <template #after-content>
       <slot name="after-content" />
@@ -95,7 +67,6 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import SidenavIcon from 'theme/components/Icons/SidenavIcon.vue';
 import { SIDEBAR_HIDE_BUTTON_ID } from 'docc-render/constants/sidebar';
 import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
-import Hierarchy from './DocumentationNav/Hierarchy.vue';
 import LanguageToggle from './DocumentationNav/LanguageToggle.vue';
 
 export default {
@@ -104,26 +75,9 @@ export default {
     SidenavIcon,
     NavBase,
     NavMenuItems,
-    Hierarchy,
     LanguageToggle,
   },
   props: {
-    title: {
-      type: String,
-      required: false,
-    },
-    parentTopicIdentifiers: {
-      type: Array,
-      required: false,
-    },
-    isSymbolBeta: {
-      type: Boolean,
-      required: false,
-    },
-    isSymbolDeprecated: {
-      type: Boolean,
-      required: false,
-    },
     isDark: {
       type: Boolean,
       default: false,
@@ -131,14 +85,6 @@ export default {
     hasNoBorder: {
       type: Boolean,
       default: false,
-    },
-    currentTopicTags: {
-      type: Array,
-      required: true,
-    },
-    references: {
-      type: Object,
-      default: () => ({}),
     },
     interfaceLanguage: {
       type: String,
@@ -152,10 +98,6 @@ export default {
       type: String,
       required: false,
     },
-    sidenavHiddenOnLarge: {
-      type: Boolean,
-      default: false,
-    },
     displaySidenav: {
       type: Boolean,
       default: false,
@@ -164,38 +106,6 @@ export default {
   computed: {
     baseNavOpenSidenavButtonId: () => baseNavOpenSidenavButtonId,
     BreakpointName: () => BreakpointName,
-    breadcrumbCount: ({ hierarchyItems }) => hierarchyItems.length + 1,
-    /**
-     * Returns the first(root) hierarchy item reference
-     * @return {Object}
-     */
-    rootHierarchyReference: ({ parentTopicIdentifiers, references }) => (
-      references[parentTopicIdentifiers[0]] || {}
-    ),
-    /**
-     * Returns whether the root link is a technology page.
-     * @return {boolean}
-     */
-    isRootTechnologyLink: ({ rootHierarchyReference: { kind } }) => kind === 'technologies',
-    /**
-     * Returns the root url reference object, if is a `technologies` link.
-     * Otherwise returns a manual route query object.
-     * @return {Object}
-     */
-    rootLink: ({
-      isRootTechnologyLink, rootHierarchyReference, $route,
-    }) => (isRootTechnologyLink
-      ? {
-        path: rootHierarchyReference.url,
-        query: $route.query,
-      } : null),
-    /**
-     * Strips out the first link, if is the root Technologies link.
-     * @return {string[]}
-     */
-    hierarchyItems: ({ parentTopicIdentifiers, isRootTechnologyLink }) => (
-      isRootTechnologyLink ? parentTopicIdentifiers.slice(1) : parentTopicIdentifiers
-    ),
   },
   methods: {
     async handleSidenavToggle(closeNav, currentBreakpoint) {
@@ -233,23 +143,17 @@ $sidenav-icon-padding-size: 5px;
       margin-left: $nav-space-between-elements;
     }
 
-    @include nav-in-breakpoint {
-      // do not apply border if no item are above setting links
-      &:not([data-previous-menu-children-count="0"]) {
-        .nav-menu-setting:first-child {
-          border-top: 1px solid dark-color(figure-gray-tertiary);
-          display: flex;
-          align-items: center;
-        }
-      }
-    }
-
     .nav-menu-setting {
       display: flex;
       align-items: center;
       color: var(--color-nav-current-link);
       margin-left: 0;
       min-width: 0;
+
+      .nav-menu-link {
+        font-weight: $font-weight-semibold;
+        @include underline-text;
+      }
 
       &:first-child:not(:only-child) {
         margin-right: $nav-space-between-elements;
@@ -265,7 +169,7 @@ $sidenav-icon-padding-size: 5px;
 
       @include nav-in-breakpoint() {
         &:not(:first-child) {
-          border-top: 1px solid dark-color(fill-gray-tertiary);
+          border-top: 1px solid var(--color-fill-gray-tertiary);
         }
       }
     }
@@ -274,17 +178,8 @@ $sidenav-icon-padding-size: 5px;
 
 .documentation-nav {
   :deep() {
-    // normalize the Title font with menu items
     .nav-title {
-      @include font-styles(documentation-nav);
-
-      .nav-title-link.inactive {
-        height: auto;
-        color: var(--color-figure-gray-secondary-alt);
-        @include nav-dark($nested: true) {
-          color: dark-color(figure-gray-secondary-alt);
-        }
-      }
+      @include font-styles(nav-title-large);
     }
   }
 }
@@ -292,6 +187,10 @@ $sidenav-icon-padding-size: 5px;
 .sidenav-toggle-wrapper {
   display: flex;
   margin-top: 1px;
+
+  @include breakpoints-from(large, nav) {
+    margin-right: $nav-padding / 2;
+  }
 
   // This is a hack to enforce the toggle to be visible when in breakpoint,
   // even if already toggled off on desktop. Conditionally checking the current breakpoint,
@@ -317,6 +216,7 @@ $sidenav-icon-padding-size: 5px;
   color: var(--color-nav-link-color);
   position: relative;
   margin: 0 (-$sidenav-icon-padding-size);
+  border-radius: $nano-border-radius;
 
   @include nav-dark {
     color: var(--color-nav-dark-link-color);
@@ -339,13 +239,6 @@ $sidenav-icon-padding-size: 5px;
   }
 
   @include nav-in-breakpoint() {
-    $space: 14px;
-    margin-left: -$space;
-    margin-right: -$space;
-    padding-left: $space;
-    padding-right: $space;
-    align-self: stretch;
-
     &__separator {
       display: none;
     }

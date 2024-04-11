@@ -100,13 +100,13 @@ describe('LanguageToggle', () => {
     const sizer = wrapper.find({ ref: 'language-sizer' }).element;
     const toggle = wrapper.find('#language-toggle');
     // clientWidth is now 0
-    expect(toggle.attributes()).toHaveProperty('style', 'width: 6px;');
+    expect(toggle.attributes()).toHaveProperty('style', 'width: 8px;');
     Object.defineProperty(sizer, 'clientWidth', {
       get: () => 20,
     });
     toggle.setValue(Language.objectiveC.key.api);
     await wrapper.vm.$nextTick();
-    expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
+    expect(toggle.attributes()).toHaveProperty('style', 'width: 28px;');
   });
 
   it('applies the faux select width on the language toggle, on screen resize', async () => {
@@ -116,12 +116,12 @@ describe('LanguageToggle', () => {
       get: () => 20,
     });
     // clientWidth was 0
-    expect(toggle.attributes()).toHaveProperty('style', 'width: 6px;');
+    expect(toggle.attributes()).toHaveProperty('style', 'width: 8px;');
     const resizeEvent = createEvent('resize');
     window.dispatchEvent(resizeEvent);
     await wrapper.vm.$nextTick();
     await flushPromises();
-    expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
+    expect(toggle.attributes()).toHaveProperty('style', 'width: 28px;');
   });
 
   it('applies the faux select width on the language toggle, on orientationchange', async () => {
@@ -131,11 +131,11 @@ describe('LanguageToggle', () => {
       get: () => 20,
     });
     // clientWidth was 0
-    expect(toggle.attributes()).toHaveProperty('style', 'width: 6px;');
+    expect(toggle.attributes()).toHaveProperty('style', 'width: 8px;');
     const orientationchangeEvent = createEvent('orientationchange');
     window.dispatchEvent(orientationchangeEvent);
     await flushPromises();
-    expect(toggle.attributes()).toHaveProperty('style', 'width: 26px;');
+    expect(toggle.attributes()).toHaveProperty('style', 'width: 28px;');
   });
 
   it('does not render the chevron if it has no languages', () => {

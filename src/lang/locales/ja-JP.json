@@ -23,11 +23,12 @@
     },
     "assessment": {
       "check-your-understanding": "理解度を確認する",
-      "success-message": "よくできました。このチュートリアルの問題にすべて回答しました。",
-      "answer-number-is": "問題番号{index}は",
-      "correct": "正解です",
-      "incorrect": "不正解です",
-      "next-question": "次の問題"
+      "success-message": "よくできました。このチュートリアルの問題にすべて解答しました。",
+      "answer-result": "解答{answer}は{result}です",
+      "correct": "正解",
+      "incorrect": "不正解",
+      "next-question": "次の問題",
+      "legend": "解答例"
     },
     "project-files": "プロジェクトファイル",
     "estimated-time": "予測時間",
@@ -64,7 +65,8 @@
       "view-api": "APIのコレクションを表示",
       "view-symbol": "記号を表示",
       "view-sample-code": "サンプルコードを表示"
-    }
+    },
+    "view-more": "さらに表示"
   },
   "aside-kind": {
     "beta": "ベータ版",
@@ -164,7 +166,8 @@
   "read-only": "読み出し専用",
   "error": {
     "unknown": "原因不明のエラーが起きました。",
-    "image": "イメージを読み込めませんでした"
+    "image": "イメージを読み込めませんでした",
+    "not-found": "探しているページが見つかりません。"
   },
   "color-scheme": {
     "select": "カラースキーム環境設定を選択",
@@ -181,7 +184,8 @@
       "start": "コードブロックの開始",
       "end": "コードブロックの終了"
     },
-    "skip-navigation": "ナビゲーションをスキップ"
+    "skip-navigation": "ナビゲーションをスキップ",
+    "in-page-link": "ページ内リンク"
   },
   "select-language": "このページの言語を選択",
   "icons": {
@@ -197,6 +201,7 @@
     "button": {
       "label": "クイックナビゲーションを開く",
       "title": "クリックするか「/」を入力すると素早く移動します"
-    }
+    },
+    "preview-unavailable": "プレビューできません"
   }
 }

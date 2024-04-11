@@ -8,18 +8,16 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import Pager from 'docc-render/components/Pager.vue';
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
 import { shallowMount } from '@vue/test-utils';
+import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
-import Row from '@/components/ContentNode/Row.vue';
-import Column from '@/components/ContentNode/Column.vue';
-import TopicsLinkCardGridItem from '@/components/DocumentationTopic/TopicsLinkCardGridItem.vue';
 
-const ref1 = { identifier: 'ref1' };
-const ref2 = { identifier: 'ref2' };
+const ref = n => ({ identifier: `ref${n}` });
 
 const defaultProps = {
-  items: [ref1, ref2],
+  items: [...Array(10).keys()].map(n => ref(n)),
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(TopicsLinkCardGrid, {
@@ -31,29 +29,73 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(TopicsLink
 });
 
 describe('TopicsLinkCardGrid', () => {
-  it('renders the TopicsLinkCardGrid', () => {
+  it('renders only a single page with every item by default', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(Row).props()).toEqual({
-      columns: { large: 3, medium: 2 }, // compact grid is a 3 column setup
-    });
-    const cols = wrapper.findAll(Column);
-    expect(cols).toHaveLength(2);
-    expect(cols.at(0).find(TopicsLinkCardGridItem).props()).toEqual({
-      item: ref1,
-      compact: true,
+
+    const pager = wrapper.find(Pager);
+    expect(pager.exists()).toBe(true);
+    expect(pager.classes('TopicsLinkCardGrid')).toBe(true);
+    expect(pager.classes('compactGrid')).toBe(true);
+
+    const pages = pager.props('pages');
+    expect(pages.length).toBe(1);
+    expect(pages[0]).toEqual(defaultProps.items);
+  });
+
+  describe('compactGrid with pages', () => {
+    it('renders a pager with right number of pages per breakpoint', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          topicStyle: TopicSectionsStyle.compactGrid,
+          usePager: true,
+        },
+      });
+
+      // 10 items => 2 pages at large breakpoint (6 links per page)
+      let pager = wrapper.find(Pager);
+      expect(pager.exists()).toBe(true);
+      expect(pager.props('pages').length).toBe(2);
+
+      // 10 items => 2 pages at medium breakpoint (6 links per page)
+      wrapper.setData({ breakpoint: BreakpointName.medium });
+      pager = wrapper.find(Pager);
+      expect(pager.exists()).toBe(true);
+      expect(pager.props('pages').length).toBe(2);
+
+      // 10 items => 10 pages at small breakpoint (1 links per page)
+      wrapper.setData({ breakpoint: BreakpointName.small });
+      pager = wrapper.find(Pager);
+      expect(pager.exists()).toBe(true);
+      expect(pager.props('pages').length).toBe(10);
     });
   });
 
-  it('renders as a `detailedGrid`', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        ...defaultProps,
-        topicStyle: TopicSectionsStyle.detailedGrid,
-      },
+  describe('detailedGrid with pages', () => {
+    it('renders a pager with the right number of pages per breakpoint', () => {
+      const wrapper = createWrapper({
+        propsData: {
+          topicStyle: TopicSectionsStyle.detailedGrid,
+          usePager: true,
+        },
+      });
+
+      // 10 items => 3 pages at large breakpoint (4 links per page)
+      let pager = wrapper.find(Pager);
+      expect(pager.classes('detailedGrid')).toBe(true);
+      expect(pager.exists()).toBe(true);
+      expect(pager.props('pages').length).toBe(3);
+
+      // 10 items => 5 pages at medium breakpoint (2 links per page)
+      wrapper.setData({ breakpoint: BreakpointName.medium });
+      pager = wrapper.find(Pager);
+      expect(pager.exists()).toBe(true);
+      expect(pager.props('pages').length).toBe(5);
+
+      // 10 items => 10 pages at small breakpoint (1 links per page)
+      wrapper.setData({ breakpoint: BreakpointName.small });
+      pager = wrapper.find(Pager);
+      expect(pager.exists()).toBe(true);
+      expect(pager.props('pages').length).toBe(10);
     });
-    expect(wrapper.find(Row).props()).toEqual({
-      columns: { large: 2, medium: 2 }, // detailed grid is a 2 column setup
-    });
-    expect(wrapper.find(TopicsLinkCardGridItem).props('compact')).toBe(false);
   });
 });

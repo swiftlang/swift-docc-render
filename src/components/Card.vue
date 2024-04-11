@@ -151,17 +151,6 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-$details-padding: 17px;
-$content-margin: 4px;
-
-@mixin static-card-size($card-height, $img-height) {
-  @include inTargetWeb {
-    --card-height: #{$card-height};
-    --card-details-height: #{$card-height - $img-height - ($details-padding * 2)};
-  }
-  --card-cover-height: #{$img-height};
-}
-
 .card {
   overflow: hidden;
   display: block;
@@ -174,7 +163,7 @@ $content-margin: 4px;
     text-decoration: none;
 
     .link {
-      text-decoration: underline;
+      @include underline-text;
     }
   }
 
@@ -215,7 +204,7 @@ $content-margin: 4px;
 
 .details {
   background-color: var(--color-card-background);
-  padding: $details-padding;
+  padding: $details-padding-card;
   position: relative;
   height: var(--card-details-height);
   @include font-styles(card-content-small);
@@ -226,14 +215,14 @@ $content-margin: 4px;
 
   .floating-style & {
     --color-card-background: transparent;
-    padding: $details-padding 0;
+    padding: $details-padding-card 0;
   }
 }
 
 .eyebrow {
   color: var(--color-card-eyebrow);
   display: block;
-  margin-bottom: $content-margin;
+  margin-bottom: $content-margin-card;
   @include font-styles(card-eyebrow-small);
 
   .large & {
@@ -253,11 +242,11 @@ $content-margin: 4px;
 
 .card-content {
   color: var(--color-card-content-text);
-  margin-top: $content-margin;
+  margin-top: $content-margin-card;
 }
 
 .link {
-  bottom: 17px;
+  bottom: $details-padding-card;
   display: flex;
   align-items: center;
   position: absolute;

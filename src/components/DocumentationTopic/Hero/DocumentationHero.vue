@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -12,7 +12,6 @@
   <div
     :class="['documentation-hero', {
       'documentation-hero--disabled': !enhanceBackground,
-      'theme-dark': enhanceBackground,
     }]"
     :style="styles"
   >
@@ -116,21 +115,24 @@ export default {
 $doc-hero-gradient-background: var(
     --standard-accent-color,
     // then fallback to a theme-settings color
-    var(--color-documentation-intro-fill, #{dark-color(fill-tertiary)})
+    var(--color-documentation-intro-fill, var(--color-fill-tertiary))
 ) !default;
 $doc-hero-overlay-background: transparent !default;
-$doc-hero-icon-opacity: 1 !default;
+$doc-hero-icon-opacity: 0.15 !default;
+$doc-hero-icon-dark-opacity: 0.15 !default;
+$doc-hero-text-color: var(--color-documentation-intro-figure, var(--color-figure-gray)) !default;
 $doc-hero-icon-color: var(
     --color-documentation-intro-accent,
-    #{dark-color(fill-secondary)}
+    var(--color-figure-gray-secondary)
 ) !default;
+$doc-hero-icon-effect: normal !default;
+$doc-hero-icon-dark-effect: normal !default;
 $doc-hero-icon-spacing: 25px;
 $doc-hero-icon-vertical-spacing: 10px;
 $doc-hero-icon-dimension: 250px;
 
 .documentation-hero {
-  background: dark-color(fill);
-  color: var(--color-documentation-intro-figure, dark-color(figure-gray));
+  color: $doc-hero-text-color;
   overflow: hidden;
   text-align: left;
   position: relative;
@@ -143,22 +145,23 @@ $doc-hero-icon-dimension: 250px;
     background: $doc-hero-gradient-background;
     position: absolute;
     width: 100%;
-    left: 0;
-    top: -50%;
-    height: 150%;
-    right: 0;
+    height: 100%;
   }
 
-  // black overlay
+  // overlay
   &:after {
     background: $doc-hero-overlay-background;
-    opacity: 0.7;
+    opacity: 0.85;
     width: 100%;
     position: absolute;
     content: '';
     height: 100%;
     left: 0;
     top: 0;
+
+    @include prefers-dark {
+      opacity: 0.55;
+    }
   }
 
   .icon {
@@ -182,6 +185,7 @@ $doc-hero-icon-dimension: 250px;
     width: $doc-hero-icon-dimension;
     height: auto;
     opacity: $doc-hero-icon-opacity;
+    mix-blend-mode: $doc-hero-icon-effect;
     position: absolute;
     // center in icon box
     top: 50%;
@@ -193,11 +197,16 @@ $doc-hero-icon-dimension: 250px;
       width: 100%;
       height: 100%;
     }
+
+    @include prefers-dark {
+      mix-blend-mode: $doc-hero-icon-dark-effect;
+      opacity: $doc-hero-icon-dark-opacity;
+    }
   }
 
   &__content:not(.minimized-hero) {
     padding-top: rem(40px);
-    padding-bottom: 40px;
+    padding-bottom: rem(40px);
     position: relative;
     z-index: 1;
     @include dynamic-content-container;
@@ -237,9 +246,5 @@ $doc-hero-icon-dimension: 250px;
 .extra-bottom-padding {
   // apply extra bottom padding when shouldShowLanguageSwitcher
   padding-bottom: rem(65px);
-}
-
-.theme-dark :deep(a:not(.button-cta)) {
-  color: dark-color(figure-blue);
 }
 </style>

@@ -11,6 +11,10 @@
 // Used to calculate `em()`s and to set the default `font-size` on `html`.
 $body-font-size: 17px;
 
+@mixin underline-text() {
+  text-decoration: underline;
+}
+
 @import "typography/font-style-utils";
 @import "typography/font-styles";
 @import "typography/font-attribute-utils";

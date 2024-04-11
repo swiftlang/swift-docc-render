@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,7 +10,6 @@
 
 <template>
   <BaseNavigatorCardItem
-    class="navigator-card-item"
     :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
     :data-nesting-index="item.depth"
@@ -106,6 +105,9 @@
       <Badge v-if="isDeprecated" variant="deprecated" />
       <Badge v-else-if="isBeta" variant="beta" />
     </template>
+    <template #content-container>
+      <slot name="card-item-content" />
+    </template>
   </BaseNavigatorCardItem>
 </template>
 
@@ -152,6 +154,10 @@ export default {
     filterPattern: {
       type: RegExp,
       default: undefined,
+    },
+    filterText: {
+      type: String,
+      default: null,
     },
     isActive: {
       type: Boolean,
@@ -264,7 +270,7 @@ $chevron-width: $nav-card-horizontal-spacing;
 
 .is-group {
   .leaf-link {
-    color: var(--color-figure-gray-secondary);
+    color: var(--color-figure-gray-tertiary);
     font-weight: $font-weight-semibold;
     // groups dont need the overlay
     &:after {
@@ -323,7 +329,7 @@ $chevron-width: $nav-card-horizontal-spacing;
   max-width: 100%;
   display: inline;
   vertical-align: middle;
-  @include font-styles(body-reduced-tight);
+  @include font-styles(body);
 
   @include on-keyboard-focus {
     outline: none;

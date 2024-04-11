@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -30,6 +30,14 @@
           <slot name="above-hero-content" />
         </template>
         <slot name="above-title" />
+        <Hierarchy
+          v-if="parentTopics.length && !enableMinimized && !isTargetIDE"
+          :currentTopicTitle="title"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :parentTopics="parentTopics"
+          :currentTopicTags="tags"
+        />
         <LanguageSwitcher
           v-if="shouldShowLanguageSwitcher"
           :interfaceLanguage="interfaceLanguage"
@@ -42,10 +50,10 @@
         >
           <component :is="titleBreakComponent">{{ title }}</component>
           <template #after v-if="isSymbolDeprecated || isSymbolBeta">
-          <small
-          :class="tagName"
-          :data-tag-name="tagName"
-          />
+            <small
+              :class="tagName"
+              :data-tag-name="tagName"
+            />
           </template>
         </Title>
         <Abstract
@@ -71,6 +79,7 @@
             :conformance="conformance"
             :declarations="declaration.declarations"
             :source="remoteSource"
+            :declListExpanded.sync="declListExpanded"
           />
         </div>
       </DocumentationHero>
@@ -80,10 +89,14 @@
           :class="{ 'no-primary-content': !hasPrimaryContent && enhanceBackground }"
         >
           <div
-            v-if="hasPrimaryContent"
+            v-if="hasPrimaryContent || showOtherDeclarations"
             :class="['container', { 'minimized-container': enableMinimized }]"
           >
-            <div class="description" :class="{ 'after-enhanced-hero': enhanceBackground }">
+            <div
+              v-if="!declListExpanded"
+              class="description"
+              :class="{ 'after-enhanced-hero': enhanceBackground }"
+            >
               <RequirementMetadata
                 v-if="isRequirement"
                 :defaultImplementationsCount="defaultImplementationsCount"
@@ -97,6 +110,17 @@
               >
                 <ContentNode :content="downloadNotAvailableSummary" />
               </Aside>
+            </div>
+            <div v-if="showOtherDeclarations" class="declaration-list-menu">
+              <button
+                class="declaration-list-toggle"
+                @click="toggleDeclList"
+              >
+                {{ declListToggleText }}
+                <div class="icon">
+                  <InlinePlusCircleIcon :class="{'expand': declListExpanded }" />
+                </div>
+              </button>
             </div>
             <PrimaryContent
               v-if="primaryContentSectionsSanitized && primaryContentSectionsSanitized.length"
@@ -147,22 +171,25 @@
 
 <script>
 import Language from 'docc-render/constants/Language';
+import SymbolKind from 'docc-render/constants/SymbolKind';
 import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
+import { last } from 'docc-render/utils/arrays';
 
 import AppStore from 'docc-render/stores/AppStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
 import ViewMore from 'theme/components/DocumentationTopic/ViewMore.vue';
-import DocumentationHero from 'docc-render/components/DocumentationTopic/DocumentationHero.vue';
+import DocumentationHero from 'docc-render/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import OnThisPageNav from 'theme/components/OnThisPageNav.vue';
 import { SectionKind } from 'docc-render/constants/PrimaryContentSection';
 import Declaration from 'docc-render/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import { StandardColors } from 'docc-render/constants/StandardColors';
+import InlinePlusCircleIcon from 'theme/components/Icons/InlinePlusCircleIcon.vue';
 import Abstract from './DocumentationTopic/Description/Abstract.vue';
 import ContentNode from './DocumentationTopic/ContentNode.vue';
 import CallToActionButton from './CallToActionButton.vue';
@@ -172,9 +199,10 @@ import Relationships from './DocumentationTopic/Relationships.vue';
 import RequirementMetadata from './DocumentationTopic/Description/RequirementMetadata.vue';
 import Availability from './DocumentationTopic/Summary/Availability.vue';
 import SeeAlso from './DocumentationTopic/SeeAlso.vue';
-import Title from './DocumentationTopic/Title.vue';
+import Title from './DocumentationTopic/Hero/Title.vue';
 import Topics from './DocumentationTopic/Topics.vue';
 import OnThisPageStickyContainer from './DocumentationTopic/OnThisPageStickyContainer.vue';
+import Hierarchy from './DocumentationTopic/Hero/Hierarchy.vue';
 
 // size above which, the OnThisPage container is visible
 const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
@@ -219,6 +247,8 @@ export default {
     Topics,
     ViewMore,
     WordBreak,
+    Hierarchy,
+    InlinePlusCircleIcon,
   },
   props: {
     abstract: {
@@ -370,6 +400,10 @@ export default {
       type: Array,
       required: false,
     },
+    hierarchyItems: {
+      type: Array,
+      default: () => ([]),
+    },
   },
   provide() {
     // NOTE: this is not reactive: if this.identifier change, the provided value
@@ -385,6 +419,7 @@ export default {
   data() {
     return {
       topicState: this.store.state,
+      declListExpanded: false, // Hide all other declarations by default
     };
   },
   computed: {
@@ -415,6 +450,30 @@ export default {
     pageDescription: ({ abstract, extractFirstParagraphText }) => (
       abstract ? extractFirstParagraphText(abstract) : null
     ),
+    parentTopics: ({
+      hierarchyItems,
+      references,
+      hasOtherDeclarations,
+      pageTitle,
+    }) => {
+      const parentTopics = hierarchyItems.reduce((all, id) => {
+        const reference = references[id];
+        if (reference) {
+          const { title, url } = reference;
+          return all.concat({ title, url });
+        }
+        console.error(`Reference for "${id}" is missing`);
+        return all;
+      }, []);
+
+      // Overloaded symbols are auto-grouped under a group page with the same title
+      // We should omit showing their immediate parent to avoid confusion and duplication
+      const immediateParent = last(parentTopics);
+      if (hasOtherDeclarations && immediateParent?.title === pageTitle) {
+        parentTopics.pop();
+      }
+      return parentTopics;
+    },
     shouldShowLanguageSwitcher: ({
       objcPath,
       swiftPath,
@@ -436,7 +495,7 @@ export default {
       ) {
         return false;
       }
-      return symbolKind ? (symbolKind === 'module') : true;
+      return symbolKind ? (symbolKind === SymbolKind.module) : true;
     },
     shortHero: ({
       roleHeading,
@@ -514,11 +573,29 @@ export default {
       topicState.contentWidth > ON_THIS_PAGE_CONTAINER_BREAKPOINT
     ),
     disableMetadata: ({ enableMinimized }) => enableMinimized,
-    primaryContentSectionsSanitized({ primaryContentSections = [] }) {
-      return primaryContentSections.filter(({ kind }) => kind !== SectionKind.declarations);
+    primaryContentSectionsSanitized({ primaryContentSections = [], symbolKind }) {
+      return primaryContentSections.filter(({ kind }) => {
+        if (kind === SectionKind.mentions) {
+          return symbolKind !== SymbolKind.module;
+        }
+        return kind !== SectionKind.declarations;
+      });
     },
     declarations({ primaryContentSections = [] }) {
       return primaryContentSections.filter(({ kind }) => kind === SectionKind.declarations);
+    },
+    showOtherDeclarations({ enableMinimized, hasOtherDeclarations }) {
+      // disable otherDeclarations in minimized mode
+      return !enableMinimized && hasOtherDeclarations;
+    },
+    hasOtherDeclarations({ declarations = [] }) {
+      return !!declarations.length
+        // there's always only 1 `declaration` at this level
+        && declarations[0].declarations.some(decl => Object.prototype.hasOwnProperty.call(decl, 'otherDeclarations'));
+    },
+    declListToggleText({ declListExpanded }) {
+      return declListExpanded ? this.$t('declarations.hide-other-declarations')
+        : this.$t('declarations.show-all-declarations');
     },
   },
   methods: {
@@ -607,6 +684,9 @@ export default {
         standardColorIdentifier,
       };
     },
+    toggleDeclList() {
+      this.declListExpanded = !this.declListExpanded;
+    },
   },
   created() {
     // Switch to the Objective-C variant of a page if the query parameter is not
@@ -646,6 +726,46 @@ export default {
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
+
+$space-size: 15px;
+
+.declaration-list-menu {
+  position: relative;
+  width: 100%;
+
+  .declaration-list-toggle {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-fill); // cover border line
+    padding: 5px 15px;
+    color: var(--colors-link, var(--color-link));
+    z-index: 1;
+    gap: 5px;
+    white-space: nowrap;
+    align-items: center;
+  }
+
+  .icon {
+    display: flex;
+    svg {
+      transition-duration: 400ms;
+      transition-timing-function: linear;
+      transition-property: transform;
+
+      width: $space-size;
+      height: $space-size;
+      fill: var(--colors-link, var(--color-link));
+
+      &.expand {
+        transform: rotate(45deg);
+      }
+    }
+  }
+}
 
 .doc-topic {
   display: flex;
@@ -747,6 +867,7 @@ export default {
 
     .source {
       border-radius: var(--code-border-radius);
+      margin: var(--declaration-code-listing-margin);
     }
 
     /* wrap declaration only when not using smart wrapping */
@@ -799,7 +920,7 @@ export default {
 }
 
 .declarations-container {
-  margin-top: 30px;
+  margin-top: 40px;
 
   &.minimized-container {
     margin-top: 0;
@@ -829,6 +950,18 @@ export default {
   .doc-content {
     min-width: 0;
     width: 100%;
+
+    // only render border on declaration list menu
+    // when there are no content sections afterwards at all
+    .container:only-child {
+      .declaration-list-menu:last-child::before {
+        border-top-color: var(--colors-grid, var(--color-grid));
+        border-top-style: solid;
+        border-top-width: var(--content-table-title-border-width, 1px);
+        content: '';
+        display: block;
+      }
+    }
 
     .with-on-this-page & {
       $large-max-width: map-deep-get($breakpoint-attributes, (default, large, content-width));

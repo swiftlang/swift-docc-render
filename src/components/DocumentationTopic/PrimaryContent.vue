@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import Attributes
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/Attributes.vue';
 import PossibleValues
   from 'docc-render/components/DocumentationTopic/PrimaryContent/PossibleValues.vue';
 import RestEndpoint
@@ -32,10 +34,12 @@ import PropertyTable from './PrimaryContent/PropertyTable.vue';
 import RestBody from './PrimaryContent/RestBody.vue';
 import RestParameters from './PrimaryContent/RestParameters.vue';
 import RestResponses from './PrimaryContent/RestResponses.vue';
+import Mentions from './PrimaryContent/Mentions.vue';
 
 export default {
   name: 'PrimaryContent',
   components: {
+    Attributes,
     ContentNode,
     Parameters,
     PropertyListKeyDetails,
@@ -45,6 +49,7 @@ export default {
     RestParameters,
     RestResponses,
     PossibleValues,
+    Mentions,
   },
   constants: { SectionKind },
   props: {
@@ -68,6 +73,7 @@ export default {
   methods: {
     componentFor(section) {
       return {
+        [SectionKind.attributes]: Attributes,
         [SectionKind.content]: ContentNode,
         [SectionKind.details]: PropertyListKeyDetails,
         [SectionKind.parameters]: Parameters,
@@ -79,10 +85,12 @@ export default {
         [SectionKind.restEndpoint]: RestEndpoint,
         [SectionKind.restResponses]: RestResponses,
         [SectionKind.possibleValues]: PossibleValues,
+        [SectionKind.mentions]: Mentions,
       }[section.kind];
     },
     propsFor(section) {
       const {
+        attributes,
         bodyContentType,
         content,
         details,
@@ -93,8 +101,10 @@ export default {
         title,
         tokens,
         values,
+        mentions,
       } = section;
       return {
+        [SectionKind.attributes]: { attributes },
         [SectionKind.content]: { content },
         [SectionKind.details]: { details },
         [SectionKind.parameters]: { parameters },
@@ -112,6 +122,7 @@ export default {
         [SectionKind.restHeaders]: { parameters: items, title },
         [SectionKind.restParameters]: { parameters: items, title },
         [SectionKind.restResponses]: { responses: items, title },
+        [SectionKind.mentions]: { mentions },
       }[kind];
     },
   },
@@ -125,7 +136,7 @@ export default {
   &.with-border::before {
     border-top-color: var(--colors-grid, var(--color-grid));
     border-top-style: solid;
-    border-top-width: 1px;
+    border-top-width: var(--content-table-title-border-width, 1px);
     content: '';
     display: block;
   }

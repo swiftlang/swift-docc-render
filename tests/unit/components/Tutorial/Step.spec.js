@@ -47,7 +47,6 @@ describe('Step', () => {
 
   const provide = {
     isTargetIDE,
-    isClientMobile: false,
     store: TopicStore,
   };
 
@@ -158,7 +157,7 @@ describe('Step', () => {
     });
 
     describe('with media', () => {
-      const mountWithMobileClient = isClientMobile => (
+      const mountWithMedia = () => (
         shallowMount(Step, {
           propsData: {
             ...defaultProps,
@@ -168,26 +167,13 @@ describe('Step', () => {
           },
           provide: {
             ...provide,
-            isClientMobile,
             isTargetIDE: true,
           },
         })
       );
 
-      it('when using a mobile client, it renders an `Asset` with `showsVideoControls=true`', () => {
-        wrapper = mountWithMobileClient(true);
-
-        const mediaContainer = wrapper.find('.media-container');
-        const asset = mediaContainer.find(Asset);
-        expect(asset.exists()).toBe(true);
-        expect(asset.props('identifier')).toBe('media.jpg');
-        expect(asset.props('showsVideoControls')).toBe(true);
-        expect(asset.props('showsReplayButton')).toBe(false);
-        expect(asset.props('videoAutoplays')).toBe(false);
-      });
-
-      it('when using a desktop client, it renders an `Asset` with `showsVideoControls=false`', () => {
-        wrapper = mountWithMobileClient(false);
+      it('renders an `Asset` with `showsReplayButton=true`', () => {
+        wrapper = mountWithMedia();
 
         const mediaContainer = wrapper.find('.media-container');
         const asset = mediaContainer.find(Asset);

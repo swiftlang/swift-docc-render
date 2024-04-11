@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -43,19 +43,19 @@ export default {
     },
     showsReplayButton: {
       type: Boolean,
-      default: () => false,
+      default: () => true,
     },
     showsVideoControls: {
       type: Boolean,
-      default: () => true,
+      default: () => false,
     },
     videoAutoplays: {
       type: Boolean,
-      default: () => true,
+      default: () => false,
     },
     videoMuted: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     deviceFrame: {
       type: String,
@@ -105,11 +105,13 @@ export default {
     videoProps() {
       return {
         variants: this.asset.variants,
-        showsControls: this.showsVideoControls,
+        showsDefaultControls: this.showsVideoControls,
         muted: this.videoMuted,
         autoplays: this.prefersReducedMotion ? false : this.videoAutoplays,
         posterVariants: this.videoPoster ? this.videoPoster.variants : [],
         deviceFrame: this.deviceFrame,
+        alt: this.asset.alt,
+        id: this.identifier,
       };
     },
     assetListeners() {

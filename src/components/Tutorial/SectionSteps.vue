@@ -35,9 +35,9 @@
         >
           <Asset
             class="step-asset"
+            videoAutoplays
+            videoMuted
             :identifier="visibleAsset.media"
-            showsReplayButton
-            :showsVideoControls="false"
             ref="asset"
           />
         </div>
@@ -308,6 +308,10 @@ export default {
     .label {
       @include font-styles(aside-label);
     }
+
+    & + * {
+      margin-top: var(--spacing-stacked-margin-large);
+    }
   }
 }
 
@@ -438,6 +442,13 @@ $rhs-col-width-max: 921px;
         min-height: $asset-min-height - 40px;
       }
     }
+
+    :deep([data-orientation="landscape"]) {
+      max-width: min(
+         #{$rhs-col-width-max - ($media-spacing * 2)},
+         calc(50vw + #{$rhs-center-overlap} - #{$media-spacing * 2})
+      );
+    }
   }
 
   @include breakpoint(small) {
@@ -457,6 +468,10 @@ $rhs-col-width-max: 921px;
         background-color: var(--background, var(--color-step-background));
       }
     }
+  }
+
+  &:has([data-orientation="landscape"]) {
+    width: unset;
   }
 }
 

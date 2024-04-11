@@ -3,10 +3,13 @@
   "continue-viewing": "Continue viewing in English",
   "language": "Language",
   "video": {
+    "title": "Video",
     "replay": "Replay",
     "play": "Play",
     "pause": "Pause",
-    "watch": "Watch intro video"
+    "watch": "Watch intro video",
+    "description": "Content description of this video: {alt}",
+    "custom-controls": "Custom controls are available below"
   },
   "tutorials": {
     "title": "Tutorial | Tutorials",
@@ -65,7 +68,12 @@
       "view-api": "View API collection",
       "view-symbol": "View symbol",
       "view-sample-code": "View sample code"
-    }
+    },
+    "view-more": "View more"
+  },
+  "declarations": {
+    "hide-other-declarations": "Hide other declarations",
+    "show-all-declarations": "Show all declarations"
   },
   "aside-kind": {
     "beta": "Beta",
@@ -87,6 +95,7 @@
     "close": "Close"
   },
   "sections": {
+    "attributes": "Attributes",
     "title": "Section {number}",
     "on-this-page": "On this page",
     "topics": "Topics",
@@ -130,7 +139,14 @@
     "navigate": "To navigate the symbols, press Up Arrow, Down Arrow, Left Arrow or Right Arrow",
     "siblings-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings}",
     "parent-label": "{number-siblings} of {total-siblings} symbols inside {parent-siblings} containing one symbol | {number-siblings} of {total-siblings} symbols inside {parent-siblings} containing {number-parent} symbols",
-    "reset-filter": "Reset Filter"
+    "reset-filter": "Reset Filter",
+    "tags": {
+      "sample-code": "Sample Code",
+      "tutorials": "Tutorials",
+      "articles": "Articles",
+      "web-service-endpoints": "Web Service Endpoints",
+      "hide-deprecated": "Hide Deprecated"
+    }
   },
   "navigator": {
     "title": "Documentation Navigator",
@@ -144,9 +160,6 @@
     "state": {
       "loading": "loading",
       "ready": "ready"
-    },
-    "tags": {
-      "hide-deprecated": "Hide Deprecated"
     }
   },
   "tab": {
@@ -200,6 +213,21 @@
     "button": {
       "label": "Open Quick Navigation",
       "title": "Click or type / for quick navigation"
+    },
+    "preview-unavailable": "Preview unavailable"
+  },
+  "mentioned-in": "Mentioned in",
+  "pager": {
+    "roledescription": "content slider",
+    "page": {
+      "label": "content page {index} of {count}"
+    },
+    "control": {
+      "navigate-previous": "navigate to previous page of content",
+      "navigate-next": "navigate to next page of content"
     }
+  },
+  "links-grid": {
+    "label": "grid of links"
   }
 }

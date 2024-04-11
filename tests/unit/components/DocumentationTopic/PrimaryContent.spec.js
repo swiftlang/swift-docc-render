@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -12,6 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import PrimaryContent from 'docc-render/components/DocumentationTopic/PrimaryContent.vue';
 
 const {
+  Attributes,
   ContentNode,
   Parameters,
   PossibleValues,
@@ -19,8 +20,20 @@ const {
   RestEndpoint,
   RestParameters,
   RestResponses,
+  Mentions,
 } = PrimaryContent.components;
 const { SectionKind } = PrimaryContent.constants;
+
+const attributesSection = {
+  kind: SectionKind.attributes,
+  attributes: [
+    {
+      kind: 'default',
+      title: 'Default',
+      value: 'foobar',
+    },
+  ],
+};
 
 const genericContentSection = {
   kind: SectionKind.content,
@@ -127,10 +140,18 @@ const restEndpointSection = {
   tokens: [{ kind: 'method', text: 'POST' }, { kind: 'text', text: ' ' }],
 };
 
+const mentions = {
+  kind: 'mentions',
+  mentions: [
+    'topic://url',
+  ],
+};
+
 const propsData = {
   conformance: { availbilityPrefix: [], constraints: [] },
   source: { url: 'foo.com' },
   sections: [
+    attributesSection,
     detailsSection,
     genericContentSection,
     parametersSection,
@@ -140,6 +161,7 @@ const propsData = {
     restResponsesSection,
     possibleValuesSection,
     restEndpointSection,
+    mentions,
   ],
 };
 
@@ -165,6 +187,7 @@ describe('PrimaryContent', () => {
     });
   }
 
+  checkProps(Attributes, { attributes: attributesSection.attributes });
   checkProps(PropertyListKeyDetails, { details: detailsSection.details });
   checkProps(ContentNode, { content: genericContentSection.content, tag: 'div' });
   checkProps(Parameters, { parameters: parametersSection.parameters });
@@ -182,4 +205,5 @@ describe('PrimaryContent', () => {
   );
   checkProps(RestResponses, { responses: restResponsesSection.items, title: 'Title' });
   checkProps(PossibleValues, { values: possibleValuesSection.values });
+  checkProps(Mentions, { mentions: ['topic://url'] });
 });
