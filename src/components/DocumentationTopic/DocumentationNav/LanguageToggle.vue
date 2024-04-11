@@ -316,7 +316,7 @@ $nav-menu-toggle-label-margin: 6px;
     display: inline-block;
 
     &:not(:first-child) {
-      border-left: 1px solid var(--color-grid);
+      border-left: $generic-border-style;
       margin-left: $nav-menu-toggle-label-margin;
       padding-left: $nav-menu-toggle-label-margin;
     }
