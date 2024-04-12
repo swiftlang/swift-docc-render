@@ -37,7 +37,7 @@
           ref="NavigatorDataProvider"
         >
           <template #default="slotProps">
-            <div class="doc-topic-aside">
+            <div class="aside">
               <QuickNavigationModal
                 v-if="enableQuickNavigation"
                 :children="slotProps.flatChildren"
@@ -248,7 +248,7 @@ export default {
   }
 }
 
-.doc-topic-aside {
+.aside {
   height: 100%;
   box-sizing: border-box;
   border-right: 1px solid var(--color-grid);
