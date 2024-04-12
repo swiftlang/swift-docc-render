@@ -265,6 +265,13 @@ export default {
     this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
   },
+  inject: {
+    isTargetIDE: {
+      default() {
+        return false;
+      },
+    },
+  },
   beforeRouteEnter(to, from, next) {
     // skip fetching, and rely on data being provided via $bridge
     if (to.meta.skipFetchingData) {
