@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2022 Apple Inc. and the Swift project authors
+ * Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -55,7 +55,6 @@ export default {
 
     selectTag(tag) {
       this.updateSelectedTags([tag]);
-      if (!this.clearFilterOnTagSelect) return;
       this.setFilterInput('');
     },
 
@@ -538,11 +537,15 @@ export default {
       }
 
       this.setFilterInput(input.trim());
-      if (this.allSelectedTagsAreActive) {
-        this.setSelectedTags(tags);
-      } else {
-        this.updateSelectedTags(tags);
+
+      if (tags.length) {
+        if (this.allSelectedTagsAreActive) {
+          this.setSelectedTags(tags);
+        } else {
+          this.updateSelectedTags(tags);
+        }
       }
+
       this.resetActiveTags();
     },
     /**
