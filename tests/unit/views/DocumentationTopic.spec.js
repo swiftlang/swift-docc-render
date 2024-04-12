@@ -28,6 +28,7 @@ getSetting.mockReturnValue(false);
 const routeEnterMock = jest.spyOn(dataUtils, 'fetchDataForRouteEnter').mockResolvedValue();
 
 const {
+  CodeTheme,
   Topic,
 } = DocumentationTopic.components;
 
@@ -153,6 +154,14 @@ describe('DocumentationTopic', () => {
 
   afterEach(() => {
     window.renderedTimes = null;
+  });
+
+  it('renders an CodeTheme without `topicData`', () => {
+    wrapper.setData({ topicData: null });
+
+    const codeTheme = wrapper.find(CodeTheme);
+    expect(codeTheme.exists()).toBe(true);
+    expect(codeTheme.isEmpty()).toEqual(true);
   });
 
   it('sets enableNavigator to true if schemaVersion is compatible', async () => {
@@ -539,6 +548,7 @@ describe('DocumentationTopic', () => {
     };
 
     expect(mocks.$bridge.on).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
+    expect(mocks.$bridge.on).toHaveBeenNthCalledWith(2, 'codeColors', expect.any(Function));
     // invoke the callback on the $bridge
     mocks.$bridge.on.mock.calls[0][1](data);
     // assert the data is stored

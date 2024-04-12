@@ -9,35 +9,38 @@
 -->
 
 <template>
-  <DocumentationLayout
-    v-if="topicData"
-    v-bind="baseViewProps"
-  >
-    <template #title>
-      <component
-        :is="rootLink ? 'router-link' : 'span'"
-        :to="rootLink"
-        class="nav-title-link"
+  <CodeTheme>
+    <template>
+      <DocumentationLayout
+        v-if="topicData"
+        v-bind="baseViewProps"
       >
-        {{ $t('documentation.title') }}
-      </component>
+        <template #title>
+          <component
+            :is="rootLink ? 'router-link' : 'span'"
+            :to="rootLink"
+            class="nav-title-link"
+          >
+            {{ $t('documentation.title') }}
+          </component>
+        </template>
+        <template #default>
+          <Topic
+            v-bind="topicProps"
+            :key="topicKey"
+            :objcPath="objcPath"
+            :swiftPath="swiftPath"
+            :isSymbolDeprecated="isSymbolDeprecated"
+            :isSymbolBeta="isSymbolBeta"
+            :languagePaths="languagePaths"
+            :enableOnThisPageNav="enableOnThisPageNav"
+            :enableMinimized="enableMinimized"
+            :hierarchyItems="hierarchyItems"
+          />
+        </template>
+      </DocumentationLayout>
     </template>
-    <template #default>
-      <Topic
-        v-bind="topicProps"
-        :key="topicKey"
-        :objcPath="objcPath"
-        :swiftPath="swiftPath"
-        :isSymbolDeprecated="isSymbolDeprecated"
-        :isSymbolBeta="isSymbolBeta"
-        :languagePaths="languagePaths"
-        :enableOnThisPageNav="enableOnThisPageNav"
-        :enableMinimized="enableMinimized"
-        :hierarchyItems="hierarchyItems"
-      />
-    </template>
-
-  </DocumentationLayout>
+  </CodeTheme>
 </template>
 
 <script>
@@ -57,6 +60,8 @@ import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils';
 import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
 import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
+import CodeTheme from 'docc-render/components/Tutorial/CodeTheme.vue';
+import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 
 const { extractProps } = DocumentationTopic.methods;
 
@@ -66,6 +71,7 @@ export default {
   name: 'DocumentationTopicView',
   constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX },
   components: {
+    CodeTheme,
     Topic: DocumentationTopic,
     DocumentationLayout,
   },
@@ -243,15 +249,21 @@ export default {
       } : null),
   },
   methods: {
+    handleCodeColorsChange(codeColors) {
+      CodeThemeStore.updateCodeColors(codeColors);
+    },
     applyObjcOverrides() {
       this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
     },
   },
   mounted() {
     this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
+    this.$bridge.on('codeColors', this.handleCodeColorsChange);
+    this.$bridge.send({ type: 'requestCodeColors' });
   },
   beforeDestroy() {
     this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
+    this.$bridge.off('codeColors', this.handleCodeColorsChange);
   },
   beforeRouteEnter(to, from, next) {
     // skip fetching, and rely on data being provided via $bridge

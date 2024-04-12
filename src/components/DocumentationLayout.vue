@@ -9,79 +9,75 @@
 -->
 
 <template>
-  <CodeTheme class="doc-topic-view">
-    <template>
-      <Nav
-        v-if="!isTargetIDE"
-        :diffAvailability="diffAvailability"
-        :interfaceLanguage="interfaceLanguage"
-        :objcPath="objcPath"
-        :swiftPath="swiftPath"
-        :displaySidenav="enableNavigator"
-        @toggle-sidenav="handleToggleSidenav"
-      >
-        <template #title>
-          <slot name="title" />
-        </template>
-      </Nav>
-      <AdjustableSidebarWidth
-        v-bind="sidebarProps"
-        v-on="sidebarListeners"
-        class="full-width-container topic-wrapper"
-      >
-        <PortalTarget name="modal-destination" multiple />
-        <template #aside="{ scrollLockID, breakpoint }">
-          <NavigatorDataProvider
-            :interface-language="interfaceLanguage"
-            :technologyUrl="technology ? technology.url : ''"
-            :api-changes-version="store.state.selectedAPIChangesVersion"
-            ref="NavigatorDataProvider"
-          >
-            <template #default="slotProps">
-              <div class="doc-topic-aside">
-                <QuickNavigationModal
-                  v-if="enableQuickNavigation"
-                  :children="slotProps.flatChildren"
-                  :showQuickNavigationModal.sync="showQuickNavigationModal"
-                  :technology="technology ? technology.title : ''"
-                />
-                <transition name="delay-hiding">
-                  <Navigator
-                    v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                    :flatChildren="slotProps.flatChildren"
-                    :parent-topic-identifiers="parentTopicIdentifiers"
-                    :technology="slotProps.technology || technology"
-                    :is-fetching="slotProps.isFetching"
-                    :error-fetching="slotProps.errorFetching"
-                    :api-changes="slotProps.apiChanges"
-                    :references="references"
-                    :navigator-references="slotProps.references"
-                    :scrollLockID="scrollLockID"
-                    :render-filter-on-top="breakpoint !== BreakpointName.large"
-                    @close="handleToggleSidenav(breakpoint)"
-                  >
-                    <template v-if="enableQuickNavigation" #filter>
-                      <QuickNavigationButton @click.native="openQuickNavigationModal" />
-                    </template>
-                    <template #navigator-head>
-                      <slot name="title" />
-                    </template>
-                  </Navigator>
-                </transition>
-              </div>
-            </template>
-          </NavigatorDataProvider>
-        </template>
-        <slot />
-      </AdjustableSidebarWidth>
-    </template>
-  </CodeTheme>
+  <div class="documentation-layout">
+    <Nav
+      v-if="!isTargetIDE"
+      :diffAvailability="diffAvailability"
+      :interfaceLanguage="interfaceLanguage"
+      :objcPath="objcPath"
+      :swiftPath="swiftPath"
+      :displaySidenav="enableNavigator"
+      @toggle-sidenav="handleToggleSidenav"
+    >
+      <template #title>
+        <slot name="title" />
+      </template>
+    </Nav>
+    <AdjustableSidebarWidth
+      v-bind="sidebarProps"
+      v-on="sidebarListeners"
+      class="full-width-container topic-wrapper"
+    >
+      <PortalTarget name="modal-destination" multiple />
+      <template #aside="{ scrollLockID, breakpoint }">
+        <NavigatorDataProvider
+          :interface-language="interfaceLanguage"
+          :technologyUrl="technology ? technology.url : ''"
+          :api-changes-version="store.state.selectedAPIChangesVersion"
+          ref="NavigatorDataProvider"
+        >
+          <template #default="slotProps">
+            <div class="doc-topic-aside">
+              <QuickNavigationModal
+                v-if="enableQuickNavigation"
+                :children="slotProps.flatChildren"
+                :showQuickNavigationModal.sync="showQuickNavigationModal"
+                :technology="technology ? technology.title : ''"
+              />
+              <transition name="delay-hiding">
+                <Navigator
+                  v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
+                  :flatChildren="slotProps.flatChildren"
+                  :parent-topic-identifiers="parentTopicIdentifiers"
+                  :technology="slotProps.technology || technology"
+                  :is-fetching="slotProps.isFetching"
+                  :error-fetching="slotProps.errorFetching"
+                  :api-changes="slotProps.apiChanges"
+                  :references="references"
+                  :navigator-references="slotProps.references"
+                  :scrollLockID="scrollLockID"
+                  :render-filter-on-top="breakpoint !== BreakpointName.large"
+                  @close="handleToggleSidenav(breakpoint)"
+                >
+                  <template v-if="enableQuickNavigation" #filter>
+                    <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                  </template>
+                  <template #navigator-head>
+                    <slot name="title" />
+                  </template>
+                </Navigator>
+              </transition>
+            </div>
+          </template>
+        </NavigatorDataProvider>
+      </template>
+      <slot />
+    </AdjustableSidebarWidth>
+  </div>
 </template>
 
 <script>
 import { PortalTarget } from 'portal-vue';
-import CodeTheme from 'docc-render/components/Tutorial/CodeTheme.vue';
-import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
@@ -104,7 +100,6 @@ export default {
     Navigator,
     AdjustableSidebarWidth,
     NavigatorDataProvider,
-    CodeTheme,
     Nav: DocumentationNav,
     QuickNavigationButton,
     QuickNavigationModal,
@@ -178,9 +173,6 @@ export default {
     },
   },
   methods: {
-    handleCodeColorsChange(codeColors) {
-      CodeThemeStore.updateCodeColors(codeColors);
-    },
     handleToggleSidenav(breakpoint) {
       if (breakpoint === BreakpointName.large) {
         this.toggleLargeSidenav();
@@ -211,15 +203,12 @@ export default {
     },
   },
   mounted() {
-    this.$bridge.on('codeColors', this.handleCodeColorsChange);
-    this.$bridge.send({ type: 'requestCodeColors' });
     if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
   },
   created() {
     this.store.reset();
   },
   beforeDestroy() {
-    this.$bridge.off('codeColors', this.handleCodeColorsChange);
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   inject: {
@@ -253,7 +242,7 @@ export default {
   }
 }
 
-.doc-topic-view {
+.documentation-layout {
   --delay: 1s;
   display: flex;
   flex-flow: column;

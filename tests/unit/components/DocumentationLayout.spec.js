@@ -30,6 +30,8 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
+storage.get.mockImplementation((key, value) => value);
+
 const TechnologyWithChildren = {
   path: '/documentation/foo',
   children: [],
@@ -46,7 +48,6 @@ jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
 getSetting.mockReturnValue(false);
 
 const {
-  CodeTheme,
   Nav,
   QuickNavigationModal,
 } = DocumentationLayout.components;
@@ -137,11 +138,6 @@ describe('DocumentationLayout', () => {
   it('provides a global store', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm._provided.store).toEqual(DocumentationTopicStore);
-  });
-
-  it('renders an CodeTheme', () => {
-    const codeTheme = wrapper.find(CodeTheme);
-    expect(codeTheme.exists()).toBe(true);
   });
 
   it('renders the Navigator and AdjustableSidebarWidth when enabled', async () => {
@@ -465,7 +461,7 @@ describe('DocumentationLayout', () => {
     expect(sidebar.props('hiddenOnLarge')).toBe(false);
   });
 
-  it.only('handles `@toggle-sidenav` on Nav, for `Large` breakpoint', async () => {
+  it('handles `@toggle-sidenav` on Nav, for `Large` breakpoint', async () => {
     // assert that the storage was called to get the navigator closed state from LS
     expect(storage.get).toHaveBeenCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false);
 
