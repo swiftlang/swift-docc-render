@@ -308,6 +308,9 @@ export default {
       next();
     }
   },
+  created() {
+    this.store.reset();
+  },
   watch: {
     topicData() {
       this.$nextTick(() => {
