@@ -13,7 +13,7 @@
     <template>
       <DocumentationLayout
         v-if="topicData"
-        v-bind="baseViewProps"
+        v-bind="documentationLayoutProps"
       >
         <template #title>
           <component
@@ -89,8 +89,13 @@ export default {
       store: DocumentationTopicStore,
     };
   },
+  provide() {
+    return {
+      store: this.store,
+    };
+  },
   computed: {
-    baseViewProps: ({
+    documentationLayoutProps: ({
       topicProps: {
         diffAvailability,
         interfaceLanguage,
@@ -101,6 +106,11 @@ export default {
       parentTopicIdentifiers,
       objcPath,
       swiftPath,
+      store: {
+        state: {
+          selectedAPIChangesVersion,
+        },
+      },
     }) => ({
       diffAvailability,
       interfaceLanguage,
@@ -110,6 +120,7 @@ export default {
       parentTopicIdentifiers,
       objcPath,
       swiftPath,
+      selectedAPIChangesVersion,
     }),
     objcOverrides: ({ topicData }) => {
       const { variantOverrides = [] } = topicData || {};

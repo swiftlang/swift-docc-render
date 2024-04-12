@@ -91,6 +91,7 @@ const propsData = {
   enableNavigator: false,
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
+  selectedAPIChangesVersion: '',
 };
 
 const AdjustableSidebarWidthSmallStub = {
@@ -108,7 +109,7 @@ const stubs = {
   DocumentationLayout,
 };
 
-const provide = { isTargetIDE: false };
+const provide = { isTargetIDE: false, store: DocumentationTopicStore };
 
 const createWrapper = props => shallowMount(DocumentationLayout, {
   propsData,
@@ -135,11 +136,6 @@ describe('DocumentationLayout', () => {
     expect(onPageLoadScrollToFragment.mounted).toHaveBeenCalled();
   });
 
-  it('provides a global store', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.store).toEqual(DocumentationTopicStore);
-  });
-
   it('renders the Navigator and AdjustableSidebarWidth when enabled', async () => {
     wrapper.setProps({
       enableNavigator: true,
@@ -161,7 +157,7 @@ describe('DocumentationLayout', () => {
     expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
       interfaceLanguage: Language.swift.key.url,
       technologyUrl: technology.url,
-      apiChangesVersion: null,
+      apiChangesVersion: '',
     });
     // its rendered by default
     const navigator = wrapper.find(Navigator);
@@ -251,7 +247,7 @@ describe('DocumentationLayout', () => {
   it('does not render QuickNavigation if enableQuickNavigation is true but IDE is being targeted', () => {
     getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
-      provide: { isTargetIDE: true },
+      provide: { ...provide, isTargetIDE: true },
       stubs: {
         ...stubs,
         Nav: DocumentationNav,
@@ -312,9 +308,9 @@ describe('DocumentationLayout', () => {
   });
 
   it('provides the selected api changes, to the NavigatorDataProvider', () => {
-    wrapper.vm.store.state.selectedAPIChangesVersion = 'latest_major';
     wrapper.setProps({
       enableNavigator: true,
+      selectedAPIChangesVersion: 'latest_major',
     });
     const dataProvider = wrapper.find(NavigatorDataProvider);
     expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
@@ -485,7 +481,7 @@ describe('DocumentationLayout', () => {
   });
 
   describe('isTargetIDE', () => {
-    const provideWithIDETarget = { isTargetIDE: true };
+    const provideWithIDETarget = { ...provide, isTargetIDE: true };
 
     it('does not render a `Nav`', () => {
       wrapper = createWrapper({ provide: provideWithIDETarget });

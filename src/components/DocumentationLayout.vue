@@ -33,7 +33,7 @@
         <NavigatorDataProvider
           :interface-language="interfaceLanguage"
           :technologyUrl="technology ? technology.url : ''"
-          :api-changes-version="store.state.selectedAPIChangesVersion"
+          :api-changes-version="selectedAPIChangesVersion"
           ref="NavigatorDataProvider"
         >
           <template #default="slotProps">
@@ -82,7 +82,6 @@ import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigat
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
-import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
@@ -128,6 +127,10 @@ export default {
       type: String,
       required: false,
     },
+    selectedAPIChangesVersion: {
+      type: String,
+      required: false,
+    },
     technology: {
       type: Object,
       require: false,
@@ -143,12 +146,6 @@ export default {
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       BreakpointName,
-      store: DocumentationTopicStore,
-    };
-  },
-  provide() {
-    return {
-      store: this.store,
     };
   },
   computed: {
@@ -204,9 +201,6 @@ export default {
   },
   mounted() {
     if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
-  },
-  created() {
-    this.store.reset();
   },
   beforeDestroy() {
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
