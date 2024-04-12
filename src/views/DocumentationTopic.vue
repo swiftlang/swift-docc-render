@@ -206,11 +206,9 @@ export default {
     // Always disable the navigator for IDE targets. For other targets, detect whether the
     // RenderJSON version is in the required range.
     enableNavigator: ({ isTargetIDE, topicDataDefault }) => !isTargetIDE && (
-      topicDataDefault
-        ? compareVersions(
-          combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
-        ) >= 0
-        : true
+      compareVersions(
+        combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
+      ) >= 0
     ),
     /**
      * Returns the first(root) hierarchy item reference
