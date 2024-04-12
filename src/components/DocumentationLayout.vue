@@ -33,7 +33,7 @@
         <template #aside="{ scrollLockID, breakpoint }">
           <NavigatorDataProvider
             :interface-language="interfaceLanguage"
-            :technologyUrl="technology ? technology.url : null"
+            :technologyUrl="technology ? technology.url : ''"
             :api-changes-version="store.state.selectedAPIChangesVersion"
             ref="NavigatorDataProvider"
           >
@@ -43,7 +43,7 @@
                   v-if="enableQuickNavigation"
                   :children="slotProps.flatChildren"
                   :showQuickNavigationModal.sync="showQuickNavigationModal"
-                  :technology="technology ? technology.title : null"
+                  :technology="technology ? technology.title : ''"
                 />
                 <transition name="delay-hiding">
                   <Navigator
