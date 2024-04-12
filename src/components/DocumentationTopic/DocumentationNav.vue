@@ -176,6 +176,7 @@ $sidenav-icon-padding-size: 5px;
   }
 }
 
+// overwrite the NavBase background color only for documentation pages
 :deep(.nav__background) {
   background-color: var(--color-fill);
   @include nav-is-sticking($nested: true) {
