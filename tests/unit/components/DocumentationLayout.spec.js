@@ -117,6 +117,10 @@ const createWrapper = props => shallowMount(DocumentationLayout, {
   provide,
   mocks,
   ...props,
+  slots: {
+    content: '<div class="content">Content</div>',
+    title: '<div class="title">Title</div>',
+  },
 });
 
 describe('DocumentationLayout', () => {
@@ -130,6 +134,11 @@ describe('DocumentationLayout', () => {
 
   afterEach(() => {
     window.renderedTimes = null;
+  });
+
+  it('renders slot for content', () => {
+    const slot = wrapper.find('.content');
+    expect(slot.text()).toBe('Content');
   });
 
   it('calls the onPageLoadScrollToFragment mixin', () => {

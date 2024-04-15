@@ -23,7 +23,7 @@
           {{ $t('documentation.title') }}
         </component>
       </template>
-      <template #default>
+      <template #content>
         <Topic
           v-bind="topicProps"
           :key="topicKey"

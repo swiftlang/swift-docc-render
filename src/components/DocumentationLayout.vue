@@ -71,7 +71,7 @@
           </template>
         </NavigatorDataProvider>
       </template>
-      <slot />
+      <slot name="content" />
     </AdjustableSidebarWidth>
   </div>
 </template>
