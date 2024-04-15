@@ -397,6 +397,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     height: 100%;
     z-index: 1;
     transition: background-color $nav-bg-color-transition;
+    background-color: var(--color-nav-background, none);
+
+    @include nav-is-sticking($nested: true) {
+      background-color: none;
+    }
 
     // apply a no-transition, for cases where the nav is sticked at page load,
     // removes a nasty flash in the background.
