@@ -10,36 +10,34 @@
 
 <template>
   <CodeTheme>
-    <template>
-      <DocumentationLayout
-        v-if="topicData"
-        v-bind="documentationLayoutProps"
-      >
-        <template #title>
-          <component
-            :is="rootLink ? 'router-link' : 'span'"
-            :to="rootLink"
-            class="nav-title-link"
-          >
-            {{ $t('documentation.title') }}
-          </component>
-        </template>
-        <template #default>
-          <Topic
-            v-bind="topicProps"
-            :key="topicKey"
-            :objcPath="objcPath"
-            :swiftPath="swiftPath"
-            :isSymbolDeprecated="isSymbolDeprecated"
-            :isSymbolBeta="isSymbolBeta"
-            :languagePaths="languagePaths"
-            :enableOnThisPageNav="enableOnThisPageNav"
-            :enableMinimized="enableMinimized"
-            :hierarchyItems="hierarchyItems"
-          />
-        </template>
-      </DocumentationLayout>
-    </template>
+    <DocumentationLayout
+      v-if="topicData"
+      v-bind="documentationLayoutProps"
+    >
+      <template #title>
+        <component
+          :is="rootLink ? 'router-link' : 'span'"
+          :to="rootLink"
+          class="nav-title-link"
+        >
+          {{ $t('documentation.title') }}
+        </component>
+      </template>
+      <template #default>
+        <Topic
+          v-bind="topicProps"
+          :key="topicKey"
+          :objcPath="objcPath"
+          :swiftPath="swiftPath"
+          :isSymbolDeprecated="isSymbolDeprecated"
+          :isSymbolBeta="isSymbolBeta"
+          :languagePaths="languagePaths"
+          :enableOnThisPageNav="enableOnThisPageNav"
+          :enableMinimized="enableMinimized"
+          :hierarchyItems="hierarchyItems"
+        />
+      </template>
+    </DocumentationLayout>
   </CodeTheme>
 </template>
 
