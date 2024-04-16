@@ -20,7 +20,7 @@
       @toggle-sidenav="handleToggleSidenav"
     >
       <template #title>
-        <slot name="title" />
+        <slot name="nav-title" />
       </template>
     </Nav>
     <AdjustableSidebarWidth
@@ -63,7 +63,7 @@
                     <QuickNavigationButton @click.native="openQuickNavigationModal" />
                   </template>
                   <template #navigator-head>
-                    <slot name="title" />
+                    <slot name="nav-title" />
                   </template>
                 </Navigator>
               </transition>
