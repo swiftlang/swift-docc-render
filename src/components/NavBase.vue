@@ -689,7 +689,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 
   a {
-    display: inline-block;
     letter-spacing: inherit;
     line-height: initial;
     margin: 0;
