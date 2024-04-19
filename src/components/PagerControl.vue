@@ -58,6 +58,10 @@ export default {
 
     @include breakpoints-from(large) {
       opacity: 0;
+
+      .medium-content-viewport & {
+        opacity: 0.6;
+      }
     }
   }
 }

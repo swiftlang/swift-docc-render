@@ -43,6 +43,19 @@ describe('Pager', () => {
     expect(indicators.length).toBe(propsData.pages.length);
   });
 
+  it('renders a root container with the class "medium-content-viewport" if contentWidth is smaller than a medium breakpoint', () => {
+    const wrapper = shallowMount(Pager, { propsData });
+    expect(wrapper.classes('medium-content-viewport')).toBe(true);
+
+    wrapper.setData({
+      appState: {
+        contentWidth: 1800,
+      },
+    });
+
+    expect(wrapper.classes('medium-content-viewport')).toBe(false);
+  });
+
   it('renders each page using provided slots', () => {
     const wrapper = shallowMount(Pager, {
       propsData,

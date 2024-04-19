@@ -8,7 +8,11 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="pager" role="region" :aria-roledescription="$t('pager.roledescription')">
+  <div
+    :class="['pager', { 'medium-content-viewport': mediumContentViewport }]"
+    role="region"
+    :aria-roledescription="$t('pager.roledescription')"
+  >
     <template v-if="pages.length === 1">
       <slot name="page" :page="pages[0]" />
     </template>
@@ -66,6 +70,8 @@
 
 <script>
 import PagerControl from 'docc-render/components/PagerControl.vue';
+import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
+import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 
 function waitForScrollIntoView(element) {
   // call `scrollIntoView` to start asynchronously scrollling the off-screen
@@ -173,6 +179,7 @@ export default {
   },
   data: () => ({
     activePageIndex: 0,
+    appState: DocumentationTopicStore.state,
   }),
   computed: {
     indices: ({ keyedPages }) => keyedPages.reduce((obj, item, i) => ({
@@ -185,6 +192,9 @@ export default {
     })),
     hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),
     hasPreviousPage: ({ activePageIndex }) => activePageIndex > 0,
+    contentWidth: ({ appState }) => (appState.contentWidth),
+    mediumContentViewport: ({ contentWidth }) => (
+      contentWidth < BreakpointAttributes.default.medium.maxWidth),
   },
   methods: {
     isActivePage(index) {
@@ -303,6 +313,10 @@ export default {
     display: none;
   }
 
+  .medium-content-viewport & {
+    display: none;
+  }
+
   &.left {
     left: calc(var(--gutter-width) * -1);
   }
@@ -346,6 +360,10 @@ export default {
   @include breakpoint(medium) {
     display: none;
   }
+
+  .medium-content-viewport & {
+    display: none;
+  }
 }
 
 .indicator {
@@ -366,11 +384,15 @@ export default {
 
 .compact-controls {
   display: none;
+  gap: 1em;
+  justify-content: flex-end;
+
+  .medium-content-viewport & {
+    display: flex;
+  }
 
   @include breakpoint(medium) {
     display: flex;
-    gap: 1em;
-    justify-content: flex-end;
   }
 }
 </style>
