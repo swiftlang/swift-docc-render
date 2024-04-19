@@ -303,6 +303,16 @@ describe('NavBase', () => {
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
   });
 
+  it('does not renders a menu chevron toggle if showActions is false', async () => {
+    wrapper = await createWrapper({
+      propsData: {
+        showActions: false,
+      },
+    });
+    const link = wrapper.find('a.nav-menucta');
+    expect(link.exists()).toBe(false);
+  });
+
   it('does not trigger a stick if there is a negative vertical scroll', async () => {
     window.scrollY = -1;
     wrapper = await createWrapper();

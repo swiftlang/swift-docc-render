@@ -58,7 +58,7 @@
             </slot>
           </div>
         </div>
-        <div class="nav-actions">
+        <div v-if="showActions" class="nav-actions">
           <a
             ref="toggle"
             href="#"
@@ -151,6 +151,10 @@ export default {
     isWideFormat: {
       type: Boolean,
       default: false,
+    },
+    showActions: {
+      type: Boolean,
+      default: true,
     },
   },
   mixins: [onIntersect],
