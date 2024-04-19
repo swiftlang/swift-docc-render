@@ -50,7 +50,7 @@
           ref="scroller"
           class="scroller"
           :aria-label="$t('navigator.title')"
-          :items="nodesToRender"
+          :items="navigatorItems"
           :min-item-size="itemSize"
           emit-update
           key-field="uid"
