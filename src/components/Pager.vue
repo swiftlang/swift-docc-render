@@ -73,6 +73,8 @@ import PagerControl from 'docc-render/components/PagerControl.vue';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 
+const SAFE_SPACE_GUTTER = 126;
+
 function waitForScrollIntoView(element) {
   // call `scrollIntoView` to start asynchronously scrollling the off-screen
   // page element into the viewport area (would be sync if the behavior is
@@ -193,8 +195,10 @@ export default {
     hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),
     hasPreviousPage: ({ activePageIndex }) => activePageIndex > 0,
     contentWidth: ({ appState }) => (appState.contentWidth),
-    mediumContentViewport: ({ contentWidth }) => (
-      contentWidth < BreakpointAttributes.default.medium.maxWidth),
+    mediumContentViewport: ({ contentWidth }) => {
+      const breakpoint = BreakpointAttributes.default.medium.maxWidth + SAFE_SPACE_GUTTER;
+      return contentWidth < breakpoint;
+    },
   },
   methods: {
     isActivePage(index) {
