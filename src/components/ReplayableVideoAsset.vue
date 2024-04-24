@@ -103,7 +103,9 @@ export default {
       if (this.videoEnded) return this.$t('video.replay');
       return this.isPlaying ? this.$t('video.pause') : this.$t('video.play');
     },
-    ariaLabelledByContainer: ({ id }) => `${id}-custom-controls ${id}-alt`,
+    ariaLabelledByContainer: ({ id, alt }) => (alt
+      ? `${id}-custom-controls ${id}-alt`
+      : `${id}-custom-controls`),
   },
   data() {
     return {

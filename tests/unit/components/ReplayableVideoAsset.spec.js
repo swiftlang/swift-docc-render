@@ -87,6 +87,16 @@ describe('ReplayableVideoAsset', () => {
     expect(customControlsDescription.text()).toBe('video.custom-controls');
   });
 
+  it('does not render the reference to the alt id in video-replay-container if alt does not exit', () => {
+    const wrapper = mountWithProps({
+      alt: '',
+    });
+    const ariaLabelledByContainer = `${propsData.id}-custom-controls`;
+
+    const container = wrapper.find('.video-replay-container');
+    expect(container.attributes('aria-labelledby')).toBe(ariaLabelledByContainer);
+  });
+
   it('renders a video-replay-container without "aria-labelledby" if showsDefaultControls is true', () => {
     const wrapper = mountWithProps({
       showsDefaultControls: true,
