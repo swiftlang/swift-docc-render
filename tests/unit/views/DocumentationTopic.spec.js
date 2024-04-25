@@ -1086,6 +1086,15 @@ describe('DocumentationTopic', () => {
       .toHaveBeenCalledWith(params.to, params.from, params.next);
   });
 
+  it('forwards `disableHeroBackground`', async () => {
+    wrapper.setProps({ disableHeroBackground: true });
+    wrapper.setData({ topicData });
+
+    await wrapper.vm.$nextTick();
+    const topic = wrapper.find(Topic);
+    expect(topic.props('disableHeroBackground')).toBe(true);
+  });
+
   describe('isTargetIDE', () => {
     const provideWithIDETarget = { isTargetIDE: true };
 
