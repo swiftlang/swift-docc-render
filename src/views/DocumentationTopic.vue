@@ -87,6 +87,7 @@
         <Topic
           v-bind="topicProps"
           :key="topicKey"
+          :disableHeroBackground="disableHeroBackground"
           :objcPath="objcPath"
           :swiftPath="swiftPath"
           :isSymbolDeprecated="isSymbolDeprecated"
@@ -153,6 +154,10 @@ export default {
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
   props: {
+    disableHeroBackground: {
+      type: Boolean,
+      default: false,
+    },
     enableMinimized: {
       type: Boolean,
       default: false,
