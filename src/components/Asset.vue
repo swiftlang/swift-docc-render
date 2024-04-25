@@ -111,7 +111,7 @@ export default {
         posterVariants: this.videoPoster ? this.videoPoster.variants : [],
         deviceFrame: this.deviceFrame,
         alt: this.asset.alt,
-        id: this.identifier.replace('.', ''),
+        id: this.identifier,
       };
     },
     assetListeners() {
