@@ -1086,11 +1086,10 @@ describe('DocumentationTopic', () => {
       .toHaveBeenCalledWith(params.to, params.from, params.next);
   });
 
-  it('forwards `disableHeroBackground`', async () => {
+  it('forwards `disableHeroBackground`', () => {
     wrapper.setProps({ disableHeroBackground: true });
     wrapper.setData({ topicData });
 
-    await wrapper.vm.$nextTick();
     const topic = wrapper.find(Topic);
     expect(topic.props('disableHeroBackground')).toBe(true);
   });
