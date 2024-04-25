@@ -50,7 +50,7 @@
           ref="scroller"
           class="scroller"
           :aria-label="$t('navigator.title')"
-          :items="nodesToRender"
+          :items="navigatorItems"
           :min-item-size="itemSize"
           emit-update
           key-field="uid"
@@ -248,9 +248,9 @@ export default {
   },
   computed: {
     politeAriaLive() {
-      const { hasNodes, nodesToRender } = this;
+      const { hasNodes, navigatorItems } = this;
       if (!hasNodes) return '';
-      return this.$tc(ITEMS_FOUND, nodesToRender.length, { number: nodesToRender.length });
+      return this.$tc(ITEMS_FOUND, navigatorItems.length, { number: navigatorItems.length });
     },
     assertiveAriaLive: ({
       hasNodes, hasFilter, errorFetching,
@@ -288,8 +288,8 @@ export default {
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
     ),
-    activeIndex: ({ activeUID, nodesToRender }) => (
-      nodesToRender.findIndex(node => node.uid === activeUID)
+    activeIndex: ({ activeUID, navigatorItems }) => (
+      navigatorItems.findIndex(node => node.uid === activeUID)
     ),
     /**
      * This generates a map of all the nodes we are allowed to render at a certain time.
@@ -365,8 +365,8 @@ export default {
     apiChangesObject() {
       return this.apiChanges || {};
     },
-    hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
-    totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
+    hasNodes: ({ navigatorItems }) => !!navigatorItems.length,
+    totalItemsToNavigate: ({ navigatorItems }) => navigatorItems.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
   },
   created() {
