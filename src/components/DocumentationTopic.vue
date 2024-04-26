@@ -807,6 +807,10 @@ $space-size: 15px;
   }
 }
 
+.topictitle + * {
+  margin-top: rem(12px);
+}
+
 .minimized-abstract {
   @include font-styles(body);
 }

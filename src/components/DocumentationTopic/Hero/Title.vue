@@ -51,7 +51,6 @@ export default {
   @include font-styles(headline-reduced);
   color: var(--color-documentation-intro-title,
     var(--colors-header-text, var(--color-header-text)));
-  margin-bottom: rem(12px);
 }
 
 small {
