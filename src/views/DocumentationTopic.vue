@@ -154,10 +154,6 @@ export default {
   },
   mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
   props: {
-    disableHeroBackground: {
-      type: Boolean,
-      default: false,
-    },
     enableMinimized: {
       type: Boolean,
       default: false,
@@ -175,6 +171,7 @@ export default {
     };
   },
   computed: {
+    disableHeroBackground: () => false,
     objcOverrides: ({ topicData }) => {
       const { variantOverrides = [] } = topicData || {};
 
