@@ -59,7 +59,7 @@ export default {
     @include breakpoints-from(large) {
       opacity: 0;
 
-      .medium-content-viewport & {
+      .collapsed-controllers & {
         opacity: 0.6;
       }
     }

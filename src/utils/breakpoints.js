@@ -9,6 +9,7 @@
 */
 
 export const BreakpointName = {
+  xlarge: 'xlarge',
   large: 'large',
   medium: 'medium',
   small: 'small',
@@ -21,8 +22,12 @@ export const BreakpointScopes = {
 
 export const BreakpointAttributes = {
   [BreakpointScopes.default]: {
+    [BreakpointName.xlarge]: {
+      minWidth: 1920,
+      contentWidth: 1536,
+    },
     [BreakpointName.large]: {
-      minWidth: 1069,
+      minWidth: 1251,
       contentWidth: 980,
     },
     [BreakpointName.medium]: {

@@ -34,7 +34,7 @@
 <script>
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import Column from 'docc-render/components/ContentNode/Column.vue';
-import Pager from 'docc-render/components/Pager.vue';
+import Pager from 'theme/components/Pager.vue';
 import Row from 'docc-render/components/ContentNode/Row.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import { BreakpointName } from 'docc-render/utils/breakpoints';

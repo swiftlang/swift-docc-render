@@ -9,7 +9,7 @@
 -->
 <template>
   <div
-    :class="['pager', { 'medium-content-viewport': mediumContentViewport }]"
+    :class="['pager', { 'collapsed-controllers': shouldCollapseControllers }]"
     role="region"
     :aria-roledescription="$t('pager.roledescription')"
   >
@@ -73,7 +73,7 @@ import PagerControl from 'docc-render/components/PagerControl.vue';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 
-const SAFE_SPACE_GUTTER = 126;
+const GUTTERS_WIDTH = 174;
 
 function waitForScrollIntoView(element) {
   // call `scrollIntoView` to start asynchronously scrollling the off-screen
@@ -195,9 +195,11 @@ export default {
     hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),
     hasPreviousPage: ({ activePageIndex }) => activePageIndex > 0,
     contentWidth: ({ appState }) => (appState.contentWidth),
-    mediumContentViewport: ({ contentWidth }) => {
-      const breakpoint = BreakpointAttributes.default.medium.maxWidth + SAFE_SPACE_GUTTER;
-      return contentWidth < breakpoint;
+    shouldCollapseControllers: ({ contentWidth }) => {
+      if (window.innerWidth > BreakpointAttributes.default.large.minWidth) {
+        return contentWidth < BreakpointAttributes.default.large.contentWidth + GUTTERS_WIDTH;
+      }
+      return contentWidth < BreakpointAttributes.default.medium.contentWidth + GUTTERS_WIDTH;
     },
   },
   methods: {
@@ -313,11 +315,7 @@ export default {
   width: var(--gutter-width);
   z-index: 42;
 
-  @include breakpoint(medium) {
-    display: none;
-  }
-
-  .medium-content-viewport & {
+  .collapsed-controllers & {
     display: none;
   }
 
@@ -361,11 +359,7 @@ export default {
   justify-content: center;
   margin-top: 1rem;
 
-  @include breakpoint(medium) {
-    display: none;
-  }
-
-  .medium-content-viewport & {
+  .collapsed-controllers & {
     display: none;
   }
 }
@@ -391,11 +385,7 @@ export default {
   gap: 1em;
   justify-content: flex-end;
 
-  .medium-content-viewport & {
-    display: flex;
-  }
-
-  @include breakpoint(medium) {
+  .collapsed-controllers & {
     display: flex;
   }
 }

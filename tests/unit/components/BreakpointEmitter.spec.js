@@ -125,7 +125,7 @@ describe('BreakpointEmitter', () => {
       removeListener,
     }));
     shallowMount(BreakpointEmitter, { scopedSlots }).destroy();
-    expect(removeListener).toBeCalledTimes(3);
+    expect(removeListener).toBeCalledTimes(4);
   });
 
   it('supports scopes', async () => {
