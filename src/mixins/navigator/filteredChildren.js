@@ -23,6 +23,7 @@ export default {
       filterPattern,
       filterChildren,
     }) => (filterChildren(children, selectedTags, apiChanges, filterPattern)),
+    navigatorItems: ({ nodesToRender }) => nodesToRender,
   },
   methods: {
     filterChildren(children, selectedTags, apiChanges, filterPattern) {
