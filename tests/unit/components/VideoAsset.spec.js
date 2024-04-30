@@ -39,7 +39,8 @@ const propsData = {
     { traits: ['dark', '1x'], url: 'https://www.example.com/video~dark.mp4' },
   ],
   alt: 'Text describing this video',
-  id: 'video.mp4',
+  id: 'videomp4',
+  showsDefaultControls: false,
 };
 
 const altTextId = `${propsData.id}-alt`;
@@ -61,21 +62,21 @@ describe('VideoAsset', () => {
   });
 
   it('renders a hidden description with unique id for AX purposes if video provides an alt text', () => {
-    const hiddenDesc = wrapper.find('span.visuallyhidden');
+    const hiddenDesc = wrapper.find('span[hidden=hidden]');
     expect(hiddenDesc.exists()).toBe(true);
     expect(hiddenDesc.attributes('id')).toBe(altTextId);
     expect(hiddenDesc.text()).toBe(`video.description ${propsData.alt}`);
   });
 
-  it('adds a description reference to the `video` with altTextId', () => {
+  it('adds a description reference to the `video` if showsDefaultControls is true', () => {
+    wrapper.setProps({ showsDefaultControls: true });
     const video = wrapper.find('video');
-    expect(video.attributes('aria-describedby')).toBe(altTextId);
+    expect(video.attributes('aria-labelledby')).toBe(altTextId);
   });
 
   it('does not add a description reference to the `video` if alt is not provided', () => {
     wrapper.setProps({ alt: null });
-    const video = wrapper.find('video');
-    expect(video.attributes()).not.toHaveProperty('aria-describedby');
+    expect(wrapper.find('video').attributes()).not.toHaveProperty('aria-labelledby');
   });
 
   it('adds a poster to the `video`, using light by default', async () => {
@@ -156,14 +157,6 @@ describe('VideoAsset', () => {
     });
     const source = wrapper.find('video source');
     expect(source.attributes('controls')).toBe(undefined);
-  });
-
-  it('renders an aria-label to indicate how the user should interact with custom controls when `showsDefaultControls=false`', () => {
-    wrapper.setProps({
-      showControls: false,
-    });
-    const video = wrapper.find('video');
-    expect(video.attributes('aria-label')).toBe('video.custom-controls');
   });
 
   it('forwards `playing`, `pause` and `ended` events', () => {

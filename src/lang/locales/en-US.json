@@ -8,8 +8,8 @@
     "play": "Play",
     "pause": "Pause",
     "watch": "Watch intro video",
-    "description": "Content description of this video: {alt}",
-    "custom-controls": "Custom controls are available below"
+    "description": "Content description: {alt}",
+    "custom-controls": "Video with custom controls."
   },
   "tutorials": {
     "title": "Tutorial | Tutorials",
