@@ -34,6 +34,12 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .topictitle {
+  margin-bottom: rem(12px);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   @include breakpoint(small) {
     margin: 0;
   }
