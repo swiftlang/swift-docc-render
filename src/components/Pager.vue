@@ -9,7 +9,7 @@
 -->
 <template>
   <div
-    :class="['pager', { 'collapsed-controllers': shouldCollapseControllers }]"
+    :class="['pager', { 'with-compact-controls': shouldUseCompactControls }]"
     role="region"
     :aria-roledescription="$t('pager.roledescription')"
   >
@@ -195,7 +195,7 @@ export default {
     hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),
     hasPreviousPage: ({ activePageIndex }) => activePageIndex > 0,
     contentWidth: ({ appState }) => (appState.contentWidth),
-    shouldCollapseControllers: ({ contentWidth }) => {
+    shouldUseCompactControls: ({ contentWidth }) => {
       if (window.innerWidth > BreakpointAttributes.default.large.minWidth) {
         return contentWidth < BreakpointAttributes.default.large.contentWidth + GUTTERS_WIDTH;
       }
@@ -315,7 +315,7 @@ export default {
   width: var(--gutter-width);
   z-index: 42;
 
-  .collapsed-controllers & {
+  .with-compact-controls & {
     display: none;
   }
 
@@ -359,7 +359,7 @@ export default {
   justify-content: center;
   margin-top: 1rem;
 
-  .collapsed-controllers & {
+  .with-compact-controls & {
     display: none;
   }
 }
@@ -385,7 +385,7 @@ export default {
   gap: 1em;
   justify-content: flex-end;
 
-  .collapsed-controllers & {
+  .with-compact-controls & {
     display: flex;
   }
 }

@@ -56,7 +56,7 @@ describe('Pager', () => {
       },
     });
 
-    expect(wrapper.classes('collapsed-controllers')).toBe(false);
+    expect(wrapper.classes('with-compact-controls')).toBe(false);
 
     wrapper.setData({
       appState: {
@@ -64,7 +64,7 @@ describe('Pager', () => {
       },
     });
 
-    expect(wrapper.classes('collapsed-controllers')).toBe(true);
+    expect(wrapper.classes('with-compact-controls')).toBe(true);
   });
 
   it('collapses the controllers if contentWidth is smaller than the medium contentWidth + the gutters width in medium viewport', () => {
@@ -78,7 +78,7 @@ describe('Pager', () => {
       },
     });
 
-    expect(wrapper.classes('collapsed-controllers')).toBe(false);
+    expect(wrapper.classes('with-compact-controls')).toBe(false);
 
     wrapper.setData({
       appState: {
@@ -86,7 +86,7 @@ describe('Pager', () => {
       },
     });
 
-    expect(wrapper.classes('collapsed-controllers')).toBe(true);
+    expect(wrapper.classes('with-compact-controls')).toBe(true);
   });
 
   it('collapses the controllers in small viewports', () => {
@@ -100,7 +100,7 @@ describe('Pager', () => {
       },
     });
 
-    expect(wrapper.classes('collapsed-controllers')).toBe(true);
+    expect(wrapper.classes('with-compact-controls')).toBe(true);
   });
 
   it('renders each page using provided slots', () => {

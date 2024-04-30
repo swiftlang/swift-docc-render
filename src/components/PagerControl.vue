@@ -59,7 +59,7 @@ export default {
     @include breakpoints-from(large) {
       opacity: 0;
 
-      .collapsed-controllers & {
+      .with-compact-controls & {
         opacity: 0.6;
       }
     }
