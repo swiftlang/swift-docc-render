@@ -30,7 +30,7 @@ export default { name: 'QuickNavigationButton' };
   align-items: center;
   justify-content: center;
   width: $icon-size-default;
-  border: 1px solid var(--color-grid);
+  border: $generic-border-style;
   height: 100%;
   border-radius: $small-border-radius;
   transition: background-color .15s;

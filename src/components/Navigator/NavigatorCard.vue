@@ -50,7 +50,7 @@
           ref="scroller"
           class="scroller"
           :aria-label="$t('navigator.title')"
-          :items="nodesToRender"
+          :items="navigatorItems"
           :min-item-size="itemSize"
           emit-update
           key-field="uid"
@@ -248,9 +248,9 @@ export default {
   },
   computed: {
     politeAriaLive() {
-      const { hasNodes, nodesToRender } = this;
+      const { hasNodes, navigatorItems } = this;
       if (!hasNodes) return '';
-      return this.$tc(ITEMS_FOUND, nodesToRender.length, { number: nodesToRender.length });
+      return this.$tc(ITEMS_FOUND, navigatorItems.length, { number: navigatorItems.length });
     },
     assertiveAriaLive: ({
       hasNodes, hasFilter, errorFetching,
@@ -288,8 +288,8 @@ export default {
     activePathMap: ({ activePathChildren }) => (
       Object.fromEntries(activePathChildren.map(({ uid }) => [uid, true]))
     ),
-    activeIndex: ({ activeUID, nodesToRender }) => (
-      nodesToRender.findIndex(node => node.uid === activeUID)
+    activeIndex: ({ activeUID, navigatorItems }) => (
+      navigatorItems.findIndex(node => node.uid === activeUID)
     ),
     /**
      * This generates a map of all the nodes we are allowed to render at a certain time.
@@ -365,8 +365,8 @@ export default {
     apiChangesObject() {
       return this.apiChanges || {};
     },
-    hasNodes: ({ nodesToRender }) => !!nodesToRender.length,
-    totalItemsToNavigate: ({ nodesToRender }) => nodesToRender.length,
+    hasNodes: ({ navigatorItems }) => !!navigatorItems.length,
+    totalItemsToNavigate: ({ navigatorItems }) => navigatorItems.length,
     lastActivePathItem: ({ activePath }) => last(activePath),
   },
   created() {
@@ -977,7 +977,7 @@ export default {
 
 // unfortunately we need to hard-code the filter height
 $filter-height: 71px;
-$filter-height-small: 50px;
+$filter-height-small: 60px;
 $close-icon-size: 19px;
 $technology-title-background: var(--color-fill) !default;
 $technology-title-background-active: var(--color-fill-gray-quaternary) !default;
@@ -1044,7 +1044,7 @@ $navigator-card-vertical-spacing: 8px !default;
 .navigator-filter {
   box-sizing: border-box;
   padding: 15px var(--nav-filter-horizontal-padding);
-  border-top: 1px solid var(--color-grid);
+  border-top: $generic-border-style;
   height: $filter-height;
   display: flex;
   align-items: flex-end;
@@ -1060,7 +1060,7 @@ $navigator-card-vertical-spacing: 8px !default;
   @include breakpoint(medium, nav) {
     --nav-filter-horizontal-padding: 20px;
     border: none;
-    padding-top: 0px;
+    padding-top: 10px;
     padding-bottom: 10px;
     height: $filter-height-small;
   }

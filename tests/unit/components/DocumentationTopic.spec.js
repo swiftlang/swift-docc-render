@@ -13,6 +13,7 @@ import DocumentationTopic from 'docc-render/components/DocumentationTopic.vue';
 import Language from 'docc-render/constants/Language';
 import InlinePlusCircleIcon from 'docc-render/components/Icons/InlinePlusCircleIcon.vue';
 import { TopicTypes } from '@/constants/TopicTypes';
+import SymbolKind from '@/constants/SymbolKind';
 import DocumentationHero from '@/components/DocumentationTopic/Hero/DocumentationHero.vue';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
@@ -366,6 +367,37 @@ describe('DocumentationTopic', () => {
 
     const hierarchy = wrapper.find(Hierarchy);
     expect(hierarchy.exists()).toBe(false);
+  });
+
+  it('only creates a "Mentioned In" section for non-module pages', () => {
+    const mentionSection = {
+      kind: PrimaryContent.constants.SectionKind.mentions,
+      mentions: [
+        'topic://foo',
+        'topic://bar',
+      ],
+    };
+
+    wrapper.setProps({
+      references: hierarchyItemsReferences,
+      role: TopicTypes.symbol,
+      symbolKind: SymbolKind.protocol,
+      primaryContentSections: [
+        mentionSection,
+        foo,
+      ],
+    });
+
+    expect(wrapper.find(PrimaryContent).props()).toHaveProperty('sections', [
+      mentionSection,
+      foo,
+    ]);
+
+    wrapper.setProps({
+      symbolKind: SymbolKind.module,
+    });
+
+    expect(wrapper.find(PrimaryContent).props()).toHaveProperty('sections', [foo]);
   });
 
   it('renders `Hierarchy` without its immediate parent if its within overload group', () => {
