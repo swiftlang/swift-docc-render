@@ -134,6 +134,7 @@
   --color-nav-dark-uiblur-expanded: #{change-color(dark-color(fill-tertiary), $alpha: 0.9)};
   --color-nav-dark-uiblur-stuck: #{change-color(dark-color(fill-tertiary), $alpha: 0.7)};
   --color-nav-dark-root-subhead: #{dark-color(tutorials-teal)};
+  --color-other-decl-button: var(--color-text-background);
   --color-runtime-preview-background: var(--color-fill-tertiary);
   --color-runtime-preview-disabled-text: #{change-color(light-color(figure-gray-secondary), $alpha: 0.6)};
   --color-runtime-preview-text: var(--color-figure-gray-secondary);
@@ -176,7 +177,6 @@
   --color-tabnav-item-border-color: var(--color-fill-gray);
   --color-text: var(--color-figure-gray);
   --color-text-background: var(--color-fill);
-  --color-other-decl-button: var(--color-text-background);
   --color-tutorial-assessments-background: var(--color-fill-secondary);
   --color-tutorial-background: var(--color-fill);
   --color-tutorial-navbar-dropdown-background: var(--color-fill);
