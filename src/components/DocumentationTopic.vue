@@ -735,7 +735,7 @@ $space-size: 15px;
     left: 50%;
     transform: translate(-50%, -50%);
     // cover border line
-    background-color: var(--colors-text-background, var(--color-other-decl-button));
+    background-color: var(--color-other-decl-button);
     padding: 5px 15px;
     color: var(--colors-link, var(--color-link));
     z-index: 1;
