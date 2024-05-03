@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+/* eslint-disable no-useless-escape */
 import { shallowMount } from '@vue/test-utils';
 import Asset from 'docc-render/components/Asset.vue';
 import ImageAsset from 'docc-render/components/ImageAsset.vue';
@@ -20,7 +21,7 @@ const video = {
   alt: 'Text describing this video',
   variants: [
     {
-      url: 'foo.mp4',
+      url: 'foo\.mp4',
       traits: ['2x'],
       size: {
         width: 42,
@@ -63,7 +64,7 @@ describe('Asset', () => {
       alt: 'blah',
       variants: [
         {
-          url: 'foo.png',
+          url: 'foo\.png',
           traits: ['2x'],
           size: {
             width: 42,
@@ -84,7 +85,7 @@ describe('Asset', () => {
       type: 'image',
       variants: [
         {
-          url: 'image.jpg',
+          url: 'image\.jpg',
           traits: ['2x', 'light'],
         },
       ],
@@ -226,7 +227,7 @@ describe('Asset', () => {
       alt: 'blah',
       variants: [
         {
-          url: 'foo.png',
+          url: 'foo\.png',
           traits: ['2x'],
           size: {
             width: 42,
