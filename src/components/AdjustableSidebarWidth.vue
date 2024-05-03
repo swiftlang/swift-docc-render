@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -13,10 +13,11 @@
     class="adjustable-sidebar-width"
     :class="{
       dragging: isDragging,
-      'sidebar-hidden': hiddenOnLarge
+      'sidebar-hidden': !enableNavigator || hiddenOnLarge
     }"
   >
     <div
+      v-if="enableNavigator"
       ref="sidebar"
       class="sidebar"
     >
@@ -46,7 +47,11 @@
     <div class="content" ref="content">
       <slot />
     </div>
-    <BreakpointEmitter :scope="BreakpointScopes.nav" @change="breakpoint = $event" />
+    <BreakpointEmitter
+      v-if="enableNavigator"
+      :scope="BreakpointScopes.nav"
+      @change="breakpoint = $event"
+    />
   </div>
 </template>
 
@@ -110,6 +115,10 @@ export default {
     shownOnMobile: {
       type: Boolean,
       default: false,
+    },
+    enableNavigator: {
+      type: Boolean,
+      default: true,
     },
     hiddenOnLarge: {
       type: Boolean,
