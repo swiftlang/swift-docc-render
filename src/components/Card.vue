@@ -178,6 +178,11 @@ export default {
         box-shadow: none;
         transform: none;
       }
+
+      @include breakpoint(small) {
+        box-shadow: none;
+        transform: none;
+      }
     }
   }
 
