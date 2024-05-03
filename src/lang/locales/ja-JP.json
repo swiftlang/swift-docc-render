@@ -123,6 +123,7 @@
   "api-reference": "APIリファレンス",
   "filter": {
     "title": "フィルタ",
+    "search": "検索",
     "search-symbols": "{technology}でシンボルを検索",
     "suggested-tags": "提案されたタグ | 提案されたタグ",
     "selected-tags": "選択したタグ | 選択したタグ",
