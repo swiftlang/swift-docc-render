@@ -8,7 +8,11 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 <template>
-  <div class="pager" role="region" :aria-roledescription="$t('pager.roledescription')">
+  <div
+    :class="['pager', { 'with-compact-controls': shouldUseCompactControls }]"
+    role="region"
+    :aria-roledescription="$t('pager.roledescription')"
+  >
     <template v-if="pages.length === 1">
       <slot name="page" :page="pages[0]" />
     </template>
@@ -66,6 +70,10 @@
 
 <script>
 import PagerControl from 'docc-render/components/PagerControl.vue';
+import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
+import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+
+const GUTTERS_WIDTH = 174;
 
 function waitForScrollIntoView(element) {
   // call `scrollIntoView` to start asynchronously scrollling the off-screen
@@ -173,6 +181,7 @@ export default {
   },
   data: () => ({
     activePageIndex: 0,
+    appState: DocumentationTopicStore.state,
   }),
   computed: {
     indices: ({ keyedPages }) => keyedPages.reduce((obj, item, i) => ({
@@ -185,6 +194,13 @@ export default {
     })),
     hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),
     hasPreviousPage: ({ activePageIndex }) => activePageIndex > 0,
+    contentWidth: ({ appState }) => (appState.contentWidth),
+    shouldUseCompactControls: ({ contentWidth }) => {
+      if (window.innerWidth > BreakpointAttributes.default.large.minWidth) {
+        return contentWidth < BreakpointAttributes.default.large.contentWidth + GUTTERS_WIDTH;
+      }
+      return contentWidth < BreakpointAttributes.default.medium.contentWidth + GUTTERS_WIDTH;
+    },
   },
   methods: {
     isActivePage(index) {
@@ -299,7 +315,7 @@ export default {
   width: var(--gutter-width);
   z-index: 42;
 
-  @include breakpoint(medium) {
+  .with-compact-controls & {
     display: none;
   }
 
@@ -343,7 +359,7 @@ export default {
   justify-content: center;
   margin-top: 1rem;
 
-  @include breakpoint(medium) {
+  .with-compact-controls & {
     display: none;
   }
 }
@@ -366,11 +382,11 @@ export default {
 
 .compact-controls {
   display: none;
+  gap: 1em;
+  justify-content: flex-end;
 
-  @include breakpoint(medium) {
+  .with-compact-controls & {
     display: flex;
-    gap: 1em;
-    justify-content: flex-end;
   }
 }
 </style>

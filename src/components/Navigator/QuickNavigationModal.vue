@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -25,7 +25,7 @@
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          :placeholder="$t('filter.search-symbols', { technology })"
+          :placeholder="placeholderText"
           focusInputWhenCreated
           focusInputWhenEmpty
           preventBorderStyle
@@ -193,7 +193,7 @@ export default {
     },
     technology: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   computed: {
@@ -222,6 +222,10 @@ export default {
       // Filter repeated matches and return the first 20
       const uniqueMatches = [...new Map(matches.map(match => [match.path, match])).values()];
       return orderSymbolsByPriority(uniqueMatches).slice(0, MAX_RESULTS);
+    },
+    placeholderText() {
+      if (!this.technology) return this.$t('filter.search');
+      return this.$t('filter.search-symbols', { technology: this.technology });
     },
     isVisible: {
       get: ({ showQuickNavigationModal }) => showQuickNavigationModal,

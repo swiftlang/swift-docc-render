@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -9,6 +9,7 @@
 */
 
 export const BreakpointName = {
+  xlarge: 'xlarge',
   large: 'large',
   medium: 'medium',
   small: 'small',
@@ -21,8 +22,12 @@ export const BreakpointScopes = {
 
 export const BreakpointAttributes = {
   [BreakpointScopes.default]: {
+    [BreakpointName.xlarge]: {
+      minWidth: 1920,
+      contentWidth: 1536,
+    },
     [BreakpointName.large]: {
-      minWidth: 1069,
+      minWidth: 1251,
       contentWidth: 980,
     },
     [BreakpointName.medium]: {

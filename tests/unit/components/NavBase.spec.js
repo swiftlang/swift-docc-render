@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -301,6 +301,16 @@ describe('NavBase', () => {
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     link.trigger('click');
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
+  });
+
+  it('does not renders a menu chevron toggle if showActions is false', async () => {
+    wrapper = await createWrapper({
+      propsData: {
+        showActions: false,
+      },
+    });
+    const link = wrapper.find('a.nav-menucta');
+    expect(link.exists()).toBe(false);
   });
 
   it('does not trigger a stick if there is a negative vertical scroll', async () => {

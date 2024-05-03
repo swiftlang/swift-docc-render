@@ -123,6 +123,7 @@
   "api-reference": "API 참조",
   "filter": {
     "title": "필터",
+    "search": "검색",
     "search-symbols": "{technology}에서 기호 찾기",
     "suggested-tags": "권장 태그 | 권장 태그",
     "selected-tags": "선택한 태그 | 선택한 태그",

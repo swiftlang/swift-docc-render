@@ -123,6 +123,7 @@
   "api-reference": "API 参考",
   "filter": {
     "title": "过滤",
+    "search": "搜索",
     "search-symbols": "在 {technology} 搜索符号",
     "suggested-tags": "建议标签",
     "selected-tags": "所选标签",
