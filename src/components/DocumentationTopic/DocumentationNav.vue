@@ -18,6 +18,7 @@
     hasFullWidthBorder
     class="documentation-nav"
     :aria-label="$t('api-reference')"
+    :showActions="hasMenuItems"
   >
     <template #pre-title="{ closeNav, isOpen, currentBreakpoint, className }" v-if="displaySidenav">
       <div :class="className">
@@ -41,10 +42,11 @@
     </template>
     <template #tray="{ closeNav }">
       <NavMenuItems
+        v-if="hasMenuItems"
         class="nav-menu-settings"
       >
         <LanguageToggle
-          v-if="interfaceLanguage && (swiftPath || objcPath)"
+          v-if="hasLanguageToggle"
           :interfaceLanguage="interfaceLanguage"
           :objcPath="objcPath"
           :swiftPath="swiftPath"
@@ -106,6 +108,9 @@ export default {
   computed: {
     baseNavOpenSidenavButtonId: () => baseNavOpenSidenavButtonId,
     BreakpointName: () => BreakpointName,
+    hasLanguageToggle: ({ interfaceLanguage, swiftPath, objcPath }) => (
+      !!(interfaceLanguage && (swiftPath || objcPath))),
+    hasMenuItems: ({ hasLanguageToggle, $slots }) => !!(hasLanguageToggle || $slots['menu-items']),
   },
   methods: {
     async handleSidenavToggle(closeNav, currentBreakpoint) {
@@ -177,6 +182,8 @@ $sidenav-icon-padding-size: 5px;
 }
 
 .documentation-nav {
+  --color-nav-background: var(--color-fill);
+
   :deep() {
     .nav-title {
       @include font-styles(nav-title-large);

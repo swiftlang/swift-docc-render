@@ -27,8 +27,7 @@
         :muted="muted"
         :width="optimalWidth"
         :aria-roledescription="$t('video.title')"
-        :aria-label="!showsDefaultControls ? $t('video.custom-controls') : null"
-        :aria-describedby="alt ? altTextId : null"
+        :aria-labelledby="showsDefaultControls && alt ? altTextId : null"
         playsinline
         @loadedmetadata="setOrientation"
         @playing="$emit('playing')"
@@ -46,7 +45,7 @@
       <span
         v-if="alt"
         :id="altTextId"
-        class="visuallyhidden"
+        hidden
       >
         {{ $t('video.description', { alt }) }}
       </span>

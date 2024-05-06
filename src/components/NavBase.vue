@@ -58,7 +58,7 @@
             </slot>
           </div>
         </div>
-        <div class="nav-actions">
+        <div v-if="showActions" class="nav-actions">
           <a
             ref="toggle"
             href="#"
@@ -151,6 +151,10 @@ export default {
     isWideFormat: {
       type: Boolean,
       default: false,
+    },
+    showActions: {
+      type: Boolean,
+      default: true,
     },
   },
   mixins: [onIntersect],
@@ -397,6 +401,11 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     height: 100%;
     z-index: 1;
     transition: background-color $nav-bg-color-transition;
+    background-color: var(--color-nav-background, none);
+
+    @include nav-is-sticking($nested: true) {
+      background-color: none;
+    }
 
     // apply a no-transition, for cases where the nav is sticked at page load,
     // removes a nasty flash in the background.
@@ -684,7 +693,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 
   a {
-    display: inline-block;
     letter-spacing: inherit;
     line-height: initial;
     margin: 0;

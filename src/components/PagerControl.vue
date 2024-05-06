@@ -58,6 +58,10 @@ export default {
 
     @include breakpoints-from(large) {
       opacity: 0;
+
+      .with-compact-controls & {
+        opacity: 0.6;
+      }
     }
   }
 }

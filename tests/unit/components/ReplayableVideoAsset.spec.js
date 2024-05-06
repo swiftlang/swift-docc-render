@@ -24,7 +24,7 @@ const propsData = {
   posterVariants,
   showsDefaultControls: false,
   alt: 'Text describing this video',
-  id: 'video.mp4',
+  id: 'videomp4',
 };
 describe('ReplayableVideoAsset', () => {
   const mountWithProps = props => shallowMount(ReplayableVideoAsset, {
@@ -71,6 +71,39 @@ describe('ReplayableVideoAsset', () => {
     expect(video.props('id')).toBe(propsData.id);
     expect(video.props('alt')).toBe(propsData.alt);
     expect(wrapper.find('.control-button').exists()).toBe(true);
+  });
+
+  it('renders a video-replay-container as a group with AX aria tags', () => {
+    const wrapper = mountWithProps();
+    const ariaLabelledByContainer = `${propsData.id}-custom-controls ${propsData.id}-alt`;
+
+    const container = wrapper.find('.video-replay-container');
+    expect(container.attributes('role')).toBe('group');
+    expect(container.attributes('aria-labelledby')).toBe(ariaLabelledByContainer);
+
+    const customControlsDescription = wrapper.find(`#${propsData.id}-custom-controls`);
+    expect(customControlsDescription.exists()).toBe(true);
+    expect(customControlsDescription.attributes('hidden')).toBe('hidden');
+    expect(customControlsDescription.text()).toBe('video.custom-controls');
+  });
+
+  it('does not render the reference to the alt id in video-replay-container if alt does not exit', () => {
+    const wrapper = mountWithProps({
+      alt: '',
+    });
+    const ariaLabelledByContainer = `${propsData.id}-custom-controls`;
+
+    const container = wrapper.find('.video-replay-container');
+    expect(container.attributes('aria-labelledby')).toBe(ariaLabelledByContainer);
+  });
+
+  it('renders a video-replay-container without "aria-labelledby" if showsDefaultControls is true', () => {
+    const wrapper = mountWithProps({
+      showsDefaultControls: true,
+    });
+
+    const container = wrapper.find('.video-replay-container');
+    expect(container.attributes()).not.toHaveProperty('aria-labelledby');
   });
 
   it('does not show the `.control-button` if `showsDefaultControls` is `true`', () => {
