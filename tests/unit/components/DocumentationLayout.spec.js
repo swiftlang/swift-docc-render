@@ -92,6 +92,7 @@ const propsData = {
   objcPath: 'documentation/objc',
   swiftPath: 'documentation/swift',
   selectedAPIChangesVersion: '',
+  navigatorFixedWidth: 400,
 };
 
 const AdjustableSidebarWidthSmallStub = {
@@ -157,7 +158,7 @@ describe('DocumentationLayout', () => {
       shownOnMobile: false,
       hiddenOnLarge: false,
       enableNavigator: true,
-      fixedWidth: null,
+      fixedWidth: propsData.navigatorFixedWidth,
     });
     const {
       technology,
