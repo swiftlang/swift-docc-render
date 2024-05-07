@@ -9,81 +9,21 @@
 -->
 
 <template>
-  <CodeTheme class="doc-topic-view">
-    <template v-if="topicData">
-      <Nav
-        v-if="!isTargetIDE"
-        :diffAvailability="topicProps.diffAvailability"
-        :interfaceLanguage="topicProps.interfaceLanguage"
-        :objcPath="objcPath"
-        :swiftPath="swiftPath"
-        :displaySidenav="enableNavigator"
-        @toggle-sidenav="handleToggleSidenav"
-      >
-        <template #title>
-          <component
-            :is="rootLink ? 'router-link' : 'span'"
-            :to="rootLink"
-            class="nav-title-link"
-          >
-            {{ $t('documentation.title') }}
-          </component>
-        </template>
-      </Nav>
-      <component
-        :is="enableNavigator ? 'AdjustableSidebarWidth' : 'StaticContentWidth'"
-        v-bind="sidebarProps"
-        v-on="sidebarListeners"
-        class="full-width-container topic-wrapper"
-      >
-        <PortalTarget name="modal-destination" multiple />
-        <template #aside="{ scrollLockID, breakpoint }">
-          <NavigatorDataProvider
-            :interface-language="topicProps.interfaceLanguage"
-            :technologyUrl="technology.url"
-            :api-changes-version="store.state.selectedAPIChangesVersion"
-            ref="NavigatorDataProvider"
-          >
-            <template #default="slotProps">
-              <div class="doc-topic-aside">
-                <QuickNavigationModal
-                  v-if="enableQuickNavigation"
-                  :children="slotProps.flatChildren"
-                  :showQuickNavigationModal.sync="showQuickNavigationModal"
-                  :technology="technology.title"
-                />
-                <transition name="delay-hiding">
-                  <Navigator
-                    v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                    :flatChildren="slotProps.flatChildren"
-                    :parent-topic-identifiers="parentTopicIdentifiers"
-                    :technology="slotProps.technology || technology"
-                    :is-fetching="slotProps.isFetching"
-                    :error-fetching="slotProps.errorFetching"
-                    :api-changes="slotProps.apiChanges"
-                    :references="topicProps.references"
-                    :navigator-references="slotProps.references"
-                    :scrollLockID="scrollLockID"
-                    :render-filter-on-top="breakpoint !== BreakpointName.large"
-                    @close="handleToggleSidenav(breakpoint)"
-                  >
-                    <template v-if="enableQuickNavigation" #filter>
-                      <QuickNavigationButton @click.native="openQuickNavigationModal" />
-                    </template>
-                    <template #navigator-head>
-                      <component
-                        :is="rootLink ? 'router-link' : 'span'"
-                        :to="rootLink"
-                      >
-                        {{ $t('documentation.title') }}
-                      </component>
-                    </template>
-                  </Navigator>
-                </transition>
-              </div>
-            </template>
-          </NavigatorDataProvider>
-        </template>
+  <CodeTheme>
+    <DocumentationLayout
+      v-if="topicData"
+      v-bind="documentationLayoutProps"
+    >
+      <template #nav-title>
+        <component
+          :is="rootLink ? 'router-link' : 'span'"
+          :to="rootLink"
+          class="nav-title"
+        >
+          {{ $t('documentation.title') }}
+        </component>
+      </template>
+      <template #content>
         <Topic
           v-bind="topicProps"
           :key="topicKey"
@@ -97,62 +37,44 @@
           :enableMinimized="enableMinimized"
           :hierarchyItems="hierarchyItems"
         />
-      </component>
-    </template>
+      </template>
+    </DocumentationLayout>
   </CodeTheme>
 </template>
 
 <script>
 import { apply } from 'docc-render/utils/json-patch';
 import { TopicRole } from 'docc-render/constants/roles';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import {
   clone,
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
-import { PortalTarget } from 'portal-vue';
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
+import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
-import CodeTheme from 'docc-render/components/Tutorial/CodeTheme.vue';
-import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 import Language from 'docc-render/constants/Language';
-import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
-import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
-import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
-import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
-import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
-import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
-import Navigator from 'docc-render/components/Navigator.vue';
-import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
-import StaticContentWidth from 'docc-render/components/DocumentationTopic/StaticContentWidth.vue';
-import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
-import { BreakpointName } from 'docc-render/utils/breakpoints';
-import { storage } from 'docc-render/utils/storage';
-import { getSetting } from 'docc-render/utils/theme-settings';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils';
-
-const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
-const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
+import { compareVersions, combineVersions } from 'docc-render/utils/schema-version-check';
+import communicationBridgeUtils from 'docc-render/mixins/communicationBridgeUtils';
+import CodeTheme from 'docc-render/components/Tutorial/CodeTheme.vue';
+import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
 
 const { extractProps } = DocumentationTopic.methods;
 
+const MIN_RENDER_JSON_VERSION_WITH_INDEX = '0.3.0';
+
 export default {
   name: 'DocumentationTopicView',
-  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX, NAVIGATOR_HIDDEN_ON_LARGE_KEY },
+  constants: { MIN_RENDER_JSON_VERSION_WITH_INDEX },
   components: {
-    Navigator,
-    AdjustableSidebarWidth,
-    StaticContentWidth,
-    NavigatorDataProvider,
-    Topic: DocumentationTopic,
     CodeTheme,
-    Nav: DocumentationNav,
-    QuickNavigationButton,
-    QuickNavigationModal,
-    PortalTarget,
+    Topic: DocumentationTopic,
+    DocumentationLayout,
   },
-  mixins: [communicationBridgeUtils, onPageLoadScrollToFragment, OnThisPageRegistrator],
+  mixins: [OnThisPageRegistrator, communicationBridgeUtils],
   props: {
     enableMinimized: {
       type: Boolean,
@@ -163,15 +85,43 @@ export default {
     return {
       topicDataDefault: null,
       topicDataObjc: null,
-      sidenavVisibleOnMobile: false,
-      sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
-      showQuickNavigationModal: false,
       store: DocumentationTopicStore,
-      BreakpointName,
+    };
+  },
+  provide() {
+    return {
+      store: this.store,
     };
   },
   computed: {
     disableHeroBackground: () => false,
+    documentationLayoutProps: ({
+      topicProps: {
+        diffAvailability,
+        interfaceLanguage,
+        references,
+      },
+      enableNavigator,
+      technology,
+      parentTopicIdentifiers,
+      objcPath,
+      swiftPath,
+      store: {
+        state: {
+          selectedAPIChangesVersion,
+        },
+      },
+    }) => ({
+      diffAvailability,
+      interfaceLanguage,
+      references,
+      enableNavigator,
+      technology,
+      parentTopicIdentifiers,
+      objcPath,
+      swiftPath,
+      selectedAPIChangesVersion,
+    }),
     objcOverrides: ({ topicData }) => {
       const { variantOverrides = [] } = topicData || {};
 
@@ -183,9 +133,6 @@ export default {
       const objcVariant = variantOverrides.find(hasObjcTrait);
       return objcVariant ? objcVariant.patch : null;
     },
-    enableQuickNavigation: ({ isTargetIDE }) => (
-      !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
-    ),
     topicData: {
       get() {
         return this.topicDataObjc ? this.topicDataObjc : this.topicDataDefault;
@@ -269,6 +216,10 @@ export default {
           && platforms.every(platform => platform.deprecatedAt)
         )
       ),
+    enableOnThisPageNav: ({ isTargetIDE }) => (
+      !getSetting(['features', 'docs', 'onThisPageNavigator', 'disable'], false)
+      && !isTargetIDE
+    ),
     // Always disable the navigator for IDE targets. For other targets, detect whether the
     // RenderJSON version is in the required range.
     enableNavigator: ({ isTargetIDE, topicDataDefault }) => !isTargetIDE && (
@@ -276,24 +227,6 @@ export default {
         combineVersions(topicDataDefault.schemaVersion), MIN_RENDER_JSON_VERSION_WITH_INDEX,
       ) >= 0
     ),
-    enableOnThisPageNav: ({ isTargetIDE }) => (
-      !getSetting(['features', 'docs', 'onThisPageNavigator', 'disable'], false)
-      && !isTargetIDE
-    ),
-    sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
-      enableNavigator
-        ? {
-          shownOnMobile: sidenavVisibleOnMobile,
-          hiddenOnLarge: sidenavHiddenOnLarge,
-        }
-        : {}
-    ),
-    sidebarListeners() {
-      return this.enableNavigator ? ({
-        'update:shownOnMobile': this.toggleMobileSidenav,
-        'update:hiddenOnLarge': this.toggleLargeSidenav,
-      }) : {};
-    },
     /**
      * Returns the first(root) hierarchy item reference
      * @return {Object}
@@ -327,51 +260,21 @@ export default {
       } : null),
   },
   methods: {
-    applyObjcOverrides() {
-      this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
-    },
     handleCodeColorsChange(codeColors) {
       CodeThemeStore.updateCodeColors(codeColors);
     },
-    handleToggleSidenav(breakpoint) {
-      if (breakpoint === BreakpointName.large) {
-        this.toggleLargeSidenav();
-      } else {
-        this.toggleMobileSidenav();
-      }
-    },
-    openQuickNavigationModal() {
-      if (this.sidenavVisibleOnMobile) return;
-      this.showQuickNavigationModal = true;
-    },
-    toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
-      this.sidenavHiddenOnLarge = value;
-      storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
-    },
-    toggleMobileSidenav(value = !this.sidenavVisibleOnMobile) {
-      this.sidenavVisibleOnMobile = value;
-    },
-    onQuickNavigationKeydown(event) {
-      // Open the modal only on `/` or `cmd+shift+o` key event
-      if (event.key !== '/' && !(event.key === 'o' && event.shiftKey && event.metaKey)) return;
-      // Prevent modal from opening when the navigator is disabled
-      if (!this.enableNavigator) return;
-      // Prevent modal from opening if the event source element is an input
-      if (event.target.tagName.toLowerCase() === 'input') return;
-      this.openQuickNavigationModal();
-      event.preventDefault();
+    applyObjcOverrides() {
+      this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
     },
   },
   mounted() {
     this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
-    if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
   },
-  provide() {
-    return {
-      store: this.store,
-    };
+  beforeDestroy() {
+    this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
+    this.$bridge.off('codeColors', this.handleCodeColorsChange);
   },
   inject: {
     isTargetIDE: {
@@ -379,11 +282,6 @@ export default {
         return false;
       },
     },
-  },
-  beforeDestroy() {
-    this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
-    this.$bridge.off('codeColors', this.handleCodeColorsChange);
-    if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   beforeRouteEnter(to, from, next) {
     // skip fetching, and rely on data being provided via $bridge
@@ -434,72 +332,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-@import 'docc-render/styles/_core.scss';
-
-:deep() {
-  .generic-modal {
-    overflow-y: overlay;
-  }
-  .modal-fullscreen > .container {
-    background-color: transparent;
-    height: fit-content;
-    flex: auto;
-    margin: rem(160px) 0;
-    max-width: rem(800px);
-    overflow: visible;
-  }
-
-  .navigator-filter .quick-navigation-open {
-    margin-left: var(--nav-filter-horizontal-padding);
-    width: calc(var(--nav-filter-horizontal-padding) * 2);
-  }
-}
-
-.doc-topic-view {
-  --delay: 1s;
-  display: flex;
-  flex-flow: column;
-  background: var(--colors-text-background, var(--color-text-background));
-
-  .delay-hiding-leave-active {
-    // don't hide navigator until delay time has passed
-    transition: display var(--delay);
-  }
-}
-
-.doc-topic-aside {
-  height: 100%;
-  box-sizing: border-box;
-  border-right: $generic-border-style;
-
-  @include breakpoint(medium, nav) {
-    background: var(--color-fill);
-    border-right: none;
-
-    .sidebar-transitioning & {
-      border-right: $generic-border-style;
-    }
-  }
-}
-
-.topic-wrapper {
-  flex: 1 1 auto;
-  width: 100%;
-
-  :root.no-js &:deep(.sidebar) {
-    display: none;
-  }
-}
-
-.full-width-container {
-  @include inTargetWeb {
-    @include breakpoint-full-width-container();
-    @include breakpoints-from(xlarge) {
-      border-left: $generic-border-style;
-      border-right: $generic-border-style;
-      box-sizing: border-box;
-    }
-  }
-}
-</style>

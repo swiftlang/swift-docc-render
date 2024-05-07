@@ -42,6 +42,8 @@ const mocks = {
   },
 };
 
+const menuItems = 'Menu Items';
+
 describe('DocumentationNav', () => {
   let wrapper;
 
@@ -88,6 +90,37 @@ describe('DocumentationNav', () => {
     expect(nav.classes('theme-dark')).toBe(true);
   });
 
+  it('accepts a showActions prop', () => {
+    // it has language toggle but it hasn't slots
+    expect(wrapper.find(NavBase).props()).toHaveProperty('showActions', true);
+
+    wrapper = shallowMount(DocumentationNav, {
+      propsData: {
+        ...propsData,
+        interfaceLanguage: null,
+        swiftPath: null,
+        objcPath: null,
+      },
+      slots: {
+        'menu-items': menuItems,
+      },
+    });
+    // it doesn't have language toggle but it has slots
+    expect(wrapper.find(NavBase).props()).toHaveProperty('showActions', true);
+
+    wrapper = shallowMount(DocumentationNav, {
+      propsData: {
+        ...propsData,
+        interfaceLanguage: null,
+        swiftPath: null,
+        objcPath: null,
+      },
+    });
+
+    // it doesn't have language toggle or sloths
+    expect(wrapper.find(NavBase).props()).toHaveProperty('showActions', false);
+  });
+
   it('accepts a hasNoBorder prop', () => {
     wrapper.setProps({
       hasNoBorder: true,
@@ -111,8 +144,8 @@ describe('DocumentationNav', () => {
 
   it('renders a LanguageToggle', () => {
     // make sure the LanguageToggle is inside the NavMenuItems
-    const menuItems = wrapper.find(NavMenuItems);
-    const toggle = menuItems.find(LanguageToggle);
+    const navMenuItemsComponent = wrapper.find(NavMenuItems);
+    const toggle = navMenuItemsComponent.find(LanguageToggle);
     expect(toggle.exists()).toBe(true);
     expect(toggle.props()).toEqual({
       interfaceLanguage: propsData.interfaceLanguage,
@@ -129,7 +162,6 @@ describe('DocumentationNav', () => {
   });
 
   it('exposes a `menu-items` slot ', () => {
-    const menuItems = 'Menu Items';
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,

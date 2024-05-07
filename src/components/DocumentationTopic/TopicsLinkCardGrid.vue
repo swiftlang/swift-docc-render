@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2022 Apple Inc. and the Swift project authors
+  Copyright (c) 2022-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -34,7 +34,7 @@
 <script>
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 import Column from 'docc-render/components/ContentNode/Column.vue';
-import Pager from 'docc-render/components/Pager.vue';
+import Pager from 'theme/components/Pager.vue';
 import Row from 'docc-render/components/ContentNode/Row.vue';
 import { TopicSectionsStyle } from 'docc-render/constants/TopicSectionsStyle';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
