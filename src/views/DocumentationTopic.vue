@@ -27,6 +27,7 @@
         <Topic
           v-bind="topicProps"
           :key="topicKey"
+          :disableHeroBackground="disableHeroBackground"
           :objcPath="objcPath"
           :swiftPath="swiftPath"
           :isSymbolDeprecated="isSymbolDeprecated"
@@ -93,6 +94,7 @@ export default {
     };
   },
   computed: {
+    disableHeroBackground: () => false,
     documentationLayoutProps: ({
       topicProps: {
         diffAvailability,

@@ -139,6 +139,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    navigatorFixedWidth: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     return {
@@ -152,11 +156,14 @@ export default {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    sidebarProps: ({ sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge }) => (
+    sidebarProps: ({
+      sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge, navigatorFixedWidth,
+    }) => (
       enableNavigator
         ? {
           shownOnMobile: sidenavVisibleOnMobile,
           hiddenOnLarge: sidenavHiddenOnLarge,
+          fixedWidth: navigatorFixedWidth,
         }
         : {
           enableNavigator,
