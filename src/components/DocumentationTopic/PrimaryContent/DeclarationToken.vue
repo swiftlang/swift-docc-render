@@ -41,15 +41,19 @@ export default {
       text,
       tokens,
     } = this;
+
     switch (kind) {
     case TokenKind.text: {
-      const props = { text };
+      const props = { text, highlightDiff: this.highlightDiff };
       return createElement(RawText, { props });
     }
     case TokenKind.typeIdentifier: {
       const props = { identifier: this.identifier };
       return createElement(LinkableToken, {
-        class: 'type-identifier-link',
+        class: {
+          'type-identifier-link': true,
+          'token-highlightDiff': this.highlightDiff,
+        },
         props,
       }, [
         createElement(WordBreak, text),
@@ -59,13 +63,21 @@ export default {
       const { identifier } = this;
       return identifier ? (
         createElement(LinkableToken, {
-          class: 'attribute-link',
+          class: {
+            'attribute-link': true,
+            'token-highlightDiff': this.highlightDiff,
+          },
           props: { identifier },
         }, [
           createElement(WordBreak, text),
         ])
       ) : (
-        createElement(SyntaxToken, { props: { kind, text } })
+        createElement(SyntaxToken, {
+          props: { kind, text },
+          class: {
+            'token-highlightDiff': this.highlightDiff,
+          },
+        })
       );
     }
     case TokenKind.added:
@@ -80,7 +92,12 @@ export default {
         kind,
         text,
       };
-      return createElement(SyntaxToken, { props });
+      return createElement(SyntaxToken, {
+        props,
+        class: {
+          'token-highlightDiff': this.highlightDiff,
+        },
+      });
     }
     }
   },
@@ -99,6 +116,10 @@ export default {
     text: {
       type: String,
       required: false,
+    },
+    highlightDiff: {
+      type: Boolean,
+      default: false,
     },
     /**
      * Used only when rendering `added/removed` tokens.
@@ -151,5 +172,9 @@ export default {
 
 .token-added {
   background-color: var(--color-highlight-green);
+}
+
+.token-highlightDiff {
+  background-color: var(--color-code-line-highlight);
 }
 </style>

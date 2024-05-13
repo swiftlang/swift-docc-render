@@ -198,6 +198,7 @@ export default {
         identifier: token.identifier,
         text: token.text,
         tokens: token.tokens,
+        highlightDiff: token.highlightDiff,
       };
     },
     handleWindowResize() {
