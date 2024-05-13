@@ -218,7 +218,7 @@ export default {
     border-color: var(--color-focus-border-color, var(--color-focus-border-color));
   }
 
-  :not(.selected-declaration) {
+  .source:not(.selected-declaration) {
     background: unset;
   }
 

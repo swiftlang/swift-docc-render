@@ -16,6 +16,10 @@
 export default {
   name: 'RawText',
   render(createElement) {
+    if (this.highlightDiff === true) {
+      return createElement('span', { class: 'token-highlightDiff' }, this.text);
+    }
+
     const {
       _v: createTextNode = str => createElement('span', str),
       text,
@@ -26,6 +30,10 @@ export default {
     text: {
       type: String,
       required: true,
+    },
+    highlightDiff: {
+      type: Boolean,
+      default: false,
     },
   },
 };
