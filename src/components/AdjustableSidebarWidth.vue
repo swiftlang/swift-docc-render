@@ -217,7 +217,6 @@ export default {
       if (this.focusTrapInstance) this.focusTrapInstance.destroy();
     });
 
-    await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.aside);
   },
   watch: {
