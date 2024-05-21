@@ -199,8 +199,7 @@ export default {
     window.addEventListener('keydown', this.onEscapeKeydown);
     window.addEventListener('resize', this.storeWindowSize, { passive: true });
     window.addEventListener('orientationchange', this.storeWindowSize, { passive: true });
-    // make sure the page is fully loaded before storing top offset
-    await this.$nextTick();
+
     this.storeTopOffset();
     if (!(this.topOffset === 0 && window.scrollY === 0)) {
       window.addEventListener('scroll', this.storeTopOffset, { passive: true });
@@ -217,6 +216,7 @@ export default {
       if (this.focusTrapInstance) this.focusTrapInstance.destroy();
     });
 
+    await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.aside);
   },
   watch: {
