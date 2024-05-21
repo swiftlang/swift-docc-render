@@ -180,19 +180,34 @@ describe('App', () => {
     expect(wrapper.find(LocaleSelector).exists()).toBe(false);
   });
 
-  it('renders the `#nav-sticky-anchor` between the header and the content', () => {
+  it('renders the `#nav-sticky-anchor` between the header and loading placeholder', () => {
     const wrapper = createWrapper({
       slots: {
         header: '<div class="header">Footer</div>',
-        default: '<div class="default">Default</div>',
       },
     });
     const header = wrapper.find('.header');
-    const content = wrapper.find('.default');
     const stickyAnchor = wrapper.find(`#${baseNavStickyAnchorId}`);
+    const loadingPlaceholder = wrapper.find(InitialLoadingPlaceholder);
+
     // make sure the anchor is below the header and above the content
     expect(header.element.nextElementSibling).toBe(stickyAnchor.element);
-    expect(stickyAnchor.element.nextElementSibling).toBe(content.element);
+    expect(stickyAnchor.element.nextElementSibling).toBe(loadingPlaceholder.element);
+  });
+
+  it('renders an `InitialLoadingPlaceholder` between the anchor and the content', () => {
+    const wrapper = createWrapper({
+      slots: {
+        default: '<div class="default">Default</div>',
+      },
+    });
+    const stickyAnchor = wrapper.find(`#${baseNavStickyAnchorId}`);
+    const content = wrapper.find('.default');
+    const placeholder = wrapper.find(InitialLoadingPlaceholder);
+    // make sure the anchor is below the header and above the content
+    expect(placeholder.exists()).toBe(true);
+    expect(stickyAnchor.element.nextElementSibling).toBe(placeholder.element);
+    expect(placeholder.element.nextElementSibling).toBe(content.element);
   });
 
   it('exposes a footer slot', () => {
@@ -214,12 +229,6 @@ describe('App', () => {
     const slotContent = wrapper.find('.default');
     expect(slotContent.text()).toBe('Default');
     expect(wrapper.find('router-view-stub').exists()).toBe(false);
-  });
-
-  it('renders an `InitialLoadingPlaceholder`', () => {
-    const wrapper = createWrapper();
-
-    expect(wrapper.find(InitialLoadingPlaceholder).exists()).toBe(true);
   });
 
   it('renders a default `Footer` for non-IDE targets', () => {
