@@ -3,10 +3,13 @@
   "continue-viewing": "日本語で表示を続ける",
   "language": "言語",
   "video": {
+    "title": "ビデオ",
     "replay": "リプレイ",
     "play": "再生",
     "pause": "一時停止",
-    "watch": "概要のビデオを観る"
+    "watch": "概要のビデオを観る",
+    "description": "このビデオコンテンツの説明: {alt}",
+    "custom-controls": "以下のカスタムコントロールを使用できます"
   },
   "tutorials": {
     "title": "チュートリアル | チュートリアル",
@@ -68,6 +71,10 @@
     },
     "view-more": "さらに表示"
   },
+  "declarations": {
+    "hide-other-declarations": "ほかの宣言を非表示",
+    "show-all-declarations": "すべての宣言を表示"
+  },
   "aside-kind": {
     "beta": "ベータ版",
     "experiment": "試験運用版",
@@ -88,6 +95,7 @@
     "close": "閉じる"
   },
   "sections": {
+    "attributes": "Attributes",
     "title": "セクション{number}",
     "on-this-page": "このページの内容",
     "topics": "トピック",
@@ -132,7 +140,14 @@
     "navigate": "シンボルを移動するには、上下左右の矢印キーを押します。",
     "siblings-label": "{total-siblings}個中{number-siblings}個のシンボルが{parent-siblings}の中にあります",
     "parent-label": "{total-siblings}個中{number-siblings}個のシンボルが1個のシンボルを含む{parent-siblings}の中にあります | {total-siblings}個中{number-siblings}個のシンボルが{number-parent}個のシンボルを含む{parent-siblings}の中にあります",
-    "reset-filter": "フィルタをリセット"
+    "reset-filter": "フィルタをリセット",
+    "tags": {
+      "sample-code": "サンプルコード",
+      "tutorials": "チュートリアル",
+      "articles": "記事",
+      "web-service-endpoints": "Webサービスのエンドポイント",
+      "hide-deprecated": "非推奨の項目を非表示"
+    }
   },
   "navigator": {
     "title": "ドキュメントナビゲータ",
@@ -146,9 +161,6 @@
     "state": {
       "loading": "読み込み中",
       "ready": "準備完了"
-    },
-    "tags": {
-      "hide-deprecated": "非推奨の項目を非表示"
     }
   },
   "tab": {
@@ -204,5 +216,19 @@
       "title": "クリックするか「/」を入力すると素早く移動します"
     },
     "preview-unavailable": "プレビューできません"
+  },
+  "mentioned-in": "言及: ",
+  "pager": {
+    "roledescription": "コンテンツスライダー",
+    "page": {
+      "label": "コンテンツページ{index}/{count}"
+    },
+    "control": {
+      "navigate-previous": "前のコンテンツページに移動",
+      "navigate-next": "次のコンテンツページに移動"
+    }
+  },
+  "links-grid": {
+    "label": "リンクのグリッド"
   }
 }

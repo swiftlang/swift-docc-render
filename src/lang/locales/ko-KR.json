@@ -3,10 +3,13 @@
   "continue-viewing": "한국어로 계속 보기",
   "language": "언어",
   "video": {
+    "title": "비디오",
     "replay": "다시 재생",
     "play": "재생",
     "pause": "일시 정지",
-    "watch": "소개 비디오 시청하기"
+    "watch": "소개 비디오 시청하기",
+    "description": "이 비디오의 콘텐츠 설명: {alt}",
+    "custom-controls": "사용자 설정 제어기는 아래에서 사용 가능"
   },
   "tutorials": {
     "title": "튜토리얼 | 튜토리얼",
@@ -68,6 +71,10 @@
     },
     "view-more": "더 보기"
   },
+  "declarations": {
+    "hide-other-declarations": "다른 선언 가리기",
+    "show-all-declarations": "모든 선언 표시하기"
+  },
   "aside-kind": {
     "beta": "베타",
     "experiment": "실험",
@@ -88,6 +95,7 @@
     "close": "닫기"
   },
   "sections": {
+    "attributes": "Attributes",
     "title": "{number}섹션",
     "on-this-page": "이 페이지에서",
     "topics": "주제",
@@ -132,7 +140,14 @@
     "navigate": "기호를 탐색하려면 위쪽 화살표, 아래쪽 화살표, 왼쪽 화살표 또는 오른쪽 화살표를 누르십시오.",
     "siblings-label": "{parent-siblings} 내의 총 {total-siblings}개의 기호 중 {number-siblings}개",
     "parent-label": "한 개의 기호를 포함하는 {parent-siblings} 내의 총 {total-siblings}개의 기호 중 {number-siblings}개 | {number-parent}개의 기호를 포함하는 {parent-siblings} 내의 총 {total-siblings}개의 기호 중 {number-siblings}개",
-    "reset-filter": "필터 재설정"
+    "reset-filter": "필터 재설정",
+    "tags": {
+      "sample-code": "샘플 코드",
+      "tutorials": "튜토리얼",
+      "articles": "문서",
+      "web-service-endpoints": "웹 서비스 엔드포인트",
+      "hide-deprecated": "제거된 항목 가리기"
+    }
   },
   "navigator": {
     "title": "문서 탐색기",
@@ -146,9 +161,6 @@
     "state": {
       "loading": "로드 중",
       "ready": "준비 완료 상태"
-    },
-    "tags": {
-      "hide-deprecated": "제거된 항목 가리기"
     }
   },
   "tab": {
@@ -204,5 +216,19 @@
       "title": "클릭하거나 /를 입력하여 빠르게 이동"
     },
     "preview-unavailable": "미리보기 사용할 수 없음"
+  },
+  "mentioned-in": "다음에서 언급됨",
+  "pager": {
+    "roledescription": "콘텐츠 슬라이더",
+    "page": {
+      "label": "{count} 중 {index}번째 콘텐츠 페이지"
+    },
+    "control": {
+      "navigate-previous": "콘텐츠의 이전 페이지로 이동",
+      "navigate-next": "콘텐츠의 다음 페이지로 이동"
+    }
+  },
+  "links-grid": {
+    "label": "링크의 격자"
   }
 }
