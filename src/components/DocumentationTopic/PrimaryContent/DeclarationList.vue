@@ -10,14 +10,8 @@
 
 <template>
   <div
-    class="declaration-group"
-    :class="classes"
-    ref="apiChangesDiff"
+    class="declaration-list"
   >
-    <p v-if="shouldCaption" class="platforms">
-      <strong>{{ caption }}</strong>
-    </p>
-
     <transition-expand
       v-for="declaration in declarationTokens"
       :key="declaration.identifier"
@@ -27,6 +21,7 @@
         class="declaration-pill"
         :class="{
           'declaration-pill--expanded': hasOtherDeclarations && isExpanded,
+          [changeClasses]: changeType && declaration.identifier === selectedIdentifier ,
         }"
       >
         <component
@@ -34,12 +29,8 @@
           @click="selectDeclaration(declaration.identifier)"
           class="declaration-source-wrapper"
         >
-          <Source
-            :tokens="declaration.tokens"
-            :language="interfaceLanguage"
-            :class="{
-              'selected-declaration': isSelectedDeclaration(declaration.identifier),
-            }"
+          <DeclarationGroup
+            v-bind="getDeclProp(declaration)"
           />
         </component>
       </div>
@@ -48,10 +39,8 @@
 </template>
 
 <script>
-import DeclarationSource from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
-import Language from 'docc-render/constants/Language';
+import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
-import { APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
 import { waitFor } from 'docc-render/utils/loading';
 import { buildUrl } from 'docc-render/utils/url-helper';
 
@@ -59,9 +48,9 @@ import { buildUrl } from 'docc-render/utils/url-helper';
  * Renders a code source with an optional caption.
  */
 export default {
-  name: 'DeclarationGroup',
+  name: 'DeclarationList',
   components: {
-    Source: DeclarationSource,
+    DeclarationGroup,
     TransitionExpand,
   },
   data() {
@@ -69,17 +58,7 @@ export default {
       selectedIdentifier: this.identifier,
     };
   },
-  mixins: [APIChangesMultipleLines],
   inject: {
-    languages: {
-      default: () => new Set(),
-    },
-    interfaceLanguage: {
-      default: () => Language.swift.key.api,
-    },
-    symbolKind: {
-      default: () => undefined,
-    },
     store: {
       default: () => ({
         state: {
@@ -118,6 +97,7 @@ export default {
     },
   },
   computed: {
+    changeClasses: ({ changeType }) => `changed changed-${changeType}`,
     hasOtherDeclarations: ({ declaration }) => declaration.otherDeclarations || null,
     declarationTokens: ({
       declaration,
@@ -140,14 +120,6 @@ export default {
         ...declarations.slice(displayIndex),
       ];
     },
-    classes: ({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) => ({
-      [`declaration-group--changed declaration-group--${changeType}`]: changeType,
-      [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
-    }),
-    caption() {
-      return this.declaration.platforms.join(', ');
-    },
-    isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
     references: ({ store }) => store.state.references,
     isExpanded: {
       get: ({ declListExpanded }) => declListExpanded,
@@ -170,6 +142,18 @@ export default {
       return (!this.isExpanded || decl.identifier === this.identifier)
         ? 'div' : 'button';
     },
+    getDeclProp(decl) {
+      console.log(decl);
+      return decl.identifier === this.identifier
+        ? {
+          declaration: decl,
+          shouldCaption: this.shouldCaption,
+          changeType: this.changeType,
+        } : {
+          declaration: decl,
+          selectedDeclaration: false,
+        };
+    },
     isSelectedDeclaration(identifier) {
       return identifier === this.selectedIdentifier;
     },
@@ -180,25 +164,12 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.platforms {
-  @include font-styles(body-reduced);
-
-  margin-bottom: 0.45rem;
-  margin-top: var(--spacing-stacked-margin-xlarge);
-
-  .changed & {
-    padding-left: $code-source-spacing;
-  }
-
-  &:first-of-type {
-    margin-top: 1rem;
-  }
-}
-
 .declaration-pill--expanded {
   transition-timing-function: linear;
   transition-property: opacity, height;
   $docs-declaration-source-border-width: 1px;
+
+  margin: var(--declaration-code-listing-margin);
 
   .source {
     border-width: $docs-declaration-source-border-width;
@@ -222,10 +193,6 @@ export default {
     background: unset;
   }
 
-  + .declaration-pill--expanded .source {
-    margin: var(--declaration-code-listing-margin);
-  }
-
   &.expand-enter, &.expand-leave-to {
     opacity: 0;
 
@@ -243,17 +210,4 @@ export default {
   }
 }
 
-@include changedStyles {
-  &.declaration-group {
-    background: var(--background, var(--color-code-background));
-  }
-  .source {
-    background: none;
-    border: none;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: $change-icon-occupied-space;
-    padding-left: 0;
-  }
-}
 </style>
