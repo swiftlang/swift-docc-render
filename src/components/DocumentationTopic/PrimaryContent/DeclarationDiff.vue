@@ -12,7 +12,7 @@
   <div class="declaration-diff">
     <div class="declaration-diff-current">
       <div class="declaration-diff-version">Current</div>
-      <DeclarationGroup
+      <DeclarationList
         v-for="(declaration, i) in currentDeclarations"
         :key="i"
         :declaration="declaration"
@@ -22,7 +22,7 @@
     </div>
     <div class="declaration-diff-previous">
       <div class="declaration-diff-version">Previous</div>
-      <DeclarationGroup
+      <DeclarationList
         v-for="(declaration, i) in previousDeclarations"
         :key="i"
         :declaration="declaration"
@@ -34,14 +34,14 @@
 </template>
 
 <script>
-import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
+import DeclarationList from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationList.vue';
 
 /**
  * Renders a diff container around two DeclarationGroup components.
  */
 export default {
   name: 'DeclarationDiff',
-  components: { DeclarationGroup },
+  components: { DeclarationList },
   props: {
     /**
      * The apiChanges object from the store.
