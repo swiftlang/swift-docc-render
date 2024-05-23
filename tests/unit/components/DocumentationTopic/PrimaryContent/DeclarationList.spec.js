@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
+import DeclarationList from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationList.vue';
 import { shallowMount } from '@vue/test-utils';
 import DeclarationSource
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
@@ -79,13 +79,13 @@ const provide = {
   store,
 };
 
-const createWrapper = options => shallowMount(DeclarationGroup, {
+const createWrapper = options => shallowMount(DeclarationList, {
   propsData,
   provide,
   ...options,
 });
 
-describe('DeclarationGroup', () => {
+describe('DeclarationList', () => {
   it('renders a platforms label for each variant', () => {
     const wrapper = createWrapper();
 
@@ -131,9 +131,9 @@ describe('DeclarationGroup', () => {
 
   it('applies the `multipleLinesClass` class if `displaysMultipleLinesAfterAPIChanges` is true', () => {
     const wrapper = shallowMount({
-      ...DeclarationGroup,
+      ...DeclarationList,
       computed: {
-        ...DeclarationGroup.computed,
+        ...DeclarationList.computed,
         displaysMultipleLinesAfterAPIChanges: () => true,
       },
     },
@@ -146,7 +146,7 @@ describe('DeclarationGroup', () => {
   });
 });
 
-describe('DeclarationGroup with otherDeclarations', () => {
+describe('DeclarationList with otherDeclarations', () => {
   let wrapper;
 
   beforeEach(() => {
