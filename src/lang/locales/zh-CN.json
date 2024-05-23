@@ -95,7 +95,6 @@
     "close": "关闭"
   },
   "sections": {
-    "attributes": "Attributes",
     "title": "第 {number} 部分",
     "on-this-page": "在此页面上",
     "topics": "主题",
@@ -131,7 +130,7 @@
   "api-reference": "API 参考",
   "filter": {
     "title": "过滤",
-    "search": "Search",
+    "search": "搜索",
     "search-symbols": "在 {technology} 搜索符号",
     "suggested-tags": "建议标签",
     "selected-tags": "所选标签",
