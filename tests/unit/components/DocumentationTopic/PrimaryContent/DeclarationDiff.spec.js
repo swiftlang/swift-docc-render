@@ -10,7 +10,7 @@
 
 import DeclarationDiff from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
 import { shallowMount } from '@vue/test-utils';
-import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
+import DeclarationList from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationList.vue';
 
 const propsData = {
   changeType: 'modified',
@@ -24,7 +24,7 @@ const propsData = {
 };
 
 describe('DeclarationDiff', () => {
-  it('renders a current and previous DeclarationGroup components', () => {
+  it('renders a current and previous DeclarationList components', () => {
     const wrapper = shallowMount(DeclarationDiff, {
       propsData,
     });
@@ -33,26 +33,26 @@ describe('DeclarationDiff', () => {
     expect(labels.at(0).text()).toEqual('Current');
     expect(labels.at(1).text()).toEqual('Previous');
 
-    const currentGroups = wrapper.find('.declaration-diff-current').findAll(DeclarationGroup);
+    const currentLists = wrapper.find('.declaration-diff-current').findAll(DeclarationList);
 
-    expect(currentGroups).toHaveLength(2);
-    expect(currentGroups.at(0).props()).toEqual({
+    expect(currentLists).toHaveLength(2);
+    expect(currentLists.at(0).props()).toEqual({
       declaration: propsData.changes.declaration.new[0],
       shouldCaption: true,
       changeType: 'modified',
       declListExpanded: false,
     });
-    expect(currentGroups.at(1).props()).toEqual({
+    expect(currentLists.at(1).props()).toEqual({
       declaration: propsData.changes.declaration.new[1],
       shouldCaption: true,
       changeType: 'modified',
       declListExpanded: false,
     });
 
-    const previousGroups = wrapper.find('.declaration-diff-previous').findAll(DeclarationGroup);
+    const previousLists = wrapper.find('.declaration-diff-previous').findAll(DeclarationList);
 
-    expect(previousGroups).toHaveLength(1);
-    expect(previousGroups.at(0).props()).toEqual({
+    expect(previousLists).toHaveLength(1);
+    expect(previousLists.at(0).props()).toEqual({
       declaration: propsData.changes.declaration.previous[0],
       shouldCaption: false, // false because we only have one declaration in the group
       changeType: 'modified',
