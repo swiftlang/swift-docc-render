@@ -130,7 +130,7 @@ export default {
   },
   methods: {
     async selectDeclaration(identifier) {
-      if (identifier === this.identifier) return;
+      if (identifier === this.identifier || !this.isExpanded) return;
       this.selectedIdentifier = identifier;
       await this.$nextTick(); // wait for identifier to update
       this.isExpanded = false; // collapse the list
