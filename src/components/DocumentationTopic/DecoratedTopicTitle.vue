@@ -94,8 +94,4 @@ export default {
     font-size: 1rem;
   }
 }
-
-.decorated-title {
-  @include underline-text;
-}
 </style>
