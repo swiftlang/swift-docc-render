@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -21,7 +21,8 @@
         class="declaration-pill"
         :class="{
           'declaration-pill--expanded': hasOtherDeclarations && isExpanded,
-          [changeClasses]: changeType && declaration.identifier === selectedIdentifier ,
+          [changeClasses]: changeType && declaration.identifier === selectedIdentifier,
+          'selected-declaration': isSelectedDeclaration(declaration.identifier),
         }"
       >
         <component
@@ -143,15 +144,13 @@ export default {
         ? 'div' : 'button';
     },
     getDeclProp(decl) {
-      console.log(decl);
-      return decl.identifier === this.identifier
+      return !this.hasOtherDeclarations || decl.identifier === this.identifier
         ? {
           declaration: decl,
           shouldCaption: this.shouldCaption,
           changeType: this.changeType,
         } : {
           declaration: decl,
-          selectedDeclaration: false,
         };
     },
     isSelectedDeclaration(identifier) {
@@ -167,30 +166,11 @@ export default {
 .declaration-pill--expanded {
   transition-timing-function: linear;
   transition-property: opacity, height;
-  $docs-declaration-source-border-width: 1px;
-
   margin: var(--declaration-code-listing-margin);
-
-  .source {
-    border-width: $docs-declaration-source-border-width;
-
-    // ensure links are not clickable, when expanded
-    :deep(a) {
-      pointer-events: none;
-    }
-  }
 
   > button {
     display: block;
     width: 100%;
-  }
-
-  .selected-declaration {
-    border-color: var(--color-focus-border-color, var(--color-focus-border-color));
-  }
-
-  :not(.selected-declaration) {
-    background: unset;
   }
 
   &.expand-enter, &.expand-leave-to {
@@ -202,12 +182,10 @@ export default {
   }
 }
 
-.source {
-  transition: margin 0.3s linear;
-
-  .platforms + & {
-    margin: 0;
+@include changedStyles {
+  &.selected-declaration {
+    // add back unset background for pills with changes
+    background: var(--background, var(--color-code-background));
   }
 }
-
 </style>

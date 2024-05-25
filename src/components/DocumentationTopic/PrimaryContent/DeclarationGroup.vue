@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -20,9 +20,6 @@
     <Source
       :tokens="declaration.tokens"
       :language="interfaceLanguage"
-      :class="{
-        'selected-declaration': selectedDeclaration,
-      }"
     />
   </div>
 </template>
@@ -73,13 +70,13 @@ export default {
       type: String,
       required: false,
     },
-    selectedDeclaration: {
-      type: Boolean,
-      default: true,
-    }
   },
   computed: {
-    classes: ({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) => ({
+    classes: ({
+      changeType,
+      multipleLinesClass,
+      displaysMultipleLinesAfterAPIChanges,
+    }) => ({
       [`declaration-group--changed declaration-group--${changeType}`]: changeType,
       [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
     }),
@@ -109,10 +106,16 @@ export default {
   }
 }
 
+.source {
+  transition: margin 0.3s linear;
 
+  .platforms + & {
+    margin: 0;
+  }
+}
+
+// only applicable for when other declaration list is expanded
 .declaration-pill--expanded {
-  transition-timing-function: linear;
-  transition-property: opacity, height;
   $docs-declaration-source-border-width: 1px;
 
   .source {
@@ -124,35 +127,23 @@ export default {
     }
   }
 
-  .selected-declaration {
-    border-color: var(--color-focus-border-color, var(--color-focus-border-color));
-  }
-
-  :not(.selected-declaration) {
-    background: unset;
-  }
-
-  &.expand-enter, &.expand-leave-to {
-    opacity: 0;
-
+  &.selected-declaration {
     .source {
-      margin: 0;
+      border-color: var(--color-focus-border-color, var(--color-focus-border-color));
+    }
+  }
+
+  &:not(.selected-declaration) {
+    .source {
+      background: none;
     }
   }
 }
 
-.source {
-  .platforms + & {
-    margin: 0;
-  }
-}
 
 @include changedStyles {
-  &.declaration-group {
-    background: var(--background, var(--color-code-background));
-  }
-
   .source {
+    // background should also be applied over changed icon over whole pill
     background: none;
     border: none;
     margin-top: 0;
