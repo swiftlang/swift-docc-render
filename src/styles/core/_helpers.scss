@@ -33,17 +33,6 @@
 }
 
 ////
-/// Applies size for static cards
-////
-@mixin static-card-size($card-height, $img-height, $details-padding: $details-padding-card) {
-  @include inTargetWeb {
-    --card-height: #{$card-height};
-    --card-details-height: #{$card-height - $img-height - ($details-padding * 2)};
-  }
-  --card-cover-height: #{$img-height};
-}
-
-////
 /// Used to apply the globalish styles that the ".section-content" class
 /// provided on /documentation pages
 ////
