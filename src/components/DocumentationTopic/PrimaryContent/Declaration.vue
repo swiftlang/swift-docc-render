@@ -10,7 +10,7 @@
 
 <template>
   <section class="declaration">
-    <template v-if="hasModifiedChanges">
+    <template v-if="hasModifiedChanges && !isExpanded">
       <DeclarationDiff
         :class="[changeClasses, multipleLinesClass]"
         :changes="declarationChanges"
@@ -18,7 +18,7 @@
       />
     </template>
     <template v-else>
-      <DeclarationGroup
+      <DeclarationList
         v-for="(declaration, i) in declarations"
         :class="changeClasses"
         :key="i"
@@ -45,8 +45,8 @@
 import ConditionalConstraints
   from 'docc-render/components/DocumentationTopic/ConditionalConstraints.vue';
 
-import DeclarationGroup
-  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
+import DeclarationList
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationList.vue';
 import DeclarationDiff
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationDiff.vue';
 import DeclarationSourceLink
@@ -59,7 +59,7 @@ export default {
   name: 'Declaration',
   components: {
     DeclarationDiff,
-    DeclarationGroup,
+    DeclarationList,
     DeclarationSourceLink,
     ConditionalConstraints,
   },

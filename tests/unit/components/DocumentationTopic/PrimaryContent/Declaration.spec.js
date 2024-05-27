@@ -19,7 +19,7 @@ import DeclarationSourceLink
 
 const {
   ConditionalConstraints,
-  DeclarationGroup,
+  DeclarationList,
 } = Declaration.components;
 
 const { ChangeTypes } = Declaration.constants;
@@ -72,14 +72,14 @@ describe('Declaration', () => {
     expect(wrapper.is('section.declaration')).toBe(true);
   });
 
-  it('renders 1 `DeclarationGroup` and 0 labels without multiple declarations', () => {
-    const declarationGroups = wrapper.findAll(DeclarationGroup);
-    expect(declarationGroups).toHaveLength(1);
-    expect(declarationGroups.at(0).props('shouldCaption')).toEqual(false);
+  it('renders 1 `DeclarationList` and 0 labels without multiple declarations', () => {
+    const declarationLists = wrapper.findAll(DeclarationList);
+    expect(declarationLists).toHaveLength(1);
+    expect(declarationLists.at(0).props('shouldCaption')).toEqual(false);
   });
 
-  it('renders a `DeclarationGroup`', () => {
-    const group = wrapper.find(DeclarationGroup);
+  it('renders a `DeclarationList`', () => {
+    const group = wrapper.find(DeclarationList);
     expect(group.exists()).toBe(true);
     expect(group.props('declaration')).toEqual(propsData.declarations[0]);
     expect(group.props()).toHaveProperty('declListExpanded', false);
@@ -155,13 +155,13 @@ describe('Declaration', () => {
 
     wrapper.setProps({ declarations });
 
-    const labels = wrapper.findAll(DeclarationGroup);
+    const labels = wrapper.findAll(DeclarationList);
     expect(labels.length).toBe(declarations.length);
     expect(labels.at(0).props('shouldCaption')).toBe(true);
     expect(labels.at(1).props('shouldCaption')).toBe(true);
   });
 
-  it('renders a `DeclarationDiff` when there are API changes for current and previous', () => {
+  it('renders a `DeclarationDiff` when there are API changes for current and previous and collapsed other declaration list', () => {
     // no DeclarationDiff if no changes
     expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
     // there is no `.changed` class applied by default
@@ -191,9 +191,14 @@ describe('Declaration', () => {
     });
     expect(declarationDiff.classes()).toContain('changed');
     expect(declarationDiff.classes()).toContain('changed-modified');
+
+    wrapper.setProps({
+      declListExpanded: true,
+    });
+    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
   });
 
-  it('renders a `DeclarationGroup` for `added` change type', () => {
+  it('renders a `DeclarationList` for `added` change type', () => {
     const provide = provideFactory({
       [identifier]: {
         change: ChangeTypes.added,
@@ -210,14 +215,14 @@ describe('Declaration', () => {
 
     expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
 
-    const declarationGroup = wrapper.find(DeclarationGroup);
-    expect(declarationGroup.props('changeType')).toBe(ChangeTypes.added);
-    expect(declarationGroup.props('declaration')).toBe(propsData.declarations[0]);
-    expect(declarationGroup.classes()).toContain('changed');
-    expect(declarationGroup.classes()).toContain('changed-added');
+    const declarationList = wrapper.find(DeclarationList);
+    expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
+    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
+    expect(declarationList.classes()).toContain('changed');
+    expect(declarationList.classes()).toContain('changed-added');
   });
 
-  it('renders a `DeclarationGroup` for `deprecated` change type', () => {
+  it('renders a `DeclarationList` for `deprecated` change type', () => {
     const provide = provideFactory({
       [identifier]: {
         change: ChangeTypes.deprecated,
@@ -234,11 +239,11 @@ describe('Declaration', () => {
 
     expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
 
-    const declarationGroup = wrapper.find(DeclarationGroup);
-    expect(declarationGroup.props('changeType')).toBe(ChangeTypes.deprecated);
-    expect(declarationGroup.props('declaration')).toBe(propsData.declarations[0]);
-    expect(declarationGroup.classes()).toContain('changed');
-    expect(declarationGroup.classes()).toContain('changed-deprecated');
+    const declarationList = wrapper.find(DeclarationList);
+    expect(declarationList.props('changeType')).toBe(ChangeTypes.deprecated);
+    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
+    expect(declarationList.classes()).toContain('changed');
+    expect(declarationList.classes()).toContain('changed-deprecated');
   });
 
   it('applies only `added` type change class if no declarations are present in the diff ', () => {
@@ -255,10 +260,10 @@ describe('Declaration', () => {
 
     expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
 
-    const declarationGroup = wrapper.find(DeclarationGroup);
-    expect(declarationGroup.props('changeType')).toBe(ChangeTypes.added);
-    expect(declarationGroup.props('declaration')).toBe(propsData.declarations[0]);
-    expect(declarationGroup.classes()).toContain('changed');
-    expect(declarationGroup.classes()).toContain('changed-added');
+    const declarationList = wrapper.find(DeclarationList);
+    expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
+    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
+    expect(declarationList.classes()).toContain('changed');
+    expect(declarationList.classes()).toContain('changed-added');
   });
 });
