@@ -89,7 +89,7 @@
         :is="refComponent"
         :id="item.uid"
         :class="{ bolded: isBold }"
-        :url="isGroupMarker ? null : (item.path.toLowerCase() || '')"
+        :url="isGroupMarker ? null : (item.path || '')"
         :tabindex="isFocused ? '0' : '-1'"
         :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
         class="leaf-link"
