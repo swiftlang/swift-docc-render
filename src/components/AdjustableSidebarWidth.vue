@@ -70,7 +70,7 @@ import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 export const STORAGE_KEY = 'sidebar';
 
 // the maximum width, after which the full-width content does not grow
-export const MAX_WIDTH = 1921;
+export const MAX_WIDTH = 1521;
 export const ULTRA_WIDE_DEFAULT = 543;
 export const LARGE_DEFAULT_WIDTH = 400;
 
@@ -92,12 +92,12 @@ const calcWidthPercent = (percent, windowWidth = window.innerWidth) => {
 
 export const minWidthResponsivePercents = {
   medium: 30,
-  large: 20,
+  large: 30,
 };
 
 export const maxWidthResponsivePercents = {
   medium: 50,
-  large: 50,
+  large: 40,
 };
 
 const SCROLL_LOCK_ID = 'sidebar-scroll-lock';
