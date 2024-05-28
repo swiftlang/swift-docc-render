@@ -70,7 +70,6 @@ export default {
     }
     case TokenKind.added:
     case TokenKind.removed:
-    case TokenKind.highlightDiff:
       return createElement(ChangedToken, { props: { tokens, kind } });
     case TokenKind.highlightDiff:
       return createElement(Highlighted, {}, (tokens || []).map(token => (
