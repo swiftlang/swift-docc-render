@@ -161,4 +161,10 @@ export default {
     padding-left: 0;
   }
 }
+
+// don't want to highlight any tokens in the currently selected declaration
+.selected-declaration:deep(.highlighted) {
+  background: unset;
+  font-weight: unset;
+}
 </style>
