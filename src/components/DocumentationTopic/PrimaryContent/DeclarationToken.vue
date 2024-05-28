@@ -27,6 +27,7 @@ const TokenKind = {
   string: 'string',
   text: 'text',
   typeIdentifier: 'typeIdentifier',
+  highlightDiff: 'highlightDiff',
   added: 'added',
   removed: 'removed',
 };
@@ -39,19 +40,15 @@ export default {
       text,
       tokens,
     } = this;
-
     switch (kind) {
     case TokenKind.text: {
-      const props = { text, highlightDiff: this.highlightDiff };
+      const props = { text };
       return createElement(RawText, { props });
     }
     case TokenKind.typeIdentifier: {
       const props = { identifier: this.identifier };
       return createElement(LinkableToken, {
-        class: {
-          'type-identifier-link': true,
-          'token-highlightDiff': this.highlightDiff,
-        },
+        class: 'type-identifier-link',
         props,
       }, [
         createElement(WordBreak, text),
@@ -61,37 +58,25 @@ export default {
       const { identifier } = this;
       return identifier ? (
         createElement(LinkableToken, {
-          class: {
-            'attribute-link': true,
-            'token-highlightDiff': this.highlightDiff,
-          },
+          class: 'attribute-link',
           props: { identifier },
         }, [
           createElement(WordBreak, text),
         ])
       ) : (
-        createElement(SyntaxToken, {
-          props: { kind, text },
-          class: {
-            'token-highlightDiff': this.highlightDiff,
-          },
-        })
+        createElement(SyntaxToken, { props: { kind, text } })
       );
     }
     case TokenKind.added:
     case TokenKind.removed:
+    case TokenKind.highlightDiff:
       return createElement(ChangedToken, { props: { tokens, kind } });
     default: {
       const props = {
         kind,
         text,
       };
-      return createElement(SyntaxToken, {
-        props,
-        class: {
-          'token-highlightDiff': this.highlightDiff,
-        },
-      });
+      return createElement(SyntaxToken, { props });
     }
     }
   },
@@ -110,10 +95,6 @@ export default {
     text: {
       type: String,
       required: false,
-    },
-    highlightDiff: {
-      type: Boolean,
-      default: false,
     },
     /**
      * Used only when rendering `added/removed` tokens.
