@@ -52,7 +52,7 @@ const boundingClientSpy = jest.spyOn(navStickyElement, 'getBoundingClientRect')
 
 document.body.appendChild(navStickyElement);
 
-const maxWidth = 500; // 50% of the innerWidth, as per the default maxWidth on large
+const maxWidth = 400; // 40% of the innerWidth, as per the default maxWidth on large
 let slotProps = {};
 
 const createWrapper = opts => shallowMount(AdjustableSidebarWidth, {
@@ -141,9 +141,9 @@ describe('AdjustableSidebarWidth', () => {
     });
 
     it('sets the `width` to the last stored value', () => {
-      storage.get.mockReturnValueOnce(450);
+      storage.get.mockReturnValueOnce(350);
       const wrapper = createWrapper();
-      assertWidth(wrapper, 450);
+      assertWidth(wrapper, 350);
       // assert the storage was called with the key and the default size
       // 350 is half of min and max on Large
       expect(storage.get).toHaveBeenLastCalledWith(STORAGE_KEY, LARGE_DEFAULT_WIDTH);
@@ -158,7 +158,7 @@ describe('AdjustableSidebarWidth', () => {
     it('sets the `width` to the `min` width allowed, if stored value is smaller', () => {
       storage.get.mockReturnValueOnce(100);
       const wrapper = createWrapper();
-      assertWidth(wrapper, 200); // 20% of 1000
+      assertWidth(wrapper, 300); // 30% of 1000
     });
 
     it('sets the `width` to the `ULTRA_WIDE_DEFAULT`, if no stored value, and on a very large monitor', () => {
@@ -311,11 +311,11 @@ describe('AdjustableSidebarWidth', () => {
     window.innerWidth = 500;
     window.dispatchEvent(createEvent('orientationchange'));
     await flushPromises();
-    assertWidth(wrapper, 250); // 50% of 500, on large
+    assertWidth(wrapper, 200); // 40% of 500, on large
     window.innerWidth = 1000;
     window.dispatchEvent(createEvent('orientationchange'));
     await flushPromises();
-    assertWidth(wrapper, 250); // 20% out of 1000, as that is the min percentage
+    assertWidth(wrapper, 300); // 30% out of 1000, as that is the min percentage
   });
 
   it('changes the sidebar width, if outside the min/max on resize', async () => {
@@ -327,11 +327,11 @@ describe('AdjustableSidebarWidth', () => {
     window.innerWidth = 500;
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
-    assertWidth(wrapper, 250); // 50% of 500, on large
+    assertWidth(wrapper, 200); // 40% of 500, on large
     window.innerWidth = 1000;
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
-    assertWidth(wrapper, 250); // 20% out of 1000, as that is the min percentage
+    assertWidth(wrapper, 300); // 30% out of 1000, as that is the min percentage
   });
 
   it('stores the height of screen on orientationchange and resize', async () => {
@@ -370,8 +370,8 @@ describe('AdjustableSidebarWidth', () => {
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.mouse.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toHaveLength(3);
-    expect(wrapper.emitted('width-change')[2]).toEqual([maxWidth]);
+    expect(wrapper.emitted('width-change')).toHaveLength(2);
+    expect(wrapper.emitted('width-change')[1]).toEqual([maxWidth]);
     // assert saved storage
     expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
@@ -408,8 +408,8 @@ describe('AdjustableSidebarWidth', () => {
     // assert drop
     document.dispatchEvent(createEvent(eventsMap.touch.end));
     // assert emit event
-    expect(wrapper.emitted('width-change')).toHaveLength(3);
-    expect(wrapper.emitted('width-change')[2]).toEqual([maxWidth]);
+    expect(wrapper.emitted('width-change')).toHaveLength(2);
+    expect(wrapper.emitted('width-change')[1]).toEqual([maxWidth]);
     // assert saved storage
     expect(storage.set).toHaveBeenLastCalledWith(STORAGE_KEY, maxWidth);
     // assert drag stopped
@@ -450,7 +450,7 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, 960); // wrapper is no wider than 50% of the widest possible, which is 1920
+    assertWidth(wrapper, 608); // wrapper is no wider than 40% of the widest possible, which is 1920
   });
 
   it('prevents dragging below the `minWidth`', () => {
@@ -463,7 +463,7 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
+    assertWidth(wrapper, 300); // wrapper is minimum 20% of the screen (1000px)
   });
 
   it('force closes the nav, if dragging below the forceClose threshold', () => {
@@ -478,7 +478,7 @@ describe('AdjustableSidebarWidth', () => {
     }));
     // assert class
     expect(aside.classes()).toContain('dragging');
-    assertWidth(wrapper, 200); // wrapper is minimum 20% of the screen (1000px)
+    assertWidth(wrapper, 300); // wrapper is minimum 30% of the screen (1000px)
     expect(wrapper.emitted('update:hiddenOnLarge')).toEqual([[true]]);
     // simulate event is handled on parent
     wrapper.setProps({
@@ -488,7 +488,7 @@ describe('AdjustableSidebarWidth', () => {
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       clientX: 350,
     }));
-    assertWidth(wrapper, 250);
+    assertWidth(wrapper, 300);
     expect(wrapper.emitted('update:hiddenOnLarge')).toEqual([[true], [false]]);
     expect(aside.classes()).toContain('is-opening-on-large');
   });
@@ -523,7 +523,7 @@ describe('AdjustableSidebarWidth', () => {
     // assert class
     expect(aside.classes()).toContain('dragging');
     // offset is 100, so we remove it from the clientX, but we add the scrollX.
-    assertWidth(wrapper, 255);
+    assertWidth(wrapper, 300);
     // assert maxWidth
     document.dispatchEvent(createEvent(eventsMap.touch.move, {
       touches: [{
@@ -638,7 +638,7 @@ describe('AdjustableSidebarWidth', () => {
       window.dispatchEvent(createEvent('resize'));
       await flushPromises();
       // assert content changes as well as content width is stored
-      assertWidth(wrapper, 250);
+      assertWidth(wrapper, 200);
       expect(store.state.contentWidth).toBe(99);
     });
   });
