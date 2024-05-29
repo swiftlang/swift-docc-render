@@ -281,7 +281,6 @@ export default {
 
       @include inTargetWeb {
         min-width: 280px;
-        max-width: 300px;
         --card-cover-height: 227px;
       }
       @include inTargetIde {
