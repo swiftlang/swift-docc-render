@@ -152,8 +152,4 @@ export default {
 .token-added {
   background-color: var(--color-highlight-green);
 }
-
-.token-highlightDiff {
-  background-color: var(--color-code-line-highlight);
-}
 </style>
