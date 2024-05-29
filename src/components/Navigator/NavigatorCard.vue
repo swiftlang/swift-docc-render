@@ -36,7 +36,7 @@
           v-if="technology"
           :id="INDEX_ROOT_KEY"
           :url="technologyPath"
-          :class="['technology-title', { 'router-link-exact-active': isSameRoute }]"
+          :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
           @click.alt.native.prevent="toggleAllNodes"
         >
           <h2 class="card-link">
@@ -247,7 +247,7 @@ export default {
     };
   },
   computed: {
-    isSameRoute: ({ technologyPath, $route }) => (
+    isTechnologyRoute: ({ technologyPath, $route }) => (
       technologyPath.toLowerCase() === $route.path.toLowerCase()),
     politeAriaLive() {
       const { hasNodes, navigatorItems } = this;
