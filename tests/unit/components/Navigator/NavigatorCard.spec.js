@@ -189,6 +189,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
     BaseNavigatorCard,
   },
   sync: false,
+  mocks: { $route: { path: defaultProps.technologyPath } },
   attachToDocument: true,
   ...others,
 });
@@ -368,6 +369,14 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.technology-title').find(Badge).props()).toMatchObject({
       variant: 'beta',
     });
+  });
+
+  it('adds the "router-link-exact-active" class for case insensitive version of technologyPath', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      technologyPath: '/documentation/Testkit',
+    });
+    expect(wrapper.find('.technology-title').classes()).toContain('router-link-exact-active');
   });
 
   it('focus the first item if there is no active item', async () => {
