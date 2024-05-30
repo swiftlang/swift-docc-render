@@ -152,12 +152,21 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .card {
+  --margin-link: #{$details-padding-card};
   overflow: hidden;
-  display: block;
+  display: flex;
+  flex-direction: column;
   transition: box-shadow, transform 160ms ease-out;
   will-change: box-shadow, transform;
   backface-visibility: hidden;
-  height: var(--card-height);
+
+  &.large {
+    --margin-link: #{$details-padding-card * 1.5};
+
+    &.floating-style {
+      --margin-link: var(--spacing-stacked-margin-large);
+    }
+  }
 
   &:hover {
     text-decoration: none;
@@ -182,31 +191,31 @@ export default {
   }
 
   &.small {
-    @include static-card-size(408px, 235px);
+    --card-cover-height: 235px;
     @include breakpoint(medium) {
-      @include static-card-size(341px, 163px);
+      --card-cover-height: 163px;
     }
   }
 
   &.large {
-    @include static-card-size(556px, 359px);
+    --card-cover-height: 359px;
     @include breakpoint(medium) {
-      @include static-card-size(420px, 249px);
+      --card-cover-height: 249px;
     }
   }
 
   &.floating-style {
     --color-card-shadow: transparent;
-    --card-height: auto;
-    --card-details-height: auto;
   }
 }
 
 .details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   background-color: var(--color-card-background);
   padding: $details-padding-card;
   position: relative;
-  height: var(--card-details-height);
   @include font-styles(card-content-small);
 
   .large & {
@@ -241,27 +250,21 @@ export default {
 }
 
 .card-content {
+  flex-grow: 1;
   color: var(--color-card-content-text);
   margin-top: $content-margin-card;
 }
 
 .link {
-  bottom: $details-padding-card;
+  margin-top: var(--margin-link);
   display: flex;
   align-items: center;
-  position: absolute;
 
   .link-icon {
     height: 0.6em;
     width: 0.6em;
     // move the icon closer
     margin-left: .3em;
-  }
-
-  .floating-style & {
-    bottom: unset;
-    margin-top: var(--spacing-stacked-margin-large);
-    position: relative;
   }
 }
 
@@ -276,9 +279,6 @@ export default {
     }
 
     &.small, &.large {
-      --card-height: auto;
-      --card-details-height: auto;
-
       @include inTargetWeb {
         min-width: 280px;
         --card-cover-height: 227px;
@@ -288,7 +288,6 @@ export default {
       }
 
       .link {
-        bottom: unset;
         margin-top: 7px;
         position: relative;
       }
