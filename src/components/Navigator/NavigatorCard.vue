@@ -32,18 +32,20 @@
         @keydown.up.exact.capture.prevent="focusPrev"
         @keydown.down.exact.capture.prevent="focusNext"
       >
-        <Reference
-          v-if="technology"
-          :id="INDEX_ROOT_KEY"
-          :url="technologyPath"
-          :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
-          @click.alt.native.prevent="toggleAllNodes"
-        >
-          <h2 class="card-link">
-            {{ technology }}
-          </h2>
-          <Badge v-if="isTechnologyBeta" variant="beta" />
-        </Reference>
+        <slot name="navigator-title">
+          <Reference
+            v-if="technology"
+            :id="INDEX_ROOT_KEY"
+            :url="technologyPath"
+            :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
+            @click.alt.native.prevent="toggleAllNodes"
+          >
+            <h2 class="card-link">
+              {{ technology }}
+            </h2>
+            <Badge v-if="isTechnologyBeta" variant="beta" />
+          </Reference>
+        </slot>
         <DynamicScroller
           v-show="hasNodes"
           :id="scrollLockID"
