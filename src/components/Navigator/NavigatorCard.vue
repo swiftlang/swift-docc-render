@@ -1056,6 +1056,9 @@ $navigator-card-vertical-spacing: 8px !default;
   align-items: flex-end;
 
   .filter-on-top & {
+    // negative margin to bring the filter up
+    // while keeping the height and padding as it is
+    margin-top: calc(#{var(--nav-filter-vertical-padding)} * -1);
     border-top: none;
     align-items: flex-start;
   }
@@ -1065,9 +1068,10 @@ $navigator-card-vertical-spacing: 8px !default;
 
   @include breakpoint(medium, nav) {
     --nav-filter-horizontal-padding: 20px;
+    --nav-filter-vertical-padding: 10px;
     border: none;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: var(--nav-filter-vertical-padding);
+    padding-bottom: var(--nav-filter-vertical-padding);
     height: $filter-height-small;
   }
 
@@ -1095,6 +1099,7 @@ $navigator-card-vertical-spacing: 8px !default;
 
 .scroller {
   height: 100%;
+  margin: 0;
   box-sizing: border-box;
   padding-bottom: calc(var(--top-offset, 0px) + var(--card-vertical-spacing));
   transition: padding-bottom ease-in 0.15s;
