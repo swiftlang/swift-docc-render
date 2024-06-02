@@ -16,6 +16,7 @@
   ><CodeBlock ref="code"><Token
     v-for="(token, i) in formattedTokens"
     :key="i"
+    :class="extraClassesFor(token)"
     v-bind="propsFor(token)" /></CodeBlock></pre>
 </template>
 
@@ -202,6 +203,10 @@ export default {
     },
     handleWindowResize() {
       this.displaysMultipleLines = displaysMultipleLines(this.$refs.declarationGroup);
+    },
+    extraClassesFor(token) {
+      const { highlightDiff: highlighted = false } = token;
+      return { highlighted };
     },
   },
   async mounted() {

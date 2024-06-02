@@ -180,6 +180,11 @@ export default {
       margin: 0;
     }
   }
+
+  :deep(.highlighted) {
+    background: var(--color-syntax-highlighted, mark);
+    font-weight: $font-weight-semibold;
+  }
 }
 
 @include changedStyles {
