@@ -193,6 +193,20 @@ describe('DeclarationSource', () => {
       .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
     expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
   });
+
+  it('adds a "highlighted" class for tokens with the `highlightDiff` flag set', () => {
+    expect(wrapper.findAll('.highlighted').length).toBe(0);
+
+    const tokensWithHighlights = [...propsData.tokens];
+    tokensWithHighlights[0].highlightDiff = true;
+    tokensWithHighlights[2].highlightDiff = true;
+    wrapper.setProps({ tokens: tokensWithHighlights });
+
+    const highlightedTokens = wrapper.findAll('.highlighted');
+    expect(highlightedTokens.length).toBe(2);
+    expect(highlightedTokens.at(0).props('text')).toBe(propsData.tokens[0].text);
+    expect(highlightedTokens.at(1).props('text')).toBe(propsData.tokens[2].text);
+  });
 });
 
 describe('Swift function/initializer formatting', () => {
