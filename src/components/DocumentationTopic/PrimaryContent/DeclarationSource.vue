@@ -33,6 +33,12 @@ const { TokenKind } = DeclarationToken.constants;
 
 const DEFAULT_INDENTATION_WIDTH = 4;
 
+const HighlightKind = {
+  added: 'added',
+  changed: 'changed',
+  removed: 'removed',
+};
+
 export default {
   name: 'DeclarationSource',
   data() {
@@ -42,6 +48,7 @@ export default {
     };
   },
   components: { Token: DeclarationToken, CodeBlock },
+  constants: { HighlightKind },
   props: {
     tokens: {
       type: Array,
@@ -205,8 +212,9 @@ export default {
       this.displaysMultipleLines = displaysMultipleLines(this.$refs.declarationGroup);
     },
     extraClassesFor(token) {
-      const { highlightDiff: highlighted = false } = token;
-      return { highlighted };
+      return {
+        highlighted: token.highlight === HighlightKind.changed,
+      };
     },
   },
   async mounted() {
