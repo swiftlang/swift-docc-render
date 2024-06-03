@@ -237,6 +237,9 @@ export default {
   :deep(.highlighted) {
     background: var(--color-syntax-highlighted, mark);
     font-weight: $font-weight-semibold;
+    transition:
+      background 0.3s linear,
+      font-weight 0.3s linear;
   }
 }
 
