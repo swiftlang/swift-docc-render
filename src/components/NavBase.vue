@@ -676,7 +676,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 .nav-title {
   height: $nav-height;
   @include font-styles(nav-title);
-  cursor: default;
   display: flex;
   align-items: center;
   white-space: nowrap;
