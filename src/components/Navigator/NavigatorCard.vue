@@ -32,12 +32,15 @@
         @keydown.up.exact.capture.prevent="focusPrev"
         @keydown.down.exact.capture.prevent="focusNext"
       >
-        <slot name="navigator-title">
+        <slot name="navigator-title" className="navigator-title">
           <Reference
             v-if="technology"
             :id="INDEX_ROOT_KEY"
             :url="technologyPath"
-            :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
+            :class="[
+              'technology-title navigator-title',
+              { 'router-link-exact-active': isTechnologyRoute }
+            ]"
             @click.alt.native.prevent="toggleAllNodes"
           >
             <h2 class="card-link">
@@ -1015,26 +1018,31 @@ $navigator-card-vertical-spacing: 8px !default;
   }
 }
 
-.technology-title {
+:deep(.navigator-title) {
   @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
   @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
+  white-space: nowrap;
   padding: $navigator-card-vertical-spacing $nav-card-horizontal-spacing;
   padding-left: $nav-card-horizontal-spacing * 2;
+  @include font-styles(label-reduced);
+  font-weight: $font-weight-semibold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.technology-title {
   background: $technology-title-background;
   border-radius: $nano-border-radius;
   display: flex;
-  white-space: nowrap;
+  color: var(--color-text);
+
+  .card-link {
+    font-size: inherit;
+    font-weight: inherit
+  }
 
   @include breakpoint(small, nav) {
     margin-top: 0;
-  }
-
-  .card-link {
-    color: var(--color-text);
-    @include font-styles(label-reduced);
-    font-weight: $font-weight-semibold;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   &.router-link-exact-active {
