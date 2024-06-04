@@ -16,7 +16,7 @@
     >
       <template #nav-title>
         <component
-          :is="rootLink ? 'router-link' : 'span'"
+          :is="rootLink ? 'router-link' : 'h2'"
           :to="rootLink"
           class="nav-title"
         >
@@ -332,3 +332,12 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+@import 'docc-render/styles/_core.scss';
+
+.nav-title {
+  font-size: inherit;
+  font-weight: inherit;
+  flex-grow: 1;
+}
+</style>
