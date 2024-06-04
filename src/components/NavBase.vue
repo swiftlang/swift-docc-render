@@ -668,7 +668,6 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
 
     @include nav-is-wide-format(true) {
       width: 100%;
-      justify-content: center;
     }
   }
 }
