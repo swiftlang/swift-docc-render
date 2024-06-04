@@ -18,6 +18,8 @@ import SyntaxToken
 import LinkableToken
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/LinkableToken.vue';
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import Highlighted
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/Highlighted.vue';
 
 const { TokenKind } = DeclarationToken.constants;
 
@@ -58,6 +60,7 @@ describe('DeclarationToken', () => {
     otherKinds.delete(TokenKind.typeIdentifier);
     otherKinds.delete(TokenKind.removed);
     otherKinds.delete(TokenKind.added);
+    otherKinds.delete(TokenKind.highlightDiff);
 
     otherKinds.forEach((kind) => {
       const propsData = { kind, text: 'foo' };
@@ -124,5 +127,30 @@ describe('DeclarationToken', () => {
     expect(link.contains(WordBreak)).toBe(true);
     expect(link.text()).toBe(propsData.text);
     expect(link.classes()).toContain('attribute-link');
+  });
+
+  it('renders a `Highlighted` for `highlightDiff` tokens', () => {
+    const stubs = { RawText };
+    const propsData = {
+      kind: TokenKind.highlightDiff,
+      tokens: [
+        {
+          kind: TokenKind.text,
+          text: 'foo',
+        },
+        {
+          kind: TokenKind.text,
+          text: 'bar',
+        },
+      ],
+    };
+    const wrapper = mountToken({ propsData, stubs });
+    const highlighted = wrapper.find(Highlighted);
+    expect(highlighted.exists()).toBe(true);
+
+    const textTokens = highlighted.findAll(RawText);
+    expect(textTokens.length).toBe(propsData.tokens.length);
+    expect(textTokens.at(0).props('text')).toBe(propsData.tokens[0].text);
+    expect(textTokens.at(1).props('text')).toBe(propsData.tokens[1].text);
   });
 });
