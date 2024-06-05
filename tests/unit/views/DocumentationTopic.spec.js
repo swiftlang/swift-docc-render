@@ -261,7 +261,7 @@ describe('DocumentationTopic', () => {
 
     wrapper.setData({ topicData });
 
-    const title = wrapper.find('span.nav-title');
+    const title = wrapper.find('h2.nav-title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('documentation.title');
   });
