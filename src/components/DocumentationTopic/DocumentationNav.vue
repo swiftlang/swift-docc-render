@@ -38,7 +38,7 @@
       </div>
     </template>
     <template #default>
-      <slot name="title" />
+      <slot name="title" className="nav-title" />
     </template>
     <template #tray="{ closeNav }">
       <NavMenuItems

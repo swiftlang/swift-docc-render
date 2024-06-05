@@ -14,11 +14,11 @@
       v-if="topicData"
       v-bind="documentationLayoutProps"
     >
-      <template #nav-title>
+      <template #nav-title="{ className }">
         <component
           :is="rootLink ? 'router-link' : 'h2'"
           :to="rootLink"
-          class="nav-title"
+          :class="className"
         >
           {{ $t('documentation.title') }}
         </component>
@@ -332,12 +332,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-@import 'docc-render/styles/_core.scss';
-
-.nav-title {
-  font-size: inherit;
-  font-weight: inherit;
-  flex-grow: 1;
-}
-</style>
