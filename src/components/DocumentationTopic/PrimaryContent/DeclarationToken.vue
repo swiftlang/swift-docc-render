@@ -14,6 +14,7 @@ import ChangedToken from './DeclarationToken/ChangedToken.vue';
 import LinkableToken from './DeclarationToken/LinkableToken.vue';
 import RawText from './DeclarationToken/RawText.vue';
 import SyntaxToken from './DeclarationToken/SyntaxToken.vue';
+import Highlighted from './DeclarationToken/Highlighted.vue';
 
 const TokenKind = {
   attribute: 'attribute',
@@ -27,13 +28,14 @@ const TokenKind = {
   string: 'string',
   text: 'text',
   typeIdentifier: 'typeIdentifier',
+  highlightDiff: 'highlightDiff',
   added: 'added',
   removed: 'removed',
 };
 
 export default {
   name: 'DeclarationToken',
-  render(createElement) {
+  render: function _render(createElement) {
     const {
       kind,
       text,
@@ -69,6 +71,10 @@ export default {
     case TokenKind.added:
     case TokenKind.removed:
       return createElement(ChangedToken, { props: { tokens, kind } });
+    case TokenKind.highlightDiff:
+      return createElement(Highlighted, {}, (tokens || []).map(token => (
+        _render.bind(token)(createElement)
+      )));
     default: {
       const props = {
         kind,

@@ -195,6 +195,15 @@ export default {
   }
 }
 
+// don't highlight tokens in initial declaration until the user has explicitly
+// expanded a list of overloaded declarations — this rule could be simplified
+// in the future if the HTML is restructured to have an expanded state class for
+// the whole list instead of having it on each declaration
+.declaration-pill:not(.declaration-pill--expanded):deep(.highlighted) {
+  background: unset;
+  font-weight: normal;
+}
+
 .declaration-pill--expanded {
   transition-timing-function: linear;
   transition-property: opacity, height;
@@ -218,7 +227,7 @@ export default {
     border-color: var(--color-focus-border-color, var(--color-focus-border-color));
   }
 
-  :not(.selected-declaration) {
+  .source:not(.selected-declaration) {
     background: unset;
   }
 
