@@ -28,7 +28,7 @@
     >
       <template #filter><slot name="filter" /></template>
       <template #navigator-head>
-        <slot name="navigator-head"/>
+        <slot name="navigator-head" className="nav-title"/>
       </template>
     </NavigatorCard>
     <LoadingNavigatorCard
@@ -176,5 +176,11 @@ export default {
     position: static;
     transition: none;
   }
+}
+
+:deep(.nav-title) {
+  font-size: inherit;
+  font-weight: inherit;
+  flex-grow: 1;
 }
 </style>

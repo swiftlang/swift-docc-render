@@ -38,7 +38,7 @@
       </div>
     </template>
     <template #default>
-      <slot name="title" />
+      <slot name="title" className="nav-title" />
     </template>
     <template #tray="{ closeNav }">
       <NavMenuItems
@@ -194,10 +194,7 @@ $sidenav-icon-padding-size: 5px;
 .sidenav-toggle-wrapper {
   display: flex;
   margin-top: 1px;
-
-  @include breakpoints-from(large, nav) {
-    margin-right: $nav-padding / 2;
-  }
+  margin-right: $nav-padding / 2;
 
   // This is a hack to enforce the toggle to be visible when in breakpoint,
   // even if already toggled off on desktop. Conditionally checking the current breakpoint,
