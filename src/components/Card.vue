@@ -172,6 +172,10 @@ export default {
 
     &:hover {
       transform: scale(1.007);
+
+      @media (prefers-reduced-motion: reduce) {
+        transform: none;
+      }
     }
   }
 
