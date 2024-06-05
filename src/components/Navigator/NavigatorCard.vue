@@ -32,13 +32,14 @@
         @keydown.up.exact.capture.prevent="focusPrev"
         @keydown.down.exact.capture.prevent="focusNext"
       >
-        <slot name="navigator-title" className="navigator-title">
+        <slot name="navigator-title" :className="NAVIGATOR_TITLE">
           <Reference
             v-if="technology"
             :id="INDEX_ROOT_KEY"
             :url="technologyPath"
             :class="[
-              'technology-title navigator-title',
+              'technology-title',
+              NAVIGATOR_TITLE,
               { 'router-link-exact-active': isTechnologyRoute }
             ]"
             @click.alt.native.prevent="toggleAllNodes"
@@ -159,6 +160,7 @@ const NO_RESULTS = 'navigator.no-results';
 const NO_CHILDREN = 'navigator.no-children';
 const ERROR_FETCHING = 'navigator.error-fetching';
 const ITEMS_FOUND = 'navigator.items-found';
+const NAVIGATOR_TITLE = 'navigator-title';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -249,6 +251,7 @@ export default {
       lastFocusTarget: null,
       allNodesToggled: false,
       INDEX_ROOT_KEY,
+      NAVIGATOR_TITLE,
     };
   },
   computed: {
