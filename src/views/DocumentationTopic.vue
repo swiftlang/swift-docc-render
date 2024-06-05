@@ -14,11 +14,11 @@
       v-if="topicData"
       v-bind="documentationLayoutProps"
     >
-      <template #nav-title>
+      <template #nav-title="{ className }">
         <component
-          :is="rootLink ? 'router-link' : 'span'"
+          :is="rootLink ? 'router-link' : 'h2'"
           :to="rootLink"
-          class="nav-title"
+          :class="className"
         >
           {{ $t('documentation.title') }}
         </component>
