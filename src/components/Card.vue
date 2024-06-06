@@ -180,11 +180,9 @@ export default {
     border-radius: $big-border-radius;
 
     &:hover {
-      box-shadow: 0 5px 10px var(--color-card-shadow);
       transform: scale(1.007);
 
       @media (prefers-reduced-motion: reduce) {
-        box-shadow: none;
         transform: none;
       }
     }
