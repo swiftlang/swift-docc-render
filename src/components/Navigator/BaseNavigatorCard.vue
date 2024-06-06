@@ -121,6 +121,7 @@ $close-icon-padding: 5px;
 }
 
 .close-card {
+  margin: 0;
 
   .close-icon {
     width: $close-icon-size;

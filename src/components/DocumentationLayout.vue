@@ -19,8 +19,8 @@
       :displaySidenav="enableNavigator"
       @toggle-sidenav="handleToggleSidenav"
     >
-      <template #title>
-        <slot name="nav-title" />
+      <template #title="{ className }">
+        <slot name="nav-title" :className="className" />
       </template>
     </Nav>
     <AdjustableSidebarWidth
@@ -62,8 +62,8 @@
                   <template v-if="enableQuickNavigation" #filter>
                     <QuickNavigationButton @click.native="openQuickNavigationModal" />
                   </template>
-                  <template #navigator-head>
-                    <slot name="nav-title" />
+                  <template #navigator-head="{ className }">
+                    <slot name="nav-title" :className="className" />
                   </template>
                 </Navigator>
               </transition>

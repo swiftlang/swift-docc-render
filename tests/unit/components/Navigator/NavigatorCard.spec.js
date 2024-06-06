@@ -189,6 +189,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
     BaseNavigatorCard,
   },
   sync: false,
+  mocks: { $route: { path: defaultProps.technologyPath } },
   attachToDocument: true,
   ...others,
 });
@@ -368,6 +369,14 @@ describe('NavigatorCard', () => {
     expect(wrapper.find('.technology-title').find(Badge).props()).toMatchObject({
       variant: 'beta',
     });
+  });
+
+  it('adds the "router-link-exact-active" class for case insensitive version of technologyPath', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      technologyPath: '/documentation/Testkit',
+    });
+    expect(wrapper.find('.technology-title').classes()).toContain('router-link-exact-active');
   });
 
   it('focus the first item if there is no active item', async () => {
@@ -2355,7 +2364,9 @@ describe('NavigatorCard', () => {
 
       const fourthItem = items.at(3);
       setOffsetParent(fourthItem.element, { offsetHeight: SIDEBAR_ITEM_SIZE });
-      fourthItem.trigger('focusin');
+      fourthItem.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       await flushPromises();
       expect(scrollBySpy).toHaveBeenCalledTimes(1);
       expect(scrollBySpy).toHaveBeenCalledWith({
@@ -2366,7 +2377,9 @@ describe('NavigatorCard', () => {
       getChildPositionInScroller.mockReturnValueOnce(-1);
       const firstItem = items.at(0);
       setOffsetParent(firstItem.element, { offsetHeight: SIDEBAR_ITEM_SIZE + 50 });
-      firstItem.trigger('focusin');
+      firstItem.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       await flushPromises();
       expect(scrollBySpy).toHaveBeenCalledTimes(2);
       expect(scrollBySpy).toHaveBeenCalledWith({
@@ -2382,7 +2395,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
-      button.trigger('focusin');
+      button.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
     });
@@ -2392,7 +2407,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
-      button.trigger('focusin');
+      button.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       await wrapper.vm.$nextTick();
       button.trigger('focusout', {
         relatedTarget: document.body,
@@ -2405,7 +2422,9 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
-      button.trigger('focusin');
+      button.trigger('focusin', {
+        relatedTarget: null,
+      });
       await wrapper.vm.$nextTick();
       button.trigger('focusout', {
         relatedTarget: null,
@@ -2430,7 +2449,9 @@ describe('NavigatorCard', () => {
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
-      button.trigger('focusin');
+      button.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       const focusSpy = jest.spyOn(button.element, 'focus');
       await flushPromises();
       // now make the component go away
@@ -2455,7 +2476,9 @@ describe('NavigatorCard', () => {
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
-      button.trigger('focusin');
+      button.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       button.element.focus();
       // move the spy below the manual focus, so we dont count it
       const focusSpy = jest.spyOn(button.element, 'focus');
@@ -2475,7 +2498,9 @@ describe('NavigatorCard', () => {
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
       const focusSpy = jest.spyOn(button.element, 'focus');
-      button.trigger('focusin');
+      button.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       await flushPromises();
       // trigger an update
       wrapper.find(DynamicScroller).vm.$emit('update');
@@ -2491,7 +2516,9 @@ describe('NavigatorCard', () => {
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.find(NavigatorCardItem).find('button');
       // should be focus, but jsdom does not propagate that
-      button.trigger('focusin');
+      button.trigger('focusin', {
+        relatedTarget: document.body,
+      });
       const focusSpy = jest.spyOn(button.element, 'focus');
       await flushPromises();
       // initiate a filter
