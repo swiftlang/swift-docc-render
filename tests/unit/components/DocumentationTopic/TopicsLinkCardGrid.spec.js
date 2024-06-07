@@ -17,7 +17,7 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 const ref = n => ({ identifier: `ref${n}` });
 
 const defaultProps = {
-  items: [...Array(10).keys()].map(n => ref(n)),
+  items: [...Array(8).keys()].map(n => ref(n)),
 };
 
 const createWrapper = ({ propsData, ...others } = {}) => shallowMount(TopicsLinkCardGrid, {
@@ -51,22 +51,28 @@ describe('TopicsLinkCardGrid', () => {
         },
       });
 
-      // 10 items => 2 pages at large breakpoint (6 links per page)
+      // 8 items => 2 pages at large breakpoint (6 links per page)
       let pager = wrapper.find(Pager);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(2);
 
-      // 10 items => 2 pages at medium breakpoint (6 links per page)
+      // 8 items => 1 pages at xlarge breakpoint (8 links per page)
+      wrapper.setData({ breakpoint: BreakpointName.xlarge });
+      pager = wrapper.find(Pager);
+      expect(pager.exists()).toBe(true);
+      expect(pager.props('pages').length).toBe(1);
+
+      // 8 items => 2 pages at medium breakpoint (6 links per page)
       wrapper.setData({ breakpoint: BreakpointName.medium });
       pager = wrapper.find(Pager);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(2);
 
-      // 10 items => 10 pages at small breakpoint (1 links per page)
+      // 8 items => 8 pages at small breakpoint (1 links per page)
       wrapper.setData({ breakpoint: BreakpointName.small });
       pager = wrapper.find(Pager);
       expect(pager.exists()).toBe(true);
-      expect(pager.props('pages').length).toBe(10);
+      expect(pager.props('pages').length).toBe(8);
     });
   });
 
@@ -79,23 +85,23 @@ describe('TopicsLinkCardGrid', () => {
         },
       });
 
-      // 10 items => 3 pages at large breakpoint (4 links per page)
+      // 8 items => 2 pages at large breakpoint (4 links per page)
       let pager = wrapper.find(Pager);
       expect(pager.classes('detailedGrid')).toBe(true);
       expect(pager.exists()).toBe(true);
-      expect(pager.props('pages').length).toBe(3);
+      expect(pager.props('pages').length).toBe(2);
 
-      // 10 items => 5 pages at medium breakpoint (2 links per page)
+      // 8 items => 4 pages at medium breakpoint (2 links per page)
       wrapper.setData({ breakpoint: BreakpointName.medium });
       pager = wrapper.find(Pager);
       expect(pager.exists()).toBe(true);
-      expect(pager.props('pages').length).toBe(5);
+      expect(pager.props('pages').length).toBe(4);
 
-      // 10 items => 10 pages at small breakpoint (1 links per page)
+      // 8 items => 8 pages at small breakpoint (1 links per page)
       wrapper.setData({ breakpoint: BreakpointName.small });
       pager = wrapper.find(Pager);
       expect(pager.exists()).toBe(true);
-      expect(pager.props('pages').length).toBe(10);
+      expect(pager.props('pages').length).toBe(8);
     });
   });
 });
