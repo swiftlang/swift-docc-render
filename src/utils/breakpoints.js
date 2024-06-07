@@ -28,7 +28,7 @@ export const BreakpointAttributes = {
     },
     [BreakpointName.large]: {
       minWidth: 1251,
-      maxWidth: 1536,
+      maxWidth: 1919,
       contentWidth: 980,
     },
     [BreakpointName.medium]: {
