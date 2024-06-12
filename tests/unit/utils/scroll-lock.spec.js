@@ -31,10 +31,12 @@ describe('scroll-lock', () => {
     DOM = parseHTMLString(`
       <div class="container">
         <div class="scrollable">long</div>
+        <div ${SCROLL_LOCK_DISABLE_ATTR}="true" class="disabled-target"></div>
       </div>
     `);
     document.body.appendChild(DOM);
     container = DOM.querySelector('.container');
+    Object.defineProperty(container, 'scrollHeight', { value: 10, writable: true });
   });
   afterEach(() => {
     window.navigator.platform = platform;
@@ -70,12 +72,7 @@ describe('scroll-lock', () => {
       container.ontouchmove(touchMoveEvent);
       expect(preventDefault).toHaveBeenCalledTimes(1);
       expect(stopPropagation).toHaveBeenCalledTimes(0);
-      expect(touchMoveEvent.target.closest).toHaveBeenCalledTimes(1);
-      expect(touchMoveEvent.target.closest).toHaveBeenCalledWith(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
-
       // simulate scroll middle
-      // simulate we have enough to scroll
-      Object.defineProperty(container, 'scrollHeight', { value: 10, writable: true });
       container.ontouchmove({ ...touchMoveEvent, targetTouches: [{ clientY: -10 }] });
       expect(preventDefault).toHaveBeenCalledTimes(1);
       expect(stopPropagation).toHaveBeenCalledTimes(1);
@@ -86,24 +83,22 @@ describe('scroll-lock', () => {
       expect(preventDefault).toHaveBeenCalledTimes(2);
       expect(stopPropagation).toHaveBeenCalledTimes(1);
 
-      // simulate there is a scroll-lock-disable target
-      container.ontouchmove({
-        ...touchMoveEvent,
-        targetTouches: [{ clientY: -10 }],
-        target: {
-          closest: jest.fn().mockReturnValue({
-            ...container,
-            clientHeight: 150,
-          }),
-        },
-      });
-      // assert scrolling was allowed
-      expect(preventDefault).toHaveBeenCalledTimes(2);
-      expect(stopPropagation).toHaveBeenCalledTimes(2);
-
       scrollLock.unlockScroll(container);
       expect(container.ontouchmove).toBeFalsy();
       expect(container.ontouchstart).toBeFalsy();
+    });
+
+    it('adds event listeners to the disabled targets too', () => {
+      const disabledTarget = DOM.querySelector('.disabled-target');
+      // init the scroll lock
+      scrollLock.lockScroll(container);
+      // assert event listeners are attached
+      expect(disabledTarget.ontouchstart).toEqual(expect.any(Function));
+      expect(disabledTarget.ontouchmove).toEqual(expect.any(Function));
+
+      scrollLock.unlockScroll(container);
+      expect(disabledTarget.ontouchmove).toBeFalsy();
+      expect(disabledTarget.ontouchstart).toBeFalsy();
     });
 
     it('prevents body scrolling', () => {

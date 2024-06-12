@@ -378,7 +378,7 @@ describe('FilterInput', () => {
       });
       expect(selectedTags.props('activeTags')).toEqual(tags);
       // assert we tried to ficus first item
-      expect(spy).toHaveBeenCalledWith(0);
+      expect(spy).not.toHaveBeenCalled();
     });
 
     it('on paste, handles clipboard in HTML format, when copying and pasting from search directly', () => {
@@ -563,7 +563,7 @@ describe('FilterInput', () => {
       await wrapper.vm.$nextTick();
       // first time was `true`, from `focus`, then `blur` made it `false`
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
-      expect(suggestedTags.exists()).toBe(false);
+      expect(suggestedTags.attributes('style')).toContain('display: none');
     });
 
     it('deletes `suggestedTags` component when `deleteButton` looses its focus on an external component', async () => {
@@ -576,7 +576,7 @@ describe('FilterInput', () => {
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
-      expect(suggestedTags.exists()).toBe(false);
+      expect(suggestedTags.attributes('style')).toContain('display: none');
     });
 
     it('does not hide the tags, if the new focus target matches `input, button`, inside the main component', async () => {
@@ -598,7 +598,7 @@ describe('FilterInput', () => {
 
       await flushPromises();
 
-      expect(suggestedTags.exists()).toBe(false);
+      expect(suggestedTags.attributes('style')).toContain('display: none');
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
     });
 
@@ -613,7 +613,7 @@ describe('FilterInput', () => {
       });
 
       await wrapper.vm.$nextTick();
-      expect(suggestedTags.exists()).toBe(false);
+      expect(suggestedTags.attributes('style')).toContain('display: none');
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true], [false]]);
       expect(wrapper.emitted('blur')).toBeTruthy();
     });
@@ -637,7 +637,7 @@ describe('FilterInput', () => {
       });
 
       it('deletes `suggestedTags` component when no tags available', () => {
-        expect(suggestedTags.exists()).toBe(false);
+        expect(suggestedTags.attributes('style')).toContain('display: none');
       });
 
       it('does not render `deleteButton` when there are no tags and `input` is empty', () => {

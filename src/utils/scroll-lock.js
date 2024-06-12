@@ -73,24 +73,26 @@ function advancedUnlock(targetElement) {
   document.removeEventListener('touchmove', preventDefault);
 }
 
+const isVerticalScroll = ({ scrollHeight, scrollWidth }) => scrollHeight > scrollWidth;
+
 /**
  * Handles the scrolling of the targetElement
  * @param {TouchEvent} event
  * @param {HTMLElement} targetElement
  * @return {boolean}
  */
-function handleScroll(event, targetElement) {
-  const clientY = event.targetTouches[0].clientY - initialClientY;
-  // check if any parent has a scroll-lock disable, if not use the targetElement
-  const target = event.target.closest(`[${SCROLL_LOCK_DISABLE_ATTR}]`) || targetElement;
-  if (target.scrollTop === 0 && clientY > 0) {
-    // element is at the top of its scroll.
-    return preventDefault(event);
-  }
+function handleScroll(event, target) {
+  if (isVerticalScroll(target)) {
+    const clientY = event.targetTouches[0].clientY - initialClientY;
+    if (target.scrollTop === 0 && clientY > 0) {
+      // element is at the top of its scroll.
+      return preventDefault(event);
+    }
 
-  if (isTargetElementTotallyScrolled(target) && clientY < 0) {
-    // element is at the bottom of its scroll.
-    return preventDefault(event);
+    if (isTargetElementTotallyScrolled(target) && clientY < 0) {
+      // element is at the bottom of its scroll.
+      return preventDefault(event);
+    }
   }
 
   // prevent the scroll event from going up to the parent/window
@@ -138,7 +140,11 @@ export default {
     if (!isIosDevice()) {
       simpleLock();
     } else {
+      // lock everything but target element
       advancedLock(targetElement);
+      // lock everything but disabled targets
+      const disabledTargets = document.querySelectorAll(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
+      disabledTargets.forEach(target => advancedLock(target));
     }
     isLocked = true;
   },
@@ -152,6 +158,9 @@ export default {
     if (isIosDevice()) {
       // revert the old scroll position
       advancedUnlock(targetElement);
+      // revert the old scroll position for disabled targets
+      const disabledTargets = document.querySelectorAll(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
+      disabledTargets.forEach(target => advancedUnlock(target));
     } else {
       // remove all inline styles added by the `simpleLock` function
       document.body.style.removeProperty('overflow');
