@@ -101,6 +101,30 @@ describe('scroll-lock', () => {
       expect(disabledTarget.ontouchstart).toBeFalsy();
     });
 
+    it('prevent event if user tries to perform vertical scroll in an horizontal scrolling element', () => {
+      Object.defineProperty(container, 'scrollWidth', { value: 100, writable: true });
+
+      const touchStartEvent = {
+        targetTouches: [{ clientY: 0, clientX: 0 }],
+      };
+      const touchMoveEvent = {
+        targetTouches: [{ clientY: -10, clientX: 0 }],
+        preventDefault,
+        stopPropagation,
+        touches: [1],
+        target: {
+          closest: jest.fn(),
+        },
+      };
+
+      scrollLock.lockScroll(container);
+      container.ontouchstart(touchStartEvent);
+      container.ontouchmove(touchMoveEvent);
+
+      expect(preventDefault).toHaveBeenCalledTimes(1);
+      expect(stopPropagation).toHaveBeenCalledTimes(0);
+    });
+
     it('prevents body scrolling', () => {
       scrollLock.lockScroll(container);
       // assert body scroll is getting prevented when swiping up/down

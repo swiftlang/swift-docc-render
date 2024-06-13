@@ -10,6 +10,7 @@
 
 let isLocked = false;
 let initialClientY = -1;
+let initialClientX = -1;
 let scrolledClientY = 0;
 // Adds this attribute to an inner scrollable element to allow it to scroll
 export const SCROLL_LOCK_DISABLE_ATTR = 'data-scroll-lock-disable';
@@ -82,8 +83,10 @@ const isVerticalScroll = ({ scrollHeight, scrollWidth }) => scrollHeight > scrol
  * @return {boolean}
  */
 function handleScroll(event, target) {
+  const clientY = event.targetTouches[0].clientY - initialClientY;
+  const clientX = event.targetTouches[0].clientX - initialClientX;
+
   if (isVerticalScroll(target)) {
-    const clientY = event.targetTouches[0].clientY - initialClientY;
     if (target.scrollTop === 0 && clientY > 0) {
       // element is at the top of its scroll.
       return preventDefault(event);
@@ -93,6 +96,9 @@ function handleScroll(event, target) {
       // element is at the bottom of its scroll.
       return preventDefault(event);
     }
+  } else if (Math.abs(clientY) > Math.abs(clientX)) {
+    // prevent event if user tries to perform vertical scroll in an horizontal scrolling element
+    return preventDefault(event);
   }
 
   // prevent the scroll event from going up to the parent/window
@@ -114,6 +120,7 @@ function advancedLock(targetElement) {
     if (event.targetTouches.length === 1) {
       // detect single touch.
       initialClientY = event.targetTouches[0].clientY;
+      initialClientX = event.targetTouches[0].clientX;
     }
   };
   targetElement.ontouchmove = (event) => {
