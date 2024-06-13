@@ -10,24 +10,22 @@
 
 import Language from 'docc-render/constants/Language';
 
+const ObjcMethodPrefix = {
+  instance: '-',
+  klass: '+',
+};
+
 function indentObjcDeclaration(codeElement) {
+  // only attempt to indent declarations for Objective-C instance/class methods
+  const txt = codeElement.textContent ?? '';
+  if (!txt.startsWith(ObjcMethodPrefix.instance) && !txt.startsWith(ObjcMethodPrefix.klass)) {
+    return;
+  }
+
   // find all param name spans (which are tokenized as "token-identifier"s)
   const params = codeElement.getElementsByClassName('token-identifier');
   if (params.length < 2) {
     return;
-  }
-
-  // since we don't yet have a way of distinguishing ObjC from C++ code yet,
-  // we should check to make sure we don't have any identifiers followed by
-  // the text "::", which will indicate that there are params using C++
-  // namespaces, and we should bail out in that scenario, since this code is
-  // tailored to ObjC declarations and is not generic enough to also work for
-  // C++ functions
-  for (let i = 0; i < params.length; i += 1) {
-    const param = params[i];
-    if (param.nextSibling?.textContent === '::') {
-      return;
-    }
   }
 
   // use the position of the first keyword colon separator as the offset
