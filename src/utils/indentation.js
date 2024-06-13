@@ -10,7 +10,18 @@
 
 import Language from 'docc-render/constants/Language';
 
+const ObjcMethodPrefix = {
+  instance: '-',
+  klass: '+',
+};
+
 function indentObjcDeclaration(codeElement) {
+  // only attempt to indent declarations for Objective-C instance/class methods
+  const txt = codeElement.textContent ?? '';
+  if (!txt.startsWith(ObjcMethodPrefix.instance) && !txt.startsWith(ObjcMethodPrefix.klass)) {
+    return;
+  }
+
   // find all param name spans (which are tokenized as "token-identifier"s)
   const params = codeElement.getElementsByClassName('token-identifier');
   if (params.length < 2) {
