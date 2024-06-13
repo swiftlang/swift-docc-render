@@ -673,12 +673,17 @@ export default {
     // without any inline formatting—other block kinds like asides will be
     // ignored in the resulting plaintext representation.
     plaintext() {
+      const { references = {} } = this;
       return this.reduce((text, node) => {
         if (node.type === BlockType.paragraph) {
           return `${text}\n`;
         }
         if (node.type === InlineType.text) {
           return `${text}${node.text}`;
+        }
+        if (node.type === InlineType.reference) {
+          const title = references[node.identifier]?.title ?? '';
+          return `${text}${title}`;
         }
         return text;
       }, '').trim();

@@ -18,9 +18,11 @@ export default {
     // Extracts the first paragraph of plaintext from the given content tree,
     // which can be used for metadata purposes.
     extractFirstParagraphText(content = []) {
+      const { references = {} } = this;
       const plaintext = ContentNode.computed.plaintext.bind({
         ...ContentNode.methods,
         content,
+        references,
       })();
       return firstParagraph(plaintext);
     },
