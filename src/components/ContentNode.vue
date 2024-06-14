@@ -677,6 +677,9 @@ export default {
         if (node.type === BlockType.paragraph) {
           return `${text}\n`;
         }
+        if (node.type === InlineType.codeVoice) {
+          return `${text}${node.code}`;
+        }
         if (node.type === InlineType.text) {
           return `${text}${node.text}`;
         }
