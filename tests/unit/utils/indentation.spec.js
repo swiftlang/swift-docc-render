@@ -59,5 +59,16 @@ describe('indentDeclaration', () => {
         expect(code.innerHTML).toEqual(originalCode);
       });
     });
+
+    describe('with a C++ function that has namespaced parameters', () => {
+      it('should not add indentation', () => {
+        const originalCode = '<a href="/documentation/mycppclass" class="type-identifier-link"><code><span>MyCPPClass</span></code></a><span class="token-identifier">operator+</span>(<span class="token-identifier">std</span>::<span class="type-identifier-link"><span>string</span></span> <span class="token-internalParam">other</span>);';
+
+        const code = prepare(originalCode);
+        indentDeclaration(code, 'occ');
+
+        expect(code.innerHTML).toEqual(originalCode);
+      });
+    });
   });
 });
