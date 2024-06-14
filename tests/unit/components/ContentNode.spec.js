@@ -2538,10 +2538,19 @@ describe('ContentNode', () => {
                 },
               ],
             },
+            {
+              type: ContentNode.BlockType.paragraph,
+              inlineContent: [
+                {
+                  type: ContentNode.InlineType.codeVoice,
+                  code: 'C',
+                },
+              ],
+            },
           ],
         },
       });
-      expect(wrapper.vm.plaintext).toBe('A\nB');
+      expect(wrapper.vm.plaintext).toBe('A\nB\nC');
     });
 
     it('includes text from references', () => {
