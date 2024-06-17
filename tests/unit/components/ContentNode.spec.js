@@ -2538,10 +2538,57 @@ describe('ContentNode', () => {
                 },
               ],
             },
+            {
+              type: ContentNode.BlockType.paragraph,
+              inlineContent: [
+                {
+                  type: ContentNode.InlineType.codeVoice,
+                  code: 'C',
+                },
+              ],
+            },
           ],
         },
       });
-      expect(wrapper.vm.plaintext).toBe('A\nB');
+      expect(wrapper.vm.plaintext).toBe('A\nB\nC');
+    });
+
+    it('includes text from references', () => {
+      const wrapper = shallowMount(ContentNode, {
+        propsData: {
+          content: [
+            {
+              type: ContentNode.BlockType.paragraph,
+              inlineContent: [
+                {
+                  type: ContentNode.InlineType.text,
+                  text: 'A',
+                },
+                {
+                  type: ContentNode.InlineType.text,
+                  text: ' ',
+                },
+                {
+                  type: ContentNode.InlineType.reference,
+                  identifier: 'b',
+                },
+              ],
+            },
+          ],
+        },
+        provide: {
+          store: {
+            state: {
+              references: {
+                b: {
+                  title: 'B',
+                },
+              },
+            },
+          },
+        },
+      });
+      expect(wrapper.vm.plaintext).toBe('A B');
     });
   });
 });
