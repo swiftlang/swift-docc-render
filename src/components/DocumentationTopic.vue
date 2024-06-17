@@ -145,7 +145,7 @@
             :isSymbolBeta="isSymbolBeta"
           />
           <Relationships
-            v-if="relationshipsSections && !enableMinimized"
+            v-if="relationshipsSections"
             :sections="relationshipsSections"
           />
           <!-- NOTE: see also may contain information about other apis, so we cannot

@@ -984,10 +984,6 @@ describe('DocumentationTopic', () => {
     const relationships = wrapper.find(Relationships);
     expect(relationships.exists()).toBe(true);
     expect(relationships.props('sections')).toBe(relationshipsSections);
-
-    // Minimized view should not render Relationships
-    wrapper.setProps({ enableMinimized: true });
-    expect(wrapper.find(Relationships).exists()).toBe(false);
   });
 
   it('renders `Relationships` before `SeeAlso`', () => {
