@@ -17,6 +17,8 @@ import { INDEX_ROOT_KEY } from '@/constants/sidebar';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
+const { LoadingNavigatorCard } = Navigator.components;
+
 const technology = {
   title: 'FooTechnology',
   children: [
@@ -159,6 +161,29 @@ describe('Navigator', () => {
     });
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
     expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.loading');
+  });
+
+  it('renders a LoadingNavigatorCard when navigator is loading', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        isFetching: true,
+      },
+    });
+    expect(wrapper.find(LoadingNavigatorCard).exists()).toBe(true);
+  });
+
+  it('does not render a LoadingNavigatorCard when navigator is not loading', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(LoadingNavigatorCard).exists()).toBe(false);
+  });
+
+  it('adds display:none to NavigatorCard when navigator is loading', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        isFetching: true,
+      },
+    });
+    expect(wrapper.find(NavigatorCard).attributes('style')).toContain('display: none');
   });
 
   it('renders an aria live that tells VO users when navigator is ready', () => {
