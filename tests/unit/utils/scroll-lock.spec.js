@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import scrollLock, { SCROLL_LOCK_DISABLE_ATTR } from 'docc-render/utils/scroll-lock';
+import scrollLock, { SCROLL_LOCK_DISABLE_ATTR, SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR } from 'docc-render/utils/scroll-lock';
 import { createEvent, parseHTMLString } from '../../../test-utils';
 
 const { platform } = window.navigator;
@@ -32,6 +32,7 @@ describe('scroll-lock', () => {
       <div class="container">
         <div class="scrollable">long</div>
         <div ${SCROLL_LOCK_DISABLE_ATTR}="true" class="disabled-target"></div>
+        <div ${SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR}="true" class="disabled-horizontal-target"></div>
       </div>
     `);
     document.body.appendChild(DOM);
@@ -90,23 +91,37 @@ describe('scroll-lock', () => {
 
     it('adds event listeners to the disabled targets too', () => {
       const disabledTarget = DOM.querySelector('.disabled-target');
+      const disabledHorizontalTarget = DOM.querySelector('.disabled-horizontal-target');
       // init the scroll lock
       scrollLock.lockScroll(container);
       // assert event listeners are attached
       expect(disabledTarget.ontouchstart).toEqual(expect.any(Function));
       expect(disabledTarget.ontouchmove).toEqual(expect.any(Function));
+      expect(disabledHorizontalTarget.ontouchstart).toEqual(expect.any(Function));
+      expect(disabledHorizontalTarget.ontouchmove).toEqual(expect.any(Function));
 
       scrollLock.unlockScroll(container);
       expect(disabledTarget.ontouchmove).toBeFalsy();
       expect(disabledTarget.ontouchstart).toBeFalsy();
+      expect(disabledHorizontalTarget.ontouchstart).toBeFalsy();
+      expect(disabledHorizontalTarget.ontouchmove).toBeFalsy();
     });
 
     it('prevent event if user tries to perform vertical scroll in an horizontal scrolling element', () => {
-      Object.defineProperty(container, 'scrollWidth', { value: 100, writable: true });
+      // set horizontal scrolling element only
+      DOM = parseHTMLString(`
+        <div class="container">
+          <div class="scrollable">long</div>
+          <div ${SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR}="true" class="disabled-horizontal-target"></div>
+        </div>
+      `);
+      document.body.appendChild(DOM);
+      container = DOM.querySelector('.container');
 
       const touchStartEvent = {
         targetTouches: [{ clientY: 0, clientX: 0 }],
       };
+      // perform vertical scroll
       const touchMoveEvent = {
         targetTouches: [{ clientY: -10, clientX: 0 }],
         preventDefault,

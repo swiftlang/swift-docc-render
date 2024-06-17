@@ -12,8 +12,10 @@ let isLocked = false;
 let initialClientY = -1;
 let initialClientX = -1;
 let scrolledClientY = 0;
-// Adds this attribute to an inner scrollable element to allow it to scroll
+// Adds this attribute to an vertical scrollable element to allow it to scroll
 export const SCROLL_LOCK_DISABLE_ATTR = 'data-scroll-lock-disable';
+// Adds this attribute to an horizontal scrollable element to allow it to scroll
+export const SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR = 'data-scroll-lock-horizontal-disable';
 
 const isIosDevice = () => window.navigator
   && window.navigator.platform
@@ -74,19 +76,17 @@ function advancedUnlock(targetElement) {
   document.removeEventListener('touchmove', preventDefault);
 }
 
-const isVerticalScroll = ({ scrollHeight, scrollWidth }) => scrollHeight > scrollWidth;
-
 /**
  * Handles the scrolling of the targetElement
  * @param {TouchEvent} event
  * @param {HTMLElement} targetElement
  * @return {boolean}
  */
-function handleScroll(event, target) {
+function handleScroll(event, target, isHorizontal) {
   const clientY = event.targetTouches[0].clientY - initialClientY;
   const clientX = event.targetTouches[0].clientX - initialClientX;
 
-  if (isVerticalScroll(target)) {
+  if (!isHorizontal) {
     if (target.scrollTop === 0 && clientY > 0) {
       // element is at the top of its scroll.
       return preventDefault(event);
@@ -110,7 +110,7 @@ function handleScroll(event, target) {
  * Advanced scroll locking for iOS devices.
  * @param targetElement
  */
-function advancedLock(targetElement) {
+function advancedLock(targetElement, isHorizontal = false) {
   // add a scroll listener to the body
   document.addEventListener('touchmove', preventDefault, { passive: false });
   if (!targetElement) return;
@@ -126,7 +126,7 @@ function advancedLock(targetElement) {
   targetElement.ontouchmove = (event) => {
     if (event.targetTouches.length === 1) {
       // detect single touch.
-      handleScroll(event, targetElement);
+      handleScroll(event, targetElement, isHorizontal);
     }
   };
 }
@@ -149,9 +149,12 @@ export default {
     } else {
       // lock everything but target element
       advancedLock(targetElement);
-      // lock everything but disabled targets
+      // lock everything but disabled targets with vertical scrolling
       const disabledTargets = document.querySelectorAll(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
       disabledTargets.forEach(target => advancedLock(target));
+      // lock everything but disabled targets with horizontal scrolling
+      const disabledHorizontalTargets = document.querySelectorAll(`[${SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR}]`);
+      disabledHorizontalTargets.forEach(target => advancedLock(target, true));
     }
     isLocked = true;
   },
@@ -167,7 +170,8 @@ export default {
       advancedUnlock(targetElement);
       // revert the old scroll position for disabled targets
       const disabledTargets = document.querySelectorAll(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
-      disabledTargets.forEach(target => advancedUnlock(target));
+      const disabledHorizontalTargets = document.querySelectorAll(`[${SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR}]`);
+      [...disabledTargets, ...disabledHorizontalTargets].forEach(target => advancedUnlock(target));
     } else {
       // remove all inline styles added by the `simpleLock` function
       document.body.style.removeProperty('overflow');

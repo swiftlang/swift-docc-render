@@ -37,7 +37,7 @@
         </button>
         <div
           :class="['filter__input-box-wrapper', { 'scrolling': isScrolling }]"
-          v-bind="{[SCROLL_LOCK_DISABLE_ATTR]: true}"
+          v-bind="{[SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR]: true}"
           @scroll="handleScroll"
         >
           <TagList
@@ -129,7 +129,7 @@
 import ClearRoundedIcon from 'theme/components/Icons/ClearRoundedIcon.vue';
 import multipleSelection from 'docc-render/mixins/multipleSelection';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
-import { SCROLL_LOCK_DISABLE_ATTR } from 'docc-render/utils/scroll-lock';
+import { SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR } from 'docc-render/utils/scroll-lock';
 import FilterIcon from 'theme/components/Icons/FilterIcon.vue';
 import TagList from './TagList.vue';
 
@@ -227,7 +227,7 @@ export default {
       SuggestedTagsId,
       AXinputProperties,
       showSuggestedTags: false,
-      SCROLL_LOCK_DISABLE_ATTR,
+      SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR,
     };
   },
   computed: {
