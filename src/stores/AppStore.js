@@ -30,6 +30,7 @@ export default {
     supportsAutoColorScheme,
     systemColorScheme: ColorScheme.light,
     availableLocales: [],
+    includedArchiveIdentifiers: [],
   },
   reset() {
     this.state.imageLoadingStrategy = process.env.VUE_APP_TARGET === 'ide'
@@ -58,6 +59,9 @@ export default {
   },
   setSystemColorScheme(value) {
     this.state.systemColorScheme = value;
+  },
+  setIncludedArchiveIdentifiers(value) {
+    this.state.includedArchiveIdentifiers = value;
   },
   syncPreferredColorScheme() {
     if (!!Settings.preferredColorScheme

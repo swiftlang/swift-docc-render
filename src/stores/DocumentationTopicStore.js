@@ -22,10 +22,12 @@ export default {
     ...changesState,
     ...pageSectionsState,
     references: {},
+    includedArchiveIdentifiers: [],
   },
   reset() {
     this.state.preferredLanguage = Settings.preferredLanguage;
     this.state.references = {};
+    this.state.includedArchiveIdentifiers = [];
     this.resetApiChanges();
   },
   setPreferredLanguage(language) {
@@ -37,6 +39,9 @@ export default {
   },
   setReferences(references) {
     this.state.references = references;
+  },
+  setIncludedArchiveIdentifiers(identifiers) {
+    this.state.includedArchiveIdentifiers = identifiers;
   },
   ...changesActions,
   ...pageSectionsActions,
