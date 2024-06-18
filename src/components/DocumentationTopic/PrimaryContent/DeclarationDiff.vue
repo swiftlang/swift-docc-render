@@ -17,7 +17,6 @@
         :key="i"
         :declaration="declaration"
         :should-caption="currentDeclarations.length > 1"
-        :changeType="changeType"
       />
     </div>
     <div class="declaration-diff-previous">
@@ -27,7 +26,6 @@
         :key="i"
         :declaration="declaration"
         :should-caption="previousDeclarations.length > 1"
-        :changeType="changeType"
       />
     </div>
   </div>
