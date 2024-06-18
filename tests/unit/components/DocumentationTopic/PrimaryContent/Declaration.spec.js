@@ -198,7 +198,7 @@ describe('Declaration', () => {
     expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
   });
 
-  it('renders a `DeclarationList` for `added` change type', () => {
+  it('renders a `DeclarationList` with `added` change type prop', () => {
     const provide = provideFactory({
       [identifier]: {
         change: ChangeTypes.added,
@@ -218,11 +218,28 @@ describe('Declaration', () => {
     const declarationList = wrapper.find(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
     expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
-    expect(declarationList.classes()).toContain('changed');
-    expect(declarationList.classes()).toContain('changed-added');
   });
 
-  it('renders a `DeclarationList` for `deprecated` change type', () => {
+  it('passes `added` type change prop if no declarations are present in the diff ', () => {
+    const provide = provideFactory({
+      [identifier]: {
+        change: ChangeTypes.added,
+      },
+    });
+
+    wrapper = shallowMount(Declaration, {
+      propsData,
+      provide,
+    });
+
+    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
+
+    const declarationList = wrapper.find(DeclarationList);
+    expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
+    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
+  });
+
+  it('renders a `DeclarationList` with `deprecated` change type prop', () => {
     const provide = provideFactory({
       [identifier]: {
         change: ChangeTypes.deprecated,
@@ -242,28 +259,5 @@ describe('Declaration', () => {
     const declarationList = wrapper.find(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.deprecated);
     expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
-    expect(declarationList.classes()).toContain('changed');
-    expect(declarationList.classes()).toContain('changed-deprecated');
-  });
-
-  it('applies only `added` type change class if no declarations are present in the diff ', () => {
-    const provide = provideFactory({
-      [identifier]: {
-        change: ChangeTypes.added,
-      },
-    });
-
-    wrapper = shallowMount(Declaration, {
-      propsData,
-      provide,
-    });
-
-    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
-
-    const declarationList = wrapper.find(DeclarationList);
-    expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
-    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
-    expect(declarationList.classes()).toContain('changed');
-    expect(declarationList.classes()).toContain('changed-added');
   });
 });
