@@ -2582,6 +2582,7 @@ describe('ContentNode', () => {
               references: {
                 b: {
                   title: 'B',
+                  url: '/b',
                 },
               },
             },
