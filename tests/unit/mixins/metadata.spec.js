@@ -45,6 +45,9 @@ const createWrapper = ({
       disableMetadata: () => disableMetadata,
       pageTitle: () => title,
       pageDescription: () => description,
+      references: () => ({
+        'ref-d': { title: 'd' },
+      }),
     },
   }, {
     mocks: {
@@ -99,7 +102,11 @@ describe('metadata', () => {
             },
             {
               type: 'text',
-              text: ' c',
+              text: ' c ',
+            },
+            {
+              type: 'reference',
+              identifier: 'ref-d',
             },
           ],
         },
@@ -114,7 +121,7 @@ describe('metadata', () => {
         },
       ];
       const wrapper = createWrapper(pageData);
-      expect(wrapper.vm.extractFirstParagraphText(content)).toBe('a b c');
+      expect(wrapper.vm.extractFirstParagraphText(content)).toBe('a b c d');
       expect(wrapper.vm.extractFirstParagraphText([])).toBe('');
     });
   });
