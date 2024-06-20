@@ -14,7 +14,7 @@
     class="navigator"
   >
     <NavigatorCard
-      v-if="!isFetching"
+      v-show="!isFetching"
       v-bind="technologyProps"
       :type="type"
       :children="flatChildren"
@@ -28,12 +28,12 @@
     >
       <template #filter><slot name="filter" /></template>
       <template #navigator-head>
-        <slot name="navigator-head"/>
+        <slot name="navigator-head" className="nav-title"/>
       </template>
     </NavigatorCard>
     <LoadingNavigatorCard
       @close="$emit('close')"
-      v-else
+      v-if="isFetching"
     />
     <div aria-live="polite" class="visuallyhidden">
       {{ $t('navigator.navigator-is', {
@@ -176,5 +176,11 @@ export default {
     position: static;
     transition: none;
   }
+}
+
+:deep(.nav-title) {
+  font-size: inherit;
+  font-weight: inherit;
+  flex-grow: 1;
 }
 </style>

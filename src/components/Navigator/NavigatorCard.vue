@@ -36,7 +36,7 @@
           v-if="technology"
           :id="INDEX_ROOT_KEY"
           :url="technologyPath"
-          class="technology-title"
+          :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
           @click.alt.native.prevent="toggleAllNodes"
         >
           <h2 class="card-link">
@@ -247,6 +247,8 @@ export default {
     };
   },
   computed: {
+    isTechnologyRoute: ({ technologyPath, $route }) => (
+      technologyPath.toLowerCase() === $route.path.toLowerCase()),
     politeAriaLive() {
       const { hasNodes, navigatorItems } = this;
       if (!hasNodes) return '';
@@ -815,8 +817,10 @@ export default {
       if (!this.$refs.scroller) return false;
       return this.$refs.scroller.$el.contains(element);
     },
-    handleFocusIn({ target }) {
+    handleFocusIn({ target, relatedTarget }) {
       this.lastFocusTarget = target;
+      // prevent scroll when focus is programmatic
+      if (!relatedTarget) return;
       const positionIndex = this.getChildPositionInScroller(target);
       // if multiplier is 0, the item is inside the scrollarea, no need to scroll
       if (positionIndex === 0) return;

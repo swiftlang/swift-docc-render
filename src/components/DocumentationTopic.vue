@@ -952,7 +952,7 @@ $space-size: 15px;
     min-width: 0;
     width: 100%;
 
-    // only render border on declaration list menu
+    // only render border and bottom margin on declaration list menu
     // when there are no content sections afterwards at all
     .container:only-child {
       .declaration-list-menu:last-child::before {
@@ -961,6 +961,7 @@ $space-size: 15px;
         border-top-width: var(--content-table-title-border-width, 1px);
         content: '';
         display: block;
+        margin-bottom: $section-spacing-single-side;
       }
     }
 

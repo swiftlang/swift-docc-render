@@ -3,10 +3,13 @@
   "continue-viewing": "继续以中文查看",
   "language": "语言",
   "video": {
+    "title": "视频",
     "replay": "重新播放",
     "play": "播放",
     "pause": "暂停",
-    "watch": "观看介绍视频"
+    "watch": "观看介绍视频",
+    "description": "此视频的内容描述：{alt}",
+    "custom-controls": "可用自定义控件如下"
   },
   "tutorials": {
     "title": "教程",
@@ -24,7 +27,7 @@
     "assessment": {
       "check-your-understanding": "检查你的理解程度",
       "success-message": "很棒，你回答了此教程的所有问题。",
-      "answer-result": "答案{answer}是{result}",
+      "answer-result": "答案 {answer} 是 {result}",
       "correct": "正确",
       "incorrect": "错误",
       "next-question": "下一个问题",
@@ -67,6 +70,10 @@
       "view-sample-code": "查看示例代码"
     },
     "view-more": "查看更多"
+  },
+  "declarations": {
+    "hide-other-declarations": "隐藏其他声明",
+    "show-all-declarations": "显示所有声明"
   },
   "aside-kind": {
     "beta": "Beta 版",
@@ -132,7 +139,14 @@
     "navigate": "若要导航符号，请按下上箭头、下箭头、左箭头或右箭头。",
     "siblings-label": "{parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）",
     "parent-label": "{parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）包含一个符号 | {parent-siblings} 内含 {number-siblings} 个符号（共 {total-siblings} 个）包含 {number-parent} 个符号",
-    "reset-filter": "还原过滤条件"
+    "reset-filter": "还原过滤条件",
+    "tags": {
+      "sample-code": "示例代码",
+      "tutorials": "教程",
+      "articles": "文章",
+      "web-service-endpoints": "网络服务端点",
+      "hide-deprecated": "隐藏已弃用"
+    }
   },
   "navigator": {
     "title": "文档导航器",
@@ -146,9 +160,6 @@
     "state": {
       "loading": "正在载入",
       "ready": "准备就绪"
-    },
-    "tags": {
-      "hide-deprecated": "隐藏已弃用"
     }
   },
   "tab": {
@@ -204,5 +215,19 @@
       "title": "点按或键入 / 进行快速导航"
     },
     "preview-unavailable": "预览不可用"
+  },
+  "mentioned-in": "提及于",
+  "pager": {
+    "roledescription": "内容滑块",
+    "page": {
+      "label": "第 {index}/{count} 个内容页面"
+    },
+    "control": {
+      "navigate-previous": "导览至上个内容页面",
+      "navigate-next": "导览至下个内容页面"
+    }
+  },
+  "links-grid": {
+    "label": "链接网格"
   }
 }
