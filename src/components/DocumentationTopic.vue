@@ -129,7 +129,6 @@
               :source="remoteSource"
               :sections="primaryContentSectionsSanitized"
             />
-            <ViewMore v-if="shouldShowViewMoreLink" :url="viewMoreLink" />
           </div>
           <Topics
             v-if="shouldRenderTopicSection"
@@ -147,12 +146,18 @@
           <Relationships
             v-if="relationshipsSections"
             :sections="relationshipsSections"
+            :enableMinimized="enableMinimized"
           />
           <!-- NOTE: see also may contain information about other apis, so we cannot
           pass deprecation and beta information -->
           <SeeAlso
             v-if="seeAlsoSections && !enableMinimized"
             :sections="seeAlsoSections"
+          />
+          <ViewMore
+            v-if="shouldShowViewMoreLink"
+            :url="viewMoreLink"
+            :class="{ 'minimized-container': enableMinimized }"
           />
         </div>
         <template v-if="enableOnThisPageNav">
@@ -820,6 +825,8 @@ $space-size: 15px;
 :deep() {
   .minimized-container {
     outline-style: none;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
 
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;
@@ -902,11 +909,6 @@ $space-size: 15px;
   :deep(.content + *) {
     margin-top: var(--spacing-stacked-margin-large);
   }
-}
-
-.full-width-container .doc-content .minimized-container {
-  padding-left: 1.4rem;
-  padding-right: 1.4rem;
 }
 
 :deep() {
