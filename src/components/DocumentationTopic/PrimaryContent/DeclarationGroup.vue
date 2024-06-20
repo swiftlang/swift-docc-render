@@ -140,7 +140,6 @@ export default {
   }
 }
 
-
 @include changedStyles {
   .source {
     // background should also be applied over changed icon over whole pill
