@@ -278,7 +278,7 @@ describe('DocumentationTopic', () => {
     const main = wrapper.find('main');
     expect(main.exists()).toBe(true);
     expect(main.classes('main')).toBe(true);
-    expect(main.attributes('id')).toBe('main');
+    expect(main.attributes('id')).toBe('app-main');
   });
 
   it('renders a <div> instead of <main> in IDE mode', () => {
@@ -293,7 +293,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find('main').exists()).toBe(false);
     const div = wrapper.find('.main');
     expect(div.exists()).toBe(true);
-    expect(div.attributes('id')).toBe('main');
+    expect(div.attributes('id')).toBe('app-main');
   });
 
   it('renders an aria live that tells VO users which it is the current page content', () => {
