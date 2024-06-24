@@ -17,7 +17,7 @@
     >
       {{ title }}
     </Nav>
-    <main id="main" tabindex="0" class="main">
+    <main id="app-main" tabindex="0" class="main">
       <div class="radial-gradient">
         <slot name="above-hero" />
         <Hero
