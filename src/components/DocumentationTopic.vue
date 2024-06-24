@@ -825,8 +825,6 @@ $space-size: 15px;
 :deep() {
   .minimized-container {
     outline-style: none;
-    padding-left: 1.4rem;
-    padding-right: 1.4rem;
 
     --spacing-stacked-margin-large: 0.667em;
     --spacing-stacked-margin-xlarge: 1em;
@@ -837,6 +835,11 @@ $space-size: 15px;
     --spacing-param: var(--spacing-stacked-margin-large);
     --aside-border-radius: 6px;
     --code-border-radius: 6px;
+
+    &:not(.declarations-container) {
+      padding-left: 1.4rem;
+      padding-right: 1.4rem;
+    }
 
     .description {
       margin-bottom: 1.5em;
