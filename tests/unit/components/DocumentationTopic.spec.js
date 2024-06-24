@@ -692,6 +692,7 @@ describe('DocumentationTopic', () => {
     const viewMore = wrapper.find(ViewMore);
     expect(viewMore.exists()).toBe(true);
     expect(viewMore.props('url')).toEqual('/documentation/swift'); // normalized path
+    expect(viewMore.classes()).toContain('minimized-container');
 
     // should not render `ViewMore` in non-minimized mode
     wrapper.setProps({ enableMinimized: false });
@@ -984,6 +985,7 @@ describe('DocumentationTopic', () => {
     const relationships = wrapper.find(Relationships);
     expect(relationships.exists()).toBe(true);
     expect(relationships.props('sections')).toBe(relationshipsSections);
+    expect(relationships.props('enableMinimized')).toBe(false);
   });
 
   it('renders `Relationships` before `SeeAlso`', () => {

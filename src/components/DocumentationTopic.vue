@@ -157,7 +157,7 @@
           <ViewMore
             v-if="shouldShowViewMoreLink"
             :url="viewMoreLink"
-            :class="{ 'minimized-container': enableMinimized }"
+            class="minimized-container"
           />
         </div>
         <template v-if="enableOnThisPageNav">

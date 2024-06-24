@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -44,5 +44,13 @@ describe('ContentTable', () => {
     const p = wrapper.find('p');
     expect(p.exists()).toBe(true);
     expect(p.html()).toBe(slots.default);
+  });
+
+  it('renders `minimized-container` class if in minimized mode', () => {
+    const container = wrapper.find('.container');
+    expect(container.classes()).not.toContain('minimized-container');
+
+    wrapper.setProps({ enableMinimized: true });
+    expect(container.classes()).toContain('minimized-container');
   });
 });
