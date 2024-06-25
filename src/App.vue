@@ -14,7 +14,9 @@
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
     <div :id="AppTopID" />
-    <a href="#main" id="skip-nav" v-if="!isTargetIDE">{{ $t('accessibility.skip-navigation') }}</a>
+    <a href="#app-main" id="skip-nav" v-if="!isTargetIDE">
+      {{ $t('accessibility.skip-navigation') }}
+    </a>
     <slot name="header" :isTargetIDE="isTargetIDE">
       <SuggestLang v-if="enablei18n" />
       <!-- Render the custom header by default, if there is no content in the `header` slot -->
