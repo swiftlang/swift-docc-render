@@ -83,7 +83,6 @@ export default {
     caption() {
       return this.declaration.platforms.join(', ');
     },
-    isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
   },
 };
 </script>
