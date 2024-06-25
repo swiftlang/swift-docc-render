@@ -114,6 +114,17 @@ export default {
   }
 }
 
+// don't highlight tokens in initial declaration until the user has explicitly
+// expanded a list of overloaded declarations — this rule could be simplified
+// in the future if the HTML is restructured to have an expanded state class for
+// the whole list instead of having it on each declaration
+.declaration-pill:not(.declaration-pill--expanded) {
+  .source:deep(.highlighted) {
+    background: unset;
+    font-weight: normal;
+  }
+}
+
 // only applicable for when other declaration list is expanded
 .declaration-pill--expanded {
   $docs-declaration-source-border-width: 1px;
