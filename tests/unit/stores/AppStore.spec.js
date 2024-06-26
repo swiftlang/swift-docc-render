@@ -76,7 +76,7 @@ describe('AppStore', () => {
 
   describe('setIncludedArchiveIdentifiers', () => {
     it('sets the included archive identifiers', () => {
-      const includedArchiveIdentifiers = ['doc://foo', 'doc://bar'];
+      const includedArchiveIdentifiers = ['foo', 'bar'];
       AppStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
       expect(AppStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
     });
