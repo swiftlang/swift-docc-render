@@ -186,8 +186,6 @@ describe('Declaration', () => {
     expect(declarationDiff.exists()).toBe(true);
     expect(declarationDiff.props()).toEqual({
       changes: provide.store.state.apiChanges.foo,
-      // when `new` and `previous` are provided, change type is always `modified`
-      changeType: ChangeTypes.modified,
     });
     expect(declarationDiff.classes()).toContain('changed');
     expect(declarationDiff.classes()).toContain('changed-modified');
