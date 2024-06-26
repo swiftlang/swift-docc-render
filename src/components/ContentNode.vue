@@ -9,6 +9,7 @@
 -->
 
 <script>
+import { shouldInactivateRef } from 'docc-render/utils/references';
 import AppStore from 'docc-render/stores/AppStore';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 import Aside from './ContentNode/Aside.vue';
@@ -471,11 +472,7 @@ function renderNode(createElement, context = {}) {
         || reference.titleInlineContent;
       const titlePlainText = node.overridingTitle || reference.title;
       const isActive = node.isActive ?? true;
-      const isInactive = !!(includedArchiveIdentifiers.length && (
-        !includedArchiveIdentifiers.some(id => (
-          node.identifier?.startsWith(`doc://${id}`)
-        ))
-      ));
+      const isInactive = shouldInactivateRef(node.identifier, { includedArchiveIdentifiers });
       return createElement(Reference, {
         props: {
           url: reference.url,
