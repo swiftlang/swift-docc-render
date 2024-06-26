@@ -70,4 +70,49 @@ describe('LinkableToken', () => {
     expect(link.props('url')).toBe(foo.url);
     expect(link.text()).toBe(foo.title);
   });
+
+  it('renders a span for inactive references', () => {
+    const bar = {
+      identifier: 'doc://Foo/documentation/foo/bar',
+      title: 'Bar',
+      url: '/documentation/foo/bar',
+    };
+    const references = { [bar.identifier]: bar };
+    const wrapper = shallowMount(LinkableToken, {
+      propsData: { identifier: bar.identifier },
+      slots: { default: bar.title },
+      provide: {
+        store: {
+          state: { references },
+        },
+      },
+    });
+
+    // active by default
+    let reference = wrapper.find(Reference);
+    expect(reference.exists()).toBe(true);
+    expect(reference.props('url')).toBe(bar.url);
+    expect(reference.text()).toBe(bar.title);
+
+    // inactive when `includedArchiveIdentifiers` is non-empty and does not include id
+    wrapper.setData({
+      appState: {
+        includedArchiveIdentifiers: ['Baz'],
+      },
+    });
+    reference = wrapper.find(Reference);
+    expect(reference.exists()).toBe(false);
+    expect(wrapper.text()).toBe(bar.title);
+
+    // active when `includedArchiveIdentifiers` is non-empty and includes id
+    wrapper.setData({
+      appState: {
+        includedArchiveIdentifiers: ['Baz', 'Foo'],
+      },
+    });
+    reference = wrapper.find(Reference);
+    expect(reference.exists()).toBe(true);
+    expect(reference.props('url')).toBe(bar.url);
+    expect(reference.text()).toBe(bar.title);
+  });
 });
