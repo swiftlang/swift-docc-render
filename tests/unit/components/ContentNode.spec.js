@@ -1297,6 +1297,57 @@ describe('ContentNode', () => {
       const reference = wrapper.find('.content');
       expect(reference.isEmpty()).toBe(true);
     });
+
+    it('inactivates references when `includedArchiveIdentifiers` is present and does not include the identifier', () => {
+      const id = {
+        bar: 'doc://Foo/documentation/foo/bar',
+        baz: 'doc://Baz/documentation/baz',
+      };
+      const wrapper = mountWithItem({
+        type: 'reference',
+        identifier: id.bar,
+      }, {
+        [id.bar]: {
+          title: 'bar',
+          url: '/documentation/foo/bar',
+        },
+      });
+
+      // active by default
+      let reference = wrapper.find(Reference);
+      expect(reference.exists()).toBe(true);
+      expect(reference.props('isActive')).toBe(true);
+
+      // inactive when `includedArchiveIdentifiers` is non-empty and does not include this id
+      wrapper.setData({
+        appState: {
+          includedArchiveIdentifiers: ['Baz'],
+        },
+      });
+      reference = wrapper.find(Reference);
+      expect(reference.exists()).toBe(true);
+      expect(reference.props('isActive')).toBe(false);
+
+      // active when `includedArchiveIdentifiers` is non-empty and includes this id
+      wrapper.setData({
+        appState: {
+          includedArchiveIdentifiers: ['Baz', 'Foo'],
+        },
+      });
+      reference = wrapper.find(Reference);
+      expect(reference.exists()).toBe(true);
+      expect(reference.props('isActive')).toBe(true);
+
+      // still active when `includedArchiveIdentifiers` is empty (for backwards compatibility)
+      wrapper.setData({
+        appState: {
+          includedArchiveIdentifiers: [],
+        },
+      });
+      reference = wrapper.find(Reference);
+      expect(reference.exists()).toBe(true);
+      expect(reference.props('isActive')).toBe(true);
+    });
   });
 
   describe('with type="strong"', () => {

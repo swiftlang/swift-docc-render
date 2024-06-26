@@ -470,17 +470,18 @@ function renderNode(createElement, context = {}) {
       const titleInlineContent = node.overridingTitleInlineContent
         || reference.titleInlineContent;
       const titlePlainText = node.overridingTitle || reference.title;
-      const isInactive = includedArchiveIdentifiers.length && (
+      const isActive = node.isActive ?? true;
+      const isInactive = !!(includedArchiveIdentifiers.length && (
         !includedArchiveIdentifiers.some(id => (
           node.identifier?.startsWith(`doc://${id}`)
         ))
-      );
+      ));
       return createElement(Reference, {
         props: {
           url: reference.url,
           kind: reference.kind,
           role: reference.role,
-          isActive: node.isActive && !isInactive,
+          isActive: isActive && !isInactive,
           ideTitle: reference.ideTitle,
           titleStyle: reference.titleStyle,
           hasInlineFormatting: !!titleInlineContent,
