@@ -129,8 +129,8 @@ const references = {
 };
 
 const includedArchiveIdentifiers = [
-  'doc://foo',
-  'doc://bar',
+  'foo',
+  'bar',
 ];
 
 const response = {
