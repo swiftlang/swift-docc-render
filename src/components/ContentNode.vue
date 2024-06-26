@@ -465,7 +465,6 @@ function renderNode(createElement, context = {}) {
         node.title
       ));
     case InlineType.reference: {
-      console.log(node.identifier, includedArchiveIdentifiers);
       const reference = references[node.identifier];
       if (!reference) return null;
       const titleInlineContent = node.overridingTitleInlineContent
