@@ -10,6 +10,7 @@
 
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import { shallowMount } from '@vue/test-utils';
+import AppStore from 'docc-render/stores/AppStore';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { fetchIndexPathsData } from '@/utils/data';
@@ -127,7 +128,13 @@ const references = {
   foo: { bar: 'bar' },
 };
 
+const includedArchiveIdentifiers = [
+  'doc://foo',
+  'doc://bar',
+];
+
 const response = {
+  includedArchiveIdentifiers,
   interfaceLanguages: {
     [Language.swift.key.url]: [
       swiftIndexOne,
@@ -172,6 +179,10 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorD
 describe('NavigatorDataProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    AppStore.reset();
   });
 
   it('fetches data when mounting NavigatorDataProvider', async () => {
@@ -551,5 +562,13 @@ describe('NavigatorDataProvider', () => {
         uid: -827353283,
       },
     ]);
+  });
+
+  it('sets `includedArchiveIdentifiers` state in the app store', async () => {
+    expect(AppStore.state.includedArchiveIdentifiers).toEqual([]);
+    fetchIndexPathsData.mockResolvedValue(response);
+    createWrapper();
+    await flushPromises();
+    expect(AppStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
   });
 });
