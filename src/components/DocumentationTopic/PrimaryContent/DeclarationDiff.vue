@@ -48,14 +48,6 @@ export default {
       type: Object,
       required: true,
     },
-    /**
-     * The applied change type to the diff.
-     * @type {"added"|"deprecated"|"modified"}
-     */
-    changeType: {
-      type: String,
-      required: true,
-    },
   },
   computed: {
     previousDeclarations: ({ changes }) => changes.declaration.previous || [],
