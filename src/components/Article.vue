@@ -18,7 +18,7 @@
       :rootReference="hierarchy.reference"
       :identifierUrl="identifierUrl"
     />
-    <main id="main" tabindex="0">
+    <main id="app-main" tabindex="0">
       <slot name="above-hero" />
       <component
         v-for="(section, index) in sections"
