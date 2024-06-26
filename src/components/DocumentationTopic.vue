@@ -15,7 +15,7 @@
   >
     <component
       :is="isTargetIDE ? 'div' : 'main'"
-      class="main" id="main"
+      class="main" id="app-main"
     >
       <DocumentationHero
         :role="role"
@@ -778,7 +778,7 @@ $space-size: 15px;
   }
 }
 
-#main {
+#app-main {
   outline-style: none;
   height: 100%;
 
