@@ -38,6 +38,7 @@ export default {
     this.state.preferredColorScheme = Settings.preferredColorScheme || defaultColorScheme;
     this.state.supportsAutoColorScheme = supportsAutoColorScheme;
     this.state.systemColorScheme = ColorScheme.light;
+    this.state.includedArchiveIdentifiers = [];
   },
   setImageLoadingStrategy(strategy) {
     this.state.imageLoadingStrategy = strategy;

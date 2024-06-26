@@ -22,6 +22,7 @@ describe('AppStore', () => {
       systemColorScheme: ColorScheme.light,
       preferredLocale: null,
       availableLocales: [],
+      includedArchiveIdentifiers: [],
     });
   });
 
@@ -37,6 +38,7 @@ describe('AppStore', () => {
       systemColorScheme: ColorScheme.light,
       preferredLocale: null,
       availableLocales: [],
+      includedArchiveIdentifiers: [],
     });
 
     // restore target
@@ -72,11 +74,20 @@ describe('AppStore', () => {
     });
   });
 
+  describe('setIncludedArchiveIdentifiers', () => {
+    it('sets the included archive identifiers', () => {
+      const includedArchiveIdentifiers = ['doc://foo', 'doc://bar'];
+      AppStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
+      expect(AppStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
+    });
+  });
+
   it('resets the state', () => {
     AppStore.setImageLoadingStrategy(ImageLoadingStrategy.eager);
     AppStore.setPreferredColorScheme(ColorScheme.auto);
     AppStore.setSystemColorScheme(ColorScheme.dark);
     AppStore.syncPreferredColorScheme();
+    AppStore.setIncludedArchiveIdentifiers(['a']);
     AppStore.reset();
 
     expect(AppStore.state).toEqual({
@@ -86,6 +97,7 @@ describe('AppStore', () => {
       systemColorScheme: ColorScheme.light,
       preferredLocale: null,
       availableLocales: [],
+      includedArchiveIdentifiers: [],
     });
   });
 });
