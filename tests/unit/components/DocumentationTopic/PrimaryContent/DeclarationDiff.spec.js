@@ -39,13 +39,11 @@ describe('DeclarationDiff', () => {
     expect(currentLists.at(0).props()).toEqual({
       declaration: propsData.changes.declaration.new[0],
       shouldCaption: true,
-      changeType: 'modified',
       declListExpanded: false,
     });
     expect(currentLists.at(1).props()).toEqual({
       declaration: propsData.changes.declaration.new[1],
       shouldCaption: true,
-      changeType: 'modified',
       declListExpanded: false,
     });
 
@@ -55,7 +53,6 @@ describe('DeclarationDiff', () => {
     expect(previousLists.at(0).props()).toEqual({
       declaration: propsData.changes.declaration.previous[0],
       shouldCaption: false, // false because we only have one declaration in the group
-      changeType: 'modified',
       declListExpanded: false,
     });
   });

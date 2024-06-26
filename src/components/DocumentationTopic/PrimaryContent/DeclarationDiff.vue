@@ -17,7 +17,6 @@
         :key="i"
         :declaration="declaration"
         :should-caption="currentDeclarations.length > 1"
-        :changeType="changeType"
       />
     </div>
     <div class="declaration-diff-previous">
@@ -27,7 +26,6 @@
         :key="i"
         :declaration="declaration"
         :should-caption="previousDeclarations.length > 1"
-        :changeType="changeType"
       />
     </div>
   </div>
@@ -48,14 +46,6 @@ export default {
      */
     changes: {
       type: Object,
-      required: true,
-    },
-    /**
-     * The applied change type to the diff.
-     * @type {"added"|"deprecated"|"modified"}
-     */
-    changeType: {
-      type: String,
       required: true,
     },
   },
