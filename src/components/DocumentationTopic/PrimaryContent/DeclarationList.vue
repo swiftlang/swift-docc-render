@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -10,14 +10,8 @@
 
 <template>
   <div
-    class="declaration-group"
-    :class="classes"
-    ref="apiChangesDiff"
+    class="declaration-list"
   >
-    <p v-if="shouldCaption" class="platforms">
-      <strong>{{ caption }}</strong>
-    </p>
-
     <transition-expand
       v-for="declaration in declarationTokens"
       :key="declaration.identifier"
@@ -27,19 +21,17 @@
         class="declaration-pill"
         :class="{
           'declaration-pill--expanded': hasOtherDeclarations && isExpanded,
+          [changeClasses]: changeType && declaration.identifier === selectedIdentifier,
+          'selected-declaration': isSelectedDeclaration(declaration.identifier),
         }"
       >
         <component
           :is="getWrapperComponent(declaration)"
           @click="selectDeclaration(declaration.identifier)"
-          class="declaration-source-wrapper"
+          class="declaration-group-wrapper"
         >
-          <Source
-            :tokens="declaration.tokens"
-            :language="interfaceLanguage"
-            :class="{
-              'selected-declaration': isSelectedDeclaration(declaration.identifier),
-            }"
+          <DeclarationGroup
+            v-bind="getDeclProp(declaration)"
           />
         </component>
       </div>
@@ -48,10 +40,8 @@
 </template>
 
 <script>
-import DeclarationSource from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
-import Language from 'docc-render/constants/Language';
+import DeclarationGroup from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import TransitionExpand from 'docc-render/components/TransitionExpand.vue';
-import { APIChangesMultipleLines } from 'docc-render/mixins/apiChangesHelpers';
 import { waitFor } from 'docc-render/utils/loading';
 import { buildUrl } from 'docc-render/utils/url-helper';
 
@@ -59,9 +49,9 @@ import { buildUrl } from 'docc-render/utils/url-helper';
  * Renders a code source with an optional caption.
  */
 export default {
-  name: 'DeclarationGroup',
+  name: 'DeclarationList',
   components: {
-    Source: DeclarationSource,
+    DeclarationGroup,
     TransitionExpand,
   },
   data() {
@@ -69,17 +59,7 @@ export default {
       selectedIdentifier: this.identifier,
     };
   },
-  mixins: [APIChangesMultipleLines],
   inject: {
-    languages: {
-      default: () => new Set(),
-    },
-    interfaceLanguage: {
-      default: () => Language.swift.key.api,
-    },
-    symbolKind: {
-      default: () => undefined,
-    },
     store: {
       default: () => ({
         state: {
@@ -118,13 +98,14 @@ export default {
     },
   },
   computed: {
+    changeClasses: ({ changeType }) => `changed changed-${changeType}`,
     hasOtherDeclarations: ({ declaration }) => declaration.otherDeclarations || null,
     declarationTokens: ({
       declaration,
       hasOtherDeclarations,
       identifier,
     }) => {
-      if (!hasOtherDeclarations) return [declaration];
+      if (!hasOtherDeclarations) return [{ ...declaration, identifier }];
       const {
         otherDeclarations: {
           declarations,
@@ -140,14 +121,6 @@ export default {
         ...declarations.slice(displayIndex),
       ];
     },
-    classes: ({ changeType, multipleLinesClass, displaysMultipleLinesAfterAPIChanges }) => ({
-      [`declaration-group--changed declaration-group--${changeType}`]: changeType,
-      [multipleLinesClass]: displaysMultipleLinesAfterAPIChanges,
-    }),
-    caption() {
-      return this.declaration.platforms.join(', ');
-    },
-    isSwift: ({ interfaceLanguage }) => interfaceLanguage === Language.swift.key.api,
     references: ({ store }) => store.state.references,
     isExpanded: {
       get: ({ declListExpanded }) => declListExpanded,
@@ -158,7 +131,7 @@ export default {
   },
   methods: {
     async selectDeclaration(identifier) {
-      if (identifier === this.identifier) return;
+      if (identifier === this.identifier || !this.isExpanded) return;
       this.selectedIdentifier = identifier;
       await this.$nextTick(); // wait for identifier to update
       this.isExpanded = false; // collapse the list
@@ -170,6 +143,16 @@ export default {
       return (!this.isExpanded || decl.identifier === this.identifier)
         ? 'div' : 'button';
     },
+    getDeclProp(decl) {
+      return !this.hasOtherDeclarations || decl.identifier === this.identifier
+        ? {
+          declaration: decl,
+          shouldCaption: this.shouldCaption,
+          changeType: this.changeType,
+        } : {
+          declaration: decl,
+        };
+    },
     isSelectedDeclaration(identifier) {
       return identifier === this.selectedIdentifier;
     },
@@ -180,59 +163,14 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.platforms {
-  @include font-styles(body-reduced);
-
-  margin-bottom: 0.45rem;
-  margin-top: var(--spacing-stacked-margin-xlarge);
-
-  .changed & {
-    padding-left: $code-source-spacing;
-  }
-
-  &:first-of-type {
-    margin-top: 1rem;
-  }
-}
-
-// don't highlight tokens in initial declaration until the user has explicitly
-// expanded a list of overloaded declarations — this rule could be simplified
-// in the future if the HTML is restructured to have an expanded state class for
-// the whole list instead of having it on each declaration
-.declaration-pill:not(.declaration-pill--expanded):deep(.highlighted) {
-  background: unset;
-  font-weight: normal;
-}
-
 .declaration-pill--expanded {
   transition-timing-function: linear;
   transition-property: opacity, height;
-  $docs-declaration-source-border-width: 1px;
-
-  .source {
-    border-width: $docs-declaration-source-border-width;
-
-    // ensure links are not clickable, when expanded
-    :deep(a) {
-      pointer-events: none;
-    }
-  }
+  margin: var(--declaration-code-listing-margin);
 
   > button {
     display: block;
     width: 100%;
-  }
-
-  .selected-declaration {
-    border-color: var(--color-focus-border-color, var(--color-focus-border-color));
-  }
-
-  .source:not(.selected-declaration) {
-    background: unset;
-  }
-
-  + .declaration-pill--expanded .source {
-    margin: var(--declaration-code-listing-margin);
   }
 
   &.expand-enter, &.expand-leave-to {
@@ -252,25 +190,10 @@ export default {
   }
 }
 
-.source {
-  transition: margin 0.3s linear;
-
-  .platforms + & {
-    margin: 0;
-  }
-}
-
 @include changedStyles {
-  &.declaration-group {
+  &.selected-declaration {
+    // add back unset background for pills with changes
     background: var(--background, var(--color-code-background));
-  }
-  .source {
-    background: none;
-    border: none;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: $change-icon-occupied-space;
-    padding-left: 0;
   }
 }
 </style>
