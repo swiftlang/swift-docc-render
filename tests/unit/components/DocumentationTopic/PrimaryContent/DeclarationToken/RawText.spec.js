@@ -14,19 +14,8 @@ import RawText from 'docc-render/components/DocumentationTopic/PrimaryContent/De
 describe('RawText', () => {
   const propsData = { text: 'foo' };
 
-  it('renders a raw text node', () => {
+  it('renders a span', () => {
     const wrapper = shallowMount(RawText, { propsData });
-    expect(wrapper.find('span').exists()).toBe(false);
-    expect(wrapper.text()).toBe(propsData.text);
-  });
-
-  it('renders a span with the text if private Vue API is not available', () => {
-    const wrapper = shallowMount(RawText, {
-      propsData,
-      mocks: {
-        _v: undefined, // `this._v` is private Vue API
-      },
-    });
     expect(wrapper.is('span')).toBe(true);
     expect(wrapper.text()).toBe(propsData.text);
   });
