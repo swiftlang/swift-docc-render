@@ -1,7 +1,7 @@
 /**
  * This source file is part of the Swift.org open source project
  *
- * Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+ * Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
  * Licensed under Apache License v2.0 with Runtime Library Exception
  *
  * See https://swift.org/LICENSE.txt for license information
@@ -10,10 +10,9 @@
 
 import DeclarationList from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationList.vue';
 import { shallowMount } from '@vue/test-utils';
-import DeclarationSource
-  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationSource.vue';
+import DeclarationGroup
+  from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationGroup.vue';
 import { waitFor } from 'docc-render/utils/loading';
-import { multipleLinesClass } from 'docc-render/constants/multipleLines';
 import { flushPromises } from '../../../../../test-utils';
 
 jest.mock('docc-render/utils/loading');
@@ -40,7 +39,7 @@ const basicDeclaration = {
 const propsData = {
   declaration: basicDeclaration,
   shouldCaption: true,
-  change: '',
+  changeType: '',
 };
 
 const withOtherDeclarations = {
@@ -65,8 +64,6 @@ const withOtherDeclarations = {
 
 const store = {
   state: {
-    onThisPageSections: [],
-    apiChanges: null,
     references: {
       'doc://boo': { url: 'url-boo' },
     },
@@ -74,9 +71,8 @@ const store = {
 };
 
 const provide = {
-  interfaceLanguage: 'swift',
-  languages: new Set(['swift', 'occ']),
   store,
+  identifier: 'doc://foo',
 };
 
 const createWrapper = options => shallowMount(DeclarationList, {
@@ -86,63 +82,15 @@ const createWrapper = options => shallowMount(DeclarationList, {
 });
 
 describe('DeclarationList', () => {
-  it('renders a platforms label for each variant', () => {
+  it('renders `DeclarationGroup` with correct prop', () => {
     const wrapper = createWrapper();
-
-    const labels = wrapper.find('.platforms');
-    expect(labels.text()).toBe('iOS, tvOS, watchOS');
-  });
-
-  it('does not render a caption label if `shouldCaption` is false', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        ...propsData,
-        shouldCaption: false,
-      },
+    const srcComponent = wrapper.find(DeclarationGroup);
+    expect(srcComponent.props('declaration')).toEqual({
+      ...propsData.declaration,
+      identifier: provide.identifier,
     });
-
-    const labels = wrapper.find('.platforms');
-    expect(labels.exists()).toBe(false);
-  });
-
-  it('adds a declaration-group--changed class when there are changes', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        ...propsData,
-        changeType: 'added',
-      },
-    });
-    expect(wrapper.classes()).toContain('declaration-group--changed');
-    expect(wrapper.classes()).toContain('declaration-group--added');
-  });
-
-  it('renders a `Source` for each variant', () => {
-    const wrapper = createWrapper();
-
-    const source = wrapper.find(DeclarationSource);
-    expect(source.props('tokens')).toEqual(propsData.declaration.tokens);
-  });
-
-  it('renders the `Source`', () => {
-    const wrapper = createWrapper();
-    const srcComponent = wrapper.find(DeclarationSource);
-    expect(srcComponent.props('language')).toEqual('swift');
-  });
-
-  it('applies the `multipleLinesClass` class if `displaysMultipleLinesAfterAPIChanges` is true', () => {
-    const wrapper = shallowMount({
-      ...DeclarationList,
-      computed: {
-        ...DeclarationList.computed,
-        displaysMultipleLinesAfterAPIChanges: () => true,
-      },
-    },
-    {
-      propsData,
-      provide,
-    });
-
-    expect(wrapper.classes()).toContain(multipleLinesClass);
+    expect(srcComponent.props('shouldCaption')).toEqual(propsData.shouldCaption);
+    expect(srcComponent.props('changeType')).toEqual(propsData.changeType);
   });
 });
 
@@ -160,19 +108,25 @@ describe('DeclarationList with otherDeclarations', () => {
     });
   });
 
-  it('renders only one `Source` when list is collapsed', () => {
+  it('renders only one `DeclarationGroup` when list is collapsed', () => {
     wrapper.setProps({ declListExpanded: false });
-    const sources = wrapper.findAll(DeclarationSource);
-    expect(sources.length).toBe(1);
-    expect(sources.at(0).props('tokens')).toEqual(withOtherDeclarations.declaration.tokens);
+    const groups = wrapper.findAll(DeclarationGroup);
+    expect(groups.length).toBe(1);
+    expect(groups.at(0).props('declaration')).toEqual({
+      tokens: basicDeclaration.tokens,
+      identifier: provide.identifier,
+    });
   });
 
-  it('renders one `Source` for each declaration in list in correct order when expanded', () => {
-    const sources = wrapper.findAll(DeclarationSource);
+  it('renders one `DeclarationGroup` for each declaration in list in correct order when expanded', () => {
+    const groups = wrapper.findAll(DeclarationGroup);
     // second item is the currently selected declaration
-    expect(sources.length).toBe(2);
-    expect(sources.at(0).props('tokens')).toEqual(withOtherDeclarations.declaration.otherDeclarations.declarations[0].tokens);
-    expect(sources.at(1).props('tokens')).toEqual(withOtherDeclarations.declaration.tokens);
+    expect(groups.length).toBe(2);
+    expect(groups.at(0).props('declaration')).toEqual(withOtherDeclarations.declaration.otherDeclarations.declarations[0]);
+    expect(groups.at(1).props('declaration')).toEqual({
+      tokens: basicDeclaration.tokens,
+      identifier: provide.identifier,
+    });
   });
 
   it('adds a `declaration-pill-expanded` class only when list is expanded', () => {
@@ -184,14 +138,14 @@ describe('DeclarationList with otherDeclarations', () => {
   });
 
   it('adds a `selected-declaration` class to the selected declaration', () => {
-    const sources = wrapper.findAll(DeclarationSource);
+    const declarations = wrapper.findAll('.declaration-pill');
     // second item is the currently selected declaration
-    expect(sources.at(0).classes()).not.toContain('selected-declaration');
-    expect(sources.at(1).classes()).toContain('selected-declaration');
+    expect(declarations.at(0).classes()).not.toContain('selected-declaration');
+    expect(declarations.at(1).classes()).toContain('selected-declaration');
   });
 
   it('renders a `div` for selected declaration, otherwise renders a `button`', () => {
-    const sourceWrapper = wrapper.findAll('.declaration-source-wrapper');
+    const sourceWrapper = wrapper.findAll('.declaration-group-wrapper');
     expect(sourceWrapper.at(0).find('div').exists()).toBe(false);
     expect(sourceWrapper.at(0).find('button').exists()).toBe(true);
     expect(sourceWrapper.at(1).find('div').exists()).toBe(true);
@@ -211,5 +165,79 @@ describe('DeclarationList with otherDeclarations', () => {
     expect(waitFor).toHaveBeenCalledWith(500); // wait for animation to be finish
     const url = `${store.state.references[identifier].url}?context=foo`;
     expect(mocks.$router.push).toHaveBeenCalledWith(url);
+  });
+});
+
+describe('DeclarationList with changes', () => {
+  it('renders `DeclarationGroup` with correct change type prop when no other declarations', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        ...propsData,
+      },
+      provide,
+    });
+
+    wrapper.setProps({
+      changeType: 'added',
+    });
+    let declarationPill = wrapper.find('.declaration-pill');
+    expect(declarationPill.classes()).toContain('changed');
+    expect(declarationPill.classes()).toContain('changed-added');
+
+    wrapper.setProps({
+      changeType: 'deprecated',
+    });
+    declarationPill = wrapper.find('.declaration-pill');
+    expect(declarationPill.classes()).toContain('changed');
+    expect(declarationPill.classes()).toContain('changed-deprecated');
+
+    wrapper.setProps({
+      changeType: 'modified',
+    });
+    declarationPill = wrapper.find('.declaration-pill');
+    expect(declarationPill.classes()).toContain('changed');
+    expect(declarationPill.classes()).toContain('changed-modified');
+
+    const declarationGroup = declarationPill.find(DeclarationGroup);
+    expect(declarationGroup.props('declaration')).toEqual({
+      ...propsData.declaration,
+      identifier: provide.identifier,
+    });
+  });
+
+  it('renders 1 `DeclarationGroup` with correct change type prop when other declarations collapsed', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        ...propsData,
+        ...withOtherDeclarations, // collapsed by default
+      },
+      provide,
+    });
+
+    wrapper.setProps({
+      changeType: 'added',
+    });
+    const declarationPills = wrapper.findAll('.declaration-pill');
+    expect(declarationPills.length).toBe(1);
+    expect(declarationPills.at(0).classes()).toContain('changed');
+    expect(declarationPills.at(0).classes()).toContain('changed-added');
+  });
+
+  it('renders the current symbol as a `DeclarationGroup` with correct change type prop when other declarations expanded', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        ...propsData,
+        ...withOtherDeclarations,
+        declListExpanded: true,
+      },
+      provide,
+    });
+
+    wrapper.setProps({
+      changeType: 'added',
+    });
+    const declarationPills = wrapper.findAll('.declaration-pill');
+    expect(declarationPills.at(1).classes()).toContain('changed'); // current symbol is second in the list
+    expect(declarationPills.at(1).classes()).toContain('changed-added');
   });
 });
