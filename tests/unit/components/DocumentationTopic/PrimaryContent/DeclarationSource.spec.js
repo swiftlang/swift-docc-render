@@ -19,6 +19,7 @@ import Language from '@/constants/Language';
 import { flushPromises } from '../../../../../test-utils';
 
 const { Token, CodeBlock } = DeclarationSource.components;
+const { HighlightKind } = DeclarationSource.constants;
 const { TokenKind } = Token.constants;
 
 jest.mock('@/utils/indentation');
@@ -192,6 +193,20 @@ describe('DeclarationSource', () => {
     expect(indentDeclaration)
       .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
     expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
+  });
+
+  it('adds a "highlighted" class for tokens with `highlight="changed"`', () => {
+    expect(wrapper.findAll('.highlighted').length).toBe(0);
+
+    const tokensWithHighlights = [...propsData.tokens];
+    tokensWithHighlights[0].highlight = HighlightKind.changed;
+    tokensWithHighlights[2].highlight = HighlightKind.changed;
+    wrapper.setProps({ tokens: tokensWithHighlights });
+
+    const highlightedTokens = wrapper.findAll('.highlighted');
+    expect(highlightedTokens.length).toBe(2);
+    expect(highlightedTokens.at(0).props('text')).toBe(propsData.tokens[0].text);
+    expect(highlightedTokens.at(1).props('text')).toBe(propsData.tokens[2].text);
   });
 });
 
