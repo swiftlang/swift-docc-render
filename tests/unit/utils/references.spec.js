@@ -26,7 +26,7 @@ describe('shouldInactivateRef', () => {
     expect(shouldInactivateRef(refId, { includedArchiveIdentifiers: [] })).toBe(false);
   });
 
-  it('returns false when non-empy `includedArchiveIdentifiers` context includes id', () => {
+  it('returns false when non-empty `includedArchiveIdentifiers` context includes id', () => {
     expect(shouldInactivateRef(refId, {
       includedArchiveIdentifiers: [archiveIds.Foo],
     })).toBe(false);
