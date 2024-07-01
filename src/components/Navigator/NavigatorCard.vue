@@ -72,7 +72,7 @@
               :isRendered="active"
               :filter-pattern="filterPattern"
               :filter-text="debouncedFilter"
-              :is-active="item.uid === activeUID"
+              :is-active="isActive(item)"
               :is-bold="activePathMap[item.uid]"
               :expanded="openNodes[item.uid]"
               :api-change="apiChangesObject[item.path]"
@@ -970,6 +970,16 @@ export default {
       if (parentIndex === -1) return;
       // we perform an intentional focus change, so no need to set `externalFocusChange` to `true`
       this.focusIndex(parentIndex);
+    },
+    isActive(item) {
+      // don't apply the active class for module nodes since they would already
+      // be highlighted in the top level title area — this is relevant when
+      // displaying navigator data for multiple targets where the modules
+      // themselves would come through as a normal item node
+      return item.uid === this.activeUID && !this.isModule(item);
+    },
+    isModule(item) {
+      return item.type === TopicTypes.module;
     },
   },
 };
