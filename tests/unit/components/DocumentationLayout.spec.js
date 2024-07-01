@@ -41,7 +41,7 @@ const navigatorReferences = { foo: {} };
 
 jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
   interfaceLanguages: {
-    [Language.swift.key.url]: [TechnologyWithChildren, { path: 'another/technology' }],
+    [Language.swift.key.url]: [TechnologyWithChildren],
   },
   references: navigatorReferences,
 });
