@@ -2619,5 +2619,27 @@ describe('NavigatorCard', () => {
       };
       expect(wrapper.vm.getChildPositionInScroller(element)).toBe(0);
     });
+
+    it('does not set `isActive` carditem prop for modules', async () => {
+      const wrapper1 = createWrapper({ children });
+      wrapper1.setData({ activeUID: children[0].uid });
+      await flushPromises();
+      expect(wrapper1.find(NavigatorCardItem).props('isActive')).toBe(true);
+
+      // same thing but with the first child having `type="module"`
+      const [firstChild, ...otherChildren] = children;
+      const wrapper2 = createWrapper({
+        children: [
+          {
+            ...firstChild,
+            type: TopicTypes.module,
+          },
+          ...otherChildren,
+        ],
+      });
+      await flushPromises();
+      wrapper2.setData({ activeUID: firstChild.uid });
+      expect(wrapper2.find(NavigatorCardItem).props('isActive')).toBe(false);
+    });
   });
 });
