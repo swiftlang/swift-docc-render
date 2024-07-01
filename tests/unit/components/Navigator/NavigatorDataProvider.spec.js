@@ -112,11 +112,6 @@ const swiftIndexOne = {
   path: technologyUrl,
   children: [1, 2, 3],
 };
-const swiftIndexTwo = {
-  id: 'bar',
-  path: '/bar',
-  children: [1],
-};
 const objectiveCIndexOne = {
   id: 'foo-objc',
   path: technologyUrl,
@@ -131,7 +126,6 @@ const response = {
   interfaceLanguages: {
     [Language.swift.key.url]: [
       swiftIndexOne,
-      swiftIndexTwo,
     ],
     [Language.objectiveC.key.url]: [
       objectiveCIndexOne,
@@ -316,6 +310,48 @@ describe('NavigatorDataProvider', () => {
       errorFetching: false,
       flatChildren: [],
       references: undefined,
+    });
+  });
+
+  it('includes all top-level modules as first layer of children when multiple are provided provided', async () => {
+    const target = {
+      A: {
+        title: 'A',
+        type: 'module',
+        path: '/documentation/a',
+        children: [],
+      },
+      B: {
+        title: 'B',
+        type: 'module',
+        path: '/documentation/b',
+        children: [],
+      },
+    };
+    const fakeResponse = {
+      includedArchiveIdentifiers: ['A', 'B'],
+      interfaceLanguages: {
+        [Language.swift.key.url]: [
+          target.A,
+          target.B,
+        ],
+      },
+    };
+    fetchIndexPathsData.mockResolvedValue(fakeResponse);
+    createWrapper();
+    await flushPromises();
+    expect(props.flatChildren.length).toBe(fakeResponse.interfaceLanguages.swift.length);
+    expect(props.flatChildren[0]).toMatchObject({
+      title: target.A.title,
+      type: target.A.type,
+      path: target.A.path,
+      depth: 0,
+    });
+    expect(props.flatChildren[1]).toMatchObject({
+      title: target.B.title,
+      type: target.B.type,
+      path: target.B.path,
+      depth: 0,
     });
   });
 
