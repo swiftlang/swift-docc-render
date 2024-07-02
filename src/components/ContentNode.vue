@@ -470,7 +470,7 @@ function renderNode(createElement, references) {
           url: reference.url,
           kind: reference.kind,
           role: reference.role,
-          isActive: node.isActive,
+          isActive: reference.isFromIncludedArchive && node.isActive,
           ideTitle: reference.ideTitle,
           titleStyle: reference.titleStyle,
           hasInlineFormatting: !!titleInlineContent,

@@ -19,7 +19,7 @@ export default {
   render(createElement) {
     const reference = this.references[this.identifier];
     // internal and external link
-    if (reference && reference.url) {
+    if (reference && reference.isFromIncludedArchive && reference.url) {
       return createElement(Reference, {
         props: {
           url: reference.url,

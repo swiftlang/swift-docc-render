@@ -7,6 +7,7 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   // inject the `store`
@@ -21,8 +22,37 @@ export default {
       }),
     },
   },
+  data: () => ({ appState: AppStore.state }),
   computed: {
     // exposes the references for the current page
-    references: ({ store }) => store.state.references,
+    references() {
+      const {
+        isFromIncludedArchive,
+        store: {
+          state: { references: originalRefs = {} },
+        },
+      } = this;
+      // if present, use `includedArchiveIdentifiers` data to determine which
+      // references should still be considered active or not
+      return Object.keys(originalRefs).reduce((newRefs, id) => ({
+        ...newRefs,
+        [id]: {
+          ...originalRefs[id],
+          isFromIncludedArchive: isFromIncludedArchive(id),
+        },
+      }), {});
+    },
+  },
+  methods: {
+    isFromIncludedArchive(id) {
+      const { includedArchiveIdentifiers = [] } = this.appState;
+      if (!includedArchiveIdentifiers.length) {
+        return true;
+      }
+
+      return includedArchiveIdentifiers.some(archiveId => (
+        id?.startsWith(`doc://${archiveId}`)
+      ));
+    },
   },
 };

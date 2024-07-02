@@ -9,13 +9,14 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
+import AppStore from 'docc-render/stores/AppStore';
 import LinkableToken
   from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken/LinkableToken.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 
 describe('LinkableToken', () => {
   const foo = {
-    identifier: 'foo',
+    identifier: 'doc://Foo/documentation/foo',
     title: 'Foo',
     url: '/documentation/foo',
   };
@@ -69,5 +70,45 @@ describe('LinkableToken', () => {
     expect(link.exists()).toBe(true);
     expect(link.props('url')).toBe(foo.url);
     expect(link.text()).toBe(foo.title);
+  });
+
+  it('renders a link for references to included archive content', () => {
+    AppStore.setIncludedArchiveIdentifiers(['Foo']);
+    const wrapper = shallowMount(LinkableToken, {
+      ...defaultOpts,
+      provide: {
+        store: {
+          state: {
+            references: {
+              [foo.identifier]: foo,
+            },
+          },
+        },
+      },
+    });
+
+    const link = wrapper.find(Reference);
+    expect(link.exists()).toBe(true);
+    expect(link.props('url')).toBe(foo.url);
+    expect(link.text()).toBe(foo.title);
+  });
+
+  it('renders a span for references to non-included archive content', () => {
+    AppStore.setIncludedArchiveIdentifiers(['Bar']);
+    const wrapper = shallowMount(LinkableToken, {
+      ...defaultOpts,
+      provide: {
+        store: {
+          state: {
+            references: {
+              [foo.identifier]: foo,
+            },
+          },
+        },
+      },
+    });
+
+    expect(wrapper.is('span')).toBe(true);
+    expect(wrapper.text()).toBe(foo.title);
   });
 });
