@@ -46,6 +46,8 @@ export default {
   methods: {
     isFromIncludedArchive(id) {
       const { includedArchiveIdentifiers = [] } = this.appState;
+      // for backwards compatibility purposes, treat all references as being
+      // from included archives if there is no data for it
       if (!includedArchiveIdentifiers.length) {
         return true;
       }
