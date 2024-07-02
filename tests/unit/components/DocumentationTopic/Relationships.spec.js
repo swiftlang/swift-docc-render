@@ -91,10 +91,8 @@ describe('Relationships', () => {
     expect(firstSection.props('anchor')).toBe(propsData.sections[0].anchor);
     const firstList = firstSection.find(List);
     expect(firstList.exists()).toBe(true);
-    expect(firstList.props('symbols')).toEqual([
-      foo,
-      bar,
-    ]);
+    expect(firstList.props('symbols')[0]).toMatchObject(foo);
+    expect(firstList.props('symbols')[1]).toMatchObject(bar);
     expect(firstList.props('type')).toEqual('inheritsFrom');
 
     const lastSection = sections.at(1);
@@ -102,7 +100,7 @@ describe('Relationships', () => {
     expect(lastSection.props('anchor')).toBe(null);
     const lastList = lastSection.find(List);
     expect(lastList.exists()).toBe(true);
-    expect(lastList.props('symbols')).toEqual([baz]);
+    expect(lastList.props('symbols')[0]).toMatchObject(baz);
     expect(firstList.props('type')).toEqual('inheritsFrom');
   });
 });

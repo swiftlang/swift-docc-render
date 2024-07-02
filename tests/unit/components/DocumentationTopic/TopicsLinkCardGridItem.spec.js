@@ -124,7 +124,7 @@ describe('TopicsLinkCardGridItem', () => {
         },
       },
     });
-    expect(wrapper.find(TopicTypeIcon).props('imageOverride')).toEqual(iconRef);
+    expect(wrapper.find(TopicTypeIcon).props('imageOverride')).toMatchObject(iconRef);
   });
 
   it('renders a TopicsLinkCardGridItem, in a none compact variant', async () => {

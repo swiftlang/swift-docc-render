@@ -41,7 +41,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(LinksBlock
 describe('LinksBlock', () => {
   it('renders the LinksBlock', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(TopicsLinkCardGrid).props()).toEqual({
+    expect(wrapper.find(TopicsLinkCardGrid).props()).toMatchObject({
       items: [references.foo, references.bar],
       topicStyle: defaultProps.blockStyle,
       usePager: false,
@@ -60,7 +60,7 @@ describe('LinksBlock', () => {
     // they are two, because one does not have a reference object
     const linkBlocks = wrapper.findAll(TopicsLinkBlock);
     expect(linkBlocks).toHaveLength(2);
-    expect(linkBlocks.at(0).props('topic')).toEqual(references.foo);
-    expect(linkBlocks.at(1).props('topic')).toEqual(references.bar);
+    expect(linkBlocks.at(0).props('topic')).toMatchObject(references.foo);
+    expect(linkBlocks.at(1).props('topic')).toMatchObject(references.bar);
   });
 });

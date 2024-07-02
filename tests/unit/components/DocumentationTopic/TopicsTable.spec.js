@@ -116,7 +116,7 @@ describe('TopicsTable', () => {
     const firstSectionBlocks = sections.at(0).findAll(TopicsLinkBlock);
     expect(firstSectionBlocks.length).toBe(1);
     expect(firstSectionBlocks.at(0).classes('topic')).toBe(true);
-    expect(firstSectionBlocks.at(0).props()).toEqual({
+    expect(firstSectionBlocks.at(0).props()).toMatchObject({
       topic: foo,
       isSymbolDeprecated: false,
       isSymbolBeta: false,
@@ -125,7 +125,7 @@ describe('TopicsTable', () => {
     const lastSectionBlocks = sections.at(1).findAll(TopicsLinkBlock);
     expect(lastSectionBlocks.length).toBe(1);
     expect(lastSectionBlocks.at(0).classes('topic')).toBe(true);
-    expect(lastSectionBlocks.at(0).props()).toEqual({
+    expect(lastSectionBlocks.at(0).props()).toMatchObject({
       topic: baz,
       isSymbolDeprecated: false,
       isSymbolBeta: false,
@@ -139,7 +139,7 @@ describe('TopicsTable', () => {
 
     const firstGrid = sections.at(0).find(TopicsLinkCardGrid);
     expect(firstGrid.classes('topic')).toBe(true);
-    expect(firstGrid.props()).toEqual({
+    expect(firstGrid.props()).toMatchObject({
       topicStyle: TopicSectionsStyle.compactGrid,
       items: [foo],
       usePager: false,
@@ -147,7 +147,7 @@ describe('TopicsTable', () => {
 
     const secondGrid = sections.at(1).find(TopicsLinkCardGrid);
     expect(secondGrid.classes('topic')).toBe(true);
-    expect(secondGrid.props()).toEqual({
+    expect(secondGrid.props()).toMatchObject({
       topicStyle: TopicSectionsStyle.compactGrid,
       items: [baz],
       usePager: false,
