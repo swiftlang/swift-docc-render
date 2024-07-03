@@ -86,7 +86,7 @@ export default {
         ...currentTechnology,
         children: currentLangTechnologies,
       }) : (
-        currentTechnology
+        currentTechnology ?? currentLangTechnologies[0]
       );
     },
   },

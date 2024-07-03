@@ -279,7 +279,7 @@ describe('NavigatorDataProvider', () => {
     });
   });
 
-  it('returns undefined technology, if none matches', async () => {
+  it('returns the first technology, if none matches', async () => {
     createWrapper({
       propsData: {
         technologyUrl: '/documentation/bar',
@@ -291,8 +291,8 @@ describe('NavigatorDataProvider', () => {
       isFetchingAPIChanges: false,
       errorFetching: false,
       isFetching: false,
-      technology: undefined,
-      flatChildren: [],
+      technology: swiftIndexOne,
+      flatChildren,
       references,
     });
   });
