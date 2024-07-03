@@ -180,7 +180,7 @@ describe('Declaration', () => {
 
     wrapper.setProps({ declarations });
 
-    const labels = wrapper.findAll(DeclarationGroup);
+    const labels = wrapper.findAll(DeclarationList);
     expect(labels.length).toBe(declarations.length);
     expect(labels.at(0).props('shouldCaption')).toBe(false);
     expect(labels.at(1).props('shouldCaption')).toBe(false);
