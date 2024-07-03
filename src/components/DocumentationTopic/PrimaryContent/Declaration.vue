@@ -20,7 +20,6 @@
     <template v-else>
       <DeclarationList
         v-for="(declaration, i) in declarations"
-        :class="changeClasses"
         :key="i"
         :declaration="declaration"
         :shouldCaption="hasPlatformVariants"
