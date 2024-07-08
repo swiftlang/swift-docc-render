@@ -82,12 +82,7 @@ export default {
       const currentTechnology = currentLangTechnologies.find(t => (
         technologyPath.toLowerCase() === t.path.toLowerCase()
       ));
-      return currentLangTechnologies.length > 1 ? ({
-        ...currentTechnology,
-        children: currentLangTechnologies,
-      }) : (
-        currentTechnology ?? currentLangTechnologies[0]
-      );
+      return currentTechnology ?? currentLangTechnologies[0];
     },
   },
   methods: {
