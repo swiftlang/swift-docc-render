@@ -21,7 +21,6 @@
         :role="symbol.role"
         :kind="symbol.kind"
         :url="symbol.url"
-        :isActive="symbol.isFromIncludedArchive"
       >{{symbol.title}}</Reference>
       <WordBreak v-else tag="code">{{symbol.title}}</WordBreak>
       <ConditionalConstraints

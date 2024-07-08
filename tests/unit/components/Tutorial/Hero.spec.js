@@ -112,7 +112,7 @@ describe('Hero', () => {
     const metadata = wrapper.find(HeroMetadata);
     expect(metadata.props('estimatedTimeInMinutes')).toBe(estimatedTimeInMinutes);
     expect(metadata.props('projectFilesUrl')).toBe(projectFilesUrl);
-    expect(metadata.props('xcodeRequirement')).toMatchObject(xcodeRequirementReference);
+    expect(metadata.props('xcodeRequirement')).toEqual(xcodeRequirementReference);
   });
 
   it('renders a div for the background and selects the light variant', () => {

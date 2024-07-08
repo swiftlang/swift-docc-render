@@ -9,7 +9,6 @@
 */
 
 import { shallowMount, mount } from '@vue/test-utils';
-import AppStore from 'docc-render/stores/AppStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 import CodeVoice from 'docc-render/components/ContentNode/CodeVoice.vue';
@@ -1297,43 +1296,6 @@ describe('ContentNode', () => {
 
       const reference = wrapper.find('.content');
       expect(reference.isEmpty()).toBe(true);
-    });
-
-    it('sets `isActive` for included archive content', () => {
-      const foo = {
-        identifier: 'doc://Foo/documentation/foo',
-        title: 'Foo',
-        url: '/documentation/foo',
-      };
-      const mountRef = (props = {}) => mountWithItem({
-        type: 'reference',
-        identifier: foo.identifier,
-        ...props,
-      }, {
-        [foo.identifier]: foo,
-      });
-
-      const wrapper1 = mountRef();
-      const ref1 = wrapper1.find('.content').find(Reference);
-      expect(ref1.exists()).toBe(true);
-      expect(ref1.props('isActive')).toBe(true);
-
-      AppStore.setIncludedArchiveIdentifiers(['Bar']);
-      const wrapper2 = mountRef();
-      const ref2 = wrapper2.find('.content').find(Reference);
-      expect(ref2.exists()).toBe(true);
-      expect(ref2.props('isActive')).toBe(false);
-
-      AppStore.setIncludedArchiveIdentifiers(['Bar', 'Foo']);
-      const wrapper3 = mountRef();
-      const ref3 = wrapper3.find('.content').find(Reference);
-      expect(ref3.exists()).toBe(true);
-      expect(ref3.props('isActive')).toBe(true);
-
-      const wrapper4 = mountRef({ isActive: false });
-      const ref4 = wrapper4.find('.content').find(Reference);
-      expect(ref4.exists()).toBe(true);
-      expect(ref4.props('isActive')).toBe(false);
     });
   });
 

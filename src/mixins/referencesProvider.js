@@ -32,15 +32,15 @@ export default {
           state: { references: originalRefs = {} },
         },
       } = this;
-      // if present, use `includedArchiveIdentifiers` data to determine which
-      // references should still be considered active or not
-      return Object.keys(originalRefs).reduce((newRefs, id) => ({
-        ...newRefs,
-        [id]: {
-          ...originalRefs[id],
-          isFromIncludedArchive: isFromIncludedArchive(id),
-        },
-      }), {});
+      // strip the `url` key from refs if their identifier comes from an
+      // archive that hasn't been included by DocC
+      return Object.keys(originalRefs).reduce((newRefs, id) => {
+        const { url, ...refWithoutUrl } = originalRefs[id];
+        return {
+          ...newRefs,
+          [id]: isFromIncludedArchive(id) ? originalRefs[id] : refWithoutUrl,
+        };
+      }, {});
     },
   },
   methods: {

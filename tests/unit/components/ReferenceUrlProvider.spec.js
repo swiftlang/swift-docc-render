@@ -53,7 +53,7 @@ describe('ReferenceUrlProvider', () => {
 
     const reference = references['doc://com.example.Test/tutorials/TechnologyX/Getting-Started'];
 
-    expect(assertProps).toMatchObject({
+    expect(assertProps).toEqual({
       title: reference.title,
       url: reference.url,
       urlWithParams: `${reference.url}?context=foo`,
