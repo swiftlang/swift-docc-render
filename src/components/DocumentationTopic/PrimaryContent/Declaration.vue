@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -159,6 +159,10 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .conditional-constraints {
+  margin-top: var(--declaration-conditional-constraints-margin, 20px);
+}
+
+.declaration-list:not(:first-child) {
   margin-top: var(--declaration-conditional-constraints-margin, 20px);
 }
 </style>
