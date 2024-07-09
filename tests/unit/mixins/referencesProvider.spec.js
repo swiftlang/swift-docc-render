@@ -45,11 +45,17 @@ const bb = {
   url: '/documentation/B/b',
   title: 'B.B',
 };
+const bbb = {
+  identifier: 'doc://BB/documentation/BB/b',
+  url: '/documentation/BB/b',
+  title: 'BB.B',
+};
 
 const references = {
   [aa.identifier]: aa,
   [ab.identifier]: ab,
   [bb.identifier]: bb,
+  [bbb.identifier]: bbb,
 };
 
 const provide = {
@@ -85,7 +91,7 @@ describe('referencesProvider', () => {
     // `includedArchiveIdentifiers` contains all refs - no changes to refs
     outer.setData({
       appState: {
-        includedArchiveIdentifiers: ['A', 'B'],
+        includedArchiveIdentifiers: ['A', 'B', 'BB'],
       },
     });
     inner = outer.find(FakeComponentInner);
@@ -109,5 +115,7 @@ describe('referencesProvider', () => {
     expect(refs3[ab.identifier].url).toBeFalsy(); // ab `url` is gone now
     expect(refs3[bb.identifier].title).toBe(bb.title);
     expect(refs3[bb.identifier].url).toBe(bb.url); // bb still has `url`
+    expect(refs3[bbb.identifier].title).toBe(bbb.title);
+    expect(refs3[bbb.identifier].url).toBeFalsy(); // bbb `url` is gone now
   });
 });

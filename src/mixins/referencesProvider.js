@@ -53,7 +53,7 @@ export default {
       }
 
       return includedArchiveIdentifiers.some(archiveId => (
-        id?.startsWith(`doc://${archiveId}`)
+        id?.startsWith(`doc://${archiveId}/`)
       ));
     },
   },
