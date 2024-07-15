@@ -54,6 +54,9 @@ export default {
   name: 'Reference',
   computed: {
     isInternal({ url }) {
+      if (!url) {
+        return false;
+      }
       if (!url.startsWith('/') && !url.startsWith('#')) {
         // If the URL has a scheme, it's not an internal link.
         return false;
@@ -92,7 +95,7 @@ export default {
   props: {
     url: {
       type: String,
-      required: true,
+      required: false,
     },
     kind: {
       type: String,
