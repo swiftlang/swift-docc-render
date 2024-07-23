@@ -113,11 +113,6 @@ const swiftIndexOne = {
   path: technologyUrl,
   children: [1, 2, 3],
 };
-const swiftIndexTwo = {
-  id: 'bar',
-  path: '/bar',
-  children: [1],
-};
 const objectiveCIndexOne = {
   id: 'foo-objc',
   path: technologyUrl,
@@ -138,7 +133,6 @@ const response = {
   interfaceLanguages: {
     [Language.swift.key.url]: [
       swiftIndexOne,
-      swiftIndexTwo,
     ],
     [Language.objectiveC.key.url]: [
       objectiveCIndexOne,
@@ -296,7 +290,7 @@ describe('NavigatorDataProvider', () => {
     });
   });
 
-  it('returns undefined technology, if none matches', async () => {
+  it('returns the first technology, if none matches', async () => {
     createWrapper({
       propsData: {
         technologyUrl: '/documentation/bar',
@@ -308,8 +302,8 @@ describe('NavigatorDataProvider', () => {
       isFetchingAPIChanges: false,
       errorFetching: false,
       isFetching: false,
-      technology: undefined,
-      flatChildren: [],
+      technology: swiftIndexOne,
+      flatChildren,
       references,
     });
   });
