@@ -11,6 +11,7 @@
 <script>
 import { fetchIndexPathsData } from 'docc-render/utils/data';
 import { flattenNestedData } from 'docc-render/utils/navigatorData';
+import AppStore from 'docc-render/stores/AppStore';
 import Language from 'docc-render/constants/Language';
 
 /**
@@ -89,11 +90,16 @@ export default {
     async fetchIndexData() {
       try {
         this.isFetching = true;
-        const { interfaceLanguages, references } = await fetchIndexPathsData(
+        const {
+          includedArchiveIdentifiers = [],
+          interfaceLanguages,
+          references,
+        } = await fetchIndexPathsData(
           { slug: this.$route.params.locale || '' },
         );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);
+        AppStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
       } catch (e) {
         this.errorFetching = true;
       } finally {
