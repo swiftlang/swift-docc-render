@@ -94,15 +94,9 @@ export default {
      * declarations.
      * @returns {boolean}
      */
-    hasPlatformVariants() {
-      const platforms = [];
-      for (let i = 0; i < this.declarations.length; i += 1) {
-        if (!platforms.some(platform => isEqual(platform, this.declarations[i].platforms))) {
-          platforms.push(this.declarations[i].platforms);
-        }
-      }
-      return platforms.length > 1;
-    },
+    hasPlatformVariants: ({ declarations }) => !(declarations.every(
+      ({ platforms }) => isEqual(platforms, declarations[0].platforms),
+    )),
     /**
      * Returns whether there are declaration changes.
      * @returns {boolean}
