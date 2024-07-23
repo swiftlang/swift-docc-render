@@ -7,6 +7,7 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import AppStore from 'docc-render/stores/AppStore';
 
 export default {
   // inject the `store`
@@ -21,8 +22,39 @@ export default {
       }),
     },
   },
+  data: () => ({ appState: AppStore.state }),
   computed: {
     // exposes the references for the current page
-    references: ({ store }) => store.state.references,
+    references() {
+      const {
+        isFromIncludedArchive,
+        store: {
+          state: { references: originalRefs = {} },
+        },
+      } = this;
+      // strip the `url` key from refs if their identifier comes from an
+      // archive that hasn't been included by DocC
+      return Object.keys(originalRefs).reduce((newRefs, id) => {
+        const { url, ...refWithoutUrl } = originalRefs[id];
+        return {
+          ...newRefs,
+          [id]: isFromIncludedArchive(id) ? originalRefs[id] : refWithoutUrl,
+        };
+      }, {});
+    },
+  },
+  methods: {
+    isFromIncludedArchive(id) {
+      const { includedArchiveIdentifiers = [] } = this.appState;
+      // for backwards compatibility purposes, treat all references as being
+      // from included archives if there is no data for it
+      if (!includedArchiveIdentifiers.length) {
+        return true;
+      }
+
+      return includedArchiveIdentifiers.some(archiveId => (
+        id?.startsWith(`doc://${archiveId}/`)
+      ));
+    },
   },
 };

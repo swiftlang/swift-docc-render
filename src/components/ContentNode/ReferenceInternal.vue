@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <router-link v-if="isActive" :to="url"><slot /></router-link>
+  <router-link v-if="url && isActive" :to="url"><slot /></router-link>
   <span v-else><slot/></span>
 </template>
 
@@ -19,7 +19,7 @@ export default {
   props: {
     url: {
       type: String,
-      required: true,
+      required: false,
     },
     isActive: {
       type: Boolean,
