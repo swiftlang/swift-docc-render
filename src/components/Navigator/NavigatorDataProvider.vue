@@ -80,9 +80,10 @@ export default {
         currentLangTechnologies = navigationIndex[Language.swift.key.url] || [];
       }
       // find the current technology
-      return currentLangTechnologies.find(t => (
+      const currentTechnology = currentLangTechnologies.find(t => (
         technologyPath.toLowerCase() === t.path.toLowerCase()
       ));
+      return currentTechnology ?? currentLangTechnologies[0];
     },
   },
   methods: {

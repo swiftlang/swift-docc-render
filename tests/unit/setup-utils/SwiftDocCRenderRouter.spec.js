@@ -168,10 +168,10 @@ describe('SwiftDocCRenderRouter', () => {
 
       expect(resolve('/documentation/foo').name).toBe(route);
       expect(resolve('/documentation/bar').name).toBe(route);
-      expect(resolve('/documentation/foobar').params.pathMatch).toBe('foobar');
+      expect(resolve('/documentation/foobar').params.pathMatch).toBe('/foobar');
 
       expect(resolve('/documentation/tutorials').name).toBe(route);
-      expect(resolve('/documentation/tutorials').params.pathMatch).toBe('tutorials');
+      expect(resolve('/documentation/tutorials').params.pathMatch).toBe('/tutorials');
     });
 
     it('resolves paths to the "documentation-topic-locale" route', () => {
@@ -180,17 +180,17 @@ describe('SwiftDocCRenderRouter', () => {
       expect(resolve('/en-US/documentation/foo').name).toBe(route);
       expect(resolve('/en-US/documentation/foo').params).toEqual({
         locale: 'en-US',
-        pathMatch: 'foo',
+        pathMatch: '/foo',
       });
       expect(resolve('/ja-JP/documentation/bar').name).toBe(route);
       expect(resolve('/ja-JP/documentation/bar').params).toEqual({
         locale: 'ja-JP',
-        pathMatch: 'bar',
+        pathMatch: '/bar',
       });
       expect(resolve('/zh-CN/documentation/baz').name).toBe(route);
       expect(resolve('/zh-CN/documentation/baz/qux').params).toEqual({
         locale: 'zh-CN',
-        pathMatch: 'baz/qux',
+        pathMatch: '/baz/qux',
       });
     });
   });
