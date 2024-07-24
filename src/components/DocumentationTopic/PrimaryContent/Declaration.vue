@@ -1,7 +1,7 @@
 <!--
   This source file is part of the Swift.org open source project
 
-  Copyright (c) 2021-2023 Apple Inc. and the Swift project authors
+  Copyright (c) 2021-2024 Apple Inc. and the Swift project authors
   Licensed under Apache License v2.0 with Runtime Library Exception
 
   See https://swift.org/LICENSE.txt for license information
@@ -53,6 +53,7 @@ import DeclarationSourceLink
 
 import { ChangeTypes } from 'docc-render/constants/Changes';
 import { multipleLinesClass } from 'docc-render/constants/multipleLines';
+import { isEqual } from 'docc-render/utils/arrays';
 
 export default {
   name: 'Declaration',
@@ -89,12 +90,13 @@ export default {
   computed: {
     /**
      * Show the captions of DeclarationGroup without changes
-     * when there are more than one declarations
+     * when there are multiple sets of platforms among the
+     * declarations.
      * @returns {boolean}
      */
-    hasPlatformVariants() {
-      return this.declarations.length > 1;
-    },
+    hasPlatformVariants: ({ declarations }) => !(declarations.every(
+      ({ platforms }) => isEqual(platforms, declarations[0].platforms),
+    )),
     /**
      * Returns whether there are declaration changes.
      * @returns {boolean}
@@ -151,6 +153,10 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .conditional-constraints {
+  margin-top: var(--declaration-conditional-constraints-margin, 20px);
+}
+
+.declaration-list:not(:first-child) {
   margin-top: var(--declaration-conditional-constraints-margin, 20px);
 }
 </style>
