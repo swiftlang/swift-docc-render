@@ -10,6 +10,7 @@
 
 import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import { shallowMount } from '@vue/test-utils';
+import AppStore from 'docc-render/stores/AppStore';
 import Language from 'docc-render/constants/Language';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { fetchIndexPathsData } from '@/utils/data';
@@ -112,11 +113,6 @@ const swiftIndexOne = {
   path: technologyUrl,
   children: [1, 2, 3],
 };
-const swiftIndexTwo = {
-  id: 'bar',
-  path: '/bar',
-  children: [1],
-};
 const objectiveCIndexOne = {
   id: 'foo-objc',
   path: technologyUrl,
@@ -127,11 +123,16 @@ const references = {
   foo: { bar: 'bar' },
 };
 
+const includedArchiveIdentifiers = [
+  'foo',
+  'bar',
+];
+
 const response = {
+  includedArchiveIdentifiers,
   interfaceLanguages: {
     [Language.swift.key.url]: [
       swiftIndexOne,
-      swiftIndexTwo,
     ],
     [Language.objectiveC.key.url]: [
       objectiveCIndexOne,
@@ -172,6 +173,10 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorD
 describe('NavigatorDataProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    AppStore.reset();
   });
 
   it('fetches data when mounting NavigatorDataProvider', async () => {
@@ -285,7 +290,7 @@ describe('NavigatorDataProvider', () => {
     });
   });
 
-  it('returns undefined technology, if none matches', async () => {
+  it('returns the first technology, if none matches', async () => {
     createWrapper({
       propsData: {
         technologyUrl: '/documentation/bar',
@@ -297,8 +302,8 @@ describe('NavigatorDataProvider', () => {
       isFetchingAPIChanges: false,
       errorFetching: false,
       isFetching: false,
-      technology: undefined,
-      flatChildren: [],
+      technology: swiftIndexOne,
+      flatChildren,
       references,
     });
   });
@@ -551,5 +556,13 @@ describe('NavigatorDataProvider', () => {
         uid: -827353283,
       },
     ]);
+  });
+
+  it('sets `includedArchiveIdentifiers` state in the app store', async () => {
+    expect(AppStore.state.includedArchiveIdentifiers).toEqual([]);
+    fetchIndexPathsData.mockResolvedValue(response);
+    createWrapper();
+    await flushPromises();
+    expect(AppStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
   });
 });
