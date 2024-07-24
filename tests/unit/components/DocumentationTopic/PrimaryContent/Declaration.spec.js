@@ -161,6 +161,31 @@ describe('Declaration', () => {
     expect(labels.at(1).props('shouldCaption')).toBe(true);
   });
 
+  it('does not render captions when multiple declarations have the same platforms', () => {
+    const declarations = [
+      propsData.declarations[0],
+      {
+        platforms: [
+          'macOS',
+        ],
+        tokens: [
+          {
+            kind: TokenKind.keyword,
+            text: 'let',
+          },
+          ...propsData.declarations[0].tokens.slice(1),
+        ],
+      },
+    ];
+
+    wrapper.setProps({ declarations });
+
+    const labels = wrapper.findAll(DeclarationList);
+    expect(labels.length).toBe(declarations.length);
+    expect(labels.at(0).props('shouldCaption')).toBe(false);
+    expect(labels.at(1).props('shouldCaption')).toBe(false);
+  });
+
   it('renders a `DeclarationDiff` when there are API changes for current and previous and collapsed other declaration list', () => {
     // no DeclarationDiff if no changes
     expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
