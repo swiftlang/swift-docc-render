@@ -32,7 +32,7 @@ export default [
     ),
   },
   {
-    path: '/documentation/*',
+    path: '/documentation*',
     name: documentationTopicName,
     component: () => import(
       /* webpackChunkName: "documentation-topic" */ 'theme/views/DocumentationTopic.vue'
