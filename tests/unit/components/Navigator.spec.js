@@ -14,6 +14,7 @@ import NavigatorCard from '@/components/Navigator/NavigatorCard.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
+import { flattenNestedData } from 'docc-render/utils/navigatorData';
 
 jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
@@ -105,7 +106,7 @@ const defaultProps = {
   scrollLockID: 'foo',
   renderFilterOnTop: false,
   navigatorReferences,
-  flatChildren: [],
+  flatChildren: flattenNestedData(technology.children),
 };
 
 const fauxAnchor = document.createElement('DIV');
@@ -139,7 +140,7 @@ describe('Navigator', () => {
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
-      children: [],
+      children: defaultProps.flatChildren,
       type: TopicTypes.module,
       technology: technology.title,
       technologyPath: technology.path,
@@ -151,6 +152,15 @@ describe('Navigator', () => {
       navigatorReferences,
       hideAvailableTags: false,
     });
+  });
+
+  it('does not render the NavigatorCard if children are not ready', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        flatChildren: [],
+      },
+    });
+    expect(wrapper.find(NavigatorCard).exists()).toBe(false);
   });
 
   it('renders an aria live that tells VO users when navigator is loading', () => {
@@ -201,7 +211,7 @@ describe('Navigator', () => {
     expect(wrapper.find(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
-      children: [],
+      children: defaultProps.flatChildren,
       type: TopicTypes.module,
       technology: fallbackTechnology.title,
       technologyPath: fallbackTechnology.url,
