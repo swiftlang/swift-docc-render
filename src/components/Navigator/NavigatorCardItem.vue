@@ -13,7 +13,7 @@
     :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
     :data-nesting-index="item.depth"
-    :id="`container-${item.uid}`"
+    :id="item.uid ? `container-${item.uid}` : null"
     :aria-hidden="isRendered ? null : 'true'"
     :hideNavigatorIcon="isGroupMarker"
     @keydown.left.native.prevent="handleLeftKeydown"
@@ -75,7 +75,7 @@
         }
       ) }}</span>
       <span
-        v-if="!isParent"
+        v-else-if="item.siblingsCount"
         :id="siblingsLabel"
         hidden
       >
