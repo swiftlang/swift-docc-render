@@ -184,6 +184,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    customTag: {
+      type: String,
+      require: false,
+    },
   },
   idState() {
     return {
@@ -204,7 +208,11 @@ export default {
     ),
     isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
-    refComponent: ({ isGroupMarker }) => (isGroupMarker ? 'h3' : Reference),
+    refComponent: ({ isGroupMarker, customTag }) => {
+      if (customTag) return customTag;
+      if (isGroupMarker) return 'h3';
+      return Reference;
+    },
   },
   methods: {
     toggleTree() {
