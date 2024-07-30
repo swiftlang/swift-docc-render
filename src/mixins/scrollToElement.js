@@ -26,7 +26,11 @@ export default {
       element.scrollIntoView();
       // if not scrolled to the bottom, use the offset
       if (window.scrollY + window.innerHeight < document.body.scrollHeight) {
-        window.scrollBy(-offset.x, -offset.y);
+        window.scrollBy({
+          top: -offset.y,
+          left: -offset.x,
+          behavior: 'smooth',
+        });
       }
       return element;
     },
