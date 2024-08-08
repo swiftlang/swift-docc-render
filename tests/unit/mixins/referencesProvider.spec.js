@@ -34,21 +34,25 @@ const aa = {
   identifier: 'doc://A/documentation/A/a',
   url: '/documentation/A/a',
   title: 'A.A',
+  type: 'topic',
 };
 const ab = {
   identifier: 'doc://A/documentation/A/b',
   url: '/documentation/A/b',
   title: 'A.B',
+  type: 'topic',
 };
 const bb = {
   identifier: 'doc://B/documentation/B/b',
   url: '/documentation/B/b',
   title: 'B.B',
+  type: 'topic',
 };
 const bbb = {
   identifier: 'doc://BB/documentation/BB/b',
   url: '/documentation/BB/b',
   title: 'BB.B',
+  type: 'topic',
 };
 
 const references = {
