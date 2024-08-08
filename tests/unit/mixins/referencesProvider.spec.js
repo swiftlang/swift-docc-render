@@ -54,12 +54,19 @@ const bbb = {
   title: 'BB.B',
   type: 'section',
 };
+const c = {
+  identifier: 'https://abc.dev',
+  url: 'https://abc.dev',
+  title: 'C',
+  type: 'link',
+};
 
 const references = {
   [aa.identifier]: aa,
   [ab.identifier]: ab,
   [bb.identifier]: bb,
   [bbb.identifier]: bbb,
+  [c.identifier]: c,
 };
 
 const provide = {
@@ -121,5 +128,6 @@ describe('referencesProvider', () => {
     expect(refs3[bb.identifier].url).toBe(bb.url); // bb still has `url`
     expect(refs3[bbb.identifier].title).toBe(bbb.title);
     expect(refs3[bbb.identifier].url).toBeFalsy(); // bbb `url` is gone now
+    expect(refs3[c.identifier].url).toBe(c.url); // external link untouched
   });
 });
