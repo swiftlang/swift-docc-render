@@ -50,9 +50,9 @@ const bb = {
 };
 const bbb = {
   identifier: 'doc://BB/documentation/BB/b',
-  url: '/documentation/BB/b',
+  url: '/documentation/BB/b#b',
   title: 'BB.B',
-  type: 'topic',
+  type: 'section',
 };
 
 const references = {
