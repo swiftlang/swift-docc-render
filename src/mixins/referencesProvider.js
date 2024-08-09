@@ -9,6 +9,11 @@
 */
 import AppStore from 'docc-render/stores/AppStore';
 
+const TopicReferenceTypes = new Set([
+  'section',
+  'topic',
+]);
+
 export default {
   // inject the `store`
   inject: {
@@ -32,14 +37,18 @@ export default {
           state: { references: originalRefs = {} },
         },
       } = this;
-      // strip the `url` key from refs if their identifier comes from an
-      // archive that hasn't been included by DocC
+      // strip the `url` key from "topic"/"section" refs if their identifier
+      // comes from an archive that hasn't been included by DocC
       return Object.keys(originalRefs).reduce((newRefs, id) => {
-        const { url, ...refWithoutUrl } = originalRefs[id];
-        return {
+        const originalRef = originalRefs[id];
+        const { url, ...refWithoutUrl } = originalRef;
+        return TopicReferenceTypes.has(originalRef.type) ? ({
           ...newRefs,
           [id]: isFromIncludedArchive(id) ? originalRefs[id] : refWithoutUrl,
-        };
+        }) : ({
+          ...newRefs,
+          [id]: originalRef,
+        });
       }, {});
     },
   },
