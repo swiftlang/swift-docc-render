@@ -11,7 +11,7 @@
 <script>
 import { fetchIndexPathsData } from 'docc-render/utils/data';
 import { flattenNestedData } from 'docc-render/utils/navigatorData';
-import AppStore from 'docc-render/stores/AppStore';
+import IndexStore from 'docc-render/stores/IndexStore';
 import Language from 'docc-render/constants/Language';
 
 /**
@@ -99,7 +99,7 @@ export default {
         );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);
-        AppStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
+        IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
       } catch (e) {
         this.errorFetching = true;
       } finally {
