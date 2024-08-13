@@ -10,14 +10,6 @@
 
 import IndexStore from 'docc-render/stores/IndexStore';
 
-const navigationIndex = {
-  interfaceLanguages: {
-    swift: [],
-    occ: [],
-    data: [],
-  },
-};
-
 const flatChildren = [
   {
     title: 'item 1',
@@ -42,7 +34,6 @@ const includedArchiveIdentifiers = ['foo', 'bar'];
 
 describe('IndexStore', () => {
   const defaultState = {
-    navigationIndex: {},
     flatChildren: [],
     references: {},
     apiChanges: {},
@@ -60,7 +51,6 @@ describe('IndexStore', () => {
 
   describe('reset', () => {
     it('restores the default state', () => {
-      IndexStore.state.navigationIndex = navigationIndex;
       IndexStore.state.flatChildren = flatChildren;
       IndexStore.state.references = references;
       IndexStore.state.apiChanges = apiChanges;
@@ -71,11 +61,6 @@ describe('IndexStore', () => {
       // assert all the state is reset
       expect(IndexStore.state).toEqual(defaultState);
     });
-  });
-
-  it('sets navigation index', () => {
-    IndexStore.setNavigationIndex(navigationIndex);
-    expect(IndexStore.state.navigationIndex).toBe(navigationIndex);
   });
 
   it('sets `flatChildren`', () => {

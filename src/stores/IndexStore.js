@@ -10,21 +10,16 @@
 
 export default {
   state: {
-    navigationIndex: {},
     flatChildren: [],
     references: {},
     apiChanges: {},
     includedArchiveIdentifiers: [],
   },
   reset() {
-    this.state.navigationIndex = {};
     this.state.flatChildren = [];
     this.state.references = {};
     this.state.apiChanges = {};
     this.state.includedArchiveIdentifiers = [];
-  },
-  setNavigationIndex(index) {
-    this.state.navigationIndex = index;
   },
   setFlatChildren(children) {
     this.state.flatChildren = children;
