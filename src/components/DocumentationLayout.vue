@@ -40,7 +40,7 @@
             <div class="documentation-layout-aside">
               <QuickNavigationModal
                 v-if="enableQuickNavigation"
-                :children="slotProps.flatChildren"
+                :children="state.flatChildren"
                 :showQuickNavigationModal.sync="showQuickNavigationModal"
                 :technology="technology ? technology.title : ''"
               />
@@ -87,6 +87,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
+import IndexStore from 'docc-render/stores/IndexStore';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
@@ -150,6 +151,7 @@ export default {
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       BreakpointName,
+      state: IndexStore.state,
     };
   },
   computed: {
