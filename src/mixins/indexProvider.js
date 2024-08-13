@@ -13,6 +13,7 @@ import IndexStore from 'docc-render/stores/IndexStore';
 
 export default {
   computed: {
+    technologyUrl: ({ technology }) => (technology ? technology.url : ''),
     /**
          * Recomputes the list of flat children.
          * @return NavigatorFlatItem[]
@@ -26,9 +27,9 @@ export default {
         ),
       )
     ),
-    technologyPath: ({ technology }) => {
+    technologyPath: ({ technologyUrl }) => {
       // regex should match only the first section, no slash - `/documentation/:technology`
-      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technology.url);
+      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technologyUrl);
       return matches ? matches[1] : '';
     },
     /**
