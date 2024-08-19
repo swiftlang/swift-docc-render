@@ -14,12 +14,14 @@ export default {
     references: {},
     apiChanges: {},
     includedArchiveIdentifiers: [],
+    errorFetching: false,
   },
   reset() {
     this.state.flatChildren = [];
     this.state.references = {};
     this.state.apiChanges = {};
     this.state.includedArchiveIdentifiers = [];
+    this.state.errorFetching = false;
   },
   setFlatChildren(children) {
     this.state.flatChildren = children;
@@ -32,5 +34,8 @@ export default {
   },
   setIncludedArchiveIdentifiers(includedArchiveIdentifiers) {
     this.state.includedArchiveIdentifiers = includedArchiveIdentifiers;
+  },
+  setErrorFetching(state) {
+    this.state.errorFetching = state;
   },
 };

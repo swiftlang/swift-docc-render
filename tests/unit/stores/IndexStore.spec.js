@@ -38,6 +38,7 @@ describe('IndexStore', () => {
     references: {},
     apiChanges: {},
     includedArchiveIdentifiers: [],
+    errorFetching: false,
   };
 
   beforeEach(() => {
@@ -55,6 +56,7 @@ describe('IndexStore', () => {
       IndexStore.state.references = references;
       IndexStore.state.apiChanges = apiChanges;
       IndexStore.state.includedArchiveIdentifiers = includedArchiveIdentifiers;
+      IndexStore.state.errorFetching = true;
 
       expect(IndexStore.state).not.toEqual(defaultState);
       IndexStore.reset();
@@ -81,5 +83,10 @@ describe('IndexStore', () => {
   it('sets `includedArchiveIdentifiers`', () => {
     IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
     expect(IndexStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
+  });
+
+  it('sets `errorFetching`', () => {
+    IndexStore.setErrorFetching(true);
+    expect(IndexStore.state.errorFetching).toEqual(true);
   });
 });

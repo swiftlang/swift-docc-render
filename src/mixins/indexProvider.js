@@ -65,9 +65,7 @@ export default {
         IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
         IndexStore.setFlatChildren(this.flatChildren);
       } catch (e) {
-        this.errorFetching = true;
-      } finally {
-        this.isFetching = false;
+        IndexStore.setErrorFetching(true);
       }
     },
   },
