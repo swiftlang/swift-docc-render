@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 function rundocc() {
   if command -v xcrun >/dev/null 2>&1; then
