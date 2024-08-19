@@ -7,6 +7,7 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import { fetchIndexPathsData } from 'docc-render/utils/data';
 import { flattenNestedData } from 'docc-render/utils/navigatorData';
 import Language from 'docc-render/constants/Language';
 import IndexStore from 'docc-render/stores/IndexStore';
@@ -21,10 +22,8 @@ export default {
     flatChildren: ({
       technologyWithChildren = {},
     }) => (
-      IndexStore.setFlatChildren(
-        flattenNestedData(
-          technologyWithChildren.children || [], null, 0, technologyWithChildren.beta,
-        ),
+      flattenNestedData(
+        technologyWithChildren.children || [], null, 0, technologyWithChildren.beta,
       )
     ),
     technologyPath: ({ technologyUrl }) => {
@@ -48,6 +47,34 @@ export default {
         technologyPath.toLowerCase() === t.path.toLowerCase()
       ));
       return currentTechnology ?? currentLangTechnologies[0];
+    },
+  },
+  methods: {
+    async fetchIndexData() {
+      try {
+        this.isFetching = true;
+        const {
+          includedArchiveIdentifiers = [],
+          interfaceLanguages,
+          references,
+        } = await fetchIndexPathsData(
+          { slug: this.$route.params.locale || '' },
+        );
+        this.navigationIndex = Object.freeze(interfaceLanguages);
+        IndexStore.setReferences(references);
+        IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
+        IndexStore.setFlatChildren(this.flatChildren);
+      } catch (e) {
+        this.errorFetching = true;
+      } finally {
+        this.isFetching = false;
+      }
+    },
+  },
+  watch: {
+    '$route.params.locale': {
+      handler: 'fetchIndexData',
+      immediate: true,
     },
   },
 };

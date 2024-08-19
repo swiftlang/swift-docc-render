@@ -50,13 +50,11 @@ import {
   clone,
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
-  fetchIndexPathsData,
 } from 'docc-render/utils/data';
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
 import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
-import IndexStore from 'docc-render/stores/IndexStore';
-import indexProvider from 'docc-render/mixins/indexProvider';
+import indexProvider from 'theme/mixins/indexProvider';
 import Language from 'docc-render/constants/Language';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils';
@@ -270,25 +268,6 @@ export default {
     applyObjcOverrides() {
       this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
     },
-    async fetchIndexData() {
-      try {
-        this.isFetching = true;
-        const {
-          includedArchiveIdentifiers = [],
-          interfaceLanguages,
-          references,
-        } = await fetchIndexPathsData(
-          { slug: this.$route.params.locale || '' },
-        );
-        this.navigationIndex = interfaceLanguages;
-        IndexStore.setReferences(references);
-        IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
-      } catch (e) {
-        this.errorFetching = true;
-      } finally {
-        this.isFetching = false;
-      }
-    },
   },
   mounted() {
     this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
@@ -351,10 +330,6 @@ export default {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
       });
-    },
-    '$route.params.locale': {
-      handler: 'fetchIndexData',
-      immediate: true,
     },
   },
 };
