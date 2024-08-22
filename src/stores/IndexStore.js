@@ -12,16 +12,18 @@ export default {
   state: {
     flatChildren: [],
     references: {},
-    apiChanges: {},
+    apiChanges: null,
     includedArchiveIdentifiers: [],
     errorFetching: false,
+    technologyProps: {},
   },
   reset() {
     this.state.flatChildren = [];
     this.state.references = {};
-    this.state.apiChanges = {};
+    this.state.apiChanges = null;
     this.state.includedArchiveIdentifiers = [];
     this.state.errorFetching = false;
+    this.state.technologyProps = {};
   },
   setFlatChildren(children) {
     this.state.flatChildren = children;
@@ -37,5 +39,8 @@ export default {
   },
   setErrorFetching(state) {
     this.state.errorFetching = state;
+  },
+  setTechnologyProps(technology) {
+    this.state.technologyProps = technology;
   },
 };

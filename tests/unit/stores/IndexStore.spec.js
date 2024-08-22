@@ -32,13 +32,20 @@ const apiChanges = {
 
 const includedArchiveIdentifiers = ['foo', 'bar'];
 
+const technologyProps = {
+  technology: 'title',
+  technologyPath: 'path',
+  isTechnologyBeta: false,
+};
+
 describe('IndexStore', () => {
   const defaultState = {
     flatChildren: [],
     references: {},
-    apiChanges: {},
+    apiChanges: null,
     includedArchiveIdentifiers: [],
     errorFetching: false,
+    technologyProps: {},
   };
 
   beforeEach(() => {
@@ -57,6 +64,7 @@ describe('IndexStore', () => {
       IndexStore.state.apiChanges = apiChanges;
       IndexStore.state.includedArchiveIdentifiers = includedArchiveIdentifiers;
       IndexStore.state.errorFetching = true;
+      IndexStore.state.technologyProps = technologyProps;
 
       expect(IndexStore.state).not.toEqual(defaultState);
       IndexStore.reset();
@@ -88,5 +96,10 @@ describe('IndexStore', () => {
   it('sets `errorFetching`', () => {
     IndexStore.setErrorFetching(true);
     expect(IndexStore.state.errorFetching).toEqual(true);
+  });
+
+  it('sets `technologyProps`', () => {
+    IndexStore.setTechnologyProps(technologyProps);
+    expect(IndexStore.state.technologyProps).toEqual(technologyProps);
   });
 });

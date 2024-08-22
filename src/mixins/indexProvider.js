@@ -54,6 +54,13 @@ export default {
       const slug = this.$route.params.locale || '';
       return pathJoin(['/index/', slug, 'index.json']);
     },
+    technologyProps: ({ technologyWithChildren }) => (
+      !technologyWithChildren ? null : {
+        technology: technologyWithChildren.title,
+        technologyPath: technologyWithChildren.path || technologyWithChildren.url,
+        isTechnologyBeta: technologyWithChildren.beta,
+      }
+    ),
   },
   methods: {
     async fetchIndexPathsData() {
@@ -66,12 +73,13 @@ export default {
         const {
           includedArchiveIdentifiers = [],
           interfaceLanguages,
-          references,
+          references = {},
         } = await this.fetchIndexPathsData();
         this.navigationIndex = Object.freeze(interfaceLanguages);
         IndexStore.setReferences(references);
         IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
         IndexStore.setFlatChildren(this.flatChildren);
+        IndexStore.setTechnologyProps(this.technologyProps);
       } catch (e) {
         IndexStore.setErrorFetching(true);
       }
