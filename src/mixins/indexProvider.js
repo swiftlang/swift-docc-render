@@ -7,7 +7,9 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
-import { fetchIndexPathsData } from 'docc-render/utils/data';
+import { fetchData } from 'docc-render/utils/data';
+import { pathJoin } from 'docc-render/utils/assets';
+import { getAbsoluteUrl } from 'docc-render/utils/url-helper';
 import { flattenNestedData } from 'docc-render/utils/navigatorData';
 import Language from 'docc-render/constants/Language';
 import IndexStore from 'docc-render/stores/IndexStore';
@@ -48,8 +50,16 @@ export default {
       ));
       return currentTechnology ?? currentLangTechnologies[0];
     },
+    indexDataPath() {
+      const slug = this.$route.params.locale || '';
+      return pathJoin(['/index/', slug, 'index.json']);
+    },
   },
   methods: {
+    async fetchIndexPathsData() {
+      const path = getAbsoluteUrl(this.indexDataPath);
+      return fetchData(path);
+    },
     async fetchIndexData() {
       try {
         this.isFetching = true;
@@ -57,9 +67,7 @@ export default {
           includedArchiveIdentifiers = [],
           interfaceLanguages,
           references,
-        } = await fetchIndexPathsData(
-          { slug: this.$route.params.locale || '' },
-        );
+        } = await this.fetchIndexPathsData();
         this.navigationIndex = Object.freeze(interfaceLanguages);
         IndexStore.setReferences(references);
         IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
@@ -70,7 +78,7 @@ export default {
     },
   },
   watch: {
-    '$route.params.locale': {
+    indexDataPath: {
       handler: 'fetchIndexData',
       immediate: true,
     },
