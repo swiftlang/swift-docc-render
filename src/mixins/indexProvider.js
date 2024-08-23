@@ -37,7 +37,11 @@ export default {
      * Extracts the technology data, for the currently chosen language
      * @return {Object}
      */
-    technologyWithChildren({ navigationIndex, topicProps: { interfaceLanguage }, technologyPath }) {
+    technologyWithChildren({
+      navigationIndex,
+      topicProps: { interfaceLanguage } = { interfaceLanguage: Language.swift.key.url },
+      technologyPath,
+    }) {
       // get the technologies for the current language
       let currentLangTechnologies = navigationIndex[interfaceLanguage] || [];
       // if no such items, we use the default swift one
@@ -51,7 +55,7 @@ export default {
       return currentTechnology ?? currentLangTechnologies[0];
     },
     indexDataPath() {
-      const slug = this.$route.params.locale || '';
+      const slug = this.$route?.params?.locale || '';
       return pathJoin(['/index/', slug, 'index.json']);
     },
     technologyProps: ({ technologyWithChildren }) => (
@@ -69,7 +73,6 @@ export default {
     },
     async fetchIndexData() {
       try {
-        this.isFetching = true;
         const {
           includedArchiveIdentifiers = [],
           interfaceLanguages,
