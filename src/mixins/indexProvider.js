@@ -73,6 +73,7 @@ export default {
     },
     async fetchIndexData() {
       try {
+        IndexStore.reset();
         const {
           includedArchiveIdentifiers = [],
           interfaceLanguages,
