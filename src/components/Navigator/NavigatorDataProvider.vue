@@ -11,7 +11,6 @@
 <script>
 import { fetchIndexPathsData } from 'docc-render/utils/data';
 import { flattenNestedData } from 'docc-render/utils/navigatorData';
-import IndexStore from 'docc-render/stores/IndexStore';
 import Language from 'docc-render/constants/Language';
 
 /**
@@ -91,7 +90,6 @@ export default {
       try {
         this.isFetching = true;
         const {
-          includedArchiveIdentifiers = [],
           interfaceLanguages,
           references,
         } = await fetchIndexPathsData(
@@ -99,7 +97,6 @@ export default {
         );
         this.navigationIndex = Object.freeze(interfaceLanguages);
         this.navigationReferences = Object.freeze(references);
-        IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
       } catch (e) {
         this.errorFetching = true;
       } finally {
