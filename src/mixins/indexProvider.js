@@ -40,7 +40,6 @@ export default {
     technologyWithChildren({
       navigationIndex,
       topicProps: { interfaceLanguage } = { interfaceLanguage: Language.swift.key.url },
-      technologyPath,
     }) {
       // get the technologies for the current language
       let currentLangTechnologies = navigationIndex[interfaceLanguage] || [];
@@ -48,11 +47,7 @@ export default {
       if (!currentLangTechnologies.length) {
         currentLangTechnologies = navigationIndex[Language.swift.key.url] || [];
       }
-      // find the current technology
-      const currentTechnology = currentLangTechnologies.find(t => (
-        technologyPath.toLowerCase() === t.path.toLowerCase()
-      ));
-      return currentTechnology ?? currentLangTechnologies[0];
+      return currentLangTechnologies[0];
     },
     indexDataPath() {
       const slug = this.$route?.params?.locale || '';
