@@ -9,14 +9,12 @@
 */
 import { fetchData } from 'docc-render/utils/data';
 import { pathJoin } from 'docc-render/utils/assets';
-import { getAbsoluteUrl } from 'docc-render/utils/url-helper';
 import { flattenNestedData } from 'docc-render/utils/navigatorData';
 import Language from 'docc-render/constants/Language';
 import IndexStore from 'docc-render/stores/IndexStore';
 
 export default {
   computed: {
-    technologyUrl: ({ technology }) => (technology ? technology.url : ''),
     /**
          * Recomputes the list of flat children.
          * @return NavigatorFlatItem[]
@@ -28,11 +26,6 @@ export default {
         technologyWithChildren.children || [], null, 0, technologyWithChildren.beta,
       )
     ),
-    technologyPath: ({ technologyUrl }) => {
-      // regex should match only the first section, no slash - `/documentation/:technology`
-      const matches = /(\/documentation\/(?:[^/]+))\/?/.exec(technologyUrl);
-      return matches ? matches[1] : '';
-    },
     /**
      * Extracts the technology data, for the currently chosen language
      * @return {Object}
@@ -63,8 +56,7 @@ export default {
   },
   methods: {
     async fetchIndexPathsData() {
-      const path = getAbsoluteUrl(this.indexDataPath);
-      return fetchData(path);
+      return fetchData(this.indexDataPath);
     },
     async fetchIndexData() {
       try {
