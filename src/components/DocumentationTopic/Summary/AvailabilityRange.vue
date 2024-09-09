@@ -54,7 +54,7 @@ export default {
       return deprecatedAt ? (
         this.$t('availability.introduced-and-deprecated', { name, introducedAt, deprecatedAt })
       ) : (
-        this.$t('availability.available-on', { name, introducedAt })
+        this.$t('availability.available-on-platform-version', { name, introducedAt })
       );
     },
     text() {
