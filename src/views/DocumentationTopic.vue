@@ -48,16 +48,13 @@ import { TopicRole } from 'docc-render/constants/roles';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import {
   clone,
-  fetchData,
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
-import { pathJoin } from 'docc-render/utils/assets';
-import { flattenNavigationIndex, extractTechnologyProps } from 'docc-render/utils/navigatorData';
-import IndexStore from 'docc-render/stores/IndexStore';
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
 import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+import indexProvider from 'theme/mixins/indexProvider';
 import Language from 'docc-render/constants/Language';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils';
@@ -78,7 +75,7 @@ export default {
     Topic: DocumentationTopic,
     DocumentationLayout,
   },
-  mixins: [OnThisPageRegistrator, communicationBridgeUtils],
+  mixins: [OnThisPageRegistrator, communicationBridgeUtils, indexProvider],
   props: {
     enableMinimized: {
       type: Boolean,
@@ -262,10 +259,6 @@ export default {
         path: rootHierarchyReference.url,
         query: $route.query,
       } : null),
-    indexDataPath() {
-      const slug = this.$route?.params?.locale || '';
-      return pathJoin(['/index/', slug, 'index.json']);
-    },
   },
   methods: {
     handleCodeColorsChange(codeColors) {
@@ -273,25 +266,6 @@ export default {
     },
     applyObjcOverrides() {
       this.topicDataObjc = apply(clone(this.topicData), this.objcOverrides);
-    },
-    async fetchIndexPathsData() {
-      return fetchData(this.indexDataPath);
-    },
-    async fetchIndexData() {
-      try {
-        IndexStore.reset();
-        const {
-          includedArchiveIdentifiers = [],
-          interfaceLanguages,
-          references = {},
-        } = await this.fetchIndexPathsData();
-        IndexStore.setFlatChildren(flattenNavigationIndex(interfaceLanguages));
-        IndexStore.setTechnologyProps(extractTechnologyProps(interfaceLanguages));
-        IndexStore.setReferences(references);
-        IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
-      } catch (e) {
-        IndexStore.setErrorFetching(true);
-      }
     },
   },
   mounted() {
@@ -355,10 +329,6 @@ export default {
         // Send a 'rendered' message to the host when new data has been patched onto the DOM.
         this.newContentMounted();
       });
-    },
-    indexDataPath: {
-      handler: 'fetchIndexData',
-      immediate: true,
     },
   },
 };
