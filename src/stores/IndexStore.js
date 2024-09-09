@@ -10,7 +10,7 @@
 
 export default {
   state: {
-    flatChildren: [],
+    flatChildren: {},
     references: {},
     apiChanges: null,
     includedArchiveIdentifiers: [],
@@ -18,7 +18,7 @@ export default {
     technologyProps: {},
   },
   reset() {
-    this.state.flatChildren = [];
+    this.state.flatChildren = {};
     this.state.references = {};
     this.state.apiChanges = null;
     this.state.includedArchiveIdentifiers = [];
