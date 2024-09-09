@@ -40,7 +40,7 @@
             <div class="documentation-layout-aside">
               <QuickNavigationModal
                 v-if="enableQuickNavigation"
-                :children="indexState.flatChildren"
+                :children="quickNavData"
                 :showQuickNavigationModal.sync="showQuickNavigationModal"
                 :technology="technology ? technology.title : ''"
               />
@@ -157,6 +157,9 @@ export default {
   computed: {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
+    ),
+    quickNavData: ({ indexState, interfaceLanguage }) => (
+      indexState.flatChildren?.[interfaceLanguage] || []
     ),
     sidebarProps: ({
       sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge, navigatorFixedWidth,

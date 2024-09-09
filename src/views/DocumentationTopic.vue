@@ -87,7 +87,6 @@ export default {
       topicDataDefault: null,
       topicDataObjc: null,
       store: DocumentationTopicStore,
-      navigationIndex: {},
     };
   },
   provide() {

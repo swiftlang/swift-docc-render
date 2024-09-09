@@ -615,7 +615,7 @@ export default {
         identifier: {
           interfaceLanguage,
           url: identifier,
-        } = {},
+        },
         metadata: {
           conformance,
           hasNoExpandedDocumentation,
@@ -643,7 +643,7 @@ export default {
         seeAlsoSections,
         variantOverrides,
         variants = [],
-      } = json || {};
+      } = json;
       const languagePaths = variants.reduce((memo, variant) => (
         variant.traits.reduce((_memo, trait) => (!trait.interfaceLanguage ? _memo : ({
           ..._memo,

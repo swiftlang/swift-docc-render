@@ -9,50 +9,15 @@
 */
 import { fetchData } from 'docc-render/utils/data';
 import { pathJoin } from 'docc-render/utils/assets';
-import { flattenNestedData } from 'docc-render/utils/navigatorData';
-import Language from 'docc-render/constants/Language';
+import { flattenNavigationIndex, extractTechnologyProps } from 'docc-render/utils/navigatorData';
 import IndexStore from 'docc-render/stores/IndexStore';
 
 export default {
   computed: {
-    /**
-         * Recomputes the list of flat children.
-         * @return NavigatorFlatItem[]
-         */
-    flatChildren: ({
-      technologyWithChildren = {},
-    }) => (
-      flattenNestedData(
-        technologyWithChildren.children || [], null, 0, technologyWithChildren.beta,
-      )
-    ),
-    /**
-     * Extracts the technology data, for the currently chosen language
-     * @return {Object}
-     */
-    technologyWithChildren({
-      navigationIndex,
-      topicProps: { interfaceLanguage } = { interfaceLanguage: Language.swift.key.url },
-    }) {
-      // get the technologies for the current language
-      let currentLangTechnologies = navigationIndex[interfaceLanguage] || [];
-      // if no such items, we use the default swift one
-      if (!currentLangTechnologies.length) {
-        currentLangTechnologies = navigationIndex[Language.swift.key.url] || [];
-      }
-      return currentLangTechnologies[0];
-    },
     indexDataPath() {
       const slug = this.$route?.params?.locale || '';
       return pathJoin(['/index/', slug, 'index.json']);
     },
-    technologyProps: ({ technologyWithChildren }) => (
-      !technologyWithChildren ? null : {
-        technology: technologyWithChildren.title,
-        technologyPath: technologyWithChildren.path || technologyWithChildren.url,
-        isTechnologyBeta: technologyWithChildren.beta,
-      }
-    ),
   },
   methods: {
     async fetchIndexPathsData() {
@@ -66,11 +31,10 @@ export default {
           interfaceLanguages,
           references = {},
         } = await this.fetchIndexPathsData();
-        this.navigationIndex = Object.freeze(interfaceLanguages);
+        IndexStore.setFlatChildren(flattenNavigationIndex(interfaceLanguages));
+        IndexStore.setTechnologyProps(extractTechnologyProps(interfaceLanguages));
         IndexStore.setReferences(references);
         IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
-        IndexStore.setFlatChildren(this.flatChildren);
-        IndexStore.setTechnologyProps(this.technologyProps);
       } catch (e) {
         IndexStore.setErrorFetching(true);
       }
