@@ -34,6 +34,13 @@ describe('AvailabilityRange', () => {
 
     wrapper.setProps({ deprecatedAt });
     expect(wrapper.text()).toBe('fooOS 1.0\u20132.0');
+
+    wrapper.setProps({
+      ...propsData,
+      deprecatedAt: null,
+      introducedAt: null,
+    });
+    expect(wrapper.text()).toBe('fooOS');
   });
 
   it('renders a descriptive title attribute', () => {
@@ -43,6 +50,13 @@ describe('AvailabilityRange', () => {
     wrapper.setProps({ deprecatedAt });
     expect(wrapper.attributes('title'))
       .toBe('availability.introduced-and-deprecated fooOS 1.0 2.0');
+
+    wrapper.setProps({
+      ...propsData,
+      deprecatedAt: null,
+      introducedAt: null,
+    });
+    expect(wrapper.attributes('title')).toBe('availability.available-on-platform fooOS');
   });
 
   it('renders an aria label with the description (prepended with short text)', () => {
@@ -52,5 +66,13 @@ describe('AvailabilityRange', () => {
     wrapper.setProps({ deprecatedAt });
     expect(wrapper.attributes('aria-label'))
       .toBe('fooOS 1.0\u20132.0, change-type.deprecated, availability.introduced-and-deprecated fooOS 1.0 2.0');
+
+    wrapper.setProps({
+      ...propsData,
+      deprecatedAt: null,
+      introducedAt: null,
+    });
+    expect(wrapper.attributes('aria-label'))
+      .toBe('fooOS, availability.available-on-platform fooOS');
   });
 });
