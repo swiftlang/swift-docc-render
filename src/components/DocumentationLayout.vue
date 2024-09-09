@@ -40,7 +40,7 @@
             <div class="documentation-layout-aside">
               <QuickNavigationModal
                 v-if="enableQuickNavigation"
-                :children="indexState.flatChildren"
+                :children="indexState.flatChildren[interfaceLanguage]"
                 :showQuickNavigationModal.sync="showQuickNavigationModal"
                 :technology="technology ? technology.title : ''"
               />
