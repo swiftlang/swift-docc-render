@@ -83,6 +83,7 @@ import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigati
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import Language from 'docc-render/constants/Language';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
@@ -158,9 +159,14 @@ export default {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    quickNavData: ({ indexState, interfaceLanguage }) => (
-      indexState.flatChildren?.[interfaceLanguage] || []
-    ),
+    quickNavData({ indexState, interfaceLanguage }) {
+      let currentLangIndexData = indexState.flatChildren[interfaceLanguage] || [];
+      // if no such items, we use the default swift one
+      if (!currentLangIndexData.length) {
+        currentLangIndexData = indexState.flatChildren[Language.swift.key.url] || [];
+      }
+      return currentLangIndexData || [];
+    },
     sidebarProps: ({
       sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge, navigatorFixedWidth,
     }) => (

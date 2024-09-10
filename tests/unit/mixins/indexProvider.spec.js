@@ -81,32 +81,44 @@ const extendedTechnologies = {
   ],
 };
 
-const flatChildren = [
-  {
-    uid: -196255993,
-    parent: '<root>',
-    index: 0,
-    siblingsCount: 3,
-    depth: 0,
-    childUIDs: [],
-  },
-  {
-    uid: -196255992,
-    parent: '<root>',
-    index: 1,
-    siblingsCount: 3,
-    depth: 0,
-    childUIDs: [],
-  },
-  {
-    uid: -196255991,
-    parent: '<root>',
-    index: 2,
-    siblingsCount: 3,
-    depth: 0,
-    childUIDs: [],
-  },
-];
+const flatChildren = {
+  [Language.swift.key.url]: [
+    {
+      uid: -196255993,
+      parent: '<root>',
+      index: 0,
+      siblingsCount: 3,
+      depth: 0,
+      childUIDs: [],
+    },
+    {
+      uid: -196255992,
+      parent: '<root>',
+      index: 1,
+      siblingsCount: 3,
+      depth: 0,
+      childUIDs: [],
+    },
+    {
+      uid: -196255991,
+      parent: '<root>',
+      index: 2,
+      siblingsCount: 3,
+      depth: 0,
+      childUIDs: [],
+    },
+  ],
+  [Language.objectiveC.key.url]: [
+    {
+      uid: -196255993,
+      parent: '<root>',
+      index: 0,
+      siblingsCount: 1,
+      depth: 0,
+      childUIDs: [],
+    },
+  ],
+};
 
 const swiftIndexOne = {
   id: 'foo',
@@ -144,9 +156,16 @@ const response = {
 };
 
 const technologyProps = {
-  technology: undefined,
-  technologyPath: technologyUrl,
-  isTechnologyBeta: undefined,
+  [Language.swift.key.url]: {
+    technology: undefined,
+    technologyPath: technologyUrl,
+    isTechnologyBeta: undefined,
+  },
+  [Language.objectiveC.key.url]: {
+    technology: undefined,
+    technologyPath: technologyUrl,
+    isTechnologyBeta: undefined,
+  },
 };
 
 fetchData.mockReturnValue(response);
@@ -182,9 +201,8 @@ describe('indexProvider', () => {
 
     expect(IndexStore.state.references).toEqual(references);
     expect(IndexStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
-    expect(wrapper.vm.navigationIndex).toEqual(interfaceLanguages);
-    expect(wrapper.vm.flatChildren).toEqual(flatChildren);
-    expect(wrapper.vm.technologyProps).toEqual(technologyProps);
+    expect(IndexStore.state.flatChildren).toEqual(flatChildren);
+    expect(IndexStore.state.technologyProps).toEqual(technologyProps);
   });
 
   it('fetches data, even if being passed a none-root technology url', async () => {
@@ -201,9 +219,8 @@ describe('indexProvider', () => {
 
     expect(IndexStore.state.references).toEqual(references);
     expect(IndexStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
-    expect(wrapper.vm.navigationIndex).toEqual(interfaceLanguages);
-    expect(wrapper.vm.flatChildren).toEqual(flatChildren);
-    expect(wrapper.vm.technologyProps).toEqual(technologyProps);
+    expect(IndexStore.state.flatChildren).toEqual(flatChildren);
+    expect(IndexStore.state.technologyProps).toEqual(technologyProps);
   });
 
   it('sets errorFetching to true, when request errored', async () => {
@@ -213,63 +230,12 @@ describe('indexProvider', () => {
     expect(fetchData).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(IndexStore.state).toEqual({
-      flatChildren: [],
+      flatChildren: {},
       references: {},
       apiChanges: null,
       includedArchiveIdentifiers: [],
       errorFetching: true,
       technologyProps: {},
-    });
-  });
-
-  it('returns objc data', async () => {
-    expect(fetchData).toHaveBeenCalledTimes(0);
-    const wrapper = createWrapper();
-    expect(fetchData).toHaveBeenCalledTimes(1);
-    wrapper.vm.topicProps = {
-      interfaceLanguage: Language.objectiveC.key.url,
-    };
-    await flushPromises();
-
-    expect(IndexStore.state).toEqual({
-      flatChildren: [{
-        uid: -196255993,
-        parent: '<root>',
-        index: 0,
-        siblingsCount: 1,
-        depth: 0,
-        childUIDs: [],
-      }],
-      references,
-      apiChanges: null,
-      includedArchiveIdentifiers,
-      errorFetching: false,
-      technologyProps,
-    });
-  });
-
-  it('falls back to swift items, if no objc items', async () => {
-    expect(fetchData).toHaveBeenCalledTimes(0);
-    fetchData.mockResolvedValueOnce({
-      interfaceLanguages: {
-        [Language.swift.key.url]: response.interfaceLanguages[Language.swift.key.url],
-      },
-      references,
-    });
-    const wrapper = createWrapper();
-    expect(fetchData).toHaveBeenCalledTimes(1);
-    wrapper.vm.topicProps = {
-      interfaceLanguage: Language.objectiveC.key.url,
-    };
-    await flushPromises();
-
-    expect(IndexStore.state).toEqual({
-      flatChildren,
-      references,
-      apiChanges: null,
-      includedArchiveIdentifiers: [],
-      errorFetching: false,
-      technologyProps,
     });
   });
 
@@ -298,12 +264,12 @@ describe('indexProvider', () => {
     createWrapper();
     await flushPromises();
     expect(IndexStore.state).toEqual({
-      flatChildren: [],
+      flatChildren: {},
       references: {},
       apiChanges: null,
       includedArchiveIdentifiers: [],
       errorFetching: false,
-      technologyProps: null,
+      technologyProps: {},
     });
   });
 
@@ -321,7 +287,7 @@ describe('indexProvider', () => {
     });
     createWrapper();
     await flushPromises();
-    expect(IndexStore.state.flatChildren[0]).toHaveProperty('deprecatedChildrenCount', 2);
+    expect(IndexStore.state.flatChildren[Language.swift.key.url][0]).toHaveProperty('deprecatedChildrenCount', 2);
     expect(IndexStore.state.flatChildren).toMatchSnapshot();
   });
 
@@ -419,128 +385,130 @@ describe('indexProvider', () => {
     });
     createWrapper();
     await flushPromises();
-    expect(IndexStore.state.flatChildren).toEqual([
-      {
-        childUIDs: [
-          551503844,
-          -97593391,
-        ],
-        deprecatedChildrenCount: 0,
-        depth: 0,
-        index: 0,
-        parent: INDEX_ROOT_KEY,
-        siblingsCount: 3,
-        title: 'Group Marker',
-        type: 'groupMarker',
-        uid: -196255993,
-      },
-      {
-        childUIDs: [
-          -361407047,
-          1438225895,
-          1439149417,
-          1440072939,
-        ],
-        depth: 0,
-        groupMarkerUID: -196255993,
-        index: 1,
-        parent: INDEX_ROOT_KEY,
-        path: '/foo/child0',
-        siblingsCount: 3,
-        title: 'Child0',
-        type: 'article',
-        uid: 551503844,
-      },
-      {
-        childUIDs: [
-          1438225895,
-          1439149417,
-          1440072939,
-        ],
-        deprecatedChildrenCount: 0,
-        depth: 1,
-        index: 0,
-        parent: 551503844,
-        siblingsCount: 4,
-        title: 'Group Marker, Child 0',
-        type: 'groupMarker',
-        uid: -361407047,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        groupMarkerUID: -361407047,
-        index: 1,
-        parent: 551503844,
-        path: '/foo/child0/grandchild0',
-        siblingsCount: 4,
-        title: 'Child0_GrandChild0',
-        type: 'tutorial',
-        uid: 1438225895,
-      },
-      {
-        childUIDs: [
-          305326087,
-        ],
-        depth: 1,
-        groupMarkerUID: -361407047,
-        index: 2,
-        parent: 551503844,
-        path: '/foo/child0/grandchild1',
-        siblingsCount: 4,
-        title: 'Child0_GrandChild1',
-        type: 'tutorial',
-        uid: 1439149417,
-      },
-      {
-        childUIDs: [],
-        depth: 2,
-        index: 0,
-        parent: 1439149417,
-        path: '/foo/child0/grandchild0/greatgrandchild0',
-        siblingsCount: 1,
-        title: 'Child0_GrandChild0_GreatGrandChild0',
-        type: 'tutorial',
-        uid: 305326087,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        groupMarkerUID: -361407047,
-        index: 3,
-        parent: 551503844,
-        path: '/foo/child0/grandchild2',
-        siblingsCount: 4,
-        title: 'Child0_GrandChild2',
-        type: 'tutorial',
-        uid: 1440072939,
-      },
-      {
-        childUIDs: [
-          -827353283,
-        ],
-        depth: 0,
-        groupMarkerUID: -196255993,
-        index: 2,
-        parent: INDEX_ROOT_KEY,
-        path: '/foo/child1/',
-        siblingsCount: 3,
-        title: 'Child1',
-        type: 'tutorial',
-        uid: -97593391,
-      },
-      {
-        childUIDs: [],
-        depth: 1,
-        index: 0,
-        parent: -97593391,
-        path: '/foo/child1/grandchild0',
-        siblingsCount: 1,
-        title: 'Child1_GrandChild0',
-        type: 'method',
-        uid: -827353283,
-      },
-    ]);
+    expect(IndexStore.state.flatChildren).toEqual({
+      [Language.swift.key.url]: [
+        {
+          childUIDs: [
+            551503844,
+            -97593391,
+          ],
+          deprecatedChildrenCount: 0,
+          depth: 0,
+          index: 0,
+          parent: INDEX_ROOT_KEY,
+          siblingsCount: 3,
+          title: 'Group Marker',
+          type: 'groupMarker',
+          uid: -196255993,
+        },
+        {
+          childUIDs: [
+            -361407047,
+            1438225895,
+            1439149417,
+            1440072939,
+          ],
+          depth: 0,
+          groupMarkerUID: -196255993,
+          index: 1,
+          parent: INDEX_ROOT_KEY,
+          path: '/foo/child0',
+          siblingsCount: 3,
+          title: 'Child0',
+          type: 'article',
+          uid: 551503844,
+        },
+        {
+          childUIDs: [
+            1438225895,
+            1439149417,
+            1440072939,
+          ],
+          deprecatedChildrenCount: 0,
+          depth: 1,
+          index: 0,
+          parent: 551503844,
+          siblingsCount: 4,
+          title: 'Group Marker, Child 0',
+          type: 'groupMarker',
+          uid: -361407047,
+        },
+        {
+          childUIDs: [],
+          depth: 1,
+          groupMarkerUID: -361407047,
+          index: 1,
+          parent: 551503844,
+          path: '/foo/child0/grandchild0',
+          siblingsCount: 4,
+          title: 'Child0_GrandChild0',
+          type: 'tutorial',
+          uid: 1438225895,
+        },
+        {
+          childUIDs: [
+            305326087,
+          ],
+          depth: 1,
+          groupMarkerUID: -361407047,
+          index: 2,
+          parent: 551503844,
+          path: '/foo/child0/grandchild1',
+          siblingsCount: 4,
+          title: 'Child0_GrandChild1',
+          type: 'tutorial',
+          uid: 1439149417,
+        },
+        {
+          childUIDs: [],
+          depth: 2,
+          index: 0,
+          parent: 1439149417,
+          path: '/foo/child0/grandchild0/greatgrandchild0',
+          siblingsCount: 1,
+          title: 'Child0_GrandChild0_GreatGrandChild0',
+          type: 'tutorial',
+          uid: 305326087,
+        },
+        {
+          childUIDs: [],
+          depth: 1,
+          groupMarkerUID: -361407047,
+          index: 3,
+          parent: 551503844,
+          path: '/foo/child0/grandchild2',
+          siblingsCount: 4,
+          title: 'Child0_GrandChild2',
+          type: 'tutorial',
+          uid: 1440072939,
+        },
+        {
+          childUIDs: [
+            -827353283,
+          ],
+          depth: 0,
+          groupMarkerUID: -196255993,
+          index: 2,
+          parent: INDEX_ROOT_KEY,
+          path: '/foo/child1/',
+          siblingsCount: 3,
+          title: 'Child1',
+          type: 'tutorial',
+          uid: -97593391,
+        },
+        {
+          childUIDs: [],
+          depth: 1,
+          index: 0,
+          parent: -97593391,
+          path: '/foo/child1/grandchild0',
+          siblingsCount: 1,
+          title: 'Child1_GrandChild0',
+          type: 'method',
+          uid: -827353283,
+        },
+      ],
+    });
   });
 
   it('sets `includedArchiveIdentifiers` state in the index store', async () => {

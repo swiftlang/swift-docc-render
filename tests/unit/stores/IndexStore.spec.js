@@ -9,6 +9,7 @@
 */
 
 import IndexStore from 'docc-render/stores/IndexStore';
+import Language from 'docc-render/constants/Language';
 
 const flatChildren = [
   {
@@ -26,21 +27,23 @@ const references = {
 
 const apiChanges = {
   interfaceLanguages: {
-    swift: [],
+    [Language.swift.key.url]: [],
   },
 };
 
 const includedArchiveIdentifiers = ['foo', 'bar'];
 
 const technologyProps = {
-  technology: 'title',
-  technologyPath: 'path',
-  isTechnologyBeta: false,
+  [Language.swift.key.url]: {
+    technology: 'title',
+    technologyPath: 'path',
+    isTechnologyBeta: false,
+  },
 };
 
 describe('IndexStore', () => {
   const defaultState = {
-    flatChildren: [],
+    flatChildren: {},
     references: {},
     apiChanges: null,
     includedArchiveIdentifiers: [],
