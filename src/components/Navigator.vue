@@ -91,13 +91,9 @@ export default {
       type: Array,
       required: true,
     },
-    technology: {
+    technologyProps: {
       type: Object,
       required: false,
-    },
-    isFetching: {
-      type: Boolean,
-      default: false,
     },
     references: {
       type: Object,
@@ -125,6 +121,9 @@ export default {
     },
   },
   computed: {
+    isFetching({ flatChildren, errorFetching }) {
+      return !flatChildren.length && !errorFetching;
+    },
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
       return parentTopicIdentifiers
@@ -153,13 +152,6 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
-    technologyProps: ({ technology }) => (
-      !technology ? null : {
-        technology: technology.title,
-        technologyPath: technology.path || technology.url,
-        isTechnologyBeta: technology.beta,
-      }
-    ),
   },
 };
 </script>
