@@ -52,7 +52,7 @@ import {
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
-import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
+import DocumentationLayout from 'theme/components/DocumentationLayout.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import indexProvider from 'theme/mixins/indexProvider';
 import Language from 'docc-render/constants/Language';
