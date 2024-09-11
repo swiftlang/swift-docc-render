@@ -40,7 +40,7 @@
             <div class="documentation-layout-aside">
               <QuickNavigationModal
                 v-if="enableQuickNavigation"
-                :children="quickNavData"
+                :children="quickNavNodes"
                 :showQuickNavigationModal.sync="showQuickNavigationModal"
                 :technology="technology ? technology.title : ''"
               />
@@ -159,13 +159,8 @@ export default {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    quickNavData({ indexState, interfaceLanguage }) {
-      let currentLangIndexData = indexState.flatChildren[interfaceLanguage] || [];
-      // if no such items, we use the default swift one
-      if (!currentLangIndexData.length) {
-        currentLangIndexData = indexState.flatChildren[Language.swift.key.url] || [];
-      }
-      return currentLangIndexData || [];
+    quickNavNodes({ indexState: { flatChildren = {} }, interfaceLanguage }) {
+      return flatChildren[interfaceLanguage] ?? (flatChildren[Language.swift.key.url] || []);
     },
     sidebarProps: ({
       sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge, navigatorFixedWidth,
