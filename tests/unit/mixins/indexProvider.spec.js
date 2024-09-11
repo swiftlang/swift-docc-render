@@ -328,7 +328,7 @@ describe('indexProvider', () => {
     expect(IndexStore.state.flatChildren).toMatchSnapshot();
   });
 
-  it('flattens deeply nested children and provides them to the NavigatorCard', async () => {
+  it('flattens deeply nested children and sets it to `IndexStore`', async () => {
     fetchData.mockResolvedValue({
       interfaceLanguages: {
         [Language.swift.key.url]: [{

@@ -78,17 +78,17 @@ describe('IndexStore', () => {
 
   it('sets `flatChildren`', () => {
     IndexStore.setFlatChildren(flatChildren);
-    expect(IndexStore.state.flatChildren).toBe(flatChildren);
+    expect(IndexStore.state.flatChildren).toEqual(flatChildren);
   });
 
   it('sets `references`', () => {
     IndexStore.setReferences(references);
-    expect(IndexStore.state.references).toBe(references);
+    expect(IndexStore.state.references).toEqual(references);
   });
 
   it('sets `apiChanges`', () => {
     IndexStore.setApiChanges(apiChanges);
-    expect(IndexStore.state.apiChanges).toBe(apiChanges);
+    expect(IndexStore.state.apiChanges).toEqual(apiChanges);
   });
 
   it('sets `includedArchiveIdentifiers`', () => {
