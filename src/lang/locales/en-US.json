@@ -124,7 +124,8 @@
   },
   "availability": {
     "introduced-and-deprecated": "Introduced in {name} {introducedAt} and deprecated in {name} {deprecatedAt}",
-    "available-on": "Available on {name} {introducedAt} and later"
+    "available-on-platform": "Available on {name}",
+    "available-on-platform-version": "Available on {name} {introducedAt} and later"
   },
   "more": "More",
   "less": "Less",
