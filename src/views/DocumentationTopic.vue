@@ -54,6 +54,7 @@ import {
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
 import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+import indexProvider from 'theme/mixins/indexProvider';
 import Language from 'docc-render/constants/Language';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils';
@@ -74,7 +75,7 @@ export default {
     Topic: DocumentationTopic,
     DocumentationLayout,
   },
-  mixins: [OnThisPageRegistrator, communicationBridgeUtils],
+  mixins: [OnThisPageRegistrator, communicationBridgeUtils, indexProvider],
   props: {
     enableMinimized: {
       type: Boolean,

@@ -30,6 +30,20 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
+const swiftChildren = [
+  'swiftChildrenMock',
+];
+const objcChildren = [
+  'objcChildrenMock',
+];
+jest.mock('docc-render/stores/IndexStore', () => ({
+  state: {
+    flatChildren: {
+      swift: swiftChildren,
+    },
+  },
+}));
+
 storage.get.mockImplementation((key, value) => value);
 
 const TechnologyWithChildren = {
@@ -271,6 +285,64 @@ describe('DocumentationLayout', () => {
 
     const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
     expect(quickNavigationModalComponent.exists()).toBe(false);
+  });
+
+  it('QuickNavigation renders Swift items', async () => {
+    getSetting.mockReturnValueOnce(true);
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+    wrapper.setProps({
+      enableNavigator: true,
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(QuickNavigationModal).props('children')).toEqual(swiftChildren);
+  });
+
+  it('QuickNavigation falls back to swift items, if no objc items', async () => {
+    getSetting.mockReturnValueOnce(true);
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+    wrapper.setProps({
+      enableNavigator: true,
+      interfaceLanguage: Language.objectiveC.key.url,
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(QuickNavigationModal).props('children')).toEqual(swiftChildren);
+  });
+
+  it('QuickNavigation renders objc items', async () => {
+    getSetting.mockReturnValueOnce(true);
+    wrapper = createWrapper({
+      stubs: {
+        ...stubs,
+        Nav: DocumentationNav,
+        NavBase,
+      },
+    });
+    wrapper.setProps({
+      enableNavigator: true,
+      interfaceLanguage: Language.objectiveC.key.url,
+    });
+    wrapper.setData({
+      indexState: {
+        flatChildren: {
+          [Language.swift.key.url]: swiftChildren,
+          [Language.objectiveC.key.url]: objcChildren,
+        },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(QuickNavigationModal).props('children')).toEqual(objcChildren);
   });
 
   describe('if breakpoint is small', () => {
