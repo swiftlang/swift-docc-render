@@ -43,7 +43,7 @@ const technologyProps = {
 
 describe('IndexStore', () => {
   const defaultState = {
-    flatChildren: {},
+    flatChildren: null,
     references: {},
     apiChanges: null,
     includedArchiveIdentifiers: [],

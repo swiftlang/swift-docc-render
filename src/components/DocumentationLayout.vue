@@ -155,7 +155,8 @@ export default {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    indexNodes({ indexState: { flatChildren = {} }, interfaceLanguage }) {
+    indexNodes({ indexState: { flatChildren }, interfaceLanguage }) {
+      if (!flatChildren) return [];
       return flatChildren[interfaceLanguage] ?? (flatChildren[Language.swift.key.url] || []);
     },
     navigatorProps: ({

@@ -230,7 +230,7 @@ describe('indexProvider', () => {
     expect(fetchData).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(IndexStore.state).toEqual({
-      flatChildren: {},
+      flatChildren: null,
       references: {},
       apiChanges: null,
       includedArchiveIdentifiers: [],
