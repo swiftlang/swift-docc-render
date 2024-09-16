@@ -95,6 +95,10 @@ export default {
       type: Object,
       required: false,
     },
+    isFetching: {
+      type: Boolean,
+      default: false,
+    },
     references: {
       type: Object,
       default: () => {},
@@ -121,9 +125,6 @@ export default {
     },
   },
   computed: {
-    isFetching({ flatChildren, errorFetching }) {
-      return !flatChildren.length && !errorFetching;
-    },
     // gets the paths for each parent in the breadcrumbs
     parentTopicReferences({ references, parentTopicIdentifiers }) {
       return parentTopicIdentifiers

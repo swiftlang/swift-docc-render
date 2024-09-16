@@ -162,6 +162,7 @@ export default {
     navigatorProps: ({
       indexNodes,
       indexState: {
+        flatChildren,
         references,
         apiChanges,
         errorFetching,
@@ -172,6 +173,7 @@ export default {
       flatChildren: indexNodes,
       navigatorReferences: references,
       apiChanges,
+      isFetching: !flatChildren && !errorFetching,
       errorFetching,
       technologyProps: technologyProps || technology,
     }),
