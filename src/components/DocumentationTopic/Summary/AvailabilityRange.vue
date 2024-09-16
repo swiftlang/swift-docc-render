@@ -26,7 +26,7 @@ export default {
     },
     introducedAt: {
       type: String,
-      required: true,
+      required: false,
     },
     platformName: {
       type: String,
@@ -51,11 +51,22 @@ export default {
         introducedAt,
         platformName: name,
       } = this;
-      return deprecatedAt ? (
-        this.$t('availability.introduced-and-deprecated', { name, introducedAt, deprecatedAt })
-      ) : (
-        this.$t('availability.available-on', { name, introducedAt })
-      );
+      if (introducedAt && deprecatedAt) {
+        return this.$t('availability.introduced-and-deprecated', {
+          name,
+          introducedAt,
+          deprecatedAt,
+        });
+      }
+
+      if (introducedAt) {
+        return this.$t('availability.available-on-platform-version', {
+          name,
+          introducedAt,
+        });
+      }
+
+      return this.$t('availability.available-on-platform', { name });
     },
     text() {
       const {
@@ -63,11 +74,15 @@ export default {
         introducedAt,
         platformName: name,
       } = this;
-      return deprecatedAt ? (
-        `${name} ${introducedAt}\u2013${deprecatedAt}`
-      ) : (
-        `${name} ${introducedAt}+`
-      );
+      if (introducedAt && deprecatedAt) {
+        return `${name} ${introducedAt}\u2013${deprecatedAt}`;
+      }
+
+      if (introducedAt) {
+        return `${name} ${introducedAt}+`;
+      }
+
+      return name;
     },
   },
 };
