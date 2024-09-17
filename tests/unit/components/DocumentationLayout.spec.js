@@ -29,6 +29,7 @@ jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
 storage.get.mockImplementation((key, value) => value);
+getSetting.mockReturnValue(true);
 
 const {
   Nav,
@@ -190,7 +191,6 @@ describe('DocumentationLayout', () => {
   });
 
   it('renders QuickNavigation if enableQuickNavigation is true', () => {
-    getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -226,7 +226,6 @@ describe('DocumentationLayout', () => {
   });
 
   it('does not render QuickNavigation and MagnifierIcon if enableNavigation is false', () => {
-    getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -240,7 +239,6 @@ describe('DocumentationLayout', () => {
   });
 
   it('does not render QuickNavigation if enableQuickNavigation is true but IDE is being targeted', () => {
-    getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       provide: { ...provide, isTargetIDE: true },
       stubs: {
@@ -259,7 +257,6 @@ describe('DocumentationLayout', () => {
   });
 
   it('QuickNavigation renders Swift items', async () => {
-    getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -275,7 +272,6 @@ describe('DocumentationLayout', () => {
   });
 
   it('QuickNavigation falls back to swift items, if no objc items', async () => {
-    getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -292,7 +288,6 @@ describe('DocumentationLayout', () => {
   });
 
   it('QuickNavigation renders objc items', async () => {
-    getSetting.mockReturnValueOnce(true);
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -358,15 +353,6 @@ describe('DocumentationLayout', () => {
       expect(wrapper.find(Navigator).attributes('style')).toBeFalsy();
     });
   });
-
-  // it('provides the selected api changes, to the NavigatorDataProvider', () => {
-  //   wrapper.setProps({
-  //     enableNavigator: true,
-  //     selectedAPIChangesVersion: 'latest_major',
-  //   });
-  //   const dataProvider = wrapper.find(NavigatorDataProvider);
-  //   expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
-  // });
 
   it('renders the Navigator with data when no reference is found for a top-level item', () => {
     const technologies = {
