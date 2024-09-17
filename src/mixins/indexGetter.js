@@ -16,6 +16,33 @@ export default {
       if (!flatChildren) return [];
       return flatChildren[interfaceLanguage] ?? (flatChildren[Language.swift.key.url] || []);
     },
+    technologyProps({ indexState: { technologyProps }, interfaceLanguage, technology }) {
+      // Select technology props from fetched index data for the current language, fallback to swift
+      // If none available, fallback to technology data of the curr page or null
+      return technologyProps[interfaceLanguage] ?? technologyProps[Language.swift.key.url]
+        ?? (technology ? {
+          technology: technology?.title,
+          technologyPath: technology?.path || technology?.url,
+          isTechnologyBeta: technology?.beta,
+        } : null);
+    },
+    navigatorProps: ({
+      indexNodes,
+      indexState: {
+        flatChildren,
+        references,
+        apiChanges,
+        errorFetching,
+      },
+      technologyProps,
+    }) => ({
+      flatChildren: indexNodes,
+      navigatorReferences: references,
+      apiChanges,
+      isFetching: !flatChildren && !errorFetching,
+      errorFetching,
+      technologyProps,
+    }),
   },
   data() {
     return {
