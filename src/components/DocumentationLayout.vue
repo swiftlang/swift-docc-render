@@ -81,12 +81,10 @@ import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigati
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
-import Language from 'docc-render/constants/Language';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
-
-import IndexStore from 'docc-render/stores/IndexStore';
+import indexGetter from 'docc-render/mixins/indexGetter';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
@@ -102,7 +100,7 @@ export default {
     QuickNavigationModal,
     PortalTarget,
   },
-  mixins: [onPageLoadScrollToFragment],
+  mixins: [onPageLoadScrollToFragment, indexGetter],
   props: {
     enableNavigator: Boolean,
     diffAvailability: {
@@ -148,44 +146,12 @@ export default {
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       BreakpointName,
-      indexState: IndexStore.state,
     };
   },
   computed: {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    indexNodes({ indexState: { flatChildren }, interfaceLanguage }) {
-      if (!flatChildren) return [];
-      return flatChildren[interfaceLanguage] ?? (flatChildren[Language.swift.key.url] || []);
-    },
-    technologyProps({ indexState: { technologyProps }, interfaceLanguage, technology }) {
-      // Select technology props from fetched index data for the current language, fallback to swift
-      // If none available, fallback to technology data of the curr page or null
-      return technologyProps[interfaceLanguage] ?? technologyProps[Language.swift.key.url]
-        ?? (technology ? {
-          technology: technology?.title,
-          technologyPath: technology?.path || technology?.url,
-          isTechnologyBeta: technology?.beta,
-        } : null);
-    },
-    navigatorProps: ({
-      indexNodes,
-      indexState: {
-        flatChildren,
-        references,
-        apiChanges,
-        errorFetching,
-      },
-      technologyProps,
-    }) => ({
-      flatChildren: indexNodes,
-      navigatorReferences: references,
-      apiChanges,
-      isFetching: !flatChildren && !errorFetching,
-      errorFetching,
-      technologyProps,
-    }),
     sidebarProps: ({
       sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge, navigatorFixedWidth,
     }) => (
