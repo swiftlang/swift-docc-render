@@ -159,6 +159,13 @@ export default {
       if (!flatChildren) return [];
       return flatChildren[interfaceLanguage] ?? (flatChildren[Language.swift.key.url] || []);
     },
+    technologyProps({ indexState: { technologyProps }, interfaceLanguage, technology }) {
+      return technologyProps[interfaceLanguage] ?? (technologyProps[Language.swift.key.url] ?? {
+        technology: technology?.title,
+        technologyPath: technology?.path || technology?.url,
+        isTechnologyBeta: technology?.beta,
+      });
+    },
     navigatorProps: ({
       indexNodes,
       indexState: {
@@ -166,16 +173,15 @@ export default {
         references,
         apiChanges,
         errorFetching,
-        technologyProps,
       },
-      technology,
+      technologyProps,
     }) => ({
       flatChildren: indexNodes,
       navigatorReferences: references,
       apiChanges,
       isFetching: !flatChildren && !errorFetching,
       errorFetching,
-      technologyProps: technologyProps || technology,
+      technologyProps,
     }),
     sidebarProps: ({
       sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge, navigatorFixedWidth,

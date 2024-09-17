@@ -8,14 +8,12 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import * as dataUtils from 'docc-render/utils/data';
 import { shallowMount } from '@vue/test-utils';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import DocumentationNav from 'docc-render/components/DocumentationTopic/DocumentationNav.vue';
 import NavBase from 'docc-render/components/NavBase.vue';
 import AdjustableSidebarWidth from '@/components/AdjustableSidebarWidth.vue';
-import NavigatorDataProvider from '@/components/Navigator/NavigatorDataProvider.vue';
 import Language from '@/constants/Language';
 import Navigator from '@/components/Navigator.vue';
 import { storage } from '@/utils/storage';
@@ -30,36 +28,7 @@ jest.mock('docc-render/utils/scroll-lock');
 jest.mock('docc-render/utils/storage');
 jest.mock('docc-render/utils/theme-settings');
 
-const swiftChildren = [
-  'swiftChildrenMock',
-];
-const objcChildren = [
-  'objcChildrenMock',
-];
-jest.mock('docc-render/stores/IndexStore', () => ({
-  state: {
-    flatChildren: {
-      swift: swiftChildren,
-    },
-  },
-}));
-
 storage.get.mockImplementation((key, value) => value);
-
-const TechnologyWithChildren = {
-  path: '/documentation/foo',
-  children: [],
-};
-
-const navigatorReferences = { foo: {} };
-
-jest.spyOn(dataUtils, 'fetchIndexPathsData').mockResolvedValue({
-  interfaceLanguages: {
-    [Language.swift.key.url]: [TechnologyWithChildren],
-  },
-  references: navigatorReferences,
-});
-getSetting.mockReturnValue(false);
 
 const {
   Nav,
@@ -120,11 +89,23 @@ const AdjustableSidebarWidthSmallStub = {
 
 const stubs = {
   AdjustableSidebarWidth,
-  NavigatorDataProvider,
   DocumentationLayout,
 };
 
 const provide = { isTargetIDE: false, store: DocumentationTopicStore };
+
+const navigatorReferences = { foo: {} };
+const technologyProps = {
+  technology: references['topic://foo'].title,
+  technologyPath: references['topic://foo'].url,
+  isTechnologyBeta: references['topic://foo'].beta,
+};
+const swiftChildren = [
+  'swiftChildrenMock',
+];
+const objcChildren = [
+  'objcChildrenMock',
+];
 
 const createWrapper = props => shallowMount(DocumentationLayout, {
   propsData,
@@ -136,6 +117,17 @@ const createWrapper = props => shallowMount(DocumentationLayout, {
     content: '<div class="content">Content</div>',
     title: '<div class="title">Title</div>',
   },
+  data: () => ({
+    indexState: {
+      flatChildren: {
+        swift: swiftChildren,
+      },
+      errorFetching: false,
+      references: navigatorReferences,
+      technologyProps,
+      apiChanges: null,
+    },
+  }),
 });
 
 describe('DocumentationLayout', () => {
@@ -174,45 +166,23 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
       fixedWidth: propsData.navigatorFixedWidth,
     });
-    const {
-      technology,
-      parentTopicIdentifiers,
-    } = propsData;
-    expect(wrapper.find(NavigatorDataProvider).props()).toEqual({
-      interfaceLanguage: Language.swift.key.url,
-      technologyUrl: technology.url,
-      apiChangesVersion: '',
-    });
+    const { parentTopicIdentifiers } = propsData;
+
     // its rendered by default
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
     expect(navigator.props()).toEqual({
       errorFetching: false,
-      isFetching: true,
+      isFetching: false,
       // assert we are passing the first set of paths always
       parentTopicIdentifiers,
       references,
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      // assert we are passing the default technology, if we dont have the children yet
-      technology,
+      technologyProps,
       apiChanges: null,
-      flatChildren: [],
-      navigatorReferences: {},
-      renderFilterOnTop: false,
-    });
-    expect(dataUtils.fetchIndexPathsData).toHaveBeenCalledTimes(1);
-    await flushPromises();
-    expect(navigator.props()).toEqual({
-      errorFetching: false,
-      isFetching: false,
-      scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
-      renderFilterOnTop: false,
-      parentTopicIdentifiers,
-      references,
-      technology: TechnologyWithChildren,
-      apiChanges: null,
-      flatChildren: [],
+      flatChildren: swiftChildren,
       navigatorReferences,
+      renderFilterOnTop: false,
     });
     // assert the nav is in wide format
     const nav = wrapper.find(Nav);
@@ -238,6 +208,7 @@ describe('DocumentationLayout', () => {
   });
 
   it('does not render QuickNavigation if enableQuickNavigation is false', () => {
+    getSetting.mockReturnValueOnce(false);
     wrapper = createWrapper({
       stubs: {
         ...stubs,
@@ -350,7 +321,6 @@ describe('DocumentationLayout', () => {
       wrapper = createWrapper({
         stubs: {
           AdjustableSidebarWidth: AdjustableSidebarWidthSmallStub,
-          NavigatorDataProvider,
         },
       });
     });
@@ -389,14 +359,14 @@ describe('DocumentationLayout', () => {
     });
   });
 
-  it('provides the selected api changes, to the NavigatorDataProvider', () => {
-    wrapper.setProps({
-      enableNavigator: true,
-      selectedAPIChangesVersion: 'latest_major',
-    });
-    const dataProvider = wrapper.find(NavigatorDataProvider);
-    expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
-  });
+  // it('provides the selected api changes, to the NavigatorDataProvider', () => {
+  //   wrapper.setProps({
+  //     enableNavigator: true,
+  //     selectedAPIChangesVersion: 'latest_major',
+  //   });
+  //   const dataProvider = wrapper.find(NavigatorDataProvider);
+  //   expect(dataProvider.props('apiChangesVersion')).toEqual('latest_major');
+  // });
 
   it('renders the Navigator with data when no reference is found for a top-level item', () => {
     const technologies = {
@@ -417,9 +387,10 @@ describe('DocumentationLayout', () => {
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
     // assert the technology is the last fallback
-    expect(navigator.props('technology')).toEqual({
-      title: 'FooTechnology',
-      url: '/documentation/foo',
+    expect(navigator.props('technologyProps')).toEqual({
+      technology: 'FooTechnology',
+      technologyPath: '/documentation/foo',
+      isTechnologyBeta: undefined,
     });
   });
 
@@ -444,9 +415,10 @@ describe('DocumentationLayout', () => {
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
     // assert the technology is the last fallback
-    expect(navigator.props('technology')).toEqual({
-      title: 'FooTechnology',
-      url: '/documentation/foo',
+    expect(navigator.props('technologyProps')).toEqual({
+      technology: 'FooTechnology',
+      technologyPath: '/documentation/foo',
+      isTechnologyBeta: undefined,
     });
   });
 
@@ -460,7 +432,11 @@ describe('DocumentationLayout', () => {
     const navigator = wrapper.find(Navigator);
     expect(navigator.exists()).toBe(true);
     // assert the technology is the last fallback
-    expect(navigator.props('technology')).toEqual(propsData.technology);
+    expect(navigator.props('technologyProps')).toEqual({
+      technology: propsData.technology.title,
+      technologyPath: propsData.technology.url,
+      isTechnologyBeta: propsData.technology.beta,
+    });
   });
 
   it('renders without a sidebar', () => {
@@ -488,10 +464,6 @@ describe('DocumentationLayout', () => {
     // assert the proper container class is applied
     expect(adjustableSidebarWidth.classes())
       .toEqual(expect.arrayContaining(['topic-wrapper', 'full-width-container']));
-  });
-
-  it('renders without NavigatorDataProvider', async () => {
-    expect(wrapper.find(NavigatorDataProvider).exists()).toBe(false);
   });
 
   it('handles the `@close`, on Navigator, for Mobile breakpoints', async () => {
