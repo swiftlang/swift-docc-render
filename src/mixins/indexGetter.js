@@ -21,9 +21,9 @@ export default {
       // If none available, fallback to technology data of the curr page or null
       return technologyProps[interfaceLanguage] ?? technologyProps[Language.swift.key.url]
         ?? (technology ? {
-          technology: technology?.title,
-          technologyPath: technology?.path || technology?.url,
-          isTechnologyBeta: technology?.beta,
+          technology: technology.title,
+          technologyPath: technology.path || technology.url,
+          isTechnologyBeta: technology.beta,
         } : null);
     },
     navigatorProps: ({
