@@ -87,7 +87,7 @@ import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
-import indexGetter from 'docc-render/mixins/indexGetter';
+import indexDataGetter from 'docc-render/mixins/indexDataGetter';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
@@ -105,7 +105,7 @@ export default {
     QuickNavigationModal,
     PortalTarget,
   },
-  mixins: [onPageLoadScrollToFragment, indexGetter],
+  mixins: [onPageLoadScrollToFragment, indexDataGetter],
   props: {
     enableNavigator: Boolean,
     diffAvailability: {

@@ -9,7 +9,7 @@
 */
 import { shallowMount } from '@vue/test-utils';
 import Language from 'docc-render/constants/Language';
-import indexGetter from 'docc-render/mixins/indexGetter';
+import indexDataGetter from 'docc-render/mixins/indexDataGetter';
 import IndexStore from 'docc-render/stores/IndexStore';
 
 const swiftIndex = [{
@@ -65,7 +65,7 @@ const mockState = () => ({
 const Component = {
   name: 'MyComponent',
   template: '<div/>',
-  mixins: [indexGetter],
+  mixins: [indexDataGetter],
   props: {
     interfaceLanguage: {
       type: String,
@@ -90,7 +90,7 @@ const createWrapper = () => shallowMount(Component, {
   },
 });
 
-describe('indexGetter', () => {
+describe('indexDataGetter', () => {
   it('selects correct language variant when it exists`', async () => {
     IndexStore.state = mockState();
     const wrapper = createWrapper();

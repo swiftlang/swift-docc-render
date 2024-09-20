@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`indexProvider counts the amount of deprecated items a groupMarker has 1`] = `
+exports[`indexDataFetcher counts the amount of deprecated items a groupMarker has 1`] = `
 Object {
   "swift": Array [
     Object {
@@ -139,7 +139,7 @@ Object {
 }
 `;
 
-exports[`indexProvider removes the \`beta\` flag from children, if the parent is a \`beta\` 1`] = `
+exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent is a \`beta\` 1`] = `
 Object {
   "swift": Array [
     Object {
@@ -277,7 +277,7 @@ Object {
 }
 `;
 
-exports[`indexProvider removes the \`beta\` flag from children, if the parent is a \`beta\` 2`] = `
+exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent is a \`beta\` 2`] = `
 Object {
   "swift": Array [
     Object {
