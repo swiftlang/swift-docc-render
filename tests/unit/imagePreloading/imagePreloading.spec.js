@@ -27,7 +27,9 @@ const router = createRouterInstance();
 jest.mock('docc-render/utils/theme-settings');
 
 const topicData = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'tutorial.json')));
+
 window.scrollTo = () => ({});
+window.fetch = jest.fn().mockResolvedValue({});
 
 const localVue = createLocalVue();
 localVue.directive('hide', hide);

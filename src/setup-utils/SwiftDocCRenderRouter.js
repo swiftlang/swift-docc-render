@@ -9,6 +9,7 @@
 */
 
 import Router from 'vue-router';
+import AppStore from 'docc-render/stores/AppStore';
 import {
   saveScrollOnReload,
   restoreScrollOnReload,
@@ -17,6 +18,7 @@ import {
 import routes, { fallbackRoutes } from 'docc-render/routes';
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import { addPrefixedRoutes } from 'docc-render/utils/route-utils';
+import { runCustomPageLoadScripts, runCustomNavigateScripts } from 'docc-render/utils/custom-scripts';
 
 const defaultRoutes = [
   ...addPrefixedRoutes(routes),
@@ -40,6 +42,15 @@ export default function createRouterInstance(routerConfig = {}) {
       window.history.scrollRestoration = 'manual';
     }
     restoreScrollOnReload();
+  });
+
+  router.afterEach(async () => {
+    if (AppStore.state.firstRoutingEventHasOccurred) {
+      await runCustomNavigateScripts();
+    } else {
+      await runCustomPageLoadScripts();
+      AppStore.setFirstRoutingEventHasOccurred(true);
+    }
   });
 
   if (process.env.VUE_APP_TARGET !== 'ide') {
