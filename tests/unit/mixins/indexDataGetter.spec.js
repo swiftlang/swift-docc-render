@@ -148,6 +148,23 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.technologyProps).toEqual(null);
   });
 
+  it('falls back to using the `technology.url` if no path', () => {
+    const fallbackTechnology = {
+      title: 'FallbackTechnology',
+      url: '/url/to/technology',
+    };
+    IndexStore.state = {
+      ...mockState(),
+      technologyProps: {},
+    };
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      technology: fallbackTechnology,
+    });
+
+    expect(wrapper.vm.technologyProps.technologyPath).toEqual(fallbackTechnology.url);
+  });
+
   it('computes the correct fetching status`', () => {
     IndexStore.state = {
       ...mockState(),
