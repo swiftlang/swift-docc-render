@@ -40,7 +40,7 @@
             <div class="documentation-layout-aside">
               <QuickNavigationModal
                 v-if="enableQuickNavigation"
-                :children="quickNavNodes"
+                :children="indexNodes"
                 :showQuickNavigationModal.sync="showQuickNavigationModal"
                 :technology="technology ? technology.title : ''"
               />
@@ -83,12 +83,11 @@ import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigati
 import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
-import Language from 'docc-render/constants/Language';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
-import IndexStore from 'docc-render/stores/IndexStore';
+import indexDataGetter from 'docc-render/mixins/indexDataGetter';
 import NavigatorDataProvider from 'theme/components/Navigator/NavigatorDataProvider.vue';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
@@ -106,7 +105,7 @@ export default {
     QuickNavigationModal,
     PortalTarget,
   },
-  mixins: [onPageLoadScrollToFragment],
+  mixins: [onPageLoadScrollToFragment, indexDataGetter],
   props: {
     enableNavigator: Boolean,
     diffAvailability: {
@@ -152,16 +151,12 @@ export default {
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
       BreakpointName,
-      indexState: IndexStore.state,
     };
   },
   computed: {
     enableQuickNavigation: ({ isTargetIDE }) => (
       !isTargetIDE && getSetting(['features', 'docs', 'quickNavigation', 'enable'], true)
     ),
-    quickNavNodes({ indexState: { flatChildren = {} }, interfaceLanguage }) {
-      return flatChildren[interfaceLanguage] ?? (flatChildren[Language.swift.key.url] || []);
-    },
     sidebarProps: ({
       sidenavVisibleOnMobile, enableNavigator, sidenavHiddenOnLarge, navigatorFixedWidth,
     }) => (

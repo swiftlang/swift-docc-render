@@ -11,14 +11,18 @@
 import IndexStore from 'docc-render/stores/IndexStore';
 import Language from 'docc-render/constants/Language';
 
-const flatChildren = [
-  {
-    title: 'item 1',
-  },
-  {
-    title: 'item 2',
-  },
-];
+const flatChildren = {
+  [Language.swift.key.url]: [
+    {
+      title: 'item 1',
+    },
+  ],
+  [Language.objectiveC.key.url]: [
+    {
+      title: 'item 2',
+    },
+  ],
+};
 
 const references = {
   foo: { identifier: 'foo' },
@@ -43,7 +47,7 @@ const technologyProps = {
 
 describe('IndexStore', () => {
   const defaultState = {
-    flatChildren: {},
+    flatChildren: null,
     references: {},
     apiChanges: null,
     includedArchiveIdentifiers: [],

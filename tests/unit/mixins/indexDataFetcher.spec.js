@@ -7,7 +7,7 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
-import indexProvider from 'docc-render/mixins/indexProvider';
+import indexDataFetcher from 'docc-render/mixins/indexDataFetcher';
 import IndexStore from 'docc-render/stores/IndexStore';
 import { shallowMount } from '@vue/test-utils';
 import { fetchData } from 'docc-render/utils/data';
@@ -173,12 +173,12 @@ fetchData.mockReturnValue(response);
 const Component = {
   name: 'MyComponent',
   template: '<div/>',
-  mixins: [indexProvider],
+  mixins: [indexDataFetcher],
 };
 
 const createWrapper = ({ mocks } = {}) => shallowMount(Component, { mocks });
 
-describe('indexProvider', () => {
+describe('indexDataFetcher', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -187,7 +187,7 @@ describe('indexProvider', () => {
     IndexStore.reset();
   });
 
-  it('fetches data when parent component imports `indexProvider`', async () => {
+  it('fetches data when parent component imports `indexDataFetcher`', async () => {
     expect(fetchData).toHaveBeenCalledTimes(0);
     const wrapper = createWrapper({
       mocks: {
@@ -230,7 +230,7 @@ describe('indexProvider', () => {
     expect(fetchData).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(IndexStore.state).toEqual({
-      flatChildren: {},
+      flatChildren: null,
       references: {},
       apiChanges: null,
       includedArchiveIdentifiers: [],
