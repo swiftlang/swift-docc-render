@@ -91,7 +91,7 @@ export default {
       type: Array,
       required: true,
     },
-    technology: {
+    technologyProps: {
       type: Object,
       required: false,
     },
@@ -153,13 +153,6 @@ export default {
      * The root item is always a module
      */
     type: () => TopicTypes.module,
-    technologyProps: ({ technology }) => (
-      !technology ? null : {
-        technology: technology.title,
-        technologyPath: technology.path || technology.url,
-        isTechnologyBeta: technology.beta,
-      }
-    ),
   },
 };
 </script>
