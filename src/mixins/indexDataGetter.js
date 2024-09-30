@@ -34,14 +34,12 @@ export default {
         apiChanges,
         errorFetching,
       },
-      technologyProps,
     }) => ({
       flatChildren: indexNodes,
       navigatorReferences: references,
       apiChanges,
       isFetching: !flatChildren && !errorFetching,
       errorFetching,
-      technologyProps,
     }),
   },
   data() {

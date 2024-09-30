@@ -51,7 +51,7 @@
             >
               <Navigator
                 v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                v-bind="navigatorProps"
+                v-bind="{ ...navigatorProps, ...technologyProps }"
                 :parent-topic-identifiers="parentTopicIdentifiers"
                 :references="references"
                 :scrollLockID="scrollLockID"
