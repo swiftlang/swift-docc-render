@@ -278,4 +278,84 @@ describe('Reference', () => {
     expect(ref.props('url')).toBe('/downloads/foo.zip');
     expect(ref.text()).toBe('Foo');
   });
+
+  it('inactivates refs as appropriate with non-empty `includedArchiveIdentifiers`', () => {
+    const createWrapper = propsData => shallowMount(Reference, {
+      localVue,
+      router,
+      propsData,
+      slots: { default: propsData.title },
+    });
+    const aa = createWrapper({
+      identifier: 'doc://A/documentation/A/a',
+      url: '/documentation/A/a',
+      title: 'A.A',
+      type: 'topic',
+    });
+    const ab = createWrapper({
+      identifier: 'doc://A/documentation/A/b',
+      url: '/documentation/A/b',
+      title: 'A.B',
+      type: 'topic',
+    });
+    const bb = createWrapper({
+      identifier: 'doc://B/documentation/B/b',
+      url: '/documentation/B/b',
+      title: 'B.B',
+      type: 'topic',
+    });
+    const bbb = createWrapper({
+      identifier: 'doc://BB/documentation/BB/b',
+      url: '/documentation/BB/b#b',
+      title: 'BB.B',
+      type: 'section',
+    });
+    const c = createWrapper({
+      identifier: 'https://abc.dev',
+      url: 'https://abc.dev',
+      title: 'C',
+      type: 'link',
+    });
+
+    expect(aa.find(ReferenceInternal).props('isActive')).toBe(true);
+    expect(ab.find(ReferenceInternal).props('isActive')).toBe(true);
+    expect(bb.find(ReferenceInternal).props('isActive')).toBe(true);
+    expect(bbb.find(ReferenceInternal).props('isActive')).toBe(true);
+    expect(c.find(ReferenceExternal).props('isActive')).toBe(true);
+
+    const allIncluded = {
+      appState: {
+        includedArchiveIdentifiers: ['A', 'B', 'BB'],
+      },
+    };
+    aa.setData(allIncluded);
+    expect(aa.find(ReferenceInternal).props('isActive')).toBe(true);
+    ab.setData(allIncluded);
+    expect(ab.find(ReferenceInternal).props('isActive')).toBe(true);
+    bb.setData(allIncluded);
+    expect(bb.find(ReferenceInternal).props('isActive')).toBe(true);
+    bbb.setData(allIncluded);
+    expect(bbb.find(ReferenceInternal).props('isActive')).toBe(true);
+    c.setData(allIncluded);
+    expect(c.find(ReferenceExternal).props('isActive')).toBe(true);
+
+    // with only the B archive included, only internal links within B should
+    // be active (only bb in this example)
+    // c is an external link so it will also remain active
+    const onlyB = {
+      appState: {
+        includedArchiveIdentifiers: ['B'],
+      },
+    };
+    aa.setData(onlyB);
+    expect(aa.find(ReferenceInternal).props('isActive')).toBe(false);
+    ab.setData(onlyB);
+    expect(ab.find(ReferenceInternal).props('isActive')).toBe(false);
+    bb.setData(onlyB);
+    expect(bb.find(ReferenceInternal).props('isActive')).toBe(true);
+    bbb.setData(onlyB);
+    expect(bbb.find(ReferenceInternal).props('isActive')).toBe(false);
+    c.setData(onlyB);
+    expect(c.find(ReferenceExternal).props('isActive')).toBe(true);
+  });
 });
