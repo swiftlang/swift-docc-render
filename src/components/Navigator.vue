@@ -27,6 +27,9 @@
       @close="$emit('close')"
     >
       <template #filter><slot name="filter" /></template>
+      <template #above-navigator-head>
+        <slot name="above-navigator-head"/>
+      </template>
       <template #navigator-head>
         <slot name="navigator-head" className="nav-title"/>
       </template>

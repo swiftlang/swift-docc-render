@@ -37,7 +37,7 @@
             :showQuickNavigationModal.sync="showQuickNavigationModal"
             :technology="technology ? technology.title : ''"
           />
-          <transition name="delay-hiding">
+          <transition-group name="delay-hiding">
             <slot
               name="navigator"
               v-bind="{
@@ -48,25 +48,28 @@
                 enableQuickNavigation,
                 openQuickNavigationModal,
               }"
+            />
+            <Navigator
+              key="base-navigator"
+              v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
+              v-bind="{ ...navigatorProps, technologyProps }"
+              :parent-topic-identifiers="parentTopicIdentifiers"
+              :references="references"
+              :scrollLockID="scrollLockID"
+              :render-filter-on-top="breakpoint !== BreakpointName.large"
+              @close="handleToggleSidenav(breakpoint)"
             >
-              <Navigator
-                v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                v-bind="{ ...navigatorProps, ...technologyProps }"
-                :parent-topic-identifiers="parentTopicIdentifiers"
-                :references="references"
-                :scrollLockID="scrollLockID"
-                :render-filter-on-top="breakpoint !== BreakpointName.large"
-                @close="handleToggleSidenav(breakpoint)"
-              >
-                <template v-if="enableQuickNavigation" #filter>
-                  <QuickNavigationButton @click.native="openQuickNavigationModal" />
-                </template>
-                <template #navigator-head="{ className }">
-                  <slot name="nav-title" :className="className" />
-                </template>
-              </Navigator>
-            </slot>
-          </transition>
+              <template v-if="enableQuickNavigation" #filter>
+                <QuickNavigationButton @click.native="openQuickNavigationModal" />
+              </template>
+              <template #above-navigator-head>
+                <slot name="above-navigator-head"/>
+              </template>
+              <template #navigator-head="{ className }">
+                <slot name="nav-title" :className="className" />
+              </template>
+            </Navigator>
+          </transition-group>
         </div>
       </template>
       <slot name="content" />

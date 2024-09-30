@@ -13,16 +13,20 @@ export default {
     flatChildren: null,
     references: {},
     apiChanges: null,
+    apiChangesVersion: '',
     includedArchiveIdentifiers: [],
     errorFetching: false,
+    errorFetchingDiffs: false,
     technologyProps: {},
   },
   reset() {
     this.state.flatChildren = null;
     this.state.references = {};
     this.state.apiChanges = null;
+    this.state.apiChangesVersion = '';
     this.state.includedArchiveIdentifiers = [];
     this.state.errorFetching = false;
+    this.state.errorFetchingDiffs = false;
     this.state.technologyProps = {};
   },
   setFlatChildren(children) {
@@ -34,11 +38,17 @@ export default {
   setApiChanges(diff) {
     this.state.apiChanges = diff;
   },
+  setApiChangesVersion(version) {
+    this.state.apiChangesVersion = version;
+  },
   setIncludedArchiveIdentifiers(includedArchiveIdentifiers) {
     this.state.includedArchiveIdentifiers = includedArchiveIdentifiers;
   },
   setErrorFetching(state) {
     this.state.errorFetching = state;
+  },
+  setErrorFetchingDiffs(state) {
+    this.state.errorFetchingDiffs = state;
   },
   setTechnologyProps(technology) {
     this.state.technologyProps = technology;
