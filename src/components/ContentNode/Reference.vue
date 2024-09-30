@@ -17,12 +17,18 @@
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { TopicRole } from 'docc-render/constants/roles';
+import AppStore from 'docc-render/stores/AppStore';
 
 import { notFoundRouteName } from 'docc-render/constants/router';
 import ReferenceExternalSymbol from './ReferenceExternalSymbol.vue';
 import ReferenceExternal from './ReferenceExternal.vue';
 import ReferenceInternalSymbol from './ReferenceInternalSymbol.vue';
 import ReferenceInternal from './ReferenceInternal.vue';
+
+const TopicReferenceTypes = new Set([
+  'section',
+  'topic',
+]);
 
 /**
  * Link to internal or external resources.
@@ -52,6 +58,9 @@ import ReferenceInternal from './ReferenceInternal.vue';
  */
 export default {
   name: 'Reference',
+  data: () => ({
+    appState: AppStore.state,
+  }),
   computed: {
     isInternal({ url }) {
       if (!url) {
@@ -88,11 +97,42 @@ export default {
     urlWithParams({ isInternal }) {
       return isInternal ? buildUrl(this.url, this.$route.query) : this.url;
     },
-    isActiveComputed({ url, isActive }) {
-      return !!(url && isActive);
+    isActiveComputed({
+      type,
+      url,
+      isActive,
+      isFromIncludedArchive,
+    }) {
+      let flag = !!(url && isActive);
+
+      if (TopicReferenceTypes.has(type)) {
+        flag &&= isFromIncludedArchive;
+      }
+
+      return flag;
+    },
+    isFromIncludedArchive({ appState, identifier }) {
+      const { includedArchiveIdentifiers = [] } = appState;
+      // for backwards compatibility purposes, treat all references as being
+      // from included archives if there is no data for it
+      if (!includedArchiveIdentifiers.length) {
+        return true;
+      }
+
+      return includedArchiveIdentifiers.some(archiveId => (
+        identifier?.startsWith(`doc://${archiveId}/`)
+      ));
     },
   },
   props: {
+    identifier: {
+      type: String,
+      required: false,
+    },
+    type: {
+      type: String,
+      required: false,
+    },
     url: {
       type: String,
       required: false,

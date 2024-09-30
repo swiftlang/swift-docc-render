@@ -22,6 +22,8 @@ export default {
     if (reference && reference.url) {
       return createElement(Reference, {
         props: {
+          identifier: this.identifier,
+          type: reference.type,
           url: reference.url,
           kind: reference.kind,
           role: reference.role,

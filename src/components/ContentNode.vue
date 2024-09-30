@@ -467,6 +467,8 @@ function renderNode(createElement, references) {
       const titlePlainText = node.overridingTitle || reference.title;
       return createElement(Reference, {
         props: {
+          identifier: node.identifier,
+          type: reference.type,
           url: reference.url,
           kind: reference.kind,
           role: reference.role,
