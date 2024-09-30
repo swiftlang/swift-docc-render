@@ -57,7 +57,10 @@ export default {
         ...section,
         symbols: section.identifiers.reduce((list, id) => (
           this.references[id] ? (
-            list.concat(this.references[id])
+            list.concat({
+              ...this.references[id],
+              identifier: id,
+            })
           ) : (
             list
           )
