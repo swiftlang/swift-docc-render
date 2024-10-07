@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="tutorials-overview">
+  <div class="tutorials-overview theme-dark">
     <Nav
       v-if="!isTargetIDE"
       :sections="otherSections"
@@ -143,6 +143,20 @@ export default {
     .radial-gradient {
       background: #111111 !important;
     }
+  }
+}
+
+.theme-dark {
+  @media screen {
+    // ensure dark colors are always used, regardless of the selected
+    // light/dark/auto color scheme preference
+    //
+    // unfortunately the order of the property declaration matters here due
+    // to the way that some properties refer to others, which is why both the
+    // light and the dark vars are included here, even though the dark ones
+    // override the light ones...
+    @include color-vars-light;
+    @include color-vars-dark;
   }
 }
 </style>
