@@ -121,6 +121,18 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .tutorials-overview {
+  @media screen {
+    // ensure dark colors are always used, regardless of the selected
+    // light/dark/auto color scheme preference
+    //
+    // unfortunately the order of the property declaration matters here due
+    // to the way that some properties refer to others, which is why both the
+    // light and the dark vars are included here, even though the dark ones
+    // override the light ones...
+    @include color-vars-light;
+    @include color-vars-dark;
+  }
+
   background: dark-color(fill);
   flex: 1;
   height: 100%;
@@ -143,20 +155,6 @@ export default {
     .radial-gradient {
       background: #111111 !important;
     }
-  }
-}
-
-.theme-dark {
-  @media screen {
-    // ensure dark colors are always used, regardless of the selected
-    // light/dark/auto color scheme preference
-    //
-    // unfortunately the order of the property declaration matters here due
-    // to the way that some properties refer to others, which is why both the
-    // light and the dark vars are included here, even though the dark ones
-    // override the light ones...
-    @include color-vars-light;
-    @include color-vars-dark;
   }
 }
 </style>
