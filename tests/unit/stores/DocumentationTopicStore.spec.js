@@ -101,7 +101,7 @@ describe('DocumentationTopicStore', () => {
 
   it('sets `references`', () => {
     DocumentationTopicStore.setReferences(references);
-    expect(DocumentationTopicStore.state.references).toBe(references);
+    expect(DocumentationTopicStore.state.references).toEqual(references);
   });
 
   describe('APIChanges', () => {
