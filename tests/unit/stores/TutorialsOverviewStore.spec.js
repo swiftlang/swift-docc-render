@@ -60,4 +60,13 @@ describe('TutorialsOverviewStore', () => {
         .toEqual(filterInactiveReferences(references));
     });
   });
+
+  describe('updateReferences', () => {
+    it('updates the current `references` state', () => {
+      const prevState = TutorialsOverviewStore.state;
+      TutorialsOverviewStore.updateReferences();
+      expect(TutorialsOverviewStore.state.references)
+        .toEqual(filterInactiveReferences(prevState.references));
+    });
+  });
 });

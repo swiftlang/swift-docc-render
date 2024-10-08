@@ -106,6 +106,13 @@ describe('DocumentationTopicStore', () => {
       .toEqual(filterInactiveReferences(references));
   });
 
+  it('updates `references`', () => {
+    const prevState = DocumentationTopicStore.state;
+    DocumentationTopicStore.updateReferences();
+    expect(DocumentationTopicStore.state.references)
+      .toEqual(filterInactiveReferences(prevState.references));
+  });
+
   describe('APIChanges', () => {
     it('sets the API changes', () => {
       const apiChanges = { foo: 'bar' };
