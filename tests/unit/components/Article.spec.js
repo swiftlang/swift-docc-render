@@ -199,6 +199,25 @@ describe('Article', () => {
     });
     expect(wrapper.text()).toContain('Above Hero Text');
   });
+
+  it('calls `store.updateReferences` when `appState.includedArchiveIdentifiers` changes', async () => {
+    const store = {
+      reset: jest.fn(),
+      setReferences: jest.fn(),
+      updateReferences: jest.fn(),
+    };
+    wrapper = shallowMount(Article, {
+      propsData,
+      provide: { store },
+    });
+    expect(store.updateReferences).not.toHaveBeenCalled();
+
+    wrapper.setData({
+      appState: { includedArchiveIdentifiers: ['Foo', 'Bar'] },
+    });
+    await wrapper.vm.$nextTick();
+    expect(store.updateReferences).toHaveBeenCalled();
+  });
 });
 
 describe('with `isTargetIDE`', () => {
