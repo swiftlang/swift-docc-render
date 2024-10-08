@@ -8,7 +8,6 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { filterInactiveReferences } from 'docc-render/utils/references';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
 const { BreakpointName } = BreakpointEmitter.constants;
@@ -46,6 +45,6 @@ export default {
     this.state.breakpoint = value;
   },
   setReferences(references) {
-    this.state.references = filterInactiveReferences(references);
+    this.state.references = references;
   },
 };

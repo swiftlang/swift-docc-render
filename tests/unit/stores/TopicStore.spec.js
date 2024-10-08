@@ -8,7 +8,6 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { filterInactiveReferences } from 'docc-render/utils/references';
 import TopicStore from 'docc-render/stores/TopicStore';
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
 
@@ -124,8 +123,7 @@ describe('TopicStore', () => {
   describe('setReferences', () => {
     it('sets the `references` state', () => {
       TopicStore.setReferences(references);
-      expect(TopicStore.state.references)
-        .toEqual(filterInactiveReferences(references));
+      expect(TopicStore.state.references).toEqual(references);
     });
   });
 });
