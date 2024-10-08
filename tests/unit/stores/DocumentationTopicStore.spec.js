@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { filterInactiveReferences } from 'docc-render/utils/references';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
 import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
@@ -101,7 +102,8 @@ describe('DocumentationTopicStore', () => {
 
   it('sets `references`', () => {
     DocumentationTopicStore.setReferences(references);
-    expect(DocumentationTopicStore.state.references).toEqual(references);
+    expect(DocumentationTopicStore.state.references)
+      .toEqual(filterInactiveReferences(references));
   });
 
   describe('APIChanges', () => {

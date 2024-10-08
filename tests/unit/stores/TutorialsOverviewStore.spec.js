@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { filterInactiveReferences } from 'docc-render/utils/references';
 import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 
 const references = {
@@ -55,7 +56,8 @@ describe('TutorialsOverviewStore', () => {
   describe('setReferences', () => {
     it('sets the `references` state', () => {
       TutorialsOverviewStore.setReferences(references);
-      expect(TutorialsOverviewStore.state.references).toEqual(references);
+      expect(TutorialsOverviewStore.state.references)
+        .toEqual(filterInactiveReferences(references));
     });
   });
 });
