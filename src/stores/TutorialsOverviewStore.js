@@ -30,7 +30,4 @@ export default {
   setReferences(references) {
     this.state.references = filterInactiveReferences(references);
   },
-  updateReferences() {
-    this.setReferences(this.state.references);
-  },
 };

@@ -239,28 +239,6 @@ describe('Tutorial', () => {
     expect(target.exists()).toBe(true);
     expect(target.props()).toHaveProperty('name', 'modal-destination');
   });
-
-  it('calls `store.updateReferences` when `appState.includedArchiveIdentifiers` changes', async () => {
-    const store = {
-      ...TopicStore,
-      updateReferences: jest.fn(),
-    };
-    wrapper = shallowMount(Tutorial, {
-      propsData,
-      mocks,
-      provide: {
-        isTargetIDE: false,
-        store,
-      },
-    });
-    expect(store.updateReferences).not.toHaveBeenCalled();
-
-    wrapper.setData({
-      appState: { includedArchiveIdentifiers: ['Foo', 'Bar'] },
-    });
-    await wrapper.vm.$nextTick();
-    expect(store.updateReferences).toHaveBeenCalled();
-  });
 });
 
 describe('Tutorial without hero section', () => {

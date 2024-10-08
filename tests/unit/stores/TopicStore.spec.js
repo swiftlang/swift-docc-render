@@ -128,13 +128,4 @@ describe('TopicStore', () => {
         .toEqual(filterInactiveReferences(references));
     });
   });
-
-  describe('updateReferences', () => {
-    it('updates the `references` state', () => {
-      const prevState = TopicStore.state;
-      TopicStore.updateReferences();
-      expect(TopicStore.state.references)
-        .toEqual(filterInactiveReferences(prevState.references));
-    });
-  });
 });

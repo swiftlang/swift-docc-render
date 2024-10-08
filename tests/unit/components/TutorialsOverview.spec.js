@@ -10,7 +10,6 @@
 
 import { shallowMount } from '@vue/test-utils';
 import TutorialsOverview from 'docc-render/components/TutorialsOverview.vue';
-import TutorialsOverviewStore from 'docc-render/stores/TutorialsOverviewStore';
 
 const {
   Hero,
@@ -118,18 +117,5 @@ describe('TutorialsOverview', () => {
       slots: { 'above-hero': 'Above Hero Content' },
     });
     expect(wrapper.text()).toContain('Above Hero Content');
-  });
-
-  it('calls `store.updateReferences` when `appStore.includedArchiveIdentifiers` changes', async () => {
-    const store = TutorialsOverviewStore;
-    store.updateReferences = jest.fn();
-    wrapper = shallowMount(TutorialsOverview, { propsData });
-    expect(store.updateReferences).not.toHaveBeenCalled();
-
-    wrapper.setData({
-      appState: { includedArchiveIdentifiers: ['Foo', 'Bar'] },
-    });
-    await wrapper.vm.$nextTick();
-    expect(store.updateReferences).toHaveBeenCalled();
   });
 });

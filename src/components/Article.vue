@@ -62,7 +62,6 @@ export default {
         return {
           reset() {},
           setReferences() {},
-          updateReferences() {},
         };
       },
     },
@@ -92,7 +91,6 @@ export default {
       required: true,
     },
   },
-  data: () => ({ appState: AppStore.state }),
   computed: {
     heroSection() {
       return this.sections.find(this.isHero);
@@ -174,9 +172,6 @@ export default {
     this.store.setReferences(this.references);
   },
   watch: {
-    'appState.includedArchiveIdentifiers': function updateRefs() {
-      this.store.updateReferences();
-    },
     // update the references in the store, in case they update, but the component is not re-created
     references(references) {
       this.store.setReferences(references);

@@ -77,7 +77,6 @@ export default {
       )),
     },
   },
-  data: () => ({ appState: AppStore.state }),
   computed: {
     pageTitle: ({ title }) => [title, 'Tutorials'].filter(Boolean).join(' '),
     pageDescription: ({ heroSection, extractFirstParagraphText }) => (
@@ -107,9 +106,6 @@ export default {
     this.store.setReferences(this.references);
   },
   watch: {
-    'appState.includedArchiveIdentifiers': function updateRefs() {
-      this.store.updateReferences();
-    },
     // update the references in the store, in case they update, but the component is not re-created
     references(references) {
       this.store.setReferences(references);
