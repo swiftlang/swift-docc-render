@@ -1171,6 +1171,26 @@ describe('DocumentationTopic', () => {
     expect(mockStore.setReferences).toHaveBeenCalledWith(newReferences);
   });
 
+  it('calls `store.updateReferences` when `appState.includedArchiveIdentifiers` changes', async () => {
+    const store = {
+      state: { references: {} },
+      reset: jest.fn(),
+      setReferences: jest.fn(),
+      updateReferences: jest.fn(),
+    };
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      provide: { store },
+    });
+    expect(store.updateReferences).not.toHaveBeenCalled();
+
+    wrapper.setData({
+      appState: { includedArchiveIdentifiers: ['Foo', 'Bar'] },
+    });
+    await wrapper.vm.$nextTick();
+    expect(store.updateReferences).toHaveBeenCalled();
+  });
+
   describe('lifecycle hooks', () => {
     it('calls `store.reset()`', () => {
       jest.clearAllMocks();
