@@ -227,6 +227,8 @@ export default {
         return {
           reset() {},
           state: {},
+          setReferences() {},
+          updateReferences() {},
         };
       },
     },
@@ -423,6 +425,7 @@ export default {
   },
   data() {
     return {
+      appState: AppStore.state,
       topicState: this.store.state,
       declListExpanded: false, // Hide all other declarations by default
     };
@@ -718,6 +721,9 @@ export default {
     this.store.setReferences(this.references);
   },
   watch: {
+    'appState.includedArchiveIdentifiers': function updateRefs() {
+      this.store.updateReferences();
+    },
     // update the references in the store, in case they update, but the component is not re-created
     references(references) {
       this.store.setReferences(references);

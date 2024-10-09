@@ -123,7 +123,7 @@ describe('TopicStore', () => {
   describe('setReferences', () => {
     it('sets the `references` state', () => {
       TopicStore.setReferences(references);
-      expect(TopicStore.state.references).toBe(references);
+      expect(TopicStore.state.references).toEqual(references);
     });
   });
 });
