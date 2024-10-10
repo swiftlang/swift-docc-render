@@ -29,10 +29,12 @@ const references = {
   bar: { identifier: 'bar' },
 };
 
-const apiChanges = {
-  interfaceLanguages: {
-    [Language.swift.key.url]: [],
-  },
+const swiftDiff = {
+  '/documentation/swift': 'modified',
+};
+
+const objectiveCDiff = {
+  '/documentation/objc': 'modified',
 };
 
 const includedArchiveIdentifiers = ['foo', 'bar'];
@@ -54,9 +56,13 @@ const mockState = () => ({
     [Language.swift.key.url]: swiftIndex,
   },
   references,
-  apiChanges,
+  apiChanges: {
+    [Language.swift.key.url]: swiftDiff,
+  },
+  apiChangesVersion: 'version0',
   includedArchiveIdentifiers,
   errorFetching: false,
+  errorFetchingDiffs: false,
   technologyProps: {
     [Language.swift.key.url]: swiftProps,
   },
@@ -75,6 +81,10 @@ const Component = {
       type: Object,
       required: false,
     },
+    selectedAPIChangesVersion: {
+      type: String,
+      required: false,
+    },
   },
 };
 
@@ -87,6 +97,7 @@ const createWrapper = () => shallowMount(Component, {
   propsData: {
     interfaceLanguage: Language.swift.key.url,
     technology,
+    selectedAPIChangesVersion: 'version0',
   },
 });
 
@@ -105,6 +116,9 @@ describe('indexDataGetter', () => {
         technologyProps: {
           [Language.objectiveC.key.url]: objectiveCProps,
         },
+        apiChanges: {
+          [Language.objectiveC.key.url]: objectiveCDiff,
+        },
       },
     });
     wrapper.setProps({
@@ -112,6 +126,7 @@ describe('indexDataGetter', () => {
     });
     expect(wrapper.vm.indexNodes).toEqual(objectiveCIndex);
     expect(wrapper.vm.technologyProps).toEqual(objectiveCProps);
+    expect(wrapper.vm.apiChanges).toEqual(objectiveCDiff);
   });
 
   it('selects swift variant when language is objc but its data does not exist`', async () => {
@@ -123,6 +138,25 @@ describe('indexDataGetter', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.indexNodes).toEqual(swiftIndex);
     expect(wrapper.vm.technologyProps).toEqual(swiftProps);
+    expect(wrapper.vm.apiChanges).toEqual(swiftDiff);
+  });
+
+  it('return undefined `apiChanges` if `apiChangesVersion` does not match selected version`', () => {
+    IndexStore.state = {
+      ...mockState(),
+      apiChangesVersion: 'version1',
+    };
+    const wrapper = createWrapper();
+    expect(wrapper.vm.apiChanges).toEqual(undefined);
+  });
+
+  it('return undefined `apiChanges` if `errorFetchingDiffs``', () => {
+    IndexStore.state = {
+      ...mockState(),
+      errorFetchingDiffs: true,
+    };
+    const wrapper = createWrapper();
+    expect(wrapper.vm.apiChanges).toEqual(undefined);
   });
 
   it('when no index data is unavailable through IndexStore, fallback to technology provided in prop`', () => {

@@ -184,11 +184,7 @@ describe('DocumentationLayout', () => {
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
       renderFilterOnTop: false,
       references,
-      apiChanges: {
-        interfaceLanguages: {
-          swift: [],
-        },
-      },
+      apiChanges: null,
       flatChildren: swiftChildren,
       navigatorReferences: { foo: {} },
       errorFetching: false,

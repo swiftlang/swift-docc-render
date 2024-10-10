@@ -13,7 +13,7 @@ export default {
     flatChildren: null,
     references: {},
     apiChanges: null,
-    apiChangesVersion: '',
+    apiChangesVersion: null,
     includedArchiveIdentifiers: [],
     errorFetching: false,
     errorFetchingDiffs: false,
@@ -23,7 +23,7 @@ export default {
     this.state.flatChildren = null;
     this.state.references = {};
     this.state.apiChanges = null;
-    this.state.apiChangesVersion = '';
+    this.state.apiChangesVersion = null;
     this.state.includedArchiveIdentifiers = [];
     this.state.errorFetching = false;
     this.state.errorFetchingDiffs = false;

@@ -27,7 +27,7 @@ export default {
     }) {
       if (!apiChanges || errorFetchingDiffs) return undefined;
       return apiChangesVersion === selectedAPIChangesVersion
-        ? apiChanges[interfaceLanguage] : undefined;
+        ? apiChanges[interfaceLanguage] || apiChanges[Language.swift.key.url] : undefined;
     },
     technologyProps({ indexState: { technologyProps }, interfaceLanguage, technology }) {
       // Select technology props from fetched index data for the current language, fallback to swift
