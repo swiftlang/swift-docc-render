@@ -35,6 +35,8 @@ const apiChanges = {
   },
 };
 
+const apiChangesVersion = 'version_name';
+
 const includedArchiveIdentifiers = ['foo', 'bar'];
 
 const technologyProps = {
@@ -50,8 +52,10 @@ describe('IndexStore', () => {
     flatChildren: null,
     references: {},
     apiChanges: null,
+    apiChangesVersion: null,
     includedArchiveIdentifiers: [],
     errorFetching: false,
+    errorFetchingDiffs: false,
     technologyProps: {},
   };
 
@@ -69,8 +73,10 @@ describe('IndexStore', () => {
       IndexStore.state.flatChildren = flatChildren;
       IndexStore.state.references = references;
       IndexStore.state.apiChanges = apiChanges;
+      IndexStore.state.apiChangesVersion = apiChangesVersion;
       IndexStore.state.includedArchiveIdentifiers = includedArchiveIdentifiers;
       IndexStore.state.errorFetching = true;
+      IndexStore.state.errorFetchingDiffs = true;
       IndexStore.state.technologyProps = technologyProps;
 
       expect(IndexStore.state).not.toEqual(defaultState);
@@ -95,6 +101,11 @@ describe('IndexStore', () => {
     expect(IndexStore.state.apiChanges).toEqual(apiChanges);
   });
 
+  it('sets `apiChangesVersion`', () => {
+    IndexStore.setApiChangesVersion(apiChangesVersion);
+    expect(IndexStore.state.apiChangesVersion).toEqual(apiChangesVersion);
+  });
+
   it('sets `includedArchiveIdentifiers`', () => {
     IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
     expect(IndexStore.state.includedArchiveIdentifiers).toEqual(includedArchiveIdentifiers);
@@ -103,6 +114,11 @@ describe('IndexStore', () => {
   it('sets `errorFetching`', () => {
     IndexStore.setErrorFetching(true);
     expect(IndexStore.state.errorFetching).toEqual(true);
+  });
+
+  it('sets `errorFetchingDiffs`', () => {
+    IndexStore.setErrorFetchingDiffs(true);
+    expect(IndexStore.state.errorFetchingDiffs).toEqual(true);
   });
 
   it('sets `technologyProps`', () => {

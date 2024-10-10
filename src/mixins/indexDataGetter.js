@@ -16,6 +16,19 @@ export default {
       if (!flatChildren) return [];
       return flatChildren[interfaceLanguage] ?? (flatChildren[Language.swift.key.url] || []);
     },
+    apiChanges({
+      indexState: {
+        apiChanges,
+        apiChangesVersion,
+        errorFetchingDiffs,
+      },
+      interfaceLanguage,
+      selectedAPIChangesVersion,
+    }) {
+      if (!apiChanges || errorFetchingDiffs) return undefined;
+      return apiChangesVersion === selectedAPIChangesVersion
+        ? apiChanges[interfaceLanguage] || apiChanges[Language.swift.key.url] : undefined;
+    },
     technologyProps({ indexState: { technologyProps }, interfaceLanguage, technology }) {
       // Select technology props from fetched index data for the current language, fallback to swift
       // If none available, fallback to technology data of the curr page or null
@@ -31,9 +44,9 @@ export default {
       indexState: {
         flatChildren,
         references,
-        apiChanges,
         errorFetching,
       },
+      apiChanges,
     }) => ({
       flatChildren: indexNodes,
       navigatorReferences: references,
