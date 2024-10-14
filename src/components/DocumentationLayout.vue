@@ -38,17 +38,6 @@
             :technology="technology ? technology.title : ''"
           />
           <transition-group name="delay-hiding">
-            <slot
-              name="navigator"
-              v-bind="{
-                scrollLockID,
-                breakpoint,
-                sidenavVisibleOnMobile,
-                handleToggleSidenav,
-                enableQuickNavigation,
-                openQuickNavigationModal,
-              }"
-            />
             <Navigator
               key="base-navigator"
               v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
@@ -69,6 +58,17 @@
                 <slot name="nav-title" :className="className" />
               </template>
             </Navigator>
+            <slot
+              name="navigator"
+              v-bind="{
+                scrollLockID,
+                breakpoint,
+                sidenavVisibleOnMobile,
+                handleToggleSidenav,
+                enableQuickNavigation,
+                openQuickNavigationModal,
+              }"
+            />
           </transition-group>
         </div>
       </template>
@@ -268,6 +268,12 @@ export default {
       border-right: $generic-border-style;
     }
   }
+}
+
+// allow navigator to be covered by navigator passed in thru slot
+.navigator {
+  position: absolute;
+  width: 100%;
 }
 
 .topic-wrapper {
