@@ -157,6 +157,7 @@ export default {
       focusTrapInstance: null,
       mobileTopOffset: 0,
       topOffset: 0,
+      scrollLockContainer: null,
     };
   },
   computed: {
@@ -194,6 +195,9 @@ export default {
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
     BreakpointScopes: () => BreakpointScopes,
+    scrollLockContainer(scrollLockID) {
+      return document.getElementById(scrollLockID);
+    },
   },
   async mounted() {
     window.addEventListener('keydown', this.onEscapeKeydown);
@@ -353,19 +357,23 @@ export default {
      * Toggles the scroll lock on/off
      */
     async toggleScrollLock(lock) {
-      const scrollLockContainer = document.getElementById(this.scrollLockID);
+      // if applicable, turn off lock on previous container
+      if (this.scrollLockContainer) {
+        scrollLock.unlockScroll(this.scrollLockContainer);
+        this.focusTrapInstance.stop();
+        changeElementVOVisibility.show(this.$refs.aside);
+        this.scrollLockContainer = null;
+      }
       if (lock) {
         await this.$nextTick();
-        scrollLock.lockScroll(scrollLockContainer);
+        this.scrollLockContainer = document.getElementById(this.scrollLockID);
+        scrollLock.lockScroll(this.scrollLockContainer);
         // lock focus
         this.focusTrapInstance.start();
         // hide sibling elements from VO
         changeElementVOVisibility.hide(this.$refs.aside);
-      } else {
-        scrollLock.unlockScroll(scrollLockContainer);
-        this.focusTrapInstance.stop();
-        changeElementVOVisibility.show(this.$refs.aside);
       }
+      console.log(this.scrollLockContainer);
     },
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
