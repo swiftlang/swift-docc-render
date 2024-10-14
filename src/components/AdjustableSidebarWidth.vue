@@ -195,9 +195,6 @@ export default {
     }),
     scrollLockID: () => SCROLL_LOCK_ID,
     BreakpointScopes: () => BreakpointScopes,
-    scrollLockContainer(scrollLockID) {
-      return document.getElementById(scrollLockID);
-    },
   },
   async mounted() {
     window.addEventListener('keydown', this.onEscapeKeydown);
@@ -373,7 +370,6 @@ export default {
         // hide sibling elements from VO
         changeElementVOVisibility.hide(this.$refs.aside);
       }
-      console.log(this.scrollLockContainer);
     },
     storeTopOffset: throttle(function storeTopOffset() {
       this.topOffset = this.getTopOffset();
