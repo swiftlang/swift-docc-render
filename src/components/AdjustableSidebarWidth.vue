@@ -364,11 +364,13 @@ export default {
       if (lock) {
         await this.$nextTick();
         this.scrollLockContainer = document.getElementById(this.scrollLockID);
-        scrollLock.lockScroll(this.scrollLockContainer);
-        // lock focus
-        this.focusTrapInstance.start();
-        // hide sibling elements from VO
-        changeElementVOVisibility.hide(this.$refs.aside);
+        if (this.scrollLockContainer) {
+          scrollLock.lockScroll(this.scrollLockContainer);
+          // lock focus
+          this.focusTrapInstance.start();
+          // hide sibling elements from VO
+          changeElementVOVisibility.hide(this.$refs.aside);
+        }
       }
     },
     storeTopOffset: throttle(function storeTopOffset() {
