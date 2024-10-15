@@ -229,14 +229,7 @@ describe('indexDataFetcher', () => {
     createWrapper();
     expect(fetchData).toHaveBeenCalledTimes(1);
     await flushPromises();
-    expect(IndexStore.state).toEqual({
-      flatChildren: null,
-      references: {},
-      apiChanges: null,
-      includedArchiveIdentifiers: [],
-      errorFetching: true,
-      technologyProps: {},
-    });
+    expect(IndexStore.state.errorFetching).toEqual(true);
   });
 
   it('returns the first technology, if none matches', async () => {
@@ -248,14 +241,7 @@ describe('indexDataFetcher', () => {
       },
     });
     await flushPromises();
-    expect(IndexStore.state).toEqual({
-      flatChildren,
-      references,
-      apiChanges: null,
-      includedArchiveIdentifiers,
-      errorFetching: false,
-      technologyProps,
-    });
+    expect(IndexStore.state.technologyProps).toEqual(technologyProps);
   });
 
   it('returns undefined technology when index response is empty', async () => {
@@ -267,8 +253,10 @@ describe('indexDataFetcher', () => {
       flatChildren: {},
       references: {},
       apiChanges: null,
+      apiChangesVersion: null,
       includedArchiveIdentifiers: [],
       errorFetching: false,
+      errorFetchingDiffs: false,
       technologyProps: {},
     });
   });

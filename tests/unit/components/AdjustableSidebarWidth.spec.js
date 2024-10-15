@@ -219,6 +219,7 @@ describe('AdjustableSidebarWidth', () => {
       // called once on mount, once now
       expect(boundingClientSpy).toHaveBeenCalledTimes(2);
       // assert scroll lock and other helpers initiated
+      expect(wrapper.vm.scrollLockContainer).toBe(scrollLockTarget); // save scroll lock target
       expect(scrollLock.lockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.hide).toHaveBeenCalledWith(aside.element);
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
@@ -229,6 +230,7 @@ describe('AdjustableSidebarWidth', () => {
       // assert class
       expect(aside.classes()).not.toContain('show-on-mobile');
       // assert helper status
+      expect(wrapper.vm.scrollLockContainer).toBe(null); // clear scroll lock target
       expect(scrollLock.unlockScroll).toHaveBeenCalledWith(scrollLockTarget);
       expect(changeElementVOVisibility.show).toHaveBeenCalledWith(aside.element);
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
