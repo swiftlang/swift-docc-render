@@ -32,18 +32,24 @@
         @keydown.up.exact.capture.prevent="focusPrev"
         @keydown.down.exact.capture.prevent="focusNext"
       >
-        <Reference
-          v-if="technology"
-          :id="INDEX_ROOT_KEY"
-          :url="technologyPath"
-          :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
-          @click.alt.native.prevent="toggleAllNodes"
-        >
-          <h2 class="card-link">
-            {{ technology }}
-          </h2>
-          <Badge v-if="isTechnologyBeta" variant="beta" />
-        </Reference>
+        <slot name="navigator-title" :className="NAVIGATOR_TITLE">
+          <Reference
+            v-if="technology"
+            :id="INDEX_ROOT_KEY"
+            :url="technologyPath"
+            :class="[
+              'technology-title',
+              NAVIGATOR_TITLE,
+              { 'router-link-exact-active': isTechnologyRoute }
+            ]"
+            @click.alt.native.prevent="toggleAllNodes"
+          >
+            <h2 class="card-link">
+              {{ technology }}
+            </h2>
+            <Badge v-if="isTechnologyBeta" variant="beta" />
+          </Reference>
+        </slot>
         <DynamicScroller
           v-show="hasNodes"
           :id="scrollLockID"
@@ -154,6 +160,7 @@ const NO_RESULTS = 'navigator.no-results';
 const NO_CHILDREN = 'navigator.no-children';
 const ERROR_FETCHING = 'navigator.error-fetching';
 const ITEMS_FOUND = 'navigator.items-found';
+const NAVIGATOR_TITLE = 'navigator-title';
 
 /**
  * Renders the card for a technology and it's child symbols, in the navigator.
@@ -244,6 +251,7 @@ export default {
       lastFocusTarget: null,
       allNodesToggled: false,
       INDEX_ROOT_KEY,
+      NAVIGATOR_TITLE,
     };
   },
   computed: {
@@ -1013,26 +1021,31 @@ $navigator-card-vertical-spacing: 8px !default;
   }
 }
 
-.technology-title {
+:deep(.navigator-title) {
   @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
   @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
+  white-space: nowrap;
   padding: $navigator-card-vertical-spacing $nav-card-horizontal-spacing;
   padding-left: $nav-card-horizontal-spacing * 2;
+  @include font-styles(label-reduced);
+  font-weight: $font-weight-semibold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.technology-title {
   background: $technology-title-background;
   border-radius: $nano-border-radius;
   display: flex;
-  white-space: nowrap;
+  color: var(--color-text);
+
+  .card-link {
+    font-size: inherit;
+    font-weight: inherit
+  }
 
   @include breakpoint(small, nav) {
     margin-top: 0;
-  }
-
-  .card-link {
-    color: var(--color-text);
-    @include font-styles(label-reduced);
-    font-weight: $font-weight-semibold;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   &.router-link-exact-active {
@@ -1054,6 +1067,9 @@ $navigator-card-vertical-spacing: 8px !default;
   align-items: flex-end;
 
   .filter-on-top & {
+    // negative margin to bring the filter up
+    // while keeping the height and padding as it is
+    margin-top: calc(#{var(--nav-filter-vertical-padding)} * -1);
     border-top: none;
     align-items: flex-start;
   }
@@ -1063,9 +1079,10 @@ $navigator-card-vertical-spacing: 8px !default;
 
   @include breakpoint(medium, nav) {
     --nav-filter-horizontal-padding: 20px;
+    --nav-filter-vertical-padding: 10px;
     border: none;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: var(--nav-filter-vertical-padding);
+    padding-bottom: var(--nav-filter-vertical-padding);
     height: $filter-height-small;
   }
 
@@ -1093,6 +1110,7 @@ $navigator-card-vertical-spacing: 8px !default;
 
 .scroller {
   height: 100%;
+  margin: 0;
   box-sizing: border-box;
   padding-bottom: calc(var(--top-offset, 0px) + var(--card-vertical-spacing));
   transition: padding-bottom ease-in 0.15s;

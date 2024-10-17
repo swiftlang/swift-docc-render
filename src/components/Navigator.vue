@@ -158,6 +158,7 @@ export default {
         technology: technology.title,
         technologyPath: technology.path || technology.url,
         isTechnologyBeta: technology.beta,
+        isTechnologyDeprecated: technology.deprecated,
       }
     ),
   },

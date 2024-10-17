@@ -86,6 +86,16 @@ describe('NavigatorCardItem', () => {
     expect(cardItem.attributes('data-nesting-index')).toBe(String(defaultProps.item.depth));
   });
 
+  it('renders a custom tag for the leaf-link if customTag is defined', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        customTag: 'button',
+      },
+    });
+    const leafLink = wrapper.find('.leaf-link');
+    expect(leafLink.is('button')).toBe(true);
+  });
+
   it('renders the NavigationCardItem with an icon override', () => {
     const navigatorReferences = {
       iconRef: {

@@ -13,7 +13,7 @@
     :class="{ expanded, active: isActive, 'is-group': isGroupMarker }"
     :style="{ '--nesting-index': item.depth }"
     :data-nesting-index="item.depth"
-    :id="`container-${item.uid}`"
+    :id="item.uid ? `container-${item.uid}` : null"
     :aria-hidden="isRendered ? null : 'true'"
     :hideNavigatorIcon="isGroupMarker"
     @keydown.left.native.prevent="handleLeftKeydown"
@@ -75,7 +75,7 @@
         }
       ) }}</span>
       <span
-        v-if="!isParent"
+        v-else-if="item.siblingsCount"
         :id="siblingsLabel"
         hidden
       >
@@ -184,6 +184,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    customTag: {
+      type: String,
+      require: false,
+    },
   },
   idState() {
     return {
@@ -193,7 +197,7 @@ export default {
   },
   computed: {
     isGroupMarker: ({ item: { type } }) => type === TopicTypes.groupMarker,
-    isParent: ({ item, isGroupMarker }) => !!item.childUIDs.length && !isGroupMarker,
+    isParent: ({ item, isGroupMarker }) => !!item.childUIDs?.length && !isGroupMarker,
     parentLabel: ({ item }) => `label-parent-${item.uid}`,
     siblingsLabel: ({ item }) => `label-${item.uid}`,
     usageLabel: ({ item }) => `usage-${item.uid}`,
@@ -204,7 +208,11 @@ export default {
     ),
     isBeta: ({ item: { beta } }) => !!beta,
     isDeprecated: ({ item: { deprecated } }) => !!deprecated,
-    refComponent: ({ isGroupMarker }) => (isGroupMarker ? 'h3' : Reference),
+    refComponent: ({ isGroupMarker, customTag }) => {
+      if (customTag) return customTag;
+      if (isGroupMarker) return 'h3';
+      return Reference;
+    },
   },
   methods: {
     toggleTree() {
