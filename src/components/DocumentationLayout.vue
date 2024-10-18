@@ -50,8 +50,9 @@
               }"
             >
               <Navigator
+                key="base-navigator"
                 v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                v-bind="{ ...navigatorProps, ...technologyProps }"
+                v-bind="{ ...navigatorProps, technologyProps }"
                 :parent-topic-identifiers="parentTopicIdentifiers"
                 :references="references"
                 :scrollLockID="scrollLockID"
@@ -60,6 +61,9 @@
               >
                 <template v-if="enableQuickNavigation" #filter>
                   <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                </template>
+                <template #above-navigator-head>
+                  <slot name="above-navigator-head"/>
                 </template>
                 <template #navigator-head="{ className }">
                   <slot name="nav-title" :className="className" />
@@ -78,14 +82,14 @@
 import { PortalTarget } from 'portal-vue';
 import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
 import QuickNavigationModal from 'docc-render/components/Navigator/QuickNavigationModal.vue';
-import AdjustableSidebarWidth from 'docc-render/components/AdjustableSidebarWidth.vue';
+import AdjustableSidebarWidth from 'theme/components/AdjustableSidebarWidth.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
-import indexDataGetter from 'docc-render/mixins/indexDataGetter';
+import indexDataGetter from 'theme/mixins/indexDataGetter';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
 
 const NAVIGATOR_HIDDEN_ON_LARGE_KEY = 'navigator-hidden-large';
