@@ -195,6 +195,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
 });
 
 const clearPersistedStateSpy = jest.spyOn(NavigatorCard.methods, 'clearPersistedState');
+const clearFiltersSpy = jest.spyOn(NavigatorCard.methods, 'clearFilters');
 let getChildPositionInScroller;
 
 const DEFAULT_STORED_STATE = {
@@ -1526,7 +1527,7 @@ describe('NavigatorCard', () => {
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('does not restore the state, if the technology is different', async () => {
+  it('does not restore the state if the technology is different', async () => {
     sessionStorage.get.mockImplementation(() => mergeSessionState({
       technology: 'some-other',
       nodesToRender: [root0.uid],
@@ -1651,6 +1652,15 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+  });
+
+  it('clears the filter if the technology is different', async () => {
+    const wrapper = createWrapper();
+    wrapper.setProps({
+      technology: 'newTechnology',
+    });
+    await flushPromises();
+    expect(clearFiltersSpy).toHaveBeenCalledTimes(1);
   });
 
   it('keeps the open state, if there are API changes', async () => {

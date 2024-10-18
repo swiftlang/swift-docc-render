@@ -52,8 +52,9 @@ import {
   shouldFetchDataForRouteUpdate,
 } from 'docc-render/utils/data';
 import DocumentationTopic from 'theme/components/DocumentationTopic.vue';
-import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue';
+import DocumentationLayout from 'theme/components/DocumentationLayout.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+import indexDataFetcher from 'theme/mixins/indexDataFetcher';
 import Language from 'docc-render/constants/Language';
 import OnThisPageRegistrator from 'docc-render/mixins/onThisPageRegistrator';
 import { updateLocale } from 'theme/utils/i18n-utils';
@@ -74,7 +75,7 @@ export default {
     Topic: DocumentationTopic,
     DocumentationLayout,
   },
-  mixins: [OnThisPageRegistrator, communicationBridgeUtils],
+  mixins: [OnThisPageRegistrator, communicationBridgeUtils, indexDataFetcher],
   props: {
     enableMinimized: {
       type: Boolean,

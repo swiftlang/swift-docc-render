@@ -1171,7 +1171,7 @@ describe('DocumentationTopic', () => {
     expect(mockStore.setReferences).toHaveBeenCalledWith(newReferences);
   });
 
-  it('calls `store.updateReferences` when `appState.includedArchiveIdentifiers` changes', async () => {
+  it('calls `store.updateReferences` when `indexState.includedArchiveIdentifiers` changes', async () => {
     const store = {
       state: { references: {} },
       reset: jest.fn(),
@@ -1185,7 +1185,7 @@ describe('DocumentationTopic', () => {
     expect(store.updateReferences).not.toHaveBeenCalled();
 
     wrapper.setData({
-      appState: { includedArchiveIdentifiers: ['Foo', 'Bar'] },
+      indexState: { includedArchiveIdentifiers: ['Foo', 'Bar'] },
     });
     await wrapper.vm.$nextTick();
     expect(store.updateReferences).toHaveBeenCalled();

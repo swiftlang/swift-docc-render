@@ -19,56 +19,10 @@ jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
 
 const { LoadingNavigatorCard } = Navigator.components;
 
-const technology = {
-  title: 'FooTechnology',
-  children: [
-    {
-      title: 'Group Marker',
-      type: TopicTypes.groupMarker,
-    },
-    {
-      title: 'Child0',
-      path: '/foo/child0',
-      type: 'article',
-      children: [
-        {
-          title: 'Group Marker, Child 0',
-          type: TopicTypes.groupMarker,
-        },
-        {
-          title: 'Child0_GrandChild0',
-          path: '/foo/child0/grandchild0',
-          type: 'tutorial',
-        },
-        {
-          title: 'Child0_GrandChild1',
-          path: '/foo/child0/grandchild1',
-          type: 'tutorial',
-          children: [{
-            title: 'Child0_GrandChild0_GreatGrandChild0',
-            path: '/foo/child0/grandchild0/greatgrandchild0',
-            type: 'tutorial',
-          }],
-        },
-        {
-          title: 'Child0_GrandChild2',
-          path: '/foo/child0/grandchild2',
-          type: 'tutorial',
-        },
-      ],
-    },
-    {
-      title: 'Child1',
-      path: '/foo/child1/',
-      type: 'tutorial',
-      children: [{
-        title: 'Child1_GrandChild0',
-        path: '/foo/child1/grandchild0',
-        type: 'method',
-      }],
-    },
-  ],
-  path: '/path/to/technology',
+const technologyProps = {
+  technology: 'FooTechnology',
+  technologyPath: '/path/to/technology',
+  isTechnologyBeta: false,
 };
 
 const references = {
@@ -83,11 +37,6 @@ const parentTopicIdentifiers = [
   'root', 'first', 'second',
 ];
 
-const fallbackTechnology = {
-  title: 'FallbackTechnology',
-  url: '/url/to/technology',
-};
-
 const mocks = {
   $route: {
     path: '/current/path',
@@ -100,7 +49,7 @@ const navigatorReferences = {
 
 const defaultProps = {
   parentTopicIdentifiers,
-  technology,
+  technologyProps,
   references,
   scrollLockID: 'foo',
   renderFilterOnTop: false,
@@ -141,9 +90,9 @@ describe('Navigator', () => {
       // will assert in another test
       children: [],
       type: TopicTypes.module,
-      technology: technology.title,
-      technologyPath: technology.path,
-      isTechnologyBeta: false,
+      technology: technologyProps.technology,
+      technologyPath: technologyProps.technologyPath,
+      isTechnologyBeta: technologyProps.isTechnologyBeta,
       scrollLockID: defaultProps.scrollLockID,
       renderFilterOnTop: defaultProps.renderFilterOnTop,
       errorFetching: false,
@@ -190,29 +139,6 @@ describe('Navigator', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
     expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.ready');
-  });
-
-  it('falls back to using the `technology.url` for the `technology-path`', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        technology: fallbackTechnology,
-      },
-    });
-    expect(wrapper.find(NavigatorCard).props()).toEqual({
-      activePath: [references.first.url, references.second.url, mocks.$route.path],
-      // will assert in another test
-      children: [],
-      type: TopicTypes.module,
-      technology: fallbackTechnology.title,
-      technologyPath: fallbackTechnology.url,
-      isTechnologyBeta: false,
-      scrollLockID: defaultProps.scrollLockID,
-      renderFilterOnTop: defaultProps.renderFilterOnTop,
-      errorFetching: false,
-      apiChanges: null,
-      navigatorReferences,
-      hideAvailableTags: false,
-    });
   });
 
   it('passes the errorFetching prop', () => {

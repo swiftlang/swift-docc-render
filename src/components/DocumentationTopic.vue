@@ -183,6 +183,7 @@ import { normalizeRelativePath } from 'docc-render/utils/assets';
 import { last } from 'docc-render/utils/arrays';
 
 import AppStore from 'docc-render/stores/AppStore';
+import IndexStore from 'docc-render/stores/IndexStore';
 import Aside from 'docc-render/components/ContentNode/Aside.vue';
 import BetaLegalText from 'theme/components/DocumentationTopic/BetaLegalText.vue';
 import LanguageSwitcher from 'theme/components/DocumentationTopic/Summary/LanguageSwitcher.vue';
@@ -425,7 +426,7 @@ export default {
   },
   data() {
     return {
-      appState: AppStore.state,
+      indexState: IndexStore.state,
       topicState: this.store.state,
       declListExpanded: false, // Hide all other declarations by default
     };
@@ -721,7 +722,7 @@ export default {
     this.store.setReferences(this.references);
   },
   watch: {
-    'appState.includedArchiveIdentifiers': function updateRefs() {
+    'indexState.includedArchiveIdentifiers': function updateRefs() {
       this.store.updateReferences();
     },
     // update the references in the store, in case they update, but the component is not re-created

@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import AppStore from 'docc-render/stores/AppStore';
+import IndexStore from 'docc-render/stores/IndexStore';
 
 const TopicReferenceTypes = new Set([
   'section',
@@ -16,7 +16,7 @@ const TopicReferenceTypes = new Set([
 ]);
 
 function isFromIncludedArchive(id) {
-  const { includedArchiveIdentifiers } = AppStore.state;
+  const { includedArchiveIdentifiers } = IndexStore.state;
 
   // for backwards compatibility purposes, treat all references as being
   // from included archives if there is no data for it

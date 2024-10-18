@@ -177,3 +177,30 @@ export function getSiblings(uid, childrenMap, children) {
   if (!item) return [];
   return getChildren(item.parent, childrenMap, children);
 }
+
+/**
+ * Flatten data for each language variant
+ * @return { languageVariant: NavigatorFlatItem[] }
+ */
+export function flattenNavigationIndex(indexData) {
+  return Object.entries(indexData).reduce((acc, [language, data]) => {
+    acc[language] = flattenNestedData(
+      data[0].children || [], null, 0, data[0].beta,
+    );
+    return acc;
+  }, {});
+}
+
+/**
+ * Extract technology data for each language variant
+ */
+export function extractTechnologyProps(indexData) {
+  return Object.entries(indexData).reduce((acc, [language, data]) => {
+    acc[language] = {
+      technology: data[0].title,
+      technologyPath: data[0].path || data[0].url,
+      isTechnologyBeta: data[0].beta,
+    };
+    return acc;
+  }, {});
+}
