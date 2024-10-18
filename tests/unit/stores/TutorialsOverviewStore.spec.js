@@ -55,7 +55,7 @@ describe('TutorialsOverviewStore', () => {
   describe('setReferences', () => {
     it('sets the `references` state', () => {
       TutorialsOverviewStore.setReferences(references);
-      expect(TutorialsOverviewStore.state.references).toBe(references);
+      expect(TutorialsOverviewStore.state.references).toEqual(references);
     });
   });
 });

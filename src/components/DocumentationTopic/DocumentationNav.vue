@@ -141,6 +141,7 @@ $sidenav-icon-padding-size: 5px;
   &-settings {
     // ensure settings can get smaller if needed
     min-width: 0;
+    gap: $nav-space-between-elements;
 
     @include font-styles(nav-toggles);
 
@@ -158,14 +159,6 @@ $sidenav-icon-padding-size: 5px;
       .nav-menu-link {
         font-weight: $font-weight-semibold;
         @include underline-text;
-      }
-
-      &:first-child:not(:only-child) {
-        margin-right: $nav-space-between-elements;
-
-        @include nav-in-breakpoint() {
-          margin-right: 0;
-        }
       }
 
       @include nav-dark() {
