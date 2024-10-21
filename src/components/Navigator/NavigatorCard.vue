@@ -395,6 +395,9 @@ export default {
         item.updateSize();
       }
     },
+    technology() {
+      this.clearFilters();
+    },
   },
   methods: {
     setUnlessEqual(property, data) {

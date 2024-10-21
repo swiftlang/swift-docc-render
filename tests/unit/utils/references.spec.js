@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import AppStore from 'docc-render/stores/AppStore';
+import IndexStore from 'docc-render/stores/IndexStore';
 import { filterInactiveReferences } from 'docc-render/utils/references';
 
 const aa = {
@@ -52,17 +52,17 @@ const references = {
 
 describe('filterInactiveReferences', () => {
   it('does not filter any refs when `includedArchiveIdentifiers` is empty', () => {
-    AppStore.setIncludedArchiveIdentifiers([]);
+    IndexStore.setIncludedArchiveIdentifiers([]);
     expect(filterInactiveReferences(references)).toEqual(references);
   });
 
   it('does not filter any refs when `includedArchiveIdentifiers` includes all ref archives', () => {
-    AppStore.setIncludedArchiveIdentifiers(['A', 'B', 'BB']);
+    IndexStore.setIncludedArchiveIdentifiers(['A', 'B', 'BB']);
     expect(filterInactiveReferences(references)).toEqual(references);
   });
 
   it('removes `url` from non-external refs that aren\'t part of included archive', () => {
-    AppStore.setIncludedArchiveIdentifiers(['B']);
+    IndexStore.setIncludedArchiveIdentifiers(['B']);
     const filteredRefs = filterInactiveReferences(references);
 
     expect(Object.keys(filteredRefs)).toEqual(Object.keys(references));
