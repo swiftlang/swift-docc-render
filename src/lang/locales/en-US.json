@@ -172,7 +172,9 @@
   "parameters": {
     "default": "Default",
     "minimum": "Minimum",
+    "minimumLength": "Minimum Length",
     "maximum": "Maximum",
+    "maximumLength": "Maximum Length",
     "possible-types": "Type | Possible types",
     "possible-values": "Value | Possible Values"
   },

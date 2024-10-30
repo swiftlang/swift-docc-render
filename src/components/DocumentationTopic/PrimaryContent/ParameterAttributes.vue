@@ -38,6 +38,15 @@
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
+      v-if="shouldRender(AttributeKind.minimumLength)"
+      v-bind="{ kind: AttributeKind.minimumLength, attributes: attributesObject, changes }">
+      <template v-slot="{ attribute }">
+        {{ $t('formats.colon', {
+          content: attribute.title || $t('parameters.minimumLength')
+        }) }}<code>{{ attribute.value }}</code>
+      </template>
+    </ParameterMetaAttribute>
+    <ParameterMetaAttribute
       v-if="shouldRender(AttributeKind.maximum)"
       v-bind="{ kind: AttributeKind.maximum, attributes: attributesObject, changes }">
       <template v-slot="{ attribute }">
@@ -53,6 +62,15 @@
         {{ $t('formats.colon', {
           content: attribute.title || $t('parameters.maximum')
         }) }}<code>&lt; {{ attribute.value }}</code>
+      </template>
+    </ParameterMetaAttribute>
+    <ParameterMetaAttribute
+      v-if="shouldRender(AttributeKind.maximumLength)"
+      v-bind="{ kind: AttributeKind.maximumLength, attributes: attributesObject, changes }">
+      <template v-slot="{ attribute }">
+        {{ $t('formats.colon', {
+          content: attribute.title || $t('parameters.maximumLength')
+        }) }}<code>{{ attribute.value }}</code>
       </template>
     </ParameterMetaAttribute>
     <ParameterMetaAttribute
@@ -94,8 +112,10 @@ const AttributeKind = {
   default: 'default',
   maximum: 'maximum',
   maximumExclusive: 'maximumExclusive',
+  maximumLength: 'maximumLength',
   minimum: 'minimum',
   minimumExclusive: 'minimumExclusive',
+  minimumLength: 'minimumLength',
 };
 
 /**
