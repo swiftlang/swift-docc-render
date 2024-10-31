@@ -20,9 +20,6 @@ export default {
     },
   },
   methods: {
-    async fetchIndexPathsData() {
-      return fetchData(this.indexDataPath);
-    },
     async fetchIndexData() {
       try {
         IndexStore.reset();
@@ -30,7 +27,7 @@ export default {
           includedArchiveIdentifiers = [],
           interfaceLanguages,
           references = {},
-        } = await this.fetchIndexPathsData();
+        } = await fetchData(this.indexDataPath);
         IndexStore.setFlatChildren(flattenNavigationIndex(interfaceLanguages));
         IndexStore.setTechnologyProps(extractTechnologyProps(interfaceLanguages));
         IndexStore.setReferences(references);

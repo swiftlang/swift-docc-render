@@ -126,15 +126,6 @@ describe('Navigator', () => {
     expect(wrapper.find(LoadingNavigatorCard).exists()).toBe(false);
   });
 
-  it('adds display:none to NavigatorCard when navigator is loading', () => {
-    const wrapper = createWrapper({
-      propsData: {
-        isFetching: true,
-      },
-    });
-    expect(wrapper.find(NavigatorCard).attributes('style')).toContain('display: none');
-  });
-
   it('renders an aria live that tells VO users when navigator is ready', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
