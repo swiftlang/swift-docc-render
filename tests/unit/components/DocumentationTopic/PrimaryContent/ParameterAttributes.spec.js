@@ -19,6 +19,8 @@ const { ParameterMetaAttribute } = ParameterAttributes.components;
 const defaultMetadata = { kind: AttributeKind.default, value: 3, title: 'Default' };
 const minimumMetadata = { kind: AttributeKind.minimum, value: 20, title: 'Minimum Value' };
 const maximumMetadata = { kind: AttributeKind.maximum, value: 50, title: 'Maximum Length' };
+const minimumLengthMetadata = { kind: AttributeKind.minimumLength, value: 1, title: 'Minimum Length' };
+const maximumLengthMetadata = { kind: AttributeKind.maximumLength, value: 10, title: 'Maximum Length' };
 const minimumExclusiveMetadata = { kind: AttributeKind.minimumExclusive, value: 2, title: 'Minimum' };
 const maximumExclusiveMetadata = { kind: AttributeKind.maximumExclusive, value: 5, title: 'Maximum' };
 const allowedValuesMetadata = {
@@ -88,6 +90,18 @@ describe('ParameterAttributes', () => {
         .at(1)
         .text(),
     ).toBe('formats.colon Maximum< 5');
+  });
+
+  it('displays min/max length metadata', () => {
+    const wrapper = mountComponent({
+      attributes: [
+        minimumLengthMetadata,
+        maximumLengthMetadata,
+      ],
+    });
+    const metadata = wrapper.findAll('.property-metadata');
+    expect(metadata.at(0).text()).toBe('formats.colon Minimum Length1');
+    expect(metadata.at(1).text()).toBe('formats.colon Maximum Length10');
   });
 
   it('displays possible types/values metadata', () => {
