@@ -123,7 +123,7 @@
   },
   "availability": {
     "introduced-and-deprecated": "{name} {introducedAt}에서 소개되었고 {name} {deprecatedAt}에서 제거됨",
-    "available-on": "{name} {introducedAt} 이상에서 사용할 수 있음"
+    "available-on-platform-version": "{name} {introducedAt} 이상에서 사용할 수 있음"
   },
   "more": "더 보기",
   "less": "간략히",

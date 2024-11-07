@@ -123,7 +123,7 @@
   },
   "availability": {
     "introduced-and-deprecated": "{name} {introducedAt} 中引入，{name} {deprecatedAt} 中弃用",
-    "available-on": "{name} {introducedAt} 及更高版本中可用"
+    "available-on-platform-version": "{name} {introducedAt} 及更高版本中可用"
   },
   "more": "更多",
   "less": "更少",

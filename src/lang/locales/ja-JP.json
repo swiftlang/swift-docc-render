@@ -123,7 +123,7 @@
   },
   "availability": {
     "introduced-and-deprecated": "{name} {introducedAt}で導入され、{name} {deprecatedAt}で非推奨になりました",
-    "available-on": "{name} {introducedAt}以降で使用できます"
+    "available-on-platform-version": "{name} {introducedAt}以降で使用できます"
   },
   "more": "さらに表示",
   "less": "表示を減らす",
