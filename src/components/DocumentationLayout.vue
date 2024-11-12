@@ -147,11 +147,11 @@ export default {
     },
     quickNavNodes: {
       type: Array,
-      required: false,
+      default: null,
     },
     quickNavPlaceholder: {
       type: String,
-      required: false,
+      default: null,
     },
   },
   data() {
