@@ -101,7 +101,9 @@ $border-width: 1px;
 // of the nav area, so they are represented as clear overlays here
 $toggle-bg-color: var(--color-nav-hierarchy-collapse-background);
 $toggle-bg-color-dark: var(--color-nav-dark-hierarchy-collapse-background);
+$toggle-bg-color-hover: var(--color-nav-hierarchy-collapse-background-hover);
 $toggle-border-color: var(--color-nav-hierarchy-collapse-borders);
+$toggle-border-color-hover: var(--color-nav-hierarchy-collapse-borders-hover);
 $hierarchy-toggle-border-width: 0 !default;
 $toggle-height: rem(19px);
 $toggle-width: rem(36px);
@@ -158,8 +160,10 @@ $dropdown-vertical-offset: rem(7px);
   display: flex;
   align-items: center;
   justify-content: center;
-  @include nav-dark() {
-    background: $toggle-bg-color-dark;
+
+  &:hover {
+    background: $toggle-bg-color-hover;
+    border-color: $toggle-border-color-hover;
   }
 
   &:active,
