@@ -44,8 +44,8 @@
   --color-nav-color: var(--color-nav-dark-color);
   --color-nav-current-link: var(--color-nav-dark-current-link);
   --color-nav-expanded: var(--color-nav-dark-expanded);
-  --color-nav-hierarchy-collapse-background: var(--color-nav-dark-hierarchy-collapse-background);
-  --color-nav-hierarchy-collapse-borders: var(--color-nav-dark-hierarchy-collapse-borders);
+  --color-nav-hierarchy-collapse-background: #{dark-color(fill-gray-tertiary)};
+  --color-nav-hierarchy-collapse-borders: #{light-color(figure-gray-secondary)};
   --color-nav-hierarchy-collapse-background-hover: #{change-color(dark-color(fill-blue), $alpha: 0.5)};
   --color-nav-hierarchy-collapse-borders-hover: #{dark-color(figure-blue)};
   --color-nav-hierarchy-item-borders: var(--color-nav-dark-hierarchy-item-borders);

@@ -100,7 +100,6 @@ $border-width: 1px;
 // Values specified in rgba due to alpha transparency used in the background
 // of the nav area, so they are represented as clear overlays here
 $toggle-bg-color: var(--color-nav-hierarchy-collapse-background);
-$toggle-bg-color-dark: var(--color-nav-dark-hierarchy-collapse-background);
 $toggle-bg-color-hover: var(--color-nav-hierarchy-collapse-background-hover);
 $toggle-border-color: var(--color-nav-hierarchy-collapse-borders);
 $toggle-border-color-hover: var(--color-nav-hierarchy-collapse-borders-hover);
@@ -111,9 +110,7 @@ $toggle-width: rem(36px);
 // Values specified here are opaque versions of the dropdown colors so that
 // they match (without using alpha)
 $dropdown-bg-color: $toggle-bg-color;
-$dropdown-bg-color-dark: $toggle-bg-color-dark;
 $dropdown-border-color: var(--color-nav-hierarchy-collapse-borders);
-$dropdown-border-color-dark: var(--color-nav-dark-hierarchy-collapse-borders);
 $dropdown-transition-duration: 250ms;
 $hierarchy-dropdown-border-width: 0px !default;
 $hierarchy-dropdown-box-shadow: 0 1px 4px -1px var(--color-figure-gray-secondary) !default;
@@ -197,10 +194,6 @@ $dropdown-vertical-offset: rem(7px);
   position: absolute;
   z-index: 42;
   top: calc(100% + #{$dropdown-vertical-offset});
-  @include nav-dark() {
-    background: $dropdown-bg-color-dark;
-    border-color: $dropdown-border-color-dark;
-  }
 
   &.collapsed {
     opacity: 0;
@@ -238,10 +231,6 @@ $dropdown-vertical-offset: rem(7px);
     left: $tail-offset;
     position: absolute;
     top: rem($border-width) - $tail-width;
-
-    @include nav-dark() {
-      border-bottom-color: $dropdown-bg-color-dark;
-    }
   }
 }
 
@@ -249,10 +238,6 @@ $dropdown-vertical-offset: rem(7px);
   border-top-color: $dropdown-border-color;
   border-top-style: $border-style;
   border-top-width: $border-width;
-
-  @include nav-dark() {
-    border-top-color: $dropdown-border-color-dark;
-  }
 
   &:first-child {
     border-top: none;
