@@ -54,11 +54,20 @@ describe('RestResponses', () => {
     },
   };
 
+  const mocks = {
+    $route: {
+      query: {
+        context: 'foo',
+      },
+    },
+  };
+
   function mountComponent(options) {
     const wrapper = mount(RestResponses, {
       stubs: ['ContentNode', 'router-link'],
       propsData,
       provide,
+      mocks,
       ...options,
     });
     return wrapper;
