@@ -24,6 +24,7 @@
         role="listbox"
         :aria-multiselectable="areTagsRemovable ? 'true' : 'false'"
         aria-orientation="horizontal"
+        v-bind="{[SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR]: true}"
         @keydown.left.capture.prevent="focusPrev"
         @keydown.right.capture.prevent="focusNext"
         @keydown.up.capture.prevent="focusPrev"
@@ -61,6 +62,7 @@
 import { isSingleCharacter } from 'docc-render/utils/input-helper';
 import handleScrollbar from 'docc-render/mixins/handleScrollbar';
 import keyboardNavigation from 'docc-render/mixins/keyboardNavigation';
+import { SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR } from 'docc-render/utils/scroll-lock';
 import Tag from './Tag.vue';
 
 export default {
@@ -69,6 +71,11 @@ export default {
     handleScrollbar,
     keyboardNavigation,
   ],
+  data() {
+    return {
+      SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR,
+    };
+  },
   props: {
     tags: {
       type: Array,
