@@ -178,21 +178,27 @@ export function getSiblings(uid, childrenMap, children) {
   return getChildren(item.parent, childrenMap, children);
 }
 
+function extractRootNode(data) {
+  // most of the time, it is expected that `data` always has a single item
+  // that represents the top-level root node of the navigation tree
+  //
+  // there may be rare, unexpected scenarios where multiple top-level root
+  // nodes are provide for some reason—if that happens, we would prefer the
+  // first one categorized as a "module"
+  //
+  // otherwise, the first provided node will be used
+  return data.length === 1 ? data[0] : (data.find(node => (
+    node.type === TopicTypes.module
+  )) ?? data[0]);
+}
+
 /**
  * Flatten data for each language variant
  * @return { languageVariant: NavigatorFlatItem[] }
  */
 export function flattenNavigationIndex(indexData) {
   return Object.entries(indexData).reduce((acc, [language, data]) => {
-    // most of the time, it is expected that `data` always has a single item
-    // that represents the top-level root node of the navigation tree
-    //
-    // there may be rare, unexpected scenarios where multiple top-level root
-    // nodes are provide for some reason—if that happens, we would prefer any
-    // categorized as a module
-    const topLevelNode = data.length === 1 ? data[0] : (data.find(node => (
-      node.type === TopicTypes.module
-    )) ?? data[0]);
+    const topLevelNode = extractRootNode(data);
     acc[language] = flattenNestedData(
       topLevelNode.children || [], null, 0, topLevelNode.beta,
     );
@@ -205,10 +211,11 @@ export function flattenNavigationIndex(indexData) {
  */
 export function extractTechnologyProps(indexData) {
   return Object.entries(indexData).reduce((acc, [language, data]) => {
+    const topLevelNode = extractRootNode(data);
     acc[language] = {
-      technology: data[0].title,
-      technologyPath: data[0].path || data[0].url,
-      isTechnologyBeta: data[0].beta,
+      technology: topLevelNode.title,
+      technologyPath: topLevelNode.path || topLevelNode.url,
+      isTechnologyBeta: topLevelNode.beta,
     };
     return acc;
   }, {});
