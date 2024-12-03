@@ -184,8 +184,17 @@ export function getSiblings(uid, childrenMap, children) {
  */
 export function flattenNavigationIndex(indexData) {
   return Object.entries(indexData).reduce((acc, [language, data]) => {
+    // most of the time, it is expected that `data` always has a single item
+    // that represents the top-level root node of the navigation tree
+    //
+    // there may be rare, unexpected scenarios where multiple top-level root
+    // nodes are provide for some reason—if that happens, we would prefer any
+    // categorized as a module
+    const topLevelNode = data.length === 1 ? data[0] : (data.find(node => (
+      node.type === TopicTypes.module
+    )) ?? data[0]);
     acc[language] = flattenNestedData(
-      data[0].children || [], null, 0, data[0].beta,
+      topLevelNode.children || [], null, 0, topLevelNode.beta,
     );
     return acc;
   }, {});
