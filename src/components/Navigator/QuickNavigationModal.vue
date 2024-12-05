@@ -25,7 +25,7 @@
         <FilterInput
           v-model="userInput"
           class="quick-navigation__filter"
-          :placeholder="placeholderText"
+          :placeholder="placeholder || placeholderText"
           focusInputWhenCreated
           focusInputWhenEmpty
           preventBorderStyle
@@ -192,6 +192,10 @@ export default {
       required: true,
     },
     technology: {
+      type: String,
+      required: false,
+    },
+    placeholder: {
       type: String,
       required: false,
     },
