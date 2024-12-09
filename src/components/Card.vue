@@ -185,6 +185,11 @@ export default {
       @media (prefers-reduced-motion: reduce) {
         transform: none;
       }
+
+      @include breakpoint(small) {
+        box-shadow: none;
+        transform: none;
+      }
     }
   }
 
