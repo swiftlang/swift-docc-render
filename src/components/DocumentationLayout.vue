@@ -37,40 +37,38 @@
             :showQuickNavigationModal.sync="showQuickNavigationModal"
             :technology="technology ? technology.title : ''"
           />
-          <transition name="delay-hiding">
-            <slot
-              name="navigator"
-              v-bind="{
-                scrollLockID,
-                breakpoint,
-                sidenavVisibleOnMobile,
-                handleToggleSidenav,
-                enableQuickNavigation,
-                openQuickNavigationModal,
-              }"
+          <slot
+            name="navigator"
+            v-bind="{
+              scrollLockID,
+              breakpoint,
+              sidenavVisibleOnMobile,
+              handleToggleSidenav,
+              enableQuickNavigation,
+              openQuickNavigationModal,
+            }"
+          >
+            <Navigator
+              key="base-navigator"
+              v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
+              v-bind="{ ...navigatorProps, technologyProps }"
+              :parent-topic-identifiers="parentTopicIdentifiers"
+              :references="references"
+              :scrollLockID="scrollLockID"
+              :render-filter-on-top="breakpoint !== BreakpointName.large"
+              @close="handleToggleSidenav(breakpoint)"
             >
-              <Navigator
-                key="base-navigator"
-                v-show="sidenavVisibleOnMobile || breakpoint === BreakpointName.large"
-                v-bind="{ ...navigatorProps, technologyProps }"
-                :parent-topic-identifiers="parentTopicIdentifiers"
-                :references="references"
-                :scrollLockID="scrollLockID"
-                :render-filter-on-top="breakpoint !== BreakpointName.large"
-                @close="handleToggleSidenav(breakpoint)"
-              >
-                <template v-if="enableQuickNavigation" #filter>
-                  <QuickNavigationButton @click.native="openQuickNavigationModal" />
-                </template>
-                <template #above-navigator-head>
-                  <slot name="above-navigator-head"/>
-                </template>
-                <template #navigator-head="{ className }">
-                  <slot name="nav-title" :className="className" />
-                </template>
-              </Navigator>
-            </slot>
-          </transition>
+              <template v-if="enableQuickNavigation" #filter>
+                <QuickNavigationButton @click.native="openQuickNavigationModal" />
+              </template>
+              <template #above-navigator-head>
+                <slot name="above-navigator-head"/>
+              </template>
+              <template #navigator-head="{ className }">
+                <slot name="nav-title" :className="className" />
+              </template>
+            </Navigator>
+          </slot>
         </div>
       </template>
       <slot name="content" />
@@ -245,15 +243,9 @@ export default {
 }
 
 .documentation-layout {
-  --delay: 1s;
   display: flex;
   flex-flow: column;
   background: var(--colors-text-background, var(--color-text-background));
-
-  .delay-hiding-leave-active {
-    // don't hide navigator until delay time has passed
-    transition: display var(--delay);
-  }
 }
 
 .documentation-layout-aside {
