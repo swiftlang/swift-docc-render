@@ -245,14 +245,14 @@ export default {
 }
 
 .documentation-layout {
-  --delay: 1s;
+  --nav-transition-duration: 0.15s;
   display: flex;
   flex-flow: column;
   background: var(--colors-text-background, var(--color-text-background));
 
   .delay-hiding-leave-active {
     // don't hide navigator until delay time has passed
-    transition: display var(--delay);
+    transition: display var(--nav-transition-duration);
   }
 }
 
