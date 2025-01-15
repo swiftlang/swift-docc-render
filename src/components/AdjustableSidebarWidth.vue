@@ -464,7 +464,7 @@ export default {
     left: 0;
     z-index: $nav-z-index + 1;
     transform: translateX(-100%);
-    transition: transform 0.15s ease-in;
+    transition: transform var(--nav-transition-duration) ease-in;
     left: 0;
 
     :deep(.aside-animated-child) {
@@ -477,8 +477,9 @@ export default {
       :deep(.aside-animated-child) {
         --index: 0;
         opacity: 1;
-        transition: opacity 0.15s linear;
-        transition-delay: calc(var(--index) * 0.15s + 0.15s);
+        transition: opacity var(--nav-transition-duration) linear;
+        transition-delay:
+          calc(var(--index) * var(--nav-transition-duration) + var(--nav-transition-duration));
       }
     }
 
