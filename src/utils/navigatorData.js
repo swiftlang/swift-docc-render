@@ -180,12 +180,14 @@ export function getSiblings(uid, childrenMap, children) {
 
 /**
  * Flatten data for each language variant
+ * @param {Object} languages
  * @return { languageVariant: NavigatorFlatItem[] }
  */
-export function flattenNavigationIndex(indexData) {
-  return Object.entries(indexData).reduce((acc, [language, data]) => {
+export function flattenNavigationIndex(languages) {
+  return Object.entries(languages).reduce((acc, [language, langData]) => {
+    if (!langData.length) return acc;
     acc[language] = flattenNestedData(
-      data[0].children || [], null, 0, data[0].beta,
+      langData[0].children || [], null, 0, langData[0].beta,
     );
     return acc;
   }, {});
@@ -196,6 +198,7 @@ export function flattenNavigationIndex(indexData) {
  */
 export function extractTechnologyProps(indexData) {
   return Object.entries(indexData).reduce((acc, [language, data]) => {
+    if (!data.length) return acc;
     acc[language] = {
       technology: data[0].title,
       technologyPath: data[0].path || data[0].url,

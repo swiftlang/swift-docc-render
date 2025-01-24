@@ -16,6 +16,7 @@ import {
   getParents,
   getSiblings,
   hashCode,
+  flattenNavigationIndex,
 } from 'docc-render/utils/navigatorData';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { INDEX_ROOT_KEY } from '@/constants/sidebar';
@@ -315,5 +316,12 @@ describe('index data', () => {
   it('it gets all sibling nodes of a node', () => {
     const childNodes = getSiblings(root0Child1.uid, childrenMap, children);
     expect(childNodes).toEqual([root0Child0, root0Child1]);
+  });
+});
+
+describe('flattenNavigationIndex', () => {
+  it('skips empty languages', () => {
+    const flattenedIndex = flattenNavigationIndex({ occ: [], swift: [technologyWithChildren] });
+    expect(flattenedIndex.swift[0].title).toBe(technologyWithChildren.children[0].title);
   });
 });
