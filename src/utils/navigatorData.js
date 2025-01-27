@@ -194,11 +194,13 @@ function extractRootNode(data) {
 
 /**
  * Flatten data for each language variant
+ * @param {Object} languages
  * @return { languageVariant: NavigatorFlatItem[] }
  */
-export function flattenNavigationIndex(indexData) {
-  return Object.entries(indexData).reduce((acc, [language, data]) => {
-    const topLevelNode = extractRootNode(data);
+export function flattenNavigationIndex(languages) {
+  return Object.entries(languages).reduce((acc, [language, langData]) => {
+    if (!langData.length) return acc;
+    const topLevelNode = extractRootNode(langData);
     acc[language] = flattenNestedData(
       topLevelNode.children || [], null, 0, topLevelNode.beta,
     );
