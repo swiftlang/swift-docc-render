@@ -45,6 +45,14 @@ describe('RestParameters', () => {
     },
   };
 
+  const mocks = {
+    $route: {
+      query: {
+        context: 'foo',
+      },
+    },
+  };
+
   function mountComponent({ propsData: props, ...others } = {}) {
     return mount(RestParameters, {
       stubs: ['ContentNode', 'router-link'],
@@ -52,6 +60,7 @@ describe('RestParameters', () => {
         ...propsData,
         ...props,
       },
+      mocks,
       provide,
       ...others,
     });
