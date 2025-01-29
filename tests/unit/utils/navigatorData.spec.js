@@ -10,6 +10,8 @@
 
 import {
   convertChildrenArrayToObject,
+  extractTechnologyProps,
+  flattenNavigationIndex,
   flattenNestedData,
   getAllChildren,
   getChildren,
@@ -315,5 +317,86 @@ describe('index data', () => {
   it('it gets all sibling nodes of a node', () => {
     const childNodes = getSiblings(root0Child1.uid, childrenMap, children);
     expect(childNodes).toEqual([root0Child0, root0Child1]);
+  });
+});
+
+describe('when multiple top-level children are provided', () => {
+  const a = {
+    type: 'overview',
+    title: 'a',
+    path: '/tutorials/a',
+    children: [
+      {
+        type: 'project',
+        title: 'a1',
+        path: '/tutorials/a/a1',
+      },
+    ],
+  };
+  const b = {
+    type: 'module',
+    title: 'a',
+    path: '/documentation/b',
+    children: [
+      {
+        type: 'article',
+        title: 'b1',
+        path: '/documentation/b/b1',
+      },
+    ],
+  };
+  const c = {
+    type: 'other',
+    title: 'c',
+    path: '/documentation/c',
+    children: [
+      {
+        type: 'article',
+        title: 'c1',
+        path: '/documentation/c/c1',
+      },
+    ],
+  };
+
+  describe('flattenNavigationIndex', () => {
+    it('prefers modules', () => {
+      // use first root node if only one is provided
+      let flattenedIndex = flattenNavigationIndex({ swift: [a] });
+      expect(flattenedIndex.swift.length).toBe(1);
+      expect(flattenedIndex.swift[0].title).toBe(a.children[0].title);
+      flattenedIndex = flattenNavigationIndex({ swift: [b] });
+      expect(flattenedIndex.swift.length).toBe(1);
+      expect(flattenedIndex.swift[0].title).toBe(b.children[0].title);
+
+      // prefer "module" root when multiple top-level nodes are provided
+      flattenedIndex = flattenNavigationIndex({ swift: [a, b] });
+      expect(flattenedIndex.swift.length).toBe(1);
+      expect(flattenedIndex.swift[0].title).toBe(b.children[0].title);
+
+      // fallback to first root node when multiple top-level nodes are provided
+      // and none of them is a "module"
+      flattenedIndex = flattenNavigationIndex({ swift: [c, a] });
+      expect(flattenedIndex.swift.length).toBe(1);
+      expect(flattenedIndex.swift[0].title).toBe(c.children[0].title);
+    });
+  });
+
+  describe('extractTechnologyProps', () => {
+    it('prefers modules', () => {
+      // use first root node if only one is provided
+      let props = extractTechnologyProps({ swift: [a] });
+      expect(props.swift.technology).toBe(a.title);
+      props = extractTechnologyProps({ swift: [b] });
+      expect(props.swift.technology).toBe(b.title);
+
+      // prefer "module" root when multiple top-level nodes are provided
+      props = extractTechnologyProps({ swift: [a, b] });
+      expect(props.swift.technology).toBe(b.title);
+
+      // fallback to first root node when multiple top-level nodes are provided
+      // and none of them is a "module"
+      props = extractTechnologyProps({ swift: [c, a] });
+      expect(props.swift.technology).toBe(c.title);
+    });
   });
 });

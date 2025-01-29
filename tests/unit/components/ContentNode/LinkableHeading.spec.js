@@ -17,9 +17,18 @@ describe('LinkableHeading', () => {
   });
   const stubs = { 'router-link': RouterLinkStub };
 
+  const mocks = {
+    $route: {
+      query: {
+        context: 'foo',
+      },
+    },
+  };
+
   it('renders a default heading that is a h2 by default', () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
+      mocks,
       slots: { default: 'Title' },
     });
     expect(wrapper.text()).toBe('Title');
@@ -29,6 +38,7 @@ describe('LinkableHeading', () => {
   it('renders a heading with a given level', () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
+      mocks,
       propsData: {
         level: 3,
       },
@@ -39,6 +49,7 @@ describe('LinkableHeading', () => {
   it('renders a heading with a header anchor and an id on the wrapper', async () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
+      mocks,
       propsData: {
         anchor: 'title',
       },
@@ -47,7 +58,7 @@ describe('LinkableHeading', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.attributes('id')).toBe('title');
     const headerAnchor = wrapper.find('.header-anchor');
-    expect(headerAnchor.props('to')).toEqual({ hash: '#title' });
+    expect(headerAnchor.props('to')).toEqual({ hash: '#title', query: mocks.$route.query });
     expect(headerAnchor.text()).toBe('Title');
     expect(headerAnchor.attributes('data-after-text')).toBe('accessibility.in-page-link');
   });
@@ -60,6 +71,7 @@ describe('LinkableHeading', () => {
   it('does not render anchor if target ide is true', () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
+      mocks,
       propsData: {
         anchor: 'title',
       },
@@ -73,6 +85,7 @@ describe('LinkableHeading', () => {
   it('does not render anchor if `enableMinimized` is true', () => {
     const wrapper = shallowMount(LinkableHeading, {
       stubs,
+      mocks,
       propsData: {
         anchor: 'title',
       },
