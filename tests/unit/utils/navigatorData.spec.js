@@ -379,6 +379,12 @@ describe('when multiple top-level children are provided', () => {
       expect(flattenedIndex.swift.length).toBe(1);
       expect(flattenedIndex.swift[0].title).toBe(c.children[0].title);
     });
+
+    it('skips empty languages', () => {
+      const flattenedIndex = flattenNavigationIndex({ occ: [], swift: [a] });
+      expect(flattenedIndex.swift.length).toBe(1);
+      expect(flattenedIndex.swift[0].title).toBe(a.children[0].title);
+    });
   });
 
   describe('extractTechnologyProps', () => {
