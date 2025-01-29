@@ -34,6 +34,14 @@ const store = {
   },
 };
 
+const mocks = {
+  $route: {
+    query: {
+      context: 'foo',
+    },
+  },
+};
+
 describe('PropertyTable', () => {
   const propsData = {
     kind: 'restResponses',
@@ -116,6 +124,7 @@ describe('PropertyTable', () => {
     return mount(PropertyTable, {
       stubs: ['ContentNode', 'router-link'],
       propsData,
+      mocks,
       provide,
       ...options,
     });

@@ -15,7 +15,7 @@
   >
     <router-link
       v-if="shouldLink"
-      :to="{ hash: `#${anchor}` }"
+      :to="linkWithAnchor"
       :data-after-text="$t('accessibility.in-page-link')"
       class="header-anchor"
       @click="handleFocusAndScroll(anchor)"
@@ -64,6 +64,7 @@ export default {
       enableMinimized,
       isTargetIDE,
     }) => !!anchor && !enableMinimized && !isTargetIDE,
+    linkWithAnchor: ({ anchor, $route }) => ({ hash: `#${anchor}`, query: $route.query }),
   },
 };
 </script>
