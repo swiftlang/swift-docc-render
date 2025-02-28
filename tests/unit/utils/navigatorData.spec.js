@@ -359,7 +359,11 @@ describe('when multiple top-level children are provided', () => {
   };
 
   describe('flattenNavigationIndex', () => {
-    it('prefers modules', () => {
+    it('prefers the root child with the same url path prefix', () => {
+      Object.defineProperty(window, 'location', {
+        value: { href: 'http://localhost/documentation/b/b42' },
+      });
+
       // use first root node if only one is provided
       let flattenedIndex = flattenNavigationIndex({ swift: [a] });
       expect(flattenedIndex.swift.length).toBe(1);
@@ -368,7 +372,7 @@ describe('when multiple top-level children are provided', () => {
       expect(flattenedIndex.swift.length).toBe(1);
       expect(flattenedIndex.swift[0].title).toBe(b.children[0].title);
 
-      // prefer "module" root when multiple top-level nodes are provided
+      // prefers root node with same url path prefix when multiple are provided
       flattenedIndex = flattenNavigationIndex({ swift: [a, b] });
       expect(flattenedIndex.swift.length).toBe(1);
       expect(flattenedIndex.swift[0].title).toBe(b.children[0].title);
@@ -388,14 +392,18 @@ describe('when multiple top-level children are provided', () => {
   });
 
   describe('extractTechnologyProps', () => {
-    it('prefers modules', () => {
+    it('prefers the root child with the same url path prefix', () => {
+      Object.defineProperty(window, 'location', {
+        value: { href: 'http://localhost/documentation/b/b42' },
+      });
+
       // use first root node if only one is provided
       let props = extractTechnologyProps({ swift: [a] });
       expect(props.swift.technology).toBe(a.title);
       props = extractTechnologyProps({ swift: [b] });
       expect(props.swift.technology).toBe(b.title);
 
-      // prefer "module" root when multiple top-level nodes are provided
+      // prefers root node with same url path prefix when multiple are provided
       props = extractTechnologyProps({ swift: [a, b] });
       expect(props.swift.technology).toBe(b.title);
 
