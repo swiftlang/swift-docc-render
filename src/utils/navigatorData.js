@@ -182,7 +182,7 @@ function extractRootNode(data) {
   // note: this "root" path won't always necessarily come at the beginning of
   // the URL in situations where the renderer is being hosted at some path
   // prefix
-  const rootPathPattern = /^.*(\/documentation\/[^/]+).*$/;
+  const rootPathPattern = /(\/documentation\/[^/]+)/;
   const rootPath = window.location.href.match(rootPathPattern)?.[1] ?? '';
   // most of the time, it is expected that `data` always has a single item
   // that represents the top-level root node of the navigation tree
