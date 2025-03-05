@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     englishTypes() {
-      return this.types.map(({
+      return this.sanitizedTypes.map(({
         arrayMode,
         baseType = '*',
       }) => (arrayMode ? (
@@ -32,6 +32,7 @@ export default {
         baseType
       )));
     },
+    sanitizedTypes: ({ sanitizeType, types }) => types.map(sanitizeType),
     typeOutput() {
       if (this.englishTypes.length > 2) {
         return [this.englishTypes.slice(0, this.englishTypes.length - 1).join(', '),
@@ -53,6 +54,14 @@ export default {
       default:
         return type;
       }
+    },
+    // trim extra starting/end whitespace of baseType strings in case they
+    // unexpectedly come through that way in the JSON
+    sanitizeType(type) {
+      const { baseType } = type;
+      return baseType
+        ? { ...type, baseType: baseType.trim() }
+        : type;
     },
   },
 };

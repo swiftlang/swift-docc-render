@@ -60,4 +60,13 @@ describe('PropertyListKeyType', () => {
       { arrayMode: true },
     ]).text()).toBe('* or array of *');
   });
+
+  it('handles extraneous whitespace when pluralizing types', () => {
+    expect(mountWithTypes([
+      {
+        baseType: 'dictionary ',
+        arrayMode: true,
+      },
+    ]).text()).toBe('array of dictionaries');
+  });
 });
