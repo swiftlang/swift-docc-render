@@ -683,7 +683,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   @include breakpoint(small, $scope: nav) {
     padding-top: 0;
     height: $nav-height-small;
-    width: 90%;
+    width: 100%;
   }
 
   :deep(span) {
