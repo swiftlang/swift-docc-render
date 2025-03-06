@@ -23,9 +23,16 @@ jest.mock('docc-render/utils/theme-settings', () => ({
   getSetting: jest.fn(() => {}),
 }));
 
+jest.mock('docc-render/utils/custom-scripts', () => ({
+  runCustomPageLoadScripts: jest.fn(),
+}));
+
 let App;
+
 let fetchThemeSettings = jest.fn();
 let getSetting = jest.fn(() => {});
+
+let runCustomPageLoadScripts = jest.fn();
 
 const matchMedia = {
   matches: false,
@@ -92,6 +99,7 @@ describe('App', () => {
     /* eslint-disable global-require */
     App = require('docc-render/App.vue').default;
     ({ fetchThemeSettings } = require('docc-render/utils/theme-settings'));
+    ({ runCustomPageLoadScripts } = require('docc-render/utils/custom-scripts'));
 
     setThemeSetting({});
     window.matchMedia = jest.fn().mockReturnValue(matchMedia);
@@ -242,6 +250,12 @@ describe('App', () => {
   it('renders the app-top element', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(`#${AppTopID}`).exists()).toBe(true);
+  });
+
+  it('does not load "on-load" scripts immediately', () => {
+    // If "on-load" scripts are run immediately after creating or mounting the app, they will not
+    // have access to the dynamic documentation HTML for the initial route.
+    expect(runCustomPageLoadScripts).toHaveBeenCalledTimes(0);
   });
 
   describe('Custom CSS Properties', () => {
