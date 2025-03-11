@@ -16,6 +16,12 @@ jest.mock('docc-render/utils/theme-settings');
 
 getSetting.mockReturnValue(undefined);
 
+const mockBaseUrl = '/developer/';
+
+jest.mock('docc-render/utils/assets', () => ({
+  normalizePath: jest.fn(name => mockBaseUrl + name),
+}));
+
 const createWrapper = attrs => shallowMount(SVGIcon, {
   slots: {
     default: '<path d="M8.33"></path>',
@@ -46,7 +52,7 @@ describe('SVGIcon', () => {
     expect(wrapper.find('use').attributes()).toEqual({
       width: '100%',
       height: '100%',
-      href: 'theme/override/path#foo',
+      href: `${mockBaseUrl}theme/override/path#foo`,
     });
   });
 
@@ -62,7 +68,7 @@ describe('SVGIcon', () => {
     expect(wrapper.find('use').attributes()).toEqual({
       width: '100%',
       height: '100%',
-      href: '/path/to/new/icon.svg#foo',
+      href: `${mockBaseUrl}/path/to/new/icon.svg#foo`,
     });
   });
 });
