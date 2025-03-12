@@ -15,13 +15,19 @@
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <use v-if="themeOverrideURL" :href="`${themeOverrideURL}#${themeId}`" width="100%" height="100%" />
+    <use
+      v-if="themeOverrideURL"
+      :href="normalizePath(`${themeOverrideURL}#${themeId}`)"
+      width="100%"
+      height="100%"
+    />
     <slot v-else />
   </svg>
 </template>
 
 <script>
 import { getSetting } from 'docc-render/utils/theme-settings';
+import { normalizePath } from 'docc-render/utils/assets';
 
 export default {
   name: 'SVGIcon',
@@ -34,6 +40,9 @@ export default {
       type: String,
       default: null,
     },
+  },
+  methods: {
+    normalizePath,
   },
   computed: {
     themeOverrideURL: ({ iconUrl, themeId }) => iconUrl || getSetting([
