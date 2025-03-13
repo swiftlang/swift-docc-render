@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { filterInactiveReferences } from 'docc-render/utils/references';
+import { filterInactiveReferences } from 'theme/utils/references';
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
 import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
 import Settings from 'docc-render/utils/settings';
