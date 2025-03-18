@@ -89,7 +89,11 @@ export async function restoreScrollOnReload() {
     // one tick for the page to render
     // a second tick for the data to be rendered
     await waitFrames(2);
-    window.scrollTo(scrollPosition.x, scrollPosition.y);
+    window.scrollTo({
+      top: scrollPosition.y,
+      left: scrollPosition.x,
+      behavior: 'smooth',
+    });
   }
 }
 
