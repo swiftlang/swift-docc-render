@@ -33,9 +33,10 @@
         <div class="documentation-layout-aside">
           <QuickNavigationModal
             v-if="enableQuickNavigation"
-            :children="indexNodes"
+            :children="quickNavNodes || indexNodes"
             :showQuickNavigationModal.sync="showQuickNavigationModal"
             :technology="technology ? technology.title : ''"
+            :placeholder="quickNavPlaceholder"
           />
           <transition name="delay-hiding">
             <slot
@@ -134,7 +135,7 @@ export default {
     },
     technology: {
       type: Object,
-      require: false,
+      required: false,
     },
     parentTopicIdentifiers: {
       type: Array,
@@ -142,6 +143,14 @@ export default {
     },
     navigatorFixedWidth: {
       type: Number,
+      default: null,
+    },
+    quickNavNodes: {
+      type: Array,
+      default: null,
+    },
+    quickNavPlaceholder: {
+      type: String,
       default: null,
     },
   },

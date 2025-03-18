@@ -195,6 +195,10 @@ export default {
       type: String,
       required: false,
     },
+    placeholder: {
+      type: String,
+      required: false,
+    },
   },
   computed: {
     childrenMap({ children }) {
@@ -224,6 +228,7 @@ export default {
       return orderSymbolsByPriority(uniqueMatches).slice(0, MAX_RESULTS);
     },
     placeholderText() {
+      if (this.placeholder) return this.placeholder;
       if (!this.technology) return this.$t('filter.search');
       return this.$t('filter.search-symbols', { technology: this.technology });
     },
