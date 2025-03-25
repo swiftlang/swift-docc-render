@@ -357,6 +357,18 @@ describe('when multiple top-level children are provided', () => {
       },
     ],
   };
+  const b2 = {
+    type: 'module',
+    title: 'b',
+    path: '/some/prefix/documentation/b',
+    children: [
+      {
+        type: 'article',
+        title: 'b1',
+        path: '/some/prefix/documentation/b/b1',
+      },
+    ],
+  };
 
   describe('flattenNavigationIndex', () => {
     it('prefers the root child with the same url path prefix', () => {
@@ -376,6 +388,9 @@ describe('when multiple top-level children are provided', () => {
       flattenedIndex = flattenNavigationIndex({ swift: [a, b] });
       expect(flattenedIndex.swift.length).toBe(1);
       expect(flattenedIndex.swift[0].title).toBe(b.children[0].title);
+      flattenedIndex = flattenNavigationIndex({ swift: [a, b2] });
+      expect(flattenedIndex.swift.length).toBe(1);
+      expect(flattenedIndex.swift[0].title).toBe(b2.children[0].title);
 
       // fallback to first root node when multiple top-level nodes are provided
       // and none of them is a "module"
@@ -406,6 +421,8 @@ describe('when multiple top-level children are provided', () => {
       // prefers root node with same url path prefix when multiple are provided
       props = extractTechnologyProps({ swift: [a, b] });
       expect(props.swift.technology).toBe(b.title);
+      props = extractTechnologyProps({ swift: [a, b2] });
+      expect(props.swift.technology).toBe(b2.title);
 
       // fallback to first root node when multiple top-level nodes are provided
       // and none of them is a "module"
