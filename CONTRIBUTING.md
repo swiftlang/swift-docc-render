@@ -184,10 +184,10 @@ npm run lint:fix
 ## Your First Contribution
 
 Unsure of where to begin contributing to Swift-DocC-Render? You can start by looking at
-the bugs in the `Swift-DocC-Render` issues list with the `StarterBug` label on
-[GitHub](https://github.com/apple/swift-docc-render/issues?q=is%3Aissue+is%3Aopen+label%3AStarterBug).
+the bugs in the `Swift-DocC-Render` issues list with the `good first issue` label on
+[GitHub](https://github.com/swiftlang/swift-docc-render/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22).
 
 Once you've found an issue to work on,
 follow the above instructions for [Building Swift-DocC-Render](#build-and-run-swift-docc-render).
 
-<!-- Copyright (c) 2021 Apple Inc and the Swift Project authors. All Rights Reserved. -->
+<!-- Copyright (c) 2025 Apple Inc and the Swift Project authors. All Rights Reserved. -->
