@@ -193,7 +193,7 @@ function extractRootNode(data) {
   //
   // otherwise, the first provided node will be used
   return data.length === 1 ? data[0] : (data.find(node => (
-    node.path.toLowerCase() === rootPath.toLowerCase()
+    node.path.toLowerCase().endsWith(rootPath.toLowerCase())
   )) ?? data[0]);
 }
 
