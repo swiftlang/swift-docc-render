@@ -217,8 +217,9 @@ export function flattenNavigationIndex(languages) {
  * Extract technology data for each language variant
  */
 export function extractTechnologyProps(indexData) {
-  return Object.entries(indexData).reduce((acc, [language, data]) => {
-    const topLevelNode = extractRootNode(data);
+  return Object.entries(indexData).reduce((acc, [language, langData]) => {
+    if (!langData.length) return acc;
+    const topLevelNode = extractRootNode(langData);
     acc[language] = {
       technology: topLevelNode.title,
       technologyPath: topLevelNode.path || topLevelNode.url,

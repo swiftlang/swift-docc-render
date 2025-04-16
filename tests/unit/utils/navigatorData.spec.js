@@ -429,5 +429,10 @@ describe('when multiple top-level children are provided', () => {
       props = extractTechnologyProps({ swift: [c, a] });
       expect(props.swift.technology).toBe(c.title);
     });
+
+    it('skips empty languages', () => {
+      const props = extractTechnologyProps({ occ: [], swift: [a] });
+      expect(props.swift.technology).toBe(a.title);
+    });
   });
 });
