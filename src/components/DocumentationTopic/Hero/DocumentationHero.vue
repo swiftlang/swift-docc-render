@@ -14,6 +14,7 @@
       'documentation-hero--disabled': !enhanceBackground,
     }]"
     :style="styles"
+    :data-hero="enhanceBackground"
   >
     <div class="icon">
       <TopicTypeIcon
