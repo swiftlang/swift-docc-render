@@ -18,7 +18,7 @@
       {{ title }}
     </Nav>
     <main id="app-main" tabindex="0" class="main">
-      <div class="radial-gradient">
+      <div class="radial-gradient" data-hero>
         <slot name="above-hero" />
         <Hero
           v-if="heroSection"
