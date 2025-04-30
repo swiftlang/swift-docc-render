@@ -183,7 +183,8 @@
   --color-tutorial-navbar-dropdown-background: var(--color-fill);
   --color-tutorial-navbar-dropdown-border: var(--color-fill-gray);
   --color-tutorial-quiz-border-active: var(--color-figure-blue);
-  --color-tutorials-overview-background: #{dark-color(fill-secondary)};
+  --color-tutorials-overview-background-color: #{dark-color(fill-secondary)};
+  --color-tutorials-overview-background: var(--color-tutorials-overview-background-color);
   --color-tutorials-overview-content: #{dark-color(figure-gray)};
   --color-tutorials-overview-content-alt: #{dark-color(figure-gray)};
   --color-tutorials-overview-eyebrow: #{dark-color(figure-gray-secondary)};
