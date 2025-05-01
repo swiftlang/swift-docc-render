@@ -46,6 +46,7 @@ describe('TopicLinkBlockIcon', () => {
       },
     });
     const icon = wrapper.find('.topic-icon');
+    expect(icon.classes('icon-override')).toBe(true);
     expect(icon.is(ArticleIcon)).toBe(false);
     expect(icon.is(OverridableAsset)).toBe(true);
     expect(icon.props()).toMatchObject({
