@@ -94,6 +94,12 @@ describe('TutorialsOverview', () => {
     expect(wrapper.contains(Nav)).toBe(false);
   });
 
+  it('exposes a data-hero HTML data attribute in the radial gradient', () => {
+    const radialGradient = wrapper.find('.radial-gradient');
+    expect(radialGradient.exists()).toBe(true);
+    expect(radialGradient.attributes('data-hero')).toBeDefined();
+  });
+
   it('renders a `Hero`', () => {
     const hero = wrapper.find(Hero);
     expect(hero.exists()).toBe(true);
