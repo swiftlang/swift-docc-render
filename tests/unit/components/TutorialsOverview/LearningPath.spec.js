@@ -53,6 +53,10 @@ describe('LearningPath', () => {
     expect(wrapper.is('.learning-path')).toBe(true);
   });
 
+  it('exposes a data-background in its background element', () => {
+    expect(wrapper.attributes('data-background')).toBeDefined();
+  });
+
   it('renders a TutorialsNavigation if in Web mode', () => {
     const navigation = wrapper.find(TutorialsNavigation);
     expect(navigation.exists()).toBe(true);
