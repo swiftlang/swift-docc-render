@@ -117,6 +117,15 @@ export default {
 };
 </script>
 
+<style lang="scss">
+@import 'docc-render/styles/_core.scss';
+
+// ensure body background is also always dark
+body:has(.tutorials-overview) {
+  --color-text-background: #{dark-color(fill)};
+}
+</style>
+
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
