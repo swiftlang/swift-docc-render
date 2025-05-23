@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="tutorial" data-background>
+  <div class="tutorial">
     <NavigationBar
       v-if="!isTargetIDE"
       :technology="metadata.category"
