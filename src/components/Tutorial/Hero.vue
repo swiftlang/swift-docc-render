@@ -14,7 +14,7 @@
     :title="sectionTitle"
     class="tutorial-hero"
   >
-    <div class="hero dark" data-hero>
+    <div class="hero dark">
       <div v-if="backgroundImageUrl" class="bg" :style="bgStyle" />
       <slot name="above-title" />
       <Row>
