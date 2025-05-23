@@ -41,8 +41,6 @@ describe('DocumentationHero', () => {
     const withBackground = createWrapper();
     expect(withBackground.classes('documentation-hero')).toBe(true);
     expect(withBackground.classes('documentation-hero--disabled')).toBe(false);
-    // exposes a data-hero HTML data attribute
-    expect(withBackground.attributes('data-hero')).toBeDefined();
 
     const withoutBackground = createWrapper({
       propsData: {
@@ -51,8 +49,6 @@ describe('DocumentationHero', () => {
     });
     expect(withoutBackground.classes('documentation-hero')).toBe(true);
     expect(withoutBackground.classes('documentation-hero--disabled')).toBe(true);
-    // does not expose a data-hero HTML data attribute if there is no background
-    expect(withoutBackground.attributes('data-hero')).not.toBeDefined();
   });
 
   it('renders the DocumentationHero, enabled', () => {

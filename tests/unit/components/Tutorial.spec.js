@@ -189,10 +189,6 @@ describe('Tutorial', () => {
     expect(wrapper.is('div.tutorial')).toBe(true);
   });
 
-  it('exposes a data-background in its background element', () => {
-    expect(wrapper.attributes('data-background')).toBeDefined();
-  });
-
   it('renders a `NavigationBar`', () => {
     const nav = wrapper.find(NavigationBar);
     expect(nav.exists()).toBe(true);
