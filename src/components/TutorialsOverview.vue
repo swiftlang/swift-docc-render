@@ -18,7 +18,7 @@
       {{ title }}
     </Nav>
     <main id="app-main" tabindex="0" class="main">
-      <div class="radial-gradient" data-hero>
+      <div class="radial-gradient">
         <slot name="above-hero" />
         <Hero
           v-if="heroSection"
@@ -138,11 +138,6 @@ body:has(.tutorials-overview) {
     margin-top: -$nav-height;
     padding-top: $nav-height;
 
-    @include inTargetIde() {
-      margin-top: 0;
-      padding-top: 0;
-    }
-
     @include breakpoint(small) {
       margin-top: -$nav-height-small;
       padding-top: $nav-height-small;
@@ -150,7 +145,6 @@ body:has(.tutorials-overview) {
 
     background: var(--color-tutorials-overview-fill-secondary,
       var(--color-tutorials-overview-background));
-    background-color: var(--color-tutorials-overview-background-color);
   }
 
   // HACK - remove the gradient for firefox only

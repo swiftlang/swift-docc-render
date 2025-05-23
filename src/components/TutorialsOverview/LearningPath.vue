@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div class="learning-path" :class="classes" data-background>
+  <div class="learning-path" :class="classes">
     <div class="main-container">
       <div v-if="!isTargetIDE" class="secondary-content-container">
         <TutorialsNavigation :sections="sections" :aria-label="$t('sections.on-this-page')" />
