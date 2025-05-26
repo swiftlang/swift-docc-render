@@ -46,6 +46,7 @@ import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
+import { runCustomPageLoadScripts, runCustomNavigateScripts } from 'docc-render/utils/custom-scripts';
 import { fetchThemeSettings, themeSettingsState, getSetting } from 'docc-render/utils/theme-settings';
 import { objectToCustomProperties } from 'docc-render/utils/themes';
 import { AppTopID } from 'docc-render/constants/AppTopID';
@@ -70,6 +71,7 @@ export default {
     return {
       AppTopID,
       appState: AppStore.state,
+      initialRoutingEventHasOccurred: false,
       fromKeyboard: false,
       isTargetIDE: process.env.VUE_APP_TARGET === 'ide',
       themeSettings: themeSettingsState,
@@ -107,6 +109,30 @@ export default {
     },
   },
   watch: {
+    async $route() {
+      // A routing event has just occurred, which is either the initial page load or a subsequent
+      // navigation. So load any custom scripts that should be run, based on their `run` property,
+      // after this routing event.
+      //
+      // This hook, and (as a result) any appropriate custom scripts for the current routing event,
+      // are called *after* the HTML for the current route has been dynamically added to the DOM.
+      // This means that custom scripts have access to the documentation HTML for the current
+      // topic (or tutorial, etc).
+
+      if (this.initialRoutingEventHasOccurred) {
+        // The initial page load counts as a routing event, so we only want to run "on-navigate"
+        // scripts from the second routing event onward.
+        await runCustomNavigateScripts();
+      } else {
+        // The "on-load" scripts are run here (on the routing hook), not on `created` or `mounted`,
+        // so that the scripts have access to the dynamically-added documentation HTML for the
+        // current topic.
+        await runCustomPageLoadScripts();
+
+        // The next time we enter the routing hook, run the navigation scripts.
+        this.initialRoutingEventHasOccurred = true;
+      }
+    },
     CSSCustomProperties: {
       immediate: true,
       handler(CSSCustomProperties) {
