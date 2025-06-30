@@ -629,6 +629,47 @@ describe('DocumentationTopic', () => {
     expect(next).toBeCalled();
   });
 
+  it('does not unecessarily re-apply ObjC data when navigating to fragments', () => {
+    const oldInterfaceLang = topicData.identifier.interfaceLanguage; // swift
+    const newInterfaceLang = 'occ';
+
+    const variantOverrides = [
+      {
+        traits: [{ interfaceLanguage: newInterfaceLang }],
+        patch: [
+          { op: 'replace', path: '/identifier/interfaceLanguage', value: newInterfaceLang },
+          // should crash if applied twice since it gets removed the first time
+          { op: 'remove', path: '/remoteSource' },
+        ],
+      },
+    ];
+    wrapper.setData({
+      topicData: { ...topicData, variantOverrides },
+    });
+    expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(oldInterfaceLang);
+
+    const from = mocks.$route;
+    const to = {
+      ...from,
+      query: { language: 'objc' },
+    };
+    const next = jest.fn();
+    // there is probably a more realistic way to simulate this
+    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
+
+    // udpate the URL again, this time just changing the hash
+    // this would crash if the patch mistakenly gets applied twice
+    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, {
+      ...to,
+      hash: '#abc',
+    }, next);
+
+    expect(wrapper.vm.topicData.identifier.interfaceLanguage).not.toBe(oldInterfaceLang);
+    expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
+    expect(routeEnterMock).not.toBeCalled();
+    expect(next).toBeCalled();
+  });
+
   it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
     const next = jest.fn();
     DocumentationTopic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);

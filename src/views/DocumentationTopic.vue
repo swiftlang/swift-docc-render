@@ -303,7 +303,7 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     if (to.path === from.path && to.query.language === Language.objectiveC.key.url
-      && this.objcOverrides) {
+      && from?.query?.language !== Language.objectiveC.key.url && this.objcOverrides) {
       this.applyObjcOverrides();
       next();
     } else if (shouldFetchDataForRouteUpdate(to, from)) {
