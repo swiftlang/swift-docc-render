@@ -46,11 +46,11 @@ describe('ContentTable', () => {
     expect(p.html()).toBe(slots.default);
   });
 
-  it('renders `minimized-container` class if in minimized mode', () => {
+  it('renders `minimized-container` class if in minimized mode', async () => {
     const container = wrapper.find('.container');
     expect(container.classes()).not.toContain('minimized-container');
 
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(container.classes()).toContain('minimized-container');
   });
 });
