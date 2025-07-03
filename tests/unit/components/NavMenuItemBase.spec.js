@@ -22,10 +22,10 @@ describe('NavMenuItemBase', () => {
     expect(wrapper.text()).toEqual('Foo');
   });
 
-  it('adds the animated class if by default, and removes it via `animate` prop', () => {
+  it('adds the animated class if by default, and removes it via `animate` prop', async () => {
     const wrapper = shallowMount(NavMenuItemBase);
     expect(wrapper.classes()).toContain('nav-menu-item--animated');
-    wrapper.setProps({
+    await wrapper.setProps({
       animate: false,
     });
     expect(wrapper.classes()).not.toContain('nav-menu-item--animated');
