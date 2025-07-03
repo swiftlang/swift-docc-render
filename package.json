@@ -50,7 +50,7 @@
     "jest": "^27.0.5",
     "sass": "^1.55.0",
     "sass-loader": "^12.0.0",
-    "tree-sitter": "^0.20.6",
+    "tree-sitter": "^0.21.1",
     "tree-sitter-javascript": "^0.20.4",
     "tree-sitter-jsdoc": "^0.19.0",
     "tree-sitter-vue": "^0.2.1",
@@ -65,5 +65,10 @@
   "engines": {
     "node": ">=22.17.0 <23",
     "npm": ">=10.9.2"
+  },
+  "overrides": {
+    "tree-sitter-vue": {
+      "nan": "^2.22.2"
+    }
   }
 }
