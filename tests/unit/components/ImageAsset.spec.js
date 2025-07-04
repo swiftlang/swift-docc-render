@@ -47,7 +47,7 @@ describe('ImageAsset', () => {
     });
 
     const picture = wrapper.find('picture');
-    expect(picture.contains('source')).toBe(false);
+    expect(picture.find('source').exists()).toBe(false);
 
     const image = picture.find('img');
 
@@ -81,7 +81,7 @@ describe('ImageAsset', () => {
     });
 
     const picture = wrapper.find('picture');
-    expect(picture.contains('source')).toBe(false);
+    expect(picture.find('source').exists()).toBe(false);
 
     const image = picture.find('img');
 
@@ -127,7 +127,7 @@ describe('ImageAsset', () => {
     });
 
     const picture = wrapper.find('picture');
-    expect(picture.contains('source')).toBe(false);
+    expect(picture.find('source').exists()).toBe(false);
 
     const image = wrapper.find('img');
 
@@ -243,7 +243,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('height')).toBe('auto');
   });
 
-  it('renders a fallback image if the specified one does not load', () => {
+  it('renders a fallback image if the specified one does not load', async () => {
     const url = 'https://www.example.com/image.png';
     const alt = 'This is alt text.';
     const wrapper = shallowMount(ImageAsset, {
@@ -269,15 +269,16 @@ describe('ImageAsset', () => {
     expect(picture.exists()).toBe(true);
     const img = picture.find('img');
     expect(img.exists()).toBe(true);
-    expect(img.classes('fallback')).toBe(false);
+    expect(img.classes()).not.toContain('fallback');
 
     // simulate an error loading the real image
     img.trigger('error');
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.find('picture').exists()).toBe(false);
     const fallbackImg = wrapper.find('img');
     expect(fallbackImg.exists()).toBe(true);
-    expect(fallbackImg.classes('fallback')).toBe(true);
+    expect(fallbackImg.classes()).toContain('fallback');
     expect(fallbackImg.attributes('alt')).toBe(alt);
     expect(fallbackImg.attributes('title')).toBe('error.image');
   });
