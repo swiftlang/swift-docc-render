@@ -23,9 +23,9 @@ describe('TutorialsNavigationMenu', () => {
     wrapper = shallowMount(TutorialsNavigationMenu, { propsData, slots });
   });
 
-  it('renders renders a collapsed class', () => {
+  it('renders renders a collapsed class', async () => {
     expect(wrapper.classes('collapsed')).toBe(true);
-    wrapper.setProps({ collapsed: false });
+    await wrapper.setProps({ collapsed: false });
     expect(wrapper.classes('collapsed')).toBeFalsy();
   });
 
@@ -43,8 +43,8 @@ describe('TutorialsNavigationMenu', () => {
     expect(icon.is(InlineCloseIcon)).toBe(true);
   });
 
-  it('renders a `TutorialsNavigationList` with slot content', () => {
-    wrapper.setProps({ collapsed: false });
+  it('renders a `TutorialsNavigationList` with slot content', async () => {
+    await wrapper.setProps({ collapsed: false });
     const navigation = wrapper.find(TutorialsNavigationList);
     expect(navigation.exists()).toBe(true);
     expect(navigation.contains('li')).toBe(true);
@@ -62,8 +62,8 @@ describe('TutorialsNavigationMenu', () => {
     expect(wrapper.emitted()['select-menu'][0]).toEqual([propsData.title]);
   });
 
-  it('emits a "deselect-menu" event when not collapsed and the toggle is clicked', () => {
-    wrapper.setProps({ collapsed: false });
+  it('emits a "deselect-menu" event when not collapsed and the toggle is clicked', async () => {
+    await wrapper.setProps({ collapsed: false });
     const link = wrapper.find('.toggle');
 
     // assert the correct AX tag is being applied
