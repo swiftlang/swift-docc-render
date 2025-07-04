@@ -34,12 +34,13 @@ describe('ColorSchemeToggle', () => {
           supportsAutoColorScheme: true,
         },
       }),
-      attachToDocument: true,
+      attachTo: document.body,
     });
   });
 
   it('renders a fieldset .color-scheme-toggle', () => {
-    expect(wrapper.is('fieldset.color-scheme-toggle'));
+    expect(wrapper.element.tagName.toLowerCase()).toBe('fieldset');
+    expect(wrapper.classes()).toContain('color-scheme-toggle');
   });
 
   it('renders a legend for fieldset', () => {
@@ -57,7 +58,7 @@ describe('ColorSchemeToggle', () => {
     expect(labels.at(2).text()).toBe('color-scheme.auto');
   });
 
-  it('renders radio buttons checked according to the preferred color scheme', () => {
+  it('renders radio buttons checked according to the preferred color scheme', async () => {
     const inputs = wrapper.findAll('input[type="radio"]');
     expect(inputs.length).toBe(3);
 
@@ -71,6 +72,7 @@ describe('ColorSchemeToggle', () => {
     wrapper.setData({
       appState: { preferredColorScheme: dark },
     });
+    await wrapper.vm.$nextTick();
     expect(inputs.at(0).element.checked).toBe(false);
     expect(inputs.at(1).element.checked).toBe(true);
     expect(inputs.at(2).element.checked).toBe(false);
@@ -78,32 +80,37 @@ describe('ColorSchemeToggle', () => {
     wrapper.setData({
       appState: { preferredColorScheme: light },
     });
+    await wrapper.vm.$nextTick();
     expect(inputs.at(0).element.checked).toBe(true);
     expect(inputs.at(1).element.checked).toBe(false);
     expect(inputs.at(2).element.checked).toBe(false);
   });
 
-  it('sets the preferred color scheme when a radio button is checked', () => {
+  it('sets the preferred color scheme when a radio button is checked', async () => {
     const darkInput = wrapper.findAll('input[type="radio"]').at(1);
-    darkInput.setChecked();
+    await darkInput.trigger('input');
     expect(AppStore.setPreferredColorScheme).toHaveBeenCalledWith(dark);
   });
 
-  it('sets body[data-color-scheme] to match the preferred color scheme', () => {
+  it('sets body[data-color-scheme] to match the preferred color scheme', async () => {
     expect(document.body.dataset.colorScheme).toBe(auto);
     wrapper.setData({
       appState: { preferredColorScheme: dark },
     });
+    await wrapper.vm.$nextTick();
+
     expect(document.body.dataset.colorScheme).toBe(dark);
   });
 
-  it('only render Light/Dark options when Auto is not supported by device', () => {
+  it('only render Light/Dark options when Auto is not supported by device', async () => {
     wrapper.setData({
       appState: {
         preferredColorScheme: light,
         supportsAutoColorScheme: false,
       },
     });
+    await wrapper.vm.$nextTick();
+
     const labels = wrapper.findAll('label');
     expect(labels.length).toBe(2);
 
