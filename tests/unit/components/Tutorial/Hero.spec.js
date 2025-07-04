@@ -125,12 +125,15 @@ describe('Hero', () => {
     });
   });
 
-  it('displays the call-to-action modal when the link is clicked', () => {
+  it('displays the call-to-action modal when the link is clicked', async () => {
     const wrapper = mountWithProps();
     const link = wrapper.find('a.call-to-action');
-    expect(wrapper.find(Asset).isVisible()).toBe(false);
+    expect(wrapper.find(Asset).exists()).toBe(true);
+    expect(wrapper.find(GenericModal).props('visible')).toBe(false);
+
     link.trigger('click');
-    expect(wrapper.find(Asset).isVisible()).toBe(true);
+    await wrapper.vm.$nextTick();
+
     const modal = wrapper.find(GenericModal);
     expect(modal.props()).toHaveProperty('visible', true);
   });
@@ -172,21 +175,25 @@ describe('Hero', () => {
       global.Element.prototype.querySelector = querySelector;
     };
 
-    it('does not pause if play returned undefined', (done) => {
-      withPlayReturning(undefined, async () => {
-        const link = wrapper.find('a.call-to-action');
-        link.trigger('click');
-        expect(wrapper.find(Asset).isVisible()).toBe(true);
+    it('does not pause if play returned undefined', async () => {
+      await new Promise((resolve) => {
+        withPlayReturning(undefined, async () => {
+          const link = wrapper.find('a.call-to-action');
+          link.trigger('click');
+          await wrapper.vm.$nextTick();
 
-        const asset = wrapper.find(Asset);
-        asset.vm.$emit('videoEnded');
+          expect(wrapper.find(GenericModal).props('visible')).toBe(true);
 
-        // Wait for the `playPromise.then` to be executed.
-        await wrapper.vm.$nextTick();
+          const asset = wrapper.find(Asset);
+          asset.vm.$emit('videoEnded');
 
-        expect(pauseMock).not.toHaveBeenCalled();
+          // Wait for the `playPromise.then` to be executed.
+          await wrapper.vm.$nextTick();
 
-        done();
+          expect(pauseMock).not.toHaveBeenCalled();
+
+          resolve();
+        });
       });
     });
   });

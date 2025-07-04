@@ -52,59 +52,61 @@ describe('LanguageSwitcher', () => {
   });
 
   it('renders a summary `Section`', () => {
-    expect(wrapper.is('.language')).toBe(true);
+    expect(wrapper.classes()).toContain('language');
 
-    const section = wrapper.find(Section);
+    const section = wrapper.findComponent(Section);
     expect(section.exists()).toBe(true);
-    expect(section.classes('language')).toBe(true);
+    expect(section.classes()).toContain('language');
     expect(section.attributes('role')).toBe('complementary');
     expect(section.attributes('aria-label')).toBe('language');
   });
 
   it('renders a summary `Title` of "Language"', () => {
-    const title = wrapper.find(Title);
+    const title = wrapper.findComponent(Title);
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('formats.colon language');
   });
 
   it('renders a `LanguageSwitcherLink` for swift and objc', () => {
-    const links = wrapper.findAll(LanguageSwitcherLink);
+    const links = wrapper.findAllComponents(LanguageSwitcherLink);
     expect(links.length).toBe(2);
 
-    expect(links.at(0).classes('language-option')).toBe(true);
-    expect(links.at(0).classes('swift')).toBe(true);
-    expect(links.at(0).classes('active')).toBe(true);
+    expect(links.at(0).classes()).toContain('language-option');
+    expect(links.at(0).classes()).toContain('swift');
+    expect(links.at(0).classes()).toContain('active');
     expect(links.at(0).props('url')).toBeNull();
     expect(links.at(0).text()).toBe(Language.swift.name);
 
-    expect(links.at(1).classes('language-option')).toBe(true);
-    expect(links.at(1).classes('objc')).toBe(true);
-    expect(links.at(1).classes('active')).toBe(false);
+    expect(links.at(1).classes()).toContain('language-option');
+    expect(links.at(1).classes()).toContain('objc');
+    expect(links.at(1).classes()).not.toContain('active');
     expect(links.at(1).props('url').startsWith('/documentation/foo?')).toBe(true);
     expect(links.at(1).props('url')).toContain('language=objc');
     expect(links.at(1).props('url')).toContain('context=foo');
     expect(links.at(1).text()).toBe(Language.objectiveC.name);
   });
 
-  it('renders the right links when the paths differ', () => {
+  it('renders the right links when the paths differ', async () => {
     wrapper.setProps({
       ...propsData,
       interfaceLanguage: Language.objectiveC.key.api,
       objcPath: 'documentation/bar',
     });
 
-    const links = wrapper.findAll(LanguageSwitcherLink);
+    await wrapper.vm.$nextTick();
+
+    const links = wrapper.findAllComponents(LanguageSwitcherLink);
     expect(links.length).toBe(2);
 
-    expect(links.at(0).classes('language-option')).toBe(true);
-    expect(links.at(0).classes('swift')).toBe(true);
-    expect(links.at(0).classes('active')).toBe(false);
+    expect(links.at(0).classes()).toContain('language-option');
+    expect(links.at(0).classes()).toContain('swift');
+    expect(links.at(0).classes()).not.toContain('active');
     expect(links.at(0).props('url')).toBe('/documentation/foo?context=foo');
     expect(links.at(0).text()).toBe(Language.swift.name);
 
-    expect(links.at(1).classes('language-option')).toBe(true);
-    expect(links.at(1).classes('objc')).toBe(true);
-    expect(links.at(1).classes('active')).toBe(true);
+    expect(links.at(1).classes()).toContain('language-option');
+    expect(links.at(1).classes()).toContain('objc');
+    expect(links.at(1).classes()).toContain('active');
     expect(links.at(1).props('url')).toBeNull();
     expect(links.at(1).text()).toBe(Language.objectiveC.name);
   });
@@ -119,7 +121,7 @@ describe('LanguageSwitcher', () => {
       },
       propsData,
     });
-    const links = wrapper.findAll(LanguageSwitcherLink);
+    const links = wrapper.findAllComponents(LanguageSwitcherLink);
     expect(links.length).toBe(2);
 
     expect(links.at(0).props('url')).toEqual(null);
@@ -134,11 +136,11 @@ describe('LanguageSwitcher', () => {
       provide: { store },
     });
 
-    let link = wrapper.findAll(LanguageSwitcherLink).at(1);
+    let link = wrapper.findAllComponents(LanguageSwitcherLink).at(1);
     link.vm.$emit('click');
     expect(store.setPreferredLanguage).toBeCalledWith(Language.objectiveC.key.url);
 
-    link = wrapper.findAll(LanguageSwitcherLink).at(0);
+    link = wrapper.findAllComponents(LanguageSwitcherLink).at(0);
     link.vm.$emit('click');
     expect(store.setPreferredLanguage).toBeCalledWith(Language.swift.key.url);
   });
@@ -154,7 +156,7 @@ describe('LanguageSwitcher', () => {
       },
     });
 
-    wrapper.findAll(LanguageSwitcherLink).at(1).vm.$emit('click');
+    wrapper.findAllComponents(LanguageSwitcherLink).at(1).vm.$emit('click');
     expect(store.setPreferredLanguage).not.toBeCalled();
   });
 });
