@@ -46,7 +46,7 @@ describe('Pager', () => {
     expect(indicators.length).toBe(propsData.pages.length);
   });
 
-  it('collapses the controllers if contentWidth is smaller than the large contentWidth + the gutters width in large viewport', () => {
+  it('collapses the controllers if contentWidth is smaller than the large contentWidth + the gutters width in large viewport', async () => {
     // set large viewport
     window.innerWidth = BreakpointAttributes.default.large.minWidth + 1;
     const wrapper = shallowMount(Pager, { propsData });
@@ -55,19 +55,21 @@ describe('Pager', () => {
         contentWidth: BreakpointAttributes.default.large.contentWidth + GUTTERS_WIDTH + 10,
       },
     });
+    await wrapper.vm.$nextTick();
 
-    expect(wrapper.classes('with-compact-controls')).toBe(false);
+    expect(wrapper.classes()).not.toContain('with-compact-controls');
 
     wrapper.setData({
       appState: {
         contentWidth: BreakpointAttributes.default.large.contentWidth + GUTTERS_WIDTH - 10,
       },
     });
+    await wrapper.vm.$nextTick();
 
-    expect(wrapper.classes('with-compact-controls')).toBe(true);
+    expect(wrapper.classes()).toContain('with-compact-controls');
   });
 
-  it('collapses the controllers if contentWidth is smaller than the medium contentWidth + the gutters width in medium viewport', () => {
+  it('collapses the controllers if contentWidth is smaller than the medium contentWidth + the gutters width in medium viewport', async () => {
     // set medium viewport
     window.innerWidth = BreakpointAttributes.default.medium.maxWidth - 1;
     const wrapper = shallowMount(Pager, { propsData });
@@ -77,16 +79,18 @@ describe('Pager', () => {
         contentWidth: BreakpointAttributes.default.medium.contentWidth + GUTTERS_WIDTH + 10,
       },
     });
+    await wrapper.vm.$nextTick();
 
-    expect(wrapper.classes('with-compact-controls')).toBe(false);
+    expect(wrapper.classes()).not.toContain('with-compact-controls');
 
     wrapper.setData({
       appState: {
         contentWidth: BreakpointAttributes.default.medium.contentWidth + GUTTERS_WIDTH - 10,
       },
     });
+    await wrapper.vm.$nextTick();
 
-    expect(wrapper.classes('with-compact-controls')).toBe(true);
+    expect(wrapper.classes()).toContain('with-compact-controls');
   });
 
   it('collapses the controllers in small viewports', () => {
@@ -100,7 +104,7 @@ describe('Pager', () => {
       },
     });
 
-    expect(wrapper.classes('with-compact-controls')).toBe(true);
+    expect(wrapper.classes()).toContain('with-compact-controls');
   });
 
   it('renders each page using provided slots', () => {
@@ -126,33 +130,33 @@ describe('Pager', () => {
 
     let pages = wrapper.findAll('.page');
     let indicators = wrapper.findAll('.indicator');
-    expect(pages.at(0).classes('active')).toBe(true);
+    expect(pages.at(0).classes()).toContain('active');
     expect(indicators.at(0).attributes('aria-current')).toBeTruthy();
-    expect(pages.at(1).classes('active')).toBe(false);
+    expect(pages.at(1).classes()).not.toContain('active');
     expect(indicators.at(1).attributes('aria-current')).toBeFalsy();
-    expect(pages.at(2).classes('active')).toBe(false);
+    expect(pages.at(2).classes()).not.toContain('active');
     expect(indicators.at(2).attributes('aria-current')).toBeFalsy();
 
     await indicators.at(1).trigger('click');
 
     pages = wrapper.findAll('.page');
     indicators = wrapper.findAll('.indicator');
-    expect(pages.at(0).classes('active')).toBe(false);
+    expect(pages.at(0).classes()).not.toContain('active');
     expect(indicators.at(0).attributes('aria-current')).toBeFalsy();
-    expect(pages.at(1).classes('active')).toBe(true);
+    expect(pages.at(1).classes()).toContain('active');
     expect(indicators.at(1).attributes('aria-current')).toBeTruthy();
-    expect(pages.at(2).classes('active')).toBe(false);
+    expect(pages.at(2).classes()).not.toContain('active');
     expect(indicators.at(2).attributes('aria-current')).toBeFalsy();
 
     await indicators.at(2).trigger('click');
 
     pages = wrapper.findAll('.page');
     indicators = wrapper.findAll('.indicator');
-    expect(pages.at(0).classes('active')).toBe(false);
+    expect(pages.at(0).classes()).not.toContain('active');
     expect(indicators.at(0).attributes('aria-current')).toBeFalsy();
-    expect(pages.at(1).classes('active')).toBe(false);
+    expect(pages.at(1).classes()).not.toContain('active');
     expect(indicators.at(1).attributes('aria-current')).toBeFalsy();
-    expect(pages.at(2).classes('active')).toBe(true);
+    expect(pages.at(2).classes()).toContain('active');
     expect(indicators.at(2).attributes('aria-current')).toBeTruthy();
   });
 
