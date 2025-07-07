@@ -51,12 +51,13 @@ export default {
   &:not(:first-child):before{
     content: '/';
     width: $nav-space-hierarchy-elements;
-    margin: 0 $nav-space-hierarchy-elements;
+    margin-block: 0;
+    margin-inline: $nav-space-hierarchy-elements;
   }
 
   display: flex;
   align-items: center;
-  margin-left: 0;
+  margin-inline-start: 0;
 
   @include nav-in-breakpoint() {
     border-top: 1px solid var(--color-nav-hierarchy-item-borders);

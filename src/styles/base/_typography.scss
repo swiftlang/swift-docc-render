@@ -63,8 +63,7 @@ button {
   -moz-font-feature-settings: 'kern';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  direction: ltr;
-  text-align: left;
+  text-align: start;
 }
 
 //
@@ -105,7 +104,7 @@ ol {
 //
 ul,
 ol {
-  margin-left: em(20px);
+  margin-inline-start: em(20px);
 
   // remove the top margin when nesting lists
   ul,

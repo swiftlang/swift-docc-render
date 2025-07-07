@@ -67,7 +67,9 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   align-items: stretch;
   min-height: $item-height;
   box-sizing: border-box;
-  padding: 0 var(--nav-head-wrapper-right-space) 0 var(--nav-head-wrapper-left-space);
+  padding-block: 0;
+  padding-inline-start: var(--nav-head-wrapper-left-space);
+  padding-inline-end: var(--nav-head-wrapper-right-space);
 
   &.active {
     .head-wrapper {
@@ -99,7 +101,7 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
 }
 
 .navigator-icon-wrapper {
-  margin-right: 7px;
+  margin-inline-end: 7px;
 }
 
 .head-wrapper {
@@ -117,5 +119,15 @@ $nesting-spacing: $nav-card-horizontal-spacing + $nav-card-horizontal-spacing-sm
   }
 
   @include safe-area-right-set(padding-right, var(--nav-head-wrapper-right-space));
+}
+</style>
+
+<style lang="scss">
+html[dir="rtl"] .navigator-card-item .head-wrapper {
+  @supports (padding: unquote('max(0px)')) {
+    padding-inline-end:
+      unquote('max(var(--nav-head-wrapper-left-space), env(safe-area-inset-right))');
+    padding-inline-start: 0;
+  }
 }
 </style>

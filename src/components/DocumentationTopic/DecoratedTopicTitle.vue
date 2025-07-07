@@ -75,6 +75,12 @@ export default {
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
+.decorated-title {
+  /* enforce "ltr" direction for text in code blocks right now since code is
+     likely to remain as English and not translated */
+  direction: ltr;
+}
+
 .decorator, .label {
   color: var(--colors-secondary-label, var(--color-secondary-label));
 }

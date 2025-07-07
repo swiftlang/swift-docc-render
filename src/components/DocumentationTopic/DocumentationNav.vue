@@ -146,14 +146,14 @@ $sidenav-icon-padding-size: 5px;
     @include font-styles(nav-toggles);
 
     @include breakpoint-only-largenav() {
-      margin-left: $nav-space-between-elements;
+      margin-inline-start: $nav-space-between-elements;
     }
 
     .nav-menu-setting {
       display: flex;
       align-items: center;
       color: var(--color-nav-current-link);
-      margin-left: 0;
+      margin-inline-start: 0;
       min-width: 0;
 
       .nav-menu-link {
@@ -187,7 +187,7 @@ $sidenav-icon-padding-size: 5px;
 .sidenav-toggle-wrapper {
   display: flex;
   margin-top: 1px;
-  margin-right: $nav-padding / 2;
+  margin-inline-end: $nav-padding / 2;
 
   // This is a hack to enforce the toggle to be visible when in breakpoint,
   // even if already toggled off on desktop. Conditionally checking the current breakpoint,
@@ -204,7 +204,7 @@ $sidenav-icon-padding-size: 5px;
   }
   .sidenav-toggle-enter, .sidenav-toggle-leave-to {
     // 2x the nav padding, 1px border, and the size of the icon
-    margin-left: (rem($sidenav-icon-size + 1px) + $nav-padding * 2) * -1;
+    margin-inline-start: (rem($sidenav-icon-size + 1px) + $nav-padding * 2) * -1;
   }
 }
 

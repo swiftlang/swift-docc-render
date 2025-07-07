@@ -1,5 +1,10 @@
 [
   {
+    "code": "ar",
+    "name": "Arabic",
+    "slug": "ar"
+  },
+  {
     "code": "en-US",
     "name": "English",
     "slug": "en-US"

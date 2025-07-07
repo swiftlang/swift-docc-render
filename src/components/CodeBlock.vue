@@ -29,6 +29,10 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 code {
+  /* enforce "ltr" direction for text in code blocks right now since code is
+     likely to remain as English and not translated */
+  direction: ltr;
+
   &::before {
     content: attr(data-before-code);
   }

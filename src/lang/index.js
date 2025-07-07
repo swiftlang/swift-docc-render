@@ -9,15 +9,17 @@
 */
 
 /* eslint-disable camelcase */
+import ar from './locales/ar.json';
 import en_US from './locales/en-US.json';
 import zh_CN from './locales/zh-CN.json';
 import ja_JP from './locales/ja-JP.json';
 import ko_KR from './locales/ko-KR.json';
 
 // default locale
-export const defaultLocale = 'en-US';
+export const defaultLocale = process.env.VUE_APP_DEFAULT_LOCALE ?? 'en-US';
 // translated locales
 export const messages = {
+  ar,
   'en-US': en_US,
   'zh-CN': zh_CN,
   'ja-JP': ja_JP,

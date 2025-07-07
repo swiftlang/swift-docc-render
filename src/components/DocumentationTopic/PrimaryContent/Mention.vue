@@ -73,7 +73,7 @@ export default {
 }
 
 .mention-icon {
-    margin-right: 0.25rem;
+    margin-inline-end: 0.25rem;
 }
 
 </style>

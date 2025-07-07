@@ -64,7 +64,7 @@ export default {
   height: rem(25px);
   flex: 0 0 $topic-link-icon-width;
   width: $topic-link-icon-width;
-  margin-right: $topic-link-icon-spacing;
+  margin-inline-end: $topic-link-icon-spacing;
 }
 
 .topic-icon {

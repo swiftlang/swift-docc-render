@@ -36,12 +36,12 @@ export default {
 @import "docc-render/styles/_core.scss";
 
 .nav-menu-item {
-  margin-left: $nav-menu-item-left-margin;
+  margin-inline-start: $nav-menu-item-left-margin;
   list-style: none;
   min-width: 0;
 
   @include nav-in-breakpoint {
-    margin-left: 0;
+    margin-inline-start: 0;
     width: 100%;
     min-height: rem(42px);
     // remove the first border of the first element

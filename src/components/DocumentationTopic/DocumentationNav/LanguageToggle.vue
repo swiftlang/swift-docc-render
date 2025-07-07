@@ -230,7 +230,7 @@ $nav-menu-toggle-label-margin: 6px;
 
 .nav-menu-setting-label {
   display: inline-block;
-  margin-right: $nav-menu-label-margin;
+  margin-inline-end: $nav-menu-label-margin;
   white-space: nowrap;
 }
 
@@ -247,8 +247,8 @@ $nav-menu-toggle-label-margin: 6px;
     background-color: transparent;
     box-sizing: inherit;
     // add left padding, but then nudge it back, so we have a consistent spacing with the label.
-    padding: 0 $dropdown-icon-padding 0 4px;
-    margin-left: -4px;
+    padding-inline: 4px $dropdown-icon-padding;
+    margin-inline-start: -4px;
     @include font-styles(nav-toggles);
     cursor: pointer;
     position: relative;
@@ -275,7 +275,7 @@ $nav-menu-toggle-label-margin: 6px;
     &-container {
       display: flex;
       align-items: center;
-      padding-right: rem(3px);
+      padding-inline-end: rem(3px);
       position: relative;
 
       @include nav-in-breakpoint() {
@@ -286,16 +286,16 @@ $nav-menu-toggle-label-margin: 6px;
         width: 0.6em;
         height: 0.6em;
         position: absolute;
-        right: 7px;
+        inset-inline-end: 7px;
       }
     }
 
     &-label {
-      margin-right: 2px;
+      margin-inline-end: 2px;
     }
 
     &.nav-menu-toggle-label {
-      margin-right: $nav-menu-toggle-label-margin;
+      margin-inline-end: $nav-menu-toggle-label-margin;
     }
   }
 }
@@ -316,9 +316,9 @@ $nav-menu-toggle-label-margin: 6px;
     display: inline-block;
 
     &:not(:first-child) {
-      border-left: $generic-border-style;
-      margin-left: $nav-menu-toggle-label-margin;
-      padding-left: $nav-menu-toggle-label-margin;
+      border-inline-start: $generic-border-style;
+      margin-inline-start: $nav-menu-toggle-label-margin;
+      padding-inline-start: $nav-menu-toggle-label-margin;
     }
   }
 }
