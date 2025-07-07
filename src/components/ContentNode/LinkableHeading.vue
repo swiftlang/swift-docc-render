@@ -78,7 +78,7 @@ $icon-margin: 7px;
   color: inherit;
   text-decoration: none;
   position: relative;
-  padding-right: $icon-size-default + $icon-margin;
+  padding-inline-end: $icon-size-default + $icon-margin;
   display: inline-block;
 
   &::after {
@@ -88,11 +88,11 @@ $icon-margin: 7px;
 
   .icon {
     position: absolute;
-    right: 0;
+    inset-inline-end: 0;
     bottom: .2em;
     display: none;
     height: $icon-size-default;
-    margin-left: $icon-margin;
+    margin-inline-start: $icon-margin;
   }
 
   &:hover, &:focus {

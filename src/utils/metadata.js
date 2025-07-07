@@ -122,10 +122,39 @@ export function addOrUpdateMetadata({
   );
 }
 
+// these are hardcoded constants needed for manually determining the
+// directionality of locales in Firefox
+//
+// this is very incomplete and will need to be manually updated to support other
+// rtl languages until the `getTextInfo().direction` API is supported in FF —
+// for now, this is just a basic set of example rtl languages
+const RtlLocales = new Set([
+  'ar', // Arabic
+  'he', // Hebrew
+  'ur', // Urdu
+]);
+
+const Direction = {
+  ltr: 'ltf',
+  rtl: 'rtl',
+};
+
+function getDirection(localeName) {
+  const locale = new Intl.Locale(localeName);
+  if ((typeof locale.getTextInfo) === 'function') {
+    return locale.getTextInfo()?.direction ?? Direction.ltr;
+  }
+
+  // only needed for Firefox, which doesn't support `Intl.Locale.getTextInfo`
+  return RtlLocales.has(localeName) ? Direction.rtl : Direction.ltr;
+}
+
 /**
  * It updates the document setting a new lang attribute with the iso code or fallback on the locale
  * @param {String} locale
  */
 export function updateLangTag(locale) {
-  document.querySelector('html').setAttribute('lang', locale);
+  const htmlElement = document.querySelector('html');
+  htmlElement.setAttribute('lang', locale);
+  htmlElement.setAttribute('dir', getDirection(locale));
 }

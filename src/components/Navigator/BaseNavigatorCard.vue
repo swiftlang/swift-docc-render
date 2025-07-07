@@ -134,7 +134,7 @@ $close-icon-padding: 5px;
     display: flex;
     flex-direction: column;
     // right padding is added by the items, so visually the scroller is stuck to the side
-    padding-right: 0;
+    padding-inline-end: 0;
     flex: 1 1 auto;
     min-height: 0;
     height: 100%;

@@ -28,3 +28,11 @@
 :root {
   --app-height: 100vh;
 }
+
+html {
+  --scale-inline: 1;
+}
+
+html[dir="rtl"] {
+  --scale-inline: -1;
+}

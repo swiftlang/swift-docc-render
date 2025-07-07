@@ -131,7 +131,7 @@ export default {
   list-style: none;
 
   &.column {
-    margin-left: 0;
+    margin-inline-start: 0;
     margin-top: 15px;
   }
 
@@ -144,7 +144,7 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
     margin-top: 15px;
-    margin-left: 0;
+    margin-inline-start: 0;
 
     li:not(:last-child)::after {
       content: ",\00a0"

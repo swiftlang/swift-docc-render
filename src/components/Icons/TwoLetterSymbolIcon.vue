@@ -46,3 +46,12 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+/* Force "ltr" text rendering direction for the letters in this icon, since they
+   are currently English-only and might not be translatable since they refer
+   to kinds of symbols */
+.two-letter-icon {
+  direction: ltr;
+}
+</style>

@@ -31,14 +31,14 @@ export default {
   align-self: flex-start;
   flex: 0 0 auto;
   width: $on-this-page-aside-width;
-  padding-right: $nav-padding;
+  padding-inline-end: $nav-padding;
   box-sizing: border-box;
   padding-bottom: var(--spacing-stacked-margin-small);
   max-height: calc(100vh - #{$top});
   overflow: auto;
 
   @include inTargetIde {
-    margin-left: $nav-padding;
+    margin-inline-start: $nav-padding;
   }
 
   @media print {

@@ -59,7 +59,7 @@ export default {
   border-style: var(--badge-border-style, none);
   border-width: var(--badge-border-width, 1px);
   margin: auto;
-  margin-left: 5px;
+  margin-inline-start: 5px;
   color: var(--colors-badge-text, var(--color-badge-text));
   background-color: var(--badge-color);
   @include prefers-dark {
