@@ -147,7 +147,7 @@ describe('TopicsLinkCardGridItem', () => {
     expect(wrapper.findComponent(ContentNode).props('content')).toBe(defaultProps.item.abstract);
   });
 
-  it('renders different text for diff roles', () => {
+  it('renders different text for diff roles', async () => {
     const wrapper = createWrapper({
       propsData: {
         ...defaultProps,
@@ -159,16 +159,16 @@ describe('TopicsLinkCardGridItem', () => {
     const card = wrapper.findComponent(Card);
     expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.overview]);
     // collection
-    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.collection } });
+    await wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.collection } });
     expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.collection]);
     // symbol
-    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.symbol } });
+    await wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.symbol } });
     expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.symbol]);
     // sampleCode
-    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.sampleCode } });
+    await wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.sampleCode } });
     expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.sampleCode]);
     // other
-    wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.link } });
+    await wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.link } });
     expect(card.props('linkText')).toBe('documentation.card.learn-more');
   });
 });

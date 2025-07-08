@@ -205,7 +205,7 @@ describe('CodeListing', () => {
     await flushPromises();
 
     expect(wrapper.findComponent('.syntax-keyword').text()).toBe('let');
-    wrapper.setProps({
+    await wrapper.setProps({
       content: ['print("Some Text")'],
     });
     await flushPromises();
@@ -223,7 +223,7 @@ describe('CodeListing', () => {
     await flushPromises();
 
     expect(wrapper.classes()).not.toContain('single-line');
-    wrapper.setProps({
+    await wrapper.setProps({
       content: content.slice(0, 1),
     });
 

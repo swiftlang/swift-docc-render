@@ -140,8 +140,8 @@ describe('Volume', () => {
     expect(provide.store.setActiveVolume).toBeCalledWith(propsData.name);
   });
 
-  it('renders a volume without a name', () => {
-    wrapper.setProps({ name: undefined });
+  it('renders a volume without a name', async () => {
+    await wrapper.setProps({ name: undefined });
     expect(wrapper.findComponent(VolumeName).exists()).toBe(false);
     expect(wrapper.findComponent(Chapter).props('volumeHasName')).toBe(false);
   });

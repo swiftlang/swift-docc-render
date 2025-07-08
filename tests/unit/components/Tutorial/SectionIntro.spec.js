@@ -132,8 +132,8 @@ describe('SectionIntro', () => {
       },
     ];
 
-    beforeEach(() => {
-      wrapper.setProps({ expandedSections });
+    beforeEach(async () => {
+      await wrapper.setProps({ expandedSections });
     });
 
     it('renders an `ExpandedIntro`', () => {

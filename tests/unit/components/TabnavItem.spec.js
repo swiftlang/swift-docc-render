@@ -54,12 +54,12 @@ describe('TabnavItem', () => {
     expect(config.provide.tabnavData.selectTab).toHaveBeenCalledWith(config.propsData.value);
   });
 
-  it('adds the `active` class if a tab is selected', () => {
+  it('adds the `active` class if a tab is selected', async () => {
     const { wrapper, config } = createWrapper();
     const link = wrapper.findComponent('a.tabnav-link');
     expect(link.classes()).not.toContain('active');
     expect(link.attributes('aria-current')).toBe('false');
-    wrapper.setProps({
+    await wrapper.setProps({
       value: config.provide.tabnavData.activeTab,
     });
     expect(link.classes()).toContain('active');

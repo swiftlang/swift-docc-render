@@ -68,14 +68,14 @@ describe('VideoAsset', () => {
     expect(hiddenDesc.text()).toBe(`video.description ${propsData.alt}`);
   });
 
-  it('adds a description reference to the `video` if showsDefaultControls is true', () => {
-    wrapper.setProps({ showsDefaultControls: true });
+  it('adds a description reference to the `video` if showsDefaultControls is true', async () => {
+    await wrapper.setProps({ showsDefaultControls: true });
     const video = wrapper.findComponent('video');
     expect(video.attributes('aria-labelledby')).toBe(altTextId);
   });
 
-  it('does not add a description reference to the `video` if alt is not provided', () => {
-    wrapper.setProps({ alt: null });
+  it('does not add a description reference to the `video` if alt is not provided', async () => {
+    await wrapper.setProps({ alt: null });
     expect(wrapper.findComponent('video').attributes()).not.toHaveProperty('aria-labelledby');
   });
 
@@ -112,7 +112,7 @@ describe('VideoAsset', () => {
 
   it('applies a light poster if there is no dark variant but target prefers dark', async () => {
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
-    wrapper.setProps({
+    await wrapper.setProps({
       posterVariants: [propsData.posterVariants[0]],
       variants: [propsData.variants[0]],
     });
@@ -127,7 +127,7 @@ describe('VideoAsset', () => {
 
   it('renders no poster if no light poster is provided, even if dark one exists', async () => {
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
-    wrapper.setProps({
+    await wrapper.setProps({
       posterVariants: [propsData.posterVariants[1]],
     });
     expect(wrapper.findComponent('video').attributes('poster')).toEqual(undefined);
@@ -140,7 +140,7 @@ describe('VideoAsset', () => {
 
   it('renders no poster if not available', async () => {
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
-    wrapper.setProps({
+    await wrapper.setProps({
       posterVariants: [],
     });
     expect(wrapper.findComponent('video').attributes('poster')).toEqual(undefined);
@@ -151,8 +151,8 @@ describe('VideoAsset', () => {
     expect(wrapper.attributes('height')).toBeFalsy();
   });
 
-  it('does not show controls when `showsDefaultControls=false`', () => {
-    wrapper.setProps({
+  it('does not show controls when `showsDefaultControls=false`', async () => {
+    await wrapper.setProps({
       showControls: false,
     });
     const source = wrapper.findComponent('video source');
@@ -172,18 +172,18 @@ describe('VideoAsset', () => {
     expect(wrapper.emitted().ended.length).toBe(1);
   });
 
-  it('sets `autoplay` using `autoplays`', () => {
+  it('sets `autoplay` using `autoplays`', async () => {
     const video = wrapper.findComponent('video');
 
     expect(video.attributes('autoplay')).toBeFalsy();
-    wrapper.setProps({ autoplays: true });
+    await wrapper.setProps({ autoplays: true });
     expect(video.attributes('autoplay')).toBe('autoplay');
   });
 
-  it('sets `controls` using `showsDefaultControls`', () => {
+  it('sets `controls` using `showsDefaultControls`', async () => {
     const video = wrapper.findComponent('video');
     expect(video.attributes('controls')).toBe(undefined);
-    wrapper.setProps({ showsDefaultControls: true });
+    await wrapper.setProps({ showsDefaultControls: true });
     expect(video.attributes('controls')).toBe('controls');
   });
 
@@ -223,16 +223,16 @@ describe('VideoAsset', () => {
     expect(source.attributes('src')).toBe(propsData.variants[1].url);
   });
 
-  it('renders a video as none-muted', () => {
-    wrapper.setProps({
+  it('renders a video as none-muted', async () => {
+    await wrapper.setProps({
       muted: false,
     });
     expect(wrapper.element.muted).toBeFalsy();
   });
 
-  it('renders a `ConditionalWrapper` around the video', () => {
+  it('renders a `ConditionalWrapper` around the video', async () => {
     expect(wrapper.findComponent(DeviceFrame).exists()).toBeFalsy();
-    wrapper.setProps({
+    await wrapper.setProps({
       deviceFrame: 'phone',
     });
     const frame = wrapper.findComponent(DeviceFrame);
