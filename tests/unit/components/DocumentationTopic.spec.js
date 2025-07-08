@@ -848,7 +848,7 @@ describe('DocumentationTopic', () => {
 
     const toggle = wrapper.findComponent('.declaration-list-toggle');
     expect(toggle.exists()).toBe(true);
-    toggle.trigger('click');
+    await toggle.trigger('click');
 
     declListMenu = wrapper.findComponent('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(true);

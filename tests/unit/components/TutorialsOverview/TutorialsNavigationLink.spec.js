@@ -80,8 +80,7 @@ describe('TutorialsNavigationLink', () => {
 
   it('focuses the element when clicked, used for AX', async () => {
     const link = wrapper.findComponent(RouterLinkStub);
-    link.trigger('click');
-    await wrapper.vm.$nextTick();
+    await link.trigger('click');
     expect(scrollToElement.methods.handleFocusAndScroll).toHaveBeenCalledWith('hello-world');
   });
 });

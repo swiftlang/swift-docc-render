@@ -223,11 +223,11 @@ describe('DocumentationNav', () => {
 
     wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
     await flushPromises();
-    wrapper.findComponent('.nav-menucta').trigger('click');
+    await wrapper.findComponent('.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain('nav--is-open');
     const toggle = wrapper.findComponent('.sidenav-toggle');
     expect(toggle.attributes()).toHaveProperty('tabindex', '-1');
-    toggle.trigger('click');
+    await toggle.trigger('click');
     wrapper.findComponent('.nav-menu-tray').trigger('transitionend', { propertyName: 'max-height' });
     expect(wrapper.classes()).not.toContain('nav--is-open');
     expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();

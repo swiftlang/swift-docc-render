@@ -131,8 +131,7 @@ describe('Hero', () => {
     expect(wrapper.findComponent(Asset).exists()).toBe(true);
     expect(wrapper.findComponent(GenericModal).props('visible')).toBe(false);
 
-    link.trigger('click');
-    await wrapper.vm.$nextTick();
+    await link.trigger('click');
 
     const modal = wrapper.findComponent(GenericModal);
     expect(modal.props()).toHaveProperty('visible', true);
@@ -179,8 +178,7 @@ describe('Hero', () => {
       await new Promise((resolve) => {
         withPlayReturning(undefined, async () => {
           const link = wrapper.findComponent('a.call-to-action');
-          link.trigger('click');
-          await wrapper.vm.$nextTick();
+          await link.trigger('click');
 
           expect(wrapper.findComponent(GenericModal).props('visible')).toBe(true);
 

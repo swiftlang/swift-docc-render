@@ -467,18 +467,15 @@ describe('NavigatorCard', () => {
     const navHead = wrapper.findComponent('.technology-title');
 
     // open all children symbols
-    navHead.trigger('click', { altKey: true });
-    await wrapper.vm.$nextTick();
+    await navHead.trigger('click', { altKey: true });
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
 
     // close all children symbols
-    navHead.trigger('click', { altKey: true });
-    await wrapper.vm.$nextTick();
+    await navHead.trigger('click', { altKey: true });
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
 
     // open all children symbols
-    navHead.trigger('click', { altKey: true });
-    await wrapper.vm.$nextTick();
+    await navHead.trigger('click', { altKey: true });
     expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
   });
 
