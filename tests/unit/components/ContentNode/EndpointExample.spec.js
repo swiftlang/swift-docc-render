@@ -75,8 +75,9 @@ describe('EndpointExample', () => {
     expect(codeListing.props('collapsed')).toBe(true);
   });
 
-  it('toggles the current tab when selected', () => {
+  it('toggles the current tab when selected', async () => {
     wrapper.findComponent(Tabnav).vm.$emit('input', Tab.response);
+    await wrapper.vm.$nextTick();
     const codeListing = wrapper.findComponent(CollapsibleCodeListing);
     expect(codeListing.props('content')).toBe(propsData.response.content);
   });
@@ -88,6 +89,7 @@ describe('EndpointExample', () => {
   it('expands/collapses the CollapsibleCodeListing when the more/less toggle is clicked', async () => {
     // show the response, as it is collapsible
     wrapper.findComponent(Tabnav).vm.$emit('input', Tab.response);
+    await wrapper.vm.$nextTick();
 
     const codeListing = wrapper.findComponent(CollapsibleCodeListing);
 

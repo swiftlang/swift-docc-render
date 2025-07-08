@@ -390,8 +390,9 @@ describe('SectionSteps', () => {
   describe('when a `CodePreview` emits a "runtime-preview-toggle" event', () => {
     const key = 2;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper.vm.onIntersect({ target: target(key), isIntersecting: true });
+      await wrapper.vm.$nextTick();
       wrapper.findComponent(CodePreview).vm.$emit('runtime-preview-toggle', false);
     });
 

@@ -37,6 +37,7 @@ describe('LoadingNavigatorCard', () => {
   it('renders the LoadingNavigatorCard and it emits a `close` event', async () => {
     const baseNavigator = wrapper.findComponent(BaseNavigatorCard);
     baseNavigator.vm.$emit('close');
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
 
