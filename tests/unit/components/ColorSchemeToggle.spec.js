@@ -69,7 +69,7 @@ describe('ColorSchemeToggle', () => {
     expect(inputs.at(1).element.checked).toBe(false);
     expect(inputs.at(2).element.checked).toBe(true);
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: { preferredColorScheme: dark },
     });
     await wrapper.vm.$nextTick();
@@ -77,7 +77,7 @@ describe('ColorSchemeToggle', () => {
     expect(inputs.at(1).element.checked).toBe(true);
     expect(inputs.at(2).element.checked).toBe(false);
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: { preferredColorScheme: light },
     });
     await wrapper.vm.$nextTick();
@@ -94,7 +94,7 @@ describe('ColorSchemeToggle', () => {
 
   it('sets body[data-color-scheme] to match the preferred color scheme', async () => {
     expect(document.body.dataset.colorScheme).toBe(auto);
-    wrapper.setData({
+    await wrapper.setData({
       appState: { preferredColorScheme: dark },
     });
     await wrapper.vm.$nextTick();
@@ -103,7 +103,7 @@ describe('ColorSchemeToggle', () => {
   });
 
   it('only render Light/Dark options when Auto is not supported by device', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         preferredColorScheme: light,
         supportsAutoColorScheme: false,

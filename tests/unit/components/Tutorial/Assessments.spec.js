@@ -260,11 +260,11 @@ describe('success slot for completed assessment', () => {
     },
   };
 
-  it('renders a default "success" message', () => {
+  it('renders a default "success" message', async () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
     });
-    wrapper.setData({ completed: true });
+    await wrapper.setData({ completed: true });
 
     const success = wrapper.findComponent('.success');
     expect(success.exists()).toBe(true);
@@ -274,7 +274,7 @@ describe('success slot for completed assessment', () => {
     expect(message.text()).toBe(SuccessMessage);
   });
 
-  it('renders a default "success" message on aria live element for AX', () => {
+  it('renders a default "success" message on aria live element for AX', async () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
     });
@@ -283,19 +283,19 @@ describe('success slot for completed assessment', () => {
     // assert that aria-live's slot is empty
     expect(ariaLive.isEmpty()).toBe(true);
 
-    wrapper.setData({ completed: true });
+    await wrapper.setData({ completed: true });
     // assert that aria-live's slot has been updated
     expect(ariaLive.text()).toBe(SuccessMessage);
   });
 
-  it('renders a "success" slot and slot message when provided', () => {
+  it('renders a "success" slot and slot message when provided', async () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
       slots: {
         success: '<marquee>Success Slot</marquee>',
       },
     });
-    wrapper.setData({ completed: true });
+    await wrapper.setData({ completed: true });
 
     const success = wrapper.findComponent('.success');
     expect(success.exists()).toBe(true);

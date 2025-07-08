@@ -105,7 +105,7 @@ describe('FilterInput', () => {
   });
 
   it('renders focus class if showSuggestedTags is true and border style is not prevented', async () => {
-    wrapper.setData({ showSuggestedTags: true });
+    await wrapper.setData({ showSuggestedTags: true });
     await wrapper.setProps({ preventBorderStyle: false });
     await wrapper.vm.$nextTick();
 
@@ -118,8 +118,8 @@ describe('FilterInput', () => {
     expect(wrapper.findComponent('.filter.focus').exists()).toBe(false);
   });
 
-  it('does not render focus class if showSuggestedTags is false', () => {
-    wrapper.setData({ showSuggestedTags: false });
+  it('does not render focus class if showSuggestedTags is false', async () => {
+    await wrapper.setData({ showSuggestedTags: false });
 
     expect(wrapper.findComponent('.filter.focus').exists()).toBe(false);
   });
@@ -158,7 +158,7 @@ describe('FilterInput', () => {
     expect(inputBoxWrapper.classes('scrolling')).toBe(false);
 
     // simulate the `handleScrollbar` mixin triggering ON
-    wrapper.setData({ isScrolling: true });
+    await wrapper.setData({ isScrolling: true });
     await wrapper.vm.$nextTick();
 
     expect(inputBoxWrapper.classes('scrolling')).toBe(true);
@@ -891,8 +891,8 @@ describe('FilterInput', () => {
         expect(wrapper.vm.keyboardIsVirtual).toBe(false);
       });
 
-      it('deletes the last tag, if delete button is pressed on a virtual keyboard, when no input', () => {
-        wrapper.setData({ keyboardIsVirtual: true });
+      it('deletes the last tag, if delete button is pressed on a virtual keyboard, when no input', async () => {
+        await wrapper.setData({ keyboardIsVirtual: true });
 
         await wrapper.findComponent('input').trigger('keydown.delete');
 
@@ -900,7 +900,7 @@ describe('FilterInput', () => {
       });
 
       it('deletes selected tag when tag is clicked on a virtual keyboard', async () => {
-        wrapper.setData({ keyboardIsVirtual: true });
+        await wrapper.setData({ keyboardIsVirtual: true });
         await wrapper.setProps({ selectedTags: [selectedTag, 'Tag2'] });
         await wrapper.vm.$nextTick();
 
@@ -911,7 +911,7 @@ describe('FilterInput', () => {
       });
 
       it('deletes selected tag debounced', async () => {
-        wrapper.setData({ keyboardIsVirtual: true });
+        await wrapper.setData({ keyboardIsVirtual: true });
 
         const selectedTags = wrapper.findComponent({ ref: 'selectedTags' });
         selectedTags.vm.$emit('click-tags', { tagName: selectedTag });

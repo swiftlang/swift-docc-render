@@ -37,12 +37,12 @@ describe('TagList', () => {
     expect(tags.length).toBe(2);
   });
 
-  it('renders an `scrolling` class inside the tag list if `isScrolling` is true', () => {
+  it('renders an `scrolling` class inside the tag list if `isScrolling` is true', async () => {
     const list = wrapper.findComponent({ ref: 'scroll-wrapper' });
 
     expect(list.classes('scrolling')).toBe(false);
 
-    wrapper.setData({ isScrolling: true });
+    await wrapper.setData({ isScrolling: true });
 
     expect(list.classes('scrolling')).toBe(true);
   });
@@ -165,7 +165,7 @@ describe('TagList', () => {
     const input = 'foo';
     const space = ' ';
     await wrapper.setProps({ input });
-    wrapper.setData({ focusedIndex: 0 });
+    await wrapper.setData({ focusedIndex: 0 });
     tag.trigger('keydown', { key: alphanumKey });
 
     expect(wrapper.emitted('delete-tag')[0][0].tagName).toEqual(propsData.tags[0]);

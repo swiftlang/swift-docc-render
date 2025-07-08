@@ -108,7 +108,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.indexNodes).toEqual(swiftIndex);
     expect(wrapper.vm.technologyProps).toEqual(swiftProps);
 
-    wrapper.setData({
+    await wrapper.setData({
       indexState: {
         flatChildren: {
           [Language.objectiveC.key.url]: objectiveCIndex,
@@ -199,7 +199,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.technologyProps.technologyPath).toEqual(fallbackTechnology.url);
   });
 
-  it('computes the correct fetching status`', () => {
+  it('computes the correct fetching status`', async () => {
     IndexStore.state = {
       ...mockState(),
       flatChildren: null,
@@ -210,7 +210,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.navigatorProps.isFetching).toBe(false);
 
     // fetching if no fetched data and no error
-    wrapper.setData({
+    await wrapper.setData({
       indexState: {
         errorFetching: false,
       },
@@ -218,7 +218,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.navigatorProps.isFetching).toBe(true);
 
     // not fetching if fetched data is not null
-    wrapper.setData({
+    await wrapper.setData({
       indexState: {
         flatChildren: {},
       },

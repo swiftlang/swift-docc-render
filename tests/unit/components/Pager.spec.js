@@ -50,7 +50,7 @@ describe('Pager', () => {
     // set large viewport
     window.innerWidth = BreakpointAttributes.default.large.minWidth + 1;
     const wrapper = shallowMount(Pager, { propsData });
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         contentWidth: BreakpointAttributes.default.large.contentWidth + GUTTERS_WIDTH + 10,
       },
@@ -59,7 +59,7 @@ describe('Pager', () => {
 
     expect(wrapper.classes()).not.toContain('with-compact-controls');
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         contentWidth: BreakpointAttributes.default.large.contentWidth + GUTTERS_WIDTH - 10,
       },
@@ -74,7 +74,7 @@ describe('Pager', () => {
     window.innerWidth = BreakpointAttributes.default.medium.maxWidth - 1;
     const wrapper = shallowMount(Pager, { propsData });
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         contentWidth: BreakpointAttributes.default.medium.contentWidth + GUTTERS_WIDTH + 10,
       },
@@ -83,7 +83,7 @@ describe('Pager', () => {
 
     expect(wrapper.classes()).not.toContain('with-compact-controls');
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         contentWidth: BreakpointAttributes.default.medium.contentWidth + GUTTERS_WIDTH - 10,
       },
@@ -93,12 +93,12 @@ describe('Pager', () => {
     expect(wrapper.classes()).toContain('with-compact-controls');
   });
 
-  it('collapses the controllers in small viewports', () => {
+  it('collapses the controllers in small viewports', async () => {
     // set small viewport
     window.innerWidth = BreakpointAttributes.default.small.minWidth;
     const wrapper = shallowMount(Pager, { propsData });
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         contentWidth: BreakpointAttributes.default.small.minWidth,
       },
