@@ -78,6 +78,7 @@ describe('TabNavigator.spec', () => {
     await flushPromises();
     const tabnav = wrapper.findComponent(Tabnav);
     tabnav.vm.$emit('input', titles[1]);
+    await wrapper.vm.$nextTick();
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('Second');
     expect(tabnav.props('value')).toEqual(titles[1]);
   });

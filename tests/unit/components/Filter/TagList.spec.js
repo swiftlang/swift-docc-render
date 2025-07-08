@@ -47,8 +47,9 @@ describe('TagList', () => {
     expect(list.classes('scrolling')).toBe(true);
   });
 
-  it('re-emits `prevent-blur` when tag emitted `prevent-blur`', () => {
+  it('re-emits `prevent-blur` when tag emitted `prevent-blur`', async () => {
     tag1.vm.$emit('prevent-blur');
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.emitted('prevent-blur')).toBeTruthy();
   });
@@ -186,10 +187,11 @@ describe('TagList', () => {
     expect(wrapper.emitted('select-all')).toBeTruthy();
   });
 
-  it('emits up `paste-tags`, when a tag emits a `paste-content` event', () => {
+  it('emits up `paste-tags`, when a tag emits a `paste-content` event', async () => {
     const tag = wrapper.findComponent({ ref: 'tag' });
     const payload = { someData: 'someData' };
     tag.vm.$emit('paste-content', payload);
+    await wrapper.vm.$nextTick();
     // assert its emitted only once
     expect(wrapper.emitted('paste-tags')).toHaveLength(1);
     // assert it passes up the event payload up

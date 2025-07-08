@@ -29,11 +29,12 @@ describe('MobileCodeListing', () => {
     expect(codeListing.props('isFileNameActionable')).toBe(true);
   });
 
-  it('re-emits `file-name-click` events', () => {
+  it('re-emits `file-name-click` events', async () => {
     const wrapper = mountWithHighlights([{ line: 1 }]);
     const codeListing = wrapper.findComponent(CodeListing);
 
     codeListing.vm.$emit('file-name-click');
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['file-name-click']).toBeTruthy();
   });
 
