@@ -135,7 +135,7 @@ describe('App', () => {
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         ...wrapper.vm.appState,
         availableLocales,
@@ -146,14 +146,14 @@ describe('App', () => {
     expect(SuggestLangComponent.exists()).toBe(true);
   });
 
-  it('renders LocaleSelector if enablei18n is true', () => {
+  it('renders LocaleSelector if enablei18n is true', async () => {
     const { LocaleSelector } = App.components;
     ({ getSetting } = require('docc-render/utils/theme-settings'));
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
     expect(wrapper.findComponent(LocaleSelector).exists()).toBe(false);
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         ...wrapper.vm.appState,
         availableLocales,
@@ -163,14 +163,14 @@ describe('App', () => {
     expect(wrapper.findComponent(LocaleSelector).exists()).toBe(true);
   });
 
-  it('does not render LocaleSelector if there is less than two available locales', () => {
+  it('does not render LocaleSelector if there is less than two available locales', async () => {
     const { LocaleSelector } = App.components;
     ({ getSetting } = require('docc-render/utils/theme-settings'));
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
     expect(wrapper.findComponent(LocaleSelector).exists()).toBe(false);
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         ...wrapper.vm.appState,
         availableLocales: ['en-US'],
@@ -231,11 +231,11 @@ describe('App', () => {
     expect(wrapper.findComponent('router-view-stub').exists()).toBe(false);
   });
 
-  it('renders a default `Footer` for non-IDE targets', () => {
+  it('renders a default `Footer` for non-IDE targets', async () => {
     const wrapper = createWrapper();
     expect(wrapper.contains(Footer)).toBe(true);
 
-    wrapper.setData({ isTargetIDE: true });
+    await wrapper.setData({ isTargetIDE: true });
     expect(wrapper.contains(Footer)).toBe(false);
   });
 
@@ -295,7 +295,7 @@ describe('App', () => {
         matches: true,
       });
       const wrapper = createWrapper();
-      wrapper.setData({
+      await wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
           preferredColorScheme: ColorScheme.auto,
@@ -308,7 +308,7 @@ describe('App', () => {
 
     it('dynamically changes the data, upon color scheme change (in auto mode)', async () => {
       const wrapper = createWrapper();
-      wrapper.setData({
+      await wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
           preferredColorScheme: ColorScheme.auto,
@@ -323,7 +323,7 @@ describe('App', () => {
 
     it('updates the values applied to the root, if the colors update', async () => {
       const wrapper = createWrapper();
-      wrapper.setData({
+      await wrapper.setData({
         appState: {
           ...wrapper.vm.appState,
           preferredColorScheme: ColorScheme.auto,
