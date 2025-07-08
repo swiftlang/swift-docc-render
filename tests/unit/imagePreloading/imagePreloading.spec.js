@@ -98,7 +98,7 @@ describe('image preloading', () => {
 
   it('has all the images in the DOM on load in tutorial pages', async () => {
     const wrapper = mount(Topic, mountOptions);
-    wrapper.setData({ topicData });
+    await wrapper.setData({ topicData });
     await assertHasAllImages(wrapper, topicData.references);
   });
 });

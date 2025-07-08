@@ -353,7 +353,7 @@ describe('DocumentationLayout', () => {
 
     it('does not apply display none to Navigator if is open', async () => {
       // renders an open navigator
-      wrapper.setData({
+      await wrapper.setData({
         sidenavVisibleOnMobile: true,
       });
       await wrapper.setProps({

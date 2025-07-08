@@ -77,19 +77,19 @@ describe('keyboardNavigation', () => {
     expect(wrapper.vm.focusedIndex).toBe(0);
   });
 
-  it('resets the `externalFocusChange` property', () => {
+  it('resets the `externalFocusChange` property', async () => {
     const wrapper = createWrapper();
-    wrapper.setData({ externalFocusChange: true });
+    await wrapper.setData({ externalFocusChange: true });
     wrapper.trigger('keydown.down');
     expect(wrapper.vm.focusedIndex).toBe(1);
     expect(wrapper.vm.externalFocusChange).toBe(false);
 
-    wrapper.setData({ externalFocusChange: true });
+    await wrapper.setData({ externalFocusChange: true });
     wrapper.trigger('keydown.up');
     expect(wrapper.vm.focusedIndex).toBe(0);
     expect(wrapper.vm.externalFocusChange).toBe(false);
 
-    wrapper.setData({ externalFocusChange: true });
+    await wrapper.setData({ externalFocusChange: true });
     wrapper.trigger('keydown', {
       key: 'ArrowUp',
       metaKey: true,
