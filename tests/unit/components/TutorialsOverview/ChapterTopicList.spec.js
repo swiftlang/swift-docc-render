@@ -88,8 +88,8 @@ describe('ChapterTopicList', () => {
     });
   });
 
-  it('renders aria labels even if no `estimatedTime` on a topic', () => {
-    wrapper.setProps({
+  it('renders aria labels even if no `estimatedTime` on a topic', async () => {
+    await wrapper.setProps({
       topics: [
         {
           kind: TopicKind.tutorial,

@@ -91,9 +91,9 @@ describe('DecoratedTopicTitle', () => {
     expect(wrapper.findAll('.label').length).toBe(1);
   });
 
-  it('renders an .identifier for externalParam tokens', () => {
+  it('renders an .identifier for externalParam tokens', async () => {
     const token = { kind: TokenKind.externalParam, text: 'blah' };
-    wrapper.setProps({ tokens: [token] });
+    await wrapper.setProps({ tokens: [token] });
 
     const identifier = wrapper.findComponent('.identifier');
     expect(identifier.exists()).toBe(true);

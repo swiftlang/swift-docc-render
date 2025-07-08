@@ -78,21 +78,21 @@ describe('Declaration', () => {
     expect(declarationLists.at(0).props('shouldCaption')).toEqual(false);
   });
 
-  it('renders a `DeclarationList`', () => {
+  it('renders a `DeclarationList`', async () => {
     const group = wrapper.findComponent(DeclarationList);
     expect(group.exists()).toBe(true);
     expect(group.props('declaration')).toEqual(propsData.declarations[0]);
     expect(group.props()).toHaveProperty('declListExpanded', false);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       declListExpanded: true,
     });
     expect(group.props()).toHaveProperty('declListExpanded', true);
   });
 
-  it('renders a DeclarationSourceLink if `source` is available', () => {
+  it('renders a DeclarationSourceLink if `source` is available', async () => {
     expect(wrapper.findComponent(DeclarationSourceLink).exists()).toBe(false);
-    wrapper.setProps({
+    await wrapper.setProps({
       source: {
         url: 'foo.com',
         fileName: 'Foo.swift',
@@ -104,8 +104,8 @@ describe('Declaration', () => {
     });
   });
 
-  it('does not render a DeclarationSourceLink if other declaration list is expanded', () => {
-    wrapper.setProps({
+  it('does not render a DeclarationSourceLink if other declaration list is expanded', async () => {
+    await wrapper.setProps({
       source: {
         url: 'foo.com',
         fileName: 'Foo.swift',
@@ -113,18 +113,18 @@ describe('Declaration', () => {
     });
     expect(wrapper.findComponent(DeclarationSourceLink).exists()).toBe(true);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       declListExpanded: true,
     });
     expect(wrapper.findComponent(DeclarationSourceLink).exists()).toBe(false);
   });
 
-  it('renders a `ConditionalConstraints` for availability with `conformance` data', () => {
+  it('renders a `ConditionalConstraints` for availability with `conformance` data', async () => {
     const conformance = {
       availabilityPrefix: [{ type: 'text', text: 'Available when' }],
       constraints: [{ type: 'codeVoice', code: 'Foo' }],
     };
-    wrapper.setProps({ conformance });
+    await wrapper.setProps({ conformance });
 
     const constraints = wrapper.findComponent(ConditionalConstraints);
     expect(constraints.exists()).toBe(true);
@@ -134,7 +134,7 @@ describe('Declaration', () => {
     });
   });
 
-  it('forces the group to render captions when more than one declaration', () => {
+  it('forces the group to render captions when more than one declaration', async () => {
     const declarations = [
       propsData.declarations[0],
       {
@@ -153,7 +153,7 @@ describe('Declaration', () => {
       },
     ];
 
-    wrapper.setProps({ declarations });
+    await wrapper.setProps({ declarations });
 
     const labels = wrapper.findAll(DeclarationList);
     expect(labels.length).toBe(declarations.length);
@@ -161,7 +161,7 @@ describe('Declaration', () => {
     expect(labels.at(1).props('shouldCaption')).toBe(true);
   });
 
-  it('does not render captions when multiple declarations have the same platforms', () => {
+  it('does not render captions when multiple declarations have the same platforms', async () => {
     const declarations = [
       propsData.declarations[0],
       {
@@ -178,7 +178,7 @@ describe('Declaration', () => {
       },
     ];
 
-    wrapper.setProps({ declarations });
+    await wrapper.setProps({ declarations });
 
     const labels = wrapper.findAll(DeclarationList);
     expect(labels.length).toBe(declarations.length);
@@ -186,7 +186,7 @@ describe('Declaration', () => {
     expect(labels.at(1).props('shouldCaption')).toBe(false);
   });
 
-  it('renders a `DeclarationDiff` when there are API changes for current and previous and collapsed other declaration list', () => {
+  it('renders a `DeclarationDiff` when there are API changes for current and previous and collapsed other declaration list', async () => {
     // no DeclarationDiff if no changes
     expect(wrapper.findComponent(DeclarationDiff).exists()).toBe(false);
     // there is no `.changed` class applied by default
@@ -215,7 +215,7 @@ describe('Declaration', () => {
     expect(declarationDiff.classes()).toContain('changed');
     expect(declarationDiff.classes()).toContain('changed-modified');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       declListExpanded: true,
     });
     expect(wrapper.findComponent(DeclarationDiff).exists()).toBe(false);

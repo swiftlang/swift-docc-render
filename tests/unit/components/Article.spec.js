@@ -150,8 +150,8 @@ describe('Article', () => {
   });
 
   describe('without hero section', () => {
-    beforeEach(() => {
-      wrapper.setProps({ sections: [] });
+    beforeEach(async () => {
+      await wrapper.setProps({ sections: [] });
     });
 
     it('does not provide a page title', () => {

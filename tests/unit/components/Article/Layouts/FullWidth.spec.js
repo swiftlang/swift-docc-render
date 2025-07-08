@@ -81,8 +81,8 @@ describe('FullWidth', () => {
       },
     ];
 
-    beforeEach(() => {
-      wrapper.setProps({ content });
+    beforeEach(async () => {
+      await wrapper.setProps({ content });
     });
 
     it('groups headings and subsequent content with `LinkableElement`', () => {

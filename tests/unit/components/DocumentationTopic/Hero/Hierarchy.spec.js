@@ -344,9 +344,9 @@ describe('Hierarchy', () => {
     });
 
     describe('with tags', () => {
-      it('renders a list with `root + 2 collapsed + max 2 items`, with tags above 1200px', () => {
+      it('renders a list with `root + 2 collapsed + max 2 items`, with tags above 1200px', async () => {
         changeSize(1250);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
         const list = wrapper.findComponent(NavMenuItems);
@@ -396,9 +396,9 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `root + 3 collapsed + max 1 item`, with tags, between 1000 and 1200px', () => {
+      it('renders a list with `root + 3 collapsed + max 1 item`, with tags, between 1000 and 1200px', async () => {
         changeSize(1200);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
 
@@ -447,9 +447,9 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`, with tags, between 735 and 1000px', () => {
+      it('renders a list with `5 collapsed and no external`, with tags, between 735 and 1000px', async () => {
         changeSize(900);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
 
@@ -503,9 +503,9 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`,with tags below 735', () => {
+      it('renders a list with `5 collapsed and no external`,with tags below 735', async () => {
         changeSize(700);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
 
