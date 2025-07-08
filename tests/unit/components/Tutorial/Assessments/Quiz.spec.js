@@ -121,7 +121,7 @@ describe('Quiz', () => {
     });
 
     it('renders a title', () => {
-      const node = wrapper.find('.title');
+      const node = wrapper.findComponent('.title');
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toBe(propsData.title);
     });
@@ -133,7 +133,7 @@ describe('Quiz', () => {
     });
 
     it('renders a fieldset element with choices', () => {
-      const choices = wrapper.find('fieldset.choices');
+      const choices = wrapper.findComponent('fieldset.choices');
       expect(choices.exists()).toBe(true);
 
       const legend = choices.find('legend');
@@ -152,15 +152,15 @@ describe('Quiz', () => {
     });
 
     it('does not render an "answer" by default', () => {
-      expect(wrapper.find('answer').exists()).toBe(false);
+      expect(wrapper.findComponent('answer').exists()).toBe(false);
     });
 
     it('does not render an icon by default', () => {
-      expect(wrapper.find('.choice-icon').exists()).toBe(false);
+      expect(wrapper.findComponent('.choice-icon').exists()).toBe(false);
     });
 
     it('does not enable the Submit button by default', () => {
-      const check = wrapper.find('.check');
+      const check = wrapper.findComponent('.check');
       expect(check.exists()).toBe(true);
       expect(check.text()).toBe('tutorials.submit');
       expect(check.attributes('disabled')).toBe('true');
@@ -178,7 +178,7 @@ describe('Quiz', () => {
         attachToDocument: true,
       });
       choices = wrapper.findAll('.choice');
-      submit = wrapper.find('.check');
+      submit = wrapper.findComponent('.check');
     });
 
     it('adds "active" class when choice is clicked', async () => {
@@ -211,7 +211,7 @@ describe('Quiz', () => {
     });
 
     it('updates the aria live text telling the user if the answer chosen is correct or incorrect', () => {
-      let ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+      let ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden');
       expect(ariaLive.exists()).toBe(true);
       expect(ariaLive.text()).toBe('');
 
@@ -219,14 +219,14 @@ describe('Quiz', () => {
       choice.trigger('click');
       submit.trigger('click');
 
-      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
+      ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.incorrect');
 
       choice = choices.at(0);
       choice.trigger('click');
       submit.trigger('click');
 
-      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
+      ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.correct');
     });
   });

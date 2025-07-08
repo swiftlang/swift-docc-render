@@ -33,13 +33,13 @@ const createWrapper = (opts = {}) => shallowMount(Attributes, {
 describe('Attributes', () => {
   it('renders a section', () => {
     const wrapper = createWrapper();
-    const section = wrapper.find('section.attributes');
+    const section = wrapper.findComponent('section.attributes');
     expect(section.exists()).toBe(true);
   });
 
   it('renders a linkable heading', () => {
     const wrapper = createWrapper();
-    const heading = wrapper.find(LinkableHeading);
+    const heading = wrapper.findComponent(LinkableHeading);
 
     const {
       anchor,
@@ -54,7 +54,7 @@ describe('Attributes', () => {
 
   it('renders a `ParameterAttributes`', () => {
     const wrapper = createWrapper();
-    const attrs = wrapper.find(ParameterAttributes);
+    const attrs = wrapper.findComponent(ParameterAttributes);
     expect(attrs.exists()).toBe(true);
     expect(attrs.props('attributes')).toEqual(propsData.attributes);
   });

@@ -44,12 +44,12 @@ describe('ContentTableSection', () => {
       title: undefined,
     });
 
-    const title = wrapper.find(LinkableHeading);
+    const title = wrapper.findComponent(LinkableHeading);
     expect(title.exists()).toBe(false);
   });
 
   it('renders an `id` if `anchor` is provided', () => {
-    const title = wrapper.find(`.${TITLE_CLASS_NAME}`);
+    const title = wrapper.findComponent(`.${TITLE_CLASS_NAME}`);
     expect(title.attributes('id')).toBe(undefined);
     wrapper.setProps({
       anchor: 'foo-bar',
@@ -64,13 +64,13 @@ describe('ContentTableSection', () => {
         title: '<div :class="props.className">Title Text</div>',
       },
     });
-    const div = wrapper.find('.section-title');
+    const div = wrapper.findComponent('.section-title');
     const title = div.find(`.${TITLE_CLASS_NAME}`);
     expect(title.text()).toEqual('Title Text');
   });
 
   it('renders slot content', () => {
-    const div = wrapper.find('.section-content');
+    const div = wrapper.findComponent('.section-content');
     expect(div.exists()).toBe(true);
 
     const p = div.find('p');
@@ -87,7 +87,7 @@ describe('ContentTableSection', () => {
         default: '<p id="list"></p>',
       },
     });
-    const col = wrapper.find('.section-content');
+    const col = wrapper.findComponent('.section-content');
     expect([...col.element.children].map(el => el.id)).toEqual(['abstract', 'discussion', 'list']);
   });
 });

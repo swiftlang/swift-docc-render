@@ -154,7 +154,7 @@ describe('OnThisPageNav', () => {
     createWrapper();
     await flushPromises();
     const parents = wrapper.findAll('.parent-item');
-    const child = wrapper.find('.child-item');
+    const child = wrapper.findComponent('.child-item');
 
     expect(store.setCurrentPageSection).toHaveBeenCalledTimes(1);
     // intersection point would be 250(150+100), which is not reaching second item

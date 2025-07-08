@@ -159,7 +159,7 @@ describe('DocumentationTopic', () => {
   it('renders an CodeTheme without `topicData`', () => {
     wrapper.setData({ topicData: null });
 
-    const codeTheme = wrapper.find(CodeTheme);
+    const codeTheme = wrapper.findComponent(CodeTheme);
     expect(codeTheme.exists()).toBe(true);
     expect(codeTheme.isEmpty()).toEqual(true);
   });
@@ -168,7 +168,7 @@ describe('DocumentationTopic', () => {
     wrapper = createWrapper();
     wrapper.setData({ topicData });
 
-    expect(wrapper.find(DocumentationLayout).props('enableNavigator')).toBe(false);
+    expect(wrapper.findComponent(DocumentationLayout).props('enableNavigator')).toBe(false);
 
     wrapper.setData({
       topicData: {
@@ -177,7 +177,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    expect(wrapper.find(DocumentationLayout).props('enableNavigator')).toBe(true);
+    expect(wrapper.findComponent(DocumentationLayout).props('enableNavigator')).toBe(true);
   });
 
   it('passes a technology to the DocumentationLayout when no reference is found for a top-level collection', () => {
@@ -207,7 +207,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const documentationLayoutComponent = wrapper.find(DocumentationLayout);
+    const documentationLayoutComponent = wrapper.findComponent(DocumentationLayout);
     expect(documentationLayoutComponent.exists()).toBe(true);
     // assert the technology is the last fallback
     expect(documentationLayoutComponent.props('technology')).toEqual({
@@ -228,14 +228,14 @@ describe('DocumentationTopic', () => {
         },
       },
     });
-    expect(wrapper.find(DocumentationLayout).props('parentTopicIdentifiers'))
+    expect(wrapper.findComponent(DocumentationLayout).props('parentTopicIdentifiers'))
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
   it('renders a `Topic` with `topicData`', () => {
     wrapper.setData({ topicData });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.exists()).toBe(true);
     expect(topic.attributes('style')).toBeFalsy();
     expect(topic.props()).toEqual({
@@ -261,7 +261,7 @@ describe('DocumentationTopic', () => {
 
     wrapper.setData({ topicData });
 
-    const title = wrapper.find('h2.nav-title');
+    const title = wrapper.findComponent('h2.nav-title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('documentation.title');
   });
@@ -281,7 +281,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const title = wrapper.find(RouterLinkStub);
+    const title = wrapper.findComponent(RouterLinkStub);
     expect(title.exists()).toBe(true);
     expect(title.props('to')).toEqual(rootLink);
     expect(title.text()).toBe('documentation.title');
@@ -300,7 +300,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.exists()).toBe(true);
     expect(topic.attributes('style')).toBeFalsy();
     expect(topic.props()).toEqual({
@@ -336,14 +336,14 @@ describe('DocumentationTopic', () => {
       provide: { isTargetIDE: true },
     });
     wrapper.setData({ topicData });
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    expect(wrapper.findComponent(Topic).props('enableOnThisPageNav')).toBe(false);
   });
 
   it('sets `enableOnThisPageNav` as `false`, if `disabled` in theme settings', async () => {
     getSetting.mockReturnValue(true);
     wrapper.setData({ topicData });
     await flushPromises();
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    expect(wrapper.findComponent(Topic).props('enableOnThisPageNav')).toBe(false);
     expect(getSetting).toHaveBeenCalledWith(['features', 'docs', 'onThisPageNavigator', 'disable'], false);
   });
 
@@ -355,7 +355,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('topicSectionsStyle')).toEqual(TopicSectionsStyle.detailedGrid);
   });
 
@@ -367,7 +367,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.exists()).toBe(true);
     expect(topic.props('languagePaths')).toEqual({});
   });
@@ -397,7 +397,7 @@ describe('DocumentationTopic', () => {
     });
 
     await wrapper.vm.$nextTick();
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('isSymbolBeta')).toBe(true);
 
     // should not if only one is beta
@@ -426,7 +426,7 @@ describe('DocumentationTopic', () => {
 
   it('computes isSymbolDeprecated if there is a deprecationSummary', async () => {
     wrapper.setData({ topicData });
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('isSymbolDeprecated')).toBeFalsy();
     wrapper.setData({
       topicData: {
@@ -443,7 +443,7 @@ describe('DocumentationTopic', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find(Topic).props('isSymbolDeprecated')).toBe(true);
+    expect(wrapper.findComponent(Topic).props('isSymbolDeprecated')).toBe(true);
     // cleanup
     topicData.deprecationSummary = [];
   });
@@ -469,7 +469,7 @@ describe('DocumentationTopic', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('isSymbolDeprecated')).toBe(true);
 
     // should not if only one is deprecated

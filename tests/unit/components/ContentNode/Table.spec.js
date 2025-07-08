@@ -17,7 +17,7 @@ describe('Table', () => {
       slots: { default: '<tbody><tr><td>foo</td></tr></tbody>' },
     });
     expect(wrapper.is('.table-wrapper')).toBe(true);
-    const table = wrapper.find('table');
+    const table = wrapper.findComponent('table');
     expect(table.exists()).toBe(true);
     expect(table.contains('tbody tr td')).toBe(true);
   });
@@ -29,7 +29,7 @@ describe('Table', () => {
         spanned: true,
       },
     });
-    const table = wrapper.find('table');
+    const table = wrapper.findComponent('table');
     expect(table.classes('spanned')).toBe(true);
   });
 });

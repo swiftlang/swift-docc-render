@@ -54,7 +54,7 @@ describe('VideoAsset', () => {
   });
 
   it('renders a video', () => {
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
     expect(video.exists()).toBe(true);
     expect(video.element.muted).toBe(false);
     expect(video.attributes('id')).toBe(propsData.id);
@@ -62,7 +62,7 @@ describe('VideoAsset', () => {
   });
 
   it('renders a hidden description with unique id for AX purposes if video provides an alt text', () => {
-    const hiddenDesc = wrapper.find('span[hidden=hidden]');
+    const hiddenDesc = wrapper.findComponent('span[hidden=hidden]');
     expect(hiddenDesc.exists()).toBe(true);
     expect(hiddenDesc.attributes('id')).toBe(altTextId);
     expect(hiddenDesc.text()).toBe(`video.description ${propsData.alt}`);
@@ -70,17 +70,17 @@ describe('VideoAsset', () => {
 
   it('adds a description reference to the `video` if showsDefaultControls is true', () => {
     wrapper.setProps({ showsDefaultControls: true });
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
     expect(video.attributes('aria-labelledby')).toBe(altTextId);
   });
 
   it('does not add a description reference to the `video` if alt is not provided', () => {
     wrapper.setProps({ alt: null });
-    expect(wrapper.find('video').attributes()).not.toHaveProperty('aria-labelledby');
+    expect(wrapper.findComponent('video').attributes()).not.toHaveProperty('aria-labelledby');
   });
 
   it('adds a poster to the `video`, using light by default', async () => {
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
     expect(video.attributes('poster')).toEqual(propsData.posterVariants[0].url);
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledWith(propsData.posterVariants[0].url);
@@ -91,7 +91,7 @@ describe('VideoAsset', () => {
   });
 
   it('applies a dark poster if available and target prefers dark', async () => {
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
     expect(getIntrinsicDimensionsSpy).toHaveBeenNthCalledWith(1, propsData.posterVariants[0].url);
     expect(video.attributes()).toMatchObject({
@@ -100,12 +100,12 @@ describe('VideoAsset', () => {
     wrapper.setData({
       appState: { preferredColorScheme: ColorScheme.dark },
     });
-    expect(wrapper.find('video').attributes('poster')).toEqual(propsData.posterVariants[1].url);
+    expect(wrapper.findComponent('video').attributes('poster')).toEqual(propsData.posterVariants[1].url);
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(2);
     expect(getIntrinsicDimensionsSpy).toHaveBeenNthCalledWith(2, propsData.posterVariants[1].url);
     await flushPromises();
     // dark image is 2x, so the width is half
-    expect(wrapper.find('video').attributes()).toMatchObject({
+    expect(wrapper.findComponent('video').attributes()).toMatchObject({
       width: '50',
     });
   });
@@ -122,7 +122,7 @@ describe('VideoAsset', () => {
     await flushPromises();
     // the poster did not change, so the function was not called again
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('video').attributes('poster')).toEqual(propsData.posterVariants[0].url);
+    expect(wrapper.findComponent('video').attributes('poster')).toEqual(propsData.posterVariants[0].url);
   });
 
   it('renders no poster if no light poster is provided, even if dark one exists', async () => {
@@ -130,7 +130,7 @@ describe('VideoAsset', () => {
     wrapper.setProps({
       posterVariants: [propsData.posterVariants[1]],
     });
-    expect(wrapper.find('video').attributes('poster')).toEqual(undefined);
+    expect(wrapper.findComponent('video').attributes('poster')).toEqual(undefined);
     // not called again
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -143,7 +143,7 @@ describe('VideoAsset', () => {
     wrapper.setProps({
       posterVariants: [],
     });
-    expect(wrapper.find('video').attributes('poster')).toEqual(undefined);
+    expect(wrapper.findComponent('video').attributes('poster')).toEqual(undefined);
     await flushPromises();
     // not called again
     expect(getIntrinsicDimensionsSpy).toHaveBeenCalledTimes(1);
@@ -155,12 +155,12 @@ describe('VideoAsset', () => {
     wrapper.setProps({
       showControls: false,
     });
-    const source = wrapper.find('video source');
+    const source = wrapper.findComponent('video source');
     expect(source.attributes('controls')).toBe(undefined);
   });
 
   it('forwards `playing`, `pause` and `ended` events', () => {
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
 
     video.trigger('playing');
     expect(wrapper.emitted().playing.length).toBe(1);
@@ -173,7 +173,7 @@ describe('VideoAsset', () => {
   });
 
   it('sets `autoplay` using `autoplays`', () => {
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
 
     expect(video.attributes('autoplay')).toBeFalsy();
     wrapper.setProps({ autoplays: true });
@@ -181,14 +181,14 @@ describe('VideoAsset', () => {
   });
 
   it('sets `controls` using `showsDefaultControls`', () => {
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
     expect(video.attributes('controls')).toBe(undefined);
     wrapper.setProps({ showsDefaultControls: true });
     expect(video.attributes('controls')).toBe('controls');
   });
 
   it('renders a source for the light variant when applicable', () => {
-    let source = wrapper.find('source');
+    let source = wrapper.findComponent('source');
     expect(source.exists()).toBe(true);
     expect(source.attributes('src')).toBe(propsData.variants[0].url);
 
@@ -197,7 +197,7 @@ describe('VideoAsset', () => {
         preferredColorScheme: ColorScheme.light,
       },
     });
-    source = wrapper.find('source');
+    source = wrapper.findComponent('source');
     expect(source.exists()).toBe(true);
     expect(source.attributes('src')).toBe(propsData.variants[0].url);
   });
@@ -208,7 +208,7 @@ describe('VideoAsset', () => {
         preferredColorScheme: ColorScheme.dark,
       },
     });
-    let source = wrapper.find('source');
+    let source = wrapper.findComponent('source');
     expect(source.exists()).toBe(true);
     expect(source.attributes('src')).toBe(propsData.variants[1].url);
 
@@ -218,7 +218,7 @@ describe('VideoAsset', () => {
         systemColorScheme: ColorScheme.dark,
       },
     });
-    source = wrapper.find('source');
+    source = wrapper.findComponent('source');
     expect(source.exists()).toBe(true);
     expect(source.attributes('src')).toBe(propsData.variants[1].url);
   });
@@ -231,11 +231,11 @@ describe('VideoAsset', () => {
   });
 
   it('renders a `ConditionalWrapper` around the video', () => {
-    expect(wrapper.find(DeviceFrame).exists()).toBeFalsy();
+    expect(wrapper.findComponent(DeviceFrame).exists()).toBeFalsy();
     wrapper.setProps({
       deviceFrame: 'phone',
     });
-    const frame = wrapper.find(DeviceFrame);
+    const frame = wrapper.findComponent(DeviceFrame);
     expect(frame.props()).toEqual({
       device: 'phone',
     });
@@ -246,7 +246,7 @@ describe('VideoAsset', () => {
   });
 
   it('sets the orientation after the metadata is loaded', () => {
-    const video = wrapper.find('video');
+    const video = wrapper.findComponent('video');
     expect(video.attributes('data-orientation')).toBeFalsy();
 
     wrapper.vm.$refs.video = { videoWidth: 300, videoHeight: 200 };

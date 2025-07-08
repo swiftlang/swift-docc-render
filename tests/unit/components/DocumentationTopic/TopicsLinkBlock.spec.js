@@ -93,7 +93,7 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('renders a router-link for the url', () => {
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.findComponent(RouterLinkStub);
     expect(link.exists()).toBe(true);
     expect(link.classes('link')).toBe(true);
     expect(link.props('to')).toBe(propsData.topic.url);
@@ -112,22 +112,22 @@ describe('TopicsLinkBlock', () => {
     });
 
     expect(wrapper.contains(RouterLinkStub)).toBe(false);
-    expect(wrapper.find(TopicLinkBlockIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(TopicLinkBlockIcon).exists()).toBe(false);
 
-    const link = wrapper.find('a.link');
+    const link = wrapper.findComponent('a.link');
     expect(link.exists()).toBe(true);
     expect(link.attributes('href')).toBe('https://foo.bar');
     expect(link.text()).toBe(propsData.topic.title);
   });
 
   it('renders a TopicLinkBlockIcon with the kind of the topic', () => {
-    const link = wrapper.find(TopicLinkBlockIcon);
+    const link = wrapper.findComponent(TopicLinkBlockIcon);
     expect(link.exists()).toBe(true);
     expect(link.props('role')).toBe(propsData.topic.role);
   });
 
   it('renders a normal `WordBreak` for the link text', () => {
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -135,7 +135,7 @@ describe('TopicsLinkBlock', () => {
 
   it('renders a `WordBreak` using <code> tag for link text to symbols', () => {
     wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -149,7 +149,7 @@ describe('TopicsLinkBlock', () => {
         kind: TopicKind.symbol,
       },
     });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -163,7 +163,7 @@ describe('TopicsLinkBlock', () => {
         kind: TopicKind.symbol,
       },
     });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -171,7 +171,7 @@ describe('TopicsLinkBlock', () => {
 
   it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection or dictionarySymbol', () => {
     wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -179,7 +179,7 @@ describe('TopicsLinkBlock', () => {
 
   it('renders a `WordBreak` using <code> tag for links with a titleStyle == title and no ideTitle', () => {
     wrapper.setProps({ topic: { ...propsData.topic, titleStyle: 'title' } });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
 
     expect(wordBreak.attributes('tag')).toEqual('code');
   });
@@ -193,7 +193,7 @@ describe('TopicsLinkBlock', () => {
         ideTitle: 'Some title',
       },
     });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
 
     expect(wordBreak.attributes('tag')).toEqual('span');
   });
@@ -205,13 +205,13 @@ describe('TopicsLinkBlock', () => {
         ideTitle: 'Some title',
       },
     });
-    const wordBreak = wrapper.find('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
 
     expect(wordBreak.attributes('tag')).toEqual('span');
   });
 
   it('does not render API changes VO helper, by default', () => {
-    expect(wrapper.find('.link .visuallyhidden').exists()).toBe(false);
+    expect(wrapper.findComponent('.link .visuallyhidden').exists()).toBe(false);
   });
 
   it('does not render an abstract container if none of its elements are to be rendered', () => {
@@ -223,9 +223,9 @@ describe('TopicsLinkBlock', () => {
       },
     });
     expect(wrapper.classes()).toContain('has-inline-element');
-    expect(wrapper.find('.abstract').exists()).toBe(false);
-    expect(wrapper.find('.has-adjacent-elements').exists()).toBe(false);
-    expect(wrapper.find(ContentNode).exists()).toBe(false);
+    expect(wrapper.findComponent('.abstract').exists()).toBe(false);
+    expect(wrapper.findComponent('.has-adjacent-elements').exists()).toBe(false);
+    expect(wrapper.findComponent(ContentNode).exists()).toBe(false);
   });
 
   it('applies the `multipleLinesClass` class if `displaysMultipleLinesAfterAPIChanges` is true', () => {
@@ -260,16 +260,16 @@ describe('TopicsLinkBlock', () => {
       },
     });
     expect(wrapper.classes()).toContain('has-inline-element');
-    expect(wrapper.find('.abstract').exists()).toBe(false);
-    expect(wrapper.find('.has-adjacent-elements').exists()).toBe(false);
-    expect(wrapper.find(ContentNode).exists()).toBe(false);
+    expect(wrapper.findComponent('.abstract').exists()).toBe(false);
+    expect(wrapper.findComponent('.has-adjacent-elements').exists()).toBe(false);
+    expect(wrapper.findComponent(ContentNode).exists()).toBe(false);
   });
 
   it('renders a `ContentNode` with the abstract', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.topic.abstract);
-    expect(wrapper.find('.has-adjacent-elements').exists()).toBe(true);
+    expect(wrapper.findComponent('.has-adjacent-elements').exists()).toBe(true);
   });
 
   it('does not render a `ContentNode` without an abstract', () => {
@@ -280,7 +280,7 @@ describe('TopicsLinkBlock', () => {
   it('renders a deprecated badge when the topic is deprecated', () => {
     expect(wrapper.contains(Badge)).toBe(false);
     wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
-    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
   });
 
   it('does not render a deprecated badge when the symbol is deprecated', () => {
@@ -291,26 +291,26 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('strikesthrough the text if the topic is deprecated', () => {
-    expect(wrapper.find('.link').classes('deprecated')).toBe(false);
+    expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
     wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
-    expect(wrapper.find('.link').classes('deprecated')).toBe(true);
+    expect(wrapper.findComponent('.link').classes('deprecated')).toBe(true);
   });
 
   it('does not strikethrough the text if the parent symbol is deprecated', () => {
-    expect(wrapper.find('.link').classes('deprecated')).toBe(false);
+    expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
     wrapper.setProps({ isSymbolDeprecated: true, deprecated: true });
-    expect(wrapper.find('.link').classes('deprecated')).toBe(false);
+    expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
   });
 
   it('renders a beta badge when the topic is in beta', () => {
     wrapper.setProps({ topic: { ...propsData.topic, beta: true } });
-    expect(wrapper.find(Badge).attributes('variant')).toBe('beta');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('beta');
   });
 
   it('does not render a beta badge if the topic is deprecated', () => {
     wrapper.setProps({ topic: { ...propsData.topic, deprecated: true, beta: true } });
     expect(wrapper.findAll(Badge).length).toBe(1);
-    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
     wrapper.setProps({
       topic: {
         ...propsData.topic,
@@ -320,7 +320,7 @@ describe('TopicsLinkBlock', () => {
       },
     });
     expect(wrapper.findAll(Badge).length).toBe(1);
-    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
   });
 
   it('renders a beta badge when the topic is in beta and the symbol is deprecated', () => {
@@ -333,7 +333,7 @@ describe('TopicsLinkBlock', () => {
       },
     });
     expect(wrapper.findAll(Badge).length).toBe(1);
-    expect(wrapper.find(Badge).attributes('variant')).toBe('beta');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('beta');
   });
 
   it('renders current topic badges', () => {
@@ -396,32 +396,32 @@ describe('TopicsLinkBlock', () => {
       },
     });
 
-    const decoratedTitle = wrapper.find('.link').find(DecoratedTopicTitle);
+    const decoratedTitle = wrapper.findComponent('.link').find(DecoratedTopicTitle);
     expect(decoratedTitle.exists()).toBe(true);
     expect(decoratedTitle.props('tokens')).toEqual(fragments);
     expect(wrapper.contains(WordBreak)).toBe(false);
   });
 
   it('renders the text as strikethrough if the topic is deprecated but deprecated symbol is false', () => {
-    expect(wrapper.find('.link').classes('deprecated')).toBe(false);
+    expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
     wrapper.setProps({
       isSymbolDeprecated: false,
       topic: { ...propsData.topic, deprecated: true },
     });
-    expect(wrapper.find('.link').classes('deprecated')).toBe(true);
+    expect(wrapper.findComponent('.link').classes('deprecated')).toBe(true);
   });
 
   it('renders a `RequirementMetadata` with defaultImplementations > 0', () => {
-    let node = wrapper.find(RequirementMetadata);
+    let node = wrapper.findComponent(RequirementMetadata);
     expect(node.exists()).toBe(false);
     wrapper.setProps({ topic: { ...propsData.topic, defaultImplementations: 1, required: true } });
-    node = wrapper.find(RequirementMetadata);
+    node = wrapper.findComponent(RequirementMetadata);
     expect(node.exists()).toBe(true);
     expect(node.attributes('defaultimplementationscount')).toEqual('1');
   });
 
   it('does not render plist keyinfo if ideTitle is not provided', () => {
-    expect(wrapper.find('.topic-keyinfo').exists()).toBe(false);
+    expect(wrapper.findComponent('.topic-keyinfo').exists()).toBe(false);
   });
 
   it('renders the plist key name', () => {
@@ -434,7 +434,7 @@ describe('TopicsLinkBlock', () => {
       },
     });
 
-    expect(wrapper.find('.topic-keyinfo').text()).toEqual('Key: some.symbol.thing');
+    expect(wrapper.findComponent('.topic-keyinfo').text()).toEqual('Key: some.symbol.thing');
   });
 
   it('renders the plist key ideTitle', () => {
@@ -447,7 +447,7 @@ describe('TopicsLinkBlock', () => {
       },
     });
 
-    expect(wrapper.find('.topic-keyinfo').text()).toEqual('Name: IDE Title');
+    expect(wrapper.findComponent('.topic-keyinfo').text()).toEqual('Name: IDE Title');
   });
 
   describe('API Changes', () => {
@@ -458,24 +458,24 @@ describe('TopicsLinkBlock', () => {
         },
       };
 
-      const link = wrapper.find('.link');
+      const link = wrapper.findComponent('.link');
       expect(link.classes('changed')).toBe(isOnLink);
       expect(link.classes(`changed-${changeType}`)).toBe(isOnLink);
       expect(link.find('.visuallyhidden').text()).toEqual(`- ${ChangeNames[changeType]}`);
 
-      const linkBlock = wrapper.find('.link-block');
+      const linkBlock = wrapper.findComponent('.link-block');
       expect(linkBlock.classes('changed')).toBe(!isOnLink);
       expect(linkBlock.classes(`changed-${changeType}`)).toBe(!isOnLink);
     };
 
     it('does not render the TopicLinkBlockIcon', () => {
-      expect(wrapper.find(TopicLinkBlockIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(TopicLinkBlockIcon).exists()).toBe(true);
       store.state.apiChanges = {
         [propsData.topic.identifier]: {
           change: 'modified',
         },
       };
-      expect(wrapper.find(TopicLinkBlockIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(TopicLinkBlockIcon).exists()).toBe(false);
     });
 
     describe('when the topic does not have an abstract', () => {

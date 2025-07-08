@@ -80,12 +80,12 @@ describe('Navigator', () => {
 
   it('renders the Navigator', () => {
     const wrapper = createWrapper();
-    const navigator = wrapper.find('.navigator');
+    const navigator = wrapper.findComponent('.navigator');
     // assert navigator is a `nav`
     expect(navigator.is('nav')).toBe(true);
     expect(navigator.attributes()).toHaveProperty('aria-labelledby', INDEX_ROOT_KEY);
     // assert Navigator card is rendered
-    expect(wrapper.find(NavigatorCard).props()).toEqual({
+    expect(wrapper.findComponent(NavigatorCard).props()).toEqual({
       activePath: [references.first.url, references.second.url, mocks.$route.path],
       // will assert in another test
       children: [],
@@ -108,8 +108,8 @@ describe('Navigator', () => {
         isFetching: true,
       },
     });
-    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.loading');
+    expect(wrapper.findComponent('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.findComponent('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.loading');
   });
 
   it('renders a LoadingNavigatorCard when navigator is loading', () => {
@@ -118,18 +118,18 @@ describe('Navigator', () => {
         isFetching: true,
       },
     });
-    expect(wrapper.find(LoadingNavigatorCard).exists()).toBe(true);
+    expect(wrapper.findComponent(LoadingNavigatorCard).exists()).toBe(true);
   });
 
   it('does not render a LoadingNavigatorCard when navigator is not loading', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(LoadingNavigatorCard).exists()).toBe(false);
+    expect(wrapper.findComponent(LoadingNavigatorCard).exists()).toBe(false);
   });
 
   it('renders an aria live that tells VO users when navigator is ready', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('[aria-live="polite"]').exists()).toBe(true);
-    expect(wrapper.find('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.ready');
+    expect(wrapper.findComponent('[aria-live="polite"]').exists()).toBe(true);
+    expect(wrapper.findComponent('[aria-live="polite"]').text()).toBe('navigator.navigator-is navigator.state.ready');
   });
 
   it('passes the errorFetching prop', () => {
@@ -138,7 +138,7 @@ describe('Navigator', () => {
         errorFetching: true,
       },
     });
-    expect(wrapper.find(NavigatorCard).props('errorFetching')).toBe(true);
+    expect(wrapper.findComponent(NavigatorCard).props('errorFetching')).toBe(true);
   });
 
   it('strips out possible technology URLs from the activePath', () => {
@@ -147,7 +147,7 @@ describe('Navigator', () => {
         parentTopicIdentifiers: ['technologies'].concat(parentTopicIdentifiers),
       },
     });
-    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+    expect(wrapper.findComponent(NavigatorCard).props('activePath')).toEqual([
       references.first.url, references.second.url, mocks.$route.path,
     ]);
   });
@@ -162,7 +162,7 @@ describe('Navigator', () => {
         },
       },
     });
-    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+    expect(wrapper.findComponent(NavigatorCard).props('activePath')).toEqual([
       references.first.url, references.second.url, '/documentation/foo/bar',
     ]);
   });
@@ -173,7 +173,7 @@ describe('Navigator', () => {
         parentTopicIdentifiers: [],
       },
     });
-    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
+    expect(wrapper.findComponent(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
   });
 
   it('renders the root path as activePath when there are no valid parentTopicIdentifiers', () => {
@@ -183,7 +183,7 @@ describe('Navigator', () => {
         parentTopicIdentifiers: [identifier],
       },
     });
-    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
+    expect(wrapper.findComponent(NavigatorCard).props('activePath')).toEqual([mocks.$route.path]);
     expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(errorSpy).toHaveBeenCalledWith(`Reference for "${identifier}" is missing`);
   });
@@ -199,7 +199,7 @@ describe('Navigator', () => {
       },
     });
     // assert `second` is missing from the activePath
-    expect(wrapper.find(NavigatorCard).props('activePath')).toEqual([
+    expect(wrapper.findComponent(NavigatorCard).props('activePath')).toEqual([
       references.first.url, mocks.$route.path,
     ]);
     expect(errorSpy).toHaveBeenCalledTimes(1);
@@ -208,7 +208,7 @@ describe('Navigator', () => {
 
   it('re-emits the `@close` event', () => {
     const wrapper = createWrapper();
-    wrapper.find(NavigatorCard).vm.$emit('close');
+    wrapper.findComponent(NavigatorCard).vm.$emit('close');
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
 });
