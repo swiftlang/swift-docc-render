@@ -114,8 +114,9 @@ describe('SecondaryDropdown', () => {
     expect(node.attributes('role')).toBe('listbox');
   });
 
-  it('changes the aria-expanded state to true when dropdown is open', () => {
+  it('changes the aria-expanded state to true when dropdown is open', async () => {
     btn.trigger('click');
+    await wrapper.vm.$nextTick();
 
     expect(btn.attributes('aria-expanded')).toBe('true');
     const optionsDropdown = wrapper.findComponent('ul.options');

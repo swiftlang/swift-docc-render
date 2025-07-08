@@ -270,9 +270,10 @@ describe('DropdownCustom', () => {
     });
   });
 
-  it('closes the dropdown of you `click` outside', () => {
+  it('closes the dropdown of you `click` outside', async () => {
     wrapper = createWrapper();
     wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
+    await wrapper.vm.$nextTick();
     const label = wrapper.findComponent('.visuallyhidden').element;
     expect(wrapper.classes()).toContain(OpenedClass);
     const event = new Event('click');

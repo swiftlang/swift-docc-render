@@ -210,6 +210,7 @@ describe('NavBase', () => {
     const label = toggle.find('.visuallyhidden');
     expect(label.text()).toBe('documentation.nav.open-menu');
     toggle.trigger('click');
+    await wrapper.vm.$nextTick();
     expect(label.text()).toBe('documentation.nav.close-menu');
   });
 
@@ -252,6 +253,7 @@ describe('NavBase', () => {
     });
     const tray = wrapper.findComponent(NavMenuItems);
     tray.find('.foo').trigger('click');
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     tray.find('.with-anchor a').trigger('click');
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
@@ -509,6 +511,7 @@ describe('NavBase', () => {
 
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(0);
     wrapper.findComponent({ ref: 'axToggle' }).trigger('click');
+    await wrapper.vm.$nextTick();
     expect(changeElementVOVisibility.hide).toHaveBeenCalledTimes(1);
     wrapper.findComponent({ ref: 'axToggle' }).trigger('click');
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);

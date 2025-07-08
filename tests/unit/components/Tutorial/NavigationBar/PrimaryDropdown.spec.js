@@ -182,19 +182,22 @@ describe('Primary Dropdown', () => {
     });
   });
 
-  it('opens the dropdown on key `down`', () => {
+  it('opens the dropdown on key `down`', async () => {
     btn.trigger('keydown.down');
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes('is-open')).toBe(true);
   });
 
-  it('opens the dropdown on key `up`', () => {
+  it('opens the dropdown on key `up`', async () => {
     btn.trigger('keydown.up');
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes('is-open')).toBe(true);
   });
 
   it('focuses the next element, when `down` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
     btn.trigger('keydown.down');
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes('is-open')).toBe(true);
     // use the down key on the first link
     firstLink.trigger('keydown.down');
@@ -206,6 +209,7 @@ describe('Primary Dropdown', () => {
   it('focuses the previous element, when `up` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
     btn.trigger('click');
+    await wrapper.vm.$nextTick();
     // find the second option
     const secondOption = wrapper.findAll(`.${OptionClass}`).at(1);
     // use the down key on the first link
