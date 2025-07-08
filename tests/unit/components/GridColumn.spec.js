@@ -20,7 +20,7 @@ describe('GridColumn', () => {
     const wrapper = shallowMount(GridColumn, {
       slots: { default: '<p class="foo">foo</p>' },
     });
-    expect(wrapper.contains('p.foo')).toBe(true);
+    expect(wrapper.find('p.foo').exists()).toBe(true);
     expect(wrapper.text()).toBe('foo');
   });
 

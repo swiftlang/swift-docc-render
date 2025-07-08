@@ -150,7 +150,7 @@ describe('Assessments', () => {
   it('renders a banner with copy', () => {
     const banner = wrapper.findComponent('.banner');
     expect(banner.exists()).toBe(true);
-    expect(banner.contains('h2')).toBe(true);
+    expect(banner.find('h2').exists()).toBe(true);
   });
   it('renders a progress section', () => {
     const progress = wrapper.findComponent(Assessments.components.Progress);
@@ -299,7 +299,7 @@ describe('success slot for completed assessment', () => {
 
     const success = wrapper.findComponent('.success');
     expect(success.exists()).toBe(true);
-    expect(success.contains('p')).toBe(false);
+    expect(success.find('p').exists()).toBe(false);
 
     const message = success.find('marquee');
     expect(message.exists()).toBe(true);

@@ -433,7 +433,7 @@ describe('QuickNavigationModal', () => {
     it('does not render if no results were found', async () => {
       await wrapper.setData({ debouncedInput: nonResultsInputValue });
 
-      expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+      expect(wrapper.findComponent(QuickNavigationPreview).exists()).toBe(false);
     });
   });
 });

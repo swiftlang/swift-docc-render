@@ -48,8 +48,8 @@ describe('CallToAction', () => {
     const row = wrapper.findComponent(Row);
     expect(row.exists()).toBe(true);
 
-    expect(row.contains(LeftColumn)).toBe(true);
-    expect(row.contains(RightColumn)).toBe(true);
+    expect(row.findComponent(LeftColumn).exists()).toBe(true);
+    expect(row.findComponent(RightColumn).exists()).toBe(true);
   });
 
   describe('LeftColumn', () => {

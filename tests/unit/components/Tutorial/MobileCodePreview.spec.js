@@ -133,7 +133,7 @@ describe('MobileCodePreview', () => {
       expect(modal.exists()).toBe(true);
       expect(modal.props()).toHaveProperty('isFullscreen', true);
       expect(modal.props()).toHaveProperty('visible', true);
-      expect(modal.contains('img')).toBe(true);
+      expect(modal.find('img').exists()).toBe(true);
 
       expect(modal.find('.runtime-preview-label').text()).toBe('tutorials.preview.title');
     });

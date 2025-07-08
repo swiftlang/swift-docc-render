@@ -315,7 +315,7 @@ describe('CodePreview', () => {
     });
 
     it('adds the "runtime-preview-ide" class to the runtime preview', () => {
-      expect(wrapper.contains('.runtime-preview.runtime-preview-ide')).toBe(true);
+      expect(wrapper.find('.runtime-preview.runtime-preview-ide').exists()).toBe(true);
     });
   });
 
@@ -333,8 +333,8 @@ describe('CodePreview', () => {
       expect(button.attributes('disabled')).toBe('disabled');
       expect(button.attributes('title')).toBe('tutorials.preview.no-preview-available-step');
 
-      expect(wrapper.contains('.preview-hide')).toBe(false);
-      expect(wrapper.contains('.preview-show')).toBe(true);
+      expect(wrapper.find('.preview-hide').exists()).toBe(false);
+      expect(wrapper.find('.preview-show').exists()).toBe(true);
     });
 
     it('does not emit `runtime-preview-toggle` events', () => {
