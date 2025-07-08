@@ -106,7 +106,7 @@ describe('CodePreview', () => {
     });
   });
 
-  it('hides/shows the media preview when the hide button is clicked', () => {
+  it('hides/shows the media preview when the hide button is clicked', async () => {
     // Because preview asset is hidden by CSS, we check if the show/hide span exists
     const hideButton = wrapper.findComponent('.header');
 
@@ -119,7 +119,7 @@ describe('CodePreview', () => {
     expect(icon.classes()).toContain('preview-hide');
     expect(icon.classes()).not.toContain('preview-show');
 
-    wrapper.setProps({ isRuntimePreviewVisible: false });
+    await wrapper.setProps({ isRuntimePreviewVisible: false });
 
     hideButton.trigger('click');
     expect(wrapper.emitted()['runtime-preview-toggle'][1]).toEqual([true]);
@@ -320,8 +320,8 @@ describe('CodePreview', () => {
   });
 
   describe('without a runtime preview', () => {
-    beforeEach(() => {
-      wrapper.setProps({ preview: undefined });
+    beforeEach(async () => {
+      await wrapper.setProps({ preview: undefined });
     });
 
     it('renders the preview with a disabled state', () => {

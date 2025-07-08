@@ -73,28 +73,28 @@ describe('NavBase', () => {
   it('adds a solid background class', async () => {
     wrapper = await createWrapper();
     expect(wrapper.classes()).not.toContain(NavStateClasses.hasSolidBackground);
-    wrapper.setProps({ hasSolidBackground: true });
+    await wrapper.setProps({ hasSolidBackground: true });
     expect(wrapper.classes()).toContain(NavStateClasses.hasSolidBackground);
   });
 
   it('adds a no border class', async () => {
     wrapper = await createWrapper();
     expect(wrapper.classes()).not.toContain(NavStateClasses.hasNoBorder);
-    wrapper.setProps({ hasNoBorder: true });
+    await wrapper.setProps({ hasNoBorder: true });
     expect(wrapper.classes()).toContain(NavStateClasses.hasNoBorder);
   });
 
   it('adds a full-width border class', async () => {
     wrapper = await createWrapper();
     expect(wrapper.classes()).not.toContain(NavStateClasses.hasFullWidthBorder);
-    wrapper.setProps({ hasFullWidthBorder: true });
+    await wrapper.setProps({ hasFullWidthBorder: true });
     expect(wrapper.classes()).toContain(NavStateClasses.hasFullWidthBorder);
   });
 
   it('adds a dark-theme class', async () => {
     wrapper = await createWrapper();
     expect(wrapper.classes()).not.toContain(NavStateClasses.isDark);
-    wrapper.setProps({ isDark: true });
+    await wrapper.setProps({ isDark: true });
     expect(wrapper.classes()).toContain(NavStateClasses.isDark);
   });
 
@@ -116,9 +116,11 @@ describe('NavBase', () => {
     expect(overlay.exists()).toBe(true);
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     overlay.trigger('click');
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
     // assert clicking again does not toggle on
     overlay.trigger('click');
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
   });
 

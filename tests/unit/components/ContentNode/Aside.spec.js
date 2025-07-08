@@ -23,7 +23,7 @@ describe('Aside', () => {
     expect(wrapper.attributes('aria-label')).toBe('note');
   });
 
-  it('renders a label', () => {
+  it('renders a label', async () => {
     const wrapper = shallowMount(Aside, {
       propsData: {
         kind: 'experiment',
@@ -33,27 +33,27 @@ describe('Aside', () => {
     expect(label.exists()).toBe(true);
     expect(label.text()).toBe('aside-kind.experiment');
 
-    wrapper.setProps({ kind: 'important' });
+    await wrapper.setProps({ kind: 'important' });
     label = wrapper.findComponent('.label');
     expect(label.exists()).toBe(true);
     expect(label.text()).toBe('aside-kind.important');
 
-    wrapper.setProps({ kind: 'note' });
+    await wrapper.setProps({ kind: 'note' });
     label = wrapper.findComponent('.label');
     expect(label.exists()).toBe(true);
     expect(label.text()).toBe('aside-kind.note');
 
-    wrapper.setProps({ kind: 'tip' });
+    await wrapper.setProps({ kind: 'tip' });
     label = wrapper.findComponent('.label');
     expect(label.exists()).toBe(true);
     expect(label.text()).toBe('aside-kind.tip');
 
-    wrapper.setProps({ kind: 'warning' });
+    await wrapper.setProps({ kind: 'warning' });
     label = wrapper.findComponent('.label');
     expect(label.exists()).toBe(true);
     expect(label.text()).toBe('aside-kind.warning');
 
-    wrapper.setProps({ kind: 'note', name: 'Custom Name' });
+    await wrapper.setProps({ kind: 'note', name: 'Custom Name' });
     label = wrapper.findComponent('.label');
     expect(label.exists()).toBe(true);
     expect(label.text()).toBe('Custom Name');

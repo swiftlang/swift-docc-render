@@ -293,7 +293,7 @@ describe('SectionSteps', () => {
         // Last step is code.
         await assertNotPlaying(1);
         // Last step has an image asset.
-        wrapper.setProps({
+        await wrapper.setProps({
           content: [
             exampleParagraph,
             exampleStepWithMedia,
@@ -301,7 +301,7 @@ describe('SectionSteps', () => {
         });
         await assertNotPlaying(1);
         // Last step has no asset nor code.
-        wrapper.setProps({
+        await wrapper.setProps({
           content: [
             exampleParagraph,
             exampleStepWithNoMediaNorCode,

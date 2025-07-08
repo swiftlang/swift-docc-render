@@ -92,8 +92,8 @@ describe('TopicsTable', () => {
     expect(sections.at(1).props('anchor')).toBe(null);
   });
 
-  it('renders a `ContentTableSection` for sections without a title', () => {
-    wrapper.setProps({
+  it('renders a `ContentTableSection` for sections without a title', async () => {
+    await wrapper.setProps({
       sections: [
         {
           ...propsData.sections[0],
@@ -132,8 +132,8 @@ describe('TopicsTable', () => {
     });
   });
 
-  it('renders a `TopicsLinkCardGrid` if `topicStyle` is not `list`', () => {
-    wrapper.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
+  it('renders a `TopicsLinkCardGrid` if `topicStyle` is not `list`', async () => {
+    await wrapper.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
     expect(wrapper.findAll(TopicsLinkBlock)).toHaveLength(0);
     const sections = wrapper.findAll(ContentTableSection);
 
@@ -154,8 +154,8 @@ describe('TopicsTable', () => {
     });
   });
 
-  it('can be passed `title` and `anchor` overrides', () => {
-    wrapper.setProps({
+  it('can be passed `title` and `anchor` overrides', async () => {
+    await wrapper.setProps({
       anchor: 'foo-bar',
       title: 'Foo Bar',
     });
@@ -187,11 +187,11 @@ describe('TopicsTable', () => {
     ).toEqual(propsData.sections[0].discussion.content);
   });
 
-  it('renders a title wrapped in WordBreak, if `wrapTitle: true`', () => {
+  it('renders a title wrapped in WordBreak, if `wrapTitle: true`', async () => {
     let wordBreak = wrapper.findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(false);
 
-    wrapper.setProps({ wrapTitle: true });
+    await wrapper.setProps({ wrapTitle: true });
     const linkableHeading = wrapper.findComponent(LinkableHeading);
     wordBreak = wrapper.findComponent(WordBreak);
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);

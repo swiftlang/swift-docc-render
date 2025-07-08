@@ -36,8 +36,8 @@ describe('LinkableElement', () => {
     expect(wrapper.is('div#foo')).toBe(true);
   });
 
-  it('renders with an optionally provided top level tag', () => {
-    wrapper.setProps({ tag: 'h2' });
+  it('renders with an optionally provided top level tag', async () => {
+    await wrapper.setProps({ tag: 'h2' });
     expect(wrapper.is('h2#foo')).toBe(true);
   });
 

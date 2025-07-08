@@ -15,7 +15,7 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 const { TopicsTable } = Topics.components;
 
 describe('Topics', () => {
-  it('renders a `TopicsTable` with appropriate anchor/title', () => {
+  it('renders a `TopicsTable` with appropriate anchor/title', async () => {
     const wrapper = shallowMount(Topics, {
       propsData: {
         sections: [],
@@ -34,11 +34,11 @@ describe('Topics', () => {
       wrapTitle: false,
       topicStyle: TopicSectionsStyle.list,
     });
-    table.setProps({ isSymbolDeprecated: true });
+    await wrapper.setProps({ isSymbolDeprecated: true });
     expect(table.props('isSymbolDeprecated')).toBe(true);
-    table.setProps({ isSymbolBeta: true });
+    await wrapper.setProps({ isSymbolBeta: true });
     expect(table.props('isSymbolBeta')).toBe(true);
-    table.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
+    await wrapper.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
     expect(table.props('topicStyle')).toBe(TopicSectionsStyle.compactGrid);
   });
 });

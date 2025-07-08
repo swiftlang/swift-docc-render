@@ -31,13 +31,13 @@ describe('BaseDropdown', () => {
     expect(wrapper.classes()).toEqual(['form-element']);
   });
 
-  it('renders a `select` component', () => {
+  it('renders a `select` component', async () => {
     const wrapper = createWrapper();
     // assert select is rendered with correct classes
     const select = wrapper.findComponent('select');
     expect(select.exists()).toBe(true);
     expect(select.classes()).toContain('form-dropdown');
-    wrapper.setProps({ value: '' });
+    await wrapper.setProps({ value: '' });
     expect(select.classes()).toContain('form-dropdown-selectnone');
   });
 
@@ -136,7 +136,7 @@ describe('BaseDropdown', () => {
     expect(icon.attributes()).toHaveProperty('aria-hidden', 'true');
   });
 
-  it('passes `form-dropdown-selectnone` if value is empty', () => {
+  it('passes `form-dropdown-selectnone` if value is empty', async () => {
     let scopedSlotProps = {};
     const wrapper = createWrapper({
       scopedSlots: {
@@ -148,7 +148,7 @@ describe('BaseDropdown', () => {
     });
     expect(scopedSlotProps.dropdownClasses)
       .toContainEqual({ [EmptyClass]: false, 'no-eyebrow': true });
-    wrapper.setProps({
+    await wrapper.setProps({
       value: '',
     });
     expect(scopedSlotProps.dropdownClasses)

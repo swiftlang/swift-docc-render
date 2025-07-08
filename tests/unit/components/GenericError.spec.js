@@ -40,9 +40,9 @@ describe('GenericError', () => {
     expect(content.text()).toBe(slotText);
   });
 
-  it('renders a custom message', () => {
+  it('renders a custom message', async () => {
     const message = 'Whoops!';
-    wrapper.setProps({ message });
+    await wrapper.setProps({ message });
 
     const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);

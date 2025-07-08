@@ -159,12 +159,12 @@ describe('TagList', () => {
     expect(wrapper.emitted('delete-tag')).not.toBeTruthy();
   });
 
-  it('deletes tag when hitting an alphanum key or space while being focus only tag', () => {
+  it('deletes tag when hitting an alphanum key or space while being focus only tag', async () => {
     const tag = wrapper.findComponent({ ref: 'tag' });
     const alphanumKey = 'a';
     const input = 'foo';
     const space = ' ';
-    wrapper.setProps({ input });
+    await wrapper.setProps({ input });
     wrapper.setData({ focusedIndex: 0 });
     tag.trigger('keydown', { key: alphanumKey });
 
@@ -175,8 +175,8 @@ describe('TagList', () => {
     expect(wrapper.emitted('delete-tag')).toBeTruthy();
   });
 
-  it('emits `select-all` when user has text on input and `command + a` is triggered on any tag', () => {
-    wrapper.setProps({ input: 'something' });
+  it('emits `select-all` when user has text on input and `command + a` is triggered on any tag', async () => {
+    await wrapper.setProps({ input: 'something' });
 
     wrapper.findComponent({ ref: 'tags' }).trigger('keydown', {
       key: 'a',
@@ -197,9 +197,9 @@ describe('TagList', () => {
   });
 
   describe('Removable Tags', () => {
-    it('sets passed down `isRemovableTag` on tags', () => {
+    it('sets passed down `isRemovableTag` on tags', async () => {
       expect(wrapper.findComponent(Tag).props()).toHaveProperty('isRemovableTag', false);
-      wrapper.setProps({ areTagsRemovable: true });
+      await wrapper.setProps({ areTagsRemovable: true });
       expect(wrapper.findComponent(Tag).props()).toHaveProperty('isRemovableTag', true);
     });
 

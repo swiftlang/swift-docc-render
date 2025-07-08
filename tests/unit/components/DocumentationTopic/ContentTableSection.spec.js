@@ -39,8 +39,8 @@ describe('ContentTableSection', () => {
     expect(title.text()).toContain(propsData.title);
   });
 
-  it('does not require a title', () => {
-    wrapper.setProps({
+  it('does not require a title', async () => {
+    await wrapper.setProps({
       title: undefined,
     });
 
@@ -48,10 +48,10 @@ describe('ContentTableSection', () => {
     expect(title.exists()).toBe(false);
   });
 
-  it('renders an `id` if `anchor` is provided', () => {
+  it('renders an `id` if `anchor` is provided', async () => {
     const title = wrapper.findComponent(`.${TITLE_CLASS_NAME}`);
     expect(title.attributes('id')).toBe(undefined);
-    wrapper.setProps({
+    await wrapper.setProps({
       anchor: 'foo-bar',
     });
     expect(title.props('anchor')).toBe('foo-bar');

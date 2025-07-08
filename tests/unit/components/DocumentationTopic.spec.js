@@ -301,9 +301,9 @@ describe('DocumentationTopic', () => {
     expect(wrapper.findComponent('[aria-live="polite"]').text()).toBe('documentation.current-page FooKit');
   });
 
-  it('renders a `DocumentationHero`, enabled', () => {
+  it('renders a `DocumentationHero`, enabled', async () => {
     const iconOverride = { variants: [] };
-    wrapper.setProps({
+    await wrapper.setProps({
       references: {
         [propsData.pageImages[0].identifier]: iconOverride,
       },
@@ -320,8 +320,8 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders a `DocumentationHero` without an image override ', () => {
-    wrapper.setProps({
+  it('renders a `DocumentationHero` without an image override ', async () => {
+    await wrapper.setProps({
       pageImages: [],
     });
     const hero = wrapper.findComponent(DocumentationHero);
@@ -336,8 +336,8 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders a Hierarchy', () => {
-    wrapper.setProps({
+  it('renders a Hierarchy', async () => {
+    await wrapper.setProps({
       references: hierarchyItemsReferences,
       hierarchyItems,
     });
@@ -369,7 +369,7 @@ describe('DocumentationTopic', () => {
     expect(hierarchy.exists()).toBe(false);
   });
 
-  it('only creates a "Mentioned In" section for non-module pages', () => {
+  it('only creates a "Mentioned In" section for non-module pages', async () => {
     const mentionSection = {
       kind: PrimaryContent.constants.SectionKind.mentions,
       mentions: [
@@ -378,7 +378,7 @@ describe('DocumentationTopic', () => {
       ],
     };
 
-    wrapper.setProps({
+    await wrapper.setProps({
       references: hierarchyItemsReferences,
       role: TopicTypes.symbol,
       symbolKind: SymbolKind.protocol,
@@ -393,15 +393,15 @@ describe('DocumentationTopic', () => {
       foo,
     ]);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       symbolKind: SymbolKind.module,
     });
 
     expect(wrapper.findComponent(PrimaryContent).props()).toHaveProperty('sections', [foo]);
   });
 
-  it('renders `Hierarchy` without its immediate parent if its within overload group', () => {
-    wrapper.setProps({
+  it('renders `Hierarchy` without its immediate parent if its within overload group', async () => {
+    await wrapper.setProps({
       references: hierarchyItemsReferences,
       hierarchyItems,
       primaryContentSections: [
@@ -415,14 +415,14 @@ describe('DocumentationTopic', () => {
     expect(hierarchy.props()).toHaveProperty('parentTopics', [itemFoo, itemBar]);
 
     // Hide immediate parent if has same title as parent and has other declarations
-    wrapper.setProps({ title: itemBar.title });
+    await wrapper.setProps({ title: itemBar.title });
     hierarchy = wrapper.findComponent(Hierarchy);
     expect(hierarchy.props()).toHaveProperty('parentTopics', [itemFoo]);
   });
 
-  it('`Hierarchy` continues working, if a reference is missing', () => {
+  it('`Hierarchy` continues working, if a reference is missing', async () => {
     const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
-    wrapper.setProps({
+    await wrapper.setProps({
       references: { 'topic://foo': itemFoo }, // set without `Bar` reference data
       hierarchyItems,
     });
@@ -433,17 +433,17 @@ describe('DocumentationTopic', () => {
     expect(errorSpy).toHaveBeenCalledWith('Reference for "topic://bar" is missing');
   });
 
-  it('does not render a Hierarchy if hierarchyItems is empty or enableMinimized is true', () => {
-    wrapper.setProps({ hierarchyItems: [] });
+  it('does not render a Hierarchy if hierarchyItems is empty or enableMinimized is true', async () => {
+    await wrapper.setProps({ hierarchyItems: [] });
     expect(wrapper.findComponent(Hierarchy).exists()).toBe(false);
 
     // Minimized view should not render LanguageSwitcher
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(wrapper.findComponent(Hierarchy).exists()).toBe(false);
   });
 
-  it('does not render a Hierarchy in minimized view', () => {
-    wrapper.setProps({ enableMinimized: true });
+  it('does not render a Hierarchy in minimized view', async () => {
+    await wrapper.setProps({ enableMinimized: true });
     expect(wrapper.findComponent(Hierarchy).exists()).toBe(false);
   });
 
@@ -458,16 +458,16 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('computes `shortHero correctly', () => {
+  it('computes `shortHero correctly', async () => {
     const hero = wrapper.findComponent(DocumentationHero);
     expect(hero.props('shortHero')).toBe(false);
 
-    wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
+    await wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
     expect(hero.props('shortHero')).toBe(true);
   });
 
   it('render a `DocumentationHero`, disabled, if symbol page', () => {
-    /* wrapper.setProps({
+    /* await wrapper.setProps({
       symbolKind: 'protocol',
     }); */
 
@@ -492,10 +492,10 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders a `DocumentationHero`, disabled, if `disableHeroBackground` prop is `true`', () => {
+  it('renders a `DocumentationHero`, disabled, if `disableHeroBackground` prop is `true`', async () => {
     const hero = wrapper.findComponent(DocumentationHero);
     expect(hero.props('enhanceBackground')).toBe(true);
-    wrapper.setProps({ disableHeroBackground: true });
+    await wrapper.setProps({ disableHeroBackground: true });
     expect(hero.props('enhanceBackground')).toBe(false);
   });
 
@@ -509,24 +509,24 @@ describe('DocumentationTopic', () => {
     expect(title.find(WordBreak).exists()).toBe(false);
   });
 
-  it('renders the right classes for `Title` based on `enableMininized` prop', () => {
+  it('renders the right classes for `Title` based on `enableMininized` prop', async () => {
     const hero = wrapper.findComponent(DocumentationHero);
     const title = hero.find(Title);
     expect(title.classes()).not.toContain('minimized-title');
 
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(title.classes()).toContain('minimized-title');
   });
 
-  it('renders a `minimized-container` class, when `enableMinimized` is true', () => {
+  it('renders a `minimized-container` class, when `enableMinimized` is true', async () => {
     const container = wrapper.findComponent('.container');
     expect(container.classes()).not.toContain('minimized-container');
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(container.classes()).toContain('minimized-container');
   });
 
-  it('uses `WordBreak` in the title for symbol pages', () => {
-    wrapper.setProps({
+  it('uses `WordBreak` in the title for symbol pages', async () => {
+    await wrapper.setProps({
       role: 'symbol',
       symbolKind: 'protocol',
     });
@@ -539,14 +539,14 @@ describe('DocumentationTopic', () => {
     expect(wb.text()).toBe(propsData.title);
   });
 
-  it('renders smaller "Beta" and "Deprecated" text in title when relevant', () => {
+  it('renders smaller "Beta" and "Deprecated" text in title when relevant', async () => {
     const title = wrapper.findComponent(Title);
     expect(title.exists()).toBe(true);
     let smalls = title.findAll('small');
     expect(smalls.length).toBe(0);
 
     // both beta _and_ deprecated — deprecated has priority
-    wrapper.setProps({
+    await wrapper.setProps({
       isSymbolDeprecated: true,
       isSymbolBeta: true,
     });
@@ -555,7 +555,7 @@ describe('DocumentationTopic', () => {
     expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
 
     // only beta
-    wrapper.setProps({
+    await wrapper.setProps({
       isSymbolDeprecated: false,
       isSymbolBeta: true,
     });
@@ -564,7 +564,7 @@ describe('DocumentationTopic', () => {
     expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.beta');
 
     // only deprecated
-    wrapper.setProps({
+    await wrapper.setProps({
       isSymbolDeprecated: true,
       isSymbolBeta: false,
     });
@@ -580,7 +580,7 @@ describe('DocumentationTopic', () => {
     expect(abstractComponent.props('content')).toEqual(propsData.abstract);
   });
 
-  it('renders an abstract, with an empty string inside', () => {
+  it('renders an abstract, with an empty string inside', async () => {
     const emptyParagraph = [{
       type: 'paragraph',
       inlineContent: [
@@ -590,7 +590,7 @@ describe('DocumentationTopic', () => {
         },
       ],
     }];
-    wrapper.setProps({
+    await wrapper.setProps({
       abstract: emptyParagraph,
     });
     const hero = wrapper.findComponent(DocumentationHero);
@@ -605,7 +605,7 @@ describe('DocumentationTopic', () => {
     expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
   });
 
-  it('renders a `PrimaryContent` with Declarations moved out and into the Hero section', () => {
+  it('renders a `PrimaryContent` with Declarations moved out and into the Hero section', async () => {
     const declarationsSection = {
       kind: PrimaryContent.constants.SectionKind.declarations,
       declarations: [
@@ -624,7 +624,7 @@ describe('DocumentationTopic', () => {
     };
     expect(wrapper.findComponent('.declarations-container').exists()).toBe(false);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       enableMinimized: true,
       primaryContentSections: [
         ...propsData.primaryContentSections,
@@ -641,7 +641,7 @@ describe('DocumentationTopic', () => {
       source: propsData.remoteSource,
       declListExpanded: false,
     });
-    // wrapper.setProps({ enableMinimized: true });
+    // await wrapper.setProps({ enableMinimized: true });
     // commented this out and moved it to the above `setProps` call because
     // there seems to be an obscure bug with vue-test-utils where things don't
     // work right if `setProps` is called more than once with a prop that is
@@ -649,21 +649,21 @@ describe('DocumentationTopic', () => {
     expect(declarationContainer.classes()).toContain('minimized-container');
   });
 
-  it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', () => {
-    wrapper.setProps({ primaryContentSections: undefined });
+  it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', async () => {
+    await wrapper.setProps({ primaryContentSections: undefined });
     expect(wrapper.contains(PrimaryContent)).toBe(false);
   });
 
-  it('does not render a `PrimaryContent` column when passed empty an PrimaryContent', () => {
-    wrapper.setProps({ primaryContentSections: [] });
+  it('does not render a `PrimaryContent` column when passed empty an PrimaryContent', async () => {
+    await wrapper.setProps({ primaryContentSections: [] });
     expect(wrapper.contains(PrimaryContent)).toBe(false);
   });
 
-  it('does not render a `PrimaryContent` column when passed empty an PrimaryContent & no `ViewMore` link', () => {
-    wrapper.setProps({ primaryContentSections: [], enableMinimized: true });
+  it('does not render a `PrimaryContent` column when passed empty an PrimaryContent & no `ViewMore` link', async () => {
+    await wrapper.setProps({ primaryContentSections: [], enableMinimized: true });
     expect(wrapper.contains(PrimaryContent)).toBe(true); // ViewMore link is present
 
-    wrapper.setProps({
+    await wrapper.setProps({
       primaryContentSections: [],
       enableMinimized: true,
       hasNoExpandedDocumentation: true,
@@ -671,8 +671,8 @@ describe('DocumentationTopic', () => {
     expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
   });
 
-  it('render a `PrimaryContent` column when passed empty an PrimaryContent but has otherDeclarations', () => {
-    wrapper.setProps({
+  it('render a `PrimaryContent` column when passed empty an PrimaryContent but has otherDeclarations', async () => {
+    await wrapper.setProps({
       primaryContentSections: [
         ...propsData.primaryContentSections,
         hasOtherDeclSection,
@@ -681,8 +681,8 @@ describe('DocumentationTopic', () => {
     expect(wrapper.contains(PrimaryContent)).toBe(true); // has otherDeclarations dropdown
   });
 
-  it('renders `ViewMore` if `enableMinimized`', () => {
-    wrapper.setProps({
+  it('renders `ViewMore` if `enableMinimized`', async () => {
+    await wrapper.setProps({
       enableMinimized: true,
       primaryContentSections: undefined,
       isRequirement: false,
@@ -695,17 +695,17 @@ describe('DocumentationTopic', () => {
     expect(viewMore.classes()).toContain('minimized-container');
 
     // should not render `ViewMore` in non-minimized mode
-    wrapper.setProps({ enableMinimized: false });
+    await wrapper.setProps({ enableMinimized: false });
     expect(wrapper.findComponent(ViewMore).exists()).toBe(false);
 
     // should not render `ViewMore` if `hasNoExpandedDocumentation`
-    wrapper.setProps({ enableMinimized: true, hasNoExpandedDocumentation: true });
+    await wrapper.setProps({ enableMinimized: true, hasNoExpandedDocumentation: true });
     expect(wrapper.findComponent(ViewMore).exists()).toBe(false);
   });
 
-  it('renders `ViewMore` with correct language path', () => {
+  it('renders `ViewMore` with correct language path', async () => {
     // only objcPath
-    wrapper.setProps({
+    await wrapper.setProps({
       enableMinimized: true,
       swiftPath: null,
       objcPath: 'documentation/objc',
@@ -716,7 +716,7 @@ describe('DocumentationTopic', () => {
     expect(objcViewMore.props('url')).toEqual('/documentation/objc'); // normalized path
 
     // only swiftPath
-    wrapper.setProps({
+    await wrapper.setProps({
       objcPath: null,
       swiftPath: 'documentation/swift',
       interfaceLanguage: 'swift',
@@ -726,7 +726,7 @@ describe('DocumentationTopic', () => {
     expect(swiftViewMore.props('url')).toEqual('/documentation/swift'); // normalized path
 
     // both paths exists, but on the objc variant
-    wrapper.setProps({
+    await wrapper.setProps({
       objcPath: 'documentation/objc',
       swiftPath: 'documentation/swift',
       interfaceLanguage: 'occ',
@@ -737,11 +737,11 @@ describe('DocumentationTopic', () => {
   });
 
   describe('description column', () => {
-    it('renders the description section', () => {
+    it('renders the description section', async () => {
       const description = wrapper.findComponent('.description');
       expect(description.exists()).toBe(true);
       expect(description.classes()).toContain('after-enhanced-hero');
-      wrapper.setProps({
+      await wrapper.setProps({
         symbolKind: 'something-else',
       });
       expect(description.classes()).not.toContain('after-enhanced-hero');
@@ -755,9 +755,9 @@ describe('DocumentationTopic', () => {
       expect(description.exists()).toBe(false);
     });
 
-    it('renders a deprecated `Aside` when deprecated', () => {
+    it('renders a deprecated `Aside` when deprecated', async () => {
       expect(wrapper.contains(Aside)).toBe(false);
-      wrapper.setProps({ deprecationSummary });
+      await wrapper.setProps({ deprecationSummary });
 
       const aside = wrapper.findComponent(Aside);
       expect(aside.exists()).toBe(true);
@@ -768,9 +768,9 @@ describe('DocumentationTopic', () => {
       expect(content.props('content')).toEqual(deprecationSummary);
     });
 
-    it('renders a note `Aside` when download button is not available', () => {
+    it('renders a note `Aside` when download button is not available', async () => {
       expect(wrapper.contains(Aside)).toBe(false);
-      wrapper.setProps({ downloadNotAvailableSummary });
+      await wrapper.setProps({ downloadNotAvailableSummary });
 
       const aside = wrapper.findComponent(Aside);
       expect(aside.exists()).toBe(true);
@@ -781,34 +781,34 @@ describe('DocumentationTopic', () => {
       expect(content.props('content')).toEqual(downloadNotAvailableSummary);
     });
 
-    it('renders a `DownloadButton` if there is sample code to download', () => {
+    it('renders a `DownloadButton` if there is sample code to download', async () => {
       expect(wrapper.contains(DownloadButton)).toBe(false);
-      wrapper.setProps({ sampleCodeDownload });
+      await wrapper.setProps({ sampleCodeDownload });
       expect(wrapper.contains(DownloadButton)).toBe(true);
     });
 
-    it('renders a `RequirementMetadata` if the symbol is required', () => {
+    it('renders a `RequirementMetadata` if the symbol is required', async () => {
       expect(wrapper.contains(RequirementMetadata)).toBe(false);
-      wrapper.setProps({ isRequirement: true });
+      await wrapper.setProps({ isRequirement: true });
       expect(wrapper.contains(RequirementMetadata)).toBe(true);
     });
 
-    it('renders a `Availability` with platforms data', () => {
+    it('renders a `Availability` with platforms data', async () => {
       const list = wrapper.findComponent(Availability);
       expect(list.exists()).toBe(true);
       expect(list.props('platforms')).toEqual(propsData.platforms);
 
       // Minimized view should not render Availability
-      wrapper.setProps({ enableMinimized: true });
+      await wrapper.setProps({ enableMinimized: true });
       expect(wrapper.findComponent(Availability).exists()).toBe(false);
     });
   });
 
-  it('render a declaration list menu if has other declarations', () => {
+  it('render a declaration list menu if has other declarations', async () => {
     let declListMenu = wrapper.findComponent('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(false);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       primaryContentSections: [
         ...propsData.primaryContentSections,
         hasOtherDeclSection,
@@ -818,8 +818,8 @@ describe('DocumentationTopic', () => {
     expect(declListMenu.exists()).toBe(true);
   });
 
-  it('does not render a declaration list menu in minimized mode', () => {
-    wrapper.setProps({
+  it('does not render a declaration list menu in minimized mode', async () => {
+    await wrapper.setProps({
       primaryContentSections: [
         ...propsData.primaryContentSections,
         hasOtherDeclSection,
@@ -828,14 +828,14 @@ describe('DocumentationTopic', () => {
     let declListMenu = wrapper.findComponent('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(true);
 
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
 
     declListMenu = wrapper.findComponent('.declaration-list-menu');
     expect(declListMenu.exists()).toBe(false);
   });
 
-  it('renders correct declaration list toggle, text, and icon', () => {
-    wrapper.setProps({
+  it('renders correct declaration list toggle, text, and icon', async () => {
+    await wrapper.setProps({
       primaryContentSections: [
         ...propsData.primaryContentSections,
         hasOtherDeclSection,
@@ -858,10 +858,10 @@ describe('DocumentationTopic', () => {
     expect(icon.classes()).toContain('expand');
   });
 
-  it('does not render any primary content or related markup, if not provided', () => {
+  it('does not render any primary content or related markup, if not provided', async () => {
     const docContent = wrapper.findComponent('.doc-content');
     expect(docContent.classes()).not.toContain('no-primary-content');
-    wrapper.setProps({
+    await wrapper.setProps({
       primaryContentSections: [],
       isRequirement: false,
       deprecationSummary: null,
@@ -873,11 +873,11 @@ describe('DocumentationTopic', () => {
     expect(wrapper.findComponent('.description').exists()).toBe(false);
     expect(docContent.classes()).toContain('no-primary-content');
     // removes it if hero is not enhanced
-    wrapper.setProps({ disableHeroBackground: true });
+    await wrapper.setProps({ disableHeroBackground: true });
     expect(docContent.classes()).not.toContain('no-primary-content');
   });
 
-  it('renders a `LanguageSwitcher` if TargetIDE', () => {
+  it('renders a `LanguageSwitcher` if TargetIDE', async () => {
     const provide = {
       isTargetIDE: true,
       store: mockStore,
@@ -892,11 +892,11 @@ describe('DocumentationTopic', () => {
     });
 
     // Minimized view should not render LanguageSwitcher
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(wrapper.findComponent(LanguageSwitcher).exists()).toBe(false);
   });
 
-  it('renders `Topics` if there are topic sections, passing the `topicSectionsStyle` over', () => {
+  it('renders `Topics` if there are topic sections, passing the `topicSectionsStyle` over', async () => {
     expect(wrapper.contains(Topics)).toBe(false);
 
     const topicSections = [
@@ -912,7 +912,7 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ topicSections, topicSectionsStyle: TopicSectionsStyle.detailedGrid });
+    await wrapper.setProps({ topicSections, topicSectionsStyle: TopicSectionsStyle.detailedGrid });
 
     const topics = wrapper.findComponent(Topics);
     expect(topics.exists()).toBe(true);
@@ -920,22 +920,22 @@ describe('DocumentationTopic', () => {
     expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
 
     // Minimized view should not render Topics
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(wrapper.findComponent(Topics).exists()).toBe(false);
   });
 
-  it('does not render the `Topics` if the `topicSectionsStyle` is `hidden`', () => {
+  it('does not render the `Topics` if the `topicSectionsStyle` is `hidden`', async () => {
     const topicSections = [
       {
         title: 'Baz',
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ topicSections, topicSectionsStyle: 'hidden' });
+    await wrapper.setProps({ topicSections, topicSectionsStyle: 'hidden' });
     expect(wrapper.findComponent(Topics).exists()).toBe(false);
   });
 
-  it('renders `SeeAlso` if there are see also sections', () => {
+  it('renders `SeeAlso` if there are see also sections', async () => {
     expect(wrapper.contains(SeeAlso)).toBe(false);
 
     const seeAlsoSections = [
@@ -951,18 +951,18 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ seeAlsoSections });
+    await wrapper.setProps({ seeAlsoSections });
 
     const seeAlso = wrapper.findComponent(SeeAlso);
     expect(seeAlso.exists()).toBe(true);
     expect(seeAlso.props('sections')).toBe(seeAlsoSections);
 
     // Minimized view should not render See Also
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(wrapper.findComponent(SeeAlso).exists()).toBe(false);
   });
 
-  it('renders `Relationships` if there are relationship sections', () => {
+  it('renders `Relationships` if there are relationship sections', async () => {
     expect(wrapper.contains(Relationships)).toBe(false);
 
     const relationshipsSections = [
@@ -980,7 +980,7 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ relationshipsSections });
+    await wrapper.setProps({ relationshipsSections });
 
     const relationships = wrapper.findComponent(Relationships);
     expect(relationships.exists()).toBe(true);
@@ -1020,7 +1020,7 @@ describe('DocumentationTopic', () => {
     expect(sections.at(1).classes('see-also')).toBe(true);
   });
 
-  it('renders `DefaultImplementations` if there are default implementation sections', () => {
+  it('renders `DefaultImplementations` if there are default implementation sections', async () => {
     expect(wrapper.contains(DefaultImplementations)).toBe(false);
 
     const defaultImplementationsSections = [
@@ -1036,26 +1036,26 @@ describe('DocumentationTopic', () => {
         identifiers: ['baz'],
       },
     ];
-    wrapper.setProps({ defaultImplementationsSections });
+    await wrapper.setProps({ defaultImplementationsSections });
 
     const defaults = wrapper.findComponent(DefaultImplementations);
     expect(defaults.exists()).toBe(true);
     expect(defaults.props('sections')).toEqual(defaultImplementationsSections);
 
     // Minimized view should not render DefaultImplementations
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(wrapper.findComponent(DefaultImplementations).exists()).toBe(false);
   });
 
-  it('computes isSymbolBeta', () => {
+  it('computes isSymbolBeta', async () => {
     const topicSections = [{}];
-    wrapper.setProps({ topicSections, isSymbolBeta: true });
+    await wrapper.setProps({ topicSections, isSymbolBeta: true });
 
     const topics = wrapper.findComponent(Topics);
     expect(topics.props('isSymbolBeta')).toBe(true);
 
     // should not if only one is beta
-    wrapper.setProps({
+    await wrapper.setProps({
       isSymbolBeta: false,
     });
     expect(topics.props('isSymbolBeta')).toBe(false);
@@ -1063,7 +1063,7 @@ describe('DocumentationTopic', () => {
 
   it('renders a beta legal text warning if at least one platform is in beta', async () => {
     expect(wrapper.findComponent(BetaLegalText).exists()).toBe(false);
-    wrapper.setProps({
+    await wrapper.setProps({
       platforms: [
         {
           introducedAt: '1.0',
@@ -1079,11 +1079,11 @@ describe('DocumentationTopic', () => {
     expect(wrapper.findComponent(BetaLegalText).exists()).toBe(true);
   });
 
-  it('sends isSymbolDeprecated down to the Topic', () => {
-    wrapper.setProps({ topicSections: [{}], isSymbolDeprecated: false });
+  it('sends isSymbolDeprecated down to the Topic', async () => {
+    await wrapper.setProps({ topicSections: [{}], isSymbolDeprecated: false });
     const topics = wrapper.findComponent(Topics);
     expect(topics.props('isSymbolDeprecated')).toBe(false);
-    wrapper.setProps({ isSymbolDeprecated: true });
+    await wrapper.setProps({ isSymbolDeprecated: true });
     expect(topics.props('isSymbolDeprecated')).toBe(true);
   });
 
@@ -1116,11 +1116,11 @@ describe('DocumentationTopic', () => {
     expect(wrapper.contains('.above-hero-content')).toBe(true);
   });
 
-  it('renders `OnThisPageNav` component, if enabled via prop', () => {
+  it('renders `OnThisPageNav` component, if enabled via prop', async () => {
     expect(wrapper.findComponent(OnThisPageNav).exists()).toBe(false);
     expect(wrapper.findComponent(OnThisPageStickyContainer).exists()).toBe(false);
     // enable the nav
-    wrapper.setProps({ enableOnThisPageNav: true });
+    await wrapper.setProps({ enableOnThisPageNav: true });
     // assert container is visible, but not the nav
     expect(wrapper.findComponent(OnThisPageStickyContainer).exists()).toBe(true);
     expect(wrapper.findComponent(OnThisPageNav).exists()).toBe(false);
@@ -1133,9 +1133,9 @@ describe('DocumentationTopic', () => {
     expect(wrapper.findComponent(OnThisPageNav).exists()).toBe(true);
   });
 
-  it('hides the `OnThisPageStickyContainer`, if the store.contentWidth is below a threshold', () => {
+  it('hides the `OnThisPageStickyContainer`, if the store.contentWidth is below a threshold', async () => {
     expect(wrapper.classes()).not.toContain('with-on-this-page');
-    wrapper.setProps({ enableOnThisPageNav: true });
+    await wrapper.setProps({ enableOnThisPageNav: true });
     wrapper.setData({
       topicState: {
         contentWidth: 200,
@@ -1153,18 +1153,18 @@ describe('DocumentationTopic', () => {
     expect(wrapper.classes()).toContain('with-on-this-page');
   });
 
-  it('computes a `disableMetadata` property that mirrors `enableMinimized`', () => {
+  it('computes a `disableMetadata` property that mirrors `enableMinimized`', async () => {
     expect(wrapper.vm.disableMetadata).toBe(false);
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(wrapper.vm.disableMetadata).toBe(true);
   });
 
-  it('sets the references, when they update in the store', () => {
+  it('sets the references, when they update in the store', async () => {
     expect(mockStore.setReferences).toHaveBeenCalledTimes(1);
     const newReferences = {
       foo: {},
     };
-    wrapper.setProps({
+    await wrapper.setProps({
       references: newReferences,
     });
     expect(mockStore.setReferences).toHaveBeenCalledTimes(2);

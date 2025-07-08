@@ -50,7 +50,7 @@ describe('ContentTable', () => {
     const container = wrapper.findComponent('.container');
     expect(container.classes()).not.toContain('minimized-container');
 
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(container.classes()).toContain('minimized-container');
   });
 });

@@ -23,9 +23,9 @@ describe('TutorialsNavigationMenu', () => {
     wrapper = shallowMount(TutorialsNavigationMenu, { propsData, slots });
   });
 
-  it('renders renders a collapsed class', () => {
+  it('renders renders a collapsed class', async () => {
     expect(wrapper.classes('collapsed')).toBe(true);
-    wrapper.setProps({ collapsed: false });
+    await wrapper.setProps({ collapsed: false });
     expect(wrapper.classes('collapsed')).toBeFalsy();
   });
 

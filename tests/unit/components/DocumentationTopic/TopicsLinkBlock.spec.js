@@ -100,9 +100,9 @@ describe('TopicsLinkBlock', () => {
     expect(link.text()).toBe(propsData.topic.title);
   });
 
-  it('renders a normal anchor for external links', () => {
+  it('renders a normal anchor for external links', async () => {
     // links have less properties
-    wrapper.setProps({
+    await wrapper.setProps({
       topic: {
         title: 'Foobarbaz',
         identifier: 'doc://com.example.documentation/foo/bar/baz',
@@ -133,16 +133,16 @@ describe('TopicsLinkBlock', () => {
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
-  it('renders a `WordBreak` using <code> tag for link text to symbols', () => {
-    wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
+  it('renders a `WordBreak` using <code> tag for link text to symbols', async () => {
+    await wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
     const wordBreak = wrapper.findComponent('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
-  it('renders a `WordBreak` using <span> tag for Framework name links in Topic that have role collection', () => {
-    wrapper.setProps({
+  it('renders a `WordBreak` using <span> tag for Framework name links in Topic that have role collection', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         role: TopicRole.collection,
@@ -155,8 +155,8 @@ describe('TopicsLinkBlock', () => {
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
-  it('renders a `WordBreak` using <span> tag for property list links in Topic, which have role dictionarySymbol', () => {
-    wrapper.setProps({
+  it('renders a `WordBreak` using <span> tag for property list links in Topic, which have role dictionarySymbol', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         role: TopicRole.dictionarySymbol,
@@ -169,23 +169,23 @@ describe('TopicsLinkBlock', () => {
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
-  it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection or dictionarySymbol', () => {
-    wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
+  it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection or dictionarySymbol', async () => {
+    await wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
     const wordBreak = wrapper.findComponent('.link').find(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe(propsData.topic.title);
   });
 
-  it('renders a `WordBreak` using <code> tag for links with a titleStyle == title and no ideTitle', () => {
-    wrapper.setProps({ topic: { ...propsData.topic, titleStyle: 'title' } });
+  it('renders a `WordBreak` using <code> tag for links with a titleStyle == title and no ideTitle', async () => {
+    await wrapper.setProps({ topic: { ...propsData.topic, titleStyle: 'title' } });
     const wordBreak = wrapper.findComponent('.link').find(WordBreak);
 
     expect(wordBreak.attributes('tag')).toEqual('code');
   });
 
-  it('renders a `WordBreak` using <span> tag for links with a titleStyle == title and an ideTitle', () => {
-    wrapper.setProps({
+  it('renders a `WordBreak` using <span> tag for links with a titleStyle == title and an ideTitle', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         kind: TopicKind.symbol, // enforce a symbol kind
@@ -198,8 +198,8 @@ describe('TopicsLinkBlock', () => {
     expect(wordBreak.attributes('tag')).toEqual('span');
   });
 
-  it('renders a `WordBreak` using <span> tag for links with no titleStyle but have an ideTitle', () => {
-    wrapper.setProps({
+  it('renders a `WordBreak` using <span> tag for links with no titleStyle but have an ideTitle', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         ideTitle: 'Some title',
@@ -214,8 +214,8 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.findComponent('.link .visuallyhidden').exists()).toBe(false);
   });
 
-  it('does not render an abstract container if none of its elements are to be rendered', () => {
-    wrapper.setProps({
+  it('does not render an abstract container if none of its elements are to be rendered', async () => {
+    await wrapper.setProps({
       topic: {
         title: 'Foobarbaz',
         url: '/foo/bar/baz',
@@ -250,8 +250,8 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.classes()).toContain(multipleLinesClass);
   });
 
-  it('does not render an abstract container if the abstract is empty', () => {
-    wrapper.setProps({
+  it('does not render an abstract container if the abstract is empty', async () => {
+    await wrapper.setProps({
       topic: {
         title: 'Foobarbaz',
         url: '/foo/bar/baz',
@@ -272,46 +272,46 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.findComponent('.has-adjacent-elements').exists()).toBe(true);
   });
 
-  it('does not render a `ContentNode` without an abstract', () => {
-    wrapper.setProps({ topic: { ...propsData.topic, abstract: undefined } });
+  it('does not render a `ContentNode` without an abstract', async () => {
+    await wrapper.setProps({ topic: { ...propsData.topic, abstract: undefined } });
     expect(wrapper.contains(ContentNode)).toBe(false);
   });
 
-  it('renders a deprecated badge when the topic is deprecated', () => {
+  it('renders a deprecated badge when the topic is deprecated', async () => {
     expect(wrapper.contains(Badge)).toBe(false);
-    wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
+    await wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
   });
 
-  it('does not render a deprecated badge when the symbol is deprecated', () => {
-    wrapper.setProps({ isSymbolDeprecated: true });
+  it('does not render a deprecated badge when the symbol is deprecated', async () => {
+    await wrapper.setProps({ isSymbolDeprecated: true });
     expect(wrapper.contains(Badge)).toBe(false);
-    wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
+    await wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
     expect(wrapper.contains(Badge)).toBe(false);
   });
 
-  it('strikesthrough the text if the topic is deprecated', () => {
+  it('strikesthrough the text if the topic is deprecated', async () => {
     expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
-    wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
+    await wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
     expect(wrapper.findComponent('.link').classes('deprecated')).toBe(true);
   });
 
-  it('does not strikethrough the text if the parent symbol is deprecated', () => {
+  it('does not strikethrough the text if the parent symbol is deprecated', async () => {
     expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
-    wrapper.setProps({ isSymbolDeprecated: true, deprecated: true });
+    await wrapper.setProps({ isSymbolDeprecated: true, deprecated: true });
     expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
   });
 
-  it('renders a beta badge when the topic is in beta', () => {
-    wrapper.setProps({ topic: { ...propsData.topic, beta: true } });
+  it('renders a beta badge when the topic is in beta', async () => {
+    await wrapper.setProps({ topic: { ...propsData.topic, beta: true } });
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('beta');
   });
 
-  it('does not render a beta badge if the topic is deprecated', () => {
-    wrapper.setProps({ topic: { ...propsData.topic, deprecated: true, beta: true } });
+  it('does not render a beta badge if the topic is deprecated', async () => {
+    await wrapper.setProps({ topic: { ...propsData.topic, deprecated: true, beta: true } });
     expect(wrapper.findAll(Badge).length).toBe(1);
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
-    wrapper.setProps({
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         deprecated: true,
@@ -323,8 +323,8 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
   });
 
-  it('renders a beta badge when the topic is in beta and the symbol is deprecated', () => {
-    wrapper.setProps({
+  it('renders a beta badge when the topic is in beta and the symbol is deprecated', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         deprecated: false,
@@ -336,8 +336,8 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('beta');
   });
 
-  it('renders current topic badges', () => {
-    wrapper.setProps({
+  it('renders current topic badges', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         tags: currentTopicTags,
@@ -349,8 +349,8 @@ describe('TopicsLinkBlock', () => {
     expect(badges.at(0).text()).toBe('Custom');
   });
 
-  it('does not provide slot content, if badge has no text', () => {
-    wrapper.setProps({
+  it('does not provide slot content, if badge has no text', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         tags: [{
@@ -364,8 +364,8 @@ describe('TopicsLinkBlock', () => {
     expect(badges.at(0).text()).toBe('');
   });
 
-  it('renders current topic badges alongside beta/deprecated badges. Badges coming after others.', () => {
-    wrapper.setProps({
+  it('renders current topic badges alongside beta/deprecated badges. Badges coming after others.', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         tags: currentTopicTags,
@@ -378,7 +378,7 @@ describe('TopicsLinkBlock', () => {
     expect(badges.at(1).attributes('variant')).toBe('custom');
   });
 
-  it('renders a `DecoratedTopicTitle` when a topic has `fragments`', () => {
+  it('renders a `DecoratedTopicTitle` when a topic has `fragments`', async () => {
     const fragments = [
       {
         kind: TokenKind.keyword,
@@ -389,7 +389,7 @@ describe('TopicsLinkBlock', () => {
         text: 'Foo',
       },
     ];
-    wrapper.setProps({
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         fragments,
@@ -402,19 +402,21 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.contains(WordBreak)).toBe(false);
   });
 
-  it('renders the text as strikethrough if the topic is deprecated but deprecated symbol is false', () => {
+  it('renders the text as strikethrough if the topic is deprecated but deprecated symbol is false', async () => {
     expect(wrapper.findComponent('.link').classes('deprecated')).toBe(false);
-    wrapper.setProps({
+    await wrapper.setProps({
       isSymbolDeprecated: false,
       topic: { ...propsData.topic, deprecated: true },
     });
     expect(wrapper.findComponent('.link').classes('deprecated')).toBe(true);
   });
 
-  it('renders a `RequirementMetadata` with defaultImplementations > 0', () => {
+  it('renders a `RequirementMetadata` with defaultImplementations > 0', async () => {
     let node = wrapper.findComponent(RequirementMetadata);
     expect(node.exists()).toBe(false);
-    wrapper.setProps({ topic: { ...propsData.topic, defaultImplementations: 1, required: true } });
+    await wrapper.setProps(
+      { topic: { ...propsData.topic, defaultImplementations: 1, required: true } }
+    );
     node = wrapper.findComponent(RequirementMetadata);
     expect(node.exists()).toBe(true);
     expect(node.attributes('defaultimplementationscount')).toEqual('1');
@@ -424,8 +426,8 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.findComponent('.topic-keyinfo').exists()).toBe(false);
   });
 
-  it('renders the plist key name', () => {
-    wrapper.setProps({
+  it('renders the plist key name', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         ideTitle: 'IDE Title',
@@ -437,8 +439,8 @@ describe('TopicsLinkBlock', () => {
     expect(wrapper.findComponent('.topic-keyinfo').text()).toEqual('Key: some.symbol.thing');
   });
 
-  it('renders the plist key ideTitle', () => {
-    wrapper.setProps({
+  it('renders the plist key ideTitle', async () => {
+    await wrapper.setProps({
       topic: {
         ...propsData.topic,
         ideTitle: 'IDE Title',
