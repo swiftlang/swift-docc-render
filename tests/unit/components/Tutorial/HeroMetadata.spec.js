@@ -31,14 +31,14 @@ describe('HeroMetadata', () => {
   it('renders a div.metadata wrapper', () => {
     const wrapper = mountWithProps();
 
-    const content = wrapper.find('div.metadata');
+    const content = wrapper.findComponent('div.metadata');
     expect(content.exists()).toBe(true);
   });
 
   it('does not render any items if there are no props', () => {
     const wrapper = mountWithProps({});
 
-    const item = wrapper.find('div.metadata div.item');
+    const item = wrapper.findComponent('div.metadata div.item');
     expect(item.exists()).toBe(false);
   });
 
@@ -51,7 +51,7 @@ describe('HeroMetadata', () => {
 
     expect(wrapper.contains(DownloadIcon)).toBe(true);
 
-    const anchor = wrapper.find('div.metadata div.item div.content a.project-download');
+    const anchor = wrapper.findComponent('div.metadata div.item div.content a.project-download');
     expect(anchor.attributes('href')).toBe(projectFilesUrl);
   });
 
@@ -62,7 +62,7 @@ describe('HeroMetadata', () => {
       estimatedTimeInMinutes,
     });
 
-    const durationDiv = wrapper.find('div.metadata div.item div.content div.duration');
+    const durationDiv = wrapper.findComponent('div.metadata div.item div.content div.duration');
     expect(durationDiv.exists()).toBe(true);
     expect(durationDiv.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*tutorials\\.time\\.minutes\\.short`));
   });

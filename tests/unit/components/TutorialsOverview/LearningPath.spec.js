@@ -54,7 +54,7 @@ describe('LearningPath', () => {
   });
 
   it('renders a TutorialsNavigation if in Web mode', () => {
-    const navigation = wrapper.find(TutorialsNavigation);
+    const navigation = wrapper.findComponent(TutorialsNavigation);
     expect(navigation.exists()).toBe(true);
     expect(navigation.props('sections')).toEqual(propsData.sections);
     expect(navigation.attributes('aria-label')).toBe('sections.on-this-page');
@@ -65,11 +65,11 @@ describe('LearningPath', () => {
       propsData,
       provide: { isTargetIDE: true },
     });
-    expect(wrapper.find(TutorialsNavigation).exists()).toBe(false);
+    expect(wrapper.findComponent(TutorialsNavigation).exists()).toBe(false);
   });
 
   it('renders a main container with primary/secondary content containers', () => {
-    const main = wrapper.find('.main-container');
+    const main = wrapper.findComponent('.main-container');
     expect(main.exists()).toBe(true);
 
     expect(main.contains('.secondary-content-container')).toBe(true);
@@ -87,7 +87,7 @@ describe('LearningPath', () => {
 
   it('renders a `Volume` section', () => {
     const { kind, ...volumeProps } = propsData.sections[0];
-    const volume = wrapper.find(Volume);
+    const volume = wrapper.findComponent(Volume);
     expect(volume.exists()).toBe(true);
     expect(volume.props('chapters')).toEqual(volumeProps.chapters);
     expect(volume.props('content')).toEqual(volumeProps.content);
@@ -97,13 +97,13 @@ describe('LearningPath', () => {
 
   it('renders a `Resources` section', () => {
     const { kind, ...resourcesProps } = propsData.sections[1];
-    const resources = wrapper.find(Resources);
+    const resources = wrapper.findComponent(Resources);
     expect(resources.exists()).toBe(true);
     expect(resources.props()).toEqual(resourcesProps);
   });
 
   it('wraps sections in a container (to group for border selectors)', () => {
-    const container = wrapper.find('.content-sections-container');
+    const container = wrapper.findComponent('.content-sections-container');
     expect(container.exists()).toBe(true);
     expect(container.findAll(Volume).length).toBe(1);
     expect(container.findAll(Resources).length).toBe(1);

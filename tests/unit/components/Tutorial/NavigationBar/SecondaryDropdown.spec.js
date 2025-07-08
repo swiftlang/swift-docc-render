@@ -85,13 +85,13 @@ describe('SecondaryDropdown', () => {
       stubs: { 'router-link': RouterLinkStub },
       attachToDocument: true,
     });
-    btn = wrapper.find('.form-dropdown-toggle');
+    btn = wrapper.findComponent('.form-dropdown-toggle');
     optionElements = wrapper.findAll(`.${OptionClass}`);
     firstLink = optionElements.at(0);
   });
 
   it('renders a `DropdownCustom` at the root', () => {
-    const node = wrapper.find(DropdownCustom);
+    const node = wrapper.findComponent(DropdownCustom);
     expect(node.exists()).toBe(true);
     expect(node.props()).toEqual({
       isSmall: true,
@@ -108,7 +108,7 @@ describe('SecondaryDropdown', () => {
   });
 
   it('renders a "ul" element as the options dropdown', () => {
-    const node = wrapper.find('ul.options');
+    const node = wrapper.findComponent('ul.options');
     expect(node.exists()).toBe(true);
     expect(node.classes()).toContain('form-dropdown-content');
     expect(node.attributes('role')).toBe('listbox');
@@ -118,12 +118,12 @@ describe('SecondaryDropdown', () => {
     btn.trigger('click');
 
     expect(btn.attributes('aria-expanded')).toBe('true');
-    const optionsDropdown = wrapper.find('ul.options');
+    const optionsDropdown = wrapper.findComponent('ul.options');
     expect(optionsDropdown.exists()).toBe(true);
   });
 
   it('renders a "li" element as the option', () => {
-    const option = wrapper.find('li');
+    const option = wrapper.findComponent('li');
     expect(option.classes()).toContain(OptionClass);
     const noneSelectedOption = wrapper.findAll(`.${OptionClass}`).at(1);
     const attrs = noneSelectedOption.attributes();
@@ -131,14 +131,14 @@ describe('SecondaryDropdown', () => {
     expect(attrs).not.toHaveProperty('aria-selected');
     expect(attrs).not.toHaveProperty('aria-current');
     // ensure we pass the query and path to the `li` which is a `router-link`
-    expect(wrapper.find(RouterLinkStub).props('to')).toEqual({
+    expect(wrapper.findComponent(RouterLinkStub).props('to')).toEqual({
       path: options[0].path,
       query,
     });
   });
 
   it('makes the currently visible section option "active" inside the dropdown', () => {
-    const activeOption = wrapper.find(`.${ActiveOptionClass}`);
+    const activeOption = wrapper.findComponent(`.${ActiveOptionClass}`);
     expect(activeOption.text()).toEqual(currentOption);
     const attrs = activeOption.attributes();
     expect(attrs).toHaveProperty('aria-selected', 'true');

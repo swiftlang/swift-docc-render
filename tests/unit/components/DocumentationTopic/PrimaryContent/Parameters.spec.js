@@ -51,14 +51,14 @@ describe('Parameters', () => {
   });
 
   it('renders an h2 with "Parameters"', () => {
-    const h2 = wrapper.find(LinkableHeading);
+    const h2 = wrapper.findComponent(LinkableHeading);
     expect(h2.exists()).toBe(true);
     expect(h2.props('level')).toBe(2);
     expect(h2.text()).toContain('sections.parameters');
   });
 
   it('renders a <dl>', () => {
-    const dl = wrapper.find('dl');
+    const dl = wrapper.findComponent('dl');
     expect(dl.exists()).toBe(true);
   });
 

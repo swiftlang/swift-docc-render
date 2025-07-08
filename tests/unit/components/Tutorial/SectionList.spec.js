@@ -97,7 +97,7 @@ describe('SectionList', () => {
 
   describe('when a `Section` emits a "runtime-preview-toggle" event', () => {
     beforeEach(() => {
-      wrapper.find(Section).vm.$emit('runtime-preview-toggle', false);
+      wrapper.findComponent(Section).vm.$emit('runtime-preview-toggle', false);
     });
 
     it('updates the `isRuntimePreviewVisible` prop of all the `Section`s', () => {

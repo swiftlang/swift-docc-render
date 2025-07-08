@@ -56,14 +56,14 @@ describe('HierarchyCollapsedItems', () => {
   });
 
   it('renders a non-focused button', () => {
-    const btn = wrapper.find('button.toggle');
+    const btn = wrapper.findComponent('button.toggle');
     expect(btn.exists()).toBe(true);
     expect(btn.classes('focused')).toBe(false);
     expect(btn.find('.indicator .icon-inline').is(EllipsisIcon)).toBe(true);
   });
 
   it('renders a collapsed dropdown', () => {
-    const dropdown = wrapper.find('ul.dropdown');
+    const dropdown = wrapper.findComponent('ul.dropdown');
     expect(dropdown.exists()).toBe(true);
     expect(dropdown.classes('collapsed')).toBe(true);
 
@@ -80,7 +80,7 @@ describe('HierarchyCollapsedItems', () => {
     let toggle;
 
     beforeEach(() => {
-      toggle = wrapper.find('.toggle');
+      toggle = wrapper.findComponent('.toggle');
       toggle.trigger('click');
     });
 
@@ -89,7 +89,7 @@ describe('HierarchyCollapsedItems', () => {
     });
 
     it('uncollapses the dropdown when the toggle is clicked', () => {
-      expect(wrapper.find('.dropdown').classes('collapsed')).toBe(false);
+      expect(wrapper.findComponent('.dropdown').classes('collapsed')).toBe(false);
     });
   });
 

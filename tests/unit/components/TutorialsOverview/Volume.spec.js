@@ -108,7 +108,7 @@ describe('Volume', () => {
   });
 
   it('renders an VolumeName', () => {
-    const title = wrapper.find(VolumeName);
+    const title = wrapper.findComponent(VolumeName);
     expect(title.exists()).toBe(true);
     expect(title.props('name')).toBe('FooBar');
     expect(title.props('content')).toEqual(propsData.content);
@@ -142,7 +142,7 @@ describe('Volume', () => {
 
   it('renders a volume without a name', () => {
     wrapper.setProps({ name: undefined });
-    expect(wrapper.find(VolumeName).exists()).toBe(false);
-    expect(wrapper.find(Chapter).props('volumeHasName')).toBe(false);
+    expect(wrapper.findComponent(VolumeName).exists()).toBe(false);
+    expect(wrapper.findComponent(Chapter).props('volumeHasName')).toBe(false);
   });
 });

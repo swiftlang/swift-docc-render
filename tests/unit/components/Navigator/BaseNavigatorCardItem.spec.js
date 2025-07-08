@@ -40,8 +40,8 @@ describe('BaseNavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find('.depth-spacer').exists()).toBe(true);
-    expect(wrapper.find('.depth-spacer-slot').exists()).toBe(true);
+    expect(wrapper.findComponent('.depth-spacer').exists()).toBe(true);
+    expect(wrapper.findComponent('.depth-spacer-slot').exists()).toBe(true);
   });
 
   it('renders a slot for navigator-icon', () => {
@@ -51,8 +51,8 @@ describe('BaseNavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find('.navigator-icon-wrapper').exists()).toBe(true);
-    expect(wrapper.find('.navigator-icon-slot').exists()).toBe(true);
+    expect(wrapper.findComponent('.navigator-icon-wrapper').exists()).toBe(true);
+    expect(wrapper.findComponent('.navigator-icon-slot').exists()).toBe(true);
   });
 
   it('does not renders a slot for navigator-icon if hideNavigatorIcon is true', () => {
@@ -65,8 +65,8 @@ describe('BaseNavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find('.navigator-icon-wrapper').exists()).toBe(false);
-    expect(wrapper.find('.navigator-icon-slot').exists()).toBe(false);
+    expect(wrapper.findComponent('.navigator-icon-wrapper').exists()).toBe(false);
+    expect(wrapper.findComponent('.navigator-icon-slot').exists()).toBe(false);
   });
 
   it('renders a slot for title-container', () => {
@@ -76,8 +76,8 @@ describe('BaseNavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find('.title-container').exists()).toBe(true);
-    expect(wrapper.find('.title-container-slot').exists()).toBe(true);
+    expect(wrapper.findComponent('.title-container').exists()).toBe(true);
+    expect(wrapper.findComponent('.title-container-slot').exists()).toBe(true);
   });
 
   it('renders a slot for content-container', () => {
@@ -87,7 +87,7 @@ describe('BaseNavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find('.content-container').exists()).toBe(true);
-    expect(wrapper.find('.content-container-slot').exists()).toBe(true);
+    expect(wrapper.findComponent('.content-container').exists()).toBe(true);
+    expect(wrapper.findComponent('.content-container-slot').exists()).toBe(true);
   });
 });

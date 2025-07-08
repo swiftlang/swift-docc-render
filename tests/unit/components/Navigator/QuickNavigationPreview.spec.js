@@ -45,7 +45,7 @@ describe('QuickNavigationPreview', () => {
     });
     expect(wrapper.contains('.loading')).toBe(false);
     expect(wrapper.contains('.unavailable')).toBe(false);
-    const topic = wrapper.find(DocumentationTopic);
+    const topic = wrapper.findComponent(DocumentationTopic);
     expect(topic.exists()).toBe(true);
     expect(topic.props('enableMinimized')).toBe(true);
     expect(topic.props('title')).toBe(json.metadata.title);
@@ -82,7 +82,7 @@ describe('QuickNavigationPreview', () => {
     expect(wrapper.contains(DocumentationTopic)).toBe(false);
     expect(wrapper.contains('.loading')).toBe(false);
 
-    const unavailable = wrapper.find('.unavailable p');
+    const unavailable = wrapper.findComponent('.unavailable p');
     expect(unavailable.text()).toBe('quicknav.preview-unavailable');
   });
 
@@ -91,7 +91,7 @@ describe('QuickNavigationPreview', () => {
     expect(wrapper.contains(DocumentationTopic)).toBe(false);
     expect(wrapper.contains('.unavailable')).toBe(false);
 
-    const loading = wrapper.find('.loading');
+    const loading = wrapper.findComponent('.loading');
     expect(loading.exists()).toBe(true);
     const rows = loading.findAll('.loading-row');
     expect(rows.length).toBe(3);
@@ -136,7 +136,7 @@ describe('QuickNavigationPreview', () => {
         json,
         state: PreviewState.success,
       });
-      const topic = wrapper.find(DocumentationTopic);
+      const topic = wrapper.findComponent(DocumentationTopic);
       expect(topic.exists()).toBe(true);
       expect(topic.props('enableMinimized')).toBe(true);
       expect(topic.props('title')).toBe(json.metadata.title);
