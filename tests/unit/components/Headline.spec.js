@@ -58,7 +58,7 @@ describe('Headline', () => {
 
     expect(wrapper.findComponent('.test').text()).toBe('Test Title');
 
-    expect(wrapper.contains('.eyebrow')).toBe(false);
+    expect(wrapper.find('.eyebrow').exists()).toBe(false);
   });
 
   it('renders a `Heading` with slot and eyebrow content', () => {

@@ -24,6 +24,6 @@ describe('Body', () => {
 
   it('renders a `BodyContent`', () => {
     const { BodyContent } = Body.components;
-    expect(wrapper.contains(BodyContent)).toBe(true);
+    expect(wrapper.findComponent(BodyContent).exists()).toBe(true);
   });
 });

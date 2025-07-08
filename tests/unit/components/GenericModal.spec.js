@@ -68,7 +68,7 @@ describe('GenericModal', () => {
     const portalSource = wrapper.findComponent(Portal);
     expect(portalSource.exists()).toBe(true);
     expect(portalSource.attributes()).toHaveProperty('to', 'modal-destination');
-    expect(portalSource.contains('.generic-modal')).toBeTruthy();
+    expect(portalSource.find('.generic-modal').exists()).toBeTruthy();
   });
 
   it('renders the GenericModal hidden by default', () => {

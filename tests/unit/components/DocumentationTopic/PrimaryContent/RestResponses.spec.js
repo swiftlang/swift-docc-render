@@ -122,8 +122,8 @@ describe('RestResponses', () => {
     it('to the `param-symbol` if content or reason is provided', () => {
       const wrapper = mountComponent();
 
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType)).toBe(true);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists()).toBe(true);
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
 
       expect(
@@ -152,8 +152,8 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType)).toBe(true);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists()).toBe(true);
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
 
@@ -178,8 +178,8 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType)).toBe(true);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists()).toBe(true);
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
 
@@ -201,9 +201,9 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(false);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(true);
 
       expect(
@@ -232,9 +232,9 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(true);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
   });

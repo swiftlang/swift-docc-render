@@ -47,7 +47,7 @@ describe('DeclarationToken', () => {
     const link = wrapper.findComponent(LinkableToken);
     expect(link.exists()).toBe(true);
     expect(link.props()).toEqual({ identifier: propsData.identifier });
-    expect(link.contains(WordBreak)).toBe(true);
+    expect(link.findComponent(WordBreak).exists()).toBe(true);
     expect(link.text()).toBe(propsData.text);
     expect(link.classes()).toContain('type-identifier-link');
   });
@@ -121,7 +121,7 @@ describe('DeclarationToken', () => {
     const link = wrapper.findComponent(LinkableToken);
     expect(link.exists()).toBe(true);
     expect(link.props()).toEqual({ identifier: propsData.identifier });
-    expect(link.contains(WordBreak)).toBe(true);
+    expect(link.findComponent(WordBreak).exists()).toBe(true);
     expect(link.text()).toBe(propsData.text);
     expect(link.classes()).toContain('attribute-link');
   });

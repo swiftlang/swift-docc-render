@@ -123,7 +123,7 @@ describe('SectionSteps', () => {
 
   it('renders a div.steps with a .content-container and .asset-container', () => {
     expect(wrapper.is('div.steps')).toBe(true);
-    expect(wrapper.contains('div.content-container')).toBe(true);
+    expect(wrapper.find('div.content-container').exists()).toBe(true);
 
     const backgroundTheme = wrapper.findComponent(BackgroundTheme);
     expect(backgroundTheme.exists()).toBe(true);
@@ -412,7 +412,7 @@ describe('SectionSteps', () => {
     });
 
     it('adds the "ide" class to the asset container', () => {
-      expect(wrapper.contains('.asset-container.ide')).toBe(true);
+      expect(wrapper.find('.asset-container.ide').exists()).toBe(true);
     });
   });
 

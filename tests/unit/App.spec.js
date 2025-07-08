@@ -233,10 +233,10 @@ describe('App', () => {
 
   it('renders a default `Footer` for non-IDE targets', async () => {
     const wrapper = createWrapper();
-    expect(wrapper.contains(Footer)).toBe(true);
+    expect(wrapper.findComponent(Footer).exists()).toBe(true);
 
     await wrapper.setData({ isTargetIDE: true });
-    expect(wrapper.contains(Footer)).toBe(false);
+    expect(wrapper.findComponent(Footer).exists()).toBe(false);
   });
 
   it('renders the app-top element', () => {

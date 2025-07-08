@@ -211,7 +211,7 @@ describe('Tutorial', () => {
   });
 
   it('renders a `BreakpointEmitter`', () => {
-    expect(wrapper.contains(BreakpointEmitter)).toBe(true);
+    expect(wrapper.findComponent(BreakpointEmitter).exists()).toBe(true);
   });
 
   it('provides a page title using the hero section title', () => {

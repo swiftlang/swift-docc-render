@@ -42,7 +42,7 @@ describe('LinkableElement', () => {
   });
 
   it('renders slot content', () => {
-    expect(wrapper.contains('p'));
+    expect(wrapper.find('p').exists());
     expect(wrapper.text()).toBe('bar');
   });
 

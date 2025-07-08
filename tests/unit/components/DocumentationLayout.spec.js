@@ -524,7 +524,7 @@ describe('DocumentationLayout', () => {
 
     it('does not render a `Nav`', () => {
       wrapper = createWrapper({ provide: provideWithIDETarget });
-      expect(wrapper.contains(Nav)).toBe(false);
+      expect(wrapper.findComponent(Nav).exists()).toBe(false);
     });
 
     it('does not render a sidebar', () => {

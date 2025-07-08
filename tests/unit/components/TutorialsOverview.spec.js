@@ -91,7 +91,7 @@ describe('TutorialsOverview', () => {
       propsData,
       provide: { isTargetIDE: true },
     });
-    expect(wrapper.contains(Nav)).toBe(false);
+    expect(wrapper.findComponent(Nav).exists()).toBe(false);
   });
 
   it('renders a `Hero`', () => {

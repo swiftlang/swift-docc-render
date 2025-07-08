@@ -111,7 +111,7 @@ describe('TopicsLinkBlock', () => {
       },
     });
 
-    expect(wrapper.contains(RouterLinkStub)).toBe(false);
+    expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
     expect(wrapper.findComponent(TopicLinkBlockIcon).exists()).toBe(false);
 
     const link = wrapper.findComponent('a.link');
@@ -274,20 +274,20 @@ describe('TopicsLinkBlock', () => {
 
   it('does not render a `ContentNode` without an abstract', async () => {
     await wrapper.setProps({ topic: { ...propsData.topic, abstract: undefined } });
-    expect(wrapper.contains(ContentNode)).toBe(false);
+    expect(wrapper.findComponent(ContentNode).exists()).toBe(false);
   });
 
   it('renders a deprecated badge when the topic is deprecated', async () => {
-    expect(wrapper.contains(Badge)).toBe(false);
+    expect(wrapper.findComponent(Badge).exists()).toBe(false);
     await wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
   });
 
   it('does not render a deprecated badge when the symbol is deprecated', async () => {
     await wrapper.setProps({ isSymbolDeprecated: true });
-    expect(wrapper.contains(Badge)).toBe(false);
+    expect(wrapper.findComponent(Badge).exists()).toBe(false);
     await wrapper.setProps({ topic: { ...propsData.topic, deprecated: true } });
-    expect(wrapper.contains(Badge)).toBe(false);
+    expect(wrapper.findComponent(Badge).exists()).toBe(false);
   });
 
   it('strikesthrough the text if the topic is deprecated', async () => {
@@ -399,7 +399,7 @@ describe('TopicsLinkBlock', () => {
     const decoratedTitle = wrapper.findComponent('.link').find(DecoratedTopicTitle);
     expect(decoratedTitle.exists()).toBe(true);
     expect(decoratedTitle.props('tokens')).toEqual(fragments);
-    expect(wrapper.contains(WordBreak)).toBe(false);
+    expect(wrapper.findComponent(WordBreak).exists()).toBe(false);
   });
 
   it('renders the text as strikethrough if the topic is deprecated but deprecated symbol is false', async () => {

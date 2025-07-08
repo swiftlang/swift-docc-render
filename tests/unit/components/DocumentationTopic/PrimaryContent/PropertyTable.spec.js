@@ -201,9 +201,9 @@ describe('PropertyTable', () => {
   describe('displays the `type` in proper place', () => {
     it('in the `param-symbol` if `content` exists', () => {
       const wrapper = mountComponent();
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(true);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
 
@@ -221,9 +221,9 @@ describe('PropertyTable', () => {
         },
       });
 
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(false);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(true);
     });
 
@@ -241,9 +241,9 @@ describe('PropertyTable', () => {
         },
       });
 
-      expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(true);
-      expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
   });

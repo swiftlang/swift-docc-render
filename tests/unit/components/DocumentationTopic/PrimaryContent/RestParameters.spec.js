@@ -75,7 +75,7 @@ describe('RestParameters', () => {
   it('displays the parameters information', () => {
     const wrapper = mountComponent();
     const paramName = wrapper.findComponent('.param-name');
-    expect(paramName.contains(WordBreak)).toBe(true);
+    expect(paramName.findComponent(WordBreak).exists()).toBe(true);
     expect(paramName.text()).toBe('name');
     expect(wrapper.findComponent('.param-required').exists()).toBe(false);
     expect(wrapper.findComponent('.property-type').text()).toBe('Foo');
@@ -109,7 +109,7 @@ describe('RestParameters', () => {
 
   it('renders type information using `PossiblyChangedType`', () => {
     const wrapper = mountComponent();
-    expect(wrapper.findComponent('.param-content').contains('.param-type'));
+    expect(wrapper.findComponent('.param-content').find('.param-type').exists());
 
     const tokensGroup = wrapper.findComponent(PossiblyChangedType);
     expect(tokensGroup.props('type')).toBe(propsData.parameters[0].type);
@@ -130,8 +130,8 @@ describe('RestParameters', () => {
         parameters,
       },
     });
-    expect(wrapper.findComponent('.param-symbol').contains(PossiblyChangedType)).toBe(false);
-    expect(wrapper.findComponent('.param-content').contains(PossiblyChangedType)).toBe(true);
+    expect(wrapper.findComponent('.param-symbol').findComponent(PossiblyChangedType).exists()).toBe(false);
+    expect(wrapper.findComponent('.param-content').findComponent(PossiblyChangedType).exists()).toBe(true);
   });
 
   it('renders the `PossiblyChangedType` ih the `param-symbol` if no `content` and no `name` provided', () => {
@@ -148,8 +148,8 @@ describe('RestParameters', () => {
         parameters,
       },
     });
-    expect(wrapper.findComponent('.param-symbol').contains(PossiblyChangedType)).toBe(true);
-    expect(wrapper.findComponent('.param-content').contains(PossiblyChangedType)).toBe(false);
+    expect(wrapper.findComponent('.param-symbol').findComponent(PossiblyChangedType).exists()).toBe(true);
+    expect(wrapper.findComponent('.param-content').findComponent(PossiblyChangedType).exists()).toBe(false);
   });
 
   it('displays the parameters as required', () => {
