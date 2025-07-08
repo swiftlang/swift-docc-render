@@ -82,8 +82,8 @@ describe('DocumentationNav', () => {
     expect(nav.props()).toHaveProperty('isWideFormat', true);
   });
 
-  it('accepts an isDark prop', () => {
-    wrapper.setProps({
+  it('accepts an isDark prop', async () => {
+    await wrapper.setProps({
       isDark: true,
     });
     const nav = wrapper.findComponent(NavBase);
@@ -121,8 +121,8 @@ describe('DocumentationNav', () => {
     expect(wrapper.findComponent(NavBase).props()).toHaveProperty('showActions', false);
   });
 
-  it('accepts a hasNoBorder prop', () => {
-    wrapper.setProps({
+  it('accepts a hasNoBorder prop', async () => {
+    await wrapper.setProps({
       hasNoBorder: true,
     });
     const nav = wrapper.findComponent(NavBase);
@@ -155,9 +155,9 @@ describe('DocumentationNav', () => {
     });
   });
 
-  it('does not render a `LanguageToggle` when there is no swift nor objc path', () => {
+  it('does not render a `LanguageToggle` when there is no swift nor objc path', async () => {
     expect(wrapper.contains(LanguageToggle)).toBe(true);
-    wrapper.setProps({ swiftPath: null, objcPath: null });
+    await wrapper.setProps({ swiftPath: null, objcPath: null });
     expect(wrapper.contains(LanguageToggle)).toBe(false);
   });
 
@@ -237,8 +237,8 @@ describe('DocumentationNav', () => {
     window.Event = backup;
   });
 
-  it('does not render the sidenav toggle if displaySidenav is false', () => {
-    wrapper.setProps({
+  it('does not render the sidenav toggle if displaySidenav is false', async () => {
+    await wrapper.setProps({
       displaySidenav: false,
     });
     expect(wrapper.findComponent(NavBase).props()).toMatchObject({

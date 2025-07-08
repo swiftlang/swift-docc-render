@@ -121,8 +121,8 @@ describe('RelationshipsList', () => {
   });
 
   describe('with 3 or fewer symbols', () => {
-    beforeEach(() => {
-      wrapper.setProps({
+    beforeEach(async () => {
+      await wrapper.setProps({
         symbols: [
           propsData.symbols[0],
           propsData.symbols[1],
@@ -147,8 +147,8 @@ describe('RelationshipsList', () => {
         ],
       };
 
-      beforeEach(() => {
-        wrapper.setProps({
+      beforeEach(async () => {
+        await wrapper.setProps({
           symbols: [
             propsData.symbols[0],
             {
@@ -176,8 +176,10 @@ describe('RelationshipsList', () => {
   });
 
   describe('when a symbol has API Changes', () => {
-    const assertChange = (change, expectedChange, type = propsData.type, relationship = {}) => {
-      wrapper.setProps({ type });
+    const assertChange = async (
+      change, expectedChange, type = propsData.type, relationship = {},
+    ) => {
+      await wrapper.setProps({ type });
 
       store.state.apiChanges = {
         [provide.identifier]: {

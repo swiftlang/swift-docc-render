@@ -203,12 +203,12 @@ describe('GenericModal', () => {
     });
   });
 
-  it('allows rendering fullscreen', () => {
+  it('allows rendering fullscreen', async () => {
     const wrapper = createWrapper({ propsData: { isFullscreen: true } });
     const modal = wrapper.findComponent('.generic-modal');
 
     expect(modal.classes()).toContain('modal-fullscreen');
-    wrapper.setProps({ isFullscreen: false });
+    await wrapper.setProps({ isFullscreen: false });
     expect(modal.classes()).not.toContain('modal-fullscreen');
   });
 
@@ -264,14 +264,14 @@ describe('GenericModal', () => {
   it('locks scrolling on `show`, and unlocks scrolling on `hide`', async () => {
     const wrapper = createWrapper();
     expect(scrollLock.lockScroll).not.toHaveBeenCalled();
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: true,
     });
     await flushPromises();
     expect(scrollLock.lockScroll).toHaveBeenCalledWith(wrapper.vm.$refs.container);
     expect(scrollLock.unlockScroll).not.toHaveBeenCalled();
 
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: false,
     });
     await flushPromises();
@@ -285,7 +285,7 @@ describe('GenericModal', () => {
       },
     });
     // simulate showing the modal
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: true,
     });
 
@@ -295,7 +295,7 @@ describe('GenericModal', () => {
     expect(changeElementVOVisibility.hide).toHaveBeenCalledTimes(1);
     expect(changeElementVOVisibility.hide).toHaveBeenCalledWith(container);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: false,
     });
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
@@ -313,7 +313,7 @@ describe('GenericModal', () => {
     });
 
     button.focus();
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: true,
     });
 
@@ -322,7 +322,7 @@ describe('GenericModal', () => {
     expect(document.activeElement).toEqual(wrapper.findComponent('.close').element);
     expect(wrapper.emitted('open')).toBeTruthy();
 
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: false,
     });
     expect(document.activeElement).toEqual(button);
@@ -341,7 +341,7 @@ describe('GenericModal', () => {
     });
 
     button.focus();
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: true,
     });
 
@@ -350,7 +350,7 @@ describe('GenericModal', () => {
     expect(document.activeElement).toEqual(button);
     expect(wrapper.emitted('open')).toBeTruthy();
 
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: false,
     });
     expect(document.activeElement).toEqual(button);
@@ -380,14 +380,14 @@ describe('GenericModal', () => {
     expect(FocusTrap).toHaveBeenCalledTimes(1);
     expect(FocusTrap).toHaveBeenCalledWith();
     // assert it starts on show
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: true,
     });
     // await the watcher
     await flushPromises();
     expect(mockFocusTrap.start).toHaveBeenCalledTimes(1);
     // assert it stops on hide
-    wrapper.setProps({
+    await wrapper.setProps({
       visible: false,
     });
     expect(mockFocusTrap.stop).toHaveBeenCalledTimes(1);
@@ -396,14 +396,14 @@ describe('GenericModal', () => {
     expect(mockFocusTrap.destroy).toHaveBeenCalledTimes(1);
   });
 
-  it('allows hiding the close button', () => {
+  it('allows hiding the close button', async () => {
     const wrapper = createWrapper({
       propsData: {
         showClose: false,
       },
     });
     expect(wrapper.findComponent('.close').exists()).toBe(false);
-    wrapper.setProps({
+    await wrapper.setProps({
       showClose: true,
     });
     expect(wrapper.findComponent('.close').exists()).toBe(true);

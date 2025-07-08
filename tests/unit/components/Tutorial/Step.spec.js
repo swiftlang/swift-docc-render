@@ -74,14 +74,14 @@ describe('Step', () => {
       expect(wrapper.is('div.step-container')).toBe(true);
     });
 
-    it('adds a `focused` class if `isActive`', () => {
+    it('adds a `focused` class if `isActive`', async () => {
       expect(wrapper.findComponent('.step').classes()).not.toContain('focused');
-      wrapper.setProps({ currentIndex: 0 });
+      await wrapper.setProps({ currentIndex: 0 });
       expect(wrapper.findComponent('.step').classes()).toContain('focused');
     });
 
-    it('adds a data-index property to the `step`', () => {
-      wrapper.setProps({ index: 1 });
+    it('adds a data-index property to the `step`', async () => {
+      await wrapper.setProps({ index: 1 });
       expect(wrapper.findComponent('.step').attributes('data-index')).toBe('1');
     });
 
@@ -116,8 +116,8 @@ describe('Step', () => {
     describe('with a caption', () => {
       const caption = [paragraph('bar')];
 
-      beforeEach(() => {
-        wrapper.setProps({ caption });
+      beforeEach(async () => {
+        await wrapper.setProps({ caption });
       });
 
       it('renders a `ContentNode` for the caption', () => {

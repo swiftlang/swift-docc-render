@@ -64,10 +64,10 @@ describe('DropdownCustom', () => {
     expect(root.classes()).toContain(OpenedClass);
   });
 
-  it('adds an `dropdown-small` class', () => {
+  it('adds an `dropdown-small` class', async () => {
     wrapper = createWrapper();
     expect(wrapper.classes()).not.toContain('dropdown-small');
-    wrapper.setProps({ isSmall: true });
+    await wrapper.setProps({ isSmall: true });
     expect(wrapper.classes()).toContain('dropdown-small');
   });
 

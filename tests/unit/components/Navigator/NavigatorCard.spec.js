@@ -363,7 +363,7 @@ describe('NavigatorCard', () => {
 
   it('renders a Beta badge in the technology title', async () => {
     const wrapper = createWrapper();
-    wrapper.setProps({
+    await wrapper.setProps({
       isTechnologyBeta: true,
     });
     await flushPromises();
@@ -374,7 +374,7 @@ describe('NavigatorCard', () => {
 
   it('adds the "router-link-exact-active" class for case insensitive version of technologyPath', async () => {
     const wrapper = createWrapper();
-    wrapper.setProps({
+    await wrapper.setProps({
       technologyPath: '/documentation/Testkit',
     });
     expect(wrapper.findComponent('.technology-title').classes()).toContain('router-link-exact-active');
@@ -385,7 +385,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(1);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       activePath: [],
     });
     await flushPromises();
@@ -501,7 +501,7 @@ describe('NavigatorCard', () => {
     });
     expect(wrapper.classes()).toContain('filter-on-top');
     expect(wrapper.findComponent(FilterInput).props('positionReversed')).toBe(false);
-    wrapper.setProps({
+    await wrapper.setProps({
       renderFilterOnTop: false,
     });
     await flushPromises();
@@ -1106,7 +1106,7 @@ describe('NavigatorCard', () => {
     // assert only 3 items are now visible
     expect(all).toHaveLength(3);
     // simulate we go to the root
-    wrapper.setProps({
+    await wrapper.setProps({
       activePath: [root0.path],
     });
     await flushPromises();
@@ -1120,7 +1120,7 @@ describe('NavigatorCard', () => {
       isBold: true,
     });
     // simulate we go to a visible sibling
-    wrapper.setProps({
+    await wrapper.setProps({
       activePath: [root0.path, root0Child0.path],
     });
     await flushPromises();
@@ -1133,7 +1133,7 @@ describe('NavigatorCard', () => {
       isBold: true,
     });
     // now navigate to the grandChild, and assert it's parent auto opens
-    wrapper.setProps({
+    await wrapper.setProps({
       activePath: [root0.path, root0Child1.path, root0Child1GrandChild0.path],
     });
     await flushPromises();
@@ -1243,7 +1243,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.findComponent(FilterInput);
     expect(filter.props('tags')).toHaveLength(2);
-    wrapper.setProps({
+    await wrapper.setProps({
       hideAvailableTags: true,
     });
     await flushPromises();
@@ -1443,7 +1443,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     all = wrapper.findAll(NavigatorCardItem);
     expect(all).toHaveLength(2);
-    wrapper.setProps({ apiChanges: null });
+    await wrapper.setProps({ apiChanges: null });
     await flushPromises();
 
     // assert all items are again visible
@@ -1656,7 +1656,7 @@ describe('NavigatorCard', () => {
 
   it('clears the filter if the technology is different', async () => {
     const wrapper = createWrapper();
-    wrapper.setProps({
+    await wrapper.setProps({
       technology: 'newTechnology',
     });
     await flushPromises();
@@ -1763,7 +1763,7 @@ describe('NavigatorCard', () => {
     filter.vm.$emit('input', sampleCode.title);
     await flushPromises();
     expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode]);
-    wrapper.setProps({ apiChanges });
+    await wrapper.setProps({ apiChanges });
     await flushPromises();
     expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode, FILTER_TAGS.modified]);
   });
@@ -1979,7 +1979,7 @@ describe('NavigatorCard', () => {
       // simulate the new item is below the fold
       getChildPositionInScroller.mockReturnValueOnce(1);
       attachDivWithID(root0Child1GrandChild0.uid);
-      wrapper.setProps({
+      await wrapper.setProps({
         activePath: [
           root0.path,
           root0Child1.path,
@@ -2021,7 +2021,7 @@ describe('NavigatorCard', () => {
       getChildPositionInScroller.mockReturnValueOnce(-1);
       // navigate to the top level sibling
       attachDivWithID(root1.uid);
-      wrapper.setProps({
+      await wrapper.setProps({
         activePath: [
           root1.path,
         ],
@@ -2110,7 +2110,7 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(2); // 3-rd item
       // now simulate the router change
-      wrapper.setProps({ activePath: [root0.path, root0Child1.path] });
+      await wrapper.setProps({ activePath: [root0.path, root0Child1.path] });
       await flushPromises();
       // assert its not called again
       expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
@@ -2173,7 +2173,7 @@ describe('NavigatorCard', () => {
       expect(allItems.at(1).props('item')).toEqual(root0Child0);
       expect(allItems.at(1).props('isActive')).toEqual(true);
       // navigate to the second child
-      wrapper.setProps({
+      await wrapper.setProps({
         activePath: [
           root0.path,
           root0Child1.path,
@@ -2189,7 +2189,7 @@ describe('NavigatorCard', () => {
       expect(allItems.at(2).props('item')).toEqual(root0Child1);
       expect(allItems.at(2).props('isActive')).toEqual(true);
       // navigate to the grand child
-      wrapper.setProps({
+      await wrapper.setProps({
         activePath: [
           root0.path,
           root0Child1.path,
@@ -2205,7 +2205,7 @@ describe('NavigatorCard', () => {
       expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
       expect(allItems.at(3).props('isActive')).toEqual(true);
       // navigate to the second child
-      wrapper.setProps({
+      await wrapper.setProps({
         activePath: [
           root0.path,
           root0Child1.path,
@@ -2258,7 +2258,7 @@ describe('NavigatorCard', () => {
         isBold: true,
       });
       // change children
-      wrapper.setProps({
+      await wrapper.setProps({
         children: [
           root0Dupe,
           root0Child0Dupe,
@@ -2269,7 +2269,7 @@ describe('NavigatorCard', () => {
       // simulate its taking time to fetch the items
       await flushPromises();
       // change the activePath later
-      wrapper.setProps({
+      await wrapper.setProps({
         activePath: [
           root0Dupe.path,
           root0Child0Dupe.path,

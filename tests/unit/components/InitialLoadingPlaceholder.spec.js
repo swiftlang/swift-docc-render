@@ -24,7 +24,7 @@ describe('InitialLoadingPlaceholder', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the InitialLoadingPlaceholder', () => {
+  it('renders the InitialLoadingPlaceholder', async () => {
     const wrapper = shallowMount(InitialLoadingPlaceholder, {
       mocks,
     });
@@ -35,10 +35,11 @@ describe('InitialLoadingPlaceholder', () => {
     expect(onReady).toHaveBeenCalledTimes(1);
     // call the registered callback for `onReady`
     onReady.mock.calls[0][0].call();
-    expect(wrapper.html()).toBeFalsy();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.html()).toBe('');
   });
 
-  it('sets the placeholder as ready, even if the router fails to load', () => {
+  it('sets the placeholder as ready, even if the router fails to load', async () => {
     const wrapper = shallowMount(InitialLoadingPlaceholder, {
       mocks,
     });
@@ -46,6 +47,7 @@ describe('InitialLoadingPlaceholder', () => {
     expect(onReady).toHaveBeenCalledTimes(1);
     // call the registered error callback for `onReady`
     onReady.mock.calls[0][1].call();
-    expect(wrapper.html()).toBeFalsy();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.html()).toBe('');
   });
 });

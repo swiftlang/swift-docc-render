@@ -89,8 +89,8 @@ describe('ResourcesTile', () => {
     expect(ref.text()).toBe(propsData.action.title);
   });
 
-  it('renders a `Reference`, from a destination type:reference', () => {
-    wrapper.setProps({
+  it('renders a `Reference`, from a destination type:reference', async () => {
+    await wrapper.setProps({
       action: {
         identifier: 'doc://foo.baz',
         type: 'reference',
@@ -102,15 +102,15 @@ describe('ResourcesTile', () => {
     expect(ref.text()).toBe(fooReference.title);
   });
 
-  it('does not render an icon without a known `identifier`', () => {
+  it('does not render an icon without a known `identifier`', async () => {
     expect(wrapper.findAll('.icon').length).toBe(0);
-    wrapper.setProps({ identifier: 'fakeidentifier' });
+    await wrapper.setProps({ identifier: 'fakeidentifier' });
     expect(wrapper.findAll('.icon').length).toBe(1);
   });
 
-  it('renders preset icons for known `identifier` values', () => {
-    const assertIconForIdentifier = (Icon, identifier) => {
-      wrapper.setProps({ identifier });
+  it('renders preset icons for known `identifier` values', async () => {
+    const assertIconForIdentifier = async (Icon, identifier) => {
+      await wrapper.setProps({ identifier });
       expect(wrapper.findAll('.icon').length).toBe(1);
       expect(wrapper.contains(Icon)).toBe(true);
     };

@@ -138,16 +138,16 @@ describe('LanguageToggle', () => {
     expect(toggle.attributes()).toHaveProperty('style', 'width: 28px;');
   });
 
-  it('does not render the chevron if it has no languages', () => {
-    wrapper.setProps({
+  it('does not render the chevron if it has no languages', async () => {
+    await wrapper.setProps({
       objcPath: '',
       swiftPath: '',
     });
     expect(wrapper.findComponent('.language-toggle-container > .toggle-icon').exists()).toBe(false);
   });
 
-  it('renders a span.nav-menu-toggle-none.current-language with only one variant', () => {
-    wrapper.setProps({ objcPath: undefined });
+  it('renders a span.nav-menu-toggle-none.current-language with only one variant', async () => {
+    await wrapper.setProps({ objcPath: undefined });
     expect(wrapper.findComponent('#language-toggle').exists()).toBe(false);
 
     const current = wrapper.findComponent('span.nav-menu-toggle-none.current-language');
@@ -185,8 +185,8 @@ describe('LanguageToggle', () => {
     expect(listContainer.exists()).toBe(true);
   });
 
-  it('does not render `language-list-container` if page has only one language', () => {
-    wrapper.setProps({ objcPath: undefined });
+  it('does not render `language-list-container` if page has only one language', async () => {
+    await wrapper.setProps({ objcPath: undefined });
 
     const listContainer = wrapper.findComponent('.language-list-container');
     expect(listContainer.exists()).toBe(false);
@@ -287,7 +287,7 @@ describe('LanguageToggle', () => {
     // assert proper language name is shown
     expect(wrapper.findComponent('.current-language').text()).toBe(Language.swift.name);
     // change the language from outside
-    wrapper.setProps({
+    await wrapper.setProps({
       interfaceLanguage: Language.objectiveC.key.api,
     });
     await wrapper.vm.$nextTick();

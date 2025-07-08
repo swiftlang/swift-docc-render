@@ -112,11 +112,11 @@ describe('Asset', () => {
     expect(videoAsset.props('alt')).toBe(video.alt);
   });
 
-  it('passes down `deviceFrame` to `ReplayableVideoAsset`', () => {
+  it('passes down `deviceFrame` to `ReplayableVideoAsset`', async () => {
     const wrapper = mountAsset('video', { video });
     let videoAsset = wrapper.findComponent(ReplayableVideoAsset);
     expect(videoAsset.props('deviceFrame')).toBeFalsy();
-    wrapper.setProps({
+    await wrapper.setProps({
       deviceFrame: 'phone',
     });
     videoAsset = wrapper.findComponent(ReplayableVideoAsset);
