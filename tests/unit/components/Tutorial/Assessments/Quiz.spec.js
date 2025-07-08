@@ -186,13 +186,16 @@ describe('Quiz', () => {
 
       expect(choice.classes('active')).toBe(false);
       choice.trigger('click');
+      await wrapper.vm.$nextTick();
       expect(choice.classes('active')).toBe(true);
     });
 
-    it('renders a success icon, only for the chosen choice', () => {
+    it('renders a success icon, only for the chosen choice', async () => {
       const choice = choices.at(0);
       choice.trigger('click');
+      await wrapper.vm.$nextTick();
       submit.trigger('click');
+      await wrapper.vm.$nextTick();
 
       expect(choice.classes()).toContain('correct');
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
@@ -200,31 +203,37 @@ describe('Quiz', () => {
       expect(choice.find('.choice-icon').html()).toContain('<checkcircleicon');
     });
 
-    it('renders an error icon only for the chosen choice', () => {
+    it('renders an error icon only for the chosen choice', async () => {
       const choice = choices.at(1);
       choice.trigger('click');
+      await wrapper.vm.$nextTick();
       submit.trigger('click');
+      await wrapper.vm.$nextTick();
 
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
       // cant match directly with element, VTU is buggy
       expect(choice.find('.choice-icon').html()).toContain('<resetcircleicon');
     });
 
-    it('updates the aria live text telling the user if the answer chosen is correct or incorrect', () => {
+    it('updates the aria live text telling the user if the answer chosen is correct or incorrect', async () => {
       let ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden');
       expect(ariaLive.exists()).toBe(true);
       expect(ariaLive.text()).toBe('');
 
       let choice = choices.at(1);
       choice.trigger('click');
+      await wrapper.vm.$nextTick();
       submit.trigger('click');
+      await wrapper.vm.$nextTick();
 
       ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.incorrect');
 
       choice = choices.at(0);
       choice.trigger('click');
+      await wrapper.vm.$nextTick();
       submit.trigger('click');
+      await wrapper.vm.$nextTick();
 
       ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.correct');

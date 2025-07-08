@@ -87,8 +87,9 @@ describe('SuggestLang', () => {
     expect(AppStore.setPreferredLocale).toHaveBeenCalledWith(matchingLocale);
   });
 
-  it('takes you to the preferredLocale url when clicking in router link', () => {
+  it('takes you to the preferredLocale url when clicking in router link', async () => {
     link.trigger('click');
+    await wrapper.vm.$nextTick();
 
     expect(getLocaleParam).toHaveBeenCalledWith(matchingLocale);
     expect(link.props('to')).toEqual(params);

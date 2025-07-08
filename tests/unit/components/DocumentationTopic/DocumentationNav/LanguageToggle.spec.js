@@ -172,6 +172,7 @@ describe('LanguageToggle', () => {
 
     wrapper.findAll('#language-toggle option').at(1).element.selected = true;
     wrapper.findComponent('#language-toggle').trigger('change');
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.findComponent('.current-language').text()).toBe(Language.objectiveC.name);
     expect(closeNav).toHaveBeenCalledTimes(1);
