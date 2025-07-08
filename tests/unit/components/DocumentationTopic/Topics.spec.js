@@ -23,7 +23,7 @@ describe('Topics', () => {
       },
     });
 
-    const table = wrapper.find(TopicsTable);
+    const table = wrapper.findComponent(TopicsTable);
     expect(table.exists()).toBe(true);
     expect(table.props()).toEqual({
       anchor: 'topics',

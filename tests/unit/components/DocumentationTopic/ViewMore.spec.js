@@ -17,7 +17,7 @@ describe('ViewMore', () => {
       propsData: { url: '/foo/bar' },
       stubs: { 'router-link': RouterLinkStub },
     });
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.findComponent(RouterLinkStub);
     expect(link.exists()).toBe(true);
     expect(link.props('to')).toBe('/foo/bar');
     expect(link.text()).toBe('documentation.view-more');
@@ -32,6 +32,6 @@ describe('ViewMore', () => {
         default: '<div class="default">Default text</div>',
       },
     });
-    expect(wrapper.find('.default').text()).toBe('Default text');
+    expect(wrapper.findComponent('.default').text()).toBe('Default text');
   });
 });

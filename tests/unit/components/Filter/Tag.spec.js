@@ -26,7 +26,7 @@ describe('Tag', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(Tag, { propsData, attachToDocument: true });
-    button = wrapper.find('button');
+    button = wrapper.findComponent('button');
     jest.clearAllMocks();
   });
   afterEach(() => {
@@ -96,7 +96,7 @@ describe('Tag', () => {
     // This is needed to prevent from focusing the button
     // on tags when user uses a virtual keyboard
     wrapper.setProps({ keyboardIsVirtual: true });
-    button = wrapper.find('button');
+    button = wrapper.findComponent('button');
     button.trigger('mousedown');
 
     expect(wrapper.emitted('focus')).toBeFalsy();
@@ -231,7 +231,7 @@ describe('Tag', () => {
       });
       await wrapper.vm.$nextTick();
 
-      wrapper.find({ ref: 'button' }).trigger('copy', { clipboardData });
+      wrapper.findComponent({ ref: 'button' }).trigger('copy', { clipboardData });
       expect(clipboardData.setData).toHaveBeenCalledTimes(2);
       expect(clipboardData.setData)
         .toHaveBeenCalledWith('text/html', prepareDataForHTMLClipboard({ tags: [propsData.name] }));

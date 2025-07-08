@@ -70,7 +70,7 @@ describe('Section', () => {
   });
 
   it('renders a `LinkableSection`', () => {
-    const section = wrapper.find(LinkableSection);
+    const section = wrapper.findComponent(LinkableSection);
     expect(section.exists()).toBe(true);
     expect(section.classes('section')).toBe(true);
     expect(section.props()).toEqual({
@@ -82,8 +82,8 @@ describe('Section', () => {
   });
 
   it('renders an `Intro`', () => {
-    const section = wrapper.find(Section);
-    const intro = wrapper.find(Intro);
+    const section = wrapper.findComponent(Section);
+    const intro = wrapper.findComponent(Intro);
     expect(section.exists()).toBe(true);
     expect(section.props('title')).toEqual('Foo');
     expect(intro.exists()).toBe(true);
@@ -94,14 +94,14 @@ describe('Section', () => {
   });
 
   it('renders a `Steps`', () => {
-    const steps = wrapper.find(Steps);
+    const steps = wrapper.findComponent(Steps);
     expect(steps.exists()).toBe(true);
     expect(steps.props('content')).toEqual(propsData.stepsSection);
   });
 
   describe('when a `Steps` emits a "runtime-preview-toggle" event', () => {
     beforeEach(() => {
-      wrapper.find(Steps).vm.$emit('runtime-preview-toggle', false);
+      wrapper.findComponent(Steps).vm.$emit('runtime-preview-toggle', false);
     });
 
     it('emits the event as well with the same value', () => {
@@ -120,7 +120,7 @@ describe('Section', () => {
     });
 
     it('does not render a steps section', () => {
-      expect(wrapper.find(Steps).exists()).toBe(false);
+      expect(wrapper.findComponent(Steps).exists()).toBe(false);
     });
   });
 });

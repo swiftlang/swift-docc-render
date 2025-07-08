@@ -69,7 +69,7 @@ describe('Hero', () => {
       title,
     });
 
-    const headline = wrapper.find(Headline);
+    const headline = wrapper.findComponent(Headline);
     expect(headline.text()).toBe(title);
   });
 
@@ -83,7 +83,7 @@ describe('Hero', () => {
       },
     });
 
-    const headline = wrapper.find(Headline);
+    const headline = wrapper.findComponent(Headline);
     expect(headline.text()).toContain(chapter);
   });
 
@@ -109,7 +109,7 @@ describe('Hero', () => {
       estimatedTimeInMinutes,
     }, references);
 
-    const metadata = wrapper.find(HeroMetadata);
+    const metadata = wrapper.findComponent(HeroMetadata);
     expect(metadata.props('estimatedTimeInMinutes')).toBe(estimatedTimeInMinutes);
     expect(metadata.props('projectFilesUrl')).toBe(projectFilesUrl);
     expect(metadata.props('xcodeRequirement')).toEqual(xcodeRequirementReference);
@@ -118,7 +118,7 @@ describe('Hero', () => {
   it('renders a div for the background and selects the light variant', () => {
     const wrapper = mountWithProps();
 
-    const bg = wrapper.find('div.bg');
+    const bg = wrapper.findComponent('div.bg');
     expect(bg.exists()).toBe(true);
     expect(wrapper.vm.bgStyle).toEqual({
       backgroundImage: 'url(\'defaultBackgroundUrlLight\')',
@@ -127,14 +127,14 @@ describe('Hero', () => {
 
   it('displays the call-to-action modal when the link is clicked', async () => {
     const wrapper = mountWithProps();
-    const link = wrapper.find('a.call-to-action');
-    expect(wrapper.find(Asset).exists()).toBe(true);
-    expect(wrapper.find(GenericModal).props('visible')).toBe(false);
+    const link = wrapper.findComponent('a.call-to-action');
+    expect(wrapper.findComponent(Asset).exists()).toBe(true);
+    expect(wrapper.findComponent(GenericModal).props('visible')).toBe(false);
 
     link.trigger('click');
     await wrapper.vm.$nextTick();
 
-    const modal = wrapper.find(GenericModal);
+    const modal = wrapper.findComponent(GenericModal);
     expect(modal.props()).toHaveProperty('visible', true);
   });
 
@@ -178,13 +178,13 @@ describe('Hero', () => {
     it('does not pause if play returned undefined', async () => {
       await new Promise((resolve) => {
         withPlayReturning(undefined, async () => {
-          const link = wrapper.find('a.call-to-action');
+          const link = wrapper.findComponent('a.call-to-action');
           link.trigger('click');
           await wrapper.vm.$nextTick();
 
-          expect(wrapper.find(GenericModal).props('visible')).toBe(true);
+          expect(wrapper.findComponent(GenericModal).props('visible')).toBe(true);
 
-          const asset = wrapper.find(Asset);
+          const asset = wrapper.findComponent(Asset);
           asset.vm.$emit('videoEnded');
 
           // Wait for the `playPromise.then` to be executed.

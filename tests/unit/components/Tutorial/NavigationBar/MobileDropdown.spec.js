@@ -103,7 +103,7 @@ describe('MobileDropdown', () => {
   });
 
   it('renders a ul.mobile-dropdown', () => {
-    const node = wrapper.find(NavMenuItems);
+    const node = wrapper.findComponent(NavMenuItems);
     expect(node.classes()).toContain('mobile-dropdown');
   });
 
@@ -114,7 +114,7 @@ describe('MobileDropdown', () => {
     expect(chapter.at(0).classes()).toContain('chapter-list');
     expect(chapter.at(0).attributes('role')).toBe('group');
 
-    const node = wrapper.find('p.chapter-name');
+    const node = wrapper.findComponent('p.chapter-name');
     expect(node.exists()).toBe(true);
     expect(node.text()).toBe('Getting Started');
   });
@@ -126,7 +126,7 @@ describe('MobileDropdown', () => {
   });
 
   it('renders link elements with appropriate role attributes', () => {
-    const link = wrapper.find('.tutorial');
+    const link = wrapper.findComponent('.tutorial');
     expect(link.is(RouterLinkStub)).toBe(true);
     expect(link.props('to'))
       // the first sub-link

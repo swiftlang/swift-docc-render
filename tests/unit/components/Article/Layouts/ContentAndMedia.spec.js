@@ -50,14 +50,14 @@ describe('ContentAndMedia', () => {
 
   it('renders a `ContentNode`', () => {
     const { content } = propsData;
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(content);
   });
 
   it('renders an `Asset`', () => {
     const { media } = propsData;
-    const asset = wrapper.find(Asset);
+    const asset = wrapper.findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe(media);
   });

@@ -49,7 +49,7 @@ describe('DeclarationGroup', () => {
   });
 
   it('renders a platforms label for each variant', () => {
-    const labels = wrapper.find('.platforms');
+    const labels = wrapper.findComponent('.platforms');
     expect(labels.text()).toBe('iOS, tvOS, watchOS');
   });
 
@@ -62,17 +62,17 @@ describe('DeclarationGroup', () => {
       provide,
     });
 
-    const labels = wrapper.find('.platforms');
+    const labels = wrapper.findComponent('.platforms');
     expect(labels.exists()).toBe(false);
   });
 
   it('renders a `Source` for each variant', () => {
-    const source = wrapper.find(DeclarationSource);
+    const source = wrapper.findComponent(DeclarationSource);
     expect(source.props('tokens')).toEqual(propsData.declaration.tokens);
   });
 
   it('renders the `Source`', () => {
-    const srcComponent = wrapper.find(DeclarationSource);
+    const srcComponent = wrapper.findComponent(DeclarationSource);
     expect(srcComponent.props('language')).toEqual('swift');
   });
 

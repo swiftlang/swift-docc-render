@@ -65,7 +65,7 @@ describe('GenericModal', () => {
 
   it('wraps the modal in a PortalSource component', () => {
     const wrapper = createWrapper();
-    const portalSource = wrapper.find(Portal);
+    const portalSource = wrapper.findComponent(Portal);
     expect(portalSource.exists()).toBe(true);
     expect(portalSource.attributes()).toHaveProperty('to', 'modal-destination');
     expect(portalSource.contains('.generic-modal')).toBeTruthy();
@@ -73,8 +73,8 @@ describe('GenericModal', () => {
 
   it('renders the GenericModal hidden by default', () => {
     const wrapper = createWrapper();
-    const modal = wrapper.find('.generic-modal');
-    expect(wrapper.find(Portal).attributes('disabled')).toBe('true');
+    const modal = wrapper.findComponent('.generic-modal');
+    expect(wrapper.findComponent(Portal).attributes('disabled')).toBe('true');
     expect(modal.attributes('style')).toContain('display: none');
     expect(modal.classes()).toContain('generic-modal');
   });
@@ -86,27 +86,27 @@ describe('GenericModal', () => {
       },
     });
 
-    const modal = wrapper.find('.generic-modal');
-    expect(wrapper.find(Portal).attributes('disabled')).toBeFalsy();
+    const modal = wrapper.findComponent('.generic-modal');
+    expect(wrapper.findComponent(Portal).attributes('disabled')).toBeFalsy();
     expect(modal.attributes('style')).toBeUndefined();
   });
 
   it('adds appropriate AX tags', () => {
     const wrapper = createWrapper();
-    const modal = wrapper.find('.generic-modal');
+    const modal = wrapper.findComponent('.generic-modal');
     expect(modal.attributes()).toHaveProperty('role', 'dialog');
   });
 
   it('closes modal when clicking on backdrop, if enabled', () => {
     const wrapper = createWrapper({ propsData: { visible: true, closeOnClickOut: true } });
-    wrapper.find('.backdrop').trigger('click');
+    wrapper.findComponent('.backdrop').trigger('click');
     // make sure its emitted only once
     expect(wrapper.emitted(VisibleChangeEvent)).toEqual([[false]]);
   });
 
   it('generates a close button', () => {
     const wrapper = createWrapper({ propsData: { visible: true } });
-    const close = wrapper.find('.close');
+    const close = wrapper.findComponent('.close');
     expect(close.exists()).toBe(true);
     // assert props
     expect(close.is('button')).toBe(true);
@@ -118,27 +118,27 @@ describe('GenericModal', () => {
 
   it('renders default slot content', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.default').text()).toEqual('Default');
+    expect(wrapper.findComponent('.default').text()).toEqual('Default');
   });
 
   describe('themes', () => {
     it('adds light theme class', () => {
       const wrapper = createWrapper({ propsData: { theme: 'light' } });
-      const modal = wrapper.find('.generic-modal');
+      const modal = wrapper.findComponent('.generic-modal');
       // assert class
       expect(modal.classes()).toContain('theme-light');
     });
 
     it('adds dark theme class', () => {
       const wrapper = createWrapper({ propsData: { theme: 'dark' } });
-      const modal = wrapper.find('.generic-modal');
+      const modal = wrapper.findComponent('.generic-modal');
       // assert class
       expect(modal.classes()).toContain('theme-dark');
     });
 
     it('adds preferred color scheme change listener for `dynamic` theme', () => {
       const wrapper = createWrapper({ propsData: { theme: 'dynamic' } });
-      const modal = wrapper.find('.generic-modal');
+      const modal = wrapper.findComponent('.generic-modal');
       // assert class
       expect(modal.classes()).toContain('theme-light');
       expect(modal.classes()).toContain('theme-dynamic');
@@ -156,14 +156,14 @@ describe('GenericModal', () => {
       });
       const wrapper = createWrapper({ propsData: { theme: 'dynamic' } });
       await wrapper.vm.$nextTick();
-      const modal = wrapper.find('.generic-modal');
+      const modal = wrapper.findComponent('.generic-modal');
       expect(modal.classes()).toContain('theme-dynamic');
       expect(modal.classes()).toContain('theme-dark');
     });
 
     it('detects color scheme changes, if theme is dynamic', () => {
       const wrapper = createWrapper({ propsData: { theme: 'dynamic' } });
-      const modal = wrapper.find('.generic-modal');
+      const modal = wrapper.findComponent('.generic-modal');
       expect(modal.classes()).toContain('theme-dynamic');
       expect(modal.classes()).toContain('theme-light');
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
@@ -180,7 +180,7 @@ describe('GenericModal', () => {
 
     it('adds preferred color scheme change listener for `code` theme', () => {
       const wrapper = createWrapper({ propsData: { theme: 'code' } });
-      const modal = wrapper.find('.generic-modal');
+      const modal = wrapper.findComponent('.generic-modal');
 
       expect(modal.classes()).toContain('theme-code');
       expect(modal.classes()).toContain('theme-light');
@@ -205,7 +205,7 @@ describe('GenericModal', () => {
 
   it('allows rendering fullscreen', () => {
     const wrapper = createWrapper({ propsData: { isFullscreen: true } });
-    const modal = wrapper.find('.generic-modal');
+    const modal = wrapper.findComponent('.generic-modal');
 
     expect(modal.classes()).toContain('modal-fullscreen');
     wrapper.setProps({ isFullscreen: false });
@@ -289,7 +289,7 @@ describe('GenericModal', () => {
       visible: true,
     });
 
-    const container = wrapper.find({ ref: 'container' }).element;
+    const container = wrapper.findComponent({ ref: 'container' }).element;
 
     await flushPromises();
     expect(changeElementVOVisibility.hide).toHaveBeenCalledTimes(1);
@@ -319,7 +319,7 @@ describe('GenericModal', () => {
 
     await flushPromises();
 
-    expect(document.activeElement).toEqual(wrapper.find('.close').element);
+    expect(document.activeElement).toEqual(wrapper.findComponent('.close').element);
     expect(wrapper.emitted('open')).toBeTruthy();
 
     wrapper.setProps({
@@ -402,11 +402,11 @@ describe('GenericModal', () => {
         showClose: false,
       },
     });
-    expect(wrapper.find('.close').exists()).toBe(false);
+    expect(wrapper.findComponent('.close').exists()).toBe(false);
     wrapper.setProps({
       showClose: true,
     });
-    expect(wrapper.find('.close').exists()).toBe(true);
+    expect(wrapper.findComponent('.close').exists()).toBe(true);
   });
 
   it('allows specifying a width to the container', () => {
@@ -415,6 +415,6 @@ describe('GenericModal', () => {
         width: '100px',
       },
     });
-    expect(wrapper.find('.container').attributes('style')).toEqual('width: 100px;');
+    expect(wrapper.findComponent('.container').attributes('style')).toEqual('width: 100px;');
   });
 });

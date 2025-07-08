@@ -35,7 +35,7 @@ describe('Heading', () => {
       },
     });
     expect(wrapper.text()).toBe('Fooing the Bar');
-    expect(wrapper.find('strong').text()).toBe('Bar');
+    expect(wrapper.findComponent('strong').text()).toBe('Bar');
   });
 });
 
@@ -56,7 +56,7 @@ describe('Headline', () => {
     expect(wrapper.classes()).toContain('headline');
     expect(wrapper.props('level')).toBe(2);
 
-    expect(wrapper.find('.test').text()).toBe('Test Title');
+    expect(wrapper.findComponent('.test').text()).toBe('Test Title');
 
     expect(wrapper.contains('.eyebrow')).toBe(false);
   });
@@ -73,9 +73,9 @@ describe('Headline', () => {
     expect(wrapper.classes()).toContain('headline');
     expect(wrapper.props('level')).toBe(1);
 
-    expect(wrapper.find('.test-title').text()).toBe('Test Title');
+    expect(wrapper.findComponent('.test-title').text()).toBe('Test Title');
 
-    const eyebrow = wrapper.find('.eyebrow');
+    const eyebrow = wrapper.findComponent('.eyebrow');
     expect(eyebrow.exists()).toBe(true);
     expect(eyebrow.find('.test-eyebrow').text()).toBe('Test Eyebrow');
   });

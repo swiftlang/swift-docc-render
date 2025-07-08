@@ -67,20 +67,20 @@ describe('LanguageToggle', () => {
   });
 
   it('renders `NavMenuItemBase` at the root', () => {
-    const menuItemBase = wrapper.find(NavMenuItemBase);
+    const menuItemBase = wrapper.findComponent(NavMenuItemBase);
     expect(menuItemBase.exists()).toBe(true);
     expect(menuItemBase.classes()).toContain('nav-menu-setting');
     expect(menuItemBase.classes()).toContain('language-container');
   });
 
   it('renders the toggle element', () => {
-    const toggle = wrapper.find('#language-toggle');
+    const toggle = wrapper.findComponent('#language-toggle');
     expect(toggle.exists()).toBe(true);
     expect(toggle.attributes('style')).toMatch(/width: [0-9]+px/);
   });
 
   it('renders a faux select element', () => {
-    const select = wrapper.find({ ref: 'language-sizer' });
+    const select = wrapper.findComponent({ ref: 'language-sizer' });
     expect(select.exists()).toBe(true);
     expect(select.classes()).toEqual(['language-dropdown', 'language-sizer']);
     expect(select.attributes()).toHaveProperty('aria-hidden', 'true');
@@ -92,13 +92,13 @@ describe('LanguageToggle', () => {
   });
 
   it('renders an inline chevron icon', () => {
-    expect(wrapper.find('.language-toggle-container > .toggle-icon').is(InlineChevronDownIcon))
+    expect(wrapper.findComponent('.language-toggle-container > .toggle-icon').is(InlineChevronDownIcon))
       .toBe(true);
   });
 
   it('applies the faux select width on the language toggle, on select', async () => {
-    const sizer = wrapper.find({ ref: 'language-sizer' }).element;
-    const toggle = wrapper.find('#language-toggle');
+    const sizer = wrapper.findComponent({ ref: 'language-sizer' }).element;
+    const toggle = wrapper.findComponent('#language-toggle');
     // clientWidth is now 0
     expect(toggle.attributes()).toHaveProperty('style', 'width: 8px;');
     Object.defineProperty(sizer, 'clientWidth', {
@@ -110,8 +110,8 @@ describe('LanguageToggle', () => {
   });
 
   it('applies the faux select width on the language toggle, on screen resize', async () => {
-    const sizer = wrapper.find({ ref: 'language-sizer' }).element;
-    const toggle = wrapper.find('#language-toggle');
+    const sizer = wrapper.findComponent({ ref: 'language-sizer' }).element;
+    const toggle = wrapper.findComponent('#language-toggle');
     Object.defineProperty(sizer, 'clientWidth', {
       get: () => 20,
     });
@@ -125,8 +125,8 @@ describe('LanguageToggle', () => {
   });
 
   it('applies the faux select width on the language toggle, on orientationchange', async () => {
-    const sizer = wrapper.find({ ref: 'language-sizer' }).element;
-    const toggle = wrapper.find('#language-toggle');
+    const sizer = wrapper.findComponent({ ref: 'language-sizer' }).element;
+    const toggle = wrapper.findComponent('#language-toggle');
     Object.defineProperty(sizer, 'clientWidth', {
       get: () => 20,
     });
@@ -143,14 +143,14 @@ describe('LanguageToggle', () => {
       objcPath: '',
       swiftPath: '',
     });
-    expect(wrapper.find('.language-toggle-container > .toggle-icon').exists()).toBe(false);
+    expect(wrapper.findComponent('.language-toggle-container > .toggle-icon').exists()).toBe(false);
   });
 
   it('renders a span.nav-menu-toggle-none.current-language with only one variant', () => {
     wrapper.setProps({ objcPath: undefined });
-    expect(wrapper.find('#language-toggle').exists()).toBe(false);
+    expect(wrapper.findComponent('#language-toggle').exists()).toBe(false);
 
-    const current = wrapper.find('span.nav-menu-toggle-none.current-language');
+    const current = wrapper.findComponent('span.nav-menu-toggle-none.current-language');
     expect(current.exists()).toBe(true);
     // text content makes sure there are no new lines
     expect(current.element.textContent).toBe(Language.swift.name);
@@ -168,12 +168,12 @@ describe('LanguageToggle', () => {
   });
 
   it('calls router and changes v-model when different option is selected', async () => {
-    expect(wrapper.find('.current-language').text()).toBe(Language.swift.name);
+    expect(wrapper.findComponent('.current-language').text()).toBe(Language.swift.name);
 
     wrapper.findAll('#language-toggle option').at(1).element.selected = true;
-    wrapper.find('#language-toggle').trigger('change');
+    wrapper.findComponent('#language-toggle').trigger('change');
 
-    expect(wrapper.find('.current-language').text()).toBe(Language.objectiveC.name);
+    expect(wrapper.findComponent('.current-language').text()).toBe(Language.objectiveC.name);
     expect(closeNav).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(mocks.$router.push).toHaveBeenCalledWith({ path: null, query: { language: 'objc' } });
@@ -181,26 +181,26 @@ describe('LanguageToggle', () => {
   });
 
   it('renders `language-list-container` if page has more than a language', () => {
-    const listContainer = wrapper.find('.language-list-container');
+    const listContainer = wrapper.findComponent('.language-list-container');
     expect(listContainer.exists()).toBe(true);
   });
 
   it('does not render `language-list-container` if page has only one language', () => {
     wrapper.setProps({ objcPath: undefined });
 
-    const listContainer = wrapper.find('.language-list-container');
+    const listContainer = wrapper.findComponent('.language-list-container');
     expect(listContainer.exists()).toBe(false);
   });
 
   it('renders `nav-menu-toggle-label` without spaces', () => {
-    const label = wrapper.find('span.nav-menu-setting-label');
+    const label = wrapper.findComponent('span.nav-menu-setting-label');
     expect(label.exists()).toBe(true);
     // textContent makes sure there are no new lines or empty spaces
     expect(label.element.textContent).toEqual('formats.colon language');
   });
 
   it('renders `.nav-menu-setting-label` in `language-list-container` without spaces', () => {
-    const label = wrapper.find('label.nav-menu-setting-label');
+    const label = wrapper.findComponent('label.nav-menu-setting-label');
     expect(label.exists()).toBe(true);
     expect(label.attributes()).toHaveProperty('for', 'language-toggle');
     // textContent makes sure there are no new lines or empty spaces
@@ -208,13 +208,13 @@ describe('LanguageToggle', () => {
   });
 
   it('renders a `span.current-language` for the current language inside `language-list-container`', () => {
-    const currentLanguage = wrapper.find('.language-list-container').find('span.current-language');
+    const currentLanguage = wrapper.findComponent('.language-list-container').find('span.current-language');
     expect(currentLanguage.exists()).toBe(true);
     expect(currentLanguage.text()).toBe(Language.swift.name);
   });
 
   it('renders a link for the alternative language inside `language-list-container`', async () => {
-    const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
+    const link = wrapper.findComponent('.language-list-container').find('a.nav-menu-link');
     expect(link.exists()).toBe(true);
     expect(link.text()).toBe(Language.objectiveC.name);
     link.trigger('click');
@@ -230,7 +230,7 @@ describe('LanguageToggle', () => {
   it('clears out the language query if language is Swift', async () => {
     wrapper.setData({ languageModel: Language.objectiveC.key.api });
 
-    const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
+    const link = wrapper.findComponent('.language-list-container').find('a.nav-menu-link');
     link.trigger('click');
     expect(closeNav).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -257,7 +257,7 @@ describe('LanguageToggle', () => {
     };
     wrapper = createWrapper(undefined, mocksWithQuery);
 
-    const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
+    const link = wrapper.findComponent('.language-list-container').find('a.nav-menu-link');
     link.trigger('click');
     expect(closeNav).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -272,7 +272,7 @@ describe('LanguageToggle', () => {
     // Re-mount component to be able to update data() through new props
     wrapper = createWrapper({ ...propsData, objcPath: 'documentation/bar' });
 
-    const link = wrapper.find('.language-list-container').find('a.nav-menu-link');
+    const link = wrapper.findComponent('.language-list-container').find('a.nav-menu-link');
     link.trigger('click');
     expect(closeNav).toHaveBeenCalledTimes(1);
     await flushPromises();
@@ -285,7 +285,7 @@ describe('LanguageToggle', () => {
 
   it('changes the model, if the interfaceLanguage changes', async () => {
     // assert proper language name is shown
-    expect(wrapper.find('.current-language').text()).toBe(Language.swift.name);
+    expect(wrapper.findComponent('.current-language').text()).toBe(Language.swift.name);
     // change the language from outside
     wrapper.setProps({
       interfaceLanguage: Language.objectiveC.key.api,
@@ -293,6 +293,6 @@ describe('LanguageToggle', () => {
     await wrapper.vm.$nextTick();
 
     // assert the language changes as well
-    expect(wrapper.find('.current-language').text()).toBe(Language.objectiveC.name);
+    expect(wrapper.findComponent('.current-language').text()).toBe(Language.objectiveC.name);
   });
 });

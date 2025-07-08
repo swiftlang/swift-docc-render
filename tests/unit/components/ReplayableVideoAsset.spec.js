@@ -63,25 +63,25 @@ describe('ReplayableVideoAsset', () => {
   it('passes the `url` prop to `VideoAsset`', () => {
     const wrapper = mountWithProps();
 
-    const video = wrapper.find(VideoAsset);
+    const video = wrapper.findComponent(VideoAsset);
     expect(video.props('variants')).toBe(variants);
     expect(video.props('posterVariants')).toBe(posterVariants);
     expect(video.props('showsDefaultControls')).toBe(false);
     expect(video.props('autoplays')).toBe(false);
     expect(video.props('id')).toBe(propsData.id);
     expect(video.props('alt')).toBe(propsData.alt);
-    expect(wrapper.find('.control-button').exists()).toBe(true);
+    expect(wrapper.findComponent('.control-button').exists()).toBe(true);
   });
 
   it('renders a video-replay-container as a group with AX aria tags', () => {
     const wrapper = mountWithProps();
     const ariaLabelledByContainer = `${propsData.id}-custom-controls ${propsData.id}-alt`;
 
-    const container = wrapper.find('.video-replay-container');
+    const container = wrapper.findComponent('.video-replay-container');
     expect(container.attributes('role')).toBe('group');
     expect(container.attributes('aria-labelledby')).toBe(ariaLabelledByContainer);
 
-    const customControlsDescription = wrapper.find(`#${propsData.id}-custom-controls`);
+    const customControlsDescription = wrapper.findComponent(`#${propsData.id}-custom-controls`);
     expect(customControlsDescription.exists()).toBe(true);
     expect(customControlsDescription.attributes('hidden')).toBe('hidden');
     expect(customControlsDescription.text()).toBe('video.custom-controls');
@@ -93,7 +93,7 @@ describe('ReplayableVideoAsset', () => {
     });
     const ariaLabelledByContainer = `${propsData.id}-custom-controls`;
 
-    const container = wrapper.find('.video-replay-container');
+    const container = wrapper.findComponent('.video-replay-container');
     expect(container.attributes('aria-labelledby')).toBe(ariaLabelledByContainer);
   });
 
@@ -102,7 +102,7 @@ describe('ReplayableVideoAsset', () => {
       showsDefaultControls: true,
     });
 
-    const container = wrapper.find('.video-replay-container');
+    const container = wrapper.findComponent('.video-replay-container');
     expect(container.attributes()).not.toHaveProperty('aria-labelledby');
   });
 
@@ -110,36 +110,36 @@ describe('ReplayableVideoAsset', () => {
     const wrapper = mountWithProps({
       showsDefaultControls: true,
     });
-    const video = wrapper.find(VideoAsset);
+    const video = wrapper.findComponent(VideoAsset);
     expect(video.props('showsDefaultControls')).toBe(true);
-    expect(wrapper.find('.control-button').exists()).toBe(false);
+    expect(wrapper.findComponent('.control-button').exists()).toBe(false);
   });
 
   it('adds an aria-controls referring to the video id in `.control-button`', () => {
     const wrapper = mountWithProps();
-    const controlButton = wrapper.find('.control-button');
+    const controlButton = wrapper.findComponent('.control-button');
     expect(controlButton.attributes('aria-controls')).toBe(propsData.id);
   });
 
   it('does not add a description reference to `.control-button` if alt is not provided', () => {
     const wrapper = mountWithProps({ alt: null });
-    const controlButton = wrapper.find('.control-button');
+    const controlButton = wrapper.findComponent('.control-button');
     expect(controlButton.attributes()).not.toHaveProperty('aria-describedby');
   });
 
   it('changes the control button text, while the video is changing states', async () => {
     const wrapper = mountWithProps();
 
-    const replayButton = wrapper.find('.control-button');
+    const replayButton = wrapper.findComponent('.control-button');
 
     expect(replayButton.exists()).toBe(true);
     expect(replayButton.text()).toBe('video.play');
 
     expect(replayButton.find('.control-icon').is(PlayIcon)).toBe(true);
-    const video = wrapper.find(VideoAsset);
+    const video = wrapper.findComponent(VideoAsset);
     await video.vm.$emit('ended');
 
-    expect(wrapper.find('.control-icon').is(InlineReplayIcon)).toBe(true);
+    expect(wrapper.findComponent('.control-icon').is(InlineReplayIcon)).toBe(true);
     expect(replayButton.text()).toBe('video.replay');
 
     // start playing
@@ -150,7 +150,7 @@ describe('ReplayableVideoAsset', () => {
     videoEl.ended = false;
     await flushPromises();
     expect(replayButton.text()).toBe('video.pause');
-    expect(wrapper.find('.control-icon').is(PauseIcon)).toBe(true);
+    expect(wrapper.findComponent('.control-icon').is(PauseIcon)).toBe(true);
     await replayButton.trigger('click');
     videoEl.paused = true;
     await video.vm.$emit('pause');
@@ -162,9 +162,9 @@ describe('ReplayableVideoAsset', () => {
 
     expect(playMock).toHaveBeenCalledTimes(0);
     expect(pauseMock).toHaveBeenCalledTimes(0);
-    const button = wrapper.find('.control-button');
+    const button = wrapper.findComponent('.control-button');
     await button.trigger('click');
-    await wrapper.find(VideoAsset).vm.$emit('playing');
+    await wrapper.findComponent(VideoAsset).vm.$emit('playing');
     await flushPromises();
     expect(pauseMock).toHaveBeenCalledTimes(0);
     expect(playMock).toHaveBeenCalledTimes(1);
@@ -176,8 +176,8 @@ describe('ReplayableVideoAsset', () => {
     const wrapper = mountWithProps({
       autoplays: false,
     });
-    const video = wrapper.find({ ref: 'asset' });
-    const control = wrapper.find('.control-button');
+    const video = wrapper.findComponent({ ref: 'asset' });
+    const control = wrapper.findComponent('.control-button');
     expect(control.text()).toBe('video.play');
     control.trigger('click');
     video.vm.$emit('playing');
@@ -194,7 +194,7 @@ describe('ReplayableVideoAsset', () => {
     const wrapper = mountWithProps({
       deviceFrame: 'phone',
     });
-    expect(wrapper.find(VideoAsset).props()).toMatchObject({
+    expect(wrapper.findComponent(VideoAsset).props()).toMatchObject({
       deviceFrame: 'phone',
     });
   });

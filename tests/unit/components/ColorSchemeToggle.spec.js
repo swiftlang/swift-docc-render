@@ -44,7 +44,7 @@ describe('ColorSchemeToggle', () => {
   });
 
   it('renders a legend for fieldset', () => {
-    const legend = wrapper.find('legend');
+    const legend = wrapper.findComponent('legend');
     expect(legend.exists()).toBe(true);
     expect(legend.text()).toBe('color-scheme.select');
   });

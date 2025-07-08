@@ -84,7 +84,7 @@ const createWrapper = options => shallowMount(DeclarationList, {
 describe('DeclarationList', () => {
   it('renders `DeclarationGroup` with correct prop', () => {
     const wrapper = createWrapper();
-    const srcComponent = wrapper.find(DeclarationGroup);
+    const srcComponent = wrapper.findComponent(DeclarationGroup);
     expect(srcComponent.props('declaration')).toEqual({
       ...propsData.declaration,
       identifier: provide.identifier,
@@ -130,11 +130,11 @@ describe('DeclarationList with otherDeclarations', () => {
   });
 
   it('adds a `declaration-pill-expanded` class only when list is expanded', () => {
-    const declaration = wrapper.find('.declaration-pill');
+    const declaration = wrapper.findComponent('.declaration-pill');
     expect(declaration.classes()).toContain('declaration-pill--expanded');
 
     wrapper.setProps({ declListExpanded: false });
-    expect(wrapper.find('.declaration-pill').classes()).not.toContain('declaration-pill--expanded');
+    expect(wrapper.findComponent('.declaration-pill').classes()).not.toContain('declaration-pill--expanded');
   });
 
   it('adds a `selected-declaration` class to the selected declaration', () => {
@@ -180,21 +180,21 @@ describe('DeclarationList with changes', () => {
     wrapper.setProps({
       changeType: 'added',
     });
-    let declarationPill = wrapper.find('.declaration-pill');
+    let declarationPill = wrapper.findComponent('.declaration-pill');
     expect(declarationPill.classes()).toContain('changed');
     expect(declarationPill.classes()).toContain('changed-added');
 
     wrapper.setProps({
       changeType: 'deprecated',
     });
-    declarationPill = wrapper.find('.declaration-pill');
+    declarationPill = wrapper.findComponent('.declaration-pill');
     expect(declarationPill.classes()).toContain('changed');
     expect(declarationPill.classes()).toContain('changed-deprecated');
 
     wrapper.setProps({
       changeType: 'modified',
     });
-    declarationPill = wrapper.find('.declaration-pill');
+    declarationPill = wrapper.findComponent('.declaration-pill');
     expect(declarationPill.classes()).toContain('changed');
     expect(declarationPill.classes()).toContain('changed-modified');
 

@@ -30,7 +30,7 @@ const createWrapper = ({ propsData, slots, ...rest } = {}) => shallowMount(NavTi
 describe('NavTitleContainer', () => {
   it('renders a router-link as root', () => {
     const wrapper = createWrapper();
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.findComponent(RouterLinkStub);
 
     expect(link.classes()).toContain('nav-title-content');
     expect(link.props()).toHaveProperty('to', 'foo');
@@ -38,7 +38,7 @@ describe('NavTitleContainer', () => {
 
   it('renders a title and its slot', () => {
     const wrapper = createWrapper();
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.text()).toBe('Default Slot');
   });
 
@@ -49,7 +49,7 @@ describe('NavTitleContainer', () => {
 
   it('renders a subhead and its default content', () => {
     const wrapper = createWrapper();
-    const title = wrapper.find('.subhead');
+    const title = wrapper.findComponent('.subhead');
     expect(title.text()).toBe('Tutorials');
   });
 
@@ -60,7 +60,7 @@ describe('NavTitleContainer', () => {
         subhead,
       },
     });
-    const title = wrapper.find('.subhead');
+    const title = wrapper.findComponent('.subhead');
     expect(title.text()).toBe(subhead);
   });
 });

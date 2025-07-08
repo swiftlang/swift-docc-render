@@ -74,12 +74,12 @@ describe('RestParameters', () => {
 
   it('displays the parameters information', () => {
     const wrapper = mountComponent();
-    const paramName = wrapper.find('.param-name');
+    const paramName = wrapper.findComponent('.param-name');
     expect(paramName.contains(WordBreak)).toBe(true);
     expect(paramName.text()).toBe('name');
-    expect(wrapper.find('.param-required').exists()).toBe(false);
-    expect(wrapper.find('.property-type').text()).toBe('Foo');
-    expect(wrapper.find({ name: 'ContentNode' }).props('content')).toEqual(
+    expect(wrapper.findComponent('.param-required').exists()).toBe(false);
+    expect(wrapper.findComponent('.property-type').text()).toBe('Foo');
+    expect(wrapper.findComponent({ name: 'ContentNode' }).props('content')).toEqual(
       propsData.parameters[0].content,
     );
   });
@@ -109,9 +109,9 @@ describe('RestParameters', () => {
 
   it('renders type information using `PossiblyChangedType`', () => {
     const wrapper = mountComponent();
-    expect(wrapper.find('.param-content').contains('.param-type'));
+    expect(wrapper.findComponent('.param-content').contains('.param-type'));
 
-    const tokensGroup = wrapper.find(PossiblyChangedType);
+    const tokensGroup = wrapper.findComponent(PossiblyChangedType);
     expect(tokensGroup.props('type')).toBe(propsData.parameters[0].type);
     expect(tokensGroup.props('changes')).toBe(undefined);
   });
@@ -130,8 +130,8 @@ describe('RestParameters', () => {
         parameters,
       },
     });
-    expect(wrapper.find('.param-symbol').contains(PossiblyChangedType)).toBe(false);
-    expect(wrapper.find('.param-content').contains(PossiblyChangedType)).toBe(true);
+    expect(wrapper.findComponent('.param-symbol').contains(PossiblyChangedType)).toBe(false);
+    expect(wrapper.findComponent('.param-content').contains(PossiblyChangedType)).toBe(true);
   });
 
   it('renders the `PossiblyChangedType` ih the `param-symbol` if no `content` and no `name` provided', () => {
@@ -148,8 +148,8 @@ describe('RestParameters', () => {
         parameters,
       },
     });
-    expect(wrapper.find('.param-symbol').contains(PossiblyChangedType)).toBe(true);
-    expect(wrapper.find('.param-content').contains(PossiblyChangedType)).toBe(false);
+    expect(wrapper.findComponent('.param-symbol').contains(PossiblyChangedType)).toBe(true);
+    expect(wrapper.findComponent('.param-content').contains(PossiblyChangedType)).toBe(false);
   });
 
   it('displays the parameters as required', () => {
@@ -166,10 +166,10 @@ describe('RestParameters', () => {
         parameters,
       },
     });
-    expect(wrapper.find('.param-name').text()).toBe('lastname');
-    expect(wrapper.find(PossiblyChangedTextAttribute).exists()).toBe(true);
-    expect(wrapper.find(PossiblyChangedType).text()).toBe('string');
-    expect(wrapper.find({ name: 'ContentNode' }).props('content')).toEqual(
+    expect(wrapper.findComponent('.param-name').text()).toBe('lastname');
+    expect(wrapper.findComponent(PossiblyChangedTextAttribute).exists()).toBe(true);
+    expect(wrapper.findComponent(PossiblyChangedType).text()).toBe('string');
+    expect(wrapper.findComponent({ name: 'ContentNode' }).props('content')).toEqual(
       parameters[0].content,
     );
   });
@@ -223,9 +223,9 @@ describe('RestParameters', () => {
       },
     });
 
-    expect(wrapper.find(PossiblyChangedType).props()).toHaveProperty('changes', changes.name.type);
-    expect(wrapper.find(PossiblyChangedTextAttribute).props())
+    expect(wrapper.findComponent(PossiblyChangedType).props()).toHaveProperty('changes', changes.name.type);
+    expect(wrapper.findComponent(PossiblyChangedTextAttribute).props())
       .toHaveProperty('changes', changes.name.required);
-    expect(wrapper.find(ParameterAttributes).props()).toHaveProperty('changes', changes.name);
+    expect(wrapper.findComponent(ParameterAttributes).props()).toHaveProperty('changes', changes.name);
   });
 });

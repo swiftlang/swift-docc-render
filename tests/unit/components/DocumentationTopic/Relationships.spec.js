@@ -74,7 +74,7 @@ describe('Relationships', () => {
   });
 
   it('renders a `ContentTable`', () => {
-    const table = wrapper.find(ContentTable);
+    const table = wrapper.findComponent(ContentTable);
     expect(table.exists()).toBe(true);
     expect(table.props()).toEqual({
       anchor: 'relationships',
@@ -84,7 +84,7 @@ describe('Relationships', () => {
   });
 
   it('renders a `Section` and `List` for each section with symbols', () => {
-    const sections = wrapper.find(ContentTable).findAll(Section);
+    const sections = wrapper.findComponent(ContentTable).findAll(Section);
     expect(sections.length).toBe(propsData.sections.length);
 
     const firstSection = sections.at(0);

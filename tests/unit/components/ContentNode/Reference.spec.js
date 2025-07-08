@@ -33,7 +33,7 @@ describe('Reference', () => {
       propsData: { url: 'https://foo.bar' },
       slots: { default: 'Foobar' },
     });
-    const ref = wrapper.find(ReferenceExternal);
+    const ref = wrapper.findComponent(ReferenceExternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('https://foo.bar');
     expect(ref.text()).toBe('Foobar');
@@ -46,7 +46,7 @@ describe('Reference', () => {
       propsData: { url: '/tutorials/bar' },
       slots: { default: 'FooBar' },
     });
-    const ref = wrapper.find(ReferenceInternal);
+    const ref = wrapper.findComponent(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/tutorials/bar');
     expect(ref.text()).toBe('FooBar');
@@ -59,7 +59,7 @@ describe('Reference', () => {
       propsData: { url: '/documentation/bar' },
       slots: { default: 'FooBar' },
     });
-    const ref = wrapper.find(ReferenceInternal);
+    const ref = wrapper.findComponent(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/bar');
     expect(ref.text()).toBe('FooBar');
@@ -76,7 +76,7 @@ describe('Reference', () => {
       },
       slots: { default: 'UIView' },
     });
-    const ref = wrapper.find(ReferenceInternalSymbol);
+    const ref = wrapper.findComponent(ReferenceInternalSymbol);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
@@ -93,7 +93,7 @@ describe('Reference', () => {
       },
       slots: { default: 'UIView' },
     });
-    const ref = wrapper.find(ReferenceInternal);
+    const ref = wrapper.findComponent(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
@@ -109,7 +109,7 @@ describe('Reference', () => {
       },
       slots: { default: 'UIView' },
     });
-    const ref = wrapper.find(ReferenceInternalSymbol);
+    const ref = wrapper.findComponent(ReferenceInternalSymbol);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
@@ -126,10 +126,10 @@ describe('Reference', () => {
       },
       slots: { default: 'custom text for UIView symbol' },
     });
-    const ref = wrapper.find(ReferenceInternal);
+    const ref = wrapper.findComponent(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
-    expect(wrapper.find(ReferenceInternalSymbol).exists()).toBe(false);
+    expect(wrapper.findComponent(ReferenceInternalSymbol).exists()).toBe(false);
   });
 
   it('renders a `ReferenceInternal` for external "dictionarySymbol" kind references with a human readable name', () => {
@@ -145,7 +145,7 @@ describe('Reference', () => {
       },
       slots: { default: 'UIView' },
     });
-    const ref = wrapper.find(ReferenceInternal);
+    const ref = wrapper.findComponent(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
@@ -163,7 +163,7 @@ describe('Reference', () => {
       },
       slots: { default: 'UIView' },
     });
-    const ref = wrapper.find(ReferenceInternalSymbol);
+    const ref = wrapper.findComponent(ReferenceInternalSymbol);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
@@ -179,8 +179,8 @@ describe('Reference', () => {
       },
       slots: { default: 'UIView' },
     });
-    expect(wrapper.find(ReferenceInternalSymbol).exists()).toBe(false);
-    const ref = wrapper.find(ReferenceInternal);
+    expect(wrapper.findComponent(ReferenceInternalSymbol).exists()).toBe(false);
+    const ref = wrapper.findComponent(ReferenceInternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/documentation/uikit/uiview');
   });
@@ -196,7 +196,7 @@ describe('Reference', () => {
       },
       slots: { default: 'Foo' },
     });
-    const ref = wrapper.find(ReferenceExternalSymbol);
+    const ref = wrapper.findComponent(ReferenceExternalSymbol);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('https://example.com/foo');
   });
@@ -208,7 +208,7 @@ describe('Reference', () => {
       propsData: { url: 'https://foo.bar', isActive: true },
       slots: { default: 'Foobar' },
     });
-    const ref = wrapper.find(ReferenceExternal);
+    const ref = wrapper.findComponent(ReferenceExternal);
     expect(ref.props('isActive')).toBe(true);
   });
 
@@ -223,7 +223,7 @@ describe('Reference', () => {
     });
     // add query params to url
     router.push({ query: { language: 'objc' } });
-    const ref = wrapper.find(ReferenceExternal);
+    const ref = wrapper.findComponent(ReferenceExternal);
     // assert isActive is empty
     expect(ref.props('isActive')).toBe(false);
   });
@@ -244,7 +244,7 @@ describe('Reference', () => {
       },
     });
     // add query params to url
-    expect(wrapper.find(ReferenceInternal).props('url')).toBe('/documentation/arkit?language=objc');
+    expect(wrapper.findComponent(ReferenceInternal).props('url')).toBe('/documentation/arkit?language=objc');
   });
 
   it('does not apply query parameters to the url, if not `isInternal`', () => {
@@ -263,7 +263,7 @@ describe('Reference', () => {
       },
     });
     // add query params to url
-    expect(wrapper.find(ReferenceExternal).props('url')).toBe('http://website.com');
+    expect(wrapper.findComponent(ReferenceExternal).props('url')).toBe('http://website.com');
   });
 
   it('renders a `ReferenceExternal` for /downloads/ URLs', () => {
@@ -273,7 +273,7 @@ describe('Reference', () => {
       propsData: { url: '/downloads/foo.zip' },
       slots: { default: 'Foo' },
     });
-    const ref = wrapper.find(ReferenceExternal);
+    const ref = wrapper.findComponent(ReferenceExternal);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe('/downloads/foo.zip');
     expect(ref.text()).toBe('Foo');

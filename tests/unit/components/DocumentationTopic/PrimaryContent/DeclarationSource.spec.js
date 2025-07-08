@@ -66,7 +66,7 @@ describe('DeclarationSource', () => {
   });
 
   it('renders a CodeBlock with a `Token` for each token', () => {
-    const code = wrapper.find(CodeBlock);
+    const code = wrapper.findComponent(CodeBlock);
     expect(code.exists()).toBe(true);
 
     const tokens = code.findAll(Token);
@@ -83,12 +83,12 @@ describe('DeclarationSource', () => {
   });
 
   it('applies the `multipleLinesClass` class if declaration group displays multiple lines', async () => {
-    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).not.toContain(multipleLinesClass);
+    expect(wrapper.findComponent({ ref: 'declarationGroup' }).classes()).not.toContain(multipleLinesClass);
 
     displaysMultipleLines.mockResolvedValue(true);
     wrapper = shallowMount(DeclarationSource, { propsData });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain(multipleLinesClass);
+    expect(wrapper.findComponent({ ref: 'declarationGroup' }).classes()).toContain(multipleLinesClass);
   });
 
   it('applies the `has-multiple-lines` class if declaration group has multiple lines regardless of window width', async () => {
@@ -171,7 +171,7 @@ describe('DeclarationSource', () => {
 
     wrapper = shallowMount(DeclarationSource, { propsData: multiLineDeclaration });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find({ ref: 'declarationGroup' }).classes()).toContain('has-multiple-lines');
+    expect(wrapper.findComponent({ ref: 'declarationGroup' }).classes()).toContain('has-multiple-lines');
   });
 
   it('runs the displaysMultipleLines, after `indentDeclaration` for ObjC code', async () => {
@@ -191,7 +191,7 @@ describe('DeclarationSource', () => {
     await flushPromises();
     expect(indentDeclaration).toHaveBeenCalledTimes(1);
     expect(indentDeclaration)
-      .toHaveBeenCalledWith(wrapper.find({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
+      .toHaveBeenCalledWith(wrapper.findComponent({ ref: 'code' }).vm.$el, Language.objectiveC.key.api);
     expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
   });
 

@@ -19,7 +19,7 @@ describe('ReferenceExternalSymbol', () => {
       slots: { default: 'Foo' },
     });
     expect(wrapper.props('url')).toBe('https://example.com/foo');
-    const code = wrapper.find(CodeVoice);
+    const code = wrapper.findComponent(CodeVoice);
     expect(code.exists()).toBe(true);
     expect(code.text()).toBe('Foo');
   });

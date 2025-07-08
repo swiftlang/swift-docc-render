@@ -75,7 +75,7 @@ describe('Asset', () => {
     };
     const wrapper = mountAsset('foo', { foo });
 
-    const imageAsset = wrapper.find(ImageAsset);
+    const imageAsset = wrapper.findComponent(ImageAsset);
     expect(imageAsset.props('alt')).toBe(foo.alt);
     expect(imageAsset.props('variants')).toBe(foo.variants);
   });
@@ -92,7 +92,7 @@ describe('Asset', () => {
     };
     const wrapper = mountAsset('video', { video, image });
 
-    const videoAsset = wrapper.find(ReplayableVideoAsset);
+    const videoAsset = wrapper.findComponent(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toBe(image.variants);
     expect(videoAsset.props('showsDefaultControls')).toBe(false);
@@ -114,12 +114,12 @@ describe('Asset', () => {
 
   it('passes down `deviceFrame` to `ReplayableVideoAsset`', () => {
     const wrapper = mountAsset('video', { video });
-    let videoAsset = wrapper.find(ReplayableVideoAsset);
+    let videoAsset = wrapper.findComponent(ReplayableVideoAsset);
     expect(videoAsset.props('deviceFrame')).toBeFalsy();
     wrapper.setProps({
       deviceFrame: 'phone',
     });
-    videoAsset = wrapper.find(ReplayableVideoAsset);
+    videoAsset = wrapper.findComponent(ReplayableVideoAsset);
     expect(videoAsset.props('deviceFrame')).toBe('phone');
   });
 
@@ -139,7 +139,7 @@ describe('Asset', () => {
       },
     });
 
-    const videoAsset = wrapper.find(VideoAsset);
+    const videoAsset = wrapper.findComponent(VideoAsset);
     expect(videoAsset.props()).toEqual(expect.objectContaining({
       variants: video.variants,
       showsDefaultControls: true,
@@ -166,7 +166,7 @@ describe('Asset', () => {
       },
     });
 
-    const videoAsset = wrapper.find(ReplayableVideoAsset);
+    const videoAsset = wrapper.findComponent(ReplayableVideoAsset);
     expect(videoAsset.props()).toEqual({
       autoplays: false,
       deviceFrame: 'phone',
@@ -194,7 +194,7 @@ describe('Asset', () => {
       },
     });
 
-    const videoAsset = wrapper.find(ReplayableVideoAsset);
+    const videoAsset = wrapper.findComponent(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('showsDefaultControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(false);
@@ -216,7 +216,7 @@ describe('Asset', () => {
       },
     });
 
-    const videoAsset = wrapper.find(ReplayableVideoAsset);
+    const videoAsset = wrapper.findComponent(ReplayableVideoAsset);
     expect(videoAsset.props('showsDefaultControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(false);
   });
@@ -243,7 +243,7 @@ describe('Asset', () => {
 
     it('renders an `ImageAsset` for videos when reduceMotion setting is chosen', () => {
       const wrapper = mountAsset('video', { video, image });
-      const asset = wrapper.find(ImageAsset);
+      const asset = wrapper.findComponent(ImageAsset);
 
       expect(asset.exists()).toBe(true);
       expect(asset.props()).toEqual({
@@ -255,7 +255,7 @@ describe('Asset', () => {
 
     it('renders with ReduceMotion only if type is video', () => {
       const wrapper = mountAsset('image', { video, image });
-      const asset = wrapper.find(ImageAsset);
+      const asset = wrapper.findComponent(ImageAsset);
       expect(asset.props()).toEqual({
         alt: image.alt,
         variants: image.variants,
@@ -265,10 +265,10 @@ describe('Asset', () => {
 
     it('falls back to video asset if no static image is found', () => {
       const wrapper = mountAsset('video', { video });
-      const asset = wrapper.find(ImageAsset);
+      const asset = wrapper.findComponent(ImageAsset);
       expect(asset.exists()).toBe(false);
-      expect(wrapper.find(ReplayableVideoAsset).props('variants')).toEqual(video.variants);
-      expect(wrapper.find(ReplayableVideoAsset).props('autoplays')).toEqual(false);
+      expect(wrapper.findComponent(ReplayableVideoAsset).props('variants')).toEqual(video.variants);
+      expect(wrapper.findComponent(ReplayableVideoAsset).props('autoplays')).toEqual(false);
     });
   });
 });
