@@ -423,9 +423,11 @@ describe('NavBase', () => {
     expect(emitter.exists()).toBe(true);
     // should do nothing, as the breakpoint change is below the target breakpoint "medium".
     emitter.vm.$emit('change', BreakpointName.small);
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes()).toContain(NavStateClasses.inBreakpoint);
 
     emitter.vm.$emit('change', BreakpointName.large);
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes()).not.toContain(NavStateClasses.inBreakpoint);
   });
 
@@ -577,9 +579,11 @@ describe('NavBase', () => {
       expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
       // should do nothing, as the breakpoint change is below the target breakpoint "medium".
       wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.small);
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
 
       wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
     });
 

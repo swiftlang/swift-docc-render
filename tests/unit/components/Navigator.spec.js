@@ -207,9 +207,10 @@ describe('Navigator', () => {
     expect(errorSpy).toHaveBeenCalledWith('Reference for "second" is missing');
   });
 
-  it('re-emits the `@close` event', () => {
+  it('re-emits the `@close` event', async () => {
     const wrapper = createWrapper();
     wrapper.findComponent(NavigatorCard).vm.$emit('close');
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
 });
