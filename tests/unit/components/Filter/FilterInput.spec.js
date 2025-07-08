@@ -175,8 +175,7 @@ describe('FilterInput', () => {
   });
 
   it('emits `show-suggested-tags` if filter button is clicked', async () => {
-    wrapper.findComponent('.filter__filter-button').trigger('click');
-    await wrapper.vm.$nextTick();
+    await wrapper.findComponent('.filter__filter-button').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['show-suggested-tags']).toBeTruthy();
     expect(wrapper.emitted('focus')).toBeTruthy();
@@ -527,9 +526,9 @@ describe('FilterInput', () => {
     const relatedTargetCard = document.createElement('a');
     document.body.appendChild(relatedTargetCard);
 
-    beforeEach(() => {
+    beforeEach(async () => {
       // show the suggested tags
-      wrapper.findComponent('.filter').trigger('focus');
+      await wrapper.findComponent('.filter').trigger('focus');
 
       suggestedTags = wrapper.findComponent({ ref: 'suggestedTags' });
       deleteButton = wrapper.findComponent('.filter__delete-button');
@@ -568,17 +567,17 @@ describe('FilterInput', () => {
       expect(suggestedTags.props()).toHaveProperty('ariaLabel', 'filter.suggested-tags');
     });
 
-    it('keeps `suggestedTags` component when `deleteButton` gets focus instead of `input`', () => {
+    it('keeps `suggestedTags` component when `deleteButton` gets focus instead of `input`', async () => {
       deleteButton = wrapper.findComponent('.filter__delete-button');
-      deleteButton.trigger('focus');
+      await deleteButton.trigger('focus');
       expect(wrapper.emitted('show-suggested-tags')).toBeTruthy();
       suggestedTags = wrapper.findComponent({ ref: 'suggestedTags' });
       expect(suggestedTags.exists()).toBe(true);
     });
 
-    it('keeps `suggestedTags` component when `deleteButton` gets focus instead of `input`', () => {
+    it('keeps `suggestedTags` component when `deleteButton` gets focus instead of `input`', async () => {
       const deleteBtnFocus = wrapper.findComponent('.filter__delete-button');
-      deleteBtnFocus.trigger('focus');
+      await deleteBtnFocus.trigger('focus');
       expect(wrapper.emitted('show-suggested-tags')).toBeTruthy();
       suggestedTags = wrapper.findComponent({ ref: 'suggestedTags' });
       expect(suggestedTags.exists()).toBe(true);
@@ -586,7 +585,7 @@ describe('FilterInput', () => {
 
     it('removes `suggestedTags` component when `suggestedTags` looses its focus on an external component', async () => {
       suggestedTags = wrapper.findComponent({ ref: 'suggestedTags' });
-      suggestedTags.trigger('focus');
+      await suggestedTags.trigger('focus');
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true]]);
       expect(wrapper.findComponent({ ref: 'suggestedTags' }).exists()).toBe(true);
 
@@ -605,7 +604,7 @@ describe('FilterInput', () => {
     it('deletes `suggestedTags` component when `deleteButton` looses its focus on an external component', async () => {
       const deleteBtnFocus = wrapper.findComponent('.filter__delete-button');
       if (deleteBtnFocus.exists()) {
-        deleteBtnFocus.trigger('focus');
+        await deleteBtnFocus.trigger('focus');
       }
       const deleteBtnExists = wrapper.findComponent('.filter__delete-button');
       expect(deleteBtnExists.exists()).toBe(true);

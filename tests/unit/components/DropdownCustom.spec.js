@@ -148,8 +148,7 @@ describe('DropdownCustom', () => {
       const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
       toggle.trigger('click');
       expect(wrapper.classes()).toContain(OpenedClass);
-      toggle.trigger('keydown.esc');
-      await wrapper.vm.$nextTick();
+      await toggle.trigger('keydown.esc');
       expect(wrapper.classes()).not.toContain(OpenedClass);
       expect(wrapper.emitted('open')).toBeTruthy();
       expect(wrapper.emitted('close')).toBeTruthy();
@@ -270,9 +269,9 @@ describe('DropdownCustom', () => {
     });
   });
 
-  it('closes the dropdown of you `click` outside', () => {
+  it('closes the dropdown of you `click` outside', async () => {
     wrapper = createWrapper();
-    wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
+    await wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
     const label = wrapper.findComponent('.visuallyhidden').element;
     expect(wrapper.classes()).toContain(OpenedClass);
     const event = new Event('click');
@@ -287,8 +286,7 @@ describe('DropdownCustom', () => {
   it('focuses the active option element on open', async () => {
     document.body.focus();
     wrapper = createWrapper();
-    wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
-    await wrapper.vm.$nextTick();
+    await wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
     const activeElement = wrapper.findComponent(`.${ActiveOptionClass}`);
     expect(document.activeElement).toEqual(activeElement.element);
   });

@@ -182,40 +182,37 @@ describe('Primary Dropdown', () => {
     });
   });
 
-  it('opens the dropdown on key `down`', () => {
-    btn.trigger('keydown.down');
+  it('opens the dropdown on key `down`', async () => {
+    await btn.trigger('keydown.down');
     expect(wrapper.classes('is-open')).toBe(true);
   });
 
-  it('opens the dropdown on key `up`', () => {
-    btn.trigger('keydown.up');
+  it('opens the dropdown on key `up`', async () => {
+    await btn.trigger('keydown.up');
     expect(wrapper.classes('is-open')).toBe(true);
   });
 
   it('focuses the next element, when `down` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
-    btn.trigger('keydown.down');
+    await btn.trigger('keydown.down');
     expect(wrapper.classes('is-open')).toBe(true);
     // use the down key on the first link
-    firstLink.trigger('keydown.down');
-    await wrapper.vm.$nextTick();
+    await firstLink.trigger('keydown.down');
     const secondOption = wrapper.findAll(`.${OptionClass}`).at(1).element;
     expect(document.activeElement).toEqual(secondOption);
   });
 
   it('focuses the previous element, when `up` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
-    btn.trigger('click');
+    await btn.trigger('click');
     // find the second option
     const secondOption = wrapper.findAll(`.${OptionClass}`).at(1);
     // use the down key on the first link
-    firstLink.trigger('keydown.down');
-    await wrapper.vm.$nextTick();
+    await firstLink.trigger('keydown.down');
     // assert it is focused
     expect(document.activeElement).toEqual(secondOption.element);
     // now click up on the active element
-    secondOption.trigger('keydown.up');
-    await wrapper.vm.$nextTick();
+    await secondOption.trigger('keydown.up');
     // assert the first element is active now
     expect(document.activeElement).toEqual(firstLink.element);
   });

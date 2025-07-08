@@ -272,8 +272,7 @@ describe('ImageAsset', () => {
     expect(img.classes()).not.toContain('fallback');
 
     // simulate an error loading the real image
-    img.trigger('error');
-    await wrapper.vm.$nextTick();
+    await img.trigger('error');
 
     expect(wrapper.findComponent('picture').exists()).toBe(false);
     const fallbackImg = wrapper.findComponent('img');

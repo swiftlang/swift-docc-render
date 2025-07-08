@@ -299,7 +299,7 @@ describe('QuickNavigationModal', () => {
     await wrapper.setData({
       debouncedInput: inputValue,
     });
-    wrapper.findComponent('.quick-navigation__refs').trigger('keydown.enter');
+    await wrapper.findComponent('.quick-navigation__refs').trigger('keydown.enter');
     wrapper.findComponent(FilterInput).trigger('keydown.enter');
     expect(handleKeyEnter).toHaveBeenCalledTimes(2);
   });

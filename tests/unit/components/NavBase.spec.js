@@ -115,12 +115,10 @@ describe('NavBase', () => {
     const overlay = wrapper.findComponent('.nav-overlay');
     expect(overlay.exists()).toBe(true);
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
-    overlay.trigger('click');
-    await wrapper.vm.$nextTick();
+    await overlay.trigger('click');
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
     // assert clicking again does not toggle on
-    overlay.trigger('click');
-    await wrapper.vm.$nextTick();
+    await overlay.trigger('click');
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
   });
 
@@ -166,8 +164,7 @@ describe('NavBase', () => {
       inBreakpoint: false,
       currentBreakpoint: BreakpointName.large,
     });
-    wrapper.findComponent('a.nav-menucta').trigger('click');
-    await wrapper.vm.$nextTick();
+    await wrapper.findComponent('a.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     expect(preTitleProps).toEqual({
       className: 'pre-title',
@@ -209,7 +206,7 @@ describe('NavBase', () => {
     const toggle = wrapper.findComponent({ ref: 'axToggle' });
     const label = toggle.find('.visuallyhidden');
     expect(label.text()).toBe('documentation.nav.open-menu');
-    toggle.trigger('click');
+    await toggle.trigger('click');
     expect(label.text()).toBe('documentation.nav.close-menu');
   });
 
@@ -251,7 +248,7 @@ describe('NavBase', () => {
       },
     });
     const tray = wrapper.findComponent(NavMenuItems);
-    tray.find('.foo').trigger('click');
+    await tray.find('.foo').trigger('click');
     expect(wrapper.classes()).toContain(NavStateClasses.isOpen);
     tray.find('.with-anchor a').trigger('click');
     expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
@@ -446,8 +443,7 @@ describe('NavBase', () => {
     emitEndOfTrayTransition(wrapper);
     // assert the lock is called once
     expect(scrollLock.lockScroll).toHaveBeenCalledTimes(1);
-    link.trigger('click');
-    await wrapper.vm.$nextTick();
+    await link.trigger('click');
     expect(scrollLock.unlockScroll).toHaveBeenCalledTimes(1);
   });
 
@@ -508,7 +504,7 @@ describe('NavBase', () => {
     wrapper = await createWrapper();
 
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(0);
-    wrapper.findComponent({ ref: 'axToggle' }).trigger('click');
+    await wrapper.findComponent({ ref: 'axToggle' }).trigger('click');
     expect(changeElementVOVisibility.hide).toHaveBeenCalledTimes(1);
     wrapper.findComponent({ ref: 'axToggle' }).trigger('click');
     expect(changeElementVOVisibility.show).toHaveBeenCalledTimes(1);
