@@ -69,11 +69,12 @@ describe('MobileCodePreview', () => {
     expect(codeListing.props('highlights')).toBe(highlights);
   });
 
-  it('displays a modal to show the full code listing when the file name is clicked', () => {
+  it('displays a modal to show the full code listing when the file name is clicked', async () => {
     const mobileCodeListing = wrapper.findComponent(MobileCodeListing);
     expect(mobileCodeListing.exists()).toBe(true);
 
     mobileCodeListing.vm.$emit('file-name-click');
+    await wrapper.vm.$nextTick();
 
     const modal = wrapper.findComponent('.full-code-listing-modal');
     expect(modal.exists()).toBe(true);
@@ -123,11 +124,12 @@ describe('MobileCodePreview', () => {
       expect(mobilePreviewToggle.props('isActionable')).toBe(false);
     });
 
-    it('displays a modal to show the media preview when the toggle is clicked', () => {
+    it('displays a modal to show the media preview when the toggle is clicked', async () => {
       const previewToggle = wrapper.findComponent(PreviewToggle);
       expect(previewToggle.exists()).toBe(true);
 
       previewToggle.vm.$emit('click');
+      await wrapper.vm.$nextTick();
 
       const modal = wrapper.findAll(GenericModal).at(1);
       expect(modal.exists()).toBe(true);

@@ -282,6 +282,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(wrapper.emitted('update:shownOnMobile')).toBeFalsy();
       // true test
       wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
+      await wrapper.vm.$nextTick();
       expect(wrapper.emitted('update:shownOnMobile')).toEqual([[false]]);
     });
   });
