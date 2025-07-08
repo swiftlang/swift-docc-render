@@ -47,7 +47,7 @@ describe('CallToActionButton', () => {
   });
 
   it('renders a `ButtonLink`', () => {
-    const btn = wrapper.find(ButtonLink);
+    const btn = wrapper.findComponent(ButtonLink);
     expect(btn.exists()).toBe(true);
     expect(btn.props('url'))
       .toBe(provide.store.state.references[propsData.action.identifier].url);
@@ -56,7 +56,7 @@ describe('CallToActionButton', () => {
   });
 
   it('renders a `DestinationDataProvider`', () => {
-    const provider = wrapper.find(DestinationDataProvider);
+    const provider = wrapper.findComponent(DestinationDataProvider);
     expect(provider.exists()).toBe(true);
     expect(provider.props('destination')).toBe(propsData.action);
   });

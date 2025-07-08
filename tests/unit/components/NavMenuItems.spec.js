@@ -27,6 +27,6 @@ describe('NavMenuItems', () => {
       },
     });
 
-    expect(wrapper.find('.foo').text()).toEqual('Foo');
+    expect(wrapper.findComponent('.foo').text()).toEqual('Foo');
   });
 });

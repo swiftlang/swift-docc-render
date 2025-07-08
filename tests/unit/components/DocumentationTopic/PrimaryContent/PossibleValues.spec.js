@@ -51,7 +51,7 @@ describe('PossibleValues', () => {
 
     const content = wrapper.findAll('.value-content');
     expect(content).toHaveLength(1);
-    const contentNode = wrapper.find(ContentNode);
+    const contentNode = wrapper.findComponent(ContentNode);
     expect(contentNode.exists()).toBe(true);
     expect(contentNode.props('content')).toBe(propsData.values[1].content);
   });

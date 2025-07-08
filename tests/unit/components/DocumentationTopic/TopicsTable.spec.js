@@ -77,7 +77,7 @@ describe('TopicsTable', () => {
   });
 
   it('renders a `ContentTable` with "Topics" title', () => {
-    const table = wrapper.find(ContentTable);
+    const table = wrapper.findComponent(ContentTable);
     expect(table.exists()).toBe(true);
     expect(table.props('anchor')).toBe('topics');
     expect(table.props('title')).toBe('Topics');
@@ -160,7 +160,7 @@ describe('TopicsTable', () => {
       title: 'Foo Bar',
     });
 
-    const table = wrapper.find(ContentTable);
+    const table = wrapper.findComponent(ContentTable);
     expect(table.exists()).toBe(true);
     expect(table.props('anchor')).toBe('foo-bar');
     expect(table.props('title')).toBe('Foo Bar');
@@ -188,12 +188,12 @@ describe('TopicsTable', () => {
   });
 
   it('renders a title wrapped in WordBreak, if `wrapTitle: true`', () => {
-    let wordBreak = wrapper.find(WordBreak);
+    let wordBreak = wrapper.findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(false);
 
     wrapper.setProps({ wrapTitle: true });
-    const linkableHeading = wrapper.find(LinkableHeading);
-    wordBreak = wrapper.find(WordBreak);
+    const linkableHeading = wrapper.findComponent(LinkableHeading);
+    wordBreak = wrapper.findComponent(WordBreak);
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
     expect(linkableHeading.exists()).toBe(true);
     expect(linkableHeading.props('level')).toBe(3);

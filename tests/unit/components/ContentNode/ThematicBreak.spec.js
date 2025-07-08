@@ -13,7 +13,7 @@ import ThematicBreak from 'docc-render/components/ContentNode/ThematicBreak.vue'
 describe('ThematicBreak', () => {
   it('renders an <hr> element', () => {
     const wrapper = shallowMount(ThematicBreak);
-    const hr = wrapper.find('hr');
+    const hr = wrapper.findComponent('hr');
     expect(hr.exists()).toBe(true);
     expect(hr.classes('thematic-break')).toBe(true);
   });

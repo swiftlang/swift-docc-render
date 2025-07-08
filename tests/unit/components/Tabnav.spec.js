@@ -38,7 +38,7 @@ describe("Tabnav", () => {
         default: '<div class="foo">Foo</div>'
       }
     });
-    expect(wrapper.find(".foo").exists()).toEqual(true);
+    expect(wrapper.findComponent(".foo").exists()).toEqual(true);
   });
 
   it("provides object with current selected tab and method to change it", () => {
@@ -90,7 +90,7 @@ describe("Tabnav", () => {
         position: 'center',
       },
     });
-    expect(wrapper.find('.tabnav').classes()).toContain('tabnav--center');
+    expect(wrapper.findComponent('.tabnav').classes()).toContain('tabnav--center');
   });
 
   it('applies a `vertical` class', () => {
@@ -100,6 +100,6 @@ describe("Tabnav", () => {
         vertical: true,
       },
     });
-    expect(wrapper.find('.tabnav').classes()).toContain('tabnav--vertical');
+    expect(wrapper.findComponent('.tabnav').classes()).toContain('tabnav--vertical');
   });
 });

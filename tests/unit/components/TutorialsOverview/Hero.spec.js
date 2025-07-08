@@ -52,19 +52,19 @@ describe('Hero', () => {
   });
 
   it('renders an h1 title', () => {
-    const h1 = wrapper.find('h1.title');
+    const h1 = wrapper.findComponent('h1.title');
     expect(h1.exists()).toBe(true);
     expect(h1.text()).toBe(propsData.title);
   });
 
   it('renders a `ContentNode`', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.content);
   });
 
   it('renders a `CallToActionButton`', () => {
-    const btn = wrapper.find(CallToActionButton);
+    const btn = wrapper.findComponent(CallToActionButton);
     expect(btn.exists()).toBe(true);
     expect(btn.props('action')).toEqual(propsData.action);
     expect(btn.props('isDark')).toBe(true);
@@ -73,13 +73,13 @@ describe('Hero', () => {
   });
 
   it('renders an `Asset`', () => {
-    const asset = wrapper.find(Asset);
+    const asset = wrapper.findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe(propsData.image);
   });
 
   it('renders an estimated time', () => {
-    const meta = wrapper.find('p.meta');
+    const meta = wrapper.findComponent('p.meta');
     expect(meta.exists()).toBe(true);
     expect(meta.text()).toMatch(/4hr 2min\s+tutorials\.estimated-time/);
 

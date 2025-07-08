@@ -98,7 +98,7 @@ describe('ChapterTopicList', () => {
         },
       ],
     });
-    expect(wrapper.find('li.topic .container').attributes('aria-label')).toEqual('Foo - Tutorial');
+    expect(wrapper.findComponent('li.topic .container').attributes('aria-label')).toEqual('Foo - Tutorial');
   });
 
   it('adds modifiers for the kind of topic (article or tutorial)', () => {

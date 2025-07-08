@@ -16,7 +16,7 @@ const { GenericError } = ServerError.components;
 describe('ServerError', () => {
   it('renders a `GenericError`', () => {
     const wrapper = shallowMount(ServerError);
-    const error = wrapper.find(GenericError);
+    const error = wrapper.findComponent(GenericError);
     expect(error.exists()).toBe(true);
   });
 });

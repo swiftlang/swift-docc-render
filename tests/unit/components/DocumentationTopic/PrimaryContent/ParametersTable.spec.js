@@ -101,7 +101,7 @@ describe('ParametersTable', () => {
 
   it('renders the appropriate `changes` classes on `.param`', () => {
     const wrapper = createWrapper();
-    const param = wrapper.find('.param');
+    const param = wrapper.findComponent('.param');
     expect(param.classes()).toContain('changed');
     expect(param.classes()).toContain('changed-modified');
   });
@@ -112,7 +112,7 @@ describe('ParametersTable', () => {
         changes: undefined,
       },
     });
-    const param = wrapper.find('.param');
+    const param = wrapper.findComponent('.param');
     expect(param.classes()).not.toContain('changed');
     expect(param.classes()).not.toContain('changed-modified');
     expect(scopedSlotProps.description[0]).toHaveProperty('changes', {});
@@ -134,7 +134,7 @@ describe('ParametersTable', () => {
       },
     });
 
-    const param = wrapper.find('.param');
+    const param = wrapper.findComponent('.param');
 
     expect(param.classes()).toContain('changed');
     expect(param.classes()).toContain('changed-modified');

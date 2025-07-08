@@ -28,7 +28,7 @@ describe('CodeListingFilename', () => {
   it('renders a span when `isFileNameActionable=false`', () => {
     const wrapper = mount(fileName, false);
 
-    const span = wrapper.find('span');
+    const span = wrapper.findComponent('span');
     expect(span.exists()).toBe(true);
     expect(span.text()).toBe(fileName);
   });
@@ -36,7 +36,7 @@ describe('CodeListingFilename', () => {
   it('renders an anchor when `isFileNameActionable=true` and emits an event when clicked', () => {
     const wrapper = mount(fileName, true);
 
-    const link = wrapper.find('a');
+    const link = wrapper.findComponent('a');
     expect(link.exists()).toBe(true);
     expect(link.text()).toBe(fileName);
 
@@ -47,7 +47,7 @@ describe('CodeListingFilename', () => {
   it('renders a file icon', () => {
     const wrapper = mount(fileName, false);
 
-    const fileIcon = wrapper.find(CodeListingFileIcon);
+    const fileIcon = wrapper.findComponent(CodeListingFileIcon);
     expect(fileIcon.exists()).toBe(true);
     expect(fileIcon.props('fileType')).toBe('swift');
   });

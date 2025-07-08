@@ -24,7 +24,7 @@ describe('CallToAction', () => {
   it('renders a `BaseCTA` with the "Next" label', () => {
     const wrapper = shallowMount(CallToAction, { propsData });
 
-    const cta = wrapper.find(BaseCTA);
+    const cta = wrapper.findComponent(BaseCTA);
     expect(cta.exists()).toBe(true);
     expect(cta.props()).toEqual(propsData);
     expect(cta.attributes('label')).toBe('tutorials.next');

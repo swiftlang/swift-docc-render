@@ -81,7 +81,7 @@ describe('TutorialsOverview', () => {
   });
 
   it('renders a `nav` with the category name as the title', () => {
-    const nav = wrapper.find(Nav);
+    const nav = wrapper.findComponent(Nav);
     expect(nav.exists()).toBe(true);
     expect(nav.text()).toBe(propsData.metadata.category);
   });
@@ -95,7 +95,7 @@ describe('TutorialsOverview', () => {
   });
 
   it('renders a `Hero`', () => {
-    const hero = wrapper.find(Hero);
+    const hero = wrapper.findComponent(Hero);
     expect(hero.exists()).toBe(true);
 
     const { kind, ...heroProps } = propsData.sections[0];
@@ -106,7 +106,7 @@ describe('TutorialsOverview', () => {
   });
 
   it('renders a `LearningPath`', () => {
-    const learningPath = wrapper.find(LearningPath);
+    const learningPath = wrapper.findComponent(LearningPath);
     expect(learningPath.exists()).toBe(true);
     expect(learningPath.props('sections')).toEqual(propsData.sections.slice(1));
   });

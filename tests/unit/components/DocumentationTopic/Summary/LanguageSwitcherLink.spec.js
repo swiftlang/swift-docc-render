@@ -20,7 +20,7 @@ describe('LanguageSwitcherLink', () => {
       propsData: { url },
       slots,
     });
-    const link = wrapper.find('a');
+    const link = wrapper.findComponent('a');
     expect(link.exists()).toBe(true);
     expect(link.attributes('href')).toBe(url);
     expect(link.text()).toBe(slots.default);

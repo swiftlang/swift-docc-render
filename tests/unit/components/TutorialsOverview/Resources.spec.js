@@ -51,14 +51,14 @@ describe('Resources', () => {
   });
 
   it('renders a VolumeName component', () => {
-    const title = wrapper.find(VolumeName);
+    const title = wrapper.findComponent(VolumeName);
     expect(title.exists()).toBe(true);
     expect(title.props('name')).toBe('sections.resources');
     expect(title.props('content')).toEqual(propsData.content);
   });
 
   it('renders a `TileGroup`', () => {
-    const group = wrapper.find(TileGroup);
+    const group = wrapper.findComponent(TileGroup);
     expect(group.exists()).toBe(true);
     expect(group.props('tiles')).toEqual(propsData.tiles);
   });

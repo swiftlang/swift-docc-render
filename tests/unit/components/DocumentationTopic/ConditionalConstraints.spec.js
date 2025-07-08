@@ -45,7 +45,7 @@ describe('ConditionalConstraints', () => {
     const wrapper = shallowMount(ConditionalConstraints, { propsData });
     expect(wrapper.classes('conditional-constraints')).toBe(true);
 
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.props('content')).toEqual([
       ...prefix,
       { type: ContentNode.InlineType.text, text: ' ' },

@@ -39,7 +39,7 @@ describe('Hero', () => {
   });
 
   it('renders a `TutorialHero`', () => {
-    const hero = wrapper.find(TutorialHero);
+    const hero = wrapper.findComponent(TutorialHero);
     expect(hero.exists()).toBe(true);
     expect(hero.props()).toEqual(propsData);
   });

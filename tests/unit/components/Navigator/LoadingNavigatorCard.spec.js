@@ -35,7 +35,7 @@ beforeEach(() => {
 
 describe('LoadingNavigatorCard', () => {
   it('renders the LoadingNavigatorCard and it emits a `close` event', async () => {
-    const baseNavigator = wrapper.find(BaseNavigatorCard);
+    const baseNavigator = wrapper.findComponent(BaseNavigatorCard);
     baseNavigator.vm.$emit('close');
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
@@ -46,7 +46,7 @@ describe('LoadingNavigatorCard', () => {
   });
 
   it('hides loading markup from screen readers', () => {
-    expect(wrapper.find('.loading-navigator').attributes()).toMatchObject({
+    expect(wrapper.findComponent('.loading-navigator').attributes()).toMatchObject({
       'aria-hidden': 'true',
     });
   });

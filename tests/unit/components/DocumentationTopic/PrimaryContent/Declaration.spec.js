@@ -79,7 +79,7 @@ describe('Declaration', () => {
   });
 
   it('renders a `DeclarationList`', () => {
-    const group = wrapper.find(DeclarationList);
+    const group = wrapper.findComponent(DeclarationList);
     expect(group.exists()).toBe(true);
     expect(group.props('declaration')).toEqual(propsData.declarations[0]);
     expect(group.props()).toHaveProperty('declListExpanded', false);
@@ -91,14 +91,14 @@ describe('Declaration', () => {
   });
 
   it('renders a DeclarationSourceLink if `source` is available', () => {
-    expect(wrapper.find(DeclarationSourceLink).exists()).toBe(false);
+    expect(wrapper.findComponent(DeclarationSourceLink).exists()).toBe(false);
     wrapper.setProps({
       source: {
         url: 'foo.com',
         fileName: 'Foo.swift',
       },
     });
-    expect(wrapper.find(DeclarationSourceLink).props()).toEqual({
+    expect(wrapper.findComponent(DeclarationSourceLink).props()).toEqual({
       url: 'foo.com',
       fileName: 'Foo.swift',
     });
@@ -111,12 +111,12 @@ describe('Declaration', () => {
         fileName: 'Foo.swift',
       },
     });
-    expect(wrapper.find(DeclarationSourceLink).exists()).toBe(true);
+    expect(wrapper.findComponent(DeclarationSourceLink).exists()).toBe(true);
 
     wrapper.setProps({
       declListExpanded: true,
     });
-    expect(wrapper.find(DeclarationSourceLink).exists()).toBe(false);
+    expect(wrapper.findComponent(DeclarationSourceLink).exists()).toBe(false);
   });
 
   it('renders a `ConditionalConstraints` for availability with `conformance` data', () => {
@@ -126,7 +126,7 @@ describe('Declaration', () => {
     };
     wrapper.setProps({ conformance });
 
-    const constraints = wrapper.find(ConditionalConstraints);
+    const constraints = wrapper.findComponent(ConditionalConstraints);
     expect(constraints.exists()).toBe(true);
     expect(constraints.props()).toEqual({
       constraints: conformance.constraints,
@@ -188,9 +188,9 @@ describe('Declaration', () => {
 
   it('renders a `DeclarationDiff` when there are API changes for current and previous and collapsed other declaration list', () => {
     // no DeclarationDiff if no changes
-    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
+    expect(wrapper.findComponent(DeclarationDiff).exists()).toBe(false);
     // there is no `.changed` class applied by default
-    expect(wrapper.find('changed').exists()).toBe(false);
+    expect(wrapper.findComponent('changed').exists()).toBe(false);
 
     const provide = provideFactory({
       [identifier]: {
@@ -207,7 +207,7 @@ describe('Declaration', () => {
       provide,
     });
 
-    const declarationDiff = wrapper.find(DeclarationDiff);
+    const declarationDiff = wrapper.findComponent(DeclarationDiff);
     expect(declarationDiff.exists()).toBe(true);
     expect(declarationDiff.props()).toEqual({
       changes: provide.store.state.apiChanges.foo,
@@ -218,7 +218,7 @@ describe('Declaration', () => {
     wrapper.setProps({
       declListExpanded: true,
     });
-    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
+    expect(wrapper.findComponent(DeclarationDiff).exists()).toBe(false);
   });
 
   it('renders a `DeclarationList` with `added` change type prop', () => {
@@ -236,9 +236,9 @@ describe('Declaration', () => {
       provide,
     });
 
-    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
+    expect(wrapper.findComponent(DeclarationDiff).exists()).toBe(false);
 
-    const declarationList = wrapper.find(DeclarationList);
+    const declarationList = wrapper.findComponent(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
     expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
   });
@@ -255,9 +255,9 @@ describe('Declaration', () => {
       provide,
     });
 
-    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
+    expect(wrapper.findComponent(DeclarationDiff).exists()).toBe(false);
 
-    const declarationList = wrapper.find(DeclarationList);
+    const declarationList = wrapper.findComponent(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
     expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
   });
@@ -277,9 +277,9 @@ describe('Declaration', () => {
       provide,
     });
 
-    expect(wrapper.find(DeclarationDiff).exists()).toBe(false);
+    expect(wrapper.findComponent(DeclarationDiff).exists()).toBe(false);
 
-    const declarationList = wrapper.find(DeclarationList);
+    const declarationList = wrapper.findComponent(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.deprecated);
     expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
   });

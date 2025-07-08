@@ -69,7 +69,7 @@ describe('LocaleSelector', () => {
 
   it('renders the locale selector', () => {
     expect(wrapper.is('div.locale-selector')).toBe(true);
-    expect(wrapper.find('select').exists()).toBe(true);
+    expect(wrapper.findComponent('select').exists()).toBe(true);
   });
 
   it('updates router when option is selected', () => {
@@ -85,7 +85,7 @@ describe('LocaleSelector', () => {
   });
 
   it('renders the icon', () => {
-    expect(wrapper.find(ChevronThickIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(ChevronThickIcon).exists()).toBe(true);
   });
 
   it('only renders available locales for options', () => {

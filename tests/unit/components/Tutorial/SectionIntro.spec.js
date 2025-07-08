@@ -72,7 +72,7 @@ describe('SectionIntro', () => {
   });
 
   it('renders a `Headline`', () => {
-    const headline = wrapper.find(Headline);
+    const headline = wrapper.findComponent(Headline);
     expect(headline.exists()).toBe(true);
     expect(headline.props('level')).toBe(2);
 
@@ -92,13 +92,13 @@ describe('SectionIntro', () => {
   });
 
   it('renders a `ContentNode`', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual([paragraph]);
   });
 
   it('renders an `Asset`', () => {
-    const asset = wrapper.find('.media').find(Asset);
+    const asset = wrapper.findComponent('.media').find(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe('foo.jpg');
     expect(asset.props()).toEqual({
@@ -137,7 +137,7 @@ describe('SectionIntro', () => {
     });
 
     it('renders an `ExpandedIntro`', () => {
-      const expandedIntro = wrapper.find(ExpandedIntro);
+      const expandedIntro = wrapper.findComponent(ExpandedIntro);
       expect(expandedIntro.exists()).toBe(true);
       expect(expandedIntro.props()).toEqual({
         content: expandedSections,

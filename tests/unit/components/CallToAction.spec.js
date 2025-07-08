@@ -45,7 +45,7 @@ describe('CallToAction', () => {
   });
 
   it('renders a row with 2 columns', () => {
-    const row = wrapper.find(Row);
+    const row = wrapper.findComponent(Row);
     expect(row.exists()).toBe(true);
 
     expect(row.contains(LeftColumn)).toBe(true);
@@ -56,7 +56,7 @@ describe('CallToAction', () => {
     let col;
 
     beforeEach(() => {
-      col = wrapper.find(LeftColumn);
+      col = wrapper.findComponent(LeftColumn);
     });
 
     it('renders a label', () => {
@@ -88,7 +88,7 @@ describe('CallToAction', () => {
   });
 
   it('renders an asset in the RightColumn', () => {
-    const asset = wrapper.find(RightColumn).find(Asset);
+    const asset = wrapper.findComponent(RightColumn).find(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe(propsData.media);
   });

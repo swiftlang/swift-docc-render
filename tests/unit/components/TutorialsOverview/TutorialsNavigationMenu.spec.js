@@ -30,7 +30,7 @@ describe('TutorialsNavigationMenu', () => {
   });
 
   it('renders a toggle link with the title', () => {
-    const link = wrapper.find('button.toggle');
+    const link = wrapper.findComponent('button.toggle');
 
     expect(link.attributes('type')).toBe('button');
     expect(link.text()).toBe(propsData.title);
@@ -43,9 +43,9 @@ describe('TutorialsNavigationMenu', () => {
     expect(icon.is(InlineCloseIcon)).toBe(true);
   });
 
-  it('renders a `TutorialsNavigationList` with slot content', () => {
-    wrapper.setProps({ collapsed: false });
-    const navigation = wrapper.find(TutorialsNavigationList);
+  it('renders a `TutorialsNavigationList` with slot content', async () => {
+    await wrapper.setProps({ collapsed: false });
+    const navigation = wrapper.findComponent(TutorialsNavigationList);
     expect(navigation.exists()).toBe(true);
     expect(navigation.contains('li')).toBe(true);
     expect(navigation.text()).toBe('foo');
@@ -53,18 +53,18 @@ describe('TutorialsNavigationMenu', () => {
   });
 
   it('does not render the List if collapsed is false', () => {
-    const navigation = wrapper.find(TutorialsNavigationList);
+    const navigation = wrapper.findComponent(TutorialsNavigationList);
     expect(navigation.exists()).toBe(false);
   });
 
   it('emits a "select-menu" event with the title when the toggle is clicked', () => {
-    wrapper.find('.toggle').trigger('click');
+    wrapper.findComponent('.toggle').trigger('click');
     expect(wrapper.emitted()['select-menu'][0]).toEqual([propsData.title]);
   });
 
-  it('emits a "deselect-menu" event when not collapsed and the toggle is clicked', () => {
-    wrapper.setProps({ collapsed: false });
-    const link = wrapper.find('.toggle');
+  it('emits a "deselect-menu" event when not collapsed and the toggle is clicked', async () => {
+    await wrapper.setProps({ collapsed: false });
+    const link = wrapper.findComponent('.toggle');
 
     // assert the correct AX tag is being applied
     expect(link.attributes('aria-expanded')).toBe('true');

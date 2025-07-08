@@ -73,7 +73,7 @@ const createWrapper = opts => shallowMount(AdjustableSidebarWidth, {
 });
 
 function assertWidth(wrapper, value) {
-  expect(wrapper.find('.aside').attributes('style')).toContain(`width: ${value}px`);
+  expect(wrapper.findComponent('.aside').attributes('style')).toContain(`width: ${value}px`);
 }
 
 Object.defineProperty(HTMLElement.prototype, 'offsetLeft', { configurable: true, value: 100 });
@@ -87,14 +87,14 @@ describe('AdjustableSidebarWidth', () => {
   it('renders the AdjustableSidebarWidth', () => {
     const wrapper = createWrapper();
     // sidebar
-    expect(wrapper.find('.sidebar').exists()).toBe(true);
-    expect(wrapper.find('.aside').exists()).toBe(true);
+    expect(wrapper.findComponent('.sidebar').exists()).toBe(true);
+    expect(wrapper.findComponent('.aside').exists()).toBe(true);
     // handle
-    expect(wrapper.find('.resize-handle').exists()).toBe(true);
+    expect(wrapper.findComponent('.resize-handle').exists()).toBe(true);
     // sidebar-slot
-    expect(wrapper.find('.aside-content').text()).toBe('Aside Content');
+    expect(wrapper.findComponent('.aside-content').text()).toBe('Aside Content');
     // content and default slot
-    expect(wrapper.find('.default-content').text()).toBe('Default Content');
+    expect(wrapper.findComponent('.default-content').text()).toBe('Default Content');
   });
 
   it('provides props from the aside scoped slot', () => {
@@ -119,15 +119,15 @@ describe('AdjustableSidebarWidth', () => {
         }),
       });
       assertWidth(wrapper, 650);
-      wrapper.find(BreakpointEmitter).vm.$emit('change', 'medium');
+      wrapper.findComponent(BreakpointEmitter).vm.$emit('change', 'medium');
       assertWidth(wrapper, 500); // 50% on medium
     });
 
     it('applies a momentary no-transition class to the aside, if going from a larger breakpoint into `small`', async () => {
       const wrapper = createWrapper();
-      const aside = wrapper.find('.aside');
+      const aside = wrapper.findComponent('.aside');
       expect(aside.classes()).not.toContain('no-transition');
-      const emitter = wrapper.find(BreakpointEmitter);
+      const emitter = wrapper.findComponent(BreakpointEmitter);
       expect(emitter.props('scope')).toEqual(BreakpointScopes.nav);
       emitter.vm.$emit('change', BreakpointName.small);
       expect(aside.classes()).toContain('no-transition');
@@ -204,7 +204,7 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       await flushPromises();
       // assert not open
-      const aside = wrapper.find('.aside');
+      const aside = wrapper.findComponent('.aside');
       expect(aside.classes()).not.toContain('show-on-mobile');
       expect(FocusTrap).toHaveBeenCalledTimes(1);
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(0);
@@ -242,7 +242,7 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       await flushPromises();
       // assert not open
-      const aside = wrapper.find('.aside');
+      const aside = wrapper.findComponent('.aside');
       // trigger opening externally
       wrapper.setProps({ shownOnMobile: true });
       await flushPromises();
@@ -277,18 +277,18 @@ describe('AdjustableSidebarWidth', () => {
         },
       });
       // setup
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+      wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('update:shownOnMobile')).toBeFalsy();
       // true test
-      wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
+      wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.large);
       expect(wrapper.emitted('update:shownOnMobile')).toEqual([[false]]);
     });
   });
 
   it('adds a `hide-on-large` class, when `hiddenOnLarge: true`', async () => {
     const wrapper = createWrapper();
-    const aside = wrapper.find({ ref: 'aside' });
+    const aside = wrapper.findComponent({ ref: 'aside' });
     expect(aside.classes()).not.toContain('hide-on-large');
     expect(aside.classes()).not.toContain('sidebar-transitioning');
     wrapper.setProps({ hiddenOnLarge: true });
@@ -298,7 +298,7 @@ describe('AdjustableSidebarWidth', () => {
       'aria-hidden': 'true',
     });
     wrapper.setProps({ hiddenOnLarge: false });
-    expect(wrapper.find({ ref: 'aside' }).classes()).not.toContain('hide-on-large');
+    expect(wrapper.findComponent({ ref: 'aside' }).classes()).not.toContain('hide-on-large');
     expect(aside.classes()).toContain('sidebar-transitioning');
     await wrapper.vm.$nextTick();
     expect(aside.classes()).not.toContain('sidebar-transitioning');
@@ -355,9 +355,9 @@ describe('AdjustableSidebarWidth', () => {
 
   it('allows dragging the handle to expand/contract the sidebar, with the mouse', () => {
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     // assert dragging
-    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mouseevent' });
+    wrapper.findComponent('.resize-handle').trigger('mousedown', { type: 'mouseevent' });
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       clientX: 500,
     }));
@@ -389,9 +389,9 @@ describe('AdjustableSidebarWidth', () => {
 
   it('allows dragging the handle to expand/contract the sidebar, with the touch device', () => {
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     // assert dragging
-    wrapper.find('.resize-handle').trigger('touchstart', { type: 'touchstart' });
+    wrapper.findComponent('.resize-handle').trigger('touchstart', { type: 'touchstart' });
     document.dispatchEvent(createEvent(eventsMap.touch.move, {
       touches: [{
         clientX: 500,
@@ -430,9 +430,9 @@ describe('AdjustableSidebarWidth', () => {
   it('prevents dragging outside of the window', () => {
     window.innerWidth = 1000;
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     // assert dragging
-    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mousedown' });
+    wrapper.findComponent('.resize-handle').trigger('mousedown', { type: 'mousedown' });
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       clientX: window.innerWidth + 500,
     }));
@@ -444,9 +444,9 @@ describe('AdjustableSidebarWidth', () => {
   it('prevents dragging outside of the max container', () => {
     window.innerWidth = MAX_WIDTH + 200; // very wide screen
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     // assert dragging
-    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mousedown' });
+    wrapper.findComponent('.resize-handle').trigger('mousedown', { type: 'mousedown' });
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       clientX: window.innerWidth + 500,
     }));
@@ -457,9 +457,9 @@ describe('AdjustableSidebarWidth', () => {
 
   it('prevents dragging below the `minWidth`', () => {
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     // assert dragging
-    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mousedown' });
+    wrapper.findComponent('.resize-handle').trigger('mousedown', { type: 'mousedown' });
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       clientX: 100,
     }));
@@ -470,10 +470,10 @@ describe('AdjustableSidebarWidth', () => {
 
   it('force closes the nav, if dragging below the forceClose threshold', () => {
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     // assert dragging
     expect(wrapper.emitted('update:hiddenOnLarge')).toBeFalsy();
-    wrapper.find('.resize-handle').trigger('mousedown', { type: 'mousedown' });
+    wrapper.findComponent('.resize-handle').trigger('mousedown', { type: 'mousedown' });
     document.dispatchEvent(createEvent(eventsMap.mouse.move, {
       // minimum is 200, so 100px wide is the forceClose cutoff point, so we drag 50px beyond it
       clientX: 150,
@@ -514,9 +514,9 @@ describe('AdjustableSidebarWidth', () => {
   it('accounts for zoomed in devices', () => {
     window.scrollX = 55;
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     // assert dragging
-    wrapper.find('.resize-handle').trigger('touchstart', { type: 'touchstart' });
+    wrapper.findComponent('.resize-handle').trigger('touchstart', { type: 'touchstart' });
     document.dispatchEvent(createEvent(eventsMap.touch.move, {
       touches: [{
         clientX: 300,
@@ -540,7 +540,7 @@ describe('AdjustableSidebarWidth', () => {
     window.Event = null;
 
     const wrapper = createWrapper();
-    const aside = wrapper.find('.aside');
+    const aside = wrapper.findComponent('.aside');
     expect(aside.classes()).not.toContain('sidebar-transitioning');
     aside.trigger('transitionstart', { propertyName: 'width' });
     expect(aside.classes()).toContain('sidebar-transitioning');
@@ -562,7 +562,7 @@ describe('AdjustableSidebarWidth', () => {
       },
     });
     expect(wrapper.classes()).toContain('sidebar-hidden');
-    const aside = wrapper.find({ ref: 'aside' });
+    const aside = wrapper.findComponent({ ref: 'aside' });
     expect(aside.attributes('aria-hidden')).toBe('true');
     expect(aside.classes()).toContain('hide-on-large');
   });
@@ -580,12 +580,12 @@ describe('AdjustableSidebarWidth', () => {
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
     assertWidth(wrapper, 200); // hardcoded width
-    expect(wrapper.find('.resize-handle').exists()).toBe(false);
+    expect(wrapper.findComponent('.resize-handle').exists()).toBe(false);
   });
 
   describe('stores the content width in the store', () => {
     function setContentWidth(wrapper, value) {
-      Object.defineProperty(wrapper.find({ ref: 'content' }).element, 'offsetWidth', {
+      Object.defineProperty(wrapper.findComponent({ ref: 'content' }).element, 'offsetWidth', {
         value,
         writable: true,
       });
@@ -595,7 +595,7 @@ describe('AdjustableSidebarWidth', () => {
       const wrapper = createWrapper();
       setContentWidth(wrapper, 99);
       expect(store.state.contentWidth).toBe(0);
-      wrapper.find('.resize-handle').trigger('touchstart', { type: 'touchstart' });
+      wrapper.findComponent('.resize-handle').trigger('touchstart', { type: 'touchstart' });
       document.dispatchEvent(createEvent(eventsMap.touch.move, {
         touches: [{
           clientX: 300,
@@ -613,7 +613,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(store.state.contentWidth).toBe(0);
       // setup an external close
       wrapper.setProps({ hiddenOnLarge: true });
-      const aside = wrapper.find('.aside');
+      const aside = wrapper.findComponent('.aside');
       aside.trigger('transitionstart', { propertyName: 'width' });
       aside.trigger('transitionend', { propertyName: 'width' });
       await flushPromises();

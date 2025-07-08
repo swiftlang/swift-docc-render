@@ -125,13 +125,13 @@ describe('SectionSteps', () => {
     expect(wrapper.is('div.steps')).toBe(true);
     expect(wrapper.contains('div.content-container')).toBe(true);
 
-    const backgroundTheme = wrapper.find(BackgroundTheme);
+    const backgroundTheme = wrapper.findComponent(BackgroundTheme);
     expect(backgroundTheme.exists()).toBe(true);
     expect(backgroundTheme.classes('asset-container')).toBe(true);
   });
 
   it('renders a `ContentNode` for a non-"step" node', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual([exampleParagraph]);
   });
@@ -320,7 +320,7 @@ describe('SectionSteps', () => {
     });
 
     it('renders the media', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
       const asset = container.find(Asset);
       expect(asset.exists()).toBe(true);
@@ -338,7 +338,7 @@ describe('SectionSteps', () => {
     });
 
     it('renders the code with the preview', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
       const preview = container.find(CodePreview);
       expect(preview.exists()).toBe(true);
@@ -358,13 +358,13 @@ describe('SectionSteps', () => {
     });
 
     it('renders the code preview without the runtime preview', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
       const preview = container.find(CodePreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('code')).toBe(exampleStepWithCodeNoRuntimePreview.code);
 
-      const asset = wrapper.find(Asset);
+      const asset = wrapper.findComponent(Asset);
       expect(asset.exists()).toBe(false);
     });
   });
@@ -377,7 +377,7 @@ describe('SectionSteps', () => {
     });
 
     it('renders the code with the preview', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
       const asset = container.find(Asset);
       expect(asset.exists()).toBe(false);
@@ -392,7 +392,7 @@ describe('SectionSteps', () => {
 
     beforeEach(() => {
       wrapper.vm.onIntersect({ target: target(key), isIntersecting: true });
-      wrapper.find(CodePreview).vm.$emit('runtime-preview-toggle', false);
+      wrapper.findComponent(CodePreview).vm.$emit('runtime-preview-toggle', false);
     });
 
     it('emits the event as well with the same value', () => {
@@ -433,7 +433,7 @@ describe('SectionSteps', () => {
     });
 
     it('still displays non-step content', () => {
-      const node = wrapper.find(ContentNode);
+      const node = wrapper.findComponent(ContentNode);
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toEqual([exampleParagraph]);
     });
@@ -457,7 +457,7 @@ describe('SectionSteps', () => {
     });
 
     it('does not render an asset container in S', () => {
-      expect(wrapper.find('.asset-container').exists()).toBe(false);
+      expect(wrapper.findComponent('.asset-container').exists()).toBe(false);
     });
   });
 });

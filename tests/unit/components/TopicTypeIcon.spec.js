@@ -37,7 +37,7 @@ describe('TopicTypeIcon', () => {
         withColors: true,
       },
     });
-    const iconComponent = wrapper.find(icon);
+    const iconComponent = wrapper.findComponent(icon);
     expect(iconComponent.props()).toMatchObject(bindings);
     if (color) {
       // we cannot assert on component, because JSDOM does not work with custom CSS vars
@@ -70,7 +70,7 @@ describe('TopicTypeIcon', () => {
         type: TopicTypes.class,
       },
     });
-    const icon = wrapper.find('.icon-inline');
+    const icon = wrapper.findComponent('.icon-inline');
     expect(icon.is(OverridableAsset)).toBe(true);
     expect(icon.props()).toMatchObject({
       imageOverride,

@@ -40,7 +40,7 @@ describe('Assessments', () => {
     expect(assessments.exists()).toBe(true);
     expect(assessments.props()).toEqual(propsData);
 
-    const message = wrapper.find('p');
+    const message = wrapper.findComponent('p');
     expect(message.exists()).toBe(true);
     expect(message.text()).toBe(
       'Great job, you\'ve answered all the questions for this article.',

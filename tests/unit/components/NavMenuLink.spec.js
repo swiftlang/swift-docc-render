@@ -25,7 +25,7 @@ describe('NavMenuLink', () => {
       slots: { default: 'Foo' },
     });
 
-    const span = wrapper.find('span.nav-menu-link.current');
+    const span = wrapper.findComponent('span.nav-menu-link.current');
     expect(span.exists()).toBe(true);
     expect(span.attributes('aria-current')).toBe('page');
     expect(span.attributes('aria-disabled')).toBe('true');
@@ -47,7 +47,7 @@ describe('NavMenuLink', () => {
       propsData: { url: currentUrl },
       mocks: { $route: { path: `${currentUrl}/` } },
     });
-    expect(wrapper.find('span.nav-menu-link').classes()).toContain('current');
+    expect(wrapper.findComponent('span.nav-menu-link').classes()).toContain('current');
   });
 
   it('renders a <Reference> for local routes', () => {
@@ -57,7 +57,7 @@ describe('NavMenuLink', () => {
       slots: { default: 'Blah' },
     });
 
-    const link = wrapper.find(Reference);
+    const link = wrapper.findComponent(Reference);
     expect(link.exists()).toBe(true);
     expect(link.classes('nav-menu-link')).toBe(true);
     expect(link.props('url')).toEqual('/foo/bar');

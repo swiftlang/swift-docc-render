@@ -95,7 +95,7 @@ describe('DecoratedTopicTitle', () => {
     const token = { kind: TokenKind.externalParam, text: 'blah' };
     wrapper.setProps({ tokens: [token] });
 
-    const identifier = wrapper.find('.identifier');
+    const identifier = wrapper.findComponent('.identifier');
     expect(identifier.exists()).toBe(true);
     expect(identifier.text()).toBe(token.text);
   });

@@ -68,7 +68,7 @@ describe('DocumentationNav', () => {
   });
 
   it('renders a `NavBase` at the root with appropriate attributes', () => {
-    const nav = wrapper.find(NavBase);
+    const nav = wrapper.findComponent(NavBase);
     expect(nav.exists()).toBe(true);
     expect(nav.attributes('aria-label')).toBe('api-reference');
     expect(nav.classes('nav-hero')).toBe(false);
@@ -86,13 +86,13 @@ describe('DocumentationNav', () => {
     wrapper.setProps({
       isDark: true,
     });
-    const nav = wrapper.find(NavBase);
+    const nav = wrapper.findComponent(NavBase);
     expect(nav.classes('theme-dark')).toBe(true);
   });
 
   it('accepts a showActions prop', () => {
     // it has language toggle but it hasn't slots
-    expect(wrapper.find(NavBase).props()).toHaveProperty('showActions', true);
+    expect(wrapper.findComponent(NavBase).props()).toHaveProperty('showActions', true);
 
     wrapper = shallowMount(DocumentationNav, {
       propsData: {
@@ -106,7 +106,7 @@ describe('DocumentationNav', () => {
       },
     });
     // it doesn't have language toggle but it has slots
-    expect(wrapper.find(NavBase).props()).toHaveProperty('showActions', true);
+    expect(wrapper.findComponent(NavBase).props()).toHaveProperty('showActions', true);
 
     wrapper = shallowMount(DocumentationNav, {
       propsData: {
@@ -118,14 +118,14 @@ describe('DocumentationNav', () => {
     });
 
     // it doesn't have language toggle or sloths
-    expect(wrapper.find(NavBase).props()).toHaveProperty('showActions', false);
+    expect(wrapper.findComponent(NavBase).props()).toHaveProperty('showActions', false);
   });
 
   it('accepts a hasNoBorder prop', () => {
     wrapper.setProps({
       hasNoBorder: true,
     });
-    const nav = wrapper.find(NavBase);
+    const nav = wrapper.findComponent(NavBase);
     expect(nav.props()).toHaveProperty('hasNoBorder', true);
   });
 
@@ -144,7 +144,7 @@ describe('DocumentationNav', () => {
 
   it('renders a LanguageToggle', () => {
     // make sure the LanguageToggle is inside the NavMenuItems
-    const navMenuItemsComponent = wrapper.find(NavMenuItems);
+    const navMenuItemsComponent = wrapper.findComponent(NavMenuItems);
     const toggle = navMenuItemsComponent.find(LanguageToggle);
     expect(toggle.exists()).toBe(true);
     expect(toggle.props()).toEqual({
@@ -203,11 +203,11 @@ describe('DocumentationNav', () => {
     const btn = document.createElement('button');
     btn.id = SIDEBAR_HIDE_BUTTON_ID;
     document.body.appendChild(btn);
-    const sidenavToggleWrapper = wrapper.find('.sidenav-toggle-wrapper');
+    const sidenavToggleWrapper = wrapper.findComponent('.sidenav-toggle-wrapper');
     // assert its visible
     expect(sidenavToggleWrapper.isVisible()).toBe(true);
     // interact with button
-    const button = sidenavToggleWrapper.find('.sidenav-toggle');
+    const button = sidenavToggleWrapper.findComponent('.sidenav-toggle');
     button.trigger('click');
     await flushPromises();
     // assert the button works and is rendered as expected
@@ -221,14 +221,14 @@ describe('DocumentationNav', () => {
     const backup = window.Event;
     window.Event = null;
 
-    wrapper.find(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
+    wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
     await flushPromises();
-    wrapper.find('.nav-menucta').trigger('click');
+    wrapper.findComponent('.nav-menucta').trigger('click');
     expect(wrapper.classes()).toContain('nav--is-open');
-    const toggle = wrapper.find('.sidenav-toggle');
+    const toggle = wrapper.findComponent('.sidenav-toggle');
     expect(toggle.attributes()).toHaveProperty('tabindex', '-1');
     toggle.trigger('click');
-    wrapper.find('.nav-menu-tray').trigger('transitionend', { propertyName: 'max-height' });
+    wrapper.findComponent('.nav-menu-tray').trigger('transitionend', { propertyName: 'max-height' });
     expect(wrapper.classes()).not.toContain('nav--is-open');
     expect(wrapper.emitted('toggle-sidenav')).toBeFalsy();
     await flushPromises();
@@ -241,10 +241,10 @@ describe('DocumentationNav', () => {
     wrapper.setProps({
       displaySidenav: false,
     });
-    expect(wrapper.find(NavBase).props()).toMatchObject({
+    expect(wrapper.findComponent(NavBase).props()).toMatchObject({
       isWideFormat: true,
       breakpoint: BreakpointName.medium,
     });
-    expect(wrapper.find('.sidenav-toggle').exists()).toBe(false);
+    expect(wrapper.findComponent('.sidenav-toggle').exists()).toBe(false);
   });
 });

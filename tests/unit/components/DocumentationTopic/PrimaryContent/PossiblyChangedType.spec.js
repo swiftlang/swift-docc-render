@@ -61,7 +61,7 @@ const createWrapper = ({ propsData } = {}) => shallowMount(PossiblyChangedType, 
 describe('PossiblyChangedType', () => {
   it('renders two `DeclarationTokenGroup`, one for each change', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(RenderChanged).props())
+    expect(wrapper.findComponent(RenderChanged).props())
       .toEqual(expect.objectContaining({
         value: type,
         wrapChanges: false,

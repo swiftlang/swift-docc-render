@@ -108,17 +108,17 @@ describe('QuickNavigationModal', () => {
   });
 
   it('renders the Quick navigation modal', () => {
-    expect(wrapper.find('.quick-navigation').exists()).toBe(true);
+    expect(wrapper.findComponent('.quick-navigation').exists()).toBe(true);
   });
 
   it('adds the focus class on container if filter input is focused', () => {
-    wrapper.find(FilterInput).vm.$emit('focus');
-    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(true);
+    wrapper.findComponent(FilterInput).vm.$emit('focus');
+    expect(wrapper.findComponent('.quick-navigation__container.focus').exists()).toBe(true);
   });
 
   it('removes the focus class on container if filter input is blur', () => {
-    wrapper.find(FilterInput).vm.$emit('blur');
-    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(false);
+    wrapper.findComponent(FilterInput).vm.$emit('blur');
+    expect(wrapper.findComponent('.quick-navigation__container.focus').exists()).toBe(false);
   });
 
   it('filters the symbols according to debouncedInput value', async () => {
@@ -134,8 +134,8 @@ describe('QuickNavigationModal', () => {
   });
 
   it('renders the filter input', () => {
-    expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
-    const filter = wrapper.find(FilterInput);
+    expect(wrapper.findComponent('.quick-navigation__filter').exists()).toBe(true);
+    const filter = wrapper.findComponent(FilterInput);
     expect(filter.props()).toEqual({
       placeholder: 'filter.search-symbols FoobarKit',
       focusInputWhenCreated: true,
@@ -159,15 +159,15 @@ describe('QuickNavigationModal', () => {
     });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(filteredSymbols.length);
-    expect(wrapper.find('.no-results').exists()).toBe(false);
-    expect(wrapper.find('.quick-navigation__refs').attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
+    expect(wrapper.findComponent('.no-results').exists()).toBe(false);
+    expect(wrapper.findComponent('.quick-navigation__refs').attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
   });
 
   it('renders the `no results found` string when no symbols are found given an input', () => {
     wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
-    const noResultsWrapper = wrapper.find('.no-results');
+    const noResultsWrapper = wrapper.findComponent('.no-results');
     expect(wrapper.vm.debouncedInput).toBe(nonResultsInputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(0);
     expect(noResultsWrapper.exists()).toBe(true);
@@ -291,7 +291,7 @@ describe('QuickNavigationModal', () => {
     wrapper.setData({
       debouncedInput: 'foobar',
     });
-    expect(wrapper.find(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
+    expect(wrapper.findComponent(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
   });
 
   it('access a symbol on `enter` key', () => {
@@ -299,8 +299,8 @@ describe('QuickNavigationModal', () => {
     wrapper.setData({
       debouncedInput: inputValue,
     });
-    wrapper.find('.quick-navigation__refs').trigger('keydown.enter');
-    wrapper.find(FilterInput).trigger('keydown.enter');
+    wrapper.findComponent('.quick-navigation__refs').trigger('keydown.enter');
+    wrapper.findComponent(FilterInput).trigger('keydown.enter');
     expect(handleKeyEnter).toHaveBeenCalledTimes(2);
   });
 
@@ -374,7 +374,7 @@ describe('QuickNavigationModal', () => {
     it('renders with a default loading state', () => {
       wrapper.setData({ debouncedInput: inputValue });
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.loading);
       expect(preview.attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
@@ -399,7 +399,7 @@ describe('QuickNavigationModal', () => {
       wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.success);
       expect(preview.props('json')).toBe(json);
@@ -412,7 +412,7 @@ describe('QuickNavigationModal', () => {
       wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.error);
     });
@@ -425,7 +425,7 @@ describe('QuickNavigationModal', () => {
         previewIsLoadingSlowly: true,
       });
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.loadingSlowly);
     });

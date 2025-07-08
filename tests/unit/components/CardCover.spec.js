@@ -43,7 +43,7 @@ const mountCover = ({ propsData, ...rest } = {}) => {
 describe('CardCover', () => {
   it('renders an `<ImageAsset>`', () => {
     const wrapper = mountCover();
-    const asset = wrapper.find(ImageAsset);
+    const asset = wrapper.findComponent(ImageAsset);
     expect(asset.classes()).toContain('card-cover');
     expect(asset.props('variants')).toEqual(defaultProps.variants);
     expect(asset.props('alt')).toEqual(defaultProps.alt);
@@ -59,7 +59,7 @@ describe('CardCover', () => {
         },
       },
     });
-    expect(wrapper.find('.card-cover').exists()).toBe(false);
+    expect(wrapper.findComponent('.card-cover').exists()).toBe(false);
     expect(slotProps).toEqual({
       classes: 'card-cover',
     });

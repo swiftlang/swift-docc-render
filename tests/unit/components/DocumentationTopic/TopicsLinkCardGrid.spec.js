@@ -32,7 +32,7 @@ describe('TopicsLinkCardGrid', () => {
   it('renders only a single page with every item by default', () => {
     const wrapper = createWrapper();
 
-    const pager = wrapper.find(Pager);
+    const pager = wrapper.findComponent(Pager);
     expect(pager.exists()).toBe(true);
     expect(pager.classes('TopicsLinkCardGrid')).toBe(true);
     expect(pager.classes('compactGrid')).toBe(true);
@@ -52,19 +52,19 @@ describe('TopicsLinkCardGrid', () => {
       });
 
       // 10 items => 2 pages at large breakpoint (6 links per page)
-      let pager = wrapper.find(Pager);
+      let pager = wrapper.findComponent(Pager);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(2);
 
       // 10 items => 2 pages at medium breakpoint (6 links per page)
       wrapper.setData({ breakpoint: BreakpointName.medium });
-      pager = wrapper.find(Pager);
+      pager = wrapper.findComponent(Pager);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(2);
 
       // 10 items => 10 pages at small breakpoint (1 links per page)
       wrapper.setData({ breakpoint: BreakpointName.small });
-      pager = wrapper.find(Pager);
+      pager = wrapper.findComponent(Pager);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(10);
     });
@@ -80,20 +80,20 @@ describe('TopicsLinkCardGrid', () => {
       });
 
       // 10 items => 3 pages at large breakpoint (4 links per page)
-      let pager = wrapper.find(Pager);
+      let pager = wrapper.findComponent(Pager);
       expect(pager.classes('detailedGrid')).toBe(true);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(3);
 
       // 10 items => 5 pages at medium breakpoint (2 links per page)
       wrapper.setData({ breakpoint: BreakpointName.medium });
-      pager = wrapper.find(Pager);
+      pager = wrapper.findComponent(Pager);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(5);
 
       // 10 items => 10 pages at small breakpoint (1 links per page)
       wrapper.setData({ breakpoint: BreakpointName.small });
-      pager = wrapper.find(Pager);
+      pager = wrapper.findComponent(Pager);
       expect(pager.exists()).toBe(true);
       expect(pager.props('pages').length).toBe(10);
     });

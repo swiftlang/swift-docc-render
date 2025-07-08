@@ -165,7 +165,7 @@ describe('RelationshipsList', () => {
       });
 
       it('renders a `ConditionalConstraints`', () => {
-        const constraints = wrapper.find(ConditionalConstraints);
+        const constraints = wrapper.findComponent(ConditionalConstraints);
         expect(constraints.exists()).toBe(true);
         expect(constraints.props()).toEqual({
           constraints: conformance.constraints,

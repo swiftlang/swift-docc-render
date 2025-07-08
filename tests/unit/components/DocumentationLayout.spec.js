@@ -153,7 +153,7 @@ describe('DocumentationLayout', () => {
   });
 
   it('renders slot for content', () => {
-    const slot = wrapper.find('.content');
+    const slot = wrapper.findComponent('.content');
     expect(slot.text()).toBe('Content');
   });
 
@@ -166,7 +166,7 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
 
-    const adjustableWidth = wrapper.find(AdjustableSidebarWidth);
+    const adjustableWidth = wrapper.findComponent(AdjustableSidebarWidth);
     expect(adjustableWidth.classes())
       .toEqual(expect.arrayContaining(['full-width-container', 'topic-wrapper']));
     expect(adjustableWidth.props()).toEqual({
@@ -177,7 +177,7 @@ describe('DocumentationLayout', () => {
     });
 
     // its rendered by default
-    const navigator = wrapper.find(Navigator);
+    const navigator = wrapper.findComponent(Navigator);
     expect(navigator.exists()).toBe(true);
     expect(navigator.props()).toEqual({
       isFetching: false,
@@ -192,7 +192,7 @@ describe('DocumentationLayout', () => {
       technologyProps: swiftProps,
     });
     // assert the nav is in wide format
-    const nav = wrapper.find(Nav);
+    const nav = wrapper.findComponent(Nav);
     expect(nav.props('displaySidenav')).toBe(true);
   });
 
@@ -210,7 +210,7 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
 
-    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const quickNavigationModalComponent = wrapper.findComponent(QuickNavigationModal);
     expect(quickNavigationModalComponent.exists()).toBe(true);
   });
 
@@ -227,7 +227,7 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
 
-    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const quickNavigationModalComponent = wrapper.findComponent(QuickNavigationModal);
     expect(quickNavigationModalComponent.exists()).toBe(false);
   });
 
@@ -241,7 +241,7 @@ describe('DocumentationLayout', () => {
       },
     });
 
-    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const quickNavigationModalComponent = wrapper.findComponent(QuickNavigationModal);
     expect(quickNavigationModalComponent.exists()).toBe(false);
   });
 
@@ -260,7 +260,7 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
 
-    const quickNavigationModalComponent = wrapper.find(QuickNavigationModal);
+    const quickNavigationModalComponent = wrapper.findComponent(QuickNavigationModal);
     expect(quickNavigationModalComponent.exists()).toBe(false);
   });
 
@@ -277,7 +277,7 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find(QuickNavigationModal).props('children')).toEqual(swiftChildren);
+    expect(wrapper.findComponent(QuickNavigationModal).props('children')).toEqual(swiftChildren);
   });
 
   it('QuickNavigation falls back to swift items, if no objc items', async () => {
@@ -294,7 +294,7 @@ describe('DocumentationLayout', () => {
       interfaceLanguage: Language.objectiveC.key.url,
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find(QuickNavigationModal).props('children')).toEqual(swiftChildren);
+    expect(wrapper.findComponent(QuickNavigationModal).props('children')).toEqual(swiftChildren);
   });
 
   it('QuickNavigation renders objc items', async () => {
@@ -319,7 +319,7 @@ describe('DocumentationLayout', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find(QuickNavigationModal).props('children')).toEqual(objcChildren);
+    expect(wrapper.findComponent(QuickNavigationModal).props('children')).toEqual(objcChildren);
   });
 
   describe('if breakpoint is small', () => {
@@ -338,7 +338,7 @@ describe('DocumentationLayout', () => {
       });
       await wrapper.vm.$nextTick();
       // assert navigator has display: none
-      expect(wrapper.find(Navigator).attributes('style')).toContain('display: none');
+      expect(wrapper.findComponent(Navigator).attributes('style')).toContain('display: none');
     });
 
     it('reverses the filter position of the navigator', async () => {
@@ -348,7 +348,7 @@ describe('DocumentationLayout', () => {
       });
       await wrapper.vm.$nextTick();
       // assert navigator has display: none
-      expect(wrapper.find(Navigator).props('renderFilterOnTop')).toBe(true);
+      expect(wrapper.findComponent(Navigator).props('renderFilterOnTop')).toBe(true);
     });
 
     it('does not apply display none to Navigator if is open', async () => {
@@ -361,7 +361,7 @@ describe('DocumentationLayout', () => {
       });
       await wrapper.vm.$nextTick();
       // assert navigator doesn't have display: none
-      expect(wrapper.find(Navigator).attributes('style')).toBeFalsy();
+      expect(wrapper.findComponent(Navigator).attributes('style')).toBeFalsy();
     });
   });
 
@@ -381,7 +381,7 @@ describe('DocumentationLayout', () => {
       ],
     });
 
-    const navigator = wrapper.find(Navigator);
+    const navigator = wrapper.findComponent(Navigator);
     expect(navigator.exists()).toBe(true);
     // assert the technology is the last fallback
     expect(navigator.props('technologyProps')).toEqual(swiftProps);
@@ -405,7 +405,7 @@ describe('DocumentationLayout', () => {
       references: {},
     });
 
-    const navigator = wrapper.find(Navigator);
+    const navigator = wrapper.findComponent(Navigator);
     expect(navigator.exists()).toBe(true);
     // assert the technology is the last fallback
     expect(navigator.props('technologyProps')).toEqual(swiftProps);
@@ -418,7 +418,7 @@ describe('DocumentationLayout', () => {
       references: {},
     });
 
-    const navigator = wrapper.find(Navigator);
+    const navigator = wrapper.findComponent(Navigator);
     expect(navigator.exists()).toBe(true);
     // assert the technology is the last fallback
     expect(navigator.props('technologyProps')).toEqual(swiftProps);
@@ -426,7 +426,7 @@ describe('DocumentationLayout', () => {
 
   it('renders without a sidebar', () => {
     // assert the Nav
-    const nav = wrapper.find(Nav);
+    const nav = wrapper.findComponent(Nav);
     expect(nav.props()).toEqual({
       isDark: false,
       hasNoBorder: false,
@@ -442,10 +442,10 @@ describe('DocumentationLayout', () => {
     });
 
     // assert the sidebar
-    const adjustableSidebarWidth = wrapper.find(AdjustableSidebarWidth);
+    const adjustableSidebarWidth = wrapper.findComponent(AdjustableSidebarWidth);
     expect(adjustableSidebarWidth.exists()).toBe(true);
-    expect(wrapper.find('.sidebar').exists()).toBe(false);
-    expect(wrapper.find(Navigator).exists()).toBe(false);
+    expect(wrapper.findComponent('.sidebar').exists()).toBe(false);
+    expect(wrapper.findComponent(Navigator).exists()).toBe(false);
     // assert the proper container class is applied
     expect(adjustableSidebarWidth.classes())
       .toEqual(expect.arrayContaining(['topic-wrapper', 'full-width-container']));
@@ -456,11 +456,11 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
     await flushPromises();
-    const navigator = wrapper.find(Navigator);
-    const nav = wrapper.find(Nav);
+    const navigator = wrapper.findComponent(Navigator);
+    const nav = wrapper.findComponent(Nav);
     // toggle the navigator from the Nav component, in Small breakpoint
     nav.vm.$emit('toggle-sidenav', BreakpointName.small);
-    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    const sidebar = wrapper.findComponent(AdjustableSidebarWidth);
     // set the breakpoint to small on the sidebar
     sidebar.vm.breakpoint = BreakpointName.small;
     expect(sidebar.props('shownOnMobile')).toBe(true);
@@ -483,10 +483,10 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
     await flushPromises();
-    const sidebar = wrapper.find(AdjustableSidebarWidth);
-    const nav = wrapper.find(Nav);
+    const sidebar = wrapper.findComponent(AdjustableSidebarWidth);
+    const nav = wrapper.findComponent(Nav);
     // close the navigator
-    wrapper.find(Navigator).vm.$emit('close');
+    wrapper.findComponent(Navigator).vm.$emit('close');
     // assert its closed on Large
     expect(sidebar.props('hiddenOnLarge')).toBe(true);
     // now toggle it back from the Nav
@@ -504,8 +504,8 @@ describe('DocumentationLayout', () => {
       enableNavigator: true,
     });
     await flushPromises();
-    const nav = wrapper.find(Nav);
-    const sidebar = wrapper.find(AdjustableSidebarWidth);
+    const nav = wrapper.findComponent(Nav);
+    const sidebar = wrapper.findComponent(AdjustableSidebarWidth);
     // assert the hidden prop is false
     expect(sidebar.props('hiddenOnLarge')).toBe(false);
     // Now close from the sidebar
@@ -529,8 +529,8 @@ describe('DocumentationLayout', () => {
 
     it('does not render a sidebar', () => {
       wrapper = createWrapper({ provide: provideWithIDETarget });
-      expect(wrapper.find('.sidebar').exists()).toBe(false);
-      expect(wrapper.find(Navigator).exists()).toBe(false);
+      expect(wrapper.findComponent('.sidebar').exists()).toBe(false);
+      expect(wrapper.findComponent(Navigator).exists()).toBe(false);
     });
   });
 });

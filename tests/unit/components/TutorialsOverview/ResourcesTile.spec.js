@@ -72,18 +72,18 @@ describe('ResourcesTile', () => {
   });
 
   it('renders the title', () => {
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.text()).toBe(propsData.title);
   });
 
   it('renders a `ContentNode`', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.content);
   });
 
   it('renders a `Reference` from a destination type:link', () => {
-    const ref = wrapper.find(Reference);
+    const ref = wrapper.findComponent(Reference);
     expect(ref.classes('link')).toBe(true);
     expect(ref.props('url')).toBe(propsData.action.destination);
     expect(ref.text()).toBe(propsData.action.title);
@@ -96,7 +96,7 @@ describe('ResourcesTile', () => {
         type: 'reference',
       },
     });
-    const ref = wrapper.find(Reference);
+    const ref = wrapper.findComponent(Reference);
     expect(ref.classes('link')).toBe(true);
     expect(ref.props('url')).toBe(fooReference.url);
     expect(ref.text()).toBe(fooReference.title);

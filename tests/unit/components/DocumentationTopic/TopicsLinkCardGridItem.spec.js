@@ -69,7 +69,7 @@ const createWrapper = ({ propsData, ...others } = {}) => mount(TopicsLinkCardGri
 describe('TopicsLinkCardGridItem', () => {
   it('renders the TopicsLinkCardGridItem', () => {
     const wrapper = createWrapper();
-    const card = wrapper.find(Card);
+    const card = wrapper.findComponent(Card);
     expect(card.props()).toMatchObject({
       url: defaultProps.item.url,
       image: defaultProps.item.images[0].identifier,
@@ -78,8 +78,8 @@ describe('TopicsLinkCardGridItem', () => {
       size: undefined,
       linkText: '',
     });
-    expect(wrapper.find('.reference-card-grid-item__image').exists()).toBe(false);
-    expect(wrapper.find(ContentNode).exists()).toBe(false);
+    expect(wrapper.findComponent('.reference-card-grid-item__image').exists()).toBe(false);
+    expect(wrapper.findComponent(ContentNode).exists()).toBe(false);
   });
 
   it('renders a TopicsLinkCardGridItem, with an icon as a fallback', () => {
@@ -91,7 +91,7 @@ describe('TopicsLinkCardGridItem', () => {
         },
       },
     });
-    const card = wrapper.find(Card);
+    const card = wrapper.findComponent(Card);
     expect(card.props()).toMatchObject({
       url: defaultProps.item.url,
       image: null,
@@ -100,10 +100,10 @@ describe('TopicsLinkCardGridItem', () => {
       size: undefined,
       linkText: '',
     });
-    expect(wrapper.find(ContentNode).exists()).toBe(false);
-    const imageWrapper = wrapper.find('.reference-card-grid-item__image');
+    expect(wrapper.findComponent(ContentNode).exists()).toBe(false);
+    const imageWrapper = wrapper.findComponent('.reference-card-grid-item__image');
     expect(imageWrapper.exists()).toBe(true);
-    const icon = imageWrapper.find(TopicTypeIcon);
+    const icon = imagewrapper.findComponent(TopicTypeIcon);
     expect(icon.props()).toEqual({
       type: defaultProps.item.role,
       imageOverride: null,
@@ -124,7 +124,7 @@ describe('TopicsLinkCardGridItem', () => {
         },
       },
     });
-    expect(wrapper.find(TopicTypeIcon).props('imageOverride')).toEqual(iconRef);
+    expect(wrapper.findComponent(TopicTypeIcon).props('imageOverride')).toEqual(iconRef);
   });
 
   it('renders a TopicsLinkCardGridItem, in a none compact variant', async () => {
@@ -135,7 +135,7 @@ describe('TopicsLinkCardGridItem', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    const card = wrapper.find(Card);
+    const card = wrapper.findComponent(Card);
     expect(card.props()).toMatchObject({
       url: defaultProps.item.url,
       image: defaultProps.item.images[0].identifier,
@@ -144,7 +144,7 @@ describe('TopicsLinkCardGridItem', () => {
       size: 'large',
       linkText: ROLE_LINK_TEXT[TopicRole.article],
     });
-    expect(wrapper.find(ContentNode).props('content')).toBe(defaultProps.item.abstract);
+    expect(wrapper.findComponent(ContentNode).props('content')).toBe(defaultProps.item.abstract);
   });
 
   it('renders different text for diff roles', () => {
@@ -156,7 +156,7 @@ describe('TopicsLinkCardGridItem', () => {
       },
     });
     // overview
-    const card = wrapper.find(Card);
+    const card = wrapper.findComponent(Card);
     expect(card.props('linkText')).toBe(ROLE_LINK_TEXT[TopicRole.overview]);
     // collection
     wrapper.setProps({ item: { ...defaultProps.item, role: TopicRole.collection } });

@@ -61,12 +61,12 @@ describe('nav', () => {
   });
 
   it('renders a `NavBase`', () => {
-    const nav = wrapper.find(NavBase);
+    const nav = wrapper.findComponent(NavBase);
     expect(nav.exists()).toBe(true);
   });
 
   it('renders the title inside `NavTitleContainer`', () => {
-    const title = wrapper.find(NavTitleContainer);
+    const title = wrapper.findComponent(NavTitleContainer);
     expect(title.exists()).toBe(true);
     expect(title.props('to')).toEqual('/tutorials/swiftui?context=foo');
 
@@ -74,7 +74,7 @@ describe('nav', () => {
   });
 
   it('renders TutorialsNavigation and passes all sections to it', () => {
-    const itemBase = wrapper.find(NavMenuItemBase);
+    const itemBase = wrapper.findComponent(NavMenuItemBase);
     expect(itemBase.classes()).toContain('in-page-navigation');
     const navigation = itemBase.find(TutorialsNavigation);
     expect(navigation.props('sections')).toEqual(propsData.sections);

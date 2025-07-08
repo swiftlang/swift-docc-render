@@ -40,7 +40,7 @@ describe('Mentions', () => {
         },
       },
     });
-    expect(wrapper.find('linkableheading-stub').attributes()).toEqual({
+    expect(wrapper.findComponent('linkableheading-stub').attributes()).toEqual({
       level: '2',
       anchor: 'mentions',
     });
@@ -70,7 +70,7 @@ describe('Mentions', () => {
       },
     });
 
-    expect(wrapper.find('linkableheading-stub').attributes()).toEqual({
+    expect(wrapper.findComponent('linkableheading-stub').attributes()).toEqual({
       level: '2',
       anchor: 'mentions',
     });

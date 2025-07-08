@@ -34,20 +34,20 @@ describe('ContentTable', () => {
   });
 
   it('renders an h2 title', () => {
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);
     expect(title.is(LinkableHeading)).toBe(true);
     expect(title.text()).toBe(propsData.title);
   });
 
   it('renders slot content', () => {
-    const p = wrapper.find('p');
+    const p = wrapper.findComponent('p');
     expect(p.exists()).toBe(true);
     expect(p.html()).toBe(slots.default);
   });
 
-  it('renders `minimized-container` class if in minimized mode', () => {
-    const container = wrapper.find('.container');
+  it('renders `minimized-container` class if in minimized mode', async () => {
+    const container = wrapper.findComponent('.container');
     expect(container.classes()).not.toContain('minimized-container');
 
     wrapper.setProps({ enableMinimized: true });

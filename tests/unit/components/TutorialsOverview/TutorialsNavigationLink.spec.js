@@ -42,7 +42,7 @@ describe('TutorialsNavigationLink', () => {
   });
 
   it('renders a router-link.tutorials-navigation-link', () => {
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.findComponent(RouterLinkStub);
     expect(link.exists()).toBe(true);
     expect(link.classes('tutorials-navigation-link')).toBe(true);
   });
@@ -52,12 +52,12 @@ describe('TutorialsNavigationLink', () => {
   });
 
   it('renders the anchorized slot text as the url fragment location', () => {
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.findComponent(RouterLinkStub);
     expect(link.props('to')).toEqual({ hash: 'hello-world', query });
   });
 
   it('renders an .active modifier if the text matches the active tutorial link', () => {
-    let link = wrapper.find(RouterLinkStub);
+    let link = wrapper.findComponent(RouterLinkStub);
     expect(link.classes('active')).toBe(false);
 
     wrapper = shallowMount(TutorialsNavigationLink, {
@@ -74,12 +74,12 @@ describe('TutorialsNavigationLink', () => {
         },
       },
     });
-    link = wrapper.find(RouterLinkStub);
+    link = wrapper.findComponent(RouterLinkStub);
     expect(link.classes('active')).toBe(true);
   });
 
   it('focuses the element when clicked, used for AX', async () => {
-    const link = wrapper.find(RouterLinkStub);
+    const link = wrapper.findComponent(RouterLinkStub);
     link.trigger('click');
     await wrapper.vm.$nextTick();
     expect(scrollToElement.methods.handleFocusAndScroll).toHaveBeenCalledWith('hello-world');

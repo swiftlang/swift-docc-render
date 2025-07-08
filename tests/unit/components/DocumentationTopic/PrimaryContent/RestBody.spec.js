@@ -67,7 +67,7 @@ describe('RestBody', () => {
   });
 
   it('renders an h2 section title', () => {
-    const sectionTitle = wrapper.find(LinkableHeading);
+    const sectionTitle = wrapper.findComponent(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });
@@ -87,7 +87,7 @@ describe('RestBody', () => {
     expect(tables.at(0).props()).toHaveProperty('keyBy', 'key');
     expect(tables.at(0).props()).toHaveProperty('changes', {});
 
-    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(true);
+    expect(wrapper.findComponent(PossiblyChangedMimetype).exists()).toBe(true);
   });
 
   it('hides the mimetype, if not provided', () => {
@@ -99,7 +99,7 @@ describe('RestBody', () => {
       stubs: { ParametersTable },
       provide,
     });
-    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(false);
+    expect(wrapper.findComponent(PossiblyChangedMimetype).exists()).toBe(false);
   });
 
   it('does not render an h3 for "Parts"', () => {
@@ -107,11 +107,11 @@ describe('RestBody', () => {
   });
 
   it('displays the `PossiblyChangedType` in the `param-symbol` if content exists', () => {
-    expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType))
       .toBe(true);
-    expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
       .toBe(false);
-    expect(wrapper.find('.param .param-symbol').find(PossiblyChangedType).props('type'))
+    expect(wrapper.findComponent('.param .param-symbol').find(PossiblyChangedType).props('type'))
       .toEqual(propsData.bodyContentType);
   });
 
@@ -119,11 +119,11 @@ describe('RestBody', () => {
     wrapper.setProps({
       content: [],
     });
-    expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-symbol').contains(PossiblyChangedType))
       .toBe(true);
-    expect(wrapper.find('.param .param-symbol').find(PossiblyChangedType).props('type'))
+    expect(wrapper.findComponent('.param .param-symbol').find(PossiblyChangedType).props('type'))
       .toEqual(propsData.bodyContentType);
-    expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-content').contains(PossiblyChangedType))
       .toBe(false);
   });
 
@@ -157,12 +157,12 @@ describe('RestBody', () => {
       },
     });
 
-    const table = wrapper.find(ParametersTable);
+    const table = wrapper.findComponent(ParametersTable);
     expect(table.props()).toHaveProperty('changes', changes);
-    expect(wrapper.find(PossiblyChangedType).props())
+    expect(wrapper.findComponent(PossiblyChangedType).props())
       .toHaveProperty('changes', changes[ChangesKey].type);
 
-    expect(wrapper.find(PossiblyChangedMimetype).props())
+    expect(wrapper.findComponent(PossiblyChangedMimetype).props())
       .toMatchObject({ changes: changes[ChangesKey].mimetype, change: changes[ChangesKey].change });
   });
 
@@ -218,7 +218,7 @@ describe('RestBody', () => {
     beforeEach(() => wrapper.setProps({ parts }));
 
     it('renders an h3 for "Parts"', () => {
-      const h3 = wrapper.find('h3');
+      const h3 = wrapper.findComponent('h3');
       expect(h3.exists()).toBe(true);
       expect(h3.text()).toBe('sections.parts');
     });
@@ -230,7 +230,7 @@ describe('RestBody', () => {
     });
 
     it('renders a part name', () => {
-      const partName = wrapper.find('.parts .part-name');
+      const partName = wrapper.findComponent('.parts .part-name');
       expect(partName.contains(WordBreak));
       const wb = partName.find(WordBreak);
       expect(wb.attributes('tag')).toBe('code');
@@ -238,11 +238,11 @@ describe('RestBody', () => {
     });
 
     it('displays the PossiblyChangedType in the `param-symbol` if content exists', () => {
-      expect(wrapper.find('.parts .param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-symbol').contains(PossiblyChangedType))
         .toBe(true);
-      expect(wrapper.find('.parts .param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-content').contains(PossiblyChangedType))
         .toBe(false);
-      expect(wrapper.find('.parts .param .param-symbol').find(PossiblyChangedType).props('type'))
+      expect(wrapper.findComponent('.parts .param .param-symbol').find(PossiblyChangedType).props('type'))
         .toEqual(parts[0].type);
     });
 
@@ -263,12 +263,12 @@ describe('RestBody', () => {
         ],
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('.parts .param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-symbol').contains(PossiblyChangedType))
         .toBe(false);
-      expect(wrapper.find('.parts .param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-content').contains(PossiblyChangedType))
         .toBe(true);
 
-      expect(wrapper.find('.parts .param .param-content').find(PossiblyChangedType).props('type'))
+      expect(wrapper.findComponent('.parts .param .param-content').find(PossiblyChangedType).props('type'))
         .toEqual(parts[0].type);
     });
 
@@ -296,7 +296,7 @@ describe('RestBody', () => {
       });
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.find('.parts').find(ParameterAttributes).props('attributes'))
+      expect(wrapper.findComponent('.parts').find(ParameterAttributes).props('attributes'))
         .toEqual(attributes);
     });
 

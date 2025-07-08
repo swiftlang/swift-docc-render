@@ -64,20 +64,20 @@ describe('NavigatorCardItem', () => {
   });
   it('renders the NavigatorCardItem', () => {
     const wrapper = createWrapper();
-    const cardItem = wrapper.find('.navigator-card-item');
+    const cardItem = wrapper.findComponent('.navigator-card-item');
     expect(cardItem.exists()).toBe(true);
-    expect(wrapper.find('button.tree-toggle').exists()).toBe(true);
-    expect(wrapper.find(TopicTypeIcon).props()).toEqual({
+    expect(wrapper.findComponent('button.tree-toggle').exists()).toBe(true);
+    expect(wrapper.findComponent(TopicTypeIcon).props()).toEqual({
       type: defaultProps.item.type,
       imageOverride: null,
       withColors: false,
       shouldCalculateOptimalWidth: false,
     });
-    const leafLink = wrapper.find('.leaf-link');
+    const leafLink = wrapper.findComponent('.leaf-link');
     expect(leafLink.is(Reference)).toBe(true);
     expect(leafLink.props('url')).toEqual(defaultProps.item.path);
     expect(leafLink.attributes('id')).toBe(`${defaultProps.item.uid}`);
-    expect(wrapper.find(HighlightMatches).props()).toEqual({
+    expect(wrapper.findComponent(HighlightMatches).props()).toEqual({
       text: defaultProps.item.title,
       matcher: defaultProps.filterPattern,
     });
@@ -102,7 +102,7 @@ describe('NavigatorCardItem', () => {
         },
       },
     });
-    expect(wrapper.find(TopicTypeIcon).props('imageOverride')).toEqual(navigatorReferences.iconRef);
+    expect(wrapper.findComponent(TopicTypeIcon).props('imageOverride')).toEqual(navigatorReferences.iconRef);
   });
 
   it('renders a deprecated badge when item is deprecated', () => {
@@ -117,7 +117,7 @@ describe('NavigatorCardItem', () => {
         },
       },
     });
-    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
   });
 
   it('renders a beta badge when item is beta', () => {
@@ -132,7 +132,7 @@ describe('NavigatorCardItem', () => {
         },
       },
     });
-    expect(wrapper.find(Badge).attributes('variant')).toBe('beta');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('beta');
   });
 
   it('only renders a deprecated badge when item is both deprecated and beta', () => {
@@ -148,7 +148,7 @@ describe('NavigatorCardItem', () => {
         },
       },
     });
-    expect(wrapper.find(Badge).attributes('variant')).toBe('deprecated');
+    expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
     expect(wrapper.findAll(Badge).length).toBe(1);
   });
 
@@ -161,7 +161,7 @@ describe('NavigatorCardItem', () => {
         },
       },
     });
-    expect(wrapper.find('.tree-toggle').exists()).toBe(false);
+    expect(wrapper.findComponent('.tree-toggle').exists()).toBe(false);
   });
 
   it('does not render the expand button, if its a groupMarker with children', () => {
@@ -173,7 +173,7 @@ describe('NavigatorCardItem', () => {
         },
       },
     });
-    expect(wrapper.find('.tree-toggle').exists()).toBe(false);
+    expect(wrapper.findComponent('.tree-toggle').exists()).toBe(false);
   });
 
   it('adds extra classes when expanded', () => {
@@ -183,7 +183,7 @@ describe('NavigatorCardItem', () => {
       },
     });
     expect(wrapper.classes()).toContain('expanded');
-    expect(wrapper.find('.chevron').classes()).toContain('rotate');
+    expect(wrapper.findComponent('.chevron').classes()).toContain('rotate');
   });
 
   it('adds extra classes when active', () => {
@@ -201,7 +201,7 @@ describe('NavigatorCardItem', () => {
         isBold: true,
       },
     });
-    expect(wrapper.find('.leaf-link').classes()).toContain('bolded');
+    expect(wrapper.findComponent('.leaf-link').classes()).toContain('bolded');
   });
 
   it('does not render the ContentNode, if no abstract', () => {
@@ -213,18 +213,18 @@ describe('NavigatorCardItem', () => {
         },
       },
     });
-    expect(wrapper.find('.extended-content').exists()).toBe(false);
+    expect(wrapper.findComponent('.extended-content').exists()).toBe(false);
   });
 
   it('emits a `toggle` event, when clicking the tree-toggle button', () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('click');
+    wrapper.findComponent('.tree-toggle').trigger('click');
     expect(wrapper.emitted()).toEqual({ toggle: [[defaultProps.item]] });
   });
 
   it('emits a `toggle-full` event, when alt + clicking the tree-toggle button', () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('click', {
+    wrapper.findComponent('.tree-toggle').trigger('click', {
       altKey: true,
     });
     expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
@@ -232,7 +232,7 @@ describe('NavigatorCardItem', () => {
 
   it('emits a `toggle-full` event, when @keydown.right + alt/option the tree-toggle button', () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('keydown.right', {
+    wrapper.findComponent('.tree-toggle').trigger('keydown.right', {
       altKey: true,
     });
     expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
@@ -240,7 +240,7 @@ describe('NavigatorCardItem', () => {
 
   it('emits a `toggle-siblings` event, when cmd + clicking the tree-toggle button', () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('click', {
+    wrapper.findComponent('.tree-toggle').trigger('click', {
       metaKey: true,
     });
     expect(wrapper.emitted()).toEqual({ 'toggle-siblings': [[defaultProps.item]] });
@@ -248,66 +248,66 @@ describe('NavigatorCardItem', () => {
 
   it('adds a temporary `animating` class, on `@toggle`', async () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('click');
+    wrapper.findComponent('.tree-toggle').trigger('click');
     expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     wrapper.setProps({
       expanded: true,
     });
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     await flushPromises();
     // assert we have waited a few frames
     expect(waitFrames).toHaveBeenCalledTimes(1);
     expect(waitFrames).toHaveBeenCalledWith(9);
-    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).not.toContain('animating');
   });
 
   it('adds a temporary `animating` class, on `@toggle-full` when @keydown.right + alt/option the tree-toggle button', async () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('keydown.right', { altKey: true });
+    wrapper.findComponent('.tree-toggle').trigger('keydown.right', { altKey: true });
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     wrapper.setProps({
       expanded: true,
     });
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     await flushPromises();
     // assert we have waited a few frames
     expect(waitFrames).toHaveBeenCalledTimes(1);
     expect(waitFrames).toHaveBeenCalledWith(9);
-    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).not.toContain('animating');
   });
 
   it('adds a temporary `animating` class, on `@toggle-full` with alt + rightkey', async () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('click', { altKey: true });
+    wrapper.findComponent('.tree-toggle').trigger('click', { altKey: true });
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     wrapper.setProps({
       expanded: true,
     });
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     await flushPromises();
     // assert we have waited a few frames
     expect(waitFrames).toHaveBeenCalledTimes(1);
     expect(waitFrames).toHaveBeenCalledWith(9);
-    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).not.toContain('animating');
   });
 
   it('adds a temporary `animating` class, on `@toggle-siblings`', async () => {
     const wrapper = createWrapper();
-    wrapper.find('.tree-toggle').trigger('click', { metaKey: true });
+    wrapper.findComponent('.tree-toggle').trigger('click', { metaKey: true });
     expect(wrapper.emitted('toggle-siblings')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     wrapper.setProps({ expanded: true });
-    expect(wrapper.find('.icon-inline').classes()).toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     await flushPromises();
     // assert we have waited a few frames
-    expect(wrapper.find('.icon-inline').classes()).not.toContain('animating');
+    expect(wrapper.findComponent('.icon-inline').classes()).not.toContain('animating');
   });
 
   it('renders the API change icon instead of the leaf icon', () => {
@@ -317,20 +317,20 @@ describe('NavigatorCardItem', () => {
       },
     });
 
-    expect(wrapper.find(TopicTypeIcon).exists()).toBe(false);
-    expect(wrapper.find('.navigator-icon').classes())
+    expect(wrapper.findComponent(TopicTypeIcon).exists()).toBe(false);
+    expect(wrapper.findComponent('.navigator-icon').classes())
       .toEqual(expect.arrayContaining(['changed', 'changed-modified']));
   });
 
   it('emits an event, when clicking on the leaf-link', () => {
     const wrapper = createWrapper();
-    wrapper.find('.leaf-link').trigger('click');
+    wrapper.findComponent('.leaf-link').trigger('click');
     expect(wrapper.emitted('navigate')).toEqual([[defaultProps.item.uid]]);
   });
 
   it('emits a `toggle-full` event, when alt + clicking on the leaf-link', () => {
     const wrapper = createWrapper();
-    wrapper.find('.leaf-link').trigger('click', {
+    wrapper.findComponent('.leaf-link').trigger('click', {
       altKey: true,
     });
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
@@ -339,7 +339,7 @@ describe('NavigatorCardItem', () => {
   describe('keyboard navigation', () => {
     it('clicks the reference link on `@keydown.enter`', () => {
       const wrapper = createWrapper();
-      const spy = jest.spyOn(wrapper.find(Reference).vm.$el, 'click');
+      const spy = jest.spyOn(wrapper.findComponent(Reference).vm.$el, 'click');
       wrapper.trigger('keydown.enter');
       expect(spy).toHaveBeenCalledTimes(1);
     });
@@ -410,7 +410,7 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      wrapper.find('.leaf-link').trigger('click');
+      wrapper.findComponent('.leaf-link').trigger('click');
       expect(wrapper.emitted('navigate')).toBeFalsy();
     });
 
@@ -423,17 +423,17 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.find('.leaf-link').is('h3')).toBe(true);
+      expect(wrapper.findComponent('.leaf-link').is('h3')).toBe(true);
     });
 
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {
       const wrapper = createWrapper();
-      expect(wrapper.find('.navigator-card-item').attributes('aria-hidden')).toBeFalsy();
+      expect(wrapper.findComponent('.navigator-card-item').attributes('aria-hidden')).toBeFalsy();
     });
 
     it('renders a hidden span telling how to use the key arrows', () => {
       const wrapper = createWrapper();
-      const label = wrapper.find(`#usage-${defaultProps.item.uid}`);
+      const label = wrapper.findComponent(`#usage-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text())
         .toBe('filter.navigate');
@@ -445,20 +445,20 @@ describe('NavigatorCardItem', () => {
           isFocused: true,
         },
       });
-      expect(wrapper.find('.leaf-link').attributes('tabindex')).toBe('0');
+      expect(wrapper.findComponent('.leaf-link').attributes('tabindex')).toBe('0');
     });
 
     it('renders tabindex -1 in button and reference', () => {
       const wrapper = createWrapper();
-      const button = wrapper.find('.tree-toggle');
+      const button = wrapper.findComponent('.tree-toggle');
       expect(button.attributes('tabindex')).toBe('-1');
-      const link = wrapper.find('.leaf-link');
+      const link = wrapper.findComponent('.leaf-link');
       expect(link.attributes('tabindex')).toBe('-1');
     });
 
     it('renders aria tags in button', () => {
       const wrapper = createWrapper();
-      const btn = wrapper.find('.tree-toggle');
+      const btn = wrapper.findComponent('.tree-toggle');
       expect(btn.attributes('tabindex')).toBe('-1');
       expect(btn.attributes('aria-expanded')).toBe('false');
       expect(btn.attributes('tabindex')).toBe('-1');
@@ -473,12 +473,12 @@ describe('NavigatorCardItem', () => {
           expanded: true,
         },
       });
-      expect(wrapper.find('.tree-toggle').attributes('aria-expanded')).toBe('true');
+      expect(wrapper.findComponent('.tree-toggle').attributes('aria-expanded')).toBe('true');
     });
 
     it('renders a aria-describedby with parent label if it is a parent', () => {
       const wrapper = createWrapper();
-      const label = wrapper.find(`#label-parent-${defaultProps.item.uid}`);
+      const label = wrapper.findComponent(`#label-parent-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text()).toBe('filter.parent-label');
     });
@@ -492,12 +492,12 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      const label = wrapper.find(`#label-${defaultProps.item.uid}`);
+      const label = wrapper.findComponent(`#label-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('hidden');
       expect(label.text())
         .toBe('filter.siblings-label 2 5 Foo');
 
-      expect(wrapper.find('.leaf-link').attributes('aria-describedby'))
+      expect(wrapper.findComponent('.leaf-link').attributes('aria-describedby'))
         .toBe(`label-${defaultProps.item.uid} usage-${defaultProps.item.uid}`);
     });
 
@@ -518,7 +518,7 @@ describe('NavigatorCardItem', () => {
       await flushPromises();
       expect(waitFrames).toHaveBeenCalledTimes(1);
       expect(waitFrames).toHaveBeenCalledWith(8);
-      const leafLink = wrapper.find('.leaf-link');
+      const leafLink = wrapper.findComponent('.leaf-link');
       expect(document.activeElement).toEqual(leafLink.element);
     });
 
@@ -545,7 +545,7 @@ describe('NavigatorCardItem', () => {
           'card-item-content': '<div class="card-item-content">CustomNavigatorCardItemContentComponent</div>',
         },
       });
-      expect(wrapper.find('.card-item-content').text()).toBe('CustomNavigatorCardItemContentComponent');
+      expect(wrapper.findComponent('.card-item-content').text()).toBe('CustomNavigatorCardItemContentComponent');
     });
   });
 });

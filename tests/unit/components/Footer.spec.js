@@ -41,6 +41,6 @@ describe('Footer', () => {
     expect(slotProps).toEqual({
       className: 'row',
     });
-    expect(wrapper.find('.slot-class').text()).toBe('Slot Content');
+    expect(wrapper.findComponent('.slot-class').text()).toBe('Slot Content');
   });
 });

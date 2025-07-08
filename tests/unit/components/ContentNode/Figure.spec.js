@@ -21,7 +21,7 @@ describe('Figure', () => {
     expect(wrapper.is('figure')).toBe(true);
     expect(wrapper.attributes('id')).toBe(propsData.anchor);
 
-    const p = wrapper.find('p');
+    const p = wrapper.findComponent('p');
     expect(p.exists()).toBe(true);
     expect(p.text()).toBe('blah');
   });
@@ -32,7 +32,7 @@ describe('Figure', () => {
     expect(wrapper.is('figure')).toBe(true);
     expect(wrapper.attributes('id')).toBeFalsy();
 
-    const p = wrapper.find('p');
+    const p = wrapper.findComponent('p');
     expect(p.exists()).toBe(true);
     expect(p.text()).toBe('blah');
   });

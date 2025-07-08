@@ -68,7 +68,7 @@ describe('Availability', () => {
   it('renders a `Section`', () => {
     expect(wrapper.is('.availability')).toBe(true);
 
-    const section = wrapper.find(Section);
+    const section = wrapper.findComponent(Section);
     expect(section.exists()).toBe(true);
     expect(section.classes('availability')).toBe(true);
     expect(section.attributes('aria-label')).toBe('sections.availability');
@@ -142,8 +142,8 @@ describe('Availability', () => {
         },
       ],
     });
-    const beta = wrapper.find('.beta');
-    const deprecated = wrapper.find('.deprecated');
+    const beta = wrapper.findComponent('.beta');
+    const deprecated = wrapper.findComponent('.deprecated');
     expect(beta.exists()).toBe(false);
     expect(deprecated.exists()).toBe(false);
   });
