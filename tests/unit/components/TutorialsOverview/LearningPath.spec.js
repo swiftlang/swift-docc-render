@@ -72,8 +72,8 @@ describe('LearningPath', () => {
     const main = wrapper.findComponent('.main-container');
     expect(main.exists()).toBe(true);
 
-    expect(main.contains('.secondary-content-container')).toBe(true);
-    expect(main.contains('.primary-content-container')).toBe(true);
+    expect(main.find('.secondary-content-container').exists()).toBe(true);
+    expect(main.find('.primary-content-container').exists()).toBe(true);
   });
 
   it('does not render a secondary content container for IDE targets', () => {
@@ -82,7 +82,7 @@ describe('LearningPath', () => {
       provide: { isTargetIDE: true },
     });
     expect(wrapper.classes('ide')).toBe(true);
-    expect(wrapper.contains('.secondary-content-container')).toBe(false);
+    expect(wrapper.find('.secondary-content-container').exists()).toBe(false);
   });
 
   it('renders a `Volume` section', () => {

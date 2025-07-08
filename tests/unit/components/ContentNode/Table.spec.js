@@ -19,7 +19,7 @@ describe('Table', () => {
     expect(wrapper.is('.table-wrapper')).toBe(true);
     const table = wrapper.findComponent('table');
     expect(table.exists()).toBe(true);
-    expect(table.contains('tbody tr td')).toBe(true);
+    expect(table.find('tbody tr td').exists()).toBe(true);
   });
 
   it('renders a table with `spanned` class', () => {

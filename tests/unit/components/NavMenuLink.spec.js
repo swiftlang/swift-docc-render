@@ -38,7 +38,7 @@ describe('NavMenuLink', () => {
       mocks: { $route: { name: 'foo', path: '/foo', query: { foo: 'bar' } } },
       slots: { default: 'Foo' },
     });
-    expect(wrapper.contains('span.nav-menu-link.current')).toBe(true);
+    expect(wrapper.find('span.nav-menu-link.current').exists()).toBe(true);
   });
 
   it('sets a link as current, even if url has a trailing slash', () => {

@@ -50,7 +50,7 @@ describe('CollapsibleCodeListing', () => {
     expect(wrapper.is('.collapsible-code-listing')).toBe(true);
     const pre = wrapper.findComponent('pre');
     expect(pre.exists()).toBe(true);
-    expect(pre.contains(CodeBlock)).toBe(true);
+    expect(pre.findComponent(CodeBlock).exists()).toBe(true);
   });
 
   it('renders code in .code-line elements', () => {

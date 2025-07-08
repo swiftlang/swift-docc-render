@@ -156,9 +156,9 @@ describe('DocumentationNav', () => {
   });
 
   it('does not render a `LanguageToggle` when there is no swift nor objc path', async () => {
-    expect(wrapper.contains(LanguageToggle)).toBe(true);
+    expect(wrapper.findComponent(LanguageToggle).exists()).toBe(true);
     await wrapper.setProps({ swiftPath: null, objcPath: null });
-    expect(wrapper.contains(LanguageToggle)).toBe(false);
+    expect(wrapper.findComponent(LanguageToggle).exists()).toBe(false);
   });
 
   it('exposes a `menu-items` slot ', () => {

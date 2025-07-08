@@ -68,7 +68,7 @@ describe('SectionIntro', () => {
   });
 
   it('renders an .intro', () => {
-    expect(wrapper.contains('.intro')).toBe(true);
+    expect(wrapper.find('.intro').exists()).toBe(true);
   });
 
   it('renders a `Headline`', () => {
@@ -111,7 +111,7 @@ describe('SectionIntro', () => {
   });
 
   it('does not render `ExpandedIntro` without `expandedSections`', () => {
-    expect(wrapper.contains(ExpandedIntro)).toBe(false);
+    expect(wrapper.findComponent(ExpandedIntro).exists()).toBe(false);
   });
 
   describe('with `expandedSections`', () => {

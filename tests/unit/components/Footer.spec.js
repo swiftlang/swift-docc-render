@@ -25,7 +25,7 @@ describe('Footer', () => {
   });
 
   it('renders a `ColorSchemeToggle`', () => {
-    expect(wrapper.contains(ColorSchemeToggle)).toBe(true);
+    expect(wrapper.findComponent(ColorSchemeToggle).exists()).toBe(true);
   });
 
   it('exposes a default slot', () => {
