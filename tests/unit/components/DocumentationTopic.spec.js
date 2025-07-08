@@ -747,8 +747,8 @@ describe('DocumentationTopic', () => {
       expect(description.classes()).not.toContain('after-enhanced-hero');
     });
 
-    it('does not render the description section if other declaration list is expanded', () => {
-      wrapper.setData({
+    it('does not render the description section if other declaration list is expanded', async () => {
+      await wrapper.setData({
         declListExpanded: true,
       });
       const description = wrapper.findComponent('.description');
@@ -1125,7 +1125,7 @@ describe('DocumentationTopic', () => {
     expect(wrapper.findComponent(OnThisPageStickyContainer).exists()).toBe(true);
     expect(wrapper.findComponent(OnThisPageNav).exists()).toBe(false);
     // show the nav
-    wrapper.setData({
+    await wrapper.setData({
       topicState: {
         onThisPageSections: [{ anchor: 'foo' }, { anchor: 'bar' }, { anchor: 'baz' }],
       },
@@ -1136,7 +1136,7 @@ describe('DocumentationTopic', () => {
   it('hides the `OnThisPageStickyContainer`, if the store.contentWidth is below a threshold', async () => {
     expect(wrapper.classes()).not.toContain('with-on-this-page');
     await wrapper.setProps({ enableOnThisPageNav: true });
-    wrapper.setData({
+    await wrapper.setData({
       topicState: {
         contentWidth: 200,
       },
@@ -1144,7 +1144,7 @@ describe('DocumentationTopic', () => {
     const container = wrapper.findComponent(OnThisPageStickyContainer);
     expect(container.exists()).toBe(true);
     expect(container.isVisible()).toBe(false);
-    wrapper.setData({
+    await wrapper.setData({
       topicState: {
         contentWidth: ON_THIS_PAGE_CONTAINER_BREAKPOINT + 10,
       },
@@ -1184,7 +1184,7 @@ describe('DocumentationTopic', () => {
     });
     expect(store.updateReferences).not.toHaveBeenCalled();
 
-    wrapper.setData({
+    await wrapper.setData({
       indexState: { includedArchiveIdentifiers: ['Foo', 'Bar'] },
     });
     await wrapper.vm.$nextTick();

@@ -97,7 +97,7 @@ describe('VideoAsset', () => {
     expect(video.attributes()).toMatchObject({
       width: '100',
     });
-    wrapper.setData({
+    await wrapper.setData({
       appState: { preferredColorScheme: ColorScheme.dark },
     });
     expect(wrapper.findComponent('video').attributes('poster')).toEqual(propsData.posterVariants[1].url);
@@ -116,7 +116,7 @@ describe('VideoAsset', () => {
       posterVariants: [propsData.posterVariants[0]],
       variants: [propsData.variants[0]],
     });
-    wrapper.setData({
+    await wrapper.setData({
       appState: { preferredColorScheme: ColorScheme.dark },
     });
     await flushPromises();
@@ -187,12 +187,12 @@ describe('VideoAsset', () => {
     expect(video.attributes('controls')).toBe('controls');
   });
 
-  it('renders a source for the light variant when applicable', () => {
+  it('renders a source for the light variant when applicable', async () => {
     let source = wrapper.findComponent('source');
     expect(source.exists()).toBe(true);
     expect(source.attributes('src')).toBe(propsData.variants[0].url);
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         preferredColorScheme: ColorScheme.light,
       },
@@ -202,8 +202,8 @@ describe('VideoAsset', () => {
     expect(source.attributes('src')).toBe(propsData.variants[0].url);
   });
 
-  it('renders a source for the dark variant when applicable', () => {
-    wrapper.setData({
+  it('renders a source for the dark variant when applicable', async () => {
+    await wrapper.setData({
       appState: {
         preferredColorScheme: ColorScheme.dark,
       },
@@ -212,7 +212,7 @@ describe('VideoAsset', () => {
     expect(source.exists()).toBe(true);
     expect(source.attributes('src')).toBe(propsData.variants[1].url);
 
-    wrapper.setData({
+    await wrapper.setData({
       appState: {
         preferredColorScheme: ColorScheme.auto,
         systemColorScheme: ColorScheme.dark,

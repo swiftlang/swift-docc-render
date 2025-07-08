@@ -122,7 +122,7 @@ describe('QuickNavigationModal', () => {
   });
 
   it('filters the symbols according to debouncedInput value', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     await wrapper.vm.$nextTick();
@@ -154,7 +154,7 @@ describe('QuickNavigationModal', () => {
   });
 
   it('renders the match list on user input', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
@@ -163,8 +163,8 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.findComponent('.quick-navigation__refs').attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
   });
 
-  it('renders the `no results found` string when no symbols are found given an input', () => {
-    wrapper.setData({
+  it('renders the `no results found` string when no symbols are found given an input', async () => {
+    await wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
     const noResultsWrapper = wrapper.findComponent('.no-results');
@@ -174,8 +174,8 @@ describe('QuickNavigationModal', () => {
     expect(noResultsWrapper.text()).toBe('navigator.no-results');
   });
 
-  it('renders symbol matches with the corresponding symbol icon', () => {
-    wrapper.setData({
+  it('renders symbol matches with the corresponding symbol icon', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     const matchWrapper = wrapper.findAll('.quick-navigation__symbol-match');
@@ -185,8 +185,8 @@ describe('QuickNavigationModal', () => {
     expect(matchWrapper.at(1).find(TopicTypeIcon).props().type).toBe(filteredSymbols[1].type);
   });
 
-  it('renders a symbol match with the corresponding symbol title', () => {
-    wrapper.setData({
+  it('renders a symbol match with the corresponding symbol title', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     const matchTitlesWrapper = wrapper.findAll('.symbol-title');
@@ -203,7 +203,7 @@ describe('QuickNavigationModal', () => {
   });
 
   it('redirects to the symbol path on symbol-match selection', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     const referencesWrapper = wrapper.findAll(Reference);
@@ -212,7 +212,7 @@ describe('QuickNavigationModal', () => {
   });
 
   it('highlights the matching substring of the symbol title', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     const matchTitlesWrapper = wrapper.findAll('.symbol-title');
@@ -236,8 +236,8 @@ describe('QuickNavigationModal', () => {
     ).toBe(symbolsMatchBlueprint[3].subMatchString);
   });
 
-  it('adds tabindex="0" when reference index is equal to focusedIndex', () => {
-    wrapper.setData({
+  it('adds tabindex="0" when reference index is equal to focusedIndex', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
       focusedIndex: 1,
     });
@@ -245,35 +245,35 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.findAll({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
   });
 
-  it('debounces user input before filtering the symbols', () => {
-    wrapper.setData({
+  it('debounces user input before filtering the symbols', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
-    wrapper.setData({
+    await wrapper.setData({
       userInput: nonResultsInputValue,
     });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
   });
 
-  it('triggers new filtering on every debounce input change', () => {
+  it('triggers new filtering on every debounce input change', async () => {
     const fuzzyMatch = jest.spyOn(wrapper.vm, 'fuzzyMatch');
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
     expect(fuzzyMatch).toHaveBeenCalledTimes(4);
   });
 
-  it('matches the smallest matching substring from a symbol title', () => {
+  it('matches the smallest matching substring from a symbol title', async () => {
     const customSymbols = [
       {
         title: 'foofooxyzbarbar',
@@ -288,15 +288,15 @@ describe('QuickNavigationModal', () => {
         technology: 'Blah',
       },
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: 'foobar',
     });
     expect(wrapper.findComponent(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
   });
 
-  it('access a symbol on `enter` key', () => {
+  it('access a symbol on `enter` key', async () => {
     const handleKeyEnter = jest.spyOn(wrapper.vm, 'handleKeyEnter');
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     wrapper.findComponent('.quick-navigation__refs').trigger('keydown.enter');
@@ -322,7 +322,7 @@ describe('QuickNavigationModal', () => {
         technology: 'Blah',
       },
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: 'bar',
     });
     const symbolTree = wrapper
@@ -331,13 +331,13 @@ describe('QuickNavigationModal', () => {
     expect(symbolTree.text()).toBe('bar');
   });
 
-  it('removes space characters from the debounced input string', () => {
-    wrapper.setData({
+  it('removes space characters from the debounced input string', async () => {
+    await wrapper.setData({
       debouncedInput: 'bar foo',
     });
     expect(wrapper.vm.processedUserInput).toBe('barfoo');
   });
-  it('removes filtered symbols with duplicate paths', () => {
+  it('removes filtered symbols with duplicate paths', async () => {
     const symbolsWithRepeatedPaths = [
       {
         title: 'foo',
@@ -362,7 +362,7 @@ describe('QuickNavigationModal', () => {
         technology: 'Blah',
       },
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: 'foo',
     });
     expect(wrapper.vm.filteredSymbols.length).toBe(2);
@@ -371,8 +371,8 @@ describe('QuickNavigationModal', () => {
   describe('preview', () => {
     const { PreviewState } = QuickNavigationPreview.constants;
 
-    it('renders with a default loading state', () => {
-      wrapper.setData({ debouncedInput: inputValue });
+    it('renders with a default loading state', async () => {
+      await wrapper.setData({ debouncedInput: inputValue });
 
       const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
@@ -396,7 +396,7 @@ describe('QuickNavigationModal', () => {
       };
       fetchDataForPreview.mockResolvedValue(json);
 
-      wrapper.setData({ debouncedInput: inputValue });
+      await wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
       const preview = wrapper.findComponent(QuickNavigationPreview);
@@ -409,7 +409,7 @@ describe('QuickNavigationModal', () => {
       // simulate data fetching encountering error
       fetchDataForPreview.mockRejectedValue(new Error('!'));
 
-      wrapper.setData({ debouncedInput: inputValue });
+      await wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
       const preview = wrapper.findComponent(QuickNavigationPreview);
@@ -420,7 +420,7 @@ describe('QuickNavigationModal', () => {
     it('renders with a loading slowly state when data takes long to load', async () => {
       // there is probably a more realistic way to simulate the timeout but not
       // exactly sure how just yet, sorry
-      wrapper.setData({
+      await wrapper.setData({
         debouncedInput: inputValue,
         previewIsLoadingSlowly: true,
       });
@@ -430,8 +430,8 @@ describe('QuickNavigationModal', () => {
       expect(preview.props('state')).toBe(PreviewState.loadingSlowly);
     });
 
-    it('does not render if no results were found', () => {
-      wrapper.setData({ debouncedInput: nonResultsInputValue });
+    it('does not render if no results were found', async () => {
+      await wrapper.setData({ debouncedInput: nonResultsInputValue });
 
       expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
     });

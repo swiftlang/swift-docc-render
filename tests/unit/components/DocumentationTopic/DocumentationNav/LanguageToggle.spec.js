@@ -228,7 +228,7 @@ describe('LanguageToggle', () => {
   });
 
   it('clears out the language query if language is Swift', async () => {
-    wrapper.setData({ languageModel: Language.objectiveC.key.api });
+    await wrapper.setData({ languageModel: Language.objectiveC.key.api });
 
     const link = wrapper.findComponent('.language-list-container').find('a.nav-menu-link');
     link.trigger('click');

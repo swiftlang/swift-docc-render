@@ -38,8 +38,8 @@ describe('TutorialsOverview', () => {
     wrapper = shallowMount(TutorialsOverview, { mocks });
   });
 
-  it('renders an `Overview` with data', () => {
-    wrapper.setData({ topicData });
+  it('renders an `Overview` with data', async () => {
+    await wrapper.setData({ topicData });
 
     const overview = wrapper.findComponent(Overview);
     expect(overview.exists()).toBe(true);

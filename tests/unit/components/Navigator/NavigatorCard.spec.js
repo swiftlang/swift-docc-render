@@ -2465,7 +2465,7 @@ describe('NavigatorCard', () => {
       const focusSpy = jest.spyOn(button.element, 'focus');
       await flushPromises();
       // now make the component go away
-      wrapper.setData({
+      await wrapper.setData({
         nodesToRender: [],
       });
       await flushPromises();
