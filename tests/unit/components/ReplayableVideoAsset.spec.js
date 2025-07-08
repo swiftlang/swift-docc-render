@@ -186,6 +186,7 @@ describe('ReplayableVideoAsset', () => {
     expect(control.text()).toBe('video.pause');
     // now end the video
     video.vm.$emit('ended');
+    await flushPromises();
     // assert text changed and its visible
     expect(control.text()).toBe('video.replay');
   });
