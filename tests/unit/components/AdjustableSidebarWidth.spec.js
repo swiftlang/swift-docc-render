@@ -210,7 +210,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(0);
       expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
       // trigger opening externally
-      wrapper.setProps({ shownOnMobile: true });
+      await wrapper.setProps({ shownOnMobile: true });
       await flushPromises();
       // assert open class attached
       expect(aside.classes()).toContain('show-on-mobile');
@@ -225,7 +225,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(FocusTrap.mock.results[0].value.start).toHaveBeenCalledTimes(1);
       expect(FocusTrap.mock.results[0].value.stop).toHaveBeenCalledTimes(0);
       // close again
-      wrapper.setProps({ shownOnMobile: false });
+      await wrapper.setProps({ shownOnMobile: false });
       await flushPromises();
       // assert class
       expect(aside.classes()).not.toContain('show-on-mobile');
@@ -244,7 +244,7 @@ describe('AdjustableSidebarWidth', () => {
       // assert not open
       const aside = wrapper.findComponent('.aside');
       // trigger opening externally
-      wrapper.setProps({ shownOnMobile: true });
+      await wrapper.setProps({ shownOnMobile: true });
       await flushPromises();
       // assert open class attached
       expect(aside.classes()).toContain('show-on-mobile');
@@ -291,13 +291,13 @@ describe('AdjustableSidebarWidth', () => {
     const aside = wrapper.findComponent({ ref: 'aside' });
     expect(aside.classes()).not.toContain('hide-on-large');
     expect(aside.classes()).not.toContain('sidebar-transitioning');
-    wrapper.setProps({ hiddenOnLarge: true });
+    await wrapper.setProps({ hiddenOnLarge: true });
     expect(aside.classes()).toContain('hide-on-large');
     expect(aside.classes()).toContain('sidebar-transitioning');
     expect(aside.attributes()).toMatchObject({
       'aria-hidden': 'true',
     });
-    wrapper.setProps({ hiddenOnLarge: false });
+    await wrapper.setProps({ hiddenOnLarge: false });
     expect(wrapper.findComponent({ ref: 'aside' }).classes()).not.toContain('hide-on-large');
     expect(aside.classes()).toContain('sidebar-transitioning');
     await wrapper.vm.$nextTick();
@@ -468,7 +468,7 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, 300); // wrapper is minimum 20% of the screen (1000px)
   });
 
-  it('force closes the nav, if dragging below the forceClose threshold', () => {
+  it('force closes the nav, if dragging below the forceClose threshold', async () => {
     const wrapper = createWrapper();
     const aside = wrapper.findComponent('.aside');
     // assert dragging
@@ -483,7 +483,7 @@ describe('AdjustableSidebarWidth', () => {
     assertWidth(wrapper, 300); // wrapper is minimum 30% of the screen (1000px)
     expect(wrapper.emitted('update:hiddenOnLarge')).toEqual([[true]]);
     // simulate event is handled on parent
-    wrapper.setProps({
+    await wrapper.setProps({
       hiddenOnLarge: true,
     });
     // drag open now
@@ -498,7 +498,7 @@ describe('AdjustableSidebarWidth', () => {
   it('removes any locks or listeners upon destruction', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    wrapper.setProps({ shownOnMobile: true });
+    await wrapper.setProps({ shownOnMobile: true });
     await flushPromises();
     wrapper.destroy();
     expect(FocusTrap.mock.results[0].value.destroy).toHaveBeenCalledTimes(1);
@@ -612,7 +612,7 @@ describe('AdjustableSidebarWidth', () => {
       setContentWidth(wrapper, 99);
       expect(store.state.contentWidth).toBe(0);
       // setup an external close
-      wrapper.setProps({ hiddenOnLarge: true });
+      await wrapper.setProps({ hiddenOnLarge: true });
       const aside = wrapper.findComponent('.aside');
       aside.trigger('transitionstart', { propertyName: 'width' });
       aside.trigger('transitionend', { propertyName: 'width' });
@@ -621,7 +621,7 @@ describe('AdjustableSidebarWidth', () => {
       expect(store.state.contentWidth).toBe(99);
       // prepare for an external open
       setContentWidth(wrapper, 1099);
-      wrapper.setProps({ hiddenOnLarge: false });
+      await wrapper.setProps({ hiddenOnLarge: false });
       aside.trigger('transitionstart', { propertyName: 'width' });
       // assert its the same, until transitions end
       expect(store.state.contentWidth).toBe(99);

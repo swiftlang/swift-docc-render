@@ -195,13 +195,13 @@ describe('DeclarationSource', () => {
     expect(callStack).toEqual(['indentDeclaration', 'displaysMultipleLines']);
   });
 
-  it('adds a "highlighted" class for tokens with `highlight="changed"`', () => {
+  it('adds a "highlighted" class for tokens with `highlight="changed"`', async () => {
     expect(wrapper.findAll('.highlighted').length).toBe(0);
 
     const tokensWithHighlights = [...propsData.tokens];
     tokensWithHighlights[0].highlight = HighlightKind.changed;
     tokensWithHighlights[2].highlight = HighlightKind.changed;
-    wrapper.setProps({ tokens: tokensWithHighlights });
+    await wrapper.setProps({ tokens: tokensWithHighlights });
 
     const highlightedTokens = wrapper.findAll('.highlighted');
     expect(highlightedTokens.length).toBe(2);

@@ -116,8 +116,8 @@ describe('Availability', () => {
     expect(badges.at(3).props('variant')).toBe('deprecated');
   });
 
-  it('renders deprecated over beta badges', () => {
-    wrapper.setProps({
+  it('renders deprecated over beta badges', async () => {
+    await wrapper.setProps({
       platforms: [
         {
           introducedAt: '1.0',
@@ -133,8 +133,8 @@ describe('Availability', () => {
     expect(badge.at(0).props('variant')).toBe('deprecated');
   });
 
-  it('renders no beta/deprecated text if not relevant', () => {
-    wrapper.setProps({
+  it('renders no beta/deprecated text if not relevant', async () => {
+    await wrapper.setProps({
       platforms: [
         {
           introducedAt: '1.0',

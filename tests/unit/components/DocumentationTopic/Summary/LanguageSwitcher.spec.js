@@ -87,7 +87,7 @@ describe('LanguageSwitcher', () => {
   });
 
   it('renders the right links when the paths differ', async () => {
-    wrapper.setProps({
+    await wrapper.setProps({
       ...propsData,
       interfaceLanguage: Language.objectiveC.key.api,
       objcPath: 'documentation/bar',

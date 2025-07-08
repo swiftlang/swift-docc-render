@@ -71,35 +71,35 @@ describe('DocumentationHero', () => {
     });
   });
 
-  it('renders the right classes based on `shortHero` prop', () => {
+  it('renders the right classes based on `shortHero` prop', async () => {
     const wrapper = createWrapper();
     expect(wrapper.findComponent('.short-hero').exists()).toBe(true);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       shortHero: false,
     });
     expect(wrapper.findComponent('.short-hero').exists()).toBe(false);
   });
 
-  it('renders the right classes based on `shouldShowLanguageSwitcher` prop', () => {
+  it('renders the right classes based on `shouldShowLanguageSwitcher` prop', async () => {
     const wrapper = createWrapper();
     const content = wrapper.findComponent('.documentation-hero__content');
 
     expect(content.classes()).toContain('extra-bottom-padding');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       shouldShowLanguageSwitcher: false,
     });
     expect(content.classes()).not.toContain('extra-bottom-padding');
   });
 
-  it('renders the right classes based on `enableMininized` prop', () => {
+  it('renders the right classes based on `enableMininized` prop', async () => {
     const wrapper = createWrapper();
     const content = wrapper.findComponent('.documentation-hero__content');
 
     expect(content.classes()).not.toContain('minimized-hero');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       enableMinimized: true,
     });
     expect(content.classes()).toContain('minimized-hero');
@@ -138,9 +138,9 @@ describe('DocumentationHero', () => {
       .toBe('var(--color-documentation-intro-accent, var(--color-type-icon-sky))');
   });
 
-  it('renders the DocumentationHero, disabled', () => {
+  it('renders the DocumentationHero, disabled', async () => {
     const wrapper = createWrapper();
-    wrapper.setProps({
+    await wrapper.setProps({
       enhanceBackground: false,
     });
     // assert no icon

@@ -252,7 +252,7 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
-    wrapper.setProps({
+    await wrapper.setProps({
       expanded: true,
     });
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
@@ -269,7 +269,7 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
-    wrapper.setProps({
+    await wrapper.setProps({
       expanded: true,
     });
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
@@ -286,7 +286,7 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
-    wrapper.setProps({
+    await wrapper.setProps({
       expanded: true,
     });
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
@@ -303,7 +303,7 @@ describe('NavigatorCardItem', () => {
     expect(wrapper.emitted('toggle-siblings')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
-    wrapper.setProps({ expanded: true });
+    await wrapper.setProps({ expanded: true });
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
     await flushPromises();
     // assert we have waited a few frames
@@ -511,7 +511,7 @@ describe('NavigatorCardItem', () => {
       });
       await flushPromises();
       expect(document.activeElement).not.toEqual(wrapper.element);
-      wrapper.setProps({
+      await wrapper.setProps({
         isFocused: true,
         enableFocus: true,
       });
@@ -532,7 +532,7 @@ describe('NavigatorCardItem', () => {
       });
       await flushPromises();
       expect(document.activeElement).not.toEqual(wrapper.element);
-      wrapper.setProps({ isFocused: true });
+      await wrapper.setProps({ isFocused: true });
       await flushPromises();
       expect(waitFrames).toHaveBeenCalledTimes(1);
       expect(waitFrames).toHaveBeenCalledWith(8);
