@@ -112,7 +112,7 @@ describe('CodePreview', () => {
 
     expect(hideButton.attributes('title')).toBeFalsy();
 
-    hideButton.trigger('click');
+    await hideButton.trigger('click');
     expect(wrapper.emitted()['runtime-preview-toggle'][0]).toEqual([false]);
     let icon = wrapper.findComponent('.preview-icon');
     expect(icon.is(DiagonalArrowIcon)).toBe(true);
@@ -121,7 +121,7 @@ describe('CodePreview', () => {
 
     await wrapper.setProps({ isRuntimePreviewVisible: false });
 
-    hideButton.trigger('click');
+    await hideButton.trigger('click');
     expect(wrapper.emitted()['runtime-preview-toggle'][1]).toEqual([true]);
 
     icon = wrapper.findComponent('.preview-icon');

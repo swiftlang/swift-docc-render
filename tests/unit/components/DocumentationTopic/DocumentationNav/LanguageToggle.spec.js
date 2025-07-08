@@ -171,7 +171,7 @@ describe('LanguageToggle', () => {
     expect(wrapper.findComponent('.current-language').text()).toBe(Language.swift.name);
 
     wrapper.findAll('#language-toggle option').at(1).element.selected = true;
-    wrapper.findComponent('#language-toggle').trigger('change');
+    await wrapper.findComponent('#language-toggle').trigger('change');
 
     expect(wrapper.findComponent('.current-language').text()).toBe(Language.objectiveC.name);
     expect(closeNav).toHaveBeenCalledTimes(1);

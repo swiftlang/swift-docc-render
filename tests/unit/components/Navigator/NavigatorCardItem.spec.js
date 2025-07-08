@@ -248,7 +248,7 @@ describe('NavigatorCardItem', () => {
 
   it('adds a temporary `animating` class, on `@toggle`', async () => {
     const wrapper = createWrapper();
-    wrapper.findComponent('.tree-toggle').trigger('click');
+    await wrapper.findComponent('.tree-toggle').trigger('click');
     expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
@@ -265,7 +265,7 @@ describe('NavigatorCardItem', () => {
 
   it('adds a temporary `animating` class, on `@toggle-full` when @keydown.right + alt/option the tree-toggle button', async () => {
     const wrapper = createWrapper();
-    wrapper.findComponent('.tree-toggle').trigger('keydown.right', { altKey: true });
+    await wrapper.findComponent('.tree-toggle').trigger('keydown.right', { altKey: true });
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
@@ -282,7 +282,7 @@ describe('NavigatorCardItem', () => {
 
   it('adds a temporary `animating` class, on `@toggle-full` with alt + rightkey', async () => {
     const wrapper = createWrapper();
-    wrapper.findComponent('.tree-toggle').trigger('click', { altKey: true });
+    await wrapper.findComponent('.tree-toggle').trigger('click', { altKey: true });
     expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');
@@ -299,7 +299,7 @@ describe('NavigatorCardItem', () => {
 
   it('adds a temporary `animating` class, on `@toggle-siblings`', async () => {
     const wrapper = createWrapper();
-    wrapper.findComponent('.tree-toggle').trigger('click', { metaKey: true });
+    await wrapper.findComponent('.tree-toggle').trigger('click', { metaKey: true });
     expect(wrapper.emitted('toggle-siblings')).toEqual([[defaultProps.item]]);
     // assert it adds the animating class
     expect(wrapper.findComponent('.icon-inline').classes()).toContain('animating');

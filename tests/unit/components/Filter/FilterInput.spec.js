@@ -175,8 +175,7 @@ describe('FilterInput', () => {
   });
 
   it('emits `show-suggested-tags` if filter button is clicked', async () => {
-    wrapper.findComponent('.filter__filter-button').trigger('click');
-    await wrapper.vm.$nextTick();
+    await wrapper.findComponent('.filter__filter-button').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['show-suggested-tags']).toBeTruthy();
     expect(wrapper.emitted('focus')).toBeTruthy();
@@ -514,9 +513,9 @@ describe('FilterInput', () => {
     const relatedTargetCard = document.createElement('a');
     document.body.appendChild(relatedTargetCard);
 
-    beforeEach(() => {
+    beforeEach(async () => {
       // show the suggested tags
-      wrapper.findComponent('.filter').trigger('focus');
+      await wrapper.findComponent('.filter').trigger('focus');
 
       suggestedTags = wrapper.findComponent({ ref: 'suggestedTags' });
       deleteButton = wrapper.findComponent('.filter__delete-button');
@@ -573,7 +572,6 @@ describe('FilterInput', () => {
     it('removes `suggestedTags` component when `suggestedTags` looses its focus on an external component', async () => {
       suggestedTags = wrapper.findComponent({ ref: 'suggestedTags' });
       await suggestedTags.trigger('focus');
-      await flushPromises();
       expect(wrapper.emitted('show-suggested-tags')).toEqual([[true]]);
       expect(wrapper.findComponent({ ref: 'suggestedTags' }).exists()).toBe(true);
 

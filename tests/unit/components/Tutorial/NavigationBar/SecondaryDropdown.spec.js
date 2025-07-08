@@ -114,8 +114,8 @@ describe('SecondaryDropdown', () => {
     expect(node.attributes('role')).toBe('listbox');
   });
 
-  it('changes the aria-expanded state to true when dropdown is open', () => {
-    btn.trigger('click');
+  it('changes the aria-expanded state to true when dropdown is open', async () => {
+    await btn.trigger('click');
 
     expect(btn.attributes('aria-expanded')).toBe('true');
     const optionsDropdown = wrapper.findComponent('ul.options');
@@ -217,22 +217,17 @@ describe('SecondaryDropdown', () => {
   });
 
   it('focuses the next element, when the down key is used on the first link', async () => {
-    btn.trigger('click');
-    await wrapper.vm.$nextTick();
-    firstLink.trigger('keydown.down');
-    await wrapper.vm.$nextTick();
+    await btn.trigger('click');
+    await firstLink.trigger('keydown.down');
     expect(document.activeElement).toEqual(optionElements.at(1).element);
   });
 
   it('focuses the previous element, when the up key is used on the second link', async () => {
-    btn.trigger('click');
-    await wrapper.vm.$nextTick();
-    firstLink.trigger('keydown.down');
-    await wrapper.vm.$nextTick();
+    await btn.trigger('click');
+    await firstLink.trigger('keydown.down');
     const secondLink = optionElements.at(1);
     expect(document.activeElement).toEqual(secondLink.element);
-    secondLink.trigger('keydown.up');
-    await wrapper.vm.$nextTick();
+    await secondLink.trigger('keydown.up');
     expect(document.activeElement).toEqual(firstLink.element);
   });
 });
