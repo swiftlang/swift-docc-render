@@ -112,7 +112,7 @@ describe('ResourcesTile', () => {
     const assertIconForIdentifier = async (Icon, identifier) => {
       await wrapper.setProps({ identifier });
       expect(wrapper.findAll('.icon').length).toBe(1);
-      expect(wrapper.contains(Icon)).toBe(true);
+      expect(wrapper.findComponent(Icon).exists()).toBe(true);
     };
     assertIconForIdentifier(DocumentIcon, Identifier.documentation);
     assertIconForIdentifier(DownloadIcon, Identifier.downloads);

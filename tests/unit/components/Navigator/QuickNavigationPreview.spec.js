@@ -21,9 +21,9 @@ const createWrapper = propsData => shallowMount(QuickNavigationPreview, {
 describe('QuickNavigationPreview', () => {
   it('renders a simple div when loading', () => {
     const wrapper = createWrapper({ state: PreviewState.loading });
-    expect(wrapper.contains(DocumentationTopic)).toBe(false);
-    expect(wrapper.contains('.loading')).toBe(false);
-    expect(wrapper.contains('.unavailable')).toBe(false);
+    expect(wrapper.findComponent(DocumentationTopic).exists()).toBe(false);
+    expect(wrapper.find('.loading').exists()).toBe(false);
+    expect(wrapper.find('.unavailable').exists()).toBe(false);
   });
 
   it('renders a minimized `DocumentationTopic` for success', () => {
@@ -43,8 +43,8 @@ describe('QuickNavigationPreview', () => {
       json,
       state: PreviewState.success,
     });
-    expect(wrapper.contains('.loading')).toBe(false);
-    expect(wrapper.contains('.unavailable')).toBe(false);
+    expect(wrapper.find('.loading').exists()).toBe(false);
+    expect(wrapper.find('.unavailable').exists()).toBe(false);
     const topic = wrapper.findComponent(DocumentationTopic);
     expect(topic.exists()).toBe(true);
     expect(topic.props('enableMinimized')).toBe(true);
@@ -79,8 +79,8 @@ describe('QuickNavigationPreview', () => {
 
   it('renders a "Preview unavailable" message for errors', () => {
     const wrapper = createWrapper({ state: PreviewState.error });
-    expect(wrapper.contains(DocumentationTopic)).toBe(false);
-    expect(wrapper.contains('.loading')).toBe(false);
+    expect(wrapper.findComponent(DocumentationTopic).exists()).toBe(false);
+    expect(wrapper.find('.loading').exists()).toBe(false);
 
     const unavailable = wrapper.findComponent('.unavailable p');
     expect(unavailable.text()).toBe('quicknav.preview-unavailable');
@@ -88,8 +88,8 @@ describe('QuickNavigationPreview', () => {
 
   it('renders loading UI when loading slowly', () => {
     const wrapper = createWrapper({ state: PreviewState.loadingSlowly });
-    expect(wrapper.contains(DocumentationTopic)).toBe(false);
-    expect(wrapper.contains('.unavailable')).toBe(false);
+    expect(wrapper.findComponent(DocumentationTopic).exists()).toBe(false);
+    expect(wrapper.find('.unavailable').exists()).toBe(false);
 
     const loading = wrapper.findComponent('.loading');
     expect(loading.exists()).toBe(true);

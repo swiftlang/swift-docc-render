@@ -116,7 +116,7 @@ describe('Hierarchy', () => {
     expect(currentItem.attributes()).toEqual({});
     expect(currentItem.text()).toBe(baz.title);
 
-    expect(wrapper.contains(HierarchyCollapsedItems)).toBe(false);
+    expect(wrapper.findComponent(HierarchyCollapsedItems).exists()).toBe(false);
   });
 
   describe('with more than 3 hierarchy items', () => {

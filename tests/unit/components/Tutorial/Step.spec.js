@@ -106,11 +106,11 @@ describe('Step', () => {
           isTargetIDE: true,
         },
       });
-      expect(wrapper.contains('div.media-container')).toBe(false);
+      expect(wrapper.find('div.media-container').exists()).toBe(false);
     });
 
     it('renders the mobile layout on non-S breakpoints in Web mode', () => {
-      expect(wrapper.contains('div.media-container')).toBe(true);
+      expect(wrapper.find('div.media-container').exists()).toBe(true);
     });
 
     describe('with a caption', () => {
@@ -153,7 +153,7 @@ describe('Step', () => {
           isTargetIDE: true,
         },
       });
-      expect(wrapper.contains('div.media-container')).toBe(true);
+      expect(wrapper.find('div.media-container').exists()).toBe(true);
     });
 
     describe('with media', () => {

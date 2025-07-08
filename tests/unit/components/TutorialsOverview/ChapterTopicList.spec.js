@@ -80,7 +80,7 @@ describe('ChapterTopicList', () => {
       if (estimatedTime) {
         const time = item.find('.time');
         expect(time.find('.time-label').text()).toBe(estimatedTime);
-        expect(time.contains(TimerIcon)).toBe(true);
+        expect(time.findComponent(TimerIcon).exists()).toBe(true);
       } else {
         expect(item.classes()).toContain('no-time-estimate');
         expect(item.find('.time').exists()).toBeFalsy();

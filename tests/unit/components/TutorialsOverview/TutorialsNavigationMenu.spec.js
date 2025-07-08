@@ -47,7 +47,7 @@ describe('TutorialsNavigationMenu', () => {
     await wrapper.setProps({ collapsed: false });
     const navigation = wrapper.findComponent(TutorialsNavigationList);
     expect(navigation.exists()).toBe(true);
-    expect(navigation.contains('li')).toBe(true);
+    expect(navigation.find('li').exists()).toBe(true);
     expect(navigation.text()).toBe('foo');
     expect(navigation.attributes('aria-label')).toBe('tutorials.nav.chapters');
   });
