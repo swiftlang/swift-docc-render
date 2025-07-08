@@ -80,7 +80,7 @@ describe('Asset', () => {
     expect(imageAsset.props('variants')).toBe(foo.variants);
   });
 
-  it('renders a `ReplayableVideoAsset` for video', () => {
+  it('renders a `ReplayableVideoAsset` for video', async () => {
     const image = {
       type: 'image',
       variants: [
@@ -100,6 +100,7 @@ describe('Asset', () => {
 
     // Check that 'ended' events emitted by a `VideoAsset` are re-emitted.
     videoAsset.vm.$emit('ended');
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted().videoEnded[0]).toBeTruthy();
   });
 

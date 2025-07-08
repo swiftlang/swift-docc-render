@@ -111,13 +111,15 @@ describe('QuickNavigationModal', () => {
     expect(wrapper.findComponent('.quick-navigation').exists()).toBe(true);
   });
 
-  it('adds the focus class on container if filter input is focused', () => {
+  it('adds the focus class on container if filter input is focused', async () => {
     wrapper.findComponent(FilterInput).vm.$emit('focus');
+    await wrapper.vm.$nextTick();
     expect(wrapper.findComponent('.quick-navigation__container.focus').exists()).toBe(true);
   });
 
-  it('removes the focus class on container if filter input is blur', () => {
+  it('removes the focus class on container if filter input is blur', async () => {
     wrapper.findComponent(FilterInput).vm.$emit('blur');
+    await wrapper.vm.$nextTick();
     expect(wrapper.findComponent('.quick-navigation__container.focus').exists()).toBe(false);
   });
 

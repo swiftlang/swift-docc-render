@@ -15,7 +15,7 @@ import { flushPromises } from '../../../../test-utils';
 describe('CodeListing', () => {
   const { Filename } = CodeListing.components;
 
-  it('renders the file name if provided', () => {
+  it('renders the file name if provided', async () => {
     const fileName = 'myfile';
     const isFileNameActionable = true;
 
@@ -37,6 +37,7 @@ describe('CodeListing', () => {
 
     // Test that an event is emitted when the file name is clicked.
     fileNameComponent.vm.$emit('click');
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['file-name-click']).toBeTruthy();
   });
 

@@ -474,6 +474,7 @@ describe('DocumentationLayout', () => {
     await flushPromises();
     sidebar.vm.breakpoint = BreakpointName.medium;
     navigator.vm.$emit('close');
+    await wrapper.vm.$nextTick();
     expect(sidebar.props('shownOnMobile')).toBe(false);
     expect(storage.set).toHaveBeenCalledTimes(0);
   });
@@ -510,10 +511,12 @@ describe('DocumentationLayout', () => {
     expect(sidebar.props('hiddenOnLarge')).toBe(false);
     // Now close from the sidebar
     sidebar.vm.$emit('update:hiddenOnLarge', true);
+    await wrapper.vm.$nextTick();
     expect(sidebar.props('hiddenOnLarge')).toBe(true);
     expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, true);
     // now toggle it back, from within the Nav button
     nav.vm.$emit('toggle-sidenav', BreakpointName.large);
+    await wrapper.vm.$nextTick();
     // assert we are storing the updated values
     expect(sidebar.props('hiddenOnLarge')).toBe(false);
     expect(storage.set).toHaveBeenLastCalledWith(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false);

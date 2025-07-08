@@ -128,7 +128,7 @@ describe('LanguageSwitcher', () => {
     expect(links.at(1).props('url')).toBe('/documentation/foo?language=objc');
   });
 
-  it('stores the preferred language when a link is clicked', () => {
+  it('stores the preferred language when a link is clicked', async () => {
     const store = { setPreferredLanguage: jest.fn() };
     wrapper = shallowMount(LanguageSwitcher, {
       mocks,
@@ -138,6 +138,7 @@ describe('LanguageSwitcher', () => {
 
     let link = wrapper.findAllComponents(LanguageSwitcherLink).at(1);
     link.vm.$emit('click');
+    await wrapper.vm.$nextTick();
     expect(store.setPreferredLanguage).toBeCalledWith(Language.objectiveC.key.url);
 
     link = wrapper.findAllComponents(LanguageSwitcherLink).at(0);
