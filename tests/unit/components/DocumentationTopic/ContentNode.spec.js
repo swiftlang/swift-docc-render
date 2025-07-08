@@ -18,7 +18,7 @@ describe('ContentNode', () => {
     const propsData = { content: [] };
     const wrapper = shallowMount(ContentNode, { propsData });
 
-    const base = wrapper.find(BaseContentNode);
+    const base = wrapper.findComponent(BaseContentNode);
     expect(base.exists()).toBe(true);
     expect(base.props('content')).toEqual(propsData.content);
   });

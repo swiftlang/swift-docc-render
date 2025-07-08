@@ -25,12 +25,12 @@ describe('NavMenuItem', () => {
 
   it('renders a NavMenuItemBase', () => {
     const wrapper = mountItem();
-    expect(wrapper.find(NavMenuItemBase).exists()).toBe(true);
+    expect(wrapper.findComponent(NavMenuItemBase).exists()).toBe(true);
   });
 
   it('renders a NavMenuLink', () => {
     const wrapper = mountItem();
-    const link = wrapper.find(NavMenuLink);
+    const link = wrapper.findComponent(NavMenuLink);
     expect(link.exists()).toBe(true);
     expect(link.props()).toHaveProperty('url', 'foo');
   });
@@ -41,6 +41,6 @@ describe('NavMenuItem', () => {
         default: '<div class="foo">Foo</div>',
       },
     });
-    expect(wrapper.find(NavMenuLink).find('.foo').exists()).toBe(true);
+    expect(wrapper.findComponent(NavMenuLink).find('.foo').exists()).toBe(true);
   });
 });

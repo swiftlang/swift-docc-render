@@ -29,13 +29,13 @@ describe('GenericError', () => {
   });
 
   it('renders a default message', () => {
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('error.unknown');
   });
 
   it('exposes a slot', () => {
-    const content = wrapper.find('.container p');
+    const content = wrapper.findComponent('.container p');
     expect(content.exists()).toBe(true);
     expect(content.text()).toBe(slotText);
   });
@@ -44,7 +44,7 @@ describe('GenericError', () => {
     const message = 'Whoops!';
     wrapper.setProps({ message });
 
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe(message);
   });

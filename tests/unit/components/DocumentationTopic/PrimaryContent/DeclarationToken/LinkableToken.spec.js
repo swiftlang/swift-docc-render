@@ -65,7 +65,7 @@ describe('LinkableToken', () => {
       },
     });
 
-    const link = wrapper.find(Reference);
+    const link = wrapper.findComponent(Reference);
     expect(link.exists()).toBe(true);
     expect(link.props('url')).toBe(foo.url);
     expect(link.text()).toBe(foo.title);

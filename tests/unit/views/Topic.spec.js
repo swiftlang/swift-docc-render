@@ -173,7 +173,7 @@ describe('Topic', () => {
     });
 
     it('renders an `Article`', () => {
-      const article = wrapper.find(Article);
+      const article = wrapper.findComponent(Article);
       expect(article.exists()).toBe(true);
       expect(article.props()).toEqual({
         ...props,
@@ -194,7 +194,7 @@ describe('Topic', () => {
         },
       });
 
-      const article = wrapper.find(Article);
+      const article = wrapper.findComponent(Article);
       expect(article.exists()).toBe(true);
       expect(article.props('hierarchy')).toEqual(hierarchy);
     });
@@ -208,7 +208,7 @@ describe('Topic', () => {
         },
       });
 
-      const article = wrapper.find(Article);
+      const article = wrapper.findComponent(Article);
       expect(article.exists()).toBe(true);
       expect(article.props('hierarchy')).toEqual({
         technologyNavigation: ['overview', 'tutorials', 'resources'],
@@ -238,7 +238,7 @@ describe('Topic', () => {
     });
 
     it('renders a `Tutorial`', () => {
-      const tutorial = wrapper.find(Tutorial);
+      const tutorial = wrapper.findComponent(Tutorial);
       expect(tutorial.exists()).toBe(true);
       expect(tutorial.props()).toEqual({
         ...props,
@@ -259,7 +259,7 @@ describe('Topic', () => {
         },
       });
 
-      const tutorial = wrapper.find(Tutorial);
+      const tutorial = wrapper.findComponent(Tutorial);
       expect(tutorial.exists()).toBe(true);
       expect(tutorial.props('hierarchy')).toEqual(hierarchy);
     });
@@ -273,7 +273,7 @@ describe('Topic', () => {
         },
       });
 
-      const tutorial = wrapper.find(Tutorial);
+      const tutorial = wrapper.findComponent(Tutorial);
       expect(tutorial.exists()).toBe(true);
       expect(tutorial.props('hierarchy')).toEqual({
         technologyNavigation: ['overview', 'tutorials', 'resources'],

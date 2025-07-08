@@ -135,12 +135,12 @@ describe('Primary Dropdown', () => {
       attachToDocument: true,
     });
 
-    btn = wrapper.find('.form-dropdown-toggle');
-    firstLink = wrapper.find(`.${OptionClass}`);
+    btn = wrapper.findComponent('.form-dropdown-toggle');
+    firstLink = wrapper.findComponent(`.${OptionClass}`);
   });
 
   it('renders a `DropdownCustom` at the root', () => {
-    const node = wrapper.find(DropdownCustom);
+    const node = wrapper.findComponent(DropdownCustom);
     expect(node.exists()).toBe(true);
     expect(node.props()).toEqual({
       isSmall: true,
@@ -150,7 +150,7 @@ describe('Primary Dropdown', () => {
   });
 
   it('Renders a the correct label', () => {
-    expect(wrapper.find('.visuallyhidden').text()).toBe('tutorials.nav.current tutorials.title');
+    expect(wrapper.findComponent('.visuallyhidden').text()).toBe('tutorials.nav.current tutorials.title');
   });
 
   it('renders chapters properly', () => {
@@ -163,7 +163,7 @@ describe('Primary Dropdown', () => {
   it('renders chapter tutorials properly', () => {
     // assert there are two tutorials, and hey apply the option class
     expect(wrapper.findAll(`.${OptionClass}`)).toHaveLength(2);
-    const options = wrapper.find('ul[role="listbox"]').findAll(RouterLinkStub);
+    const options = wrapper.findComponent('ul[role="listbox"]').findAll(RouterLinkStub);
     // assert it gets the active option class applied
     expect(options.at(0).props('to')).toEqual('/tutorials/technologyx/tutorial?context=foo');
     expect(options.at(0).find('li').attributes()).toEqual({

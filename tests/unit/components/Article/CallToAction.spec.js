@@ -36,7 +36,7 @@ describe('CallToAction', () => {
   });
 
   it('renders a `TutorialCTA`', () => {
-    const cta = wrapper.find(TutorialCTA);
+    const cta = wrapper.findComponent(TutorialCTA);
     expect(cta.exists()).toBe(true);
     expect(cta.props()).toEqual(propsData);
   });

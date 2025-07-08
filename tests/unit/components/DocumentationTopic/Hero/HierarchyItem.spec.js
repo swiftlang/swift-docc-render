@@ -35,7 +35,7 @@ describe('HierarchyItem', () => {
 
   it('renders a .parent.item link if the URL exists', () => {
     const wrapper = mountWithProps({ url: 'foo.bar' });
-    const item = wrapper.find('.item');
+    const item = wrapper.findComponent('.item');
     expect(item.classes('parent')).toBe(true);
     expect(item.is(RouterLinkStub)).toBe(true);
     expect(item.props('to')).toBe('foo.bar');
@@ -44,7 +44,7 @@ describe('HierarchyItem', () => {
 
   it('renders a .current.item span if there is no URL', () => {
     const wrapper = mountWithProps();
-    const item = wrapper.find('.item');
+    const item = wrapper.findComponent('.item');
     expect(item.classes('current')).toBe(true);
     expect(item.is('span')).toBe(true);
     expect(item.text()).toBe('Foobar');

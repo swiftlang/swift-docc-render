@@ -176,7 +176,7 @@ describe('Pager', () => {
     expect(wrapper.findAll('.page.active').length).toBe(0);
     expect(wrapper.findAll('.indicator').length).toBe(0);
 
-    const p = wrapper.find('.pager p');
+    const p = wrapper.findComponent('.pager p');
     expect(p.exists()).toBe(true);
     expect(p.text()).toBe('test: foobar');
   });

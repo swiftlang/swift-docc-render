@@ -67,8 +67,8 @@ describe('SuggestLang', () => {
       },
     });
 
-    link = wrapper.find('.suggest-lang__link');
-    closeIcon = wrapper.find('.suggest-lang__close-icon-button');
+    link = wrapper.findComponent('.suggest-lang__link');
+    closeIcon = wrapper.findComponent('.suggest-lang__close-icon-button');
   });
 
   it('renders a <SuggestLang> if preferredLocale is different to currentLocale', () => {
@@ -95,12 +95,12 @@ describe('SuggestLang', () => {
   });
 
   it('renders a InlineChevronRightIcon', () => {
-    expect(wrapper.find(InlineChevronRightIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(InlineChevronRightIcon).exists()).toBe(true);
   });
 
   it('renders a close icon', () => {
     expect(closeIcon.exists()).toBe(true);
-    expect(wrapper.find(CloseIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(CloseIcon).exists()).toBe(true);
     expect(closeIcon.attributes('aria-label')).toBe('continue-viewing');
   });
 

@@ -33,7 +33,7 @@ describe('apiChangesHelpers', () => {
     wrapper = createWrapper();
     wrapper.vm.$refs = { apiChangesDiff: { offsetHeight: 100 } };
 
-    const apiChangesDiff = wrapper.find({ ref: 'apiChangesDiff' });
+    const apiChangesDiff = wrapper.findComponent({ ref: 'apiChangesDiff' });
     expect(apiChangesDiff.exists()).toBe(true);
     expect(wrapper.vm.displaysMultipleLinesAfterAPIChanges).toBe(true);
     expect(window.getComputedStyle).toHaveBeenCalledTimes(1);

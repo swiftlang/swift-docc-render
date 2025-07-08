@@ -29,7 +29,7 @@ describe('CodeListing', () => {
       },
     });
 
-    const fileNameComponent = wrapper.find(Filename);
+    const fileNameComponent = wrapper.findComponent(Filename);
     expect(fileNameComponent.exists()).toBe(true);
     expect(fileNameComponent.props('isActionable')).toBe(isFileNameActionable);
     expect(fileNameComponent.props('fileType')).toBe('swift');
@@ -51,7 +51,7 @@ describe('CodeListing', () => {
 
     await flushPromises();
 
-    const listing = wrapper.find('div.code-listing');
+    const listing = wrapper.findComponent('div.code-listing');
     expect(listing.attributes('data-syntax')).toBe('swift');
 
     const codeLineContainer = listing.find('span.code-line-container');
@@ -76,7 +76,7 @@ describe('CodeListing', () => {
 
     await flushPromises();
 
-    const pre = wrapper.find('pre');
+    const pre = wrapper.findComponent('pre');
     expect(pre.exists()).toBe(true);
 
     const codeLineContainers = wrapper.findAll('span.code-line-container');
@@ -106,7 +106,7 @@ describe('CodeListing', () => {
     });
     await flushPromises();
 
-    const syntaxToken = wrapper.find('.syntax-keyword');
+    const syntaxToken = wrapper.findComponent('.syntax-keyword');
     expect(syntaxToken.exists()).toBe(true);
     expect(syntaxToken.text()).toBe('let');
   });
@@ -121,7 +121,7 @@ describe('CodeListing', () => {
 
     await flushPromises();
 
-    const syntaxToken = wrapper.find('.syntax-keyword');
+    const syntaxToken = wrapper.findComponent('.syntax-keyword');
     expect(syntaxToken.exists()).toBe(true);
     expect(syntaxToken.text()).toBe('typedef');
     expect(wrapper.attributes('data-syntax')).toBe('objc');
@@ -134,7 +134,7 @@ describe('CodeListing', () => {
         content: ['let foo = "bar"'],
       },
     });
-    const syntaxToken = wrapper.find('.syntax-keyword');
+    const syntaxToken = wrapper.findComponent('.syntax-keyword');
     expect(syntaxToken.exists()).toBe(false);
     expect(wrapper.html().includes('.syntax')).toBe(false);
   });
@@ -204,12 +204,12 @@ describe('CodeListing', () => {
     });
     await flushPromises();
 
-    expect(wrapper.find('.syntax-keyword').text()).toBe('let');
+    expect(wrapper.findComponent('.syntax-keyword').text()).toBe('let');
     wrapper.setProps({
       content: ['print("Some Text")'],
     });
     await flushPromises();
-    expect(wrapper.find('.syntax-built_in').text()).toBe('print');
+    expect(wrapper.findComponent('.syntax-built_in').text()).toBe('print');
   });
 
   it('adds a class `single-line` if only one line of code is provided', async () => {

@@ -75,18 +75,18 @@ describe('Step', () => {
     });
 
     it('adds a `focused` class if `isActive`', () => {
-      expect(wrapper.find('.step').classes()).not.toContain('focused');
+      expect(wrapper.findComponent('.step').classes()).not.toContain('focused');
       wrapper.setProps({ currentIndex: 0 });
-      expect(wrapper.find('.step').classes()).toContain('focused');
+      expect(wrapper.findComponent('.step').classes()).toContain('focused');
     });
 
     it('adds a data-index property to the `step`', () => {
       wrapper.setProps({ index: 1 });
-      expect(wrapper.find('.step').attributes('data-index')).toBe('1');
+      expect(wrapper.findComponent('.step').attributes('data-index')).toBe('1');
     });
 
     it('renders a div.step with a `ContentNode`', () => {
-      const step = wrapper.find('div.step');
+      const step = wrapper.findComponent('div.step');
       expect(step.classes('focused')).toBe(false);
 
       const node = step.find(ContentNode);
@@ -175,7 +175,7 @@ describe('Step', () => {
       it('renders an `Asset` with `showsReplayButton=true`', () => {
         wrapper = mountWithMedia();
 
-        const mediaContainer = wrapper.find('.media-container');
+        const mediaContainer = wrapper.findComponent('.media-container');
         const asset = mediaContainer.find(Asset);
         expect(asset.exists()).toBe(true);
         expect(asset.props('identifier')).toBe('media.jpg');
@@ -202,7 +202,7 @@ describe('Step', () => {
             isTargetIDE: true,
           },
         });
-        mediaContainer = wrapper.find('.media-container');
+        mediaContainer = wrapper.findComponent('.media-container');
       });
 
       it('renders a `MobileCodePreview`', () => {

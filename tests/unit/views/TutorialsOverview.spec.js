@@ -41,7 +41,7 @@ describe('TutorialsOverview', () => {
   it('renders an `Overview` with data', () => {
     wrapper.setData({ topicData });
 
-    const overview = wrapper.find(Overview);
+    const overview = wrapper.findComponent(Overview);
     expect(overview.exists()).toBe(true);
   });
 

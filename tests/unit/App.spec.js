@@ -101,10 +101,10 @@ describe('App', () => {
     const wrapper = createWrapper();
     expect(wrapper.classes('hascustomheader')).toBe(false);
 
-    const header = wrapper.find('custom-header-stub');
+    const header = wrapper.findComponent('custom-header-stub');
     expect(header.exists()).toBe(false);
 
-    const footer = wrapper.find('custom-footer-stub');
+    const footer = wrapper.findComponent('custom-footer-stub');
     expect(footer.exists()).toBe(false);
   });
 
@@ -115,7 +115,7 @@ describe('App', () => {
 
   it('renders Skip Navigation', () => {
     const wrapper = createWrapper();
-    const skipNavigation = wrapper.find('#skip-nav');
+    const skipNavigation = wrapper.findComponent('#skip-nav');
     expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
     expect(skipNavigation.attributes('href')).toBe('#app-main');
   });
@@ -126,7 +126,7 @@ describe('App', () => {
         header: '<div class="header">Header</div>',
       },
     });
-    const header = wrapper.find('.header');
+    const header = wrapper.findComponent('.header');
     expect(header.text()).toBe('Header');
   });
 
@@ -142,7 +142,7 @@ describe('App', () => {
       },
     });
 
-    const SuggestLangComponent = wrapper.find(SuggestLang);
+    const SuggestLangComponent = wrapper.findComponent(SuggestLang);
     expect(SuggestLangComponent.exists()).toBe(true);
   });
 
@@ -152,7 +152,7 @@ describe('App', () => {
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
-    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    expect(wrapper.findComponent(LocaleSelector).exists()).toBe(false);
     wrapper.setData({
       appState: {
         ...wrapper.vm.appState,
@@ -160,7 +160,7 @@ describe('App', () => {
       },
     });
 
-    expect(wrapper.find(LocaleSelector).exists()).toBe(true);
+    expect(wrapper.findComponent(LocaleSelector).exists()).toBe(true);
   });
 
   it('does not render LocaleSelector if there is less than two available locales', () => {
@@ -169,7 +169,7 @@ describe('App', () => {
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
-    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    expect(wrapper.findComponent(LocaleSelector).exists()).toBe(false);
     wrapper.setData({
       appState: {
         ...wrapper.vm.appState,
@@ -177,7 +177,7 @@ describe('App', () => {
       },
     });
 
-    expect(wrapper.find(LocaleSelector).exists()).toBe(false);
+    expect(wrapper.findComponent(LocaleSelector).exists()).toBe(false);
   });
 
   it('renders the `#nav-sticky-anchor` between the header and loading placeholder', () => {
@@ -186,9 +186,9 @@ describe('App', () => {
         header: '<div class="header">Footer</div>',
       },
     });
-    const header = wrapper.find('.header');
-    const stickyAnchor = wrapper.find(`#${baseNavStickyAnchorId}`);
-    const loadingPlaceholder = wrapper.find(InitialLoadingPlaceholder);
+    const header = wrapper.findComponent('.header');
+    const stickyAnchor = wrapper.findComponent(`#${baseNavStickyAnchorId}`);
+    const loadingPlaceholder = wrapper.findComponent(InitialLoadingPlaceholder);
 
     // make sure the anchor is below the header and above the content
     expect(header.element.nextElementSibling).toBe(stickyAnchor.element);
@@ -201,9 +201,9 @@ describe('App', () => {
         default: '<div class="default">Default</div>',
       },
     });
-    const stickyAnchor = wrapper.find(`#${baseNavStickyAnchorId}`);
-    const content = wrapper.find('.default');
-    const placeholder = wrapper.find(InitialLoadingPlaceholder);
+    const stickyAnchor = wrapper.findComponent(`#${baseNavStickyAnchorId}`);
+    const content = wrapper.findComponent('.default');
+    const placeholder = wrapper.findComponent(InitialLoadingPlaceholder);
     // make sure the anchor is below the header and above the content
     expect(placeholder.exists()).toBe(true);
     expect(stickyAnchor.element.nextElementSibling).toBe(placeholder.element);
@@ -216,7 +216,7 @@ describe('App', () => {
         footer: '<div class="footer-slot">Footer</div>',
       },
     });
-    const footer = wrapper.find('.footer-slot');
+    const footer = wrapper.findComponent('.footer-slot');
     expect(footer.text()).toBe('Footer');
   });
 
@@ -226,9 +226,9 @@ describe('App', () => {
         default: '<div class="default">Default</div>',
       },
     });
-    const slotContent = wrapper.find('.default');
+    const slotContent = wrapper.findComponent('.default');
     expect(slotContent.text()).toBe('Default');
-    expect(wrapper.find('router-view-stub').exists()).toBe(false);
+    expect(wrapper.findComponent('router-view-stub').exists()).toBe(false);
   });
 
   it('renders a default `Footer` for non-IDE targets', () => {
@@ -241,7 +241,7 @@ describe('App', () => {
 
   it('renders the app-top element', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(`#${AppTopID}`).exists()).toBe(true);
+    expect(wrapper.findComponent(`#${AppTopID}`).exists()).toBe(true);
   });
 
   describe('Custom CSS Properties', () => {
@@ -365,7 +365,7 @@ describe('App', () => {
       });
 
       it('renders a <custom-header>', () => {
-        const header = wrapper.find('custom-header-stub');
+        const header = wrapper.findComponent('custom-header-stub');
         expect(header.exists()).toBe(true);
         expect(header.attributes('data-color-scheme')).toBeDefined();
       });
@@ -376,7 +376,7 @@ describe('App', () => {
             header: '<div class="header">Header</div>',
           },
         });
-        const header = wrapper.find('custom-header-stub');
+        const header = wrapper.findComponent('custom-header-stub');
         expect(header.exists()).toBe(false);
       });
     });
@@ -384,7 +384,7 @@ describe('App', () => {
     it('renders a <custom-footer> if one has been defined', () => {
       window.customElements.get.mockImplementation(name => name === 'custom-footer');
       const wrapper = createWrapper();
-      const footer = wrapper.find('custom-footer-stub');
+      const footer = wrapper.findComponent('custom-footer-stub');
       expect(footer.exists()).toBe(true);
       expect(footer.attributes('data-color-scheme')).toBeDefined();
     });

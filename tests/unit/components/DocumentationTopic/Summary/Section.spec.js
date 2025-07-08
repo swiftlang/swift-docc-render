@@ -25,7 +25,7 @@ describe('Section', () => {
   });
 
   it('renders slot content', () => {
-    const content = wrapper.find('p');
+    const content = wrapper.findComponent('p');
     expect(content.html()).toBe(slots.default);
   });
 });
