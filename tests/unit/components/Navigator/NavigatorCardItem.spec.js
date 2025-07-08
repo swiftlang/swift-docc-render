@@ -108,7 +108,7 @@ describe('NavigatorCardItem', () => {
   it('renders a deprecated badge when item is deprecated', () => {
     let wrapper;
     wrapper = createWrapper();
-    expect(wrapper.contains(Badge)).toBe(false);
+    expect(wrapper.findComponent(Badge).exists()).toBe(false);
     wrapper = createWrapper({
       propsData: {
         item: {
@@ -123,7 +123,7 @@ describe('NavigatorCardItem', () => {
   it('renders a beta badge when item is beta', () => {
     let wrapper;
     wrapper = createWrapper();
-    expect(wrapper.contains(Badge)).toBe(false);
+    expect(wrapper.findComponent(Badge).exists()).toBe(false);
     wrapper = createWrapper({
       propsData: {
         item: {
@@ -138,7 +138,7 @@ describe('NavigatorCardItem', () => {
   it('only renders a deprecated badge when item is both deprecated and beta', () => {
     let wrapper;
     wrapper = createWrapper();
-    expect(wrapper.contains(Badge)).toBe(false);
+    expect(wrapper.findComponent(Badge).exists()).toBe(false);
     wrapper = createWrapper({
       propsData: {
         item: {

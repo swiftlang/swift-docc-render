@@ -651,24 +651,24 @@ describe('DocumentationTopic', () => {
 
   it('does not render a `PrimaryContent` column when passed undefined as PrimaryContent', async () => {
     await wrapper.setProps({ primaryContentSections: undefined });
-    expect(wrapper.contains(PrimaryContent)).toBe(false);
+    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(false);
   });
 
   it('does not render a `PrimaryContent` column when passed empty an PrimaryContent', async () => {
     await wrapper.setProps({ primaryContentSections: [] });
-    expect(wrapper.contains(PrimaryContent)).toBe(false);
+    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(false);
   });
 
   it('does not render a `PrimaryContent` column when passed empty an PrimaryContent & no `ViewMore` link', async () => {
     await wrapper.setProps({ primaryContentSections: [], enableMinimized: true });
-    expect(wrapper.contains(PrimaryContent)).toBe(true); // ViewMore link is present
+    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(true); // ViewMore link is present
 
     await wrapper.setProps({
       primaryContentSections: [],
       enableMinimized: true,
       hasNoExpandedDocumentation: true,
     });
-    expect(wrapper.contains(PrimaryContent)).toBe(false); // no ViewMore link
+    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(false); // no ViewMore link
   });
 
   it('render a `PrimaryContent` column when passed empty an PrimaryContent but has otherDeclarations', async () => {
@@ -678,7 +678,8 @@ describe('DocumentationTopic', () => {
         hasOtherDeclSection,
       ],
     });
-    expect(wrapper.contains(PrimaryContent)).toBe(true); // has otherDeclarations dropdown
+    expect(wrapper.findComponent(PrimaryContent).exists())
+      .toBe(true); // has otherDeclarations dropdown
   });
 
   it('renders `ViewMore` if `enableMinimized`', async () => {
@@ -756,7 +757,7 @@ describe('DocumentationTopic', () => {
     });
 
     it('renders a deprecated `Aside` when deprecated', async () => {
-      expect(wrapper.contains(Aside)).toBe(false);
+      expect(wrapper.findComponent(Aside).exists()).toBe(false);
       await wrapper.setProps({ deprecationSummary });
 
       const aside = wrapper.findComponent(Aside);
@@ -769,7 +770,7 @@ describe('DocumentationTopic', () => {
     });
 
     it('renders a note `Aside` when download button is not available', async () => {
-      expect(wrapper.contains(Aside)).toBe(false);
+      expect(wrapper.findComponent(Aside).exists()).toBe(false);
       await wrapper.setProps({ downloadNotAvailableSummary });
 
       const aside = wrapper.findComponent(Aside);
@@ -782,15 +783,15 @@ describe('DocumentationTopic', () => {
     });
 
     it('renders a `DownloadButton` if there is sample code to download', async () => {
-      expect(wrapper.contains(DownloadButton)).toBe(false);
+      expect(wrapper.findComponent(DownloadButton).exists()).toBe(false);
       await wrapper.setProps({ sampleCodeDownload });
-      expect(wrapper.contains(DownloadButton)).toBe(true);
+      expect(wrapper.findComponent(DownloadButton).exists()).toBe(true);
     });
 
     it('renders a `RequirementMetadata` if the symbol is required', async () => {
-      expect(wrapper.contains(RequirementMetadata)).toBe(false);
+      expect(wrapper.findComponent(RequirementMetadata).exists()).toBe(false);
       await wrapper.setProps({ isRequirement: true });
-      expect(wrapper.contains(RequirementMetadata)).toBe(true);
+      expect(wrapper.findComponent(RequirementMetadata).exists()).toBe(true);
     });
 
     it('renders a `Availability` with platforms data', async () => {
@@ -897,7 +898,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders `Topics` if there are topic sections, passing the `topicSectionsStyle` over', async () => {
-    expect(wrapper.contains(Topics)).toBe(false);
+    expect(wrapper.findComponent(Topics).exists()).toBe(false);
 
     const topicSections = [
       {
@@ -936,7 +937,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders `SeeAlso` if there are see also sections', async () => {
-    expect(wrapper.contains(SeeAlso)).toBe(false);
+    expect(wrapper.findComponent(SeeAlso).exists()).toBe(false);
 
     const seeAlsoSections = [
       {
@@ -963,7 +964,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders `Relationships` if there are relationship sections', async () => {
-    expect(wrapper.contains(Relationships)).toBe(false);
+    expect(wrapper.findComponent(Relationships).exists()).toBe(false);
 
     const relationshipsSections = [
       {
@@ -1021,7 +1022,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders `DefaultImplementations` if there are default implementation sections', async () => {
-    expect(wrapper.contains(DefaultImplementations)).toBe(false);
+    expect(wrapper.findComponent(DefaultImplementations).exists()).toBe(false);
 
     const defaultImplementationsSections = [
       {
@@ -1097,7 +1098,7 @@ describe('DocumentationTopic', () => {
         store: mockStore,
       },
     });
-    expect(wrapper.findComponent(DocumentationHero).contains('.above-title')).toBe(true);
+    expect(wrapper.findComponent(DocumentationHero).find('.above-title').exists()).toBe(true);
   });
 
   it('renders content in the `above-hero-content` slot', () => {
@@ -1113,7 +1114,7 @@ describe('DocumentationTopic', () => {
         store: mockStore,
       },
     });
-    expect(wrapper.contains('.above-hero-content')).toBe(true);
+    expect(wrapper.find('.above-hero-content').exists()).toBe(true);
   });
 
   it('renders `OnThisPageNav` component, if enabled via prop', async () => {

@@ -46,7 +46,7 @@ describe('FullWidth', () => {
   });
 
   it('does not render a `LinkableElement` without headings', () => {
-    expect(wrapper.contains(LinkableElement)).toBe(false);
+    expect(wrapper.findComponent(LinkableElement).exists()).toBe(false);
   });
 
   describe('with headings', () => {

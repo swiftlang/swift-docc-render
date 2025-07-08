@@ -27,7 +27,7 @@ describe('Title', () => {
   });
 
   it('renders an eyebrow if provided', async () => {
-    expect(wrapper.contains('.eyebrow')).toBe(false);
+    expect(wrapper.find('.eyebrow').exists()).toBe(false);
 
     await wrapper.setProps({ eyebrow: 'Thing' });
 

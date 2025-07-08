@@ -130,12 +130,12 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBe(metadata.anchor);
-      expect(figure.contains(CodeListing)).toBe(true);
+      expect(figure.findComponent(CodeListing).exists()).toBe(true);
 
       const caption = figure.find(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
-      expect(caption.contains('p')).toBe(true);
+      expect(caption.find('p').exists()).toBe(true);
       expect(caption.text()).toContain('blah');
     });
   });
@@ -758,11 +758,11 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBe(metadata.anchor);
-      expect(figure.contains(InlineImage)).toBe(true);
+      expect(figure.findComponent(InlineImage).exists()).toBe(true);
 
       const caption = wrapper.findComponent(Caption);
       expect(caption.exists()).toBe(true);
-      expect(caption.contains('p')).toBe(true);
+      expect(caption.find('p').exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.text()).toContain('blah');
     });
@@ -783,11 +783,11 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBeFalsy();
-      expect(figure.contains(InlineImage)).toBe(true);
+      expect(figure.findComponent(InlineImage).exists()).toBe(true);
 
       const caption = wrapper.findComponent(Caption);
       expect(caption.exists()).toBe(true);
-      expect(caption.contains('p')).toBe(true);
+      expect(caption.find('p').exists()).toBe(true);
       expect(caption.props('title')).toBeFalsy();
       expect(caption.props('position')).toBe('trailing');
       expect(caption.text()).toContain('blah');
@@ -840,7 +840,7 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBe('foo-figure');
-      expect(figure.contains(InlineImage)).toBe(true);
+      expect(figure.findComponent(InlineImage).exists()).toBe(true);
 
       expect(wrapper.findComponent(Caption).exists()).toBe(false);
     });
@@ -935,11 +935,11 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBe('foo');
-      expect(figure.contains(BlockVideo)).toBe(true);
+      expect(figure.findComponent(BlockVideo).exists()).toBe(true);
 
       const caption = wrapper.findComponent(Caption);
       expect(caption.exists()).toBe(true);
-      expect(caption.contains('p')).toBe(true);
+      expect(caption.find('p').exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.props('position')).toBe('trailing');
       expect(caption.text()).toContain('blah');
@@ -961,11 +961,11 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBeFalsy();
-      expect(figure.contains(BlockVideo)).toBe(true);
+      expect(figure.findComponent(BlockVideo).exists()).toBe(true);
 
       const caption = wrapper.findComponent(Caption);
       expect(caption.exists()).toBe(true);
-      expect(caption.contains('p')).toBe(true);
+      expect(caption.find('p').exists()).toBe(true);
       expect(caption.props('title')).toBeFalsy();
       expect(caption.props('position')).toBe('trailing');
       expect(caption.text()).toContain('blah');
@@ -1402,7 +1402,7 @@ describe('ContentNode', () => {
       const table = wrapper.findComponent('.content').find(Table);
       expect(table.exists()).toBe(true);
       expect(table.props('spanned')).toBe(false);
-      expect(table.contains('thead')).toBe(false);
+      expect(table.find('thead').exists()).toBe(false);
       expect(table.findAll('tbody tr').length).toBe(2);
       expect(table.findAll('tbody tr td').length).toBe(4);
     });
@@ -1440,7 +1440,7 @@ describe('ContentNode', () => {
       });
       const table = wrapper.findComponent('.content').find(Table);
       expect(table.exists()).toBe(true);
-      expect(table.contains('thead')).toBe(false);
+      expect(table.find('thead').exists()).toBe(false);
       expect(table.findAll('tbody tr th[scope="row"]').length).toBe(2);
       expect(table.findAll('tbody tr td').length).toBe(2);
     });
@@ -1470,7 +1470,7 @@ describe('ContentNode', () => {
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.props('position')).toBe('leading');
       expect(caption.props('tag')).toBe('caption');
-      expect(caption.contains('p')).toBe(true);
+      expect(caption.find('p').exists()).toBe(true);
       expect(caption.text()).toContain('blah');
     });
 
