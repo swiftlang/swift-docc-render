@@ -104,8 +104,8 @@ describe('LanguageToggle', () => {
     Object.defineProperty(sizer, 'clientWidth', {
       get: () => 20,
     });
-    toggle.setValue(Language.objectiveC.key.api);
-    await wrapper.vm.$nextTick();
+    await toggle.setValue(Language.objectiveC.key.api);
+    await flushPromises();
     expect(toggle.attributes()).toHaveProperty('style', 'width: 28px;');
   });
 

@@ -132,13 +132,12 @@ describe('FilterInput', () => {
     });
     expect(input.attributes('placeholder')).toBe('Foo');
     // make sure it emits the correct event
-    input.setValue(inputValue);
+    await input.setValue(inputValue);
     expect(wrapper.emitted('input')).toEqual([[inputValue]]);
     // make sure the input is bound
     await wrapper.setProps({
       value: 'new-value',
     });
-    await wrapper.vm.$nextTick();
     expect(input.element.value).toEqual('new-value');
   });
 
@@ -243,7 +242,7 @@ describe('FilterInput', () => {
   });
 
   it('adds character `/` as input value', async () => {
-    input.setValue('/');
+    await input.setValue('/');
     expect(wrapper.emitted('input')).toEqual([['/']]);
   });
 
@@ -1021,11 +1020,10 @@ describe('FilterInput', () => {
       wrapper.findComponent({ ref: 'selectedTags' }).vm.$emit('select-all');
       await wrapper.vm.$nextTick();
       input.trigger('keydown', { key: singleCharacter });
-      input.setValue(singleCharacter);
+      await input.setValue(singleCharacter);
 
       expect(wrapper.emitted('input')).toEqual([[''], [singleCharacter]]);
       expect(wrapper.emitted('update:selectedTags')).toBeTruthy();
-      await wrapper.vm.$nextTick();
       expect(document.activeElement).toBe(input.element);
     });
 
@@ -1041,11 +1039,10 @@ describe('FilterInput', () => {
         key: singleCharacter,
         shiftKey: true,
       });
-      input.setValue(singleCharacter);
+      await input.setValue(singleCharacter);
 
       expect(wrapper.emitted('input')).toEqual([[''], [singleCharacter]]);
       expect(wrapper.emitted('update:selectedTags')).toBeTruthy();
-      await wrapper.vm.$nextTick();
       expect(document.activeElement).toBe(input.element);
     });
 
