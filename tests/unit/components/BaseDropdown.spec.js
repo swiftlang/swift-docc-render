@@ -57,7 +57,7 @@ describe('BaseDropdown', () => {
     expect(dropdown.find('option').exists()).toBe(true);
   });
 
-  it('emits `input` event on each select change', () => {
+  it('emits `input` event on each select change', async () => {
     const value = 'foo';
     const wrapper = createWrapper({
       slots: {
@@ -65,7 +65,7 @@ describe('BaseDropdown', () => {
       },
     });
 
-    wrapper.findComponent('select').setValue(value);
+    await wrapper.findComponent('select').setValue(value);
     expect(wrapper.emitted('input')).toEqual([[value]]);
   });
 
