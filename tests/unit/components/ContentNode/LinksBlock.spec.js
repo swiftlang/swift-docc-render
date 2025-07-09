@@ -12,7 +12,6 @@ import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import TopicsLinkCardGrid from '@/components/DocumentationTopic/TopicsLinkCardGrid.vue';
-import TopicsLinkBlock from '@/components/DocumentationTopic/TopicsLinkBlock.vue';
 
 const defaultProps = {
   identifiers: ['foo', 'bar', 'baz'],
@@ -29,7 +28,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(LinksBlock
     ...defaultProps,
     ...propsData,
   },
-  stubs: { TopicsLinkBlock: { props: ['topic'], template: '<div/>' } },
+  stubs: { TopicsLinkBlock: { props: ['topic'], template: '<div class="topics-link-block"/>' } },
   provide: {
     store: {
       state: { references },
@@ -51,14 +50,13 @@ describe('LinksBlock', () => {
   it('renders `TopicsLinkBlock` if `blockStyle` is a `list`', () => {
     const wrapper = createWrapper({
       propsData: {
-        items: defaultProps.items,
         blockStyle: TopicSectionsStyle.list,
       },
     });
     expect(wrapper.findComponent(TopicsLinkCardGrid).exists()).toBe(false);
     expect(wrapper.findComponent('.links-block').exists()).toBe(true);
     // they are two, because one does not have a reference object
-    const linkBlocks = wrapper.findAll(TopicsLinkBlock);
+    const linkBlocks = wrapper.findAllComponents('.topics-link-block');
     expect(linkBlocks).toHaveLength(2);
     expect(linkBlocks.at(0).props('topic')).toEqual(references.foo);
     expect(linkBlocks.at(1).props('topic')).toEqual(references.bar);
