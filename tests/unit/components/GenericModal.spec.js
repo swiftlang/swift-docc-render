@@ -161,12 +161,13 @@ describe('GenericModal', () => {
       expect(modal.classes()).toContain('theme-dark');
     });
 
-    it('detects color scheme changes, if theme is dynamic', () => {
+    it('detects color scheme changes, if theme is dynamic', async () => {
       const wrapper = createWrapper({ propsData: { theme: 'dynamic' } });
       const modal = wrapper.findComponent('.generic-modal');
       expect(modal.classes()).toContain('theme-dynamic');
       expect(modal.classes()).toContain('theme-light');
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
+      await wrapper.vm.$nextTick();
       expect(modal.classes()).toContain('theme-dark');
       expect(modal.classes()).not.toContain('theme-light');
     });
@@ -178,13 +179,14 @@ describe('GenericModal', () => {
       expect(matchMedia.removeListener).toHaveBeenCalledTimes(1);
     });
 
-    it('adds preferred color scheme change listener for `code` theme', () => {
+    it('adds preferred color scheme change listener for `code` theme', async () => {
       const wrapper = createWrapper({ propsData: { theme: 'code' } });
       const modal = wrapper.findComponent('.generic-modal');
 
       expect(modal.classes()).toContain('theme-code');
       expect(modal.classes()).toContain('theme-light');
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
+      await wrapper.vm.$nextTick();
       expect(modal.classes()).toContain('theme-dark');
       expect(modal.classes()).not.toContain('theme-light');
     });
