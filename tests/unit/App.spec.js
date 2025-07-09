@@ -317,6 +317,7 @@ describe('App', () => {
       await flushPromises();
       expect(setPropertySpy).toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.light);
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
+      await wrapper.vm.$nextTick();
       expect(setPropertySpy).toHaveBeenCalledTimes(2);
       expect(setPropertySpy).toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.dark);
     });
@@ -334,6 +335,7 @@ describe('App', () => {
       expect(setPropertySpy).toHaveBeenCalledTimes(1);
       expect(setPropertySpy).toHaveBeenCalledWith('--text', 'light');
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
+      await wrapper.vm.$nextTick();
       expect(removePropertySpy).toHaveBeenCalledTimes(2);
       expect(removePropertySpy).toHaveBeenLastCalledWith('--text');
       expect(setPropertySpy).toHaveBeenCalledWith('--text', 'dark');
