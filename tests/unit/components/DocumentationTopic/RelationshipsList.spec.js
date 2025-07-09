@@ -188,6 +188,7 @@ describe('RelationshipsList', () => {
         },
       };
 
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain('changed');
       expect(wrapper.classes()).toContain(`changed-${expectedChange}`);
     };
