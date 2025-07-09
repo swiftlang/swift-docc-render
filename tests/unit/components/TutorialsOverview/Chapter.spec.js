@@ -78,7 +78,7 @@ describe('Chapter', () => {
   it('renders an `.name` with dynamic heading tag and the name/number', () => {
     const name = wrapper.findComponent('.name');
     expect(name.exists()).toBe(true);
-    expect(name.is('H3')).toBe(true);
+    expect(name.is('h3')).toBe(true);
     expect(name.text()).toMatch(/tutorials\.sections\.chapter/);
     expect(name.attributes('aria-label')).toEqual('Foo - tutorials.sections.chapter');
 
@@ -91,7 +91,7 @@ describe('Chapter', () => {
   it('renders the `.name` with H2 if volume has no name', async () => {
     await wrapper.setProps({ volumeHasName: false });
     const name = wrapper.findComponent('.name');
-    expect(name.is('H2')).toBe(true);
+    expect(name.is('h2')).toBe(true);
   });
 
   it('renders a `ContentNode`', () => {
