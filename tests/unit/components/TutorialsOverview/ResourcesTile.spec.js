@@ -115,9 +115,13 @@ describe('ResourcesTile', () => {
       expect(wrapper.findComponent(Icon).exists()).toBe(true);
     };
     assertIconForIdentifier(DocumentIcon, Identifier.documentation);
+    await wrapper.vm.$nextTick();
     assertIconForIdentifier(DownloadIcon, Identifier.downloads);
+    await wrapper.vm.$nextTick();
     assertIconForIdentifier(ForumIcon, Identifier.forums);
+    await wrapper.vm.$nextTick();
     assertIconForIdentifier(CurlyBracketsIcon, Identifier.sampleCode);
+    await wrapper.vm.$nextTick();
     assertIconForIdentifier(PlayIcon, Identifier.videos);
   });
 });
