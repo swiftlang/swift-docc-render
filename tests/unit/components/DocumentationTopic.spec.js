@@ -661,14 +661,17 @@ describe('DocumentationTopic', () => {
 
   it('does not render a `PrimaryContent` column when passed empty an PrimaryContent & no `ViewMore` link', async () => {
     await wrapper.setProps({ primaryContentSections: [], enableMinimized: true });
-    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(true); // ViewMore link is present
+    expect(wrapper.findComponent(ViewMore).exists()).toBe(true); // ViewMore link is present
+    // but PrimaryContent is not rendered
+    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(false);
 
     await wrapper.setProps({
       primaryContentSections: [],
       enableMinimized: true,
       hasNoExpandedDocumentation: true,
     });
-    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(false); // no ViewMore link
+    expect(wrapper.findComponent(ViewMore).exists()).toBe(false); // no ViewMore link
+    expect(wrapper.findComponent(PrimaryContent).exists()).toBe(false); // no PrimaryContent either
   });
 
   it('render a `PrimaryContent` column when passed empty an PrimaryContent but has otherDeclarations', async () => {
