@@ -149,7 +149,7 @@ describe('Availability', () => {
   });
 
   describe('with API Changes', () => {
-    it('sets changes classes for platforms that have changed', () => {
+    it('sets changes classes for platforms that have changed', async () => {
       store.state.apiChanges = {
         [provide.identifier]: {
           availability: {
@@ -175,6 +175,7 @@ describe('Availability', () => {
         },
       };
 
+      await wrapper.vm.$nextTick();
       const pills = wrapper.findAll('.technology, .platform');
 
       expect(pills.at(2).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);
