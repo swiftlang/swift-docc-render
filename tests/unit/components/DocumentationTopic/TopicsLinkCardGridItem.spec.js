@@ -16,6 +16,7 @@ import TopicsLinkCardGridItem, {
   ROLE_LINK_TEXT,
 } from '@/components/DocumentationTopic/TopicsLinkCardGridItem.vue';
 import ContentNode from 'docc-render/components/ContentNode.vue';
+import { flushPromises } from '../../../../test-utils';
 
 const defaultProps = {
   item: {
@@ -103,7 +104,7 @@ describe('TopicsLinkCardGridItem', () => {
     expect(wrapper.findComponent(ContentNode).exists()).toBe(false);
     const imageWrapper = wrapper.findComponent('.reference-card-grid-item__image');
     expect(imageWrapper.exists()).toBe(true);
-    const icon = imagewrapper.findComponent(TopicTypeIcon);
+    const icon = imageWrapper.findComponent(TopicTypeIcon);
     expect(icon.props()).toEqual({
       type: defaultProps.item.role,
       imageOverride: null,
@@ -134,7 +135,7 @@ describe('TopicsLinkCardGridItem', () => {
         compact: false,
       },
     });
-    await wrapper.vm.$nextTick();
+    await flushPromises();
     const card = wrapper.findComponent(Card);
     expect(card.props()).toMatchObject({
       url: defaultProps.item.url,
