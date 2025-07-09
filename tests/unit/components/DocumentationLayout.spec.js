@@ -463,15 +463,17 @@ describe('DocumentationLayout', () => {
     const sidebar = wrapper.findComponent(AdjustableSidebarWidth);
     // set the breakpoint to small on the sidebar
     sidebar.vm.breakpoint = BreakpointName.small;
+    await wrapper.vm.$nextTick();
     expect(sidebar.props('shownOnMobile')).toBe(true);
     await flushPromises();
     navigator.vm.$emit('close');
+    await wrapper.vm.$nextTick();
     expect(sidebar.props('shownOnMobile')).toBe(false);
     // Test that Medium works with the same set of props/events
     // toggle the navigator from the Nav component, in Medium breakpoint
     nav.vm.$emit('toggle-sidenav', BreakpointName.medium);
+    await wrapper.vm.$nextTick();
     expect(sidebar.props('shownOnMobile')).toBe(true);
-    await flushPromises();
     sidebar.vm.breakpoint = BreakpointName.medium;
     navigator.vm.$emit('close');
     await wrapper.vm.$nextTick();
@@ -488,6 +490,7 @@ describe('DocumentationLayout', () => {
     const nav = wrapper.findComponent(Nav);
     // close the navigator
     wrapper.findComponent(Navigator).vm.$emit('close');
+    await wrapper.vm.$nextTick();
     // assert its closed on Large
     expect(sidebar.props('hiddenOnLarge')).toBe(true);
     // now toggle it back from the Nav
