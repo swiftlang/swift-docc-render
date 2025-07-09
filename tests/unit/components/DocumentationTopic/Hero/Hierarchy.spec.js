@@ -191,9 +191,9 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `root + 2 collapsed + max 2 items`, between 1000 and 1200px', () => {
+      it('renders a list with `root + 2 collapsed + max 2 items`, between 1000 and 1200px', async () => {
         changeSize(1100);
-
+        await wrapper.vm.$nextTick();
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert root item
@@ -234,8 +234,9 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `3 collapsed + max 1 item`, between 735 and 1000px', () => {
+      it('renders a list with `3 collapsed + max 1 item`, between 735 and 1000px', async () => {
         changeSize(900);
+        await wrapper.vm.$nextTick();
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
@@ -283,8 +284,9 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external links`, below 735', () => {
+      it('renders a list with `5 collapsed and no external links`, below 735', async () => {
         changeSize(720);
+        await wrapper.vm.$nextTick();
         const items = wrapper.findAll(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
