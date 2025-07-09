@@ -10,6 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import ResourcesTile from 'docc-render/components/TutorialsOverview/ResourcesTile.vue';
+import { flushPromises } from '../../../../test-utils';
 
 const { Identifier } = ResourcesTile.constants;
 const {
@@ -115,9 +116,13 @@ describe('ResourcesTile', () => {
       expect(wrapper.findComponent(Icon).exists()).toBe(true);
     };
     assertIconForIdentifier(DocumentIcon, Identifier.documentation);
+    await flushPromises();
     assertIconForIdentifier(DownloadIcon, Identifier.downloads);
+    await flushPromises();
     assertIconForIdentifier(ForumIcon, Identifier.forums);
+    await flushPromises();
     assertIconForIdentifier(CurlyBracketsIcon, Identifier.sampleCode);
+    await flushPromises();
     assertIconForIdentifier(PlayIcon, Identifier.videos);
   });
 });
