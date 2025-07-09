@@ -98,8 +98,9 @@ describe('CodePreview', () => {
     });
 
     describe('in "medium" breakpoint', () => {
-      it('renders the preview at 80% of 1/3 scale', () => {
+      it('renders the preview at 80% of 1/3 scale', async () => {
         TopicStore.updateBreakpoint('medium');
+        await wrapper.vm.$nextTick();
         const runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
@@ -293,8 +294,9 @@ describe('CodePreview', () => {
     });
 
     describe('in "medium" breakpoint', () => {
-      it('renders the preview at 80% of 1/1.75 scale', () => {
+      it('renders the preview at 80% of 1/1.75 scale', async () => {
         TopicStore.updateBreakpoint('medium');
+        await wrapper.vm.$nextTick();
         const runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
