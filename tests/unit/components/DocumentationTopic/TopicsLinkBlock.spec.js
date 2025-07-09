@@ -453,7 +453,7 @@ describe('TopicsLinkBlock', () => {
   });
 
   describe('API Changes', () => {
-    const assertHasAPIChanges = (changeType, isOnLink) => {
+    const assertHasAPIChanges = async (changeType, isOnLink) => {
       store.state.apiChanges = {
         'doc://com.example.documentation/foo/bar/baz': {
           change: changeType,
@@ -461,6 +461,7 @@ describe('TopicsLinkBlock', () => {
       };
 
       const link = wrapper.findComponent('.link');
+      await wrapper.vm.$nextTick();
       expect(link.classes('changed')).toBe(isOnLink);
       expect(link.classes(`changed-${changeType}`)).toBe(isOnLink);
       expect(link.find('.visuallyhidden').text()).toEqual(`- ${ChangeNames[changeType]}`);
@@ -470,13 +471,14 @@ describe('TopicsLinkBlock', () => {
       expect(linkBlock.classes(`changed-${changeType}`)).toBe(!isOnLink);
     };
 
-    it('does not render the TopicLinkBlockIcon', () => {
+    it('does not render the TopicLinkBlockIcon', async () => {
       expect(wrapper.findComponent(TopicLinkBlockIcon).exists()).toBe(true);
       store.state.apiChanges = {
         [propsData.topic.identifier]: {
           change: 'modified',
         },
       };
+      await wrapper.vm.$nextTick();
       expect(wrapper.findComponent(TopicLinkBlockIcon).exists()).toBe(false);
     });
 
