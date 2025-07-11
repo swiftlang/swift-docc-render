@@ -111,7 +111,7 @@ describe('RestBody', () => {
       .toBe(true);
     expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
       .toBe(false);
-    expect(wrapper.findComponent('.param .param-symbol').find(PossiblyChangedType).props('type'))
+    expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).props('type'))
       .toEqual(propsData.bodyContentType);
   });
 
@@ -121,7 +121,7 @@ describe('RestBody', () => {
     });
     expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
       .toBe(true);
-    expect(wrapper.findComponent('.param .param-symbol').find(PossiblyChangedType).props('type'))
+    expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).props('type'))
       .toEqual(propsData.bodyContentType);
     expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
       .toBe(false);
@@ -234,7 +234,7 @@ describe('RestBody', () => {
     it('renders a part name', () => {
       const partName = wrapper.findComponent('.parts .part-name');
       expect(partName.findComponent(WordBreak).exists());
-      const wb = partName.find(WordBreak);
+      const wb = partName.findComponent(WordBreak);
       expect(wb.attributes('tag')).toBe('code');
       expect(wb.text()).toEqual('Any Key');
     });
@@ -244,7 +244,7 @@ describe('RestBody', () => {
         .toBe(true);
       expect(wrapper.findComponent('.parts .param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
-      expect(wrapper.findComponent('.parts .param .param-symbol').find(PossiblyChangedType).props('type'))
+      expect(wrapper.findComponent('.parts .param .param-symbol').findComponent(PossiblyChangedType).props('type'))
         .toEqual(parts[0].type);
     });
 
@@ -270,7 +270,7 @@ describe('RestBody', () => {
       expect(wrapper.findComponent('.parts .param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(true);
 
-      expect(wrapper.findComponent('.parts .param .param-content').find(PossiblyChangedType).props('type'))
+      expect(wrapper.findComponent('.parts .param .param-content').findComponent(PossiblyChangedType).props('type'))
         .toEqual(parts[0].type);
     });
 
@@ -298,7 +298,7 @@ describe('RestBody', () => {
       });
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.findComponent('.parts').find(ParameterAttributes).props('attributes'))
+      expect(wrapper.findComponent('.parts').findComponent(ParameterAttributes).props('attributes'))
         .toEqual(attributes);
     });
 
@@ -348,16 +348,16 @@ describe('RestBody', () => {
       expect(table.props()).toHaveProperty('changes', changes[ChangesKey].parts);
 
       const partsChange = changes[ChangesKey].parts[firstKey];
-      expect(table.find(PossiblyChangedType).props())
+      expect(table.findComponent(PossiblyChangedType).props())
         .toHaveProperty('changes', partsChange.type);
 
-      expect(table.find(PossiblyChangedMimetype).props())
+      expect(table.findComponent(PossiblyChangedMimetype).props())
         .toMatchObject({ changes: partsChange.mimetype, change: partsChange.change });
 
-      expect(table.find(PossiblyChangedTextAttribute).props())
+      expect(table.findComponent(PossiblyChangedTextAttribute).props())
         .toHaveProperty('changes', partsChange.required);
 
-      expect(table.find(ParameterAttributes).props())
+      expect(table.findComponent(ParameterAttributes).props())
         .toHaveProperty('changes', partsChange.attributes);
     });
   });

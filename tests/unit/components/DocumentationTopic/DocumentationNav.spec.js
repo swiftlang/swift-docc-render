@@ -145,7 +145,7 @@ describe('DocumentationNav', () => {
   it('renders a LanguageToggle', () => {
     // make sure the LanguageToggle is inside the NavMenuItems
     const navMenuItemsComponent = wrapper.findComponent(NavMenuItems);
-    const toggle = navMenuItemsComponent.find(LanguageToggle);
+    const toggle = navMenuItemsComponent.findComponent(LanguageToggle);
     expect(toggle.exists()).toBe(true);
     expect(toggle.props()).toEqual({
       interfaceLanguage: propsData.interfaceLanguage,

@@ -74,7 +74,7 @@ describe('RestResponses', () => {
   }
 
   it('renders an h2 section title', () => {
-    const sectionTitle = mountComponent().find(LinkableHeading);
+    const sectionTitle = mountComponent().findComponent(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });
@@ -91,7 +91,7 @@ describe('RestResponses', () => {
     const wrapper = mountComponent();
     expect(
       wrapper
-        .find('.response-name')
+        .findComponent('.response-name')
         .text()
         // condense all whitespace
         .replace(/\s+/g, ' '),
@@ -128,7 +128,7 @@ describe('RestResponses', () => {
 
       expect(
         wrapper
-          .find({ name: 'PossiblyChangedType' })
+          .findComponent({ name: 'PossiblyChangedType' })
           .props('type'),
       ).toEqual(propsData.responses[0].type);
     });
@@ -208,7 +208,7 @@ describe('RestResponses', () => {
 
       expect(
         wrapper
-          .find({ name: 'PossiblyChangedType' })
+          .findComponent({ name: 'PossiblyChangedType' })
           .props('type'),
       ).toEqual(propsData.responses[0].type);
     });
