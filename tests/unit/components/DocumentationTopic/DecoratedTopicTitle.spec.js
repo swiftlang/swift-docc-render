@@ -55,7 +55,7 @@ describe('DecoratedTopicTitle', () => {
   });
 
   it('renders a <WordBreak> for each token that isn\'t all whitespace', () => {
-    const breaks = wrapper.findAll(WordBreak);
+    const breaks = wrapper.findAllComponents(WordBreak);
     expect(breaks.length).toBe(4);
     expect(breaks.at(0).text()).toBe(propsData.tokens[0].text);
     expect(breaks.at(0).classes()).toEqual(['decorator']);

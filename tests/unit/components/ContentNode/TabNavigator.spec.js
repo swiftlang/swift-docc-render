@@ -52,7 +52,7 @@ describe('TabNavigator.spec', () => {
       vertical: false,
       value: titles[0],
     });
-    expect(wrapper.findAll(TabnavItem)).toHaveLength(3);
+    expect(wrapper.findAllComponents(TabnavItem)).toHaveLength(3);
     const tabs = wrapper.findAll('.tab-container');
     expect(tabs).toHaveLength(3);
     expect(tabs.at(0).classes()).toContain('active');

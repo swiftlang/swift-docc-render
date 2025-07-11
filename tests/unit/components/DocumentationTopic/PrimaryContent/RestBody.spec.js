@@ -73,7 +73,7 @@ describe('RestBody', () => {
   });
 
   it('renders a single `ParametersTable`', () => {
-    const tables = wrapper.findAll(ParametersTable);
+    const tables = wrapper.findAllComponents(ParametersTable);
     expect(tables.length).toBe(1);
 
     expect(tables.at(0).props()).toHaveProperty('parameters', [
@@ -226,7 +226,7 @@ describe('RestBody', () => {
     });
 
     it('renders 2 param tables, using the second to render parts', () => {
-      const tables = wrapper.findAll(ParametersTable);
+      const tables = wrapper.findAllComponents(ParametersTable);
       expect(tables.length).toBe(2);
       expect(tables.at(1).props()).toEqual({ parameters: parts, changes: {}, keyBy: 'name' });
     });
@@ -344,7 +344,7 @@ describe('RestBody', () => {
         },
       });
 
-      const table = wrapper.findAll(ParametersTable).at(1);
+      const table = wrapper.findAllComponents(ParametersTable).at(1);
       expect(table.props()).toHaveProperty('changes', changes[ChangesKey].parts);
 
       const partsChange = changes[ChangesKey].parts[firstKey];

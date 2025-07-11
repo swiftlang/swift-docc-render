@@ -109,7 +109,7 @@ describe('MobileDropdown', () => {
 
   it('renders a <p> with the name of each available module', () => {
     // assert the
-    const chapter = wrapper.findAll(NavMenuItemBase);
+    const chapter = wrapper.findAllComponents(NavMenuItemBase);
     expect(chapter).toHaveLength(1);
     expect(chapter.at(0).classes()).toContain('chapter-list');
     expect(chapter.at(0).attributes('role')).toBe('group');

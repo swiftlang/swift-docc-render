@@ -62,8 +62,8 @@ describe('ParametersTable', () => {
   it('renders the ParametersTable with passed Row and Column', () => {
     const wrapper = createWrapper();
 
-    const rows = wrapper.findAll(Row);
-    const cols = wrapper.findAll(Column);
+    const rows = wrapper.findAllComponents(Row);
+    const cols = wrapper.findAllComponents(Column);
 
     expect(rows).toHaveLength(1);
     expect(cols).toHaveLength(2);

@@ -78,7 +78,7 @@ describe('SectionList', () => {
 
   it('renders a div.sections with a `Section` for each section', () => {
     expect(wrapper.element.matches('div.sections')).toBe(true);
-    const sections = wrapper.findAll(Section);
+    const sections = wrapper.findAllComponents(Section);
     expect(sections.length).toBe(propsData.tasks.length);
 
     const sectionA = sections.at(0);
@@ -101,7 +101,7 @@ describe('SectionList', () => {
     });
 
     it('updates the `isRuntimePreviewVisible` prop of all the `Section`s', () => {
-      wrapper.findAll(Section).wrappers.forEach((section) => {
+      wrapper.findAllComponents(Section).wrappers.forEach((section) => {
         expect(section.props('isRuntimePreviewVisible')).toBe(false);
       });
     });

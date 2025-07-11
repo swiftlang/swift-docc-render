@@ -73,7 +73,7 @@ describe('Declaration', () => {
   });
 
   it('renders 1 `DeclarationList` and 0 labels without multiple declarations', () => {
-    const declarationLists = wrapper.findAll(DeclarationList);
+    const declarationLists = wrapper.findAllComponents(DeclarationList);
     expect(declarationLists).toHaveLength(1);
     expect(declarationLists.at(0).props('shouldCaption')).toEqual(false);
   });
@@ -155,7 +155,7 @@ describe('Declaration', () => {
 
     await wrapper.setProps({ declarations });
 
-    const labels = wrapper.findAll(DeclarationList);
+    const labels = wrapper.findAllComponents(DeclarationList);
     expect(labels.length).toBe(declarations.length);
     expect(labels.at(0).props('shouldCaption')).toBe(true);
     expect(labels.at(1).props('shouldCaption')).toBe(true);
@@ -180,7 +180,7 @@ describe('Declaration', () => {
 
     await wrapper.setProps({ declarations });
 
-    const labels = wrapper.findAll(DeclarationList);
+    const labels = wrapper.findAllComponents(DeclarationList);
     expect(labels.length).toBe(declarations.length);
     expect(labels.at(0).props('shouldCaption')).toBe(false);
     expect(labels.at(1).props('shouldCaption')).toBe(false);

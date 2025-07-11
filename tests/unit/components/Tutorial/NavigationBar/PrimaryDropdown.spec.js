@@ -163,7 +163,7 @@ describe('Primary Dropdown', () => {
   it('renders chapter tutorials properly', () => {
     // assert there are two tutorials, and hey apply the option class
     expect(wrapper.findAll(`.${OptionClass}`)).toHaveLength(2);
-    const options = wrapper.findComponent('ul[role="listbox"]').findAll(RouterLinkStub);
+    const options = wrapper.findComponent('ul[role="listbox"]').findAllComponents(RouterLinkStub);
     // assert it gets the active option class applied
     expect(options.at(0).props('to')).toEqual('/tutorials/technologyx/tutorial?context=foo');
     expect(options.at(0).find('li').attributes()).toEqual({

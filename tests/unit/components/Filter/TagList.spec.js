@@ -27,12 +27,12 @@ describe('TagList', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(TagList, { propsData });
-    tag1 = wrapper.findAll(Tag).at(0);
-    tag2 = wrapper.findAll(Tag).at(1);
+    tag1 = wrapper.findAllComponents(Tag).at(0);
+    tag2 = wrapper.findAllComponents(Tag).at(1);
   });
 
   it('renders `Tag` components', () => {
-    const tags = wrapper.findAll(Tag);
+    const tags = wrapper.findAllComponents(Tag);
 
     expect(tags.length).toBe(2);
   });

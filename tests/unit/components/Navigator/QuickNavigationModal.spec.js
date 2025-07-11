@@ -132,7 +132,8 @@ describe('QuickNavigationModal', () => {
     expect(matches).toHaveLength(filteredSymbols.length);
     expect(matches[0]).toMatchObject(filteredSymbols[0]);
     expect(matches[1]).toMatchObject(filteredSymbols[1]);
-    expect(wrapper.findAll(QuickNavigationHighlighter).length).toBe(filteredSymbols.length);
+    expect(wrapper.findAllComponents(QuickNavigationHighlighter).length)
+      .toBe(filteredSymbols.length);
   });
 
   it('renders the filter input', () => {
@@ -183,8 +184,10 @@ describe('QuickNavigationModal', () => {
     const matchWrapper = wrapper.findAll('.quick-navigation__symbol-match');
     expect(matchWrapper.at(0).findComponent(TopicTypeIcon).exists()).toBe(true);
     expect(matchWrapper.at(1).findComponent(TopicTypeIcon).exists()).toBe(true);
-    expect(matchWrapper.at(0).findComponent(TopicTypeIcon).props().type).toBe(filteredSymbols[0].type);
-    expect(matchWrapper.at(1).findComponent(TopicTypeIcon).props().type).toBe(filteredSymbols[1].type);
+    expect(matchWrapper.at(0).findComponent(TopicTypeIcon).props().type)
+      .toBe(filteredSymbols[0].type);
+    expect(matchWrapper.at(1).findComponent(TopicTypeIcon).props().type)
+      .toBe(filteredSymbols[1].type);
   });
 
   it('renders a symbol match with the corresponding symbol title', async () => {
@@ -208,7 +211,7 @@ describe('QuickNavigationModal', () => {
     await wrapper.setData({
       debouncedInput: inputValue,
     });
-    const referencesWrapper = wrapper.findAll(Reference);
+    const referencesWrapper = wrapper.findAllComponents(Reference);
     expect(referencesWrapper.at(0).props().url).toBe(filteredSymbols[0].path);
     expect(referencesWrapper.at(1).props().url).toBe(filteredSymbols[1].path);
   });
@@ -243,8 +246,8 @@ describe('QuickNavigationModal', () => {
       debouncedInput: inputValue,
       focusedIndex: 1,
     });
-    expect(wrapper.findAll({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
-    expect(wrapper.findAll({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
   });
 
   it('debounces user input before filtering the symbols', async () => {

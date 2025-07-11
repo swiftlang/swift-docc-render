@@ -60,7 +60,7 @@ describe('EndpointExample', () => {
 
   it('renders tabs for request/response links', () => {
     const tabnav = wrapper.findComponent(Tabnav);
-    const tabnavLinks = wrapper.findAll(TabnavItem);
+    const tabnavLinks = wrapper.findAllComponents(TabnavItem);
     expect(tabnav.props()).toHaveProperty('value', Tab.request);
     expect(tabnavLinks.length).toBe(2);
     expect(tabnavLinks.at(0).props('value')).toBe(Tab.request);
