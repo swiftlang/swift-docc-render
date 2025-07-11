@@ -106,6 +106,7 @@ describe('TopicsLinkBlock', () => {
       topic: {
         title: 'Foobarbaz',
         identifier: 'doc://com.example.documentation/foo/bar/baz',
+        kind: TopicKind.article,
         type: ReferenceType.link,
         url: 'https://foo.bar',
       },
@@ -219,6 +220,8 @@ describe('TopicsLinkBlock', () => {
       topic: {
         title: 'Foobarbaz',
         url: '/foo/bar/baz',
+        identifier: 'doc://com.example.documentation/foo/bar/baz',
+        kind: TopicKind.article,
         role: TopicKind.article,
       },
     });
@@ -255,6 +258,8 @@ describe('TopicsLinkBlock', () => {
       topic: {
         title: 'Foobarbaz',
         url: '/foo/bar/baz',
+        identifier: 'doc://com.example.documentation/foo/bar/baz',
+        kind: TopicKind.article,
         role: TopicKind.article,
         abstract: [],
       },
@@ -273,7 +278,8 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('does not render a `ContentNode` without an abstract', async () => {
-    await wrapper.setProps({ topic: { ...propsData.topic, abstract: undefined } });
+    const { abstract, ...topicWithoutAbstract } = propsData.topic;
+    await wrapper.setProps({ topic: topicWithoutAbstract });
     expect(wrapper.findComponent(ContentNode).exists()).toBe(false);
   });
 
