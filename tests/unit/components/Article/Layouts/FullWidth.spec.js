@@ -33,7 +33,7 @@ describe('FullWidth', () => {
   });
 
   it('renders a .full-width', () => {
-    expect(wrapper.is('.full-width')).toBe(true);
+    expect(wrapper.element.matches('.full-width')).toBe(true);
   });
 
   it('renders a `ContentNode`', () => {
@@ -89,12 +89,12 @@ describe('FullWidth', () => {
       const groups = wrapper.findAll('.group');
       expect(groups.length).toBe(3);
 
-      expect(groups.at(0).is('div')).toBe(true);
+      expect(groups.at(0).element.tagName.toLowerCase() === 'div').toBe(true);
       expect(groups.at(0).find(ContentNode).props('content')).toEqual([
         content[0],
       ]);
 
-      expect(groups.at(1).is(LinkableElement)).toBe(true);
+      expect(groups.at(1).findComponent(LinkableElement).exists()).toBe(true);
       expect(groups.at(1).props()).toEqual({
         anchor: content[1].anchor,
         depth: 0,
@@ -106,7 +106,7 @@ describe('FullWidth', () => {
         content[2],
       ]);
 
-      expect(groups.at(2).is(LinkableElement)).toBe(true);
+      expect(groups.at(2).findComponent(LinkableElement).exists()).toBe(true);
       expect(groups.at(2).props()).toEqual({
         anchor: content[3].anchor,
         depth: 1,

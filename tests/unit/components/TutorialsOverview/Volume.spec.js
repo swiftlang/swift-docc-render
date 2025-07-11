@@ -104,7 +104,7 @@ describe('Volume', () => {
   });
 
   it('renders a section.volume root', () => {
-    expect(wrapper.is('section.volume')).toBe(true);
+    expect(wrapper.element.matches('section.volume')).toBe(true);
   });
 
   it('renders an VolumeName', () => {

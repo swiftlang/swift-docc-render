@@ -127,7 +127,7 @@ describe('MobileDropdown', () => {
 
   it('renders link elements with appropriate role attributes', () => {
     const link = wrapper.findComponent('.tutorial');
-    expect(link.is(RouterLinkStub)).toBe(true);
+    expect(link.findComponent(RouterLinkStub).exists()).toBe(true);
     expect(link.props('to'))
       // the first sub-link
       .toEqual(`${references['doc://com.example.Test/tutorials/TechnologyX/Tutorial'].url}?context=foo`);
@@ -149,7 +149,7 @@ describe('MobileDropdown', () => {
     expect(sectionComponents).toHaveLength(sectionComponents.length);
 
     const sectionLink = sectionComponents.at(0);
-    expect(sectionLink.is(RouterLinkStub)).toBe(true);
+    expect(sectionLink.findComponent(RouterLinkStub).exists()).toBe(true);
     expect(sectionLink.props('to')).toEqual({
       path: sections[0].path,
       query: { context: 'foo' },

@@ -117,7 +117,7 @@ describe('CodePreview', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['runtime-preview-toggle'][0]).toEqual([false]);
     let icon = wrapper.findComponent('.preview-icon');
-    expect(icon.is(DiagonalArrowIcon)).toBe(true);
+    expect(icon.findComponent(DiagonalArrowIcon).exists()).toBe(true);
     expect(icon.classes()).toContain('preview-hide');
     expect(icon.classes()).not.toContain('preview-show');
 

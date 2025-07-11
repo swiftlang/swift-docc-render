@@ -16,7 +16,7 @@ const createWrapper = args => shallowMount(NavMenuItems, args);
 describe('NavMenuItems', () => {
   it('renders the NavMenuItems', () => {
     const wrapper = createWrapper();
-    expect(wrapper.is('ul'));
+    expect(wrapper.element.tagName.toLowerCase() === 'ul');
     expect(wrapper.classes()).toContain('nav-menu-items');
   });
 

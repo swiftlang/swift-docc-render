@@ -16,7 +16,7 @@ describe('TutorialsNavigationList', () => {
     const wrapper = shallowMount(TutorialsNavigationList, {
       slots: { default: '<li>item</li>' },
     });
-    expect(wrapper.is('ol.tutorials-navigation-list')).toBe(true);
+    expect(wrapper.element.matches('ol.tutorials-navigation-list')).toBe(true);
     expect(wrapper.find('li').exists()).toBe(true);
     expect(wrapper.text()).toBe('item');
   });

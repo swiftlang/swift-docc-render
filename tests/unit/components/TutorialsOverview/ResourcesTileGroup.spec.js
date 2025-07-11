@@ -36,7 +36,7 @@ describe('ResourcesTileGroup', () => {
   });
 
   it('renders a .tile-group root', () => {
-    expect(wrapper.is('.tile-group'));
+    expect(wrapper.element.matches('.tile-group'));
   });
 
   it('renders a "count-{n}" class for the number of tiles', async () => {

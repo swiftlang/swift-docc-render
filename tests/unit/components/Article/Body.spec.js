@@ -19,7 +19,7 @@ describe('Body', () => {
   });
 
   it('renders a div.body wrapper', () => {
-    expect(wrapper.is('div.body')).toBe(true);
+    expect(wrapper.element.matches('div.body')).toBe(true);
   });
 
   it('renders a `BodyContent`', () => {

@@ -23,7 +23,7 @@ describe('Title', () => {
   });
 
   it('renders a div.topictitle', () => {
-    expect(wrapper.is('div.topictitle')).toBe(true);
+    expect(wrapper.element.matches('div.topictitle')).toBe(true);
   });
 
   it('renders an eyebrow if provided', async () => {

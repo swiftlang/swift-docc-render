@@ -30,7 +30,7 @@ describe('BaseNavigatorCardItem', () => {
   });
 
   it('renders a navigator-card-item as wrapper', () => {
-    expect(wrapper.is('div.navigator-card-item')).toBe(true);
+    expect(wrapper.element.matches('div.navigator-card-item')).toBe(true);
   });
 
   it('renders a slot for depth-spacer', () => {

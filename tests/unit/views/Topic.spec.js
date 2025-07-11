@@ -47,7 +47,7 @@ describe('Topic', () => {
   });
 
   it('renders an empty div with no data', () => {
-    expect(wrapper.is('div')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'div').toBe(true);
     expect(wrapper.isEmpty()).toBe(true);
   });
 

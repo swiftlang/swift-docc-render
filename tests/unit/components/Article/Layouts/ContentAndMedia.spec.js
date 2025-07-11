@@ -33,11 +33,11 @@ describe('ContentAndMedia', () => {
   });
 
   it('renders a div.content-and-media', () => {
-    expect(wrapper.is('div.content-and-media')).toBe(true);
+    expect(wrapper.element.matches('div.content-and-media')).toBe(true);
   });
 
   it('renders the `mediaPosition` classname', async () => {
-    expect(wrapper.is('.content-and-media.media-trailing')).toBe(true);
+    expect(wrapper.element.matches('.content-and-media.media-trailing')).toBe(true);
 
     await wrapper.setProps({ mediaPosition: MediaPosition.leading });
     expect(wrapper.classes('media-leading')).toBe(true);

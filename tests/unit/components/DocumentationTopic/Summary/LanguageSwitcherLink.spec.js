@@ -28,7 +28,7 @@ describe('LanguageSwitcherLink', () => {
 
   it('renders a span if not provided a url', () => {
     const wrapper = shallowMount(LanguageSwitcherLink, { slots });
-    expect(wrapper.is('span')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
     expect(wrapper.text()).toBe(slots.default);
   });
 });
