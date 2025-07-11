@@ -132,7 +132,7 @@ describe('Primary Dropdown', () => {
           state: { references },
         },
       },
-      attachToDocument: true,
+      attachTo: document.body,
     });
 
     btn = wrapper.findComponent('.form-dropdown-toggle');

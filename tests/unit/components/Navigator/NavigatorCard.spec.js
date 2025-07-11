@@ -190,7 +190,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   },
   sync: false,
   mocks: { $route: { path: defaultProps.technologyPath } },
-  attachToDocument: true,
+  attachTo: document.body,
   ...others,
 });
 
