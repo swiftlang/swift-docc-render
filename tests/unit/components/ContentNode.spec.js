@@ -1838,10 +1838,10 @@ describe('ContentNode', () => {
       expect(definitions.length).toBe(2);
 
       expect(terms.at(0).text()).toBe('Foo');
-      expect(definitions.at(0).contains('p')).toBe(true);
+      expect(definitions.at(0).find('p').exists()).toBe(true);
       expect(definitions.at(0).text()).toBe('foo');
       expect(terms.at(1).text()).toBe('Bar');
-      expect(definitions.at(1).contains('p')).toBe(true);
+      expect(definitions.at(1).find('p').exists()).toBe(true);
       expect(definitions.at(1).text()).toBe('bar');
     });
   });
