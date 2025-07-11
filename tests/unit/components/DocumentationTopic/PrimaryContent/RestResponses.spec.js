@@ -101,7 +101,7 @@ describe('RestResponses', () => {
 
     expect(
       wrapper
-        .findAll({ name: 'ContentNode' })
+        .findAllComponents({ name: 'ContentNode' })
         .at(0)
         .props('content'),
     ).toEqual(propsData.responses[0].content);

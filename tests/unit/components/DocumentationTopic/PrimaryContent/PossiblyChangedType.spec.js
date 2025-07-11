@@ -68,7 +68,7 @@ describe('PossiblyChangedType', () => {
         changes,
       }));
 
-    const groups = wrapper.findAll(DeclarationTokenGroup);
+    const groups = wrapper.findAllComponents(DeclarationTokenGroup);
     expect(groups).toHaveLength(2);
     // assert that it is passing over the `values`
     expect(groups.at(0).props('type')).toEqual(changes.new.values);
@@ -83,7 +83,7 @@ describe('PossiblyChangedType', () => {
         changes: undefined,
       },
     });
-    const groups = wrapper.findAll(DeclarationTokenGroup);
+    const groups = wrapper.findAllComponents(DeclarationTokenGroup);
     expect(groups).toHaveLength(1);
     // assert type is directly passed through
     expect(groups.at(0).props('type')).toEqual(type);

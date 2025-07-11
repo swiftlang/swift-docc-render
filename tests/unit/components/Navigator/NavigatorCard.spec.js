@@ -268,7 +268,7 @@ describe('NavigatorCard', () => {
     expect(wrapper.findComponent(DynamicScroller).attributes('aria-label')).toBe('navigator.title');
     expect(scroller.attributes('id')).toEqual(defaultProps.scrollLockID);
     // assert CardItem
-    const items = wrapper.findAll(NavigatorCardItem);
+    const items = wrapper.findAllComponents(NavigatorCardItem);
     expect(items).toHaveLength(4);
     expect(items.at(0).props()).toEqual({
       expanded: true,
@@ -396,7 +396,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     expect(wrapper.vm.focusedIndex).toBe(1);
-    const items = wrapper.findAll(NavigatorCardItem);
+    const items = wrapper.findAllComponents(NavigatorCardItem);
     expect(items.at(0).props('enableFocus')).toBe(false);
     items.at(0).trigger('keydown.down');
     await flushPromises();
@@ -412,7 +412,7 @@ describe('NavigatorCard', () => {
   it('sets the `enableFocus` back to false, upon filtering', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    let items = wrapper.findAll(NavigatorCardItem);
+    let items = wrapper.findAllComponents(NavigatorCardItem);
     expect(wrapper.vm.focusedIndex).toBe(1);
     expect(items.at(1).props()).toMatchObject({
       enableFocus: false,
@@ -430,7 +430,7 @@ describe('NavigatorCard', () => {
     wrapper.findComponent(FilterInput).vm.$emit('input', root0.title);
     await flushPromises();
     // re-fetch the items
-    items = wrapper.findAll(NavigatorCardItem);
+    items = wrapper.findAllComponents(NavigatorCardItem);
     expect(items.at(0).props()).toMatchObject({
       item: root0,
       enableFocus: false, // self focus is disabled now
@@ -448,44 +448,44 @@ describe('NavigatorCard', () => {
   it('allows the user to navigate to the last item on the list when pressing alt + down key', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    wrapper.findAll(NavigatorCardItem).at(0).trigger('keydown', {
+    wrapper.findAllComponents(NavigatorCardItem).at(0).trigger('keydown', {
       key: 'ArrowDown',
       altKey: true,
     });
     // assert that focusedIndex is restore
     expect(wrapper.vm.focusedIndex).toBe(null);
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.focusedIndex).toBe(wrapper.findAll(NavigatorCardItem).length - 1);
+    expect(wrapper.vm.focusedIndex).toBe(wrapper.findAllComponents(NavigatorCardItem).length - 1);
   });
 
   it('allows expand/collapse all symbols when clicking on framework name + while pressing alt', async () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert initial items are rendered
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(4);
 
     const navHead = wrapper.findComponent('.technology-title');
 
     // open all children symbols
     navHead.trigger('click', { altKey: true });
     await wrapper.vm.$nextTick();
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(children.length);
 
     // close all children symbols
     navHead.trigger('click', { altKey: true });
     await wrapper.vm.$nextTick();
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(2);
 
     // open all children symbols
     navHead.trigger('click', { altKey: true });
     await wrapper.vm.$nextTick();
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(children.length);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(children.length);
   });
 
   it('allows the user to navigate to the first item on the list when pressing alt + up key', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    wrapper.findAll(NavigatorCardItem).at(3).trigger('keydown', {
+    wrapper.findAllComponents(NavigatorCardItem).at(3).trigger('keydown', {
       key: 'ArrowUp',
       altKey: true,
     });
@@ -564,7 +564,7 @@ describe('NavigatorCard', () => {
   it('renders an hidden message updating aria-live, notifying how many items were found', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    const unopenedItem = wrapper.findAll(NavigatorCardItem).at(2);
+    const unopenedItem = wrapper.findAllComponents(NavigatorCardItem).at(2);
     unopenedItem.vm.$emit('toggle', root0Child1);
     await wrapper.vm.$nextTick();
     expect(wrapper.findComponent('[aria-live="polite"].visuallyhidden').text()).toBe(ITEMS_FOUND);
@@ -575,7 +575,7 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper();
       await flushPromises();
       const item = root0Child1;
-      let all = wrapper.findAll(NavigatorCardItem);
+      let all = wrapper.findAllComponents(NavigatorCardItem);
       const unopenedItem = all.at(2);
       expect(unopenedItem.props()).toEqual({
         expanded: false,
@@ -593,7 +593,7 @@ describe('NavigatorCard', () => {
       unopenedItem.vm.$emit('toggle', item);
       await wrapper.vm.$nextTick();
       expect(unopenedItem.props('expanded')).toBe(true);
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // assert all items are now visible
       expect(all).toHaveLength(children.length);
       // assert the grandchild item is now visible
@@ -604,12 +604,12 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper();
       await flushPromises();
       const item = root0;
-      let all = wrapper.findAll(NavigatorCardItem);
+      let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(4);
       const openItem = all.at(0);
       openItem.vm.$emit('toggle', item);
       await wrapper.vm.$nextTick();
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // only the two top items are visible
       expect(all).toHaveLength(2);
     });
@@ -618,34 +618,34 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper();
       await flushPromises();
       // assert initial items are rendered
-      let all = wrapper.findAll(NavigatorCardItem);
+      let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(4);
       // do a filter
       wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1.title);
       await flushPromises();
 
       // assert filtered items
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(2);
 
       // close all items
       all.at(0).vm.$emit('toggle', root0);
       await wrapper.vm.$nextTick();
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // assert only the top level item is visible
       expect(all).toHaveLength(1);
       // now toggle it back open
       all.at(0).vm.$emit('toggle', root0);
       await flushPromises();
       // re-fetch items
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // assert only filtered children are visible
       expect(all).toHaveLength(2);
       expect(all.at(1).props('item')).toEqual(root0Child1);
       // open the child now
       all.at(1).vm.$emit('toggle', root0Child1);
       await flushPromises();
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // assert grandchild is visible, even though its not fitting the filter
       expect(all).toHaveLength(3);
       expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
@@ -662,44 +662,44 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       const item = root0;
-      let all = wrapper.findAll(NavigatorCardItem);
+      let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(2);
       const openItem = all.at(0);
       openItem.vm.$emit('toggle-full', item);
       await flushPromises();
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // only the two top items are visible
       expect(all).toHaveLength(children.length);
       openItem.vm.$emit('toggle-full', item);
       await flushPromises();
-      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+      expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(2);
     });
 
     it('opens an item, and all of its children, obeying applied filters', async () => {
       const wrapper = createWrapper();
       await flushPromises();
       // assert initial items are rendered
-      let all = wrapper.findAll(NavigatorCardItem);
+      let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(4);
       // do a filter
       wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1.title);
       await flushPromises();
 
       // assert filtered items
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(2);
 
       // close all items
       all.at(0).vm.$emit('toggle-full', root0);
       await wrapper.vm.$nextTick();
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // assert only the top level item is visible
       expect(all).toHaveLength(1);
       // now toggle it back open
       all.at(0).vm.$emit('toggle-full', root0);
       await flushPromises();
       // re-fetch items
-      all = wrapper.findAll(NavigatorCardItem);
+      all = wrapper.findAllComponents(NavigatorCardItem);
       // assert only filtered children are visible
       expect(all).toHaveLength(3);
       expect(all.at(1).props('item')).toEqual(root0Child1);
@@ -717,10 +717,10 @@ describe('NavigatorCard', () => {
       await flushPromises();
       wrapper.findComponent(NavigatorCardItem).vm.$emit('toggle-full', root0);
       await flushPromises();
-      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(6);
+      expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(6);
       wrapper.findComponent(NavigatorCardItem).vm.$emit('toggle-full', root0);
       await flushPromises();
-      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+      expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(2);
     });
   });
 
@@ -773,7 +773,7 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert all items are as we expect them to be
       expect(allItems).toHaveLength(4);
       expect(allItems.at(0).props('item')).toEqual(root0);
@@ -783,7 +783,7 @@ describe('NavigatorCard', () => {
       // trigger `@toggle-siblings` on `root0Child0WithChildren`
       allItems.at(1).vm.$emit('toggle-siblings', root0Child0WithChildren);
       await flushPromises();
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(6);
       // assert grand children are visible
       expect(allItems.at(1).props()).toMatchObject({
@@ -800,7 +800,7 @@ describe('NavigatorCard', () => {
       allItems.at(1).vm.$emit('toggle-siblings', root0Child0WithChildren);
       await flushPromises();
       // assert items are closed
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(4);
       expect(allItems.at(0).props('item')).toEqual(root0);
       expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
@@ -818,7 +818,7 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert all items are as we expect them to be
       expect(allItems).toHaveLength(4);
       expect(allItems.at(0).props('item')).toEqual(root0);
@@ -829,7 +829,7 @@ describe('NavigatorCard', () => {
       allItems.at(2).vm.$emit('toggle', root0Child1);
       await flushPromises();
       // assert its open and its children are visible
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       // assert parent is open
       expect(allItems.at(2).props()).toMatchObject({
@@ -843,7 +843,7 @@ describe('NavigatorCard', () => {
       // now toggle the other sibling using `toggle-siblings`
       allItems.at(1).vm.$emit('toggle-siblings', root0Child0WithChildren);
       await flushPromises();
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert grand children are visible, without duplication
       expect(allItems).toHaveLength(6);
       expect(allItems.at(1).props()).toMatchObject({
@@ -860,7 +860,7 @@ describe('NavigatorCard', () => {
       allItems.at(1).vm.$emit('toggle-siblings', root0Child0WithChildren);
       await flushPromises();
       // assert items are closed
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(4);
       expect(allItems.at(0).props('item')).toEqual(root0);
       expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
@@ -880,7 +880,7 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       expect(allItems.at(0).props('item')).toEqual(root0);
       expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
@@ -890,7 +890,7 @@ describe('NavigatorCard', () => {
       // toggle the siblings of `root0`
       allItems.at(0).vm.$emit('toggle-siblings', root0);
       await flushPromises();
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(2);
       expect(allItems.at(0).props('item')).toEqual(root0);
       expect(allItems.at(1).props('item')).toEqual(root1WithChildren);
@@ -906,7 +906,7 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert all items are as we expect them to be
       expect(allItems).toHaveLength(2);
       expect(allItems.at(0).props('item')).toEqual(root0);
@@ -915,7 +915,7 @@ describe('NavigatorCard', () => {
       // toggle the items
       allItems.at(0).vm.$emit('toggle-siblings', root0);
       await flushPromises();
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       expect(allItems.at(0).props()).toMatchObject({
         item: root0,
@@ -932,7 +932,7 @@ describe('NavigatorCard', () => {
       allItems.at(2).vm.$emit('toggle', root1WithChildren);
       await flushPromises();
       // assert items are closed
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(4);
       expect(allItems.at(0).props('item')).toEqual(root0);
       expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
@@ -942,7 +942,7 @@ describe('NavigatorCard', () => {
       allItems.at(0).vm.$emit('toggle-siblings', root0);
       await flushPromises();
       // assert only 2 items are visible
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(2);
     });
 
@@ -954,13 +954,13 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert all items are as we expect them to be
       expect(allItems).toHaveLength(2);
       // apply a broad filter across items
       wrapper.findComponent(FilterInput).vm.$emit('input', 'First Child');
       await flushPromises();
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(6);
       expect(allItems.at(0).props('item')).toEqual(root0);
       expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
@@ -973,7 +973,7 @@ describe('NavigatorCard', () => {
       allItems.at(0).vm.$emit('toggle-siblings', root0);
       await flushPromises();
       // toggle the items closed
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert items
       expect(allItems).toHaveLength(2);
       expect(allItems.at(0).props('item')).toEqual(root0);
@@ -982,7 +982,7 @@ describe('NavigatorCard', () => {
       allItems.at(0).vm.$emit('toggle-siblings', root0);
       await flushPromises();
       // assert the items are filtered
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       expect(allItems.at(0).props('item')).toEqual(root0);
       expect(allItems.at(1).props('item')).toEqual(root0Child0WithChildren);
@@ -1009,12 +1009,12 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       // assert we have 3 items rendered
-      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
+      expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(5);
       // open the item and it's siblings
       wrapper.findComponent(NavigatorCardItem).vm.$emit('toggle-siblings', root0Child1);
       await flushPromises();
       // assert we have one extra item visible
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert all items are as we expect them to be
       expect(allItems).toHaveLength(7);
       expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
@@ -1028,7 +1028,7 @@ describe('NavigatorCard', () => {
       // toggle the items
       allItems.at(0).vm.$emit('toggle-siblings', root0Child1);
       await flushPromises();
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       expect(allItems.at(0).props()).toMatchObject({
         item: root0WithGroupMarker,
@@ -1046,7 +1046,7 @@ describe('NavigatorCard', () => {
     it('focuses parent', async () => {
       const wrapper = createWrapper();
       await flushPromises();
-      const items = wrapper.findAll(NavigatorCardItem);
+      const items = wrapper.findAllComponents(NavigatorCardItem);
       expect(items.at(0).props('isFocused')).toBe(false);
       expect(items.at(1).props('isFocused')).toBe(true);
       items.at(1).vm.$emit('focus-parent', root0Child0);
@@ -1062,7 +1062,7 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      const items = wrapper.findAll(NavigatorCardItem);
+      const items = wrapper.findAllComponents(NavigatorCardItem);
       expect(items.at(1).props('isFocused')).toBe(true);
       items.at(1).vm.$emit('focus-parent', root1);
       await flushPromises();
@@ -1073,7 +1073,7 @@ describe('NavigatorCard', () => {
   it('highlights the current page, and expands all of its parents', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4); // assert all are rendered, except the grandchild
     expect(all.at(0).props()).toMatchObject({
       item: root0, // the first item
@@ -1095,14 +1095,14 @@ describe('NavigatorCard', () => {
     wrapper.findComponent(FilterInput).vm.$emit('input', 'Child');
     await flushPromises();
     // assert the items rendered
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
     // assert the inner most child is rendered
     expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
     // toggle to close a few items
     all.at(1).vm.$emit('toggle', root0Child1);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     // assert only 3 items are now visible
     expect(all).toHaveLength(3);
     // simulate we go to the root
@@ -1111,7 +1111,7 @@ describe('NavigatorCard', () => {
     });
     await flushPromises();
     // assert there is no change to the open/closed state
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     // assert only 3 items are now visible
     expect(all).toHaveLength(3);
     expect(all.at(0).props()).toMatchObject({
@@ -1124,7 +1124,7 @@ describe('NavigatorCard', () => {
       activePath: [root0.path, root0Child0.path],
     });
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     // assert only 3 items are still visible
     expect(all).toHaveLength(3);
     expect(all.at(1).props()).toMatchObject({
@@ -1137,7 +1137,7 @@ describe('NavigatorCard', () => {
       activePath: [root0.path, root0Child1.path, root0Child1GrandChild0.path],
     });
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     // assert only 3 items are still visible
     expect(all).toHaveLength(4);
     expect(all.at(1).props()).toMatchObject({
@@ -1171,7 +1171,7 @@ describe('NavigatorCard', () => {
     // assert list is not scrolled, if item is in viewport or current activeUID is rendered
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
@@ -1204,7 +1204,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(2);
     expect(all.at(0).props('item')).toEqual(root0Updated);
     expect(all.at(1).props('item')).toEqual(root0Child1);
@@ -1219,20 +1219,20 @@ describe('NavigatorCard', () => {
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root0);
     // open the item
     all.at(0).vm.$emit('toggle', root0);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(1).props('item')).toEqual(root0Child0);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     // open last child
     all.at(2).vm.$emit('toggle', root0Child1);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
     expect(all.at(3).props('item')).toEqual(root0Child1GrandChild0);
   });
@@ -1262,7 +1262,7 @@ describe('NavigatorCard', () => {
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(0);
     // assert only the parens of the match are visible
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
@@ -1281,7 +1281,7 @@ describe('NavigatorCard', () => {
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root1);
   });
@@ -1297,7 +1297,7 @@ describe('NavigatorCard', () => {
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledWith(0);
     // assert only the parens of the match are visible
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
@@ -1305,7 +1305,7 @@ describe('NavigatorCard', () => {
     // add filtering on top
     filter.vm.$emit('input', root0Child1GrandChild0.title);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
@@ -1321,14 +1321,14 @@ describe('NavigatorCard', () => {
     filter.vm.$emit('input', root0Child1.title);
     await flushPromises();
     // assert match and all if it's parents are visible
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(2);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
     // open the last match
     all.at(1).vm.$emit('toggle', root0Child1);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     // assert the last match child is visible
     expect(all).toHaveLength(3);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
@@ -1336,7 +1336,7 @@ describe('NavigatorCard', () => {
     all.at(1).vm.$emit('toggle', root0Child1);
     await flushPromises();
     // assert there are again only 2 matches
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(2);
   });
 
   it('removes duplicate items, when multiple items with the same parent match the filter', async () => {
@@ -1347,7 +1347,7 @@ describe('NavigatorCard', () => {
     filter.vm.$emit('input', 'Child');
     await flushPromises();
     // assert only the parens of the match are visible
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
     // the root is rendered only once, even though multiple children match
     expect(all.at(0).props('item')).toEqual(root0);
@@ -1367,7 +1367,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child0);
@@ -1385,7 +1385,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child0);
@@ -1393,7 +1393,7 @@ describe('NavigatorCard', () => {
     // filter
     wrapper.findComponent(FilterInput).vm.$emit('input', root0Child0.title);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(2);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child0);
@@ -1410,7 +1410,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child0);
@@ -1418,7 +1418,7 @@ describe('NavigatorCard', () => {
     // filter
     wrapper.findComponent(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.added]);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(2);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(all.at(1).props('item')).toEqual(root0Child1);
@@ -1435,19 +1435,19 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     // filter
     const filter = wrapper.findComponent(FilterInput);
     filter.vm.$emit('update:selectedTags', [FILTER_TAGS.added]);
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(2);
     await wrapper.setProps({ apiChanges: null });
     await flushPromises();
 
     // assert all items are again visible
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
     expect(filter.props()).toHaveProperty('selectedTags', []);
   });
@@ -1457,12 +1457,12 @@ describe('NavigatorCard', () => {
     await flushPromises();
     wrapper.findComponent(FilterInput).vm.$emit('input', 'First Child, Depth 2');
     await flushPromises();
-    let all = wrapper.findAll(NavigatorCardItem);
+    let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
     wrapper.findComponent(FilterInput).vm.$emit('input', '');
     await flushPromises();
-    all = wrapper.findAll(NavigatorCardItem);
+    all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
     // assert that the previously open child is no longer visible
     expect(all.at(2).props('item')).toEqual(root0Child1);
@@ -1507,7 +1507,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(1);
     expect(all.at(0).props('item')).toEqual(root0);
     expect(wrapper.findComponent(FilterInput).props('selectedTags'))
@@ -1523,7 +1523,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert we are render more than just the single item in the store
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(4);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -1535,7 +1535,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert we are render more than just the single item in the store
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(4);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -1546,7 +1546,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert we are render more than just the single item in the store
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
     expect(all.at(3).props('item')).not.toEqual(root0Child1GrandChild0);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
@@ -1565,7 +1565,7 @@ describe('NavigatorCard', () => {
     });
     await flushPromises();
     // assert we are render more than just the single item in the store
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
     expect(all.at(3).props('item')).not.toEqual(root0Child1GrandChild0);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
@@ -1586,7 +1586,7 @@ describe('NavigatorCard', () => {
     });
     await flushPromises();
     // assert we are render more than just the single item in the store
-    const all = wrapper.findAll(NavigatorCardItem);
+    const all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
@@ -1599,7 +1599,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert we are render more than just the single item in the store
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(4);
   });
 
   it('does not restore the state, if the nodesToRender and filter are empty', async () => {
@@ -1610,7 +1610,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert we are render more than just the single item in the store
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(4);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -1624,7 +1624,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // assert we are render more than just the single item in the store
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(0);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(0);
     expect(clearPersistedStateSpy).toHaveBeenCalledTimes(0);
   });
 
@@ -1637,7 +1637,7 @@ describe('NavigatorCard', () => {
     }));
     const wrapper = createWrapper();
     await flushPromises();
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(4);
   });
 
   it('does not restore the state, if `activeUID` is null, but there are activePath items', async () => {
@@ -1651,7 +1651,7 @@ describe('NavigatorCard', () => {
     }));
     const wrapper = createWrapper();
     await flushPromises();
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(4);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(4);
   });
 
   it('clears the filter if the technology is different', async () => {
@@ -1680,7 +1680,7 @@ describe('NavigatorCard', () => {
       },
     });
     await flushPromises();
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(3);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(3);
   });
 
   it('keeps the open state, even if there is a title filter', async () => {
@@ -1700,7 +1700,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     // assert we are render more than just whats in the store,
     // so the filter does not trigger re-calculations
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(2);
   });
 
   it('keeps the open state, even if there is a Tag filter applied', async () => {
@@ -1719,7 +1719,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     // assert we are render more than just whats in the store,
     // so the filter does not trigger re-calculations
-    expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(2);
+    expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(2);
   });
 
   it('removes other tag suggestions, when picking one', async () => {
@@ -1817,7 +1817,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       // assert no other tags are shown now
       expect(filter.props('tags')).toEqual([]);
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert the deprecated item is filtered out
       expect(allItems).toHaveLength(4);
       // assert root is rendered
@@ -1833,7 +1833,7 @@ describe('NavigatorCard', () => {
       // Ensure all first children should show up
       filter.vm.$emit('input', 'First Child');
       await flushPromises();
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert that filtering opens everything as usual, showing groupMarkers as well
       expect(allItems).toHaveLength(4);
       expect(allItems.at(0).props('item')).toEqual(root0WithGroupMarker);
@@ -1856,7 +1856,7 @@ describe('NavigatorCard', () => {
       const input = wrapper.findComponent(FilterInput);
       input.vm.$emit('input', groupMarker.title);
       await flushPromises();
-      let items = wrapper.findAll(NavigatorCardItem);
+      let items = wrapper.findAllComponents(NavigatorCardItem);
       // parent + group and 2 siblings
       expect(items).toHaveLength(4);
       expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
@@ -1866,13 +1866,13 @@ describe('NavigatorCard', () => {
       // assert that toggling children shows items as normal
       items.at(3).vm.$emit('toggle', root0Child1);
       await flushPromises();
-      items = wrapper.findAll(NavigatorCardItem);
+      items = wrapper.findAllComponents(NavigatorCardItem);
       expect(items).toHaveLength(5);
       expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
       // assert that partial matches of group and children show only those that match
       input.vm.$emit('input', 'First Child');
       await flushPromises();
-      items = wrapper.findAll(NavigatorCardItem);
+      items = wrapper.findAllComponents(NavigatorCardItem);
       expect(items).toHaveLength(5);
       expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
       expect(items.at(1).props('item')).toEqual(groupMarker);
@@ -1898,7 +1898,7 @@ describe('NavigatorCard', () => {
       // apply a filter that matches an element
       filter.vm.$emit('input', root0Child1Clone.title);
       await flushPromises();
-      const items = wrapper.findAll(NavigatorCardItem);
+      const items = wrapper.findAllComponents(NavigatorCardItem);
       // parent + group and 1 item
       expect(items).toHaveLength(3);
       expect(items.at(0).props('item')).toEqual(root0WithGroupMarker);
@@ -1934,7 +1934,7 @@ describe('NavigatorCard', () => {
       // apply a filter that matches an element
       filter.vm.$emit('update:selectedTags', [FILTER_TAGS.hideDeprecated]);
       await flushPromises();
-      const items = wrapper.findAll(NavigatorCardItem);
+      const items = wrapper.findAllComponents(NavigatorCardItem);
       // parent
       expect(items).toHaveLength(1);
       expect(items.at(0).props('item')).toEqual(root1);
@@ -1990,7 +1990,7 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(3);
       // assert all are open
-      const all = wrapper.findAll(NavigatorCardItem);
+      const all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(5);
       // assert it auto opens
       expect(all.at(0).props()).toMatchObject({
@@ -2068,7 +2068,7 @@ describe('NavigatorCard', () => {
       const wrapper = createWrapper();
       await flushPromises();
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       const targetChild = allItems.at(2);
       expect(targetChild.props('item')).toEqual(root0Child1);
       // simulate the new item is below the fold
@@ -2090,7 +2090,7 @@ describe('NavigatorCard', () => {
         }));
       expect(wrapper.emitted('navigate')).toEqual([[root0Child1.path]]);
       // assert all items are still there, even the new one is open
-      expect(wrapper.findAll(NavigatorCardItem)).toHaveLength(5);
+      expect(wrapper.findAllComponents(NavigatorCardItem)).toHaveLength(5);
       // assert the target child is active
       expect(targetChild.props()).toEqual({
         apiChange: null,
@@ -2116,7 +2116,7 @@ describe('NavigatorCard', () => {
       expect(getChildPositionInScroller).toHaveBeenCalledTimes(2);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       // assert items have not changed
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       expect(allItems.at(2).props()).toEqual({
         apiChange: null,
@@ -2137,8 +2137,8 @@ describe('NavigatorCard', () => {
       attachDivWithID(root0Child0.uid);
       const wrapper = createWrapper();
       await flushPromises();
-      const allItems = wrapper.findAll(NavigatorCardItem);
-      const allDynamicItems = wrapper.findAll(DynamicScrollerItemStub);
+      const allItems = wrapper.findAllComponents(NavigatorCardItem);
+      const allDynamicItems = wrapper.findAllComponents(DynamicScrollerItemStub);
       allItems.at(2).vm.$emit('navigate', root0Child1.uid);
       await flushPromises();
       expect(DynamicScrollerItemStub.methods.updateSize).toHaveBeenCalledTimes(1);
@@ -2168,7 +2168,7 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      let allItems = wrapper.findAll(NavigatorCardItem);
+      let allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(5);
       expect(allItems.at(1).props('item')).toEqual(root0Child0);
       expect(allItems.at(1).props('isActive')).toEqual(true);
@@ -2181,7 +2181,7 @@ describe('NavigatorCard', () => {
       });
       await wrapper.vm.$nextTick();
       // re-fetch the items
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert old item is no longer active
       expect(allItems.at(1).props('item')).toEqual(root0Child0);
       expect(allItems.at(1).props('isActive')).toEqual(false);
@@ -2198,7 +2198,7 @@ describe('NavigatorCard', () => {
       });
       await wrapper.vm.$nextTick();
       // re-fetch the items
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems.at(2).props('item')).toEqual(root0Child1);
       expect(allItems.at(2).props('isActive')).toEqual(false);
       // assert grandchild is active
@@ -2213,7 +2213,7 @@ describe('NavigatorCard', () => {
       });
       await wrapper.vm.$nextTick();
       // re-fetch the items
-      allItems = wrapper.findAll(NavigatorCardItem);
+      allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert old item is no longer active
       expect(allItems.at(3).props('item')).toEqual(root0Child1GrandChild0);
       expect(allItems.at(3).props('isActive')).toEqual(false);
@@ -2252,7 +2252,7 @@ describe('NavigatorCard', () => {
         },
       });
       await flushPromises();
-      expect(wrapper.findAll(NavigatorCardItem).at(0).props()).toMatchObject({
+      expect(wrapper.findAllComponents(NavigatorCardItem).at(0).props()).toMatchObject({
         item: root1,
         isActive: true,
         isBold: true,
@@ -2277,7 +2277,7 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       // assert no errors
-      const all = wrapper.findAll(NavigatorCardItem);
+      const all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(3);
       expect(all.at(0).props('item')).toEqual(root0Dupe);
       expect(all.at(1).props('item')).toEqual(root0Child0Dupe);
@@ -2286,7 +2286,7 @@ describe('NavigatorCard', () => {
     it('does not store the activeUID of clicked items, with different path than the `technologyPath`', async () => {
       const wrapper = createWrapper();
       await flushPromises();
-      const allItems = wrapper.findAll(NavigatorCardItem);
+      const allItems = wrapper.findAllComponents(NavigatorCardItem);
       const target = allItems.at(3);
       expect(target.props('item')).toEqual(root1);
       // trigger a navigation
@@ -2313,7 +2313,7 @@ describe('NavigatorCard', () => {
       detachDivWithID(root0Child0.uid);
       await wrapper.vm.$nextTick();
       // assert filter is applied
-      const items = wrapper.findAll(NavigatorCardItem);
+      const items = wrapper.findAllComponents(NavigatorCardItem);
       expect(items).toHaveLength(1);
       expect(items.at(0).props('item')).toEqual(root1);
       // assert scroller has been reset
@@ -2345,7 +2345,7 @@ describe('NavigatorCard', () => {
       // assert scrollToItem is not called, because its "in view"
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
       attachDivWithID(root0Child1.uid);
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
+      wrapper.findAllComponents(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1.uid);
       await flushPromises();
       // make sure scrollToItem is not called again, because active item is still in the viewport
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
@@ -2354,7 +2354,7 @@ describe('NavigatorCard', () => {
       // prepare
       attachDivWithID(root0Child1GrandChild0.uid);
       // navigate
-      wrapper.findAll(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1GrandChild0.uid);
+      wrapper.findAllComponents(NavigatorCardItem).at(2).vm.$emit('navigate', root0Child1GrandChild0.uid);
       await flushPromises();
       // assert scrollToItem is called, because item was under the fold
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
@@ -2370,7 +2370,7 @@ describe('NavigatorCard', () => {
       expect(scrollBySpy).toHaveBeenCalledTimes(0);
       // simulate item is not visible
       getChildPositionInScroller.mockReturnValueOnce(1);
-      const items = wrapper.findAll(NavigatorCardItem);
+      const items = wrapper.findAllComponents(NavigatorCardItem);
 
       const fourthItem = items.at(3);
       setOffsetParent(fourthItem.element, { offsetHeight: SIDEBAR_ITEM_SIZE });

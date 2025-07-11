@@ -121,7 +121,7 @@ describe('Step', () => {
       });
 
       it('renders a `ContentNode` for the caption', () => {
-        const nodes = wrapper.findAll(ContentNode);
+        const nodes = wrapper.findAllComponents(ContentNode);
         expect(nodes.length).toBe(2);
 
         const captionNode = nodes.at(1);

@@ -309,7 +309,7 @@ describe('TopicsLinkBlock', () => {
 
   it('does not render a beta badge if the topic is deprecated', async () => {
     await wrapper.setProps({ topic: { ...propsData.topic, deprecated: true, beta: true } });
-    expect(wrapper.findAll(Badge).length).toBe(1);
+    expect(wrapper.findAllComponents(Badge).length).toBe(1);
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
     await wrapper.setProps({
       topic: {
@@ -319,7 +319,7 @@ describe('TopicsLinkBlock', () => {
         beta: true,
       },
     });
-    expect(wrapper.findAll(Badge).length).toBe(1);
+    expect(wrapper.findAllComponents(Badge).length).toBe(1);
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
   });
 
@@ -332,7 +332,7 @@ describe('TopicsLinkBlock', () => {
         beta: true,
       },
     });
-    expect(wrapper.findAll(Badge).length).toBe(1);
+    expect(wrapper.findAllComponents(Badge).length).toBe(1);
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('beta');
   });
 
@@ -343,7 +343,7 @@ describe('TopicsLinkBlock', () => {
         tags: currentTopicTags,
       },
     });
-    const badges = wrapper.findAll(Badge);
+    const badges = wrapper.findAllComponents(Badge);
     expect(badges.length).toBe(1);
     expect(badges.at(0).attributes('variant')).toBe('custom');
     expect(badges.at(0).text()).toBe('Custom');
@@ -358,7 +358,7 @@ describe('TopicsLinkBlock', () => {
         }],
       },
     });
-    const badges = wrapper.findAll(Badge);
+    const badges = wrapper.findAllComponents(Badge);
     expect(badges.length).toBe(1);
     expect(badges.at(0).attributes('variant')).toBe('custom');
     expect(badges.at(0).text()).toBe('');
@@ -372,7 +372,7 @@ describe('TopicsLinkBlock', () => {
         beta: true,
       },
     });
-    const badges = wrapper.findAll(Badge);
+    const badges = wrapper.findAllComponents(Badge);
     expect(badges.length).toBe(2);
     expect(badges.at(0).attributes('variant')).toBe('beta');
     expect(badges.at(1).attributes('variant')).toBe('custom');
@@ -415,7 +415,7 @@ describe('TopicsLinkBlock', () => {
     let node = wrapper.findComponent(RequirementMetadata);
     expect(node.exists()).toBe(false);
     await wrapper.setProps(
-      { topic: { ...propsData.topic, defaultImplementations: 1, required: true } }
+      { topic: { ...propsData.topic, defaultImplementations: 1, required: true } },
     );
     node = wrapper.findComponent(RequirementMetadata);
     expect(node.exists()).toBe(true);

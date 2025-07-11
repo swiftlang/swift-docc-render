@@ -109,7 +109,7 @@ describe('Availability', () => {
   });
 
   it('renders correct beta and deprecated badge', () => {
-    const badges = wrapper.findAll(Badge);
+    const badges = wrapper.findAllComponents(Badge);
     expect(badges.at(0).props('variant')).toBe('beta');
     expect(badges.at(1).props('variant')).toBe('deprecated');
     expect(badges.at(2).props('variant')).toBe('deprecated');
@@ -127,7 +127,7 @@ describe('Availability', () => {
         },
       ],
     });
-    const badge = wrapper.findAll(Badge);
+    const badge = wrapper.findAllComponents(Badge);
     expect(badge.exists()).toBe(true);
     expect(badge.length).toBe(1);
     expect(badge.at(0).props('variant')).toBe('deprecated');

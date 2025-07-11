@@ -53,7 +53,7 @@ describe('DocumentationHero', () => {
 
   it('renders the DocumentationHero, enabled', () => {
     const wrapper = createWrapper();
-    const allIcons = wrapper.findAll(TopicTypeIcon);
+    const allIcons = wrapper.findAllComponents(TopicTypeIcon);
     expect(allIcons).toHaveLength(1);
     expect(allIcons.at(0).props()).toEqual({
       withColors: true,
@@ -144,7 +144,7 @@ describe('DocumentationHero', () => {
       enhanceBackground: false,
     });
     // assert no icon
-    const allIcons = wrapper.findAll(TopicTypeIcon);
+    const allIcons = wrapper.findAllComponents(TopicTypeIcon);
     expect(allIcons).toHaveLength(0);
     // assert slot
     expect(wrapper.findComponent('.default-slot').text()).toBe('Default Slot');
