@@ -102,7 +102,7 @@ describe('RenderChanged', () => {
         },
       });
       expect(wrapper.text()).toBe('foo true');
-      expect(wrapper.contains(ChangedClasses.added));
+      expect(wrapper.find(ChangedClasses.added).exists());
     });
 
     it('renders the `new` val slot, if `new:false` and `previous:true` when `renderSingleChange:true`', () => {
@@ -118,7 +118,7 @@ describe('RenderChanged', () => {
         },
       });
       expect(wrapper.text()).toBe('foo true');
-      expect(wrapper.contains(ChangedClasses.removed));
+      expect(wrapper.find(ChangedClasses.removed).exists());
     });
   });
 

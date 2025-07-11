@@ -13,7 +13,7 @@ import GridRow from 'docc-render/components/GridRow.vue';
 
 describe('GridRow', () => {
   it('renders a div.row', () => {
-    expect(shallowMount(GridRow).contains('div.row')).toBe(true);
+    expect(shallowMount(GridRow).find('div.row').exists()).toBe(true);
   });
 
   it('renders slot content', () => {

@@ -13,7 +13,7 @@ import GridColumn from 'docc-render/components/GridColumn.vue';
 
 describe('GridColumn', () => {
   it('renders a div.col', () => {
-    expect(shallowMount(GridColumn).contains('div.col')).toBe(true);
+    expect(shallowMount(GridColumn).find('div.col').exists()).toBe(true);
   });
 
   it('renders slot content', () => {
