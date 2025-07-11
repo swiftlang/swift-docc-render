@@ -508,7 +508,7 @@ describe('ContentNode', () => {
       expect(grid.props()).toEqual({
         columns: { large: 4 },
       });
-      const columns = grid.findAll(Column);
+      const columns = grid.findAllComponents(Column);
       expect(columns).toHaveLength(2);
       expect(columns.at(0).props()).toEqual({ span: 2 });
       expect(columns.at(0).find('p').text()).toBe('foo');
@@ -552,7 +552,7 @@ describe('ContentNode', () => {
       expect(grid.props()).toEqual({
         columns: undefined,
       });
-      const columns = grid.findAll(Column);
+      const columns = grid.findAllComponents(Column);
       expect(columns).toHaveLength(2);
       expect(columns.at(0).props()).toEqual({ span: 2 });
       expect(columns.at(0).find('p').text()).toBe('foo');

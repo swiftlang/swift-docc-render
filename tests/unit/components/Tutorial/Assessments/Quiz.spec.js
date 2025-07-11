@@ -127,7 +127,7 @@ describe('Quiz', () => {
     });
 
     it('renders a `ContentNode`', () => {
-      const node = wrapper.findAll(ContentNode).at(1);
+      const node = wrapper.findAllComponents(ContentNode).at(1);
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toEqual(propsData.content);
     });

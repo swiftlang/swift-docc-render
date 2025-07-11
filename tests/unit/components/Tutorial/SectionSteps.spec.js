@@ -137,7 +137,7 @@ describe('SectionSteps', () => {
   });
 
   it('renders a `Step` for "step" nodes', () => {
-    const steps = wrapper.findAll(Step);
+    const steps = wrapper.findAllComponents(Step);
     expect(steps.length).toBe(5);
 
     let step = steps.at(0);
@@ -159,7 +159,7 @@ describe('SectionSteps', () => {
   it('by default, assigns the first step section index as active', () => {
     // assert the active step is the second element in the content, which is the first step
     expect(wrapper.vm.activeStep).toBe(1);
-    const nodes = wrapper.findAll({ ref: 'contentNodes' });
+    const nodes = wrapper.findAllComponents({ ref: 'contentNodes' });
     // the first node is not a step
     expect(nodes.at(0).props()).not.toHaveProperty('currentIndex');
     // second node gets the current index

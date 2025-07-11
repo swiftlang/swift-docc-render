@@ -149,7 +149,7 @@ describe('NavigatorCardItem', () => {
       },
     });
     expect(wrapper.findComponent(Badge).attributes('variant')).toBe('deprecated');
-    expect(wrapper.findAll(Badge).length).toBe(1);
+    expect(wrapper.findAllComponents(Badge).length).toBe(1);
   });
 
   it('does not render the expand button, if has no children', () => {

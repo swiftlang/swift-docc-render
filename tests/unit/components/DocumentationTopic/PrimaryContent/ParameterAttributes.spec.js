@@ -202,8 +202,8 @@ describe('ParameterAttributes', () => {
         ],
         changes,
       });
-      expect(wrapper.findAll(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
-      expect(wrapper.findAll(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
 
       const metadata = wrapper.findAll('.property-metadata');
       expect(
@@ -240,8 +240,8 @@ describe('ParameterAttributes', () => {
         ],
         changes,
       });
-      expect(wrapper.findAll(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
-      expect(wrapper.findAll(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
 
       const metadata = wrapper.findAll('.property-metadata');
       expect(

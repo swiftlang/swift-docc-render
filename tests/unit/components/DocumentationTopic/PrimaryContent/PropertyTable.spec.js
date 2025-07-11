@@ -177,7 +177,7 @@ describe('PropertyTable', () => {
     const code = wrapper.findComponent('.property-type code');
     expect(code.exists()).toBe(true);
 
-    const tokens = code.findAll(DeclarationToken);
+    const tokens = code.findAllComponents(DeclarationToken);
     expect(tokens.length).toBe(propsData.properties[0].type.length);
 
     const type = propsData.properties[0].type[0];
@@ -270,7 +270,7 @@ describe('PropertyTable', () => {
       },
     });
 
-    const allAttributes = wrapper.findAll(ParameterAttributes);
+    const allAttributes = wrapper.findAllComponents(ParameterAttributes);
     expect(allAttributes).toHaveLength(2);
     expect(allAttributes.at(0).props('attributes')).toEqual(attributes);
     expect(allAttributes.at(0).props('changes')).toEqual({});
