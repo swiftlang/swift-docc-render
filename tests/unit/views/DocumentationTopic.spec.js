@@ -161,7 +161,7 @@ describe('DocumentationTopic', () => {
 
     const codeTheme = wrapper.findComponent(CodeTheme);
     expect(codeTheme.exists()).toBe(true);
-    expect(codeTheme.isEmpty()).toEqual(true);
+    expect(codeTheme.element.childElementCount === 0).toEqual(true);
   });
 
   it('sets enableNavigator to true if schemaVersion is compatible', async () => {
