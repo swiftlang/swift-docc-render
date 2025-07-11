@@ -103,7 +103,7 @@ describe('RestParameters', () => {
     expect(allNames.at(1).classes()).not.toContain('deprecated');
     const deprecatedBadges = wrapper.findAll('.param-deprecated');
     expect(deprecatedBadges).toHaveLength(1);
-    expect(deprecatedBadges.at(0).is(Badge));
+    expect(deprecatedBadges.at(0).findComponent(Badge).exists());
     expect(deprecatedBadges.at(0).props('variant')).toBe('deprecated');
   });
 

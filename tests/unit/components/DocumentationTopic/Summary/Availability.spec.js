@@ -66,7 +66,7 @@ describe('Availability', () => {
   });
 
   it('renders a `Section`', () => {
-    expect(wrapper.is('.availability')).toBe(true);
+    expect(wrapper.element.matches('.availability')).toBe(true);
 
     const section = wrapper.findComponent(Section);
     expect(section.exists()).toBe(true);

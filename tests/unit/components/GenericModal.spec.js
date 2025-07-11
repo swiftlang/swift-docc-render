@@ -109,7 +109,7 @@ describe('GenericModal', () => {
     const close = wrapper.findComponent('.close');
     expect(close.exists()).toBe(true);
     // assert props
-    expect(close.is('button')).toBe(true);
+    expect(close.element.tagName.toLowerCase() === 'button').toBe(true);
     expect(close.attributes()).toHaveProperty('aria-label', 'verbs.close');
     // assert clicking closes modal
     close.trigger('click');

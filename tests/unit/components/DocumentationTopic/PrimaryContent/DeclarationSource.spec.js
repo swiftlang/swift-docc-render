@@ -62,7 +62,7 @@ describe('DeclarationSource', () => {
   });
 
   it('renders a <pre>', () => {
-    expect(wrapper.is('pre.source')).toBe(true);
+    expect(wrapper.element.matches('pre.source')).toBe(true);
   });
 
   it('renders a CodeBlock with a `Token` for each token', () => {

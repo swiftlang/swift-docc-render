@@ -17,7 +17,7 @@ const mountWithTypes = (types = []) => mountWithProps({ types });
 describe('PropertyListKeyType', () => {
   it('renders a div.type', () => {
     const wrapper = mountWithTypes();
-    expect(wrapper.is('div.type')).toBe(true);
+    expect(wrapper.element.matches('div.type')).toBe(true);
     expect(wrapper.text()).toBe('');
   });
 

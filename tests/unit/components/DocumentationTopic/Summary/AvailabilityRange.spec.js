@@ -26,7 +26,7 @@ describe('AvailabilityRange', () => {
   });
 
   it('renders a span[role="text"]', () => {
-    expect(wrapper.is('span[role="text"]')).toBe(true);
+    expect(wrapper.element.matches('span[role="text"]')).toBe(true);
   });
 
   it('renders the range in text form', async () => {

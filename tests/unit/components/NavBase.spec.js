@@ -191,7 +191,7 @@ describe('NavBase', () => {
     expect(menu.exists()).toBe(true);
     const toggle = menu.find('.nav-ax-toggle');
     expect(toggle.exists()).toBe(true);
-    expect(toggle.is('a')).toBe(true);
+    expect(toggle.element.tagName.toLowerCase() === 'a').toBe(true);
     expect(toggle.attributes()).toHaveProperty('href', '#');
     expect(toggle.attributes()).toHaveProperty('role', 'button');
     // assert the nav toggling works

@@ -135,11 +135,11 @@ describe('ReplayableVideoAsset', () => {
     expect(replayButton.exists()).toBe(true);
     expect(replayButton.text()).toBe('video.play');
 
-    expect(replayButton.find('.control-icon').is(PlayIcon)).toBe(true);
+    expect(replayButton.find('.control-icon').findComponent(PlayIcon).exists()).toBe(true);
     const video = wrapper.findComponent(VideoAsset);
     await video.vm.$emit('ended');
 
-    expect(wrapper.findComponent('.control-icon').is(InlineReplayIcon)).toBe(true);
+    expect(wrapper.findComponent('.control-icon').findComponent(InlineReplayIcon).exists()).toBe(true);
     expect(replayButton.text()).toBe('video.replay');
 
     // start playing
@@ -150,7 +150,7 @@ describe('ReplayableVideoAsset', () => {
     videoEl.ended = false;
     await flushPromises();
     expect(replayButton.text()).toBe('video.pause');
-    expect(wrapper.findComponent('.control-icon').is(PauseIcon)).toBe(true);
+    expect(wrapper.findComponent('.control-icon').findComponent(PauseIcon).exists()).toBe(true);
     await replayButton.trigger('click');
     videoEl.paused = true;
     await video.vm.$emit('pause');

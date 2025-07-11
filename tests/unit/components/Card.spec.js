@@ -60,7 +60,7 @@ describe('Card', () => {
 
   it('renders a .card root', () => {
     const card = mountCard();
-    expect(card.is('.card')).toBe(true);
+    expect(card.element.matches('.card')).toBe(true);
     expect(card.classes('ide')).toBe(false);
   });
 
@@ -104,7 +104,7 @@ describe('Card', () => {
     });
     const icon = wrapper.findComponent('.link .link-icon');
     expect(icon.exists()).toBeTruthy();
-    expect(icon.is(DiagonalArrowIcon)).toBeTruthy();
+    expect(icon.findComponent(DiagonalArrowIcon).exists()).toBeTruthy();
   });
 
   it('allows providing an AX helper text formatter, for external links', () => {
@@ -127,7 +127,7 @@ describe('Card', () => {
     });
     const icon = wrapper.findComponent('.link .link-icon');
     expect(icon.exists()).toBe(true);
-    expect(icon.is(InlineChevronRightIcon)).toBe(true);
+    expect(icon.findComponent(InlineChevronRightIcon).exists()).toBe(true);
     // check if the special AX helper is visible for `references`
     expect(wrapper.findComponent('.title .visuallyhidden').exists()).toBe(false);
   });
@@ -152,7 +152,7 @@ describe('Card', () => {
     });
     const div = wrapper.findComponent('.link');
     expect(div.exists()).toBe(true);
-    expect(div.is('div')).toBe(true);
+    expect(div.element.tagName.toLowerCase() === 'div').toBe(true);
   });
 
   it('renders no `.link`, if no `linkText` is provided', () => {

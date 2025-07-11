@@ -92,7 +92,7 @@ describe('LanguageToggle', () => {
   });
 
   it('renders an inline chevron icon', () => {
-    expect(wrapper.findComponent('.language-toggle-container > .toggle-icon').is(InlineChevronDownIcon))
+    expect(wrapper.findComponent('.language-toggle-container > .toggle-icon').findComponent(InlineChevronDownIcon).exists())
       .toBe(true);
   });
 

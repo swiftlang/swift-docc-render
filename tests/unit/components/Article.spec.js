@@ -114,7 +114,7 @@ describe('Article', () => {
   });
 
   it('renders a div.article', () => {
-    expect(wrapper.is('div.article')).toBe(true);
+    expect(wrapper.element.matches('div.article')).toBe(true);
   });
 
   it('provides a page title using the hero section title', () => {

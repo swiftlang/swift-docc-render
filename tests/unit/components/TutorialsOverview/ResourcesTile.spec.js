@@ -68,7 +68,7 @@ describe('ResourcesTile', () => {
   });
 
   it('renders a .tile root', () => {
-    expect(wrapper.is('.tile')).toBe(true);
+    expect(wrapper.element.matches('.tile')).toBe(true);
   });
 
   it('renders the title', () => {

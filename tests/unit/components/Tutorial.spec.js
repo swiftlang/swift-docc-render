@@ -186,7 +186,7 @@ describe('Tutorial', () => {
   });
 
   it('renders a div.tutorial', () => {
-    expect(wrapper.is('div.tutorial')).toBe(true);
+    expect(wrapper.element.matches('div.tutorial')).toBe(true);
   });
 
   it('renders a `NavigationBar`', () => {
