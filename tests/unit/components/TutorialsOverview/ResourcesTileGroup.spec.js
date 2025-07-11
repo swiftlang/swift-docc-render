@@ -42,7 +42,16 @@ describe('ResourcesTileGroup', () => {
   it('renders a "count-{n}" class for the number of tiles', async () => {
     expect(wrapper.classes('count-2')).toBe(true);
 
-    await wrapper.setProps({ tiles: [...propsData.tiles, propsData.tiles[0]] });
+    await wrapper.setProps({
+      tiles: [
+        ...propsData.tiles,
+        {
+          title: 'C',
+          action: { title: 'c', destination: '/c' },
+          content: [{ type: 'text', text: 'c' }],
+        },
+      ],
+    });
     expect(wrapper.classes('count-2')).toBe(false);
     expect(wrapper.classes('count-3')).toBe(true);
   });
