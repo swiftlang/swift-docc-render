@@ -99,7 +99,7 @@ describe('Hierarchy', () => {
     const list = wrapper.findComponent(NavMenuItems);
     expect(list.exists()).toBe(true);
 
-    const items = list.findAll(HierarchyItem);
+    const items = list.findAllComponents(HierarchyItem);
     expect(items.length).toBe(3);
 
     const fooItem = items.at(0);
@@ -152,7 +152,7 @@ describe('Hierarchy', () => {
         const list = wrapper.findComponent(NavMenuItems);
         expect(list.exists()).toBe(true);
 
-        const items = list.findAll(HierarchyItem);
+        const items = list.findAllComponents(HierarchyItem);
         // all parentTopicIdentifiers + the last item
         expect(items.length).toBe(parentTopics.length + 1);
 
@@ -194,7 +194,7 @@ describe('Hierarchy', () => {
       it('renders a list with `root + 2 collapsed + max 2 items`, between 1000 and 1200px', async () => {
         changeSize(1100);
         await wrapper.vm.$nextTick();
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert root item
         expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
@@ -237,7 +237,7 @@ describe('Hierarchy', () => {
       it('renders a list with `3 collapsed + max 1 item`, between 735 and 1000px', async () => {
         changeSize(900);
         await wrapper.vm.$nextTick();
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -287,7 +287,7 @@ describe('Hierarchy', () => {
       it('renders a list with `5 collapsed and no external links`, below 735', async () => {
         changeSize(720);
         await wrapper.vm.$nextTick();
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -354,7 +354,7 @@ describe('Hierarchy', () => {
         const list = wrapper.findComponent(NavMenuItems);
         expect(list.exists()).toBe(true);
 
-        const items = list.findAll(HierarchyItem);
+        const items = list.findAllComponents(HierarchyItem);
         // all parentTopicIdentifiers + the last item
         expect(items.length).toBe(parentTopics.length + 1);
 
@@ -404,7 +404,7 @@ describe('Hierarchy', () => {
           isSymbolBeta: true,
         });
 
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert root item
         expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
@@ -455,7 +455,7 @@ describe('Hierarchy', () => {
           isSymbolBeta: true,
         });
 
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -511,7 +511,7 @@ describe('Hierarchy', () => {
           isSymbolBeta: true,
         });
 
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -608,9 +608,9 @@ describe('Hierarchy', () => {
       },
     });
 
-    const HierarchyItems = wrapper.findAll(HierarchyItem);
+    const HierarchyItems = wrapper.findAllComponents(HierarchyItem);
     // The badges are rendered inside the last HierarchyItem slot
-    const badges = HierarchyItems.at(HierarchyItems.length - 1).findAll(Badge);
+    const badges = HierarchyItems.at(HierarchyItems.length - 1).findAllComponents(Badge);
     expect(badges).toHaveLength(3);
     expect(badges.at(0).props('variant')).toBe('deprecated');
     expect(badges.at(0).text()).toBe('aside-kind.deprecated');

@@ -65,10 +65,10 @@ describe('TutorialsNavigation', () => {
   it('renders TutorialsNavigationMenu if the volume has a name', () => {
     expect(wrapper.findComponent('.volume').classes()).toContain('volume--named');
     // for one Volume section
-    const menus = wrapper.findAll({ name: 'TutorialsNavigationMenu' });
+    const menus = wrapper.findAllComponents({ name: 'TutorialsNavigationMenu' });
     expect(menus).toHaveLength(1);
     expect(menus.at(0).props()).toEqual({ collapsed: false, title: 'Volume A' });
-    const links = menus.at(0).findAll(TutorialsNavigationLink);
+    const links = menus.at(0).findAllComponents(TutorialsNavigationLink);
     expect(links).toHaveLength(2);
   });
 
@@ -76,7 +76,7 @@ describe('TutorialsNavigation', () => {
     // find the volume without name, its the second item
     const menu = wrapper.findAll('.volume').at(1);
     expect(menu.classes()).not.toContain('volume--named');
-    const menuItem = menu.findAll({ name: 'TutorialsNavigationList' });
+    const menuItem = menu.findAllComponents({ name: 'TutorialsNavigationList' });
     expect(menuItem).toHaveLength(1);
     expect(menuItem.at(0).text()).toContain('Really Advanced');
     expect(menuItem.at(0).attributes('aria-label')).toBe('Chapters');

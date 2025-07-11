@@ -48,7 +48,7 @@ describe('ResourcesTileGroup', () => {
   });
 
   it('renders a `Tile` for each tile', () => {
-    const tiles = wrapper.findAll(Tile);
+    const tiles = wrapper.findAllComponents(Tile);
     expect(tiles.length).toBe(propsData.tiles.length);
 
     tiles.wrappers.forEach((tile, i) => {

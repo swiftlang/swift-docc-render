@@ -44,7 +44,7 @@ describe('Mentions', () => {
       level: '2',
       anchor: 'mentions',
     });
-    const mentionComponents = wrapper.findAll(Mention);
+    const mentionComponents = wrapper.findAllComponents(Mention);
     expect(mentionComponents.length).toBe(mentions.length);
     mentions.forEach((id, i) => {
       expect(mentionComponents.at(i).props()).toEqual({
@@ -74,7 +74,7 @@ describe('Mentions', () => {
       level: '2',
       anchor: 'mentions',
     });
-    const mentionComponents = wrapper.findAll(Mention);
+    const mentionComponents = wrapper.findAllComponents(Mention);
     expect(mentionComponents.length).toBe(5);
   });
 
@@ -86,7 +86,7 @@ describe('Mentions', () => {
       mentions: [],
     });
     expect(wrapper.findComponent('linkableheading-stub').exists()).toBe(false);
-    expect(wrapper.findAll(Mention).length).toBe(0);
+    expect(wrapper.findAllComponents(Mention).length).toBe(0);
   });
 
   it('omits a "Mentioned In" section when mentions are empty', () => {
@@ -97,6 +97,6 @@ describe('Mentions', () => {
       mentions: [],
     });
     expect(wrapper.findComponent('linkableheading-stub').exists()).toBe(false);
-    expect(wrapper.findAll(Mention).length).toBe(0);
+    expect(wrapper.findAllComponents(Mention).length).toBe(0);
   });
 });
