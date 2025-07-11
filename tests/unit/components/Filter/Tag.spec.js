@@ -25,7 +25,7 @@ describe('Tag', () => {
   };
 
   beforeEach(() => {
-    wrapper = shallowMount(Tag, { propsData, attachToDocument: true });
+    wrapper = shallowMount(Tag, { propsData, attachTo: document.body });
     button = wrapper.findComponent('button');
     jest.clearAllMocks();
   });
