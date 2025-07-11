@@ -358,7 +358,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     expect(wrapper.findComponent(Reference).props('url')).toEqual(defaultProps.technologyPath);
     expect(wrapper.findComponent('.card-link').text()).toBe(defaultProps.technology);
-    expect(wrapper.findComponent('.card-link').is('h2')).toBe(true);
+    expect(wrapper.findComponent('.card-link').element.tagName.toLowerCase() === 'h2').toBe(true);
   });
 
   it('renders a Beta badge in the technology title', async () => {

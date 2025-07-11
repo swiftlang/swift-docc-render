@@ -47,7 +47,7 @@ describe('Parameters', () => {
   });
 
   it('renders an `section.parameters`', () => {
-    expect(wrapper.is('section.parameters')).toBe(true);
+    expect(wrapper.element.matches('section.parameters')).toBe(true);
   });
 
   it('renders an h2 with "Parameters"', () => {

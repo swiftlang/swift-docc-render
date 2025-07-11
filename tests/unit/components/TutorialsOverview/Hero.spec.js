@@ -48,7 +48,7 @@ describe('Hero', () => {
   });
 
   it('renders a section.hero root', () => {
-    expect(wrapper.is('section.hero')).toBe(true);
+    expect(wrapper.element.matches('section.hero')).toBe(true);
   });
 
   it('renders an h1 title', () => {

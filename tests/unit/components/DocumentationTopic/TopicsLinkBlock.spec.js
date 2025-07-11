@@ -89,7 +89,7 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('renders a .link-block root', () => {
-    expect(wrapper.is('div.link-block')).toBe(true);
+    expect(wrapper.element.matches('div.link-block')).toBe(true);
   });
 
   it('renders a router-link for the url', () => {

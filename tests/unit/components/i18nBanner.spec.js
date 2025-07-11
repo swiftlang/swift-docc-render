@@ -72,7 +72,7 @@ describe('SuggestLang', () => {
   });
 
   it('renders a <SuggestLang> if preferredLocale is different to currentLocale', () => {
-    expect(wrapper.is('.suggest-lang')).toBe(true);
+    expect(wrapper.element.matches('.suggest-lang')).toBe(true);
   });
 
   it('renders a router link with the preferredLocale view-in text and lang tag using the matching locale', () => {

@@ -117,7 +117,7 @@ describe('Quiz', () => {
     });
 
     it('renders a div.quiz root', () => {
-      expect(wrapper.is('div.quiz')).toBe(true);
+      expect(wrapper.element.matches('div.quiz')).toBe(true);
     });
 
     it('renders a title', () => {

@@ -47,7 +47,7 @@ describe('LinkableToken', () => {
 
   it('renders a span for unresolved references', () => {
     const wrapper = shallowMount(LinkableToken, defaultOpts);
-    expect(wrapper.is('span')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
     expect(wrapper.text()).toBe(foo.title);
   });
 

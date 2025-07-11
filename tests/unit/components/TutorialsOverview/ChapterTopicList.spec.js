@@ -56,7 +56,7 @@ describe('ChapterTopicList', () => {
   });
 
   it('renders an ol.topic-list root', () => {
-    expect(wrapper.is('ol.topic-list')).toBe(true);
+    expect(wrapper.element.matches('ol.topic-list')).toBe(true);
   });
 
   it('renders an li with link/time for every topic', () => {

@@ -52,14 +52,14 @@ describe('HierarchyCollapsedItems', () => {
   });
 
   it('renders an list item with `.hierarchy-collapsed-items` class', () => {
-    expect(wrapper.is('li.hierarchy-collapsed-items')).toBe(true);
+    expect(wrapper.element.matches('li.hierarchy-collapsed-items')).toBe(true);
   });
 
   it('renders a non-focused button', () => {
     const btn = wrapper.findComponent('button.toggle');
     expect(btn.exists()).toBe(true);
     expect(btn.classes('focused')).toBe(false);
-    expect(btn.find('.indicator .icon-inline').is(EllipsisIcon)).toBe(true);
+    expect(btn.find('.indicator .icon-inline').findComponent(EllipsisIcon).exists()).toBe(true);
   });
 
   it('renders a collapsed dropdown', () => {

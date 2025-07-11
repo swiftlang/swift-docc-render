@@ -54,7 +54,7 @@ describe('Asset', () => {
 
   it('renders a div.asset', () => {
     const wrapper = mountAsset('foo.bar');
-    expect(wrapper.is('div.asset')).toBe(true);
+    expect(wrapper.element.matches('div.asset')).toBe(true);
     expect(wrapper.isEmpty()).toBe(true);
   });
 

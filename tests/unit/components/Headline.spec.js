@@ -20,12 +20,12 @@ describe('Heading', () => {
   });
 
   it('renders a dynamic <h[n]> for 1 <= n <= 6', () => {
-    expect(mountHeadingWithLevel(1).is('h1')).toBe(true);
-    expect(mountHeadingWithLevel(2).is('h2')).toBe(true);
-    expect(mountHeadingWithLevel(3).is('h3')).toBe(true);
-    expect(mountHeadingWithLevel(4).is('h4')).toBe(true);
-    expect(mountHeadingWithLevel(5).is('h5')).toBe(true);
-    expect(mountHeadingWithLevel(6).is('h6')).toBe(true);
+    expect(mountHeadingWithLevel(1).element.tagName.toLowerCase() === 'h1').toBe(true);
+    expect(mountHeadingWithLevel(2).element.tagName.toLowerCase() === 'h2').toBe(true);
+    expect(mountHeadingWithLevel(3).element.tagName.toLowerCase() === 'h3').toBe(true);
+    expect(mountHeadingWithLevel(4).element.tagName.toLowerCase() === 'h4').toBe(true);
+    expect(mountHeadingWithLevel(5).element.tagName.toLowerCase() === 'h5').toBe(true);
+    expect(mountHeadingWithLevel(6).element.tagName.toLowerCase() === 'h6').toBe(true);
   });
 
   it('renders slot content', () => {
@@ -52,7 +52,7 @@ describe('Headline', () => {
       },
     });
 
-    expect(wrapper.is(Heading));
+    expect(wrapper.findComponent(Heading).exists());
     expect(wrapper.classes()).toContain('headline');
     expect(wrapper.props('level')).toBe(2);
 
@@ -69,7 +69,7 @@ describe('Headline', () => {
       },
     });
 
-    expect(wrapper.is(Heading));
+    expect(wrapper.findComponent(Heading).exists());
     expect(wrapper.classes()).toContain('headline');
     expect(wrapper.props('level')).toBe(1);
 

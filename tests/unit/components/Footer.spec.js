@@ -21,7 +21,7 @@ describe('Footer', () => {
   });
 
   it('renders a <footer>', () => {
-    expect(wrapper.is('footer.footer')).toBe(true);
+    expect(wrapper.element.matches('footer.footer')).toBe(true);
   });
 
   it('renders a `ColorSchemeToggle`', () => {

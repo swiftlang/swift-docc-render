@@ -33,12 +33,12 @@ describe('LinkableElement', () => {
   });
 
   it('renders a div with an id', () => {
-    expect(wrapper.is('div#foo')).toBe(true);
+    expect(wrapper.element.matches('div#foo')).toBe(true);
   });
 
   it('renders with an optionally provided top level tag', async () => {
     await wrapper.setProps({ tag: 'h2' });
-    expect(wrapper.is('h2#foo')).toBe(true);
+    expect(wrapper.element.matches('h2#foo')).toBe(true);
   });
 
   it('renders slot content', () => {

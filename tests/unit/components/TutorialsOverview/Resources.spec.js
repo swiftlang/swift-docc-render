@@ -46,7 +46,7 @@ describe('Resources', () => {
   });
 
   it('renders a section.resources root', () => {
-    expect(wrapper.is('section.resources')).toBe(true);
+    expect(wrapper.element.matches('section.resources')).toBe(true);
     expect(wrapper.attributes('id')).toBe('resources');
   });
 

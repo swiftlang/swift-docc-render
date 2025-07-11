@@ -59,7 +59,7 @@ describe('BodyContent', () => {
   });
 
   it('renders an article.bodycontent', () => {
-    expect(wrapper.is('article.body-content')).toBe(true);
+    expect(wrapper.element.matches('article.body-content')).toBe(true);
   });
 
   it('renders a `Columns` layout', () => {

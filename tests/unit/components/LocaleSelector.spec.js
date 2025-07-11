@@ -68,7 +68,7 @@ describe('LocaleSelector', () => {
   });
 
   it('renders the locale selector', () => {
-    expect(wrapper.is('div.locale-selector')).toBe(true);
+    expect(wrapper.element.matches('div.locale-selector')).toBe(true);
     expect(wrapper.findComponent('select').exists()).toBe(true);
   });
 

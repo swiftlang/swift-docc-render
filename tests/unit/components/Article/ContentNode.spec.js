@@ -42,7 +42,7 @@ describe('ContentNode', () => {
   });
 
   it('renders a `BaseContentNode', () => {
-    expect(wrapper.is(BaseContentNode)).toBe(true);
+    expect(wrapper.findComponent(BaseContentNode).exists()).toBe(true);
   });
 
   // This needs to be directly tested in `articleContent` directly for now due

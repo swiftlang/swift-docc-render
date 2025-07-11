@@ -40,7 +40,7 @@ describe('TutorialsNavigationMenu', () => {
 
     const icon = link.find('.toggle-icon');
     expect(icon.exists()).toBe(true);
-    expect(icon.is(InlineCloseIcon)).toBe(true);
+    expect(icon.findComponent(InlineCloseIcon).exists()).toBe(true);
   });
 
   it('renders a `TutorialsNavigationList` with slot content', async () => {

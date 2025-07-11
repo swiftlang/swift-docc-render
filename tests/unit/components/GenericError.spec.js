@@ -25,7 +25,7 @@ describe('GenericError', () => {
   });
 
   it('renders a .generic-error container', () => {
-    expect(wrapper.is('.generic-error')).toBe(true);
+    expect(wrapper.element.matches('.generic-error')).toBe(true);
   });
 
   it('renders a default message', () => {

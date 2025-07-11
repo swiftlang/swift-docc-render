@@ -41,7 +41,7 @@ describe('CallToAction', () => {
   });
 
   it('renders a .call-to-action', () => {
-    expect(wrapper.is('.call-to-action')).toBe(true);
+    expect(wrapper.element.matches('.call-to-action')).toBe(true);
   });
 
   it('renders a row with 2 columns', () => {

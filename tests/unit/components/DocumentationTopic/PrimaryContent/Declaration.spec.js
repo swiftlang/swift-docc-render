@@ -69,7 +69,7 @@ describe('Declaration', () => {
   });
 
   it('renders an `section.declaration`', () => {
-    expect(wrapper.is('section.declaration')).toBe(true);
+    expect(wrapper.element.matches('section.declaration')).toBe(true);
   });
 
   it('renders 1 `DeclarationList` and 0 labels without multiple declarations', () => {

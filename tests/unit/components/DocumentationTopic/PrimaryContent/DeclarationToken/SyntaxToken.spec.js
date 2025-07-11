@@ -20,7 +20,7 @@ describe('SyntaxToken', () => {
       },
     });
 
-    expect(wrapper.is('span.token-keyword')).toBe(true);
+    expect(wrapper.element.matches('span.token-keyword')).toBe(true);
     expect(wrapper.text()).toBe('var');
   });
 });

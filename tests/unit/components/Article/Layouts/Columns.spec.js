@@ -35,7 +35,7 @@ describe('Columns', () => {
     });
 
     it('renders a .columns.cols-2 row', () => {
-      expect(wrapper.is('div.columns.cols-2')).toBe(true);
+      expect(wrapper.element.matches('div.columns.cols-2')).toBe(true);
     });
 
     it('renders an `Asset` and `ContentNode` for each col', () => {
@@ -76,7 +76,7 @@ describe('Columns', () => {
     });
 
     it('renders a .columns.cols-3 row', () => {
-      expect(wrapper.is('div.columns.cols-3')).toBe(true);
+      expect(wrapper.element.matches('div.columns.cols-3')).toBe(true);
     });
 
     it('renders an `Asset` and `ContentNode` for each col', () => {

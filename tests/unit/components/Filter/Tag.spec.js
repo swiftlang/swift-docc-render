@@ -35,7 +35,7 @@ describe('Tag', () => {
   });
 
   it('renders a tag', () => {
-    expect(wrapper.is('.tag')).toBe(true);
+    expect(wrapper.element.matches('.tag')).toBe(true);
     expect(wrapper.attributes()).toHaveProperty('role', 'presentation');
 
     expect(button.exists()).toBe(true);

@@ -145,7 +145,7 @@ describe('PropertyTable', () => {
         // condense all whitespace
         .replace(/\s+/g, ' '),
     ).toBe('columns');
-    expect(wrapper.findComponent(WordBreak).is('code')).toBe(true);
+    expect(wrapper.findComponent(WordBreak).element.tagName.toLowerCase() === 'code').toBe(true);
     expect(wrapper.findComponent('.property-metadata').text()).toBe('integer');
     expect(wrapper.findComponent({ name: 'ContentNode' }).props('content')).toEqual(
       propsData.properties[0].content,
@@ -167,7 +167,7 @@ describe('PropertyTable', () => {
     expect(allNames.at(1).classes()).not.toContain('deprecated');
     const deprecatedBadges = wrapper.findAll('.property-deprecated');
     expect(deprecatedBadges).toHaveLength(1);
-    expect(deprecatedBadges.at(0).is(Badge));
+    expect(deprecatedBadges.at(0).findComponent(Badge).exists());
     expect(deprecatedBadges.at(0).props('variant')).toBe('deprecated');
   });
 

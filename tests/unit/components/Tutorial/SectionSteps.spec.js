@@ -122,7 +122,7 @@ describe('SectionSteps', () => {
   });
 
   it('renders a div.steps with a .content-container and .asset-container', () => {
-    expect(wrapper.is('div.steps')).toBe(true);
+    expect(wrapper.element.matches('div.steps')).toBe(true);
     expect(wrapper.find('div.content-container').exists()).toBe(true);
 
     const backgroundTheme = wrapper.findComponent(BackgroundTheme);
