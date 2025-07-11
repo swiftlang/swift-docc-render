@@ -63,7 +63,7 @@ describe('ContentNode', () => {
 
     const content = wrapper.findComponent('div.content');
     expect(content.exists()).toBe(true);
-    expect(content.isEmpty()).toBe(true);
+    expect(content.element.childElementCount === 0).toBe(true);
   });
 
   describe('with type="aside"', () => {
@@ -113,7 +113,7 @@ describe('ContentNode', () => {
       expect(codeListing.props('fileType')).toBe(listing.fileType);
       expect(codeListing.props('content')).toEqual(listing.code);
       expect(codeListing.props('copyToClipboard')).toEqual(listing.copyToClipboard);
-      expect(codeListing.isEmpty()).toBe(true);
+      expect(codeListing.element.childElementCount === 0).toBe(true);
     });
 
     it('renders a `Figure`/`Caption` with metadata', () => {
@@ -159,7 +159,7 @@ describe('ContentNode', () => {
       expect(codeListing.props('fileType')).toBe(listing.fileType);
       expect(codeListing.props('content')).toEqual(listing.code);
       expect(codeListing.props('copyToClipboard')).toEqual(listing.copyToClipboard);
-      expect(codeListing.isEmpty()).toBe(true);
+      expect(codeListing.element.childElementCount === 0).toBe(true);
     });
   });
 
@@ -212,7 +212,7 @@ describe('ContentNode', () => {
         expect(sectionTitle.exists()).toBe(true);
         expect(sectionTitle.props('level')).toBe(level);
         expect(sectionTitle.attributes('anchor')).toBe('heading');
-        expect(sectionTitle.isEmpty()).toBe(false);
+        expect(sectionTitle.text().length > 0).toBe(true);
         expect(sectionTitle.text()).toContain('heading');
       }
     });
@@ -1054,7 +1054,7 @@ describe('ContentNode', () => {
       expect(reference.props('ideTitle')).toBe('IDETitle');
       expect(reference.props('titleStyle')).toBe('symbol');
       expect(reference.props('hasInlineFormatting')).toBe(false);
-      expect(reference.isEmpty()).toBe(false);
+      expect(reference.text().length > 0).toBe(true);
       expect(reference.text()).toBe('FooBar');
     });
 
@@ -1320,7 +1320,7 @@ describe('ContentNode', () => {
       });
 
       const reference = wrapper.findComponent('.content');
-      expect(reference.isEmpty()).toBe(true);
+      expect(reference.element.childElementCount === 0).toBe(true);
     });
   });
 
