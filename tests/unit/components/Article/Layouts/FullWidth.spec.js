@@ -33,20 +33,20 @@ describe('FullWidth', () => {
   });
 
   it('renders a .full-width', () => {
-    expect(wrapper.is('.full-width')).toBe(true);
+    expect(wrapper.element.matches('.full-width')).toBe(true);
   });
 
   it('renders a `ContentNode`', () => {
     const groups = wrapper.findAll('.group');
     expect(groups.length).toBe(1);
 
-    const node = groups.at(0).find(ContentNode);
+    const node = groups.at(0).findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.content);
   });
 
   it('does not render a `LinkableElement` without headings', () => {
-    expect(wrapper.contains(LinkableElement)).toBe(false);
+    expect(wrapper.findComponent(LinkableElement).exists()).toBe(false);
   });
 
   describe('with headings', () => {
@@ -81,39 +81,39 @@ describe('FullWidth', () => {
       },
     ];
 
-    beforeEach(() => {
-      wrapper.setProps({ content });
+    beforeEach(async () => {
+      await wrapper.setProps({ content });
     });
 
     it('groups headings and subsequent content with `LinkableElement`', () => {
       const groups = wrapper.findAll('.group');
       expect(groups.length).toBe(3);
 
-      expect(groups.at(0).is('div')).toBe(true);
-      expect(groups.at(0).find(ContentNode).props('content')).toEqual([
+      expect(groups.at(0).element.tagName.toLowerCase() === 'div').toBe(true);
+      expect(groups.at(0).findComponent(ContentNode).props('content')).toEqual([
         content[0],
       ]);
 
-      expect(groups.at(1).is(LinkableElement)).toBe(true);
+      expect(groups.at(1).findComponent(LinkableElement).exists()).toBe(true);
       expect(groups.at(1).props()).toEqual({
         anchor: content[1].anchor,
         depth: 0,
         tag: 'div',
         title: content[1].text,
       });
-      expect(groups.at(1).find(ContentNode).props('content')).toEqual([
+      expect(groups.at(1).findComponent(ContentNode).props('content')).toEqual([
         content[1],
         content[2],
       ]);
 
-      expect(groups.at(2).is(LinkableElement)).toBe(true);
+      expect(groups.at(2).findComponent(LinkableElement).exists()).toBe(true);
       expect(groups.at(2).props()).toEqual({
         anchor: content[3].anchor,
         depth: 1,
         tag: 'div',
         title: content[3].text,
       });
-      expect(groups.at(2).find(ContentNode).props('content')).toEqual([
+      expect(groups.at(2).findComponent(ContentNode).props('content')).toEqual([
         content[3],
         content[4],
         content[5],

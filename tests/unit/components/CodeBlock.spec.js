@@ -16,7 +16,7 @@ describe('CodeBlock', () => {
     const wrapper = shallowMount(CodeBlock, {
       slots: { default: 'foobar' },
     });
-    expect(wrapper.is('code')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'code').toBe(true);
     expect(wrapper.text()).toBe('foobar');
   });
 

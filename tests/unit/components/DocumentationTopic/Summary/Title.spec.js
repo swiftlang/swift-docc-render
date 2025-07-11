@@ -21,11 +21,11 @@ describe('Title', () => {
   });
 
   it('renders a p.title', () => {
-    expect(wrapper.is('p.title')).toBe(true);
+    expect(wrapper.element.matches('p.title')).toBe(true);
   });
 
   it('renders slot content', () => {
-    const content = wrapper.find('span');
+    const content = wrapper.findComponent('span');
     expect(content.html()).toBe(slots.default);
   });
 });

@@ -51,13 +51,13 @@ describe('PossibleValues', () => {
 
     const content = wrapper.findAll('.value-content');
     expect(content).toHaveLength(1);
-    const contentNode = wrapper.find(ContentNode);
+    const contentNode = wrapper.findComponent(ContentNode);
     expect(contentNode.exists()).toBe(true);
     expect(contentNode.props('content')).toBe(propsData.values[1].content);
   });
 
   it('renders <WordBreak> with a <code> tag', () => {
-    const wordBreaks = wrapper.findAll(WordBreak);
+    const wordBreaks = wrapper.findAllComponents(WordBreak);
     expect(wordBreaks).toHaveLength(2);
     expect(wordBreaks.at(0).text()).toBe(propsData.values[0].name);
     expect(wordBreaks.at(0).attributes('tag')).toBe('code');

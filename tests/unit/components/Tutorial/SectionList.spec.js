@@ -77,8 +77,8 @@ describe('SectionList', () => {
   });
 
   it('renders a div.sections with a `Section` for each section', () => {
-    expect(wrapper.is('div.sections')).toBe(true);
-    const sections = wrapper.findAll(Section);
+    expect(wrapper.element.matches('div.sections')).toBe(true);
+    const sections = wrapper.findAllComponents(Section);
     expect(sections.length).toBe(propsData.tasks.length);
 
     const sectionA = sections.at(0);
@@ -97,11 +97,11 @@ describe('SectionList', () => {
 
   describe('when a `Section` emits a "runtime-preview-toggle" event', () => {
     beforeEach(() => {
-      wrapper.find(Section).vm.$emit('runtime-preview-toggle', false);
+      wrapper.findComponent(Section).vm.$emit('runtime-preview-toggle', false);
     });
 
     it('updates the `isRuntimePreviewVisible` prop of all the `Section`s', () => {
-      wrapper.findAll(Section).wrappers.forEach((section) => {
+      wrapper.findAllComponents(Section).wrappers.forEach((section) => {
         expect(section.props('isRuntimePreviewVisible')).toBe(false);
       });
     });

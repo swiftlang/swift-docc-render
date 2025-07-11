@@ -69,7 +69,7 @@ describe('Hero', () => {
       title,
     });
 
-    const headline = wrapper.find(Headline);
+    const headline = wrapper.findComponent(Headline);
     expect(headline.text()).toBe(title);
   });
 
@@ -83,7 +83,7 @@ describe('Hero', () => {
       },
     });
 
-    const headline = wrapper.find(Headline);
+    const headline = wrapper.findComponent(Headline);
     expect(headline.text()).toContain(chapter);
   });
 
@@ -109,7 +109,7 @@ describe('Hero', () => {
       estimatedTimeInMinutes,
     }, references);
 
-    const metadata = wrapper.find(HeroMetadata);
+    const metadata = wrapper.findComponent(HeroMetadata);
     expect(metadata.props('estimatedTimeInMinutes')).toBe(estimatedTimeInMinutes);
     expect(metadata.props('projectFilesUrl')).toBe(projectFilesUrl);
     expect(metadata.props('xcodeRequirement')).toEqual(xcodeRequirementReference);
@@ -118,20 +118,23 @@ describe('Hero', () => {
   it('renders a div for the background and selects the light variant', () => {
     const wrapper = mountWithProps();
 
-    const bg = wrapper.find('div.bg');
+    const bg = wrapper.findComponent('div.bg');
     expect(bg.exists()).toBe(true);
     expect(wrapper.vm.bgStyle).toEqual({
       backgroundImage: 'url(\'defaultBackgroundUrlLight\')',
     });
   });
 
-  it('displays the call-to-action modal when the link is clicked', () => {
+  it('displays the call-to-action modal when the link is clicked', async () => {
     const wrapper = mountWithProps();
-    const link = wrapper.find('a.call-to-action');
-    expect(wrapper.find(Asset).isVisible()).toBe(false);
+    const link = wrapper.findComponent('a.call-to-action');
+    expect(wrapper.findComponent(Asset).exists()).toBe(true);
+    expect(wrapper.findComponent(GenericModal).props('visible')).toBe(false);
+
     link.trigger('click');
-    expect(wrapper.find(Asset).isVisible()).toBe(true);
-    const modal = wrapper.find(GenericModal);
+    await wrapper.vm.$nextTick();
+
+    const modal = wrapper.findComponent(GenericModal);
     expect(modal.props()).toHaveProperty('visible', true);
   });
 
@@ -172,21 +175,25 @@ describe('Hero', () => {
       global.Element.prototype.querySelector = querySelector;
     };
 
-    it('does not pause if play returned undefined', (done) => {
-      withPlayReturning(undefined, async () => {
-        const link = wrapper.find('a.call-to-action');
-        link.trigger('click');
-        expect(wrapper.find(Asset).isVisible()).toBe(true);
+    it('does not pause if play returned undefined', async () => {
+      await new Promise((resolve) => {
+        withPlayReturning(undefined, async () => {
+          const link = wrapper.findComponent('a.call-to-action');
+          link.trigger('click');
+          await wrapper.vm.$nextTick();
 
-        const asset = wrapper.find(Asset);
-        asset.vm.$emit('videoEnded');
+          expect(wrapper.findComponent(GenericModal).props('visible')).toBe(true);
 
-        // Wait for the `playPromise.then` to be executed.
-        await wrapper.vm.$nextTick();
+          const asset = wrapper.findComponent(Asset);
+          asset.vm.$emit('videoEnded');
 
-        expect(pauseMock).not.toHaveBeenCalled();
+          // Wait for the `playPromise.then` to be executed.
+          await wrapper.vm.$nextTick();
 
-        done();
+          expect(pauseMock).not.toHaveBeenCalled();
+
+          resolve();
+        });
       });
     });
   });

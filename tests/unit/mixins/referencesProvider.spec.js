@@ -80,14 +80,14 @@ const createOuter = (opts = { provide }) => shallowMount(FakeComponentOuter, opt
 describe('referencesProvider', () => {
   it('provides a store with a default state', () => {
     const outer = createOuter({});
-    const inner = outer.find(FakeComponentInner);
+    const inner = outer.findComponent(FakeComponentInner);
     expect(inner.exists()).toBe(true);
     expect(inner.props('references')).toEqual({});
   });
 
   it('provides references from a store', () => {
     const outer = createOuter();
-    const inner = outer.find(FakeComponentInner);
+    const inner = outer.findComponent(FakeComponentInner);
     expect(inner.exists()).toBe(true);
     expect(inner.props('references')).toEqual(references);
   });

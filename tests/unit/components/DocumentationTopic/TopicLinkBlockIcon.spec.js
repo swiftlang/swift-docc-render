@@ -29,7 +29,7 @@ const createWrapper = ({ propsData, ...others } = {}) => mount(TopicLinkBlockIco
 describe('TopicLinkBlockIcon', () => {
   it('renders an icon from a `role`', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.topic-icon').is(ArticleIcon)).toBe(true);
+    expect(wrapper.findComponent('.topic-icon').findComponent(ArticleIcon).exists()).toBe(true);
   });
 
   it('renders nothing if no role', () => {
@@ -44,6 +44,6 @@ describe('TopicLinkBlockIcon', () => {
   it('uses the technology icon for collections', () => {
     const propsData = { role: TopicRole.collection };
     const wrapper = createWrapper({ propsData });
-    expect(wrapper.find('.topic-icon').is(TechnologyIcon)).toBe(true);
+    expect(wrapper.findComponent('.topic-icon').findComponent(TechnologyIcon).exists()).toBe(true);
   });
 });

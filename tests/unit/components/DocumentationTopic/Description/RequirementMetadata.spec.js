@@ -14,9 +14,9 @@ import RequirementMetadata from 'docc-render/components/DocumentationTopic/Descr
 describe('RequirementMetadata', () => {
   it('renders "Required." with <p><strong>', () => {
     const wrapper = shallowMount(RequirementMetadata);
-    expect(wrapper.is('p.requirement-metadata')).toBe(true);
+    expect(wrapper.element.matches('p.requirement-metadata')).toBe(true);
 
-    const strong = wrapper.find('strong');
+    const strong = wrapper.findComponent('strong');
     expect(strong.exists()).toBe(true);
     expect(strong.text()).toBe('required');
 

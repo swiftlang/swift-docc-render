@@ -137,7 +137,7 @@ describe('Assessments', () => {
   });
 
   it('renders a `LinkableSection`', () => {
-    const section = wrapper.find(LinkableSection);
+    const section = wrapper.findComponent(LinkableSection);
     expect(section.exists()).toBe(true);
     expect(section.props()).toEqual({
       anchor: 'Check-your-understanding',
@@ -148,19 +148,19 @@ describe('Assessments', () => {
   });
 
   it('renders a banner with copy', () => {
-    const banner = wrapper.find('.banner');
+    const banner = wrapper.findComponent('.banner');
     expect(banner.exists()).toBe(true);
-    expect(banner.contains('h2')).toBe(true);
+    expect(banner.find('h2').exists()).toBe(true);
   });
   it('renders a progress section', () => {
-    const progress = wrapper.find(Assessments.components.Progress);
+    const progress = wrapper.findComponent(Assessments.components.Progress);
     expect(progress.exists()).toBe(true);
     expect(progress.props('index')).toBe(1);
     expect(progress.props('total')).toBe(2);
   });
 
   it('renders the first assessment', () => {
-    const assessment = wrapper.find(Assessments.components.Quiz);
+    const assessment = wrapper.findComponent(Assessments.components.Quiz);
     expect(assessment.exists()).toBe(true);
     expect(assessment.props('choices')).toEqual(assessments[0].choices);
     expect(assessment.props('isLast')).toBe(false);
@@ -169,17 +169,17 @@ describe('Assessments', () => {
 
   describe('when the user advances to the next assessment', () => {
     beforeEach(() => {
-      const assessment = wrapper.find(Assessments.components.Quiz);
+      const assessment = wrapper.findComponent(Assessments.components.Quiz);
       assessment.vm.$emit('advance');
     });
 
     it('renders the progress with the next index', () => {
-      const progress = wrapper.find(Assessments.components.Progress);
+      const progress = wrapper.findComponent(Assessments.components.Progress);
       expect(progress.props('index')).toBe(2);
     });
 
     it('renders the next assessment', () => {
-      const assessment = wrapper.find(Assessments.components.Quiz);
+      const assessment = wrapper.findComponent(Assessments.components.Quiz);
       expect(assessment.exists()).toBe(true);
       expect(assessment.props('choices')).toEqual(assessments[1].choices);
       expect(assessment.props('content')).toEqual(assessments[1].content);
@@ -209,7 +209,7 @@ describe('Assessments', () => {
 
     it('scrolls the user on submit', async () => {
       wrapper = mountWithNavigationBarHeight(52);
-      const assessment = wrapper.find(Assessments.components.Quiz);
+      const assessment = wrapper.findComponent(Assessments.components.Quiz);
       assessment.vm.$emit('submit');
 
       await wrapper.vm.$nextTick();
@@ -220,7 +220,7 @@ describe('Assessments', () => {
 
     it('scrolls the user on advance', async () => {
       wrapper = mountWithNavigationBarHeight(0);
-      const assessment = wrapper.find(Assessments.components.Quiz);
+      const assessment = wrapper.findComponent(Assessments.components.Quiz);
       assessment.vm.$emit('advance');
 
       await wrapper.vm.$nextTick();
@@ -231,7 +231,7 @@ describe('Assessments', () => {
 
     it('scrolls the user on see-results', async () => {
       wrapper = mountWithNavigationBarHeight(40);
-      const assessment = wrapper.find(Assessments.components.Quiz);
+      const assessment = wrapper.findComponent(Assessments.components.Quiz);
       assessment.vm.$emit('see-results');
 
       await wrapper.vm.$nextTick();
@@ -260,13 +260,13 @@ describe('success slot for completed assessment', () => {
     },
   };
 
-  it('renders a default "success" message', () => {
+  it('renders a default "success" message', async () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
     });
-    wrapper.setData({ completed: true });
+    await wrapper.setData({ completed: true });
 
-    const success = wrapper.find('.success');
+    const success = wrapper.findComponent('.success');
     expect(success.exists()).toBe(true);
 
     const message = success.find('p');
@@ -274,38 +274,38 @@ describe('success slot for completed assessment', () => {
     expect(message.text()).toBe(SuccessMessage);
   });
 
-  it('renders a default "success" message on aria live element for AX', () => {
+  it('renders a default "success" message on aria live element for AX', async () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
     });
-    const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+    const ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden');
     expect(ariaLive.exists()).toBe(true);
     // assert that aria-live's slot is empty
-    expect(ariaLive.isEmpty()).toBe(true);
+    expect(ariaLive.element.childElementCount === 0).toBe(true);
 
-    wrapper.setData({ completed: true });
+    await wrapper.setData({ completed: true });
     // assert that aria-live's slot has been updated
     expect(ariaLive.text()).toBe(SuccessMessage);
   });
 
-  it('renders a "success" slot and slot message when provided', () => {
+  it('renders a "success" slot and slot message when provided', async () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
       slots: {
         success: '<marquee>Success Slot</marquee>',
       },
     });
-    wrapper.setData({ completed: true });
+    await wrapper.setData({ completed: true });
 
-    const success = wrapper.find('.success');
+    const success = wrapper.findComponent('.success');
     expect(success.exists()).toBe(true);
-    expect(success.contains('p')).toBe(false);
+    expect(success.find('p').exists()).toBe(false);
 
     const message = success.find('marquee');
     expect(message.exists()).toBe(true);
     expect(message.text()).toBe('Success Slot');
 
-    const ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+    const ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden');
     expect(ariaLive.exists()).toBe(true);
     // Aria live is updated
     expect(ariaLive.text()).toBe('Success Slot');

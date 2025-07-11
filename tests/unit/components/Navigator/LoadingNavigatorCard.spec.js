@@ -35,18 +35,19 @@ beforeEach(() => {
 
 describe('LoadingNavigatorCard', () => {
   it('renders the LoadingNavigatorCard and it emits a `close` event', async () => {
-    const baseNavigator = wrapper.find(BaseNavigatorCard);
+    const baseNavigator = wrapper.findComponent(BaseNavigatorCard);
     baseNavigator.vm.$emit('close');
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted('close')).toHaveLength(1);
   });
 
   it('renders three loading navigator items, if is loading', () => {
-    const items = wrapper.findAll(LoadingNavigatorItem);
+    const items = wrapper.findAllComponents(LoadingNavigatorItem);
     expect(items.length).toBe(3);
   });
 
   it('hides loading markup from screen readers', () => {
-    expect(wrapper.find('.loading-navigator').attributes()).toMatchObject({
+    expect(wrapper.findComponent('.loading-navigator').attributes()).toMatchObject({
       'aria-hidden': 'true',
     });
   });

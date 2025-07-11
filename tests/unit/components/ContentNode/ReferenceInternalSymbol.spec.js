@@ -19,7 +19,7 @@ describe('ReferenceInternalSymbol', () => {
       slots: { default: 'UIView' },
     });
     expect(wrapper.props('url')).toBe('/documentation/uikit/uiview');
-    const code = wrapper.find(CodeVoice);
+    const code = wrapper.findComponent(CodeVoice);
     expect(code.exists()).toBe(true);
     expect(code.text()).toBe('UIView');
   });

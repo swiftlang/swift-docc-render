@@ -64,21 +64,21 @@ describe('Chapter', () => {
   });
 
   it('renders a section.chapter root', () => {
-    expect(wrapper.is('section.chapter')).toBe(true);
+    expect(wrapper.element.matches('section.chapter')).toBe(true);
     expect(wrapper.attributes('id')).toBe('foo');
   });
 
   it('renders an `Asset`', () => {
-    const asset = wrapper.find(Asset);
+    const asset = wrapper.findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe(propsData.image);
     expect(asset.attributes('aria-hidden')).toBe('true');
   });
 
   it('renders an `.name` with dynamic heading tag and the name/number', () => {
-    const name = wrapper.find('.name');
+    const name = wrapper.findComponent('.name');
     expect(name.exists()).toBe(true);
-    expect(name.is('H3')).toBe(true);
+    expect(name.element.tagName.toLowerCase() === 'h3').toBe(true);
     expect(name.text()).toMatch(/tutorials\.sections\.chapter/);
     expect(name.attributes('aria-label')).toEqual('Foo - tutorials.sections.chapter');
 
@@ -88,20 +88,20 @@ describe('Chapter', () => {
     expect(eyebrow.attributes('aria-hidden')).toBe('true');
   });
 
-  it('renders the `.name` with H2 if volume has no name', () => {
-    wrapper.setProps({ volumeHasName: false });
-    const name = wrapper.find('.name');
-    expect(name.is('H2')).toBe(true);
+  it('renders the `.name` with H2 if volume has no name', async () => {
+    await wrapper.setProps({ volumeHasName: false });
+    const name = wrapper.findComponent('.name');
+    expect(name.element.tagName.toLowerCase() === 'h2').toBe(true);
   });
 
   it('renders a `ContentNode`', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.content);
   });
 
   it('renders a `TopicList`', () => {
-    const list = wrapper.find(TopicList);
+    const list = wrapper.findComponent(TopicList);
     expect(list.exists()).toBe(true);
     expect(list.props('topics')).toEqual(propsData.topics);
   });
@@ -112,8 +112,8 @@ describe('Chapter', () => {
     expect(provide.store.setActiveVolume).toBeCalledTimes(0);
   });
 
-  it('unsets the volume, if it has no name, when intersecting the viewport center', () => {
-    wrapper.setProps({
+  it('unsets the volume, if it has no name, when intersecting the viewport center', async () => {
+    await wrapper.setProps({
       volumeHasName: false,
     });
     wrapper.vm.onIntersectViewport();

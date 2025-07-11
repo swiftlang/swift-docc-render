@@ -30,27 +30,27 @@ describe('ContentTable', () => {
   });
 
   it('renders a `section.conntenttable`', () => {
-    expect(wrapper.is('section.contenttable')).toBe(true);
+    expect(wrapper.element.matches('section.contenttable')).toBe(true);
   });
 
   it('renders an h2 title', () => {
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);
-    expect(title.is(LinkableHeading)).toBe(true);
+    expect(title.findComponent(LinkableHeading).exists()).toBe(true);
     expect(title.text()).toBe(propsData.title);
   });
 
   it('renders slot content', () => {
-    const p = wrapper.find('p');
+    const p = wrapper.findComponent('p');
     expect(p.exists()).toBe(true);
     expect(p.html()).toBe(slots.default);
   });
 
-  it('renders `minimized-container` class if in minimized mode', () => {
-    const container = wrapper.find('.container');
+  it('renders `minimized-container` class if in minimized mode', async () => {
+    const container = wrapper.findComponent('.container');
     expect(container.classes()).not.toContain('minimized-container');
 
-    wrapper.setProps({ enableMinimized: true });
+    await wrapper.setProps({ enableMinimized: true });
     expect(container.classes()).toContain('minimized-container');
   });
 });

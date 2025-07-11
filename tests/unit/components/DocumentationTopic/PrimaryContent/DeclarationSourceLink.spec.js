@@ -30,9 +30,9 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(Declaratio
 describe('DeclarationSourceLink', () => {
   it('renders the DeclarationSourceLink with a swift icon', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(SwiftFileIcon).exists()).toBe(true);
-    expect(wrapper.find(WordBreak).text()).toContain(defaultProps.fileName);
-    expect(wrapper.find('a').attributes('href')).toBe(defaultProps.url);
+    expect(wrapper.findComponent(SwiftFileIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(WordBreak).text()).toContain(defaultProps.fileName);
+    expect(wrapper.findComponent('a').attributes('href')).toBe(defaultProps.url);
   });
 
   it('does not render the Swift icon for none-swift files', () => {
@@ -41,7 +41,7 @@ describe('DeclarationSourceLink', () => {
         fileName: 'foo.js',
       },
     });
-    expect(wrapper.find(SwiftFileIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(SwiftFileIcon).exists()).toBe(false);
     expect(wrapper.text()).toContain('foo.js');
   });
 });

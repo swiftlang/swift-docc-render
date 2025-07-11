@@ -24,8 +24,13 @@ describe('Column', () => {
     expect(wrapper.classes()).toContain('column');
     expect(wrapper.text()).toBe('Default Content');
     expect(wrapper.vm.style).toHaveProperty('--col-span', null);
-    wrapper.setProps({
-      span: 5,
+  });
+
+  it('renders with span', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        span: 5,
+      },
     });
     expect(wrapper.vm.style).toHaveProperty('--col-span', 5);
   });

@@ -23,21 +23,21 @@ describe('Title', () => {
   });
 
   it('renders a div.topictitle', () => {
-    expect(wrapper.is('div.topictitle')).toBe(true);
+    expect(wrapper.element.matches('div.topictitle')).toBe(true);
   });
 
-  it('renders an eyebrow if provided', () => {
-    expect(wrapper.contains('.eyebrow')).toBe(false);
+  it('renders an eyebrow if provided', async () => {
+    expect(wrapper.find('.eyebrow').exists()).toBe(false);
 
-    wrapper.setProps({ eyebrow: 'Thing' });
+    await wrapper.setProps({ eyebrow: 'Thing' });
 
-    const eyebrow = wrapper.find('.eyebrow');
+    const eyebrow = wrapper.findComponent('.eyebrow');
     expect(eyebrow.exists()).toBe(true);
     expect(eyebrow.text()).toBe('Thing');
   });
 
   it('renders <h1> tag for the default slot', () => {
-    const h1 = wrapper.find('h1');
+    const h1 = wrapper.findComponent('h1');
     expect(h1.classes('title')).toBe(true);
     expect(h1.text()).toBe('FooKit');
   });

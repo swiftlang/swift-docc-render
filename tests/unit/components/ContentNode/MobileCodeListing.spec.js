@@ -25,42 +25,43 @@ describe('MobileCodeListing', () => {
 
   it('sets `isFileNameActionable=true` on `CodeListing`', () => {
     const wrapper = mountWithHighlights([{ line: 1 }]);
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('isFileNameActionable')).toBe(true);
   });
 
-  it('re-emits `file-name-click` events', () => {
+  it('re-emits `file-name-click` events', async () => {
     const wrapper = mountWithHighlights([{ line: 1 }]);
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
 
     codeListing.vm.$emit('file-name-click');
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['file-name-click']).toBeTruthy();
   });
 
   it('selects the correct lines', () => {
     const wrapper = mountWithHighlights([{ line: 4 }, { line: 5 }]);
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('startLineNumber')).toEqual(2);
     expect(codeListing.props('content')).toEqual(['2', '3', '4', '5', '6', '7']);
   });
 
   it('selects the correct lines when highlighted lines are at the beginning', () => {
     const wrapper = mountWithHighlights([{ line: 2 }]);
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('startLineNumber')).toEqual(1);
     expect(codeListing.props('content')).toEqual(['1', '2', '3', '4']);
   });
 
   it('selects the correct lines when highlighted lines are at the end', () => {
     const wrapper = mountWithHighlights([{ line: 10 }]);
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('startLineNumber')).toEqual(8);
     expect(codeListing.props('content')).toEqual(['8', '9', '10']);
   });
 
   it('shows the entire code when `highlights=[]`', () => {
     const wrapper = mountWithHighlights([]);
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('startLineNumber')).toEqual(1);
     expect(codeListing.props('content')).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
   });
@@ -74,7 +75,7 @@ describe('MobileCodeListing', () => {
       },
     });
 
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('startLineNumber')).toEqual(1);
     expect(codeListing.props('content')).toEqual(['1']);
   });
@@ -88,7 +89,7 @@ describe('MobileCodeListing', () => {
       },
     });
 
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('startLineNumber')).toEqual(1);
     expect(codeListing.props('content')).toEqual(['1']);
   });
