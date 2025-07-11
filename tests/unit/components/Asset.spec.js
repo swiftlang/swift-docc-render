@@ -55,7 +55,7 @@ describe('Asset', () => {
   it('renders a div.asset', () => {
     const wrapper = mountAsset('foo.bar');
     expect(wrapper.element.matches('div.asset')).toBe(true);
-    expect(wrapper.isEmpty()).toBe(true);
+    expect(wrapper.element.childElementCount === 0).toBe(true);
   });
 
   it('renders an `ImageAsset` for images', () => {
