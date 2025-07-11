@@ -502,16 +502,16 @@ describe('DocumentationTopic', () => {
   it('renders a `Title`', () => {
     const hero = wrapper.findComponent(DocumentationHero);
 
-    const title = hero.find(Title);
+    const title = hero.findComponent(Title);
     expect(title.exists()).toBe(true);
     expect(title.props('eyebrow')).toBe(propsData.roleHeading);
     expect(title.text()).toContain(propsData.title);
-    expect(title.find(WordBreak).exists()).toBe(false);
+    expect(title.findComponent(WordBreak).exists()).toBe(false);
   });
 
   it('renders the right classes for `Title` based on `enableMininized` prop', async () => {
     const hero = wrapper.findComponent(DocumentationHero);
-    const title = hero.find(Title);
+    const title = hero.findComponent(Title);
     expect(title.classes()).not.toContain('minimized-title');
 
     await wrapper.setProps({ enableMinimized: true });
@@ -534,7 +534,7 @@ describe('DocumentationTopic', () => {
     const title = wrapper.findComponent(Title);
     expect(title.exists()).toBe(true);
 
-    const wb = title.find(WordBreak);
+    const wb = title.findComponent(WordBreak);
     expect(wb.exists()).toBe(true);
     expect(wb.text()).toBe(propsData.title);
   });
@@ -575,7 +575,7 @@ describe('DocumentationTopic', () => {
 
   it('renders an abstract', () => {
     const hero = wrapper.findComponent(DocumentationHero);
-    const abstractComponent = hero.find(Abstract);
+    const abstractComponent = hero.findComponent(Abstract);
     expect(abstractComponent.exists()).toBe(true);
     expect(abstractComponent.props('content')).toEqual(propsData.abstract);
   });
@@ -594,7 +594,7 @@ describe('DocumentationTopic', () => {
       abstract: emptyParagraph,
     });
     const hero = wrapper.findComponent(DocumentationHero);
-    const abstractComponent = hero.find(Abstract);
+    const abstractComponent = hero.findComponent(Abstract);
     expect(abstractComponent.exists()).toBe(true);
     expect(abstractComponent.props('content')).toEqual(emptyParagraph);
   });
@@ -635,7 +635,7 @@ describe('DocumentationTopic', () => {
     expect(primary.props('sections')).toEqual(propsData.primaryContentSections);
     const declarationContainer = wrapper.findComponent('.declarations-container');
     // expect(declarationContainer.classes()).not.toContain('minimized-container');
-    expect(declarationContainer.find(Declaration).props()).toEqual({
+    expect(declarationContainer.findComponent(Declaration).props()).toEqual({
       conformance: propsData.conformance,
       declarations: declarationsSection.declarations,
       source: propsData.remoteSource,
@@ -767,7 +767,7 @@ describe('DocumentationTopic', () => {
       expect(aside.exists()).toBe(true);
       expect(aside.props('kind')).toEqual('deprecated');
 
-      const content = aside.find(ContentNode);
+      const content = aside.findComponent(ContentNode);
       expect(content.exists()).toBe(true);
       expect(content.props('content')).toEqual(deprecationSummary);
     });
@@ -780,7 +780,7 @@ describe('DocumentationTopic', () => {
       expect(aside.exists()).toBe(true);
       expect(aside.props('kind')).toEqual('note');
 
-      const content = aside.find(ContentNode);
+      const content = aside.findComponent(ContentNode);
       expect(content.exists()).toBe(true);
       expect(content.props('content')).toEqual(downloadNotAvailableSummary);
     });

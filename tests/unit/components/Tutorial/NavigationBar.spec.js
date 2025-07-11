@@ -206,7 +206,7 @@ describe('NavigationBar', () => {
       });
 
       const titleDiv = wrapper.findComponent('div.nav-title');
-      const link = titleDiv.find(NavTitleContainer);
+      const link = titleDiv.findComponent(NavTitleContainer);
       expect(link.props('to')).toEqual(`${references[rootReference].url}?changes=foo&context=bar`);
     });
 
