@@ -42,7 +42,7 @@ describe('LoadingNavigatorCard', () => {
   });
 
   it('renders three loading navigator items, if is loading', () => {
-    const items = wrapper.findAll(LoadingNavigatorItem);
+    const items = wrapper.findAllComponents(LoadingNavigatorItem);
     expect(items.length).toBe(3);
   });
 

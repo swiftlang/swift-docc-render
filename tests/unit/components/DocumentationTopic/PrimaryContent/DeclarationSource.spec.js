@@ -69,7 +69,7 @@ describe('DeclarationSource', () => {
     const code = wrapper.findComponent(CodeBlock);
     expect(code.exists()).toBe(true);
 
-    const tokens = code.findAll(Token);
+    const tokens = code.findAllComponents(Token);
     expect(tokens.length).toBe(propsData.tokens.length);
 
     tokens.wrappers.forEach((tokenWrapper, i) => {
@@ -268,7 +268,7 @@ describe('Swift function/initializer formatting', () => {
       },
     ];
     const wrapper = mountWithTokens(tokens);
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe('init(_ foo: Foo)');
   });
 
@@ -356,7 +356,7 @@ describe('Swift function/initializer formatting', () => {
     ];
     const wrapper = mountWithTokens(tokens);
 
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `func foo(
     _ a: A,
@@ -462,7 +462,7 @@ describe('Swift function/initializer formatting', () => {
     ];
     const wrapper = mountWithTokens(tokens);
 
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `func foo(
     _ a: A,
@@ -640,7 +640,7 @@ describe('Swift function/initializer formatting', () => {
 
     const wrapper = mountWithTokens(tokens);
 
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `public func f(
     t: T,
@@ -741,7 +741,7 @@ describe('Swift function/initializer formatting', () => {
     ];
     const wrapper = mountWithTokens(tokens);
 
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `func foo(
   _ a: A,
@@ -800,7 +800,7 @@ describe('Swift function/initializer formatting', () => {
     ];
     const wrapper = mountWithTokens(tokens);
 
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `@discardableResult @objc(baz)
 func foobarbaz() -> Int`,
@@ -849,7 +849,7 @@ func foobarbaz() -> Int`,
     ];
     let wrapper = mountWithTokens(tokens);
 
-    let tokenComponents = wrapper.findAll(Token);
+    let tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe('func foo(bar: @escaping () -> ())');
 
     // @discardableResult func foo(bar: @escaping () -> ()) -> Int
@@ -864,7 +864,7 @@ func foobarbaz() -> Int`,
         text: 'Int',
       },
     ]);
-    tokenComponents = wrapper.findAll(Token);
+    tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `@discardableResult
 func foo(bar: @escaping () -> ()) -> Int`,
@@ -946,7 +946,7 @@ func foo(bar: @escaping () -> ()) -> Int`,
     //     @StringBuilder b: () -> String
     // )
     const wrapper = mountWithTokens(tokens(param('a'), attributeParam('b')));
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `func qux(
     a: Int,
@@ -963,7 +963,7 @@ func foo(bar: @escaping () -> ()) -> Int`,
     //     b: Int
     // )
     const wrapper2 = mountWithTokens(tokens(attributeParam('a'), param('b')));
-    const tokenComponents2 = wrapper2.findAll(Token);
+    const tokenComponents2 = wrapper2.findAllComponents(Token);
     expect(getText(tokenComponents2)).toBe(
 `func qux(
     @StringBuilder a: () -> String,
@@ -1046,7 +1046,7 @@ func foo(bar: @escaping () -> ()) -> Int`,
     //     b: Int
     // ) -> Int
     const wrapper = mountWithTokens(tokens);
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `@objc(quxA:B:)
 func quxqux(
@@ -1118,7 +1118,7 @@ func quxqux(
     //    b: Int
     // )
     const wrapper = mountWithTokens(tokens);
-    const tokenComponents = wrapper.findAll(Token);
+    const tokenComponents = wrapper.findAllComponents(Token);
     expect(getText(tokenComponents)).toBe(
 `@objc(initWithA:B:)
 init(

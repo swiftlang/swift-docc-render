@@ -202,7 +202,7 @@ describe('Tutorial', () => {
   });
 
   it('renders a `Section` for each section', () => {
-    const projectSections = wrapper.findAll(Section);
+    const projectSections = wrapper.findAllComponents(Section);
     expect(projectSections.length).toBe(sections.length);
 
     expect(projectSections.at(0).props('section')).toEqual(sections[0]);

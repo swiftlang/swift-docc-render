@@ -115,7 +115,7 @@ describe('Volume', () => {
   });
 
   it('renders a `Chapter` for each chapter', () => {
-    const chapters = wrapper.findAll(Chapter);
+    const chapters = wrapper.findAllComponents(Chapter);
     expect(chapters.length).toBe(propsData.chapters.length);
 
     chapters.wrappers.forEach((chapter, i) => {

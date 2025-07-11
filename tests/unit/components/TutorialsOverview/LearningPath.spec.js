@@ -105,7 +105,7 @@ describe('LearningPath', () => {
   it('wraps sections in a container (to group for border selectors)', () => {
     const container = wrapper.findComponent('.content-sections-container');
     expect(container.exists()).toBe(true);
-    expect(container.findAll(Volume).length).toBe(1);
-    expect(container.findAll(Resources).length).toBe(1);
+    expect(container.findAllComponents(Volume).length).toBe(1);
+    expect(container.findAllComponents(Resources).length).toBe(1);
   });
 });

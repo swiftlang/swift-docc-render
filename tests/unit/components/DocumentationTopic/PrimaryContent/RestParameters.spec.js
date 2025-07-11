@@ -190,7 +190,7 @@ describe('RestParameters', () => {
       },
     });
 
-    const allAttributes = wrapper.findAll(ParameterAttributes);
+    const allAttributes = wrapper.findAllComponents(ParameterAttributes);
     expect(allAttributes).toHaveLength(2);
     expect(allAttributes.at(0).props('attributes')).toEqual(attributes);
   });

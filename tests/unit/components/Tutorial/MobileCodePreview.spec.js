@@ -131,7 +131,7 @@ describe('MobileCodePreview', () => {
       previewToggle.vm.$emit('click');
       await wrapper.vm.$nextTick();
 
-      const modal = wrapper.findAll(GenericModal).at(1);
+      const modal = wrapper.findAllComponents(GenericModal).at(1);
       expect(modal.exists()).toBe(true);
       expect(modal.props()).toHaveProperty('isFullscreen', true);
       expect(modal.props()).toHaveProperty('visible', true);
@@ -153,7 +153,7 @@ describe('MobileCodePreview', () => {
     it('uses the light theme for the code listing and runtime preview modal when isTargetIDE=false', () => {
       wrapper = mountWithIDETarget(false);
 
-      const modals = wrapper.findAll(GenericModal);
+      const modals = wrapper.findAllComponents(GenericModal);
 
       const fullCodeListingModal = modals.at(0);
       expect(fullCodeListingModal.props('theme')).toBe('light');
@@ -165,7 +165,7 @@ describe('MobileCodePreview', () => {
     it('uses the code/dynamic themes for the code listing and runtime preview modal when isTargetIDE=true', () => {
       wrapper = mountWithIDETarget(true);
 
-      const modals = wrapper.findAll(GenericModal);
+      const modals = wrapper.findAllComponents(GenericModal);
 
       const fullCodeListingModal = modals.at(0);
       expect(fullCodeListingModal.props('theme')).toBe('code');

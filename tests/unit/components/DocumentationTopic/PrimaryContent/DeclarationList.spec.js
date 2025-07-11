@@ -110,7 +110,7 @@ describe('DeclarationList with otherDeclarations', () => {
 
   it('renders only one `DeclarationGroup` when list is collapsed', async () => {
     await wrapper.setProps({ declListExpanded: false });
-    const groups = wrapper.findAll(DeclarationGroup);
+    const groups = wrapper.findAllComponents(DeclarationGroup);
     expect(groups.length).toBe(1);
     expect(groups.at(0).props('declaration')).toEqual({
       tokens: basicDeclaration.tokens,
@@ -119,7 +119,7 @@ describe('DeclarationList with otherDeclarations', () => {
   });
 
   it('renders one `DeclarationGroup` for each declaration in list in correct order when expanded', () => {
-    const groups = wrapper.findAll(DeclarationGroup);
+    const groups = wrapper.findAllComponents(DeclarationGroup);
     // second item is the currently selected declaration
     expect(groups.length).toBe(2);
     expect(groups.at(0).props('declaration')).toEqual(withOtherDeclarations.declaration.otherDeclarations.declarations[0]);

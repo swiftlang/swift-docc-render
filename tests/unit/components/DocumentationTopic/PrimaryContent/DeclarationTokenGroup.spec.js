@@ -23,7 +23,7 @@ const propsData = {
 describe('DeclarationTokenGroup', () => {
   it('renders a list of DeclarationTokens', () => {
     const wrapper = shallowMount(DeclarationTokenGroup, { propsData });
-    expect(wrapper.findAll(DeclarationToken)).toHaveLength(2);
+    expect(wrapper.findAllComponents(DeclarationToken)).toHaveLength(2);
   });
 
   it('does not render anything if `type` is not provided', () => {
