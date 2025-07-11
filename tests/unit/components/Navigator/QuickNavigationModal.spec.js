@@ -244,6 +244,11 @@ describe('QuickNavigationModal', () => {
   it('adds tabindex="0" when reference index is equal to focusedIndex', async () => {
     await wrapper.setData({
       debouncedInput: inputValue,
+      focusedIndex: 0,
+    });
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('-1');
+    await wrapper.setData({
       focusedIndex: 1,
     });
     expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
