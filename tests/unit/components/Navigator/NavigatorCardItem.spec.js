@@ -74,7 +74,7 @@ describe('NavigatorCardItem', () => {
       shouldCalculateOptimalWidth: false,
     });
     const leafLink = wrapper.findComponent('.leaf-link');
-    expect(leafLink.is(Reference)).toBe(true);
+    expect(leafLink.findComponent(Reference).exists()).toBe(true);
     expect(leafLink.props('url')).toEqual(defaultProps.item.path);
     expect(leafLink.attributes('id')).toBe(`${defaultProps.item.uid}`);
     expect(wrapper.findComponent(HighlightMatches).props()).toEqual({
@@ -423,7 +423,7 @@ describe('NavigatorCardItem', () => {
           },
         },
       });
-      expect(wrapper.findComponent('.leaf-link').is('h3')).toBe(true);
+      expect(wrapper.findComponent('.leaf-link').element.tagName.toLowerCase() === 'h3').toBe(true);
     });
 
     it('does not apply aria-hidden to NavigatorCardItem if isRendered is true', () => {

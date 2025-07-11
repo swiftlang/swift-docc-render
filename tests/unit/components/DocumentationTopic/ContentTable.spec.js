@@ -30,13 +30,13 @@ describe('ContentTable', () => {
   });
 
   it('renders a `section.conntenttable`', () => {
-    expect(wrapper.is('section.contenttable')).toBe(true);
+    expect(wrapper.element.matches('section.contenttable')).toBe(true);
   });
 
   it('renders an h2 title', () => {
     const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);
-    expect(title.is(LinkableHeading)).toBe(true);
+    expect(title.findComponent(LinkableHeading).exists()).toBe(true);
     expect(title.text()).toBe(propsData.title);
   });
 

@@ -271,7 +271,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('renders a root div', () => {
-    expect(wrapper.is('div.doc-topic')).toBe(true);
+    expect(wrapper.element.matches('div.doc-topic')).toBe(true);
   });
 
   it('renders a <main> in non-IDE mode', () => {

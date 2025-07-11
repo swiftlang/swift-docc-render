@@ -21,7 +21,7 @@ describe('Section', () => {
   });
 
   it('renders a div.summary-section', () => {
-    expect(wrapper.is('div.summary-section')).toBe(true);
+    expect(wrapper.element.matches('div.summary-section')).toBe(true);
   });
 
   it('renders slot content', () => {

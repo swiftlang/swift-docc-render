@@ -83,7 +83,7 @@ describe('DropdownCustom', () => {
     it('renders a toggle button', () => {
       wrapper = createWrapper();
       const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
-      expect(toggle.is('button')).toBe(true);
+      expect(toggle.element.tagName.toLowerCase() === 'button').toBe(true);
       // classes
       expect(toggle.classes()).toContain('form-dropdown-toggle');
       // passed from the parent via scoped slot

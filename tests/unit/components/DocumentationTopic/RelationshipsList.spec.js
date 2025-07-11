@@ -77,7 +77,7 @@ describe('RelationshipsList', () => {
   });
 
   it('renders a ul.relationships-list', () => {
-    expect(wrapper.is('ul.relationships-list')).toBe(true);
+    expect(wrapper.element.matches('ul.relationships-list')).toBe(true);
     expect(wrapper.classes('inline')).toBe(false);
   });
 

@@ -82,7 +82,7 @@ describe('Navigator', () => {
     const wrapper = createWrapper();
     const navigator = wrapper.findComponent('.navigator');
     // assert navigator is a `nav`
-    expect(navigator.is('nav')).toBe(true);
+    expect(navigator.element.tagName.toLowerCase() === 'nav').toBe(true);
     expect(navigator.attributes()).toHaveProperty('aria-labelledby', INDEX_ROOT_KEY);
     // assert Navigator card is rendered
     expect(wrapper.findComponent(NavigatorCard).props()).toEqual({

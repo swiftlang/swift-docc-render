@@ -32,7 +32,7 @@ describe('LinkableHeading', () => {
       slots: { default: 'Title' },
     });
     expect(wrapper.text()).toBe('Title');
-    expect(wrapper.is('h2')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'h2').toBe(true);
   });
 
   it('renders a heading with a given level', () => {
@@ -43,7 +43,7 @@ describe('LinkableHeading', () => {
         level: 3,
       },
     });
-    expect(wrapper.is('h3')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'h3').toBe(true);
   });
 
   it('renders a heading with a header anchor and an id on the wrapper', async () => {

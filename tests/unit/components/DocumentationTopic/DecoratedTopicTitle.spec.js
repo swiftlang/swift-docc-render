@@ -51,7 +51,7 @@ describe('DecoratedTopicTitle', () => {
   });
 
   it('renders a <code>', () => {
-    expect(wrapper.is('code.decorated-title')).toBe(true);
+    expect(wrapper.element.matches('code.decorated-title')).toBe(true);
   });
 
   it('renders a <WordBreak> for each token that isn\'t all whitespace', () => {
@@ -70,8 +70,8 @@ describe('DecoratedTopicTitle', () => {
   it('renders a span with empty-token class for whitespace-only tokens', () => {
     const spans = wrapper.findAll('.empty-token');
     expect(spans.length).toBe(2);
-    expect(spans.at(0).is('span')).toBeTruthy();
-    expect(spans.at(1).is('span')).toBeTruthy();
+    expect(spans.at(0).element.tagName.toLowerCase() === 'span').toBeTruthy();
+    expect(spans.at(1).element.tagName.toLowerCase() === 'span').toBeTruthy();
   });
 
   it('renders wbrs for each token', () => {

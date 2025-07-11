@@ -64,7 +64,7 @@ describe('SectionIntro', () => {
   });
 
   it('renders an .intro-container', () => {
-    expect(wrapper.is('.intro-container')).toBe(true);
+    expect(wrapper.element.matches('.intro-container')).toBe(true);
   });
 
   it('renders an .intro', () => {

@@ -16,7 +16,7 @@ describe('RawText', () => {
 
   it('renders a span', () => {
     const wrapper = shallowMount(RawText, { propsData });
-    expect(wrapper.is('span')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
     expect(wrapper.text()).toBe(propsData.text);
   });
 });

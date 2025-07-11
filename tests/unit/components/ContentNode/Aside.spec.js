@@ -18,7 +18,7 @@ describe('Aside', () => {
         kind: 'note',
       },
     });
-    expect(wrapper.is('aside')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'aside').toBe(true);
     expect(wrapper.classes('note')).toBe(true);
     expect(wrapper.attributes('aria-label')).toBe('note');
   });

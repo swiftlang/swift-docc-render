@@ -47,7 +47,7 @@ describe('CollapsibleCodeListing', () => {
   });
 
   it('renders a .collapsible-code-listing root with <pre><code>', () => {
-    expect(wrapper.is('.collapsible-code-listing')).toBe(true);
+    expect(wrapper.element.matches('.collapsible-code-listing')).toBe(true);
     const pre = wrapper.findComponent('pre');
     expect(pre.exists()).toBe(true);
     expect(pre.findComponent(CodeBlock).exists()).toBe(true);

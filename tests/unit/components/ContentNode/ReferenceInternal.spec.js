@@ -33,7 +33,7 @@ describe('ReferenceInternal', () => {
       slots: { default: 'FooBar' },
     });
 
-    expect(wrapper.is('span')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
     expect(wrapper.attributes()).toEqual({});
     expect(wrapper.text()).toEqual('FooBar');
   });
