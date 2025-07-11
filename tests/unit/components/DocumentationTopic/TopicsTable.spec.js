@@ -137,7 +137,7 @@ describe('TopicsTable', () => {
     expect(wrapper.findAll(TopicsLinkBlock)).toHaveLength(0);
     const sections = wrapper.findAll(ContentTableSection);
 
-    const firstGrid = sections.at(0).find(TopicsLinkCardGrid);
+    const firstGrid = sections.at(0).findComponent(TopicsLinkCardGrid);
     expect(firstGrid.classes('topic')).toBe(true);
     expect(firstGrid.props()).toEqual({
       topicStyle: TopicSectionsStyle.compactGrid,
@@ -145,7 +145,7 @@ describe('TopicsTable', () => {
       usePager: false,
     });
 
-    const secondGrid = sections.at(1).find(TopicsLinkCardGrid);
+    const secondGrid = sections.at(1).findComponent(TopicsLinkCardGrid);
     expect(secondGrid.classes('topic')).toBe(true);
     expect(secondGrid.props()).toEqual({
       topicStyle: TopicSectionsStyle.compactGrid,
@@ -171,7 +171,7 @@ describe('TopicsTable', () => {
     expect(
       sections
         .at(0)
-        .find(ContentNode)
+        .findComponent(ContentNode)
         .props('content'),
     ).toEqual(propsData.sections[0].abstract);
   });

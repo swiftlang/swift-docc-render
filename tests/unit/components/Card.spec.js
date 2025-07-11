@@ -191,7 +191,7 @@ describe('Card', () => {
   });
 
   it('renders a Reference component at the root', () => {
-    expect(mountCard().find(Reference).props('url')).toBe(propsData.url);
+    expect(mountCard().findComponent(Reference).props('url')).toBe(propsData.url);
   });
 
   it('renders a .large or .small modifier depending on the size', () => {

@@ -90,7 +90,7 @@ describe('Relationships', () => {
     const firstSection = sections.at(0);
     expect(firstSection.props('title')).toBe(propsData.sections[0].title);
     expect(firstSection.props('anchor')).toBe(propsData.sections[0].anchor);
-    const firstList = firstSection.find(List);
+    const firstList = firstSection.findComponent(List);
     expect(firstList.exists()).toBe(true);
     expect(firstList.props('symbols')).toEqual([
       foo,
@@ -101,7 +101,7 @@ describe('Relationships', () => {
     const lastSection = sections.at(1);
     expect(lastSection.props('title')).toBe(propsData.sections[1].title);
     expect(lastSection.props('anchor')).toBe(null);
-    const lastList = lastSection.find(List);
+    const lastList = lastSection.findComponent(List);
     expect(lastList.exists()).toBe(true);
     expect(lastList.props('symbols')).toEqual([baz]);
     expect(firstList.props('type')).toEqual('inheritsFrom');

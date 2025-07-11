@@ -367,7 +367,7 @@ describe('NavigatorCard', () => {
       isTechnologyBeta: true,
     });
     await flushPromises();
-    expect(wrapper.findComponent('.technology-title').find(Badge).props()).toMatchObject({
+    expect(wrapper.findComponent('.technology-title').findComponent(Badge).props()).toMatchObject({
       variant: 'beta',
     });
   });

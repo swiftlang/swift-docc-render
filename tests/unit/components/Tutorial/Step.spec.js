@@ -89,7 +89,7 @@ describe('Step', () => {
       const step = wrapper.findComponent('div.step');
       expect(step.classes('focused')).toBe(false);
 
-      const node = step.find(ContentNode);
+      const node = step.findComponent(ContentNode);
       expect(node.props('content')).toEqual(content);
     });
 
@@ -176,7 +176,7 @@ describe('Step', () => {
         wrapper = mountWithMedia();
 
         const mediaContainer = wrapper.findComponent('.media-container');
-        const asset = mediaContainer.find(Asset);
+        const asset = mediaContainer.findComponent(Asset);
         expect(asset.exists()).toBe(true);
         expect(asset.props('identifier')).toBe('media.jpg');
         expect(asset.props('showsVideoControls')).toBe(false);
@@ -206,11 +206,11 @@ describe('Step', () => {
       });
 
       it('renders a `MobileCodePreview`', () => {
-        const preview = mediaContainer.find(MobileCodePreview);
+        const preview = mediaContainer.findComponent(MobileCodePreview);
         expect(preview.exists()).toBe(true);
         expect(preview.props('code')).toBe('test.swift');
 
-        const asset = preview.find(Asset);
+        const asset = preview.findComponent(Asset);
         expect(asset.exists()).toBe(true);
         expect(asset.props('identifier')).toBe('preview.jpg');
       });

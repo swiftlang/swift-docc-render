@@ -97,7 +97,7 @@ describe('TutorialsNavigation', () => {
   });
 
   it('renders TutorialsNavigationLink for Resource', () => {
-    const link = wrapper.findComponent('li.resource').find({ name: 'TutorialsNavigationLink' });
+    const link = wrapper.findComponent('li.resource').findComponent({ name: 'TutorialsNavigationLink' });
     expect(link.exists()).toBe(true);
     expect(link.text()).toBe('sections.resources');
   });

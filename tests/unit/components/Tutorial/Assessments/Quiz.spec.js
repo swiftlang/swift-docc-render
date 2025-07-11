@@ -143,11 +143,11 @@ describe('Quiz', () => {
       const items = choices.findAll('label.choice');
       expect(items.length).toBe(propsData.choices.length);
 
-      expect(items.at(0).find(ContentNode).props('content'))
+      expect(items.at(0).findComponent(ContentNode).props('content'))
         .toEqual(propsData.choices[0].content);
-      expect(items.at(1).find(ContentNode).props('content'))
+      expect(items.at(1).findComponent(ContentNode).props('content'))
         .toEqual(propsData.choices[1].content);
-      expect(items.at(2).find(ContentNode).props('content'))
+      expect(items.at(2).findComponent(ContentNode).props('content'))
         .toEqual(propsData.choices[2].content);
     });
 

@@ -101,7 +101,7 @@ describe('RelationshipsList', () => {
     expect(items.length).toBe(propsData.symbols.length);
 
     items.wrappers.slice(0, items.length - 1).forEach((item, i) => {
-      const link = item.find(Reference);
+      const link = item.findComponent(Reference);
       expect(link.exists()).toBe(true);
       expect(link.classes('link')).toBe(true);
       expect(link.props('url')).toBe(propsData.symbols[i].url);
@@ -112,9 +112,9 @@ describe('RelationshipsList', () => {
     const items = wrapper.findAll('li');
 
     const lastItem = items.at(items.length - 1);
-    expect(lastItem.find(RouterLinkStub).exists()).toBe(false);
+    expect(lastItem.findComponent(RouterLinkStub).exists()).toBe(false);
 
-    const wb = lastItem.find(WordBreak);
+    const wb = lastItem.findComponent(WordBreak);
     expect(wb.exists()).toBe(true);
     expect(wb.attributes('tag')).toBe('code');
     expect(wb.text()).toBe(propsData.symbols[4].title);

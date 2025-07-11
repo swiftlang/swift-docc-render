@@ -69,7 +69,7 @@ describe('ChapterTopicList', () => {
         title, url, kind, estimatedTime,
       } = topic;
 
-      const link = item.find(RouterLinkStub);
+      const link = item.findComponent(RouterLinkStub);
       expect(link.exists()).toBe(true);
       expect(link.props('to')).toBe(`${url}?context=foo`);
 

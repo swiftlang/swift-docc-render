@@ -67,7 +67,7 @@ describe('RestParameters', () => {
   }
 
   it('renders an h2 section title', () => {
-    const sectionTitle = mountComponent().find(LinkableHeading);
+    const sectionTitle = mountComponent().findComponent(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });

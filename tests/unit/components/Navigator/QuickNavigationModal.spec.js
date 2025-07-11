@@ -181,10 +181,10 @@ describe('QuickNavigationModal', () => {
       debouncedInput: inputValue,
     });
     const matchWrapper = wrapper.findAll('.quick-navigation__symbol-match');
-    expect(matchWrapper.at(0).find(TopicTypeIcon).exists()).toBe(true);
-    expect(matchWrapper.at(1).find(TopicTypeIcon).exists()).toBe(true);
-    expect(matchWrapper.at(0).find(TopicTypeIcon).props().type).toBe(filteredSymbols[0].type);
-    expect(matchWrapper.at(1).find(TopicTypeIcon).props().type).toBe(filteredSymbols[1].type);
+    expect(matchWrapper.at(0).findComponent(TopicTypeIcon).exists()).toBe(true);
+    expect(matchWrapper.at(1).findComponent(TopicTypeIcon).exists()).toBe(true);
+    expect(matchWrapper.at(0).findComponent(TopicTypeIcon).props().type).toBe(filteredSymbols[0].type);
+    expect(matchWrapper.at(1).findComponent(TopicTypeIcon).props().type).toBe(filteredSymbols[1].type);
   });
 
   it('renders a symbol match with the corresponding symbol title', async () => {
@@ -194,12 +194,12 @@ describe('QuickNavigationModal', () => {
     const matchTitlesWrapper = wrapper.findAll('.symbol-title');
     expect(
       matchTitlesWrapper.at(0).text()
-      + matchTitlesWrapper.at(0).find(QuickNavigationHighlighter).props().text
+      + matchTitlesWrapper.at(0).findComponent(QuickNavigationHighlighter).props().text
       + matchTitlesWrapper.at(0).find('span').text(),
     ).toBe(filteredSymbols[0].title);
     expect(
       matchTitlesWrapper.at(1).text()
-      + matchTitlesWrapper.at(1).find(QuickNavigationHighlighter).props().text
+      + matchTitlesWrapper.at(1).findComponent(QuickNavigationHighlighter).props().text
       + matchTitlesWrapper.at(1).find('span').text(),
     ).toBe(filteredSymbols[1].title);
   });
@@ -219,22 +219,22 @@ describe('QuickNavigationModal', () => {
     });
     const matchTitlesWrapper = wrapper.findAll('.symbol-title');
     expect(
-      matchTitlesWrapper.at(0).find(QuickNavigationHighlighter).props().matcherText,
+      matchTitlesWrapper.at(0).findComponent(QuickNavigationHighlighter).props().matcherText,
     ).toBe(symbolsMatchBlueprint[0].input);
     expect(
-      matchTitlesWrapper.at(0).find(QuickNavigationHighlighter).props().text,
+      matchTitlesWrapper.at(0).findComponent(QuickNavigationHighlighter).props().text,
     ).toBe(symbolsMatchBlueprint[0].subMatchString);
     expect(
-      matchTitlesWrapper.at(1).find(QuickNavigationHighlighter).props().matcherText,
+      matchTitlesWrapper.at(1).findComponent(QuickNavigationHighlighter).props().matcherText,
     ).toBe(symbolsMatchBlueprint[1].input);
     expect(
-      matchTitlesWrapper.at(1).find(QuickNavigationHighlighter).props().text,
+      matchTitlesWrapper.at(1).findComponent(QuickNavigationHighlighter).props().text,
     ).toBe(symbolsMatchBlueprint[1].subMatchString);
     expect(
-      matchTitlesWrapper.at(2).find(QuickNavigationHighlighter).props().matcherText,
+      matchTitlesWrapper.at(2).findComponent(QuickNavigationHighlighter).props().matcherText,
     ).toBe(symbolsMatchBlueprint[3].input);
     expect(
-      matchTitlesWrapper.at(2).find(QuickNavigationHighlighter).props().text,
+      matchTitlesWrapper.at(2).findComponent(QuickNavigationHighlighter).props().text,
     ).toBe(symbolsMatchBlueprint[3].subMatchString);
   });
 

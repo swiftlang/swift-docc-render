@@ -81,7 +81,7 @@ describe('MobileCodePreview', () => {
     expect(modal.props()).toHaveProperty('isFullscreen', true);
     expect(modal.props()).toHaveProperty('visible', true);
 
-    const listing = modal.find(CodeListing);
+    const listing = modal.findComponent(CodeListing);
     expect(listing.exists()).toBe(true);
     expect(listing.classes('full-code-listing')).toBe(true);
     expect(listing.props('content')).toBe(content);

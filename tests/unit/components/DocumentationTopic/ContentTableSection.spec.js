@@ -32,7 +32,7 @@ describe('ContentTableSection', () => {
   it('renders the title as `h3.title` by default', () => {
     const div = wrapper.findAll('.section-title').at(0);
 
-    const title = div.find(LinkableHeading);
+    const title = div.findComponent(LinkableHeading);
     expect(title.exists()).toBe(true);
     expect(title.props('level')).toBe(3);
     expect(title.classes()).toContain(TITLE_CLASS_NAME);

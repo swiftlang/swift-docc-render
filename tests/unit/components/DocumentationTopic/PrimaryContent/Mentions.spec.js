@@ -85,7 +85,7 @@ describe('Mentions', () => {
       },
       mentions: [],
     });
-    expect(wrapper.find('linkableheading-stub').exists()).toBe(false);
+    expect(wrapper.findComponent('linkableheading-stub').exists()).toBe(false);
     expect(wrapper.findAll(Mention).length).toBe(0);
   });
 
@@ -96,7 +96,7 @@ describe('Mentions', () => {
       },
       mentions: [],
     });
-    expect(wrapper.find('linkableheading-stub').exists()).toBe(false);
+    expect(wrapper.findComponent('linkableheading-stub').exists()).toBe(false);
     expect(wrapper.findAll(Mention).length).toBe(0);
   });
 });

@@ -76,7 +76,7 @@ describe('nav', () => {
   it('renders TutorialsNavigation and passes all sections to it', () => {
     const itemBase = wrapper.findComponent(NavMenuItemBase);
     expect(itemBase.classes()).toContain('in-page-navigation');
-    const navigation = itemBase.find(TutorialsNavigation);
+    const navigation = itemBase.findComponent(TutorialsNavigation);
     expect(navigation.props('sections')).toEqual(propsData.sections);
   });
 });

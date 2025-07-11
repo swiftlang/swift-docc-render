@@ -198,7 +198,7 @@ describe('DeclarationList with changes', () => {
     expect(declarationPill.classes()).toContain('changed');
     expect(declarationPill.classes()).toContain('changed-modified');
 
-    const declarationGroup = declarationPill.find(DeclarationGroup);
+    const declarationGroup = declarationPill.findComponent(DeclarationGroup);
     expect(declarationGroup.props('declaration')).toEqual({
       ...propsData.declaration,
       identifier: provide.identifier,

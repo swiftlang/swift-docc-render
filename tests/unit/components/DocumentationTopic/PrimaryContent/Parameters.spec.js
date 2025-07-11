@@ -78,7 +78,7 @@ describe('Parameters', () => {
     expect(contents.length).toBe(propsData.parameters.length);
 
     contents.wrappers.forEach((content, i) => {
-      const node = content.find(ContentNode);
+      const node = content.findComponent(ContentNode);
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toEqual(propsData.parameters[i].content);
     });

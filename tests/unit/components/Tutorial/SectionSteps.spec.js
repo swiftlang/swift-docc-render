@@ -322,7 +322,7 @@ describe('SectionSteps', () => {
     it('renders the media', () => {
       const container = wrapper.findComponent('.asset-container');
 
-      const asset = container.find(Asset);
+      const asset = container.findComponent(Asset);
       expect(asset.exists()).toBe(true);
       expect(asset.props('identifier')).toBe(exampleStepWithMedia.media);
       expect(asset.props('showsReplayButton')).toBe(true);
@@ -340,11 +340,11 @@ describe('SectionSteps', () => {
     it('renders the code with the preview', () => {
       const container = wrapper.findComponent('.asset-container');
 
-      const preview = container.find(CodePreview);
+      const preview = container.findComponent(CodePreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('code')).toBe(exampleStepWithCode.code);
 
-      const asset = preview.find(Asset);
+      const asset = preview.findComponent(Asset);
       expect(asset.exists()).toBe(true);
       expect(asset.props('identifier')).toBe(exampleStepWithCode.runtimePreview);
     });
@@ -360,7 +360,7 @@ describe('SectionSteps', () => {
     it('renders the code preview without the runtime preview', () => {
       const container = wrapper.findComponent('.asset-container');
 
-      const preview = container.find(CodePreview);
+      const preview = container.findComponent(CodePreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('code')).toBe(exampleStepWithCodeNoRuntimePreview.code);
 
@@ -379,10 +379,10 @@ describe('SectionSteps', () => {
     it('renders the code with the preview', () => {
       const container = wrapper.findComponent('.asset-container');
 
-      const asset = container.find(Asset);
+      const asset = container.findComponent(Asset);
       expect(asset.exists()).toBe(false);
 
-      const codePreview = container.find(CodePreview);
+      const codePreview = container.findComponent(CodePreview);
       expect(codePreview.exists()).toBe(false);
     });
   });
