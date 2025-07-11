@@ -91,14 +91,14 @@ describe('Availability', () => {
       } = platforms[i - technologies.length];
       const pill = pills.at(i);
 
-      const badge = pill.find(Badge);
+      const badge = pill.findComponent(Badge);
       if (deprecatedAt || beta) {
         expect(badge.exists()).toBe(true);
       } else {
         expect(badge.exists()).toBe(false);
       }
 
-      const range = pill.find(AvailabilityRange);
+      const range = pill.findComponent(AvailabilityRange);
       expect(range.exists()).toBe(true);
       expect(range.props()).toEqual({
         deprecatedAt,

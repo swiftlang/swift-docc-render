@@ -76,7 +76,7 @@ describe('SectionIntro', () => {
     expect(headline.exists()).toBe(true);
     expect(headline.props('level')).toBe(2);
 
-    const eyebrowLink = headline.find(RouterLinkStub);
+    const eyebrowLink = headline.findComponent(RouterLinkStub);
     expect(eyebrowLink.exists()).toBe(true);
 
     expect(eyebrowLink.props('to')).toEqual({
@@ -98,7 +98,7 @@ describe('SectionIntro', () => {
   });
 
   it('renders an `Asset`', () => {
-    const asset = wrapper.findComponent('.media').find(Asset);
+    const asset = wrapper.findComponent('.media').findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe('foo.jpg');
     expect(asset.props()).toEqual({

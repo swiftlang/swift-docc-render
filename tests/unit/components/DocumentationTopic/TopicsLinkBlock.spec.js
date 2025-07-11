@@ -127,7 +127,7 @@ describe('TopicsLinkBlock', () => {
   });
 
   it('renders a normal `WordBreak` for the link text', () => {
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -135,7 +135,7 @@ describe('TopicsLinkBlock', () => {
 
   it('renders a `WordBreak` using <code> tag for link text to symbols', async () => {
     await wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -149,7 +149,7 @@ describe('TopicsLinkBlock', () => {
         kind: TopicKind.symbol,
       },
     });
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -163,7 +163,7 @@ describe('TopicsLinkBlock', () => {
         kind: TopicKind.symbol,
       },
     });
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('span');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -171,7 +171,7 @@ describe('TopicsLinkBlock', () => {
 
   it('renders a `WordBreak` using <code> tag for Framework name links in Topic that do NOT have role collection or dictionarySymbol', async () => {
     await wrapper.setProps({ topic: { ...propsData.topic, kind: TopicKind.symbol } });
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe(propsData.topic.title);
@@ -179,7 +179,7 @@ describe('TopicsLinkBlock', () => {
 
   it('renders a `WordBreak` using <code> tag for links with a titleStyle == title and no ideTitle', async () => {
     await wrapper.setProps({ topic: { ...propsData.topic, titleStyle: 'title' } });
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
 
     expect(wordBreak.attributes('tag')).toEqual('code');
   });
@@ -193,7 +193,7 @@ describe('TopicsLinkBlock', () => {
         ideTitle: 'Some title',
       },
     });
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
 
     expect(wordBreak.attributes('tag')).toEqual('span');
   });
@@ -205,7 +205,7 @@ describe('TopicsLinkBlock', () => {
         ideTitle: 'Some title',
       },
     });
-    const wordBreak = wrapper.findComponent('.link').find(WordBreak);
+    const wordBreak = wrapper.findComponent('.link').findComponent(WordBreak);
 
     expect(wordBreak.attributes('tag')).toEqual('span');
   });
@@ -396,7 +396,7 @@ describe('TopicsLinkBlock', () => {
       },
     });
 
-    const decoratedTitle = wrapper.findComponent('.link').find(DecoratedTopicTitle);
+    const decoratedTitle = wrapper.findComponent('.link').findComponent(DecoratedTopicTitle);
     expect(decoratedTitle.exists()).toBe(true);
     expect(decoratedTitle.props('tokens')).toEqual(fragments);
     expect(wrapper.findComponent(WordBreak).exists()).toBe(false);

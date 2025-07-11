@@ -106,7 +106,7 @@ describe('Asset', () => {
 
   it('renders a `ReplayableVideoAsset` without poster variants', () => {
     const identifier = 'video';
-    const videoAsset = mountAsset(identifier, { video }).find(ReplayableVideoAsset);
+    const videoAsset = mountAsset(identifier, { video }).findComponent(ReplayableVideoAsset);
     expect(videoAsset.props('variants')).toBe(video.variants);
     expect(videoAsset.props('posterVariants')).toEqual([]);
     expect(videoAsset.props('id')).toBe(identifier);
