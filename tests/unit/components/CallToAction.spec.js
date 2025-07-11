@@ -72,7 +72,7 @@ describe('CallToAction', () => {
     });
 
     it('renders abstract', () => {
-      const node = col.find(ContentNode);
+      const node = col.findComponent(ContentNode);
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toEqual([{
         type: 'paragraph',
@@ -81,14 +81,14 @@ describe('CallToAction', () => {
     });
 
     it('renders a button', () => {
-      const btn = col.find(Button);
+      const btn = col.findComponent(Button);
       expect(btn.exists()).toBe(true);
       expect(btn.props('action')).toEqual(propsData.action);
     });
   });
 
   it('renders an asset in the RightColumn', () => {
-    const asset = wrapper.findComponent(RightColumn).find(Asset);
+    const asset = wrapper.findComponent(RightColumn).findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe(propsData.media);
   });

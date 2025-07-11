@@ -69,7 +69,7 @@ describe('HierarchyCollapsedItems', () => {
 
     const items = dropdown.findAll('li.dropdown-item');
     propsData.topics.forEach((topic, i) => {
-      const link = items.at(i).find(NavMenuLink);
+      const link = items.at(i).findComponent(NavMenuLink);
       expect(link.exists()).toBe(true);
       expect(link.props('url')).toBe(topic.url);
       expect(link.text()).toBe(topic.title);
@@ -105,7 +105,7 @@ describe('HierarchyCollapsedItems', () => {
       propsData,
       stubs,
     });
-    const link = wrapper2.find(NavMenuLink);
+    const link = wrapper2.findComponent(NavMenuLink);
     expect(link.exists()).toBe(true);
     expect(link.props('url')).toBe('/documentation/foo?language=objc');
     expect(link.classes()).toContain('nav-menu-link');

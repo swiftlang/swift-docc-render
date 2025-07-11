@@ -84,7 +84,7 @@ describe('ContentNode', () => {
           },
         ],
       });
-      const aside = wrapper.findComponent('.content').find(Aside);
+      const aside = wrapper.findComponent('.content').findComponent(Aside);
       expect(aside.exists()).toBe(true);
       expect(aside.props('kind')).toBe('note');
       expect(aside.props('name')).toBe('Custom Name');
@@ -106,7 +106,7 @@ describe('ContentNode', () => {
     it('renders a `CodeListing`', () => {
       const wrapper = mountWithItem(listing);
 
-      const codeListing = wrapper.findComponent('.content').find(CodeListing);
+      const codeListing = wrapper.findComponent('.content').findComponent(CodeListing);
       expect(codeListing.exists()).toBe(true);
       expect(codeListing.props('syntax')).toBe(listing.syntax);
       expect(codeListing.props('fileType')).toBe(listing.fileType);
@@ -130,7 +130,7 @@ describe('ContentNode', () => {
       expect(figure.props('anchor')).toBe(metadata.anchor);
       expect(figure.findComponent(CodeListing).exists()).toBe(true);
 
-      const caption = figure.find(Caption);
+      const caption = figure.findComponent(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.find('p').exists()).toBe(true);
@@ -183,7 +183,7 @@ describe('ContentNode', () => {
           text: 'heading',
         });
 
-        const sectionTitle = wrapper.findComponent('.content').find(LinkableHeading);
+        const sectionTitle = wrapper.findComponent('.content').findComponent(LinkableHeading);
         expect(sectionTitle.exists()).toBe(true);
         expect(sectionTitle.props('level')).toBe(level);
         expect(sectionTitle.attributes('anchor')).toBe('heading');
@@ -325,7 +325,7 @@ describe('ContentNode', () => {
 
       const paragraph = wrapper.findComponent('.content p');
       expect(paragraph.classes()).toContain('inline-image-container');
-      const inlineImage = paragraph.find(InlineImage);
+      const inlineImage = paragraph.findComponent(InlineImage);
       expect(inlineImage.exists()).toBe(true);
     });
   });
@@ -438,7 +438,7 @@ describe('ContentNode', () => {
         ],
       });
       const paragraph = wrapper.findComponent('p');
-      const small = paragraph.find(Small);
+      const small = paragraph.findComponent(Small);
       expect(small.exists()).toBe(true);
       expect(small.text()).toBe('foo');
     });
@@ -637,7 +637,7 @@ describe('ContentNode', () => {
         code: 'fooBar',
       });
 
-      const codeVoice = wrapper.findComponent('.content').find(CodeVoice);
+      const codeVoice = wrapper.findComponent('.content').findComponent(CodeVoice);
       expect(codeVoice.exists()).toBe(true);
       expect(codeVoice.text()).toBe('fooBar');
     });
@@ -703,7 +703,7 @@ describe('ContentNode', () => {
         identifier: 'figure1.png',
       }, references);
 
-      const inlineImage = wrapper.findComponent('.content').find(InlineImage);
+      const inlineImage = wrapper.findComponent('.content').findComponent(InlineImage);
       expect(inlineImage.exists()).toBe(true);
       expect(inlineImage.props('variants').length).toBe(2);
     });
@@ -829,11 +829,11 @@ describe('ContentNode', () => {
         },
       }, references);
 
-      const deviceFrame = wrapper.findComponent('.content').find(DeviceFrame);
+      const deviceFrame = wrapper.findComponent('.content').findComponent(DeviceFrame);
       expect(deviceFrame.props()).toEqual({
         device: 'phone',
       });
-      const inlineImage = deviceFrame.find(InlineImage);
+      const inlineImage = deviceFrame.findComponent(InlineImage);
       expect(inlineImage.exists()).toBe(true);
       expect(inlineImage.props('variants').length).toBe(2);
     });
@@ -855,8 +855,8 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBeFalsy();
-      expect(figure.find(DeviceFrame).exists()).toBe(true);
-      expect(figure.find(InlineImage).exists()).toBe(true);
+      expect(figure.findComponent(DeviceFrame).exists()).toBe(true);
+      expect(figure.findComponent(InlineImage).exists()).toBe(true);
     });
   });
 
@@ -881,7 +881,7 @@ describe('ContentNode', () => {
         identifier,
       }, references);
 
-      const inlineVideo = wrapper.findComponent('.content').find(BlockVideo);
+      const inlineVideo = wrapper.findComponent('.content').findComponent(BlockVideo);
       expect(inlineVideo.exists()).toBe(true);
       expect(inlineVideo.props('identifier')).toEqual(identifier);
     });
@@ -964,7 +964,7 @@ describe('ContentNode', () => {
         },
       }, references);
 
-      const blockVideo = wrapper.findComponent('.content').find(BlockVideo);
+      const blockVideo = wrapper.findComponent('.content').findComponent(BlockVideo);
       expect(blockVideo.exists()).toBe(true);
 
       expect(blockVideo.props()).toEqual({
@@ -990,7 +990,7 @@ describe('ContentNode', () => {
       const figure = wrapper.findComponent(Figure);
       expect(figure.exists()).toBe(true);
       expect(figure.props('anchor')).toBeFalsy();
-      expect(figure.find(BlockVideo).props('deviceFrame')).toBe('phone');
+      expect(figure.findComponent(BlockVideo).props('deviceFrame')).toBe('phone');
     });
   });
 
@@ -1023,7 +1023,7 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
       expect(reference.props('ideTitle')).toBe('IDETitle');
@@ -1045,7 +1045,7 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
 
@@ -1075,7 +1075,7 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
 
@@ -1118,7 +1118,7 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
       expect(reference.props('hasInlineFormatting')).toBe(true);
@@ -1151,7 +1151,7 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
 
@@ -1194,7 +1194,7 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
 
@@ -1221,11 +1221,11 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
 
-      const codeVoice = reference.find(CodeVoice);
+      const codeVoice = reference.findComponent(CodeVoice);
       expect(codeVoice.exists()).toBe(true);
       expect(codeVoice.text()).toBe('FooBar with Code Voice');
     });
@@ -1254,11 +1254,11 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('url')).toBe('/foo/bar');
 
-      const codeVoice = reference.find(CodeVoice);
+      const codeVoice = reference.findComponent(CodeVoice);
       expect(codeVoice.exists()).toBe(true);
       expect(codeVoice.text()).not.toBe('FooBar with Code Voice');
       expect(codeVoice.text()).toBe('Foo the Bar with Code Voice');
@@ -1276,7 +1276,7 @@ describe('ContentNode', () => {
         },
       });
 
-      const reference = wrapper.findComponent('.content').find(Reference);
+      const reference = wrapper.findComponent('.content').findComponent(Reference);
       expect(reference.exists()).toBe(true);
       expect(reference.props('isActive')).toBe(false);
 
@@ -1374,7 +1374,7 @@ describe('ContentNode', () => {
         header: TableHeaderStyle.none,
         rows,
       });
-      const table = wrapper.findComponent('.content').find(Table);
+      const table = wrapper.findComponent('.content').findComponent(Table);
       expect(table.exists()).toBe(true);
       expect(table.props('spanned')).toBe(false);
       expect(table.find('thead').exists()).toBe(false);
@@ -1388,7 +1388,7 @@ describe('ContentNode', () => {
         header: TableHeaderStyle.both,
         rows,
       });
-      const table = wrapper.findComponent('.content').find(Table);
+      const table = wrapper.findComponent('.content').findComponent(Table);
       expect(table.exists()).toBe(true);
       expect(table.findAll('thead tr th[scope="col"]').length).toBe(2);
       expect(table.findAll('tbody tr th[scope="row"').length).toBe(1);
@@ -1401,7 +1401,7 @@ describe('ContentNode', () => {
         header: TableHeaderStyle.row,
         rows,
       });
-      const table = wrapper.findComponent('.content').find(Table);
+      const table = wrapper.findComponent('.content').findComponent(Table);
       expect(table.exists()).toBe(true);
       expect(table.findAll('thead tr th[scope="col"]').length).toBe(2);
       expect(table.findAll('tbody tr td').length).toBe(2);
@@ -1413,7 +1413,7 @@ describe('ContentNode', () => {
         header: TableHeaderStyle.column,
         rows,
       });
-      const table = wrapper.findComponent('.content').find(Table);
+      const table = wrapper.findComponent('.content').findComponent(Table);
       expect(table.exists()).toBe(true);
       expect(table.find('thead').exists()).toBe(false);
       expect(table.findAll('tbody tr th[scope="row"]').length).toBe(2);
@@ -1436,11 +1436,11 @@ describe('ContentNode', () => {
         metadata,
       });
 
-      const table = wrapper.findComponent('.content').find(Table);
+      const table = wrapper.findComponent('.content').findComponent(Table);
       expect(table.exists()).toBe(true);
       expect(table.attributes('id')).toBe(metadata.anchor);
 
-      const caption = table.find(Caption);
+      const caption = table.findComponent(Caption);
       expect(caption.exists()).toBe(true);
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.props('position')).toBe('leading');
@@ -1496,7 +1496,7 @@ describe('ContentNode', () => {
           rows: rowsExtended,
           extendedData,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub spanned="true">
             <tbody>
@@ -1525,7 +1525,7 @@ describe('ContentNode', () => {
           rows: rowsExtended,
           extendedData,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub spanned="true">
             <thead>
@@ -1556,7 +1556,7 @@ describe('ContentNode', () => {
           rows: rowsExtended,
           extendedData,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub spanned="true">
             <thead>
@@ -1587,7 +1587,7 @@ describe('ContentNode', () => {
           rows: rowsExtended,
           extendedData,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub spanned="true">
             <tbody>
@@ -1639,7 +1639,7 @@ describe('ContentNode', () => {
           alignments,
           rows: alignedRows,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub>
             <tbody>
@@ -1667,7 +1667,7 @@ describe('ContentNode', () => {
           alignments,
           rows: alignedRows,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub>
             <thead>
@@ -1697,7 +1697,7 @@ describe('ContentNode', () => {
           alignments,
           rows: alignedRows,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub>
             <thead>
@@ -1727,7 +1727,7 @@ describe('ContentNode', () => {
           alignments,
           rows: alignedRows,
         });
-        const table = wrapper.findComponent('.content').find(Table);
+        const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
           <table-stub>
             <tbody>

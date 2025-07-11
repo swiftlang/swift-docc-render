@@ -40,7 +40,7 @@ describe('FullWidth', () => {
     const groups = wrapper.findAll('.group');
     expect(groups.length).toBe(1);
 
-    const node = groups.at(0).find(ContentNode);
+    const node = groups.at(0).findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.content);
   });
@@ -90,7 +90,7 @@ describe('FullWidth', () => {
       expect(groups.length).toBe(3);
 
       expect(groups.at(0).element.tagName.toLowerCase() === 'div').toBe(true);
-      expect(groups.at(0).find(ContentNode).props('content')).toEqual([
+      expect(groups.at(0).findComponent(ContentNode).props('content')).toEqual([
         content[0],
       ]);
 
@@ -101,7 +101,7 @@ describe('FullWidth', () => {
         tag: 'div',
         title: content[1].text,
       });
-      expect(groups.at(1).find(ContentNode).props('content')).toEqual([
+      expect(groups.at(1).findComponent(ContentNode).props('content')).toEqual([
         content[1],
         content[2],
       ]);
@@ -113,7 +113,7 @@ describe('FullWidth', () => {
         tag: 'div',
         title: content[3].text,
       });
-      expect(groups.at(2).find(ContentNode).props('content')).toEqual([
+      expect(groups.at(2).findComponent(ContentNode).props('content')).toEqual([
         content[3],
         content[4],
         content[5],
