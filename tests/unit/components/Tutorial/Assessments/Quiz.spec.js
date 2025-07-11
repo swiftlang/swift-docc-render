@@ -175,7 +175,7 @@ describe('Quiz', () => {
       wrapper = shallowMount(Quiz, {
         propsData,
         stubs: { i18n: i18nStub },
-        attachToDocument: true,
+        attachTo: document.body,
       });
       choices = wrapper.findAll('.choice');
       submit = wrapper.findComponent('.check');

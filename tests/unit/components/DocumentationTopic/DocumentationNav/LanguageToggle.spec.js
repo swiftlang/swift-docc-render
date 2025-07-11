@@ -57,7 +57,7 @@ describe('LanguageToggle', () => {
       propsData: props,
       provide,
       stubs,
-      attachToDocument: true,
+      attachTo: document.body,
     })
   );
 

@@ -34,7 +34,7 @@ const createWrapper = async ({ propsData, ...rest } = {}) => {
     propsData: {
       ...propsData,
     },
-    attachToDocument: true,
+    attachTo: document.body,
     ...rest,
   });
   await wrapper.vm.$nextTick();
