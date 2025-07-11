@@ -44,13 +44,16 @@ const {
 } = DocumentationTopic.components;
 
 const foo = {
-  type: 'paragraph',
-  inlineContent: [
-    {
-      type: 'text',
-      text: 'foo',
-    },
-  ],
+  kind: PrimaryContent.constants.SectionKind.content,
+  content: [{
+    type: 'paragraph',
+    inlineContent: [
+      {
+        type: 'text',
+        text: 'foo',
+      },
+    ],
+  }],
 };
 
 const abstract = {
