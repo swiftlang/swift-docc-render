@@ -27,7 +27,7 @@ const createWrapper = ({ propsData, ...rest } = {}) => mount(DropdownCustom, {
     ...defaultProps,
     ...propsData,
   },
-  attachToDocument: true,
+  attachTo: document.body,
   scopedSlots: {
     default(props) {
       slotProps = props;
