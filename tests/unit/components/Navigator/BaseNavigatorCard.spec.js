@@ -30,7 +30,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(BaseNaviga
 describe('BaseNavigatorCard', () => {
   it('renders the BaseNavigatorCard', () => {
     const wrapper = createWrapper();
-    expect(wrapper.is('div')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'div').toBe(true);
     expect(wrapper.classes()).toContain('navigator-card');
     expect(wrapper.findComponent('.navigator-card-full-height').exists()).toBe(true);
     expect(wrapper.findComponent('.navigator-card-inner').exists()).toBe(true);

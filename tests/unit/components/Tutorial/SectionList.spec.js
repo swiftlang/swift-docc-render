@@ -77,7 +77,7 @@ describe('SectionList', () => {
   });
 
   it('renders a div.sections with a `Section` for each section', () => {
-    expect(wrapper.is('div.sections')).toBe(true);
+    expect(wrapper.element.matches('div.sections')).toBe(true);
     const sections = wrapper.findAll(Section);
     expect(sections.length).toBe(propsData.tasks.length);
 

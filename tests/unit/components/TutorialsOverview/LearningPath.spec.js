@@ -50,7 +50,7 @@ describe('LearningPath', () => {
   });
 
   it('renders a .learning-path root', () => {
-    expect(wrapper.is('.learning-path')).toBe(true);
+    expect(wrapper.element.matches('.learning-path')).toBe(true);
   });
 
   it('renders a TutorialsNavigation if in Web mode', () => {

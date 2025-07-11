@@ -18,7 +18,7 @@ describe('NavMenuItemBase', () => {
         default: '<div>Foo</div>',
       },
     });
-    expect(wrapper.is('li.nav-menu-item')).toBe(true);
+    expect(wrapper.element.matches('li.nav-menu-item')).toBe(true);
     expect(wrapper.text()).toEqual('Foo');
   });
 

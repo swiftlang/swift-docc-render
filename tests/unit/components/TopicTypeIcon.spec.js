@@ -71,7 +71,7 @@ describe('TopicTypeIcon', () => {
       },
     });
     const icon = wrapper.findComponent('.icon-inline');
-    expect(icon.is(OverridableAsset)).toBe(true);
+    expect(icon.findComponent(OverridableAsset).exists()).toBe(true);
     expect(icon.props()).toMatchObject({
       imageOverride,
     });

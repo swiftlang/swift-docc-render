@@ -26,7 +26,7 @@ describe('HierarchyItem', () => {
     const propsData = { url: 'foo.bar' };
 
     let wrapper = mountWithProps(propsData);
-    expect(wrapper.is(NavMenuItemBase));
+    expect(wrapper.findComponent(NavMenuItemBase).exists());
     expect(wrapper.classes('collapsed')).toBe(false);
 
     wrapper = mountWithProps({ ...propsData, isCollapsed: true });
@@ -37,7 +37,7 @@ describe('HierarchyItem', () => {
     const wrapper = mountWithProps({ url: 'foo.bar' });
     const item = wrapper.findComponent('.item');
     expect(item.classes('parent')).toBe(true);
-    expect(item.is(RouterLinkStub)).toBe(true);
+    expect(item.findComponent(RouterLinkStub).exists()).toBe(true);
     expect(item.props('to')).toBe('foo.bar');
     expect(item.text()).toBe('Foobar');
   });
@@ -46,7 +46,7 @@ describe('HierarchyItem', () => {
     const wrapper = mountWithProps();
     const item = wrapper.findComponent('.item');
     expect(item.classes('current')).toBe(true);
-    expect(item.is('span')).toBe(true);
+    expect(item.element.tagName.toLowerCase() === 'span').toBe(true);
     expect(item.text()).toBe('Foobar');
   });
 

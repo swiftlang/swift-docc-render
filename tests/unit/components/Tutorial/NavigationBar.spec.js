@@ -264,7 +264,7 @@ describe('NavigationBar', () => {
     it('renders a "Primary Dropdown" with chapters', () => {
       const primaryDropdown = wrapper.findComponent('.primary-dropdown');
       expect(primaryDropdown.exists()).toBe(true);
-      expect(primaryDropdown.is(PrimaryDropdown)).toBe(true);
+      expect(primaryDropdown.findComponent(PrimaryDropdown).exists()).toBe(true);
       expect(primaryDropdown.props()).toEqual({
         currentOption: topic,
         options: chapters,
@@ -293,7 +293,7 @@ describe('NavigationBar', () => {
     it('renders a "Secondary Dropdown"', () => {
       const secondaryDropdown = wrapper.findComponent('.secondary-dropdown');
       expect(secondaryDropdown.exists()).toBe(true);
-      expect(secondaryDropdown.is(SecondaryDropdown)).toBe(true);
+      expect(secondaryDropdown.findComponent(SecondaryDropdown).exists()).toBe(true);
       expect(secondaryDropdown.props('options')).toEqual([
         {
           path: '#introduction',

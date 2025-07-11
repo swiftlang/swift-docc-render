@@ -39,7 +39,7 @@ describe('PropertyKeyListDetails', () => {
   });
 
   it('renders an `section.details`', () => {
-    expect(wrapper.is('section.details')).toBe(true);
+    expect(wrapper.element.matches('section.details')).toBe(true);
   });
 
   it('renders a title with "Details"', () => {

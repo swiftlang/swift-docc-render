@@ -17,7 +17,7 @@ describe('Caption', () => {
     const slots = { default: '<p>Blah</p>' };
     const wrapper = shallowMount(Caption, { propsData, slots });
 
-    expect(wrapper.is('figcaption')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'figcaption').toBe(true);
     expect(wrapper.text()).toBe('Figure 1\u00a0Blah');
   });
 
@@ -26,7 +26,7 @@ describe('Caption', () => {
     const slots = { default: '<p>Blah</p>' };
     const wrapper = shallowMount(Caption, { propsData, slots });
 
-    expect(wrapper.is('figcaption')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'figcaption').toBe(true);
     expect(wrapper.text()).toBe('Blah');
     expect(wrapper.text()).not.toBe('\u00a0Blah');
   });
@@ -42,6 +42,6 @@ describe('Caption', () => {
     const propsData = { tag: 'caption' };
     const slots = { default: '<p>Blah</p>' };
     const wrapper = shallowMount(Caption, { slots, propsData });
-    expect(wrapper.is('caption')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'caption').toBe(true);
   });
 });

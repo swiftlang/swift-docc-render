@@ -71,7 +71,7 @@ describe('Step', () => {
     });
 
     it('renders a div.step-container', () => {
-      expect(wrapper.is('div.step-container')).toBe(true);
+      expect(wrapper.element.matches('div.step-container')).toBe(true);
     });
 
     it('adds a `focused` class if `isActive`', async () => {

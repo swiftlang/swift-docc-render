@@ -16,7 +16,7 @@ describe('Table', () => {
     const wrapper = shallowMount(Table, {
       slots: { default: '<tbody><tr><td>foo</td></tr></tbody>' },
     });
-    expect(wrapper.is('.table-wrapper')).toBe(true);
+    expect(wrapper.element.matches('.table-wrapper')).toBe(true);
     const table = wrapper.findComponent('table');
     expect(table.exists()).toBe(true);
     expect(table.find('tbody tr td').exists()).toBe(true);
