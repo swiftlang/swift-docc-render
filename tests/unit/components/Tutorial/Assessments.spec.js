@@ -281,7 +281,7 @@ describe('success slot for completed assessment', () => {
     const ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden');
     expect(ariaLive.exists()).toBe(true);
     // assert that aria-live's slot is empty
-    expect(ariaLive.isEmpty()).toBe(true);
+    expect(ariaLive.element.childElementCount === 0).toBe(true);
 
     await wrapper.setData({ completed: true });
     // assert that aria-live's slot has been updated

@@ -21,7 +21,7 @@ describe('WordBreak', () => {
     it('renders an empty span', () => {
       const wrapper = shallowMount(WordBreak);
       expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.element.childElementCount === 0).toBe(true);
     });
   });
 

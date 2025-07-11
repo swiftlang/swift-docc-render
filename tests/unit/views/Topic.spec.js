@@ -48,7 +48,7 @@ describe('Topic', () => {
 
   it('renders an empty div with no data', () => {
     expect(wrapper.element.tagName.toLowerCase() === 'div').toBe(true);
-    expect(wrapper.isEmpty()).toBe(true);
+    expect(wrapper.element.childElementCount === 0).toBe(true);
   });
 
   it('provides a positive offset for `navigationBarHeight`', () => {
