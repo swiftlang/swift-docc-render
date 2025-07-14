@@ -19,12 +19,12 @@ const createWrapper = props => shallowMount(Column, {
 });
 
 describe('Column', () => {
-  it('renders the Column', () => {
+  it('renders the Column', async () => {
     const wrapper = createWrapper();
     expect(wrapper.classes()).toContain('column');
     expect(wrapper.text()).toBe('Default Content');
     expect(wrapper.vm.style).toHaveProperty('--col-span', null);
-    wrapper.setProps({
+    await wrapper.setProps({
       span: 5,
     });
     expect(wrapper.vm.style).toHaveProperty('--col-span', 5);
