@@ -16,7 +16,7 @@ describe('StrikeThrough', () => {
     const wrapper = shallowMount(StrikeThrough, {
       slots: { default: 'foobar' },
     });
-    expect(wrapper.is('s')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 's').toBe(true);
     expect(wrapper.text()).toBe('foobar');
   });
 });

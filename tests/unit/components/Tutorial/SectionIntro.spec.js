@@ -64,19 +64,19 @@ describe('SectionIntro', () => {
   });
 
   it('renders an .intro-container', () => {
-    expect(wrapper.is('.intro-container')).toBe(true);
+    expect(wrapper.element.matches('.intro-container')).toBe(true);
   });
 
   it('renders an .intro', () => {
-    expect(wrapper.contains('.intro')).toBe(true);
+    expect(wrapper.find('.intro').exists()).toBe(true);
   });
 
   it('renders a `Headline`', () => {
-    const headline = wrapper.find(Headline);
+    const headline = wrapper.findComponent(Headline);
     expect(headline.exists()).toBe(true);
     expect(headline.props('level')).toBe(2);
 
-    const eyebrowLink = headline.find(RouterLinkStub);
+    const eyebrowLink = headline.findComponent(RouterLinkStub);
     expect(eyebrowLink.exists()).toBe(true);
 
     expect(eyebrowLink.props('to')).toEqual({
@@ -92,13 +92,13 @@ describe('SectionIntro', () => {
   });
 
   it('renders a `ContentNode`', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual([paragraph]);
   });
 
   it('renders an `Asset`', () => {
-    const asset = wrapper.find('.media').find(Asset);
+    const asset = wrapper.findComponent('.media').findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe('foo.jpg');
     expect(asset.props()).toEqual({
@@ -111,7 +111,7 @@ describe('SectionIntro', () => {
   });
 
   it('does not render `ExpandedIntro` without `expandedSections`', () => {
-    expect(wrapper.contains(ExpandedIntro)).toBe(false);
+    expect(wrapper.findComponent(ExpandedIntro).exists()).toBe(false);
   });
 
   describe('with `expandedSections`', () => {
@@ -132,12 +132,12 @@ describe('SectionIntro', () => {
       },
     ];
 
-    beforeEach(() => {
-      wrapper.setProps({ expandedSections });
+    beforeEach(async () => {
+      await wrapper.setProps({ expandedSections });
     });
 
     it('renders an `ExpandedIntro`', () => {
-      const expandedIntro = wrapper.find(ExpandedIntro);
+      const expandedIntro = wrapper.findComponent(ExpandedIntro);
       expect(expandedIntro.exists()).toBe(true);
       expect(expandedIntro.props()).toEqual({
         content: expandedSections,

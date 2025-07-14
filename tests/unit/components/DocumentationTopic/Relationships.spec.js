@@ -74,7 +74,7 @@ describe('Relationships', () => {
   });
 
   it('renders a `ContentTable`', () => {
-    const table = wrapper.find(ContentTable);
+    const table = wrapper.findComponent(ContentTable);
     expect(table.exists()).toBe(true);
     expect(table.props()).toEqual({
       anchor: 'relationships',
@@ -84,13 +84,13 @@ describe('Relationships', () => {
   });
 
   it('renders a `Section` and `List` for each section with symbols', () => {
-    const sections = wrapper.find(ContentTable).findAll(Section);
+    const sections = wrapper.findComponent(ContentTable).findAllComponents(Section);
     expect(sections.length).toBe(propsData.sections.length);
 
     const firstSection = sections.at(0);
     expect(firstSection.props('title')).toBe(propsData.sections[0].title);
     expect(firstSection.props('anchor')).toBe(propsData.sections[0].anchor);
-    const firstList = firstSection.find(List);
+    const firstList = firstSection.findComponent(List);
     expect(firstList.exists()).toBe(true);
     expect(firstList.props('symbols')).toEqual([
       foo,
@@ -101,7 +101,7 @@ describe('Relationships', () => {
     const lastSection = sections.at(1);
     expect(lastSection.props('title')).toBe(propsData.sections[1].title);
     expect(lastSection.props('anchor')).toBe(null);
-    const lastList = lastSection.find(List);
+    const lastList = lastSection.findComponent(List);
     expect(lastList.exists()).toBe(true);
     expect(lastList.props('symbols')).toEqual([baz]);
     expect(firstList.props('type')).toEqual('inheritsFrom');

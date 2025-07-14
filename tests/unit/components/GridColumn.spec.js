@@ -13,14 +13,14 @@ import GridColumn from 'docc-render/components/GridColumn.vue';
 
 describe('GridColumn', () => {
   it('renders a div.col', () => {
-    expect(shallowMount(GridColumn).contains('div.col')).toBe(true);
+    expect(shallowMount(GridColumn).find('div.col').exists()).toBe(true);
   });
 
   it('renders slot content', () => {
     const wrapper = shallowMount(GridColumn, {
       slots: { default: '<p class="foo">foo</p>' },
     });
-    expect(wrapper.contains('p.foo')).toBe(true);
+    expect(wrapper.find('p.foo').exists()).toBe(true);
     expect(wrapper.text()).toBe('foo');
   });
 

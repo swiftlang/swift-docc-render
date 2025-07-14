@@ -17,7 +17,7 @@ describe('ReferenceExternal', () => {
       propsData: { url: 'https://foo.bar' },
       slots: { default: 'Foo Bar' },
     });
-    expect(wrapper.is('a')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'a').toBe(true);
     expect(wrapper.attributes('href')).toBe('https://foo.bar');
     expect(wrapper.text()).toBe('Foo Bar');
   });
@@ -28,7 +28,7 @@ describe('ReferenceExternal', () => {
       slots: { default: 'Foo Bar' },
     });
 
-    expect(wrapper.is('span')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
     expect(wrapper.attributes()).toEqual({});
     expect(wrapper.text()).toEqual('Foo Bar');
   });

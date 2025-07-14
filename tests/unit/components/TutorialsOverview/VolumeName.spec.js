@@ -32,18 +32,18 @@ describe('VolumeName', () => {
     const wrapper = shallowMount(VolumeName, {
       propsData,
     });
-    const asset = wrapper.find(Asset);
+    const asset = wrapper.findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe(propsData.image);
     expect(asset.attributes('aria-hidden')).toBe('true');
 
-    const name = wrapper.find('h2.name');
+    const name = wrapper.findComponent('h2.name');
     expect(name.exists()).toBe(true);
     expect(name.text()).toBe(propsData.name);
 
-    expect(wrapper.find('.visuallyhidden').exists()).toBe(false);
+    expect(wrapper.findComponent('.visuallyhidden').exists()).toBe(false);
 
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.content);
   });
@@ -55,7 +55,7 @@ describe('VolumeName', () => {
         image: null,
       },
     });
-    const asset = wrapper.find(Asset);
+    const asset = wrapper.findComponent(Asset);
     expect(asset.exists()).toBe(false);
   });
 
@@ -66,7 +66,7 @@ describe('VolumeName', () => {
         content: null,
       },
     });
-    const asset = wrapper.find(ContentNode);
+    const asset = wrapper.findComponent(ContentNode);
     expect(asset.exists()).toBe(false);
   });
 });

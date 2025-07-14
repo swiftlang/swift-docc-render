@@ -10,6 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import ResourcesTile from 'docc-render/components/TutorialsOverview/ResourcesTile.vue';
+import { flushPromises } from '../../../../test-utils';
 
 const { Identifier } = ResourcesTile.constants;
 const {
@@ -68,56 +69,60 @@ describe('ResourcesTile', () => {
   });
 
   it('renders a .tile root', () => {
-    expect(wrapper.is('.tile')).toBe(true);
+    expect(wrapper.element.matches('.tile')).toBe(true);
   });
 
   it('renders the title', () => {
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.text()).toBe(propsData.title);
   });
 
   it('renders a `ContentNode`', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(propsData.content);
   });
 
   it('renders a `Reference` from a destination type:link', () => {
-    const ref = wrapper.find(Reference);
+    const ref = wrapper.findComponent(Reference);
     expect(ref.classes('link')).toBe(true);
     expect(ref.props('url')).toBe(propsData.action.destination);
     expect(ref.text()).toBe(propsData.action.title);
   });
 
-  it('renders a `Reference`, from a destination type:reference', () => {
-    wrapper.setProps({
+  it('renders a `Reference`, from a destination type:reference', async () => {
+    await wrapper.setProps({
       action: {
         identifier: 'doc://foo.baz',
         type: 'reference',
       },
     });
-    const ref = wrapper.find(Reference);
+    const ref = wrapper.findComponent(Reference);
     expect(ref.classes('link')).toBe(true);
     expect(ref.props('url')).toBe(fooReference.url);
     expect(ref.text()).toBe(fooReference.title);
   });
 
-  it('does not render an icon without a known `identifier`', () => {
+  it('does not render an icon without a known `identifier`', async () => {
     expect(wrapper.findAll('.icon').length).toBe(0);
-    wrapper.setProps({ identifier: 'fakeidentifier' });
+    await wrapper.setProps({ identifier: 'fakeidentifier' });
     expect(wrapper.findAll('.icon').length).toBe(1);
   });
 
-  it('renders preset icons for known `identifier` values', () => {
-    const assertIconForIdentifier = (Icon, identifier) => {
-      wrapper.setProps({ identifier });
+  it('renders preset icons for known `identifier` values', async () => {
+    const assertIconForIdentifier = async (Icon, identifier) => {
+      await wrapper.setProps({ identifier });
       expect(wrapper.findAll('.icon').length).toBe(1);
-      expect(wrapper.contains(Icon)).toBe(true);
+      expect(wrapper.findComponent(Icon).exists()).toBe(true);
     };
     assertIconForIdentifier(DocumentIcon, Identifier.documentation);
+    await flushPromises();
     assertIconForIdentifier(DownloadIcon, Identifier.downloads);
+    await flushPromises();
     assertIconForIdentifier(ForumIcon, Identifier.forums);
+    await flushPromises();
     assertIconForIdentifier(CurlyBracketsIcon, Identifier.sampleCode);
+    await flushPromises();
     assertIconForIdentifier(PlayIcon, Identifier.videos);
   });
 });

@@ -13,14 +13,14 @@ import GridRow from 'docc-render/components/GridRow.vue';
 
 describe('GridRow', () => {
   it('renders a div.row', () => {
-    expect(shallowMount(GridRow).contains('div.row')).toBe(true);
+    expect(shallowMount(GridRow).find('div.row').exists()).toBe(true);
   });
 
   it('renders slot content', () => {
     const wrapper = shallowMount(GridRow, {
       slots: { default: '<p class="foo">foo</p>' },
     });
-    expect(wrapper.contains('p.foo')).toBe(true);
+    expect(wrapper.find('p.foo').exists()).toBe(true);
     expect(wrapper.text()).toBe('foo');
   });
 });

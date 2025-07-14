@@ -96,10 +96,10 @@ describe('Hierarchy', () => {
       },
     });
 
-    const list = wrapper.find(NavMenuItems);
+    const list = wrapper.findComponent(NavMenuItems);
     expect(list.exists()).toBe(true);
 
-    const items = list.findAll(HierarchyItem);
+    const items = list.findAllComponents(HierarchyItem);
     expect(items.length).toBe(3);
 
     const fooItem = items.at(0);
@@ -116,7 +116,7 @@ describe('Hierarchy', () => {
     expect(currentItem.attributes()).toEqual({});
     expect(currentItem.text()).toBe(baz.title);
 
-    expect(wrapper.contains(HierarchyCollapsedItems)).toBe(false);
+    expect(wrapper.findComponent(HierarchyCollapsedItems).exists()).toBe(false);
   });
 
   describe('with more than 3 hierarchy items', () => {
@@ -149,10 +149,10 @@ describe('Hierarchy', () => {
 
     describe('without tags', () => {
       it('renders a list with `root + 1 collapsed + max 3 items`, above 1200px', () => {
-        const list = wrapper.find(NavMenuItems);
+        const list = wrapper.findComponent(NavMenuItems);
         expect(list.exists()).toBe(true);
 
-        const items = list.findAll(HierarchyItem);
+        const items = list.findAllComponents(HierarchyItem);
         // all parentTopicIdentifiers + the last item
         expect(items.length).toBe(parentTopics.length + 1);
 
@@ -181,7 +181,7 @@ describe('Hierarchy', () => {
         expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -191,10 +191,10 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `root + 2 collapsed + max 2 items`, between 1000 and 1200px', () => {
+      it('renders a list with `root + 2 collapsed + max 2 items`, between 1000 and 1200px', async () => {
         changeSize(1100);
-
-        const items = wrapper.findAll(HierarchyItem);
+        await wrapper.vm.$nextTick();
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert root item
         expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
@@ -220,7 +220,7 @@ describe('Hierarchy', () => {
         expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -234,9 +234,10 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `3 collapsed + max 1 item`, between 735 and 1000px', () => {
+      it('renders a list with `3 collapsed + max 1 item`, between 735 and 1000px', async () => {
         changeSize(900);
-        const items = wrapper.findAll(HierarchyItem);
+        await wrapper.vm.$nextTick();
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -265,7 +266,7 @@ describe('Hierarchy', () => {
         expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -283,9 +284,10 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external links`, below 735', () => {
+      it('renders a list with `5 collapsed and no external links`, below 735', async () => {
         changeSize(720);
-        const items = wrapper.findAll(HierarchyItem);
+        await wrapper.vm.$nextTick();
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -316,7 +318,7 @@ describe('Hierarchy', () => {
         });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -344,15 +346,15 @@ describe('Hierarchy', () => {
     });
 
     describe('with tags', () => {
-      it('renders a list with `root + 2 collapsed + max 2 items`, with tags above 1200px', () => {
+      it('renders a list with `root + 2 collapsed + max 2 items`, with tags above 1200px', async () => {
         changeSize(1250);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
-        const list = wrapper.find(NavMenuItems);
+        const list = wrapper.findComponent(NavMenuItems);
         expect(list.exists()).toBe(true);
 
-        const items = list.findAll(HierarchyItem);
+        const items = list.findAllComponents(HierarchyItem);
         // all parentTopicIdentifiers + the last item
         expect(items.length).toBe(parentTopics.length + 1);
 
@@ -382,7 +384,7 @@ describe('Hierarchy', () => {
         expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -396,13 +398,13 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `root + 3 collapsed + max 1 item`, with tags, between 1000 and 1200px', () => {
+      it('renders a list with `root + 3 collapsed + max 1 item`, with tags, between 1000 and 1200px', async () => {
         changeSize(1200);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
 
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert root item
         expect(items.at(0).attributes('url')).toEqual(parentTopics[0].url);
@@ -429,7 +431,7 @@ describe('Hierarchy', () => {
         expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -447,13 +449,13 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`, with tags, between 735 and 1000px', () => {
+      it('renders a list with `5 collapsed and no external`, with tags, between 735 and 1000px', async () => {
         changeSize(900);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
 
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -481,7 +483,7 @@ describe('Hierarchy', () => {
         expect(items.at(5).attributes()).toEqual({});
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -503,13 +505,13 @@ describe('Hierarchy', () => {
         ]);
       });
 
-      it('renders a list with `5 collapsed and no external`,with tags below 735', () => {
+      it('renders a list with `5 collapsed and no external`,with tags below 735', async () => {
         changeSize(700);
-        wrapper.setProps({
+        await wrapper.setProps({
           isSymbolBeta: true,
         });
 
-        const items = wrapper.findAll(HierarchyItem);
+        const items = wrapper.findAllComponents(HierarchyItem);
         // assert what items are shown
         // assert there is no root item
         expect(items.at(0).attributes()).toEqual({
@@ -540,7 +542,7 @@ describe('Hierarchy', () => {
         });
 
         // assert there is a `HierarchyCollapsedItems` rendered, with correct items
-        const collapsedItems = wrapper.find(HierarchyCollapsedItems);
+        const collapsedItems = wrapper.findComponent(HierarchyCollapsedItems);
         expect(collapsedItems.exists()).toBe(true);
         expect(collapsedItems.props('topics')).toEqual([
           {
@@ -580,7 +582,7 @@ describe('Hierarchy', () => {
         HierarchyItem,
       },
     });
-    expect(wrapper.find(Badge).props('variant')).toBe('beta');
+    expect(wrapper.findComponent(Badge).props('variant')).toBe('beta');
   });
 
   it('renders tags in the last HierarchyItem', () => {
@@ -606,9 +608,9 @@ describe('Hierarchy', () => {
       },
     });
 
-    const HierarchyItems = wrapper.findAll(HierarchyItem);
+    const HierarchyItems = wrapper.findAllComponents(HierarchyItem);
     // The badges are rendered inside the last HierarchyItem slot
-    const badges = HierarchyItems.at(HierarchyItems.length - 1).findAll(Badge);
+    const badges = HierarchyItems.at(HierarchyItems.length - 1).findAllComponents(Badge);
     expect(badges).toHaveLength(3);
     expect(badges.at(0).props('variant')).toBe('deprecated');
     expect(badges.at(0).text()).toBe('aside-kind.deprecated');

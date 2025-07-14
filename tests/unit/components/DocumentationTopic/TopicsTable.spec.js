@@ -77,14 +77,14 @@ describe('TopicsTable', () => {
   });
 
   it('renders a `ContentTable` with "Topics" title', () => {
-    const table = wrapper.find(ContentTable);
+    const table = wrapper.findComponent(ContentTable);
     expect(table.exists()).toBe(true);
     expect(table.props('anchor')).toBe('topics');
     expect(table.props('title')).toBe('Topics');
   });
 
   it('renders a `ContentTableSection` for each provided section', () => {
-    const sections = wrapper.findAll(ContentTableSection);
+    const sections = wrapper.findAllComponents(ContentTableSection);
     expect(sections.length).toBe(propsData.sections.length);
     expect(sections.at(0).props('title')).toBe(propsData.sections[0].title);
     expect(sections.at(0).props('anchor')).toBe(propsData.sections[0].anchor);
@@ -92,8 +92,8 @@ describe('TopicsTable', () => {
     expect(sections.at(1).props('anchor')).toBe(null);
   });
 
-  it('renders a `ContentTableSection` for sections without a title', () => {
-    wrapper.setProps({
+  it('renders a `ContentTableSection` for sections without a title', async () => {
+    await wrapper.setProps({
       sections: [
         {
           ...propsData.sections[0],
@@ -102,7 +102,7 @@ describe('TopicsTable', () => {
         propsData.sections[1],
       ],
     });
-    const sections = wrapper.findAll(ContentTableSection);
+    const sections = wrapper.findAllComponents(ContentTableSection);
     expect(sections.length).toBe(propsData.sections.length);
     const firstSection = sections.at(0);
     expect(firstSection.props('title')).toBeFalsy();
@@ -110,10 +110,10 @@ describe('TopicsTable', () => {
   });
 
   it('renders a `TopicsLinkBlock` for each topic with reference data in a section', () => {
-    const sections = wrapper.findAll(ContentTableSection);
-    expect(wrapper.findAll(TopicsLinkCardGrid)).toHaveLength(0);
+    const sections = wrapper.findAllComponents(ContentTableSection);
+    expect(wrapper.findAllComponents(TopicsLinkCardGrid)).toHaveLength(0);
 
-    const firstSectionBlocks = sections.at(0).findAll(TopicsLinkBlock);
+    const firstSectionBlocks = sections.at(0).findAllComponents(TopicsLinkBlock);
     expect(firstSectionBlocks.length).toBe(1);
     expect(firstSectionBlocks.at(0).classes('topic')).toBe(true);
     expect(firstSectionBlocks.at(0).props()).toEqual({
@@ -122,7 +122,7 @@ describe('TopicsTable', () => {
       isSymbolBeta: false,
     });
 
-    const lastSectionBlocks = sections.at(1).findAll(TopicsLinkBlock);
+    const lastSectionBlocks = sections.at(1).findAllComponents(TopicsLinkBlock);
     expect(lastSectionBlocks.length).toBe(1);
     expect(lastSectionBlocks.at(0).classes('topic')).toBe(true);
     expect(lastSectionBlocks.at(0).props()).toEqual({
@@ -132,12 +132,12 @@ describe('TopicsTable', () => {
     });
   });
 
-  it('renders a `TopicsLinkCardGrid` if `topicStyle` is not `list`', () => {
-    wrapper.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
-    expect(wrapper.findAll(TopicsLinkBlock)).toHaveLength(0);
-    const sections = wrapper.findAll(ContentTableSection);
+  it('renders a `TopicsLinkCardGrid` if `topicStyle` is not `list`', async () => {
+    await wrapper.setProps({ topicStyle: TopicSectionsStyle.compactGrid });
+    expect(wrapper.findAllComponents(TopicsLinkBlock)).toHaveLength(0);
+    const sections = wrapper.findAllComponents(ContentTableSection);
 
-    const firstGrid = sections.at(0).find(TopicsLinkCardGrid);
+    const firstGrid = sections.at(0).findComponent(TopicsLinkCardGrid);
     expect(firstGrid.classes('topic')).toBe(true);
     expect(firstGrid.props()).toEqual({
       topicStyle: TopicSectionsStyle.compactGrid,
@@ -145,7 +145,7 @@ describe('TopicsTable', () => {
       usePager: false,
     });
 
-    const secondGrid = sections.at(1).find(TopicsLinkCardGrid);
+    const secondGrid = sections.at(1).findComponent(TopicsLinkCardGrid);
     expect(secondGrid.classes('topic')).toBe(true);
     expect(secondGrid.props()).toEqual({
       topicStyle: TopicSectionsStyle.compactGrid,
@@ -154,46 +154,46 @@ describe('TopicsTable', () => {
     });
   });
 
-  it('can be passed `title` and `anchor` overrides', () => {
-    wrapper.setProps({
+  it('can be passed `title` and `anchor` overrides', async () => {
+    await wrapper.setProps({
       anchor: 'foo-bar',
       title: 'Foo Bar',
     });
 
-    const table = wrapper.find(ContentTable);
+    const table = wrapper.findComponent(ContentTable);
     expect(table.exists()).toBe(true);
     expect(table.props('anchor')).toBe('foo-bar');
     expect(table.props('title')).toBe('Foo Bar');
   });
 
   it('renders an abstract if provided', () => {
-    const sections = wrapper.findAll(ContentTableSection);
+    const sections = wrapper.findAllComponents(ContentTableSection);
     expect(
       sections
         .at(0)
-        .find(ContentNode)
+        .findComponent(ContentNode)
         .props('content'),
     ).toEqual(propsData.sections[0].abstract);
   });
 
   it('renders a discussion if provided', () => {
-    const sections = wrapper.findAll(ContentTableSection);
+    const sections = wrapper.findAllComponents(ContentTableSection);
     expect(
       sections
         .at(0)
-        .findAll(ContentNode)
+        .findAllComponents(ContentNode)
         .at(1)
         .props('content'),
     ).toEqual(propsData.sections[0].discussion.content);
   });
 
-  it('renders a title wrapped in WordBreak, if `wrapTitle: true`', () => {
-    let wordBreak = wrapper.find(WordBreak);
+  it('renders a title wrapped in WordBreak, if `wrapTitle: true`', async () => {
+    let wordBreak = wrapper.findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(false);
 
-    wrapper.setProps({ wrapTitle: true });
-    const linkableHeading = wrapper.find(LinkableHeading);
-    wordBreak = wrapper.find(WordBreak);
+    await wrapper.setProps({ wrapTitle: true });
+    const linkableHeading = wrapper.findComponent(LinkableHeading);
+    wordBreak = wrapper.findComponent(WordBreak);
     expect(wordBreak.text()).toEqual(propsData.sections[0].title);
     expect(linkableHeading.exists()).toBe(true);
     expect(linkableHeading.props('level')).toBe(3);

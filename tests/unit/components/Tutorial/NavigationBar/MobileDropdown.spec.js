@@ -103,18 +103,18 @@ describe('MobileDropdown', () => {
   });
 
   it('renders a ul.mobile-dropdown', () => {
-    const node = wrapper.find(NavMenuItems);
+    const node = wrapper.findComponent(NavMenuItems);
     expect(node.classes()).toContain('mobile-dropdown');
   });
 
   it('renders a <p> with the name of each available module', () => {
     // assert the
-    const chapter = wrapper.findAll(NavMenuItemBase);
+    const chapter = wrapper.findAllComponents(NavMenuItemBase);
     expect(chapter).toHaveLength(1);
     expect(chapter.at(0).classes()).toContain('chapter-list');
     expect(chapter.at(0).attributes('role')).toBe('group');
 
-    const node = wrapper.find('p.chapter-name');
+    const node = wrapper.findComponent('p.chapter-name');
     expect(node.exists()).toBe(true);
     expect(node.text()).toBe('Getting Started');
   });
@@ -126,8 +126,8 @@ describe('MobileDropdown', () => {
   });
 
   it('renders link elements with appropriate role attributes', () => {
-    const link = wrapper.find('.tutorial');
-    expect(link.is(RouterLinkStub)).toBe(true);
+    const link = wrapper.findComponent('.tutorial');
+    expect(link.findComponent(RouterLinkStub).exists()).toBe(true);
     expect(link.props('to'))
       // the first sub-link
       .toEqual(`${references['doc://com.example.Test/tutorials/TechnologyX/Tutorial'].url}?context=foo`);
@@ -149,7 +149,7 @@ describe('MobileDropdown', () => {
     expect(sectionComponents).toHaveLength(sectionComponents.length);
 
     const sectionLink = sectionComponents.at(0);
-    expect(sectionLink.is(RouterLinkStub)).toBe(true);
+    expect(sectionLink.findComponent(RouterLinkStub).exists()).toBe(true);
     expect(sectionLink.props('to')).toEqual({
       path: sections[0].path,
       query: { context: 'foo' },

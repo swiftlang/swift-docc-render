@@ -38,7 +38,7 @@ describe('SVGIcon', () => {
       xmlns: 'http://www.w3.org/2000/svg',
       'xmlns:xlink': 'http://www.w3.org/1999/xlink',
     });
-    expect(wrapper.find('path').exists()).toBe(true);
+    expect(wrapper.findComponent('path').exists()).toBe(true);
   });
 
   it('renders an override, if there is a `themeSetting` override', () => {
@@ -48,8 +48,8 @@ describe('SVGIcon', () => {
         themeId: 'foo',
       },
     });
-    expect(wrapper.find('path').exists()).toBe(false);
-    expect(wrapper.find('use').attributes()).toEqual({
+    expect(wrapper.findComponent('path').exists()).toBe(false);
+    expect(wrapper.findComponent('use').attributes()).toEqual({
       width: '100%',
       height: '100%',
       href: `${mockBaseUrl}theme/override/path#foo`,
@@ -64,8 +64,8 @@ describe('SVGIcon', () => {
         themeId: 'foo',
       },
     });
-    expect(wrapper.find('path').exists()).toBe(false);
-    expect(wrapper.find('use').attributes()).toEqual({
+    expect(wrapper.findComponent('path').exists()).toBe(false);
+    expect(wrapper.findComponent('use').attributes()).toEqual({
       width: '100%',
       height: '100%',
       href: `${mockBaseUrl}/path/to/new/icon.svg#foo`,

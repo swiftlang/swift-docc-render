@@ -62,25 +62,26 @@ describe('MobileCodePreview', () => {
   });
 
   it('renders a MobileCodeListing', () => {
-    const codeListing = wrapper.find(MobileCodeListing);
+    const codeListing = wrapper.findComponent(MobileCodeListing);
     expect(codeListing.props('content')).toBe(content);
     expect(codeListing.props('fileName')).toBe(fileName);
     expect(codeListing.props('syntax')).toBe(syntax);
     expect(codeListing.props('highlights')).toBe(highlights);
   });
 
-  it('displays a modal to show the full code listing when the file name is clicked', () => {
-    const mobileCodeListing = wrapper.find(MobileCodeListing);
+  it('displays a modal to show the full code listing when the file name is clicked', async () => {
+    const mobileCodeListing = wrapper.findComponent(MobileCodeListing);
     expect(mobileCodeListing.exists()).toBe(true);
 
     mobileCodeListing.vm.$emit('file-name-click');
+    await wrapper.vm.$nextTick();
 
-    const modal = wrapper.find('.full-code-listing-modal');
+    const modal = wrapper.findComponent('.full-code-listing-modal');
     expect(modal.exists()).toBe(true);
     expect(modal.props()).toHaveProperty('isFullscreen', true);
     expect(modal.props()).toHaveProperty('visible', true);
 
-    const listing = modal.find(CodeListing);
+    const listing = modal.findComponent(CodeListing);
     expect(listing.exists()).toBe(true);
     expect(listing.classes('full-code-listing')).toBe(true);
     expect(listing.props('content')).toBe(content);
@@ -110,7 +111,7 @@ describe('MobileCodePreview', () => {
     it('renders an actionable PreviewToggle when a runtime preview is provided', () => {
       wrapper = mountWithPreview(true);
 
-      const mobilePreviewToggle = wrapper.find(PreviewToggle);
+      const mobilePreviewToggle = wrapper.findComponent(PreviewToggle);
       expect(mobilePreviewToggle.exists()).toBe(true);
       expect(mobilePreviewToggle.props('isActionable'));
     });
@@ -118,22 +119,23 @@ describe('MobileCodePreview', () => {
     it('renders a disabled PreviewToggle when a runtime preview is not provided', () => {
       wrapper = mountWithPreview(false);
 
-      const mobilePreviewToggle = wrapper.find(PreviewToggle);
+      const mobilePreviewToggle = wrapper.findComponent(PreviewToggle);
       expect(mobilePreviewToggle.exists()).toBe(true);
       expect(mobilePreviewToggle.props('isActionable')).toBe(false);
     });
 
-    it('displays a modal to show the media preview when the toggle is clicked', () => {
-      const previewToggle = wrapper.find(PreviewToggle);
+    it('displays a modal to show the media preview when the toggle is clicked', async () => {
+      const previewToggle = wrapper.findComponent(PreviewToggle);
       expect(previewToggle.exists()).toBe(true);
 
       previewToggle.vm.$emit('click');
+      await wrapper.vm.$nextTick();
 
-      const modal = wrapper.findAll(GenericModal).at(1);
+      const modal = wrapper.findAllComponents(GenericModal).at(1);
       expect(modal.exists()).toBe(true);
       expect(modal.props()).toHaveProperty('isFullscreen', true);
       expect(modal.props()).toHaveProperty('visible', true);
-      expect(modal.contains('img')).toBe(true);
+      expect(modal.find('img').exists()).toBe(true);
 
       expect(modal.find('.runtime-preview-label').text()).toBe('tutorials.preview.title');
     });
@@ -151,7 +153,7 @@ describe('MobileCodePreview', () => {
     it('uses the light theme for the code listing and runtime preview modal when isTargetIDE=false', () => {
       wrapper = mountWithIDETarget(false);
 
-      const modals = wrapper.findAll(GenericModal);
+      const modals = wrapper.findAllComponents(GenericModal);
 
       const fullCodeListingModal = modals.at(0);
       expect(fullCodeListingModal.props('theme')).toBe('light');
@@ -163,7 +165,7 @@ describe('MobileCodePreview', () => {
     it('uses the code/dynamic themes for the code listing and runtime preview modal when isTargetIDE=true', () => {
       wrapper = mountWithIDETarget(true);
 
-      const modals = wrapper.findAll(GenericModal);
+      const modals = wrapper.findAllComponents(GenericModal);
 
       const fullCodeListingModal = modals.at(0);
       expect(fullCodeListingModal.props('theme')).toBe('code');
