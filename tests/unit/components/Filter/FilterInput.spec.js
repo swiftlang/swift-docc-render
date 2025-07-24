@@ -107,7 +107,6 @@ describe('FilterInput', () => {
   it('renders focus class if showSuggestedTags is true and border style is not prevented', async () => {
     await wrapper.setData({ showSuggestedTags: true });
     await wrapper.setProps({ preventBorderStyle: false });
-    await wrapper.vm.$nextTick();
 
     expect(wrapper.findComponent('.filter.focus').exists()).toBe(true);
   });
@@ -143,7 +142,6 @@ describe('FilterInput', () => {
 
   it('renders an filter label element that has a input-value attrib to resize the input', async () => {
     await wrapper.setProps({ value: inputValue });
-    await wrapper.vm.$nextTick();
     const filterLabel = wrapper.findComponent('#filter-label');
     // check input-value attrib for filter label contains the input value
     expect(filterLabel.attributes('data-value')).toBe(inputValue);
@@ -158,7 +156,6 @@ describe('FilterInput', () => {
 
     // simulate the `handleScrollbar` mixin triggering ON
     await wrapper.setData({ isScrolling: true });
-    await wrapper.vm.$nextTick();
 
     expect(inputBoxWrapper.classes('scrolling')).toBe(true);
   });
@@ -708,7 +705,6 @@ describe('FilterInput', () => {
         await wrapper.vm.$nextTick();
 
         await wrapper.setProps({ selectedTags: [selectedTag] });
-        await wrapper.vm.$nextTick();
         selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
       });
 
@@ -748,7 +744,6 @@ describe('FilterInput', () => {
         document.activeElement.blur();
         await wrapper.vm.$nextTick();
         await wrapper.setProps({ selectedTags: [] });
-        await wrapper.vm.$nextTick();
         expect(document.activeElement).not.toEqual(input.element);
       });
 
@@ -903,7 +898,6 @@ describe('FilterInput', () => {
       it('deletes selected tag when tag is clicked on a virtual keyboard', async () => {
         await wrapper.setData({ keyboardIsVirtual: true });
         await wrapper.setProps({ selectedTags: [selectedTag, 'Tag2'] });
-        await wrapper.vm.$nextTick();
 
         selectedTagsComponent.vm.$emit('click-tags', { tagName: 'Tag2' });
         await flushPromises();
@@ -1125,7 +1119,6 @@ describe('FilterInput', () => {
 
     it('assigns selected tags to active tags when cmd + a is triggered on input', async () => {
       await wrapper.setProps({ value: 'Foo', selectedTags: tags });
-      await wrapper.vm.$nextTick();
       const selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
       wrapper.findComponent('input').trigger('keydown', {
         key: 'a',
@@ -1401,7 +1394,6 @@ describe('FilterInput', () => {
       beforeEach(async () => {
         jest.resetAllMocks();
         await wrapper.setProps({ selectedTags });
-        await wrapper.vm.$nextTick();
         selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
         spyFocusTag = jest.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
       });

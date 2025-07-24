@@ -621,7 +621,6 @@ describe('AdjustableSidebarWidth', () => {
         }],
       }));
       await wrapper.vm.$nextTick();
-      await flushPromises();
       expect(store.state.contentWidth).toBe(99);
     });
 
