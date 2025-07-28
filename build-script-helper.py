@@ -73,7 +73,10 @@ def ensure_npm_is_installed(verbose=False):
         fatal_error('-- Error: %s' % error_msg)
     try:
         node_version = check_output(['node', '--version'], verbose=verbose)
-        if not node_version.startswith('v18.16.'):
+        # Ensure node_version is a string (decode if it's bytes)
+        if isinstance(node_version, bytes):
+            node_version = node_version.decode('utf-8')
+        if not node_version.strip().startswith('v18.16.'):
             warn_msg = "Unexpected version of 'node' installed. Swift-DocC-Render requires node 18.16.1. "\
                 "See the README.md file for more information about building Swift-DocC-Render."
             printerr('-- Warning: %s' % warn_msg)
