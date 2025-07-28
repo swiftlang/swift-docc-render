@@ -13,8 +13,6 @@
  knows how to build and install the swift-docc-render.
 """
 
-from __future__ import print_function
-
 import argparse
 import os
 import platform
