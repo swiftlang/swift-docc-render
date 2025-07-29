@@ -274,6 +274,7 @@ function renderNode(createElement, references) {
         fileType: node.fileType,
         content: node.code,
         showLineNumbers: node.showLineNumbers,
+        copyToClipboard: node.copyToClipboard ?? false,
       };
       return createElement(CodeListing, { props });
     }
