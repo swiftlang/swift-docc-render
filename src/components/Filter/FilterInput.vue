@@ -456,11 +456,10 @@ $input-height: rem(28px);
     position: relative;
     z-index: 1;
     cursor: text;
-    margin-left: var(--input-horizontal-spacing);
-    margin-right: rem(3px);
+    margin-inline: var(--input-horizontal-spacing) rem(3px);
 
     @include breakpoint(small) {
-      margin-right: rem(7px);
+      margin-inline-end: rem(7px);
     }
 
     .svg-icon {
@@ -522,11 +521,11 @@ $input-height: rem(28px);
 
   &__selected-tags {
     z-index: 1;
-    padding-left: $tag-outline-padding;
+    padding-inline-start: $tag-outline-padding;
     margin: -$tag-outline-padding 0;
 
     @include breakpoint(small) {
-      padding-left: 0;
+      padding-inline-start: 0;
     }
 
     :deep() {
@@ -534,11 +533,11 @@ $input-height: rem(28px);
         padding: $tag-outline-padding;
 
         @include breakpoint(small) {
-          padding-right: rem(7px);
+          padding-inline-end: rem(7px);
         }
 
         .tag:last-child {
-          padding-right: 0;
+          padding-inline-end: 0;
         }
       }
     }
@@ -562,8 +561,7 @@ $input-height: rem(28px);
   &__delete-button-wrapper {
     display: flex;
     align-items: center;
-    padding-right: var(--input-horizontal-spacing);
-    padding-left: rem(3px);
+    padding-inline: rem(3px) var(--input-horizontal-spacing);
     border-top-right-radius: $small-border-radius;
     border-bottom-right-radius: $small-border-radius;
   }

@@ -134,10 +134,9 @@ $doc-hero-icon-dimension: 250px;
 .documentation-hero {
   color: $doc-hero-text-color;
   overflow: hidden;
-  text-align: left;
   position: relative;
   // extra offset applied when OnThisPage component is rendered
-  padding-right: var(--doc-hero-right-offset);
+  padding-inline-end: var(--doc-hero-right-offset);
 
   // gradient
   &:before {
@@ -156,7 +155,7 @@ $doc-hero-icon-dimension: 250px;
     position: absolute;
     content: '';
     height: 100%;
-    left: 0;
+    inset-inline-start: 0;
     top: 0;
 
     @include prefers-dark {
@@ -167,8 +166,8 @@ $doc-hero-icon-dimension: 250px;
   .icon {
     position: absolute;
     margin-top: $doc-hero-icon-vertical-spacing;
-    margin-right: $doc-hero-icon-spacing;
-    right: 0;
+    margin-inline-end: $doc-hero-icon-spacing;
+    inset-inline-end: 0;
     width: $doc-hero-icon-dimension;
     // create icon box with spacing in hero section
     height: calc(100% - #{$doc-hero-icon-vertical-spacing * 2});
@@ -189,7 +188,7 @@ $doc-hero-icon-dimension: 250px;
     position: absolute;
     // center in icon box
     top: 50%;
-    left: 0;
+    inset-inline-start: 0;
     transform: translateY(-50%);
     max-height: 100%;
 

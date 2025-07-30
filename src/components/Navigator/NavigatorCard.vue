@@ -1020,7 +1020,7 @@ $navigator-card-vertical-spacing: 8px !default;
   @include safe-area-left-set(margin-left, var(--card-horizontal-spacing));
   @include safe-area-right-set(margin-right, var(--card-horizontal-spacing));
   padding: $navigator-card-vertical-spacing $nav-card-horizontal-spacing;
-  padding-left: $nav-card-horizontal-spacing * 2;
+  padding-inline-start: $nav-card-horizontal-spacing * 2;
   background: $technology-title-background;
   border-radius: $nano-border-radius;
   display: flex;

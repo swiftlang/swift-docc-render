@@ -461,11 +461,10 @@ export default {
     position: fixed;
     top: var(--top-offset-mobile);
     bottom: 0;
-    left: 0;
+    inset-inline-start: 0;
     z-index: $nav-z-index + 1;
     transform: translateX(-100%);
     transition: transform var(--nav-transition-duration) ease-in;
-    left: 0;
 
     :deep(.aside-animated-child) {
       opacity: 0;
@@ -502,7 +501,7 @@ export default {
   cursor: col-resize;
   top: 0;
   bottom: 0;
-  right: 0;
+  inset-inline-end: 0;
   width: 5px;
   height: 100%;
   user-select: none;

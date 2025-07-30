@@ -55,7 +55,7 @@ export default {
 
 .param-name {
   font-weight: $font-weight-semibold;
-  padding-left: 1rem;
+  padding-inline-start: 1rem;
   padding-top: var(--spacing-param);
 
   &:first-child {
@@ -63,15 +63,15 @@ export default {
   }
 
   @include breakpoint(small) {
-    padding-left: 0;
+    padding-inline-start: 0;
   }
 }
 
 .param-content {
-  padding-left: 2rem;
+  padding-inline-start: 2rem;
 
   @include breakpoint(small) {
-    padding-left: 0;
+    padding-inline-start: 0;
   }
 
   :deep(dt) {
@@ -79,7 +79,7 @@ export default {
   }
 
   :deep(dd) {
-    margin-left: 1em;
+    margin-inline-start: 1em;
   }
 }
 </style>

@@ -113,7 +113,7 @@ $availability-info-spacing: 10px;
 
 .changed {
   $-coin-spacer: 5px;
-  padding-left: $icon-size-default - $-coin-spacer + 2;
+  padding-inline-start: $icon-size-default - $-coin-spacer + 2;
   border: none;
 
   &::after {
@@ -124,7 +124,7 @@ $availability-info-spacing: 10px;
   &::before {
     @include coin($modified-svg, $icon-size-default);
     margin: 0;
-    left: -$-coin-spacer;
+    inset-inline-start: -$-coin-spacer;
 
     @include prefers-dark {
       background-image: $modified-dark-svg;
@@ -162,7 +162,7 @@ $availability-info-spacing: 10px;
       width: 1px;
       height: 1em;
       background: currentColor;
-      margin-left: $availability-info-spacing;
+      margin-inline-start: $availability-info-spacing;
     }
 
     &:last-child::after {

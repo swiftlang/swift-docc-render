@@ -366,7 +366,7 @@ $chevron-width: $nav-card-horizontal-spacing;
   position: absolute;
   width: 100%;
   height: 100%;
-  padding-right: $tree-toggle-padding;
+  padding-inline-end: $tree-toggle-padding;
   box-sizing: border-box;
   z-index: 1;
   display: flex;

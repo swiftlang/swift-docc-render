@@ -231,7 +231,7 @@ $dropdown-vertical-offset: rem(7px);
     border-right-style: $border-style;
     border-right-width: $tail-width;
     content: '';
-    left: $tail-offset;
+    inset-inline-start: $tail-offset;
     position: absolute;
     top: rem($border-width) - $tail-width;
 

@@ -58,12 +58,12 @@ $tabnav-item-gutter: rem(30px);
 
   display: flex;
   list-style: none;
-  padding-left: $tabnav-item-gutter;
+  padding-inline-start: $tabnav-item-gutter;
   margin: 0;
   outline: none;
 
   &:first-child {
-    padding-left: 0;
+    padding-inline-start: 0;
   }
 
   // hack to make sure item margin is not overwritten by external css
@@ -97,7 +97,7 @@ $tabnav-item-gutter: rem(30px);
     content: '';
     position: absolute;
     bottom: -1 * ($tabnav-margin + 1);
-    left: 0;
+    inset-inline-start: 0;
     width: 100%;
     border: 1px solid transparent;
   }

@@ -531,7 +531,7 @@ $input-horizontal-spacing: rem(15px);
     overflow: auto;
   }
   &__preview {
-    border-left: $base-border-width solid var(--color-grid);
+    border-inline-start: $base-border-width solid var(--color-grid);
     flex: 0 0 61.8%;
     overflow: auto;
     position: sticky;
@@ -560,7 +560,7 @@ $input-horizontal-spacing: rem(15px);
       margin: auto;
       width: 100%;
       .navigator-icon {
-        margin-right: rem(10px);
+        margin-inline-end: rem(10px);
       }
       .symbol-name {
         display: flex;
@@ -572,11 +572,11 @@ $input-horizontal-spacing: rem(15px);
         @include font-styles(body-reduced-tight);
         color: var(--color-figure-gray-secondary);
         display: flex;
-        margin-left: rem(27px);
+        margin-inline-start: rem(27px);
         overflow: hidden;
         white-space: nowrap;
         .parent-path {
-          padding-right: rem(5px);
+          padding-inline-end: rem(5px);
         }
       }
     }

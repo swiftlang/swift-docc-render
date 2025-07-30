@@ -130,9 +130,9 @@ export default {
   .tabs-content {
     flex: 1 1 auto;
     min-width: 0;
-    padding-right: var(--spacing-stacked-margin-xlarge);
+    padding-inline-end: var(--spacing-stacked-margin-xlarge);
     @include breakpoint(small) {
-      padding-right: 0;
+      padding-inline-end: 0;
       padding-bottom: var(--spacing-stacked-margin-large);
     }
   }

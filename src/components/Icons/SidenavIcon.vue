@@ -24,3 +24,9 @@ export default {
   components: { SVGIcon },
 };
 </script>
+
+<style scoped lang="scss">
+.sidenav-icon {
+  transform: scaleX(var(--scale-inline, 1));
+}
+</style>

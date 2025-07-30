@@ -248,7 +248,7 @@ export default {
   }
 
   .navigator-filter .quick-navigation-open {
-    margin-left: var(--nav-filter-horizontal-padding);
+    margin-inline-start: var(--nav-filter-horizontal-padding);
     width: calc(var(--nav-filter-horizontal-padding) * 2);
   }
 }
@@ -268,14 +268,14 @@ export default {
 .documentation-layout-aside {
   height: 100%;
   box-sizing: border-box;
-  border-right: $generic-border-style;
+  border-inline-end: $generic-border-style;
 
   @include breakpoint(medium, nav) {
     background: var(--color-fill);
-    border-right: none;
+    border-inline-end: none;
 
     .sidebar-transitioning & {
-      border-right: $generic-border-style;
+      border-inline-end: $generic-border-style;
     }
   }
 }
@@ -293,8 +293,7 @@ export default {
   @include inTargetWeb {
     @include breakpoint-full-width-container();
     @include breakpoints-from(xlarge) {
-      border-left: $generic-border-style;
-      border-right: $generic-border-style;
+      border-inline: $generic-border-style;
       box-sizing: border-box;
     }
   }

@@ -816,7 +816,7 @@ $space-size: 15px;
 
   small {
     font-size: 1rem;
-    padding-left: 0.416rem;
+    padding-inline-start: 0.416rem;
   }
 }
 

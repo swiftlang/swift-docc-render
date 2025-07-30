@@ -216,11 +216,11 @@ export default {
 
 .abstract,
 .link-block :deep(.badge) {
-  margin-left: calc(#{$topic-link-icon-spacing} + #{$topic-link-icon-width});
+  margin-inline-start: calc(#{$topic-link-icon-spacing} + #{$topic-link-icon-width});
 }
 
 .link-block .badge + .badge {
-  margin-left: 1rem;
+  margin-inline-start: 1rem;
 }
 
 .link {
@@ -238,7 +238,7 @@ export default {
     flex-flow: row wrap;
 
     .badge {
-      margin-left: 1rem;
+      margin-inline-start: 1rem;
       margin-top: 0;
     }
   }
