@@ -63,7 +63,7 @@ function baseChainWebpack(config) {
     }]);
 
   // Limit highlight.js to only the necessary languages
-  const builtinLanguages = 'bash|c|s?css|cpp|diff|http|java|llvm|perl|php|python|ruby|xml|javascript|json|markdown|objectivec|shell|swift';
+  const builtinLanguages = 'bash|c|s?css|cpp|diff|http|java|llvm|perl|php|python|ruby|xml|javascript|json|markdown|objectivec|shell|swift|yaml';
   const envLanguages = (process.env.VUE_APP_HLJS_LANGUAGES ?? '').split(',').join('|');
   config
     .plugin('LanguagesPlugin')
