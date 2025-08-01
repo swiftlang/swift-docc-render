@@ -104,18 +104,18 @@ describe('Volume', () => {
   });
 
   it('renders a section.volume root', () => {
-    expect(wrapper.is('section.volume')).toBe(true);
+    expect(wrapper.element.matches('section.volume')).toBe(true);
   });
 
   it('renders an VolumeName', () => {
-    const title = wrapper.find(VolumeName);
+    const title = wrapper.findComponent(VolumeName);
     expect(title.exists()).toBe(true);
     expect(title.props('name')).toBe('FooBar');
     expect(title.props('content')).toEqual(propsData.content);
   });
 
   it('renders a `Chapter` for each chapter', () => {
-    const chapters = wrapper.findAll(Chapter);
+    const chapters = wrapper.findAllComponents(Chapter);
     expect(chapters.length).toBe(propsData.chapters.length);
 
     chapters.wrappers.forEach((chapter, i) => {
@@ -140,9 +140,9 @@ describe('Volume', () => {
     expect(provide.store.setActiveVolume).toBeCalledWith(propsData.name);
   });
 
-  it('renders a volume without a name', () => {
-    wrapper.setProps({ name: undefined });
-    expect(wrapper.find(VolumeName).exists()).toBe(false);
-    expect(wrapper.find(Chapter).props('volumeHasName')).toBe(false);
+  it('renders a volume without a name', async () => {
+    await wrapper.setProps({ name: undefined });
+    expect(wrapper.findComponent(VolumeName).exists()).toBe(false);
+    expect(wrapper.findComponent(Chapter).props('volumeHasName')).toBe(false);
   });
 });

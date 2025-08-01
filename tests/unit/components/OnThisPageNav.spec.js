@@ -110,26 +110,26 @@ describe('OnThisPageNav', () => {
     // assert first parent is active
     expect(firstParent.classes()).not.toContain('active');
     expect(parentLink1.props('to')).toEqual(`?language=objc#${sections[0].anchor}`);
-    const wbreak = parentLink1.find(WordBreak);
+    const wbreak = parentLink1.findComponent(WordBreak);
     expect(wbreak.exists()).toBe(true);
     expect(wbreak.text()).toBe(sections[0].title);
     // assert second parent
     const secondParent = parents.at(1);
     expect(secondParent.classes()).toContain('active');
-    expect(secondParent.find(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[1].anchor}`);
+    expect(secondParent.findComponent(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[1].anchor}`);
     expect(secondParent.text()).toBe(sections[1].title);
     // assert "children" items
     const children = wrapper.findAll('.child-item');
     expect(children).toHaveLength(1);
     // assert child is not active
     expect(children.at(0).classes()).not.toContain('active');
-    const childLink = children.at(0).find(RouterLinkStub);
+    const childLink = children.at(0).findComponent(RouterLinkStub);
     expect(childLink.classes()).toEqual(['base-link']);
     expect(childLink.props('to')).toEqual(`?language=objc#${sections[2].anchor}`);
     // assert third parent
     const thirdParent = parents.at(2);
     expect(thirdParent.classes()).not.toContain('active');
-    expect(thirdParent.find(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[3].anchor}`);
+    expect(thirdParent.findComponent(RouterLinkStub).props('to')).toEqual(`?language=objc#${sections[3].anchor}`);
     expect(thirdParent.find('.children').exists()).toBe(false);
   });
 
@@ -154,7 +154,7 @@ describe('OnThisPageNav', () => {
     createWrapper();
     await flushPromises();
     const parents = wrapper.findAll('.parent-item');
-    const child = wrapper.find('.child-item');
+    const child = wrapper.findComponent('.child-item');
 
     expect(store.setCurrentPageSection).toHaveBeenCalledTimes(1);
     // intersection point would be 250(150+100), which is not reaching second item

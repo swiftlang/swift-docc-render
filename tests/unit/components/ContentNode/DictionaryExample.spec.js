@@ -25,7 +25,7 @@ describe('DictionaryExample', () => {
     const wrapper = shallowMount(DictionaryExample, {
       propsData,
     });
-    const codeListing = wrapper.find(CollapsibleCodeListing);
+    const codeListing = wrapper.findComponent(CollapsibleCodeListing);
     expect(codeListing.props('content')).toEqual(propsData.example.content);
     expect(codeListing.props('showLineNumbers')).toEqual(true);
   });

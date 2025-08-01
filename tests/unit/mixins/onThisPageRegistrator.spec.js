@@ -109,7 +109,7 @@ describe('OnThisPageRegistrator', () => {
       data: () => ({ topicData: null }),
     });
     await flushPromises();
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         metadata: { title: 'Foo' },
         kind: 'symbol',
@@ -157,7 +157,7 @@ describe('OnThisPageRegistrator', () => {
       data: () => ({ topicData: null }),
     });
     await flushPromises();
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         metadata: { title: 'Foo' },
         primaryContentSections: [

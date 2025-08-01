@@ -77,7 +77,7 @@ describe('RelationshipsList', () => {
   });
 
   it('renders a ul.relationships-list', () => {
-    expect(wrapper.is('ul.relationships-list')).toBe(true);
+    expect(wrapper.element.matches('ul.relationships-list')).toBe(true);
     expect(wrapper.classes('inline')).toBe(false);
   });
 
@@ -101,7 +101,7 @@ describe('RelationshipsList', () => {
     expect(items.length).toBe(propsData.symbols.length);
 
     items.wrappers.slice(0, items.length - 1).forEach((item, i) => {
-      const link = item.find(Reference);
+      const link = item.findComponent(Reference);
       expect(link.exists()).toBe(true);
       expect(link.classes('link')).toBe(true);
       expect(link.props('url')).toBe(propsData.symbols[i].url);
@@ -112,17 +112,17 @@ describe('RelationshipsList', () => {
     const items = wrapper.findAll('li');
 
     const lastItem = items.at(items.length - 1);
-    expect(lastItem.find(RouterLinkStub).exists()).toBe(false);
+    expect(lastItem.findComponent(RouterLinkStub).exists()).toBe(false);
 
-    const wb = lastItem.find(WordBreak);
+    const wb = lastItem.findComponent(WordBreak);
     expect(wb.exists()).toBe(true);
     expect(wb.attributes('tag')).toBe('code');
     expect(wb.text()).toBe(propsData.symbols[4].title);
   });
 
   describe('with 3 or fewer symbols', () => {
-    beforeEach(() => {
-      wrapper.setProps({
+    beforeEach(async () => {
+      await wrapper.setProps({
         symbols: [
           propsData.symbols[0],
           propsData.symbols[1],
@@ -147,8 +147,8 @@ describe('RelationshipsList', () => {
         ],
       };
 
-      beforeEach(() => {
-        wrapper.setProps({
+      beforeEach(async () => {
+        await wrapper.setProps({
           symbols: [
             propsData.symbols[0],
             {
@@ -165,7 +165,7 @@ describe('RelationshipsList', () => {
       });
 
       it('renders a `ConditionalConstraints`', () => {
-        const constraints = wrapper.find(ConditionalConstraints);
+        const constraints = wrapper.findComponent(ConditionalConstraints);
         expect(constraints.exists()).toBe(true);
         expect(constraints.props()).toEqual({
           constraints: conformance.constraints,
@@ -176,8 +176,10 @@ describe('RelationshipsList', () => {
   });
 
   describe('when a symbol has API Changes', () => {
-    const assertChange = (change, expectedChange, type = propsData.type, relationship = {}) => {
-      wrapper.setProps({ type });
+    const assertChange = async (
+      change, expectedChange, type = propsData.type, relationship = {},
+    ) => {
+      await wrapper.setProps({ type });
 
       store.state.apiChanges = {
         [provide.identifier]: {
@@ -186,6 +188,7 @@ describe('RelationshipsList', () => {
         },
       };
 
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain('changed');
       expect(wrapper.classes()).toContain(`changed-${expectedChange}`);
     };

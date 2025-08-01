@@ -47,10 +47,10 @@ describe('CollapsibleCodeListing', () => {
   });
 
   it('renders a .collapsible-code-listing root with <pre><code>', () => {
-    expect(wrapper.is('.collapsible-code-listing')).toBe(true);
-    const pre = wrapper.find('pre');
+    expect(wrapper.element.matches('.collapsible-code-listing')).toBe(true);
+    const pre = wrapper.findComponent('pre');
     expect(pre.exists()).toBe(true);
-    expect(pre.contains(CodeBlock)).toBe(true);
+    expect(pre.findComponent(CodeBlock).exists()).toBe(true);
   });
 
   it('renders code in .code-line elements', () => {
@@ -71,32 +71,32 @@ describe('CollapsibleCodeListing', () => {
     expect(containers.at(0).find('.code-line-container').exists()).toBe(true);
     expect(containers.at(0).classes('collapsible')).toBe(false);
     expect(containers.at(0).classes('collapsed')).toBe(false);
-    expect(containers.at(0).contains('.code-number')).toBe(true);
-    expect(containers.at(0).contains('.code-line')).toBe(true);
+    expect(containers.at(0).find('.code-number').exists()).toBe(true);
+    expect(containers.at(0).find('.code-line').exists()).toBe(true);
 
     expect(containers.at(1).find('.code-line-container').exists()).toBe(true);
     expect(containers.at(1).classes('collapsible')).toBe(true);
     expect(containers.at(1).classes('collapsed')).toBe(false);
-    expect(containers.at(1).contains('.code-number')).toBe(true);
-    expect(containers.at(1).contains('.code-line')).toBe(true);
+    expect(containers.at(1).find('.code-number').exists()).toBe(true);
+    expect(containers.at(1).find('.code-line').exists()).toBe(true);
 
     expect(containers.at(2).find('.code-line-container').exists()).toBe(true);
     expect(containers.at(2).classes('collapsible')).toBe(false);
     expect(containers.at(2).classes('collapsed')).toBe(false);
-    expect(containers.at(2).contains('.code-number')).toBe(true);
-    expect(containers.at(2).contains('.code-line')).toBe(true);
+    expect(containers.at(2).find('.code-number').exists()).toBe(true);
+    expect(containers.at(2).find('.code-line').exists()).toBe(true);
   });
 
-  it('adds collapsed class to all collapsible containers when collapsed', () => {
+  it('adds collapsed class to all collapsible containers when collapsed', async () => {
     expect(wrapper.findAll('.collapsed').length).toBe(0);
-    wrapper.setProps({ collapsed: true });
+    await wrapper.setProps({ collapsed: true });
     expect(wrapper.findAll('.collapsed').length).toBe(1);
   });
 
-  it('does not show line numbers when showLineNumbers is false', () => {
+  it('does not show line numbers when showLineNumbers is false', async () => {
     let number = wrapper.element.querySelector('.code-number');
     expect(number.style.display).toBe('');
-    wrapper.setProps({ showLineNumbers: false });
+    await wrapper.setProps({ showLineNumbers: false });
     number = wrapper.element.querySelector('.code-number');
     expect(number.style.display).toBe('none');
   });
@@ -104,7 +104,7 @@ describe('CollapsibleCodeListing', () => {
   it('adds a class `single-line` if only one line of code is provided', async () => {
     expect(wrapper.classes()).not.toContain('single-line');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       content: [
         {
           collapsible: false,

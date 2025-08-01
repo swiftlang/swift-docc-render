@@ -56,7 +56,7 @@ describe('ChapterTopicList', () => {
   });
 
   it('renders an ol.topic-list root', () => {
-    expect(wrapper.is('ol.topic-list')).toBe(true);
+    expect(wrapper.element.matches('ol.topic-list')).toBe(true);
   });
 
   it('renders an li with link/time for every topic', () => {
@@ -69,7 +69,7 @@ describe('ChapterTopicList', () => {
         title, url, kind, estimatedTime,
       } = topic;
 
-      const link = item.find(RouterLinkStub);
+      const link = item.findComponent(RouterLinkStub);
       expect(link.exists()).toBe(true);
       expect(link.props('to')).toBe(`${url}?context=foo`);
 
@@ -80,7 +80,7 @@ describe('ChapterTopicList', () => {
       if (estimatedTime) {
         const time = item.find('.time');
         expect(time.find('.time-label').text()).toBe(estimatedTime);
-        expect(time.contains(TimerIcon)).toBe(true);
+        expect(time.findComponent(TimerIcon).exists()).toBe(true);
       } else {
         expect(item.classes()).toContain('no-time-estimate');
         expect(item.find('.time').exists()).toBeFalsy();
@@ -88,8 +88,8 @@ describe('ChapterTopicList', () => {
     });
   });
 
-  it('renders aria labels even if no `estimatedTime` on a topic', () => {
-    wrapper.setProps({
+  it('renders aria labels even if no `estimatedTime` on a topic', async () => {
+    await wrapper.setProps({
       topics: [
         {
           kind: TopicKind.tutorial,
@@ -98,7 +98,7 @@ describe('ChapterTopicList', () => {
         },
       ],
     });
-    expect(wrapper.find('li.topic .container').attributes('aria-label')).toEqual('Foo - Tutorial');
+    expect(wrapper.findComponent('li.topic .container').attributes('aria-label')).toEqual('Foo - Tutorial');
   });
 
   it('adds modifiers for the kind of topic (article or tutorial)', () => {

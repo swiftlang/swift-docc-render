@@ -23,7 +23,7 @@ describe('ContentNode', () => {
     const wrapper = createWrapper({
       propsData: { tasks },
     });
-    expect(wrapper.is('ul.tasklist')).toBe(true);
+    expect(wrapper.element.matches('ul.tasklist')).toBe(true);
 
     const checkboxes = wrapper.findAll('li input[disabled][type="checkbox"]');
     expect(checkboxes.length).toBe(tasks.length);

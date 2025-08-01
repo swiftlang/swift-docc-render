@@ -33,7 +33,7 @@ describe('DeclarationDiff', () => {
     expect(labels.at(0).text()).toEqual('Current');
     expect(labels.at(1).text()).toEqual('Previous');
 
-    const currentLists = wrapper.find('.declaration-diff-current').findAll(DeclarationList);
+    const currentLists = wrapper.findComponent('.declaration-diff-current').findAllComponents(DeclarationList);
 
     expect(currentLists).toHaveLength(2);
     expect(currentLists.at(0).props()).toEqual({
@@ -47,7 +47,7 @@ describe('DeclarationDiff', () => {
       declListExpanded: false,
     });
 
-    const previousLists = wrapper.find('.declaration-diff-previous').findAll(DeclarationList);
+    const previousLists = wrapper.findComponent('.declaration-diff-previous').findAllComponents(DeclarationList);
 
     expect(previousLists).toHaveLength(1);
     expect(previousLists.at(0).props()).toEqual({

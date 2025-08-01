@@ -27,7 +27,7 @@ const createWrapper = ({ propsData, ...rest } = {}) => mount(DropdownCustom, {
     ...defaultProps,
     ...propsData,
   },
-  attachToDocument: true,
+  attachTo: document.body,
   scopedSlots: {
     default(props) {
       slotProps = props;
@@ -51,29 +51,30 @@ describe('DropdownCustom', () => {
     wrapper.destroy();
   });
 
-  it('renders the BaseDropdown at the root', () => {
+  it('renders the BaseDropdown at the root', async () => {
     wrapper = createWrapper();
-    const root = wrapper.find(BaseDropdown);
+    const root = wrapper.findComponent(BaseDropdown);
     // assert exist
     expect(root.exists()).toBe(true);
     // assert value
     expect(root.props()).toHaveProperty('value', defaultProps.value);
     // assert isOpen class
     expect(root.classes()).not.toContain(OpenedClass);
-    wrapper.find({ ref: 'dropdownToggle' }).trigger('click');
+    wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
+    await wrapper.vm.$nextTick();
     expect(root.classes()).toContain(OpenedClass);
   });
 
-  it('adds an `dropdown-small` class', () => {
+  it('adds an `dropdown-small` class', async () => {
     wrapper = createWrapper();
     expect(wrapper.classes()).not.toContain('dropdown-small');
-    wrapper.setProps({ isSmall: true });
+    await wrapper.setProps({ isSmall: true });
     expect(wrapper.classes()).toContain('dropdown-small');
   });
 
   it('renders a label', () => {
     wrapper = createWrapper();
-    const label = wrapper.find('.visuallyhidden');
+    const label = wrapper.findComponent('.visuallyhidden');
     expect(label.text()).toBe(defaultProps.ariaLabel);
     expect(label.attributes()).toHaveProperty('id', expect.stringMatching(/DropdownLabel_\d/));
   });
@@ -81,8 +82,8 @@ describe('DropdownCustom', () => {
   describe('toggle button', () => {
     it('renders a toggle button', () => {
       wrapper = createWrapper();
-      const toggle = wrapper.find({ ref: 'dropdownToggle' });
-      expect(toggle.is('button')).toBe(true);
+      const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
+      expect(toggle.element.tagName.toLowerCase() === 'button').toBe(true);
       // classes
       expect(toggle.classes()).toContain('form-dropdown-toggle');
       // passed from the parent via scoped slot
@@ -99,45 +100,53 @@ describe('DropdownCustom', () => {
       expect(toggle.find('.form-dropdown-title').text()).toEqual(defaultProps.value);
     });
 
-    it('toggles the dropdown on/off on `click`', () => {
+    it('toggles the dropdown on/off on `click`', async () => {
       wrapper = createWrapper();
-      const toggle = wrapper.find({ ref: 'dropdownToggle' });
+      const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
       toggle.trigger('click');
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain(OpenedClass);
       toggle.trigger('click');
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).not.toContain(OpenedClass);
       expect(wrapper.emitted('open')).toBeTruthy();
       expect(wrapper.emitted('close')).toBeTruthy();
     });
 
-    it('opens the dropdown on `enter`', () => {
+    it('opens the dropdown on `enter`', async () => {
       wrapper = createWrapper();
-      const toggle = wrapper.find({ ref: 'dropdownToggle' });
+      const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
       toggle.trigger('keydown.enter');
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain(OpenedClass);
       toggle.trigger('keydown.enter');
+      await wrapper.vm.$nextTick();
       // assert it does not close it
       expect(wrapper.classes()).toContain(OpenedClass);
       expect(wrapper.emitted('open')).toBeTruthy();
     });
 
-    it('opens the dropdown on `keydown.down`', () => {
+    it('opens the dropdown on `keydown.down`', async () => {
       wrapper = createWrapper();
-      const toggle = wrapper.find({ ref: 'dropdownToggle' });
+      const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
       toggle.trigger('keydown.down');
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain(OpenedClass);
       toggle.trigger('keydown.down');
+      await wrapper.vm.$nextTick();
       // assert it does not close it
       expect(wrapper.classes()).toContain(OpenedClass);
       expect(wrapper.emitted('open')).toBeTruthy();
     });
 
-    it('opens the dropdown on `keydown.up`', () => {
+    it('opens the dropdown on `keydown.up`', async () => {
       wrapper = createWrapper();
-      const toggle = wrapper.find({ ref: 'dropdownToggle' });
+      const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
       toggle.trigger('keydown.up');
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain(OpenedClass);
       toggle.trigger('keydown.up');
+      await wrapper.vm.$nextTick();
       // assert it does not close it
       expect(wrapper.classes()).toContain(OpenedClass);
       expect(wrapper.emitted('open')).toBeTruthy();
@@ -145,11 +154,11 @@ describe('DropdownCustom', () => {
 
     it('closes the dropdown on `escape` and focuses the toggle', async () => {
       wrapper = createWrapper();
-      const toggle = wrapper.find({ ref: 'dropdownToggle' });
+      const toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
       toggle.trigger('click');
-      expect(wrapper.classes()).toContain(OpenedClass);
-      toggle.trigger('keydown.esc');
       await wrapper.vm.$nextTick();
+      expect(wrapper.classes()).toContain(OpenedClass);
+      await toggle.trigger('keydown.esc');
       expect(wrapper.classes()).not.toContain(OpenedClass);
       expect(wrapper.emitted('open')).toBeTruthy();
       expect(wrapper.emitted('close')).toBeTruthy();
@@ -164,7 +173,7 @@ describe('DropdownCustom', () => {
         'toggle-post-content': '<div class="postContent">Post Content</div>',
       },
     });
-    const renderedSlot = wrapper.find({ ref: 'dropdownToggle' }).find('.postContent');
+    const renderedSlot = wrapper.findComponent({ ref: 'dropdownToggle' }).find('.postContent');
     expect(renderedSlot.text()).toContain('Post Content');
   });
 
@@ -174,18 +183,18 @@ describe('DropdownCustom', () => {
         eyebrow: '<div class="eyebrow">Eyebrow Content</div>',
       },
     });
-    expect(wrapper.find('.eyebrow').text()).toEqual('Eyebrow Content');
+    expect(wrapper.findComponent('.eyebrow').text()).toEqual('Eyebrow Content');
   });
 
   describe('default scoped slot', () => {
     let toggle;
     beforeEach(() => {
       wrapper = createWrapper();
-      toggle = wrapper.find({ ref: 'dropdownToggle' });
+      toggle = wrapper.findComponent({ ref: 'dropdownToggle' });
     });
 
     it('renders the default scoped slot', () => {
-      expect(wrapper.find('.defaultSlot').exists()).toBe(true);
+      expect(wrapper.findComponent('.defaultSlot').exists()).toBe(true);
     });
 
     it('provides the `option` and `activeOption` classes', () => {
@@ -233,23 +242,27 @@ describe('DropdownCustom', () => {
       expect(slotProps.value).toBe(defaultProps.value);
     });
 
-    it('provides the `isOpen` variable', () => {
+    it('provides the `isOpen` variable', async () => {
       expect(slotProps.isOpen).toBe(false);
       toggle.trigger('click');
+      await wrapper.vm.$nextTick();
       expect(slotProps.isOpen).toBe(true);
     });
 
-    it('provides the correct `classes`', () => {
+    it('provides the correct `classes`', async () => {
       expect(slotProps.contentClasses).toEqual(['form-dropdown-content', { [OpenedClass]: false }]);
       toggle.trigger('click');
+      await wrapper.vm.$nextTick();
       expect(slotProps.contentClasses).toEqual(['form-dropdown-content', { [OpenedClass]: true }]);
     });
 
-    it('provides a `closeDropdown` method', () => {
+    it('provides a `closeDropdown` method', async () => {
       expect(slotProps.closeDropdown).toEqual(expect.any(Function));
       toggle.trigger('click');
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain(OpenedClass);
       slotProps.closeDropdown();
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).not.toContain(OpenedClass);
     });
 
@@ -263,6 +276,7 @@ describe('DropdownCustom', () => {
     it('provides a `closeAndFocusToggler` method', async () => {
       expect(slotProps.closeAndFocusToggler).toEqual(expect.any(Function));
       toggle.trigger('click');
+      await wrapper.vm.$nextTick();
       expect(wrapper.classes()).toContain(OpenedClass);
       await slotProps.closeAndFocusToggler();
       expect(wrapper.classes()).not.toContain(OpenedClass);
@@ -270,26 +284,27 @@ describe('DropdownCustom', () => {
     });
   });
 
-  it('closes the dropdown of you `click` outside', () => {
+  it('closes the dropdown of you `click` outside', async () => {
     wrapper = createWrapper();
-    wrapper.find({ ref: 'dropdownToggle' }).trigger('click');
-    const label = wrapper.find('.visuallyhidden').element;
+    await wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
+    const label = wrapper.findComponent('.visuallyhidden').element;
     expect(wrapper.classes()).toContain(OpenedClass);
     const event = new Event('click');
     Object.defineProperty(event, 'target', { value: label });
     document.dispatchEvent(event);
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes()).toContain(OpenedClass);
 
     document.dispatchEvent(new Event('click'));
+    await wrapper.vm.$nextTick();
     expect(wrapper.classes()).not.toContain(OpenedClass);
   });
 
   it('focuses the active option element on open', async () => {
     document.body.focus();
     wrapper = createWrapper();
-    wrapper.find({ ref: 'dropdownToggle' }).trigger('click');
-    await wrapper.vm.$nextTick();
-    const activeElement = wrapper.find(`.${ActiveOptionClass}`);
+    await wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
+    const activeElement = wrapper.findComponent(`.${ActiveOptionClass}`);
     expect(document.activeElement).toEqual(activeElement.element);
   });
 });

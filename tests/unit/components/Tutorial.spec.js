@@ -113,7 +113,7 @@ describe('Section', () => {
       mocks,
     });
 
-    const assessment = wrapper.find(Assessments);
+    const assessment = wrapper.findComponent(Assessments);
     expect(assessment.exists()).toBe(true);
     expect(assessment.props()).toEqual(sectionProps);
   });
@@ -134,7 +134,7 @@ describe('Section', () => {
       mocks,
     });
 
-    const hero = wrapper.find(Hero);
+    const hero = wrapper.findComponent(Hero);
     expect(hero.exists()).toBe(true);
     expect(hero.props()).toEqual(sectionProps);
   });
@@ -155,7 +155,7 @@ describe('Section', () => {
       mocks,
     });
 
-    const sectionList = wrapper.find(SectionList);
+    const sectionList = wrapper.findComponent(SectionList);
     expect(sectionList.exists()).toBe(true);
     expect(sectionList.props()).toEqual(sectionProps);
   });
@@ -186,11 +186,11 @@ describe('Tutorial', () => {
   });
 
   it('renders a div.tutorial', () => {
-    expect(wrapper.is('div.tutorial')).toBe(true);
+    expect(wrapper.element.matches('div.tutorial')).toBe(true);
   });
 
   it('renders a `NavigationBar`', () => {
-    const nav = wrapper.find(NavigationBar);
+    const nav = wrapper.findComponent(NavigationBar);
     expect(nav.exists()).toBe(true);
     expect(nav.props()).toEqual({
       technology: propsData.metadata.category,
@@ -202,7 +202,7 @@ describe('Tutorial', () => {
   });
 
   it('renders a `Section` for each section', () => {
-    const projectSections = wrapper.findAll(Section);
+    const projectSections = wrapper.findAllComponents(Section);
     expect(projectSections.length).toBe(sections.length);
 
     expect(projectSections.at(0).props('section')).toEqual(sections[0]);
@@ -211,7 +211,7 @@ describe('Tutorial', () => {
   });
 
   it('renders a `BreakpointEmitter`', () => {
-    expect(wrapper.contains(BreakpointEmitter)).toBe(true);
+    expect(wrapper.findComponent(BreakpointEmitter).exists()).toBe(true);
   });
 
   it('provides a page title using the hero section title', () => {
@@ -228,14 +228,14 @@ describe('Tutorial', () => {
 
   it('renders a BreakpointEmitter and updates the breakpoint in the store', () => {
     const spy = jest.spyOn(wrapper.vm.store, 'updateBreakpoint');
-    const emitter = wrapper.find(BreakpointEmitter);
+    const emitter = wrapper.findComponent(BreakpointEmitter);
     expect(emitter.exists()).toBe(true);
     emitter.vm.$emit('change', 'foo');
     expect(spy).toHaveBeenCalledWith('foo');
   });
 
   it('renders a `PortalTarget`', () => {
-    const target = wrapper.find(PortalTarget);
+    const target = wrapper.findComponent(PortalTarget);
     expect(target.exists()).toBe(true);
     expect(target.props()).toHaveProperty('name', 'modal-destination');
   });

@@ -125,7 +125,7 @@ describe('NavigationBar', () => {
   it('renders the NavBase', () => {
     wrapper = shallowMount(NavigationBar, mountOptions(TopicStore));
 
-    const container = wrapper.find(NavBase);
+    const container = wrapper.findComponent(NavBase);
     expect(container.attributes()).toHaveProperty('aria-label', technology);
     expect(container.props()).toHaveProperty('hasSolidBackground', true);
     expect(container.exists()).toBe(true);
@@ -178,7 +178,7 @@ describe('NavigationBar', () => {
     });
 
     it('renders a .nav-title-content with technology title', () => {
-      const title = wrapper.find(NavTitleContainer);
+      const title = wrapper.findComponent(NavTitleContainer);
       expect(title.exists()).toBe(true);
       expect(title.text()).toContain('Augmented Reality');
 
@@ -186,7 +186,7 @@ describe('NavigationBar', () => {
     });
 
     it('renders a separator', () => {
-      expect(wrapper.find('.separator').exists()).toBe(true);
+      expect(wrapper.findComponent('.separator').exists()).toBe(true);
     });
 
     it('appends already existing query params to the url', () => {
@@ -205,8 +205,8 @@ describe('NavigationBar', () => {
         },
       });
 
-      const titleDiv = wrapper.find('div.nav-title');
-      const link = titleDiv.find(NavTitleContainer);
+      const titleDiv = wrapper.findComponent('div.nav-title');
+      const link = titleDiv.findComponent(NavTitleContainer);
       expect(link.props('to')).toEqual(`${references[rootReference].url}?changes=foo&context=bar`);
     });
 
@@ -215,7 +215,7 @@ describe('NavigationBar', () => {
     });
 
     it('renders a MobileDropdown element', () => {
-      const dropdown = wrapper.find(MobileDropdown);
+      const dropdown = wrapper.findComponent(MobileDropdown);
       expect(dropdown.exists()).toBe(true);
       expect(dropdown.props()).toEqual({
         options: chapters,
@@ -246,7 +246,7 @@ describe('NavigationBar', () => {
     });
 
     it('scrolls to a section, on `@select-section`, on MobileDropdown', async () => {
-      const dropdown = wrapper.find(MobileDropdown);
+      const dropdown = wrapper.findComponent(MobileDropdown);
       dropdown.vm.$emit('select-section', 'path/to/item#section-foo');
       await flushPromises();
       expect(scrollToElement.methods.handleFocusAndScroll).toHaveBeenCalledTimes(1);
@@ -254,7 +254,7 @@ describe('NavigationBar', () => {
     });
 
     it('scrolls to a section, on `@select-section`, on SecondaryDropdown', async () => {
-      const dropdown = wrapper.find(SecondaryDropdown);
+      const dropdown = wrapper.findComponent(SecondaryDropdown);
       dropdown.vm.$emit('select-section', 'path/to/item#section-foo');
       await flushPromises();
       expect(scrollToElement.methods.handleFocusAndScroll).toHaveBeenCalledTimes(1);
@@ -262,9 +262,9 @@ describe('NavigationBar', () => {
     });
 
     it('renders a "Primary Dropdown" with chapters', () => {
-      const primaryDropdown = wrapper.find('.primary-dropdown');
+      const primaryDropdown = wrapper.findComponent('.primary-dropdown');
       expect(primaryDropdown.exists()).toBe(true);
-      expect(primaryDropdown.is(PrimaryDropdown)).toBe(true);
+      expect(primaryDropdown.findComponent(PrimaryDropdown).exists()).toBe(true);
       expect(primaryDropdown.props()).toEqual({
         currentOption: topic,
         options: chapters,
@@ -272,7 +272,7 @@ describe('NavigationBar', () => {
     });
 
     it('shows a chevron icon', () => {
-      const chevron = wrapper.find(ChevronIcon);
+      const chevron = wrapper.findComponent(ChevronIcon);
       expect(chevron.exists()).toBe(true);
       expect(chevron.classes('hidden')).toBe(false);
     });
@@ -291,9 +291,9 @@ describe('NavigationBar', () => {
     });
 
     it('renders a "Secondary Dropdown"', () => {
-      const secondaryDropdown = wrapper.find('.secondary-dropdown');
+      const secondaryDropdown = wrapper.findComponent('.secondary-dropdown');
       expect(secondaryDropdown.exists()).toBe(true);
-      expect(secondaryDropdown.is(SecondaryDropdown)).toBe(true);
+      expect(secondaryDropdown.findComponent(SecondaryDropdown).exists()).toBe(true);
       expect(secondaryDropdown.props('options')).toEqual([
         {
           path: '#introduction',
