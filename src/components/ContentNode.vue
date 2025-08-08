@@ -275,6 +275,8 @@ function renderNode(createElement, references) {
         content: node.code,
         showLineNumbers: node.showLineNumbers,
         copyToClipboard: node.copyToClipboard ?? false,
+        wrap: node.wrap ?? 0,
+        highlightedLines: node.highlight ?? [],
       };
       return createElement(CodeListing, { props });
     }
