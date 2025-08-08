@@ -12,7 +12,8 @@
   <div
     class="code-listing"
     :data-syntax="syntaxNameNormalized"
-    :class="{ 'single-line': syntaxHighlightedLines.length === 1 }"
+    :class="{ 'single-line': syntaxHighlightedLines.length === 1, 'is-wrapped': wrap > 0 }"
+    :style="wrapStyle"
   >
     <Filename
       v-if="fileName"
@@ -103,6 +104,14 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    wrap: {
+      type: Number,
+      required: true,
+    },
+    highlightedLines: {
+      type: Array,
+      required: true,
+    },
     startLineNumber: {
       type: Number,
       default: () => 1,
@@ -129,6 +138,22 @@ export default {
     copyableText() {
       return this.content.join('\n');
     },
+    highlightSet() {
+      const arr = this.highlightedLines || [];
+      return new Set(arr.map(Number).filter(n => Number.isFinite(n) && n > 0));
+    },
+    wrapStyle() {
+      const style = {};
+      if (this.wrap > 0) {
+        style.whiteSpace = 'pre-wrap';
+        style.wordBreak = 'break-word';
+        style.overflowWrap = 'anywhere';
+        style['--wrap-ch'] = String(this.wrap);
+      } else {
+        style.whiteSpace = 'pre';
+      }
+      return style;
+    },
   },
   watch: {
     content: {
@@ -138,7 +163,10 @@ export default {
   },
   methods: {
     isHighlighted(index) {
-      return this.highlightedLineNumbers.has(this.lineNumberFor(index));
+      const lineNumber = this.lineNumberFor(index);
+      const h1 = this.highlightedLineNumbers.has(lineNumber);
+      const h2 = this.highlightSet.has(lineNumber);
+      return (h1 || h2);
     },
     // Returns the line number for the line at the given index in `content`.
     lineNumberFor(index) {
@@ -247,6 +275,17 @@ code {
   &.single-line {
     border-radius: $large-border-radius;
   }
+}
+
+.is-wrapped pre,
+.is-wrapped code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.is-wrapped pre {
+  max-width: calc(var(--wrap-ch) * 1ch);
 }
 
 .container-general {
