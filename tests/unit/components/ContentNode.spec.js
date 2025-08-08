@@ -101,6 +101,7 @@ describe('ContentNode', () => {
       syntax: 'swift',
       fileType: 'swift',
       code: ['foobar'],
+      copyToClipboard: false,
     };
 
     it('renders a `CodeListing`', () => {
@@ -111,6 +112,7 @@ describe('ContentNode', () => {
       expect(codeListing.props('syntax')).toBe(listing.syntax);
       expect(codeListing.props('fileType')).toBe(listing.fileType);
       expect(codeListing.props('content')).toEqual(listing.code);
+      expect(codeListing.props('copyToClipboard')).toEqual(listing.copyToClipboard);
       expect(codeListing.isEmpty()).toBe(true);
     });
 
@@ -135,6 +137,29 @@ describe('ContentNode', () => {
       expect(caption.props('title')).toBe(metadata.title);
       expect(caption.contains('p')).toBe(true);
       expect(caption.text()).toContain('blah');
+    });
+  });
+
+  describe('with type="codeListing" and copy set', () => {
+    const listing = {
+      type: 'codeListing',
+      syntax: 'swift',
+      fileType: 'swift',
+      code: ['foobar'],
+      copyToClipboard: true,
+    };
+
+    // renders a copy button
+    it('renders a copy button', () => {
+      const wrapper = mountWithItem(listing);
+
+      const codeListing = wrapper.find('.content').find(CodeListing);
+      expect(codeListing.exists()).toBe(true);
+      expect(codeListing.props('syntax')).toBe(listing.syntax);
+      expect(codeListing.props('fileType')).toBe(listing.fileType);
+      expect(codeListing.props('content')).toEqual(listing.code);
+      expect(codeListing.props('copyToClipboard')).toEqual(listing.copyToClipboard);
+      expect(codeListing.isEmpty()).toBe(true);
     });
   });
 
