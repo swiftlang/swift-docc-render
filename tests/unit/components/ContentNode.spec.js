@@ -102,6 +102,8 @@ describe('ContentNode', () => {
       fileType: 'swift',
       code: ['foobar'],
       copyToClipboard: false,
+      wrap: 0,
+      lineAnnotations: [],
     };
 
     it('renders a `CodeListing`', () => {
@@ -113,6 +115,8 @@ describe('ContentNode', () => {
       expect(codeListing.props('fileType')).toBe(listing.fileType);
       expect(codeListing.props('content')).toEqual(listing.code);
       expect(codeListing.props('copyToClipboard')).toEqual(listing.copyToClipboard);
+      expect(codeListing.props('wrap')).toEqual(listing.wrap);
+      expect(codeListing.props('lineAnnotations')).toEqual(listing.lineAnnotations);
       expect(codeListing.element.childElementCount === 0).toBe(true);
     });
 

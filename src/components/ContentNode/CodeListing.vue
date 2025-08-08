@@ -12,7 +12,8 @@
   <div
     class="code-listing"
     :data-syntax="syntaxNameNormalized"
-    :class="{ 'single-line': syntaxHighlightedLines.length === 1 }"
+    :class="{ 'single-line': syntaxHighlightedLines.length === 1, 'is-wrapped': wrap > 0 }"
+    :style="wrap > 0 ? { '--wrap-ch': wrap } : null"
   >
     <Filename
       v-if="fileName"
@@ -40,7 +41,13 @@
         v-for="(line, index) in syntaxHighlightedLines"
       ><span
         :key="index"
-        :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
+        :class="[
+          'code-line-container',
+          {
+            highlighted: isHighlighted(index) || isUserHighlighted(index),
+            strikethrough: isUserStrikethrough(index),
+          }
+        ]"
       ><span
         v-if="showLineNumbers"
         class="code-number"
@@ -103,6 +110,14 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    wrap: {
+      type: Number,
+      default: () => 0,
+    },
+    lineAnnotations: {
+      type: Array,
+      default: () => [],
+    },
     startLineNumber: {
       type: Number,
       default: () => 1,
@@ -139,6 +154,24 @@ export default {
   methods: {
     isHighlighted(index) {
       return this.highlightedLineNumbers.has(this.lineNumberFor(index));
+    },
+    isLineInStyle(index, style) {
+      const lineNumber = this.lineNumberFor(index);
+
+      return this.lineAnnotations
+        .filter(a => a.style === style)
+        .some((a) => {
+          if (!a.range || !a.range[0] || !a.range[1]) return false;
+          const startLine = a.range[0].line;
+          const endLine = a.range[1].line;
+          return lineNumber >= startLine && lineNumber <= endLine;
+        });
+    },
+    isUserHighlighted(index) {
+      return this.isLineInStyle(index, 'highlight');
+    },
+    isUserStrikethrough(index) {
+      return this.isLineInStyle(index, 'strikeout');
     },
     // Returns the line number for the line at the given index in `content`.
     lineNumberFor(index) {
@@ -209,6 +242,12 @@ export default {
   }
 }
 
+.strikethrough {
+  text-decoration-line: line-through;
+  text-decoration-color: var(--color-figure-gray);
+  opacity: 0.85;
+}
+
 pre {
   padding: $code-listing-with-numbers-padding;
   display: flex;
@@ -247,6 +286,17 @@ code {
   &.single-line {
     border-radius: $large-border-radius;
   }
+}
+
+.is-wrapped pre,
+.is-wrapped code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.is-wrapped pre {
+  max-width: calc(var(--wrap-ch) * 1ch);
 }
 
 .container-general {

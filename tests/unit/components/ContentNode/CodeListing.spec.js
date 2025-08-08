@@ -98,6 +98,55 @@ describe('CodeListing', () => {
     });
   });
 
+  it('styles the correct lines from lineAnnotations with the specified style', async () => {
+    const content = ['a', 'b', 'c', 'd', 'e'];
+    const lineAnnotations = [
+      { style: 'highlight', range: [{ line: 1 }, { line: 1 }] },
+      { style: 'highlight', range: [{ line: 2 }, { line: 2 }] },
+      { style: 'strikeout', range: [{ line: 1 }, { line: 1 }] },
+      { style: 'strikeout', range: [{ line: 3 }, { line: 3 }] },
+    ];
+
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        content,
+        lineAnnotations,
+        showLineNumbers: true,
+      },
+    });
+
+    await flushPromises();
+
+    const pre = wrapper.find('pre');
+    expect(pre.exists()).toBe(true);
+
+    const codeLineContainers = wrapper.findAll('span.code-line-container');
+    expect(codeLineContainers.length).toBe(content.length);
+
+    const highlightedLines = lineAnnotations
+      .filter(a => a.style === 'highlight')
+      .flatMap(a => a.range.map(r => r.line));
+    const strikethroughLines = lineAnnotations
+      .filter(a => a.style === 'strikeout')
+      .flatMap(a => a.range.map(r => r.line));
+
+    content.forEach((line, index) => {
+      const codeLineContainer = codeLineContainers.at(index);
+      const shouldBeHighlighted = highlightedLines.includes(index + 1);
+      const shouldBeStriked = strikethroughLines.includes(index + 1);
+
+      const codeNumber = codeLineContainer.find('.code-number');
+
+      expect(codeNumber.attributes('data-line-number')).toBe(`${index + 1}`);
+
+      const codeLine = codeLineContainer.find('.code-line');
+      expect(codeLine.text()).toBe(line);
+
+      expect(codeLineContainer.classes('highlighted')).toBe(shouldBeHighlighted);
+      expect(codeLineContainer.classes('strikethrough')).toBe(shouldBeStriked);
+    });
+  });
+
   it('syntax highlights code for Swift', async () => {
     const wrapper = shallowMount(CodeListing, {
       propsData: {
@@ -231,5 +280,70 @@ describe('CodeListing', () => {
     await flushPromises();
 
     expect(wrapper.classes()).toContain('single-line');
+  });
+
+  it('does not wrap when wrap=0', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: 0,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).not.toContain('is-wrapped');
+
+    const style = wrapper.attributes('style') || '';
+    expect(style).not.toMatch(/--wrap-ch:\s*\d+/);
+  });
+
+  it('wraps when wrap>0 and exposes the width in style', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: 80,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).toContain('is-wrapped');
+
+    const style = wrapper.attributes('style') || '';
+    expect(style).toMatch(/--wrap-ch:\s*80\b/);
+  });
+
+  it('reacts when wrap changes', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: 80,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).toContain('is-wrapped');
+
+    let style = wrapper.attributes('style') || '';
+    expect(style).toMatch(/--wrap-ch:\s*80\b/);
+
+    await wrapper.setProps({ wrap: 0 });
+    style = wrapper.attributes('style') || '';
+    expect(style === null || style === '').toBe(true);
+  });
+
+  it('treats negative wrap as no-wrap', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: -5,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).not.toContain('is-wrapped');
   });
 });
