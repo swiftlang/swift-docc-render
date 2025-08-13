@@ -106,11 +106,11 @@ export default {
     },
     wrap: {
       type: Number,
-      required: true,
+      default: () => 0,
     },
     highlightedLines: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     startLineNumber: {
       type: Number,
