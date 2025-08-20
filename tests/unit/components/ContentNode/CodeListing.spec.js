@@ -139,6 +139,32 @@ describe('CodeListing', () => {
     expect(wrapper.html().includes('.syntax')).toBe(false);
   });
 
+  it('does not show copy button when its disabled', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        copyToClipboard: false,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.find('.copy-button').exists()).toBe(false);
+  });
+
+  it('shows copy button when its enabled', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        copyToClipboard: true,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.find('.copy-button').exists()).toBe(true);
+  });
+
   it('renders code with empty spaces', async () => {
     const wrapper = shallowMount(CodeListing, {
       propsData: {
