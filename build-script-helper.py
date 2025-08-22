@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
  This source file is part of the Swift.org open source project
@@ -12,8 +12,6 @@
  This is a helper script for the main swift repository's build-script.py that
  knows how to build and install the swift-docc-render.
 """
-
-from __future__ import print_function
 
 import argparse
 import os
@@ -75,7 +73,10 @@ def ensure_npm_is_installed(verbose=False):
         fatal_error('-- Error: %s' % error_msg)
     try:
         node_version = check_output(['node', '--version'], verbose=verbose)
-        if not node_version.startswith('v18.16.'):
+        # Ensure node_version is a string (decode if it's bytes)
+        if isinstance(node_version, bytes):
+            node_version = node_version.decode('utf-8')
+        if not node_version.strip().startswith('v18.16.'):
             warn_msg = "Unexpected version of 'node' installed. Swift-DocC-Render requires node 18.16.1. "\
                 "See the README.md file for more information about building Swift-DocC-Render."
             printerr('-- Warning: %s' % warn_msg)
