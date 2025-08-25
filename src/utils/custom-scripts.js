@@ -8,7 +8,6 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import fetchText from 'docc-render/utils/fetch-text';
 import {
   copyPresentProperties,
   copyPropertyIfPresent,
@@ -16,6 +15,7 @@ import {
   mustNotHave,
 } from 'docc-render/utils/object-properties';
 import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
+import { fetchText } from 'docc-render/utils/data';
 
 /** Enum for the allowed values of the `run` property in a custom script. */
 const Run = {
@@ -135,7 +135,7 @@ async function evalScript(customScript) {
 
     if (has(customScript, 'integrity')) {
       // External script with integrity. Must also use CORS.
-      codeToEval = await fetchText(customScript.url, {
+      codeToEval = await fetchText(customScript.url, {}, {
         integrity: customScript.integrity,
         crossOrigin: 'anonymous',
       });
@@ -150,7 +150,7 @@ async function evalScript(customScript) {
 
     if (has(customScript, 'integrity')) {
       // Local script with integrity. Do not use CORS.
-      codeToEval = await fetchText(url, { integrity: customScript.integrity });
+      codeToEval = await fetchText(url, {}, { integrity: customScript.integrity });
     } else {
       // Local script without integrity.
       codeToEval = await fetchText(url);
