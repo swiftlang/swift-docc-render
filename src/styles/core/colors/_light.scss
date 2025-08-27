@@ -77,6 +77,8 @@
   --color-code-collapsible-text: var(--color-figure-gray-secondary-alt);
   --color-code-line-highlight: #{change-color(light-color(figure-blue), $alpha: 0.08)};
   --color-code-line-highlight-border: var(--color-figure-blue);
+  --color-user-code-line-highlight: #{change-color(light-color(figure-orange), $alpha: 0.32)};
+  --color-user-code-line-highlight-border: var(--color-figure-orange);
   --color-code-plain: var(--color-figure-gray);
   --color-dropdown-background: #{transparentize(light-color(fill), 0.2)};
   --color-dropdown-border: #{light-color(fill-gray)};
