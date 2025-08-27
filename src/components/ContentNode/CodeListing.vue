@@ -41,7 +41,8 @@
         v-for="(line, index) in syntaxHighlightedLines"
       ><span
         :key="index"
-        :class="['code-line-container',{ highlighted: isHighlighted(index) }]"
+        :class="['code-line-container',{ highlighted: isHighlighted(index),
+                 'user-highlighted': isUserHighlighted(index) }]"
       ><span
         v-if="showLineNumbers"
         class="code-number"
@@ -163,10 +164,10 @@ export default {
   },
   methods: {
     isHighlighted(index) {
-      const lineNumber = this.lineNumberFor(index);
-      const h1 = this.highlightedLineNumbers.has(lineNumber);
-      const h2 = this.highlightSet.has(lineNumber);
-      return (h1 || h2);
+      return this.highlightedLineNumbers.has(this.lineNumberFor(index));
+    },
+    isUserHighlighted(index) {
+      return this.highlightSet.has(this.lineNumberFor(index));
     },
     // Returns the line number for the line at the given index in `content`.
     lineNumberFor(index) {
@@ -231,6 +232,15 @@ export default {
 .highlighted {
   background: var(--line-highlight, var(--color-code-line-highlight));
   border-left: $highlighted-border-width solid var(--color-code-line-highlight-border);
+
+  .code-number {
+    padding-left: $code-number-padding-left - $highlighted-border-width;
+  }
+}
+
+.user-highlighted {
+  background: var(--user-line-highlight, var(--color-user-code-line-highlight));
+  border-left: $highlighted-border-width solid var(--color-user-code-line-highlight-border);
 
   .code-number {
     padding-left: $code-number-padding-left - $highlighted-border-width;

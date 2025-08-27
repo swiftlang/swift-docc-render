@@ -84,6 +84,7 @@ export default {
         '--text': codeColors.text,
         '--background': codeColors.background,
         '--line-highlight': codeColors.lineHighlight,
+        '--user-line-highlight': codeColors.userLineHighlight,
         '--url': codeColors.commentURL,
         '--syntax-comment': codeColors.comment,
         '--syntax-quote': codeColors.comment,
