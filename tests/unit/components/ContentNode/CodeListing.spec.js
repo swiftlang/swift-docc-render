@@ -97,6 +97,76 @@ describe('CodeListing', () => {
     });
   });
 
+  it('highlights the correct lines from highlightedLines', async () => {
+    const content = ['a', 'b', 'c', 'd', 'e'];
+    const highlightedLines = [1, 3];
+
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        content,
+        highlightedLines,
+        showLineNumbers: true,
+      },
+    });
+
+    await flushPromises();
+
+    const pre = wrapper.find('pre');
+    expect(pre.exists()).toBe(true);
+
+    const codeLineContainers = wrapper.findAll('span.code-line-container');
+    expect(codeLineContainers.length).toBe(content.length);
+
+    content.forEach((line, index) => {
+      const codeLineContainer = codeLineContainers.at(index);
+      const shouldBeHighlighted = highlightedLines.includes(index + 1);
+
+      const codeNumber = codeLineContainer.find('.code-number');
+
+      expect(codeNumber.attributes('data-line-number')).toBe(`${index + 1}`);
+
+      const codeLine = codeLineContainer.find('.code-line');
+      expect(codeLine.text()).toBe(line);
+
+      expect(codeLineContainer.classes('user-highlighted')).toBe(shouldBeHighlighted);
+    });
+  });
+
+  it('strikes through the correct lines from strikethroughLines', async () => {
+    const content = ['a', 'b', 'c', 'd', 'e'];
+    const strikethroughLines = [1, 3];
+
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        content,
+        strikethroughLines,
+        showLineNumbers: true,
+      },
+    });
+
+    await flushPromises();
+
+    const pre = wrapper.find('pre');
+    expect(pre.exists()).toBe(true);
+
+    const codeLineContainers = wrapper.findAll('span.code-line-container');
+    expect(codeLineContainers.length).toBe(content.length);
+
+    content.forEach((line, index) => {
+      const codeLineContainer = codeLineContainers.at(index);
+      const shouldBeStriked = strikethroughLines.includes(index + 1);
+
+      const codeNumber = codeLineContainer.find('.code-number');
+
+      expect(codeNumber.attributes('data-line-number')).toBe(`${index + 1}`);
+
+      const codeLine = codeLineContainer.find('.code-line');
+      expect(codeLine.text()).toBe(line);
+
+      expect(codeLineContainer.classes('user-strikethrough')).toBe(shouldBeStriked);
+    });
+  });
+
   it('syntax highlights code for Swift', async () => {
     const wrapper = shallowMount(CodeListing, {
       propsData: {

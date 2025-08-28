@@ -42,7 +42,8 @@
       ><span
         :key="index"
         :class="['code-line-container',{ highlighted: isHighlighted(index),
-                 'user-highlighted': isUserHighlighted(index) }]"
+                 'user-highlighted': isUserHighlighted(index),
+                 'user-strikethrough': isUserStrikethrough(index),}]"
       ><span
         v-if="showLineNumbers"
         class="code-number"
@@ -113,6 +114,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    strikethroughLines: {
+      type: Array,
+      default: () => [],
+    },
     startLineNumber: {
       type: Number,
       default: () => 1,
@@ -143,6 +148,10 @@ export default {
       const arr = this.highlightedLines || [];
       return new Set(arr.map(Number).filter(n => Number.isFinite(n) && n > 0));
     },
+    strikethroughSet() {
+      const arr = this.strikethroughLines || [];
+      return new Set(arr.map(Number).filter(n => Number.isFinite(n) && n > 0));
+    },
     wrapStyle() {
       const style = {};
       if (this.wrap > 0) {
@@ -168,6 +177,9 @@ export default {
     },
     isUserHighlighted(index) {
       return this.highlightSet.has(this.lineNumberFor(index));
+    },
+    isUserStrikethrough(index) {
+      return this.strikethroughSet.has(this.lineNumberFor(index));
     },
     // Returns the line number for the line at the given index in `content`.
     lineNumberFor(index) {
@@ -245,6 +257,12 @@ export default {
   .code-number {
     padding-left: $code-number-padding-left - $highlighted-border-width;
   }
+}
+
+.user-strikethrough {
+  text-decoration-line: line-through;
+  text-decoration-color: var(--color-figure-gray);
+  opacity: 0.85;
 }
 
 pre {
