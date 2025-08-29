@@ -301,4 +301,70 @@ describe('CodeListing', () => {
 
     expect(wrapper.classes()).toContain('single-line');
   });
+
+  it('does not wrap when wrap=0', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: 0,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).not.toContain('is-wrapped');
+
+    const style = wrapper.attributes('style') || '';
+    expect(style).not.toMatch(/--wrap-ch:\s*\d+/);
+  });
+
+  it('wraps when wrap>0 and exposes the width in style', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: 80,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).toContain('is-wrapped');
+
+    const style = wrapper.attributes('style') || '';
+    expect(style).toMatch(/--wrap-ch:\s*80\b/);
+  });
+
+  it('reacts when wrap changes', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: 80,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).toContain('is-wrapped');
+
+    let style = wrapper.attributes('style') || '';
+    expect(style).toMatch(/--wrap-ch:\s*80\b/);
+
+    await wrapper.setProps({ wrap: 0 });
+    style = wrapper.attributes('style') || '';
+    expect(wrapper.classes()).not.toContain('is-wrapped');
+    expect(style).not.toMatch(/--wrap-ch:\s*\d+/);
+  });
+
+  it('treats negative wrap as no-wrap', async () => {
+    const wrapper = shallowMount(CodeListing, {
+      propsData: {
+        syntax: 'swift',
+        content: ['let foo = "bar"'],
+        wrap: -5,
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.classes()).not.toContain('is-wrapped');
+  });
 });
