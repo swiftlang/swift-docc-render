@@ -53,13 +53,10 @@ aside {
   break-inside: avoid;
   border-radius: var(--aside-border-radius, $border-radius);
   border-style: var(--aside-border-style, solid);
-  /*border-width: var(--aside-border-width,
-    $aside-width-border
-    $aside-width-border
-    $aside-width-border
-    $aside-width-left-border);*/
-  border-block-width: $aside-width-border;
-  border-inline-width: $aside-width-left-border 0;
+  border-block-width: var(--aside-border-width-block, $aside-width-border);
+  border-inline-width: var(--aside-border-width-inline,
+    $aside-width-left-border
+    $aside-width-border);
   padding: rem(16px);
   text-align: start;
 
