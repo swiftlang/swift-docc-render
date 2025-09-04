@@ -13,7 +13,7 @@
     class="code-listing"
     :data-syntax="syntaxNameNormalized"
     :class="{ 'single-line': syntaxHighlightedLines.length === 1, 'is-wrapped': wrap > 0 }"
-    :style="wrapStyle"
+    :style="wrap > 0 ? { '--wrap-ch': wrap } : null"
   >
     <Filename
       v-if="fileName"
@@ -42,8 +42,8 @@
       ><span
         :key="index"
         :class="['code-line-container',{ highlighted: isHighlighted(index),
-                 'user-highlighted': isUserHighlighted(index),
-                 'user-strikethrough': isUserStrikethrough(index),}]"
+                 highlighted: isUserHighlighted(index),
+                 strikethrough: isUserStrikethrough(index),}]"
       ><span
         v-if="showLineNumbers"
         class="code-number"
@@ -113,10 +113,13 @@ export default {
     highlightedLines: {
       type: Array,
       default: () => [],
+      validator: lines => lines.every(number => Number.isInteger(number) && number > 0),
     },
     strikethroughLines: {
       type: Array,
       default: () => [],
+      validator: lines => lines.every(number => Number.isInteger(number) && number > 0),
+
     },
     startLineNumber: {
       type: Number,
@@ -144,26 +147,6 @@ export default {
     copyableText() {
       return this.content.join('\n');
     },
-    highlightSet() {
-      const arr = this.highlightedLines || [];
-      return new Set(arr.map(Number).filter(n => Number.isFinite(n) && n > 0));
-    },
-    strikethroughSet() {
-      const arr = this.strikethroughLines || [];
-      return new Set(arr.map(Number).filter(n => Number.isFinite(n) && n > 0));
-    },
-    wrapStyle() {
-      const style = {};
-      if (this.wrap > 0) {
-        style.whiteSpace = 'pre-wrap';
-        style.wordBreak = 'break-word';
-        style.overflowWrap = 'anywhere';
-        style['--wrap-ch'] = String(this.wrap);
-      } else {
-        style.whiteSpace = 'pre';
-      }
-      return style;
-    },
   },
   watch: {
     content: {
@@ -176,10 +159,10 @@ export default {
       return this.highlightedLineNumbers.has(this.lineNumberFor(index));
     },
     isUserHighlighted(index) {
-      return this.highlightSet.has(this.lineNumberFor(index));
+      return this.highlightedLines.includes(this.lineNumberFor(index));
     },
     isUserStrikethrough(index) {
-      return this.strikethroughSet.has(this.lineNumberFor(index));
+      return this.strikethroughLines.includes(this.lineNumberFor(index));
     },
     // Returns the line number for the line at the given index in `content`.
     lineNumberFor(index) {
@@ -250,16 +233,7 @@ export default {
   }
 }
 
-.user-highlighted {
-  background: var(--user-line-highlight, var(--color-user-code-line-highlight));
-  border-left: $highlighted-border-width solid var(--color-user-code-line-highlight-border);
-
-  .code-number {
-    padding-left: $code-number-padding-left - $highlighted-border-width;
-  }
-}
-
-.user-strikethrough {
+.strikethrough {
   text-decoration-line: line-through;
   text-decoration-color: var(--color-figure-gray);
   opacity: 0.85;

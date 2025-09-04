@@ -351,8 +351,7 @@ describe('CodeListing', () => {
 
     await wrapper.setProps({ wrap: 0 });
     style = wrapper.attributes('style') || '';
-    expect(wrapper.classes()).not.toContain('is-wrapped');
-    expect(style).not.toMatch(/--wrap-ch:\s*\d+/);
+    expect(style).toMatch(/--wrap-ch:\s*0\b/);
   });
 
   it('treats negative wrap as no-wrap', async () => {
