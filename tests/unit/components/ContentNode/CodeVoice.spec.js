@@ -18,7 +18,7 @@ describe('CodeVoice', () => {
     const wrapper = shallowMount(CodeVoice, {
       slots: { default: 'fooBar' },
     });
-    const wordBreak = wrapper.find(WordBreak);
+    const wordBreak = wrapper.findComponent(WordBreak);
     expect(wordBreak.exists()).toBe(true);
     expect(wordBreak.attributes('tag')).toBe('code');
     expect(wordBreak.text()).toBe('fooBar');

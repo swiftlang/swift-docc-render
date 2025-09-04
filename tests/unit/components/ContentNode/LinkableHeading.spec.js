@@ -32,7 +32,7 @@ describe('LinkableHeading', () => {
       slots: { default: 'Title' },
     });
     expect(wrapper.text()).toBe('Title');
-    expect(wrapper.is('h2')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'h2').toBe(true);
   });
 
   it('renders a heading with a given level', () => {
@@ -43,7 +43,7 @@ describe('LinkableHeading', () => {
         level: 3,
       },
     });
-    expect(wrapper.is('h3')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'h3').toBe(true);
   });
 
   it('renders a heading with a header anchor and an id on the wrapper', async () => {
@@ -57,7 +57,7 @@ describe('LinkableHeading', () => {
     });
     await wrapper.vm.$nextTick();
     expect(wrapper.attributes('id')).toBe('title');
-    const headerAnchor = wrapper.find('.header-anchor');
+    const headerAnchor = wrapper.findComponent('.header-anchor');
     expect(headerAnchor.props('to')).toEqual({ hash: '#title', query: mocks.$route.query });
     expect(headerAnchor.text()).toBe('Title');
     expect(headerAnchor.attributes('data-after-text')).toBe('accessibility.in-page-link');
@@ -65,7 +65,7 @@ describe('LinkableHeading', () => {
 
   it('does not render anchor if there is no anchor', () => {
     const wrapper = shallowMount(LinkableHeading);
-    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+    expect(wrapper.findComponent('.header-anchor').exists()).toBe(false);
   });
 
   it('does not render anchor if target ide is true', () => {
@@ -79,7 +79,7 @@ describe('LinkableHeading', () => {
         isTargetIDE: true,
       },
     });
-    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+    expect(wrapper.findComponent('.header-anchor').exists()).toBe(false);
   });
 
   it('does not render anchor if `enableMinimized` is true', () => {
@@ -93,6 +93,6 @@ describe('LinkableHeading', () => {
         enableMinimized: true,
       },
     });
-    expect(wrapper.find('.header-anchor').exists()).toBe(false);
+    expect(wrapper.findComponent('.header-anchor').exists()).toBe(false);
   });
 });

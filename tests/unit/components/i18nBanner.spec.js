@@ -67,12 +67,12 @@ describe('SuggestLang', () => {
       },
     });
 
-    link = wrapper.find('.suggest-lang__link');
-    closeIcon = wrapper.find('.suggest-lang__close-icon-button');
+    link = wrapper.findComponent('.suggest-lang__link');
+    closeIcon = wrapper.findComponent('.suggest-lang__close-icon-button');
   });
 
   it('renders a <SuggestLang> if preferredLocale is different to currentLocale', () => {
-    expect(wrapper.is('.suggest-lang')).toBe(true);
+    expect(wrapper.element.matches('.suggest-lang')).toBe(true);
   });
 
   it('renders a router link with the preferredLocale view-in text and lang tag using the matching locale', () => {
@@ -87,20 +87,20 @@ describe('SuggestLang', () => {
     expect(AppStore.setPreferredLocale).toHaveBeenCalledWith(matchingLocale);
   });
 
-  it('takes you to the preferredLocale url when clicking in router link', () => {
-    link.trigger('click');
+  it('takes you to the preferredLocale url when clicking in router link', async () => {
+    await link.trigger('click');
 
     expect(getLocaleParam).toHaveBeenCalledWith(matchingLocale);
     expect(link.props('to')).toEqual(params);
   });
 
   it('renders a InlineChevronRightIcon', () => {
-    expect(wrapper.find(InlineChevronRightIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(InlineChevronRightIcon).exists()).toBe(true);
   });
 
   it('renders a close icon', () => {
     expect(closeIcon.exists()).toBe(true);
-    expect(wrapper.find(CloseIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(CloseIcon).exists()).toBe(true);
     expect(closeIcon.attributes('aria-label')).toBe('continue-viewing');
   });
 

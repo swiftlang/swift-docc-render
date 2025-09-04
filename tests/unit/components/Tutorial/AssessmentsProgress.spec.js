@@ -20,7 +20,7 @@ describe('AssessmentsProgress', () => {
   });
 
   it('renders index/total in a p tag', () => {
-    const title = wrapper.find('p.title');
+    const title = wrapper.findComponent('p.title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('tutorials.question-of 1 3');
   });

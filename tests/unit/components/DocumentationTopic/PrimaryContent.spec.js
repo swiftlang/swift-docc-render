@@ -181,7 +181,7 @@ describe('PrimaryContent', () => {
   function checkProps(Component, props, { info = '', at = 0 } = {}) {
     it(`renders a "${Component.name}"${info ? `: ${info}` : ''}`, () => {
       const wrapper = shallowMount(PrimaryContent, { propsData });
-      const component = wrapper.findAll(Component).at(at);
+      const component = wrapper.findAllComponents(Component).at(at);
       expect(component.exists()).toBe(true);
       expect(component.props()).toEqual(props);
     });

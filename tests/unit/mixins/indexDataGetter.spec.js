@@ -108,7 +108,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.indexNodes).toEqual(swiftIndex);
     expect(wrapper.vm.technologyProps).toEqual(swiftProps);
 
-    wrapper.setData({
+    await wrapper.setData({
       indexState: {
         flatChildren: {
           [Language.objectiveC.key.url]: objectiveCIndex,
@@ -121,7 +121,7 @@ describe('indexDataGetter', () => {
         },
       },
     });
-    wrapper.setProps({
+    await wrapper.setProps({
       interfaceLanguage: Language.objectiveC.key.url,
     });
     expect(wrapper.vm.indexNodes).toEqual(objectiveCIndex);
@@ -132,7 +132,7 @@ describe('indexDataGetter', () => {
   it('selects swift variant when language is objc but its data does not exist`', async () => {
     IndexStore.state = mockState();
     const wrapper = createWrapper();
-    wrapper.setProps({
+    await wrapper.setProps({
       interfaceLanguage: Language.objectiveC.key.url,
     });
     await wrapper.vm.$nextTick();
@@ -159,7 +159,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.apiChanges).toEqual(undefined);
   });
 
-  it('when no index data is unavailable through IndexStore, fallback to technology provided in prop`', () => {
+  it('when no index data is unavailable through IndexStore, fallback to technology provided in prop`', async () => {
     IndexStore.state = {
       ...mockState(),
       flatChildren: {},
@@ -174,7 +174,7 @@ describe('indexDataGetter', () => {
       isTechnologyBeta: technology.beta,
     });
 
-    wrapper.setProps({
+    await wrapper.setProps({
       technology: null,
     });
     expect(wrapper.vm.indexNodes).toEqual([]);
@@ -182,7 +182,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.technologyProps).toEqual(null);
   });
 
-  it('falls back to using the `technology.url` if no path', () => {
+  it('falls back to using the `technology.url` if no path', async () => {
     const fallbackTechnology = {
       title: 'FallbackTechnology',
       url: '/url/to/technology',
@@ -192,14 +192,14 @@ describe('indexDataGetter', () => {
       technologyProps: {},
     };
     const wrapper = createWrapper();
-    wrapper.setProps({
+    await wrapper.setProps({
       technology: fallbackTechnology,
     });
 
     expect(wrapper.vm.technologyProps.technologyPath).toEqual(fallbackTechnology.url);
   });
 
-  it('computes the correct fetching status`', () => {
+  it('computes the correct fetching status`', async () => {
     IndexStore.state = {
       ...mockState(),
       flatChildren: null,
@@ -210,7 +210,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.navigatorProps.isFetching).toBe(false);
 
     // fetching if no fetched data and no error
-    wrapper.setData({
+    await wrapper.setData({
       indexState: {
         errorFetching: false,
       },
@@ -218,7 +218,7 @@ describe('indexDataGetter', () => {
     expect(wrapper.vm.navigatorProps.isFetching).toBe(true);
 
     // not fetching if fetched data is not null
-    wrapper.setData({
+    await wrapper.setData({
       indexState: {
         flatChildren: {},
       },

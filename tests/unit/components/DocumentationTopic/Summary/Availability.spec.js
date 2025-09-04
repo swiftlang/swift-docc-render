@@ -66,9 +66,9 @@ describe('Availability', () => {
   });
 
   it('renders a `Section`', () => {
-    expect(wrapper.is('.availability')).toBe(true);
+    expect(wrapper.element.matches('.availability')).toBe(true);
 
-    const section = wrapper.find(Section);
+    const section = wrapper.findComponent(Section);
     expect(section.exists()).toBe(true);
     expect(section.classes('availability')).toBe(true);
     expect(section.attributes('aria-label')).toBe('sections.availability');
@@ -91,14 +91,14 @@ describe('Availability', () => {
       } = platforms[i - technologies.length];
       const pill = pills.at(i);
 
-      const badge = pill.find(Badge);
+      const badge = pill.findComponent(Badge);
       if (deprecatedAt || beta) {
         expect(badge.exists()).toBe(true);
       } else {
         expect(badge.exists()).toBe(false);
       }
 
-      const range = pill.find(AvailabilityRange);
+      const range = pill.findComponent(AvailabilityRange);
       expect(range.exists()).toBe(true);
       expect(range.props()).toEqual({
         deprecatedAt,
@@ -109,15 +109,15 @@ describe('Availability', () => {
   });
 
   it('renders correct beta and deprecated badge', () => {
-    const badges = wrapper.findAll(Badge);
+    const badges = wrapper.findAllComponents(Badge);
     expect(badges.at(0).props('variant')).toBe('beta');
     expect(badges.at(1).props('variant')).toBe('deprecated');
     expect(badges.at(2).props('variant')).toBe('deprecated');
     expect(badges.at(3).props('variant')).toBe('deprecated');
   });
 
-  it('renders deprecated over beta badges', () => {
-    wrapper.setProps({
+  it('renders deprecated over beta badges', async () => {
+    await wrapper.setProps({
       platforms: [
         {
           introducedAt: '1.0',
@@ -127,14 +127,14 @@ describe('Availability', () => {
         },
       ],
     });
-    const badge = wrapper.findAll(Badge);
+    const badge = wrapper.findAllComponents(Badge);
     expect(badge.exists()).toBe(true);
     expect(badge.length).toBe(1);
     expect(badge.at(0).props('variant')).toBe('deprecated');
   });
 
-  it('renders no beta/deprecated text if not relevant', () => {
-    wrapper.setProps({
+  it('renders no beta/deprecated text if not relevant', async () => {
+    await wrapper.setProps({
       platforms: [
         {
           introducedAt: '1.0',
@@ -142,14 +142,14 @@ describe('Availability', () => {
         },
       ],
     });
-    const beta = wrapper.find('.beta');
-    const deprecated = wrapper.find('.deprecated');
+    const beta = wrapper.findComponent('.beta');
+    const deprecated = wrapper.findComponent('.deprecated');
     expect(beta.exists()).toBe(false);
     expect(deprecated.exists()).toBe(false);
   });
 
   describe('with API Changes', () => {
-    it('sets changes classes for platforms that have changed', () => {
+    it('sets changes classes for platforms that have changed', async () => {
       store.state.apiChanges = {
         [provide.identifier]: {
           availability: {
@@ -175,6 +175,7 @@ describe('Availability', () => {
         },
       };
 
+      await wrapper.vm.$nextTick();
       const pills = wrapper.findAll('.technology, .platform');
 
       expect(pills.at(2).classes()).toEqual(['platform', 'changed', 'changed-deprecated']);

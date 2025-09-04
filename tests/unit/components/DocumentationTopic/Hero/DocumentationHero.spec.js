@@ -53,7 +53,7 @@ describe('DocumentationHero', () => {
 
   it('renders the DocumentationHero, enabled', () => {
     const wrapper = createWrapper();
-    const allIcons = wrapper.findAll(TopicTypeIcon);
+    const allIcons = wrapper.findAllComponents(TopicTypeIcon);
     expect(allIcons).toHaveLength(1);
     expect(allIcons.at(0).props()).toEqual({
       withColors: true,
@@ -63,43 +63,43 @@ describe('DocumentationHero', () => {
     });
     expect(allIcons.at(0).classes()).toEqual(['background-icon', 'first-icon']);
     // assert slot
-    expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
-    expect(wrapper.find('.above-content-slot').text()).toBe('Above Content Slot');
+    expect(wrapper.findComponent('.default-slot').text()).toBe('Default Slot');
+    expect(wrapper.findComponent('.above-content-slot').text()).toBe('Above Content Slot');
     expect(wrapper.vm.styles).toEqual({
       '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColorsMap[defaultProps.role]}))`,
       '--standard-accent-color': undefined,
     });
   });
 
-  it('renders the right classes based on `shortHero` prop', () => {
+  it('renders the right classes based on `shortHero` prop', async () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.short-hero').exists()).toBe(true);
+    expect(wrapper.findComponent('.short-hero').exists()).toBe(true);
 
-    wrapper.setProps({
+    await wrapper.setProps({
       shortHero: false,
     });
-    expect(wrapper.find('.short-hero').exists()).toBe(false);
+    expect(wrapper.findComponent('.short-hero').exists()).toBe(false);
   });
 
-  it('renders the right classes based on `shouldShowLanguageSwitcher` prop', () => {
+  it('renders the right classes based on `shouldShowLanguageSwitcher` prop', async () => {
     const wrapper = createWrapper();
-    const content = wrapper.find('.documentation-hero__content');
+    const content = wrapper.findComponent('.documentation-hero__content');
 
     expect(content.classes()).toContain('extra-bottom-padding');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       shouldShowLanguageSwitcher: false,
     });
     expect(content.classes()).not.toContain('extra-bottom-padding');
   });
 
-  it('renders the right classes based on `enableMininized` prop', () => {
+  it('renders the right classes based on `enableMininized` prop', async () => {
     const wrapper = createWrapper();
-    const content = wrapper.find('.documentation-hero__content');
+    const content = wrapper.findComponent('.documentation-hero__content');
 
     expect(content.classes()).not.toContain('minimized-hero');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       enableMinimized: true,
     });
     expect(content.classes()).toContain('minimized-hero');
@@ -138,16 +138,16 @@ describe('DocumentationHero', () => {
       .toBe('var(--color-documentation-intro-accent, var(--color-type-icon-sky))');
   });
 
-  it('renders the DocumentationHero, disabled', () => {
+  it('renders the DocumentationHero, disabled', async () => {
     const wrapper = createWrapper();
-    wrapper.setProps({
+    await wrapper.setProps({
       enhanceBackground: false,
     });
     // assert no icon
-    const allIcons = wrapper.findAll(TopicTypeIcon);
+    const allIcons = wrapper.findAllComponents(TopicTypeIcon);
     expect(allIcons).toHaveLength(0);
     // assert slot
-    expect(wrapper.find('.default-slot').text()).toBe('Default Slot');
+    expect(wrapper.findComponent('.default-slot').text()).toBe('Default Slot');
     expect(wrapper.vm.styles).toEqual({
       '--accent-color': `var(--color-documentation-intro-accent, var(--color-type-icon-${HeroColorsMap[defaultProps.role]}))`,
       '--standard-accent-color': undefined,
@@ -161,7 +161,7 @@ describe('DocumentationHero', () => {
         role: TopicRole.collection,
       },
     });
-    expect(wrapper.find(TopicTypeIcon).props('type')).toBe(TopicTypes.module);
+    expect(wrapper.findComponent(TopicTypeIcon).props('type')).toBe(TopicTypes.module);
   });
 
   it('maps the "collectionGroup" role to the "collection" type', () => {
@@ -171,7 +171,7 @@ describe('DocumentationHero', () => {
         role: TopicRole.collectionGroup,
       },
     });
-    expect(wrapper.find(TopicTypeIcon).props('type')).toBe(TopicTypes.collection);
+    expect(wrapper.findComponent(TopicTypeIcon).props('type')).toBe(TopicTypes.collection);
   });
 
   it('adds a standard-accent-color, if provided', () => {

@@ -156,38 +156,38 @@ describe('DocumentationTopic', () => {
     window.renderedTimes = null;
   });
 
-  it('renders an CodeTheme without `topicData`', () => {
-    wrapper.setData({ topicData: null });
+  it('renders an CodeTheme without `topicData`', async () => {
+    await wrapper.setData({ topicData: null });
 
-    const codeTheme = wrapper.find(CodeTheme);
+    const codeTheme = wrapper.findComponent(CodeTheme);
     expect(codeTheme.exists()).toBe(true);
-    expect(codeTheme.isEmpty()).toEqual(true);
+    expect(codeTheme.element.childElementCount === 0).toEqual(true);
   });
 
   it('sets enableNavigator to true if schemaVersion is compatible', async () => {
     wrapper = createWrapper();
-    wrapper.setData({ topicData });
+    await wrapper.setData({ topicData });
 
-    expect(wrapper.find(DocumentationLayout).props('enableNavigator')).toBe(false);
+    expect(wrapper.findComponent(DocumentationLayout).props('enableNavigator')).toBe(false);
 
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         schemaVersion: schemaVersionWithSidebar,
       },
     });
 
-    expect(wrapper.find(DocumentationLayout).props('enableNavigator')).toBe(true);
+    expect(wrapper.findComponent(DocumentationLayout).props('enableNavigator')).toBe(true);
   });
 
-  it('passes a technology to the DocumentationLayout when no reference is found for a top-level collection', () => {
+  it('passes a technology to the DocumentationLayout when no reference is found for a top-level collection', async () => {
     const technologies = {
       id: 'topic://technologies',
       title: 'Technologies',
       url: '/technologies',
       kind: 'technologies',
     };
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         metadata: {
@@ -207,7 +207,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const documentationLayoutComponent = wrapper.find(DocumentationLayout);
+    const documentationLayoutComponent = wrapper.findComponent(DocumentationLayout);
     expect(documentationLayoutComponent.exists()).toBe(true);
     // assert the technology is the last fallback
     expect(documentationLayoutComponent.props('technology')).toEqual({
@@ -216,8 +216,8 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', () => {
-    wrapper.setData({
+  it('finds the parentTopicIdentifiers, that have the closest url structure to the current page', async () => {
+    await wrapper.setData({
       topicData: {
         ...topicData,
         references: {
@@ -228,14 +228,14 @@ describe('DocumentationTopic', () => {
         },
       },
     });
-    expect(wrapper.find(DocumentationLayout).props('parentTopicIdentifiers'))
+    expect(wrapper.findComponent(DocumentationLayout).props('parentTopicIdentifiers'))
       .toEqual(topicData.hierarchy.paths[1]);
   });
 
-  it('renders a `Topic` with `topicData`', () => {
-    wrapper.setData({ topicData });
+  it('renders a `Topic` with `topicData`', async () => {
+    await wrapper.setData({ topicData });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.exists()).toBe(true);
     expect(topic.attributes('style')).toBeFalsy();
     expect(topic.props()).toEqual({
@@ -256,20 +256,20 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders an inactive link, when no technologies root paths', () => {
+  it('renders an inactive link, when no technologies root paths', async () => {
     wrapper = createWrapper();
 
-    wrapper.setData({ topicData });
+    await wrapper.setData({ topicData });
 
-    const title = wrapper.find('h2.nav-title');
+    const title = wrapper.findComponent('h2.nav-title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('documentation.title');
   });
 
-  it('renders the title "Documentation" link, if there is root link', () => {
+  it('renders the title "Documentation" link, if there is root link', async () => {
     wrapper = createWrapper();
 
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         hierarchy: {
@@ -281,14 +281,14 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const title = wrapper.find(RouterLinkStub);
+    const title = wrapper.findComponent(RouterLinkStub);
     expect(title.exists()).toBe(true);
     expect(title.props('to')).toEqual(rootLink);
     expect(title.text()).toBe('documentation.title');
   });
 
-  it('renders a `Topic` with `topicData` without the first hierarchy item if there is root link', () => {
-    wrapper.setData({
+  it('renders a `Topic` with `topicData` without the first hierarchy item if there is root link', async () => {
+    await wrapper.setData({
       topicData: {
         ...topicData,
         hierarchy: {
@@ -300,7 +300,7 @@ describe('DocumentationTopic', () => {
       },
     });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.exists()).toBe(true);
     expect(topic.attributes('style')).toBeFalsy();
     expect(topic.props()).toEqual({
@@ -321,53 +321,53 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('calls `extractOnThisPageSections` when `topicData` changes', () => {
+  it('calls `extractOnThisPageSections` when `topicData` changes', async () => {
     // called once on mounted
     expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(1);
-    wrapper.setData({ topicData });
+    await wrapper.setData({ topicData });
     // assert its called again
     expect(onThisPageRegistrator.methods.extractOnThisPageSections).toHaveBeenCalledTimes(2);
   });
 
-  it('passes `enableOnThisPageNav` as `false`, if in IDE', () => {
+  it('passes `enableOnThisPageNav` as `false`, if in IDE', async () => {
     wrapper.destroy();
     getSetting.mockReturnValue(false);
     wrapper = createWrapper({
       provide: { isTargetIDE: true },
     });
-    wrapper.setData({ topicData });
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    await wrapper.setData({ topicData });
+    expect(wrapper.findComponent(Topic).props('enableOnThisPageNav')).toBe(false);
   });
 
   it('sets `enableOnThisPageNav` as `false`, if `disabled` in theme settings', async () => {
     getSetting.mockReturnValue(true);
-    wrapper.setData({ topicData });
+    await wrapper.setData({ topicData });
     await flushPromises();
-    expect(wrapper.find(Topic).props('enableOnThisPageNav')).toBe(false);
+    expect(wrapper.findComponent(Topic).props('enableOnThisPageNav')).toBe(false);
     expect(getSetting).toHaveBeenCalledWith(['features', 'docs', 'onThisPageNavigator', 'disable'], false);
   });
 
-  it('passes `topicSectionsStyle`', () => {
-    wrapper.setData({
+  it('passes `topicSectionsStyle`', async () => {
+    await wrapper.setData({
       topicData: {
         ...topicData,
         topicSectionsStyle: TopicSectionsStyle.detailedGrid,
       },
     });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('topicSectionsStyle')).toEqual(TopicSectionsStyle.detailedGrid);
   });
 
-  it('provides an empty languagePaths, even if no variants', () => {
-    wrapper.setData({
+  it('provides an empty languagePaths, even if no variants', async () => {
+    await wrapper.setData({
       topicData: {
         ...topicData,
         variants: undefined,
       },
     });
 
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.exists()).toBe(true);
     expect(topic.props('languagePaths')).toEqual({});
   });
@@ -386,7 +386,7 @@ describe('DocumentationTopic', () => {
         name: 'barOS',
       },
     ];
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         metadata: {
@@ -397,11 +397,11 @@ describe('DocumentationTopic', () => {
     });
 
     await wrapper.vm.$nextTick();
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('isSymbolBeta')).toBe(true);
 
     // should not if only one is beta
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         metadata: {
@@ -425,10 +425,10 @@ describe('DocumentationTopic', () => {
   });
 
   it('computes isSymbolDeprecated if there is a deprecationSummary', async () => {
-    wrapper.setData({ topicData });
-    const topic = wrapper.find(Topic);
+    await wrapper.setData({ topicData });
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('isSymbolDeprecated')).toBeFalsy();
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         deprecationSummary: [{
@@ -443,7 +443,7 @@ describe('DocumentationTopic', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find(Topic).props('isSymbolDeprecated')).toBe(true);
+    expect(wrapper.findComponent(Topic).props('isSymbolDeprecated')).toBe(true);
     // cleanup
     topicData.deprecationSummary = [];
   });
@@ -459,7 +459,7 @@ describe('DocumentationTopic', () => {
         name: 'barOS',
       },
     ];
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         metadata: {
@@ -469,11 +469,11 @@ describe('DocumentationTopic', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    const topic = wrapper.find(Topic);
+    const topic = wrapper.findComponent(Topic);
     expect(topic.props('isSymbolDeprecated')).toBe(true);
 
     // should not if only one is deprecated
-    wrapper.setData({
+    await wrapper.setData({
       topicData: {
         ...topicData,
         metadata: {
@@ -512,7 +512,7 @@ describe('DocumentationTopic', () => {
     });
 
     // Mimic receiving JSON data.
-    wrapper.setData({
+    await wrapper.setData({
       topicData,
     });
 
@@ -530,7 +530,7 @@ describe('DocumentationTopic', () => {
     expect(window.renderedTimes).toBeFalsy();
 
     // Mimic receiving data.
-    wrapper.setData({
+    await wrapper.setData({
       topicData,
     });
 
@@ -558,7 +558,7 @@ describe('DocumentationTopic', () => {
     expect(mocks.$bridge.off).toHaveBeenNthCalledWith(1, 'contentUpdate', expect.any(Function));
   });
 
-  it('applies ObjC data when provided as overrides', () => {
+  it('applies ObjC data when provided as overrides', async () => {
     const oldInterfaceLang = topicData.identifier.interfaceLanguage; // swift
     const newInterfaceLang = 'occ';
 
@@ -570,7 +570,7 @@ describe('DocumentationTopic', () => {
         ],
       },
     ];
-    wrapper.setData({
+    await wrapper.setData({
       topicData: { ...topicData, variantOverrides },
     });
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(oldInterfaceLang);
@@ -609,7 +609,7 @@ describe('DocumentationTopic', () => {
     };
 
     routeEnterMock.mockResolvedValue(newTopicData);
-    wrapper.setData({ topicData });
+    await wrapper.setData({ topicData });
 
     const to = {
       path: '/documentation/bar',

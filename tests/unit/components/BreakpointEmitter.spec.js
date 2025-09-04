@@ -85,14 +85,14 @@ describe('BreakpointEmitter', () => {
 
   it('renders its default scoped slot', () => {
     const wrapper = shallowMount(BreakpointEmitter, { scopedSlots });
-    expect(wrapper.is('div')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'div').toBe(true);
     expect(wrapper.text()).toBe('');
   });
 
   it('does not emit anything if it does not match anything', async () => {
     window.matchMedia = jest.fn().mockImplementation(matchesNone);
     const wrapper = shallowMount(BreakpointEmitter, { scopedSlots });
-    expect(wrapper.is('div')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'div').toBe(true);
     await wrapper.vm.$nextTick();
     expect(wrapper.text()).toBe('');
     expect(wrapper.emitted('change')).toBeFalsy();

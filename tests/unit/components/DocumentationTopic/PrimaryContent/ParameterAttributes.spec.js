@@ -49,7 +49,7 @@ describe('ParameterAttributes', () => {
         defaultMetadata,
       ],
     });
-    expect(wrapper.find('.property-metadata').text()).toBe('formats.colon Default3');
+    expect(wrapper.findComponent('.property-metadata').text()).toBe('formats.colon Default3');
   });
 
   it('displays minimum/maximum metadata', () => {
@@ -176,7 +176,7 @@ describe('ParameterAttributes', () => {
         ],
         changes,
       });
-      expect(wrapper.find(ParameterMetaAttribute).props('changes')).toEqual(changes);
+      expect(wrapper.findComponent(ParameterMetaAttribute).props('changes')).toEqual(changes);
 
       const metadata = wrapper.findAll('.property-metadata');
       expect(metadata.at(0).text()).toEqual('formats.colon Default4');
@@ -202,8 +202,8 @@ describe('ParameterAttributes', () => {
         ],
         changes,
       });
-      expect(wrapper.findAll(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
-      expect(wrapper.findAll(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
 
       const metadata = wrapper.findAll('.property-metadata');
       expect(
@@ -240,8 +240,8 @@ describe('ParameterAttributes', () => {
         ],
         changes,
       });
-      expect(wrapper.findAll(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
-      expect(wrapper.findAll(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(0).props('changes')).toEqual(changes);
+      expect(wrapper.findAllComponents(ParameterMetaAttribute).at(1).props('changes')).toEqual(changes);
 
       const metadata = wrapper.findAll('.property-metadata');
       expect(

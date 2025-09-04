@@ -44,22 +44,22 @@ describe('TabnavItem', () => {
 
   it('renders a link', () => {
     const { wrapper } = createWrapper();
-    expect(wrapper.find('a.tabnav-link').exists()).toBe(true);
+    expect(wrapper.findComponent('a.tabnav-link').exists()).toBe(true);
   });
 
   it('updates the active link on link click', () => {
     const { wrapper, config } = createWrapper();
-    wrapper.find('a.tabnav-link').trigger('click');
+    wrapper.findComponent('a.tabnav-link').trigger('click');
     expect(config.provide.tabnavData.selectTab).toHaveBeenCalledTimes(1);
     expect(config.provide.tabnavData.selectTab).toHaveBeenCalledWith(config.propsData.value);
   });
 
-  it('adds the `active` class if a tab is selected', () => {
+  it('adds the `active` class if a tab is selected', async () => {
     const { wrapper, config } = createWrapper();
-    const link = wrapper.find('a.tabnav-link');
+    const link = wrapper.findComponent('a.tabnav-link');
     expect(link.classes()).not.toContain('active');
     expect(link.attributes('aria-current')).toBe('false');
-    wrapper.setProps({
+    await wrapper.setProps({
       value: config.provide.tabnavData.activeTab,
     });
     expect(link.classes()).toContain('active');

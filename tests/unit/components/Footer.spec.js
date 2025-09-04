@@ -21,11 +21,11 @@ describe('Footer', () => {
   });
 
   it('renders a <footer>', () => {
-    expect(wrapper.is('footer.footer')).toBe(true);
+    expect(wrapper.element.matches('footer.footer')).toBe(true);
   });
 
   it('renders a `ColorSchemeToggle`', () => {
-    expect(wrapper.contains(ColorSchemeToggle)).toBe(true);
+    expect(wrapper.findComponent(ColorSchemeToggle).exists()).toBe(true);
   });
 
   it('exposes a default slot', () => {
@@ -41,6 +41,6 @@ describe('Footer', () => {
     expect(slotProps).toEqual({
       className: 'row',
     });
-    expect(wrapper.find('.slot-class').text()).toBe('Slot Content');
+    expect(wrapper.findComponent('.slot-class').text()).toBe('Slot Content');
   });
 });

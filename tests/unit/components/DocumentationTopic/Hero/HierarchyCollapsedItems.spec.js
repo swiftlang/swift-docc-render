@@ -52,24 +52,24 @@ describe('HierarchyCollapsedItems', () => {
   });
 
   it('renders an list item with `.hierarchy-collapsed-items` class', () => {
-    expect(wrapper.is('li.hierarchy-collapsed-items')).toBe(true);
+    expect(wrapper.element.matches('li.hierarchy-collapsed-items')).toBe(true);
   });
 
   it('renders a non-focused button', () => {
-    const btn = wrapper.find('button.toggle');
+    const btn = wrapper.findComponent('button.toggle');
     expect(btn.exists()).toBe(true);
     expect(btn.classes('focused')).toBe(false);
-    expect(btn.find('.indicator .icon-inline').is(EllipsisIcon)).toBe(true);
+    expect(btn.find('.indicator .icon-inline').findComponent(EllipsisIcon).exists()).toBe(true);
   });
 
   it('renders a collapsed dropdown', () => {
-    const dropdown = wrapper.find('ul.dropdown');
+    const dropdown = wrapper.findComponent('ul.dropdown');
     expect(dropdown.exists()).toBe(true);
     expect(dropdown.classes('collapsed')).toBe(true);
 
     const items = dropdown.findAll('li.dropdown-item');
     propsData.topics.forEach((topic, i) => {
-      const link = items.at(i).find(NavMenuLink);
+      const link = items.at(i).findComponent(NavMenuLink);
       expect(link.exists()).toBe(true);
       expect(link.props('url')).toBe(topic.url);
       expect(link.text()).toBe(topic.title);
@@ -80,7 +80,7 @@ describe('HierarchyCollapsedItems', () => {
     let toggle;
 
     beforeEach(() => {
-      toggle = wrapper.find('.toggle');
+      toggle = wrapper.findComponent('.toggle');
       toggle.trigger('click');
     });
 
@@ -89,7 +89,7 @@ describe('HierarchyCollapsedItems', () => {
     });
 
     it('uncollapses the dropdown when the toggle is clicked', () => {
-      expect(wrapper.find('.dropdown').classes('collapsed')).toBe(false);
+      expect(wrapper.findComponent('.dropdown').classes('collapsed')).toBe(false);
     });
   });
 
@@ -105,7 +105,7 @@ describe('HierarchyCollapsedItems', () => {
       propsData,
       stubs,
     });
-    const link = wrapper2.find(NavMenuLink);
+    const link = wrapper2.findComponent(NavMenuLink);
     expect(link.exists()).toBe(true);
     expect(link.props('url')).toBe('/documentation/foo?language=objc');
     expect(link.classes()).toContain('nav-menu-link');

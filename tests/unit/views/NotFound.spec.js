@@ -16,7 +16,7 @@ const { GenericError } = NotFound.components;
 describe('NotFound', () => {
   it('renders a `GenericError` with a custom message', () => {
     const wrapper = shallowMount(NotFound);
-    const error = wrapper.find(GenericError);
+    const error = wrapper.findComponent(GenericError);
     expect(error.exists()).toBe(true);
     expect(error.props('message')).toBe('error.not-found');
   });
@@ -27,6 +27,6 @@ describe('NotFound', () => {
         default: '<div class="default">Default Content</div>',
       },
     });
-    expect(wrapper.find('.default').text()).toBe('Default Content');
+    expect(wrapper.findComponent('.default').text()).toBe('Default Content');
   });
 });

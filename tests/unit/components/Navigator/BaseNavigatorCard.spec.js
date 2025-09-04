@@ -30,12 +30,12 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(BaseNaviga
 describe('BaseNavigatorCard', () => {
   it('renders the BaseNavigatorCard', () => {
     const wrapper = createWrapper();
-    expect(wrapper.is('div')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'div').toBe(true);
     expect(wrapper.classes()).toContain('navigator-card');
-    expect(wrapper.find('.navigator-card-full-height').exists()).toBe(true);
-    expect(wrapper.find('.navigator-card-inner').exists()).toBe(true);
-    expect(wrapper.find('.head-wrapper').exists()).toBe(true);
-    expect(wrapper.find('.head-inner').exists()).toBe(true);
+    expect(wrapper.findComponent('.navigator-card-full-height').exists()).toBe(true);
+    expect(wrapper.findComponent('.navigator-card-inner').exists()).toBe(true);
+    expect(wrapper.findComponent('.head-wrapper').exists()).toBe(true);
+    expect(wrapper.findComponent('.head-inner').exists()).toBe(true);
   });
 
   it('emits a `close` event, and focuses the open toggle', async () => {
@@ -43,7 +43,7 @@ describe('BaseNavigatorCard', () => {
     btn.id = baseNavOpenSidenavButtonId;
     document.body.appendChild(btn);
     const wrapper = createWrapper();
-    const button = wrapper.find('.close-card');
+    const button = wrapper.findComponent('.close-card');
     button.trigger('click');
     await flushPromises();
     expect(button.attributes('aria-label')).toBe('navigator.close-navigator');
@@ -57,7 +57,7 @@ describe('BaseNavigatorCard', () => {
         body: '<div :class="props.className">CustomBody</div>',
       },
     });
-    expect(wrapper.find('.card-body').text()).toBe('CustomBody');
+    expect(wrapper.findComponent('.card-body').text()).toBe('CustomBody');
   });
 
   it('exposes a #above-navigator-head slot', () => {
@@ -66,7 +66,7 @@ describe('BaseNavigatorCard', () => {
         'above-navigator-head': '<div class="above-navigator-head">CustomAboveNavigatorHeadComponent</div>',
       },
     });
-    expect(wrapper.find('.above-navigator-head').text()).toBe('CustomAboveNavigatorHeadComponent');
+    expect(wrapper.findComponent('.above-navigator-head').text()).toBe('CustomAboveNavigatorHeadComponent');
   });
 
   it('exposes a #navigator-head slot', () => {
@@ -75,6 +75,6 @@ describe('BaseNavigatorCard', () => {
         'navigator-head': '<div class="navigator-head">CustomNavigatorHeadComponent</div>',
       },
     });
-    expect(wrapper.find('.navigator-head').text()).toBe('CustomNavigatorHeadComponent');
+    expect(wrapper.findComponent('.navigator-head').text()).toBe('CustomNavigatorHeadComponent');
   });
 });

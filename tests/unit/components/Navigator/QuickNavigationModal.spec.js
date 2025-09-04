@@ -108,21 +108,23 @@ describe('QuickNavigationModal', () => {
   });
 
   it('renders the Quick navigation modal', () => {
-    expect(wrapper.find('.quick-navigation').exists()).toBe(true);
+    expect(wrapper.findComponent('.quick-navigation').exists()).toBe(true);
   });
 
-  it('adds the focus class on container if filter input is focused', () => {
-    wrapper.find(FilterInput).vm.$emit('focus');
-    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(true);
+  it('adds the focus class on container if filter input is focused', async () => {
+    wrapper.findComponent(FilterInput).vm.$emit('focus');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findComponent('.quick-navigation__container.focus').exists()).toBe(true);
   });
 
-  it('removes the focus class on container if filter input is blur', () => {
-    wrapper.find(FilterInput).vm.$emit('blur');
-    expect(wrapper.find('.quick-navigation__container.focus').exists()).toBe(false);
+  it('removes the focus class on container if filter input is blur', async () => {
+    wrapper.findComponent(FilterInput).vm.$emit('blur');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findComponent('.quick-navigation__container.focus').exists()).toBe(false);
   });
 
   it('filters the symbols according to debouncedInput value', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     await wrapper.vm.$nextTick();
@@ -130,12 +132,13 @@ describe('QuickNavigationModal', () => {
     expect(matches).toHaveLength(filteredSymbols.length);
     expect(matches[0]).toMatchObject(filteredSymbols[0]);
     expect(matches[1]).toMatchObject(filteredSymbols[1]);
-    expect(wrapper.findAll(QuickNavigationHighlighter).length).toBe(filteredSymbols.length);
+    expect(wrapper.findAllComponents(QuickNavigationHighlighter).length)
+      .toBe(filteredSymbols.length);
   });
 
   it('renders the filter input', () => {
-    expect(wrapper.find('.quick-navigation__filter').exists()).toBe(true);
-    const filter = wrapper.find(FilterInput);
+    expect(wrapper.findComponent('.quick-navigation__filter').exists()).toBe(true);
+    const filter = wrapper.findComponent(FilterInput);
     expect(filter.props()).toEqual({
       placeholder: 'filter.search-symbols FoobarKit',
       focusInputWhenCreated: true,
@@ -154,126 +157,133 @@ describe('QuickNavigationModal', () => {
   });
 
   it('renders the match list on user input', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(filteredSymbols.length);
-    expect(wrapper.find('.no-results').exists()).toBe(false);
-    expect(wrapper.find('.quick-navigation__refs').attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
+    expect(wrapper.findComponent('.no-results').exists()).toBe(false);
+    expect(wrapper.findComponent('.quick-navigation__refs').attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
   });
 
-  it('renders the `no results found` string when no symbols are found given an input', () => {
-    wrapper.setData({
+  it('renders the `no results found` string when no symbols are found given an input', async () => {
+    await wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
-    const noResultsWrapper = wrapper.find('.no-results');
+    const noResultsWrapper = wrapper.findComponent('.no-results');
     expect(wrapper.vm.debouncedInput).toBe(nonResultsInputValue);
     expect(wrapper.findAll('.quick-navigation__symbol-match').length).toBe(0);
     expect(noResultsWrapper.exists()).toBe(true);
     expect(noResultsWrapper.text()).toBe('navigator.no-results');
   });
 
-  it('renders symbol matches with the corresponding symbol icon', () => {
-    wrapper.setData({
+  it('renders symbol matches with the corresponding symbol icon', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     const matchWrapper = wrapper.findAll('.quick-navigation__symbol-match');
-    expect(matchWrapper.at(0).find(TopicTypeIcon).exists()).toBe(true);
-    expect(matchWrapper.at(1).find(TopicTypeIcon).exists()).toBe(true);
-    expect(matchWrapper.at(0).find(TopicTypeIcon).props().type).toBe(filteredSymbols[0].type);
-    expect(matchWrapper.at(1).find(TopicTypeIcon).props().type).toBe(filteredSymbols[1].type);
+    expect(matchWrapper.at(0).findComponent(TopicTypeIcon).exists()).toBe(true);
+    expect(matchWrapper.at(1).findComponent(TopicTypeIcon).exists()).toBe(true);
+    expect(matchWrapper.at(0).findComponent(TopicTypeIcon).props().type)
+      .toBe(filteredSymbols[0].type);
+    expect(matchWrapper.at(1).findComponent(TopicTypeIcon).props().type)
+      .toBe(filteredSymbols[1].type);
   });
 
-  it('renders a symbol match with the corresponding symbol title', () => {
-    wrapper.setData({
+  it('renders a symbol match with the corresponding symbol title', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     const matchTitlesWrapper = wrapper.findAll('.symbol-title');
     expect(
       matchTitlesWrapper.at(0).text()
-      + matchTitlesWrapper.at(0).find(QuickNavigationHighlighter).props().text
+      + matchTitlesWrapper.at(0).findComponent(QuickNavigationHighlighter).props().text
       + matchTitlesWrapper.at(0).find('span').text(),
     ).toBe(filteredSymbols[0].title);
     expect(
       matchTitlesWrapper.at(1).text()
-      + matchTitlesWrapper.at(1).find(QuickNavigationHighlighter).props().text
+      + matchTitlesWrapper.at(1).findComponent(QuickNavigationHighlighter).props().text
       + matchTitlesWrapper.at(1).find('span').text(),
     ).toBe(filteredSymbols[1].title);
   });
 
   it('redirects to the symbol path on symbol-match selection', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
-    const referencesWrapper = wrapper.findAll(Reference);
+    const referencesWrapper = wrapper.findAllComponents(Reference);
     expect(referencesWrapper.at(0).props().url).toBe(filteredSymbols[0].path);
     expect(referencesWrapper.at(1).props().url).toBe(filteredSymbols[1].path);
   });
 
   it('highlights the matching substring of the symbol title', async () => {
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     const matchTitlesWrapper = wrapper.findAll('.symbol-title');
     expect(
-      matchTitlesWrapper.at(0).find(QuickNavigationHighlighter).props().matcherText,
+      matchTitlesWrapper.at(0).findComponent(QuickNavigationHighlighter).props().matcherText,
     ).toBe(symbolsMatchBlueprint[0].input);
     expect(
-      matchTitlesWrapper.at(0).find(QuickNavigationHighlighter).props().text,
+      matchTitlesWrapper.at(0).findComponent(QuickNavigationHighlighter).props().text,
     ).toBe(symbolsMatchBlueprint[0].subMatchString);
     expect(
-      matchTitlesWrapper.at(1).find(QuickNavigationHighlighter).props().matcherText,
+      matchTitlesWrapper.at(1).findComponent(QuickNavigationHighlighter).props().matcherText,
     ).toBe(symbolsMatchBlueprint[1].input);
     expect(
-      matchTitlesWrapper.at(1).find(QuickNavigationHighlighter).props().text,
+      matchTitlesWrapper.at(1).findComponent(QuickNavigationHighlighter).props().text,
     ).toBe(symbolsMatchBlueprint[1].subMatchString);
     expect(
-      matchTitlesWrapper.at(2).find(QuickNavigationHighlighter).props().matcherText,
+      matchTitlesWrapper.at(2).findComponent(QuickNavigationHighlighter).props().matcherText,
     ).toBe(symbolsMatchBlueprint[3].input);
     expect(
-      matchTitlesWrapper.at(2).find(QuickNavigationHighlighter).props().text,
+      matchTitlesWrapper.at(2).findComponent(QuickNavigationHighlighter).props().text,
     ).toBe(symbolsMatchBlueprint[3].subMatchString);
   });
 
-  it('adds tabindex="0" when reference index is equal to focusedIndex', () => {
-    wrapper.setData({
+  it('adds tabindex="0" when reference index is equal to focusedIndex', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
+      focusedIndex: 0,
+    });
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('-1');
+    await wrapper.setData({
       focusedIndex: 1,
     });
-    expect(wrapper.findAll({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
-    expect(wrapper.findAll({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
+    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
   });
 
-  it('debounces user input before filtering the symbols', () => {
-    wrapper.setData({
+  it('debounces user input before filtering the symbols', async () => {
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
-    wrapper.setData({
+    await wrapper.setData({
       userInput: nonResultsInputValue,
     });
     expect(wrapper.vm.debouncedInput).toBe(inputValue);
   });
 
-  it('triggers new filtering on every debounce input change', () => {
+  it('triggers new filtering on every debounce input change', async () => {
     const fuzzyMatch = jest.spyOn(wrapper.vm, 'fuzzyMatch');
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: nonResultsInputValue,
     });
     expect(fuzzyMatch).toHaveBeenCalledTimes(4);
   });
 
-  it('matches the smallest matching substring from a symbol title', () => {
+  it('matches the smallest matching substring from a symbol title', async () => {
     const customSymbols = [
       {
         title: 'foofooxyzbarbar',
@@ -288,19 +298,19 @@ describe('QuickNavigationModal', () => {
         technology: 'Blah',
       },
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: 'foobar',
     });
-    expect(wrapper.find(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
+    expect(wrapper.findComponent(QuickNavigationHighlighter).props().text).toBe('fooxyzbar');
   });
 
-  it('access a symbol on `enter` key', () => {
+  it('access a symbol on `enter` key', async () => {
     const handleKeyEnter = jest.spyOn(wrapper.vm, 'handleKeyEnter');
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: inputValue,
     });
-    wrapper.find('.quick-navigation__refs').trigger('keydown.enter');
-    wrapper.find(FilterInput).trigger('keydown.enter');
+    await wrapper.findComponent('.quick-navigation__refs').trigger('keydown.enter');
+    wrapper.findComponent(FilterInput).trigger('keydown.enter');
     expect(handleKeyEnter).toHaveBeenCalledTimes(2);
   });
 
@@ -322,7 +332,7 @@ describe('QuickNavigationModal', () => {
         technology: 'Blah',
       },
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: 'bar',
     });
     const symbolTree = wrapper
@@ -331,13 +341,13 @@ describe('QuickNavigationModal', () => {
     expect(symbolTree.text()).toBe('bar');
   });
 
-  it('removes space characters from the debounced input string', () => {
-    wrapper.setData({
+  it('removes space characters from the debounced input string', async () => {
+    await wrapper.setData({
       debouncedInput: 'bar foo',
     });
     expect(wrapper.vm.processedUserInput).toBe('barfoo');
   });
-  it('removes filtered symbols with duplicate paths', () => {
+  it('removes filtered symbols with duplicate paths', async () => {
     const symbolsWithRepeatedPaths = [
       {
         title: 'foo',
@@ -362,7 +372,7 @@ describe('QuickNavigationModal', () => {
         technology: 'Blah',
       },
     });
-    wrapper.setData({
+    await wrapper.setData({
       debouncedInput: 'foo',
     });
     expect(wrapper.vm.filteredSymbols.length).toBe(2);
@@ -371,10 +381,10 @@ describe('QuickNavigationModal', () => {
   describe('preview', () => {
     const { PreviewState } = QuickNavigationPreview.constants;
 
-    it('renders with a default loading state', () => {
-      wrapper.setData({ debouncedInput: inputValue });
+    it('renders with a default loading state', async () => {
+      await wrapper.setData({ debouncedInput: inputValue });
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.loading);
       expect(preview.attributes(SCROLL_LOCK_DISABLE_ATTR)).toBeTruthy();
@@ -396,10 +406,10 @@ describe('QuickNavigationModal', () => {
       };
       fetchDataForPreview.mockResolvedValue(json);
 
-      wrapper.setData({ debouncedInput: inputValue });
+      await wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.success);
       expect(preview.props('json')).toBe(json);
@@ -409,10 +419,10 @@ describe('QuickNavigationModal', () => {
       // simulate data fetching encountering error
       fetchDataForPreview.mockRejectedValue(new Error('!'));
 
-      wrapper.setData({ debouncedInput: inputValue });
+      await wrapper.setData({ debouncedInput: inputValue });
       await flushPromises();
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.error);
     });
@@ -420,20 +430,20 @@ describe('QuickNavigationModal', () => {
     it('renders with a loading slowly state when data takes long to load', async () => {
       // there is probably a more realistic way to simulate the timeout but not
       // exactly sure how just yet, sorry
-      wrapper.setData({
+      await wrapper.setData({
         debouncedInput: inputValue,
         previewIsLoadingSlowly: true,
       });
 
-      const preview = wrapper.find(QuickNavigationPreview);
+      const preview = wrapper.findComponent(QuickNavigationPreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('state')).toBe(PreviewState.loadingSlowly);
     });
 
-    it('does not render if no results were found', () => {
-      wrapper.setData({ debouncedInput: nonResultsInputValue });
+    it('does not render if no results were found', async () => {
+      await wrapper.setData({ debouncedInput: nonResultsInputValue });
 
-      expect(wrapper.contains(QuickNavigationPreview)).toBe(false);
+      expect(wrapper.findComponent(QuickNavigationPreview).exists()).toBe(false);
     });
   });
 });

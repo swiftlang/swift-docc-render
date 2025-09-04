@@ -59,8 +59,8 @@ describe('EndpointExample', () => {
   });
 
   it('renders tabs for request/response links', () => {
-    const tabnav = wrapper.find(Tabnav);
-    const tabnavLinks = wrapper.findAll(TabnavItem);
+    const tabnav = wrapper.findComponent(Tabnav);
+    const tabnavLinks = wrapper.findAllComponents(TabnavItem);
     expect(tabnav.props()).toHaveProperty('value', Tab.request);
     expect(tabnavLinks.length).toBe(2);
     expect(tabnavLinks.at(0).props('value')).toBe(Tab.request);
@@ -70,38 +70,40 @@ describe('EndpointExample', () => {
   });
 
   it('renders a collapsed CollapsibleCodeListing as an output for Request/Response', () => {
-    const codeListing = wrapper.find(CollapsibleCodeListing);
+    const codeListing = wrapper.findComponent(CollapsibleCodeListing);
     expect(codeListing.props('content')).toBe(propsData.request.content);
     expect(codeListing.props('collapsed')).toBe(true);
   });
 
-  it('toggles the current tab when selected', () => {
-    wrapper.find(Tabnav).vm.$emit('input', Tab.response);
-    const codeListing = wrapper.find(CollapsibleCodeListing);
+  it('toggles the current tab when selected', async () => {
+    wrapper.findComponent(Tabnav).vm.$emit('input', Tab.response);
+    await wrapper.vm.$nextTick();
+    const codeListing = wrapper.findComponent(CollapsibleCodeListing);
     expect(codeListing.props('content')).toBe(propsData.response.content);
   });
 
   it('hides the `controls` if content is not collapsible', () => {
-    expect(wrapper.find('.controls').exists()).toBe(false);
+    expect(wrapper.findComponent('.controls').exists()).toBe(false);
   });
 
-  it('expands/collapses the CollapsibleCodeListing when the more/less toggle is clicked', () => {
+  it('expands/collapses the CollapsibleCodeListing when the more/less toggle is clicked', async () => {
     // show the response, as it is collapsible
-    wrapper.find(Tabnav).vm.$emit('input', Tab.response);
+    wrapper.findComponent(Tabnav).vm.$emit('input', Tab.response);
+    await wrapper.vm.$nextTick();
 
-    const codeListing = wrapper.find(CollapsibleCodeListing);
+    const codeListing = wrapper.findComponent(CollapsibleCodeListing);
 
-    wrapper.find('.toggle').trigger('click');
+    await wrapper.findComponent('.toggle').trigger('click');
 
     expect(codeListing.props('collapsed')).toBe(false);
-    expect(wrapper.find('.toggle').text()).toBe('less');
-    expect(wrapper.find(InlineMinusCircleSolidIcon).exists()).toBe(true);
+    expect(wrapper.findComponent('.toggle').text()).toBe('less');
+    expect(wrapper.findComponent(InlineMinusCircleSolidIcon).exists()).toBe(true);
 
-    wrapper.find('.toggle').trigger('click');
+    await wrapper.findComponent('.toggle').trigger('click');
 
     expect(codeListing.props('collapsed')).toBe(true);
-    expect(wrapper.find('.toggle').text()).toBe('more');
-    expect(wrapper.find(InlinePlusCircleSolidIcon).exists()).toBe(true);
+    expect(wrapper.findComponent('.toggle').text()).toBe('more');
+    expect(wrapper.findComponent(InlinePlusCircleSolidIcon).exists()).toBe(true);
   });
 
   it('renders the provided slot content', () => {
@@ -109,6 +111,6 @@ describe('EndpointExample', () => {
       propsData,
       slots: { default: '<div class="foo">Foo</div>' },
     });
-    expect(wrapper.find('.foo').text()).toEqual('Foo');
+    expect(wrapper.findComponent('.foo').text()).toEqual('Foo');
   });
 });
