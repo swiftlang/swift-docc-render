@@ -14,6 +14,7 @@ import {
 } from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import RedirectError from 'docc-render/errors/RedirectError';
+import { fetchThemeSettings } from 'docc-render/utils/theme-settings';
 import FetchError from 'docc-render/errors/FetchError';
 
 export async function fetchData(path, params = {}, options = {}) {
@@ -55,8 +56,26 @@ export async function fetchData(path, params = {}, options = {}) {
   return json;
 }
 
-function createDataPath(path) {
-  const dataPath = path.replace(/\/$/, '');
+// Cache the value of the usePortablePaths setting, so we don't have to fetch it on every request.
+let _cachedUsePortablePaths = null;
+
+async function getUsePortablePaths() {
+  if (_cachedUsePortablePaths !== null) {
+    return _cachedUsePortablePaths;
+  }
+
+  const themeSettings = await fetchThemeSettings();
+  _cachedUsePortablePaths = themeSettings.portablePaths;
+  return _cachedUsePortablePaths;
+}
+
+async function createDataPath(path) {
+  const portablePaths = await getUsePortablePaths();
+  let dataPath = path.replace(/\/$/, '');
+  if (portablePaths === true) {
+    // Replace characters that are not allowed in file names with underscores
+    dataPath = dataPath.replace(/[<>:"\/\\|*]/, '_');
+  }
   return `${normalizePath(['/data', dataPath])}.json`;
 }
 
@@ -74,7 +93,7 @@ function transformDataPathToRoutePath(dataURL) {
 }
 
 export async function fetchDataForRouteEnter(to, from, next) {
-  const path = createDataPath(to.path);
+  const path = await createDataPath(to.path);
 
   let data;
   try {
@@ -113,7 +132,7 @@ export function shouldFetchDataForRouteUpdate(to, from) {
 }
 
 export async function fetchAPIChangesForRoute(route, changes) {
-  const path = createDataPath(`/diffs${route.path}`);
+  const path = await createDataPath(`/diffs${route.path}`);
 
   let data;
   try {
@@ -129,7 +148,7 @@ export async function fetchAPIChangesForRoute(route, changes) {
 }
 
 export async function fetchDataForPreview(path, options = {}) {
-  const dataPath = createDataPath(path);
+  const dataPath = await createDataPath(path);
   return fetchData(dataPath, {}, options);
 }
 
