@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import scrollLock, { SCROLL_LOCK_DISABLE_ATTR } from 'docc-render/utils/scroll-lock';
+import scrollLock, { SCROLL_LOCK_DISABLE_ATTR, SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR } from 'docc-render/utils/scroll-lock';
 import { createEvent, parseHTMLString } from '../../../test-utils';
 
 const { platform } = window.navigator;
@@ -31,10 +31,13 @@ describe('scroll-lock', () => {
     DOM = parseHTMLString(`
       <div class="container">
         <div class="scrollable">long</div>
+        <div ${SCROLL_LOCK_DISABLE_ATTR}="true" class="disabled-target"></div>
+        <div ${SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR}="true" class="disabled-horizontal-target"></div>
       </div>
     `);
     document.body.appendChild(DOM);
     container = DOM.querySelector('.container');
+    Object.defineProperty(container, 'scrollHeight', { value: 10, writable: true });
   });
   afterEach(() => {
     window.navigator.platform = platform;
@@ -70,12 +73,7 @@ describe('scroll-lock', () => {
       container.ontouchmove(touchMoveEvent);
       expect(preventDefault).toHaveBeenCalledTimes(1);
       expect(stopPropagation).toHaveBeenCalledTimes(0);
-      expect(touchMoveEvent.target.closest).toHaveBeenCalledTimes(1);
-      expect(touchMoveEvent.target.closest).toHaveBeenCalledWith(`[${SCROLL_LOCK_DISABLE_ATTR}]`);
-
       // simulate scroll middle
-      // simulate we have enough to scroll
-      Object.defineProperty(container, 'scrollHeight', { value: 10, writable: true });
       container.ontouchmove({ ...touchMoveEvent, targetTouches: [{ clientY: -10 }] });
       expect(preventDefault).toHaveBeenCalledTimes(1);
       expect(stopPropagation).toHaveBeenCalledTimes(1);
@@ -86,24 +84,60 @@ describe('scroll-lock', () => {
       expect(preventDefault).toHaveBeenCalledTimes(2);
       expect(stopPropagation).toHaveBeenCalledTimes(1);
 
-      // simulate there is a scroll-lock-disable target
-      container.ontouchmove({
-        ...touchMoveEvent,
-        targetTouches: [{ clientY: -10 }],
-        target: {
-          closest: jest.fn().mockReturnValue({
-            ...container,
-            clientHeight: 150,
-          }),
-        },
-      });
-      // assert scrolling was allowed
-      expect(preventDefault).toHaveBeenCalledTimes(2);
-      expect(stopPropagation).toHaveBeenCalledTimes(2);
-
       scrollLock.unlockScroll(container);
       expect(container.ontouchmove).toBeFalsy();
       expect(container.ontouchstart).toBeFalsy();
+    });
+
+    it('adds event listeners to the disabled targets too', () => {
+      const disabledTarget = DOM.querySelector('.disabled-target');
+      const disabledHorizontalTarget = DOM.querySelector('.disabled-horizontal-target');
+      // init the scroll lock
+      scrollLock.lockScroll(container);
+      // assert event listeners are attached
+      expect(disabledTarget.ontouchstart).toEqual(expect.any(Function));
+      expect(disabledTarget.ontouchmove).toEqual(expect.any(Function));
+      expect(disabledHorizontalTarget.ontouchstart).toEqual(expect.any(Function));
+      expect(disabledHorizontalTarget.ontouchmove).toEqual(expect.any(Function));
+
+      scrollLock.unlockScroll(container);
+      expect(disabledTarget.ontouchmove).toBeFalsy();
+      expect(disabledTarget.ontouchstart).toBeFalsy();
+      expect(disabledHorizontalTarget.ontouchstart).toBeFalsy();
+      expect(disabledHorizontalTarget.ontouchmove).toBeFalsy();
+    });
+
+    it('prevent event if user tries to perform vertical scroll in an horizontal scrolling element', () => {
+      // set horizontal scrolling element only
+      DOM = parseHTMLString(`
+        <div class="container">
+          <div class="scrollable">long</div>
+          <div ${SCROLL_LOCK_DISABLE_HORIZONTAL_ATTR}="true" class="disabled-horizontal-target"></div>
+        </div>
+      `);
+      document.body.appendChild(DOM);
+      container = DOM.querySelector('.container');
+
+      const touchStartEvent = {
+        targetTouches: [{ clientY: 0, clientX: 0 }],
+      };
+      // perform vertical scroll
+      const touchMoveEvent = {
+        targetTouches: [{ clientY: -10, clientX: 0 }],
+        preventDefault,
+        stopPropagation,
+        touches: [1],
+        target: {
+          closest: jest.fn(),
+        },
+      };
+
+      scrollLock.lockScroll(container);
+      container.ontouchstart(touchStartEvent);
+      container.ontouchmove(touchMoveEvent);
+
+      expect(preventDefault).toHaveBeenCalledTimes(1);
+      expect(stopPropagation).toHaveBeenCalledTimes(0);
     });
 
     it('prevents body scrolling', () => {
