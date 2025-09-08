@@ -41,9 +41,13 @@
         v-for="(line, index) in syntaxHighlightedLines"
       ><span
         :key="index"
-        :class="['code-line-container',{ highlighted: isHighlighted(index),
-                 highlighted: isUserHighlighted(index),
-                 strikethrough: isUserStrikethrough(index),}]"
+        :class="[
+          'code-line-container',
+          {
+            highlighted: isHighlighted(index) || isUserHighlighted(index),
+            strikethrough: isUserStrikethrough(index),
+          }
+        ]"
       ><span
         v-if="showLineNumbers"
         class="code-number"
