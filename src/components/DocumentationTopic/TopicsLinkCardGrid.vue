@@ -81,11 +81,13 @@ export default {
       usePager,
     }) => (usePager ? {
       [TopicSectionsStyle.compactGrid]: {
+        [BreakpointName.xlarge]: 8,
         [BreakpointName.large]: 6,
         [BreakpointName.medium]: 6,
         [BreakpointName.small]: 1,
       },
       [TopicSectionsStyle.detailedGrid]: {
+        [BreakpointName.xlarge]: 6,
         [BreakpointName.large]: 4,
         [BreakpointName.medium]: 2,
         [BreakpointName.small]: 1,
