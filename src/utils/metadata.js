@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 import { getSetting } from 'docc-render/utils/theme-settings';
-import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
+import { resolveAbsoluteUrl } from 'theme/utils/url-helper';
 
 const themeTitle = getSetting(['meta', 'title'], process.env.VUE_APP_TITLE);
 

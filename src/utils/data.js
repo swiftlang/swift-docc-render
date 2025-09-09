@@ -11,7 +11,7 @@
 import { normalizePath } from 'docc-render/utils/assets';
 import {
   queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
-} from 'docc-render/utils/url-helper';
+} from 'theme/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
