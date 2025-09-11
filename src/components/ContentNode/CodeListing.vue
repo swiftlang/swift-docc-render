@@ -287,7 +287,7 @@ code {
 .is-wrapped code {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  word-break: break-word;
+  word-break: normal;
 }
 
 .is-wrapped pre {
