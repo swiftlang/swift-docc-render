@@ -117,23 +117,23 @@ describe('Quiz', () => {
     });
 
     it('renders a div.quiz root', () => {
-      expect(wrapper.is('div.quiz')).toBe(true);
+      expect(wrapper.element.matches('div.quiz')).toBe(true);
     });
 
     it('renders a title', () => {
-      const node = wrapper.find('.title');
+      const node = wrapper.findComponent('.title');
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toBe(propsData.title);
     });
 
     it('renders a `ContentNode`', () => {
-      const node = wrapper.findAll(ContentNode).at(1);
+      const node = wrapper.findAllComponents(ContentNode).at(1);
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toEqual(propsData.content);
     });
 
     it('renders a fieldset element with choices', () => {
-      const choices = wrapper.find('fieldset.choices');
+      const choices = wrapper.findComponent('fieldset.choices');
       expect(choices.exists()).toBe(true);
 
       const legend = choices.find('legend');
@@ -143,24 +143,24 @@ describe('Quiz', () => {
       const items = choices.findAll('label.choice');
       expect(items.length).toBe(propsData.choices.length);
 
-      expect(items.at(0).find(ContentNode).props('content'))
+      expect(items.at(0).findComponent(ContentNode).props('content'))
         .toEqual(propsData.choices[0].content);
-      expect(items.at(1).find(ContentNode).props('content'))
+      expect(items.at(1).findComponent(ContentNode).props('content'))
         .toEqual(propsData.choices[1].content);
-      expect(items.at(2).find(ContentNode).props('content'))
+      expect(items.at(2).findComponent(ContentNode).props('content'))
         .toEqual(propsData.choices[2].content);
     });
 
     it('does not render an "answer" by default', () => {
-      expect(wrapper.find('answer').exists()).toBe(false);
+      expect(wrapper.findComponent('answer').exists()).toBe(false);
     });
 
     it('does not render an icon by default', () => {
-      expect(wrapper.find('.choice-icon').exists()).toBe(false);
+      expect(wrapper.findComponent('.choice-icon').exists()).toBe(false);
     });
 
     it('does not enable the Submit button by default', () => {
-      const check = wrapper.find('.check');
+      const check = wrapper.findComponent('.check');
       expect(check.exists()).toBe(true);
       expect(check.text()).toBe('tutorials.submit');
       expect(check.attributes('disabled')).toBe('true');
@@ -175,24 +175,24 @@ describe('Quiz', () => {
       wrapper = shallowMount(Quiz, {
         propsData,
         stubs: { i18n: i18nStub },
-        attachToDocument: true,
+        attachTo: document.body,
       });
       choices = wrapper.findAll('.choice');
-      submit = wrapper.find('.check');
+      submit = wrapper.findComponent('.check');
     });
 
     it('adds "active" class when choice is clicked', async () => {
       const choice = choices.at(0);
 
       expect(choice.classes('active')).toBe(false);
-      choice.trigger('click');
+      await choice.trigger('click');
       expect(choice.classes('active')).toBe(true);
     });
 
-    it('renders a success icon, only for the chosen choice', () => {
+    it('renders a success icon, only for the chosen choice', async () => {
       const choice = choices.at(0);
-      choice.trigger('click');
-      submit.trigger('click');
+      await choice.trigger('click');
+      await submit.trigger('click');
 
       expect(choice.classes()).toContain('correct');
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
@@ -200,33 +200,33 @@ describe('Quiz', () => {
       expect(choice.find('.choice-icon').html()).toContain('<checkcircleicon');
     });
 
-    it('renders an error icon only for the chosen choice', () => {
+    it('renders an error icon only for the chosen choice', async () => {
       const choice = choices.at(1);
-      choice.trigger('click');
-      submit.trigger('click');
+      await choice.trigger('click');
+      await submit.trigger('click');
 
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
       // cant match directly with element, VTU is buggy
       expect(choice.find('.choice-icon').html()).toContain('<resetcircleicon');
     });
 
-    it('updates the aria live text telling the user if the answer chosen is correct or incorrect', () => {
-      let ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden');
+    it('updates the aria live text telling the user if the answer chosen is correct or incorrect', async () => {
+      let ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden');
       expect(ariaLive.exists()).toBe(true);
       expect(ariaLive.text()).toBe('');
 
       let choice = choices.at(1);
-      choice.trigger('click');
-      submit.trigger('click');
+      await choice.trigger('click');
+      await submit.trigger('click');
 
-      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
+      ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.incorrect');
 
       choice = choices.at(0);
-      choice.trigger('click');
-      submit.trigger('click');
+      await choice.trigger('click');
+      await submit.trigger('click');
 
-      ariaLive = wrapper.find('[aria-live="assertive"].visuallyhidden > span');
+      ariaLive = wrapper.findComponent('[aria-live="assertive"].visuallyhidden > span');
       expect(ariaLive.text()).toBe('Answer is tutorials.assessment.correct');
     });
   });

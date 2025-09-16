@@ -122,22 +122,22 @@ describe('SectionSteps', () => {
   });
 
   it('renders a div.steps with a .content-container and .asset-container', () => {
-    expect(wrapper.is('div.steps')).toBe(true);
-    expect(wrapper.contains('div.content-container')).toBe(true);
+    expect(wrapper.element.matches('div.steps')).toBe(true);
+    expect(wrapper.find('div.content-container').exists()).toBe(true);
 
-    const backgroundTheme = wrapper.find(BackgroundTheme);
+    const backgroundTheme = wrapper.findComponent(BackgroundTheme);
     expect(backgroundTheme.exists()).toBe(true);
     expect(backgroundTheme.classes('asset-container')).toBe(true);
   });
 
   it('renders a `ContentNode` for a non-"step" node', () => {
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual([exampleParagraph]);
   });
 
   it('renders a `Step` for "step" nodes', () => {
-    const steps = wrapper.findAll(Step);
+    const steps = wrapper.findAllComponents(Step);
     expect(steps.length).toBe(5);
 
     let step = steps.at(0);
@@ -159,7 +159,7 @@ describe('SectionSteps', () => {
   it('by default, assigns the first step section index as active', () => {
     // assert the active step is the second element in the content, which is the first step
     expect(wrapper.vm.activeStep).toBe(1);
-    const nodes = wrapper.findAll({ ref: 'contentNodes' });
+    const nodes = wrapper.findAllComponents({ ref: 'contentNodes' });
     // the first node is not a step
     expect(nodes.at(0).props()).not.toHaveProperty('currentIndex');
     // second node gets the current index
@@ -293,7 +293,7 @@ describe('SectionSteps', () => {
         // Last step is code.
         await assertNotPlaying(1);
         // Last step has an image asset.
-        wrapper.setProps({
+        await wrapper.setProps({
           content: [
             exampleParagraph,
             exampleStepWithMedia,
@@ -301,7 +301,7 @@ describe('SectionSteps', () => {
         });
         await assertNotPlaying(1);
         // Last step has no asset nor code.
-        wrapper.setProps({
+        await wrapper.setProps({
           content: [
             exampleParagraph,
             exampleStepWithNoMediaNorCode,
@@ -320,9 +320,9 @@ describe('SectionSteps', () => {
     });
 
     it('renders the media', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
-      const asset = container.find(Asset);
+      const asset = container.findComponent(Asset);
       expect(asset.exists()).toBe(true);
       expect(asset.props('identifier')).toBe(exampleStepWithMedia.media);
       expect(asset.props('showsReplayButton')).toBe(true);
@@ -338,13 +338,13 @@ describe('SectionSteps', () => {
     });
 
     it('renders the code with the preview', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
-      const preview = container.find(CodePreview);
+      const preview = container.findComponent(CodePreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('code')).toBe(exampleStepWithCode.code);
 
-      const asset = preview.find(Asset);
+      const asset = preview.findComponent(Asset);
       expect(asset.exists()).toBe(true);
       expect(asset.props('identifier')).toBe(exampleStepWithCode.runtimePreview);
     });
@@ -358,13 +358,13 @@ describe('SectionSteps', () => {
     });
 
     it('renders the code preview without the runtime preview', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
-      const preview = container.find(CodePreview);
+      const preview = container.findComponent(CodePreview);
       expect(preview.exists()).toBe(true);
       expect(preview.props('code')).toBe(exampleStepWithCodeNoRuntimePreview.code);
 
-      const asset = wrapper.find(Asset);
+      const asset = wrapper.findComponent(Asset);
       expect(asset.exists()).toBe(false);
     });
   });
@@ -377,12 +377,12 @@ describe('SectionSteps', () => {
     });
 
     it('renders the code with the preview', () => {
-      const container = wrapper.find('.asset-container');
+      const container = wrapper.findComponent('.asset-container');
 
-      const asset = container.find(Asset);
+      const asset = container.findComponent(Asset);
       expect(asset.exists()).toBe(false);
 
-      const codePreview = container.find(CodePreview);
+      const codePreview = container.findComponent(CodePreview);
       expect(codePreview.exists()).toBe(false);
     });
   });
@@ -390,9 +390,10 @@ describe('SectionSteps', () => {
   describe('when a `CodePreview` emits a "runtime-preview-toggle" event', () => {
     const key = 2;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper.vm.onIntersect({ target: target(key), isIntersecting: true });
-      wrapper.find(CodePreview).vm.$emit('runtime-preview-toggle', false);
+      await wrapper.vm.$nextTick();
+      wrapper.findComponent(CodePreview).vm.$emit('runtime-preview-toggle', false);
     });
 
     it('emits the event as well with the same value', () => {
@@ -412,7 +413,7 @@ describe('SectionSteps', () => {
     });
 
     it('adds the "ide" class to the asset container', () => {
-      expect(wrapper.contains('.asset-container.ide')).toBe(true);
+      expect(wrapper.find('.asset-container.ide').exists()).toBe(true);
     });
   });
 
@@ -433,7 +434,7 @@ describe('SectionSteps', () => {
     });
 
     it('still displays non-step content', () => {
-      const node = wrapper.find(ContentNode);
+      const node = wrapper.findComponent(ContentNode);
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toEqual([exampleParagraph]);
     });
@@ -457,7 +458,7 @@ describe('SectionSteps', () => {
     });
 
     it('does not render an asset container in S', () => {
-      expect(wrapper.find('.asset-container').exists()).toBe(false);
+      expect(wrapper.findComponent('.asset-container').exists()).toBe(false);
     });
   });
 });

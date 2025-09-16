@@ -31,14 +31,14 @@ describe('HeroMetadata', () => {
   it('renders a div.metadata wrapper', () => {
     const wrapper = mountWithProps();
 
-    const content = wrapper.find('div.metadata');
+    const content = wrapper.findComponent('div.metadata');
     expect(content.exists()).toBe(true);
   });
 
   it('does not render any items if there are no props', () => {
     const wrapper = mountWithProps({});
 
-    const item = wrapper.find('div.metadata div.item');
+    const item = wrapper.findComponent('div.metadata div.item');
     expect(item.exists()).toBe(false);
   });
 
@@ -49,9 +49,9 @@ describe('HeroMetadata', () => {
       projectFilesUrl,
     });
 
-    expect(wrapper.contains(DownloadIcon)).toBe(true);
+    expect(wrapper.findComponent(DownloadIcon).exists()).toBe(true);
 
-    const anchor = wrapper.find('div.metadata div.item div.content a.project-download');
+    const anchor = wrapper.findComponent('div.metadata div.item div.content a.project-download');
     expect(anchor.attributes('href')).toBe(projectFilesUrl);
   });
 
@@ -62,7 +62,7 @@ describe('HeroMetadata', () => {
       estimatedTimeInMinutes,
     });
 
-    const durationDiv = wrapper.find('div.metadata div.item div.content div.duration');
+    const durationDiv = wrapper.findComponent('div.metadata div.item div.content div.duration');
     expect(durationDiv.exists()).toBe(true);
     expect(durationDiv.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*tutorials\\.time\\.minutes\\.short`));
   });
@@ -74,12 +74,12 @@ describe('HeroMetadata', () => {
         title: 'xcode',
       },
     });
-    expect(wrapper.contains(XcodeIcon)).toBe(true);
+    expect(wrapper.findComponent(XcodeIcon).exists()).toBe(true);
   });
 
   it('does not render requirements icon if there are no requirements', () => {
     const wrapper = mountWithProps({});
-    expect(wrapper.contains(XcodeIcon)).toBe(false);
+    expect(wrapper.findComponent(XcodeIcon).exists()).toBe(false);
   });
 
   it('renders metadata in the expected order: [time]|[files]|[xcode]', () => {
@@ -114,11 +114,11 @@ describe('HeroMetadata', () => {
       provide: { isTargetIDE: true },
     });
 
-    expect(wrapper.contains(XcodeIcon)).toBe(true);
+    expect(wrapper.findComponent(XcodeIcon).exists()).toBe(true);
 
     const items = wrapper.findAll('.item');
     const item = items.at(items.length - 1);
-    expect(item.contains('a')).toBe(false);
+    expect(item.find('a').exists()).toBe(false);
 
     const span = item.find('span');
     expect(span.exists()).toBe(true);

@@ -25,7 +25,7 @@ describe('ConditionalWrapper', () => {
         'aria-hidden': 'true',
       },
     });
-    const span = wrapper.find('span');
+    const span = wrapper.findComponent('span');
     expect(span.attributes('aria-hidden')).toBe('true');
     expect(wrapper.text()).toBe('Some text');
   });

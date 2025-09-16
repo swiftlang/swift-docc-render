@@ -60,7 +60,7 @@ describe('Card', () => {
 
   it('renders a .card root', () => {
     const card = mountCard();
-    expect(card.is('.card')).toBe(true);
+    expect(card.element.matches('.card')).toBe(true);
     expect(card.classes('ide')).toBe(false);
   });
 
@@ -102,9 +102,9 @@ describe('Card', () => {
         showExternalLinks: true,
       },
     });
-    const icon = wrapper.find('.link .link-icon');
+    const icon = wrapper.findComponent('.link .link-icon');
     expect(icon.exists()).toBeTruthy();
-    expect(icon.is(DiagonalArrowIcon)).toBeTruthy();
+    expect(icon.findComponent(DiagonalArrowIcon).exists()).toBeTruthy();
   });
 
   it('allows providing an AX helper text formatter, for external links', () => {
@@ -114,7 +114,7 @@ describe('Card', () => {
         formatAriaLabel: label => `${label} (opens in browser)`,
       },
     });
-    expect(wrapper.find('.eyebrow').attributes('aria-label')).toMatch(/- .* \(opens in browser\)$/);
+    expect(wrapper.findComponent('.eyebrow').attributes('aria-label')).toMatch(/- .* \(opens in browser\)$/);
   });
 
   it('renders `.link` with a ChevronIcon for internal links', () => {
@@ -125,11 +125,11 @@ describe('Card', () => {
         hasButton: false,
       },
     });
-    const icon = wrapper.find('.link .link-icon');
+    const icon = wrapper.findComponent('.link .link-icon');
     expect(icon.exists()).toBe(true);
-    expect(icon.is(InlineChevronRightIcon)).toBe(true);
+    expect(icon.findComponent(InlineChevronRightIcon).exists()).toBe(true);
     // check if the special AX helper is visible for `references`
-    expect(wrapper.find('.title .visuallyhidden').exists()).toBe(false);
+    expect(wrapper.findComponent('.title .visuallyhidden').exists()).toBe(false);
   });
 
   it('renders a `ButtonLink` if hasButton is true', () => {
@@ -139,10 +139,10 @@ describe('Card', () => {
         hasButton: true,
       },
     });
-    const button = wrapper.find(ButtonLink);
+    const button = wrapper.findComponent(ButtonLink);
     expect(button.exists()).toBe(true);
     expect(button.classes()).toEqual(['link']);
-    const icon = wrapper.find('.link .link-icon');
+    const icon = wrapper.findComponent('.link .link-icon');
     expect(icon.exists()).toBe(false);
   });
 
@@ -150,9 +150,9 @@ describe('Card', () => {
     const wrapper = mountCard({
       propsData,
     });
-    const div = wrapper.find('.link');
+    const div = wrapper.findComponent('.link');
     expect(div.exists()).toBe(true);
-    expect(div.is('div')).toBe(true);
+    expect(div.element.tagName.toLowerCase() === 'div').toBe(true);
   });
 
   it('renders no `.link`, if no `linkText` is provided', () => {
@@ -162,7 +162,7 @@ describe('Card', () => {
         linkText: '',
       },
     });
-    expect(wrapper.find('.link').exists()).toBe(false);
+    expect(wrapper.findComponent('.link').exists()).toBe(false);
   });
 
   it('renders a CardCover components', () => {
@@ -173,7 +173,7 @@ describe('Card', () => {
         CardCover,
       },
     });
-    const cardCover = wrapper.find(CardCover);
+    const cardCover = wrapper.findComponent(CardCover);
     expect(cardCover.exists()).toBe(true);
     expect(cardCover.props()).toEqual({
       variants: references[propsData.image].variants,
@@ -184,14 +184,14 @@ describe('Card', () => {
 
   it('renders a `.link` with appropriate classes and aria label in WEB', () => {
     const wrapper = mountCard();
-    const link = wrapper.find('.link');
+    const link = wrapper.findComponent('.link');
 
     expect(link.attributes('aria-labelledby')).toBe(undefined);
     expect(link.attributes('aria-describedby')).toBe(undefined);
   });
 
   it('renders a Reference component at the root', () => {
-    expect(mountCard().find(Reference).props('url')).toBe(propsData.url);
+    expect(mountCard().findComponent(Reference).props('url')).toBe(propsData.url);
   });
 
   it('renders a .large or .small modifier depending on the size', () => {
@@ -218,7 +218,7 @@ describe('Card', () => {
       },
     });
     await flushPromises();
-    const contentDiv = wrapper.find('.card-content');
+    const contentDiv = wrapper.findComponent('.card-content');
     expect(contentDiv.exists()).toBe(true);
     expect(contentDiv.text()).toEqual(content);
     expect(contentDiv.attributes('id')).toMatch(cardContentIdRE);
@@ -231,7 +231,7 @@ describe('Card', () => {
       },
     });
     await flushPromises();
-    expect(wrapper.find('.card-content').exists()).toBe(false);
+    expect(wrapper.findComponent('.card-content').exists()).toBe(false);
   });
 
   it('renders card as a `floatingStyle`', () => {
@@ -241,7 +241,7 @@ describe('Card', () => {
         floatingStyle: true,
       },
     });
-    expect(wrapper.find(CardCover).props('rounded')).toBe(true);
+    expect(wrapper.findComponent(CardCover).props('rounded')).toBe(true);
     expect(wrapper.classes()).toContain('floating-style');
   });
 });

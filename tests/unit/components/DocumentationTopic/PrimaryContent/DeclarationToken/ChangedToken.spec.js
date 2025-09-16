@@ -39,7 +39,7 @@ describe('ChangedToken', () => {
   it('renders DeclarationToken for each token', () => {
     const wrapper = shallowMount(ChangedToken, { propsData });
 
-    const tokens = wrapper.findAll(DeclarationToken);
+    const tokens = wrapper.findAllComponents(DeclarationToken);
     expect(tokens).toHaveLength(2);
     expect(tokens.at(0).props()).toEqual(expect.objectContaining(propsData.tokens[0]));
   });

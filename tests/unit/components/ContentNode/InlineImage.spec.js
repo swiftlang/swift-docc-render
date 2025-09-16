@@ -36,7 +36,7 @@ describe('InlineImage', () => {
       },
     });
 
-    const imageAsset = wrapper.find(ImageAsset);
+    const imageAsset = wrapper.findComponent(ImageAsset);
     expect(imageAsset.exists()).toBe(true);
     expect(imageAsset.props('alt')).toBe(alt);
     expect(imageAsset.props('variants')).toBe(variants);

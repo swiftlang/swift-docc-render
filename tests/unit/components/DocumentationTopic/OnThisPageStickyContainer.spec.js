@@ -21,6 +21,6 @@ const createWrapper = ({ provide, ...others } = {}) => shallowMount(OnThisPageSt
 describe('OnThisPageStickyContainer', () => {
   it('renders the default slot', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.default').text()).toBe('Default Content');
+    expect(wrapper.findComponent('.default').text()).toBe('Default Content');
   });
 });

@@ -45,7 +45,7 @@ describe('ParameterMetaAttribute', () => {
   it('exposes a default scoped slot with `attribute` as a prop', () => {
     const wrapper = createWrapper();
     // expect the class to be applied
-    const metadata = wrapper.find('.property-metadata');
+    const metadata = wrapper.findComponent('.property-metadata');
     expect(metadata.exists()).toBe(true);
     expect(metadata.text()).toEqual('Foo');
 
@@ -68,7 +68,7 @@ describe('ParameterMetaAttribute', () => {
       },
     });
     // expect the class to be applied
-    const metadata = wrapper.find('.property-metadata');
+    const metadata = wrapper.findComponent('.property-metadata');
     expect(metadata.exists()).toBe(true);
     expect(metadata.text()).toEqual('Foo');
 

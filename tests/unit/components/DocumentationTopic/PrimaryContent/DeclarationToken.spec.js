@@ -31,7 +31,7 @@ describe('DeclarationToken', () => {
     };
     const wrapper = mountToken({ propsData });
 
-    const rawText = wrapper.find(RawText);
+    const rawText = wrapper.findComponent(RawText);
     expect(rawText.exists()).toBe(true);
     expect(rawText.props()).toEqual({ text: propsData.text });
   });
@@ -44,10 +44,10 @@ describe('DeclarationToken', () => {
     };
     const wrapper = mountToken({ propsData });
 
-    const link = wrapper.find(LinkableToken);
+    const link = wrapper.findComponent(LinkableToken);
     expect(link.exists()).toBe(true);
     expect(link.props()).toEqual({ identifier: propsData.identifier });
-    expect(link.contains(WordBreak)).toBe(true);
+    expect(link.findComponent(WordBreak).exists()).toBe(true);
     expect(link.text()).toBe(propsData.text);
     expect(link.classes()).toContain('type-identifier-link');
   });
@@ -63,7 +63,7 @@ describe('DeclarationToken', () => {
       const propsData = { kind, text: 'foo' };
       const wrapper = mountToken({ propsData });
 
-      const syntaxToken = wrapper.find(SyntaxToken);
+      const syntaxToken = wrapper.findComponent(SyntaxToken);
       expect(syntaxToken.exists()).toBe(true);
       expect(syntaxToken.props()).toEqual(propsData);
     });
@@ -78,7 +78,7 @@ describe('DeclarationToken', () => {
       }],
     };
     const wrapper = mountToken({ propsData });
-    const token = wrapper.find(ChangedToken);
+    const token = wrapper.findComponent(ChangedToken);
     expect(token.exists()).toBe(true);
     expect(token.props('tokens')).toEqual(propsData.tokens);
     expect(token.props('kind')).toEqual(propsData.kind);
@@ -93,7 +93,7 @@ describe('DeclarationToken', () => {
       }],
     };
     const wrapper = mountToken({ propsData });
-    const token = wrapper.find(ChangedToken);
+    const token = wrapper.findComponent(ChangedToken);
     expect(token.exists()).toBe(true);
     expect(token.props('tokens')).toEqual(propsData.tokens);
     expect(token.props('kind')).toEqual(propsData.kind);
@@ -105,7 +105,7 @@ describe('DeclarationToken', () => {
       text: '@foo',
     };
     const wrapper = mountToken({ propsData });
-    const token = wrapper.find(SyntaxToken);
+    const token = wrapper.findComponent(SyntaxToken);
     expect(token.exists()).toBe(true);
     expect(token.props('kind')).toBe(TokenKind.attribute);
     expect(token.props('text')).toBe(propsData.text);
@@ -118,10 +118,10 @@ describe('DeclarationToken', () => {
       text: '@foo',
     };
     const wrapper = mountToken({ propsData });
-    const link = wrapper.find(LinkableToken);
+    const link = wrapper.findComponent(LinkableToken);
     expect(link.exists()).toBe(true);
     expect(link.props()).toEqual({ identifier: propsData.identifier });
-    expect(link.contains(WordBreak)).toBe(true);
+    expect(link.findComponent(WordBreak).exists()).toBe(true);
     expect(link.text()).toBe(propsData.text);
     expect(link.classes()).toContain('attribute-link');
   });

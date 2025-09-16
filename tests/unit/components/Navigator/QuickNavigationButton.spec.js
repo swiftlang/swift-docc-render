@@ -15,7 +15,7 @@ describe('QuickNavigationButton', () => {
   it('renders and behaves like a button', () => {
     const wrapper = shallowMount(QuickNavigationButton);
 
-    expect(wrapper.is('button.quick-navigation-open')).toBe(true);
+    expect(wrapper.element.matches('button.quick-navigation-open')).toBe(true);
     expect(wrapper.attributes('aria-label')).toBe('quicknav.button.label');
     expect(wrapper.attributes('title')).toBe('quicknav.button.title');
     expect(wrapper.text()).toBe('/');

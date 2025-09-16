@@ -27,28 +27,29 @@ describe('TagList', () => {
 
   beforeEach(() => {
     wrapper = shallowMount(TagList, { propsData });
-    tag1 = wrapper.findAll(Tag).at(0);
-    tag2 = wrapper.findAll(Tag).at(1);
+    tag1 = wrapper.findAllComponents(Tag).at(0);
+    tag2 = wrapper.findAllComponents(Tag).at(1);
   });
 
   it('renders `Tag` components', () => {
-    const tags = wrapper.findAll(Tag);
+    const tags = wrapper.findAllComponents(Tag);
 
     expect(tags.length).toBe(2);
   });
 
-  it('renders an `scrolling` class inside the tag list if `isScrolling` is true', () => {
-    const list = wrapper.find({ ref: 'scroll-wrapper' });
+  it('renders an `scrolling` class inside the tag list if `isScrolling` is true', async () => {
+    const list = wrapper.findComponent({ ref: 'scroll-wrapper' });
 
     expect(list.classes('scrolling')).toBe(false);
 
-    wrapper.setData({ isScrolling: true });
+    await wrapper.setData({ isScrolling: true });
 
     expect(list.classes('scrolling')).toBe(true);
   });
 
-  it('re-emits `prevent-blur` when tag emitted `prevent-blur`', () => {
+  it('re-emits `prevent-blur` when tag emitted `prevent-blur`', async () => {
     tag1.vm.$emit('prevent-blur');
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.emitted('prevent-blur')).toBeTruthy();
   });
@@ -132,7 +133,7 @@ describe('TagList', () => {
   });
 
   it('reset filters when pressing the delete button while being focus only on the list', () => {
-    const list = wrapper.find({ ref: 'tags' });
+    const list = wrapper.findComponent({ ref: 'tags' });
     expect(list.exists()).toBe(true);
 
     list.trigger('keydown.delete.self');
@@ -140,7 +141,7 @@ describe('TagList', () => {
   });
 
   it('does not reset filters when hitting `Enter` while being focus only on the list', () => {
-    const list = wrapper.find({ ref: 'tags' });
+    const list = wrapper.findComponent({ ref: 'tags' });
 
     list.trigger('keydown', {
       key: 'Enter',
@@ -150,7 +151,7 @@ describe('TagList', () => {
   });
 
   it('does not delete tag when hitting `Enter` while being focus only tag', () => {
-    const tag = wrapper.find({ ref: 'tag' });
+    const tag = wrapper.findComponent({ ref: 'tag' });
 
     tag.trigger('keydown', {
       key: 'Enter',
@@ -159,13 +160,13 @@ describe('TagList', () => {
     expect(wrapper.emitted('delete-tag')).not.toBeTruthy();
   });
 
-  it('deletes tag when hitting an alphanum key or space while being focus only tag', () => {
-    const tag = wrapper.find({ ref: 'tag' });
+  it('deletes tag when hitting an alphanum key or space while being focus only tag', async () => {
+    const tag = wrapper.findComponent({ ref: 'tag' });
     const alphanumKey = 'a';
     const input = 'foo';
     const space = ' ';
-    wrapper.setProps({ input });
-    wrapper.setData({ focusedIndex: 0 });
+    await wrapper.setProps({ input });
+    await wrapper.setData({ focusedIndex: 0 });
     tag.trigger('keydown', { key: alphanumKey });
 
     expect(wrapper.emitted('delete-tag')[0][0].tagName).toEqual(propsData.tags[0]);
@@ -175,10 +176,10 @@ describe('TagList', () => {
     expect(wrapper.emitted('delete-tag')).toBeTruthy();
   });
 
-  it('emits `select-all` when user has text on input and `command + a` is triggered on any tag', () => {
-    wrapper.setProps({ input: 'something' });
+  it('emits `select-all` when user has text on input and `command + a` is triggered on any tag', async () => {
+    await wrapper.setProps({ input: 'something' });
 
-    wrapper.find({ ref: 'tags' }).trigger('keydown', {
+    wrapper.findComponent({ ref: 'tags' }).trigger('keydown', {
       key: 'a',
       metaKey: true,
     });
@@ -186,10 +187,11 @@ describe('TagList', () => {
     expect(wrapper.emitted('select-all')).toBeTruthy();
   });
 
-  it('emits up `paste-tags`, when a tag emits a `paste-content` event', () => {
-    const tag = wrapper.find({ ref: 'tag' });
+  it('emits up `paste-tags`, when a tag emits a `paste-content` event', async () => {
+    const tag = wrapper.findComponent({ ref: 'tag' });
     const payload = { someData: 'someData' };
     tag.vm.$emit('paste-content', payload);
+    await wrapper.vm.$nextTick();
     // assert its emitted only once
     expect(wrapper.emitted('paste-tags')).toHaveLength(1);
     // assert it passes up the event payload up
@@ -197,14 +199,14 @@ describe('TagList', () => {
   });
 
   describe('Removable Tags', () => {
-    it('sets passed down `isRemovableTag` on tags', () => {
-      expect(wrapper.find(Tag).props()).toHaveProperty('isRemovableTag', false);
-      wrapper.setProps({ areTagsRemovable: true });
-      expect(wrapper.find(Tag).props()).toHaveProperty('isRemovableTag', true);
+    it('sets passed down `isRemovableTag` on tags', async () => {
+      expect(wrapper.findComponent(Tag).props()).toHaveProperty('isRemovableTag', false);
+      await wrapper.setProps({ areTagsRemovable: true });
+      expect(wrapper.findComponent(Tag).props()).toHaveProperty('isRemovableTag', true);
     });
 
     it('sets the tabindex on the `ul`', () => {
-      expect(wrapper.find('ul').attributes()).toHaveProperty('tabindex', '0');
+      expect(wrapper.findComponent('ul').attributes()).toHaveProperty('tabindex', '0');
     });
   });
 });

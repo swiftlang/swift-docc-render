@@ -67,13 +67,13 @@ describe('RestBody', () => {
   });
 
   it('renders an h2 section title', () => {
-    const sectionTitle = wrapper.find(LinkableHeading);
+    const sectionTitle = wrapper.findComponent(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('renders a single `ParametersTable`', () => {
-    const tables = wrapper.findAll(ParametersTable);
+    const tables = wrapper.findAllComponents(ParametersTable);
     expect(tables.length).toBe(1);
 
     expect(tables.at(0).props()).toHaveProperty('parameters', [
@@ -87,7 +87,7 @@ describe('RestBody', () => {
     expect(tables.at(0).props()).toHaveProperty('keyBy', 'key');
     expect(tables.at(0).props()).toHaveProperty('changes', {});
 
-    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(true);
+    expect(wrapper.findComponent(PossiblyChangedMimetype).exists()).toBe(true);
   });
 
   it('hides the mimetype, if not provided', () => {
@@ -99,31 +99,31 @@ describe('RestBody', () => {
       stubs: { ParametersTable },
       provide,
     });
-    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(false);
+    expect(wrapper.findComponent(PossiblyChangedMimetype).exists()).toBe(false);
   });
 
   it('does not render an h3 for "Parts"', () => {
-    expect(wrapper.contains('h3')).toBe(false);
+    expect(wrapper.find('h3').exists()).toBe(false);
   });
 
   it('displays the `PossiblyChangedType` in the `param-symbol` if content exists', () => {
-    expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
       .toBe(true);
-    expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
       .toBe(false);
-    expect(wrapper.find('.param .param-symbol').find(PossiblyChangedType).props('type'))
+    expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).props('type'))
       .toEqual(propsData.bodyContentType);
   });
 
-  it('displays the `PossiblyChangedType` in the `param-symbol` if no content exists', () => {
-    wrapper.setProps({
+  it('displays the `PossiblyChangedType` in the `param-symbol` if no content exists', async () => {
+    await wrapper.setProps({
       content: [],
     });
-    expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
       .toBe(true);
-    expect(wrapper.find('.param .param-symbol').find(PossiblyChangedType).props('type'))
+    expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).props('type'))
       .toEqual(propsData.bodyContentType);
-    expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+    expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
       .toBe(false);
   });
 
@@ -157,12 +157,12 @@ describe('RestBody', () => {
       },
     });
 
-    const table = wrapper.find(ParametersTable);
+    const table = wrapper.findComponent(ParametersTable);
     expect(table.props()).toHaveProperty('changes', changes);
-    expect(wrapper.find(PossiblyChangedType).props())
+    expect(wrapper.findComponent(PossiblyChangedType).props())
       .toHaveProperty('changes', changes[ChangesKey].type);
 
-    expect(wrapper.find(PossiblyChangedMimetype).props())
+    expect(wrapper.findComponent(PossiblyChangedMimetype).props())
       .toMatchObject({ changes: changes[ChangesKey].mimetype, change: changes[ChangesKey].change });
   });
 
@@ -215,39 +215,41 @@ describe('RestBody', () => {
       },
     ];
 
-    beforeEach(() => wrapper.setProps({ parts }));
+    beforeEach(async () => {
+      await wrapper.setProps({ parts });
+    });
 
     it('renders an h3 for "Parts"', () => {
-      const h3 = wrapper.find('h3');
+      const h3 = wrapper.findComponent('h3');
       expect(h3.exists()).toBe(true);
       expect(h3.text()).toBe('sections.parts');
     });
 
     it('renders 2 param tables, using the second to render parts', () => {
-      const tables = wrapper.findAll(ParametersTable);
+      const tables = wrapper.findAllComponents(ParametersTable);
       expect(tables.length).toBe(2);
       expect(tables.at(1).props()).toEqual({ parameters: parts, changes: {}, keyBy: 'name' });
     });
 
     it('renders a part name', () => {
-      const partName = wrapper.find('.parts .part-name');
-      expect(partName.contains(WordBreak));
-      const wb = partName.find(WordBreak);
+      const partName = wrapper.findComponent('.parts .part-name');
+      expect(partName.findComponent(WordBreak).exists());
+      const wb = partName.findComponent(WordBreak);
       expect(wb.attributes('tag')).toBe('code');
       expect(wb.text()).toEqual('Any Key');
     });
 
     it('displays the PossiblyChangedType in the `param-symbol` if content exists', () => {
-      expect(wrapper.find('.parts .param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(true);
-      expect(wrapper.find('.parts .param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
-      expect(wrapper.find('.parts .param .param-symbol').find(PossiblyChangedType).props('type'))
+      expect(wrapper.findComponent('.parts .param .param-symbol').findComponent(PossiblyChangedType).props('type'))
         .toEqual(parts[0].type);
     });
 
     it('displays the PossiblyChangedType in the `param-content` if no content exists', async () => {
-      wrapper.setProps({
+      await wrapper.setProps({
         parts: [
           {
             name: 'Any Key',
@@ -263,12 +265,12 @@ describe('RestBody', () => {
         ],
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('.parts .param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(false);
-      expect(wrapper.find('.parts .param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.parts .param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(true);
 
-      expect(wrapper.find('.parts .param .param-content').find(PossiblyChangedType).props('type'))
+      expect(wrapper.findComponent('.parts .param .param-content').findComponent(PossiblyChangedType).props('type'))
         .toEqual(parts[0].type);
     });
 
@@ -279,7 +281,7 @@ describe('RestBody', () => {
         value: '10',
       }];
 
-      wrapper.setProps({
+      await wrapper.setProps({
         parts: [
           {
             name: 'Any Key',
@@ -296,7 +298,7 @@ describe('RestBody', () => {
       });
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.find('.parts').find(ParameterAttributes).props('attributes'))
+      expect(wrapper.findComponent('.parts').findComponent(ParameterAttributes).props('attributes'))
         .toEqual(attributes);
     });
 
@@ -342,20 +344,20 @@ describe('RestBody', () => {
         },
       });
 
-      const table = wrapper.findAll(ParametersTable).at(1);
+      const table = wrapper.findAllComponents(ParametersTable).at(1);
       expect(table.props()).toHaveProperty('changes', changes[ChangesKey].parts);
 
       const partsChange = changes[ChangesKey].parts[firstKey];
-      expect(table.find(PossiblyChangedType).props())
+      expect(table.findComponent(PossiblyChangedType).props())
         .toHaveProperty('changes', partsChange.type);
 
-      expect(table.find(PossiblyChangedMimetype).props())
+      expect(table.findComponent(PossiblyChangedMimetype).props())
         .toMatchObject({ changes: partsChange.mimetype, change: partsChange.change });
 
-      expect(table.find(PossiblyChangedTextAttribute).props())
+      expect(table.findComponent(PossiblyChangedTextAttribute).props())
         .toHaveProperty('changes', partsChange.required);
 
-      expect(table.find(ParameterAttributes).props())
+      expect(table.findComponent(ParameterAttributes).props())
         .toHaveProperty('changes', partsChange.attributes);
     });
   });

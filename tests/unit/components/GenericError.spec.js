@@ -25,26 +25,26 @@ describe('GenericError', () => {
   });
 
   it('renders a .generic-error container', () => {
-    expect(wrapper.is('.generic-error')).toBe(true);
+    expect(wrapper.element.matches('.generic-error')).toBe(true);
   });
 
   it('renders a default message', () => {
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe('error.unknown');
   });
 
   it('exposes a slot', () => {
-    const content = wrapper.find('.container p');
+    const content = wrapper.findComponent('.container p');
     expect(content.exists()).toBe(true);
     expect(content.text()).toBe(slotText);
   });
 
-  it('renders a custom message', () => {
+  it('renders a custom message', async () => {
     const message = 'Whoops!';
-    wrapper.setProps({ message });
+    await wrapper.setProps({ message });
 
-    const title = wrapper.find('.title');
+    const title = wrapper.findComponent('.title');
     expect(title.exists()).toBe(true);
     expect(title.text()).toBe(message);
   });

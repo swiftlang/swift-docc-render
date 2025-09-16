@@ -18,10 +18,10 @@ describe('Figure', () => {
   it('renders a <figure> with an id and slot content', () => {
     const wrapper = shallowMount(Figure, { propsData, slots });
 
-    expect(wrapper.is('figure')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'figure').toBe(true);
     expect(wrapper.attributes('id')).toBe(propsData.anchor);
 
-    const p = wrapper.find('p');
+    const p = wrapper.findComponent('p');
     expect(p.exists()).toBe(true);
     expect(p.text()).toBe('blah');
   });
@@ -29,10 +29,10 @@ describe('Figure', () => {
   it('renders a <figure> without an id, just slot content', () => {
     const wrapper = shallowMount(Figure, { slots });
 
-    expect(wrapper.is('figure')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'figure').toBe(true);
     expect(wrapper.attributes('id')).toBeFalsy();
 
-    const p = wrapper.find('p');
+    const p = wrapper.findComponent('p');
     expect(p.exists()).toBe(true);
     expect(p.text()).toBe('blah');
   });

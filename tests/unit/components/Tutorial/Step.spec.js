@@ -71,25 +71,25 @@ describe('Step', () => {
     });
 
     it('renders a div.step-container', () => {
-      expect(wrapper.is('div.step-container')).toBe(true);
+      expect(wrapper.element.matches('div.step-container')).toBe(true);
     });
 
-    it('adds a `focused` class if `isActive`', () => {
-      expect(wrapper.find('.step').classes()).not.toContain('focused');
-      wrapper.setProps({ currentIndex: 0 });
-      expect(wrapper.find('.step').classes()).toContain('focused');
+    it('adds a `focused` class if `isActive`', async () => {
+      expect(wrapper.findComponent('.step').classes()).not.toContain('focused');
+      await wrapper.setProps({ currentIndex: 0 });
+      expect(wrapper.findComponent('.step').classes()).toContain('focused');
     });
 
-    it('adds a data-index property to the `step`', () => {
-      wrapper.setProps({ index: 1 });
-      expect(wrapper.find('.step').attributes('data-index')).toBe('1');
+    it('adds a data-index property to the `step`', async () => {
+      await wrapper.setProps({ index: 1 });
+      expect(wrapper.findComponent('.step').attributes('data-index')).toBe('1');
     });
 
     it('renders a div.step with a `ContentNode`', () => {
-      const step = wrapper.find('div.step');
+      const step = wrapper.findComponent('div.step');
       expect(step.classes('focused')).toBe(false);
 
-      const node = step.find(ContentNode);
+      const node = step.findComponent(ContentNode);
       expect(node.props('content')).toEqual(content);
     });
 
@@ -106,22 +106,22 @@ describe('Step', () => {
           isTargetIDE: true,
         },
       });
-      expect(wrapper.contains('div.media-container')).toBe(false);
+      expect(wrapper.find('div.media-container').exists()).toBe(false);
     });
 
     it('renders the mobile layout on non-S breakpoints in Web mode', () => {
-      expect(wrapper.contains('div.media-container')).toBe(true);
+      expect(wrapper.find('div.media-container').exists()).toBe(true);
     });
 
     describe('with a caption', () => {
       const caption = [paragraph('bar')];
 
-      beforeEach(() => {
-        wrapper.setProps({ caption });
+      beforeEach(async () => {
+        await wrapper.setProps({ caption });
       });
 
       it('renders a `ContentNode` for the caption', () => {
-        const nodes = wrapper.findAll(ContentNode);
+        const nodes = wrapper.findAllComponents(ContentNode);
         expect(nodes.length).toBe(2);
 
         const captionNode = nodes.at(1);
@@ -153,7 +153,7 @@ describe('Step', () => {
           isTargetIDE: true,
         },
       });
-      expect(wrapper.contains('div.media-container')).toBe(true);
+      expect(wrapper.find('div.media-container').exists()).toBe(true);
     });
 
     describe('with media', () => {
@@ -175,8 +175,8 @@ describe('Step', () => {
       it('renders an `Asset` with `showsReplayButton=true`', () => {
         wrapper = mountWithMedia();
 
-        const mediaContainer = wrapper.find('.media-container');
-        const asset = mediaContainer.find(Asset);
+        const mediaContainer = wrapper.findComponent('.media-container');
+        const asset = mediaContainer.findComponent(Asset);
         expect(asset.exists()).toBe(true);
         expect(asset.props('identifier')).toBe('media.jpg');
         expect(asset.props('showsVideoControls')).toBe(false);
@@ -202,15 +202,15 @@ describe('Step', () => {
             isTargetIDE: true,
           },
         });
-        mediaContainer = wrapper.find('.media-container');
+        mediaContainer = wrapper.findComponent('.media-container');
       });
 
       it('renders a `MobileCodePreview`', () => {
-        const preview = mediaContainer.find(MobileCodePreview);
+        const preview = mediaContainer.findComponent(MobileCodePreview);
         expect(preview.exists()).toBe(true);
         expect(preview.props('code')).toBe('test.swift');
 
-        const asset = preview.find(Asset);
+        const asset = preview.findComponent(Asset);
         expect(asset.exists()).toBe(true);
         expect(asset.props('identifier')).toBe('preview.jpg');
       });

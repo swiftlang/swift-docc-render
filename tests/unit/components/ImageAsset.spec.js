@@ -46,8 +46,8 @@ describe('ImageAsset', () => {
       },
     });
 
-    const picture = wrapper.find('picture');
-    expect(picture.contains('source')).toBe(false);
+    const picture = wrapper.findComponent('picture');
+    expect(picture.find('source').exists()).toBe(false);
 
     const image = picture.find('img');
 
@@ -80,8 +80,8 @@ describe('ImageAsset', () => {
       },
     });
 
-    const picture = wrapper.find('picture');
-    expect(picture.contains('source')).toBe(false);
+    const picture = wrapper.findComponent('picture');
+    expect(picture.find('source').exists()).toBe(false);
 
     const image = picture.find('img');
 
@@ -126,10 +126,10 @@ describe('ImageAsset', () => {
       },
     });
 
-    const picture = wrapper.find('picture');
-    expect(picture.contains('source')).toBe(false);
+    const picture = wrapper.findComponent('picture');
+    expect(picture.find('source').exists()).toBe(false);
 
-    const image = wrapper.find('img');
+    const image = wrapper.findComponent('img');
 
     expect(image.attributes('src')).toBe(url2x);
     expect(image.attributes('srcset')).toBe(`${url2x} 2x, ${url3x} 3x`);
@@ -171,13 +171,13 @@ describe('ImageAsset', () => {
       },
     });
 
-    const picture = wrapper.find('picture');
+    const picture = wrapper.findComponent('picture');
     const source = picture.find('source');
 
     expect(source.attributes('media')).toBe('(prefers-color-scheme: dark)');
     expect(source.attributes('srcset')).toBe(`${url2x} 2x, ${url3x} 3x`);
 
-    const image = wrapper.find('img');
+    const image = wrapper.findComponent('img');
 
     // The img tag should have the dark variant's attributes.
     expect(image.attributes('src')).toBe(url2x);
@@ -229,13 +229,13 @@ describe('ImageAsset', () => {
       },
     });
 
-    const picture = wrapper.find('picture');
+    const picture = wrapper.findComponent('picture');
     const source = picture.find('source');
 
     expect(source.attributes('media')).toBe('(prefers-color-scheme: dark)');
     expect(source.attributes('srcset')).toBe(`${url2x} 2x`);
 
-    const image = wrapper.find('img');
+    const image = wrapper.findComponent('img');
 
     expect(image.attributes('src')).toBe(url1x);
     expect(image.attributes('srcset')).toBe(`${url1x} 1x, ${url3x} 3x`);
@@ -243,7 +243,7 @@ describe('ImageAsset', () => {
     expect(image.attributes('height')).toBe('auto');
   });
 
-  it('renders a fallback image if the specified one does not load', () => {
+  it('renders a fallback image if the specified one does not load', async () => {
     const url = 'https://www.example.com/image.png';
     const alt = 'This is alt text.';
     const wrapper = shallowMount(ImageAsset, {
@@ -265,19 +265,19 @@ describe('ImageAsset', () => {
       },
     });
 
-    const picture = wrapper.find('picture');
+    const picture = wrapper.findComponent('picture');
     expect(picture.exists()).toBe(true);
     const img = picture.find('img');
     expect(img.exists()).toBe(true);
-    expect(img.classes('fallback')).toBe(false);
+    expect(img.classes()).not.toContain('fallback');
 
     // simulate an error loading the real image
-    img.trigger('error');
+    await img.trigger('error');
 
-    expect(wrapper.find('picture').exists()).toBe(false);
-    const fallbackImg = wrapper.find('img');
+    expect(wrapper.findComponent('picture').exists()).toBe(false);
+    const fallbackImg = wrapper.findComponent('img');
     expect(fallbackImg.exists()).toBe(true);
-    expect(fallbackImg.classes('fallback')).toBe(true);
+    expect(fallbackImg.classes()).toContain('fallback');
     expect(fallbackImg.attributes('alt')).toBe(alt);
     expect(fallbackImg.attributes('title')).toBe('error.image');
   });
@@ -322,7 +322,7 @@ describe('ImageAsset', () => {
       },
     });
 
-    const img = wrapper.find('img');
+    const img = wrapper.findComponent('img');
     expect(img.attributes('src')).toBe(url);
     expect(img.attributes('srcset')).toBe(`${url} 2x`);
     expect(img.attributes('width')).toBeFalsy();
@@ -354,7 +354,7 @@ describe('ImageAsset', () => {
 
     const calculateOptimalDimensionsSpy = jest.spyOn(wrapper.vm, 'calculateOptimalDimensions')
       .mockReturnValue({ width: 99 });
-    const img = wrapper.find('img');
+    const img = wrapper.findComponent('img');
 
     expect(img.attributes('width')).toBeFalsy();
     expect(img.attributes('height')).toBeFalsy();
@@ -381,7 +381,7 @@ describe('ImageAsset', () => {
         shouldCalculateOptimalWidth: false,
       },
     });
-    const img = wrapper.find('img');
+    const img = wrapper.findComponent('img');
     img.trigger('load');
     await flushPromises();
     expect(img.attributes('width')).toBeFalsy();
@@ -420,7 +420,7 @@ describe('ImageAsset', () => {
       },
     });
 
-    const img = wrapper.find('img');
+    const img = wrapper.findComponent('img');
     expect(img.attributes('src')).toBe(url);
     expect(img.attributes('srcset')).toBe(`${url} 2x`);
     expect(img.attributes('width')).toBeFalsy();
@@ -458,7 +458,7 @@ describe('ImageAsset', () => {
       },
     });
 
-    const image = wrapper.find('img');
+    const image = wrapper.findComponent('img');
     expect(image.attributes('loading')).toBe(ImageLoadingStrategy.eager);
   });
 });

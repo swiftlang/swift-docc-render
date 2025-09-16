@@ -26,16 +26,16 @@ describe('AvailabilityRange', () => {
   });
 
   it('renders a span[role="text"]', () => {
-    expect(wrapper.is('span[role="text"]')).toBe(true);
+    expect(wrapper.element.matches('span[role="text"]')).toBe(true);
   });
 
-  it('renders the range in text form', () => {
+  it('renders the range in text form', async () => {
     expect(wrapper.text()).toBe('fooOS 1.0+');
 
-    wrapper.setProps({ deprecatedAt });
+    await wrapper.setProps({ deprecatedAt });
     expect(wrapper.text()).toBe('fooOS 1.0\u20132.0');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       ...propsData,
       deprecatedAt: null,
       introducedAt: null,
@@ -43,15 +43,15 @@ describe('AvailabilityRange', () => {
     expect(wrapper.text()).toBe('fooOS');
   });
 
-  it('renders a descriptive title attribute', () => {
+  it('renders a descriptive title attribute', async () => {
     expect(wrapper.attributes('title'))
       .toBe('availability.available-on-platform-version fooOS 1.0');
 
-    wrapper.setProps({ deprecatedAt });
+    await wrapper.setProps({ deprecatedAt });
     expect(wrapper.attributes('title'))
       .toBe('availability.introduced-and-deprecated fooOS 1.0 2.0');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       ...propsData,
       deprecatedAt: null,
       introducedAt: null,
@@ -59,15 +59,15 @@ describe('AvailabilityRange', () => {
     expect(wrapper.attributes('title')).toBe('availability.available-on-platform fooOS');
   });
 
-  it('renders an aria label with the description (prepended with short text)', () => {
+  it('renders an aria label with the description (prepended with short text)', async () => {
     expect(wrapper.attributes('aria-label'))
       .toBe('fooOS 1.0+, availability.available-on-platform-version fooOS 1.0');
 
-    wrapper.setProps({ deprecatedAt });
+    await wrapper.setProps({ deprecatedAt });
     expect(wrapper.attributes('aria-label'))
       .toBe('fooOS 1.0\u20132.0, change-type.deprecated, availability.introduced-and-deprecated fooOS 1.0 2.0');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       ...propsData,
       deprecatedAt: null,
       introducedAt: null,

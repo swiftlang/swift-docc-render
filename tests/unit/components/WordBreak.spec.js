@@ -20,8 +20,8 @@ describe('WordBreak', () => {
   describe('without content', () => {
     it('renders an empty span', () => {
       const wrapper = shallowMount(WordBreak);
-      expect(wrapper.is('span')).toBe(true);
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
+      expect(wrapper.element.childElementCount === 0).toBe(true);
     });
   });
 
@@ -39,7 +39,7 @@ describe('WordBreak', () => {
       </word-break>`,
       components: { WordBreak },
     });
-    expect(wrapper.is('code')).toBeTruthy();
+    expect(wrapper.element.tagName.toLowerCase() === 'code').toBeTruthy();
     expect(wrapper.classes()).toEqual(['static', 'dynamic', 'dynamic2']);
     expect(wrapper.attributes()).toHaveProperty('aria-label', 'Foo');
     expect(wrapper.attributes()).toHaveProperty('style', 'display: block; color: white;');
@@ -48,7 +48,7 @@ describe('WordBreak', () => {
   describe('without any safe boundaries', () => {
     it('renders with unchanged content', () => {
       const wrapper = mountWithText('foobarbazqux');
-      expect(wrapper.is('span')).toBe(true);
+      expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
       expect(wrapper.text()).toBe('foobarbazqux');
     });
   });

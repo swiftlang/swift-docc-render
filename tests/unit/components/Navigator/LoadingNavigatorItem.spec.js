@@ -37,7 +37,7 @@ describe('LoadingNavigatorItem', () => {
   });
 
   it('renders an empty BaseNavigatorCardItem with navigator-icon', () => {
-    const baseComponent = wrapper.find(BaseNavigatorCardItem);
+    const baseComponent = wrapper.findComponent(BaseNavigatorCardItem);
     expect(baseComponent.props()).toEqual({
       hideNavigatorIcon: propsData.hideNavigatorIcon,
     });
@@ -47,11 +47,11 @@ describe('LoadingNavigatorItem', () => {
 
   it('does not render a navigator-icon slot if hideNavigatorIcon is true', () => {
     wrapper = createWrapper({ propsData: { hideNavigatorIcon: true } });
-    expect(wrapper.find('.navigator-icon').exists()).toBe(false);
+    expect(wrapper.findComponent('.navigator-icon').exists()).toBe(false);
   });
 
   it('renders a loader with a width given by prop', () => {
-    const loader = wrapper.find('.loader');
+    const loader = wrapper.findComponent('.loader');
     expect(loader.exists()).toBe(true);
     expect(loader.element.style.width).toEqual(propsData.width);
   });

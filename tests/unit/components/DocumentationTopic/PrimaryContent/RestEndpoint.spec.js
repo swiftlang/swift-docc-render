@@ -28,9 +28,9 @@ describe('RestEndpoint', () => {
         tokens,
       },
     });
-    expect(wrapper.find(LinkableHeading).text()).toContain('URL');
+    expect(wrapper.findComponent(LinkableHeading).text()).toContain('URL');
 
-    const source = wrapper.find({ name: 'DeclarationSource' });
+    const source = wrapper.findComponent({ name: 'DeclarationSource' });
     expect(source.exists()).toBe(true);
     expect(source.props('tokens')).toEqual(tokens);
   });

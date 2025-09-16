@@ -131,7 +131,7 @@ describe('PropertyTable', () => {
   }
 
   it('renders an h2 section title', () => {
-    const sectionTitle = mountComponent().find(LinkableHeading);
+    const sectionTitle = mountComponent().findComponent(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });
@@ -145,9 +145,9 @@ describe('PropertyTable', () => {
         // condense all whitespace
         .replace(/\s+/g, ' '),
     ).toBe('columns');
-    expect(wrapper.find(WordBreak).is('code')).toBe(true);
-    expect(wrapper.find('.property-metadata').text()).toBe('integer');
-    expect(wrapper.find({ name: 'ContentNode' }).props('content')).toEqual(
+    expect(wrapper.findComponent(WordBreak).element.tagName.toLowerCase() === 'code').toBe(true);
+    expect(wrapper.findComponent('.property-metadata').text()).toBe('integer');
+    expect(wrapper.findComponent({ name: 'ContentNode' }).props('content')).toEqual(
       propsData.properties[0].content,
     );
   });
@@ -167,17 +167,17 @@ describe('PropertyTable', () => {
     expect(allNames.at(1).classes()).not.toContain('deprecated');
     const deprecatedBadges = wrapper.findAll('.property-deprecated');
     expect(deprecatedBadges).toHaveLength(1);
-    expect(deprecatedBadges.at(0).is(Badge));
+    expect(deprecatedBadges.at(0).findComponent(Badge).exists());
     expect(deprecatedBadges.at(0).props('variant')).toBe('deprecated');
   });
 
   it('renders the type using declaration tokens in code', () => {
     const wrapper = mountComponent();
 
-    const code = wrapper.find('.property-type code');
+    const code = wrapper.findComponent('.property-type code');
     expect(code.exists()).toBe(true);
 
-    const tokens = code.findAll(DeclarationToken);
+    const tokens = code.findAllComponents(DeclarationToken);
     expect(tokens.length).toBe(propsData.properties[0].type.length);
 
     const type = propsData.properties[0].type[0];
@@ -201,9 +201,9 @@ describe('PropertyTable', () => {
   describe('displays the `type` in proper place', () => {
     it('in the `param-symbol` if `content` exists', () => {
       const wrapper = mountComponent();
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(true);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
 
@@ -221,9 +221,9 @@ describe('PropertyTable', () => {
         },
       });
 
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(false);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(true);
     });
 
@@ -241,9 +241,9 @@ describe('PropertyTable', () => {
         },
       });
 
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(true);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
   });
@@ -270,7 +270,7 @@ describe('PropertyTable', () => {
       },
     });
 
-    const allAttributes = wrapper.findAll(ParameterAttributes);
+    const allAttributes = wrapper.findAllComponents(ParameterAttributes);
     expect(allAttributes).toHaveLength(2);
     expect(allAttributes.at(0).props('attributes')).toEqual(attributes);
     expect(allAttributes.at(0).props('changes')).toEqual({});
@@ -344,10 +344,10 @@ describe('PropertyTable', () => {
     });
 
     // assert it passes the current `properties` of the `changes` for this page identifier.
-    expect(wrapper.find(ParametersTable).props('changes'))
+    expect(wrapper.findComponent(ParametersTable).props('changes'))
       .toHaveProperty(propertyName, changes.properties[propertyName]);
     // the first available property
-    expect(wrapper.find(ParameterAttributes).props('changes'))
+    expect(wrapper.findComponent(ParameterAttributes).props('changes'))
       .toEqual(changes.properties[propertyName].attributes);
   });
 
@@ -368,7 +368,7 @@ describe('PropertyTable', () => {
       },
     });
 
-    expect(wrapper.find(ParametersTable).props('changes')).toEqual({});
-    expect(wrapper.find(ParameterAttributes).props('changes')).toEqual({});
+    expect(wrapper.findComponent(ParametersTable).props('changes')).toEqual({});
+    expect(wrapper.findComponent(ParameterAttributes).props('changes')).toEqual({});
   });
 });

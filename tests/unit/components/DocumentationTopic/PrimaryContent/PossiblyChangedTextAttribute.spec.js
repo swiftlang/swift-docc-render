@@ -44,12 +44,12 @@ describe('PossiblyChangedTextAttribute', () => {
         changes,
       },
     });
-    expect(wrapper.find(RenderChanged).props()).toEqual(expect.objectContaining({
+    expect(wrapper.findComponent(RenderChanged).props()).toEqual(expect.objectContaining({
       changes,
       renderSingleChange: true,
       value: defaultProps.value,
     }));
-    expect(wrapper.find('.property-text').exists()).toBe(true);
+    expect(wrapper.findComponent('.property-text').exists()).toBe(true);
   });
 
   it('renders a text node, if value is false but has changes', () => {
@@ -59,7 +59,7 @@ describe('PossiblyChangedTextAttribute', () => {
         changes,
       },
     });
-    expect(wrapper.find('.property-text').exists()).toBe(true);
+    expect(wrapper.findComponent('.property-text').exists()).toBe(true);
   });
 
   it('does not render a text node, if value is false and no changes', () => {
@@ -68,12 +68,12 @@ describe('PossiblyChangedTextAttribute', () => {
         value: false,
       },
     });
-    expect(wrapper.find('.property-text').exists()).toBe(false);
+    expect(wrapper.findComponent('.property-text').exists()).toBe(false);
   });
 
   it('renders a `Required` text', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.property-text').element.textContent).toEqual('(Required) ');
+    expect(wrapper.findComponent('.property-text').element.textContent).toEqual('(Required) ');
   });
 
   it('renders slot content', () => {
@@ -82,6 +82,6 @@ describe('PossiblyChangedTextAttribute', () => {
         default: '(Read only) ',
       },
     });
-    expect(wrapper.find('.property-text').element.textContent).toEqual('(Read only) ');
+    expect(wrapper.findComponent('.property-text').element.textContent).toEqual('(Read only) ');
   });
 });

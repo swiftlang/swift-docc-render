@@ -32,7 +32,7 @@ describe('ButtonLink', () => {
       },
     });
 
-    const ref = wrapper.find(Reference);
+    const ref = wrapper.findComponent(Reference);
     expect(ref.exists()).toBe(true);
     expect(ref.props('url')).toBe(propsData.url);
     expect(ref.classes('button-cta')).toBe(true);
@@ -48,7 +48,7 @@ describe('ButtonLink', () => {
       },
     });
 
-    const button = wrapper.find('button');
+    const button = wrapper.findComponent('button');
     expect(button.exists()).toBe(true);
     expect(button.classes('button-cta')).toBe(true);
     expect(button.text()).toBe(slotValue);

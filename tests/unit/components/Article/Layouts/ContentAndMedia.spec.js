@@ -33,31 +33,31 @@ describe('ContentAndMedia', () => {
   });
 
   it('renders a div.content-and-media', () => {
-    expect(wrapper.is('div.content-and-media')).toBe(true);
+    expect(wrapper.element.matches('div.content-and-media')).toBe(true);
   });
 
-  it('renders the `mediaPosition` classname', () => {
-    expect(wrapper.is('.content-and-media.media-trailing')).toBe(true);
+  it('renders the `mediaPosition` classname', async () => {
+    expect(wrapper.element.matches('.content-and-media.media-trailing')).toBe(true);
 
-    wrapper.setProps({ mediaPosition: MediaPosition.leading });
+    await wrapper.setProps({ mediaPosition: MediaPosition.leading });
     expect(wrapper.classes('media-leading')).toBe(true);
     expect(wrapper.classes('media-trailing')).toBe(false);
 
-    wrapper.setProps({ mediaPosition: MediaPosition.trailing });
+    await wrapper.setProps({ mediaPosition: MediaPosition.trailing });
     expect(wrapper.classes('media-leading')).toBe(false);
     expect(wrapper.classes('media-trailing')).toBe(true);
   });
 
   it('renders a `ContentNode`', () => {
     const { content } = propsData;
-    const node = wrapper.find(ContentNode);
+    const node = wrapper.findComponent(ContentNode);
     expect(node.exists()).toBe(true);
     expect(node.props('content')).toEqual(content);
   });
 
   it('renders an `Asset`', () => {
     const { media } = propsData;
-    const asset = wrapper.find(Asset);
+    const asset = wrapper.findComponent(Asset);
     expect(asset.exists()).toBe(true);
     expect(asset.props('identifier')).toBe(media);
   });

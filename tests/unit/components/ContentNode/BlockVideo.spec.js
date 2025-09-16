@@ -24,7 +24,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(BlockVideo
 describe('BlockVideo', () => {
   it('renders an Asset', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find(Asset).props()).toEqual({
+    expect(wrapper.findComponent(Asset).props()).toEqual({
       identifier: defaultProps.identifier,
       videoAutoplays: false,
       videoMuted: false,
@@ -39,7 +39,7 @@ describe('BlockVideo', () => {
         deviceFrame: 'phone',
       },
     });
-    expect(wrapper.find(Asset).props()).toEqual({
+    expect(wrapper.findComponent(Asset).props()).toEqual({
       identifier: defaultProps.identifier,
       videoAutoplays: false,
       videoMuted: false,

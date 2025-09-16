@@ -132,15 +132,15 @@ describe('Primary Dropdown', () => {
           state: { references },
         },
       },
-      attachToDocument: true,
+      attachTo: document.body,
     });
 
-    btn = wrapper.find('.form-dropdown-toggle');
-    firstLink = wrapper.find(`.${OptionClass}`);
+    btn = wrapper.findComponent('.form-dropdown-toggle');
+    firstLink = wrapper.findComponent(`.${OptionClass}`);
   });
 
   it('renders a `DropdownCustom` at the root', () => {
-    const node = wrapper.find(DropdownCustom);
+    const node = wrapper.findComponent(DropdownCustom);
     expect(node.exists()).toBe(true);
     expect(node.props()).toEqual({
       isSmall: true,
@@ -150,7 +150,7 @@ describe('Primary Dropdown', () => {
   });
 
   it('Renders a the correct label', () => {
-    expect(wrapper.find('.visuallyhidden').text()).toBe('tutorials.nav.current tutorials.title');
+    expect(wrapper.findComponent('.visuallyhidden').text()).toBe('tutorials.nav.current tutorials.title');
   });
 
   it('renders chapters properly', () => {
@@ -163,7 +163,7 @@ describe('Primary Dropdown', () => {
   it('renders chapter tutorials properly', () => {
     // assert there are two tutorials, and hey apply the option class
     expect(wrapper.findAll(`.${OptionClass}`)).toHaveLength(2);
-    const options = wrapper.find('ul[role="listbox"]').findAll(RouterLinkStub);
+    const options = wrapper.findComponent('ul[role="listbox"]').findAllComponents(RouterLinkStub);
     // assert it gets the active option class applied
     expect(options.at(0).props('to')).toEqual('/tutorials/technologyx/tutorial?context=foo');
     expect(options.at(0).find('li').attributes()).toEqual({
@@ -182,40 +182,37 @@ describe('Primary Dropdown', () => {
     });
   });
 
-  it('opens the dropdown on key `down`', () => {
-    btn.trigger('keydown.down');
+  it('opens the dropdown on key `down`', async () => {
+    await btn.trigger('keydown.down');
     expect(wrapper.classes('is-open')).toBe(true);
   });
 
-  it('opens the dropdown on key `up`', () => {
-    btn.trigger('keydown.up');
+  it('opens the dropdown on key `up`', async () => {
+    await btn.trigger('keydown.up');
     expect(wrapper.classes('is-open')).toBe(true);
   });
 
   it('focuses the next element, when `down` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
-    btn.trigger('keydown.down');
+    await btn.trigger('keydown.down');
     expect(wrapper.classes('is-open')).toBe(true);
     // use the down key on the first link
-    firstLink.trigger('keydown.down');
-    await wrapper.vm.$nextTick();
+    await firstLink.trigger('keydown.down');
     const secondOption = wrapper.findAll(`.${OptionClass}`).at(1).element;
     expect(document.activeElement).toEqual(secondOption);
   });
 
   it('focuses the previous element, when `up` key is used on opened dropdown link', async () => {
     // open dropdown first using down key
-    btn.trigger('click');
+    await btn.trigger('click');
     // find the second option
     const secondOption = wrapper.findAll(`.${OptionClass}`).at(1);
     // use the down key on the first link
-    firstLink.trigger('keydown.down');
-    await wrapper.vm.$nextTick();
+    await firstLink.trigger('keydown.down');
     // assert it is focused
     expect(document.activeElement).toEqual(secondOption.element);
     // now click up on the active element
-    secondOption.trigger('keydown.up');
-    await wrapper.vm.$nextTick();
+    await secondOption.trigger('keydown.up');
     // assert the first element is active now
     expect(document.activeElement).toEqual(firstLink.element);
   });

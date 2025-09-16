@@ -19,17 +19,17 @@ describe('BetaLegalText', () => {
     wrapper = shallowMount(BetaLegalText);
   });
   it('renders the BetaLegalText inside a grid', () => {
-    expect(wrapper.find(GridRow).exists()).toBe(true);
-    expect(wrapper.find(GridColumn).exists()).toBe(true);
-    expect(wrapper.find(GridColumn).props('span')).toEqual({ large: 12 });
+    expect(wrapper.findComponent(GridRow).exists()).toBe(true);
+    expect(wrapper.findComponent(GridColumn).exists()).toBe(true);
+    expect(wrapper.findComponent(GridColumn).props('span')).toEqual({ large: 12 });
   });
 
   it('renders a title', () => {
-    expect(wrapper.find('.betainfo-label').text()).toEqual('metadata.beta.software');
+    expect(wrapper.findComponent('.betainfo-label').text()).toEqual('metadata.beta.software');
   });
 
   it('renders default content in the content slot', () => {
-    const content = wrapper.find('.betainfo-content');
+    const content = wrapper.findComponent('.betainfo-content');
     expect(content.exists()).toBe(true);
     expect(content.text()).toContain('metadata.beta.legal');
   });
@@ -40,7 +40,7 @@ describe('BetaLegalText', () => {
         content: '<div class="foo">Foo</div>',
       },
     });
-    const content = wrapper.find('.foo');
+    const content = wrapper.findComponent('.foo');
     expect(content.exists()).toBe(true);
     expect(content.text()).toContain('Foo');
   });
@@ -51,7 +51,7 @@ describe('BetaLegalText', () => {
         content: '<div class="after">After</div>',
       },
     });
-    const content = wrapper.find('.after');
+    const content = wrapper.findComponent('.after');
     expect(content.exists()).toBe(true);
     expect(content.text()).toContain('After');
   });

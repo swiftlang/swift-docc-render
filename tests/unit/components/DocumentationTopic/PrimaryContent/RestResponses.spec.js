@@ -74,14 +74,14 @@ describe('RestResponses', () => {
   }
 
   it('renders an h2 section title', () => {
-    const sectionTitle = mountComponent().find(LinkableHeading);
+    const sectionTitle = mountComponent().findComponent(LinkableHeading);
     expect(sectionTitle.exists()).toBe(true);
     expect(sectionTitle.text()).toContain(propsData.title);
   });
 
   it('renders a `ParametersTable`', () => {
     const wrapper = mountComponent();
-    const props = wrapper.find(ParametersTable).props();
+    const props = wrapper.findComponent(ParametersTable).props();
     expect(props).toHaveProperty('keyBy', 'status');
     expect(props).toHaveProperty('parameters', propsData.responses);
     expect(props).toHaveProperty('changes', {});
@@ -91,17 +91,17 @@ describe('RestResponses', () => {
     const wrapper = mountComponent();
     expect(
       wrapper
-        .find('.response-name')
+        .findComponent('.response-name')
         .text()
         // condense all whitespace
         .replace(/\s+/g, ' '),
     ).toBe('200 OK');
-    expect(wrapper.find('.response-reason').text()).toBe('OK');
-    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(true);
+    expect(wrapper.findComponent('.response-reason').text()).toBe('OK');
+    expect(wrapper.findComponent(PossiblyChangedMimetype).exists()).toBe(true);
 
     expect(
       wrapper
-        .findAll({ name: 'ContentNode' })
+        .findAllComponents({ name: 'ContentNode' })
         .at(0)
         .props('content'),
     ).toEqual(propsData.responses[0].content);
@@ -115,20 +115,20 @@ describe('RestResponses', () => {
         responses: [{ ...otherProps }],
       },
     });
-    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(false);
+    expect(wrapper.findComponent(PossiblyChangedMimetype).exists()).toBe(false);
   });
 
   describe('moves the `PossiblyChangedType`', () => {
     it('to the `param-symbol` if content or reason is provided', () => {
       const wrapper = mountComponent();
 
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType)).toBe(true);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists()).toBe(true);
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
 
       expect(
         wrapper
-          .find({ name: 'PossiblyChangedType' })
+          .findComponent({ name: 'PossiblyChangedType' })
           .props('type'),
       ).toEqual(propsData.responses[0].type);
     });
@@ -152,8 +152,8 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType)).toBe(true);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists()).toBe(true);
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
 
@@ -178,8 +178,8 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType)).toBe(true);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists()).toBe(true);
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
 
@@ -201,14 +201,14 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(false);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(true);
 
       expect(
         wrapper
-          .find({ name: 'PossiblyChangedType' })
+          .findComponent({ name: 'PossiblyChangedType' })
           .props('type'),
       ).toEqual(propsData.responses[0].type);
     });
@@ -232,9 +232,9 @@ describe('RestResponses', () => {
         },
       });
 
-      expect(wrapper.find('.param .param-symbol').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-symbol').findComponent(PossiblyChangedType).exists())
         .toBe(true);
-      expect(wrapper.find('.param .param-content').contains(PossiblyChangedType))
+      expect(wrapper.findComponent('.param .param-content').findComponent(PossiblyChangedType).exists())
         .toBe(false);
     });
   });
@@ -268,8 +268,8 @@ describe('RestResponses', () => {
         },
       },
     });
-    expect(wrapper.find(PossiblyChangedType).props()).toHaveProperty('changes', changes['200'].type);
-    expect(wrapper.find(PossiblyChangedMimetype).props()).toMatchObject({ changes: changes['200'].mimetype, change: changes['200'].change });
+    expect(wrapper.findComponent(PossiblyChangedType).props()).toHaveProperty('changes', changes['200'].type);
+    expect(wrapper.findComponent(PossiblyChangedMimetype).props()).toMatchObject({ changes: changes['200'].mimetype, change: changes['200'].change });
   });
 
   it('handles data where `mimetype` spelling is used instead of `mimeType`', () => {
@@ -288,6 +288,6 @@ describe('RestResponses', () => {
         ],
       },
     });
-    expect(wrapper.find(PossiblyChangedMimetype).exists()).toBe(true);
+    expect(wrapper.findComponent(PossiblyChangedMimetype).exists()).toBe(true);
   });
 });

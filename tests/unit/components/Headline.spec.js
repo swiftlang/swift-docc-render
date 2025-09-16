@@ -20,12 +20,12 @@ describe('Heading', () => {
   });
 
   it('renders a dynamic <h[n]> for 1 <= n <= 6', () => {
-    expect(mountHeadingWithLevel(1).is('h1')).toBe(true);
-    expect(mountHeadingWithLevel(2).is('h2')).toBe(true);
-    expect(mountHeadingWithLevel(3).is('h3')).toBe(true);
-    expect(mountHeadingWithLevel(4).is('h4')).toBe(true);
-    expect(mountHeadingWithLevel(5).is('h5')).toBe(true);
-    expect(mountHeadingWithLevel(6).is('h6')).toBe(true);
+    expect(mountHeadingWithLevel(1).element.tagName.toLowerCase() === 'h1').toBe(true);
+    expect(mountHeadingWithLevel(2).element.tagName.toLowerCase() === 'h2').toBe(true);
+    expect(mountHeadingWithLevel(3).element.tagName.toLowerCase() === 'h3').toBe(true);
+    expect(mountHeadingWithLevel(4).element.tagName.toLowerCase() === 'h4').toBe(true);
+    expect(mountHeadingWithLevel(5).element.tagName.toLowerCase() === 'h5').toBe(true);
+    expect(mountHeadingWithLevel(6).element.tagName.toLowerCase() === 'h6').toBe(true);
   });
 
   it('renders slot content', () => {
@@ -35,7 +35,7 @@ describe('Heading', () => {
       },
     });
     expect(wrapper.text()).toBe('Fooing the Bar');
-    expect(wrapper.find('strong').text()).toBe('Bar');
+    expect(wrapper.findComponent('strong').text()).toBe('Bar');
   });
 });
 
@@ -52,13 +52,13 @@ describe('Headline', () => {
       },
     });
 
-    expect(wrapper.is(Heading));
+    expect(wrapper.findComponent(Heading).exists());
     expect(wrapper.classes()).toContain('headline');
     expect(wrapper.props('level')).toBe(2);
 
-    expect(wrapper.find('.test').text()).toBe('Test Title');
+    expect(wrapper.findComponent('.test').text()).toBe('Test Title');
 
-    expect(wrapper.contains('.eyebrow')).toBe(false);
+    expect(wrapper.find('.eyebrow').exists()).toBe(false);
   });
 
   it('renders a `Heading` with slot and eyebrow content', () => {
@@ -69,13 +69,13 @@ describe('Headline', () => {
       },
     });
 
-    expect(wrapper.is(Heading));
+    expect(wrapper.findComponent(Heading).exists());
     expect(wrapper.classes()).toContain('headline');
     expect(wrapper.props('level')).toBe(1);
 
-    expect(wrapper.find('.test-title').text()).toBe('Test Title');
+    expect(wrapper.findComponent('.test-title').text()).toBe('Test Title');
 
-    const eyebrow = wrapper.find('.eyebrow');
+    const eyebrow = wrapper.findComponent('.eyebrow');
     expect(eyebrow.exists()).toBe(true);
     expect(eyebrow.find('.test-eyebrow').text()).toBe('Test Eyebrow');
   });

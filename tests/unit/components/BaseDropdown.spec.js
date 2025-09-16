@@ -31,13 +31,13 @@ describe('BaseDropdown', () => {
     expect(wrapper.classes()).toEqual(['form-element']);
   });
 
-  it('renders a `select` component', () => {
+  it('renders a `select` component', async () => {
     const wrapper = createWrapper();
     // assert select is rendered with correct classes
-    const select = wrapper.find('select');
+    const select = wrapper.findComponent('select');
     expect(select.exists()).toBe(true);
     expect(select.classes()).toContain('form-dropdown');
-    wrapper.setProps({ value: '' });
+    await wrapper.setProps({ value: '' });
     expect(select.classes()).toContain('form-dropdown-selectnone');
   });
 
@@ -51,13 +51,13 @@ describe('BaseDropdown', () => {
         default: '<option value="foo">Foo</option>',
       },
     });
-    const dropdown = wrapper.find('select.form-dropdown');
+    const dropdown = wrapper.findComponent('select.form-dropdown');
     // assert v-model is there
     expect(dropdown.element.value).toEqual(value);
     expect(dropdown.find('option').exists()).toBe(true);
   });
 
-  it('emits `input` event on each select change', () => {
+  it('emits `input` event on each select change', async () => {
     const value = 'foo';
     const wrapper = createWrapper({
       slots: {
@@ -65,7 +65,7 @@ describe('BaseDropdown', () => {
       },
     });
 
-    wrapper.find('select').setValue(value);
+    await wrapper.findComponent('select').setValue(value);
     expect(wrapper.emitted('input')).toEqual([[value]]);
   });
 
@@ -76,7 +76,7 @@ describe('BaseDropdown', () => {
         disabled: true,
       },
     });
-    const attrs = wrapper.find('select').attributes();
+    const attrs = wrapper.findComponent('select').attributes();
     expect(attrs).toHaveProperty('aria-label', 'Some label');
     expect(attrs).toHaveProperty('disabled', 'disabled');
   });
@@ -95,10 +95,10 @@ describe('BaseDropdown', () => {
       },
     });
     // assert the `select` and it's default slot are not rendered
-    expect(wrapper.find('selector').exists()).toBe(false);
-    expect(wrapper.find('.default').exists()).toBe(false);
+    expect(wrapper.findComponent('selector').exists()).toBe(false);
+    expect(wrapper.findComponent('.default').exists()).toBe(false);
     // assert the new slot content is rendered
-    expect(wrapper.find('.foo').text()).toEqual('Foo');
+    expect(wrapper.findComponent('.foo').text()).toEqual('Foo');
     expect(scopedSlotProps.value).toEqual('foo');
     expect(scopedSlotProps.dropdownClasses).toEqual(expect.arrayContaining(['form-dropdown']));
   });
@@ -109,7 +109,7 @@ describe('BaseDropdown', () => {
         after: '<div class="after">Foo Text</div>',
       },
     });
-    expect(wrapper.find('.after').text()).toContain('Foo Text');
+    expect(wrapper.findComponent('.after').text()).toContain('Foo Text');
   });
 
   it('renders an eyebrow slot', () => {
@@ -121,9 +121,9 @@ describe('BaseDropdown', () => {
         eyebrow: 'Foo',
       },
     });
-    expect(wrapper.find('.form-dropdown').classes()).not.toContain('no-eyebrow');
+    expect(wrapper.findComponent('.form-dropdown').classes()).not.toContain('no-eyebrow');
     // assert its rendered
-    const label = wrapper.find('.form-label');
+    const label = wrapper.findComponent('.form-label');
     expect(label.exists()).toBe(true);
     expect(label.text()).toEqual('Foo');
     expect(label.attributes()).toHaveProperty('aria-hidden', 'true');
@@ -131,12 +131,12 @@ describe('BaseDropdown', () => {
 
   it('renders a chevron', () => {
     const wrapper = createWrapper();
-    const icon = wrapper.find(InlineChevronDownIcon);
+    const icon = wrapper.findComponent(InlineChevronDownIcon);
     expect(icon.exists()).toBe(true);
     expect(icon.attributes()).toHaveProperty('aria-hidden', 'true');
   });
 
-  it('passes `form-dropdown-selectnone` if value is empty', () => {
+  it('passes `form-dropdown-selectnone` if value is empty', async () => {
     let scopedSlotProps = {};
     const wrapper = createWrapper({
       scopedSlots: {
@@ -148,7 +148,7 @@ describe('BaseDropdown', () => {
     });
     expect(scopedSlotProps.dropdownClasses)
       .toContainEqual({ [EmptyClass]: false, 'no-eyebrow': true });
-    wrapper.setProps({
+    await wrapper.setProps({
       value: '',
     });
     expect(scopedSlotProps.dropdownClasses)

@@ -84,7 +84,7 @@ const createWrapper = options => shallowMount(DeclarationList, {
 describe('DeclarationList', () => {
   it('renders `DeclarationGroup` with correct prop', () => {
     const wrapper = createWrapper();
-    const srcComponent = wrapper.find(DeclarationGroup);
+    const srcComponent = wrapper.findComponent(DeclarationGroup);
     expect(srcComponent.props('declaration')).toEqual({
       ...propsData.declaration,
       identifier: provide.identifier,
@@ -108,9 +108,9 @@ describe('DeclarationList with otherDeclarations', () => {
     });
   });
 
-  it('renders only one `DeclarationGroup` when list is collapsed', () => {
-    wrapper.setProps({ declListExpanded: false });
-    const groups = wrapper.findAll(DeclarationGroup);
+  it('renders only one `DeclarationGroup` when list is collapsed', async () => {
+    await wrapper.setProps({ declListExpanded: false });
+    const groups = wrapper.findAllComponents(DeclarationGroup);
     expect(groups.length).toBe(1);
     expect(groups.at(0).props('declaration')).toEqual({
       tokens: basicDeclaration.tokens,
@@ -119,7 +119,7 @@ describe('DeclarationList with otherDeclarations', () => {
   });
 
   it('renders one `DeclarationGroup` for each declaration in list in correct order when expanded', () => {
-    const groups = wrapper.findAll(DeclarationGroup);
+    const groups = wrapper.findAllComponents(DeclarationGroup);
     // second item is the currently selected declaration
     expect(groups.length).toBe(2);
     expect(groups.at(0).props('declaration')).toEqual(withOtherDeclarations.declaration.otherDeclarations.declarations[0]);
@@ -129,12 +129,12 @@ describe('DeclarationList with otherDeclarations', () => {
     });
   });
 
-  it('adds a `declaration-pill-expanded` class only when list is expanded', () => {
-    const declaration = wrapper.find('.declaration-pill');
+  it('adds a `declaration-pill-expanded` class only when list is expanded', async () => {
+    const declaration = wrapper.findComponent('.declaration-pill');
     expect(declaration.classes()).toContain('declaration-pill--expanded');
 
-    wrapper.setProps({ declListExpanded: false });
-    expect(wrapper.find('.declaration-pill').classes()).not.toContain('declaration-pill--expanded');
+    await wrapper.setProps({ declListExpanded: false });
+    expect(wrapper.findComponent('.declaration-pill').classes()).not.toContain('declaration-pill--expanded');
   });
 
   it('adds a `selected-declaration` class to the selected declaration', () => {
@@ -169,7 +169,7 @@ describe('DeclarationList with otherDeclarations', () => {
 });
 
 describe('DeclarationList with changes', () => {
-  it('renders `DeclarationGroup` with correct change type prop when no other declarations', () => {
+  it('renders `DeclarationGroup` with correct change type prop when no other declarations', async () => {
     const wrapper = createWrapper({
       propsData: {
         ...propsData,
@@ -177,35 +177,35 @@ describe('DeclarationList with changes', () => {
       provide,
     });
 
-    wrapper.setProps({
+    await wrapper.setProps({
       changeType: 'added',
     });
-    let declarationPill = wrapper.find('.declaration-pill');
+    let declarationPill = wrapper.findComponent('.declaration-pill');
     expect(declarationPill.classes()).toContain('changed');
     expect(declarationPill.classes()).toContain('changed-added');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       changeType: 'deprecated',
     });
-    declarationPill = wrapper.find('.declaration-pill');
+    declarationPill = wrapper.findComponent('.declaration-pill');
     expect(declarationPill.classes()).toContain('changed');
     expect(declarationPill.classes()).toContain('changed-deprecated');
 
-    wrapper.setProps({
+    await wrapper.setProps({
       changeType: 'modified',
     });
-    declarationPill = wrapper.find('.declaration-pill');
+    declarationPill = wrapper.findComponent('.declaration-pill');
     expect(declarationPill.classes()).toContain('changed');
     expect(declarationPill.classes()).toContain('changed-modified');
 
-    const declarationGroup = declarationPill.find(DeclarationGroup);
+    const declarationGroup = declarationPill.findComponent(DeclarationGroup);
     expect(declarationGroup.props('declaration')).toEqual({
       ...propsData.declaration,
       identifier: provide.identifier,
     });
   });
 
-  it('renders 1 `DeclarationGroup` with correct change type prop when other declarations collapsed', () => {
+  it('renders 1 `DeclarationGroup` with correct change type prop when other declarations collapsed', async () => {
     const wrapper = createWrapper({
       propsData: {
         ...propsData,
@@ -214,7 +214,7 @@ describe('DeclarationList with changes', () => {
       provide,
     });
 
-    wrapper.setProps({
+    await wrapper.setProps({
       changeType: 'added',
     });
     const declarationPills = wrapper.findAll('.declaration-pill');
@@ -223,7 +223,7 @@ describe('DeclarationList with changes', () => {
     expect(declarationPills.at(0).classes()).toContain('changed-added');
   });
 
-  it('renders the current symbol as a `DeclarationGroup` with correct change type prop when other declarations expanded', () => {
+  it('renders the current symbol as a `DeclarationGroup` with correct change type prop when other declarations expanded', async () => {
     const wrapper = createWrapper({
       propsData: {
         ...propsData,
@@ -233,7 +233,7 @@ describe('DeclarationList with changes', () => {
       provide,
     });
 
-    wrapper.setProps({
+    await wrapper.setProps({
       changeType: 'added',
     });
     const declarationPills = wrapper.findAll('.declaration-pill');

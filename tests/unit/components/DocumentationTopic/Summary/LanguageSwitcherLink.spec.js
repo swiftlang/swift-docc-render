@@ -20,7 +20,7 @@ describe('LanguageSwitcherLink', () => {
       propsData: { url },
       slots,
     });
-    const link = wrapper.find('a');
+    const link = wrapper.findComponent('a');
     expect(link.exists()).toBe(true);
     expect(link.attributes('href')).toBe(url);
     expect(link.text()).toBe(slots.default);
@@ -28,7 +28,7 @@ describe('LanguageSwitcherLink', () => {
 
   it('renders a span if not provided a url', () => {
     const wrapper = shallowMount(LanguageSwitcherLink, { slots });
-    expect(wrapper.is('span')).toBe(true);
+    expect(wrapper.element.tagName.toLowerCase() === 'span').toBe(true);
     expect(wrapper.text()).toBe(slots.default);
   });
 });

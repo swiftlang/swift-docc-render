@@ -47,18 +47,18 @@ describe('Parameters', () => {
   });
 
   it('renders an `section.parameters`', () => {
-    expect(wrapper.is('section.parameters')).toBe(true);
+    expect(wrapper.element.matches('section.parameters')).toBe(true);
   });
 
   it('renders an h2 with "Parameters"', () => {
-    const h2 = wrapper.find(LinkableHeading);
+    const h2 = wrapper.findComponent(LinkableHeading);
     expect(h2.exists()).toBe(true);
     expect(h2.props('level')).toBe(2);
     expect(h2.text()).toContain('sections.parameters');
   });
 
   it('renders a <dl>', () => {
-    const dl = wrapper.find('dl');
+    const dl = wrapper.findComponent('dl');
     expect(dl.exists()).toBe(true);
   });
 
@@ -78,7 +78,7 @@ describe('Parameters', () => {
     expect(contents.length).toBe(propsData.parameters.length);
 
     contents.wrappers.forEach((content, i) => {
-      const node = content.find(ContentNode);
+      const node = content.findComponent(ContentNode);
       expect(node.exists()).toBe(true);
       expect(node.props('content')).toEqual(propsData.parameters[i].content);
     });

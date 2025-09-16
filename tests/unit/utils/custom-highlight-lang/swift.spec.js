@@ -27,17 +27,21 @@ describe('swift', () => {
 
     beforeEach(() => {
       mode = language.contains.find(m => (
-        m.begin && m.begin.test && m.begin.test('class Foobar {')
+        Array.isArray(m.begin)
+        && m.begin.length > 0
+        && m.begin[0].test('class Foobar {')
       ));
     });
 
     it('does not have a `beginKeywords` attribute anymore', () => {
+      expect(mode).toBeDefined();
       expect(mode.beginKeywords).toBeFalsy();
     });
 
     it('does have a new `begin` attribute', () => {
-      expect(mode.begin)
-        .toEqual(/\b(struct|protocol|extension|enum|actor|class\b(?!.*\bfunc))\b/);
+      expect(mode).toBeDefined();
+      expect(Array.isArray(mode.begin)).toBe(true);
+      expect(mode.begin[0]).toEqual(/(struct|protocol|class|extension|enum|actor)/);
     });
   });
 });

@@ -23,14 +23,14 @@ describe('CodeListingIcon', () => {
   it('renders the Swift icon for Swift files', () => {
     const wrapper = mount('swift');
 
-    expect(wrapper.find(SwiftFileIcon).exists()).toBe(true);
-    expect(wrapper.find(GenericFileIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(SwiftFileIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GenericFileIcon).exists()).toBe(false);
   });
 
   it('renders the generic icon for other file extensions', () => {
     const wrapper = mount('json');
 
-    expect(wrapper.find(SwiftFileIcon).exists()).toBe(false);
-    expect(wrapper.find(GenericFileIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(SwiftFileIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(GenericFileIcon).exists()).toBe(true);
   });
 });

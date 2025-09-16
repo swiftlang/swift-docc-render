@@ -39,7 +39,7 @@ function createWrapper(props) {
 describe('PossiblyChangedMimetype', () => {
   it('renders a mimetype with default value', () => {
     const wrapper = createWrapper({ changes: {} });
-    expect(wrapper.find('.response-mimetype').text()).toBe('content-type foo');
+    expect(wrapper.findComponent('.response-mimetype').text()).toBe('content-type foo');
   });
 
   it('renders two mimetypes, one for each change', () => {
@@ -65,7 +65,7 @@ describe('PossiblyChangedMimetype', () => {
       change: ChangeTypes.added,
     });
 
-    expect(wrapper.find('.response-mimetype').text()).toBe('content-type foo');
+    expect(wrapper.findComponent('.response-mimetype').text()).toBe('content-type foo');
   });
 
   it('does not render a mimetype change, if change is `modified` but the changes are still a `string`.', () => {
@@ -74,6 +74,6 @@ describe('PossiblyChangedMimetype', () => {
       change: ChangeTypes.modified,
     });
 
-    expect(wrapper.find('.response-mimetype').text()).toBe('content-type foo');
+    expect(wrapper.findComponent('.response-mimetype').text()).toBe('content-type foo');
   });
 });

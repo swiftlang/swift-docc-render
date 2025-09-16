@@ -72,7 +72,7 @@ describe('CodePreview', () => {
   });
 
   it('renders a CodeListing', () => {
-    const codeListing = wrapper.find(CodeListing);
+    const codeListing = wrapper.findComponent(CodeListing);
     expect(codeListing.props('content')).toBe(content);
     expect(codeListing.props('fileName')).toBe(fileName);
     expect(codeListing.props('syntax')).toBe(syntax);
@@ -80,7 +80,7 @@ describe('CodePreview', () => {
   });
 
   it('renders the media preview', () => {
-    const runtimePreview = wrapper.find('.runtime-preview p');
+    const runtimePreview = wrapper.findComponent('.runtime-preview p');
     expect(runtimePreview.text()).toBe('foo');
   });
 
@@ -88,43 +88,44 @@ describe('CodePreview', () => {
     describe('in breakpoint other than "medium"', () => {
       it('renders the media preview at 1/3 scale', () => {
         TopicStore.updateBreakpoint('large');
-        let runtimePreview = wrapper.find('.runtime-preview');
+        let runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 200px;');
 
         TopicStore.updateBreakpoint('small');
-        runtimePreview = wrapper.find('.runtime-preview');
+        runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 200px;');
       });
     });
 
     describe('in "medium" breakpoint', () => {
-      it('renders the preview at 80% of 1/3 scale', () => {
+      it('renders the preview at 80% of 1/3 scale', async () => {
         TopicStore.updateBreakpoint('medium');
-        const runtimePreview = wrapper.find('.runtime-preview');
+        await wrapper.vm.$nextTick();
+        const runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
     });
   });
 
-  it('hides/shows the media preview when the hide button is clicked', () => {
+  it('hides/shows the media preview when the hide button is clicked', async () => {
     // Because preview asset is hidden by CSS, we check if the show/hide span exists
-    const hideButton = wrapper.find('.header');
+    const hideButton = wrapper.findComponent('.header');
 
     expect(hideButton.attributes('title')).toBeFalsy();
 
-    hideButton.trigger('click');
+    await hideButton.trigger('click');
     expect(wrapper.emitted()['runtime-preview-toggle'][0]).toEqual([false]);
-    let icon = wrapper.find('.preview-icon');
-    expect(icon.is(DiagonalArrowIcon)).toBe(true);
+    let icon = wrapper.findComponent('.preview-icon');
+    expect(icon.findComponent(DiagonalArrowIcon).exists()).toBe(true);
     expect(icon.classes()).toContain('preview-hide');
     expect(icon.classes()).not.toContain('preview-show');
 
-    wrapper.setProps({ isRuntimePreviewVisible: false });
+    await wrapper.setProps({ isRuntimePreviewVisible: false });
 
-    hideButton.trigger('click');
+    await hideButton.trigger('click');
     expect(wrapper.emitted()['runtime-preview-toggle'][1]).toEqual([true]);
 
-    icon = wrapper.find('.preview-icon');
+    icon = wrapper.findComponent('.preview-icon');
     expect(icon.classes()).toContain('preview-show');
     expect(icon.classes()).not.toContain('preview-hide');
   });
@@ -149,7 +150,7 @@ describe('CodePreview', () => {
       slots,
     });
 
-    let runtimePreview = wrapper.find('.runtime-preview');
+    let runtimePreview = wrapper.findComponent('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 300px;');
 
     const variantNoSize = [
@@ -169,7 +170,7 @@ describe('CodePreview', () => {
       slots,
     });
 
-    runtimePreview = wrapper.find('.runtime-preview');
+    runtimePreview = wrapper.findComponent('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 300px;');
   });
 
@@ -189,7 +190,7 @@ describe('CodePreview', () => {
       slots,
     });
 
-    const runtimePreview = wrapper.find('.runtime-preview');
+    const runtimePreview = wrapper.findComponent('.runtime-preview');
     expect(runtimePreview.attributes('style')).toBe('width: 400px;');
   });
 
@@ -209,7 +210,7 @@ describe('CodePreview', () => {
       slots,
     });
 
-    const runtimePreview = wrapper.find('.runtime-preview');
+    const runtimePreview = wrapper.findComponent('.runtime-preview');
     // no height is defined at all
     expect(runtimePreview.attributes('style')).toBeFalsy();
   });
@@ -229,34 +230,34 @@ describe('CodePreview', () => {
 
     it('does not add the "collapsed" class if the preview is visible', () => {
       wrapper = mountWithPreviewVisible(false);
-      const runtimePreview = wrapper.find('.runtime-preview');
+      const runtimePreview = wrapper.findComponent('.runtime-preview');
       expect(runtimePreview.classes('collapsed')).toBe(true);
 
-      const runtimePreviewAsset = wrapper.find('.runtime-preview-asset');
+      const runtimePreviewAsset = wrapper.findComponent('.runtime-preview-asset');
       expect(runtimePreviewAsset.attributes('style')).toContain('display: none');
     });
 
     it('does not add the "collapsed" class if there is no preview', () => {
       wrapper = mountWithPreviewVisible(false, false);
-      const runtimePreview = wrapper.find('.runtime-preview');
+      const runtimePreview = wrapper.findComponent('.runtime-preview');
       expect(runtimePreview.classes('collapsed')).toBe(true);
 
-      const runtimePreviewAsset = wrapper.find('.runtime-preview-asset');
+      const runtimePreviewAsset = wrapper.findComponent('.runtime-preview-asset');
       expect(runtimePreviewAsset.attributes('style')).toContain('display: none');
     });
 
     it('adds the "collapsed" class if the preview is visible', () => {
       wrapper = mountWithPreviewVisible(true);
-      const runtimePreview = wrapper.find('.runtime-preview');
+      const runtimePreview = wrapper.findComponent('.runtime-preview');
       expect(runtimePreview.classes('collapsed')).toBe(false);
 
-      const runtimePreviewAsset = wrapper.find('.runtime-preview-asset');
+      const runtimePreviewAsset = wrapper.findComponent('.runtime-preview-asset');
       expect(runtimePreviewAsset.attributes('style')).toBeFalsy();
     });
 
     it('renders the collapsed preview button at proper dimensions', () => {
       wrapper = mountWithPreviewVisible(false);
-      const runtimePreview = wrapper.find('.runtime-preview');
+      const runtimePreview = wrapper.findComponent('.runtime-preview');
       expect(runtimePreview.attributes('style')).toBe('width: 102px;');
     });
   });
@@ -283,19 +284,20 @@ describe('CodePreview', () => {
     describe('in breakpoint other than "medium"', () => {
       it('renders the preview at 1/1.75 scale', () => {
         TopicStore.updateBreakpoint('large');
-        let runtimePreview = wrapper.find('.runtime-preview');
+        let runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 200px;');
 
         TopicStore.updateBreakpoint('small');
-        runtimePreview = wrapper.find('.runtime-preview');
+        runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 200px;');
       });
     });
 
     describe('in "medium" breakpoint', () => {
-      it('renders the preview at 80% of 1/1.75 scale', () => {
+      it('renders the preview at 80% of 1/1.75 scale', async () => {
         TopicStore.updateBreakpoint('medium');
-        const runtimePreview = wrapper.find('.runtime-preview');
+        await wrapper.vm.$nextTick();
+        const runtimePreview = wrapper.findComponent('.runtime-preview');
         expect(runtimePreview.attributes('style')).toBe('width: 160px;');
       });
     });
@@ -315,17 +317,17 @@ describe('CodePreview', () => {
     });
 
     it('adds the "runtime-preview-ide" class to the runtime preview', () => {
-      expect(wrapper.contains('.runtime-preview.runtime-preview-ide')).toBe(true);
+      expect(wrapper.find('.runtime-preview.runtime-preview-ide').exists()).toBe(true);
     });
   });
 
   describe('without a runtime preview', () => {
-    beforeEach(() => {
-      wrapper.setProps({ preview: undefined });
+    beforeEach(async () => {
+      await wrapper.setProps({ preview: undefined });
     });
 
     it('renders the preview with a disabled state', () => {
-      const preview = wrapper.find('.runtime-preview');
+      const preview = wrapper.findComponent('.runtime-preview');
       expect(preview.classes('disabled')).toBe(true);
       expect(preview.attributes('style')).toBe('width: 102px;');
 
@@ -333,12 +335,12 @@ describe('CodePreview', () => {
       expect(button.attributes('disabled')).toBe('disabled');
       expect(button.attributes('title')).toBe('tutorials.preview.no-preview-available-step');
 
-      expect(wrapper.contains('.preview-hide')).toBe(false);
-      expect(wrapper.contains('.preview-show')).toBe(true);
+      expect(wrapper.find('.preview-hide').exists()).toBe(false);
+      expect(wrapper.find('.preview-show').exists()).toBe(true);
     });
 
     it('does not emit `runtime-preview-toggle` events', () => {
-      const button = wrapper.find('button');
+      const button = wrapper.findComponent('button');
       button.trigger('click');
       expect(wrapper.emitted()['runtime-preview-toggle']).toBeUndefined();
     });

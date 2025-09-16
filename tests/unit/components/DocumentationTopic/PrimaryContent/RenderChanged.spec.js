@@ -61,8 +61,8 @@ describe('RenderChanged', () => {
       },
     });
 
-    expect(wrapper.find('.defaultSlot').exists()).toBe(true);
-    expect(wrapper.find('.secondDefault').exists()).toBe(false);
+    expect(wrapper.findComponent('.defaultSlot').exists()).toBe(true);
+    expect(wrapper.findComponent('.secondDefault').exists()).toBe(false);
   });
 
   it('renders the default scoped slot when `changes: undefined`', () => {
@@ -102,7 +102,7 @@ describe('RenderChanged', () => {
         },
       });
       expect(wrapper.text()).toBe('foo true');
-      expect(wrapper.contains(ChangedClasses.added));
+      expect(wrapper.find(ChangedClasses.added).exists());
     });
 
     it('renders the `new` val slot, if `new:false` and `previous:true` when `renderSingleChange:true`', () => {
@@ -118,21 +118,21 @@ describe('RenderChanged', () => {
         },
       });
       expect(wrapper.text()).toBe('foo true');
-      expect(wrapper.contains(ChangedClasses.removed));
+      expect(wrapper.find(ChangedClasses.removed).exists());
     });
   });
 
   describe('wrapChanges', () => {
     it('renders by wrapping changes in a specific class when `wrapChanges: false`', () => {
       const wrapper = createWrapper();
-      expect(wrapper.find(ChangedClasses.added).exists()).toBeFalsy();
-      expect(wrapper.find(ChangedClasses.removed).exists()).toBeFalsy();
+      expect(wrapper.findComponent(ChangedClasses.added).exists()).toBeFalsy();
+      expect(wrapper.findComponent(ChangedClasses.removed).exists()).toBeFalsy();
     });
 
     it('renders without wrapping changes in classes when `wrapChanges: true`', () => {
       const wrapper = createWrapper();
-      expect(wrapper.find(`.${ChangedClasses.added}`).text()).toContain('Default newFoo');
-      expect(wrapper.find(`.${ChangedClasses.removed}`).text()).toContain('Default oldFoo');
+      expect(wrapper.findComponent(`.${ChangedClasses.added}`).text()).toContain('Default newFoo');
+      expect(wrapper.findComponent(`.${ChangedClasses.removed}`).text()).toContain('Default oldFoo');
     });
   });
 });

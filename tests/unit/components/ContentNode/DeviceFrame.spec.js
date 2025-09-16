@@ -103,10 +103,10 @@ describe('DeviceFrame', () => {
   it('renders the DeviceFrame', () => {
     const wrapper = createWrapper();
     expect(wrapper.attributes('data-device')).toBe('phone');
-    const deviceScreen = wrapper.find('.device-screen');
+    const deviceScreen = wrapper.findComponent('.device-screen');
     expect(deviceScreen.classes()).toContain('with-device');
     expect(deviceScreen.find('.default-slot-content').text()).toBe('Default Slot');
-    expect(wrapper.find('.device').exists()).toBe(true);
+    expect(wrapper.findComponent('.device').exists()).toBe(true);
   });
 
   it('exposes the correct css variables', () => {
@@ -122,7 +122,7 @@ describe('DeviceFrame', () => {
     });
     expect(wrapper.attributes('data-device')).toBe('TV');
     expect(wrapper.classes()).toContain('no-device');
-    expect(wrapper.find('.device-screen').classes()).not.toContain('with-device');
+    expect(wrapper.findComponent('.device-screen').classes()).not.toContain('with-device');
     expect(wrapper.vm.styles).toMatchObject({
       '--frame-aspect': null,
       '--frame-width': null,

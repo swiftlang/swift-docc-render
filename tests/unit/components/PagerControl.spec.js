@@ -12,7 +12,7 @@ import ChevronRoundedIcon from 'theme/components/Icons/ChevronRoundedIcon.vue';
 import PagerControl from 'docc-render/components/PagerControl.vue';
 
 describe('PagerControl', () => {
-  it('renders a button with a chevron icon', () => {
+  it('renders a button with a chevron icon', async () => {
     const wrapper = shallowMount(PagerControl, {
       propsData: {
         action: PagerControl.Action.next,
@@ -21,10 +21,10 @@ describe('PagerControl', () => {
     expect(wrapper.classes()).toEqual(['pager-control', 'next']);
     expect(wrapper.attributes('aria-label')).toBe('pager.control.navigate-next');
 
-    const icon = wrapper.find(ChevronRoundedIcon);
+    const icon = wrapper.findComponent(ChevronRoundedIcon);
     expect(icon.exists()).toBe(true);
 
-    wrapper.setProps({ action: PagerControl.Action.previous });
+    await wrapper.setProps({ action: PagerControl.Action.previous });
     expect(wrapper.classes()).toEqual(['pager-control', 'previous']);
     expect(wrapper.attributes('aria-label')).toBe('pager.control.navigate-previous');
   });

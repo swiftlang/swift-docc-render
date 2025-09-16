@@ -47,7 +47,7 @@ describe('OverridableAsset', () => {
         },
       },
     });
-    expect(wrapper.find(ImageAsset).props()).toEqual({
+    expect(wrapper.findComponent(ImageAsset).props()).toEqual({
       variants: [localVariantNoID],
       alt: 'someAlt',
       shouldCalculateOptimalWidth: true,
@@ -63,7 +63,7 @@ describe('OverridableAsset', () => {
         },
       },
     });
-    expect(wrapper.find(ImageAsset).props()).toEqual({
+    expect(wrapper.findComponent(ImageAsset).props()).toEqual({
       variants: [remoteDifferentVariant],
       alt: 'someAlt',
       shouldCalculateOptimalWidth: true,
@@ -78,7 +78,7 @@ describe('OverridableAsset', () => {
         },
       },
     });
-    expect(wrapper.find(SVGIcon).props()).toEqual({
+    expect(wrapper.findComponent(SVGIcon).props()).toEqual({
       iconUrl: localVariantWithID.url,
       themeId: localVariantWithID.svgID,
     });
@@ -92,7 +92,7 @@ describe('OverridableAsset', () => {
         },
       },
     });
-    expect(wrapper.find(SVGIcon).props()).toEqual({
+    expect(wrapper.findComponent(SVGIcon).props()).toEqual({
       iconUrl: remoteVariant.url,
       themeId: remoteVariant.svgID,
     });
