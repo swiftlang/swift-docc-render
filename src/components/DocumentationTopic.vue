@@ -739,7 +739,7 @@ export default {
       AppStore.setAvailableLocales(availableLanguages);
     },
     availableLocales(availableLocales) {
-      AppStore.setAvailableLocales(availableLocales);
+      AppStore.setAvailableLocales(this.availableLanguages ?? availableLocales);
     },
   },
 };

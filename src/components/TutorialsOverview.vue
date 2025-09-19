@@ -113,7 +113,7 @@ export default {
       this.store.setReferences(references);
     },
     'metadata.availableLocales': function availableLocalesWatcher(availableLocales) {
-      AppStore.setAvailableLocales(availableLocales);
+      AppStore.setAvailableLocales(this.metadata?.availableLanguages ?? availableLocales);
     },
     'metadata.availableLanguages': function availableLanguagesWatcher(availableLanguages) {
       AppStore.setAvailableLocales(availableLanguages);
