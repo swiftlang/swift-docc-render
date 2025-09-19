@@ -20,6 +20,7 @@ import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import OnThisPageStickyContainer
   from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declaration.vue';
+import AppStore from '@/stores/AppStore';
 
 const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
@@ -1173,6 +1174,23 @@ describe('DocumentationTopic', () => {
     });
     expect(mockStore.setReferences).toHaveBeenCalledTimes(2);
     expect(mockStore.setReferences).toHaveBeenCalledWith(newReferences);
+  });
+
+  it('sets available languages/locales', async () => {
+    const locales = ['en-US', 'ja-JP'];
+    const langs = ['en', 'jp'];
+
+    await wrapper.setProps({ availableLocales: locales });
+    expect(AppStore.state.availableLocales).toEqual(locales);
+
+    await wrapper.setProps({ availableLanguages: langs });
+    expect(AppStore.state.availableLocales).toEqual(langs);
+
+    await wrapper.setProps({
+      availableLanguages: langs,
+      availableLocales: locales,
+    });
+    expect(AppStore.state.availableLocales).toEqual(langs);
   });
 
   it('calls `store.updateReferences` when `indexState.includedArchiveIdentifiers` changes', async () => {

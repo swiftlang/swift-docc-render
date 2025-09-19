@@ -404,6 +404,10 @@ export default {
       required: false,
       validator: v => Object.prototype.hasOwnProperty.call(StandardColors, v),
     },
+    availableLanguages: {
+      type: Array,
+      required: false,
+    },
     availableLocales: {
       type: Array,
       required: false,
@@ -624,6 +628,7 @@ export default {
           conformance,
           hasNoExpandedDocumentation,
           modules,
+          availableLanguages,
           availableLocales,
           platforms,
           required: isRequirement = false,
@@ -666,6 +671,7 @@ export default {
         downloadNotAvailableSummary,
         diffAvailability,
         hasNoExpandedDocumentation,
+        availableLanguages,
         availableLocales,
         hierarchy,
         role,
@@ -717,7 +723,7 @@ export default {
       });
     }
 
-    AppStore.setAvailableLocales(this.availableLocales || []);
+    AppStore.setAvailableLocales(this.availableLanguages ?? this.availableLocales);
     this.store.reset();
     this.store.setReferences(this.references);
   },
@@ -728,6 +734,9 @@ export default {
     // update the references in the store, in case they update, but the component is not re-created
     references(references) {
       this.store.setReferences(references);
+    },
+    availableLanguages(availableLanguages) {
+      AppStore.setAvailableLocales(availableLanguages);
     },
     availableLocales(availableLocales) {
       AppStore.setAvailableLocales(availableLocales);

@@ -101,7 +101,9 @@ export default {
     };
   },
   created() {
-    AppStore.setAvailableLocales(this.metadata.availableLocales);
+    AppStore.setAvailableLocales(
+      this.metadata.availableLanguages ?? this.metadata.availableLocales,
+    );
     this.store.reset();
     this.store.setReferences(this.references);
   },
@@ -112,6 +114,9 @@ export default {
     },
     'metadata.availableLocales': function availableLocalesWatcher(availableLocales) {
       AppStore.setAvailableLocales(availableLocales);
+    },
+    'metadata.availableLanguages': function availableLanguagesWatcher(availableLanguages) {
+      AppStore.setAvailableLocales(availableLanguages);
     },
   },
 };

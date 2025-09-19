@@ -10,6 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import TutorialsOverview from 'docc-render/components/TutorialsOverview.vue';
+import AppStore from 'docc-render/stores/AppStore';
 
 const {
   Hero,
@@ -117,5 +118,35 @@ describe('TutorialsOverview', () => {
       slots: { 'above-hero': 'Above Hero Content' },
     });
     expect(wrapper.text()).toContain('Above Hero Content');
+  });
+
+  it('sets available langs/locales', async () => {
+    const locales = ['en-US', 'ja-JP'];
+    const langs = ['en', 'jp'];
+
+    await wrapper.setProps({
+      metadata: {
+        ...propsData.metadata,
+        availableLocales: locales,
+      },
+    });
+    expect(AppStore.state.availableLocales).toEqual(locales);
+
+    await wrapper.setProps({
+      metadata: {
+        ...propsData.metadata,
+        availableLanguages: langs,
+      },
+    });
+    expect(AppStore.state.availableLocales).toEqual(langs);
+
+    await wrapper.setProps({
+      metadata: {
+        ...propsData.metadata,
+        availableLanguages: langs,
+        availableLocales: locales,
+      },
+    });
+    expect(AppStore.state.availableLocales).toEqual(langs);
   });
 });
