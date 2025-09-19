@@ -15,6 +15,7 @@ import Tutorial from 'docc-render/components/Tutorial.vue';
 import SectionList from 'docc-render/components/Tutorial/SectionList.vue';
 import NavigationBar from 'docc-render/components/Tutorial/NavigationBar.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
+import AppStore from 'docc-render/stores/AppStore';
 
 const { Section, BreakpointEmitter, PortalTarget } = Tutorial.components;
 
@@ -238,6 +239,36 @@ describe('Tutorial', () => {
     const target = wrapper.findComponent(PortalTarget);
     expect(target.exists()).toBe(true);
     expect(target.props()).toHaveProperty('name', 'modal-destination');
+  });
+
+  it('sets available langs/locales', async () => {
+    const locales = ['en-US', 'ja-JP'];
+    const langs = ['en', 'jp'];
+
+    await wrapper.setProps({
+      metadata: {
+        ...propsData.metadata,
+        availableLocales: locales,
+      },
+    });
+    expect(AppStore.state.availableLocales).toEqual(locales);
+
+    await wrapper.setProps({
+      metadata: {
+        ...propsData.metadata,
+        availableLanguages: langs,
+      },
+    });
+    expect(AppStore.state.availableLocales).toEqual(langs);
+
+    await wrapper.setProps({
+      metadata: {
+        ...propsData.metadata,
+        availableLanguages: langs,
+        availableLocales: locales,
+      },
+    });
+    expect(AppStore.state.availableLocales).toEqual(langs);
   });
 });
 
