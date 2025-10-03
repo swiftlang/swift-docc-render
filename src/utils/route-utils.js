@@ -7,6 +7,7 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import { pathJoin } from 'docc-render/utils/assets';
 
 const localEnvs = [
   { pathPrefix: '/:locale?', nameSuffix: '-locale' },
@@ -26,7 +27,7 @@ export function addPrefixedRoutes(routes, skipRoutes = [], envs = localEnvs) {
       .filter(route => !skipRoutes.includes(route.name))
       .map(route => ({
         ...route,
-        path: current.pathPrefix + route.path,
+        path: pathJoin([current.pathPrefix, route.path]),
         name: route.name + current.nameSuffix,
       })),
   ), []);
