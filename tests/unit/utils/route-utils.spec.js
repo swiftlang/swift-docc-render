@@ -50,4 +50,49 @@ describe('route-utils', () => {
       { meta: { b: 'b' }, name: 'b-foo', path: '/foo/bar/path/to/b' },
     ]);
   });
+
+  it('handles routes with root path', () => {
+    const rootRoutes = [
+      { name: 'home', path: '/', meta: { isHome: true } },
+    ];
+
+    const result = addPrefixedRoutes(rootRoutes);
+    expect(result[0].path).toBe('/:locale?/');
+  });
+
+  it('handles routes with trailing slashes', () => {
+    const trailingSlashRoutes = [
+      { name: 'trailing', path: '/path/with/trailing/', meta: {} },
+    ];
+
+    const result = addPrefixedRoutes(trailingSlashRoutes);
+    expect(result[0].path).toBe('/:locale?/path/with/trailing/');
+  });
+
+  it('handles routes without trailing slashes', () => {
+    const trailingSlashRoutes = [
+      { name: 'trailing', path: 'path/with/trailing', meta: {} },
+    ];
+
+    const result = addPrefixedRoutes(trailingSlashRoutes);
+    expect(result[0].path).toBe('/:locale?/path/with/trailing');
+  });
+
+  it('handles pathPrefix with trailing slash', () => {
+    const envWithTrailingSlash = [
+      { pathPrefix: '/api/', nameSuffix: '-api' },
+    ];
+
+    const result = addPrefixedRoutes([routes[0]], [], envWithTrailingSlash);
+    expect(result[0].path).toBe('/api/path/to/a');
+  });
+
+  it('handles pathPrefix without leading slash', () => {
+    const envWithoutLeadingSlash = [
+      { pathPrefix: 'api', nameSuffix: '-api' },
+    ];
+
+    const result = addPrefixedRoutes([routes[0]], [], envWithoutLeadingSlash);
+    expect(result[0].path).toBe('api/path/to/a');
+  });
 });
