@@ -18,16 +18,17 @@ import {
   restoreScrollOnReload,
   scrollBehavior,
 } from 'docc-render/utils/router-utils';
-import routes from 'docc-render/routes';
+import routes, { pagesRoutes, fallbackRoutes } from 'docc-render/routes';
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import { addPrefixedRoutes } from 'docc-render/utils/route-utils';
 
 const defaultRoutes = [
-  ...routes,
+  ...pagesRoutes,
   ...addPrefixedRoutes(routes, [
     notFoundRouteName,
     serverErrorRouteName,
   ]),
+  ...fallbackRoutes,
 ];
 
 export default function createRouterInstance(routerConfig = {}) {
