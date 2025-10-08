@@ -3,12 +3,12 @@
 Swift-DocC-Render is a web Single Page Application (SPA) powered by [Vue.js](https://vuejs.org/) for creating rich code documentation websites. Pages and content are generated using render JSON data from DocC. It comes with a well suited design for documentation websites.
 SPAs are web apps that render dynamically at runtime entirely in the browser, using JavaScript.
 
-[Swift-DocC](https://github.com/apple/swift-docc) is a tool for building and previewing documentation, aimed at making it easy to generate reference documentation from frameworks and packages, as well as free-form articles and tutorials authored in Markdown. It produces a folder in the Documentation Archive format (extension `.doccarchive`), which contains a machine-readable output of the documentation as JSON data that Swift-DocC-Render uses to produce rendered documentation.
+[Swift-DocC](https://github.com/swiftlang/swift-docc) is a tool for building and previewing documentation, aimed at making it easy to generate reference documentation from frameworks and packages, as well as free-form articles and tutorials authored in Markdown. It produces a folder in the Documentation Archive format (extension `.doccarchive`), which contains a machine-readable output of the documentation as JSON data that Swift-DocC-Render uses to produce rendered documentation.
 
 ## Getting Started
 
-> Note: requires [Node.js](https://nodejs.org/en/download/) v18
-> and [npm](https://www.npmjs.com/package/npm) v9.5. An easy way to set these up is to install
+> Note: requires [Node.js](https://nodejs.org/en/download/) v22.17.0
+> and [npm](https://www.npmjs.com/package/npm) v10.9.2. An easy way to set these up is to install
 > [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
 > repository. To use these versions as the default, add `--default` to the installation command.
 
@@ -37,7 +37,7 @@ SPAs are web apps that render dynamically at runtime entirely in the browser, us
 
 ## Using Swift-DocC-Render to render documentation
 
-Follow [these steps](https://github.com/apple/swift-docc#using-docc-to-build-and-preview-documentation) to generate a documentation archive, set the path to your renderer and render locally your documentation using Swift-DocC-Render.
+Follow [these steps](https://github.com/swiftlang/swift-docc#using-docc-to-build-and-preview-documentation) to generate a documentation archive, set the path to your renderer and render locally your documentation using Swift-DocC-Render.
 
 ## Rendering and building docs
 
