@@ -118,8 +118,8 @@ describe('SwiftDocCRenderRouter', () => {
 
     const resolve = path => router.resolve(path).route;
 
-    it('resolves paths to the "tutorials-overview" route', () => {
-      const route = 'tutorials-overview';
+    it('resolves paths to the "tutorials-overview-locale" route', () => {
+      const route = 'tutorials-overview-locale';
 
       expect(resolve('/tutorials/foo').name).toBe(route);
       expect(resolve('/tutorials/bar').name).toBe(route);
@@ -140,8 +140,8 @@ describe('SwiftDocCRenderRouter', () => {
       expect(resolve('/zh-CN/tutorials/foo/bar').name).not.toBe(route);
     });
 
-    it('resolves paths to the "topic" route', () => {
-      const route = 'topic';
+    it('resolves paths to the "topic-locale" route', () => {
+      const route = 'topic-locale';
       expect(resolve('/tutorials/foo/bar').name).toBe(route);
       expect(resolve('/tutorials/foobar/baz').name).toBe(route);
       expect(resolve('/tutorials/documentation/foo').name).toBe(route);
@@ -163,8 +163,8 @@ describe('SwiftDocCRenderRouter', () => {
       });
     });
 
-    it('resolves paths to the "documentation-topic" route', () => {
-      const route = 'documentation-topic';
+    it('resolves paths to the "documentation-topic-locale" route', () => {
+      const route = 'documentation-topic-locale';
 
       expect(resolve('/documentation/foo').name).toBe(route);
       expect(resolve('/documentation/bar').name).toBe(route);
