@@ -16,7 +16,20 @@ import {
 import ServerError from 'theme/views/ServerError.vue';
 import NotFound from 'theme/views/NotFound.vue';
 
-export default [
+export const fallbackRoutes = [
+  {
+    path: '*',
+    name: notFoundRouteName,
+    component: NotFound,
+  },
+  {
+    path: '*', // purposefully unreachable without a forced navigation
+    name: serverErrorRouteName,
+    component: ServerError,
+  },
+];
+
+export const pagesRoutes = [
   {
     path: '/tutorials/:id',
     name: 'tutorials-overview',
@@ -38,14 +51,9 @@ export default [
       /* webpackChunkName: "documentation-topic" */ 'theme/views/DocumentationTopic.vue'
     ),
   },
-  {
-    path: '*',
-    name: notFoundRouteName,
-    component: NotFound,
-  },
-  {
-    path: '*', // purposefully unreachable without a forced navigation
-    name: serverErrorRouteName,
-    component: ServerError,
-  },
+];
+
+export default [
+  ...pagesRoutes,
+  ...fallbackRoutes,
 ];
