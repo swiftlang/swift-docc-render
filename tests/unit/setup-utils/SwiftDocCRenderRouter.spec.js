@@ -15,6 +15,7 @@ import FetchError from 'docc-render/errors/FetchError';
 
 jest.mock('docc-render/utils/theme-settings', () => ({
   baseUrl: '/',
+  getSetting: jest.fn(),
 }));
 
 const mockInstance = {

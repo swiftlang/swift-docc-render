@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { updateLocale } from 'theme/utils/i18n-utils';
 import {
   fetchDataForRouteEnter,
   shouldFetchDataForRouteUpdate,
@@ -54,6 +55,7 @@ export default {
     }
 
     fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
+      updateLocale(to.params.locale, vm);
       vm.topicData = data; // eslint-disable-line no-param-reassign
     })).catch(next);
   },
@@ -61,6 +63,7 @@ export default {
     if (shouldFetchDataForRouteUpdate(to, from)) {
       fetchDataForRouteEnter(to, from, next).then((data) => {
         this.topicData = data;
+        updateLocale(to.params.locale, this);
         next();
       }).catch(next);
     } else {
