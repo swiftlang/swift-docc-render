@@ -78,6 +78,11 @@ const CopyState = {
   failure: 'failure',
 };
 
+export const LineStyle = {
+  highlight: 'highlight',
+  strikeout: 'strikeout',
+};
+
 export default {
   name: 'CodeListing',
   components: {
@@ -168,10 +173,10 @@ export default {
         });
     },
     isUserHighlighted(index) {
-      return this.isLineInStyle(index, 'highlight');
+      return this.isLineInStyle(index, LineStyle.highlight);
     },
     isUserStrikethrough(index) {
-      return this.isLineInStyle(index, 'strikeout');
+      return this.isLineInStyle(index, LineStyle.strikeout);
     },
     // Returns the line number for the line at the given index in `content`.
     lineNumberFor(index) {

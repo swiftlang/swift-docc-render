@@ -9,7 +9,7 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
+import CodeListing, { LineStyle } from 'docc-render/components/ContentNode/CodeListing.vue';
 import { flushPromises } from '../../../../test-utils';
 
 describe('CodeListing', () => {
@@ -101,10 +101,10 @@ describe('CodeListing', () => {
   it('styles the correct lines from lineAnnotations with the specified style', async () => {
     const content = ['a', 'b', 'c', 'd', 'e'];
     const lineAnnotations = [
-      { style: 'highlight', range: [{ line: 1 }, { line: 1 }] },
-      { style: 'highlight', range: [{ line: 2 }, { line: 2 }] },
-      { style: 'strikeout', range: [{ line: 1 }, { line: 1 }] },
-      { style: 'strikeout', range: [{ line: 3 }, { line: 3 }] },
+      { style: LineStyle.highlight, range: [{ line: 1 }, { line: 1 }] },
+      { style: LineStyle.highlight, range: [{ line: 2 }, { line: 2 }] },
+      { style: LineStyle.strikeout, range: [{ line: 1 }, { line: 1 }] },
+      { style: LineStyle.strikeout, range: [{ line: 3 }, { line: 3 }] },
     ];
 
     const wrapper = shallowMount(CodeListing, {
