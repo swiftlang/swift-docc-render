@@ -149,6 +149,30 @@ export default {
     copyableText() {
       return this.content.join('\n');
     },
+    styleLineSets() {
+      const sets = Object.create(null);
+
+      (this.lineAnnotations || []).forEach((a) => {
+        if (!a || !a.style || !a.range || !a.range[0] || !a.range[1]) {
+          return;
+        }
+
+        const { style } = a;
+        const startLine = a.range[0].line;
+        const endLine = a.range[1].line;
+
+        if (!sets[style]) {
+          sets[style] = new Set();
+        }
+
+        // add all lines within the range to check membership
+        for (let line = startLine; line <= endLine; line += 1) {
+          sets[style].add(line);
+        }
+      });
+
+      return sets;
+    },
   },
   watch: {
     content: {
@@ -162,15 +186,7 @@ export default {
     },
     isLineInStyle(index, style) {
       const lineNumber = this.lineNumberFor(index);
-
-      return this.lineAnnotations
-        .filter(a => a.style === style)
-        .some((a) => {
-          if (!a.range || !a.range[0] || !a.range[1]) return false;
-          const startLine = a.range[0].line;
-          const endLine = a.range[1].line;
-          return lineNumber >= startLine && lineNumber <= endLine;
-        });
+      return this.styleLineSets[style]?.has(lineNumber) ?? false;
     },
     isUserHighlighted(index) {
       return this.isLineInStyle(index, LineStyle.highlight);
