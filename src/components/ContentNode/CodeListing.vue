@@ -239,6 +239,7 @@ export default {
   display: inline-block;
   width: 100%;
   box-sizing: border-box;
+  border-left: $highlighted-border-width solid transparent;
 }
 
 .code-number {
@@ -254,9 +255,13 @@ export default {
   }
 }
 
+.code-listing:not(:has(.code-number)) .code-line-container {
+  padding-left: $code-number-padding-left;
+}
+
 .highlighted {
   background: var(--line-highlight, var(--color-code-line-highlight));
-  border-left: $highlighted-border-width solid var(--color-code-line-highlight-border);
+  border-left-color: var(--color-code-line-highlight-border);
 
   .code-number {
     padding-left: $code-number-padding-left - $highlighted-border-width;
