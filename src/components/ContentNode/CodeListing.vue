@@ -264,7 +264,7 @@ export default {
   border-left-color: var(--color-code-line-highlight-border);
 
   .code-number {
-    padding-left: $code-number-padding-left - $highlighted-border-width;
+    padding-left: $code-number-padding-left;
   }
 }
 
