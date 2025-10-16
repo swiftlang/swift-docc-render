@@ -255,7 +255,7 @@ export default {
   }
 }
 
-.code-listing:not(:has(.code-number)) .code-line-container {
+.code-listing:not(:has(.code-number)):has(.highlighted) .code-line-container {
   padding-left: $code-number-padding-left;
 }
 
