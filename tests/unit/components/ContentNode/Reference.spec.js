@@ -23,7 +23,9 @@ import { TopicRole } from '@/constants/roles';
 const router = createRouterInstance();
 const localVue = createLocalVue();
 localVue.use(Router);
+
 window.scrollTo = () => ({});
+window.fetch = jest.fn().mockResolvedValue({});
 
 describe('Reference', () => {
   it('renders a `ReferenceExternal` for external urls', () => {
