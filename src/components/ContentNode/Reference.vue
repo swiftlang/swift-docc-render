@@ -70,7 +70,7 @@ export default {
       } = this.$router.resolve(url) || {};
 
       // Resolved internal URLs don't have the "not found" route.
-      return name !== notFoundRouteName;
+      return !name.startsWith(notFoundRouteName);
     },
     isSymbolReference() {
       return this.kind === 'symbol' && !this.hasInlineFormatting

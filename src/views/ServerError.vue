@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { updateLocale } from 'theme/utils/i18n-utils';
 import GenericError from 'theme/components/GenericError.vue';
 import AppStore from 'docc-render/stores/AppStore';
 
@@ -21,6 +22,14 @@ export default {
   components: { GenericError },
   created() {
     AppStore.setAllLocalesAreAvailable();
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      updateLocale(to.params.locale, vm);
+    });
+  },
+  beforeRouteUpdate(to) {
+    updateLocale(to.params.locale, this);
   },
 };
 </script>
