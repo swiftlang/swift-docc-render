@@ -36,6 +36,7 @@ const Languages = {
   scss: [],
   shell: ['console', 'shellsession'],
   swift: [],
+  typescript: ['typescript', 'ts', 'tsx', 'mts', 'cts'],
   xml: ['html', 'xhtml', 'rss', 'atom', 'xjb', 'xsd', 'xsl', 'plist', 'wsf', 'svg'],
   yaml: ['yml', 'yaml'],
   // load more languages from the environment
