@@ -16,7 +16,7 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
 
-export async function fetchData(path, params = {}, options = {}) {
+async function safeFetch(path, params = {}, options = {}) {
   function isBadResponse(response) {
     // When this is running in an IDE target, the `fetch` API will be used with
     // custom URL schemes. Right now, WebKit will return successful responses
@@ -50,9 +50,33 @@ export async function fetchData(path, params = {}, options = {}) {
     });
   }
 
+  return response;
+}
+
+/**
+ * Fetch the contents of a file as an object.
+ * @param {string} path The file path.
+ * @param {any} params Object containing URL query parameters.
+ * @param {RequestInit} options Fetch options.
+ * @returns {Promise<any>} The contents of the file.
+ */
+export async function fetchData(path, params = {}, options = {}) {
+  const response = await safeFetch(path, params, options);
   const json = await response.json();
   emitWarningForSchemaVersionMismatch(json.schemaVersion);
   return json;
+}
+
+/**
+ * Fetch the contents of a file as text.
+ * @param {string} path The file path.
+ * @param {any} params Object containing URL query parameters.
+ * @param {RequestInit} options Fetch options.
+ * @returns {Promise<string>} The text contents of the file.
+ */
+export async function fetchText(path, params = {}, options = {}) {
+  const response = await safeFetch(path, params, options);
+  return response.text();
 }
 
 function createDataPath(path) {
