@@ -9,6 +9,7 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
+import { pathJoin } from 'docc-render/utils/assets';
 import CallToActionButton from 'docc-render/components/CallToActionButton.vue';
 
 const { ButtonLink, DestinationDataProvider } = CallToActionButton.components;
@@ -23,39 +24,60 @@ describe('CallToActionButton', () => {
     },
     isDark: true,
   };
+
+  const relativePath = '/foo/bar';
+  const absolutePath = 'http://example.com/foo/bar';
+
   let wrapper;
 
-  const provide = {
+  const createProvide = references => ({
     store: {
-      state: {
-        references: {
-          [propsData.action.identifier]: {
-            title: 'Foo Bar',
-            url: '/foo/bar',
-          },
-        },
-      },
+      state: { references },
     },
-  };
-
-  beforeEach(() => {
-    wrapper = shallowMount(CallToActionButton, {
-      propsData,
-      stubs: { DestinationDataProvider },
-      provide,
-    });
   });
 
-  it('renders a `ButtonLink`', () => {
+  const createReferences = ({ url }) => ({
+    [propsData.action.identifier]: {
+      title: 'Foo Bar',
+      url,
+    },
+  });
+
+  const createWrapper = ({ provide } = {}) => (
+    shallowMount(CallToActionButton, {
+      propsData,
+      stubs: { DestinationDataProvider },
+      provide: provide || createProvide(createReferences({ url: relativePath })),
+    })
+  );
+
+  const baseUrl = '/base-prefix';
+
+  it('renders a `ButtonLink` with relative path', () => {
+    wrapper = createWrapper();
     const btn = wrapper.findComponent(ButtonLink);
     expect(btn.exists()).toBe(true);
-    expect(btn.props('url'))
-      .toBe(provide.store.state.references[propsData.action.identifier].url);
+    expect(btn.props('url')).toBe(relativePath);
     expect(btn.props('isDark')).toBe(propsData.isDark);
     expect(btn.text()).toBe(propsData.action.overridingTitle);
   });
 
+  it('prefixes `ButtonLink` URL if baseUrl is provided', () => {
+    window.baseUrl = baseUrl;
+    wrapper = createWrapper();
+
+    const btn = wrapper.findComponent(ButtonLink);
+    expect(btn.props('url')).toBe(pathJoin([baseUrl, relativePath]));
+  });
+
+  it('does not prefix `ButtonLink` URL if baseUrl is provided but path is absolute', () => {
+    window.baseUrl = baseUrl;
+    wrapper = createWrapper({ provide: createProvide(createReferences({ url: absolutePath })) });
+    expect(wrapper.findComponent(ButtonLink).props('url')).toBe(absolutePath);
+  });
+
   it('renders a `DestinationDataProvider`', () => {
+    wrapper = createWrapper();
     const provider = wrapper.findComponent(DestinationDataProvider);
     expect(provider.exists()).toBe(true);
     expect(provider.props('destination')).toBe(propsData.action);

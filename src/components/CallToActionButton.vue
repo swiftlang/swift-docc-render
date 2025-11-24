@@ -11,7 +11,7 @@
 <template>
   <DestinationDataProvider v-if="action" :destination="action" v-slot="{ url, title }">
     <ButtonLink
-      :url="url"
+      :url="normalizePath(url)"
       :isDark="isDark"
     >
       {{ title }}
@@ -22,12 +22,16 @@
 
 import ButtonLink from 'docc-render/components/ButtonLink.vue';
 import DestinationDataProvider from 'docc-render/components/DestinationDataProvider.vue';
+import { normalizePath } from 'docc-render/utils/assets';
 
 export default {
   name: 'CallToActionButton',
   components: {
     DestinationDataProvider,
     ButtonLink,
+  },
+  methods: {
+    normalizePath,
   },
   props: {
     action: {
