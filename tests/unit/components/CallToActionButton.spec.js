@@ -23,6 +23,7 @@ describe('CallToActionButton', () => {
       type: 'reference',
     },
     isDark: true,
+    linksToAsset: true,
   };
 
   const relativePath = '/foo/bar';
@@ -68,6 +69,17 @@ describe('CallToActionButton', () => {
 
     const btn = wrapper.findComponent(ButtonLink);
     expect(btn.props('url')).toBe(pathJoin([baseUrl, relativePath]));
+  });
+
+  it('does not prefixes `ButtonLink` URL if path should not be normalized', async () => {
+    window.baseUrl = baseUrl;
+    wrapper = createWrapper();
+    await wrapper.setProps({
+      linksToAsset: false,
+    });
+
+    const btn = wrapper.findComponent(ButtonLink);
+    expect(btn.props('url')).toBe(relativePath);
   });
 
   it('does not prefix `ButtonLink` URL if baseUrl is provided but path is absolute', () => {

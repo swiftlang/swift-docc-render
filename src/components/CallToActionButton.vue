@@ -11,7 +11,7 @@
 <template>
   <DestinationDataProvider v-if="action" :destination="action" v-slot="{ url, title }">
     <ButtonLink
-      :url="normalizePath(url)"
+      :url="linksToAsset ? normalizePath(url) : url"
       :isDark="isDark"
     >
       {{ title }}
@@ -39,6 +39,10 @@ export default {
       required: true,
     },
     isDark: {
+      type: Boolean,
+      default: false,
+    },
+    linksToAsset: {
       type: Boolean,
       default: false,
     },
