@@ -189,7 +189,7 @@ function flattenModules(modules) {
   ]);
 }
 
-function extractRootNode(modules) {
+function extractRootModule(modules) {
   const flattenedModules = flattenModules(modules);
   // note: this "root" path won't always necessarily come at the beginning of
   // the URL in situations where the renderer is being hosted at some path
@@ -217,7 +217,7 @@ function extractRootNode(modules) {
 export function flattenNavigationIndex(languages) {
   return Object.entries(languages).reduce((acc, [language, modules]) => {
     if (!modules.length) return acc;
-    const topLevelModule = extractRootNode(modules);
+    const topLevelModule = extractRootModule(modules);
     acc[language] = flattenNestedData(
       topLevelModule.children || [], null, 0, topLevelModule.beta,
     );
@@ -231,7 +231,7 @@ export function flattenNavigationIndex(languages) {
 export function extractTechnologyProps(indexData) {
   return Object.entries(indexData).reduce((acc, [language, modules]) => {
     if (!modules.length) return acc;
-    const topLevelModule = extractRootNode(modules);
+    const topLevelModule = extractRootModule(modules);
     acc[language] = {
       technology: topLevelModule.title,
       technologyPath: topLevelModule.path || topLevelModule.url,
