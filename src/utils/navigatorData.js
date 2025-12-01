@@ -178,7 +178,19 @@ export function getSiblings(uid, childrenMap, children) {
   return getChildren(item.parent, childrenMap, children);
 }
 
+/**
+ * Recursively flatten a nested module structure into a single array
+ * @param {Object[]} modules - Array of module objects with optional children
+ * @return {Object[]} Flattened array containing all modules and their nested module children
+ */
+function flattenModules(modules) {
+  return modules.flatMap(module => [
+    module, ...flattenModules((module.children || []).filter(child => child.type === 'module')),
+  ]);
+}
+
 function extractRootNode(modules) {
+  const flattenedModules = flattenModules(modules);
   // note: this "root" path won't always necessarily come at the beginning of
   // the URL in situations where the renderer is being hosted at some path
   // prefix
@@ -192,9 +204,9 @@ function extractRootNode(modules) {
   // with a path that most closely resembles the current URL path
   //
   // otherwise, the first provided node will be used
-  return modules.length === 1 ? modules[0] : (modules.find(module => (
+  return flattenedModules.length === 1 ? flattenedModules[0] : (flattenedModules.find(module => (
     module.path.toLowerCase().endsWith(rootPath.toLowerCase())
-  )) ?? modules[0]);
+  )) ?? flattenedModules[0]);
 }
 
 /**
