@@ -178,7 +178,7 @@ export function getSiblings(uid, childrenMap, children) {
   return getChildren(item.parent, childrenMap, children);
 }
 
-function extractRootNode(data) {
+function extractRootNode(modules) {
   // note: this "root" path won't always necessarily come at the beginning of
   // the URL in situations where the renderer is being hosted at some path
   // prefix
@@ -192,9 +192,9 @@ function extractRootNode(data) {
   // with a path that most closely resembles the current URL path
   //
   // otherwise, the first provided node will be used
-  return data.length === 1 ? data[0] : (data.find(node => (
-    node.path.toLowerCase().endsWith(rootPath.toLowerCase())
-  )) ?? data[0]);
+  return modules.length === 1 ? modules[0] : (modules.find(module => (
+    module.path.toLowerCase().endsWith(rootPath.toLowerCase())
+  )) ?? modules[0]);
 }
 
 /**
@@ -203,11 +203,11 @@ function extractRootNode(data) {
  * @return { languageVariant: NavigatorFlatItem[] }
  */
 export function flattenNavigationIndex(languages) {
-  return Object.entries(languages).reduce((acc, [language, langData]) => {
-    if (!langData.length) return acc;
-    const topLevelNode = extractRootNode(langData);
+  return Object.entries(languages).reduce((acc, [language, modules]) => {
+    if (!modules.length) return acc;
+    const topLevelModule = extractRootNode(modules);
     acc[language] = flattenNestedData(
-      topLevelNode.children || [], null, 0, topLevelNode.beta,
+      topLevelModule.children || [], null, 0, topLevelModule.beta,
     );
     return acc;
   }, {});
@@ -217,13 +217,13 @@ export function flattenNavigationIndex(languages) {
  * Extract technology data for each language variant
  */
 export function extractTechnologyProps(indexData) {
-  return Object.entries(indexData).reduce((acc, [language, langData]) => {
-    if (!langData.length) return acc;
-    const topLevelNode = extractRootNode(langData);
+  return Object.entries(indexData).reduce((acc, [language, modules]) => {
+    if (!modules.length) return acc;
+    const topLevelModule = extractRootNode(modules);
     acc[language] = {
-      technology: topLevelNode.title,
-      technologyPath: topLevelNode.path || topLevelNode.url,
-      isTechnologyBeta: topLevelNode.beta,
+      technology: topLevelModule.title,
+      technologyPath: topLevelModule.path || topLevelModule.url,
+      isTechnologyBeta: topLevelModule.beta,
     };
     return acc;
   }, {});
