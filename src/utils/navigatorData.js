@@ -183,7 +183,7 @@ export function getSiblings(uid, childrenMap, children) {
  * @param {Object[]} modules - Array of module objects with optional children
  * @return {Object[]} Flattened array containing all modules and their nested module children
  */
-function flattenModules(modules) {
+export function flattenModules(modules) {
   return modules.flatMap(module => [
     module, ...flattenModules((module.children || []).filter(child => child.type === 'module')),
   ]);
