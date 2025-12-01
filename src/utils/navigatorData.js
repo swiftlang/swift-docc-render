@@ -217,9 +217,9 @@ function extractRootModule(modules) {
 export function flattenNavigationIndex(languages) {
   return Object.entries(languages).reduce((acc, [language, modules]) => {
     if (!modules.length) return acc;
-    const topLevelModule = extractRootModule(modules);
+    const rootModule = extractRootModule(modules);
     acc[language] = flattenNestedData(
-      topLevelModule.children || [], null, 0, topLevelModule.beta,
+      rootModule.children || [], null, 0, rootModule.beta,
     );
     return acc;
   }, {});
@@ -231,11 +231,11 @@ export function flattenNavigationIndex(languages) {
 export function extractTechnologyProps(indexData) {
   return Object.entries(indexData).reduce((acc, [language, modules]) => {
     if (!modules.length) return acc;
-    const topLevelModule = extractRootModule(modules);
+    const rootModule = extractRootModule(modules);
     acc[language] = {
-      technology: topLevelModule.title,
-      technologyPath: topLevelModule.path || topLevelModule.url,
-      isTechnologyBeta: topLevelModule.beta,
+      technology: rootModule.title,
+      technologyPath: rootModule.path || rootModule.url,
+      isTechnologyBeta: rootModule.beta,
     };
     return acc;
   }, {});
