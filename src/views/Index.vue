@@ -143,8 +143,8 @@ export default {
   data: () => ({
     // fallback interface language used by indexDataGetter
     interfaceLanguage: Language.swift.key.url,
-    heroTitle: 'Apple Developer Documentation',
-    heroCopy: 'Browse the latest sample code, articles, tutorials, and API reference.',
+    heroTitle: 'Developer Documentation',
+    heroCopy: 'Browse the latest API reference.',
     store: DocumentationTopicStore,
     BreakpointName,
   }),
@@ -231,9 +231,10 @@ export default {
   border-radius: 20px;
   box-shadow: 0 20px 60px var(--color-card-shadow);
   text-align: center;
-  width: fit-content;
-  max-width: 100%;
+  width: 50%;
   margin: 0 auto 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero__title {
@@ -256,6 +257,10 @@ export default {
 }
 
 @media (max-width: 1024px) {
+  .hero {
+    width: unset;
+  }
+
   .card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -309,10 +314,4 @@ export default {
   color: var(--color-figure-orange);
 }
 
-@media (max-width: 768px) {
-  .hero {
-    padding: 28px 20px;
-    text-align: left;
-  }
-}
 </style>
