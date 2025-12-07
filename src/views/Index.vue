@@ -229,9 +229,9 @@ export default {
   min-width: 28px;
   padding: 4px 10px;
   border-radius: 14px;
-  background: #f1f2f6;
+  background: var(--color-fill-secondary);
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--color-figure-gray);
   font-size: 0.9rem;
 }
 
@@ -262,16 +262,20 @@ export default {
   font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 999px;
-  background: #fde68a;
-  color: #92400e;
+  background: var(--color-standard-yellow);
+  color: var(--color-figure-orange);
 }
 
 .hero {
-  background: radial-gradient(120% 120% at 20% 20%, #2c2c34 0%, #111118 55%);
-  color: #f5f5f7;
+  background: linear-gradient(
+    315deg,
+    var(--color-fill-secondary),
+    var(--color-fill-tertiary)
+  );
+  color: var(--colors-header-text, var(--color-header-text));
   padding: 48px 36px;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 20px 60px var(--color-card-shadow);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -289,7 +293,7 @@ export default {
 
 .hero__lede {
   margin: 0;
-  color: #d1d1d6;
+  color: var(--colors-text, var(--color-text));
   font-size: 1.1rem;
 }
 
@@ -308,10 +312,10 @@ export default {
   flex-direction: column;
   gap: 8px;
   padding: 16px;
-  background: #15151c;
-  color: #f5f5f7;
+  background: var(--color-card-background);
+  color: var(--color-card-content-text);
   border-radius: 12px;
-  border: 1px solid #222230;
+  border: 1px solid var(--color-link-block-card-border);
   text-decoration: none;
   position: relative;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
@@ -319,8 +323,8 @@ export default {
 
 .feature-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-  border-color: #2e2e3e;
+  box-shadow: 0 10px 30px var(--color-card-shadow);
+  border-color: var(--color-navigator-item-hover);
 }
 
 .feature-card__icon {
@@ -343,8 +347,8 @@ export default {
   font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 999px;
-  background: #fde68a;
-  color: #92400e;
+  background: var(--color-standard-yellow);
+  color: var(--color-figure-orange);
 }
 
 @media (max-width: 768px) {
