@@ -224,54 +224,8 @@ export default {
   margin-bottom: 12px;
 }
 
-.index-section__count {
-  display: inline-flex;
-  min-width: 28px;
-  padding: 4px 10px;
-  border-radius: 14px;
-  background: var(--color-fill-secondary);
-  font-weight: 600;
-  color: var(--color-figure-gray);
-  font-size: 0.9rem;
-}
-
-.index-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.index-list__item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 0;
-  border-bottom: 1px solid #e5e5ea;
-}
-
-.index-list__link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.index-list__link:hover {
-  text-decoration: underline;
-}
-
-.index-list__tag {
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--color-standard-yellow);
-  color: var(--color-figure-orange);
-}
-
 .hero {
-  background: linear-gradient(
-    315deg,
-    var(--color-fill-secondary),
-    var(--color-fill-tertiary)
-  );
+  background: linear-gradient(315deg, var(--color-fill-secondary), var(--color-fill-tertiary));
   color: var(--colors-header-text, var(--color-header-text));
   padding: 48px 36px;
   border-radius: 20px;
@@ -279,10 +233,6 @@ export default {
   text-align: center;
   position: relative;
   overflow: hidden;
-}
-
-.hero::after {
-  content: none;
 }
 
 .hero__title {
