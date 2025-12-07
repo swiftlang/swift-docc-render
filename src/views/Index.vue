@@ -208,9 +208,9 @@ export default {
 
 <style scoped lang="scss">
 .index-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px 64px;
+  width: 100%;
+  padding: 32px 28px 56px;
+  box-sizing: border-box;
 }
 
 .index-section {
@@ -227,34 +227,44 @@ export default {
 .hero {
   background: linear-gradient(315deg, var(--color-fill-secondary), var(--color-fill-tertiary));
   color: var(--colors-header-text, var(--color-header-text));
-  padding: 48px 36px;
+  padding: 40px 32px;
   border-radius: 20px;
   box-shadow: 0 20px 60px var(--color-card-shadow);
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 32px;
 }
 
 .hero__title {
-  font-size: 2.6rem;
-  line-height: 1.2;
-  margin: 0 0 12px;
+  margin: 0 0 8px;
 }
 
 .hero__lede {
   margin: 0;
   color: var(--colors-text, var(--color-text));
-  font-size: 1.1rem;
 }
 
 .index-section--grid {
-  margin-top: 40px;
+  margin-top: 32px;
 }
 
 .card-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .feature-card {
@@ -267,7 +277,6 @@ export default {
   border-radius: 12px;
   border: 1px solid var(--color-link-block-card-border);
   text-decoration: none;
-  position: relative;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
@@ -289,7 +298,6 @@ export default {
 
 .feature-card__title {
   margin: 0;
-  font-size: 1.1rem;
 }
 
 .feature-card__tag {
@@ -303,12 +311,8 @@ export default {
 
 @media (max-width: 768px) {
   .hero {
-    padding: 32px 24px;
+    padding: 28px 20px;
     text-align: left;
-  }
-
-  .hero__title {
-    font-size: 2.1rem;
   }
 }
 </style>
