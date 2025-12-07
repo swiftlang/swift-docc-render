@@ -53,9 +53,9 @@
     <template #content>
       <main class="index-page">
         <section class="hero">
-          <h1 class="hero__title">{{ heroTitle }}</h1>
+          <h1 class="hero__title">{{ $t('documentation.hero.title') }}</h1>
           <p class="hero__lede">
-            {{ heroCopy }}
+            {{ $t('documentation.hero.copy') }}
           </p>
         </section>
 
@@ -143,8 +143,6 @@ export default {
   data: () => ({
     // fallback interface language used by indexDataGetter
     interfaceLanguage: Language.swift.key.url,
-    heroTitle: 'Developer Documentation',
-    heroCopy: 'Browse the latest API reference.',
     store: DocumentationTopicStore,
     BreakpointName,
   }),

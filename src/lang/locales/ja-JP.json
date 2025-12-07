@@ -69,7 +69,11 @@
       "view-symbol": "記号を表示",
       "view-sample-code": "サンプルコードを表示"
     },
-    "view-more": "さらに表示"
+    "view-more": "さらに表示",
+    "hero": {
+      "title": "デベロッパドキュメント",
+      "copy": "最新のAPIリファレンスを閲覧できます。"
+    }
   },
   "declarations": {
     "hide-other-declarations": "ほかの宣言を非表示",
