@@ -16,6 +16,14 @@ import {
 import ServerError from 'theme/views/ServerError.vue';
 import NotFound from 'theme/views/NotFound.vue';
 
+export const homeRoute = {
+  path: '/',
+  name: 'home-index',
+  component: () => import(
+    /* webpackChunkName: "home-index" */ 'theme/views/Index.vue'
+  ),
+};
+
 export const fallbackRoutes = [
   {
     path: '*',
@@ -54,6 +62,7 @@ export const pagesRoutes = [
 ];
 
 export default [
+  homeRoute,
   ...pagesRoutes,
   ...fallbackRoutes,
 ];
