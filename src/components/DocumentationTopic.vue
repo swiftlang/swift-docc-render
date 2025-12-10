@@ -62,7 +62,11 @@
           :content="abstract"
         />
         <div v-if="sampleCodeDownload">
-          <DownloadButton class="sample-download" :action="sampleCodeDownload.action" />
+          <DownloadButton
+            class="sample-download"
+            :action="sampleCodeDownload.action"
+            linksToAsset
+          />
         </div>
         <Availability
           v-if="shouldShowAvailability"
