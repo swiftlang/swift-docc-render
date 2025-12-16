@@ -18,4 +18,5 @@ module.exports = {
   },
   testEnvironment: 'jest-environment-jsdom',
   setupFiles: ['./tests/unit/config.js'],
+  transformIgnorePatterns: ['/node_modules/(?!@apple/highlightjs-pkl)'],
 };
