@@ -23,7 +23,7 @@
     "webpack-asset-path.js"
   ],
   "dependencies": {
-    "@apple/highlightjs-pkl": "^1.0.0",
+    "@apple/highlightjs-pkl": "^1.0.1",
     "core-js": "^3.8.2",
     "css.escape": "^1.5.1",
     "highlight.js": "^11.3.1",
