@@ -178,7 +178,19 @@ export function getSiblings(uid, childrenMap, children) {
   return getChildren(item.parent, childrenMap, children);
 }
 
-function extractRootNode(data) {
+/**
+ * Recursively flatten a nested module structure into a single array
+ * @param {Object[]} modules - Array of module objects with optional children
+ * @return {Object[]} Flattened array containing all modules and their nested module children
+ */
+export function flattenModules(modules) {
+  return modules.flatMap(module => [
+    module, ...flattenModules((module.children || []).filter(child => child.type === 'module')),
+  ]);
+}
+
+function extractRootModule(modules) {
+  const flattenedModules = flattenModules(modules);
   // note: this "root" path won't always necessarily come at the beginning of
   // the URL in situations where the renderer is being hosted at some path
   // prefix
@@ -192,9 +204,9 @@ function extractRootNode(data) {
   // with a path that most closely resembles the current URL path
   //
   // otherwise, the first provided node will be used
-  return data.length === 1 ? data[0] : (data.find(node => (
-    node.path.toLowerCase().endsWith(rootPath.toLowerCase())
-  )) ?? data[0]);
+  return flattenedModules.length === 1 ? flattenedModules[0] : (flattenedModules.find(module => (
+    module.path.toLowerCase().endsWith(rootPath.toLowerCase())
+  )) ?? flattenedModules[0]);
 }
 
 /**
@@ -203,11 +215,11 @@ function extractRootNode(data) {
  * @return { languageVariant: NavigatorFlatItem[] }
  */
 export function flattenNavigationIndex(languages) {
-  return Object.entries(languages).reduce((acc, [language, langData]) => {
-    if (!langData.length) return acc;
-    const topLevelNode = extractRootNode(langData);
+  return Object.entries(languages).reduce((acc, [language, modules]) => {
+    if (!modules.length) return acc;
+    const rootModule = extractRootModule(modules);
     acc[language] = flattenNestedData(
-      topLevelNode.children || [], null, 0, topLevelNode.beta,
+      rootModule.children || [], null, 0, rootModule.beta,
     );
     return acc;
   }, {});
@@ -217,13 +229,13 @@ export function flattenNavigationIndex(languages) {
  * Extract technology data for each language variant
  */
 export function extractTechnologyProps(indexData) {
-  return Object.entries(indexData).reduce((acc, [language, langData]) => {
-    if (!langData.length) return acc;
-    const topLevelNode = extractRootNode(langData);
+  return Object.entries(indexData).reduce((acc, [language, modules]) => {
+    if (!modules.length) return acc;
+    const rootModule = extractRootModule(modules);
     acc[language] = {
-      technology: topLevelNode.title,
-      technologyPath: topLevelNode.path || topLevelNode.url,
-      isTechnologyBeta: topLevelNode.beta,
+      technology: rootModule.title,
+      technologyPath: rootModule.path || rootModule.url,
+      isTechnologyBeta: rootModule.beta,
     };
     return acc;
   }, {});
