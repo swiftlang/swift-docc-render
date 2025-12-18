@@ -105,4 +105,10 @@ describe('CallToActionButton', () => {
     expect(provider.exists()).toBe(true);
     expect(provider.props('destination')).toBe(propsData.action);
   });
+
+  it('passes the `linksToAsset` prop to `ButtonLink`', () => {
+    wrapper = createWrapper();
+    const btn = wrapper.findComponent(ButtonLink);
+    expect(btn.props('linksToAsset')).toBe(propsData.linksToAsset);
+  });
 });

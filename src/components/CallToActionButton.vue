@@ -13,6 +13,7 @@
     <ButtonLink
       :url="normalizeUrl(url)"
       :isDark="isDark"
+      :linksToAsset="linksToAsset"
     >
       {{ title }}
     </ButtonLink>
