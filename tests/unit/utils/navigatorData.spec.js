@@ -11,6 +11,7 @@
 import {
   convertChildrenArrayToObject,
   extractTechnologyProps,
+  flattenModules,
   flattenNavigationIndex,
   flattenNestedData,
   getAllChildren,
@@ -434,5 +435,170 @@ describe('when multiple top-level children are provided', () => {
       const props = extractTechnologyProps({ occ: [], swift: [a] });
       expect(props.swift.technology).toBe(a.title);
     });
+  });
+});
+
+describe('flattenModules', () => {
+  it('flattens nested modules while preserving root modules', () => {
+    const modules = [
+      {
+        path: '/documentation/testkit',
+        title: 'Testkit',
+        type: 'module',
+        children: [],
+      },
+      {
+        path: '/documentation/foo',
+        title: 'Foo',
+        type: 'module',
+        children: [
+          {
+            path: '/documentation/nestedmodule',
+            title: 'NestedModule',
+            type: 'module',
+            children: [],
+          },
+        ],
+      },
+    ];
+
+    const result = flattenModules(modules);
+
+    expect(result).toEqual([
+      {
+        path: '/documentation/testkit',
+        title: 'Testkit',
+        type: 'module',
+        children: [],
+      },
+      {
+        path: '/documentation/foo',
+        title: 'Foo',
+        type: 'module',
+        children: [
+          {
+            path: '/documentation/nestedmodule',
+            title: 'NestedModule',
+            type: 'module',
+            children: [],
+          },
+        ],
+      },
+      {
+        path: '/documentation/nestedmodule',
+        title: 'NestedModule',
+        type: 'module',
+        children: [],
+      },
+    ]);
+  });
+
+  it('filters out non-module children when flattening', () => {
+    const modules = [
+      {
+        path: '/documentation/foo',
+        title: 'Foo',
+        type: 'module',
+        children: [
+          {
+            path: '/documentation/foo/article',
+            title: 'Foo Article',
+            type: 'article',
+          },
+          {
+            path: '/documentation/nestedmodule',
+            title: 'NestedModule',
+            type: 'module',
+          },
+          {
+            path: '/documentation/foo/tutorial',
+            title: 'Foo Tutorial',
+            type: 'tutorial',
+          },
+        ],
+      },
+    ];
+
+    const result = flattenModules(modules);
+
+    expect(result).toEqual([
+      {
+        path: '/documentation/foo',
+        title: 'Foo',
+        type: 'module',
+        children: [
+          {
+            path: '/documentation/foo/article',
+            title: 'Foo Article',
+            type: 'article',
+          },
+          {
+            path: '/documentation/nestedmodule',
+            title: 'NestedModule',
+            type: 'module',
+          },
+          {
+            path: '/documentation/foo/tutorial',
+            title: 'Foo Tutorial',
+            type: 'tutorial',
+          },
+        ],
+      },
+      {
+        path: '/documentation/nestedmodule',
+        title: 'NestedModule',
+        type: 'module',
+      },
+    ]);
+  });
+
+  it('extracts root module correctly from interfaceLanguages data structure', () => {
+    const interfaceLanguages = {
+      occ: [],
+      swift: [
+        {
+          children: [
+            {
+              path: '/documentation/foo/article',
+              title: 'Foo Article',
+              type: 'article',
+            },
+          ],
+          path: '/documentation/testkit',
+          title: 'Testkit',
+          type: 'module',
+        },
+        {
+          children: [
+            {
+              children: [
+                {
+                  path: '/documentation/nestedmodule/submodule',
+                  title: 'SubModule',
+                  type: 'module',
+                },
+              ],
+              path: '/documentation/nestedmodule',
+              title: 'NestedModule',
+              type: 'module',
+            },
+          ],
+          path: '/documentation/foo',
+          title: 'Foo',
+          type: 'module',
+        },
+      ],
+    };
+
+    const result = flattenModules(interfaceLanguages.swift);
+
+    // Should include all modules: Testkit, Foo, NestedModule, SubModule
+    expect(result).toHaveLength(4);
+
+    const modulePaths = result.map(module => module.path);
+    expect(modulePaths).toContain('/documentation/testkit');
+    expect(modulePaths).toContain('/documentation/foo');
+    expect(modulePaths).toContain('/documentation/nestedmodule');
+    expect(modulePaths).toContain('/documentation/nestedmodule/submodule');
   });
 });
