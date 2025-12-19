@@ -69,7 +69,11 @@
       "view-symbol": "查看符号",
       "view-sample-code": "查看示例代码"
     },
-    "view-more": "查看更多"
+    "view-more": "查看更多",
+    "hero": {
+      "title": "开发者文档",
+      "copy": "浏览最新的 API 参考。"
+    }
   },
   "declarations": {
     "hide-other-declarations": "隐藏其他声明",

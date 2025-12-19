@@ -28,8 +28,10 @@ export default {
           interfaceLanguages,
           references = {},
         } = await fetchData(this.indexDataPath);
+        const topLevelNodes = Object.values(interfaceLanguages || {}).flat();
         const flatChildren = Object.freeze(flattenNavigationIndex(interfaceLanguages));
         IndexStore.setFlatChildren(flatChildren);
+        IndexStore.setTopLevelNodes(topLevelNodes);
         IndexStore.setTechnologyProps(extractTechnologyProps(interfaceLanguages));
         IndexStore.setReferences(references);
         IndexStore.setIncludedArchiveIdentifiers(includedArchiveIdentifiers);
