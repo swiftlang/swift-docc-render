@@ -286,6 +286,19 @@ describe("syntax-highlight", () => {
     `);
   });
 
+  it("tokenizes pkl code", async () => {
+    const content = [
+      "foo = 1",
+      "bar = \"Hello \\(foo)\"",
+    ];
+    const { highlightedCode } = await prepare(content, "pkl");
+    expect(highlightedCode).toMatchInlineSnapshot(`
+        <span class="syntax-property">foo</span> = <span class="syntax-number">1</span>
+        <span class="syntax-property">bar</span> = <span class="syntax-string">"Hello <span class="syntax-subst">\\(foo)</span>"</span>
+      `
+    );
+  });
+
   it("returns false if the language is not supported", async () => {
     expect(await registerHighlightLanguage("pascal")).toBe(false);
   });
