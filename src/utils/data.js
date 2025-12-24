@@ -12,6 +12,7 @@ import { normalizePath } from 'docc-render/utils/assets';
 import {
   queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
 } from 'docc-render/utils/url-helper';
+import { getSetting } from 'docc-render/utils/theme-settings';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
@@ -56,8 +57,15 @@ export async function fetchData(path, params = {}, options = {}) {
 }
 
 function createDataPath(path) {
-  const dataPath = path.replace(/\/$/, '');
-  return `${normalizePath(['/data', dataPath])}.json`;
+  function filePathFor(path) {
+    if (process.env.VUE_APP_TARGET !== 'ide' &&
+        getSetting(['features', 'docs', 'portablePaths', 'enable'], false)) {
+      return path.replace(/\/$/, "").replace(/[<>:"\/\\|*]/, "_");
+    } else {
+      return path.replace(/\/$/, "")
+    }
+  }
+  return `${normalizePath(['/data', filePathFor(path)])}.json`;
 }
 
 /**
