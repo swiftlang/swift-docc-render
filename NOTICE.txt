@@ -72,3 +72,12 @@ This product depends on PortalVue.
     * https://github.com/LinusBorg/portal-vue/blob/develop/LICENCE
   * HOMEPAGE:
     * https://github.com/LinusBorg/portal-vue
+
+---
+
+This product depends on highlightjs-pkl.
+
+  * LICENSE (Apache-2.0):
+    * https://github.com/apple/highlightjs-pkl/blob/main/LICENSE.txt
+  * HOMEPAGE:
+    * https://github.com/apple/highlightjs-pkl
