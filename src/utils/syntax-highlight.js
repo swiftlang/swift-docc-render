@@ -31,6 +31,7 @@ const Languages = {
   objectivec: ['mm', 'objc', 'obj-c'].concat(CustomLanguageAliases.objectivec),
   perl: ['pl', 'pm'],
   php: [],
+  pkl: [],
   python: ['py', 'gyp', 'ipython'],
   ruby: ['rb', 'gemspec', 'podspec', 'thor', 'irb'],
   scss: [],
@@ -50,6 +51,7 @@ const Languages = {
 export const CustomLanguagesSet = new Set([
   'markdown',
   'swift',
+  'pkl',
 ]);
 
 export const LanguageAliasEntries = Object.entries(Languages);
