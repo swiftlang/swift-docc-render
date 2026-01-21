@@ -69,7 +69,11 @@
       "view-symbol": "기호 보기",
       "view-sample-code": "샘플 코드 보기"
     },
-    "view-more": "더 보기"
+    "view-more": "더 보기",
+    "hero": {
+      "title": "개발자 문서",
+      "copy": "최신 API 레퍼런스를 확인하세요."
+    }
   },
   "declarations": {
     "hide-other-declarations": "다른 선언 가리기",
