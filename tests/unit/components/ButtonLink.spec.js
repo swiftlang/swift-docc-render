@@ -63,4 +63,17 @@ describe('ButtonLink', () => {
     });
     expect(wrapper.classes()).toContain('is-dark');
   });
+
+  it('passes the `linksToAsset` prop to `Reference`', () => {
+    const wrapper = shallowMount(ButtonLink, {
+      propsData: {
+        ...propsData,
+        linksToAsset: true,
+      },
+    });
+
+    const ref = wrapper.findComponent(Reference);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('linksToAsset')).toBe(true);
+  });
 });
