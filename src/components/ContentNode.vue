@@ -429,7 +429,9 @@ function renderNode(createElement, references) {
     case BlockType.thematicBreak:
       return createElement(ThematicBreak);
     case InlineType.codeVoice:
-      return createElement(CodeVoice, {}, (
+      return createElement(CodeVoice, {
+        class: 'inline-code',
+      }, (
         node.code
       ));
     case InlineType.emphasis:
