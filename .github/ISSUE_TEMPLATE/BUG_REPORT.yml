@@ -23,7 +23,7 @@ body:
     options:
     - label: If possible, I've reproduced the issue using the `main` branch of this package.
       required: false
-    - label: This issue hasn't been addressed in an [existing GitHub issue](https://github.com/apple/swift-docc-render/issues).
+    - label: This issue hasn't been addressed in an [existing GitHub issue](https://github.com/swiftlang/swift-docc-render/issues).
       required: true
 - type: textarea
   attributes:
