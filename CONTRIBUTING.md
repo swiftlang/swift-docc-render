@@ -35,7 +35,7 @@ from the community.
 ### Contributing Code and Documentation
 
 Before contributing code or documentation to Swift-DocC-Render
-we encourage you to first create an issue on [GitHub](https://github.com/apple/swift-docc-render/issues/new/choose)
+we encourage you to first create an issue on [GitHub](https://github.com/swiftlang/swift-docc-render/issues/new/choose)
 for a bug report or feature request.
 This will allow us to provide feedback on the proposed change.
 However, this is not a requirement. If your contribution is small in scope,
@@ -125,7 +125,7 @@ When you're ready to have your change reviewed, please make sure you've complete
 When opening a pull request, please make sure to fill out the pull request template
 and complete all tasks mentioned there.
 
-Your PR should mention the number of the [GitHub issue](https://github.com/apple/swift-docc-render/issues)
+Your PR should mention the number of the [GitHub issue](https://github.com/swiftlang/swift-docc-render/issues)
 issue your work is addressing (#NNN).
   
 Most PRs should be against the `main` branch. If your change is intended 
