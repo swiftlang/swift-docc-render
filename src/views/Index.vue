@@ -54,63 +54,9 @@
       <main class="index-page">
         <section class="hero">
           <h1 class="hero__title">{{ $t('documentation.hero.title') }}</h1>
-          <p class="hero__lede">
+          <p class="hero__subtitle">
             {{ $t('documentation.hero.copy') }}
           </p>
-        </section>
-
-        <section v-if="documentation.length" class="index-section index-section--grid">
-          <header class="index-section__header">
-            <h2>Frameworks</h2>
-          </header>
-          <p v-if="isLoading">Loading index…</p>
-          <div v-else class="card-grid">
-            <RouterLink
-              v-for="doc in documentation"
-              :key="doc.path"
-              :to="doc.path"
-              class="feature-card"
-            >
-              <div class="feature-card__icon">
-                <TopicTypeIcon
-                  :type="doc.type || 'module'"
-                  :with-colors="false"
-                  :shouldCalculateOptimalWidth="false"
-                />
-              </div>
-              <div class="feature-card__body">
-                <h3 class="feature-card__title">{{ doc.title || doc.path }}</h3>
-              </div>
-              <span v-if="doc.beta" class="feature-card__tag">Beta</span>
-            </RouterLink>
-          </div>
-        </section>
-
-        <section v-if="tutorials.length" class="index-section index-section--grid">
-          <header class="index-section__header">
-            <h2>Tutorials</h2>
-          </header>
-          <p v-if="isLoading">Loading index…</p>
-          <div v-else class="card-grid">
-            <RouterLink
-              v-for="tutorial in tutorials"
-              :key="tutorial.path"
-              :to="tutorial.path"
-              class="feature-card"
-            >
-              <div class="feature-card__icon">
-                <TopicTypeIcon
-                  :type="tutorial.type || 'tutorial'"
-                  :with-colors="false"
-                  :shouldCalculateOptimalWidth="false"
-                />
-              </div>
-              <div class="feature-card__body">
-                <h3 class="feature-card__title">{{ tutorial.title || tutorial.path }}</h3>
-              </div>
-              <span v-if="tutorial.beta" class="feature-card__tag">Beta</span>
-            </RouterLink>
-          </div>
         </section>
       </main>
     </template>
@@ -122,7 +68,6 @@ import Language from 'docc-render/constants/Language';
 import DocumentationLayout from 'theme/components/DocumentationLayout.vue';
 import Navigator from 'docc-render/components/Navigator.vue';
 import QuickNavigationButton from 'docc-render/components/Navigator/QuickNavigationButton.vue';
-import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { INDEX_ROOT_KEY } from 'docc-render/constants/sidebar';
@@ -137,7 +82,6 @@ export default {
     DocumentationLayout,
     Navigator,
     QuickNavigationButton,
-    TopicTypeIcon,
   },
   mixins: [indexDataFetcher, indexDataGetter, communicationBridgeUtils],
   data: () => ({
@@ -181,20 +125,6 @@ export default {
         technologyProps: null,
       };
     },
-    documentation() {
-      const docs = this.topLevelIndexNodes
-        .filter(node => node.path?.startsWith('/documentation/'));
-      return docs;
-    },
-    tutorials() {
-      const tops = this.topLevelIndexNodes
-        .filter(node => node.path?.startsWith('/tutorials/'));
-      return tops;
-    },
-    isLoading() {
-      const { flatChildren, errorFetching } = this.indexState;
-      return !flatChildren && !errorFetching;
-    },
   },
   watch: {
     indexNodes() {
@@ -206,110 +136,19 @@ export default {
 
 <style scoped lang="scss">
 .index-page {
-  width: 100%;
   padding: 32px 28px 56px;
   box-sizing: border-box;
-}
-
-.index-section {
-  margin-top: 32px;
-}
-
-.index-section__header {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+  flex-direction: column;
 }
 
 .hero {
-  background: linear-gradient(315deg, var(--color-fill-secondary), var(--color-fill-tertiary));
   color: var(--colors-header-text, var(--color-header-text));
-  padding: 40px 32px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px var(--color-card-shadow);
   text-align: center;
-  width: 50%;
-  margin: 0 auto 32px;
-  display: flex;
-  flex-direction: column;
 }
 
-.hero__title {
-  margin: 0 0 8px;
-}
-
-.hero__lede {
-  margin: 0;
+.hero__subtitle {
   color: var(--colors-text, var(--color-text));
-}
-
-.index-section--grid {
-  margin-top: 32px;
-}
-
-.card-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-@media (max-width: 1024px) {
-  .hero {
-    width: unset;
-  }
-
-  .card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.feature-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  background: var(--color-card-background);
-  color: var(--color-card-content-text);
-  border-radius: 12px;
-  border: 1px solid var(--color-link-block-card-border);
-  text-decoration: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px var(--color-card-shadow);
-  border-color: var(--color-navigator-item-hover);
-}
-
-.feature-card__icon {
-  font-size: 1.5rem;
-}
-
-.feature-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.feature-card__title {
-  margin: 0;
-}
-
-.feature-card__tag {
-  align-self: flex-start;
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--color-standard-yellow);
-  color: var(--color-figure-orange);
 }
 
 </style>

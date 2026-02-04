@@ -79,7 +79,7 @@ describe('Index view', () => {
   it('renders hero text from translation keys', () => {
     const wrapper = mountWith();
     expect(wrapper.find('.hero__title').text()).toBe('Developer Documentation');
-    expect(wrapper.find('.hero__lede').text()).toBe('Browse the latest API reference.');
+    expect(wrapper.find('.hero__subtitle').text()).toBe('Browse the latest API reference.');
   });
 
   it('passes top-level nodes to navigator only', () => {
@@ -89,10 +89,5 @@ describe('Index view', () => {
     expect(nav.exists()).toBe(true);
     expect(nav.props('flatChildren').length).toBe(1);
     expect(nav.props('flatChildren')[0].path).toBe('/documentation/foo');
-  });
-
-  it('hides sections when lists are empty', () => {
-    const wrapper = mountWith();
-    expect(wrapper.find('section.index-section--grid').exists()).toBe(false);
   });
 });
