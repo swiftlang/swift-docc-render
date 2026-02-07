@@ -278,4 +278,21 @@ describe('Reference', () => {
     expect(ref.props('url')).toBe('/downloads/foo.zip');
     expect(ref.text()).toBe('Foo');
   });
+
+  it('renders a `ReferenceExternal` when linksToAsset is true', () => {
+    const wrapper = shallowMount(Reference, {
+      localVue,
+      router,
+      propsData: {
+        url: '/asset/link/path.zip',
+        linksToAsset: true,
+      },
+      slots: { default: 'Asset Link' },
+    });
+    const ref = wrapper.findComponent(ReferenceExternal);
+    expect(ref.exists()).toBe(true);
+    expect(ref.props('url')).toBe('/asset/link/path.zip');
+    expect(ref.text()).toBe('Asset Link');
+    expect(wrapper.findComponent(ReferenceInternal).exists()).toBe(false);
+  });
 });

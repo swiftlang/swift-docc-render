@@ -23,6 +23,7 @@
     "webpack-asset-path.js"
   ],
   "dependencies": {
+    "@apple/highlightjs-pkl": "^1.0.1",
     "core-js": "^3.8.2",
     "css.escape": "^1.5.1",
     "highlight.js": "^11.3.1",
@@ -69,6 +70,9 @@
   "overrides": {
     "tree-sitter-vue": {
       "nan": "^2.22.2"
-    }
+    },
+    "cross-spawn": "^7.0.3",
+    "postcss": "^8.4.31",
+    "webpack-dev-server": "^5.2.1"
   }
 }

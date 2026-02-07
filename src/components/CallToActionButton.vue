@@ -11,8 +11,9 @@
 <template>
   <DestinationDataProvider v-if="action" :destination="action" v-slot="{ url, title }">
     <ButtonLink
-      :url="url"
+      :url="normalizeUrl(url)"
       :isDark="isDark"
+      :linksToAsset="linksToAsset"
     >
       {{ title }}
     </ButtonLink>
@@ -22,6 +23,8 @@
 
 import ButtonLink from 'docc-render/components/ButtonLink.vue';
 import DestinationDataProvider from 'docc-render/components/DestinationDataProvider.vue';
+import { isAbsoluteUrl } from 'docc-render/utils/url-helper';
+import { normalizePath, normalizeRelativePath } from 'docc-render/utils/assets';
 
 export default {
   name: 'CallToActionButton',
@@ -29,12 +32,22 @@ export default {
     DestinationDataProvider,
     ButtonLink,
   },
+  methods: {
+    normalizeUrl(url) {
+      if (!this.linksToAsset || isAbsoluteUrl(url)) return url;
+      return normalizePath(normalizeRelativePath(url));
+    },
+  },
   props: {
     action: {
       type: Object,
       required: true,
     },
     isDark: {
+      type: Boolean,
+      default: false,
+    },
+    linksToAsset: {
       type: Boolean,
       default: false,
     },

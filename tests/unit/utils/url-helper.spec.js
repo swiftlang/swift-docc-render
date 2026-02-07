@@ -13,6 +13,7 @@ import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryPara
 let areEquivalentLocations;
 let buildUrl;
 let resolveAbsoluteUrl;
+let isAbsoluteUrl;
 
 const normalizePathMock = jest.fn().mockImplementation(n => n);
 
@@ -29,6 +30,7 @@ function importDeps() {
     areEquivalentLocations,
     buildUrl,
     resolveAbsoluteUrl,
+    isAbsoluteUrl,
   // eslint-disable-next-line global-require
   } = require('@/utils/url-helper'));
 }
@@ -183,5 +185,37 @@ describe('resolveAbsoluteUrl', () => {
       .toBe('https://swift.org/foobar');
     expect(resolveAbsoluteUrl('foo/bar', 'https://swift.org/blah'))
       .toBe('https://swift.org/foo/bar');
+  });
+});
+
+describe('isAbsoluteUrl', () => {
+  beforeEach(() => {
+    importDeps();
+    jest.clearAllMocks();
+  });
+
+  it('returns true for absolute URLs', () => {
+    expect(isAbsoluteUrl('https://example.com')).toBe(true);
+    expect(isAbsoluteUrl('https://example.com/path')).toBe(true);
+  });
+
+  it('returns true for other protocol schemes', () => {
+    expect(isAbsoluteUrl('mailto:test@example.com')).toBe(true);
+    expect(isAbsoluteUrl('tel:+1234567890')).toBe(true);
+  });
+
+  it('returns false for relative paths starting with /', () => {
+    expect(isAbsoluteUrl('/relative/path')).toBe(false);
+    expect(isAbsoluteUrl('/')).toBe(false);
+  });
+
+  it('returns false for relative paths not starting with /', () => {
+    expect(isAbsoluteUrl('relative/path')).toBe(false);
+    expect(isAbsoluteUrl('./current/path')).toBe(false);
+  });
+
+  it('returns false for empty or invalid URLs', () => {
+    expect(isAbsoluteUrl('')).toBe(false);
+    expect(isAbsoluteUrl('not-a-valid-url')).toBe(false);
   });
 });

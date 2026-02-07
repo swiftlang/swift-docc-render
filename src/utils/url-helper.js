@@ -108,3 +108,24 @@ export function getAbsoluteUrl(path, domainPath = window.location.href) {
 export function resolveAbsoluteUrl(path, domainPath) {
   return getAbsoluteUrl(path, domainPath).href;
 }
+
+/**
+ * Check if a URL is absolute (has a protocol scheme).
+ *
+ * @param {string} url - The URL to check.
+ * @return {boolean} True if the URL is absolute, false if relative.
+ *
+ * @example
+ * isAbsoluteUrl('https://example.com/path') // true
+ * isAbsoluteUrl('/relative/path') // false
+ * isAbsoluteUrl('relative/path') // false
+ */
+export function isAbsoluteUrl(url) {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

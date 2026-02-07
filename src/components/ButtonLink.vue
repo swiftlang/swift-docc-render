@@ -36,10 +36,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    linksToAsset: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     resolvedComponent: ({ url }) => (url ? Reference : 'button'),
-    componentProps: ({ url }) => (url ? { url } : {}),
+    componentProps: ({ url, linksToAsset }) => (url ? { url, linksToAsset } : { linksToAsset }),
   },
 };
 </script>
