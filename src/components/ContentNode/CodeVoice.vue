@@ -28,7 +28,7 @@ code {
 
 .inline-code {
   background-color: var(--color-inline-code-background);
-  padding: 0.0625em 0.25em;
-  border-radius: 0.25em;
+  padding: var(--inline-code-padding);
+  border-radius: var(--inline-code-border-radius);
 }
 </style>
