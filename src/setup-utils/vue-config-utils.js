@@ -96,7 +96,7 @@ function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {})
 
         res.sendFile(path.join(devServerProxy, directory, `${baseName}-${changes}${extension}`));
       });
-      app.get(/^\/(data|downloads|images|videos|index)/, (req, res) => {
+      app.get(/^\/(data|downloads|images|videos|index|theme-settings.json)/, (req, res) => {
         res.sendFile(path.join(devServerProxy, req.path));
       });
       return middlewares;
@@ -107,7 +107,7 @@ function baseDevServer({ defaultDevServerProxy = 'http://localhost:8000' } = {})
     //
     // Example: a localhost:[port] URL obtained from `docc preview`
     proxy: {
-      '^/(data|downloads|images|videos|index)': {
+      '^/(data|downloads|images|videos|index|theme-settings.json)': {
         target: devServerProxy,
       },
     },

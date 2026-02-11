@@ -25,4 +25,10 @@ export default {
 code {
   speak-punctuation: code;
 }
+
+.inline-code {
+  background-color: var(--color-inline-code-background);
+  padding: var(--inline-code-padding);
+  border-radius: var(--inline-code-border-radius);
+}
 </style>

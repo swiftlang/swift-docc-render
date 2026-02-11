@@ -670,6 +670,17 @@ describe('ContentNode', () => {
       expect(codeVoice.exists()).toBe(true);
       expect(codeVoice.text()).toBe('fooBar');
     });
+
+    it('renders a `CodeVoice` with `inline-code` class', () => {
+      const wrapper = mountWithItem({
+        type: 'codeVoice',
+        code: 'fooBar',
+      });
+
+      const codeVoice = wrapper.findComponent('.content').findComponent(CodeVoice);
+      expect(codeVoice.exists()).toBe(true);
+      expect(codeVoice.classes('inline-code')).toBe(true);
+    });
   });
 
   describe('with type="emphasis"', () => {
