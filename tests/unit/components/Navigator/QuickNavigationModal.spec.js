@@ -446,4 +446,29 @@ describe('QuickNavigationModal', () => {
       expect(wrapper.findComponent(QuickNavigationPreview).exists()).toBe(false);
     });
   });
+
+  describe('initialFilterText prop', () => {
+    it('seeds userInput from initialFilterText', () => {
+      const w = shallowMount(QuickNavigationModal, {
+        propsData: {
+          children: symbols,
+          showQuickNavigationModal: true,
+          initialFilterText: 'foo',
+        },
+        mocks,
+      });
+      expect(w.findComponent(FilterInput).props('value')).toBe('foo');
+    });
+
+    it('defaults userInput to empty string when initialFilterText is not provided', () => {
+      const w = shallowMount(QuickNavigationModal, {
+        propsData: {
+          children: symbols,
+          showQuickNavigationModal: true,
+        },
+        mocks,
+      });
+      expect(w.findComponent(FilterInput).props('value')).toBe('');
+    });
+  });
 });
