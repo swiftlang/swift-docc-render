@@ -582,7 +582,7 @@ describe('DocumentationLayout', () => {
       window.location = originalLocation;
     });
 
-    it('resets quickNavigationInitialFilter after opening the modal', async () => {
+    it('keeps quickNavigationInitialFilter after opening the modal', async () => {
       getSetting.mockReturnValueOnce(true);
       const w = createWrapper({
         mocks: {
@@ -591,7 +591,7 @@ describe('DocumentationLayout', () => {
         },
       });
       await w.vm.$nextTick();
-      expect(w.vm.quickNavigationInitialFilter).toBe('');
+      expect(w.vm.quickNavigationInitialFilter).toBe('foo');
     });
 
     it('does not open the modal when ?q= is absent', async () => {

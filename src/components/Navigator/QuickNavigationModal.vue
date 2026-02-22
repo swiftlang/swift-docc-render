@@ -297,7 +297,7 @@ export default {
   },
   watch: {
     initialFilterText(value) {
-      this.userInput = value;
+      if (value) this.userInput = value;
     },
     userInput: 'debounceInput',
     focusedIndex() {

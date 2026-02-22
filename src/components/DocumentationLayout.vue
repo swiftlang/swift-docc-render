@@ -206,8 +206,6 @@ export default {
       this.quickNavigationInitialFilter = q;
       this.$nextTick(() => {
         this.openQuickNavigationModal();
-        // Reset so subsequent keyboard-triggered opens don't re-use stale filter text.
-        this.quickNavigationInitialFilter = '';
       });
       // Use history.replaceState instead of $router.replace to avoid triggering
       // beforeRouteUpdate, which re-fetches data and remounts the layout.
