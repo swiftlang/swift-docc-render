@@ -37,6 +37,7 @@
             :showQuickNavigationModal.sync="showQuickNavigationModal"
             :technology="technology ? technology.title : ''"
             :placeholder="quickNavPlaceholder"
+            :initialFilterText="quickNavigationInitialFilter"
           />
           <transition name="delay-hiding">
             <slot
@@ -159,6 +160,7 @@ export default {
       sidenavVisibleOnMobile: false,
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
+      quickNavigationInitialFilter: '',
       BreakpointName,
     };
   },
@@ -198,6 +200,21 @@ export default {
       if (this.sidenavVisibleOnMobile) return;
       this.showQuickNavigationModal = true;
     },
+    handleInitialQueryFilter() {
+      const { q } = this.$route.query;
+      if (!q || !this.enableQuickNavigation) return;
+      this.quickNavigationInitialFilter = q;
+      this.$nextTick(() => {
+        this.openQuickNavigationModal();
+        // Reset so subsequent keyboard-triggered opens don't re-use stale filter text.
+        this.quickNavigationInitialFilter = '';
+      });
+      // Use history.replaceState instead of $router.replace to avoid triggering
+      // beforeRouteUpdate, which re-fetches data and remounts the layout.
+      const url = new URL(window.location);
+      url.searchParams.delete('q');
+      window.history.replaceState(window.history.state, '', url);
+    },
     toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
       this.sidenavHiddenOnLarge = value;
       storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
@@ -218,6 +235,7 @@ export default {
   },
   mounted() {
     if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
+    this.handleInitialQueryFilter();
   },
   beforeDestroy() {
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
