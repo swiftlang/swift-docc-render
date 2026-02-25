@@ -10,6 +10,7 @@
 
 import { normalizePath } from 'docc-render/utils/assets';
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
+import QuickNavigationQueryParams from 'docc-render/constants/QuickNavigationQueryParams';
 
 export function queryStringForParams(params = {}) {
   return Object.entries(params).reduce((pairs, [name, value]) => (
@@ -45,7 +46,7 @@ export function areEquivalentLocations(routeA, routeB) {
       changes: routeAChanges,
       [TechnologiesQueryParams.input]: technologiesAQuery,
       [TechnologiesQueryParams.tags]: technologiesATags,
-      q: routeAQ,
+      [QuickNavigationQueryParams.query]: routeAQ,
       ...routeAQuery
     } = {},
   } = routeA;
@@ -55,7 +56,7 @@ export function areEquivalentLocations(routeA, routeB) {
       changes: routeBChanges,
       [TechnologiesQueryParams.input]: technologiesBQuery,
       [TechnologiesQueryParams.tags]: technologiesBTags,
-      q: routeBQ,
+      [QuickNavigationQueryParams.query]: routeBQ,
       ...routeBQuery
     } = {},
   } = routeB;

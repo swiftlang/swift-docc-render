@@ -9,6 +9,7 @@
 */
 
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
+import QuickNavigationQueryParams from 'docc-render/constants/QuickNavigationQueryParams';
 
 let areEquivalentLocations;
 let buildUrl;
@@ -74,13 +75,16 @@ describe('areEquivalentLocations', () => {
     })).toBe(true);
   });
 
-  it('returns true for the same route, path, all queries but changes query', () => {
+  it('returns true for the same route, path, all queries but excluded param changes', () => {
     expect(areEquivalentLocations({
       name: 'foo',
       path: '/bar',
       query: {
         param: 'value',
         changes: 'a value',
+        [TechnologiesQueryParams.tags]: 'a,b,c',
+        [TechnologiesQueryParams.input]: 'foo',
+        [QuickNavigationQueryParams.query]: 'search term',
       },
     }, {
       name: 'foo',
@@ -88,43 +92,8 @@ describe('areEquivalentLocations', () => {
       query: {
         param: 'value',
         changes: 'a different value',
-      },
-    })).toBe(true);
-  });
-
-  it('returns true for the same route, path, all queries but input or tags changes', () => {
-    expect(areEquivalentLocations({
-      name: 'foo',
-      path: '/bar',
-      query: {
-        param: 'value',
-        [TechnologiesQueryParams.tags]: 'a,b,c',
-        [TechnologiesQueryParams.input]: 'foo',
-      },
-    }, {
-      name: 'foo',
-      path: '/bar',
-      query: {
-        param: 'value',
         [TechnologiesQueryParams.tags]: 'c,d,e',
         [TechnologiesQueryParams.input]: 'bar',
-      },
-    })).toBe(true);
-  });
-
-  it('returns true for the same route, path, all queries but q changes', () => {
-    expect(areEquivalentLocations({
-      name: 'foo',
-      path: '/bar',
-      query: {
-        param: 'value',
-        q: 'search term',
-      },
-    }, {
-      name: 'foo',
-      path: '/bar',
-      query: {
-        param: 'value',
       },
     })).toBe(true);
   });

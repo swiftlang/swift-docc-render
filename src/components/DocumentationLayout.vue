@@ -90,6 +90,7 @@ import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFra
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import QuickNavigationQueryParams from 'docc-render/constants/QuickNavigationQueryParams';
 
 import indexDataGetter from 'theme/mixins/indexDataGetter';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
@@ -201,14 +202,14 @@ export default {
       this.showQuickNavigationModal = true;
     },
     handleInitialQueryFilter() {
-      const { q } = this.$route.query;
-      if (!q || !this.enableQuickNavigation) return;
-      this.quickNavigationInitialFilter = q;
+      const { [QuickNavigationQueryParams.query]: filterText } = this.$route.query;
+      if (!filterText || !this.enableQuickNavigation) return;
+      this.quickNavigationInitialFilter = filterText;
       this.$nextTick(() => {
         this.openQuickNavigationModal();
       });
       // `areEquivalentLocations` excludes the `q` param below
-      const { q: _, ...query } = this.$route.query;
+      const { [QuickNavigationQueryParams.query]: _, ...query } = this.$route.query;
       this.$router.replace({ ...this.$route, query });
     },
     toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
