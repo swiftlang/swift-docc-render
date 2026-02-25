@@ -112,6 +112,23 @@ describe('areEquivalentLocations', () => {
     })).toBe(true);
   });
 
+  it('returns true for the same route, path, all queries but q changes', () => {
+    expect(areEquivalentLocations({
+      name: 'foo',
+      path: '/bar',
+      query: {
+        param: 'value',
+        q: 'search term',
+      },
+    }, {
+      name: 'foo',
+      path: '/bar',
+      query: {
+        param: 'value',
+      },
+    })).toBe(true);
+  });
+
   it('returns false for the same route, path, different queries', () => {
     expect(areEquivalentLocations({
       name: 'foo',

@@ -207,11 +207,9 @@ export default {
       this.$nextTick(() => {
         this.openQuickNavigationModal();
       });
-      // Use history.replaceState instead of $router.replace to avoid triggering
-      // beforeRouteUpdate, which re-fetches data and remounts the layout.
-      const url = new URL(window.location);
-      url.searchParams.delete('q');
-      window.history.replaceState(window.history.state, '', url);
+      // `areEquivalentLocations` excludes the `q` param below
+      const { q: _, ...query } = this.$route.query;
+      this.$router.replace({ ...this.$route, query });
     },
     toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
       this.sidenavHiddenOnLarge = value;

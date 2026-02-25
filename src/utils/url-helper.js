@@ -36,7 +36,7 @@ export function buildUrl(url, { changes, language, context } = {}) {
 // Whether the given routes are equivalent.
 //
 // Routes are considered equivalent if they have the same name, path, and query parameters, with the
-// exception of `changes`,`input` and `tags` query parameters,
+// exception of `changes`, `input`, `tags`, and `q` query parameters,
 // which are not considered in the equivalency.
 export function areEquivalentLocations(routeA, routeB) {
   // Remove the aforementioned query parameters because they're not considered in equivalency.
@@ -45,6 +45,7 @@ export function areEquivalentLocations(routeA, routeB) {
       changes: routeAChanges,
       [TechnologiesQueryParams.input]: technologiesAQuery,
       [TechnologiesQueryParams.tags]: technologiesATags,
+      q: routeAQ,
       ...routeAQuery
     } = {},
   } = routeA;
@@ -54,6 +55,7 @@ export function areEquivalentLocations(routeA, routeB) {
       changes: routeBChanges,
       [TechnologiesQueryParams.input]: technologiesBQuery,
       [TechnologiesQueryParams.tags]: technologiesBTags,
+      q: routeBQ,
       ...routeBQuery
     } = {},
   } = routeB;

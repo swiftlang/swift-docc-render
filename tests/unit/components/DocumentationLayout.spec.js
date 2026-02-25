@@ -547,39 +547,30 @@ describe('DocumentationLayout', () => {
         mocks: {
           ...mocks,
           $route: { path: '/documentation/somepath', query: { q: 'foo' } },
+          $router: { replace: jest.fn() },
         },
       });
       await w.vm.$nextTick();
       expect(w.vm.showQuickNavigationModal).toBe(true);
     });
 
-    it('removes ?q= from the URL via history.replaceState', () => {
+    it('removes ?q= from the URL via $router.replace', () => {
       getSetting.mockReturnValueOnce(true);
-      // intercept history replacement
-      const replaceState = jest.fn();
-      const originalReplaceState = window.history.replaceState;
-      const originalLocation = window.location;
-      window.history.replaceState = replaceState;
-
-      // replace with test location
-      delete window.location;
-      window.location = new URL('http://localhost/documentation/somepath?q=foo&changes=latest_minor');
+      const replace = jest.fn();
+      const $route = { path: '/documentation/somepath', query: { q: 'foo', changes: 'latest_minor' } };
       createWrapper({
         mocks: {
           ...mocks,
-          $route: { path: '/documentation/somepath', query: { q: 'foo', changes: 'latest_minor' } },
+          $route,
+          $router: { replace },
         },
       });
 
-      // assert current state is as expected after 1 history replacement
-      expect(replaceState).toHaveBeenCalledTimes(1);
-      const url = new URL(String(replaceState.mock.calls[0][2]));
-      expect(url.searchParams.has('q')).toBe(false);
-      expect(url.searchParams.get('changes')).toBe('latest_minor');
-
-      // reset to original state
-      window.history.replaceState = originalReplaceState;
-      window.location = originalLocation;
+      expect(replace).toHaveBeenCalledTimes(1);
+      expect(replace).toHaveBeenCalledWith({
+        ...$route,
+        query: { changes: 'latest_minor' },
+      });
     });
 
     it('keeps quickNavigationInitialFilter after opening the modal', async () => {
@@ -588,6 +579,7 @@ describe('DocumentationLayout', () => {
         mocks: {
           ...mocks,
           $route: { path: '/documentation/somepath', query: { q: 'foo' } },
+          $router: { replace: jest.fn() },
         },
       });
       await w.vm.$nextTick();
