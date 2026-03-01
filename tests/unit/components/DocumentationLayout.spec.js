@@ -544,14 +544,21 @@ describe('DocumentationLayout', () => {
     it('opens the modal and pre-fills filter when ?q= is present', async () => {
       getSetting.mockReturnValueOnce(true);
       const w = createWrapper({
+        stubs: {
+          ...stubs,
+          Nav: DocumentationNav,
+          NavBase,
+        },
         mocks: {
           ...mocks,
           $route: { path: '/documentation/somepath', query: { q: 'foo' } },
           $router: { replace: jest.fn() },
         },
       });
+      await w.setProps({ enableNavigator: true });
       await w.vm.$nextTick();
-      expect(w.vm.showQuickNavigationModal).toBe(true);
+      const modal = w.findComponent(QuickNavigationModal);
+      expect(modal.props('showQuickNavigationModal')).toBe(true);
     });
 
     it('removes ?q= from the URL via $router.replace', () => {
@@ -576,26 +583,44 @@ describe('DocumentationLayout', () => {
     it('keeps quickNavigationInitialFilter after opening the modal', async () => {
       getSetting.mockReturnValueOnce(true);
       const w = createWrapper({
+        stubs: {
+          ...stubs,
+          Nav: DocumentationNav,
+          NavBase,
+        },
         mocks: {
           ...mocks,
           $route: { path: '/documentation/somepath', query: { q: 'foo' } },
           $router: { replace: jest.fn() },
         },
       });
+      await w.setProps({
+        enableNavigator: true 
+      });
       await w.vm.$nextTick();
-      expect(w.vm.quickNavigationInitialFilter).toBe('foo');
+      const modal = w.findComponent(QuickNavigationModal);
+      expect(modal.props('initialFilterText')).toBe('foo');
     });
 
     it('does not open the modal when ?q= is absent', async () => {
       getSetting.mockReturnValueOnce(true);
       const w = createWrapper({
+        stubs: {
+          ...stubs,
+          Nav: DocumentationNav,
+          NavBase,
+        },
         mocks: {
           ...mocks,
           $route: { path: '/documentation/somepath', query: {} },
         },
       });
+      await w.setProps({
+        enableNavigator: true 
+      });
       await w.vm.$nextTick();
-      expect(w.vm.showQuickNavigationModal).toBe(false);
+      const modal = w.findComponent(QuickNavigationModal);
+      expect(modal.props('showQuickNavigationModal')).toBe(false);
     });
 
     it('does not open the modal when quick navigation is disabled', async () => {
@@ -607,7 +632,8 @@ describe('DocumentationLayout', () => {
         },
       });
       await w.vm.$nextTick();
-      expect(w.vm.showQuickNavigationModal).toBe(false);
+      const modal = w.findComponent(QuickNavigationModal);
+      expect(modal.exists()).toBe(false);
     });
   });
 });
