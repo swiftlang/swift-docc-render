@@ -37,6 +37,7 @@
             :showQuickNavigationModal.sync="showQuickNavigationModal"
             :technology="technology ? technology.title : ''"
             :placeholder="quickNavPlaceholder"
+            :initialFilterText="quickNavigationInitialFilter"
           />
           <transition name="delay-hiding">
             <slot
@@ -89,6 +90,7 @@ import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFra
 import { BreakpointName } from 'docc-render/utils/breakpoints';
 import { storage } from 'docc-render/utils/storage';
 import { getSetting } from 'docc-render/utils/theme-settings';
+import QuickNavigationQueryParams from 'docc-render/constants/QuickNavigationQueryParams';
 
 import indexDataGetter from 'theme/mixins/indexDataGetter';
 import DocumentationNav from 'theme/components/DocumentationTopic/DocumentationNav.vue';
@@ -159,6 +161,7 @@ export default {
       sidenavVisibleOnMobile: false,
       sidenavHiddenOnLarge: storage.get(NAVIGATOR_HIDDEN_ON_LARGE_KEY, false),
       showQuickNavigationModal: false,
+      quickNavigationInitialFilter: '',
       BreakpointName,
     };
   },
@@ -198,6 +201,17 @@ export default {
       if (this.sidenavVisibleOnMobile) return;
       this.showQuickNavigationModal = true;
     },
+    handleInitialQueryFilter() {
+      const { [QuickNavigationQueryParams.query]: filterText } = this.$route.query;
+      if (!filterText || !this.enableQuickNavigation) return;
+      this.quickNavigationInitialFilter = filterText;
+      this.$nextTick(() => {
+        this.openQuickNavigationModal();
+      });
+      // `areEquivalentLocations` excludes the `q` param below
+      const { [QuickNavigationQueryParams.query]: _, ...query } = this.$route.query;
+      this.$router.replace({ ...this.$route, query });
+    },
     toggleLargeSidenav(value = !this.sidenavHiddenOnLarge) {
       this.sidenavHiddenOnLarge = value;
       storage.set(NAVIGATOR_HIDDEN_ON_LARGE_KEY, value);
@@ -218,6 +232,7 @@ export default {
   },
   mounted() {
     if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
+    this.handleInitialQueryFilter();
   },
   beforeDestroy() {
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);

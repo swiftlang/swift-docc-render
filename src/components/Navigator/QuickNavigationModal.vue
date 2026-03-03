@@ -175,7 +175,7 @@ export default {
   data() {
     return {
       debouncedInput: '',
-      userInput: '',
+      userInput: this.initialFilterText,
       focusedInput: false,
       cachedSymbolResults: {},
       previewIsLoadingSlowly: false,
@@ -198,6 +198,10 @@ export default {
     placeholder: {
       type: String,
       required: false,
+    },
+    initialFilterText: {
+      type: String,
+      default: '',
     },
   },
   computed: {
@@ -292,6 +296,9 @@ export default {
     )),
   },
   watch: {
+    initialFilterText(value) {
+      if (value) this.userInput = value;
+    },
     userInput: 'debounceInput',
     focusedIndex() {
       if (this.focusedInput) return;
