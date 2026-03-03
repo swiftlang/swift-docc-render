@@ -595,7 +595,7 @@ describe('DocumentationLayout', () => {
         },
       });
       await w.setProps({
-        enableNavigator: true 
+        enableNavigator: true,
       });
       await w.vm.$nextTick();
       const modal = w.findComponent(QuickNavigationModal);
@@ -616,7 +616,7 @@ describe('DocumentationLayout', () => {
         },
       });
       await w.setProps({
-        enableNavigator: true 
+        enableNavigator: true,
       });
       await w.vm.$nextTick();
       const modal = w.findComponent(QuickNavigationModal);
