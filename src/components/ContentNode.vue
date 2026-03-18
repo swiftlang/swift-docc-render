@@ -31,6 +31,7 @@ import TaskList from './ContentNode/TaskList.vue';
 import LinksBlock from './ContentNode/LinksBlock.vue';
 import DeviceFrame from './ContentNode/DeviceFrame.vue';
 import ThematicBreak from './ContentNode/ThematicBreak.vue';
+import Card from './ContentNode/Card.vue';
 
 const { CaptionPosition, CaptionTag } = Caption.constants;
 
@@ -51,6 +52,7 @@ export const BlockType = {
   tabNavigator: 'tabNavigator',
   links: 'links',
   thematicBreak: 'thematicBreak',
+  card: 'card',
 };
 
 const InlineType = {
@@ -428,6 +430,14 @@ function renderNode(createElement, references) {
     }
     case BlockType.thematicBreak:
       return createElement(ThematicBreak);
+    case BlockType.card:
+      return createElement(Card, {}, ([
+        ...renderChildren(node.head ?? []).map(vnode => ({
+          ...vnode,
+          data: { ...vnode.data, slot: 'head' },
+        })),
+        ...renderChildren(node.content),
+      ]));
     case InlineType.codeVoice:
       return createElement(CodeVoice, {
         class: 'inline-code',
