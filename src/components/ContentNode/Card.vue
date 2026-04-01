@@ -30,10 +30,7 @@ export default {
   border: var(--card-border-width) var(--card-border-style) var(--card-color-border);
   border-radius: var(--card-border-radius);
 
-  & + *,
-  * + & {
-    margin-block-start: var(--spacing-stacked-margin-xlarge);
-  }
+  @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 
   & > * {
     padding: 20px;
