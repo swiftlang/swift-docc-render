@@ -69,7 +69,11 @@
       "view-symbol": "View symbol",
       "view-sample-code": "View sample code"
     },
-    "view-more": "View more"
+    "view-more": "View more",
+    "hero": {
+      "title": "Developer Documentation",
+      "copy": "Browse the latest API reference."
+    }
   },
   "declarations": {
     "hide-other-declarations": "Hide other declarations",
