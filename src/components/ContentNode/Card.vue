@@ -29,7 +29,7 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .card {
-  --card-border-radius: 4px;
+  --card-border-radius: #{$border-radius};
   --card-border-style: solid;
   --card-border-width: 1px;
   --card-color-border: var(--color-fill);
