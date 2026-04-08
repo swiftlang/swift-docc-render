@@ -14,9 +14,11 @@ import en_US from './locales/en-US.json';
 import zh_CN from './locales/zh-CN.json';
 import ja_JP from './locales/ja-JP.json';
 import ko_KR from './locales/ko-KR.json';
+import locales from './locales.json';
 
 // default locale
-export const defaultLocale = process.env.VUE_APP_DEFAULT_LOCALE ?? 'en-US';
+export const defaultLocale = process.env.VUE_APP_DEFAULT_LOCALE
+ ?? locales.find(locale => locale.default).slug;
 // translated locales
 export const messages = {
   ar,
