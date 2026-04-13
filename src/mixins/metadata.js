@@ -10,7 +10,7 @@
 
 import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
 import { firstParagraph } from 'docc-render/utils/strings';
-import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
+import { resolveAbsoluteUrl } from 'theme/utils/url-helper';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 
 export default {
