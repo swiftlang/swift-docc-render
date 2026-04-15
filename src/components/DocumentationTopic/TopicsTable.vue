@@ -110,8 +110,20 @@ export default {
     sectionsWithTopics() {
       return this.sections.map(section => ({
         ...section,
-        topics: section.identifiers.reduce(
-          (list, id) => (this.references[id] ? list.concat(this.references[id]) : list),
+        topics: section.identifierItems.reduce(
+          (list, item) => {
+            if (this.references[item.identifier]) {
+              const ref = this.references[item.identifier];
+              if (item.overrideTitle) {
+                ref.title = item.overrideTitle;
+              }
+              if (item.overridingTitleInlineContent) {
+                ref.titleInlineContent = item.overridingTitleInlineContent;
+              }
+              return list.concat(ref);
+            }
+            return list;
+          },
           [],
         ),
       }));
