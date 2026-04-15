@@ -34,7 +34,7 @@ const goodFetchResponse = {
   ok: true,
   json: () => Promise.resolve({ foobar: 'foobar' }),
 };
-const notFoundFetchResposne = {
+const notFoundFetchResponse = {
   ok: false,
   status: 404,
 };
@@ -218,7 +218,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls the `next` fn with a not-found route for 404s', async () => {
-    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResposne);
+    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResponse);
 
     await fetchDataForRouteEnter(to, from, next);
     await expect(next).toHaveBeenCalledWith({
@@ -231,7 +231,7 @@ describe('fetchDataForRouteEnter', () => {
 
   it('redirects to the default locale path when a localized page returns 404', async () => {
     window.fetch = jest.fn()
-      .mockImplementationOnce(() => notFoundFetchResposne)
+      .mockImplementationOnce(() => notFoundFetchResponse)
       .mockImplementationOnce(() => goodFetchResponse);
 
     await fetchDataForRouteEnter(localizedTo, from, next);
@@ -247,13 +247,13 @@ describe('fetchDataForRouteEnter', () => {
 
   it('shows 404 when both localized and English fallback return 404', async () => {
     const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
-    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResposne);
+    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResponse);
 
     await fetchDataForRouteEnter(localizedTo, from, next);
     expect(window.fetch).toHaveBeenCalledTimes(2);
     expect(errorSpy).toHaveBeenCalledWith(
       'Fallback fetch failed for locale "zh-CN":',
-      notFoundFetchResposne,
+      notFoundFetchResponse,
     );
     expect(next).toHaveBeenCalledWith({
       name: 'not-found',
