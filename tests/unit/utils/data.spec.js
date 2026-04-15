@@ -155,6 +155,11 @@ describe('fetchDataForRouteEnter', () => {
     path: '/tutorials/augmented-reality/tutorials',
     params: { locale: defaultLocale },
   };
+  const localizedTo = {
+    name: 'technology-tutorials-locale',
+    path: '/zh-CN/tutorials/augmented-reality/tutorials',
+    params: { locale: 'zh-CN' },
+  };
   const from = {};
   const next = jest.fn();
 
@@ -221,6 +226,41 @@ describe('fetchDataForRouteEnter', () => {
       params: ['/tutorials/augmented-reality/tutorials'],
     });
 
+    window.fetch.mockRestore();
+  });
+
+  it('redirects to the default locale path when a localized page returns 404', async () => {
+    window.fetch = jest.fn()
+      .mockImplementationOnce(() => notFoundFetchResposne)
+      .mockImplementationOnce(() => goodFetchResponse);
+
+    await fetchDataForRouteEnter(localizedTo, from, next);
+    expect(window.fetch).toHaveBeenCalledTimes(2);
+    expect(window.fetch.mock.calls[1][0]).toEqual(new URL(
+      '/data/tutorials/augmented-reality/tutorials.json',
+      window.location.href,
+    ).href);
+    expect(next).toHaveBeenCalledWith('/tutorials/augmented-reality/tutorials');
+
+    window.fetch.mockRestore();
+  });
+
+  it('shows 404 when both localized and English fallback return 404', async () => {
+    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResposne);
+
+    await fetchDataForRouteEnter(localizedTo, from, next);
+    expect(window.fetch).toHaveBeenCalledTimes(2);
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Fallback fetch failed for locale "zh-CN":',
+      notFoundFetchResposne,
+    );
+    expect(next).toHaveBeenCalledWith({
+      name: 'not-found',
+      params: ['/zh-CN/tutorials/augmented-reality/tutorials'],
+    });
+
+    errorSpy.mockRestore();
     window.fetch.mockRestore();
   });
 

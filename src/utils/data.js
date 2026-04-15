@@ -13,6 +13,7 @@ import {
   queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
 } from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
+import { defaultLocale } from 'theme/lang/index';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
 
@@ -95,6 +96,19 @@ export async function fetchDataForRouteEnter(to, from, next) {
     }
 
     if (error.status && error.status === 404) {
+      // If the current locale is not the default, try fetching the default
+      // locale version as a fallback and redirect to it.
+      const locale = to.params && to.params.locale;
+      if (locale && locale !== defaultLocale) {
+        const fallbackPath = to.path.replace(`/${locale}`, '');
+        try {
+          await fetchData(createDataPath(fallbackPath), to.query);
+          next(fallbackPath);
+          return null;
+        } catch (fallbackError) {
+          console.error(`Fallback fetch failed for locale "${locale}":`, fallbackError);
+        }
+      }
       // route to 404 page if missing data, but not in IDE build
       next({
         name: 'not-found',
