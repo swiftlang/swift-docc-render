@@ -330,6 +330,27 @@ describe('SectionSteps', () => {
     });
   });
 
+  describe('aria-live announcements', () => {
+    it('announces code block updates when a step with code becomes active', async () => {
+      // step at index 2 has code (exampleStepWithCode, stepNumber 2 of 5)
+      wrapper.vm.onIntersect({ target: target(2), isIntersecting: true });
+      await wrapper.vm.$nextTick();
+
+      const liveRegion = wrapper.find('[aria-live="polite"]');
+      expect(liveRegion.exists()).toBe(true);
+      // $t mock returns 'key number total'
+      expect(wrapper.vm.stepAnnouncement).toBe('tutorials.steps.code-updated 2 5');
+    });
+
+    it('does not announce when a step with only media becomes active', async () => {
+      // step at index 1 has media only (exampleStepWithMedia)
+      wrapper.vm.onIntersect({ target: target(1), isIntersecting: true });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.stepAnnouncement).toBe('');
+    });
+  });
+
   describe('when a code step is active', () => {
     const key = 2;
 

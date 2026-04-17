@@ -41,6 +41,9 @@
     "question-of": "{total}問中の{index}問",
     "section-of": "{total}件中の{number}件",
     "overriding-title": "{title}の{newTitle}",
+    "steps": {
+      "code-updated": "ステップ {number}/{total} のコードが更新されました"
+    },
     "time": {
       "format": "{number} {minutes}",
       "minutes": {
