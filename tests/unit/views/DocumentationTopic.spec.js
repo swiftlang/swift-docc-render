@@ -496,6 +496,29 @@ describe('DocumentationTopic', () => {
     expect(topic.props('isSymbolDeprecated')).toBe(false);
   });
 
+  it('computes isSymbolDeprecated from deprecated reference flag without deprecationSummary', async () => {
+    const identifier = topicData.identifier.url;
+    await wrapper.setData({
+      topicData: {
+        ...topicData,
+        deprecationSummary: [],
+        metadata: {
+          ...topicData.metadata,
+          platforms: [],
+        },
+        references: {
+          ...topicData.references,
+          [identifier]: {
+            deprecated: true,
+          },
+        },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    const topic = wrapper.findComponent(Topic);
+    expect(topic.props('isSymbolDeprecated')).toBe(true);
+  });
+
   it('sends a rendered message', async () => {
     const sendMock = jest.fn();
     wrapper = shallowMount(DocumentationTopic, {

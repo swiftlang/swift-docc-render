@@ -210,8 +210,13 @@ export default {
         && platforms.length
         && platforms.every(platform => platform.beta)),
     isSymbolDeprecated:
-      ({ topicProps: { platforms, deprecationSummary } }) => !!(
-        (deprecationSummary && deprecationSummary.length > 0)
+      ({
+        topicProps: {
+          platforms, deprecationSummary, identifier, references,
+        },
+      }) => !!(
+        (references[identifier] && references[identifier].deprecated)
+        || (deprecationSummary && deprecationSummary.length > 0)
         || (platforms
           && platforms.length
           && platforms.every(platform => platform.deprecatedAt)
