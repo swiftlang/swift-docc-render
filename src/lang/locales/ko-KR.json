@@ -41,6 +41,9 @@
     "question-of": "총 {total}개 중 {index}번째 질문",
     "section-of": "{total} 중 {number}",
     "overriding-title": "{title}의 {newTitle}",
+    "steps": {
+      "code-updated": "총 {total}단계 중 {number}단계의 코드가 업데이트되었습니다"
+    },
     "time": {
       "format": "{number}{minutes}",
       "minutes": {

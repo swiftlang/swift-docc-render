@@ -10,6 +10,11 @@
 
 <template>
   <div class="steps">
+    <div
+      aria-live="polite"
+      aria-atomic="true"
+      class="visuallyhidden"
+    >{{ stepAnnouncement }}</div>
     <div class="content-container">
       <component
         v-for="(node, index) in contentNodes"
@@ -107,6 +112,7 @@ export default {
         runtimePreview,
       },
       activeStep: firstStepIndex,
+      stepAnnouncement: '',
     };
   },
   computed: {
@@ -196,6 +202,17 @@ export default {
         media,
         runtimePreview,
       };
+
+      if (code) {
+        const stepNode = this.stepNodes.find(({ props }) => props.index === key);
+        if (stepNode) {
+          const { stepNumber } = stepNode.props;
+          this.stepAnnouncement = this.$t('tutorials.steps.code-updated', {
+            number: stepNumber,
+            total: this.numberOfSteps,
+          });
+        }
+      }
     },
     onRuntimePreviewToggle(value) {
       this.$emit('runtime-preview-toggle', value);
