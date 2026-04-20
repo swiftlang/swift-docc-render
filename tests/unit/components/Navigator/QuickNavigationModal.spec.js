@@ -470,14 +470,12 @@ describe('QuickNavigationModal', () => {
     it('pressing Down on the last item wraps focus back to the first item', async () => {
       await wrapper.setData({ focusedIndex: wrapper.vm.totalItemsToNavigate - 1 });
       wrapper.vm.focusNext({});
-      await wrapper.vm.$nextTick();
       expect(wrapper.vm.focusedIndex).toBe(0);
     });
 
     it('pressing Up on the first item wraps focus to the last item', async () => {
       await wrapper.setData({ focusedIndex: 0 });
       wrapper.vm.focusPrev({});
-      await wrapper.vm.$nextTick();
       expect(wrapper.vm.focusedIndex).toBe(wrapper.vm.totalItemsToNavigate - 1);
     });
 
@@ -490,7 +488,6 @@ describe('QuickNavigationModal', () => {
     it('handleDownKeyInput focuses the first result item', async () => {
       await wrapper.setData({ focusedIndex: 2 });
       wrapper.vm.handleDownKeyInput();
-      await wrapper.vm.$nextTick();
       expect(wrapper.vm.focusedIndex).toBe(0);
     });
   });
