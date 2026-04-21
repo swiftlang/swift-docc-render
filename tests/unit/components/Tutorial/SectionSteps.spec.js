@@ -336,10 +336,8 @@ describe('SectionSteps', () => {
       wrapper.vm.onIntersect({ target: target(2), isIntersecting: true });
       await wrapper.vm.$nextTick();
 
-      const liveRegion = wrapper.find('[aria-live="polite"]');
-      expect(liveRegion.exists()).toBe(true);
       // $t mock returns 'key number total'
-      expect(wrapper.vm.stepAnnouncement).toBe('tutorials.steps.code-updated 2 5');
+      expect(wrapper.find('[aria-live="polite"]').text()).toBe('tutorials.code-updated 2 5');
     });
 
     it('does not announce when a step with only media becomes active', async () => {
@@ -347,7 +345,7 @@ describe('SectionSteps', () => {
       wrapper.vm.onIntersect({ target: target(1), isIntersecting: true });
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.vm.stepAnnouncement).toBe('');
+      expect(wrapper.find('[aria-live="polite"]').text()).toBe('');
     });
   });
 
