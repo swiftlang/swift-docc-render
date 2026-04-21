@@ -41,6 +41,7 @@
     "question-of": "Question {index} of {total}",
     "section-of": "{number} of {total}",
     "overriding-title": "{newTitle} with {title}",
+    "code-updated": "Code updated for step {number} of {total}",
     "time": {
       "format": "{number} {minutes}",
       "minutes": {

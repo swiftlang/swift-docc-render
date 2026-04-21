@@ -41,6 +41,7 @@
     "question-of": "第 {index} 个问题（共 {total} 个）",
     "section-of": "{number}/{total}",
     "overriding-title": "{newTitle}{title}",
+    "code-updated": "步骤 {number}（共 {total} 步）的代码已更新",
     "time": {
       "format": "{number} {minutes}",
       "minutes": {
