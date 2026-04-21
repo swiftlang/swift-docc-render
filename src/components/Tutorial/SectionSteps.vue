@@ -157,6 +157,9 @@ export default {
       return this.tutorialState.breakpoint === BreakpointName.small;
     },
     stepNodes: ({ contentNodes, isStepNode }) => contentNodes.filter(isStepNode),
+    activeStepNode({ stepNodes, activeStep }) {
+      return stepNodes.find(({ props }) => props.index === activeStep);
+    },
     intersectionRootMargin: () => IntersectionMargins,
   },
   async mounted() {
@@ -203,15 +206,11 @@ export default {
         runtimePreview,
       };
 
-      if (code) {
-        const stepNode = this.stepNodes.find(({ props }) => props.index === key);
-        if (stepNode) {
-          const { stepNumber } = stepNode.props;
-          this.stepAnnouncement = this.$t('tutorials.steps.code-updated', {
-            number: stepNumber,
-            total: this.numberOfSteps,
-          });
-        }
+      if (code && this.activeStepNode) {
+        this.stepAnnouncement = this.$t('tutorials.code-updated', {
+          number: this.activeStepNode.props.stepNumber,
+          total: this.numberOfSteps,
+        });
       }
     },
     onRuntimePreviewToggle(value) {
