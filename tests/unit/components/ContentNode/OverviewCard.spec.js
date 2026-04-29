@@ -9,33 +9,33 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-import Card from 'docc-render/components/ContentNode/Card.vue';
+import OverviewCard from 'docc-render/components/ContentNode/OverviewCard.vue';
 
-describe('Card', () => {
+describe('OverviewCard', () => {
   it('renders slot content', () => {
-    const wrapper = shallowMount(Card, {
+    const wrapper = shallowMount(OverviewCard, {
       slots: {
         head: '<h3>foobar</h3>',
         default: '<p>qux</p>',
       },
     });
-    expect(wrapper.classes('card')).toBe(true);
+    expect(wrapper.classes('overviewcard')).toBe(true);
 
-    const head = wrapper.find('.card-head');
+    const head = wrapper.find('.overviewcard-head');
     expect(head.exists()).toBe(true);
     expect(head.text()).toBe('foobar');
 
-    const content = wrapper.find('.card-content');
+    const content = wrapper.find('.overviewcard-content');
     expect(content.exists()).toBe(true);
     expect(content.text()).toBe('qux');
   });
 
   it('does not render header if no head slot is provided', () => {
-    const wrapper = shallowMount(Card, {
+    const wrapper = shallowMount(OverviewCard, {
       slots: {
         default: '<p>foobar</p>',
       },
     });
-    expect(wrapper.find('.card-head').exists()).toBe(false);
+    expect(wrapper.find('.overviewcard-head').exists()).toBe(false);
   });
 });

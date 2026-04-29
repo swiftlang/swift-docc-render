@@ -9,11 +9,11 @@
 -->
 
 <template>
-  <article class="card">
-    <header v-if="$slots.head" class="card-head">
+  <article class="overviewcard">
+    <header v-if="$slots.head" class="overviewcard-head">
       <slot name="head" />
     </header>
-    <div class="card-content">
+    <div class="overviewcard-content">
       <slot />
     </div>
   </article>
@@ -21,24 +21,27 @@
 
 <script>
 export default {
-  name: 'Card',
+  name: 'OverviewCard',
 };
 </script>
 
 <style scoped lang="scss">
 @import 'docc-render/styles/_core.scss';
 
-.card {
-  --card-border-radius: #{$border-radius};
-  --card-border-style: solid;
-  --card-border-width: 1px;
-  --card-color-border: var(--color-fill);
-  --card-color-content: var(--color-fill-secondary);
-  --card-color-head: var(--color-fill-tertiary);
+.overviewcard {
+  --overviewcard-border-radius: #{$border-radius};
+  --overviewcard-border-style: solid;
+  --overviewcard-border-width: 1px;
+  --overviewcard-color-border: var(--color-fill);
+  --overviewcard-color-content: var(--color-fill-secondary);
+  --overviewcard-color-head: var(--color-fill-tertiary);
 
-  background: var(--card-color-content);
-  border: var(--card-border-width) var(--card-border-style) var(--card-color-border);
-  border-radius: var(--card-border-radius);
+  background: var(--overviewcard-color-content);
+  border:
+    var(--overviewcard-border-width)
+    var(--overviewcard-border-style)
+    var(--overviewcard-color-border);
+  border-radius: var(--overviewcard-border-radius);
 
   @include space-out-between-siblings(var(--spacing-stacked-margin-xlarge));
 
@@ -47,7 +50,7 @@ export default {
   }
 
   &-head {
-    background: var(--card-color-head);
+    background: var(--overviewcard-color-head);
     border-start-start-radius: inherit;
     border-start-end-radius: inherit;
   }
