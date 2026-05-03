@@ -65,7 +65,7 @@ export function pathJoin(parts) {
  * @return {string}
  */
 export function normalizePath(rawPath) {
-  const { baseUrl } = window;
+  const baseUrl = document.querySelector('base')?.getAttribute('href') ?? '/';
   const path = Array.isArray(rawPath) ? pathJoin(rawPath) : rawPath;
   if (!path || typeof path !== 'string' || path.startsWith(baseUrl) || !path.startsWith('/')) {
     return path;

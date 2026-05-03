@@ -38,12 +38,18 @@ window.fetch = fetchMock;
 
 describe('theme-settings', () => {
   beforeEach(() => {
+    const base = document.createElement('base');
+    document.head.appendChild(base);
     importDeps();
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    document.head.querySelector('base')?.remove();
+  });
+
   it('fetches the theme settings from a remote path', async () => {
-    window.baseUrl = '/';
+    document.head.querySelector('base').setAttribute('href', '/');
     resolveAbsoluteUrlMock.mockReturnValue('http://localhost/theme-settings.json');
     importDeps();
     await fetchThemeSettings();
@@ -53,9 +59,9 @@ describe('theme-settings', () => {
     expect(jsonMock).toHaveBeenCalledTimes(1);
   });
 
-  it('uses the window.baseUrl for the json path', async () => {
-    window.baseUrl = '/bar/foo/';
-    resolveAbsoluteUrlMock.mockReturnValue(`http://localhost${window.baseUrl}theme-settings.json`);
+  it('uses the base href for the json path', async () => {
+    document.head.querySelector('base').setAttribute('href', '/bar/foo/');
+    resolveAbsoluteUrlMock.mockReturnValue('http://localhost/bar/foo/theme-settings.json');
     importDeps();
     await fetchThemeSettings();
     expect(resolveAbsoluteUrlMock).toHaveBeenCalledWith('/theme-settings.json');
