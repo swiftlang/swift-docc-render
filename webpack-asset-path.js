@@ -11,4 +11,4 @@
 // See https://webpack.js.org/guides/public-path/#on-the-fly
 
 /* eslint-disable */
-__webpack_public_path__ = document.querySelector('base').getAttribute('href');
+__webpack_public_path__ = new URL(document.baseURI).pathname;
