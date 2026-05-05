@@ -11,13 +11,13 @@
 <!DOCTYPE html>
 <html lang="en-US" class="no-js">
 <head>
+    <base href="<%= BASE_URL %>">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <link rel="mask-icon" href="<%= BASE_URL %>favicon.svg" color="#333333">
     <title><%= process.env.VUE_APP_TITLE %></title>
-    <script type="application/javascript">var baseUrl = "<%= BASE_URL %>"</script>
 </head>
 <body data-color-scheme="auto">
 <noscript><%= require('@/assets/global-elements/noscript.html').default %></noscript>

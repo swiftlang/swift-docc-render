@@ -162,11 +162,15 @@ describe('fetchDataForRouteEnter', () => {
     originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'production';
 
+    const base = document.createElement('base');
+    document.head.appendChild(base);
+
     jest.clearAllMocks();
   });
 
   afterEach(() => {
     process.env.NODE_ENV = originalNodeEnv;
+    document.head.querySelector('base')?.remove();
   });
 
   it('calls `fetchData` with the right path', async () => {
@@ -184,7 +188,7 @@ describe('fetchDataForRouteEnter', () => {
 
   it('calls `fetchData` with a configurable base url', async () => {
     const baseUrl = '/base-prefix';
-    window.baseUrl = baseUrl;
+    document.head.querySelector('base').setAttribute('href', baseUrl);
     window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
@@ -195,7 +199,6 @@ describe('fetchDataForRouteEnter', () => {
     await expect(data).toEqual(await goodFetchResponse.json());
 
     window.fetch.mockRestore();
-    window.baseUrl = '/';
   });
 
   it('calls `fetchData` with the right query string', async () => {
