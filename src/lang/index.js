@@ -18,6 +18,7 @@ import es_419 from './locales/es-419.json';
 import de_DE from './locales/de-DE.json';
 import fr_FR from './locales/fr-FR.json';
 import it_IT from './locales/it-IT.json';
+import pt_BR from './locales/pt-BR.json';
 import locales from './locales.json';
 
 // default locale
@@ -34,4 +35,5 @@ export const messages = {
   'de-DE': de_DE,
   'fr-FR': fr_FR,
   'it-IT': it_IT,
+  'pt-BR': pt_BR,
 };
