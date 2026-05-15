@@ -32,9 +32,9 @@ export default {
   --overviewcard-border-radius: #{$border-radius};
   --overviewcard-border-style: solid;
   --overviewcard-border-width: 1px;
-  --overviewcard-color-border: var(--color-fill);
-  --overviewcard-color-content: var(--color-fill-secondary);
-  --overviewcard-color-head: var(--color-fill-tertiary);
+  --overviewcard-color-border: var(--color-overviewcard-border);
+  --overviewcard-color-content: var(--color-overviewcard-fill);
+  --overviewcard-color-head: var(--color-overviewcard-fill-secondary);
 
   background: var(--overviewcard-color-content);
   border:
