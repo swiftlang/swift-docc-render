@@ -44,5 +44,10 @@
     "code": "it-IT",
     "name": "Italiano",
     "slug": "it-IT"
+  },
+  {
+    "code": "pt-BR",
+    "name": "Português (Brasil)",
+    "slug": "pt-BR"
   }
 ]
