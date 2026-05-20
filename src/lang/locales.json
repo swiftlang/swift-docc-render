@@ -39,5 +39,10 @@
     "code": "fr-FR",
     "name": "Français",
     "slug": "fr-FR"
+  },
+  {
+    "code": "it-IT",
+    "name": "Italiano",
+    "slug": "it-IT"
   }
 ]
