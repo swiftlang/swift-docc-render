@@ -24,5 +24,10 @@
     "code": "ko-KR",
     "name": "한국어",
     "slug": "ko-KR"
+  },
+  {
+    "code": "es-419",
+    "name": "Español",
+    "slug": "es"
   }
 ]

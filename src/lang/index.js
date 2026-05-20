@@ -14,6 +14,7 @@ import en_US from './locales/en-US.json';
 import zh_CN from './locales/zh-CN.json';
 import ja_JP from './locales/ja-JP.json';
 import ko_KR from './locales/ko-KR.json';
+import es_419 from './locales/es-419.json';
 import locales from './locales.json';
 
 // default locale
@@ -26,4 +27,5 @@ export const messages = {
   'zh-CN': zh_CN,
   'ja-JP': ja_JP,
   'ko-KR': ko_KR,
+  'es-419': es_419,
 };
