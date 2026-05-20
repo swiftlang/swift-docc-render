@@ -29,5 +29,10 @@
     "code": "es-419",
     "name": "Español",
     "slug": "es"
+  },
+  {
+    "code": "de-DE",
+    "name": "Deutsch",
+    "slug": "de-DE"
   }
 ]
