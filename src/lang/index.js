@@ -16,6 +16,7 @@ import ja_JP from './locales/ja-JP.json';
 import ko_KR from './locales/ko-KR.json';
 import es_419 from './locales/es-419.json';
 import de_DE from './locales/de-DE.json';
+import fr_FR from './locales/fr-FR.json';
 import locales from './locales.json';
 
 // default locale
@@ -30,4 +31,5 @@ export const messages = {
   'ko-KR': ko_KR,
   'es-419': es_419,
   'de-DE': de_DE,
+  'fr-FR': fr_FR,
 };

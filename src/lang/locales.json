@@ -34,5 +34,10 @@
     "code": "de-DE",
     "name": "Deutsch",
     "slug": "de-DE"
+  },
+  {
+    "code": "fr-FR",
+    "name": "Français",
+    "slug": "fr-FR"
   }
 ]
