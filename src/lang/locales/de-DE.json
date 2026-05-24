@@ -1,0 +1,238 @@
+{
+  "view-in": "Auf Englisch anzeigen",
+  "continue-viewing": "Weiter auf Englisch anzeigen",
+  "language": "Sprache",
+  "video": {
+    "title": "Video",
+    "replay": "Erneut wiedergeben",
+    "play": "Wiedergeben",
+    "pause": "Pause",
+    "watch": "Einführungsvideo ansehen",
+    "description": "Beschreibung des Inhalts: {alt}",
+    "custom-controls": "Video mit eigenen Steuerelementen."
+  },
+  "tutorials": {
+    "title": "Einführung | Einführungen",
+    "step": "Schritt {number}",
+    "submit": "Senden",
+    "next": "Weiter",
+    "preview": {
+      "title": "Keine Vorschau | Vorschau | Vorschauen",
+      "no-preview-available-step": "Für diesen Schritt ist keine Vorschau verfügbar."
+    },
+    "nav": {
+      "chapters": "Kapitel",
+      "current": "Aktuell: {thing}"
+    },
+    "assessment": {
+      "check-your-understanding": "Verständnis überprüfen",
+      "success-message": "Tolle Leistung, du hast alle Fragen dieser Einführung beantwortet.",
+      "answer-result": "Antwort „{answer}“ ist {result}",
+      "correct": "korrekt",
+      "incorrect": "falsch",
+      "next-question": "Nächste Frage",
+      "legend": "Mögliche Antworten"
+    },
+    "project-files": "Projektdateien",
+    "estimated-time": "Geschätzte Dauer",
+    "sections": {
+      "chapter": "Kapitel {number}"
+    },
+    "question-of": "Frage {index} von {total}",
+    "section-of": "{number} von {total}",
+    "overriding-title": "{newTitle} mit {title}",
+    "time": {
+      "format": "{number} {minutes}",
+      "minutes": {
+        "full": "Minute | Minuten | {count} Minuten",
+        "short": "min | Min."
+      },
+      "hours": {
+        "full": "Stunde | Stunden"
+      }
+    }
+  },
+  "documentation": {
+    "title": "Dokumentation",
+    "nav": {
+      "breadcrumbs": "Brotkrümel",
+      "menu": "Menü",
+      "open-menu": "Menü öffnen",
+      "close-menu": "Menü schließen"
+    },
+    "current-page": "Aktuelle Seite ist {title}",
+    "card": {
+      "learn-more": "Weitere Infos",
+      "read-article": "Artikel lesen",
+      "start-tutorial": "Einführung starten",
+      "view-api": "API-Sammlung anzeigen",
+      "view-symbol": "Symbol anzeigen",
+      "view-sample-code": "Beispielcode anzeigen"
+    },
+    "view-more": "Weitere anzeigen"
+  },
+  "declarations": {
+    "hide-other-declarations": "Andere Deklarationen ausblenden",
+    "show-all-declarations": "Alle Deklarationen einblenden"
+  },
+  "aside-kind": {
+    "beta": "Beta",
+    "experiment": "Experiment",
+    "important": "Wichtig",
+    "note": "Hinweis",
+    "tip": "Tipp",
+    "warning": "Achtung",
+    "deprecated": "Nicht mehr unterstützt"
+  },
+  "change-type": {
+    "added": "Hinzugefügt",
+    "modified": "Geändert",
+    "deprecated": "Nicht mehr unterstützt"
+  },
+  "verbs": {
+    "hide": "Ausblenden",
+    "show": "Anzeigen",
+    "close": "Schließen"
+  },
+  "sections": {
+    "attributes": "Attribute",
+    "title": "Abschnitt {number}",
+    "on-this-page": "Auf dieser Seite",
+    "topics": "Themen",
+    "default-implementations": "Standardimplementierungen",
+    "relationships": "Beziehungen",
+    "see-also": "Siehe auch",
+    "declaration": "Deklaration",
+    "details": "Details",
+    "parameters": "Parameter",
+    "possible-values": "Mögliche Werte",
+    "parts": "Teile",
+    "availability": "Verfügbarkeit",
+    "resources": "Ressourcen"
+  },
+  "metadata": {
+    "details": {
+      "name": "Name",
+      "key": "Taste",
+      "type": "Typ"
+    },
+    "beta": {
+      "legal": "Diese Dokumentation bezieht sich auf Beta-Software und kann geändert werden.",
+      "software": "Beta-Software"
+    },
+    "default-implementation": "Standardimplementierung bereitgestellt. | Standardimplementierungen bereitgestellt."
+  },
+  "availability": {
+    "introduced-and-deprecated": "Eingeführt in {name} {introducedAt}, nicht mehr unterstützt in {name} {deprecatedAt}",
+    "available-on-platform": "Verfügbar auf {name}",
+    "available-on-platform-version": "Verfügbar auf {name} {introducedAt} und neuer"
+  },
+  "more": "Mehr",
+  "less": "Weniger",
+  "api-reference": "API-Referenz",
+  "filter": {
+    "title": "Filtern",
+    "search": "Suche",
+    "search-symbols": "Symbole in {technology} suchen",
+    "suggested-tags": "Vorgeschlagenes Tag | Vorgeschlagene Tags",
+    "selected-tags": "Ausgewähltes Tag | Ausgewählte Tags",
+    "add-tag": "Tag hinzufügen",
+    "tag-select-remove": "Tag. Wähle es aus, um es aus der Liste zu entfernen.",
+    "navigate": "Um durch die Symbole zu navigieren, drücke die Aufwärtspfeil-, Abwärtspfeil-, Linkspfeil- oder Rechtspfeiltaste.",
+    "siblings-label": "{number-siblings} von {total-siblings} Symbolen in {parent-siblings}",
+    "parent-label": "{number-siblings} von {total-siblings} Symbolen in {parent-siblings} enthalten ein Symbol | {number-siblings} von {total-siblings} Symbolen in {parent-siblings} enthalten {number-parent} Symbole",
+    "reset-filter": "Filter zurücksetzen",
+    "tags": {
+      "sample-code": "Beispielcode",
+      "tutorials": "Einführungen",
+      "articles": "Artikel",
+      "web-service-endpoints": "Endpunkte für Webdienste",
+      "hide-deprecated": "Nicht mehr Unterstütztes ausblenden"
+    }
+  },
+  "navigator": {
+    "title": "Dokumentationsnavigator",
+    "open-navigator": "Dokumentationsnavigator öffnen",
+    "close-navigator": "Dokumentationsnavigator schließen",
+    "no-results": "Keine Ergebnisse gefunden.",
+    "no-children": "Keine Daten verfügbar.",
+    "error-fetching": "Beim Abrufen der Daten ist ein Fehler aufgetreten.",
+    "items-found": "Es wurden keine Objekte gefunden | Es wurde 1 Objekt gefunden | Es wurden {number} Objekte gefunden. Tippe zurück, um sie zu durchsuchen.",
+    "navigator-is": "Navigator ist {state}",
+    "state": {
+      "loading": "laden …",
+      "ready": "bereit"
+    }
+  },
+  "tab": {
+    "request": "Anfordern",
+    "response": "Antwort"
+  },
+  "required": "Erforderlich",
+  "parameters": {
+    "default": "Standard",
+    "minimum": "Minimum",
+    "minimumLength": "Mindestlänge",
+    "maximum": "Maximum",
+    "maximumLength": "Maximallänge",
+    "possible-types": "Typ | Mögliche Typen",
+    "possible-values": "Wert | Mögliche Werte"
+  },
+  "content-type": "Inhaltsart: {value}",
+  "read-only": "Nur lesen",
+  "error": {
+    "unknown": "Es ist ein unbekannter Fehler aufgetreten.",
+    "image": "Laden des Bildes fehlgeschlagen",
+    "not-found": "Die von dir gesuchte Seite wurde nicht gefunden."
+  },
+  "color-scheme": {
+    "select": "Bevorzugtes Farbschema auswählen",
+    "auto": "Automatisch",
+    "dark": "Dunkel",
+    "light": "Hell"
+  },
+  "accessibility": {
+    "strike": {
+      "start": "Anfang des durchgestrichenen Textes",
+      "end": "Ende des durchgestrichenen Textes"
+    },
+    "code": {
+      "start": "Anfang eines Codeblocks",
+      "end": "Ende des Codeblocks"
+    },
+    "skip-navigation": "Navigation überspringen",
+    "in-page-link": "In-Page-Link"
+  },
+  "select-language": "Sprache für diese Seite auswählen",
+  "icons": {
+    "clear": "Löschen",
+    "web-service-endpoint": "Endpunkt für Webdienste",
+    "search": "Suche",
+    "copy": "Code in die Zwischenablage kopieren"
+  },
+  "formats": {
+    "parenthesis": "({content})",
+    "colon": "{content}: "
+  },
+  "quicknav": {
+    "button": {
+      "label": "Schnelle Navigation öffnen",
+      "title": "Auf „/” klicken oder „/” eingeben zum schnellen Navigieren"
+    },
+    "preview-unavailable": "Vorschau nicht verfügbar"
+  },
+  "mentioned-in": "Erwähnt in",
+  "pager": {
+    "roledescription": "Inhaltsschieberegler",
+    "page": {
+      "label": "Inhaltsseite {index} von {count}"
+    },
+    "control": {
+      "navigate-previous": "zur vorherigen Seite des Inhalts navigieren",
+      "navigate-next": "zur nächsten Seite des Inhalts navigieren"
+    }
+  },
+  "links-grid": {
+    "label": "Linkraster"
+  }
+}

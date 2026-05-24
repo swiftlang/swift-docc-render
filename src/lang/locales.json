@@ -24,5 +24,30 @@
     "code": "ko-KR",
     "name": "한국어",
     "slug": "ko-KR"
+  },
+  {
+    "code": "es-419",
+    "name": "Español",
+    "slug": "es"
+  },
+  {
+    "code": "de-DE",
+    "name": "Deutsch",
+    "slug": "de-DE"
+  },
+  {
+    "code": "fr-FR",
+    "name": "Français",
+    "slug": "fr-FR"
+  },
+  {
+    "code": "it-IT",
+    "name": "Italiano",
+    "slug": "it-IT"
+  },
+  {
+    "code": "pt-BR",
+    "name": "Português (Brasil)",
+    "slug": "pt-BR"
   }
 ]
