@@ -399,7 +399,9 @@ function renderNode(createElement, references) {
       return createElement(
         Row, { props: { columns } }, node.columns.map(col => (
           createElement(
-            Column, { props: { span: col.size } }, renderChildren(col.content),
+            Column,
+            { props: { span: col.size, alignment: col.alignment } },
+            renderChildren(col.content),
           )
         )),
       );
