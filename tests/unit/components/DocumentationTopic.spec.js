@@ -1121,6 +1121,19 @@ describe('DocumentationTopic', () => {
     expect(wrapper.find('.above-hero-content').exists()).toBe(true);
   });
 
+  it('renders content in the `below-abstract` slot', () => {
+    wrapper = shallowMount(DocumentationTopic, {
+      propsData,
+      slots: {
+        'below-abstract': '<div class="below-abstract">Below Abstract Content</div>',
+      },
+      provide: {
+        store: mockStore,
+      },
+    });
+    expect(wrapper.findComponent(DocumentationHero).find('.below-abstract').exists()).toBe(true);
+  });
+
   it('renders `OnThisPageNav` component, if enabled via prop', async () => {
     expect(wrapper.findComponent(OnThisPageNav).exists()).toBe(false);
     expect(wrapper.findComponent(OnThisPageStickyContainer).exists()).toBe(false);
