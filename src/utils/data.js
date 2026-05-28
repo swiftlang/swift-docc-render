@@ -13,6 +13,8 @@ import {
   queryStringForParams, areEquivalentLocations, getAbsoluteUrl,
 } from 'docc-render/utils/url-helper';
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
+import { defaultLocale } from 'theme/lang/index';
+import { localeIsValid } from 'docc-render/utils/i18n-utils';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
 
@@ -95,6 +97,14 @@ export async function fetchDataForRouteEnter(to, from, next) {
     }
 
     if (error.status && error.status === 404) {
+      // Destructure the locale out of the route params, leaving the rest.
+      const { locale, ...paramsWithoutLocale } = to.params ?? {};
+      if (locale && locale !== defaultLocale && localeIsValid(locale)) {
+        // Call `next` with the same route but without the locale param,
+        // redirecting to the non-localized version of the route.
+        next({ ...to, params: paramsWithoutLocale });
+        return null;
+      }
       // route to 404 page if missing data, but not in IDE build
       next({
         name: 'not-found',
