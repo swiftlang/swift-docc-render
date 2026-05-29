@@ -34,7 +34,7 @@ const goodFetchResponse = {
   ok: true,
   json: () => Promise.resolve({ foobar: 'foobar' }),
 };
-const notFoundFetchResposne = {
+const notFoundFetchResponse = {
   ok: false,
   status: 404,
 };
@@ -155,6 +155,11 @@ describe('fetchDataForRouteEnter', () => {
     path: '/tutorials/augmented-reality/tutorials',
     params: { locale: defaultLocale },
   };
+  const localizedTo = {
+    name: 'technology-tutorials-locale',
+    path: '/zh-CN/tutorials/augmented-reality/tutorials',
+    params: { locale: 'zh-CN' },
+  };
   const from = {};
   const next = jest.fn();
 
@@ -213,12 +218,39 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls the `next` fn with a not-found route for 404s', async () => {
-    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResposne);
+    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResponse);
 
     await fetchDataForRouteEnter(to, from, next);
     await expect(next).toHaveBeenCalledWith({
       name: 'not-found',
       params: ['/tutorials/augmented-reality/tutorials'],
+    });
+
+    window.fetch.mockRestore();
+  });
+
+  it('redirects to the default locale path when a localized page returns 404', async () => {
+    window.fetch = jest.fn().mockImplementationOnce(() => notFoundFetchResponse);
+
+    await fetchDataForRouteEnter(localizedTo, from, next);
+    expect(window.fetch).toHaveBeenCalledTimes(1);
+    expect(next).toHaveBeenCalledWith({ ...localizedTo, params: {} });
+
+    window.fetch.mockRestore();
+  });
+
+  it('routes to 404 page when a page with an unsupported locale param returns 404', async () => {
+    window.fetch = jest.fn().mockImplementationOnce(() => notFoundFetchResponse);
+
+    const fakeLocaleTo = {
+      name: 'technology-tutorials-locale',
+      path: '/fakelocale/tutorials/augmented-reality/tutorials',
+      params: { locale: 'fakelocale' },
+    };
+    await fetchDataForRouteEnter(fakeLocaleTo, from, next);
+    expect(next).toHaveBeenCalledWith({
+      name: 'not-found',
+      params: [fakeLocaleTo.path],
     });
 
     window.fetch.mockRestore();
