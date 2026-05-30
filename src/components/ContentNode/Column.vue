@@ -30,6 +30,7 @@ export default {
     alignment: {
       type: String,
       default: null,
+      validator: v => Object.hasOwn(AlignmentMap, v) || v === null,
     },
   },
   computed: {
