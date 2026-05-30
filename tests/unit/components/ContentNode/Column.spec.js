@@ -37,17 +37,20 @@ describe('Column', () => {
     });
 
     it('applies leading alignment', async () => {
-      const wrapper = createWrapper({ props: { alignment: 'leading' } });
+      const wrapper = createWrapper();
+      await wrapper.setProps({ alignment: 'leading' });
       expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'flex-start');
     });
 
     it('applies center alignment', async () => {
-      const wrapper = createWrapper({ props: { alignment: 'center' } });
+      const wrapper = createWrapper();
+      await wrapper.setProps({ alignment: 'center' });
       expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'center');
     });
 
     it('applies trailing alignment', async () => {
-      const wrapper = createWrapper({ props: { alignment: 'trailing' } });
+      const wrapper = createWrapper();
+      await wrapper.setProps({ alignment: 'trailing' });
       expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'flex-end');
     });
   });
