@@ -447,6 +447,51 @@ describe('QuickNavigationModal', () => {
     });
   });
 
+  describe('keyboard navigation', () => {
+    beforeEach(async () => {
+      await wrapper.setData({ debouncedInput: inputValue });
+      // Suppress DOM calls that require a real browser environment
+      jest.spyOn(wrapper.vm, 'scrollIntoView').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'focusReference').mockImplementation(() => {});
+    });
+
+    it('pressing Down moves focus to the next item', async () => {
+      await wrapper.setData({ focusedIndex: 0 });
+      wrapper.vm.focusNext({});
+      expect(wrapper.vm.focusedIndex).toBe(1);
+    });
+
+    it('pressing Up moves focus to the previous item', async () => {
+      await wrapper.setData({ focusedIndex: 1 });
+      wrapper.vm.focusPrev({});
+      expect(wrapper.vm.focusedIndex).toBe(0);
+    });
+
+    it('pressing Down on the last item wraps focus back to the first item', async () => {
+      await wrapper.setData({ focusedIndex: wrapper.vm.totalItemsToNavigate - 1 });
+      wrapper.vm.focusNext({});
+      expect(wrapper.vm.focusedIndex).toBe(0);
+    });
+
+    it('pressing Up on the first item wraps focus to the last item', async () => {
+      await wrapper.setData({ focusedIndex: 0 });
+      wrapper.vm.focusPrev({});
+      expect(wrapper.vm.focusedIndex).toBe(wrapper.vm.totalItemsToNavigate - 1);
+    });
+
+    it('does not move focus when metaKey and shiftKey are held', async () => {
+      await wrapper.setData({ focusedIndex: 1 });
+      wrapper.vm.focusNext({ metaKey: true, shiftKey: true });
+      expect(wrapper.vm.focusedIndex).toBe(1);
+    });
+
+    it('handleDownKeyInput focuses the first result item', async () => {
+      await wrapper.setData({ focusedIndex: 2 });
+      wrapper.vm.handleDownKeyInput();
+      expect(wrapper.vm.focusedIndex).toBe(0);
+    });
+  });
+
   describe('initialFilterText prop', () => {
     it('seeds userInput from initialFilterText', () => {
       const w = shallowMount(QuickNavigationModal, {
