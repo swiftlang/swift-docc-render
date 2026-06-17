@@ -59,6 +59,20 @@ describe('Aside', () => {
     expect(label.text()).toBe('Custom Name');
   });
 
+  it('renders a default label slot that can be overridden with custom content', () => {
+    const wrapper = shallowMount(Aside, {
+      propsData: {
+        kind: 'note',
+      },
+      slots: {
+        label: '<span class="custom-label">My Label</span>',
+        default: '<p>content</p>',
+      },
+    });
+    expect(wrapper.find('.label').exists()).toBe(false);
+    expect(wrapper.find('.custom-label').text()).toBe('My Label');
+  });
+
   it('renders slot content', () => {
     const wrapper = shallowMount(Aside, {
       propsData: {

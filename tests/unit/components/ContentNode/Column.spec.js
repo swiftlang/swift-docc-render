@@ -29,4 +29,29 @@ describe('Column', () => {
     });
     expect(wrapper.vm.style).toHaveProperty('--col-span', 5);
   });
+
+  describe('alignment', () => {
+    it('defaults to null when no alignment is set', () => {
+      const wrapper = createWrapper();
+      expect(wrapper.vm.style).toHaveProperty('--col-alignment', null);
+    });
+
+    it('applies leading alignment', async () => {
+      const wrapper = createWrapper();
+      await wrapper.setProps({ alignment: 'leading' });
+      expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'flex-start');
+    });
+
+    it('applies center alignment', async () => {
+      const wrapper = createWrapper();
+      await wrapper.setProps({ alignment: 'center' });
+      expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'center');
+    });
+
+    it('applies trailing alignment', async () => {
+      const wrapper = createWrapper();
+      await wrapper.setProps({ alignment: 'trailing' });
+      expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'flex-end');
+    });
+  });
 });

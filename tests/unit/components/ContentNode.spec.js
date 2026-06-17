@@ -514,9 +514,9 @@ describe('ContentNode', () => {
       });
       const columns = grid.findAllComponents(Column);
       expect(columns).toHaveLength(2);
-      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).props()).toEqual({ span: 2, alignment: null });
       expect(columns.at(0).find('p').text()).toBe('foo');
-      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).props()).toEqual({ span: null, alignment: null });
       expect(columns.at(1).find('p').text()).toBe('bar');
     });
     it('renders a `<Row>` without column count specified', () => {
@@ -558,10 +558,40 @@ describe('ContentNode', () => {
       });
       const columns = grid.findAllComponents(Column);
       expect(columns).toHaveLength(2);
-      expect(columns.at(0).props()).toEqual({ span: 2 });
+      expect(columns.at(0).props()).toEqual({ span: 2, alignment: null });
       expect(columns.at(0).find('p').text()).toBe('foo');
-      expect(columns.at(1).props()).toEqual({ span: null });
+      expect(columns.at(1).props()).toEqual({ span: null, alignment: null });
       expect(columns.at(1).find('p').text()).toBe('bar');
+    });
+
+    it('renders columns with alignment', () => {
+      const col = (size, alignment, text) => ({
+        size,
+        alignment,
+        content: [
+          {
+            type: 'paragraph',
+            inlineContent: [{ type: 'text', text }],
+          },
+        ],
+      });
+      const wrapper = mountWithItem({
+        type: 'row',
+        numberOfColumns: 4,
+        columns: [
+          col(1, null, 'foo'),
+          col(1, 'leading', 'bar'),
+          col(1, 'center', 'baz'),
+          col(1, 'trailing', 'qux'),
+        ],
+      });
+      const grid = wrapper.findComponent(Row);
+      const columns = grid.findAllComponents(Column);
+      expect(columns).toHaveLength(4);
+      expect(columns.at(0).props()).toEqual({ span: 1, alignment: null });
+      expect(columns.at(1).props()).toEqual({ span: 1, alignment: 'leading' });
+      expect(columns.at(2).props()).toEqual({ span: 1, alignment: 'center' });
+      expect(columns.at(3).props()).toEqual({ span: 1, alignment: 'trailing' });
     });
   });
 

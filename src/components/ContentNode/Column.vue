@@ -14,6 +14,12 @@
 </template>
 
 <script>
+const AlignmentMap = {
+  leading: 'flex-start',
+  center: 'center',
+  trailing: 'flex-end',
+};
+
 export default {
   name: 'Column',
   props: {
@@ -21,9 +27,17 @@ export default {
       type: Number,
       default: null,
     },
+    alignment: {
+      type: String,
+      default: null,
+      validator: v => Object.hasOwn(AlignmentMap, v) || v === null,
+    },
   },
   computed: {
-    style: ({ span }) => ({ '--col-span': span }),
+    style: ({ span, alignment }) => ({
+      '--col-span': span,
+      '--col-alignment': AlignmentMap[alignment] || null,
+    }),
   },
 };
 </script>
@@ -32,6 +46,9 @@ export default {
 @import 'docc-render/styles/_core.scss';
 
 .column {
+  display: flex;
+  flex-direction: column;
+  align-items: var(--col-alignment, flex-start);
   grid-column: span var(--col-span);
   min-width: 0;
   @include breakpoint(small) {
