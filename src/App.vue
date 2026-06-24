@@ -14,7 +14,7 @@
     :class="{ fromkeyboard: fromKeyboard, hascustomheader: hasCustomHeader }"
   >
     <div :id="AppTopID" />
-    <a href="#app-main" id="skip-nav" v-if="!isTargetIDE">
+    <a :href="`${$route.path}#app-main`" id="skip-nav" v-if="!isTargetIDE">
       {{ $t('accessibility.skip-navigation') }}
     </a>
     <slot name="header" :isTargetIDE="isTargetIDE">
