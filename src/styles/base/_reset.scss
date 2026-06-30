@@ -18,6 +18,10 @@ html {
   // enough that it does not actually exceed the breakpoint height.
   background-color: var(--colors-text-background, var(--color-text-background));
   height: 100%;
+  // Enable smooth scrolling for anchor links unless reduced motion is preferred.
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
 }
 
 //============================================================
