@@ -60,6 +60,16 @@ describe('router-utils', () => {
 
     beforeEach(() => {
       process.env.VUE_APP_TARGET = appTarget;
+      window.matchMedia = jest.fn().mockReturnValue({
+        matches: true,
+        media: '(prefers-reduced-motion: no-preference)',
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      });
     });
 
     it('resolves with the saved position', async () => {
@@ -83,7 +93,11 @@ describe('router-utils', () => {
     it('resolves with a selector and `y:0` offset if passed `hash` but in IDE target', async () => {
       process.env.VUE_APP_TARGET = 'ide';
       const resolved = await scrollBehavior(routeFoo, routeBar);
-      expect(resolved).toEqual({ selector: routeFoo.hash, offset: { x: 0, y: 0 } });
+      expect(resolved).toEqual({
+        selector: routeFoo.hash,
+        offset: { x: 0, y: 0 },
+        behavior: 'smooth',
+      });
     });
 
     it('resolves with one nav height offset if passed `hash` but no API `changes` enabled', async () => {
@@ -93,6 +107,7 @@ describe('router-utils', () => {
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
         offset: { x: 0, y: baseNavHeight + EXTRA_DOCUMENTATION_OFFSET },
+        behavior: 'smooth',
       });
     });
 
@@ -105,6 +120,7 @@ describe('router-utils', () => {
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
         offset: { x: 0, y: baseNavHeightSmallBreakpoint + EXTRA_DOCUMENTATION_OFFSET },
+        behavior: 'smooth',
       });
 
       window.innerWidth = innerWidth;
@@ -117,6 +133,26 @@ describe('router-utils', () => {
       expect(resolved).toEqual({
         selector: routeDocsNoChanges.hash,
         offset: { x: 0, y: baseNavHeight * 2 + EXTRA_DOCUMENTATION_OFFSET },
+        behavior: 'smooth',
+      });
+    });
+
+    it('does not resolve with smooth behavior if reduced motion is preferred', async () => {
+      window.matchMedia = jest.fn().mockReturnValue({
+        matches: false,
+        media: '(prefers-reduced-motion: no-preference)',
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      });
+      const routeDocsNoChanges = createRoute(documentationTopicName, {}, 'bar');
+      const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
+      expect(resolved).toEqual({
+        selector: routeDocsNoChanges.hash,
+        offset: { x: 0, y: baseNavHeight + EXTRA_DOCUMENTATION_OFFSET },
       });
     });
 

@@ -63,7 +63,17 @@ export async function scrollBehavior(to, from, savedPosition) {
     const offset = baseNavOffset + apiChangesNavHeight + getExtraScrollOffset(to);
 
     const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
-    return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };
+    const position = {
+      selector: cssEscapeTopicIdHash(hash),
+      offset: { x: 0, y },
+    };
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      return {
+        ...position,
+        behavior: 'smooth',
+      };
+    }
+    return position;
   }
   if (areEquivalentLocations(to, from)) {
     // Do not change the scroll position if the location hasn't changed
