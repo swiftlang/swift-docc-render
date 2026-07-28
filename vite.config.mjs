@@ -142,6 +142,19 @@ function localDocCArchive(archivePath) {
   };
 }
 
+function validateLocalDocCArchive(archivePath) {
+  const dataPath = path.join(archivePath, 'data');
+  if (fs.existsSync(dataPath) && fs.statSync(dataPath).isDirectory()) return;
+
+  throw new Error(
+    [
+      `VITE_DEV_SERVER_PROXY="${archivePath}" is not a rendered DocC archive`,
+      '(the data directory is missing). A .docc source catalog cannot be served directly.',
+      'Run "pnpm docs:build", then use "VITE_DEV_SERVER_PROXY=docs pnpm serve".',
+    ].join(' '),
+  );
+}
+
 function indexTemplate({ title, isBuild }) {
   const baseUrl = isBuild ? `${BASE_URL_PLACEHOLDER}/` : '/';
   const noScript = fs.readFileSync(
@@ -237,6 +250,8 @@ export default defineConfig(({ command, mode }) => {
   const archiveIsLocal = fs.existsSync(archiveProxy);
   const buildTarget = ['ide', 'default'].includes(target) ? target : 'default';
 
+  if (!isBuild && archiveIsLocal) validateLocalDocCArchive(archiveProxy);
+
   return {
     root: appRoot,
     base: isBuild ? `/${BASE_URL_PLACEHOLDER}/` : '/',
@@ -320,7 +335,14 @@ export default defineConfig(({ command, mode }) => {
       outDir: path.join(projectRoot, 'dist'),
       emptyOutDir: true,
       sourcemap: false,
-      rollupOptions: {
+      rolldownOptions: {
+        checks: {
+          // ContentNode is loaded asynchronously here to break a recursive component
+          // dependency, not to create a separate chunk.
+          ineffectiveDynamicImport: false,
+          // Sass compilation is expected to dominate this stylesheet-heavy build.
+          pluginTimings: false,
+        },
         output: {
           assetFileNames: ({ names = [] }) => (
             names.some(name => name.endsWith('.css'))

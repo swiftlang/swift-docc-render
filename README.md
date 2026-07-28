@@ -36,6 +36,17 @@ SPAs are web apps that render dynamically at runtime entirely in the browser, us
 
     As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` env variable so you don't have to set it in the `pnpm serve` script each time.
 
+    `SwiftDocCRender.docc` is a source catalog, not a rendered documentation archive.
+    To use this repository's documentation while developing the renderer, generate its
+    data first and open the documentation route rather than the site root:
+
+    ```shell
+    pnpm docs:build
+    VITE_DEV_SERVER_PROXY=docs pnpm serve
+    ```
+
+    Then visit [localhost:5173/documentation/swiftdoccrender](http://localhost:5173/documentation/swiftdoccrender).
+
 ## Using Swift-DocC-Render to render documentation
 
 Follow [these steps](https://github.com/swiftlang/swift-docc#using-docc-to-build-and-preview-documentation) to generate a documentation archive, set the path to your renderer and render locally your documentation using Swift-DocC-Render.
