@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  tree-sitter@0.25.0: ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913
+
 importers:
 
   .:
@@ -39,6 +42,9 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
         version: 6.0.8(vite@8.1.5(@types/node@26.1.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.5.40)
+      '@vue/compiler-sfc':
+        specifier: 3.5.40
+        version: 3.5.40
       '@vue/test-utils':
         specifier: ^2.4.11
         version: 2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40)
@@ -70,17 +76,14 @@ importers:
         specifier: ^1.102.0
         version: 1.102.0
       tree-sitter:
-        specifier: ^0.21.1
-        version: 0.21.1
+        specifier: ^0.25.0
+        version: 0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913)
       tree-sitter-javascript:
-        specifier: ^0.23.1
-        version: 0.23.1(tree-sitter@0.21.1)
+        specifier: ^0.25.0
+        version: 0.25.0(tree-sitter@0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913))
       tree-sitter-jsdoc:
-        specifier: ^0.23.2
-        version: 0.23.2(tree-sitter@0.21.1)
-      tree-sitter-vue:
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.25.0
+        version: 0.25.0(tree-sitter@0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913))
       vite:
         specifier: ^8.1.5
         version: 8.1.5(@types/node@26.1.1)(sass@1.102.0)(terser@5.49.0)(yaml@2.9.0)
@@ -1513,9 +1516,6 @@ packages:
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
 
-  nan@2.28.0:
-    resolution: {integrity: sha512-fTsDz99OTq2sVePhGdp4qQhggZFtKr64ZNVyVajRKtMOkJxYekplBh577PiJB12v/D3s2E5cGtOI45LWp6rnLQ==}
-
   nanoid@3.3.16:
     resolution: {integrity: sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -1780,27 +1780,24 @@ packages:
     resolution: {integrity: sha512-bLVMLPtstlZ4iMQHpFHTR7GAGj2jxi8Dg0s2h2MafAE4uSWF98FC/3MomU51iQAMf8/qDUbKWf5GxuvvVcXEhw==}
     engines: {node: '>=20'}
 
-  tree-sitter-javascript@0.23.1:
-    resolution: {integrity: sha512-/bnhbrTD9frUYHQTiYnPcxyHORIw157ERBa6dqzaKxvR/x3PC4Yzd+D1pZIMS6zNg2v3a8BZ0oK7jHqsQo9fWA==}
+  tree-sitter-javascript@0.25.0:
+    resolution: {integrity: sha512-1fCbmzAskZkxcZzN41sFZ2br2iqTYP3tKls1b/HKGNPQUVOpsUxpmGxdN/wMqAk3jYZnYBR1dd/y/0avMeU7dw==}
     peerDependencies:
-      tree-sitter: ^0.21.1
+      tree-sitter: ^0.25.0
     peerDependenciesMeta:
       tree-sitter:
         optional: true
 
-  tree-sitter-jsdoc@0.23.2:
-    resolution: {integrity: sha512-ea60Xc69SkEWLAe1y02G8bXTyYn/N6KtDnkkdj+sy9/1eH4mvgH62VdoUAl0rx0NDPpCsPaZWvS1AChfEMIJgw==}
+  tree-sitter-jsdoc@0.25.0:
+    resolution: {integrity: sha512-ki7u9WA/AUZyk2ISULzFALL2iMax27O0Bz2O5WtyUkGAfJ97R0dgOSs0Bdf1zUpk6q5cq7bI2hBgJt29WH54Tw==}
     peerDependencies:
-      tree-sitter: ^0.21.1
+      tree-sitter: ^0.25.0
     peerDependenciesMeta:
       tree-sitter:
         optional: true
 
-  tree-sitter-vue@0.2.1:
-    resolution: {integrity: sha512-Uy6/ih87qJfoID5Z45Mb3qBqMuFfhnN5u6Ujgrmi/D6SyFIoZSZTAV97yxsejXFdcn4Vw3/XO+agk7ztIdhJLw==}
-
-  tree-sitter@0.21.1:
-    resolution: {integrity: sha512-7dxoA6kYvtgWw80265MyqJlkRl4yawIjO7S5MigytjELkX43fV2WsAXzsNfO7sBpPPCF5Gp0+XzHk0DwLCq3xQ==}
+  tree-sitter@0.25.0:
+    resolution: {integrity: sha512-PGZZzFW63eElZJDe/b/R/LbsjDDYJa5UEjLZJB59RQsMX+fo0j54fqBPn1MGKav/QNa0JR0zBiVaikYDWCj5KQ==}
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
@@ -3409,8 +3406,6 @@ snapshots:
 
   muggle-string@0.4.1: {}
 
-  nan@2.28.0: {}
-
   nanoid@3.3.16: {}
 
   napi-postinstall@0.3.4: {}
@@ -3659,25 +3654,21 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  tree-sitter-javascript@0.23.1(tree-sitter@0.21.1):
+  tree-sitter-javascript@0.25.0(tree-sitter@0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913)):
     dependencies:
       node-addon-api: 8.9.0
       node-gyp-build: 4.8.4
     optionalDependencies:
-      tree-sitter: 0.21.1
+      tree-sitter: 0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913)
 
-  tree-sitter-jsdoc@0.23.2(tree-sitter@0.21.1):
+  tree-sitter-jsdoc@0.25.0(tree-sitter@0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913)):
     dependencies:
       node-addon-api: 8.9.0
       node-gyp-build: 4.8.4
     optionalDependencies:
-      tree-sitter: 0.21.1
+      tree-sitter: 0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913)
 
-  tree-sitter-vue@0.2.1:
-    dependencies:
-      nan: 2.28.0
-
-  tree-sitter@0.21.1:
+  tree-sitter@0.25.0(patch_hash=ea9e2f8f46c622414d0d8771383849e9a9e335a3774d06c7c9c5218ccb914913):
     dependencies:
       node-addon-api: 8.9.0
       node-gyp-build: 4.8.4

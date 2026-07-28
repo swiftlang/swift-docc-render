@@ -15,10 +15,10 @@
 const fs = require('fs');
 const path = require('path');
 
+const { parse: parseSFC } = require('@vue/compiler-sfc');
 const Parser = require('tree-sitter');
 const JavaScript = require('tree-sitter-javascript');
 const JSDoc = require('tree-sitter-jsdoc');
-const Vue = require('tree-sitter-vue');
 
 async function* find(dir, predicate = () => true) {
   const files = await fs.promises.readdir(dir);
@@ -46,6 +46,23 @@ function uniqueCaptures(query, tree) {
     ...obj,
     [capture.name]: capture.node,
   }), {});
+}
+
+function findSlotNames(node) {
+  if (!node) return [];
+
+  const slotNames = [];
+  if (node.type === 1 && node.tag === 'slot') {
+    const nameAttribute = node.props.find(prop => (
+      prop.type === 6 && prop.name === 'name'
+    ));
+    slotNames.push(nameAttribute?.value?.content || 'default');
+  }
+
+  return [
+    ...slotNames,
+    ...(node.children || []).flatMap(findSlotNames),
+  ];
 }
 
 const line = (
@@ -119,12 +136,6 @@ function createDeclaration(componentName, slotNames = []) {
 }
 
 (async () => {
-  const vueParser = new Parser();
-  vueParser.setLanguage(Vue);
-  const scriptTextQuery = new Parser.Query(Vue,
-    `(script_element
-       (raw_text) @script)`);
-
   const jsParser = new Parser();
   jsParser.setLanguage(JavaScript);
   const exportNameQuery = new Parser.Query(JavaScript,
@@ -158,23 +169,6 @@ function createDeclaration(componentName, slotNames = []) {
   const commentDescriptionQuery = new Parser.Query(JSDoc,
     `(document
        (description) @description)`);
-  const slotsQuery = new Parser.Query(Vue,
-    `[
-      (self_closing_tag
-        (tag_name) @tag
-        (attribute
-          (attribute_name) @attr.name
-          (quoted_attribute_value (attribute_value) @attr.value))?
-        (#eq? @tag "slot")
-        (#eq? @attr.name "name"))
-      (start_tag
-        (tag_name) @tag
-        (attribute
-          (attribute_name) @attr.name
-          (quoted_attribute_value (attribute_value) @attr.value))?
-        (#eq? @tag "slot")
-        (#eq? @attr.name "name"))
-     ]`);
 
   const symbols = [];
   const relationships = [];
@@ -184,11 +178,11 @@ function createDeclaration(componentName, slotNames = []) {
   const componentsDir = path.join(rootDir, 'src/components');
   for await (const filepath of findVueFiles(componentsDir)) {
     const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });
-    const vueTree = vueParser.parse(contents);
+    const { descriptor } = parseSFC(contents, { filename: filepath });
+    const script = descriptor.script?.content;
 
-    const { script } = uniqueCaptures(scriptTextQuery, vueTree);
     if (script) {
-      const jsTree = jsParser.parse(script.text);
+      const jsTree = jsParser.parse(script);
 
       const { comment, component } = uniqueCaptures(exportNameQuery, jsTree);
 
@@ -231,17 +225,7 @@ function createDeclaration(componentName, slotNames = []) {
 
         // TODO: eventually we should also capture slots that are expressed in
         // a render function instead of the template
-        const slots = slotsQuery.captures(vueTree.rootNode).reduce((memo, capture) => {
-          if (capture.name === 'tag') {
-            memo.push({ name: 'default' });
-          }
-          if (capture.name === 'attr.value') {
-            // eslint-disable-next-line no-param-reassign
-            memo[memo.length - 1].name = capture.node.text;
-          }
-          return memo;
-        }, []);
-        const slotNames = [...new Set(slots.map(slot => slot.name))];
+        const slotNames = [...new Set(findSlotNames(descriptor.template?.ast))];
         const declarationFragments = createDeclaration(componentName, slotNames);
 
         let docComment;
