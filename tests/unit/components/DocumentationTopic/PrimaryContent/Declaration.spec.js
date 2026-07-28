@@ -243,7 +243,7 @@ describe('Declaration', () => {
     expect(declarationList.props('declaration')).toEqual(propsData.declarations[0]);
   });
 
-  it('passes `added` type change prop if no declarations are present in the diff ', () => {
+  it('passes `added` type change prop if no declarations are present in the diff', () => {
     const provide = provideFactory({
       [identifier]: {
         change: ChangeTypes.added,

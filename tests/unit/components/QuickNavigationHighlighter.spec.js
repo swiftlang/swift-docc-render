@@ -21,7 +21,7 @@ describe('QuickNavigationHighlighter', () => {
     vi.clearAllMocks();
   });
 
-  it('it renders the HighlightMatches', () => {
+  it('renders the HighlightMatches', () => {
     const wrapper = shallowMount(QuickNavigationHighlighter, {
       propsData: {
         text: defaultProps.text,
@@ -32,7 +32,7 @@ describe('QuickNavigationHighlighter', () => {
       .toEqual('<p class="highlight"><span class="match">S</span><span>ome </span><span class="match">S</span><span>tring t</span><span class="match">o</span><span> Matc</span><span class="match">h</span></p>');
   });
 
-  it('it renders the text, when no matcher provided', () => {
+  it('renders the text, when no matcher provided', () => {
     const wrapper = shallowMount(QuickNavigationHighlighter, {
       propsData: {
         text: defaultProps.text,

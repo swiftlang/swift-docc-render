@@ -6,58 +6,50 @@
  *
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
- */
+*/
 
-import eslint from '@eslint/js';
-import stylistic from '@stylistic/eslint-plugin';
-import imports from 'eslint-plugin-import-x';
-import vue from 'eslint-plugin-vue';
-import accessibility from 'eslint-plugin-vuejs-accessibility';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import js from '@eslint/js';
+import pluginVue from 'eslint-plugin-vue';
+import pluginVitest from '@vitest/eslint-plugin';
+import pluginOxlint from 'eslint-plugin-oxlint';
+import pluginAccessibility from 'eslint-plugin-vuejs-accessibility';
 import globals from 'globals';
 
-export default [
+export default defineConfig([
+  globalIgnores([
+    '**/coverage/**',
+    '**/dist/**',
+    '**/dist-ssr/**',
+    '**/docs/**',
+    '**/node_modules/**',
+    '**/tmp/**',
+  ]),
+
   {
-    ignores: [
-      'dist/**',
-      'node_modules/**',
-    ],
-  },
-  eslint.configs.recommended,
-  ...vue.configs['flat/essential'],
-  ...accessibility.configs['flat/recommended'],
-  {
-    files: ['**/*.{js,mjs,vue}'],
-    linterOptions: {
-      reportUnusedDisableDirectives: false,
-    },
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
       globals: {
         ...globals.browser,
         ...globals.node,
       },
     },
-    plugins: {
-      '@stylistic': stylistic,
-      import: imports,
+  },
+
+  js.configs.recommended,
+  ...pluginVue.configs['flat/essential'],
+  ...pluginAccessibility.configs['flat/recommended'],
+
+  {
+    name: 'app/files-to-lint',
+    files: ['**/*.{vue,js,mjs,jsx}'],
+    linterOptions: {
+      reportUnusedDisableDirectives: false,
     },
     rules: {
       'no-console': process.env.NODE_ENV === 'production' ? [
         'error',
         { allow: ['error', 'warn'] },
       ] : 'off',
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-      'no-irregular-whitespace': ['error', {
-        skipStrings: true,
-        skipComments: true,
-      }],
-      '@stylistic/arrow-parens': ['error', 'as-needed', {
-        requireForBlockBody: true,
-      }],
-      '@stylistic/template-curly-spacing': 'off',
-      '@stylistic/function-paren-newline': ['error', 'consistent'],
-      '@stylistic/function-call-argument-newline': 'off',
       'no-unused-vars': ['error', {
         args: 'after-used',
         caughtErrors: 'none',
@@ -78,17 +70,26 @@ export default [
     },
   },
   {
-    files: ['**/__mocks__/*.js', '**/tests/unit/**/*.spec.js'],
+    name: 'app/test-mocks',
+    files: ['**/__mocks__/*.js'],
     languageOptions: {
       globals: globals.vitest,
     },
   },
   {
-    files: ['vite.config.mjs'],
+    ...pluginVitest.configs.recommended,
+    files: ['tests/unit/**/*.spec.js'],
+    languageOptions: {
+      globals: globals.vitest,
+    },
     rules: {
-      'import/no-extraneous-dependencies': ['error', {
-        devDependencies: true,
-      }],
+      ...pluginVitest.configs.recommended.rules,
+      'vitest/expect-expect': 'off',
+      'vitest/no-conditional-expect': 'off',
+      'vitest/valid-expect': 'off',
+      'vitest/valid-title': 'off',
     },
   },
-];
+
+  ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
+]);

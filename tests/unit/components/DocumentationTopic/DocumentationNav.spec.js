@@ -161,7 +161,7 @@ describe('DocumentationNav', () => {
     expect(wrapper.findComponent(LanguageToggle).exists()).toBe(false);
   });
 
-  it('exposes a `menu-items` slot ', () => {
+  it('exposes a `menu-items` slot', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
@@ -173,7 +173,7 @@ describe('DocumentationNav', () => {
     expect(wrapper.text()).toContain(menuItems);
   });
 
-  it('exposes a `after-content` slot ', () => {
+  it('exposes a `after-content` slot', () => {
     const afterContent = 'After Content';
     wrapper = shallowMount(DocumentationNav, {
       stubs,

@@ -11,7 +11,6 @@
 // Keep the test suite readable while its mount options move from Vue Test
 // Utils 1's top-level API to Vue Test Utils 2's `global` API.
 const { h, isReactive, reactive } = require('vue');
-// eslint-disable-next-line import/extensions, import/no-unresolved
 const VueTestUtils = require('../../node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js');
 
 const enhancedWrappers = new WeakSet();
@@ -42,8 +41,8 @@ const legacyCreateElement = (type, data, children) => {
     ]),
   );
   return h(type, {
-    ...(attrs || {}),
-    ...(props || {}),
+    ...attrs,
+    ...props,
     ...otherData,
     ...listeners,
   }, children);
@@ -85,18 +84,18 @@ const normalizeMountOptions = (options = {}) => {
     ...mountOptions
   } = options;
   delete mountOptions.sync;
-  const global = { ...(mountOptions.global || {}) };
+  const global = { ...mountOptions.global };
   const registrations = localVue && localVue.registrations;
 
   global.components = {
     ...(registrations ? registrations.components : {}),
-    ...(global.components || {}),
+    ...global.components,
   };
   global.directives = {
     ...(registrations ? registrations.directives : {}),
-    ...(global.directives || {}),
+    ...global.directives,
   };
-  global.mocks = { ...(global.mocks || {}), ...(mocks || {}) };
+  global.mocks = { ...global.mocks, ...mocks };
   const normalizedProvide = Object.fromEntries(
     Object.entries(provide || {}).map(([key, value]) => {
       if (value && value.state && !isReactive(value.state)) {
@@ -109,8 +108,8 @@ const normalizeMountOptions = (options = {}) => {
       return [key, value];
     }),
   );
-  global.provide = { ...(global.provide || {}), ...normalizedProvide };
-  global.stubs = { ...(global.stubs || {}), ...(stubs || {}) };
+  global.provide = { ...global.provide, ...normalizedProvide };
+  global.stubs = { ...global.stubs, ...stubs };
   global.plugins = [
     ...(registrations ? registrations.plugins : []),
     ...(global.plugins || []),
@@ -126,7 +125,7 @@ const normalizeMountOptions = (options = {}) => {
         : props => slot.call({ $createElement: legacyCreateElement }, props),
     ]),
   );
-  mountOptions.slots = { ...(mountOptions.slots || {}), ...normalizedScopedSlots };
+  mountOptions.slots = { ...mountOptions.slots, ...normalizedScopedSlots };
   if (attachToDocument && !mountOptions.attachTo) {
     mountOptions.attachTo = document.body;
   }

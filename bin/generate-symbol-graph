@@ -10,15 +10,18 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-/* eslint-disable no-restricted-syntax, import/no-extraneous-dependencies */
+/* eslint-disable no-restricted-syntax */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const { parse: parseSFC } = require('@vue/compiler-sfc');
-const Parser = require('tree-sitter');
-const JavaScript = require('tree-sitter-javascript');
-const JSDoc = require('tree-sitter-jsdoc');
+import { parse as parseSFC } from '@vue/compiler-sfc';
+import Parser from 'tree-sitter';
+import JavaScript from 'tree-sitter-javascript';
+import JSDoc from 'tree-sitter-jsdoc';
+
+const binDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 async function* find(dir, predicate = () => true) {
   const files = await fs.promises.readdir(dir);
@@ -174,7 +177,7 @@ function createDeclaration(componentName, slotNames = []) {
   const relationships = [];
   const identifiers = new Set();
 
-  const rootDir = path.join(__dirname, '..');
+  const rootDir = path.resolve(binDirectory, '..');
   const componentsDir = path.join(rootDir, 'src/components');
   for await (const filepath of findVueFiles(componentsDir)) {
     const contents = await fs.promises.readFile(filepath, { encoding: 'utf8' });

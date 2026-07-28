@@ -8,17 +8,15 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { createApp, h } from 'vue';
-import App from '@/App.vue';
+import { createApp } from 'vue';
+import App from './App.vue';
 import SwiftDocCRenderPlugin from '@/setup-utils/SwiftDocCRenderPlugin';
 import SwiftDocCRenderRouter from '@/setup-utils/SwiftDocCRenderRouter';
 import SwiftDocCRenderi18n from '@/setup-utils/SwiftDocCRenderi18n';
 
 document.documentElement.classList.remove('no-js');
 
-const app = createApp({
-  render: () => h(App),
-});
+const app = createApp(App)
 
 app.use(SwiftDocCRenderPlugin);
 app.use(SwiftDocCRenderRouter());

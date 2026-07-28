@@ -11,12 +11,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import vue from '@vitejs/plugin-vue';
 import { defineConfig, loadEnv } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueDevTools from 'vite-plugin-vue-devtools'
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const sourceRoot = path.join(projectRoot, 'src');
-const appRoot = path.join(projectRoot, 'app');
 const BASE_URL_PLACEHOLDER = '{{BASE_PATH}}';
 const LICENSE_HEADER = `This source file is part of the Swift.org open source project
 
@@ -241,6 +241,7 @@ function distributionLicenseHeaders() {
   };
 }
 
+// https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, projectRoot, '');
   const isBuild = command === 'build';
@@ -253,10 +254,7 @@ export default defineConfig(({ command, mode }) => {
   if (!isBuild && archiveIsLocal) validateLocalDocCArchive(archiveProxy);
 
   return {
-    root: appRoot,
     base: isBuild ? `/${BASE_URL_PLACEHOLDER}/` : '/',
-    publicDir: path.join(appRoot, 'public'),
-    envDir: projectRoot,
     plugins: [
       themeFallback(),
       highlightLanguageLoaders(env.VITE_APP_HLJS_LANGUAGES || ''),
@@ -269,19 +267,17 @@ export default defineConfig(({ command, mode }) => {
           },
         },
       }),
+      vueDevTools(),
       indexTemplate({ title, isBuild }),
       ...(archiveIsLocal ? [localDocCArchive(archiveProxy)] : []),
     ],
     resolve: {
-      alias: [
-        { find: '@', replacement: sourceRoot },
-        { find: 'docc-render', replacement: sourceRoot },
-        { find: 'theme', replacement: sourceRoot },
-        {
-          find: 'highlight-js-alias',
-          replacement: path.join(projectRoot, 'node_modules/highlight.js'),
-        },
-      ],
+      alias: {
+        '@': sourceRoot,
+        'docc-render': sourceRoot,
+        'theme': sourceRoot,
+        'highlight-js-alias': path.join(projectRoot, 'node_modules/highlight.js'),
+      },
     },
     define: {
       'process.env.NODE_ENV': JSON.stringify(isBuild ? 'production' : 'development'),

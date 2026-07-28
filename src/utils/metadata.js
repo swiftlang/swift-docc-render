@@ -101,7 +101,6 @@ const addTitle = (title) => {
  * It adds or updates client-side metadata tags to pages
  * @param {Object} pageData
  */
-// eslint-disable-next-line import/prefer-default-export
 export function addOrUpdateMetadata({
   title,
   description,

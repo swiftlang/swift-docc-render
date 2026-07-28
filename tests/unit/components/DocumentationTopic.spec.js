@@ -252,16 +252,6 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm.$.provides.interfaceLanguage).toEqual(propsData.interfaceLanguage);
   });
 
-  it('provides the languages', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm.$.provides.languages).toEqual(new Set(['occ', 'swift']));
-  });
-
-  it('provides the interface languages', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm.$.provides.interfaceLanguage).toEqual(propsData.interfaceLanguage);
-  });
-
   it('provides the symbol kind', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm.$.provides.symbolKind).toEqual(propsData.symbolKind);
@@ -322,7 +312,7 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders a `DocumentationHero` without an image override ', async () => {
+  it('renders a `DocumentationHero` without an image override', async () => {
     await wrapper.setProps({
       pageImages: [],
     });

@@ -4,7 +4,6 @@ allowBuilds:
   tree-sitter-javascript: true
   tree-sitter-jsdoc: true
   unrs-resolver: false
-# Backport node-tree-sitter's Node 24 C++20 fix until v0.25.1 reaches npm.
-patchedDependencies:
-  tree-sitter@0.25.0: patches/tree-sitter@0.25.0.patch
-verifyDepsBeforeRun: false
+minimumReleaseAgeExclude:
+  - tree-sitter@0.25.1
+  - npm-run-all2@9.0.3

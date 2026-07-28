@@ -9,7 +9,6 @@
 */
 
 import SwiftDocCRenderPlugin from 'docc-render/setup-utils/SwiftDocCRenderPlugin';
-// eslint-disable-next-line import/no-named-default
 import { default as CommunicationBridge } from 'docc-render/plugins/CommunicationBridge';
 
 describe('SwiftDocCRenderPlugin', () => {

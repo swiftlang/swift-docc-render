@@ -58,9 +58,9 @@ export default function createElement(type, data, children) {
     ...otherData
   } = normalizedData;
   const vnodeProps = {
-    ...(attrs || {}),
-    ...(domProps || {}),
-    ...(props || {}),
+    ...attrs,
+    ...domProps,
+    ...props,
     ...otherData,
     ...eventListeners(nativeOn),
     ...eventListeners(on),

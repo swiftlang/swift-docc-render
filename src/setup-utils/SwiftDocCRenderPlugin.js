@@ -8,7 +8,6 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-// eslint-disable-next-line import/no-named-default
 import { default as CommunicationBridge } from 'docc-render/plugins/CommunicationBridge';
 import CustomComponents from '../plugins/CustomComponents';
 import directives from '../directives';

@@ -297,7 +297,7 @@ describe('indexDataFetcher', () => {
     expect(toRaw(IndexStore.state.flatChildren)).toMatchSnapshot();
   });
 
-  it('removes the `beta` flag from children, if the parent is a `beta`', async () => {
+  it('removes the `beta` flag when any ancestor is `beta`', async () => {
     const technologyClone = JSON.parse(JSON.stringify(extendedTechnologies));
     technologyClone.children[1].beta = true;
     technologyClone.children[1].children[1].beta = true;

@@ -30,7 +30,7 @@ vi.mock('theme/lang/locales.json', () => ({
 }));
 
 const testDirectory = path.dirname(fileURLToPath(import.meta.url));
-const html = fs.readFileSync(path.resolve(testDirectory, '../../../app/index.html'));
+const html = fs.readFileSync(path.resolve(testDirectory, '../../../index.html'));
 
 const title = 'Featured';
 const description = 'Browse the latest developer documentation, including tutorials, sample code, articles, and API reference.';

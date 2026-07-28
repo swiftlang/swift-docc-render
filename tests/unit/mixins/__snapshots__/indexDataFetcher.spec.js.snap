@@ -277,7 +277,7 @@ exports[`indexDataFetcher > removes the \`beta\` flag from children, if the pare
 }
 `;
 
-exports[`indexDataFetcher > removes the \`beta\` flag from children, if the parent is a \`beta\` 2`] = `
+exports[`indexDataFetcher > removes the \`beta\` flag when any ancestor is \`beta\` 1`] = `
 {
   "swift": [
     {
