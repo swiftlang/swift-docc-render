@@ -57,15 +57,6 @@ This product depends on Highlight.js.
 
 ---
 
-This product depends on the IntersectionObserver polyfill.
-
-  * LICENSE (W3C Software and Document):
-    * https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
-  * HOMEPAGE:
-    * https://github.com/w3c/IntersectionObserver/tree/main/polyfill
-
----
-
 This product depends on PortalVue.
 
   * LICENSE (MIT):

@@ -11,9 +11,24 @@
 import { config } from '@vue/test-utils';
 import PortalVue from 'portal-vue';
 import { defaultLocale } from 'theme/lang/index';
+import { vi } from 'vitest';
 
 process.env.VUE_APP_TITLE = 'Documentation';
 window.TransitionEvent = window.TransitionEvent || window.Event;
+window.IntersectionObserver = vi.fn().mockImplementation(class MockIntersectionObserver {
+  constructor(callback, options = {}) {
+    this.callback = callback;
+    this.root = options.root ?? null;
+    this.rootMargin = options.rootMargin ?? '0px';
+    this.thresholds = options.threshold ?? [0];
+  }
+
+  disconnect = vi.fn();
+
+  observe = vi.fn();
+
+  unobserve = vi.fn();
+});
 
 config.global.mocks = {
   $t: (tKey, secondParam) => (secondParam ? [tKey, ...Object.values(secondParam)].join(' ') : tKey),

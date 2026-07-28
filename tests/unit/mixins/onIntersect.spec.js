@@ -12,8 +12,6 @@ import { shallowMount } from '@vue/test-utils';
 import onIntersect from 'docc-render/mixins/onIntersect';
 import { flushPromises } from '../../../test-utils';
 
-vi.mock('intersection-observer', () => ({}));
-
 window.IntersectionObserver = vi.fn(function MockIntersectionObserver(cb, props) {
   return {
     // return mocks

@@ -16,11 +16,6 @@ describe('onIntersectViewport', () => {
   let wrapper;
 
   beforeEach(async () => {
-    await import('intersection-observer');
-    // mock methods that can fail in jsdom
-    IntersectionObserver.prototype.disconnect = vi.fn();
-    IntersectionObserver.prototype.observe = vi.fn();
-
     wrapper = shallowMount({
       name: 'TestComponentForOnIntersectViewportCenter',
       mixins: [onIntersectViewport],

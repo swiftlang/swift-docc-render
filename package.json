@@ -27,7 +27,6 @@
     "@apple/highlightjs-pkl": "^1.0.1",
     "css.escape": "^1.5.1",
     "highlight.js": "^11.11.1",
-    "intersection-observer": "0.12.0",
     "portal-vue": "^3.0.0",
     "vue-i18n": "^11.4.8",
     "vue-virtual-scroller": "^3.0.4"

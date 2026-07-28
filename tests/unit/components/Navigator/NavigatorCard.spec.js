@@ -13,7 +13,6 @@ import BaseNavigatorCard from '@/components/Navigator/BaseNavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
-import 'intersection-observer';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
