@@ -15,7 +15,7 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
       highlight.js:
-        specifier: ^11.3.1
+        specifier: ^11.11.1
         version: 11.11.1
       intersection-observer:
         specifier: 0.12.0
@@ -31,13 +31,13 @@ importers:
         version: 3.0.4(vue@3.5.40)
     devDependencies:
       '@babel/core':
-        specifier: ^7.12.16
+        specifier: ^7.29.7
         version: 7.29.7(supports-color@8.1.1)
       '@babel/eslint-parser':
-        specifier: ^7.12.16
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(eslint@7.32.0(supports-color@8.1.1))
       '@babel/preset-env':
-        specifier: ^7.28.5
+        specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
@@ -52,25 +52,25 @@ importers:
         specifier: 27.0.0
         version: 27.0.0(@babel/core@7.29.7(supports-color@8.1.1))(babel-jest@27.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(jest@27.5.1(supports-color@8.1.1))(supports-color@8.1.1)(vue@3.5.40)
       autoprefixer:
-        specifier: ^10.4.21
+        specifier: ^10.5.4
         version: 10.5.4(postcss@8.5.23)
       babel-jest:
-        specifier: ^27.0.6
+        specifier: ^27.5.1
         version: 27.5.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
       eslint:
         specifier: ^7.32.0
         version: 7.32.0(supports-color@8.1.1)
       eslint-plugin-import:
-        specifier: ^2.25.3
+        specifier: ^2.32.0
         version: 2.32.0(eslint-import-resolver-webpack@0.13.11)(eslint@7.32.0(supports-color@8.1.1))(supports-color@8.1.1)
       eslint-plugin-vue:
-        specifier: ^8.0.3
+        specifier: ^8.7.1
         version: 8.7.1(eslint@7.32.0(supports-color@8.1.1))(supports-color@8.1.1)
       eslint-plugin-vuejs-accessibility:
-        specifier: ^1.1.0
+        specifier: ^1.2.0
         version: 1.2.0(eslint@7.32.0(supports-color@8.1.1))(supports-color@8.1.1)
       jest:
-        specifier: ^27.0.5
+        specifier: ^27.5.1
         version: 27.5.1(supports-color@8.1.1)
       jest-environment-jsdom:
         specifier: ^27.5.1
@@ -79,10 +79,10 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       postcss:
-        specifier: ^8.5.6
+        specifier: ^8.5.23
         version: 8.5.23
       sass:
-        specifier: ^1.55.0
+        specifier: ^1.102.0
         version: 1.102.0
       tree-sitter:
         specifier: ^0.21.1
