@@ -12,7 +12,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'json', 'vue'],
   testMatch: ['**/tests/unit/**/*.spec.js'],
   transform: {
-    '^.+\\.js$': 'babel-jest',
+    '^.+\\.m?js$': 'babel-jest',
     '^.+\\.vue$': '@vue/vue3-jest',
   },
   // support the same docc-render/ & theme/ -> src alias mapping in source code
@@ -35,6 +35,6 @@ module.exports = {
     printBasicPrototype: false,
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!\\.pnpm/@apple\\+highlightjs-pkl@|@apple/highlightjs-pkl)',
+    '/node_modules/(?!\\.pnpm/(?:@apple\\+highlightjs-pkl@|nostics@|perfect-debounce@)|@apple/highlightjs-pkl|nostics|perfect-debounce)',
   ],
 };
