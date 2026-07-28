@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "main": "index.js",
   "private": true,
+  "packageManager": "pnpm@11.17.0",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && node ./bin/transformIndex.js",
-    "test": "npm run test:unit && npm run lint && npm run test:license",
+    "serve": "vite",
+    "build": "vite build && node ./bin/transformIndex.js",
+    "test": "pnpm test:unit && pnpm lint && pnpm test:license",
     "test:license": "./bin/check-source",
-    "test:unit": "vue-cli-service test:unit",
-    "test:unit:watch": "vue-cli-service test:unit --watch",
-    "lint": "vue-cli-service lint",
+    "test:unit": "jest",
+    "test:unit:watch": "jest --watch",
+    "lint": "eslint --ext .js,.vue app src tests",
+    "lint:fix": "pnpm lint --fix",
     "docs": "bin/build-and-serve-docs",
     "docs:preview": "bin/build-and-serve-docs",
     "docs:build": "bin/build-docs",
@@ -19,60 +21,58 @@
   "files": [
     "src",
     "index.js",
-    "test-utils.js",
-    "webpack-asset-path.js"
+    "test-utils.js"
   ],
   "dependencies": {
     "@apple/highlightjs-pkl": "^1.0.1",
-    "core-js": "^3.8.2",
     "css.escape": "^1.5.1",
     "highlight.js": "^11.3.1",
     "intersection-observer": "0.12.0",
-    "portal-vue": "2.1.7",
-    "vue-i18n": "^8.28.2",
-    "vue-virtual-scroller": "^1.1.2"
+    "portal-vue": "^3.0.0",
+    "vue-i18n": "^11.4.8",
+    "vue-virtual-scroller": "^3.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.28.5",
     "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "^5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-plugin-unit-jest": "^5.0.8",
-    "@vue/cli-service": "^5.0.8",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/compat": "3.5.40",
     "@vue/eslint-config-airbnb": "^6.0.0",
-    "@vue/test-utils": "1.3.6",
-    "@vue/vue2-jest": "^27.0.0-alpha.2",
+    "@vue/test-utils": "^2.4.11",
+    "@vue/vue3-jest": "27.0.0",
+    "autoprefixer": "^10.4.21",
     "babel-jest": "^27.0.6",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-vue": "^8.0.3",
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
-    "html-loader": "^4.2.0",
     "jest": "^27.0.5",
+    "jest-environment-jsdom": "^27.5.1",
+    "jest-serializer-vue": "2.0.2",
+    "postcss": "^8.5.6",
     "sass": "^1.55.0",
-    "sass-loader": "^12.0.0",
     "tree-sitter": "^0.21.1",
     "tree-sitter-javascript": "^0.23.1",
     "tree-sitter-jsdoc": "^0.23.2",
     "tree-sitter-vue": "^0.2.1",
-    "vue": "^2.7.10",
-    "vue-router": "^3.5.2",
-    "vue-template-compiler": "^2.7.10"
+    "vite": "^8.1.5",
+    "vue": "3.5.40",
+    "vue-router": "^4.6.4"
   },
   "peerDependencies": {
-    "vue": "^2.7.10",
-    "vue-router": "^3.5.2"
+    "vue": "^3.5.0",
+    "vue-router": "^4.6.0"
   },
   "engines": {
-    "node": ">=22.17.0 <23",
-    "npm": ">=10.9.2"
+    "node": ">=24.0.0 <25",
+    "pnpm": ">=11.17.0 <12"
   },
   "overrides": {
     "tree-sitter-vue": {
       "nan": "^2.22.2"
     },
     "cross-spawn": "^7.0.3",
-    "postcss": "^8.4.31",
-    "webpack-dev-server": "^5.2.1"
+    "postcss": "^8.5.6"
   }
 }

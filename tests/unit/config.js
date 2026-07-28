@@ -8,13 +8,30 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { configureCompat } from 'vue';
 import { config } from '@vue/test-utils';
+import PortalVue from 'portal-vue';
 import { defaultLocale } from 'theme/lang/index';
 
-config.mocks = {
+process.env.VUE_APP_TITLE = 'Documentation';
+window.TransitionEvent = window.TransitionEvent || window.Event;
+
+configureCompat({
+  MODE: 2,
+  RENDER_FUNCTION: false,
+});
+
+config.global.mocks = {
   $t: (tKey, secondParam) => (secondParam ? [tKey, ...Object.values(secondParam)].join(' ') : tKey),
   $tc: tKey => tKey,
   $i18n: {
     locale: defaultLocale,
+  },
+};
+config.global.renderStubDefaultSlot = true;
+config.global.plugins = [PortalVue];
+config.global.config = {
+  compilerOptions: {
+    whitespace: 'preserve',
   },
 };

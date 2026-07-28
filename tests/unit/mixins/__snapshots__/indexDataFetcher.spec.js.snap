@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`indexDataFetcher counts the amount of deprecated items a groupMarker has 1`] = `
-Object {
-  "swift": Array [
-    Object {
-      "childUIDs": Array [
+{
+  "swift": [
+    {
+      "childUIDs": [
         365745369,
         -1561138820,
       ],
@@ -18,8 +18,8 @@ Object {
       "type": "groupMarker",
       "uid": -196255993,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         -1893192488,
         -2046366661,
         -2045443139,
@@ -37,8 +37,8 @@ Object {
       "type": "article",
       "uid": 365745369,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         -2046366661,
         -2045443139,
         -2044519617,
@@ -53,8 +53,8 @@ Object {
       "type": "groupMarker",
       "uid": -1893192488,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "deprecated": true,
       "depth": 1,
       "groupMarkerUID": -1893192488,
@@ -67,8 +67,8 @@ Object {
       "type": "tutorial",
       "uid": -2046366661,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         366459535,
       ],
       "depth": 1,
@@ -82,8 +82,8 @@ Object {
       "type": "tutorial",
       "uid": -2045443139,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 2,
       "id": "Child0_GrandChild0_GreatGrandChild0",
       "index": 0,
@@ -94,8 +94,8 @@ Object {
       "type": "tutorial",
       "uid": 366459535,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 1,
       "groupMarkerUID": -1893192488,
       "id": "Child0_GrandChild2",
@@ -107,8 +107,8 @@ Object {
       "type": "tutorial",
       "uid": -2044519617,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         1069111095,
       ],
       "deprecated": true,
@@ -123,8 +123,8 @@ Object {
       "type": "tutorial",
       "uid": -1561138820,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 1,
       "id": "Child1_GrandChild0",
       "index": 0,
@@ -140,10 +140,10 @@ Object {
 `;
 
 exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent is a \`beta\` 1`] = `
-Object {
-  "swift": Array [
-    Object {
-      "childUIDs": Array [
+{
+  "swift": [
+    {
+      "childUIDs": [
         365745369,
         -1561138820,
       ],
@@ -157,9 +157,9 @@ Object {
       "type": "groupMarker",
       "uid": -196255993,
     },
-    Object {
+    {
       "beta": false,
-      "childUIDs": Array [
+      "childUIDs": [
         -1893192488,
         -2046366661,
         -2045443139,
@@ -176,9 +176,9 @@ Object {
       "type": "article",
       "uid": 365745369,
     },
-    Object {
+    {
       "beta": false,
-      "childUIDs": Array [
+      "childUIDs": [
         -2046366661,
         -2045443139,
         -2044519617,
@@ -193,8 +193,8 @@ Object {
       "type": "groupMarker",
       "uid": -1893192488,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 1,
       "groupMarkerUID": -1893192488,
       "id": "Child0_GrandChild0",
@@ -206,8 +206,8 @@ Object {
       "type": "tutorial",
       "uid": -2046366661,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         366459535,
       ],
       "depth": 1,
@@ -221,8 +221,8 @@ Object {
       "type": "tutorial",
       "uid": -2045443139,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 2,
       "id": "Child0_GrandChild0_GreatGrandChild0",
       "index": 0,
@@ -233,8 +233,8 @@ Object {
       "type": "tutorial",
       "uid": 366459535,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 1,
       "groupMarkerUID": -1893192488,
       "id": "Child0_GrandChild2",
@@ -246,8 +246,8 @@ Object {
       "type": "tutorial",
       "uid": -2044519617,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         1069111095,
       ],
       "depth": 0,
@@ -261,8 +261,8 @@ Object {
       "type": "tutorial",
       "uid": -1561138820,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 1,
       "id": "Child1_GrandChild0",
       "index": 0,
@@ -278,10 +278,10 @@ Object {
 `;
 
 exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent is a \`beta\` 2`] = `
-Object {
-  "swift": Array [
-    Object {
-      "childUIDs": Array [
+{
+  "swift": [
+    {
+      "childUIDs": [
         365745369,
         -1561138820,
       ],
@@ -295,9 +295,9 @@ Object {
       "type": "groupMarker",
       "uid": -196255993,
     },
-    Object {
+    {
       "beta": true,
-      "childUIDs": Array [
+      "childUIDs": [
         -1893192488,
         -2046366661,
         -2045443139,
@@ -314,8 +314,8 @@ Object {
       "type": "article",
       "uid": 365745369,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         -2046366661,
         -2045443139,
         -2044519617,
@@ -330,9 +330,9 @@ Object {
       "type": "groupMarker",
       "uid": -1893192488,
     },
-    Object {
+    {
       "beta": false,
-      "childUIDs": Array [],
+      "childUIDs": [],
       "depth": 1,
       "groupMarkerUID": -1893192488,
       "id": "Child0_GrandChild0",
@@ -344,8 +344,8 @@ Object {
       "type": "tutorial",
       "uid": -2046366661,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         366459535,
       ],
       "depth": 1,
@@ -359,9 +359,9 @@ Object {
       "type": "tutorial",
       "uid": -2045443139,
     },
-    Object {
+    {
       "beta": false,
-      "childUIDs": Array [],
+      "childUIDs": [],
       "depth": 2,
       "id": "Child0_GrandChild0_GreatGrandChild0",
       "index": 0,
@@ -372,8 +372,8 @@ Object {
       "type": "tutorial",
       "uid": 366459535,
     },
-    Object {
-      "childUIDs": Array [],
+    {
+      "childUIDs": [],
       "depth": 1,
       "groupMarkerUID": -1893192488,
       "id": "Child0_GrandChild2",
@@ -385,8 +385,8 @@ Object {
       "type": "tutorial",
       "uid": -2044519617,
     },
-    Object {
-      "childUIDs": Array [
+    {
+      "childUIDs": [
         1069111095,
       ],
       "depth": 0,
@@ -400,9 +400,9 @@ Object {
       "type": "tutorial",
       "uid": -1561138820,
     },
-    Object {
+    {
       "beta": true,
-      "childUIDs": Array [],
+      "childUIDs": [],
       "depth": 1,
       "id": "Child1_GrandChild0",
       "index": 0,

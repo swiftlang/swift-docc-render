@@ -206,19 +206,18 @@ export default {
       window.addEventListener('scroll', this.storeTopOffset, { passive: true });
     }
 
-    this.$once('hook:beforeDestroy', () => {
-      window.removeEventListener('keydown', this.onEscapeKeydown);
-      window.removeEventListener('resize', this.storeWindowSize);
-      window.removeEventListener('orientationchange', this.storeWindowSize);
-      window.removeEventListener('scroll', this.storeTopOffset);
-      if (this.shownOnMobile) {
-        this.toggleScrollLock(false);
-      }
-      if (this.focusTrapInstance) this.focusTrapInstance.destroy();
-    });
-
     await this.$nextTick();
     this.focusTrapInstance = new FocusTrap(this.$refs.aside);
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.onEscapeKeydown);
+    window.removeEventListener('resize', this.storeWindowSize);
+    window.removeEventListener('orientationchange', this.storeWindowSize);
+    window.removeEventListener('scroll', this.storeTopOffset);
+    if (this.shownOnMobile) {
+      this.toggleScrollLock(false);
+    }
+    if (this.focusTrapInstance) this.focusTrapInstance.destroy();
   },
   watch: {
     // make sure a route navigation closes the sidebar

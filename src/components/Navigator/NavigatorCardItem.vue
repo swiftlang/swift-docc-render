@@ -120,16 +120,17 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { ChangeTypesOrder } from 'docc-render/constants/Changes';
-import { IdState } from 'vue-virtual-scroller';
+import { useIdState } from 'vue-virtual-scroller';
 import { waitFrames } from 'docc-render/utils/loading';
 
 export default {
   name: 'NavigatorCardItem',
-  mixins: [
-    IdState({
+  emits: ['focus-parent', 'navigate', 'toggle', 'toggle-full', 'toggle-siblings'],
+  setup() {
+    return useIdState({
       idProp: vm => vm.item.uid,
-    }),
-  ],
+    });
+  },
   components: {
     BaseNavigatorCardItem,
     HighlightMatches,

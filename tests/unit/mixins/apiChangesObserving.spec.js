@@ -10,12 +10,11 @@
 
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import apiChangesObserving from 'docc-render/mixins/apiChangesObserving';
-import VueRouter from 'vue-router';
+import { createMemoryHistory, createRouter } from 'vue-router';
 import { fetchAPIChangesForRoute } from 'docc-render/utils/data';
 import { flushPromises } from '../../../test-utils';
 
 const localVue = createLocalVue();
-localVue.use(VueRouter);
 
 jest.mock('docc-render/utils/data');
 const response = { changes: 'foo' };
@@ -23,9 +22,10 @@ const response = { changes: 'foo' };
 fetchAPIChangesForRoute.mockResolvedValue(response);
 const availableOptions = new Set(['latest_major', 'latest_minor']);
 
-const router = new VueRouter({
+const router = createRouter({
+  history: createMemoryHistory(),
   routes: [{
-    path: '/foo/*',
+    path: '/foo/:pathMatch(.*)*',
     name: 'foo-bar',
     component: {
       name: 'Foo',
@@ -39,8 +39,9 @@ const store = {
   setSelectedAPIChangesVersion: jest.fn(),
 };
 
-const createWrapperWithQuery = (changeQuery) => {
-  router.push({
+const createWrapperWithQuery = async (changeQuery) => {
+  await router.push({
+    path: '/foo',
     query: {
       changes: changeQuery,
     },
@@ -82,12 +83,12 @@ describe('apiChangesObserving', () => {
     const validChangeQuery = 'latest_major';
     const notValidChangeQuery = 'blah';
 
-    wrapper = createWrapperWithQuery(notValidChangeQuery);
+    wrapper = await createWrapperWithQuery(notValidChangeQuery);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(false);
     expect(store.setSelectedAPIChangesVersion).toHaveBeenLastCalledWith(null);
     wrapper.destroy();
 
-    wrapper = createWrapperWithQuery(validChangeQuery);
+    wrapper = await createWrapperWithQuery(validChangeQuery);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(true);
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(1);
 
@@ -114,11 +115,14 @@ describe('apiChangesObserving', () => {
   it('re-fetches, when navigating and turns `shouldDisplayChangesNav` true, on `$route` change, if there is a selected version', async () => {
     const validChangeQuery = 'latest_major';
 
-    wrapper = createWrapperWithQuery(validChangeQuery);
+    wrapper = await createWrapperWithQuery(validChangeQuery);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(true);
     expect(pushSpy).toHaveBeenCalledTimes(0);
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(1);
-    expect(fetchAPIChangesForRoute).toHaveBeenLastCalledWith(router.currentRoute, validChangeQuery);
+    expect(fetchAPIChangesForRoute).toHaveBeenLastCalledWith(
+      router.currentRoute.value,
+      validChangeQuery,
+    );
     await flushPromises();
     expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(1);
     expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledWith(validChangeQuery);
@@ -133,7 +137,10 @@ describe('apiChangesObserving', () => {
     expect(pushSpy).toHaveBeenCalledTimes(1);
     // assert we fetched again
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(2);
-    expect(fetchAPIChangesForRoute).toHaveBeenLastCalledWith(router.currentRoute, validChangeQuery);
+    expect(fetchAPIChangesForRoute).toHaveBeenLastCalledWith(
+      router.currentRoute.value,
+      validChangeQuery,
+    );
     expect(store.setAPIChanges).toHaveBeenCalledTimes(2);
     expect(store.setAPIChanges).toHaveBeenLastCalledWith(response);
     expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(2);
@@ -141,7 +148,7 @@ describe('apiChangesObserving', () => {
   });
 
   it('does not re-fetch, on `$route` change, if there is no version', async () => {
-    wrapper = createWrapperWithQuery();
+    wrapper = await createWrapperWithQuery();
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(false);
     expect(pushSpy).toHaveBeenCalledTimes(0);
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(0);
@@ -163,7 +170,7 @@ describe('apiChangesObserving', () => {
 
   it('updates the route, if only the query changed', async () => {
     const change = 'latest_major';
-    wrapper = createWrapperWithQuery(change);
+    wrapper = await createWrapperWithQuery(change);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(true);
     expect(pushSpy).toHaveBeenCalledTimes(0);
     expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(0);

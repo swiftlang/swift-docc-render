@@ -21,6 +21,7 @@ import OnThisPageStickyContainer
   from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import AppStore from '@/stores/AppStore';
+import { h } from 'vue';
 
 const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
@@ -243,32 +244,32 @@ describe('DocumentationTopic', () => {
 
   it('provides the languages', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.languages).toEqual(new Set(['occ', 'swift']));
+    expect(wrapper.vm.$.provides.languages).toEqual(new Set(['occ', 'swift']));
   });
 
   it('provides the interface languages', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
+    expect(wrapper.vm.$.provides.interfaceLanguage).toEqual(propsData.interfaceLanguage);
   });
 
   it('provides the languages', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.languages).toEqual(new Set(['occ', 'swift']));
+    expect(wrapper.vm.$.provides.languages).toEqual(new Set(['occ', 'swift']));
   });
 
   it('provides the interface languages', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
+    expect(wrapper.vm.$.provides.interfaceLanguage).toEqual(propsData.interfaceLanguage);
   });
 
   it('provides the symbol kind', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.symbolKind).toEqual(propsData.symbolKind);
+    expect(wrapper.vm.$.provides.symbolKind).toEqual(propsData.symbolKind);
   });
 
   it('provides the `enableMinimized` flag', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.enableMinimized).toBe(false);
+    expect(wrapper.vm.$.provides.enableMinimized).toBe(false);
   });
 
   it('renders a root div', () => {
@@ -921,7 +922,7 @@ describe('DocumentationTopic', () => {
 
     const topics = wrapper.findComponent(Topics);
     expect(topics.exists()).toBe(true);
-    expect(topics.props('sections')).toBe(topicSections);
+    expect(topics.props('sections')).toEqual(topicSections);
     expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
 
     // Minimized view should not render Topics
@@ -960,7 +961,7 @@ describe('DocumentationTopic', () => {
 
     const seeAlso = wrapper.findComponent(SeeAlso);
     expect(seeAlso.exists()).toBe(true);
-    expect(seeAlso.props('sections')).toBe(seeAlsoSections);
+    expect(seeAlso.props('sections')).toEqual(seeAlsoSections);
 
     // Minimized view should not render See Also
     await wrapper.setProps({ enableMinimized: true });
@@ -989,7 +990,7 @@ describe('DocumentationTopic', () => {
 
     const relationships = wrapper.findComponent(Relationships);
     expect(relationships.exists()).toBe(true);
-    expect(relationships.props('sections')).toBe(relationshipsSections);
+    expect(relationships.props('sections')).toEqual(relationshipsSections);
     expect(relationships.props('enableMinimized')).toBe(false);
   });
 
@@ -1000,7 +1001,7 @@ describe('DocumentationTopic', () => {
     // implementation. I'm stubbing out the components I care about to add a
     // common class that can be queried so that the ordering can be verified.
     const stubSection = klass => ({
-      render: h => h('div', { class: `section-stub ${klass}` }),
+      render: () => h('div', { class: `section-stub ${klass}` }),
     });
     wrapper = shallowMount(DocumentationTopic, {
       propsData: {

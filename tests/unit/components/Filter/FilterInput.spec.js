@@ -21,10 +21,6 @@ import multipleSelection from '@/mixins/multipleSelection';
 import keyboardNavigation from '@/mixins/keyboardNavigation';
 import { flushPromises } from '../../../../test-utils';
 
-// TODO: Remove this Event caching, once we update VTU, as there is a bug now,
-//  that prevents you from setting extra parameters
-window.Event = null;
-
 jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
 
 jest.mock('@/utils/input-helper', () => ({
@@ -167,7 +163,7 @@ describe('FilterInput', () => {
     await wrapper.setProps({ disabled: true });
     // input is disabled
     await wrapper.vm.$nextTick();
-    expect(input.attributes('disabled')).toBe('disabled');
+    expect(input.attributes('disabled')).toBe('');
   });
 
   it('emits `show-suggested-tags` if filter button is clicked', async () => {
@@ -744,7 +740,7 @@ describe('FilterInput', () => {
         document.activeElement.blur();
         await wrapper.vm.$nextTick();
         await wrapper.setProps({ selectedTags: [] });
-        expect(document.activeElement).not.toEqual(input.element);
+        expect(document.activeElement).not.toBe(input.element);
       });
 
       it('changes the input placeholder to empty', () => {
@@ -780,7 +776,7 @@ describe('FilterInput', () => {
         wrapper.findComponent({ ref: 'selectedTags' }).vm.$emit('delete-tag', selectedTag);
         await wrapper.setProps({ selectedTags: [] });
         await flushPromises();
-        expect(document.activeElement).toEqual(input.element);
+        expect(document.activeElement).toBe(input.element);
         expect(moveCursorToStart).toHaveBeenCalledTimes(0);
       });
 

@@ -23,6 +23,13 @@ const createWrapper = (change = 'added') => shallowMount({
 describe('apiChangesHelpers', () => {
   let wrapper;
 
+  const setOffsetHeight = (height) => {
+    Object.defineProperty(wrapper.vm.$refs.apiChangesDiff, 'offsetHeight', {
+      configurable: true,
+      value: height,
+    });
+  };
+
   beforeEach(() => {
     window.getComputedStyle = jest.fn().mockReturnValue({
       lineHeight: '25px',
@@ -31,9 +38,9 @@ describe('apiChangesHelpers', () => {
 
   it('set `displaysMultipleLinesAfterAPIChanges` to true if apiChangesDiff ref is multiline', () => {
     wrapper = createWrapper();
-    wrapper.vm.$refs = { apiChangesDiff: { offsetHeight: 100 } };
+    setOffsetHeight(100);
 
-    const apiChangesDiff = wrapper.findComponent({ ref: 'apiChangesDiff' });
+    const apiChangesDiff = wrapper.find('div');
     expect(apiChangesDiff.exists()).toBe(true);
     expect(wrapper.vm.displaysMultipleLinesAfterAPIChanges).toBe(true);
     expect(window.getComputedStyle).toHaveBeenCalledTimes(1);
@@ -42,7 +49,7 @@ describe('apiChangesHelpers', () => {
 
   it('set `displaysMultipleLinesAfterAPIChanges` to false if apiChangesDiff ref has only one line', () => {
     wrapper = createWrapper();
-    wrapper.vm.$refs = { apiChangesDiff: { offsetHeight: 25 } };
+    setOffsetHeight(25);
 
     expect(wrapper.vm.displaysMultipleLinesAfterAPIChanges).toBe(false);
     expect(window.getComputedStyle).toHaveBeenCalledTimes(1);
@@ -51,7 +58,7 @@ describe('apiChangesHelpers', () => {
 
   it('set `displaysMultipleLinesAfterAPIChanges` to false if apiChangesDiff ref is multiline but API Changes it not available', () => {
     wrapper = createWrapper(null);
-    wrapper.vm.$refs = { apiChangesDiff: { offsetHeight: 100 } };
+    setOffsetHeight(100);
 
     expect(wrapper.vm.displaysMultipleLinesAfterAPIChanges).toBe(false);
     expect(window.getComputedStyle).toHaveBeenCalledTimes(0);

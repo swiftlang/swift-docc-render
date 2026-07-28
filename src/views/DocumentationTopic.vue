@@ -278,7 +278,7 @@ export default {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
   },

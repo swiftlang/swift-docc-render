@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Vue from 'vue';
+import Vue, { reactive } from 'vue';
 import { ChangeTypes } from 'docc-render/constants/Changes';
 
 /**
@@ -23,11 +23,11 @@ export const apiChangesCountsFactory = () => ({
 });
 
 export default {
-  state: {
+  state: reactive({
     apiChanges: null,
     apiChangesCounts: apiChangesCountsFactory(),
     selectedAPIChangesVersion: null,
-  },
+  }),
   setAPIChanges(changes) {
     this.state.apiChanges = changes;
   },

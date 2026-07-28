@@ -146,22 +146,13 @@ describe('Tag', () => {
     const clipboardData = {
       setData,
     };
-    const { Event } = window;
-
     function triggerGlobalEvent(eventName, data = clipboardData) {
-      const clipboardEvent = new Event(eventName);
+      const clipboardEvent = new window.Event(eventName);
       clipboardEvent.clipboardData = data;
       document.dispatchEvent(clipboardEvent);
       return clipboardEvent;
     }
 
-    beforeEach(() => {
-      // TODO: remove hack for VueTestUtils to overwrite `clipboardData`, when we update version.
-      window.Event = null;
-    });
-    afterEach(() => {
-      window.Event = Event;
-    });
     it('adds and removes event listeners on mounted and destroyed', () => {
       const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
       const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');

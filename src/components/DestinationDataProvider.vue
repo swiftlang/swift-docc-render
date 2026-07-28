@@ -87,7 +87,7 @@ export default {
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return this.$slots.default({
       url: this.linkUrl || '',
       title: this.linkTitle || '',
       formatAriaLabel: this.formatAriaLabel,

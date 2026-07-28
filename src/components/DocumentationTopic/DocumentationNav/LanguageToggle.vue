@@ -124,22 +124,23 @@ export default {
     return {
       languageModel: null,
       adjustedWidth: 0,
+      resizeHandler: null,
     };
   },
   mounted() {
     // on resize, re-calculate the width of the select.
-    const cb = throttle(async () => {
+    this.resizeHandler = throttle(async () => {
       // we wait for 3 frames, as that is the minimum it takes
       // for the browser orientation-change transitions to finish
       await waitFrames(3);
       this.calculateSelectWidth();
     }, 150);
-    window.addEventListener('resize', cb);
-    window.addEventListener('orientationchange', cb);
-    this.$once('hook:beforeDestroy', () => {
-      window.removeEventListener('resize', cb);
-      window.removeEventListener('orientationchange', cb);
-    });
+    window.addEventListener('resize', this.resizeHandler);
+    window.addEventListener('orientationchange', this.resizeHandler);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.resizeHandler);
+    window.removeEventListener('orientationchange', this.resizeHandler);
   },
   watch: {
     interfaceLanguage: {

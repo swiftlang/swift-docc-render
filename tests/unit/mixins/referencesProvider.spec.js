@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 import { shallowMount } from '@vue/test-utils';
+import { h } from 'vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
 
 const FakeComponentInner = {
@@ -21,11 +22,9 @@ const FakeComponentInner = {
 const FakeComponentOuter = {
   name: 'FakeComponentOuter',
   mixins: [referencesProvider],
-  render(createElement) {
-    return createElement(FakeComponentInner, {
-      props: {
-        references: this.references,
-      },
+  render() {
+    return h(FakeComponentInner, {
+      references: this.references,
     });
   },
 };

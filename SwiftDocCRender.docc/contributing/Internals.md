@@ -150,9 +150,9 @@ DocC-Render is unit tested, using the [Jest](https://jestjs.io/) testing framewo
 
 Unit tests can be run via:
 
-* `npm run test:unit`  - run all unittests
-* `npm run test:unit:watch`  - run only the modified files and watch for changes
-* `npx run test:unit tests/unit/path/to/spec.js`  - run an individual test file
+* `pnpm test:unit`  - run all unit tests
+* `pnpm test:unit:watch`  - run only the modified files and watch for changes
+* `pnpm test:unit tests/unit/path/to/spec.js`  - run an individual test file
 
 #### Code style
 
@@ -160,27 +160,27 @@ DocC-Render uses [ESLint](https://eslint.org/) to format the code and avoid synt
 
 To run the linter run:
 
-`npm run lint`
+`pnpm lint`
 
 To automatically fix any error, run:
 
-`npm run lint:fix`
+`pnpm lint:fix`
 
-If you use the development server via `npm run serve`, files are linted on each change. Read more about configuring your linter [here](https://cli.vuejs.org/core-plugins/eslint.html#configuration).
+Read more about configuring the linter in the [ESLint configuration documentation](https://eslint.org/docs/latest/use/configure/).
 
 #### Environment flags
 
-DocC-Render has a few build-time environment flags, that allow you to set configuration parameters before building. Read [How to set Environment Variables in Vue CLI](https://cli.vuejs.org/guide/mode-and-env.html#environment-variables).
+DocC-Render has a few build-time environment flags that allow you to set configuration parameters before building. Read [Vite's environment variable documentation](https://vite.dev/guide/env-and-mode.html).
 
 **List of env variables:**
 
-* **VUE_APP_DEV_SERVER_PROXY** - The HTTP endpoint or  local filepath to read render JSON from when using the development server
-* **VUE_APP_TITLE** - An optional default page title to apply to pages
-* **VUE_APP_HLJS_LANGUAGES** - An optional comma-separated list of highlight.js languages to include in the build
+* **VITE_DEV_SERVER_PROXY** - The HTTP endpoint or local filepath to read render JSON from when using the development server
+* **VITE_APP_TITLE** - An optional default page title to apply to pages
+* **VITE_APP_HLJS_LANGUAGES** - An optional comma-separated list of highlight.js languages to include in the build
 
 #### Available Scripts
 
-These are the most commonly used npm scripts you would need to develop DocC-Render:
+These are the most commonly used pnpm scripts you would need to develop DocC-Render:
 
 * **serve** - used while developing DocC-Render or a theme. Starts up a custom live-reloading server, which serves a local DocC-Render instance.
 * **build** - builds DocC-Render, in a state ready for `docc`.

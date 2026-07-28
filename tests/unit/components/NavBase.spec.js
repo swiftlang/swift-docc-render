@@ -16,7 +16,7 @@ import scrollLock from 'docc-render/utils/scroll-lock';
 import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibility';
 import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/constants/nav';
 import { waitFrames } from 'docc-render/utils/loading';
-import { createEvent } from '../../../test-utils';
+import { createEvent, flushPromises } from '../../../test-utils';
 
 jest.mock('docc-render/utils/changeElementVOVisibility');
 jest.mock('docc-render/utils/scroll-lock');
@@ -41,21 +41,14 @@ const createWrapper = async ({ propsData, ...rest } = {}) => {
   return wrapper;
 };
 
-const event = window.Event;
 let wrapper;
 
 describe('NavBase', () => {
-  beforeAll(() => {
-    window.Event = null;
-  });
   beforeEach(() => {
     jest.clearAllMocks();
   });
   afterEach(() => {
     wrapper.destroy();
-  });
-  afterAll(() => {
-    window.Event = event;
   });
   it('renders a nav element at the root', async () => {
     wrapper = await createWrapper();
@@ -475,7 +468,7 @@ describe('NavBase', () => {
     wrapper = await createWrapper();
     expect(wrapper.classes()).toContain(NavStateClasses.noBackgroundTransition);
     resolve();
-    await wrapper.vm.$nextTick();
+    await flushPromises();
     expect(waitFrames).toHaveBeenCalledWith(NoBGTransitionFrames);
     expect(wrapper.classes()).not.toContain(NavStateClasses.noBackgroundTransition);
   });
@@ -509,7 +502,7 @@ describe('NavBase', () => {
     await wrapper.vm.$nextTick();
     expect(blurSpy).toHaveBeenCalledTimes(1);
     // assert focus is on the body
-    expect(document.activeElement).toEqual(document.body);
+    expect(document.activeElement).toBe(document.body);
   });
 
   it('changes the sibling visibility to `hidden` on expand', async () => {
@@ -548,7 +541,7 @@ describe('NavBase', () => {
       // assert its closed
       expect(wrapper.classes()).not.toContain(NavStateClasses.isOpen);
       // assert the toggle is focused
-      expect(document.activeElement).toEqual(wrapper.findComponent({ ref: 'axToggle' }).element);
+      expect(document.activeElement).toBe(wrapper.findComponent({ ref: 'axToggle' }).element);
     });
 
     it('upon popstate change when navigating back/forward', async () => {

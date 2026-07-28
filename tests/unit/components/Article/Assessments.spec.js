@@ -30,6 +30,7 @@ describe('Assessments', () => {
       propsData,
       stubs: {
         TutorialAssessments: {
+          props: TutorialAssessments.props,
           template: '<div><slot name="success"></slot></div>',
         },
       },

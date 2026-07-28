@@ -321,13 +321,13 @@ describe('GenericModal', () => {
 
     await flushPromises();
 
-    expect(document.activeElement).toEqual(wrapper.findComponent('.close').element);
+    expect(document.activeElement).toBe(wrapper.findComponent('.close').element);
     expect(wrapper.emitted('open')).toBeTruthy();
 
     await wrapper.setProps({
       visible: false,
     });
-    expect(document.activeElement).toEqual(button);
+    expect(document.activeElement).toBe(button);
     expect(wrapper.emitted('close')).toBeTruthy();
   });
 
@@ -349,13 +349,13 @@ describe('GenericModal', () => {
 
     await flushPromises();
 
-    expect(document.activeElement).toEqual(button);
+    expect(document.activeElement).toBe(button);
     expect(wrapper.emitted('open')).toBeTruthy();
 
     await wrapper.setProps({
       visible: false,
     });
-    expect(document.activeElement).toEqual(button);
+    expect(document.activeElement).toBe(button);
     expect(wrapper.emitted('close')).toBeTruthy();
   });
 

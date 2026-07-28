@@ -96,7 +96,7 @@ export default {
   mounted() {
     document.addEventListener('click', this.closeOnLoseFocus);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     document.removeEventListener('click', this.closeOnLoseFocus);
   },
   methods: {

@@ -36,7 +36,7 @@ describe('InitialLoadingPlaceholder', () => {
     // call the registered callback for `onReady`
     onReady.mock.calls[0][0].call();
     await wrapper.vm.$nextTick();
-    expect(wrapper.html()).toBeFalsy();
+    expect(wrapper.html()).toBe('<!--v-if-->');
   });
 
   it('sets the placeholder as ready, even if the router fails to load', async () => {
@@ -48,6 +48,6 @@ describe('InitialLoadingPlaceholder', () => {
     // call the registered error callback for `onReady`
     onReady.mock.calls[0][1].call();
     await wrapper.vm.$nextTick();
-    expect(wrapper.html()).toBeFalsy();
+    expect(wrapper.html()).toBe('<!--v-if-->');
   });
 });

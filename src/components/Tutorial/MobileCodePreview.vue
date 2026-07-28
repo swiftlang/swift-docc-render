@@ -16,7 +16,7 @@
       :theme="isTargetIDE ? 'code' : 'light'"
       :codeBackgroundColorOverride="modalBackgroundColor"
       isFullscreen
-      :visible.sync="fullCodeIsVisible"
+      v-model:visible="fullCodeIsVisible"
     >
       <div class="full-code-listing-modal-content">
         <CodeTheme>
@@ -40,7 +40,7 @@
       :theme="isTargetIDE ? 'dynamic' : 'light'"
       class="runtime-preview-modal"
       isFullscreen
-      :visible.sync="previewIsVisible"
+      v-model:visible="previewIsVisible"
     >
       <div class="runtime-preview-modal-content">
         <span class="runtime-preview-label">{{ $tc('tutorials.preview.title', 1) }}</span>

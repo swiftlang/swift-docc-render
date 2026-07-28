@@ -11,8 +11,9 @@
 /* eslint-disable */
 
 import Tabnav from "docc-render/components/Tabnav.vue";
-import { shallowMount } from "@vue/test-utils";
+import { mount, shallowMount } from "@vue/test-utils";
 import TabnavItem from "docc-render/components/TabnavItem.vue";
+import { h, inject } from "vue";
 
 const { ProvideKey } = Tabnav.constants;
 
@@ -43,17 +44,17 @@ describe("Tabnav", () => {
 
   it("provides object with current selected tab and method to change it", () => {
     let data;
+    const SlotComponent = {
+      setup() {
+        data = inject(ProvideKey);
+        return () => h("div", "Foo");
+      }
+    };
 
-    const wrapper = shallowMount(Tabnav, {
+    const wrapper = mount(Tabnav, {
       propsData,
       slots: {
-        default: {
-          inject: [ProvideKey],
-          template: "<div>Foo</div>",
-          mounted() {
-            data = this[ProvideKey];
-          }
-        }
+        default: SlotComponent
       }
     });
 

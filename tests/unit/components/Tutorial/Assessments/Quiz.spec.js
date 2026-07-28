@@ -123,7 +123,7 @@ describe('Quiz', () => {
     it('renders a title', () => {
       const node = wrapper.findComponent('.title');
       expect(node.exists()).toBe(true);
-      expect(node.props('content')).toBe(propsData.title);
+      expect(node.props('content')).toEqual(propsData.title);
     });
 
     it('renders a `ContentNode`', () => {
@@ -197,7 +197,7 @@ describe('Quiz', () => {
       expect(choice.classes()).toContain('correct');
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
       // cant match directly with element, VTU is buggy
-      expect(choice.find('.choice-icon').html()).toContain('<checkcircleicon');
+      expect(choice.find('.choice-icon').html()).toContain('<check-circle-icon-stub');
     });
 
     it('renders an error icon only for the chosen choice', async () => {
@@ -207,7 +207,7 @@ describe('Quiz', () => {
 
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
       // cant match directly with element, VTU is buggy
-      expect(choice.find('.choice-icon').html()).toContain('<resetcircleicon');
+      expect(choice.find('.choice-icon').html()).toContain('<reset-circle-icon-stub');
     });
 
     it('updates the aria live text telling the user if the answer chosen is correct or incorrect', async () => {

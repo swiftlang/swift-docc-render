@@ -27,7 +27,7 @@ export default {
     title: ({ resolvedReference }) => resolvedReference.title,
   },
   render() {
-    return this.$scopedSlots.default({
+    return this.$slots.default({
       url: this.url,
       urlWithParams: buildUrl(this.url, this.$route.query),
       title: this.title,

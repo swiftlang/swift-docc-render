@@ -36,11 +36,19 @@ try {
     return;
   }
 
+  // Vite normalizes its base URL with a leading slash. DocC's placeholder is
+  // replaced with a complete base path, so keep the placeholder itself
+  // root-relative to avoid producing protocol-relative URLs after replacement.
+  const template = data.replace(
+    new RegExp(`/${BASE_URL_PLACEHOLDER}/`, 'g'),
+    `${BASE_URL_PLACEHOLDER}/`,
+  );
+
   // copy it to a new file
-  fs.writeFileSync(templateFile, data, 'utf8');
+  fs.writeFileSync(templateFile, template, 'utf8');
 
   // do the replacement
-  const result = data.replace(new RegExp(`${BASE_URL_PLACEHOLDER}/`, 'g'), baseUrl);
+  const result = template.replace(new RegExp(`${BASE_URL_PLACEHOLDER}/`, 'g'), baseUrl);
 
   // replace the file
   fs.writeFileSync(indexFile, result, 'utf8');

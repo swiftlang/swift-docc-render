@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { toRaw } from 'vue';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { shallowMount } from '@vue/test-utils';
 import { SectionKind } from '@/constants/PrimaryContentSection';
@@ -100,7 +101,7 @@ describe('OnThisPageRegistrator', () => {
 
   it('extracts the sections from the JSON', () => {
     createWrapper();
-    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toMatchSnapshot();
+    expect(toRaw(onThisPageSectionsStoreBase.state.onThisPageSections)).toMatchSnapshot();
   });
 
   it('only stores headings up to level 3, anchorising `title` if no `anchor` is provided', async () => {

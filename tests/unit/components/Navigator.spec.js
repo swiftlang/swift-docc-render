@@ -99,7 +99,6 @@ describe('Navigator', () => {
       apiChanges: null,
       navigatorReferences,
       hideAvailableTags: false,
-      shouldTruncateTags: false,
     });
   });
 

@@ -8,10 +8,12 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { reactive } from 'vue';
+
 export default {
-  state: {
+  state: reactive({
     codeColors: null,
-  },
+  }),
   reset() {
     this.state.codeColors = null;
   },

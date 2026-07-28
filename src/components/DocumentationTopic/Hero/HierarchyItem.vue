@@ -8,13 +8,12 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 
-<template functional>
-  <component
-    :is="$options.components.NavMenuItemBase"
-    :class="[{ collapsed: props.isCollapsed }, data.staticClass]"
+<template>
+  <NavMenuItemBase
+    :class="{ collapsed: isCollapsed }"
     class="hierarchy-item"
   >
-    <router-link v-if="props.url" class="parent item nav-menu-link" :to="props.url">
+    <router-link v-if="url" class="parent item nav-menu-link" :to="url">
       <slot />
     </router-link>
     <template v-else>
@@ -23,16 +22,15 @@
       </span>
       <slot name="tags" />
     </template>
-  </component>
+  </NavMenuItemBase>
 </template>
 
 <script>
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
-import InlineChevronRightIcon from 'theme/components/Icons/InlineChevronRightIcon.vue';
 
 export default {
   name: 'HierarchyItem',
-  components: { NavMenuItemBase, InlineChevronRightIcon },
+  components: { NavMenuItemBase },
   props: {
     isCollapsed: Boolean,
     url: {

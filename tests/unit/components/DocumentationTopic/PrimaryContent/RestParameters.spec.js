@@ -112,7 +112,7 @@ describe('RestParameters', () => {
     expect(wrapper.findComponent('.param-content').find('.param-type').exists());
 
     const tokensGroup = wrapper.findComponent(PossiblyChangedType);
-    expect(tokensGroup.props('type')).toBe(propsData.parameters[0].type);
+    expect(tokensGroup.props('type')).toEqual(propsData.parameters[0].type);
     expect(tokensGroup.props('changes')).toBe(undefined);
   });
 

@@ -64,8 +64,8 @@ describe('ReplayableVideoAsset', () => {
     const wrapper = mountWithProps();
 
     const video = wrapper.findComponent(VideoAsset);
-    expect(video.props('variants')).toBe(variants);
-    expect(video.props('posterVariants')).toBe(posterVariants);
+    expect(video.props('variants')).toEqual(variants);
+    expect(video.props('posterVariants')).toEqual(posterVariants);
     expect(video.props('showsDefaultControls')).toBe(false);
     expect(video.props('autoplays')).toBe(false);
     expect(video.props('id')).toBe(propsData.id);
@@ -83,7 +83,7 @@ describe('ReplayableVideoAsset', () => {
 
     const customControlsDescription = wrapper.findComponent(`#${propsData.id}-custom-controls`);
     expect(customControlsDescription.exists()).toBe(true);
-    expect(customControlsDescription.attributes('hidden')).toBe('hidden');
+    expect(customControlsDescription.attributes('hidden')).toBe('');
     expect(customControlsDescription.text()).toBe('video.custom-controls');
   });
 

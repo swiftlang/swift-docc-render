@@ -113,7 +113,7 @@ const propsData = {
 
 const AdjustableSidebarWidthSmallStub = {
   render() {
-    return this.$scopedSlots.aside({
+    return this.$slots.aside({
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
       breakpoint: BreakpointName.small,
     });

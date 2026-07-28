@@ -214,13 +214,10 @@ describe('DocumentationNav', () => {
     expect(button.attributes('aria-label')).toBe('navigator.open-navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
     // assert the nav-hide button is focused
-    expect(document.activeElement).toEqual(btn);
+    expect(document.activeElement).toBe(btn);
   });
 
   it('closes the nav, if open and clicking on the sidenav-toggle', async () => {
-    const backup = window.Event;
-    window.Event = null;
-
     wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
     await flushPromises();
     await wrapper.findComponent('.nav-menucta').trigger('click');
@@ -234,7 +231,6 @@ describe('DocumentationNav', () => {
     await flushPromises();
     expect(wrapper.emitted('toggle-sidenav')).toEqual([[BreakpointName.medium]]);
     expect(toggle.attributes()).not.toHaveProperty('tabindex');
-    window.Event = backup;
   });
 
   it('does not render the sidenav toggle if displaySidenav is false', async () => {

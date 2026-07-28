@@ -141,13 +141,13 @@ describe('SectionSteps', () => {
     expect(steps.length).toBe(5);
 
     let step = steps.at(0);
-    expect(step.props('content')).toBe(exampleStepWithMedia.content);
+    expect(step.props('content')).toEqual(exampleStepWithMedia.content);
     expect(step.props('media')).toBe(exampleStepWithMedia.media);
     expect(step.props('currentIndex')).toBe(1);
 
     step = steps.at(1);
     expect(step.props('code')).toBe(exampleStepWithCode.code);
-    expect(step.props('content')).toBe(exampleStepWithCode.content);
+    expect(step.props('content')).toEqual(exampleStepWithCode.content);
     expect(step.props('runtimePreview')).toBe(exampleStepWithCode.runtimePreview);
     expect(step.props('currentIndex')).toBe(1);
   });
@@ -159,11 +159,11 @@ describe('SectionSteps', () => {
   it('by default, assigns the first step section index as active', () => {
     // assert the active step is the second element in the content, which is the first step
     expect(wrapper.vm.activeStep).toBe(1);
-    const nodes = wrapper.findAllComponents({ ref: 'contentNodes' });
+    const nodes = wrapper.vm.$refs.contentNodes;
     // the first node is not a step
-    expect(nodes.at(0).props()).not.toHaveProperty('currentIndex');
+    expect(nodes.at(0).$props).not.toHaveProperty('currentIndex');
     // second node gets the current index
-    expect(nodes.at(1).props()).toHaveProperty('currentIndex', 1);
+    expect(nodes.at(1).$props).toHaveProperty('currentIndex', 1);
   });
 
   it('provides a custom array of intersectionTargets, with each content node step', async () => {

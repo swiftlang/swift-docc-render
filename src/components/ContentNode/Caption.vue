@@ -31,7 +31,7 @@ const CaptionPosition = {
 };
 
 export default {
-  name: 'Caption',
+  name: 'ContentCaption',
   constants: {
     CaptionPosition,
     CaptionTag,

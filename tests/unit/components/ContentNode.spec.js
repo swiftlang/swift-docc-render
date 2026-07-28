@@ -838,13 +838,13 @@ describe('ContentNode', () => {
       expect(caption.text()).toContain('blah');
       // assert figurercaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
-        <figure-stub>
-          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-          <caption-stub tag="figcaption" position="trailing">
-            <p>blah</p>
-          </caption-stub>
-        </figure-stub>
-      `);
+<figure-stub>
+  <inline-image-stub variants="[object Object],[object Object]" alt=""></inline-image-stub>
+  <content-caption-stub tag="figcaption" position="trailing">
+    <p>blah</p>
+  </content-caption-stub>
+</figure-stub>
+`);
     });
 
     it('renders a `Caption` before the image, if it has a title', () => {
@@ -861,13 +861,13 @@ describe('ContentNode', () => {
         metadata,
       }, references);
       expect(wrapper.findComponent(Figure).html()).toMatchInlineSnapshot(`
-        <figure-stub>
-          <caption-stub title="foo" tag="figcaption" position="leading">
-            <p>blah</p>
-          </caption-stub>
-          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-        </figure-stub>
-      `);
+<figure-stub>
+  <content-caption-stub title="foo" tag="figcaption" position="leading">
+    <p>blah</p>
+  </content-caption-stub>
+  <inline-image-stub variants="[object Object],[object Object]" alt=""></inline-image-stub>
+</figure-stub>
+`);
     });
 
     it('renders no `Caption`, if there is a `title`, but no `abstract`', () => {
@@ -1016,13 +1016,13 @@ describe('ContentNode', () => {
       expect(caption.text()).toContain('blah');
       // assert figcaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
-        <figure-stub>
-          <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
-          <caption-stub tag="figcaption" position="trailing">
-            <p>blah</p>
-          </caption-stub>
-        </figure-stub>
-      `);
+<figure-stub>
+  <block-video-stub identifier="video.mp4"></block-video-stub>
+  <content-caption-stub tag="figcaption" position="trailing">
+    <p>blah</p>
+  </content-caption-stub>
+</figure-stub>
+`);
     });
 
     it('passes the deviceFrame down to the BlockVideo`', () => {
@@ -1568,24 +1568,26 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
-            <tbody>
-              <tr>
-                <td colspan="2">row0col0</td>
-                <td>row0col2</td>
-              </tr>
-              <tr>
-                <td>row1col0</td>
-                <td>row1col1</td>
-                <td rowspan="2">row1col2</td>
-              </tr>
-              <tr>
-                <td>row2col0</td>
-                <td>row2col1</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="true">
+  <tbody>
+    <tr>
+      <td colspan="2">row0col0</td>
+      <!---->
+      <td>row0col2</td>
+    </tr>
+    <tr>
+      <td>row1col0</td>
+      <td>row1col1</td>
+      <td rowspan="2">row1col2</td>
+    </tr>
+    <tr>
+      <td>row2col0</td>
+      <td>row2col1</td>
+      <!---->
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
 
       it('renders header="both" style table, with spans', () => {
@@ -1597,26 +1599,28 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
-            <thead>
-              <tr>
-                <th scope="col" colspan="2">row0col0</th>
-                <th scope="col">row0col2</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">row1col0</th>
-                <td>row1col1</td>
-                <td rowspan="2">row1col2</td>
-              </tr>
-              <tr>
-                <th scope="row">row2col0</th>
-                <td>row2col1</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="true">
+  <thead>
+    <tr>
+      <th scope="col" colspan="2">row0col0</th>
+      <!---->
+      <th scope="col">row0col2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">row1col0</th>
+      <td>row1col1</td>
+      <td rowspan="2">row1col2</td>
+    </tr>
+    <tr>
+      <th scope="row">row2col0</th>
+      <td>row2col1</td>
+      <!---->
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
 
       it('renders header="row" style table, with spans', () => {
@@ -1628,26 +1632,28 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
-            <thead>
-              <tr>
-                <th scope="col" colspan="2">row0col0</th>
-                <th scope="col">row0col2</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>row1col0</td>
-                <td>row1col1</td>
-                <td rowspan="2">row1col2</td>
-              </tr>
-              <tr>
-                <td>row2col0</td>
-                <td>row2col1</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="true">
+  <thead>
+    <tr>
+      <th scope="col" colspan="2">row0col0</th>
+      <!---->
+      <th scope="col">row0col2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>row1col0</td>
+      <td>row1col1</td>
+      <td rowspan="2">row1col2</td>
+    </tr>
+    <tr>
+      <td>row2col0</td>
+      <td>row2col1</td>
+      <!---->
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
 
       it('renders header="column" style table, with spans', () => {
@@ -1659,24 +1665,26 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
-            <tbody>
-              <tr>
-                <th scope="row" colspan="2">row0col0</th>
-                <td>row0col2</td>
-              </tr>
-              <tr>
-                <th scope="row">row1col0</th>
-                <td>row1col1</td>
-                <td rowspan="2">row1col2</td>
-              </tr>
-              <tr>
-                <th scope="row">row2col0</th>
-                <td>row2col1</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="true">
+  <tbody>
+    <tr>
+      <th scope="row" colspan="2">row0col0</th>
+      <!---->
+      <td>row0col2</td>
+    </tr>
+    <tr>
+      <th scope="row">row1col0</th>
+      <td>row1col1</td>
+      <td rowspan="2">row1col2</td>
+    </tr>
+    <tr>
+      <th scope="row">row2col0</th>
+      <td>row2col1</td>
+      <!---->
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
     });
 
@@ -1983,7 +1991,7 @@ describe('ContentNode', () => {
       const content = wrapper.findComponent(StrikeThrough);
       // assert the `strong` tag is rendered
       expect(content.html())
-        .toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
+        .toBe('<strike-through-stub>2<strong>strong</strong></strike-through-stub>');
     });
   });
 

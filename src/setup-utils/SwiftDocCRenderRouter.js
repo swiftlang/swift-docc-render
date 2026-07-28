@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Router from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import {
   saveScrollOnReload,
   restoreScrollOnReload,
@@ -24,15 +24,19 @@ const defaultRoutes = [
 ];
 
 export default function createRouterInstance(routerConfig = {}) {
-  const router = new Router({
-    mode: 'history',
-    base: baseUrl,
+  const {
+    history = createWebHistory(baseUrl),
+    routes: configuredRoutes,
+    ...config
+  } = routerConfig;
+  const router = createRouter({
+    history,
     scrollBehavior,
-    ...routerConfig,
-    routes: routerConfig.routes || defaultRoutes,
+    ...config,
+    routes: configuredRoutes || defaultRoutes,
   });
 
-  router.onReady(() => {
+  router.isReady().then(() => {
     // Disable the browser's automatic scroll restoration mechanism so that it doesn't
     // interfere with vue-router's scrollBehavior.
     // https://github.com/vuejs/vue-router/pull/1814
@@ -47,7 +51,7 @@ export default function createRouterInstance(routerConfig = {}) {
       const { route = { path: '/' } } = error;
       router.replace({
         name: 'server-error',
-        params: [route.path],
+        params: { pathMatch: route.path },
       });
     });
   }

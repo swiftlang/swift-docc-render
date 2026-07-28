@@ -73,7 +73,7 @@ export default {
   mounted() {
     this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
   },
   watch: {

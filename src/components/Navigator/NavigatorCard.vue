@@ -980,7 +980,7 @@ export default {
 
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
-@import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
+@import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 // unfortunately we need to hard-code the filter height
 $filter-height: 71px;

@@ -183,6 +183,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
     DynamicScroller: DynamicScrollerStub,
     DynamicScrollerItem: DynamicScrollerItemStub,
     NavigatorCardItem: {
+      emits: ['focus-parent', 'navigate', 'toggle', 'toggle-full', 'toggle-siblings'],
       props: NavigatorCardItem.props,
       template: '<div><button></button></div>',
     },
@@ -2406,7 +2407,7 @@ describe('NavigatorCard', () => {
         relatedTarget: document.body,
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
     });
 
     it('resets the `lastFocusTarget`, if the related target is outside the scroller', async () => {
@@ -2421,7 +2422,7 @@ describe('NavigatorCard', () => {
       button.trigger('focusout', {
         relatedTarget: document.body,
       });
-      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).toBe(null);
     });
 
     it('does not do anything, if there is no `relatedTarget`, if no relatedTarget', async () => {
@@ -2437,7 +2438,7 @@ describe('NavigatorCard', () => {
         relatedTarget: null,
       });
       // assert we are still focusing the button
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
     });
 
     it('on DynamicScroller@update, does nothing, if there is no focusTarget', async () => {
@@ -2446,7 +2447,7 @@ describe('NavigatorCard', () => {
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
       expect(waitFor).toHaveBeenLastCalledWith(300);
-      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).toBe(null);
     });
 
     it('on DynamicScroller@update, does nothing, if focusTarget is outside scroller', async () => {
@@ -2471,7 +2472,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       expect(waitFor).toHaveBeenLastCalledWith(300);
       // we may still have the lastFocusTarget, as it did not emit a focusOut
-      expect(wrapper.vm.lastFocusTarget).not.toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).not.toBe(null);
       // but the spy will not be called, because its no longer in the DOM
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
@@ -2490,11 +2491,11 @@ describe('NavigatorCard', () => {
       // move the spy below the manual focus, so we dont count it
       const focusSpy = jest.spyOn(button.element, 'focus');
       await flushPromises();
-      expect(document.activeElement).toEqual(button.element);
+      expect(document.activeElement).toBe(button.element);
       // trigger an update
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
 
@@ -2512,7 +2513,7 @@ describe('NavigatorCard', () => {
       // trigger an update
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
       expect(focusSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -2534,7 +2535,7 @@ describe('NavigatorCard', () => {
       // trigger an update
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
-      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).toBe(null);
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
   });

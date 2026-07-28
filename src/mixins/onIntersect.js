@@ -60,7 +60,7 @@ export default {
       this.intersectionObserver.observe(child);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.intersectionObserver) {
       this.intersectionObserver.disconnect();
     }

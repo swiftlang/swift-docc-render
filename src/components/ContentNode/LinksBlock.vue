@@ -63,7 +63,7 @@ export default {
   margin-top: var(--spacing-stacked-margin-xlarge);
 }
 
-* + .links-block {
+.links-block:not(:first-child) {
   margin-top: var(--spacing-stacked-margin-xlarge);
 }
 

@@ -84,7 +84,7 @@
             :conformance="conformance"
             :declarations="declaration.declarations"
             :source="remoteSource"
-            :declListExpanded.sync="declListExpanded"
+            v-model:declListExpanded="declListExpanded"
           />
         </div>
       </DocumentationHero>

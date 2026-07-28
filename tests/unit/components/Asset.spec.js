@@ -77,7 +77,7 @@ describe('Asset', () => {
 
     const imageAsset = wrapper.findComponent(ImageAsset);
     expect(imageAsset.props('alt')).toBe(foo.alt);
-    expect(imageAsset.props('variants')).toBe(foo.variants);
+    expect(imageAsset.props('variants')).toEqual(foo.variants);
   });
 
   it('renders a `ReplayableVideoAsset` for video', async () => {
@@ -93,8 +93,8 @@ describe('Asset', () => {
     const wrapper = mountAsset('video', { video, image });
 
     const videoAsset = wrapper.findComponent(ReplayableVideoAsset);
-    expect(videoAsset.props('variants')).toBe(video.variants);
-    expect(videoAsset.props('posterVariants')).toBe(image.variants);
+    expect(videoAsset.props('variants')).toEqual(video.variants);
+    expect(videoAsset.props('posterVariants')).toEqual(image.variants);
     expect(videoAsset.props('showsDefaultControls')).toBe(false);
     expect(videoAsset.props('autoplays')).toBe(false);
 
@@ -107,7 +107,7 @@ describe('Asset', () => {
   it('renders a `ReplayableVideoAsset` without poster variants', () => {
     const identifier = 'video';
     const videoAsset = mountAsset(identifier, { video }).findComponent(ReplayableVideoAsset);
-    expect(videoAsset.props('variants')).toBe(video.variants);
+    expect(videoAsset.props('variants')).toEqual(video.variants);
     expect(videoAsset.props('posterVariants')).toEqual([]);
     expect(videoAsset.props('id')).toBe(identifier);
     expect(videoAsset.props('alt')).toBe(video.alt);
@@ -196,7 +196,7 @@ describe('Asset', () => {
     });
 
     const videoAsset = wrapper.findComponent(ReplayableVideoAsset);
-    expect(videoAsset.props('variants')).toBe(video.variants);
+    expect(videoAsset.props('variants')).toEqual(video.variants);
     expect(videoAsset.props('showsDefaultControls')).toBe(true);
     expect(videoAsset.props('muted')).toBe(false);
     expect(videoAsset.props('autoplays')).toBe(true);

@@ -206,7 +206,7 @@ export default {
     this.handleFlashOnMount();
     await this.$nextTick();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('keydown', this.onEscape);
     window.removeEventListener('popstate', this.closeNav);
     window.removeEventListener('orientationchange', this.closeNav);

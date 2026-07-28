@@ -71,7 +71,7 @@ describe('EndpointExample', () => {
 
   it('renders a collapsed CollapsibleCodeListing as an output for Request/Response', () => {
     const codeListing = wrapper.findComponent(CollapsibleCodeListing);
-    expect(codeListing.props('content')).toBe(propsData.request.content);
+    expect(codeListing.props('content')).toEqual(propsData.request.content);
     expect(codeListing.props('collapsed')).toBe(true);
   });
 
@@ -79,7 +79,7 @@ describe('EndpointExample', () => {
     wrapper.findComponent(Tabnav).vm.$emit('input', Tab.response);
     await wrapper.vm.$nextTick();
     const codeListing = wrapper.findComponent(CollapsibleCodeListing);
-    expect(codeListing.props('content')).toBe(propsData.response.content);
+    expect(codeListing.props('content')).toEqual(propsData.response.content);
   });
 
   it('hides the `controls` if content is not collapsible', () => {

@@ -34,7 +34,7 @@
           <QuickNavigationModal
             v-if="enableQuickNavigation"
             :children="quickNavNodes || indexNodes"
-            :showQuickNavigationModal.sync="showQuickNavigationModal"
+            v-model:showQuickNavigationModal="showQuickNavigationModal"
             :technology="technology ? technology.title : ''"
             :placeholder="quickNavPlaceholder"
             :initialFilterText="quickNavigationInitialFilter"
@@ -234,7 +234,7 @@ export default {
     if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
     this.handleInitialQueryFilter();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   inject: {

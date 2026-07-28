@@ -53,12 +53,12 @@ describe('Topic', () => {
 
   it('provides a positive offset for `navigationBarHeight`', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.navigationBarHeight).toBe(52);
+    expect(wrapper.vm.$.provides.navigationBarHeight).toBe(52);
   });
 
   it('provides `TopicStore` as `store`', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.store).toEqual(TopicStore);
+    expect(wrapper.vm.$.provides.store).toEqual(TopicStore);
   });
 
   it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
@@ -296,6 +296,6 @@ describe('with `isTargetIDE', () => {
 
   it('provides a 0 offset for `navigationBarHeight`', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.navigationBarHeight).toBe(0);
+    expect(wrapper.vm.$.provides.navigationBarHeight).toBe(0);
   });
 });

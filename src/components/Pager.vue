@@ -70,6 +70,7 @@
 
 <script>
 import PagerControl from 'docc-render/components/PagerControl.vue';
+import createElement from 'docc-render/utils/create-element';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
 
@@ -151,21 +152,21 @@ export default {
   name: 'Pager',
   components: {
     ControlNext: {
-      render(createElement) {
+      render() {
         return createElement(PagerControl, {
           props: { action: PagerControl.Action.next },
         });
       },
     },
     ControlPrevious: {
-      render(createElement) {
+      render() {
         return createElement(PagerControl, {
           props: { action: PagerControl.Action.previous },
         });
       },
     },
     Gutter: {
-      render(createElement) {
+      render() {
         return createElement('div', { class: 'gutter' }, (
           this.$slots.default
         ));
@@ -264,7 +265,7 @@ export default {
       this.setupObserver();
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.observer?.disconnect();
   },
 };

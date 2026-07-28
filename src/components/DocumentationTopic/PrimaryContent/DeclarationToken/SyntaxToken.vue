@@ -9,10 +9,12 @@
 -->
 
 <script>
+import createElement from 'docc-render/utils/create-element';
+
 // This component simply renders text with a span and a `token-[kind]` class.
 export default {
   name: 'SyntaxToken',
-  render(createElement) {
+  render() {
     return createElement('span', {
       class: `token-${this.kind}`,
     }, (

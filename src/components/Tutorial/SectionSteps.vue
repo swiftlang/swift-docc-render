@@ -47,7 +47,7 @@
           />
         </div>
         <CodePreview
-          v-if="visibleAsset.code"
+          v-else-if="visibleAsset.code"
           :code="visibleAsset.code"
           :preview="visibleAsset.runtimePreview"
           :isRuntimePreviewVisible="isRuntimePreviewVisible"

@@ -8,12 +8,11 @@
   See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 -->
 
-<template functional>
-  <!-- because the component is functional we must mannually pass the classes -->
-  <p class="requirement-metadata" :class="data.staticClass">
-    <strong>{{ parent.$t('required') }}</strong>
-    <template v-if="props.defaultImplementationsCount">
-       {{ parent.$tc('metadata.default-implementation', props.defaultImplementationsCount) }}
+<template>
+  <p class="requirement-metadata">
+    <strong>{{ $t('required') }}</strong>
+    <template v-if="defaultImplementationsCount">
+       {{ $tc('metadata.default-implementation', defaultImplementationsCount) }}
     </template>
   </p>
 </template>

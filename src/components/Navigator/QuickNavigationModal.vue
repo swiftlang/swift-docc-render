@@ -12,7 +12,7 @@
   <GenericModal
     isFullscreen
     :showClose="false"
-    :visible.sync="isVisible"
+    v-model:visible="isVisible"
     backdropBackgroundColorOverride="rgba(0, 0, 0, 0.7)"
   >
     <div
@@ -31,7 +31,7 @@
           preventBorderStyle
           selectInputOnFocus
           @keydown.down.exact.native.prevent="handleDownKeyInput"
-          @keydown.enter.exact.native="handleKeyEnter"
+          @keydown.enter.exact="handleKeyEnter"
           @focus="focusedInput = true"
           @blur="focusedInput = false"
         >

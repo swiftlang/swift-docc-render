@@ -103,6 +103,8 @@ describe('QuickNavigationModal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    fetchDataForPreview.mockReset();
+    fetchDataForPreview.mockReturnValue(new Promise(() => {}));
     wrapper = shallowMount(QuickNavigationModal, config);
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
   });
@@ -246,13 +248,13 @@ describe('QuickNavigationModal', () => {
       debouncedInput: inputValue,
       focusedIndex: 0,
     });
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('0');
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('-1');
+    expect(wrapper.findAllComponents(Reference).at(0).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents(Reference).at(1).attributes('tabindex')).toBe('-1');
     await wrapper.setData({
       focusedIndex: 1,
     });
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents(Reference).at(0).attributes('tabindex')).toBe('-1');
+    expect(wrapper.findAllComponents(Reference).at(1).attributes('tabindex')).toBe('0');
   });
 
   it('debounces user input before filtering the symbols', async () => {

@@ -10,6 +10,7 @@
 
 <script>
 import referencesProvider from 'docc-render/mixins/referencesProvider';
+import createVNode from 'docc-render/utils/create-element';
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
 import LinkableHeading from './ContentNode/LinkableHeading.vue';
@@ -538,11 +539,11 @@ export default {
   name: 'ContentNode',
   constants: { TableHeaderStyle, TableColumnAlignments },
   mixins: [referencesProvider],
-  render: function render(createElement) {
+  render() {
     // Dynamically map each content item and any children to their
     // corresponding components, and wrap the whole tree in a <div>
-    return createElement(this.tag, { class: 'content' }, (
-      this.content.map(renderNode(createElement, this.references), this)
+    return createVNode(this.tag, { class: 'content' }, (
+      this.content.map(renderNode(createVNode, this.references), this)
     ));
   },
   props: {

@@ -552,9 +552,6 @@ describe('AdjustableSidebarWidth', () => {
   });
 
   it('adds a transition detection', async () => {
-    const oldEvent = window.Event;
-    window.Event = null;
-
     const wrapper = createWrapper();
     const aside = wrapper.findComponent('.aside');
     expect(aside.classes()).not.toContain('sidebar-transitioning');
@@ -571,7 +568,6 @@ describe('AdjustableSidebarWidth', () => {
     await flushPromises();
     expect(aside.classes()).not.toContain('sidebar-transitioning');
     expect(waitFor).toHaveBeenCalledWith(1000);
-    window.Event = oldEvent;
   });
 
   it('hides the nav on desktop', () => {
@@ -625,8 +621,6 @@ describe('AdjustableSidebarWidth', () => {
     });
 
     it('when toggling on/off the sidebar', async () => {
-      const backup = window.Event;
-      window.Event = null;
       const wrapper = createWrapper();
       setContentWidth(wrapper, 99);
       expect(store.state.contentWidth).toBe(0);
@@ -647,7 +641,6 @@ describe('AdjustableSidebarWidth', () => {
       aside.trigger('transitionend', { propertyName: 'width' });
       await flushPromises();
       expect(store.state.contentWidth).toBe(1099);
-      window.Event = backup;
     });
 
     it('when resizing the screen', async () => {

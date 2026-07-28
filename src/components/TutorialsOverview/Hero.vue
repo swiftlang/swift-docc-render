@@ -147,7 +147,7 @@ export default {
   margin-top: rem(30px);
 }
 
-* + .asset {
+.asset:not(:first-child) {
   margin-top: rem(70px);
 }
 
@@ -175,7 +175,7 @@ export default {
     margin-top: rem(24px);
   }
 
-  * + .asset {
+  .asset:not(:first-child) {
     margin-top: rem(38px);
   }
 }

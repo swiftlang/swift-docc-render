@@ -164,7 +164,7 @@ describe('Assessments', () => {
     expect(assessment.exists()).toBe(true);
     expect(assessment.props('choices')).toEqual(assessments[0].choices);
     expect(assessment.props('isLast')).toBe(false);
-    expect(assessment.props('title')).toBe(assessments[0].title);
+    expect(assessment.props('title')).toEqual(assessments[0].title);
   });
 
   describe('when the user advances to the next assessment', () => {
@@ -184,7 +184,7 @@ describe('Assessments', () => {
       expect(assessment.props('choices')).toEqual(assessments[1].choices);
       expect(assessment.props('content')).toEqual(assessments[1].content);
       expect(assessment.props('isLast')).toBe(true);
-      expect(assessment.props('title')).toBe(assessments[1].title);
+      expect(assessment.props('title')).toEqual(assessments[1].title);
     });
   });
 

@@ -73,10 +73,10 @@ describe('CodePreview', () => {
 
   it('renders a CodeListing', () => {
     const codeListing = wrapper.findComponent(CodeListing);
-    expect(codeListing.props('content')).toBe(content);
+    expect(codeListing.props('content')).toEqual(content);
     expect(codeListing.props('fileName')).toBe(fileName);
     expect(codeListing.props('syntax')).toBe(syntax);
-    expect(codeListing.props('highlights')).toBe(highlights);
+    expect(codeListing.props('highlights')).toEqual(highlights);
   });
 
   it('renders the media preview', () => {
@@ -332,7 +332,7 @@ describe('CodePreview', () => {
       expect(preview.attributes('style')).toBe('width: 102px;');
 
       const button = preview.find('button');
-      expect(button.attributes('disabled')).toBe('disabled');
+      expect(button.attributes('disabled')).toBe('');
       expect(button.attributes('title')).toBe('tutorials.preview.no-preview-available-step');
 
       expect(wrapper.find('.preview-hide').exists()).toBe(false);

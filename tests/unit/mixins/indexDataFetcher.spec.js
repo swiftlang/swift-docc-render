@@ -7,6 +7,7 @@
  * See https://swift.org/LICENSE.txt for license information
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
+import { toRaw } from 'vue';
 import indexDataFetcher from 'docc-render/mixins/indexDataFetcher';
 import IndexStore from 'docc-render/stores/IndexStore';
 import { shallowMount } from '@vue/test-utils';
@@ -276,7 +277,7 @@ describe('indexDataFetcher', () => {
     createWrapper();
     await flushPromises();
     expect(IndexStore.state.flatChildren[Language.swift.key.url][0]).toHaveProperty('deprecatedChildrenCount', 2);
-    expect(IndexStore.state.flatChildren).toMatchSnapshot();
+    expect(toRaw(IndexStore.state.flatChildren)).toMatchSnapshot();
   });
 
   it('removes the `beta` flag from children, if the parent is a `beta`', async () => {
@@ -293,7 +294,7 @@ describe('indexDataFetcher', () => {
     });
     createWrapper();
     await flushPromises();
-    expect(IndexStore.state.flatChildren).toMatchSnapshot();
+    expect(toRaw(IndexStore.state.flatChildren)).toMatchSnapshot();
   });
 
   it('removes the `beta` flag from children, if the parent is a `beta`', async () => {
@@ -313,7 +314,7 @@ describe('indexDataFetcher', () => {
     });
     createWrapper();
     await flushPromises();
-    expect(IndexStore.state.flatChildren).toMatchSnapshot();
+    expect(toRaw(IndexStore.state.flatChildren)).toMatchSnapshot();
   });
 
   it('flattens deeply nested children and sets it to `IndexStore`', async () => {

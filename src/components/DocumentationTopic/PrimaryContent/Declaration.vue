@@ -24,7 +24,7 @@
         :declaration="declaration"
         :shouldCaption="hasPlatformVariants"
         :changeType="changeType"
-        :declListExpanded.sync="isExpanded"
+        v-model:declListExpanded="isExpanded"
       />
     </template>
     <DeclarationSourceLink

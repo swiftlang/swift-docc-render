@@ -8,23 +8,23 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import '../webpack-asset-path';
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
-import Router from 'vue-router';
+import { configureCompat, createApp, h } from 'vue';
 import App from '@/App.vue';
 import SwiftDocCRenderPlugin from '@/setup-utils/SwiftDocCRenderPlugin';
 import SwiftDocCRenderRouter from '@/setup-utils/SwiftDocCRenderRouter';
 import SwiftDocCRenderi18n from '@/setup-utils/SwiftDocCRenderi18n';
 
-Vue.use(SwiftDocCRenderPlugin);
-Vue.use(Router);
-Vue.use(VueI18n);
+configureCompat({
+  MODE: 2,
+});
 
 document.documentElement.classList.remove('no-js');
 
-new Vue({
-  router: SwiftDocCRenderRouter(),
-  render: h => h(App),
-  i18n: SwiftDocCRenderi18n(),
-}).$mount('#app');
+const app = createApp({
+  render: () => h(App),
+});
+
+app.use(SwiftDocCRenderPlugin);
+app.use(SwiftDocCRenderRouter());
+app.use(SwiftDocCRenderi18n());
+app.mount('#app');
