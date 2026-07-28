@@ -11,6 +11,7 @@
 <template>
   <PortalSource to="modal-destination" :disabled="!isVisible">
     <div
+      v-bind="$attrs"
       v-show="isVisible"
       class="generic-modal"
       role="dialog"
@@ -56,6 +57,7 @@ const Theme = {
 
 export default {
   name: 'GenericModal',
+  inheritAttrs: false,
   components: { CloseIcon, PortalSource: Portal },
   props: {
     visible: {

@@ -113,6 +113,7 @@ const propsData = {
 };
 
 const AdjustableSidebarWidthSmallStub = {
+  inheritAttrs: false,
   render() {
     return this.$slots.aside({
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,

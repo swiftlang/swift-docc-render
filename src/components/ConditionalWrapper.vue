@@ -23,7 +23,11 @@ export default {
   render() {
     const children = this.$slots.default ? this.$slots.default() : [];
     if (this.shouldWrap) {
-      return h(this.tag, this.$attrs, children);
+      return h(
+        this.tag,
+        this.$attrs,
+        typeof this.tag === 'string' ? children : { default: () => children },
+      );
     }
     return children;
   },

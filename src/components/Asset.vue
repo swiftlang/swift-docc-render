@@ -116,11 +116,11 @@ export default {
     },
     assetListeners() {
       return {
-        [AssetTypes.image]: null,
+        [AssetTypes.image]: {},
         [AssetTypes.video]: {
           ended: () => this.$emit('videoEnded'),
         },
-      }[this.asset.type];
+      }[this.asset.type] || {};
     },
   },
 };

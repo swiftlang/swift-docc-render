@@ -464,7 +464,7 @@ describe('DocumentationTopic', () => {
     const hero = wrapper.findComponent(DocumentationHero);
     expect(hero.props('shortHero')).toBe(false);
 
-    await wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
+    await wrapper.setProps({ abstract: null, roleHeading: '', sampleCodeDownload: null });
     expect(hero.props('shortHero')).toBe(true);
   });
 

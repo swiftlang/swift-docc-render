@@ -50,4 +50,18 @@ describe('throttle', () => {
     expect(func).toHaveBeenNthCalledWith(1, 0);
     expect(func).toHaveBeenNthCalledWith(2, 49);
   });
+
+  it('never schedules a negative timeout after the interval has elapsed', () => {
+    const setTimeoutSpy = vi.spyOn(global, 'setTimeout');
+    const interval = 50;
+    const throttled = throttle(vi.fn(), interval);
+    const initialTime = Date.now();
+
+    throttled();
+    nowSpy.mockReturnValue(initialTime + interval + 1);
+    throttled();
+
+    expect(setTimeoutSpy).toHaveBeenLastCalledWith(expect.any(Function), 0);
+    setTimeoutSpy.mockRestore();
+  });
 });

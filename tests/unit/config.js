@@ -8,10 +8,13 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { config } from '@vue/test-utils';
+import { config, RouterLinkStub } from '@vue/test-utils';
 import PortalVue from 'portal-vue';
 import { defaultLocale } from 'theme/lang/index';
 import { vi } from 'vitest';
+import { defineComponent, h } from 'vue';
+
+const readOnlyElementProperties = new Set(['attributes', 'children', 'prefix']);
 
 process.env.VUE_APP_TITLE = 'Documentation';
 window.TransitionEvent = window.TransitionEvent || window.Event;
@@ -39,8 +42,36 @@ config.global.mocks = {
 };
 config.global.renderStubDefaultSlot = true;
 config.global.plugins = [PortalVue];
+config.global.stubs = {
+  'router-link': RouterLinkStub,
+};
+config.plugins.createStubs = ({ name, component, registerStub }) => {
+  const componentOptions = component.__vccOpts || component;
+  const stub = defineComponent({
+    name: name || 'AnonymousStub',
+    props: componentOptions.props || {},
+    setup(props, { slots }) {
+      return () => {
+        const forwardedProps = Object.fromEntries(
+          Object.entries(props).filter(([key]) => !readOnlyElementProperties.has(key)),
+        );
+        return h(
+          `${(name || 'anonymous').replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase()}-stub`,
+          forwardedProps,
+          config.global.renderStubDefaultSlot ? slots.default?.({}) : undefined,
+        );
+      };
+    },
+  });
+
+  registerStub({ source: component, stub });
+  return stub;
+};
 config.global.config = {
   compilerOptions: {
     whitespace: 'preserve',
+  },
+  warnHandler(message, instance, trace) {
+    throw new Error(`[Vue warn]: ${message}${trace}`);
   },
 };

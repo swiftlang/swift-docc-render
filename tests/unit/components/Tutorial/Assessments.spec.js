@@ -292,7 +292,7 @@ describe('success slot for completed assessment', () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
       slots: {
-        success: '<marquee>Success Slot</marquee>',
+        success: '<div class="success-slot">Success Slot</div>',
       },
     });
     await wrapper.setData({ completed: true });
@@ -301,7 +301,7 @@ describe('success slot for completed assessment', () => {
     expect(success.exists()).toBe(true);
     expect(success.find('p').exists()).toBe(false);
 
-    const message = success.find('marquee');
+    const message = success.find('.success-slot');
     expect(message.exists()).toBe(true);
     expect(message.text()).toBe('Success Slot');
 

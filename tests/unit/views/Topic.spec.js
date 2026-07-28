@@ -61,21 +61,22 @@ describe('Topic', () => {
     expect(wrapper.vm.$.provides.store).toEqual(TopicStore);
   });
 
-  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
-    const next = vi.fn();
-    Topic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
-    expect(next).toHaveBeenCalledTimes(1);
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', async () => {
+    const afterEnter = await Topic.beforeRouteEnter(
+      { meta: { skipFetchingData: true } },
+      {},
+    );
+    expect(afterEnter).toEqual(expect.any(Function));
     expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
     // now call without `skipFetchingData`
     const params = {
-      to: { name: 'foo', meta: {} },
+      to: { name: 'foo', meta: {}, params: {} },
       from: { name: 'bar' },
-      next: vi.fn(),
     };
-    Topic.beforeRouteEnter(params.to, params.from, params.next);
+    await Topic.beforeRouteEnter(params.to, params.from);
     expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
     expect(fetchDataForRouteEnter)
-      .toHaveBeenCalledWith(params.to, params.from, params.next);
+      .toHaveBeenCalledWith(params.to, params.from, expect.any(Function));
   });
 
   async function testRenderedMessageWithProvide(provide) {

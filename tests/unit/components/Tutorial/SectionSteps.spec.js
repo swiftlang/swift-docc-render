@@ -178,12 +178,13 @@ describe('SectionSteps', () => {
       provide: {
         isTargetIDE: false,
         store: TopicStore,
-        references: {},
       },
       stubs: {
         Asset: true,
+        CodePreview: true,
         CodeListing: true,
         MobileCodeListing: true,
+        MobileCodePreview: true,
         GenericModal: true,
       },
     });
@@ -212,12 +213,13 @@ describe('SectionSteps', () => {
       provide: {
         isTargetIDE: false,
         store: TopicStore,
-        references: {},
       },
       stubs: {
         Asset: true,
+        CodePreview: true,
         CodeListing: true,
         MobileCodeListing: true,
+        MobileCodePreview: true,
         GenericModal: true,
       },
     });

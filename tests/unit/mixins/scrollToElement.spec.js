@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 import * as loading from 'docc-render/utils/loading';
 
-const framesWait = vi.spyOn(loading, 'waitFrames');
+const framesWait = vi.spyOn(loading, 'waitFrames').mockResolvedValue();
 window.innerHeight = 700;
 window.scrollY = 300;
 Object.defineProperty(document.body, 'scrollHeight', {

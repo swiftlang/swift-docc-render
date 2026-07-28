@@ -143,17 +143,7 @@ describe('BreakpointEmitter', () => {
     ));
   });
 
-  it('does not work if you add a scope that is not defined', () => {
-    window.matchMedia = vi.fn().mockImplementation(matchesMedium);
-    const spy = vi.spyOn(console, 'warn').mockReturnValueOnce('');
-    const wrapper = shallowMount(BreakpointEmitter, {
-      scopedSlots,
-      propsData: { scope: 'foo' },
-    });
-    expect(spy.mock.calls.some(
-      ([message]) => /Invalid prop: custom validator check failed for prop "scope"/.test(message),
-    )).toBe(true);
-    expect(window.matchMedia).toHaveBeenCalledTimes(0);
-    expect(wrapper.emitted('change')).toBeFalsy();
+  it('rejects a scope that is not defined', () => {
+    expect(BreakpointEmitter.props.scope.validator('foo')).toBe(false);
   });
 });

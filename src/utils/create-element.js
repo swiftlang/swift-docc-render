@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { h } from 'vue';
+import { h, isVNode } from 'vue';
 
 const eventListeners = listeners => Object.fromEntries(
   Object.entries(listeners || {}).map(([name, listener]) => [
@@ -16,6 +16,16 @@ const eventListeners = listeners => Object.fromEntries(
     listener,
   ]),
 );
+
+const normalizeChildren = (type, children) => {
+  if (typeof type === 'string' || children === undefined || children === null) {
+    return children;
+  }
+  if (typeof children === 'object' && !Array.isArray(children) && !isVNode(children)) {
+    return children;
+  }
+  return { default: () => children };
+};
 
 /**
  * Translates the Vue 2 VNode-data surface used by DocC's schema-driven
@@ -31,7 +41,10 @@ export default function createElement(type, data, children) {
     return h(
       type,
       null,
-      typeof normalizedData === 'function' ? normalizedData() : normalizedData,
+      normalizeChildren(
+        type,
+        typeof normalizedData === 'function' ? normalizedData() : normalizedData,
+      ),
     );
   }
 
@@ -60,5 +73,5 @@ export default function createElement(type, data, children) {
       ...(vnodeChildren === undefined ? {} : { default: () => vnodeChildren }),
     };
   }
-  return h(type, vnodeProps, vnodeChildren);
+  return h(type, vnodeProps, normalizeChildren(type, vnodeChildren));
 }

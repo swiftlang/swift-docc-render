@@ -75,26 +75,31 @@ export default {
       topicData.identifier.interfaceLanguage,
     ].join(),
   },
-  beforeRouteEnter(to, from, next) {
+  async beforeRouteEnter(to, from) {
     if (to.meta.skipFetchingData) {
-      next(vm => vm.newContentMounted());
-      return;
+      return vm => vm.newContentMounted();
     }
-    fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
+    let navigationResult;
+    const data = await fetchDataForRouteEnter(to, from, (result) => {
+      navigationResult = result;
+    });
+    if (navigationResult !== undefined) return navigationResult;
+    return (vm) => {
       updateLocale(to.params.locale, vm);
       vm.topicData = data; // eslint-disable-line no-param-reassign
-    })).catch(next);
+    };
   },
-  beforeRouteUpdate(to, from, next) {
+  async beforeRouteUpdate(to, from) {
     if (shouldFetchDataForRouteUpdate(to, from)) {
-      fetchDataForRouteEnter(to, from, next).then((data) => {
-        this.topicData = data;
-        updateLocale(to.params.locale, this);
-        next();
-      }).catch(next);
-    } else {
-      next();
+      let navigationResult;
+      const data = await fetchDataForRouteEnter(to, from, (result) => {
+        navigationResult = result;
+      });
+      if (navigationResult !== undefined) return navigationResult;
+      this.topicData = data;
+      updateLocale(to.params.locale, this);
     }
+    return undefined;
   },
   created() {
     this.store.reset();

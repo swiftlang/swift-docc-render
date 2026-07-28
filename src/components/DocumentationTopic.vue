@@ -519,13 +519,13 @@ export default {
       roleHeading,
       abstract,
       sampleCodeDownload,
-      hasAvailability,
+      shouldShowAvailability,
       shouldShowLanguageSwitcher,
       declarations,
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
       (!!roleHeading + !!abstract + !!sampleCodeDownload + !!declarations.length
-        + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
+        + !!shouldShowAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {

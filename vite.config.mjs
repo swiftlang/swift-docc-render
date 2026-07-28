@@ -197,7 +197,7 @@ function highlightLanguageLoaders(additionalLanguages) {
       const loaders = languages.map((language) => {
         const moduleId = customHighlightLanguages.has(language)
           ? path.join(sourceRoot, `utils/custom-highlight-lang/${language}.js`)
-          : `highlight.js/lib/languages/${language}.js`;
+          : `highlight.js/lib/languages/${language}`;
         return `${JSON.stringify(language)}: () => import(${JSON.stringify(moduleId)})`;
       });
       return `export default {${loaders.join(',')}};`;
