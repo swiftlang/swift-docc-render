@@ -30,7 +30,7 @@
           focusInputWhenEmpty
           preventBorderStyle
           selectInputOnFocus
-          @keydown.down.exact.native.prevent="handleDownKeyInput"
+          @keydown.down.exact.prevent="handleDownKeyInput"
           @keydown.enter.exact="handleKeyEnter"
           @focus="focusedInput = true"
           @blur="focusedInput = false"
@@ -71,7 +71,7 @@
                 :url="symbol.path"
                 :tabindex="focusedIndex === index ? '0' : '-1'"
                 :data-index="index"
-                @click.native="closeQuickNavigationModal"
+                @click="closeQuickNavigationModal"
                 ref="match"
               >
                 <div

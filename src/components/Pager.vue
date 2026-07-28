@@ -21,7 +21,7 @@
         <Gutter class="left">
           <ControlPrevious
             :disabled="!hasPreviousPage"
-            @click.native="previous"
+            @click="previous"
           />
         </Gutter>
         <div class="viewport" ref="viewport" role="group">
@@ -39,24 +39,24 @@
         <Gutter class="right">
           <ControlNext
             :disabled="!hasNextPage"
-            @click.native="next"
+            @click="next"
           />
         </Gutter>
       </div>
       <div class="compact-controls" role="group" aria-label="Controls">
         <ControlPrevious
           :disabled="!hasPreviousPage"
-          @click.native="previous"
+          @click="previous"
         />
         <ControlNext
           :disabled="!hasNextPage"
-          @click.native="next"
+          @click="next"
         />
       </div>
       <div class="indicators">
         <a
           v-for="({ key }, n) in keyedPages"
-          :aria-current="isActivePage(n)"
+          :aria-current="isActivePage(n) || null"
           :href="`#${key}`"
           :key="key"
           :class="['indicator', pageStates(n)]"

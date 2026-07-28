@@ -37,7 +37,7 @@
           :id="INDEX_ROOT_KEY"
           :url="technologyPath"
           :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
-          @click.alt.native.prevent="toggleAllNodes"
+          @click.alt.prevent="toggleAllNodes"
         >
           <h2 class="card-link">
             {{ technology }}
@@ -55,13 +55,9 @@
           emit-update
           key-field="uid"
           v-slot="{ item, active, index }"
-          @focusin.native="handleFocusIn"
-          @focusout.native="handleFocusOut"
+          @focusin="handleFocusIn"
+          @focusout="handleFocusOut"
           @update="handleScrollerUpdate"
-          @keydown.alt.up.capture.prevent="focusFirst"
-          @keydown.alt.down.capture.prevent="focusLast"
-          @keydown.up.exact.capture.prevent="focusPrev"
-          @keydown.down.exact.capture.prevent="focusNext"
         >
           <DynamicScrollerItem
             v-bind="{ active, item, dataIndex: index }"
@@ -101,7 +97,8 @@
               v-model="filter"
               :tags="suggestedTags"
               :translatableTags="translatableTags"
-              :selected-tags.sync="selectedTags"
+              :selected-tags="selectedTags"
+              @update:selected-tags="selectedTags = $event"
               :placeholder="$t('filter.title')"
               :should-keep-open-on-blur="false"
               :shouldTruncateTags="shouldTruncateTags"

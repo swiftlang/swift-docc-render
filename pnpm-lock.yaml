@@ -42,9 +42,6 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
         version: 6.0.8(vite@8.1.5(@types/node@26.1.1)(sass@1.102.0)(terser@5.49.0))(vue@3.5.40)
-      '@vue/compat':
-        specifier: 3.5.40
-        version: 3.5.40(vue@3.5.40)
       '@vue/eslint-config-airbnb':
         specifier: ^6.0.0
         version: 6.0.0(eslint-plugin-import@2.32.0)(eslint-plugin-vuejs-accessibility@1.2.0(eslint@7.32.0(supports-color@8.1.1))(supports-color@8.1.1))(eslint@7.32.0(supports-color@8.1.1))(supports-color@8.1.1)(webpack@5.109.0(lightningcss@1.33.0)(postcss@8.5.23))
@@ -1105,11 +1102,6 @@ packages:
     peerDependencies:
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
       vue: ^3.2.25
-
-  '@vue/compat@3.5.40':
-    resolution: {integrity: sha512-VajKNXf4Z6KdeGcuhKzoZmIsji/kZTt675yZlo7vY+sc82G16nSXYyN4uGfexsV5UOvTpHnHSfaLjBpT4++MFw==}
-    peerDependencies:
-      vue: 3.5.40
 
   '@vue/compiler-core@3.5.40':
     resolution: {integrity: sha512-39E8IgOhTbVDnoJFMKc2DvYnypcZwUqgUhQkccva/0m6FUwtIKSGV7n1hpVmYcFaoRAwf9pBcwnKlCEsN63ZEQ==}
@@ -4831,14 +4823,6 @@ snapshots:
     dependencies:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.1.5(@types/node@26.1.1)(sass@1.102.0)(terser@5.49.0)
-      vue: 3.5.40
-
-  '@vue/compat@3.5.40(vue@3.5.40)':
-    dependencies:
-      '@babel/parser': 7.29.7
-      entities: 7.0.1
-      estree-walker: 2.0.2
-      source-map-js: 1.2.1
       vue: 3.5.40
 
   '@vue/compiler-core@3.5.40':

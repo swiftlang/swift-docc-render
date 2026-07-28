@@ -9,16 +9,6 @@
 */
 
 module.exports = {
-  globals: {
-    'vue-jest': {
-      compilerOptions: {
-        whitespace: 'preserve',
-        compatConfig: {
-          MODE: 2,
-        },
-      },
-    },
-  },
   moduleFileExtensions: ['js', 'json', 'vue'],
   testMatch: ['**/tests/unit/**/*.spec.js'],
   transform: {
@@ -35,7 +25,6 @@ module.exports = {
     '^highlight-js-alias/(.*)$': '<rootDir>/node_modules/highlight.js/$1',
     '^virtual:swift-docc-highlight-languages$': '<rootDir>/tests/unit/highlight-language-loaders.js',
     '^vue-virtual-scroller$': '<rootDir>/tests/unit/vue-virtual-scroller.js',
-    '^vue$': '@vue/compat',
     '\\.(gif|jpe?g|png|svg|webp)$': '<rootDir>/tests/unit/file-mock.js',
   },
   testEnvironment: 'jest-environment-jsdom',

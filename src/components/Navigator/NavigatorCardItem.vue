@@ -16,10 +16,10 @@
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
     :hideNavigatorIcon="isGroupMarker"
-    @keydown.left.native.prevent="handleLeftKeydown"
-    @keydown.right.exact.native.prevent="handleRightKeydown"
-    @keydown.enter.native.prevent="clickReference"
-    @keydown.alt.right.native.prevent="toggleEntireTree"
+    @keydown.left.prevent="handleLeftKeydown"
+    @keydown.right.exact.prevent="handleRightKeydown"
+    @keydown.enter.prevent="clickReference"
+    @keydown.alt.right.prevent="toggleEntireTree"
   >
     <template #depth-spacer>
       <span
@@ -94,8 +94,8 @@
         :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
         class="leaf-link"
         ref="reference"
-        @click.exact.native="handleClick"
-        @click.alt.native.prevent="toggleEntireTree"
+        @click.exact="handleClick"
+        @click.alt.prevent="toggleEntireTree"
       >
         <HighlightMatches
           :text="item.title"

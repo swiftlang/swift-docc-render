@@ -56,10 +56,6 @@ const Theme = {
 
 export default {
   name: 'GenericModal',
-  model: {
-    prop: 'visible',
-    event: 'update:visible',
-  },
   components: { CloseIcon, PortalSource: Portal },
   props: {
     visible: {

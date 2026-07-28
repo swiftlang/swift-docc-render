@@ -250,9 +250,6 @@ export default defineConfig(({ command, mode }) => {
         template: {
           compilerOptions: {
             whitespace: 'preserve',
-            compatConfig: {
-              MODE: 2,
-            },
             isCustomElement: tag => tag.startsWith('custom-'),
           },
         },
@@ -262,7 +259,6 @@ export default defineConfig(({ command, mode }) => {
     ],
     resolve: {
       alias: [
-        { find: /^vue$/, replacement: '@vue/compat' },
         { find: '@', replacement: sourceRoot },
         { find: 'docc-render', replacement: sourceRoot },
         { find: 'theme', replacement: sourceRoot },

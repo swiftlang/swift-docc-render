@@ -148,6 +148,7 @@ describe('QuickNavigationModal', () => {
       positionReversed: false,
       preventBorderStyle: true,
       disabled: false,
+      modelValue: '',
       value: '',
       preventedBlur: false,
       selectedTags: [],
@@ -504,7 +505,7 @@ describe('QuickNavigationModal', () => {
         },
         mocks,
       });
-      expect(w.findComponent(FilterInput).props('value')).toBe('foo');
+      expect(w.findComponent(FilterInput).props('modelValue')).toBe('foo');
     });
 
     it('defaults userInput to empty string when initialFilterText is not provided', () => {
@@ -515,7 +516,7 @@ describe('QuickNavigationModal', () => {
         },
         mocks,
       });
-      expect(w.findComponent(FilterInput).props('value')).toBe('');
+      expect(w.findComponent(FilterInput).props('modelValue')).toBe('');
     });
   });
 });

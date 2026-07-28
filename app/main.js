@@ -8,15 +8,11 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { configureCompat, createApp, h } from 'vue';
+import { createApp, h } from 'vue';
 import App from '@/App.vue';
 import SwiftDocCRenderPlugin from '@/setup-utils/SwiftDocCRenderPlugin';
 import SwiftDocCRenderRouter from '@/setup-utils/SwiftDocCRenderRouter';
 import SwiftDocCRenderi18n from '@/setup-utils/SwiftDocCRenderi18n';
-
-configureCompat({
-  MODE: 2,
-});
 
 document.documentElement.classList.remove('no-js');
 

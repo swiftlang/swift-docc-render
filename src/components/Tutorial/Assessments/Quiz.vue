@@ -46,7 +46,7 @@
     <div class="controls">
       <ButtonLink
         class="check"
-        @click.native="submit"
+        @click="submit"
         :disabled="selectedIndex === null || showNextQuestion"
       >
        {{ $t('tutorials.submit') }}
@@ -54,7 +54,7 @@
       <ButtonLink
         v-if="isLast"
         class="results"
-        @click.native="seeResults"
+        @click="seeResults"
         :disabled="!showNextQuestion"
       >
         {{ $t('tutorials.next') }}
@@ -63,7 +63,7 @@
         v-else
         class="next"
         :disabled="!showNextQuestion"
-        @click.native="advance"
+        @click="advance"
       >
         {{ $t('tutorials.assessment.next-question') }}
       </ButtonLink>
@@ -137,7 +137,7 @@ export default {
         : ResetCircleIcon;
     },
     submit() {
-      this.$set(this.userChoices, this.selectedIndex, { checked: true });
+      this.userChoices[this.selectedIndex] = { checked: true };
       this.checkedIndex = this.selectedIndex;
       this.$emit('submit');
     },

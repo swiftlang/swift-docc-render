@@ -9,9 +9,9 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
+import { reactive } from 'vue';
 import Hierarchy from 'docc-render/components/DocumentationTopic/Hero/Hierarchy.vue';
 import Badge from 'docc-render/components/Badge.vue';
-import Vue from 'vue';
 
 const {
   HierarchyCollapsedItems,
@@ -48,7 +48,7 @@ const qux = {
 
 const currentPath = '/foo';
 
-const store = Vue.observable({
+const store = reactive({
   state: {
     contentWidth: 1800,
   },

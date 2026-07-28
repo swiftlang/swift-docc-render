@@ -41,10 +41,6 @@ module.exports = {
     'template-curly-spacing': 'off',
     'vue/experimental-script-setup-vars': 'off',
     'vue/multi-word-component-names': 'off',
-    // The Vue 3 compatibility build still needs these modifiers where events
-    // must target the root element of legacy shallow-rendered components.
-    'vue/no-deprecated-v-bind-sync': 'off',
-    'vue/no-deprecated-v-on-native-modifier': 'off',
     'function-paren-newline': ['error', 'consistent'],
     'function-call-argument-newline': 'off',
     'vuejs-accessibility/form-control-has-label': 'off',

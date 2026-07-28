@@ -10,18 +10,18 @@
 
 <template>
   <BaseDropdown
-    :value="value"
+    :model-value="value"
     :class="{ [OpenedClass]: isOpen, 'dropdown-small': isSmall }"
     class="dropdown-custom"
   >
     <template #dropdown="{ dropdownClasses }">
-      <span :id="`DropdownLabel_${_uid}`" class="visuallyhidden">{{ ariaLabel }}</span>
+      <span :id="`DropdownLabel_${componentId}`" class="visuallyhidden">{{ ariaLabel }}</span>
       <button
         ref="dropdownToggle"
-        :id="`DropdownToggle_${_uid}`"
+        :id="`DropdownToggle_${componentId}`"
         :class="dropdownClasses"
         class="form-dropdown-toggle"
-        :aria-labelledby="`DropdownLabel_${_uid} DropdownToggle_${_uid}`"
+        :aria-labelledby="`DropdownLabel_${componentId} DropdownToggle_${componentId}`"
         :aria-expanded="isOpen ? 'true' : 'false'"
         aria-haspopup="true"
         @click="toggleDropdown"
@@ -58,6 +58,7 @@
 <script>
 
 import BaseDropdown from 'docc-render/components/BaseDropdown.vue';
+import { useId } from 'vue';
 
 const OpenedClass = 'is-open';
 const OptionClass = 'option';
@@ -65,6 +66,9 @@ const ActiveOptionClass = 'option-active';
 
 export default {
   name: 'DropdownCustom',
+  setup() {
+    return { componentId: useId() };
+  },
   components: { BaseDropdown },
   constants: {
     OpenedClass,

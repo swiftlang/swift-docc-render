@@ -32,7 +32,10 @@ export default {
   name: 'HierarchyItem',
   components: { NavMenuItemBase },
   props: {
-    isCollapsed: Boolean,
+    isCollapsed: {
+      type: Boolean,
+      default: undefined,
+    },
     url: {
       type: String,
       required: false,

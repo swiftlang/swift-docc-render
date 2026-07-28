@@ -62,7 +62,7 @@
                 @close="handleToggleSidenav(breakpoint)"
               >
                 <template v-if="enableQuickNavigation" #filter>
-                  <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                  <QuickNavigationButton @click="openQuickNavigationModal" />
                 </template>
                 <template #above-navigator-head>
                   <slot name="above-navigator-head"/>

@@ -43,7 +43,7 @@
           <li
             :value="option.title"
             :class="[OptionClass, { [ActiveOptionClass] : currentOption === option.title }]"
-            :aria-selected="currentOption === option.title"
+            :aria-selected="currentOption === option.title ? 'true' : null"
             :aria-current="ariaCurrent(option.title)"
             :tabindex="-1"
             @click="setActive(option, navigate, closeAndFocusToggler, $event)"
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     ariaCurrent(title) {
-      return this.currentOption === title ? 'section' : false;
+      return this.currentOption === title ? 'section' : null;
     },
     setActive(option, navigate, closeAndFocusToggler, $event) {
       navigate($event);

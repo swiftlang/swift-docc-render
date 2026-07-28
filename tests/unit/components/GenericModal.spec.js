@@ -87,7 +87,7 @@ describe('GenericModal', () => {
     });
 
     const modal = wrapper.findComponent('.generic-modal');
-    expect(wrapper.findComponent(Portal).attributes('disabled')).toBeFalsy();
+    expect(wrapper.findComponent(Portal).props('disabled')).toBe(false);
     expect(modal.attributes('style')).toBeUndefined();
   });
 

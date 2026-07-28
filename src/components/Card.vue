@@ -62,10 +62,14 @@ import DiagonalArrowIcon from 'theme/components/Icons/DiagonalArrowIcon.vue';
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import CardSize from 'docc-render/constants/CardSize';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
+import { useId } from 'vue';
 import CardCover from './CardCover.vue';
 
 export default {
   name: 'Card',
+  setup() {
+    return { componentId: useId() };
+  },
   components: {
     Reference,
     DiagonalArrowIcon,
@@ -78,9 +82,9 @@ export default {
   },
   mixins: [referencesProvider],
   computed: {
-    titleId: ({ _uid }) => `card_title_${_uid}`,
-    contentId: ({ _uid }) => `card_content_${_uid}`,
-    eyebrowId: ({ _uid }) => `card_eyebrow_${_uid}`,
+    titleId: ({ componentId }) => `card_title_${componentId}`,
+    contentId: ({ componentId }) => `card_content_${componentId}`,
+    eyebrowId: ({ componentId }) => `card_eyebrow_${componentId}`,
     hasDefaultSlot() {
       const content = this.$slots.default ? this.$slots.default() : [];
       return content.some(node => node.children !== '');

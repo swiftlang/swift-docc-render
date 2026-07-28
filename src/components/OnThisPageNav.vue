@@ -18,7 +18,7 @@
         <router-link
           :to="item.url"
           class="base-link"
-          @click.native="handleFocusAndScroll(item.anchor)"
+          @click="handleFocusAndScroll(item.anchor)"
         >
           <component :is="getWrapperComponent(item)">
             {{ getTextContent(item) }}

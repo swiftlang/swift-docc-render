@@ -13,7 +13,7 @@
     class="tutorials-navigation-link"
     :class="{ active }"
     :to="fragment"
-    @click.native="handleFocusAndScroll(fragment.hash)"
+    @click="handleFocusAndScroll(fragment.hash)"
   >
     <slot />
   </router-link>

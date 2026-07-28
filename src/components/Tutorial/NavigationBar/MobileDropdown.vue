@@ -45,7 +45,7 @@
                     :to="{ path: section.path, query: $route.query }"
                     :value="section.title"
                     :class="classesFor(section)"
-                    @click.native="onClick(section)"
+                    @click="onClick(section)"
                   >
                     {{ section.title}}
                   </router-link>

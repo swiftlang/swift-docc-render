@@ -57,7 +57,7 @@ describe('DropdownCustom', () => {
     // assert exist
     expect(root.exists()).toBe(true);
     // assert value
-    expect(root.props()).toHaveProperty('value', defaultProps.value);
+    expect(root.props()).toHaveProperty('modelValue', defaultProps.value);
     // assert isOpen class
     expect(root.classes()).not.toContain(OpenedClass);
     wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
@@ -76,7 +76,10 @@ describe('DropdownCustom', () => {
     wrapper = createWrapper();
     const label = wrapper.findComponent('.visuallyhidden');
     expect(label.text()).toBe(defaultProps.ariaLabel);
-    expect(label.attributes()).toHaveProperty('id', expect.stringMatching(/DropdownLabel_\d/));
+    expect(label.attributes()).toHaveProperty(
+      'id',
+      expect.stringMatching(/DropdownLabel_[\w-]+/),
+    );
   });
 
   describe('toggle button', () => {
@@ -95,7 +98,7 @@ describe('DropdownCustom', () => {
       expect(attrs)
         .toHaveProperty('aria-labelledby', expect.stringMatching(/(DropdownLabel_).*(DropdownToggle_)/));
       // id
-      expect(attrs).toHaveProperty('id', expect.stringMatching(/DropdownToggle_\d/));
+      expect(attrs).toHaveProperty('id', expect.stringMatching(/DropdownToggle_[\w-]+/));
       // content
       expect(toggle.find('.form-dropdown-title').text()).toEqual(defaultProps.value);
     });

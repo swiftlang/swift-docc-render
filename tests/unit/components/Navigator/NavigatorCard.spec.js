@@ -292,6 +292,7 @@ describe('NavigatorCard', () => {
       disabled: false,
       focusInputWhenCreated: false,
       focusInputWhenEmpty: false,
+      modelValue: '',
       placeholder: 'filter.title',
       positionReversed: true,
       preventBorderStyle: false,
@@ -428,7 +429,7 @@ describe('NavigatorCard', () => {
     });
 
     // now to do a search, so the position of the focused item changes.
-    wrapper.findComponent(FilterInput).vm.$emit('input', root0.title);
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0.title);
     await flushPromises();
     // re-fetch the items
     items = wrapper.findAllComponents(NavigatorCardItem);
@@ -440,7 +441,7 @@ describe('NavigatorCard', () => {
     // assert that the focusIndex was set to the first item
     expect(wrapper.vm.focusedIndex).toBe(0);
     // remove any filters
-    wrapper.findComponent(FilterInput).vm.$emit('input', '');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', '');
     await flushPromises();
     // assert that the focusIndex was set to the activeUID
     expect(wrapper.vm.focusedIndex).toBe(1);
@@ -518,7 +519,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const scroller = wrapper.findComponent(DynamicScroller);
     expect(scroller.isVisible()).toBe(true);
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'bad-query');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'bad-query');
     await wrapper.vm.$nextTick();
     expect(scroller.isVisible()).toBe(false);
   });
@@ -528,7 +529,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const scroller = wrapper.findComponent(DynamicScroller);
     expect(scroller.isVisible()).toBe(true);
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'bad-query');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'bad-query');
     await wrapper.vm.$nextTick();
     expect(scroller.props('items')).toEqual([]);
     expect(scroller.isVisible()).toBe(false);
@@ -619,7 +620,7 @@ describe('NavigatorCard', () => {
       let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(4);
       // do a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1.title);
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child1.title);
       await flushPromises();
 
       // assert filtered items
@@ -680,7 +681,7 @@ describe('NavigatorCard', () => {
       let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(4);
       // do a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1.title);
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child1.title);
       await flushPromises();
 
       // assert filtered items
@@ -956,7 +957,7 @@ describe('NavigatorCard', () => {
       // assert all items are as we expect them to be
       expect(allItems).toHaveLength(2);
       // apply a broad filter across items
-      wrapper.findComponent(FilterInput).vm.$emit('input', 'First Child');
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'First Child');
       await flushPromises();
       allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(6);
@@ -1090,7 +1091,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // apply a generic filter with lots of hits
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'Child');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'Child');
     await flushPromises();
     // assert the items rendered
     let all = wrapper.findAllComponents(NavigatorCardItem);
@@ -1164,7 +1165,7 @@ describe('NavigatorCard', () => {
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     const filter = wrapper.findComponent(FilterInput);
     // the filter is on the grandchild of the current activeUID
-    filter.vm.$emit('input', root0Child1GrandChild0.title);
+    filter.vm.$emit('update:modelValue', root0Child1GrandChild0.title);
     await flushPromises();
     // assert list is not scrolled, if item is in viewport or current activeUID is rendered
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
@@ -1198,7 +1199,7 @@ describe('NavigatorCard', () => {
     const filter = wrapper.findComponent(FilterInput);
     await flushPromises();
     // make sure we match at both the top item as well as one of its children
-    filter.vm.$emit('input', 'Second');
+    filter.vm.$emit('update:modelValue', 'Second');
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
@@ -1213,7 +1214,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.findComponent(FilterInput);
     await flushPromises();
-    filter.vm.$emit('input', root0.title);
+    filter.vm.$emit('update:modelValue', root0.title);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
@@ -1301,7 +1302,7 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
     // add filtering on top
-    filter.vm.$emit('input', root0Child1GrandChild0.title);
+    filter.vm.$emit('update:modelValue', root0Child1GrandChild0.title);
     await flushPromises();
     all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
@@ -1316,7 +1317,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.findComponent(FilterInput);
     await flushPromises();
-    filter.vm.$emit('input', root0Child1.title);
+    filter.vm.$emit('update:modelValue', root0Child1.title);
     await flushPromises();
     // assert match and all if it's parents are visible
     let all = wrapper.findAllComponents(NavigatorCardItem);
@@ -1342,7 +1343,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.findComponent(FilterInput);
     // make sure both child elements match
-    filter.vm.$emit('input', 'Child');
+    filter.vm.$emit('update:modelValue', 'Child');
     await flushPromises();
     // assert only the parens of the match are visible
     const all = wrapper.findAllComponents(NavigatorCardItem);
@@ -1389,7 +1390,7 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child0);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     // filter
-    wrapper.findComponent(FilterInput).vm.$emit('input', root0Child0.title);
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child0.title);
     await flushPromises();
     all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -1453,12 +1454,12 @@ describe('NavigatorCard', () => {
   it('clears previously open items, when filtering and clearing the filter', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'First Child, Depth 2');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'First Child, Depth 2');
     await flushPromises();
     let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
-    wrapper.findComponent(FilterInput).vm.$emit('input', '');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', '');
     await flushPromises();
     all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
@@ -1476,7 +1477,7 @@ describe('NavigatorCard', () => {
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEY, DEFAULT_STORED_STATE);
     await flushPromises();
-    wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1GrandChild0.title);
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child1GrandChild0.title);
     wrapper.findComponent(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     await flushPromises();
     expect(sessionStorage.set).toHaveBeenCalledTimes(3);
@@ -1758,7 +1759,7 @@ describe('NavigatorCard', () => {
     // assert there are no Articles for example
     expect(filter.props('tags')).toEqual([FILTER_TAGS.tutorials, FILTER_TAGS.sampleCode]);
     // apply a filter
-    filter.vm.$emit('input', sampleCode.title);
+    filter.vm.$emit('update:modelValue', sampleCode.title);
     await flushPromises();
     expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode]);
     await wrapper.setProps({ apiChanges });
@@ -1829,7 +1830,7 @@ describe('NavigatorCard', () => {
       });
       expect(allItems.at(3).props('item')).toEqual(root1);
       // Ensure all first children should show up
-      filter.vm.$emit('input', 'First Child');
+      filter.vm.$emit('update:modelValue', 'First Child');
       await flushPromises();
       allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert that filtering opens everything as usual, showing groupMarkers as well
@@ -1852,7 +1853,7 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       const input = wrapper.findComponent(FilterInput);
-      input.vm.$emit('input', groupMarker.title);
+      input.vm.$emit('update:modelValue', groupMarker.title);
       await flushPromises();
       let items = wrapper.findAllComponents(NavigatorCardItem);
       // parent + group and 2 siblings
@@ -1868,7 +1869,7 @@ describe('NavigatorCard', () => {
       expect(items).toHaveLength(5);
       expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
       // assert that partial matches of group and children show only those that match
-      input.vm.$emit('input', 'First Child');
+      input.vm.$emit('update:modelValue', 'First Child');
       await flushPromises();
       items = wrapper.findAllComponents(NavigatorCardItem);
       expect(items).toHaveLength(5);
@@ -1894,7 +1895,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.findComponent(FilterInput);
       // apply a filter that matches an element
-      filter.vm.$emit('input', root0Child1Clone.title);
+      filter.vm.$emit('update:modelValue', root0Child1Clone.title);
       await flushPromises();
       const items = wrapper.findAllComponents(NavigatorCardItem);
       // parent + group and 1 item
@@ -2306,7 +2307,7 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
       // initiate a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', root1.title);
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root1.title);
       // we have to manually remove it from the DOM, as we are mocking lots of stuff
       detachDivWithID(root0Child0.uid);
       await wrapper.vm.$nextTick();
@@ -2530,7 +2531,7 @@ describe('NavigatorCard', () => {
       const focusSpy = jest.spyOn(button.element, 'focus');
       await flushPromises();
       // initiate a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', 'Child');
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'Child');
       await flushPromises();
       // trigger an update
       wrapper.findComponent(DynamicScroller).vm.$emit('update');

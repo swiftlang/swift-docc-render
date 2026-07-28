@@ -37,7 +37,6 @@
     "@babel/preset-env": "^7.28.5",
     "@babel/eslint-parser": "^7.12.16",
     "@vitejs/plugin-vue": "^6.0.8",
-    "@vue/compat": "3.5.40",
     "@vue/eslint-config-airbnb": "^6.0.0",
     "@vue/test-utils": "^2.4.11",
     "@vue/vue3-jest": "27.0.0",

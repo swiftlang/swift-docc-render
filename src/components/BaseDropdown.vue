@@ -9,16 +9,20 @@
 -->
 
 <template>
-  <div class="form-element">
+  <div
+    class="form-element"
+    :class="$attrs.class"
+    :style="$attrs.style"
+  >
     <slot
       name="dropdown"
       :dropdownClasses="dropdownClasses"
-      :value="value"
+      :value="effectiveValue"
     >
       <select
-        v-model="modelValue"
+        v-model="selectedValue"
         :class="dropdownClasses"
-        v-bind="$attrs"
+        v-bind="selectAttrs"
       >
         <slot />
       </select>
@@ -47,6 +51,10 @@ export default {
   name: 'BaseDropdown',
   inheritAttrs: false,
   props: {
+    modelValue: {
+      type: String,
+      default: undefined,
+    },
     value: {
       type: String,
       default: '',
@@ -56,15 +64,25 @@ export default {
     InlineChevronDownIcon,
   },
   computed: {
-    modelValue: {
-      get: ({ value }) => value,
+    selectedValue: {
+      get: ({ effectiveValue }) => effectiveValue,
       set(value) {
+        this.$emit('update:modelValue', value);
         this.$emit('input', value);
       },
     },
-    dropdownClasses({ value }) {
+    effectiveValue: ({ modelValue, value }) => (
+      modelValue === undefined ? value : modelValue
+    ),
+    selectAttrs() {
+      const attrs = { ...this.$attrs };
+      delete attrs.class;
+      delete attrs.style;
+      return attrs;
+    },
+    dropdownClasses({ effectiveValue }) {
       return ['form-dropdown', {
-        'form-dropdown-selectnone': value === '',
+        'form-dropdown-selectnone': effectiveValue === '',
         'no-eyebrow': !this.$slots.eyebrow,
       }];
     },

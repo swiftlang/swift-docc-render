@@ -638,7 +638,7 @@ describe('ContentNode', () => {
         vertical: false,
       });
       // assert we passed the correct scoped slots
-      expect(tabs.vm.$scopedSlots).toEqual({
+      expect(tabs.vm.$slots).toEqual({
         Foo: expect.any(Function),
         Bar: expect.any(Function),
       });
@@ -1719,23 +1719,23 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
-            <tbody>
-              <tr>
-                <td class="left-cell">row0col0</td>
-                <td class="right-cell">row0col1</td>
-                <td class="center-cell">row0col2</td>
-                <td>row0col3</td>
-              </tr>
-              <tr>
-                <td class="left-cell">row1col0</td>
-                <td class="right-cell">row1col1</td>
-                <td class="center-cell">row1col2</td>
-                <td>row1col3</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="false">
+  <tbody>
+    <tr>
+      <td class="left-cell">row0col0</td>
+      <td class="right-cell">row0col1</td>
+      <td class="center-cell">row0col2</td>
+      <td>row0col3</td>
+    </tr>
+    <tr>
+      <td class="left-cell">row1col0</td>
+      <td class="right-cell">row1col1</td>
+      <td class="center-cell">row1col2</td>
+      <td>row1col3</td>
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
 
       it('renders header="both" style tables, with column alignments', () => {
@@ -1747,25 +1747,25 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
-            <thead>
-              <tr>
-                <th scope="col" class="left-cell">row0col0</th>
-                <th scope="col" class="right-cell">row0col1</th>
-                <th scope="col" class="center-cell">row0col2</th>
-                <th scope="col">row0col3</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row" class="left-cell">row1col0</th>
-                <td class="right-cell">row1col1</td>
-                <td class="center-cell">row1col2</td>
-                <td>row1col3</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="false">
+  <thead>
+    <tr>
+      <th scope="col" class="left-cell">row0col0</th>
+      <th scope="col" class="right-cell">row0col1</th>
+      <th scope="col" class="center-cell">row0col2</th>
+      <th scope="col">row0col3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" class="left-cell">row1col0</th>
+      <td class="right-cell">row1col1</td>
+      <td class="center-cell">row1col2</td>
+      <td>row1col3</td>
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
 
       it('renders header="row" style tables, with column alignments', () => {
@@ -1777,25 +1777,25 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
-            <thead>
-              <tr>
-                <th scope="col" class="left-cell">row0col0</th>
-                <th scope="col" class="right-cell">row0col1</th>
-                <th scope="col" class="center-cell">row0col2</th>
-                <th scope="col">row0col3</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="left-cell">row1col0</td>
-                <td class="right-cell">row1col1</td>
-                <td class="center-cell">row1col2</td>
-                <td>row1col3</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="false">
+  <thead>
+    <tr>
+      <th scope="col" class="left-cell">row0col0</th>
+      <th scope="col" class="right-cell">row0col1</th>
+      <th scope="col" class="center-cell">row0col2</th>
+      <th scope="col">row0col3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left-cell">row1col0</td>
+      <td class="right-cell">row1col1</td>
+      <td class="center-cell">row1col2</td>
+      <td>row1col3</td>
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
 
       it('renders header="column" style tables, with column alignments', () => {
@@ -1807,23 +1807,23 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
-            <tbody>
-              <tr>
-                <th scope="row" class="left-cell">row0col0</th>
-                <td class="right-cell">row0col1</td>
-                <td class="center-cell">row0col2</td>
-                <td>row0col3</td>
-              </tr>
-              <tr>
-                <th scope="row" class="left-cell">row1col0</th>
-                <td class="right-cell">row1col1</td>
-                <td class="center-cell">row1col2</td>
-                <td>row1col3</td>
-              </tr>
-            </tbody>
-          </table-stub>
-        `);
+<table-stub spanned="false">
+  <tbody>
+    <tr>
+      <th scope="row" class="left-cell">row0col0</th>
+      <td class="right-cell">row0col1</td>
+      <td class="center-cell">row0col2</td>
+      <td>row0col3</td>
+    </tr>
+    <tr>
+      <th scope="row" class="left-cell">row1col0</th>
+      <td class="right-cell">row1col1</td>
+      <td class="center-cell">row1col2</td>
+      <td>row1col3</td>
+    </tr>
+  </tbody>
+</table-stub>
+`);
       });
     });
   });

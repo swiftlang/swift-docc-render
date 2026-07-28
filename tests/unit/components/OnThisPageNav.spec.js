@@ -8,7 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Vue from 'vue';
+import { reactive } from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import { AppTopID } from '@/constants/AppTopID';
@@ -32,7 +32,7 @@ const sections = [
   },
 ];
 const store = {
-  state: Vue.observable({
+  state: reactive({
     onThisPageSections: sections,
     currentPageAnchor: 'first',
   }),
