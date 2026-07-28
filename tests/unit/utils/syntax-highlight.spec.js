@@ -49,8 +49,9 @@ const tryHighlight = (code, lang) => () => highlight(code, lang);
 describe("syntax-highlight", () => {
   // reset the imported modules between tests
   beforeEach(async () => {
-    jest.resetModules();
+    vi.resetModules();
     hljs = await import("highlight.js/lib/core");
+    hljs.listLanguages().forEach(language => hljs.unregisterLanguage(language));
     ({ highlightContent, highlight, registerHighlightLanguage, LanguageAliasCacheMap } =
       await import("docc-render/utils/syntax-highlight"));
   });
@@ -60,8 +61,8 @@ describe("syntax-highlight", () => {
     const { highlightedCode, sanitizedCode } = await prepare(content, "swift");
     expect(sanitizedCode).toEqual(highlightedCode);
     expect(sanitizedCode).toMatchInlineSnapshot(`
-      <span class="syntax-keyword">let</span> name <span class="syntax-operator">=</span> <span class="syntax-string">"Rosa"</span>
-      <span class="syntax-keyword">let</span> personalizedGreeting <span class="syntax-operator">=</span> <span class="syntax-string">"Welcome, <span class="syntax-subst">\\(name)</span>!"</span>
+      "<span class="syntax-keyword">let</span> name <span class="syntax-operator">=</span> <span class="syntax-string">"Rosa"</span>
+      <span class="syntax-keyword">let</span> personalizedGreeting <span class="syntax-operator">=</span> <span class="syntax-string">"Welcome, <span class="syntax-subst">\\(name)</span>!"</span>"
     `);
   });
 
@@ -79,14 +80,14 @@ describe("syntax-highlight", () => {
     const { highlightedCode, sanitizedCode } = await prepare(content, "swift");
     expect(sanitizedCode).not.toEqual(highlightedCode);
     expect(sanitizedCode).toMatchInlineSnapshot(`
-      <span class="syntax-keyword">let</span> banner <span class="syntax-operator">=</span> <span class="syntax-string">"""</span>
+      "<span class="syntax-keyword">let</span> banner <span class="syntax-operator">=</span> <span class="syntax-string">"""</span>
       <span class="syntax-string">          __,</span>
       <span class="syntax-string">         (           o  /) _/_</span>
       <span class="syntax-string">          \`.  , , , ,  //  /</span>
       <span class="syntax-string">        (___)(_(_/_(_ //_ (__</span>
       <span class="syntax-string">                     /)</span>
       <span class="syntax-string">                    (/</span>
-      <span class="syntax-string">        """</span>
+      <span class="syntax-string">        """</span>"
     `);
   });
 
@@ -105,7 +106,7 @@ describe("syntax-highlight", () => {
     const { highlightedCode, sanitizedCode } = await prepare(content, "js");
     expect(sanitizedCode).not.toEqual(highlightedCode);
     expect(sanitizedCode).toMatchInlineSnapshot(`
-      <span class="syntax-keyword">let</span> multiline = <span class="syntax-string">""</span><span class="syntax-string">"</span>
+      "<span class="syntax-keyword">let</span> multiline = <span class="syntax-string">""</span><span class="syntax-string">"</span>
       <span class="syntax-string">Needs</span>
       <span class="syntax-string"></span>
       <span class="syntax-string">Spaces</span>
@@ -113,7 +114,7 @@ describe("syntax-highlight", () => {
       <span class="syntax-string">Between</span>
       <span class="syntax-string"></span>
       <span class="syntax-string">Lines</span>
-      <span class="syntax-string">"</span><span class="syntax-string">""</span>
+      <span class="syntax-string">"</span><span class="syntax-string">""</span>"
     `);
   });
 
@@ -128,11 +129,11 @@ describe("syntax-highlight", () => {
     const { highlightedCode, sanitizedCode } = await prepare(content, "js");
     expect(sanitizedCode).not.toEqual(highlightedCode);
     expect(sanitizedCode).toMatchInlineSnapshot(`
-      <span class="syntax-keyword">function</span> <span class="syntax-title function_">someName</span>(<span class="syntax-params">foo,</span>
+      "<span class="syntax-keyword">function</span> <span class="syntax-title function_">someName</span>(<span class="syntax-params">foo,</span>
       <span class="syntax-params">          bar,</span>
       <span class="syntax-params">          baz</span>) {
-      <span class="syntax-title function_">foo</span>()
-      }
+        <span class="syntax-title function_">foo</span>()
+      }"
     `);
   });
 
@@ -149,13 +150,13 @@ describe("syntax-highlight", () => {
     const { highlightedCode, sanitizedCode } = await prepare(content, 'swift');
     expect(sanitizedCode).not.toEqual(highlightedCode);
     expect(sanitizedCode).toMatchInlineSnapshot(`
-      <span class="syntax-keyword">let</span> multiline <span class="syntax-operator">=</span> <span class="syntax-string">"""</span>
+      "<span class="syntax-keyword">let</span> multiline <span class="syntax-operator">=</span> <span class="syntax-string">"""</span>
       <span class="syntax-string">a <span class="syntax-subst">\\</span></span>
       <span class="syntax-string">b</span>
       <span class="syntax-string"></span>
       <span class="syntax-string">c <span class="syntax-subst">\\</span></span>
       <span class="syntax-string">d</span>
-      <span class="syntax-string">"""</span>
+      <span class="syntax-string">"""</span>"
     `);
   });
 
@@ -168,11 +169,11 @@ describe("syntax-highlight", () => {
 }</span>`;
     sanitizeMultilineNodes(code);
     expect(code.innerHTML).toMatchInlineSnapshot(`
-      <span class="syntax-function">function <span class="syntax-title function_">someName</span>(<span class="syntax-params">foo,</span></span>
+      "<span class="syntax-function">function <span class="syntax-title function_">someName</span>(<span class="syntax-params">foo,</span></span>
       <span class="syntax-function"><span class="syntax-params">          bar,</span></span>
       <span class="syntax-function"><span class="syntax-params">          baz</span>)</span> <span class="syntax-function-body">{</span>
       <span class="syntax-function-body"><span class="syntax-title function_">foo</span>()</span>
-      <span class="syntax-function-body">}</span>
+      <span class="syntax-function-body">}</span>"
     `);
   });
 
@@ -180,7 +181,7 @@ describe("syntax-highlight", () => {
     const content = ["class func foo() async throws -> [Bar]"];
     const { highlightedCode } = await prepare(content, "swift");
     expect(highlightedCode).toMatchInlineSnapshot(
-      `<span class="syntax-keyword">class</span> <span class="syntax-keyword">func</span> <span class="syntax-title function_">foo</span>() <span class="syntax-keyword">async</span> <span class="syntax-keyword">throws</span> -&gt; [<span class="syntax-type">Bar</span>]`
+      `"<span class="syntax-keyword">class</span> <span class="syntax-keyword">func</span> <span class="syntax-title function_">foo</span>() <span class="syntax-keyword">async</span> <span class="syntax-keyword">throws</span> -&gt; [<span class="syntax-type">Bar</span>]"`
     );
   });
 
@@ -194,11 +195,11 @@ describe("syntax-highlight", () => {
     ];
     const { highlightedCode } = await prepare(content, "swift");
     expect(highlightedCode).toMatchInlineSnapshot(`
-      <span class="syntax-keyword">var</span> protocolMock <span class="syntax-operator">=</span> <span class="syntax-literal">true</span> <span class="syntax-comment">// 'protocol' is not highlighted</span>
-      <span class="syntax-keyword">var</span> myenum <span class="syntax-operator">=</span> <span class="syntax-literal">true</span> <span class="syntax-comment">// 'enum' is not highlighted</span>
+      "<span class="syntax-keyword">var</span> protocolMock <span class="syntax-operator">=</span> <span class="syntax-literal">true</span>  <span class="syntax-comment">// 'protocol' is not highlighted</span>
+      <span class="syntax-keyword">var</span> myenum <span class="syntax-operator">=</span> <span class="syntax-literal">true</span>  <span class="syntax-comment">// 'enum' is not highlighted</span>
       <span class="syntax-keyword">if</span> <span class="syntax-type">FooConfig</span>.supportsReconstruction(.someClassification) {
-      configuration.fooReconstruction <span class="syntax-operator">=</span> .someprotocolextensionclass
-      }
+          configuration.fooReconstruction <span class="syntax-operator">=</span> .someprotocolextensionclass
+      }"
     `);
   });
 
@@ -245,7 +246,7 @@ describe("syntax-highlight", () => {
     ];
     const { highlightedCode } = await prepare(content, "markdown");
     expect(highlightedCode).toMatchInlineSnapshot(`
-      <span class="syntax-section"># h1</span>
+      "<span class="syntax-section"># h1</span>
       <span class="syntax-section">## h2</span>
       <span class="syntax-section">### h3</span>
 
@@ -275,14 +276,14 @@ describe("syntax-highlight", () => {
       <span class="syntax-quote">&gt; </span><span class="syntax-quote">This is a normal blockquote</span>
 
       <span class="syntax-title">@Directive</span>(time: <span class="syntax-number">42</span>, files: example.zip) {
-      <span class="syntax-title">@NestedDirective</span>
+        <span class="syntax-title">@NestedDirective</span>
       }
 
       \`\`<span class="syntax-link">FakeSymbol</span>\`\`
 
       &lt;<span class="syntax-link">doc:FakeSymbol</span>&gt;
 
-      &lt;<span class="syntax-link">doc:/path/to/fakesymbol</span>&gt;
+      &lt;<span class="syntax-link">doc:/path/to/fakesymbol</span>&gt;"
     `);
   });
 
@@ -293,9 +294,9 @@ describe("syntax-highlight", () => {
     ];
     const { highlightedCode } = await prepare(content, "pkl");
     expect(highlightedCode).toMatchInlineSnapshot(`
-        <span class="syntax-property">foo</span> = <span class="syntax-number">1</span>
-        <span class="syntax-property">bar</span> = <span class="syntax-string">"Hello <span class="syntax-subst">\\(foo)</span>"</span>
-      `
+      "<span class="syntax-property">foo</span> = <span class="syntax-number">1</span>
+      <span class="syntax-property">bar</span> = <span class="syntax-string">"Hello <span class="syntax-subst">\\(foo)</span>"</span>"
+    `
     );
   });
 

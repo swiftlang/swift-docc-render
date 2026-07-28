@@ -13,35 +13,35 @@ import { createRouter, createWebHistory } from 'vue-router';
 import SwiftDocCRenderRouter from 'docc-render/setup-utils/SwiftDocCRenderRouter';
 import FetchError from 'docc-render/errors/FetchError';
 
-jest.mock('docc-render/utils/theme-settings', () => ({
+vi.mock('docc-render/utils/theme-settings', () => ({
   baseUrl: '/',
-  getSetting: jest.fn(),
+  getSetting: vi.fn(),
 }));
 
 const mockInstance = {
-  onError: jest.fn(),
-  isReady: jest.fn(() => ({
-    then: jest.fn(),
+  onError: vi.fn(),
+  isReady: vi.fn(() => ({
+    then: vi.fn(),
   })),
-  replace: jest.fn(),
-  beforeEach: jest.fn(),
+  replace: vi.fn(),
+  beforeEach: vi.fn(),
 };
 const mockHistory = {};
 
-jest.mock('vue-router', () => ({
-  createRouter: jest.fn(() => mockInstance),
-  createWebHistory: jest.fn(() => mockHistory),
+vi.mock('vue-router', () => ({
+  createRouter: vi.fn(() => mockInstance),
+  createWebHistory: vi.fn(() => mockHistory),
 }));
-jest.mock('docc-render/utils/router-utils', () => ({
-  restoreScrollOnReload: jest.fn(),
-  scrollBehavior: jest.fn(),
-  saveScrollOnReload: jest.fn(),
+vi.mock('docc-render/utils/router-utils', () => ({
+  restoreScrollOnReload: vi.fn(),
+  scrollBehavior: vi.fn(),
+  saveScrollOnReload: vi.fn(),
 }));
 
 describe('SwiftDocCRenderRouter', () => {
   beforeEach(() => {
     window.removeEventListener('unload', saveScrollOnReload);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('creates a new VueRouter instance and attaches the correct hooks', () => {
@@ -116,11 +116,13 @@ describe('SwiftDocCRenderRouter', () => {
   describe('route resolving', () => {
     let router;
 
-    beforeAll(() => {
-      jest.resetModules();
-      jest.unmock('vue-router');
-      // eslint-disable-next-line global-require
-      router = require('docc-render/setup-utils/SwiftDocCRenderRouter').default();
+    beforeAll(async () => {
+      vi.resetModules();
+      vi.doUnmock('vue-router');
+      const { default: createSwiftDocCRenderRouter } = await import(
+        'docc-render/setup-utils/SwiftDocCRenderRouter'
+      );
+      router = createSwiftDocCRenderRouter();
     });
 
     const resolve = path => router.resolve(path);

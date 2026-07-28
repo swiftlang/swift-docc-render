@@ -20,10 +20,12 @@ import FetchError from 'docc-render/errors/FetchError';
 import RedirectError from 'docc-render/errors/RedirectError';
 import { defaultLocale } from 'theme/lang/index';
 
-jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
+vi.mock('docc-render/utils/schema-version-check', () => ({
+  default: vi.fn(),
+}));
 
-jest.mock('docc-render/utils/metadata', () => ({
-  updateLangTag: jest.fn(),
+vi.mock('docc-render/utils/metadata', () => ({
+  updateLangTag: vi.fn(),
 }));
 
 const badFetchResponse = {
@@ -62,7 +64,7 @@ describe('fetchData', () => {
   beforeEach(() => {
     originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'production';
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -70,13 +72,13 @@ describe('fetchData', () => {
   });
 
   it('calls `fetch` to retrieve data from a remote source', async () => {
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
     const data = await fetchData('/data/tutorials/augmented-reality/tutorials.json');
     await expect(data).toEqual(await goodFetchResponse.json());
   });
 
   it('calls `fetch` with any passed options', async () => {
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
 
     const path = '/data/tutorials/augmented-reality/tutorials.json';
     const options = { signal: new AbortController().signal };
@@ -89,7 +91,7 @@ describe('fetchData', () => {
   });
 
   it('throws non "OK" responses', async () => {
-    window.fetch = jest.fn().mockImplementation(() => badFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => badFetchResponse);
     try {
       await fetchData('/data/tutorials/augmented-responses/tutorials.json');
     } catch (error) {
@@ -99,7 +101,7 @@ describe('fetchData', () => {
 
   it('sends data to check for version mismatch', async () => {
     const schemaVersion = { major: 1, minor: 0, patch: 0 };
-    window.fetch = jest.fn()
+    window.fetch = vi.fn()
       .mockResolvedValue({ ...goodFetchResponse, json: () => Promise.resolve({ schemaVersion }) });
     await fetchData('/data/tutorials/augmented-reality/tutorials.json');
     expect(emitWarningForSchemaVersionMismatch).toHaveBeenCalledTimes(1);
@@ -108,7 +110,7 @@ describe('fetchData', () => {
   });
 
   it('throws a RedirectError, when a redirect response is present', async () => {
-    window.fetch = jest.fn().mockImplementation(() => redirectResponse);
+    window.fetch = vi.fn().mockImplementation(() => redirectResponse);
     try {
       await fetchData('/data/tutorials/augmented-responses/tutorials.json');
     } catch (err) {
@@ -131,13 +133,13 @@ describe('fetchData', () => {
     });
 
     it('calls `fetch` to retrieve data, handling a response status of 0', async () => {
-      window.fetch = jest.fn().mockImplementation(() => goodIDEFetchResponse);
+      window.fetch = vi.fn().mockImplementation(() => goodIDEFetchResponse);
       const data = await fetchData('/data/tutorials/augmented-reality/tutorials.json');
       await expect(data).toEqual(await goodIDEFetchResponse.json());
     });
 
     it('throws for bad responses with a status other than 0', async () => {
-      window.fetch = jest.fn().mockImplementation(() => badFetchResponse);
+      window.fetch = vi.fn().mockImplementation(() => badFetchResponse);
       try {
         await fetchData('/data/tutorials/augmented-reality/learn.json');
       } catch (error) {
@@ -161,7 +163,7 @@ describe('fetchDataForRouteEnter', () => {
     params: { locale: 'zh-CN' },
   };
   const from = {};
-  const next = jest.fn();
+  const next = vi.fn();
 
   beforeEach(() => {
     originalNodeEnv = process.env.NODE_ENV;
@@ -170,7 +172,7 @@ describe('fetchDataForRouteEnter', () => {
     const base = document.createElement('base');
     document.head.appendChild(base);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -179,7 +181,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls `fetchData` with the right path', async () => {
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
@@ -194,7 +196,7 @@ describe('fetchDataForRouteEnter', () => {
   it('calls `fetchData` with a configurable base url', async () => {
     const baseUrl = '/base-prefix';
     document.head.querySelector('base').setAttribute('href', baseUrl);
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter(to, from, next);
     await expect(window.fetch).toHaveBeenCalledWith(new URL(
@@ -207,7 +209,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls `fetchData` with the right query string', async () => {
-    window.fetch = jest.fn().mockResolvedValue(goodFetchResponse);
+    window.fetch = vi.fn().mockResolvedValue(goodFetchResponse);
 
     const toWithParams = { ...to, query: { foo: 'bar' } };
     const data = await fetchDataForRouteEnter(toWithParams, from, next);
@@ -221,7 +223,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls the `next` fn with a not-found route for 404s', async () => {
-    window.fetch = jest.fn().mockImplementation(() => notFoundFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => notFoundFetchResponse);
 
     await fetchDataForRouteEnter(to, from, next);
     await expect(next).toHaveBeenCalledWith({
@@ -233,7 +235,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('redirects to the default locale path when a localized page returns 404', async () => {
-    window.fetch = jest.fn().mockImplementationOnce(() => notFoundFetchResponse);
+    window.fetch = vi.fn().mockImplementationOnce(() => notFoundFetchResponse);
 
     await fetchDataForRouteEnter(localizedTo, from, next);
     expect(window.fetch).toHaveBeenCalledTimes(1);
@@ -243,7 +245,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('routes to 404 page when a page with an unsupported locale param returns 404', async () => {
-    window.fetch = jest.fn().mockImplementationOnce(() => notFoundFetchResponse);
+    window.fetch = vi.fn().mockImplementationOnce(() => notFoundFetchResponse);
 
     const fakeLocaleTo = {
       name: 'technology-tutorials-locale',
@@ -261,8 +263,8 @@ describe('fetchDataForRouteEnter', () => {
 
   it('throws false if fetchDataForRouteEnter gets rejected and VUE_APP_TARGET is ide', async () => {
     process.env.VUE_APP_TARGET = 'ide';
-    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
-    window.fetch = jest.fn().mockImplementation(() => badIDEFetchResponse);
+    const errorSpy = vi.spyOn(console, 'error').mockReturnValue('');
+    window.fetch = vi.fn().mockImplementation(() => badIDEFetchResponse);
 
     await expect(fetchDataForRouteEnter(to, from, next)).rejects.toBe(false);
     expect(errorSpy).toHaveBeenCalledWith(new Error());
@@ -272,7 +274,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('throws with a new path, when `fetch` has been redirected', async () => {
-    window.fetch = jest.fn().mockResolvedValue(redirectResponse);
+    window.fetch = vi.fn().mockResolvedValue(redirectResponse);
 
     await expect(fetchDataForRouteEnter(to, from, next))
       .rejects
@@ -282,7 +284,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('calls the `next` fn with a `FetchError`', async () => {
-    window.fetch = jest.fn().mockImplementation(() => badFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => badFetchResponse);
 
     try {
       await fetchDataForRouteEnter(to, from, next);
@@ -294,7 +296,7 @@ describe('fetchDataForRouteEnter', () => {
   });
 
   it('removes trailing slashes from paths', async () => {
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchDataForRouteEnter({
       name: 'technology-tutorials',
@@ -370,7 +372,7 @@ describe('fetchAPIChangesForRoute', () => {
 
     process.env.NODE_ENV = 'production';
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -382,7 +384,7 @@ describe('fetchAPIChangesForRoute', () => {
   };
 
   it('calls `fetchData` with the right path', async () => {
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
 
     const data = await fetchAPIChangesForRoute(route, 'latest_minor');
     expect(window.fetch.mock.calls[0][0].toString()).toEqual(new URL(
@@ -402,7 +404,7 @@ describe('fetchIndexPathsData', () => {
     delete window.location;
     // change the location to a deep page
     window.location = new URL('http://localhost/some/deep/path/');
-    window.fetch = jest.fn().mockImplementation(() => goodFetchResponse);
+    window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
     // fetch data with default locale
     const data = await fetchIndexPathsData({ currentLocale: defaultLocale });
     // ensure the index was called at the root, not the deep page

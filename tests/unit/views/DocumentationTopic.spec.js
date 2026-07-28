@@ -19,13 +19,13 @@ import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/mixins/onThisPageRegistrator');
-jest.mock('docc-render/utils/theme-settings');
+vi.mock('docc-render/mixins/onThisPageRegistrator');
+vi.mock('docc-render/utils/theme-settings');
 
 const defaultLocale = 'en-US';
 
 getSetting.mockReturnValue(false);
-const routeEnterMock = jest.spyOn(dataUtils, 'fetchDataForRouteEnter').mockResolvedValue();
+const routeEnterMock = vi.spyOn(dataUtils, 'fetchDataForRouteEnter').mockResolvedValue();
 
 const {
   CodeTheme,
@@ -49,9 +49,9 @@ const references = {
 
 const mocks = {
   $bridge: {
-    on: jest.fn(),
-    off: jest.fn(),
-    send: jest.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
+    send: vi.fn(),
   },
   $route: {
     path: '/documentation/somepath',
@@ -148,7 +148,7 @@ describe('DocumentationTopic', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = createWrapper();
   });
 
@@ -520,7 +520,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('sends a rendered message', async () => {
-    const sendMock = jest.fn();
+    const sendMock = vi.fn();
     wrapper = shallowMount(DocumentationTopic, {
       mocks: {
         ...mocks,
@@ -603,7 +603,7 @@ describe('DocumentationTopic', () => {
       ...from,
       query: { language: 'objc' },
     };
-    const next = jest.fn();
+    const next = vi.fn();
     // there is probably a more realistic way to simulate this
     DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
 
@@ -639,7 +639,7 @@ describe('DocumentationTopic', () => {
       query: { language: 'objc' },
     };
     const from = mocks.$route;
-    const next = jest.fn();
+    const next = vi.fn();
     // there is probably a more realistic way to simulate this
     DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
     await flushPromises();
@@ -676,7 +676,7 @@ describe('DocumentationTopic', () => {
       ...from,
       query: { language: 'objc' },
     };
-    const next = jest.fn();
+    const next = vi.fn();
     // there is probably a more realistic way to simulate this
     DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
 
@@ -694,7 +694,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
-    const next = jest.fn();
+    const next = vi.fn();
     DocumentationTopic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
     expect(next).toHaveBeenCalledTimes(1);
     expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
@@ -702,7 +702,7 @@ describe('DocumentationTopic', () => {
     const params = {
       to: { name: 'foo', meta: {}, params: { locale: defaultLocale } },
       from: { name: 'bar' },
-      next: jest.fn(),
+      next: vi.fn(),
     };
     DocumentationTopic.beforeRouteEnter(params.to, params.from, params.next);
     expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(1);

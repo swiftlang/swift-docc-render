@@ -18,9 +18,9 @@ import { baseNavStickyAnchorId, MenuLinkModifierClasses } from 'docc-render/cons
 import { waitFrames } from 'docc-render/utils/loading';
 import { createEvent, flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/utils/changeElementVOVisibility');
-jest.mock('docc-render/utils/scroll-lock');
-jest.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/changeElementVOVisibility');
+vi.mock('docc-render/utils/scroll-lock');
+vi.mock('docc-render/utils/loading');
 
 const { BreakpointScopes, BreakpointName } = BreakpointEmitter.constants;
 const { NoBGTransitionFrames, NavStateClasses } = NavBase.constants;
@@ -45,7 +45,7 @@ let wrapper;
 
 describe('NavBase', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   afterEach(() => {
     wrapper.destroy();
@@ -485,7 +485,7 @@ describe('NavBase', () => {
   it('stays focus on axToggle, if nav expand is toggled from axToggle', async () => {
     wrapper = await createWrapper();
     const axToggle = wrapper.findComponent({ ref: 'axToggle' });
-    const focusSpy = jest.spyOn(axToggle.element, 'focus');
+    const focusSpy = vi.spyOn(axToggle.element, 'focus');
     axToggle.trigger('click');
 
     // assert focus is not moved
@@ -495,7 +495,7 @@ describe('NavBase', () => {
   it('blurs active element, if nav expand is toggled by mouse click', async () => {
     wrapper = await createWrapper();
     const navToggle = wrapper.findComponent('.nav-menucta');
-    const blurSpy = jest.spyOn(navToggle.element, 'blur');
+    const blurSpy = vi.spyOn(navToggle.element, 'blur');
     // manually focus to fix JSDom issue
     navToggle.element.focus();
     navToggle.trigger('click');

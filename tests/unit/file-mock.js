@@ -8,4 +8,4 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-module.exports = 'test-file-stub';
+export default 'test-file-stub';

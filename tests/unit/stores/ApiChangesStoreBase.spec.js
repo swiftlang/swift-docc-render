@@ -12,7 +12,7 @@ import ApiChangesStoreBase, { apiChangesCountsFactory } from 'docc-render/stores
 
 describe('ApiChangesStoreBase', () => {
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
   it('sets api changes', () => {
     const changes = {
@@ -28,7 +28,7 @@ describe('ApiChangesStoreBase', () => {
   });
 
   it('updates `apiChangesCounts`', async () => {
-    const querySpy = jest.spyOn(document, 'querySelectorAll');
+    const querySpy = vi.spyOn(document, 'querySelectorAll');
 
     querySpy.mockReturnValueOnce({ length: 1 });
     querySpy.mockReturnValueOnce({ length: 2 });

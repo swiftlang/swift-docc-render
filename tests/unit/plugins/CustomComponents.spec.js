@@ -11,11 +11,11 @@
 import CustomComponents from 'docc-render/plugins/CustomComponents';
 import { createApp } from 'vue';
 
-const defineSpy = jest.spyOn(window.customElements, 'define');
+const defineSpy = vi.spyOn(window.customElements, 'define');
 
 describe('CustomComponents', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('does not utilize `customElements.define` when no templates exist', () => {

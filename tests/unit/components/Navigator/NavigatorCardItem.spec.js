@@ -17,7 +17,7 @@ import Reference from '@/components/ContentNode/Reference.vue';
 import { waitFrames } from 'docc-render/utils/loading';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/loading');
 
 const {
   Badge,
@@ -59,7 +59,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
 
 describe('NavigatorCardItem', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     if (document.activeElement) document.activeElement.blur();
   });
   it('renders the NavigatorCardItem', () => {
@@ -339,7 +339,7 @@ describe('NavigatorCardItem', () => {
   describe('keyboard navigation', () => {
     it('clicks the reference link on `@keydown.enter`', () => {
       const wrapper = createWrapper();
-      const spy = jest.spyOn(wrapper.findComponent(Reference).vm.$el, 'click');
+      const spy = vi.spyOn(wrapper.findComponent(Reference).vm.$el, 'click');
       wrapper.trigger('keydown.enter');
       expect(spy).toHaveBeenCalledTimes(1);
     });

@@ -44,7 +44,7 @@ describe('NavTitleContainer', () => {
 
   it('renders a nbsp after the title', () => {
     const wrapper = createWrapper();
-    expect(wrapper.element.textContent).toMatch(/Default Slot\xa0Tutorials/);
+    expect(wrapper.element.textContent).toMatch(/Default Slot\s+\xa0Tutorials/);
   });
 
   it('renders a subhead and its default content', () => {

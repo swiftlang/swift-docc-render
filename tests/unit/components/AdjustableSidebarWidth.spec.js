@@ -28,14 +28,16 @@ import { BreakpointName, BreakpointScopes } from '@/utils/breakpoints';
 import { baseNavStickyAnchorId } from '@/constants/nav';
 import { createEvent, flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/utils/debounce');
-jest.mock('docc-render/utils/storage');
-jest.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/debounce');
+vi.mock('docc-render/utils/storage');
+vi.mock('docc-render/utils/loading');
 
-jest.mock('docc-render/utils/changeElementVOVisibility');
-jest.mock('docc-render/utils/scroll-lock');
-jest.mock('docc-render/utils/FocusTrap');
-jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
+vi.mock('docc-render/utils/changeElementVOVisibility');
+vi.mock('docc-render/utils/scroll-lock');
+vi.mock('docc-render/utils/FocusTrap');
+vi.mock('docc-render/utils/throttle', () => ({
+  default: vi.fn(v => v),
+}));
 
 storage.get.mockImplementation((key, value) => value);
 
@@ -47,7 +49,7 @@ document.body.appendChild(scrollLockTarget);
 
 const navStickyElement = document.createElement('DIV');
 navStickyElement.id = baseNavStickyAnchorId;
-const boundingClientSpy = jest.spyOn(navStickyElement, 'getBoundingClientRect')
+const boundingClientSpy = vi.spyOn(navStickyElement, 'getBoundingClientRect')
   .mockReturnValue({ y: 0 });
 
 document.body.appendChild(navStickyElement);
@@ -82,7 +84,7 @@ describe('AdjustableSidebarWidth', () => {
   beforeEach(() => {
     window.innerWidth = 1000; // 1000 for easy math
     store.state.contentWidth = 0;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   it('renders the AdjustableSidebarWidth', () => {
     const wrapper = createWrapper();
@@ -314,7 +316,7 @@ describe('AdjustableSidebarWidth', () => {
     storage.get.mockReturnValueOnce(window.innerWidth);
     const wrapper = createWrapper();
     // simulate window changes width form orientation change.
-    // This should trigger both breakpoint emitter and window resize, but not in Jest
+    // This should trigger both breakpoint emitter and window resize, but not in jsdom
     window.innerWidth = 500;
     window.dispatchEvent(createEvent('orientationchange'));
     await flushPromises();
@@ -330,7 +332,7 @@ describe('AdjustableSidebarWidth', () => {
     storage.get.mockReturnValueOnce(window.innerWidth);
     const wrapper = createWrapper();
     // simulate window changes width form orientation change.
-    // This should trigger both breakpoint emitter and window resize, but not in Jest
+    // This should trigger both breakpoint emitter and window resize, but not in jsdom
     window.innerWidth = 500;
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();
@@ -590,7 +592,7 @@ describe('AdjustableSidebarWidth', () => {
     });
     expect(wrapper.vm.asideStyles).toHaveProperty('width', '200px');
     // simulate window changes width form orientation change.
-    // This should trigger both breakpoint emitter and window resize, but not in Jest
+    // This should trigger both breakpoint emitter and window resize, but not in jsdom
     window.innerWidth = 1500;
     window.dispatchEvent(createEvent('resize'));
     await flushPromises();

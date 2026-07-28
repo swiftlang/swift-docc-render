@@ -54,8 +54,8 @@ describe('Chapter', () => {
 
   const provide = {
     store: {
-      setActiveSidebarLink: jest.fn(),
-      setActiveVolume: jest.fn(),
+      setActiveSidebarLink: vi.fn(),
+      setActiveVolume: vi.fn(),
     },
   };
 

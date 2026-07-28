@@ -12,14 +12,14 @@ import { shallowMount } from '@vue/test-utils';
 import TutorialsOverview from 'docc-render/views/TutorialsOverview.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 
-jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
+vi.mock('docc-render/mixins/onPageLoadScrollToFragment');
 const { Overview } = TutorialsOverview.components;
 
 describe('TutorialsOverview', () => {
   let wrapper;
 
   const mocks = {
-    $bridge: { send: jest.fn(), on: jest.fn(), off: jest.fn() },
+    $bridge: { send: vi.fn(), on: vi.fn(), off: vi.fn() },
     $route: { path: '/tutorials/swiftui', params: {} },
   };
 
@@ -34,7 +34,7 @@ describe('TutorialsOverview', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(TutorialsOverview, { mocks });
   });
 

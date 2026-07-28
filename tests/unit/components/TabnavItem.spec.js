@@ -20,7 +20,7 @@ const createWrapper = ({ propsData, ...other } = {}) => {
     provide: {
       tabnavData: {
         activeTab: 'foo',
-        selectTab: jest.fn(),
+        selectTab: vi.fn(),
       },
     },
     slots: {

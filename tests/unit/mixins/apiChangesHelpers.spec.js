@@ -31,7 +31,7 @@ describe('apiChangesHelpers', () => {
   };
 
   beforeEach(() => {
-    window.getComputedStyle = jest.fn().mockReturnValue({
+    window.getComputedStyle = vi.fn().mockReturnValue({
       lineHeight: '25px',
     });
   });

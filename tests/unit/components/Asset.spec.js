@@ -35,7 +35,7 @@ describe('Asset', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: jest.fn().mockImplementation(() => ({
+      value: vi.fn().mockImplementation(() => ({
         matches: false,
       })),
     });

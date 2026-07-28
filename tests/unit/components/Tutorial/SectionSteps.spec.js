@@ -19,19 +19,24 @@ import CodePreview from 'docc-render/components/Tutorial/CodePreview.vue';
 import BackgroundTheme from 'docc-render/components/Tutorial/BackgroundTheme.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 
-// mock out the intersection observer
-jest.mock('docc-render/mixins/onIntersect', () => ({
-  constants: {
-    IntersectionDirections: {
-      up: 'up',
-      down: 'down',
-    },
+const { IntersectionDirections } = vi.hoisted(() => ({
+  IntersectionDirections: {
+    up: 'up',
+    down: 'down',
   },
 }));
-jest.mock('docc-render/utils/loading', () => ({ waitFrames: jest.fn() }));
 
-const onIntersect = jest.requireActual('docc-render/mixins/onIntersect');
-const { constants: { IntersectionDirections } } = onIntersect.default;
+// mock out the intersection observer
+vi.mock('docc-render/mixins/onIntersect', () => ({
+  default: {
+    constants: { IntersectionDirections },
+  },
+  constants: {
+    IntersectionDirections,
+  },
+}));
+vi.mock('docc-render/utils/loading', () => ({ waitFrames: vi.fn() }));
+
 const { IntersectionMargins } = SectionSteps.constants;
 
 describe('SectionSteps', () => {
@@ -195,7 +200,7 @@ describe('SectionSteps', () => {
 
   it('on mount, finds the closest step and assigns it as an active one.', async () => {
     wrapper.destroy();
-    const getBoundingClientRect = jest.fn();
+    const getBoundingClientRect = vi.fn();
     window.HTMLElement.prototype.getBoundingClientRect = getBoundingClientRect;
     getBoundingClientRect.mockReturnValue({ top: 500, bottom: 700 });
     getBoundingClientRect.mockReturnValueOnce({ top: 20, bottom: 100 });
@@ -238,7 +243,7 @@ describe('SectionSteps', () => {
       let playMock;
 
       beforeEach(() => {
-        playMock = jest.fn(() => new Promise(jest.fn));
+        playMock = vi.fn(() => new Promise(vi.fn));
         window.HTMLMediaElement.prototype.play = playMock;
       });
 

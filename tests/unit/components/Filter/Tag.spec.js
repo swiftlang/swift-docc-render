@@ -27,7 +27,7 @@ describe('Tag', () => {
   beforeEach(() => {
     wrapper = shallowMount(Tag, { propsData, attachTo: document.body });
     button = wrapper.findComponent('button');
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   afterEach(() => {
     // remove global even listeners before each test begins
@@ -142,7 +142,7 @@ describe('Tag', () => {
   });
 
   describe('copy/cut', () => {
-    const setData = jest.fn();
+    const setData = vi.fn();
     const clipboardData = {
       setData,
     };
@@ -154,8 +154,8 @@ describe('Tag', () => {
     }
 
     it('adds and removes event listeners on mounted and destroyed', () => {
-      const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
-      const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
+      const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
+      const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
       wrapper = shallowMount(Tag, { propsData });
       // assert `copy` and `cut` are added
       expect(addEventListenerSpy).toHaveBeenCalledTimes(3);

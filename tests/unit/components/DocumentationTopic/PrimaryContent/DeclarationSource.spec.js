@@ -22,8 +22,8 @@ const { Token, CodeBlock } = DeclarationSource.components;
 const { HighlightKind } = DeclarationSource.constants;
 const { TokenKind } = Token.constants;
 
-jest.mock('@/utils/indentation');
-jest.mock('@/utils/multipleLines');
+vi.mock('@/utils/indentation');
+vi.mock('@/utils/multipleLines');
 
 displaysMultipleLines.mockImplementation(() => false);
 

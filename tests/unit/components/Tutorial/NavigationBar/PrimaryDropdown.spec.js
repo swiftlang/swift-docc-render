@@ -17,7 +17,7 @@ import PrimaryDropdown from 'docc-render/components/Tutorial/NavigationBar/Prima
 import ReferenceUrlProvider from 'docc-render/components/ReferenceUrlProvider.vue';
 import DropdownCustom from 'docc-render/components/DropdownCustom.vue';
 
-const navigate = jest.fn();
+const navigate = vi.fn();
 
 const RouterLinkStub = {
   name: 'RouterLink',
@@ -105,7 +105,7 @@ describe('Primary Dropdown', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     const localVue = createLocalVue();
     localVue.directive('hide', hide);
 
@@ -117,7 +117,7 @@ describe('Primary Dropdown', () => {
       },
       mocks: {
         $router: {
-          push: jest.fn(),
+          push: vi.fn(),
         },
         $route: {
           query,

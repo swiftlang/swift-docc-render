@@ -16,16 +16,16 @@ import Tutorial from 'docc-render/components/Tutorial.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import { fetchDataForRouteEnter } from '@/utils/data';
 
-jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
-jest.mock('@/utils/data');
+vi.mock('docc-render/mixins/onPageLoadScrollToFragment');
+vi.mock('@/utils/data');
 
 fetchDataForRouteEnter.mockResolvedValue({});
 
 const mocks = {
   $bridge: {
-    on: jest.fn(),
-    off: jest.fn(),
-    send: jest.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
+    send: vi.fn(),
   },
   $route: {},
 };
@@ -34,7 +34,7 @@ describe('Topic', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(Topic, { mocks });
   });
 
@@ -62,7 +62,7 @@ describe('Topic', () => {
   });
 
   it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
-    const next = jest.fn();
+    const next = vi.fn();
     Topic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
     expect(next).toHaveBeenCalledTimes(1);
     expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
@@ -70,7 +70,7 @@ describe('Topic', () => {
     const params = {
       to: { name: 'foo', meta: {} },
       from: { name: 'bar' },
-      next: jest.fn(),
+      next: vi.fn(),
     };
     Topic.beforeRouteEnter(params.to, params.from, params.next);
     expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
@@ -79,7 +79,7 @@ describe('Topic', () => {
   });
 
   async function testRenderedMessageWithProvide(provide) {
-    const sendMock = jest.fn();
+    const sendMock = vi.fn();
     wrapper = shallowMount(Topic, {
       mocks: {
         ...mocks,

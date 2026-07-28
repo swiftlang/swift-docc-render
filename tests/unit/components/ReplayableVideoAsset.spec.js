@@ -38,8 +38,8 @@ describe('ReplayableVideoAsset', () => {
     },
   });
 
-  const playMock = jest.fn().mockResolvedValue(undefined);
-  const pauseMock = jest.fn().mockResolvedValue(undefined);
+  const playMock = vi.fn().mockResolvedValue(undefined);
+  const pauseMock = vi.fn().mockResolvedValue(undefined);
 
   beforeAll(() => {
     window.matchMedia = () => ({ matches: false });
@@ -57,7 +57,7 @@ describe('ReplayableVideoAsset', () => {
     });
   });
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('passes the `url` prop to `VideoAsset`', () => {

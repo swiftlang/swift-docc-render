@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`indexDataFetcher counts the amount of deprecated items a groupMarker has 1`] = `
+exports[`indexDataFetcher > counts the amount of deprecated items a groupMarker has 1`] = `
 {
   "swift": [
     {
@@ -12,7 +12,7 @@ exports[`indexDataFetcher counts the amount of deprecated items a groupMarker ha
       "depth": 0,
       "id": "Group Marker",
       "index": 0,
-      "parent": <root>,
+      "parent": "<root>",
       "siblingsCount": 3,
       "title": "Group Marker",
       "type": "groupMarker",
@@ -30,7 +30,7 @@ exports[`indexDataFetcher counts the amount of deprecated items a groupMarker ha
       "groupMarkerUID": -196255993,
       "id": "Child0",
       "index": 1,
-      "parent": <root>,
+      "parent": "<root>",
       "path": "/documentation/foo/child0",
       "siblingsCount": 3,
       "title": "Child0",
@@ -116,7 +116,7 @@ exports[`indexDataFetcher counts the amount of deprecated items a groupMarker ha
       "groupMarkerUID": -196255993,
       "id": "Child1",
       "index": 2,
-      "parent": <root>,
+      "parent": "<root>",
       "path": "/documentation/foo/child1/",
       "siblingsCount": 3,
       "title": "Child1",
@@ -139,7 +139,7 @@ exports[`indexDataFetcher counts the amount of deprecated items a groupMarker ha
 }
 `;
 
-exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent is a \`beta\` 1`] = `
+exports[`indexDataFetcher > removes the \`beta\` flag from children, if the parent is a \`beta\` 1`] = `
 {
   "swift": [
     {
@@ -151,7 +151,7 @@ exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent
       "depth": 0,
       "id": "Group Marker",
       "index": 0,
-      "parent": <root>,
+      "parent": "<root>",
       "siblingsCount": 3,
       "title": "Group Marker",
       "type": "groupMarker",
@@ -169,7 +169,7 @@ exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent
       "groupMarkerUID": -196255993,
       "id": "Child0",
       "index": 1,
-      "parent": <root>,
+      "parent": "<root>",
       "path": "/documentation/foo/child0",
       "siblingsCount": 3,
       "title": "Child0",
@@ -254,7 +254,7 @@ exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent
       "groupMarkerUID": -196255993,
       "id": "Child1",
       "index": 2,
-      "parent": <root>,
+      "parent": "<root>",
       "path": "/documentation/foo/child1/",
       "siblingsCount": 3,
       "title": "Child1",
@@ -277,7 +277,7 @@ exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent
 }
 `;
 
-exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent is a \`beta\` 2`] = `
+exports[`indexDataFetcher > removes the \`beta\` flag from children, if the parent is a \`beta\` 2`] = `
 {
   "swift": [
     {
@@ -289,7 +289,7 @@ exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent
       "depth": 0,
       "id": "Group Marker",
       "index": 0,
-      "parent": <root>,
+      "parent": "<root>",
       "siblingsCount": 3,
       "title": "Group Marker",
       "type": "groupMarker",
@@ -307,7 +307,7 @@ exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent
       "groupMarkerUID": -196255993,
       "id": "Child0",
       "index": 1,
-      "parent": <root>,
+      "parent": "<root>",
       "path": "/documentation/foo/child0",
       "siblingsCount": 3,
       "title": "Child0",
@@ -393,7 +393,7 @@ exports[`indexDataFetcher removes the \`beta\` flag from children, if the parent
       "groupMarkerUID": -196255993,
       "id": "Child1",
       "index": 2,
-      "parent": <root>,
+      "parent": "<root>",
       "path": "/documentation/foo/child1/",
       "siblingsCount": 3,
       "title": "Child1",

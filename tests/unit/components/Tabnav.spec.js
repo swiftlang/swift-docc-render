@@ -26,9 +26,9 @@ describe("Tabnav", () => {
       propsData
     });
     expect(wrapper.html()).toMatchInlineSnapshot(`
-      <nav class="tabnav">
+      "<nav class="tabnav">
         <ul class="tabnav-items"></ul>
-      </nav>
+      </nav>"
     `);
   });
 

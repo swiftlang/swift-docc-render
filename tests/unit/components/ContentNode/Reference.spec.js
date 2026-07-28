@@ -218,7 +218,7 @@ describe('Reference', () => {
       slots: { default: 'Foobar' },
       mocks: {
         $router: {
-          resolve: jest.fn(),
+          resolve: vi.fn(),
         },
         $route: {
           query: {
@@ -238,7 +238,7 @@ describe('Reference', () => {
       slots: { default: 'Foobar' },
       mocks: {
         $router: {
-          resolve: jest.fn().mockReturnValue({ name: '' }),
+          resolve: vi.fn().mockReturnValue({ name: '' }),
         },
         $route: {
           query: {
@@ -257,7 +257,7 @@ describe('Reference', () => {
       slots: { default: 'Foobar' },
       mocks: {
         $router: {
-          resolve: jest.fn().mockReturnValue({ name: '' }),
+          resolve: vi.fn().mockReturnValue({ name: '' }),
         },
         $route: {
           query: {

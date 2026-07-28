@@ -150,7 +150,7 @@ Before opening a pull request, we ask that you:
 ### Tests and linting
 
 Run the following script to:
-- Run unit tests with [Jest](https://jestjs.io/)
+- Run unit tests with [Vitest](https://vitest.dev/)
 - Find syntax errors with [ESLint](https://eslint.org/)
 - Check that all files have license headers
 

@@ -141,6 +141,8 @@ const enhanceWrapper = (wrapper) => {
   const findAll = wrapper.findAll.bind(wrapper);
   const findComponent = wrapper.findComponent.bind(wrapper);
   const findAllComponents = wrapper.findAllComponents.bind(wrapper);
+  const attributes = wrapper.attributes.bind(wrapper);
+  const html = wrapper.html.bind(wrapper);
   const emitted = typeof wrapper.emitted === 'function'
     ? wrapper.emitted.bind(wrapper)
     : null;
@@ -167,6 +169,12 @@ const enhanceWrapper = (wrapper) => {
       : events;
   };
   Object.assign(wrapper, {
+    attributes(attributeName) {
+      if (attributeName) return attributes(attributeName);
+      return Object.fromEntries(
+        Object.entries(attributes()).filter(([name]) => !name.startsWith('data-v-')),
+      );
+    },
     destroy: wrapper.unmount ? wrapper.unmount.bind(wrapper) : undefined,
     find(selector) {
       return enhanceWrapper(find(selector));
@@ -200,6 +208,9 @@ const enhanceWrapper = (wrapper) => {
           .map(ref => new VueTestUtils.DOMWrapper(ref));
       }
       return enhanceWrappers(results);
+    },
+    html() {
+      return html().replace(/ data-v-[\da-f]+=""/g, '');
     },
     emitted(eventName) {
       if (!emitted) return undefined;

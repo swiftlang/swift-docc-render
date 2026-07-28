@@ -80,7 +80,7 @@ export default [
   {
     files: ['**/__mocks__/*.js', '**/tests/unit/**/*.spec.js'],
     languageOptions: {
-      globals: globals.jest,
+      globals: globals.vitest,
     },
   },
   {

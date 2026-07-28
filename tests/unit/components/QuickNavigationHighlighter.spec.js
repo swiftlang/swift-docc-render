@@ -18,7 +18,7 @@ describe('QuickNavigationHighlighter', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('it renders the HighlightMatches', () => {

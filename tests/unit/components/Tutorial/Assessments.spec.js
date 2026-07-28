@@ -14,7 +14,7 @@ import Assessments from 'docc-render/components/Tutorial/Assessments.vue';
 const { LinkableSection } = Assessments.components;
 const { SuccessMessage } = Assessments.constants;
 
-// Stub scrolling APIs not implemented in Jest.
+// Stub scrolling APIs not implemented in jsdom.
 window.HTMLElement.prototype.scrollIntoView = () => {};
 window.scrollBy = () => {};
 
@@ -200,10 +200,10 @@ describe('Assessments', () => {
     let scrollByMock;
 
     beforeEach(() => {
-      scrollIntoViewMock = jest.fn();
+      scrollIntoViewMock = vi.fn();
       window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
-      scrollByMock = jest.fn();
+      scrollByMock = vi.fn();
       window.scrollBy = scrollByMock;
     });
 

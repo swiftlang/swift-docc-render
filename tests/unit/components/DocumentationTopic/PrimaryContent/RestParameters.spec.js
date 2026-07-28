@@ -196,36 +196,40 @@ describe('RestParameters', () => {
   });
 
   describe('apiChanges', () => {
-    const changes = {
-      name: {
-        type: {
-          new: [],
-          previous: [],
+    it('provides API changes', () => {
+      const changes = {
+        name: {
+          type: {
+            new: [],
+            previous: [],
+          },
+          required: {
+            new: false,
+            previous: true,
+          },
+          attributes: {},
         },
-        required: {
-          new: false,
-          previous: true,
-        },
-        attributes: {},
-      },
-    };
-    const wrapper = mountComponent({
-      provide: {
-        ...provide,
-        store: {
-          ...provide.store,
-          state: {
-            apiChanges: {
-              [provide.identifier]: { restParameters: changes },
+      };
+      const wrapper = mountComponent({
+        provide: {
+          ...provide,
+          store: {
+            ...provide.store,
+            state: {
+              apiChanges: {
+                [provide.identifier]: { restParameters: changes },
+              },
             },
           },
         },
-      },
-    });
+      });
 
-    expect(wrapper.findComponent(PossiblyChangedType).props()).toHaveProperty('changes', changes.name.type);
-    expect(wrapper.findComponent(PossiblyChangedTextAttribute).props())
-      .toHaveProperty('changes', changes.name.required);
-    expect(wrapper.findComponent(ParameterAttributes).props()).toHaveProperty('changes', changes.name);
+      expect(wrapper.findComponent(PossiblyChangedType).props())
+        .toHaveProperty('changes', changes.name.type);
+      expect(wrapper.findComponent(PossiblyChangedTextAttribute).props())
+        .toHaveProperty('changes', changes.name.required);
+      expect(wrapper.findComponent(ParameterAttributes).props())
+        .toHaveProperty('changes', changes.name);
+    });
   });
 });

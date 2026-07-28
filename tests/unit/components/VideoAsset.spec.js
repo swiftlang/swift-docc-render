@@ -16,7 +16,7 @@ import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 import ConditionalWrapper from '@/components/ConditionalWrapper.vue';
 import { flushPromises } from '../../../test-utils';
 
-const getIntrinsicDimensionsSpy = jest.spyOn(assetUtils, 'getIntrinsicDimensions').mockResolvedValue({
+const getIntrinsicDimensionsSpy = vi.spyOn(assetUtils, 'getIntrinsicDimensions').mockResolvedValue({
   width: 100,
   height: 100,
 });
@@ -49,7 +49,7 @@ describe('VideoAsset', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(VideoAsset, { data, propsData, stubs: { ConditionalWrapper } });
   });
 

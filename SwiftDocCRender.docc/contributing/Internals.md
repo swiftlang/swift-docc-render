@@ -146,7 +146,7 @@ If you need access to a global mixin or var, from `_core.scss` you have to impor
 
 #### Unit tests
 
-DocC-Render is unit tested, using the [Jest](https://jestjs.io/) testing framework. All components and utilities strive to have a corresponding test file inside the  `tests` folder, mirroring the file's location.
+DocC-Render is unit tested using the [Vitest](https://vitest.dev/) testing framework. All components and utilities strive to have a corresponding test file inside the `tests` folder, mirroring the file's location.
 
 Unit tests can be run via:
 

@@ -18,9 +18,9 @@ import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
 import { SIDEBAR_HIDE_BUTTON_ID } from 'docc-render/constants/sidebar';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('docc-render/utils/changeElementVOVisibility');
-jest.mock('docc-render/utils/scroll-lock');
-jest.mock('docc-render/utils/FocusTrap');
+vi.mock('docc-render/utils/changeElementVOVisibility');
+vi.mock('docc-render/utils/scroll-lock');
+vi.mock('docc-render/utils/FocusTrap');
 
 const {
   NavBase,
@@ -35,7 +35,7 @@ const stubs = {
 
 const mocks = {
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
   },
   $route: {
     query: {},

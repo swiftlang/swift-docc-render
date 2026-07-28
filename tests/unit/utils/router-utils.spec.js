@@ -24,11 +24,11 @@ import { EXTRA_DOCUMENTATION_OFFSET } from '@/utils/scroll-offset';
 const appTarget = process.env.VUE_APP_TARGET;
 
 const sessionStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
+  getItem: vi.fn(),
+  setItem: vi.fn(),
 };
-const scrollToSpy = jest.fn();
-const mockLocation = jest.fn().mockReturnValue({
+const scrollToSpy = vi.fn();
+const mockLocation = vi.fn().mockReturnValue({
   pathname: '/foo',
   search: '?bar',
   hash: '#baz',
@@ -45,11 +45,11 @@ Object.defineProperty(window, 'location', {
 
 describe('router-utils', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('scrollBehavior', () => {
-    const mockApp = { app: { $nextTick: jest.fn().mockResolvedValue({}) } };
+    const mockApp = { app: { $nextTick: vi.fn().mockResolvedValue({}) } };
     const scrollBehavior = originalScrollBehavior.bind(mockApp);
 
     const createRoute = (name, query, hash, meta) => ({
@@ -141,7 +141,7 @@ describe('router-utils', () => {
     });
 
     it('fails silently if the stored value is invalid', async () => {
-      const errorSpy = jest.spyOn(console, 'error');
+      const errorSpy = vi.spyOn(console, 'error');
       errorSpy.mockImplementationOnce(() => {});
       sessionStorage.getItem.mockReturnValueOnce('not json');
       await restoreScrollOnReload();

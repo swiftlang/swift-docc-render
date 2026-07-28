@@ -215,11 +215,11 @@ describe('DocumentationTopic', () => {
   let wrapper;
   const mockStore = {
     state: { onThisPageSections: [], references: {} },
-    reset: jest.fn(),
-    setReferences: jest.fn(),
+    reset: vi.fn(),
+    setReferences: vi.fn(),
   };
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
       stubs: { Title },
@@ -423,7 +423,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('`Hierarchy` continues working, if a reference is missing', async () => {
-    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+    const errorSpy = vi.spyOn(console, 'error').mockReturnValue('');
     await wrapper.setProps({
       references: { 'topic://foo': itemFoo }, // set without `Bar` reference data
       hierarchyItems,
@@ -1160,7 +1160,7 @@ describe('DocumentationTopic', () => {
         contentWidth: 200,
       },
     });
-    const container = wrapper.findComponent(OnThisPageStickyContainer);
+    let container = wrapper.findComponent(OnThisPageStickyContainer);
     expect(container.exists()).toBe(true);
     expect(container.isVisible()).toBe(false);
     await wrapper.setData({
@@ -1168,7 +1168,9 @@ describe('DocumentationTopic', () => {
         contentWidth: ON_THIS_PAGE_CONTAINER_BREAKPOINT + 10,
       },
     });
-    expect(container.isVisible()).toBe(true);
+    container = wrapper.findComponent(OnThisPageStickyContainer);
+    expect(wrapper.vm.isOnThisPageNavVisible).toBe(true);
+    expect(container.attributes('style')).toBe('');
     expect(wrapper.classes()).toContain('with-on-this-page');
   });
 
@@ -1210,9 +1212,9 @@ describe('DocumentationTopic', () => {
   it('calls `store.updateReferences` when `indexState.includedArchiveIdentifiers` changes', async () => {
     const store = {
       state: { references: {} },
-      reset: jest.fn(),
-      setReferences: jest.fn(),
-      updateReferences: jest.fn(),
+      reset: vi.fn(),
+      setReferences: vi.fn(),
+      updateReferences: vi.fn(),
     };
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
@@ -1229,7 +1231,7 @@ describe('DocumentationTopic', () => {
 
   describe('lifecycle hooks', () => {
     it('calls `store.reset()`', () => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       wrapper = shallowMount(DocumentationTopic, {
         propsData,
         provide: { store: mockStore },
@@ -1241,7 +1243,7 @@ describe('DocumentationTopic', () => {
 
     it('routes to the objc variant of a page if that is the preferred language', async () => {
       const $route = { query: {} };
-      const $router = { replace: jest.fn() };
+      const $router = { replace: vi.fn() };
       const store = {
         ...mockStore,
         state: {

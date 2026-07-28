@@ -18,7 +18,7 @@ import DropdownCustom from 'docc-render/components/DropdownCustom.vue';
 
 const { OptionClass, ActiveOptionClass } = DropdownCustom.constants;
 
-const navigate = jest.fn();
+const navigate = vi.fn();
 
 const RouterLinkStub = {
   name: 'RouterLink',
@@ -79,7 +79,7 @@ describe('SecondaryDropdown', () => {
           query,
         },
         $router: {
-          push: jest.fn(),
+          push: vi.fn(),
         },
       },
       stubs: { 'router-link': RouterLinkStub },

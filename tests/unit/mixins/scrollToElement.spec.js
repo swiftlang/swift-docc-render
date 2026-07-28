@@ -12,7 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 import * as loading from 'docc-render/utils/loading';
 
-const framesWait = jest.spyOn(loading, 'waitFrames');
+const framesWait = vi.spyOn(loading, 'waitFrames');
 window.innerHeight = 700;
 window.scrollY = 300;
 Object.defineProperty(document.body, 'scrollHeight', {
@@ -45,16 +45,16 @@ describe('scrollToElement', () => {
   });
 
   it('scrolls to the correct element when "scrollToElement" is called', async () => {
-    const scrollIntoViewMock = jest.fn();
+    const scrollIntoViewMock = vi.fn();
     const mockElement = { scrollIntoView: scrollIntoViewMock };
 
-    const querySelectorMock = jest.fn((selector) => {
+    const querySelectorMock = vi.fn((selector) => {
       // mimic selecting non existent element
       if (selector === anchor) return mockElement;
       return null;
     });
 
-    const scrollByMock = jest.fn();
+    const scrollByMock = vi.fn();
 
     document.querySelector = querySelectorMock;
     window.scrollBy = scrollByMock;
@@ -85,10 +85,10 @@ describe('scrollToElement', () => {
   });
 
   it('focuses element and scrolls to it', async () => {
-    wrapper.vm.scrollToElement = jest.fn();
+    wrapper.vm.scrollToElement = vi.fn();
     const hash = 'foo';
-    const mockObject = { focus: jest.fn() };
-    const getElementSpy = jest.spyOn(document, 'getElementById').mockReturnValue(mockObject);
+    const mockObject = { focus: vi.fn() };
+    const getElementSpy = vi.spyOn(document, 'getElementById').mockReturnValue(mockObject);
 
     await wrapper.vm.handleFocusAndScroll(hash);
     // focus element
@@ -101,9 +101,9 @@ describe('scrollToElement', () => {
   });
 
   it('does not focus element and scroll if element is not in the document', async () => {
-    wrapper.vm.scrollToElement = jest.fn();
+    wrapper.vm.scrollToElement = vi.fn();
     const hash = 'foo';
-    const getElementSpy = jest.spyOn(document, 'getElementById').mockReturnValue(null);
+    const getElementSpy = vi.spyOn(document, 'getElementById').mockReturnValue(null);
 
     await wrapper.vm.handleFocusAndScroll(hash);
     // scrolls to element

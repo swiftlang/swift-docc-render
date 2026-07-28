@@ -17,8 +17,8 @@ describe('SwiftDocCRenderPlugin', () => {
   beforeEach(() => {
     window.bridge = null;
     mockApp = {
-      directive: jest.fn(),
-      use: jest.fn(),
+      directive: vi.fn(),
+      use: vi.fn(),
       config: {
         globalProperties: {
           $bridge: null,

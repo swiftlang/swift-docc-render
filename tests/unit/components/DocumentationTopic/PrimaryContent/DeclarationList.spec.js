@@ -15,7 +15,7 @@ import DeclarationGroup
 import { waitFor } from 'docc-render/utils/loading';
 import { flushPromises } from '../../../../../test-utils';
 
-jest.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/loading');
 
 const mocks = {
   $route: {
@@ -25,7 +25,7 @@ const mocks = {
     },
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
   },
 };
 

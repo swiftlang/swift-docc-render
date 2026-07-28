@@ -11,28 +11,28 @@
 import debounce from 'docc-render/utils/debounce';
 
 describe('debounce', () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   const defaultTime = 5;
-  const func = jest.fn();
+  const func = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('calls a function after X time passes between invocations', () => {
     const debouncedFunc = debounce(func, defaultTime);
     debouncedFunc(1);
     debouncedFunc(2);
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
     debouncedFunc(3);
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
     // this gets called because the time passes
     debouncedFunc(4);
-    jest.advanceTimersByTime(defaultTime);
+    vi.advanceTimersByTime(defaultTime);
     expect(func).toHaveBeenCalledTimes(1);
     expect(func).toHaveBeenLastCalledWith(4); // last parameter
     debouncedFunc(5);
-    jest.advanceTimersByTime(defaultTime);
+    vi.advanceTimersByTime(defaultTime);
     expect(func).toHaveBeenCalledTimes(2);
   });
 
@@ -47,7 +47,7 @@ describe('debounce', () => {
     expect(func).toHaveBeenCalledTimes(1);
     debouncedFunc(2);
     // elapse time
-    jest.advanceTimersByTime(defaultTime);
+    vi.advanceTimersByTime(defaultTime);
     // gets called
     debouncedFunc(3);
     expect(func).toHaveBeenCalledTimes(2);
@@ -60,20 +60,20 @@ describe('debounce', () => {
     const debouncedFunc = debounce(func, defaultTime, false, true);
     debouncedFunc(1);
     debouncedFunc(2);
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
     debouncedFunc(3);
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
     // this gets called because the time passes
     debouncedFunc(4);
-    jest.advanceTimersByTime(3);
+    vi.advanceTimersByTime(3);
     expect(func).toHaveBeenCalledTimes(1);
     expect(func).toHaveBeenLastCalledWith(1); // last parameter
     debouncedFunc(5);
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
     debouncedFunc(6);
-    jest.advanceTimersByTime(2);
+    vi.advanceTimersByTime(2);
     debouncedFunc(7);
-    jest.advanceTimersByTime(2);
+    vi.advanceTimersByTime(2);
     expect(func).toHaveBeenCalledTimes(2);
     expect(func).toHaveBeenLastCalledWith(5);
   });

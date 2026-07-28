@@ -73,6 +73,7 @@ import PagerControl from 'docc-render/components/PagerControl.vue';
 import createElement from 'docc-render/utils/create-element';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+import { useId } from 'vue';
 
 const GUTTERS_WIDTH = 174;
 
@@ -150,6 +151,9 @@ function waitForScrollIntoView(element) {
  */
 export default {
   name: 'Pager',
+  setup() {
+    return { componentId: useId() };
+  },
   components: {
     ControlNext: {
       render() {
@@ -189,8 +193,8 @@ export default {
       ...obj,
       [item.key]: i,
     }), {}),
-    keyedPages: ({ _uid, pages }) => pages.map((page, i) => ({
-      key: `pager-${_uid}-page-${i}`,
+    keyedPages: ({ componentId, pages }) => pages.map((page, i) => ({
+      key: `pager-${componentId}-page-${i}`,
       page,
     })),
     hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),

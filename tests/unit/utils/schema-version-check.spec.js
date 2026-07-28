@@ -14,11 +14,11 @@ import emitWarningForSchemaVersionMismatch, {
   CURRENT_SCHEMA_STRING, compareVersions,
 } from 'docc-render/utils/schema-version-check';
 
-const warnSpy = jest.spyOn(console, 'warn').mockReturnValue('');
+const warnSpy = vi.spyOn(console, 'warn').mockReturnValue('');
 
 describe('schema-version-check', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('does not emit a warning, if having an exact match', () => {

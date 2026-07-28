@@ -51,7 +51,7 @@ describe('HeroMetadata', () => {
 
     expect(wrapper.findComponent(DownloadIcon).exists()).toBe(true);
 
-    const anchor = wrapper.findComponent('div.metadata div.item div.content a.project-download');
+    const anchor = wrapper.find('a.project-download');
     expect(anchor.attributes('href')).toBe(projectFilesUrl);
   });
 

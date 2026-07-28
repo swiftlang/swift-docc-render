@@ -13,7 +13,7 @@ import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.
 
 describe('LinkableHeading', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   const stubs = { 'router-link': RouterLinkStub };
 

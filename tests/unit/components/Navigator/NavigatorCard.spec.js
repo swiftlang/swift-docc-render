@@ -26,10 +26,12 @@ import {
 } from 'docc-render/constants/Tags';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
-jest.mock('docc-render/utils/storage');
-jest.mock('docc-render/utils/loading');
-jest.mock('docc-render/utils/theme-settings');
+vi.mock('docc-render/utils/debounce', () => ({
+  default: vi.fn(fn => fn),
+}));
+vi.mock('docc-render/utils/storage');
+vi.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/theme-settings');
 
 getSetting.mockReturnValue(false);
 
@@ -49,7 +51,7 @@ const DynamicScrollerStub = {
   props: DynamicScroller.props,
   template: '<div class="vue-recycle-scroller-stub"><template v-for="(item, index) in items"><slot v-bind="{ item, index, active: false }" /></template></div>',
   methods: {
-    scrollToItem: jest.fn(),
+    scrollToItem: vi.fn(),
   },
 };
 
@@ -58,7 +60,7 @@ const DynamicScrollerItemStub = {
   props: DynamicScrollerItem.props,
   template: '<div class="dynamic-scroller-item-stub"><slot/></div>',
   methods: {
-    updateSize: jest.fn(),
+    updateSize: vi.fn(),
   },
 };
 
@@ -195,8 +197,8 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   ...others,
 });
 
-const clearPersistedStateSpy = jest.spyOn(NavigatorCard.methods, 'clearPersistedState');
-const clearFiltersSpy = jest.spyOn(NavigatorCard.methods, 'clearFilters');
+const clearPersistedStateSpy = vi.spyOn(NavigatorCard.methods, 'clearPersistedState');
+const clearFiltersSpy = vi.spyOn(NavigatorCard.methods, 'clearFilters');
 let getChildPositionInScroller;
 
 const DEFAULT_STORED_STATE = {
@@ -244,9 +246,9 @@ function detachDivWithID(id) {
 describe('NavigatorCard', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // mock the position helper function, as its too difficult to mock the boundingClientRects
-    getChildPositionInScroller = jest.spyOn(NavigatorCard.methods, 'getChildPositionInScroller')
+    getChildPositionInScroller = vi.spyOn(NavigatorCard.methods, 'getChildPositionInScroller')
       .mockReturnValue(0);
   });
 
@@ -2363,7 +2365,7 @@ describe('NavigatorCard', () => {
 
     it('scrolls to the focused item, if not visible, as with the size of its closes parent', async () => {
       const wrapper = createWrapper();
-      const scrollBySpy = jest.fn();
+      const scrollBySpy = vi.fn();
       wrapper.findComponent({ ref: 'scroller' }).element.scrollBy = scrollBySpy;
       await flushPromises();
       expect(scrollBySpy).toHaveBeenCalledTimes(0);
@@ -2461,7 +2463,7 @@ describe('NavigatorCard', () => {
       button.trigger('focusin', {
         relatedTarget: document.body,
       });
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       await flushPromises();
       // now make the component go away
       await wrapper.setData({
@@ -2490,7 +2492,7 @@ describe('NavigatorCard', () => {
       });
       button.element.focus();
       // move the spy below the manual focus, so we dont count it
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       await flushPromises();
       expect(document.activeElement).toBe(button.element);
       // trigger an update
@@ -2506,7 +2508,7 @@ describe('NavigatorCard', () => {
       // Set the focus item to be something outside the scroller.
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.findComponent(NavigatorCardItem).find('button');
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       button.trigger('focusin', {
         relatedTarget: document.body,
       });
@@ -2528,7 +2530,7 @@ describe('NavigatorCard', () => {
       button.trigger('focusin', {
         relatedTarget: document.body,
       });
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       await flushPromises();
       // initiate a filter
       wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'Child');
@@ -2545,7 +2547,7 @@ describe('NavigatorCard', () => {
     it('returns -1 if item is above the scrollarea', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValueOnce({
           y: 50,
           height: 1000,
@@ -2564,7 +2566,7 @@ describe('NavigatorCard', () => {
     it('returns 1 if items is below the scrollarea', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValueOnce({
           y: 50,
           height: 1000,
@@ -2583,11 +2585,11 @@ describe('NavigatorCard', () => {
     it('takes into consideration the padding offsets', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue({
         paddingTop: '10px',
         paddingBottom: '20px',
       });
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValue({
           y: 50,
           height: 1000,
@@ -2613,7 +2615,7 @@ describe('NavigatorCard', () => {
     it('returns 0 if the item is in the scrollarea', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValueOnce({
           y: 50,
           height: 1000,

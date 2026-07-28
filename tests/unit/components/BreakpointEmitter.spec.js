@@ -17,7 +17,7 @@ const defaultBreakpoints = BreakpointAttributes[BreakpointScopes.default];
 const matchesNone = query => ({
   matches: false,
   media: query,
-  addListener: jest.fn(),
+  addListener: vi.fn(),
   removeListener: () => {},
 });
 
@@ -62,7 +62,7 @@ describe('BreakpointEmitter', () => {
 
   beforeEach(() => {
     originalMatchMedia = window.matchMedia;
-    window.matchMedia = jest.fn().mockImplementation(matchesNone);
+    window.matchMedia = vi.fn().mockImplementation(matchesNone);
   });
 
   afterEach(() => {
@@ -90,7 +90,7 @@ describe('BreakpointEmitter', () => {
   });
 
   it('does not emit anything if it does not match anything', async () => {
-    window.matchMedia = jest.fn().mockImplementation(matchesNone);
+    window.matchMedia = vi.fn().mockImplementation(matchesNone);
     const wrapper = shallowMount(BreakpointEmitter, { scopedSlots });
     expect(wrapper.element.tagName.toLowerCase() === 'div').toBe(true);
     await wrapper.vm.$nextTick();
@@ -99,7 +99,7 @@ describe('BreakpointEmitter', () => {
   });
 
   it('emits a "medium" change when the appropriate media query matches', async () => {
-    window.matchMedia = jest.fn().mockImplementation(matchesMedium);
+    window.matchMedia = vi.fn().mockImplementation(matchesMedium);
     const wrapper = shallowMount(BreakpointEmitter, { scopedSlots });
     await wrapper.vm.$nextTick();
     expect(wrapper.text()).toBe('medium');
@@ -109,7 +109,7 @@ describe('BreakpointEmitter', () => {
   });
 
   it('emits a "small" change when the appropriate media query matches', async () => {
-    window.matchMedia = jest.fn().mockImplementation(matchesSmall);
+    window.matchMedia = vi.fn().mockImplementation(matchesSmall);
     const wrapper = shallowMount(BreakpointEmitter, { scopedSlots });
     await wrapper.vm.$nextTick();
     expect(wrapper.text()).toBe('small');
@@ -119,8 +119,8 @@ describe('BreakpointEmitter', () => {
   });
 
   it('cleans up media query listeners when destroyed', () => {
-    const removeListener = jest.fn();
-    window.matchMedia = jest.fn().mockImplementation(query => ({
+    const removeListener = vi.fn();
+    window.matchMedia = vi.fn().mockImplementation(query => ({
       ...matchesNone(query),
       removeListener,
     }));
@@ -129,7 +129,7 @@ describe('BreakpointEmitter', () => {
   });
 
   it('supports scopes', async () => {
-    window.matchMedia = jest.fn().mockImplementation(matchesSmallNav);
+    window.matchMedia = vi.fn().mockImplementation(matchesSmallNav);
     const wrapper = shallowMount(BreakpointEmitter, {
       scopedSlots,
       propsData: { scope: 'nav' },
@@ -144,8 +144,8 @@ describe('BreakpointEmitter', () => {
   });
 
   it('does not work if you add a scope that is not defined', () => {
-    window.matchMedia = jest.fn().mockImplementation(matchesMedium);
-    const spy = jest.spyOn(console, 'warn').mockReturnValueOnce('');
+    window.matchMedia = vi.fn().mockImplementation(matchesMedium);
+    const spy = vi.spyOn(console, 'warn').mockReturnValueOnce('');
     const wrapper = shallowMount(BreakpointEmitter, {
       scopedSlots,
       propsData: { scope: 'foo' },

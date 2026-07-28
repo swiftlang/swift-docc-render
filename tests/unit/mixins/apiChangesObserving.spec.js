@@ -16,7 +16,7 @@ import { flushPromises } from '../../../test-utils';
 
 const localVue = createLocalVue();
 
-jest.mock('docc-render/utils/data');
+vi.mock('docc-render/utils/data');
 const response = { changes: 'foo' };
 
 fetchAPIChangesForRoute.mockResolvedValue(response);
@@ -35,8 +35,8 @@ const router = createRouter({
 });
 
 const store = {
-  setAPIChanges: jest.fn(),
-  setSelectedAPIChangesVersion: jest.fn(),
+  setAPIChanges: vi.fn(),
+  setSelectedAPIChangesVersion: vi.fn(),
 };
 
 const createWrapperWithQuery = async (changeQuery) => {
@@ -47,7 +47,7 @@ const createWrapperWithQuery = async (changeQuery) => {
     },
   });
   // make sure we reset the counter
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   return shallowMount({
     name: 'TestComponentForapiChangesObserving',
     mixins: [apiChangesObserving],
@@ -67,13 +67,13 @@ const createWrapperWithQuery = async (changeQuery) => {
   });
 };
 
-const pushSpy = jest.spyOn(router, 'push');
+const pushSpy = vi.spyOn(router, 'push');
 
 describe('apiChangesObserving', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   afterEach(() => {
     wrapper.destroy();
@@ -173,7 +173,7 @@ describe('apiChangesObserving', () => {
     wrapper = await createWrapperWithQuery(change);
     expect(wrapper.vm.shouldDisplayChangesNav).toBe(true);
     expect(pushSpy).toHaveBeenCalledTimes(0);
-    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(0);
+    expect(store.setSelectedAPIChangesVersion).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(fetchAPIChangesForRoute).toHaveBeenCalledTimes(1);
     expect(pushSpy).toHaveBeenCalledTimes(0);

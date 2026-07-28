@@ -50,7 +50,7 @@ describe('FocusTrap', () => {
     focusInstance.destroy();
   });
   it('warns if no elements to focus', () => {
-    const warnSpy = jest.spyOn(console, 'warn').mockReturnValue('');
+    const warnSpy = vi.spyOn(console, 'warn').mockReturnValue('');
     const emptyDOM = parseHTMLString('<div>Just Text</div>');
     const emptyFocusInstance = new FocusTrap(emptyDOM);
     emptyFocusInstance.start();
