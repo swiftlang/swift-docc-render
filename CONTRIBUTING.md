@@ -79,10 +79,10 @@ more details.
     You may want to set an http endpoint as a proxy to handle data requests while developing locally.
 
     ```shell
-    VITE_DEV_SERVER_PROXY=https://localhost:8000 pnpm serve
+    VITE_DEV_SERVER_PROXY=https://localhost:8000 pnpm dev
     ```
 
-    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` environment variable so you don't have to set it in the `pnpm serve` script each time.
+    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` environment variable so you don't have to set it in the `pnpm dev` script each time.
     
 ### Build Steps
 
