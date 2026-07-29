@@ -39,15 +39,6 @@ This product depends on vue-router.
 
 ---
 
-This product depends on core-js.
-
-  * LICENSE (MIT):
-    * https://github.com/zloirock/core-js/blob/master/LICENSE
-  * HOMEPAGE:
-    * https://github.com/zloirock/core-js
-
----
-
 This product depends on Highlight.js.
 
   * LICENSE (BSD-3-Clause):
