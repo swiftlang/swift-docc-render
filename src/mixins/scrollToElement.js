@@ -9,6 +9,7 @@
 */
 
 import { waitFrames } from 'docc-render/utils/loading';
+import { scrollBehavior } from 'docc-render/utils/router-utils';
 
 export default {
   methods: {
@@ -19,7 +20,7 @@ export default {
       const {
         selector,
         offset,
-      } = await this.$router.options.scrollBehavior(resolvedRoute.route);
+      } = await scrollBehavior(resolvedRoute);
       const element = document.querySelector(selector);
       if (!element) return null;
 

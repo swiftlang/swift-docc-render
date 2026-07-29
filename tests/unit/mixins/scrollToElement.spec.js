@@ -32,14 +32,7 @@ describe('scrollToElement', () => {
   }, {
     mocks: {
       $router: {
-        resolve: ({ hash }) => ({ route: { hash } }),
-        options: {
-          scrollBehavior(to) {
-            return new Promise((resolve) => {
-              resolve({ selector: to.hash, offset: scrollOffset });
-            });
-          },
-        },
+        resolve: ({ hash }) => ({ hash }),
       },
     },
   });

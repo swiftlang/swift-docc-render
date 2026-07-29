@@ -249,7 +249,7 @@ export default {
     politeAriaLive() {
       const { hasNodes, navigatorItems } = this;
       if (!hasNodes) return '';
-      return this.$tc(ITEMS_FOUND, navigatorItems.length, { number: navigatorItems.length });
+      return this.$t(ITEMS_FOUND, navigatorItems.length, { number: navigatorItems.length });
     },
     assertiveAriaLive: ({
       hasNodes, hasFilter, errorFetching,
@@ -975,9 +975,12 @@ export default {
 };
 </script>
 
+<style lang="scss">
+@import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+</style>
+
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
-@import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 // unfortunately we need to hard-code the filter height
 $filter-height: 71px;

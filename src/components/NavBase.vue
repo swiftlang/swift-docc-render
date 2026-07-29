@@ -569,7 +569,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   z-index: 1;
 }
 
-.pre-title {
+:slotted(.pre-title) {
   display: flex;
 }
 
@@ -662,7 +662,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 }
 
-.pre-title + .nav-title {
+:slotted(.pre-title) + .nav-title {
   @include nav-in-breakpoint {
     grid-area: title;
 

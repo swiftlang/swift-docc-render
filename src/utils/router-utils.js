@@ -12,6 +12,7 @@ import {
   baseNavHeight,
   baseNavHeightSmallBreakpoint,
 } from 'docc-render/constants/nav';
+import { nextTick } from 'vue';
 import { documentationTopicName } from 'docc-render/constants/router';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
@@ -45,7 +46,7 @@ export async function scrollBehavior(to, from, savedPosition) {
     // outside the bounds of the app's non-rendered page, which is
     // header + loading-placeholder + footer. This would result in the
     // browser displaying the top of the page and no scrolling to occur.
-    await this.app.$nextTick();
+    await nextTick();
     return savedPosition;
   }
   if (to.meta && to.meta.preventScrolling) {

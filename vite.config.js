@@ -262,7 +262,6 @@ export default defineConfig(({ command, mode }) => {
       vue({
         template: {
           compilerOptions: {
-            whitespace: 'preserve',
             isCustomElement: tag => tag.startsWith('custom-'),
           },
         },
