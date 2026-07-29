@@ -60,8 +60,8 @@ describe('SuggestLang', () => {
     wrapper = shallowMount(SuggestLang, {
       stubs: { 'router-link': RouterLinkStub },
       mocks: {
+        $t: (key, _values, { locale } = {}) => messages[locale]?.[key] ?? key,
         $i18n: {
-          messages,
           locale: currentLocale,
         },
       },

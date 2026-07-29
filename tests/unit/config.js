@@ -15,6 +15,12 @@ import { vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 
 const readOnlyElementProperties = new Set(['attributes', 'children', 'prefix']);
+const I18nTStub = defineComponent({
+  name: 'I18nTStub',
+  setup(_props, { slots }) {
+    return () => h('span', Object.values(slots).flatMap(slot => slot()));
+  },
+});
 
 process.env.VUE_APP_TITLE = 'Documentation';
 window.TransitionEvent = window.TransitionEvent || window.Event;
@@ -35,7 +41,6 @@ window.IntersectionObserver = vi.fn().mockImplementation(class MockIntersectionO
 
 config.global.mocks = {
   $t: (tKey, secondParam) => (secondParam ? [tKey, ...Object.values(secondParam)].join(' ') : tKey),
-  $tc: tKey => tKey,
   $i18n: {
     locale: defaultLocale,
   },
@@ -43,6 +48,7 @@ config.global.mocks = {
 config.global.renderStubDefaultSlot = true;
 config.global.plugins = [PortalVue];
 config.global.stubs = {
+  'i18n-t': I18nTStub,
   'router-link': RouterLinkStub,
 };
 config.plugins.createStubs = ({ name, component, registerStub }) => {
@@ -68,9 +74,6 @@ config.plugins.createStubs = ({ name, component, registerStub }) => {
   return stub;
 };
 config.global.config = {
-  compilerOptions: {
-    whitespace: 'preserve',
-  },
   warnHandler(message, instance, trace) {
     throw new Error(`[Vue warn]: ${message}${trace}`);
   },

@@ -20,7 +20,7 @@ Object.defineProperty(document.body, 'scrollHeight', {
 });
 
 describe('scrollToElement', () => {
-  const scrollOffset = { x: 0, y: 14 };
+  const scrollOffset = { x: 0, y: 52 };
   const anchor = 'heres-why';
 
   const wrapper = shallowMount({
@@ -32,7 +32,12 @@ describe('scrollToElement', () => {
   }, {
     mocks: {
       $router: {
-        resolve: ({ hash }) => ({ hash }),
+        resolve: ({ hash }) => ({
+          hash,
+          meta: {},
+          name: '',
+          query: {},
+        }),
       },
     },
   });

@@ -12,13 +12,13 @@ import { shallowMount } from '@vue/test-utils';
 import HeroMetadata from 'docc-render/components/Tutorial/HeroMetadata.vue';
 
 const i18nStub = {
-  name: 'i18n',
+  name: 'I18nT',
   template: '<div><slot name="number"/><slot name="minutes"/></div>',
 };
 
 const mountWithProps = props => shallowMount(HeroMetadata, {
   propsData: props,
-  stubs: { i18n: i18nStub },
+  stubs: { 'i18n-t': i18nStub },
   provide: { isTargetIDE: false },
 });
 
@@ -110,7 +110,7 @@ describe('HeroMetadata', () => {
           title: 'Xcode',
         },
       },
-      stubs: { i18n: i18nStub },
+      stubs: { 'i18n-t': i18nStub },
       provide: { isTargetIDE: true },
     });
 

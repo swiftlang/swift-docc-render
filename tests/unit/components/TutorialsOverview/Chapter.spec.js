@@ -80,7 +80,7 @@ describe('Chapter', () => {
     expect(name.exists()).toBe(true);
     expect(name.element.tagName.toLowerCase() === 'h3').toBe(true);
     expect(name.text()).toMatch(/tutorials\.sections\.chapter/);
-    expect(name.attributes('aria-label')).toEqual('Foo - tutorials.sections.chapter');
+    expect(name.attributes('aria-label')).toEqual('Foo - tutorials.sections.chapter 1');
 
     const eyebrow = name.find('.eyebrow');
     expect(eyebrow.exists()).toBe(true);

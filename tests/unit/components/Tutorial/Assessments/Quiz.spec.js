@@ -13,7 +13,7 @@ import ContentNode from 'docc-render/components/ContentNode.vue';
 import Quiz from 'docc-render/components/Tutorial/Assessments/Quiz.vue';
 
 const i18nStub = {
-  name: 'i18n',
+  name: 'I18nT',
   template: '<span>Answer is <slot name="result"/></span>',
 };
 
@@ -112,7 +112,7 @@ describe('Quiz', () => {
     beforeEach(() => {
       wrapper = shallowMount(Quiz, {
         propsData,
-        stubs: { i18n: i18nStub },
+        stubs: { 'i18n-t': i18nStub },
       });
     });
 
@@ -174,7 +174,7 @@ describe('Quiz', () => {
     beforeEach(() => {
       wrapper = shallowMount(Quiz, {
         propsData,
-        stubs: { i18n: i18nStub },
+        stubs: { 'i18n-t': i18nStub },
         attachTo: document.body,
       });
       choices = wrapper.findAll('.choice');
