@@ -87,7 +87,7 @@
           {{ politeAriaLive }}
         </div>
         <div aria-live="assertive" class="no-items-wrapper">
-          <p class="no-items">{{ $t(assertiveAriaLive) }}</p>
+          <p v-if="assertiveAriaLive" class="no-items">{{ $t(assertiveAriaLive) }}</p>
         </div>
       </div>
       <div class="filter-wrapper" v-if="!errorFetching">
