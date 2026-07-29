@@ -64,7 +64,7 @@
         v-if="isParent"
         hidden
         :id="parentLabel"
-      >{{ $tc(
+      >{{ $t(
         'filter.parent-label',
         item.childUIDs.length,
         {

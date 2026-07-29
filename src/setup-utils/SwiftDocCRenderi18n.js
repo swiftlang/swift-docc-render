@@ -15,7 +15,8 @@ export default function createi18nInstance(config = lang) {
   const { defaultLocale, messages, dateTimeFormats = {} } = config;
 
   const i18n = createI18n({
-    legacy: true,
+    legacy: false,
+    globalInjection: true,
     dateTimeFormats,
     locale: defaultLocale,
     fallbackLocale: defaultLocale,

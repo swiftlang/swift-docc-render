@@ -9,6 +9,7 @@
 */
 
 import { createApp } from 'vue';
+import PortalVue from 'portal-vue';
 import App from './App.vue';
 import SwiftDocCRenderPlugin from '@/setup-utils/SwiftDocCRenderPlugin';
 import SwiftDocCRenderRouter from '@/setup-utils/SwiftDocCRenderRouter';
@@ -16,8 +17,12 @@ import SwiftDocCRenderi18n from '@/setup-utils/SwiftDocCRenderi18n';
 
 document.documentElement.classList.remove('no-js');
 
-const app = createApp(App)
+const app = createApp(App);
 
+app.use(PortalVue, {
+  portalName: false,
+  portalTargetName: false,
+});
 app.use(SwiftDocCRenderPlugin);
 app.use(SwiftDocCRenderRouter());
 app.use(SwiftDocCRenderi18n());

@@ -78,7 +78,7 @@
       v-bind="{ kind: AttributeKind.allowedTypes, attributes: attributesObject, changes }">
       <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
-          content: $tc('parameters.possible-types', fallbackToValues(attribute).length)
+          content: $t('parameters.possible-types', fallbackToValues(attribute).length)
         }) }}<code><template
             v-for="(possibleType, i) in fallbackToValues(attribute)"
             :key="i"
@@ -96,7 +96,7 @@
       v-bind="{ kind: AttributeKind.allowedValues, attributes: attributesObject, changes }">
       <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
-          content: $tc('parameters.possible-values', fallbackToValues(attribute).length)
+          content: $t('parameters.possible-values', fallbackToValues(attribute).length)
         }) }}<code>{{ fallbackToValues(attribute).join(', ') }}</code>
       </template>
     </ParameterMetaAttribute>

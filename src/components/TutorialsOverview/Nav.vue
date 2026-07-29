@@ -14,7 +14,7 @@
       <template #default>
         <slot />
       </template>
-      <template #subhead>{{ $tc('tutorials.title', 2) }}</template>
+      <template #subhead>{{ $t('tutorials.title', 2) }}</template>
     </NavTitleContainer>
     <template #menu-items>
       <NavMenuItemBase class="in-page-navigation">

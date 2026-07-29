@@ -43,7 +43,7 @@
       v-model:visible="previewIsVisible"
     >
       <div class="runtime-preview-modal-content">
-        <span class="runtime-preview-label">{{ $tc('tutorials.preview.title', 1) }}</span>
+        <span class="runtime-preview-label">{{ $t('tutorials.preview.title', 1) }}</span>
         <slot />
       </div>
     </GenericModal>

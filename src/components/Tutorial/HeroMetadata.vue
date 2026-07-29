@@ -14,7 +14,7 @@
       class="item"
       v-if="estimatedTimeInMinutes"
       :aria-label="`
-        ${$tc(
+        ${$t(
           'tutorials.time.minutes.full', estimatedTimeInMinutes, { count: estimatedTimeInMinutes }
         )}
         ${$t('tutorials.estimated-time')}
@@ -23,17 +23,22 @@
       <!-- Accessibility warning: if you remove the label above,
       also remove the aria-hidden="true" values below. -->
       <div class="content" aria-hidden="true">
-        <i18n path="tutorials.time.format" tag="div" class="duration">
+        <i18n-t
+          keypath="tutorials.time.format"
+          scope="global"
+          tag="div"
+          class="duration"
+        >
           <template #number>
             {{ estimatedTimeInMinutes }}
           </template>
           <template #minutes>
-            <div class="minutes">{{ $tc(
+            <div class="minutes">{{ $t(
               'tutorials.time.minutes.short', estimatedTimeInMinutes
             ) }}
             </div>
           </template>
-        </i18n>
+        </i18n-t>
       </div>
       <div class="bottom" aria-hidden="true">{{ $t('tutorials.estimated-time') }}</div>
     </div>

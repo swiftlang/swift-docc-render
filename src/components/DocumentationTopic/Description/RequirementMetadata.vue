@@ -12,7 +12,7 @@
   <p class="requirement-metadata">
     <strong>{{ $t('required') }}</strong>
     <template v-if="defaultImplementationsCount">
-       {{ $tc('metadata.default-implementation', defaultImplementationsCount) }}
+       {{ $t('metadata.default-implementation', defaultImplementationsCount) }}
     </template>
   </p>
 </template>
