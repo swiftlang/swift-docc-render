@@ -54,10 +54,8 @@ export default defineConfig(configEnv => mergeConfig(
         },
       },
       exclude: [...configDefaults.exclude],
-      fileParallelism: false,
       globals: true,
       include: ['tests/unit/**/*.spec.js'],
-      maxWorkers: 1,
       root: fileURLToPath(new URL('./', import.meta.url)),
       sequence: {
         hooks: 'list',
