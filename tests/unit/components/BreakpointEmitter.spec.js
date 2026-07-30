@@ -143,7 +143,20 @@ describe('BreakpointEmitter', () => {
     ));
   });
 
-  it('rejects a scope that is not defined', () => {
-    expect(BreakpointEmitter.props.scope.validator('foo')).toBe(false);
+  it('does not work if you add a scope that is not defined', () => {
+    window.matchMedia = vi.fn().mockImplementation(matchesMedium);
+    const warnHandler = vi.fn();
+    const wrapper = shallowMount(BreakpointEmitter, {
+      scopedSlots,
+      propsData: { scope: 'foo' },
+      global: {
+        config: { warnHandler },
+      },
+    });
+    expect(warnHandler).toHaveBeenCalled();
+    expect(warnHandler.mock.calls[0][0])
+      .toMatch(/Invalid prop: custom validator check failed for prop "scope"/);
+    expect(window.matchMedia).toHaveBeenCalledTimes(0);
+    expect(wrapper.emitted('change')).toBeFalsy();
   });
 });
