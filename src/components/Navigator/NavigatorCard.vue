@@ -249,7 +249,11 @@ export default {
     politeAriaLive() {
       const { hasNodes, navigatorItems } = this;
       if (!hasNodes) return '';
-      return this.$t(ITEMS_FOUND, navigatorItems.length, { number: navigatorItems.length });
+      return this.$t(
+        ITEMS_FOUND,
+        { number: navigatorItems.length },
+        navigatorItems.length,
+      );
     },
     assertiveAriaLive: ({
       hasNodes, hasFilter, errorFetching,

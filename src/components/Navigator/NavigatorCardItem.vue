@@ -66,13 +66,13 @@
         :id="parentLabel"
       >{{ $t(
         'filter.parent-label',
-        item.childUIDs.length,
         {
           'number-siblings': item.index + 1,
           'total-siblings': item.siblingsCount,
           'parent-siblings': item.parent,
           'number-parent': item.childUIDs.length
-        }
+        },
+        item.childUIDs.length
       ) }}</span>
       <span
         v-if="!isParent"

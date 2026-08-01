@@ -67,6 +67,23 @@ describe('HeroMetadata', () => {
     expect(durationDiv.text()).toMatch(new RegExp(`${estimatedTimeInMinutes}\\s*tutorials\\.time\\.minutes\\.short`));
   });
 
+  it('passes plural interpolation values to the estimated-time translation', () => {
+    const estimatedTimeInMinutes = 20;
+    const $t = vi.fn(key => key);
+    shallowMount(HeroMetadata, {
+      propsData: { estimatedTimeInMinutes },
+      mocks: { $t },
+      stubs: { 'i18n-t': i18nStub },
+      provide: { isTargetIDE: false },
+    });
+
+    expect($t).toHaveBeenCalledWith(
+      'tutorials.time.minutes.full',
+      { count: estimatedTimeInMinutes },
+      estimatedTimeInMinutes,
+    );
+  });
+
   it('renders requirements icon if requirements present', () => {
     const wrapper = mountWithProps({
       xcodeRequirement: {

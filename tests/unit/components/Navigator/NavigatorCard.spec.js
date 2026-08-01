@@ -515,6 +515,18 @@ describe('NavigatorCard', () => {
     expect(wrapper.findComponent('[aria-live="assertive"]').exists()).toBe(true);
   });
 
+  it('passes plural interpolation values to the item-count translation', async () => {
+    const $t = vi.fn(key => key);
+    const wrapper = createWrapper({ mocks: { $t, $route: { path: defaultProps.technologyPath } } });
+    await flushPromises();
+
+    expect($t).toHaveBeenCalledWith(
+      ITEMS_FOUND,
+      { number: wrapper.vm.navigatorItems.length },
+      wrapper.vm.navigatorItems.length,
+    );
+  });
+
   it('hides the DynamicScroller, if no items to show', async () => {
     const wrapper = createWrapper();
     await flushPromises();
@@ -567,7 +579,8 @@ describe('NavigatorCard', () => {
     const unopenedItem = wrapper.findAllComponents(NavigatorCardItem).at(2);
     unopenedItem.vm.$emit('toggle', root0Child1);
     await wrapper.vm.$nextTick();
-    expect(wrapper.findComponent('[aria-live="polite"].visuallyhidden').text()).toBe(ITEMS_FOUND);
+    expect(wrapper.findComponent('[aria-live="polite"].visuallyhidden').text())
+      .toBe(`${ITEMS_FOUND} 5`);
   });
 
   describe('toggles a child, on @toggle', () => {

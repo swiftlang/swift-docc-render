@@ -15,7 +15,9 @@
       v-if="estimatedTimeInMinutes"
       :aria-label="`
         ${$t(
-          'tutorials.time.minutes.full', estimatedTimeInMinutes, { count: estimatedTimeInMinutes }
+          'tutorials.time.minutes.full',
+          { count: estimatedTimeInMinutes },
+          estimatedTimeInMinutes
         )}
         ${$t('tutorials.estimated-time')}
       `"

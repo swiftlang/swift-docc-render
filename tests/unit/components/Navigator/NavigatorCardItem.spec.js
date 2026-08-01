@@ -86,6 +86,22 @@ describe('NavigatorCardItem', () => {
     expect(cardItem.attributes('data-nesting-index')).toBe(String(defaultProps.item.depth));
   });
 
+  it('passes plural interpolation values to the parent-label translation', () => {
+    const $t = vi.fn(key => key);
+    createWrapper({ mocks: { $t } });
+
+    expect($t).toHaveBeenCalledWith(
+      'filter.parent-label',
+      {
+        'number-siblings': defaultProps.item.index + 1,
+        'total-siblings': defaultProps.item.siblingsCount,
+        'parent-siblings': defaultProps.item.parent,
+        'number-parent': defaultProps.item.childUIDs.length,
+      },
+      defaultProps.item.childUIDs.length,
+    );
+  });
+
   it('renders the NavigationCardItem with an icon override', () => {
     const navigatorReferences = {
       iconRef: {
@@ -480,7 +496,7 @@ describe('NavigatorCardItem', () => {
       const wrapper = createWrapper();
       const label = wrapper.findComponent(`#label-parent-${defaultProps.item.uid}`);
       expect(label.attributes('hidden')).toBe('');
-      expect(label.text()).toBe('filter.parent-label');
+      expect(label.text()).toBe('filter.parent-label 2 5 Foo 3');
     });
 
     it('renders a aria-describedby with sibling label if it is not a parent', () => {
