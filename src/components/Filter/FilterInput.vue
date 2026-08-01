@@ -150,6 +150,19 @@ const AXinputProperties = {
 
 export default {
   name: 'FilterInput',
+  emits: [
+    'blur',
+    'focus',
+    'focus-next',
+    'focus-prev',
+    'input',
+    'show-suggested-tags',
+    'suggested-tags',
+    'update:input',
+    'update:modelValue',
+    'update:preventedBlur',
+    'update:selectedTags',
+  ],
   mixins: [handleScrollbar, multipleSelection],
   constants: {
     FilterInputId,

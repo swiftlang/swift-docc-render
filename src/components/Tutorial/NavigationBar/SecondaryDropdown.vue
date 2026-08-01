@@ -66,6 +66,7 @@ import DropdownCustom from 'docc-render/components/DropdownCustom.vue';
 
 export default {
   name: 'SecondaryDropdown',
+  emits: ['select-section'],
   components: { DropdownCustom },
   props: {
     options: {

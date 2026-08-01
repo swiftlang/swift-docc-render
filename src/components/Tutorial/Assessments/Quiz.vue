@@ -80,6 +80,7 @@ import CheckCircleIcon from 'theme/components/Icons/CheckCircleIcon.vue';
 
 export default {
   name: 'Quiz',
+  emits: ['advance', 'see-results', 'submit'],
   components: {
     CheckCircleIcon, ResetCircleIcon, ContentNode, ButtonLink,
   },

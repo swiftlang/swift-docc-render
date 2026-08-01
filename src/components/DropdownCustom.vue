@@ -66,6 +66,7 @@ const ActiveOptionClass = 'option-active';
 
 export default {
   name: 'DropdownCustom',
+  emits: ['close', 'input', 'open'],
   setup() {
     return { componentId: useId() };
   },

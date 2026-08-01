@@ -28,6 +28,7 @@ const AssetTypes = {
 
 export default {
   name: 'Asset',
+  emits: ['videoEnded'],
   components: {
     ImageAsset,
     VideoAsset,

@@ -41,6 +41,7 @@ import { baseNavOpenSidenavButtonId } from 'docc-render/constants/nav';
 
 export default {
   name: 'BaseNavigatorCard',
+  emits: ['close'],
   components: {
     InlineCloseIcon,
   },

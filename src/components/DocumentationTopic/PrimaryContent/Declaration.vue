@@ -57,6 +57,7 @@ import { isEqual } from 'docc-render/utils/arrays';
 
 export default {
   name: 'Declaration',
+  emits: ['update:declListExpanded'],
   components: {
     DeclarationDiff,
     DeclarationList,

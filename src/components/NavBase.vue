@@ -108,6 +108,7 @@ const NavStateClasses = {
 
 export default {
   name: 'NavBase',
+  emits: ['change', 'changed', 'close', 'closed', 'open', 'opened'],
   components: { NavMenuItems, BreakpointEmitter },
   constants: { NavStateClasses, NoBGTransitionFrames },
   props: {

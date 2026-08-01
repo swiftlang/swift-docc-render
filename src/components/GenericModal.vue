@@ -57,6 +57,7 @@ const Theme = {
 
 export default {
   name: 'GenericModal',
+  emits: ['close', 'open', 'update:visible'],
   inheritAttrs: false,
   components: { CloseIcon, PortalSource: Portal },
   props: {

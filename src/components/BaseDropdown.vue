@@ -49,6 +49,7 @@ import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.
  */
 export default {
   name: 'BaseDropdown',
+  emits: ['input', 'update:modelValue'],
   inheritAttrs: false,
   props: {
     modelValue: {

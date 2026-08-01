@@ -30,6 +30,7 @@ function breakpointMediaQuery({ maxWidth, minWidth }) {
 
 export default {
   name: 'BreakpointEmitter',
+  emits: ['change'],
   constants: {
     BreakpointAttributes,
     BreakpointName,

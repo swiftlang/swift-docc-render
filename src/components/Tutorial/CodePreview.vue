@@ -65,6 +65,7 @@ function scaledSize({ width, height }, scale = 1) {
 
 export default {
   name: 'CodePreview',
+  emits: ['runtime-preview-toggle'],
   inject: {
     isTargetIDE: {
       default: false,

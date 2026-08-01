@@ -82,6 +82,7 @@ const IntersectionMargins = '-35% 0% -65% 0%';
 
 export default {
   name: 'SectionSteps',
+  emits: ['runtime-preview-toggle'],
   components: {
     ContentNode,
     Step,

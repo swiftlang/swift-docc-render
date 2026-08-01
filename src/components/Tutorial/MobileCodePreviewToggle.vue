@@ -31,6 +31,7 @@ import InlinePlusCircleIcon from 'theme/components/Icons/InlinePlusCircleIcon.vu
 
 export default {
   name: 'MobileCodePreviewToggle',
+  emits: ['click'],
   components: { InlinePlusCircleIcon },
   props: {
     // Whether the toggle can be clicked. If set, a 'click'

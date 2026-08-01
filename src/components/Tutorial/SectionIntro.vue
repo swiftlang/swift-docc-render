@@ -52,6 +52,7 @@ import createElement from 'docc-render/utils/create-element';
 
 export default {
   name: 'SectionIntro',
+  emits: ['focus'],
   inject: {
     isTargetIDE: {
       default: () => false,

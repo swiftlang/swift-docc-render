@@ -48,6 +48,7 @@ import { prepareDataForHTMLClipboard } from 'docc-render/utils/clipboard';
 
 export default {
   name: 'Tag',
+  emits: ['click', 'delete-tag', 'focus', 'keydown', 'paste-content', 'prevent-blur'],
   props: {
     name: {
       type: String,

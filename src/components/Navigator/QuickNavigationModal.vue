@@ -155,6 +155,7 @@ const SLOW_LOADING_DELAY = 1000; // 1 second in milliseconds
 
 export default {
   name: 'QuickNavigationModal',
+  emits: ['update:showQuickNavigationModal'],
   components: {
     FilterInput,
     GenericModal,

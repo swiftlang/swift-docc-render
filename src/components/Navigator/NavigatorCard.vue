@@ -159,6 +159,7 @@ const ITEMS_FOUND = 'navigator.items-found';
  */
 export default {
   name: 'NavigatorCard',
+  emits: ['close', 'navigate'],
   constants: {
     STORAGE_KEY,
     ERROR_FETCHING,

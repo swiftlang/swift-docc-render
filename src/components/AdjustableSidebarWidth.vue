@@ -104,6 +104,7 @@ const SCROLL_LOCK_ID = 'sidebar-scroll-lock';
 
 export default {
   name: 'AdjustableSidebarWidth',
+  emits: ['update:hiddenOnLarge', 'update:shownOnMobile', 'width-change'],
   constants: {
     SCROLL_LOCK_ID,
   },

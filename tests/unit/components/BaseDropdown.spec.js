@@ -71,6 +71,24 @@ describe('BaseDropdown', () => {
     expect(emitted[0][0]).toBe(value);
   });
 
+  it('invokes a parent input listener only once per select change', async () => {
+    const onInput = vi.fn();
+    const wrapper = createWrapper({
+      attrs: { onInput },
+      slots: {
+        default: [
+          '<option value="foo">Foo</option>',
+          '<option value="bar">Bar</option>',
+        ],
+      },
+    });
+
+    await wrapper.findComponent('select').setValue('bar');
+
+    expect(onInput).toHaveBeenCalledTimes(1);
+    expect(onInput).toHaveBeenCalledWith('bar');
+  });
+
   it('passes all extra attrs to the `select` component', () => {
     const wrapper = createWrapper({
       attrs: {

@@ -23,6 +23,7 @@
 const ProvideKey = 'tabnavData';
 export default {
   name: 'Tabnav',
+  emits: ['input', 'update:modelValue'],
   constants: { ProvideKey },
   provide() {
     const tabnavData = {

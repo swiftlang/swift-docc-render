@@ -48,6 +48,22 @@ describe('Tag', () => {
     expect(wrapper.emitted().click).toBeTruthy();
   });
 
+  it('invokes a parent click listener only once', async () => {
+    const onClick = vi.fn();
+    wrapper.destroy();
+    wrapper = shallowMount(Tag, {
+      propsData,
+      attrs: { onClick },
+      attachTo: document.body,
+    });
+    button = wrapper.findComponent('button');
+
+    await button.trigger('click');
+
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledWith(expect.objectContaining({ tagName: propsData.name }));
+  });
+
   it('emits `delete-tag` when being double clicked', () => {
     button.trigger('dblclick');
 

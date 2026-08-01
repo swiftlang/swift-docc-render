@@ -85,6 +85,7 @@ export const LineStyle = {
 
 export default {
   name: 'CodeListing',
+  emits: ['file-name-click'],
   components: {
     Filename: CodeListingFilename,
     CodeBlock,
