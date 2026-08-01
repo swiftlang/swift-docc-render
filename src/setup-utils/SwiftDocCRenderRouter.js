@@ -8,7 +8,12 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { createRouter, createWebHistory } from 'vue-router';
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router';
 import {
   saveScrollOnReload,
   restoreScrollOnReload,
@@ -23,9 +28,17 @@ const defaultRoutes = [
   ...fallbackRoutes,
 ];
 
+const createHistory = (mode, base) => ({
+  abstract: createMemoryHistory,
+  hash: createWebHashHistory,
+  history: createWebHistory,
+}[mode] || createWebHistory)(base);
+
 export default function createRouterInstance(routerConfig = {}) {
   const {
-    history = createWebHistory(baseUrl),
+    base = baseUrl,
+    mode = 'history',
+    history = createHistory(mode, base),
     routes: configuredRoutes,
     ...config
   } = routerConfig;

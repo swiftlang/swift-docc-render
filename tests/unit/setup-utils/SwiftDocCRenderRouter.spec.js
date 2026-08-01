@@ -9,7 +9,12 @@
 */
 
 import { restoreScrollOnReload, saveScrollOnReload, scrollBehavior } from 'docc-render/utils/router-utils';
-import { createRouter, createWebHistory } from 'vue-router';
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router';
 import SwiftDocCRenderRouter from 'docc-render/setup-utils/SwiftDocCRenderRouter';
 import FetchError from 'docc-render/errors/FetchError';
 
@@ -29,7 +34,9 @@ const mockInstance = {
 const mockHistory = {};
 
 vi.mock('vue-router', () => ({
+  createMemoryHistory: vi.fn(() => mockHistory),
   createRouter: vi.fn(() => mockInstance),
+  createWebHashHistory: vi.fn(() => mockHistory),
   createWebHistory: vi.fn(() => mockHistory),
 }));
 vi.mock('docc-render/utils/router-utils', () => ({
@@ -104,6 +111,31 @@ describe('SwiftDocCRenderRouter', () => {
       // assert the provided config is passed
       foo: 'foo',
     });
+  });
+
+  it('preserves legacy base and history-mode configuration', () => {
+    SwiftDocCRenderRouter({ base: '/custom-base' });
+
+    expect(createWebHistory).toHaveBeenCalledWith('/custom-base');
+    expect(createRouter).toHaveBeenCalledWith({
+      history: mockHistory,
+      routes: expect.any(Array),
+      scrollBehavior,
+    });
+  });
+
+  it('preserves legacy hash-mode configuration', () => {
+    SwiftDocCRenderRouter({ base: '/custom-base', mode: 'hash' });
+
+    expect(createWebHashHistory).toHaveBeenCalledWith('/custom-base');
+    expect(createWebHistory).not.toHaveBeenCalled();
+  });
+
+  it('preserves legacy abstract-mode configuration', () => {
+    SwiftDocCRenderRouter({ base: '/custom-base', mode: 'abstract' });
+
+    expect(createMemoryHistory).toHaveBeenCalledWith('/custom-base');
+    expect(createWebHistory).not.toHaveBeenCalled();
   });
 
   it('stores the last scroll coordinates on `unload`', () => {
