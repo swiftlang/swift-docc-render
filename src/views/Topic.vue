@@ -80,9 +80,14 @@ export default {
       return vm => vm.newContentMounted();
     }
     let navigationResult;
-    const data = await fetchDataForRouteEnter(to, from, (result) => {
-      navigationResult = result;
-    });
+    let data;
+    try {
+      data = await fetchDataForRouteEnter(to, from, (result) => {
+        navigationResult = result;
+      });
+    } catch (error) {
+      return error;
+    }
     if (navigationResult !== undefined) return navigationResult;
     return (vm) => {
       updateLocale(to.params.locale, vm);
@@ -92,9 +97,14 @@ export default {
   async beforeRouteUpdate(to, from) {
     if (shouldFetchDataForRouteUpdate(to, from)) {
       let navigationResult;
-      const data = await fetchDataForRouteEnter(to, from, (result) => {
-        navigationResult = result;
-      });
+      let data;
+      try {
+        data = await fetchDataForRouteEnter(to, from, (result) => {
+          navigationResult = result;
+        });
+      } catch (error) {
+        return error;
+      }
       if (navigationResult !== undefined) return navigationResult;
       this.topicData = data;
       updateLocale(to.params.locale, this);

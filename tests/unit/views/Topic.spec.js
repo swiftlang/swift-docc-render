@@ -14,7 +14,7 @@ import Topic from 'docc-render/views/Topic.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 import Tutorial from 'docc-render/components/Tutorial.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
-import { fetchDataForRouteEnter } from '@/utils/data';
+import { fetchDataForRouteEnter, shouldFetchDataForRouteUpdate } from '@/utils/data';
 
 vi.mock('docc-render/mixins/onPageLoadScrollToFragment');
 vi.mock('@/utils/data');
@@ -77,6 +77,20 @@ describe('Topic', () => {
     expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
     expect(fetchDataForRouteEnter)
       .toHaveBeenCalledWith(params.to, params.from, expect.any(Function));
+  });
+
+  it('returns redirects rejected by the route data fetch', async () => {
+    const redirect = '/documentation/redirected';
+    fetchDataForRouteEnter.mockRejectedValueOnce(redirect);
+
+    await expect(Topic.beforeRouteEnter({ meta: {} }, {})).resolves.toBe(redirect);
+  });
+
+  it('returns cancellations rejected while updating a route', async () => {
+    shouldFetchDataForRouteUpdate.mockReturnValueOnce(true);
+    fetchDataForRouteEnter.mockRejectedValueOnce(false);
+
+    await expect(Topic.beforeRouteUpdate.call(wrapper.vm, {}, {})).resolves.toBe(false);
   });
 
   async function testRenderedMessageWithProvide(provide) {

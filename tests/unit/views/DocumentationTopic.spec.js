@@ -704,4 +704,10 @@ describe('DocumentationTopic', () => {
     expect(dataUtils.fetchDataForRouteEnter)
       .toHaveBeenCalledWith(params.to, params.from, expect.any(Function));
   });
+
+  it('returns cancellations rejected by the route data fetch', async () => {
+    routeEnterMock.mockRejectedValueOnce(false);
+
+    await expect(DocumentationTopic.beforeRouteEnter({ meta: {} }, {})).resolves.toBe(false);
+  });
 });

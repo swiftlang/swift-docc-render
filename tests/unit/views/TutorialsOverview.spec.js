@@ -11,6 +11,7 @@
 import { shallowMount } from '@vue/test-utils';
 import TutorialsOverview from 'docc-render/views/TutorialsOverview.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
+import * as dataUtils from 'docc-render/utils/data';
 
 vi.mock('docc-render/mixins/onPageLoadScrollToFragment');
 const { Overview } = TutorialsOverview.components;
@@ -57,5 +58,12 @@ describe('TutorialsOverview', () => {
     wrapper.destroy();
     expect(mocks.$bridge.off).toHaveBeenCalledTimes(1);
     expect(mocks.$bridge.off).toHaveBeenCalledWith('contentUpdate', expect.any(Function));
+  });
+
+  it('returns redirects rejected by the route data fetch', async () => {
+    const redirect = '/tutorials/redirected';
+    vi.spyOn(dataUtils, 'fetchDataForRouteEnter').mockRejectedValueOnce(redirect);
+
+    await expect(TutorialsOverview.beforeRouteEnter({ meta: {} }, {})).resolves.toBe(redirect);
   });
 });
