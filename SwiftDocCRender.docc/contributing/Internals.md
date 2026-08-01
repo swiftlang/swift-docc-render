@@ -182,7 +182,7 @@ DocC-Render has a few build-time environment flags that allow you to set configu
 
 These are the most commonly used pnpm scripts you would need to develop DocC-Render:
 
-* **serve** - used while developing DocC-Render or a theme. Starts up a custom live-reloading server, which serves a local DocC-Render instance.
+* **dev** - used while developing DocC-Render or a theme. Starts up a custom live-reloading server, which serves a local DocC-Render instance.
 * **build** - builds DocC-Render, in a state ready for `docc`.
 * **test** - run the entire DocC-Render test suite.
 * **lint** - run the linter, to check for code styling errors.

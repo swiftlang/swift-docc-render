@@ -150,7 +150,7 @@ function validateLocalDocCArchive(archivePath) {
     [
       `VITE_DEV_SERVER_PROXY="${archivePath}" is not a rendered DocC archive`,
       '(the data directory is missing). A .docc source catalog cannot be served directly.',
-      'Run "pnpm docs:build", then use "VITE_DEV_SERVER_PROXY=docs pnpm serve".',
+      'Run "pnpm docs:build", then use "VITE_DEV_SERVER_PROXY=docs pnpm dev".',
     ].join(' '),
   );
 }
