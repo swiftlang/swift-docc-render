@@ -18,16 +18,17 @@ export default {
       await waitFrames(8);
       const resolvedRoute = this.$router.resolve({ hash });
       const {
-        selector,
-        offset,
+        el,
+        left = 0,
+        top = 0,
       } = await scrollBehavior(resolvedRoute);
-      const element = document.querySelector(selector);
+      const element = typeof el === 'string' ? document.querySelector(el) : el;
       if (!element) return null;
 
       element.scrollIntoView();
       // if not scrolled to the bottom, use the offset
       if (window.scrollY + window.innerHeight < document.body.scrollHeight) {
-        window.scrollBy(-offset.x, -offset.y);
+        window.scrollBy(-left, -top);
       }
       return element;
     },

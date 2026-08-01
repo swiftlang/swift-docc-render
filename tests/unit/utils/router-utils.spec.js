@@ -63,7 +63,7 @@ describe('router-utils', () => {
     });
 
     it('resolves with the saved position', async () => {
-      const savedPosition = { foo: 'foo' };
+      const savedPosition = { left: 12, top: 34 };
       const resolved = await scrollBehavior(routeFoo, routeBar, savedPosition);
       expect(resolved).toEqual(savedPosition);
     });
@@ -80,10 +80,10 @@ describe('router-utils', () => {
       expect(resolved).toEqual(false);
     });
 
-    it('resolves with a selector and `y:0` offset if passed `hash` but in IDE target', async () => {
+    it('resolves with an element and zero offset if passed `hash` but in IDE target', async () => {
       process.env.VUE_APP_TARGET = 'ide';
       const resolved = await scrollBehavior(routeFoo, routeBar);
-      expect(resolved).toEqual({ selector: routeFoo.hash, offset: { x: 0, y: 0 } });
+      expect(resolved).toEqual({ el: routeFoo.hash, left: 0, top: 0 });
     });
 
     it('resolves with one nav height offset if passed `hash` but no API `changes` enabled', async () => {
@@ -91,8 +91,9 @@ describe('router-utils', () => {
 
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
-        selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeight + EXTRA_DOCUMENTATION_OFFSET },
+        el: routeDocsNoChanges.hash,
+        left: 0,
+        top: baseNavHeight + EXTRA_DOCUMENTATION_OFFSET,
       });
     });
 
@@ -103,8 +104,9 @@ describe('router-utils', () => {
       const routeDocsNoChanges = createRoute(documentationTopicName, {}, 'bar');
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
-        selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeightSmallBreakpoint + EXTRA_DOCUMENTATION_OFFSET },
+        el: routeDocsNoChanges.hash,
+        left: 0,
+        top: baseNavHeightSmallBreakpoint + EXTRA_DOCUMENTATION_OFFSET,
       });
 
       window.innerWidth = innerWidth;
@@ -115,15 +117,16 @@ describe('router-utils', () => {
 
       const resolved = await scrollBehavior(routeDocsNoChanges, routeBar);
       expect(resolved).toEqual({
-        selector: routeDocsNoChanges.hash,
-        offset: { x: 0, y: baseNavHeight * 2 + EXTRA_DOCUMENTATION_OFFSET },
+        el: routeDocsNoChanges.hash,
+        left: 0,
+        top: baseNavHeight * 2 + EXTRA_DOCUMENTATION_OFFSET,
       });
     });
 
-    it('resolves with `{ x: 0, y: 0 }` if new url without hash', async () => {
+    it('resolves with `{ left: 0, top: 0 }` if new url has no hash', async () => {
       const noHashUrl = createRoute('foo', {});
       const resolved = await scrollBehavior(noHashUrl, routeBar);
-      expect(resolved).toEqual({ x: 0, y: 0 });
+      expect(resolved).toEqual({ left: 0, top: 0 });
     });
   });
 

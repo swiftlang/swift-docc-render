@@ -20,7 +20,7 @@ Object.defineProperty(document.body, 'scrollHeight', {
 });
 
 describe('scrollToElement', () => {
-  const scrollOffset = { x: 0, y: 52 };
+  const scrollOffset = { left: 0, top: 52 };
   const anchor = 'heres-why';
 
   const wrapper = shallowMount({
@@ -79,7 +79,7 @@ describe('scrollToElement', () => {
     window.scrollY = 100;
     await wrapper.vm.scrollToElement(anchor);
     // assert `scrollBy` is called
-    expect(scrollByMock).toBeCalledWith(-scrollOffset.x, -scrollOffset.y);
+    expect(scrollByMock).toBeCalledWith(-scrollOffset.left, -scrollOffset.top);
   });
 
   it('focuses element and scrolls to it', async () => {
