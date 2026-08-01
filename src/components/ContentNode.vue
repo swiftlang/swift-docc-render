@@ -434,13 +434,10 @@ function renderNode(createElement, references) {
     case BlockType.thematicBreak:
       return createElement(ThematicBreak);
     case BlockType.overviewCard:
-      return createElement(OverviewCard, {}, ([
-        ...renderChildren(node.head ?? []).map(vnode => ({
-          ...vnode,
-          data: { ...vnode.data, slot: 'head' },
-        })),
-        ...renderChildren(node.content),
-      ]));
+      return createElement(OverviewCard, {}, {
+        head: () => renderChildren(node.head ?? []),
+        default: () => renderChildren(node.content),
+      });
     case InlineType.codeVoice:
       return createElement(CodeVoice, {
         class: 'inline-code',

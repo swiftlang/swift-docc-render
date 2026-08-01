@@ -32,6 +32,7 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
 import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 import ThematicBreak from 'docc-render/components/ContentNode/ThematicBreak.vue';
+import OverviewCard from 'docc-render/components/ContentNode/OverviewCard.vue';
 
 const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
@@ -1904,6 +1905,33 @@ describe('ContentNode', () => {
       const wrapper = mountWithItem({ type: ContentNode.BlockType.thematicBreak });
       const tbreak = wrapper.findComponent(ThematicBreak);
       expect(tbreak.exists()).toBe(true);
+    });
+  });
+
+  describe('with type="overviewCard"', () => {
+    it('passes head and content through their respective slots', () => {
+      const wrapper = mount(ContentNode, {
+        propsData: {
+          content: [{
+            type: 'overviewCard',
+            head: [{
+              type: 'paragraph',
+              inlineContent: [{ type: 'text', text: 'Card heading' }],
+            }],
+            content: [{
+              type: 'paragraph',
+              inlineContent: [{ type: 'text', text: 'Card content' }],
+            }],
+          }],
+        },
+        provide: {
+          store: { state: { references: {} } },
+        },
+      });
+
+      const card = wrapper.findComponent(OverviewCard);
+      expect(card.find('.overviewcard-head').text()).toBe('Card heading');
+      expect(card.find('.overviewcard-content').text()).toBe('Card content');
     });
   });
 
