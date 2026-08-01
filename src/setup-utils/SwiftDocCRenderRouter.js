@@ -51,7 +51,7 @@ export default function createRouterInstance(routerConfig = {}) {
       const { route = { path: '/' } } = error;
       router.replace({
         name: 'server-error',
-        params: { pathMatch: route.path },
+        params: { pathMatch: route.path.split('/').filter(Boolean) },
       });
     });
   }

@@ -66,13 +66,13 @@ describe('SwiftDocCRenderRouter', () => {
     routerInstance.onError.mock.calls[0][0].call({}, new FetchError(routeWithError));
     expect(routerInstance.replace).toHaveBeenCalledWith({
       name: 'server-error',
-      params: { pathMatch: routeWithError.path },
+      params: { pathMatch: ['fake', 'path'] },
     });
 
     routerInstance.onError.mock.calls[0][0].call({}, new Error('?'));
     expect(routerInstance.replace).toHaveBeenCalledWith({
       name: 'server-error',
-      params: { pathMatch: '/' },
+      params: { pathMatch: [] },
     });
   });
 
@@ -126,6 +126,17 @@ describe('SwiftDocCRenderRouter', () => {
     });
 
     const resolve = path => router.resolve(path);
+
+    it('preserves nested paths when resolving named fallback routes', () => {
+      expect(resolve({
+        name: 'not-found',
+        params: { pathMatch: ['missing', 'nested', 'page'] },
+      }).fullPath).toBe('/missing/nested/page');
+      expect(resolve({
+        name: 'server-error',
+        params: { pathMatch: ['documentation', 'foo'] },
+      }).fullPath).toBe('/__server-error/documentation/foo');
+    });
 
     it('resolves paths to the "tutorials-overview-locale" route', () => {
       const route = 'tutorials-overview-locale';

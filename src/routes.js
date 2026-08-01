@@ -18,12 +18,12 @@ import NotFound from 'theme/views/NotFound.vue';
 
 export const fallbackRoutes = [
   {
-    path: '/:pathMatch(.*)',
+    path: '/:pathMatch(.*)*',
     name: notFoundRouteName,
     component: NotFound,
   },
   {
-    path: '/__server-error/:pathMatch(.*)', // purposefully unreachable without a forced navigation
+    path: '/__server-error/:pathMatch(.*)*', // purposefully unreachable without a forced navigation
     name: serverErrorRouteName,
     component: ServerError,
   },

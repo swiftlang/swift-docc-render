@@ -228,7 +228,7 @@ describe('fetchDataForRouteEnter', () => {
     await fetchDataForRouteEnter(to, from, next);
     await expect(next).toHaveBeenCalledWith({
       name: 'not-found',
-      params: ['/tutorials/augmented-reality/tutorials'],
+      params: { pathMatch: ['tutorials', 'augmented-reality', 'tutorials'] },
     });
 
     window.fetch.mockRestore();
@@ -255,7 +255,9 @@ describe('fetchDataForRouteEnter', () => {
     await fetchDataForRouteEnter(fakeLocaleTo, from, next);
     expect(next).toHaveBeenCalledWith({
       name: 'not-found',
-      params: [fakeLocaleTo.path],
+      params: {
+        pathMatch: ['fakelocale', 'tutorials', 'augmented-reality', 'tutorials'],
+      },
     });
 
     window.fetch.mockRestore();
