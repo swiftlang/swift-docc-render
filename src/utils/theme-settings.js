@@ -20,7 +20,7 @@ export const themeSettingsState = {
   theme: {},
   features: {},
 };
-export const { baseUrl } = window;
+export const baseUrl = new URL(document.baseURI).pathname;
 
 /**
  * Method to fetch the theme settings and store in local module state.
