@@ -19,10 +19,6 @@ const {
   Title,
 } = LanguageSwitcher.components;
 
-jest.mock('docc-render/utils/assets', () => ({
-  normalizeRelativePath: jest.fn(name => `/${name}`),
-}));
-
 describe('LanguageSwitcher', () => {
   let wrapper;
 
@@ -126,6 +122,22 @@ describe('LanguageSwitcher', () => {
 
     expect(links.at(0).props('url')).toEqual(null);
     expect(links.at(1).props('url')).toBe('/documentation/foo?language=objc');
+  });
+
+  it('preserves the current locale in the generated links', () => {
+    wrapper = shallowMount(LanguageSwitcher, {
+      mocks: {
+        $route: {
+          path: '/ja-JP/documentation/foo',
+          params: { locale: 'ja-JP' },
+          query: {},
+        },
+      },
+      propsData,
+    });
+    const links = wrapper.findAllComponents(LanguageSwitcherLink);
+    expect(links.at(0).props('url')).toBeNull();
+    expect(links.at(1).props('url')).toBe('/ja-JP/documentation/foo?language=objc');
   });
 
   it('stores the preferred language when a link is clicked', async () => {

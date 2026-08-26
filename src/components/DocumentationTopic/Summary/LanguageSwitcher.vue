@@ -34,7 +34,7 @@
 
 <script>
 import { buildUrl } from 'docc-render/utils/url-helper';
-import { normalizeRelativePath } from 'docc-render/utils/assets';
+import { pathWithLocale } from 'docc-render/utils/i18n-utils';
 import Language from 'docc-render/constants/Language';
 
 import LanguageSwitcherLink from './LanguageSwitcherLink.vue';
@@ -83,11 +83,11 @@ export default {
     objc: ({
       interfaceLanguage,
       objcPath,
-      $route: { query },
+      $route: { query, params = {} },
     }) => ({
       ...Language.objectiveC,
       active: Language.objectiveC.key.api === interfaceLanguage,
-      url: buildUrl(normalizeRelativePath(objcPath), {
+      url: buildUrl(pathWithLocale(objcPath, params.locale), {
         ...query,
         language: Language.objectiveC.key.url,
       }),
@@ -95,11 +95,11 @@ export default {
     swift: ({
       interfaceLanguage,
       swiftPath,
-      $route: { query },
+      $route: { query, params = {} },
     }) => ({
       ...Language.swift,
       active: Language.swift.key.api === interfaceLanguage,
-      url: buildUrl(normalizeRelativePath(swiftPath), {
+      url: buildUrl(pathWithLocale(swiftPath, params.locale), {
         ...query,
         language: undefined,
       }),
