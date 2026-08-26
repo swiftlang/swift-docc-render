@@ -84,7 +84,7 @@
 
 <script>
 import { waitFrames } from 'docc-render/utils/loading';
-import { normalizeRelativePath } from 'docc-render/utils/assets';
+import { pathWithLocale } from 'docc-render/utils/i18n-utils';
 import Language from 'docc-render/constants/Language';
 import throttle from 'docc-render/utils/throttle';
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
@@ -165,7 +165,9 @@ export default {
       return {
         // make sure we dont loose any extra query params on the way
         query: { ...this.$route.query, language },
-        path: this.isCurrentPath(route.path) ? null : normalizeRelativePath(route.path),
+        path: this.isCurrentPath(route.path)
+          ? null
+          : pathWithLocale(route.path, this.$route.params?.locale),
       };
     },
     async pushRoute(route) {

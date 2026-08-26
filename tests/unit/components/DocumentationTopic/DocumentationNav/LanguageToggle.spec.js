@@ -283,6 +283,29 @@ describe('LanguageToggle', () => {
       });
   });
 
+  it('preserves the current locale in the path when switching languages', async () => {
+    const mocksWithLocale = {
+      ...mocks,
+      $route: {
+        path: '/ja-JP/documentation/foo',
+        params: { locale: 'ja-JP' },
+      },
+    };
+    wrapper = createWrapper(
+      { ...propsData, objcPath: 'documentation/bar' },
+      mocksWithLocale,
+    );
+
+    const link = wrapper.findComponent('.language-list-container').find('a.nav-menu-link');
+    link.trigger('click');
+    await flushPromises();
+    expect(mocks.$router.push)
+      .toHaveBeenCalledWith({
+        path: '/ja-JP/documentation/bar',
+        query: { language: Language.objectiveC.key.url },
+      });
+  });
+
   it('changes the model, if the interfaceLanguage changes', async () => {
     // assert proper language name is shown
     expect(wrapper.findComponent('.current-language').text()).toBe(Language.swift.name);
