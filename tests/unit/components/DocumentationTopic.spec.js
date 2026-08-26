@@ -1238,8 +1238,7 @@ describe('DocumentationTopic', () => {
       expect(mockStore.setReferences).toHaveBeenCalledWith(propsData.references);
     });
 
-    it('routes to the objc variant of a page if that is the preferred language', async () => {
-      const $route = { query: {} };
+    const mountWithObjcPreference = async ($route) => {
       const $router = { replace: jest.fn() };
       const store = {
         ...mockStore,
@@ -1249,16 +1248,26 @@ describe('DocumentationTopic', () => {
         },
       };
       wrapper = shallowMount(DocumentationTopic, {
-        mocks: {
-          $route,
-          $router,
-        },
+        mocks: { $route, $router },
         propsData,
         provide: { store },
       });
       await wrapper.vm.$nextTick();
+      return $router;
+    };
+
+    it('routes to the objc variant of a page if that is the preferred language', async () => {
+      const $router = await mountWithObjcPreference({ query: {} });
       expect($router.replace).toBeCalledWith({
         path: `/${propsData.languagePaths.occ[0]}`,
+        query: { language: Language.objectiveC.key.url },
+      });
+    });
+
+    it('preserves the current locale when routing to the objc variant', async () => {
+      const $router = await mountWithObjcPreference({ query: {}, params: { locale: 'es' } });
+      expect($router.replace).toBeCalledWith({
+        path: `/es/${propsData.languagePaths.occ[0]}`,
         query: { language: Language.objectiveC.key.url },
       });
     });

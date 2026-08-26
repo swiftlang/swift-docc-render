@@ -185,6 +185,7 @@ import SymbolKind from 'docc-render/constants/SymbolKind';
 import metadata from 'theme/mixins/metadata';
 import { buildUrl } from 'docc-render/utils/url-helper';
 import { normalizeRelativePath } from 'docc-render/utils/assets';
+import { pathWithLocale } from 'docc-render/utils/i18n-utils';
 import { last } from 'docc-render/utils/arrays';
 
 import AppStore from 'docc-render/stores/AppStore';
@@ -719,7 +720,7 @@ export default {
 
       this.$nextTick().then(() => {
         this.$router.replace({
-          path: normalizeRelativePath(this.objcPath),
+          path: pathWithLocale(this.objcPath, this.$route.params?.locale),
           query: {
             ...query,
             language: Language.objectiveC.key.url,
