@@ -11,6 +11,7 @@
 import locales from 'theme/lang/locales.json';
 import { defaultLocale } from 'theme/lang/index';
 import { updateLangTag } from 'docc-render/utils/metadata';
+import { normalizeRelativePath, pathJoin } from 'docc-render/utils/assets';
 
 const codeForSlug = locales.reduce((map, locale) => ({
   ...map,
@@ -44,6 +45,23 @@ export function getLocaleParam(slug) {
       locale: slug === defaultLocale ? undefined : slug,
     },
   };
+}
+
+/**
+ * Prefixes a path with the given locale slug, so that navigation stays within
+ * the current locale.
+ * @param {String} path - a path, with or without a leading slash
+ * @param {String} [locale] - the locale slug to prefix with
+ * @return {String}
+ */
+export function pathWithLocale(path, locale) {
+  if (!path) return path;
+  const normalizedPath = normalizeRelativePath(path);
+  // No prefix needed for the default locale (routes declare locale as optional).
+  if (!locale || locale === defaultLocale || !localeIsValid(locale)) {
+    return normalizedPath;
+  }
+  return pathJoin(['/', locale, normalizedPath]);
 }
 
 /**

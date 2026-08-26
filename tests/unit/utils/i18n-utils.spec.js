@@ -8,7 +8,9 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { localeIsValid, updateLocale, getLocaleParam } from '@/utils/i18n-utils';
+import {
+  localeIsValid, updateLocale, getLocaleParam, pathWithLocale,
+} from '@/utils/i18n-utils';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
 jest.mock('theme/lang/locales.json', () => (
@@ -67,5 +69,21 @@ describe('getLocaleParam', () => {
   it('returns a params object', () => {
     expect(getLocaleParam('cn')).toEqual(params('cn'));
     expect(getLocaleParam('en')).toEqual(params(undefined));
+  });
+});
+
+describe('pathWithLocale', () => {
+  it('prefixes the path with the given locale', () => {
+    expect(pathWithLocale('documentation/foo', 'cn')).toBe('/cn/documentation/foo');
+    expect(pathWithLocale('/documentation/foo', 'cn')).toBe('/cn/documentation/foo');
+  });
+
+  it('does not prefix the default locale', () => {
+    expect(pathWithLocale('/documentation/foo', 'en')).toBe('/documentation/foo');
+  });
+
+  it('does not prefix when no/invalid locale is provided', () => {
+    expect(pathWithLocale('/documentation/foo')).toBe('/documentation/foo');
+    expect(pathWithLocale('documentation/foo', 'blah')).toBe('/documentation/foo');
   });
 });
