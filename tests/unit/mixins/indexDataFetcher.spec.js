@@ -258,6 +258,7 @@ describe('indexDataFetcher', () => {
       errorFetching: false,
       errorFetchingDiffs: false,
       technologyProps: {},
+      topLevelNodes: [],
     });
   });
 
