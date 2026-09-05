@@ -22,6 +22,7 @@ describe('AppStore', () => {
       systemColorScheme: ColorScheme.light,
       preferredLocale: null,
       availableLocales: [],
+      firstRoutingEventHasOccurred: false,
     });
   });
 
@@ -37,6 +38,7 @@ describe('AppStore', () => {
       systemColorScheme: ColorScheme.light,
       preferredLocale: null,
       availableLocales: [],
+      firstRoutingEventHasOccurred: false,
     });
 
     // restore target
@@ -65,6 +67,13 @@ describe('AppStore', () => {
     });
   });
 
+  describe('setFirstRoutingEventHasOccurred', () => {
+    it('sets the `firstRoutingEventHasOccurred` state', () => {
+      AppStore.setFirstRoutingEventHasOccurred(true);
+      expect(AppStore.state.firstRoutingEventHasOccurred).toBe(true);
+    });
+  });
+
   describe('syncPreferredColorScheme', () => {
     it('sets the `syncPreferredColorScheme` state', () => {
       AppStore.syncPreferredColorScheme();
@@ -86,6 +95,7 @@ describe('AppStore', () => {
       systemColorScheme: ColorScheme.light,
       preferredLocale: null,
       availableLocales: [],
+      firstRoutingEventHasOccurred: false,
     });
   });
 });

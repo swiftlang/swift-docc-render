@@ -23,6 +23,7 @@ const mockInstance = {
   onReady: jest.fn(),
   replace: jest.fn(),
   beforeEach: jest.fn(),
+  afterEach: jest.fn(),
 };
 
 jest.mock('vue-router', () => jest.fn(() => (mockInstance)));
