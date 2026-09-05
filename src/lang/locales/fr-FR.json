@@ -183,7 +183,8 @@
   "error": {
     "unknown": "Une erreur inconnue est survenue.",
     "image": "Échec du chargement de l'image",
-    "not-found": "La page que vous recherchez est introuvable."
+    "not-found": "La page que vous recherchez est introuvable.",
+    "back-to-documentation": "Retour à la documentation"
   },
   "color-scheme": {
     "select": "Sélectionnez une préférence de palette de couleurs",
