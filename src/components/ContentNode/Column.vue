@@ -48,7 +48,7 @@ export default {
 .column {
   display: flex;
   flex-direction: column;
-  align-items: var(--col-alignment, flex-start);
+  align-items: var(--col-alignment, normal);
   grid-column: span var(--col-span);
   min-width: 0;
   @include breakpoint(small) {
