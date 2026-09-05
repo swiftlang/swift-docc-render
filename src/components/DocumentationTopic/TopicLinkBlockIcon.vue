@@ -9,8 +9,12 @@
 -->
 
 <template>
-  <div class="topic-icon-wrapper" v-if="icon">
-    <component :is="icon" class="topic-icon" />
+  <div class="topic-icon-wrapper" v-if="imageOverride || icon">
+    <OverridableAsset
+      v-if="imageOverride"
+      :imageOverride="imageOverride"
+      class="topic-icon icon-override" />
+    <component v-else-if="icon" :is="icon" class="topic-icon" />
   </div>
 </template>
 
@@ -24,6 +28,7 @@ import TechnologyIcon from 'theme/components/Icons/TechnologyIcon.vue';
 import TutorialIcon from 'theme/components/Icons/TutorialIcon.vue';
 import SVGIcon from 'docc-render/components/SVGIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
+import OverridableAsset from 'docc-render/components/OverridableAsset.vue';
 
 const TopicRoleIcons = {
   [TopicRole.article]: ArticleIcon,
@@ -39,11 +44,15 @@ const TopicRoleIcons = {
 };
 
 export default {
-  components: { SVGIcon },
+  components: { OverridableAsset, SVGIcon },
   props: {
     role: {
       type: String,
       required: true,
+    },
+    imageOverride: {
+      type: Object,
+      default: null,
     },
   },
 
@@ -83,5 +92,13 @@ export default {
   &.curly-brackets-icon {
     height: rem(17px);
   }
+}
+
+// Since we are unable to enforce the actual SVG color when it is embedded in
+// an <img> element, this workaround will force a gray color by applying a
+// grayscale filter to ensure the color of the icon is consistent with the
+// normal, builtin icons
+.icon-override:deep(img) {
+  filter: grayscale(1);
 }
 </style>
