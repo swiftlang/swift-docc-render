@@ -8,15 +8,17 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import Vue from 'vue';
+import { reactive } from 'vue';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import OnThisPageNav from '@/components/OnThisPageNav.vue';
 import { AppTopID } from '@/constants/AppTopID';
 import WordBreak from '@/components/WordBreak.vue';
 import { createEvent, flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/utils/throttle', () => jest.fn(v => v));
-jest.mock('docc-render/utils/loading', () => ({ waitFrames: jest.fn() }));
+vi.mock('docc-render/utils/throttle', () => ({
+  default: vi.fn(v => v),
+}));
+vi.mock('docc-render/utils/loading', () => ({ waitFrames: vi.fn() }));
 const sections = [
   {
     title: 'Title', level: 1, anchor: AppTopID, i18n: false, isSymbol: true,
@@ -32,11 +34,11 @@ const sections = [
   },
 ];
 const store = {
-  state: Vue.observable({
+  state: reactive({
     onThisPageSections: sections,
     currentPageAnchor: 'first',
   }),
-  setCurrentPageSection: jest.fn((anchor) => {
+  setCurrentPageSection: vi.fn((anchor) => {
     store.state.currentPageAnchor = anchor;
   }),
 };
@@ -56,7 +58,7 @@ Object.defineProperty(document.body, 'scrollHeight', {
   value: scrollHeight,
 });
 let wrapper;
-jest.spyOn(document, 'getElementById').mockImplementation((anchor) => {
+vi.spyOn(document, 'getElementById').mockImplementation((anchor) => {
   switch (anchor) {
   case AppTopID:
     return { offsetTop: titleTop };
@@ -96,7 +98,7 @@ const scrollWindowBy = async (px) => {
 describe('OnThisPageNav', () => {
   beforeEach(() => {
     if (wrapper) wrapper.destroy();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     window.scrollY = 0;
   });
   it('renders the OnThisPageNav, as flat list of items', () => {

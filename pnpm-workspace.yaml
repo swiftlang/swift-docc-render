@@ -1,0 +1,9 @@
+allowBuilds:
+  '@parcel/watcher': true
+  tree-sitter: true
+  tree-sitter-javascript: true
+  tree-sitter-jsdoc: true
+  unrs-resolver: false
+minimumReleaseAgeExclude:
+  - tree-sitter@0.25.1
+  - npm-run-all2@9.0.3

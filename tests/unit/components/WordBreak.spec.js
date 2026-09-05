@@ -129,7 +129,7 @@ describe('WordBreak', () => {
 
   describe('with a `tag` prop', () => {
     const mountWithTextAndTag = (text, tag) => mountWithText(text, {
-      context: { props: { tag } },
+      propsData: { tag },
     });
 
     it('renders with that tag instead of <span>', () => {
@@ -164,7 +164,7 @@ describe('WordBreak', () => {
     it('renders with <wbr> inserted where appropriate given the pattern', () => {
       expect(mountWithText(
         'https://foo.bar/baz/qux',
-        { context: { props: { safeBoundaryPattern: /(\w(?=\.\w)|\w(?=\/))/g } } },
+        { propsData: { safeBoundaryPattern: /(\w(?=\.\w)|\w(?=\/))/g } },
       ).html()).toBe(
         '<span>https://foo<wbr>.bar<wbr>/baz<wbr>/qux</span>',
       );

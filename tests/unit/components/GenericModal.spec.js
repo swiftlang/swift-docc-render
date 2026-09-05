@@ -16,23 +16,33 @@ import changeElementVOVisibility from 'docc-render/utils/changeElementVOVisibili
 import { Portal } from 'portal-vue';
 import { createEvent as createBaseEvent, flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/utils/changeElementVOVisibility', () => ({
-  hide: jest.fn(),
-  show: jest.fn(),
+vi.mock('docc-render/utils/changeElementVOVisibility', () => ({
+  default: {
+    hide: vi.fn(),
+    show: vi.fn(),
+  },
 }));
 
-const mockFocusTrap = {
-  start: jest.fn(),
-  stop: jest.fn(),
-  destroy: jest.fn(),
-  updateFocusContainer: jest.fn(),
-};
+const { mockFocusTrap } = vi.hoisted(() => ({
+  mockFocusTrap: {
+    start: vi.fn(),
+    stop: vi.fn(),
+    destroy: vi.fn(),
+    updateFocusContainer: vi.fn(),
+  },
+}));
 
-jest.mock('docc-render/utils/FocusTrap', () => jest.fn(() => (mockFocusTrap)));
+vi.mock('docc-render/utils/FocusTrap', () => ({
+  default: vi.fn(function MockFocusTrap() {
+    return mockFocusTrap;
+  }),
+}));
 
-jest.mock('docc-render/utils/scroll-lock', () => ({
-  lockScroll: jest.fn(),
-  unlockScroll: jest.fn(),
+vi.mock('docc-render/utils/scroll-lock', () => ({
+  default: {
+    lockScroll: vi.fn(),
+    unlockScroll: vi.fn(),
+  },
 }));
 
 const VisibleChangeEvent = 'update:visible';
@@ -53,14 +63,14 @@ const createEvent = (key = 'Escape') => createBaseEvent('keydown', { key });
 
 const matchMedia = {
   matches: false,
-  addListener: jest.fn(),
-  removeListener: jest.fn(),
+  addListener: vi.fn(),
+  removeListener: vi.fn(),
 };
 
 describe('GenericModal', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    window.matchMedia = jest.fn().mockReturnValue(matchMedia);
+    vi.clearAllMocks();
+    window.matchMedia = vi.fn().mockReturnValue(matchMedia);
   });
 
   it('wraps the modal in a PortalSource component', () => {
@@ -87,7 +97,7 @@ describe('GenericModal', () => {
     });
 
     const modal = wrapper.findComponent('.generic-modal');
-    expect(wrapper.findComponent(Portal).attributes('disabled')).toBeFalsy();
+    expect(wrapper.findComponent(Portal).props('disabled')).toBe(false);
     expect(modal.attributes('style')).toBeUndefined();
   });
 
@@ -233,8 +243,8 @@ describe('GenericModal', () => {
   });
 
   it('selects content when cmd+a or ctrl+a are typed', () => {
-    const selectAllChildren = jest.fn();
-    const preventDefault = jest.fn();
+    const selectAllChildren = vi.fn();
+    const preventDefault = vi.fn();
     window.getSelection = () => ({
       selectAllChildren,
     });
@@ -249,13 +259,13 @@ describe('GenericModal', () => {
     // assert that content is selected
     expect(selectAllChildren).toHaveBeenCalledWith(wrapper.vm.$refs.content);
     expect(preventDefault).toHaveBeenCalled();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // type a
     type({ key: 'a' });
     // assert that content is not selected
     expect(selectAllChildren).not.toHaveBeenCalledWith(wrapper.vm.$refs.content);
     expect(preventDefault).not.toHaveBeenCalled();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // type ctrl+a
     type({ key: 'a', ctrlKey: true });
     // assert that content is selected
@@ -321,13 +331,13 @@ describe('GenericModal', () => {
 
     await flushPromises();
 
-    expect(document.activeElement).toEqual(wrapper.findComponent('.close').element);
+    expect(document.activeElement).toBe(wrapper.findComponent('.close').element);
     expect(wrapper.emitted('open')).toBeTruthy();
 
     await wrapper.setProps({
       visible: false,
     });
-    expect(document.activeElement).toEqual(button);
+    expect(document.activeElement).toBe(button);
     expect(wrapper.emitted('close')).toBeTruthy();
   });
 
@@ -349,13 +359,13 @@ describe('GenericModal', () => {
 
     await flushPromises();
 
-    expect(document.activeElement).toEqual(button);
+    expect(document.activeElement).toBe(button);
     expect(wrapper.emitted('open')).toBeTruthy();
 
     await wrapper.setProps({
       visible: false,
     });
-    expect(document.activeElement).toEqual(button);
+    expect(document.activeElement).toBe(button);
     expect(wrapper.emitted('close')).toBeTruthy();
   });
 

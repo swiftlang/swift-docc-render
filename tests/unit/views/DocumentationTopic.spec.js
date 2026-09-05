@@ -19,13 +19,13 @@ import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/mixins/onThisPageRegistrator');
-jest.mock('docc-render/utils/theme-settings');
+vi.mock('docc-render/mixins/onThisPageRegistrator');
+vi.mock('docc-render/utils/theme-settings');
 
 const defaultLocale = 'en-US';
 
 getSetting.mockReturnValue(false);
-const routeEnterMock = jest.spyOn(dataUtils, 'fetchDataForRouteEnter').mockResolvedValue();
+const routeEnterMock = vi.spyOn(dataUtils, 'fetchDataForRouteEnter').mockResolvedValue();
 
 const {
   CodeTheme,
@@ -49,9 +49,9 @@ const references = {
 
 const mocks = {
   $bridge: {
-    on: jest.fn(),
-    off: jest.fn(),
-    send: jest.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
+    send: vi.fn(),
   },
   $route: {
     path: '/documentation/somepath',
@@ -148,7 +148,7 @@ describe('DocumentationTopic', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = createWrapper();
   });
 
@@ -520,7 +520,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('sends a rendered message', async () => {
-    const sendMock = jest.fn();
+    const sendMock = vi.fn();
     wrapper = shallowMount(DocumentationTopic, {
       mocks: {
         ...mocks,
@@ -603,9 +603,8 @@ describe('DocumentationTopic', () => {
       ...from,
       query: { language: 'objc' },
     };
-    const next = jest.fn();
     // there is probably a more realistic way to simulate this
-    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
+    await DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from);
 
     // check that the provided override data has been applied after updating the
     // route with the "language=objc" query param and also ensure that new data
@@ -613,7 +612,6 @@ describe('DocumentationTopic', () => {
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).not.toBe(oldInterfaceLang);
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(routeEnterMock).not.toBeCalled();
-    expect(next).toBeCalled();
   });
 
   it('loads new data and applies ObjC data when provided as overrides', async () => {
@@ -636,23 +634,21 @@ describe('DocumentationTopic', () => {
 
     const to = {
       path: '/documentation/bar',
+      params: { locale: defaultLocale },
       query: { language: 'objc' },
     };
     const from = mocks.$route;
-    const next = jest.fn();
     // there is probably a more realistic way to simulate this
-    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
-    await flushPromises();
+    await DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from);
 
     // check that the provided override data has been applied after updating the
     // route with the "language=objc" query param and ensure that new data has
     // been fetched
     expect(routeEnterMock).toBeCalled();
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
-    expect(next).toBeCalled();
   });
 
-  it('does not unecessarily re-apply ObjC data when navigating to fragments', () => {
+  it('does not unecessarily re-apply ObjC data when navigating to fragments', async () => {
     const oldInterfaceLang = topicData.identifier.interfaceLanguage; // swift
     const newInterfaceLang = 'occ';
 
@@ -676,37 +672,42 @@ describe('DocumentationTopic', () => {
       ...from,
       query: { language: 'objc' },
     };
-    const next = jest.fn();
     // there is probably a more realistic way to simulate this
-    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from, next);
+    await DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, from);
 
     // udpate the URL again, this time just changing the hash
     // this would crash if the patch mistakenly gets applied twice
-    DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, {
+    await DocumentationTopic.beforeRouteUpdate.call(wrapper.vm, to, {
       ...to,
       hash: '#abc',
-    }, next);
+    });
 
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).not.toBe(oldInterfaceLang);
     expect(wrapper.vm.topicData.identifier.interfaceLanguage).toBe(newInterfaceLang);
     expect(routeEnterMock).not.toBeCalled();
-    expect(next).toBeCalled();
   });
 
-  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
-    const next = jest.fn();
-    DocumentationTopic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
-    expect(next).toHaveBeenCalledTimes(1);
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', async () => {
+    const afterEnter = await DocumentationTopic.beforeRouteEnter(
+      { meta: { skipFetchingData: true } },
+      {},
+    );
+    expect(afterEnter).toEqual(expect.any(Function));
     expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
     // now call without `skipFetchingData`
     const params = {
       to: { name: 'foo', meta: {}, params: { locale: defaultLocale } },
       from: { name: 'bar' },
-      next: jest.fn(),
     };
-    DocumentationTopic.beforeRouteEnter(params.to, params.from, params.next);
+    await DocumentationTopic.beforeRouteEnter(params.to, params.from);
     expect(dataUtils.fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
     expect(dataUtils.fetchDataForRouteEnter)
-      .toHaveBeenCalledWith(params.to, params.from, params.next);
+      .toHaveBeenCalledWith(params.to, params.from, expect.any(Function));
+  });
+
+  it('returns cancellations rejected by the route data fetch', async () => {
+    routeEnterMock.mockRejectedValueOnce(false);
+
+    await expect(DocumentationTopic.beforeRouteEnter({ meta: {} }, {})).resolves.toBe(false);
   });
 });

@@ -9,28 +9,17 @@
 */
 
 import CustomComponents from 'docc-render/plugins/CustomComponents';
-import { createLocalVue } from '@vue/test-utils';
+import { createApp } from 'vue';
 
-const defineSpy = jest.spyOn(window.customElements, 'define');
+const defineSpy = vi.spyOn(window.customElements, 'define');
 
 describe('CustomComponents', () => {
-  let localVue;
-
   beforeEach(() => {
-    jest.clearAllMocks();
-    localVue = createLocalVue();
-  });
-
-  it('configures Vue to ignore elements that start with "custom-"', () => {
-    localVue.use(CustomComponents);
-    expect(localVue.config.ignoredElements.test('custom-header')).toBe(true);
-    expect(localVue.config.ignoredElements.test('custom-footer')).toBe(true);
-    expect(localVue.config.ignoredElements.test('custom-foo-bar')).toBe(true);
-    expect(localVue.config.ignoredElements.test('FakeComponent')).toBe(false);
+    vi.clearAllMocks();
   });
 
   it('does not utilize `customElements.define` when no templates exist', () => {
-    localVue.use(CustomComponents);
+    createApp({}).use(CustomComponents);
     expect(defineSpy).not.toBeCalled();
   });
 
@@ -42,7 +31,7 @@ describe('CustomComponents', () => {
     document.body.appendChild(customHeader);
     document.body.appendChild(customFooter);
 
-    localVue.use(CustomComponents);
+    createApp({}).use(CustomComponents);
     expect(defineSpy).toHaveBeenCalledTimes(2);
 
     const { mock: { calls } } = defineSpy;

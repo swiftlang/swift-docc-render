@@ -21,6 +21,7 @@ import OnThisPageStickyContainer
   from '@/components/DocumentationTopic/OnThisPageStickyContainer.vue';
 import Declaration from '@/components/DocumentationTopic/PrimaryContent/Declaration.vue';
 import AppStore from '@/stores/AppStore';
+import { h } from 'vue';
 
 const { ON_THIS_PAGE_CONTAINER_BREAKPOINT } = DocumentationTopic.constants;
 
@@ -214,11 +215,11 @@ describe('DocumentationTopic', () => {
   let wrapper;
   const mockStore = {
     state: { onThisPageSections: [], references: {} },
-    reset: jest.fn(),
-    setReferences: jest.fn(),
+    reset: vi.fn(),
+    setReferences: vi.fn(),
   };
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
       stubs: { Title },
@@ -243,32 +244,22 @@ describe('DocumentationTopic', () => {
 
   it('provides the languages', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.languages).toEqual(new Set(['occ', 'swift']));
+    expect(wrapper.vm.$.provides.languages).toEqual(new Set(['occ', 'swift']));
   });
 
   it('provides the interface languages', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
-  });
-
-  it('provides the languages', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.languages).toEqual(new Set(['occ', 'swift']));
-  });
-
-  it('provides the interface languages', () => {
-    // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.interfaceLanguage).toEqual(propsData.interfaceLanguage);
+    expect(wrapper.vm.$.provides.interfaceLanguage).toEqual(propsData.interfaceLanguage);
   });
 
   it('provides the symbol kind', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.symbolKind).toEqual(propsData.symbolKind);
+    expect(wrapper.vm.$.provides.symbolKind).toEqual(propsData.symbolKind);
   });
 
   it('provides the `enableMinimized` flag', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.enableMinimized).toBe(false);
+    expect(wrapper.vm.$.provides.enableMinimized).toBe(false);
   });
 
   it('renders a root div', () => {
@@ -321,7 +312,7 @@ describe('DocumentationTopic', () => {
     });
   });
 
-  it('renders a `DocumentationHero` without an image override ', async () => {
+  it('renders a `DocumentationHero` without an image override', async () => {
     await wrapper.setProps({
       pageImages: [],
     });
@@ -422,7 +413,7 @@ describe('DocumentationTopic', () => {
   });
 
   it('`Hierarchy` continues working, if a reference is missing', async () => {
-    const errorSpy = jest.spyOn(console, 'error').mockReturnValue('');
+    const errorSpy = vi.spyOn(console, 'error').mockReturnValue('');
     await wrapper.setProps({
       references: { 'topic://foo': itemFoo }, // set without `Bar` reference data
       hierarchyItems,
@@ -463,7 +454,7 @@ describe('DocumentationTopic', () => {
     const hero = wrapper.findComponent(DocumentationHero);
     expect(hero.props('shortHero')).toBe(false);
 
-    await wrapper.setProps({ abstract: '', roleHeading: '', sampleCodeDownload: '' });
+    await wrapper.setProps({ abstract: null, roleHeading: '', sampleCodeDownload: null });
     expect(hero.props('shortHero')).toBe(true);
   });
 
@@ -921,7 +912,7 @@ describe('DocumentationTopic', () => {
 
     const topics = wrapper.findComponent(Topics);
     expect(topics.exists()).toBe(true);
-    expect(topics.props('sections')).toBe(topicSections);
+    expect(topics.props('sections')).toEqual(topicSections);
     expect(topics.props('topicStyle')).toBe(TopicSectionsStyle.detailedGrid);
 
     // Minimized view should not render Topics
@@ -960,7 +951,7 @@ describe('DocumentationTopic', () => {
 
     const seeAlso = wrapper.findComponent(SeeAlso);
     expect(seeAlso.exists()).toBe(true);
-    expect(seeAlso.props('sections')).toBe(seeAlsoSections);
+    expect(seeAlso.props('sections')).toEqual(seeAlsoSections);
 
     // Minimized view should not render See Also
     await wrapper.setProps({ enableMinimized: true });
@@ -989,7 +980,7 @@ describe('DocumentationTopic', () => {
 
     const relationships = wrapper.findComponent(Relationships);
     expect(relationships.exists()).toBe(true);
-    expect(relationships.props('sections')).toBe(relationshipsSections);
+    expect(relationships.props('sections')).toEqual(relationshipsSections);
     expect(relationships.props('enableMinimized')).toBe(false);
   });
 
@@ -1000,7 +991,7 @@ describe('DocumentationTopic', () => {
     // implementation. I'm stubbing out the components I care about to add a
     // common class that can be queried so that the ordering can be verified.
     const stubSection = klass => ({
-      render: h => h('div', { class: `section-stub ${klass}` }),
+      render: () => h('div', { class: `section-stub ${klass}` }),
     });
     wrapper = shallowMount(DocumentationTopic, {
       propsData: {
@@ -1159,7 +1150,7 @@ describe('DocumentationTopic', () => {
         contentWidth: 200,
       },
     });
-    const container = wrapper.findComponent(OnThisPageStickyContainer);
+    let container = wrapper.findComponent(OnThisPageStickyContainer);
     expect(container.exists()).toBe(true);
     expect(container.isVisible()).toBe(false);
     await wrapper.setData({
@@ -1167,7 +1158,9 @@ describe('DocumentationTopic', () => {
         contentWidth: ON_THIS_PAGE_CONTAINER_BREAKPOINT + 10,
       },
     });
-    expect(container.isVisible()).toBe(true);
+    container = wrapper.findComponent(OnThisPageStickyContainer);
+    expect(wrapper.vm.isOnThisPageNavVisible).toBe(true);
+    expect(container.attributes('style')).toBe('');
     expect(wrapper.classes()).toContain('with-on-this-page');
   });
 
@@ -1209,9 +1202,9 @@ describe('DocumentationTopic', () => {
   it('calls `store.updateReferences` when `indexState.includedArchiveIdentifiers` changes', async () => {
     const store = {
       state: { references: {} },
-      reset: jest.fn(),
-      setReferences: jest.fn(),
-      updateReferences: jest.fn(),
+      reset: vi.fn(),
+      setReferences: vi.fn(),
+      updateReferences: vi.fn(),
     };
     wrapper = shallowMount(DocumentationTopic, {
       propsData,
@@ -1228,7 +1221,7 @@ describe('DocumentationTopic', () => {
 
   describe('lifecycle hooks', () => {
     it('calls `store.reset()`', () => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       wrapper = shallowMount(DocumentationTopic, {
         propsData,
         provide: { store: mockStore },
@@ -1240,7 +1233,7 @@ describe('DocumentationTopic', () => {
 
     it('routes to the objc variant of a page if that is the preferred language', async () => {
       const $route = { query: {} };
-      const $router = { replace: jest.fn() };
+      const $router = { replace: vi.fn() };
       const store = {
         ...mockStore,
         state: {

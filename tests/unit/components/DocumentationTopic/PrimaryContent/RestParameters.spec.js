@@ -112,7 +112,7 @@ describe('RestParameters', () => {
     expect(wrapper.findComponent('.param-content').find('.param-type').exists());
 
     const tokensGroup = wrapper.findComponent(PossiblyChangedType);
-    expect(tokensGroup.props('type')).toBe(propsData.parameters[0].type);
+    expect(tokensGroup.props('type')).toEqual(propsData.parameters[0].type);
     expect(tokensGroup.props('changes')).toBe(undefined);
   });
 
@@ -196,36 +196,40 @@ describe('RestParameters', () => {
   });
 
   describe('apiChanges', () => {
-    const changes = {
-      name: {
-        type: {
-          new: [],
-          previous: [],
+    it('provides API changes', () => {
+      const changes = {
+        name: {
+          type: {
+            new: [],
+            previous: [],
+          },
+          required: {
+            new: false,
+            previous: true,
+          },
+          attributes: {},
         },
-        required: {
-          new: false,
-          previous: true,
-        },
-        attributes: {},
-      },
-    };
-    const wrapper = mountComponent({
-      provide: {
-        ...provide,
-        store: {
-          ...provide.store,
-          state: {
-            apiChanges: {
-              [provide.identifier]: { restParameters: changes },
+      };
+      const wrapper = mountComponent({
+        provide: {
+          ...provide,
+          store: {
+            ...provide.store,
+            state: {
+              apiChanges: {
+                [provide.identifier]: { restParameters: changes },
+              },
             },
           },
         },
-      },
-    });
+      });
 
-    expect(wrapper.findComponent(PossiblyChangedType).props()).toHaveProperty('changes', changes.name.type);
-    expect(wrapper.findComponent(PossiblyChangedTextAttribute).props())
-      .toHaveProperty('changes', changes.name.required);
-    expect(wrapper.findComponent(ParameterAttributes).props()).toHaveProperty('changes', changes.name);
+      expect(wrapper.findComponent(PossiblyChangedType).props())
+        .toHaveProperty('changes', changes.name.type);
+      expect(wrapper.findComponent(PossiblyChangedTextAttribute).props())
+        .toHaveProperty('changes', changes.name.required);
+      expect(wrapper.findComponent(ParameterAttributes).props())
+        .toHaveProperty('changes', changes.name);
+    });
   });
 });

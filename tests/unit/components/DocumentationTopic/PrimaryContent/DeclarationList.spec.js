@@ -15,7 +15,7 @@ import DeclarationGroup
 import { waitFor } from 'docc-render/utils/loading';
 import { flushPromises } from '../../../../../test-utils';
 
-jest.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/loading');
 
 const mocks = {
   $route: {
@@ -25,7 +25,7 @@ const mocks = {
     },
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
   },
 };
 
@@ -146,10 +146,8 @@ describe('DeclarationList with otherDeclarations', () => {
 
   it('renders a `div` for selected declaration, otherwise renders a `button`', () => {
     const sourceWrapper = wrapper.findAll('.declaration-group-wrapper');
-    expect(sourceWrapper.at(0).find('div').exists()).toBe(false);
-    expect(sourceWrapper.at(0).find('button').exists()).toBe(true);
-    expect(sourceWrapper.at(1).find('div').exists()).toBe(true);
-    expect(sourceWrapper.at(1).find('button').exists()).toBe(false);
+    expect(sourceWrapper.at(0).element.tagName).toBe('BUTTON');
+    expect(sourceWrapper.at(1).element.tagName).toBe('DIV');
   });
 
   it('clicking on a pill from the expanded list selects that declaration with query param', async () => {

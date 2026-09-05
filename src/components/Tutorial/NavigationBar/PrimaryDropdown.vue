@@ -11,7 +11,7 @@
 <template>
   <DropdownCustom
     :value="currentOption"
-    :aria-label="$t('tutorials.nav.current', { thing: $tc('tutorials.title', 1) })"
+    :aria-label="$t('tutorials.nav.current', { thing: $t('tutorials.title', 1) })"
     class="tutorial-dropdown"
     isSmall
   >
@@ -56,8 +56,8 @@
                   <li
                     :class="{ [OptionClass]: true, [ActiveOptionClass]: isActive }"
                     :value="title"
-                    :aria-selected="isActive"
-                    :aria-current="isActive ? 'tutorial': false"
+                    :aria-selected="isActive ? 'true' : null"
+                    :aria-current="isActive ? 'tutorial': null"
                     :tabindex="-1"
                     @click="setActive(navigate, closeDropdown, $event)"
                     @keydown.enter="setActive(navigate, closeDropdown, $event)"

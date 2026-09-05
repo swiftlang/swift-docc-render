@@ -19,7 +19,7 @@ describe('CommunicationBridge', () => {
   let sendMock;
 
   beforeEach(() => {
-    sendMock = jest.fn();
+    sendMock = vi.fn();
 
     bridge = new CommunicationBridge({
       send: sendMock,
@@ -33,9 +33,9 @@ describe('CommunicationBridge', () => {
   });
 
   it('notifies the correct listeners', () => {
-    const listener1 = jest.fn();
-    const listener2 = jest.fn();
-    const listener3 = jest.fn();
+    const listener1 = vi.fn();
+    const listener2 = vi.fn();
+    const listener3 = vi.fn();
 
     bridge.on('type1', listener1);
     bridge.on('type1', listener2);
@@ -50,8 +50,8 @@ describe('CommunicationBridge', () => {
   });
 
   it('does not notify removed listeners', () => {
-    const listener1 = jest.fn();
-    const listener2 = jest.fn();
+    const listener1 = vi.fn();
+    const listener2 = vi.fn();
 
     bridge.on('type1', listener1);
     bridge.on('type1', listener2);
@@ -69,7 +69,7 @@ describe('WebKitBackend', () => {
   let postMessageMock;
 
   beforeEach(() => {
-    postMessageMock = jest.fn();
+    postMessageMock = vi.fn();
     global.webkit = {
       messageHandlers: {
         bridge: {

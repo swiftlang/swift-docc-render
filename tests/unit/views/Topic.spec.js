@@ -14,18 +14,18 @@ import Topic from 'docc-render/views/Topic.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 import Tutorial from 'docc-render/components/Tutorial.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
-import { fetchDataForRouteEnter } from '@/utils/data';
+import { fetchDataForRouteEnter, shouldFetchDataForRouteUpdate } from '@/utils/data';
 
-jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
-jest.mock('@/utils/data');
+vi.mock('docc-render/mixins/onPageLoadScrollToFragment');
+vi.mock('@/utils/data');
 
 fetchDataForRouteEnter.mockResolvedValue({});
 
 const mocks = {
   $bridge: {
-    on: jest.fn(),
-    off: jest.fn(),
-    send: jest.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
+    send: vi.fn(),
   },
   $route: {},
 };
@@ -34,7 +34,7 @@ describe('Topic', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(Topic, { mocks });
   });
 
@@ -53,33 +53,48 @@ describe('Topic', () => {
 
   it('provides a positive offset for `navigationBarHeight`', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.navigationBarHeight).toBe(52);
+    expect(wrapper.vm.$.provides.navigationBarHeight).toBe(52);
   });
 
   it('provides `TopicStore` as `store`', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.store).toEqual(TopicStore);
+    expect(wrapper.vm.$.provides.store).toEqual(TopicStore);
   });
 
-  it('skips fetching data, if `meta.skipFetchingData` is `true`', () => {
-    const next = jest.fn();
-    Topic.beforeRouteEnter({ meta: { skipFetchingData: true } }, {}, next);
-    expect(next).toHaveBeenCalledTimes(1);
+  it('skips fetching data, if `meta.skipFetchingData` is `true`', async () => {
+    const afterEnter = await Topic.beforeRouteEnter(
+      { meta: { skipFetchingData: true } },
+      {},
+    );
+    expect(afterEnter).toEqual(expect.any(Function));
     expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(0);
     // now call without `skipFetchingData`
     const params = {
-      to: { name: 'foo', meta: {} },
+      to: { name: 'foo', meta: {}, params: {} },
       from: { name: 'bar' },
-      next: jest.fn(),
     };
-    Topic.beforeRouteEnter(params.to, params.from, params.next);
+    await Topic.beforeRouteEnter(params.to, params.from);
     expect(fetchDataForRouteEnter).toHaveBeenCalledTimes(1);
     expect(fetchDataForRouteEnter)
-      .toHaveBeenCalledWith(params.to, params.from, params.next);
+      .toHaveBeenCalledWith(params.to, params.from, expect.any(Function));
+  });
+
+  it('returns redirects rejected by the route data fetch', async () => {
+    const redirect = '/documentation/redirected';
+    fetchDataForRouteEnter.mockRejectedValueOnce(redirect);
+
+    await expect(Topic.beforeRouteEnter({ meta: {} }, {})).resolves.toBe(redirect);
+  });
+
+  it('returns cancellations rejected while updating a route', async () => {
+    shouldFetchDataForRouteUpdate.mockReturnValueOnce(true);
+    fetchDataForRouteEnter.mockRejectedValueOnce(false);
+
+    await expect(Topic.beforeRouteUpdate.call(wrapper.vm, {}, {})).resolves.toBe(false);
   });
 
   async function testRenderedMessageWithProvide(provide) {
-    const sendMock = jest.fn();
+    const sendMock = vi.fn();
     wrapper = shallowMount(Topic, {
       mocks: {
         ...mocks,
@@ -296,6 +311,6 @@ describe('with `isTargetIDE', () => {
 
   it('provides a 0 offset for `navigationBarHeight`', () => {
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided.navigationBarHeight).toBe(0);
+    expect(wrapper.vm.$.provides.navigationBarHeight).toBe(0);
   });
 });

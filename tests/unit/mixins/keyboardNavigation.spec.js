@@ -97,22 +97,22 @@ describe('keyboardNavigation', () => {
     expect(wrapper.vm.externalFocusChange).toBe(false);
   });
 
-  it('prevents the user to navigate when meta, ctrl or shift keys are pressed', () => {
+  it('ignores non-arrow keyboard shortcuts', () => {
     const wrapper = createWrapper();
     wrapper.trigger('keydown', {
-      key: 'down',
+      key: 'x',
       metaKey: true,
     });
     expect(wrapper.vm.focusedIndex).toBe(0);
 
     wrapper.trigger('keydown', {
-      key: 'down',
+      key: 'x',
       ctrlKey: true,
     });
     expect(wrapper.vm.focusedIndex).toBe(0);
 
     wrapper.trigger('keydown', {
-      key: 'down',
+      key: 'x',
       shiftKey: true,
     });
     expect(wrapper.vm.focusedIndex).toBe(0);

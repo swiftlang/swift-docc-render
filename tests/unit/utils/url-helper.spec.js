@@ -10,36 +10,25 @@
 
 import TechnologiesQueryParams from 'docc-render/constants/TechnologiesQueryParams';
 import QuickNavigationQueryParams from 'docc-render/constants/QuickNavigationQueryParams';
+import {
+  areEquivalentLocations,
+  buildUrl,
+  resolveAbsoluteUrl,
+  isAbsoluteUrl,
+} from '@/utils/url-helper';
 
-let areEquivalentLocations;
-let buildUrl;
-let resolveAbsoluteUrl;
-let isAbsoluteUrl;
+const { normalizePathMock } = vi.hoisted(() => ({
+  normalizePathMock: vi.fn().mockImplementation(n => n),
+}));
 
-const normalizePathMock = jest.fn().mockImplementation(n => n);
-
-const mockAssets = {
+vi.mock('docc-render/utils/assets', () => ({
   normalizePath: normalizePathMock,
-};
-
-jest.mock('docc-render/utils/assets', () => (mockAssets));
-
-function importDeps() {
-  jest.resetModules();
-  // eslint-disable-next-line global-require
-  ({
-    areEquivalentLocations,
-    buildUrl,
-    resolveAbsoluteUrl,
-    isAbsoluteUrl,
-  // eslint-disable-next-line global-require
-  } = require('@/utils/url-helper'));
-}
+}));
 
 describe('areEquivalentLocations', () => {
   beforeEach(() => {
-    importDeps();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    normalizePathMock.mockImplementation(n => n);
   });
 
   it('returns false for the same route with a different path', () => {
@@ -152,7 +141,6 @@ describe('resolveAbsoluteUrl', () => {
   it('resolves against the host and base path of the current environment', () => {
     const { location } = window;
     normalizePathMock.mockImplementation(n => `/foo${n}`);
-    importDeps();
     Object.defineProperty(window, 'location', {
       value: new URL('https://example.com'),
     });
@@ -176,8 +164,8 @@ describe('resolveAbsoluteUrl', () => {
 
 describe('isAbsoluteUrl', () => {
   beforeEach(() => {
-    importDeps();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    normalizePathMock.mockImplementation(n => n);
   });
 
   it('returns true for absolute URLs', () => {

@@ -36,6 +36,7 @@ import TutorialsNavigationList from './TutorialsNavigationList.vue';
 
 export default {
   name: 'TutorialsNavigationMenu',
+  emits: ['deselect-menu', 'select-menu'],
   components: { InlineCloseIcon, TransitionExpand, TutorialsNavigationList },
   props: {
     collapsed: {

@@ -10,9 +10,12 @@
 
 import { addOrUpdateMetadata, updateLangTag } from 'docc-render/utils/metadata';
 import { defaultLocale } from 'theme/lang/index';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-jest.mock('theme/lang/locales.json', () => (
-  [
+vi.mock('theme/lang/locales.json', () => ({
+  default: [
     {
       code: 'en-US',
       name: 'English',
@@ -23,15 +26,12 @@ jest.mock('theme/lang/locales.json', () => (
       name: '简体中文',
       slug: 'cn',
     },
-  ]
-));
+  ],
+}));
 
-const fs = require('fs');
-const path = require('path');
+const testDirectory = path.dirname(fileURLToPath(import.meta.url));
+const html = fs.readFileSync(path.resolve(testDirectory, '../../../index.html'));
 
-const html = fs.readFileSync(path.resolve(__dirname, '../../../app/index.html'));
-
-const mockBaseUrl = 'developer';
 const title = 'Featured';
 const description = 'Browse the latest developer documentation, including tutorials, sample code, articles, and API reference.';
 const differentDescription = 'Some different description.';
@@ -55,12 +55,12 @@ const pageWithoutTitleOrDescription = {
   },
 };
 
-jest.mock('docc-render/utils/theme-settings', () => ({
-  getSetting: jest.fn((_, fallback) => fallback),
+vi.mock('docc-render/utils/theme-settings', () => ({
+  getSetting: vi.fn((_, fallback) => fallback),
 }));
 
-jest.mock('docc-render/utils/assets', () => ({
-  normalizePath: jest.fn(name => mockBaseUrl + name),
+vi.mock('docc-render/utils/assets', () => ({
+  normalizePath: vi.fn(name => `developer${name}`),
 }));
 
 document.documentElement.innerHTML = html.toString();

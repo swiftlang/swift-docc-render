@@ -18,7 +18,7 @@
         <router-link
           :to="item.url"
           class="base-link"
-          @click.native="handleFocusAndScroll(item.anchor)"
+          @click="handleFocusAndScroll(item.anchor)"
         >
           <component :is="getWrapperComponent(item)">
             {{ getTextContent(item) }}
@@ -58,9 +58,9 @@ export default {
   },
   async mounted() {
     window.addEventListener('scroll', this.onScroll, false);
-    this.$once('hook:beforeDestroy', () => {
-      window.removeEventListener('scroll', this.onScroll);
-    });
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
   },
   watch: {
     onThisPageSections: {

@@ -20,11 +20,11 @@ const scrollBarAppearsEvent = {
     offsetHeight: 150,
     scrollTop: 0,
     style: {
-      setProperty: jest.fn(),
-      getPropertyValue: jest.fn().mockReturnValue(''),
+      setProperty: vi.fn(),
+      getPropertyValue: vi.fn().mockReturnValue(''),
     },
   },
-  preventDefault: jest.fn(),
+  preventDefault: vi.fn(),
 };
 
 const scrollBarDoesNotAppearEvent = {
@@ -38,10 +38,10 @@ const scrollBarDoesNotAppearEvent = {
 
 describe('handleScrollbar', () => {
   let wrapper;
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount({
       name: 'MyComponent',
       mixins: [handleScrollbar],
@@ -74,7 +74,7 @@ describe('handleScrollbar', () => {
   it('hides the scrollbar after the scrolling debounce delay time has passed', () => {
     wrapper.vm.handleScroll(scrollBarAppearsEvent);
     // Wait longer than 1000 miliseconds
-    jest.advanceTimersByTime(ScrollingDebounceDelay + 10);
+    vi.advanceTimersByTime(ScrollingDebounceDelay + 10);
     expect(wrapper.vm.isScrolling).toEqual(false);
   });
 
@@ -82,16 +82,16 @@ describe('handleScrollbar', () => {
     wrapper.vm.handleScroll(scrollBarAppearsEvent);
     wrapper.vm.handleScroll(scrollBarAppearsEvent);
     // Wait only 10 miliseconds
-    jest.advanceTimersByTime(10);
+    vi.advanceTimersByTime(10);
     expect(wrapper.vm.isScrolling).toEqual(true);
   });
 
   it('does not hide the scrollbar, before enough time has passed', () => {
-    const nowSpy = jest.spyOn(Date, 'now');
+    const nowSpy = vi.spyOn(Date, 'now');
     wrapper.vm.handleScroll(scrollBarAppearsEvent);
     expect(wrapper.vm.isScrolling).toEqual(true);
     // Wait longer than 1000 miliseconds
-    jest.advanceTimersByTime(ScrollingDebounceDelay);
+    vi.advanceTimersByTime(ScrollingDebounceDelay);
     // make sure we are not scrolling any more
     expect(wrapper.vm.isScrolling).toEqual(false);
     // scroll
@@ -100,7 +100,7 @@ describe('handleScrollbar', () => {
     expect(wrapper.vm.isScrolling).toEqual(false);
     // force 110 seconds to pass
     nowSpy.mockReturnValueOnce(Date.now() + 110);
-    jest.advanceTimersByTime(110);
+    vi.advanceTimersByTime(110);
     // scroll again
     wrapper.vm.handleScroll(scrollBarAppearsEvent);
     // assert the time is correct

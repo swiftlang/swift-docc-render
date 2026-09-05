@@ -64,7 +64,7 @@ describe('escapeHtml', () => {
 });
 
 describe('cssEscapeTopicIdHash', () => {
-  const escapeSpy = jest.spyOn(CSS, 'escape');
+  const escapeSpy = vi.spyOn(CSS, 'escape');
 
   it('calls CSS.escape', () => {
     expect(escapeSpy).not.toHaveBeenCalled();

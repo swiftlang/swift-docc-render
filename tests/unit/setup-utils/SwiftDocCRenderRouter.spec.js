@@ -9,46 +9,59 @@
 */
 
 import { restoreScrollOnReload, saveScrollOnReload, scrollBehavior } from 'docc-render/utils/router-utils';
-import Router from 'vue-router';
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router';
 import SwiftDocCRenderRouter from 'docc-render/setup-utils/SwiftDocCRenderRouter';
 import FetchError from 'docc-render/errors/FetchError';
 
-jest.mock('docc-render/utils/theme-settings', () => ({
+vi.mock('docc-render/utils/theme-settings', () => ({
   baseUrl: '/',
-  getSetting: jest.fn(),
+  getSetting: vi.fn(),
 }));
 
 const mockInstance = {
-  onError: jest.fn(),
-  onReady: jest.fn(),
-  replace: jest.fn(),
-  beforeEach: jest.fn(),
+  onError: vi.fn(),
+  isReady: vi.fn(() => ({
+    then: vi.fn(),
+  })),
+  replace: vi.fn(),
+  beforeEach: vi.fn(),
 };
+const mockHistory = {};
 
-jest.mock('vue-router', () => jest.fn(() => (mockInstance)));
-jest.mock('docc-render/utils/router-utils', () => ({
-  restoreScrollOnReload: jest.fn(),
-  scrollBehavior: jest.fn(),
-  saveScrollOnReload: jest.fn(),
+vi.mock('vue-router', () => ({
+  createMemoryHistory: vi.fn(() => mockHistory),
+  createRouter: vi.fn(() => mockInstance),
+  createWebHashHistory: vi.fn(() => mockHistory),
+  createWebHistory: vi.fn(() => mockHistory),
+}));
+vi.mock('docc-render/utils/router-utils', () => ({
+  restoreScrollOnReload: vi.fn(),
+  scrollBehavior: vi.fn(),
+  saveScrollOnReload: vi.fn(),
 }));
 
 describe('SwiftDocCRenderRouter', () => {
   beforeEach(() => {
     window.removeEventListener('unload', saveScrollOnReload);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('creates a new VueRouter instance and attaches the correct hooks', () => {
     const routerInstance = SwiftDocCRenderRouter();
     expect(routerInstance).toEqual(mockInstance);
-    expect(mockInstance.onReady).toHaveBeenCalledTimes(1);
+    expect(mockInstance.isReady).toHaveBeenCalledTimes(1);
   });
 
   it('restores scroll position `onReady`', () => {
     const routerInstance = SwiftDocCRenderRouter();
     window.history.scrollRestoration = 'auto';
     expect(restoreScrollOnReload).toHaveBeenCalledTimes(0);
-    routerInstance.onReady.mock.calls[0][0].call();
+    routerInstance.isReady.mock.results[0].value.then.mock.calls[0][0].call();
     expect(restoreScrollOnReload).toHaveBeenCalledTimes(1);
     expect(window.history.scrollRestoration).toBe('manual');
   });
@@ -60,13 +73,13 @@ describe('SwiftDocCRenderRouter', () => {
     routerInstance.onError.mock.calls[0][0].call({}, new FetchError(routeWithError));
     expect(routerInstance.replace).toHaveBeenCalledWith({
       name: 'server-error',
-      params: [routeWithError.path],
+      params: { pathMatch: ['fake', 'path'] },
     });
 
     routerInstance.onError.mock.calls[0][0].call({}, new Error('?'));
     expect(routerInstance.replace).toHaveBeenCalledWith({
       name: 'server-error',
-      params: ['/'],
+      params: { pathMatch: [] },
     });
   });
 
@@ -75,11 +88,11 @@ describe('SwiftDocCRenderRouter', () => {
     expect(SwiftDocCRenderRouter().onError.mock.calls.length).toBe(0);
   });
 
-  it('calls instantiated Vue Router with a default set of settings', () => {
+  it('creates Vue Router with HTML5 history and the default settings', () => {
     SwiftDocCRenderRouter();
-    expect(Router).toHaveBeenCalledWith({
-      base: '/',
-      mode: 'history',
+    expect(createWebHistory).toHaveBeenCalledWith('/');
+    expect(createRouter).toHaveBeenCalledWith({
+      history: mockHistory,
       routes: expect.any(Array),
       scrollBehavior,
     });
@@ -87,17 +100,42 @@ describe('SwiftDocCRenderRouter', () => {
 
   it('accepts provided config file', () => {
     SwiftDocCRenderRouter({
+      history: mockHistory,
       routes: ['a'],
       foo: 'foo',
     });
-    expect(Router).toHaveBeenCalledWith({
-      base: '/',
-      mode: 'history',
+    expect(createRouter).toHaveBeenCalledWith({
+      history: mockHistory,
       routes: ['a'],
       scrollBehavior,
       // assert the provided config is passed
       foo: 'foo',
     });
+  });
+
+  it('preserves legacy base and history-mode configuration', () => {
+    SwiftDocCRenderRouter({ base: '/custom-base' });
+
+    expect(createWebHistory).toHaveBeenCalledWith('/custom-base');
+    expect(createRouter).toHaveBeenCalledWith({
+      history: mockHistory,
+      routes: expect.any(Array),
+      scrollBehavior,
+    });
+  });
+
+  it('preserves legacy hash-mode configuration', () => {
+    SwiftDocCRenderRouter({ base: '/custom-base', mode: 'hash' });
+
+    expect(createWebHashHistory).toHaveBeenCalledWith('/custom-base');
+    expect(createWebHistory).not.toHaveBeenCalled();
+  });
+
+  it('preserves legacy abstract-mode configuration', () => {
+    SwiftDocCRenderRouter({ base: '/custom-base', mode: 'abstract' });
+
+    expect(createMemoryHistory).toHaveBeenCalledWith('/custom-base');
+    expect(createWebHistory).not.toHaveBeenCalled();
   });
 
   it('stores the last scroll coordinates on `unload`', () => {
@@ -110,14 +148,27 @@ describe('SwiftDocCRenderRouter', () => {
   describe('route resolving', () => {
     let router;
 
-    beforeAll(() => {
-      jest.resetModules();
-      jest.unmock('vue-router');
-      // eslint-disable-next-line global-require
-      router = require('docc-render/setup-utils/SwiftDocCRenderRouter').default();
+    beforeAll(async () => {
+      vi.resetModules();
+      vi.doUnmock('vue-router');
+      const { default: createSwiftDocCRenderRouter } = await import(
+        'docc-render/setup-utils/SwiftDocCRenderRouter'
+      );
+      router = createSwiftDocCRenderRouter();
     });
 
-    const resolve = path => router.resolve(path).route;
+    const resolve = path => router.resolve(path);
+
+    it('preserves nested paths when resolving named fallback routes', () => {
+      expect(resolve({
+        name: 'not-found',
+        params: { pathMatch: ['missing', 'nested', 'page'] },
+      }).fullPath).toBe('/missing/nested/page');
+      expect(resolve({
+        name: 'server-error',
+        params: { pathMatch: ['documentation', 'foo'] },
+      }).fullPath).toBe('/__server-error/documentation/foo');
+    });
 
     it('resolves paths to the "tutorials-overview-locale" route', () => {
       const route = 'tutorials-overview-locale';
@@ -130,7 +181,7 @@ describe('SwiftDocCRenderRouter', () => {
       expect(resolve('/tutorials/documentation').name).toBe(route);
     });
 
-    it('resolves paths to the "tutorials-overview-locale" route', () => {
+    it('resolves localized paths to the "tutorials-overview-locale" route', () => {
       const route = 'tutorials-overview-locale';
 
       expect(resolve('/en-US/tutorials/foobar').name).toBe(route);
@@ -148,7 +199,7 @@ describe('SwiftDocCRenderRouter', () => {
       expect(resolve('/tutorials/documentation/foo').name).toBe(route);
     });
 
-    it('resolves paths to the "topic-locale" route', () => {
+    it('resolves localized paths to the "topic-locale" route', () => {
       const route = 'topic-locale';
 
       expect(resolve('/en-US/tutorials/foo/bar').name).toBe(route);
@@ -175,7 +226,7 @@ describe('SwiftDocCRenderRouter', () => {
       expect(resolve('/documentation/tutorials').params.pathMatch).toBe('/tutorials');
     });
 
-    it('resolves paths to the "documentation-topic-locale" route', () => {
+    it('resolves localized paths to the "documentation-topic-locale" route', () => {
       const route = 'documentation-topic-locale';
 
       expect(resolve('/en-US/documentation/foo').name).toBe(route);

@@ -16,23 +16,23 @@ import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import AppStore from 'docc-render/stores/AppStore';
 import { getLocaleParam, getCodeForSlug } from 'docc-render/utils/i18n-utils';
 
-jest.mock('docc-render/utils/i18n-utils', () => ({
-  getCodeForSlug: jest.fn(value => value),
-  getLocaleParam: jest.fn(() => ({
+vi.mock('docc-render/utils/i18n-utils', () => ({
+  getCodeForSlug: vi.fn(value => value),
+  getLocaleParam: vi.fn(() => ({
     locale: undefined,
   })),
 }));
 
-jest.mock('docc-render/stores/AppStore', () => ({
-  setPreferredLocale: jest.fn(),
-  state: {
-    preferredLocale: '',
+vi.mock('docc-render/stores/AppStore', () => ({
+  default: {
+    setPreferredLocale: vi.fn(),
+    state: {
+      preferredLocale: '',
+    },
   },
 }));
 
-window.navigator = jest.fn().mockReturnValue({
-  language: 'en-GB',
-});
+vi.spyOn(window.navigator, 'language', 'get').mockReturnValue('en-GB');
 
 const params = {
   locale: undefined,
@@ -60,8 +60,8 @@ describe('SuggestLang', () => {
     wrapper = shallowMount(SuggestLang, {
       stubs: { 'router-link': RouterLinkStub },
       mocks: {
+        $t: (key, _values, { locale } = {}) => messages[locale]?.[key] ?? key,
         $i18n: {
-          messages,
           locale: currentLocale,
         },
       },

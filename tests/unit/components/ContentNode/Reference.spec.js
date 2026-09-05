@@ -213,16 +213,20 @@ describe('Reference', () => {
   });
 
   it('does not pass `isActive` if the `url` is empty string, even if there are query params', () => {
-    // shim
-    window.scrollTo = () => ({});
     const wrapper = shallowMount(Reference, {
-      localVue,
-      router,
       propsData: { url: '', isActive: true },
       slots: { default: 'Foobar' },
+      mocks: {
+        $router: {
+          resolve: vi.fn(),
+        },
+        $route: {
+          query: {
+            language: 'objc',
+          },
+        },
+      },
     });
-    // add query params to url
-    router.push({ query: { language: 'objc' } });
     const ref = wrapper.findComponent(ReferenceExternal);
     // assert isActive is empty
     expect(ref.props('isActive')).toBe(false);
@@ -234,7 +238,7 @@ describe('Reference', () => {
       slots: { default: 'Foobar' },
       mocks: {
         $router: {
-          resolve: jest.fn().mockReturnValue({ resolved: { name: '' } }),
+          resolve: vi.fn().mockReturnValue({ name: '' }),
         },
         $route: {
           query: {
@@ -253,7 +257,7 @@ describe('Reference', () => {
       slots: { default: 'Foobar' },
       mocks: {
         $router: {
-          resolve: jest.fn().mockReturnValue({ resolved: { name: '' } }),
+          resolve: vi.fn().mockReturnValue({ name: '' }),
         },
         $route: {
           query: {

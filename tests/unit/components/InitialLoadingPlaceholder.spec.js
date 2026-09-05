@@ -10,18 +10,20 @@
 
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
 import { shallowMount } from '@vue/test-utils';
+import { flushPromises } from '../../../test-utils';
 
-const onReady = jest.fn();
+const isReady = vi.fn();
 
 const mocks = {
   $router: {
-    onReady,
+    isReady,
   },
 };
 
 describe('InitialLoadingPlaceholder', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    isReady.mockResolvedValue();
   });
 
   it('renders the InitialLoadingPlaceholder', async () => {
@@ -32,22 +34,19 @@ describe('InitialLoadingPlaceholder', () => {
       id: 'loading-placeholder',
       class: 'InitialLoadingPlaceholder',
     });
-    expect(onReady).toHaveBeenCalledTimes(1);
-    // call the registered callback for `onReady`
-    onReady.mock.calls[0][0].call();
-    await wrapper.vm.$nextTick();
-    expect(wrapper.html()).toBeFalsy();
+    expect(isReady).toHaveBeenCalledTimes(1);
+    await flushPromises();
+    expect(wrapper.html()).toBe('<!--v-if-->');
   });
 
   it('sets the placeholder as ready, even if the router fails to load', async () => {
+    isReady.mockRejectedValue(new Error('Router failed to load'));
     const wrapper = shallowMount(InitialLoadingPlaceholder, {
       mocks,
     });
     expect(wrapper.html()).toBeTruthy();
-    expect(onReady).toHaveBeenCalledTimes(1);
-    // call the registered error callback for `onReady`
-    onReady.mock.calls[0][1].call();
-    await wrapper.vm.$nextTick();
-    expect(wrapper.html()).toBeFalsy();
+    expect(isReady).toHaveBeenCalledTimes(1);
+    await flushPromises();
+    expect(wrapper.html()).toBe('<!--v-if-->');
   });
 });

@@ -78,10 +78,13 @@
       v-bind="{ kind: AttributeKind.allowedTypes, attributes: attributesObject, changes }">
       <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
-          content: $tc('parameters.possible-types', fallbackToValues(attribute).length)
-        }) }}<code><template v-for="(possibleType, i) in fallbackToValues(attribute)">
-            <template v-for="(token, j) in possibleType">
-              <DeclarationToken v-bind="token" :key="`${i}-${j}`"
+          content: $t('parameters.possible-types', fallbackToValues(attribute).length)
+        }) }}<code><template
+            v-for="(possibleType, i) in fallbackToValues(attribute)"
+            :key="i"
+          >
+            <template v-for="(token, j) in possibleType" :key="`${i}-${j}`">
+              <DeclarationToken v-bind="token"
               /><template v-if="i + 1 < fallbackToValues(attribute).length">, </template>
             </template>
           </template>
@@ -93,7 +96,7 @@
       v-bind="{ kind: AttributeKind.allowedValues, attributes: attributesObject, changes }">
       <template v-slot="{ attribute }">
         {{ $t('formats.colon', {
-          content: $tc('parameters.possible-values', fallbackToValues(attribute).length)
+          content: $t('parameters.possible-values', fallbackToValues(attribute).length)
         }) }}<code>{{ fallbackToValues(attribute).join(', ') }}</code>
       </template>
     </ParameterMetaAttribute>

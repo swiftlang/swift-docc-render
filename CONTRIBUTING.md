@@ -50,10 +50,11 @@ more details.
 
 ### Run Steps
 
-> Note: requires [Node.js](https://nodejs.org/en/download/) v18
-> and [npm](https://www.npmjs.com/package/npm) v9.5. An easy way to set these up is to install
+> Note: requires [Node.js](https://nodejs.org/en/download/) v24
+> and [pnpm](https://pnpm.io/) v11.17. An easy way to select Node.js is to install
 > [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
-> repository. To use these versions as the default, add `--default` to the installation command.
+> repository. Then run `corepack enable pnpm` to activate the package manager version declared
+> by this project.
 
 1. Checkout this repository using:
 
@@ -70,25 +71,25 @@ more details.
 3. Install dependencies:
 
     ```shell
-    npm install
+    pnpm install
     ```
 
-4. Run a local server with hot reload at [localhost:8080](http://localhost:8080/)
+4. Run a local server with hot reload at [localhost:5173](http://localhost:5173/)
 
     You may want to set an http endpoint as a proxy to handle data requests while developing locally.
 
     ```shell
-    VUE_APP_DEV_SERVER_PROXY=https://localhost:8000 npm run serve
+    VITE_DEV_SERVER_PROXY=https://localhost:8000 pnpm dev
     ```
 
-    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VUE_APP_DEV_SERVER_PROXY` env varible so you don't have to set it in the `npm run serve` script each time.
+    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` environment variable so you don't have to set it in the `pnpm dev` script each time.
     
 ### Build Steps
 
 To build Swift-DocC-Render for deployment, run the command below. The output will be generated inside the `dist` folder:
 
 ```shell
-npm run build
+pnpm build
 ```
 
 ## Testing Swift-DocC-Render using data from Swift-DocC
@@ -115,7 +116,7 @@ When you're ready to have your change reviewed, please make sure you've complete
 
 - [x] Add tests to cover any new functionality or to prevent regressions of a bug fix.
 
-- [x] Run the `npm run test` script and confirm that the unit test, lint and license header checks pass.
+- [x] Run the `pnpm test` script and confirm that the unit test, lint and license header checks pass.
 
 - [x] Add source code documentation to all added coded that explains
   the new behavior.
@@ -149,36 +150,36 @@ Before opening a pull request, we ask that you:
 ### Tests and linting
 
 Run the following script to:
-- Run unit tests with [Jest](https://jestjs.io/)
+- Run unit tests with [Vitest](https://vitest.dev/)
 - Find syntax errors with [ESLint](https://eslint.org/)
 - Check that all files have license headers
 
 ```shell
-npm run test
+pnpm test
 ```
 
 Run an individual unit test suite:
 
 ```shell
-npm run test:unit tests/unit/path/to/spec.js
+pnpm test:unit tests/unit/path/to/spec.js
 ```
 
 Run unit tests and watch for changes:
 
 ```shell
-npm run test:unit:watch
+pnpm test:unit:watch
 ```
 
 To manually lint your code for style issues, you can run the [ESLint](https://eslint.org/) suite:
 
 ```shell
-npm run lint
+pnpm lint
 ```
 
 If you want the linter to automatically fix the errors it finds, run:
 
 ```shell
-npm run lint:fix
+pnpm lint:fix
 ```
 
 ## Your First Contribution

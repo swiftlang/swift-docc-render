@@ -9,6 +9,8 @@
 -->
 
 <script>
+import { h, Text } from 'vue';
+
 /**
  * Indicate safe places to break apart words across multiple lines when necessary.
  *
@@ -69,18 +71,18 @@
  * ```
  */
 export default {
-  functional: true,
   name: 'WordBreak',
-  render(createElement, { props, slots, data }) {
-    const childNodes = (slots().default || []);
-    const textNodes = childNodes.filter(node => node.text && !node.tag);
+  inheritAttrs: false,
+  render() {
+    const childNodes = this.$slots.default ? this.$slots.default() : [];
+    const textNodes = childNodes.filter(node => node.type === Text);
 
     // Don't attempt word breaking unless this component wraps raw strings
     if (textNodes.length === 0 || textNodes.length !== childNodes.length) {
-      return createElement(props.tag, data, childNodes);
+      return h(this.tag, this.$attrs, childNodes);
     }
 
-    const word = textNodes.map(({ text }) => text).join();
+    const word = textNodes.map(({ children }) => children).join();
     const childrenWithBreaks = [];
 
     let match = null;
@@ -88,17 +90,17 @@ export default {
     // Find each regex match in the wrapped string and create an array of each
     // individual substring along with a corresponding <wbr> element.
     // eslint-disable-next-line no-cond-assign
-    while ((match = props.safeBoundaryPattern.exec(word)) !== null) {
+    while ((match = this.safeBoundaryPattern.exec(word)) !== null) {
       const nextIndex = match.index + 1;
 
       childrenWithBreaks.push(word.slice(lastIndex, nextIndex));
-      childrenWithBreaks.push(createElement('wbr', { key: match.index }));
+      childrenWithBreaks.push(h('wbr', { key: match.index }));
 
       lastIndex = nextIndex;
     }
     childrenWithBreaks.push(word.slice(lastIndex, word.length));
 
-    return createElement(props.tag, data, childrenWithBreaks);
+    return h(this.tag, this.$attrs, childrenWithBreaks);
   },
   props: {
     safeBoundaryPattern: {

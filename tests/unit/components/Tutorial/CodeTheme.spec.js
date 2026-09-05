@@ -101,7 +101,7 @@ describe('CodeTheme', () => {
         },
       });
       expect(wrapper.vm.codeStyle['--color-syntax-param-internal-name'])
-        .toBe(colors.text);
+        .toBe('notrgbainput');
     });
   });
 });

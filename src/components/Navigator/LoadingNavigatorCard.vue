@@ -41,6 +41,7 @@ const LOADER_ROWS = [
 
 export default {
   name: 'LoadingNavigatorCard',
+  emits: ['close'],
   components: {
     BaseNavigatorCard,
     LoadingNavigatorItem,

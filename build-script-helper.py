@@ -62,13 +62,13 @@ def check_output(cmd, cwd=None, env=os.environ, verbose=False):
 # -----------------------------------------------------------------------------
 # Building, Testing, and Installing Swift-DocC-Render
 
-def ensure_npm_is_installed(verbose=False):
+def ensure_pnpm_is_installed(verbose=False):
     cmd = 'where' if platform.system() == 'Windows' else 'which'
     try:
-        check_output([cmd, 'npm'], verbose=verbose)
+        check_output([cmd, 'pnpm'], verbose=verbose)
         check_output([cmd, 'node'], verbose=verbose)
     except:
-        error_msg = "Could not locate 'npm'. Swift-DocC-Render requires node. "\
+        error_msg = "Could not locate 'pnpm'. Swift-DocC-Render requires Node.js and pnpm. "\
             "See the README.md file for more information about building Swift-DocC-Render."
         fatal_error('-- Error: %s' % error_msg)
     try:
@@ -76,8 +76,8 @@ def ensure_npm_is_installed(verbose=False):
         # Ensure node_version is a string (decode if it's bytes)
         if isinstance(node_version, bytes):
             node_version = node_version.decode('utf-8')
-        if not node_version.strip().startswith('v22.17.'):
-            warn_msg = "Unexpected version of 'node' installed. Swift-DocC-Render requires node v22.17 "\
+        if not node_version.strip().startswith('v24.'):
+            warn_msg = "Unexpected version of 'node' installed. Swift-DocC-Render requires Node.js v24. "\
                 "See the README.md file for more information about building Swift-DocC-Render."
             printerr('-- Warning: %s' % warn_msg)
     except:
@@ -87,10 +87,10 @@ def ensure_npm_is_installed(verbose=False):
 
 
 def run(action, verbose=False):
-    ensure_npm_is_installed(verbose)
+    ensure_pnpm_is_installed(verbose)
     
-    check_call(['npm', 'ci'], cwd=PROJECT_ROOT_DIR, verbose=verbose)
-    check_call(['npm', 'run', action], cwd=PROJECT_ROOT_DIR, verbose=verbose) # action should be either 'build' or 'test'
+    check_call(['pnpm', 'install', '--frozen-lockfile'], cwd=PROJECT_ROOT_DIR, verbose=verbose)
+    check_call(['pnpm', 'run', action], cwd=PROJECT_ROOT_DIR, verbose=verbose) # action should be either 'build' or 'test'
 
 
 def check_and_sync(file_path, install_path):

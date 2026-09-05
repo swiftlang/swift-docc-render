@@ -13,7 +13,7 @@
     class="tutorials-navigation-link"
     :class="{ active }"
     :to="fragment"
-    @click.native="handleFocusAndScroll(fragment.hash)"
+    @click="handleFocusAndScroll(fragment.hash)"
   >
     <slot />
   </router-link>
@@ -40,7 +40,12 @@ export default {
       text,
     }) => text === activeTutorialLink,
     fragment: ({ text, $route }) => ({ hash: anchorize(text), query: $route.query }),
-    text: ({ $slots: { default: [{ text: slotText }] } }) => slotText.trim(),
+    text() {
+      const content = this.$slots.default ? this.$slots.default() : [];
+      return content.map(({ children }) => (
+        typeof children === 'string' ? children : ''
+      )).join('').trim();
+    },
   },
 };
 </script>

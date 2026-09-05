@@ -12,7 +12,7 @@
   <GenericModal
     isFullscreen
     :showClose="false"
-    :visible.sync="isVisible"
+    v-model:visible="isVisible"
     backdropBackgroundColorOverride="rgba(0, 0, 0, 0.7)"
   >
     <div
@@ -30,8 +30,8 @@
           focusInputWhenEmpty
           preventBorderStyle
           selectInputOnFocus
-          @keydown.down.exact.native.prevent="handleDownKeyInput"
-          @keydown.enter.exact.native="handleKeyEnter"
+          @keydown.down.exact.prevent="handleDownKeyInput"
+          @keydown.enter.exact="handleKeyEnter"
           @focus="focusedInput = true"
           @blur="focusedInput = false"
         >
@@ -71,7 +71,7 @@
                 :url="symbol.path"
                 :tabindex="focusedIndex === index ? '0' : '-1'"
                 :data-index="index"
-                @click.native="closeQuickNavigationModal"
+                @click="closeQuickNavigationModal"
                 ref="match"
               >
                 <div
@@ -155,6 +155,7 @@ const SLOW_LOADING_DELAY = 1000; // 1 second in milliseconds
 
 export default {
   name: 'QuickNavigationModal',
+  emits: ['update:showQuickNavigationModal'],
   components: {
     FilterInput,
     GenericModal,

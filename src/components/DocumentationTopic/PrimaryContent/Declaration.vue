@@ -24,7 +24,7 @@
         :declaration="declaration"
         :shouldCaption="hasPlatformVariants"
         :changeType="changeType"
-        :declListExpanded.sync="isExpanded"
+        v-model:declListExpanded="isExpanded"
       />
     </template>
     <DeclarationSourceLink
@@ -57,6 +57,7 @@ import { isEqual } from 'docc-render/utils/arrays';
 
 export default {
   name: 'Declaration',
+  emits: ['update:declListExpanded'],
   components: {
     DeclarationDiff,
     DeclarationList,

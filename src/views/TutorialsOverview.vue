@@ -46,34 +46,49 @@ export default {
       topicData.identifier.interfaceLanguage,
     ].join(),
   },
-  beforeRouteEnter(to, from, next) {
+  async beforeRouteEnter(to, from) {
     // skip fetching, and rely on data being provided via $bridge
     if (to.meta.skipFetchingData) {
       // notify the $bridge, the page is ready
-      next(vm => vm.newContentMounted());
-      return;
+      return vm => vm.newContentMounted();
     }
 
-    fetchDataForRouteEnter(to, from, next).then(data => next((vm) => {
+    let navigationResult;
+    let data;
+    try {
+      data = await fetchDataForRouteEnter(to, from, (result) => {
+        navigationResult = result;
+      });
+    } catch (error) {
+      return error;
+    }
+    if (navigationResult !== undefined) return navigationResult;
+    return (vm) => {
       updateLocale(to.params.locale, vm);
       vm.topicData = data; // eslint-disable-line no-param-reassign
-    })).catch(next);
+    };
   },
-  beforeRouteUpdate(to, from, next) {
+  async beforeRouteUpdate(to, from) {
     if (shouldFetchDataForRouteUpdate(to, from)) {
-      fetchDataForRouteEnter(to, from, next).then((data) => {
-        this.topicData = data;
-        updateLocale(to.params.locale, this);
-        next();
-      }).catch(next);
-    } else {
-      next();
+      let navigationResult;
+      let data;
+      try {
+        data = await fetchDataForRouteEnter(to, from, (result) => {
+          navigationResult = result;
+        });
+      } catch (error) {
+        return error;
+      }
+      if (navigationResult !== undefined) return navigationResult;
+      this.topicData = data;
+      updateLocale(to.params.locale, this);
     }
+    return undefined;
   },
   mounted() {
     this.$bridge.on('contentUpdate', this.handleContentUpdateFromBridge);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$bridge.off('contentUpdate', this.handleContentUpdateFromBridge);
   },
   watch: {

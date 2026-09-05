@@ -65,6 +65,18 @@ import Tag from './Tag.vue';
 
 export default {
   name: 'Tags',
+  emits: [
+    'click-tags',
+    'delete-tag',
+    'focus',
+    'focus-next',
+    'focus-prev',
+    'keydown',
+    'paste-tags',
+    'prevent-blur',
+    'reset-filters',
+    'select-all',
+  ],
   mixins: [
     handleScrollbar,
     keyboardNavigation,

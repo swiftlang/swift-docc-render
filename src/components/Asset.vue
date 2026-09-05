@@ -28,6 +28,7 @@ const AssetTypes = {
 
 export default {
   name: 'Asset',
+  emits: ['videoEnded'],
   components: {
     ImageAsset,
     VideoAsset,
@@ -116,11 +117,11 @@ export default {
     },
     assetListeners() {
       return {
-        [AssetTypes.image]: null,
+        [AssetTypes.image]: {},
         [AssetTypes.video]: {
           ended: () => this.$emit('videoEnded'),
         },
-      }[this.asset.type];
+      }[this.asset.type] || {};
     },
   },
 };

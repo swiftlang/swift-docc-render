@@ -44,7 +44,7 @@
             :id="SelectedTagsId"
             :input="input"
             :tags="selectedTags"
-            :ariaLabel="$tc('filter.selected-tags', suggestedTags.length)"
+            :ariaLabel="$t('filter.selected-tags', suggestedTags.length)"
             :activeTags="activeTags"
             :translatableTags="translatableTags"
             v-bind="virtualKeyboardBind"
@@ -60,14 +60,14 @@
           <label
             id="filter-label"
             :for="FilterInputId"
-            :data-value="modelValue"
+            :data-value="inputValue"
             :aria-label="placeholder"
             class="filter__input-label"
           >
             <input
               :id="FilterInputId"
               ref="input"
-              v-model="modelValue"
+              v-model="inputValue"
               :placeholder="hasSelectedTags ? '' : placeholder"
               :aria-expanded="displaySuggestedTags ? 'true' : 'false'"
               :disabled="disabled"
@@ -109,7 +109,7 @@
         v-if="displaySuggestedTags"
         :id="SuggestedTagsId"
         ref="suggestedTags"
-        :ariaLabel="$tc('filter.suggested-tags', suggestedTags.length)"
+        :ariaLabel="$t('filter.suggested-tags', suggestedTags.length)"
         :input="input"
         :tags="suggestedTags"
         :translatableTags="translatableTags"
@@ -150,6 +150,19 @@ const AXinputProperties = {
 
 export default {
   name: 'FilterInput',
+  emits: [
+    'blur',
+    'focus',
+    'focus-next',
+    'focus-prev',
+    'input',
+    'show-suggested-tags',
+    'suggested-tags',
+    'update:input',
+    'update:modelValue',
+    'update:preventedBlur',
+    'update:selectedTags',
+  ],
   mixins: [handleScrollbar, multipleSelection],
   constants: {
     FilterInputId,
@@ -187,6 +200,10 @@ export default {
     disabled: {
       type: Boolean,
       default: () => false,
+    },
+    modelValue: {
+      type: String,
+      default: undefined,
     },
     value: {
       type: String,
@@ -234,13 +251,17 @@ export default {
     searchAriaLabelledBy: ({ hasSelectedTags }) => (
       hasSelectedTags ? FilterInputId.concat(' ', SelectedTagsId) : FilterInputId
     ),
-    modelValue: {
-      get: ({ value }) => value,
+    inputValue: {
+      get: ({ effectiveValue }) => effectiveValue,
       set(v) {
+        this.$emit('update:modelValue', v);
         this.$emit('input', v);
       },
     },
-    input: ({ value }) => value,
+    effectiveValue: ({ modelValue, value }) => (
+      modelValue === undefined ? value : modelValue
+    ),
+    input: ({ effectiveValue }) => effectiveValue,
     /**
      * Filters out the selected tags, from the tags.
      * Can also truncate the tags, at a certain limit, via the `shouldTruncateTags` prop.
@@ -359,6 +380,7 @@ export default {
       }
     },
     setFilterInput(value) {
+      this.$emit('update:modelValue', value);
       this.$emit('input', value);
     },
     setSelectedTags(tags) {

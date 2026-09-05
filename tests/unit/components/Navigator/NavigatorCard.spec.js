@@ -13,7 +13,6 @@ import BaseNavigatorCard from '@/components/Navigator/BaseNavigatorCard.vue';
 import { shallowMount } from '@vue/test-utils';
 import { TopicTypes } from '@/constants/TopicTypes';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
-import 'intersection-observer';
 import { INDEX_ROOT_KEY, SIDEBAR_ITEM_SIZE } from '@/constants/sidebar';
 import NavigatorCardItem from '@/components/Navigator/NavigatorCardItem.vue';
 import { sessionStorage } from 'docc-render/utils/storage';
@@ -26,10 +25,12 @@ import {
 } from 'docc-render/constants/Tags';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
-jest.mock('docc-render/utils/storage');
-jest.mock('docc-render/utils/loading');
-jest.mock('docc-render/utils/theme-settings');
+vi.mock('docc-render/utils/debounce', () => ({
+  default: vi.fn(fn => fn),
+}));
+vi.mock('docc-render/utils/storage');
+vi.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/theme-settings');
 
 getSetting.mockReturnValue(false);
 
@@ -49,7 +50,7 @@ const DynamicScrollerStub = {
   props: DynamicScroller.props,
   template: '<div class="vue-recycle-scroller-stub"><template v-for="(item, index) in items"><slot v-bind="{ item, index, active: false }" /></template></div>',
   methods: {
-    scrollToItem: jest.fn(),
+    scrollToItem: vi.fn(),
   },
 };
 
@@ -58,7 +59,7 @@ const DynamicScrollerItemStub = {
   props: DynamicScrollerItem.props,
   template: '<div class="dynamic-scroller-item-stub"><slot/></div>',
   methods: {
-    updateSize: jest.fn(),
+    updateSize: vi.fn(),
   },
 };
 
@@ -183,6 +184,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
     DynamicScroller: DynamicScrollerStub,
     DynamicScrollerItem: DynamicScrollerItemStub,
     NavigatorCardItem: {
+      emits: ['focus-parent', 'navigate', 'toggle', 'toggle-full', 'toggle-siblings'],
       props: NavigatorCardItem.props,
       template: '<div><button></button></div>',
     },
@@ -194,8 +196,8 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
   ...others,
 });
 
-const clearPersistedStateSpy = jest.spyOn(NavigatorCard.methods, 'clearPersistedState');
-const clearFiltersSpy = jest.spyOn(NavigatorCard.methods, 'clearFilters');
+const clearPersistedStateSpy = vi.spyOn(NavigatorCard.methods, 'clearPersistedState');
+const clearFiltersSpy = vi.spyOn(NavigatorCard.methods, 'clearFilters');
 let getChildPositionInScroller;
 
 const DEFAULT_STORED_STATE = {
@@ -243,9 +245,9 @@ function detachDivWithID(id) {
 describe('NavigatorCard', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // mock the position helper function, as its too difficult to mock the boundingClientRects
-    getChildPositionInScroller = jest.spyOn(NavigatorCard.methods, 'getChildPositionInScroller')
+    getChildPositionInScroller = vi.spyOn(NavigatorCard.methods, 'getChildPositionInScroller')
       .mockReturnValue(0);
   });
 
@@ -291,6 +293,7 @@ describe('NavigatorCard', () => {
       disabled: false,
       focusInputWhenCreated: false,
       focusInputWhenEmpty: false,
+      modelValue: '',
       placeholder: 'filter.title',
       positionReversed: true,
       preventBorderStyle: false,
@@ -427,7 +430,7 @@ describe('NavigatorCard', () => {
     });
 
     // now to do a search, so the position of the focused item changes.
-    wrapper.findComponent(FilterInput).vm.$emit('input', root0.title);
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0.title);
     await flushPromises();
     // re-fetch the items
     items = wrapper.findAllComponents(NavigatorCardItem);
@@ -439,7 +442,7 @@ describe('NavigatorCard', () => {
     // assert that the focusIndex was set to the first item
     expect(wrapper.vm.focusedIndex).toBe(0);
     // remove any filters
-    wrapper.findComponent(FilterInput).vm.$emit('input', '');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', '');
     await flushPromises();
     // assert that the focusIndex was set to the activeUID
     expect(wrapper.vm.focusedIndex).toBe(1);
@@ -512,12 +515,24 @@ describe('NavigatorCard', () => {
     expect(wrapper.findComponent('[aria-live="assertive"]').exists()).toBe(true);
   });
 
+  it('passes plural interpolation values to the item-count translation', async () => {
+    const $t = vi.fn(key => key);
+    const wrapper = createWrapper({ mocks: { $t, $route: { path: defaultProps.technologyPath } } });
+    await flushPromises();
+
+    expect($t).toHaveBeenCalledWith(
+      ITEMS_FOUND,
+      { number: wrapper.vm.navigatorItems.length },
+      wrapper.vm.navigatorItems.length,
+    );
+  });
+
   it('hides the DynamicScroller, if no items to show', async () => {
     const wrapper = createWrapper();
     await flushPromises();
     const scroller = wrapper.findComponent(DynamicScroller);
     expect(scroller.isVisible()).toBe(true);
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'bad-query');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'bad-query');
     await wrapper.vm.$nextTick();
     expect(scroller.isVisible()).toBe(false);
   });
@@ -527,7 +542,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const scroller = wrapper.findComponent(DynamicScroller);
     expect(scroller.isVisible()).toBe(true);
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'bad-query');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'bad-query');
     await wrapper.vm.$nextTick();
     expect(scroller.props('items')).toEqual([]);
     expect(scroller.isVisible()).toBe(false);
@@ -564,7 +579,8 @@ describe('NavigatorCard', () => {
     const unopenedItem = wrapper.findAllComponents(NavigatorCardItem).at(2);
     unopenedItem.vm.$emit('toggle', root0Child1);
     await wrapper.vm.$nextTick();
-    expect(wrapper.findComponent('[aria-live="polite"].visuallyhidden').text()).toBe(ITEMS_FOUND);
+    expect(wrapper.findComponent('[aria-live="polite"].visuallyhidden').text())
+      .toBe(`${ITEMS_FOUND} 5`);
   });
 
   describe('toggles a child, on @toggle', () => {
@@ -618,7 +634,7 @@ describe('NavigatorCard', () => {
       let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(4);
       // do a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1.title);
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child1.title);
       await flushPromises();
 
       // assert filtered items
@@ -679,7 +695,7 @@ describe('NavigatorCard', () => {
       let all = wrapper.findAllComponents(NavigatorCardItem);
       expect(all).toHaveLength(4);
       // do a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1.title);
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child1.title);
       await flushPromises();
 
       // assert filtered items
@@ -955,7 +971,7 @@ describe('NavigatorCard', () => {
       // assert all items are as we expect them to be
       expect(allItems).toHaveLength(2);
       // apply a broad filter across items
-      wrapper.findComponent(FilterInput).vm.$emit('input', 'First Child');
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'First Child');
       await flushPromises();
       allItems = wrapper.findAllComponents(NavigatorCardItem);
       expect(allItems).toHaveLength(6);
@@ -1089,7 +1105,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     await flushPromises();
     // apply a generic filter with lots of hits
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'Child');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'Child');
     await flushPromises();
     // assert the items rendered
     let all = wrapper.findAllComponents(NavigatorCardItem);
@@ -1163,7 +1179,7 @@ describe('NavigatorCard', () => {
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     const filter = wrapper.findComponent(FilterInput);
     // the filter is on the grandchild of the current activeUID
-    filter.vm.$emit('input', root0Child1GrandChild0.title);
+    filter.vm.$emit('update:modelValue', root0Child1GrandChild0.title);
     await flushPromises();
     // assert list is not scrolled, if item is in viewport or current activeUID is rendered
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
@@ -1197,7 +1213,7 @@ describe('NavigatorCard', () => {
     const filter = wrapper.findComponent(FilterInput);
     await flushPromises();
     // make sure we match at both the top item as well as one of its children
-    filter.vm.$emit('input', 'Second');
+    filter.vm.$emit('update:modelValue', 'Second');
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
@@ -1212,7 +1228,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.findComponent(FilterInput);
     await flushPromises();
-    filter.vm.$emit('input', root0.title);
+    filter.vm.$emit('update:modelValue', root0.title);
     await flushPromises();
     expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(0);
     // assert only the parens of the match are visible
@@ -1300,7 +1316,7 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child1);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
     // add filtering on top
-    filter.vm.$emit('input', root0Child1GrandChild0.title);
+    filter.vm.$emit('update:modelValue', root0Child1GrandChild0.title);
     await flushPromises();
     all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
@@ -1315,7 +1331,7 @@ describe('NavigatorCard', () => {
     const wrapper = createWrapper();
     const filter = wrapper.findComponent(FilterInput);
     await flushPromises();
-    filter.vm.$emit('input', root0Child1.title);
+    filter.vm.$emit('update:modelValue', root0Child1.title);
     await flushPromises();
     // assert match and all if it's parents are visible
     let all = wrapper.findAllComponents(NavigatorCardItem);
@@ -1341,7 +1357,7 @@ describe('NavigatorCard', () => {
     await flushPromises();
     const filter = wrapper.findComponent(FilterInput);
     // make sure both child elements match
-    filter.vm.$emit('input', 'Child');
+    filter.vm.$emit('update:modelValue', 'Child');
     await flushPromises();
     // assert only the parens of the match are visible
     const all = wrapper.findAllComponents(NavigatorCardItem);
@@ -1388,7 +1404,7 @@ describe('NavigatorCard', () => {
     expect(all.at(1).props('item')).toEqual(root0Child0);
     expect(all.at(2).props('item')).toEqual(root0Child1);
     // filter
-    wrapper.findComponent(FilterInput).vm.$emit('input', root0Child0.title);
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child0.title);
     await flushPromises();
     all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(2);
@@ -1452,12 +1468,12 @@ describe('NavigatorCard', () => {
   it('clears previously open items, when filtering and clearing the filter', async () => {
     const wrapper = createWrapper();
     await flushPromises();
-    wrapper.findComponent(FilterInput).vm.$emit('input', 'First Child, Depth 2');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'First Child, Depth 2');
     await flushPromises();
     let all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(3);
     expect(all.at(2).props('item')).toEqual(root0Child1GrandChild0);
-    wrapper.findComponent(FilterInput).vm.$emit('input', '');
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', '');
     await flushPromises();
     all = wrapper.findAllComponents(NavigatorCardItem);
     expect(all).toHaveLength(4);
@@ -1475,7 +1491,7 @@ describe('NavigatorCard', () => {
     expect(sessionStorage.set)
       .toHaveBeenCalledWith(STORAGE_KEY, DEFAULT_STORED_STATE);
     await flushPromises();
-    wrapper.findComponent(FilterInput).vm.$emit('input', root0Child1GrandChild0.title);
+    wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root0Child1GrandChild0.title);
     wrapper.findComponent(FilterInput).vm.$emit('update:selectedTags', [FILTER_TAGS.articles]);
     await flushPromises();
     expect(sessionStorage.set).toHaveBeenCalledTimes(3);
@@ -1757,7 +1773,7 @@ describe('NavigatorCard', () => {
     // assert there are no Articles for example
     expect(filter.props('tags')).toEqual([FILTER_TAGS.tutorials, FILTER_TAGS.sampleCode]);
     // apply a filter
-    filter.vm.$emit('input', sampleCode.title);
+    filter.vm.$emit('update:modelValue', sampleCode.title);
     await flushPromises();
     expect(filter.props('tags')).toEqual([FILTER_TAGS.sampleCode]);
     await wrapper.setProps({ apiChanges });
@@ -1828,7 +1844,7 @@ describe('NavigatorCard', () => {
       });
       expect(allItems.at(3).props('item')).toEqual(root1);
       // Ensure all first children should show up
-      filter.vm.$emit('input', 'First Child');
+      filter.vm.$emit('update:modelValue', 'First Child');
       await flushPromises();
       allItems = wrapper.findAllComponents(NavigatorCardItem);
       // assert that filtering opens everything as usual, showing groupMarkers as well
@@ -1851,7 +1867,7 @@ describe('NavigatorCard', () => {
       });
       await flushPromises();
       const input = wrapper.findComponent(FilterInput);
-      input.vm.$emit('input', groupMarker.title);
+      input.vm.$emit('update:modelValue', groupMarker.title);
       await flushPromises();
       let items = wrapper.findAllComponents(NavigatorCardItem);
       // parent + group and 2 siblings
@@ -1867,7 +1883,7 @@ describe('NavigatorCard', () => {
       expect(items).toHaveLength(5);
       expect(items.at(4).props('item')).toEqual(root0Child1GrandChild0);
       // assert that partial matches of group and children show only those that match
-      input.vm.$emit('input', 'First Child');
+      input.vm.$emit('update:modelValue', 'First Child');
       await flushPromises();
       items = wrapper.findAllComponents(NavigatorCardItem);
       expect(items).toHaveLength(5);
@@ -1893,7 +1909,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       const filter = wrapper.findComponent(FilterInput);
       // apply a filter that matches an element
-      filter.vm.$emit('input', root0Child1Clone.title);
+      filter.vm.$emit('update:modelValue', root0Child1Clone.title);
       await flushPromises();
       const items = wrapper.findAllComponents(NavigatorCardItem);
       // parent + group and 1 item
@@ -2305,7 +2321,7 @@ describe('NavigatorCard', () => {
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenCalledTimes(1);
       expect(DynamicScrollerStub.methods.scrollToItem).toHaveBeenLastCalledWith(1);
       // initiate a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', root1.title);
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', root1.title);
       // we have to manually remove it from the DOM, as we are mocking lots of stuff
       detachDivWithID(root0Child0.uid);
       await wrapper.vm.$nextTick();
@@ -2361,7 +2377,7 @@ describe('NavigatorCard', () => {
 
     it('scrolls to the focused item, if not visible, as with the size of its closes parent', async () => {
       const wrapper = createWrapper();
-      const scrollBySpy = jest.fn();
+      const scrollBySpy = vi.fn();
       wrapper.findComponent({ ref: 'scroller' }).element.scrollBy = scrollBySpy;
       await flushPromises();
       expect(scrollBySpy).toHaveBeenCalledTimes(0);
@@ -2406,7 +2422,7 @@ describe('NavigatorCard', () => {
         relatedTarget: document.body,
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
     });
 
     it('resets the `lastFocusTarget`, if the related target is outside the scroller', async () => {
@@ -2421,7 +2437,7 @@ describe('NavigatorCard', () => {
       button.trigger('focusout', {
         relatedTarget: document.body,
       });
-      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).toBe(null);
     });
 
     it('does not do anything, if there is no `relatedTarget`, if no relatedTarget', async () => {
@@ -2437,7 +2453,7 @@ describe('NavigatorCard', () => {
         relatedTarget: null,
       });
       // assert we are still focusing the button
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
     });
 
     it('on DynamicScroller@update, does nothing, if there is no focusTarget', async () => {
@@ -2446,7 +2462,7 @@ describe('NavigatorCard', () => {
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
       expect(waitFor).toHaveBeenLastCalledWith(300);
-      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).toBe(null);
     });
 
     it('on DynamicScroller@update, does nothing, if focusTarget is outside scroller', async () => {
@@ -2459,7 +2475,7 @@ describe('NavigatorCard', () => {
       button.trigger('focusin', {
         relatedTarget: document.body,
       });
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       await flushPromises();
       // now make the component go away
       await wrapper.setData({
@@ -2471,7 +2487,7 @@ describe('NavigatorCard', () => {
       await flushPromises();
       expect(waitFor).toHaveBeenLastCalledWith(300);
       // we may still have the lastFocusTarget, as it did not emit a focusOut
-      expect(wrapper.vm.lastFocusTarget).not.toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).not.toBe(null);
       // but the spy will not be called, because its no longer in the DOM
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
@@ -2488,13 +2504,13 @@ describe('NavigatorCard', () => {
       });
       button.element.focus();
       // move the spy below the manual focus, so we dont count it
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       await flushPromises();
-      expect(document.activeElement).toEqual(button.element);
+      expect(document.activeElement).toBe(button.element);
       // trigger an update
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
 
@@ -2504,7 +2520,7 @@ describe('NavigatorCard', () => {
       // Set the focus item to be something outside the scroller.
       // This might happen if it deletes an item, that was in focus
       const button = wrapper.findComponent(NavigatorCardItem).find('button');
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       button.trigger('focusin', {
         relatedTarget: document.body,
       });
@@ -2512,7 +2528,7 @@ describe('NavigatorCard', () => {
       // trigger an update
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
-      expect(wrapper.vm.lastFocusTarget).toEqual(button.element);
+      expect(wrapper.vm.lastFocusTarget).toBe(button.element);
       expect(focusSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -2526,15 +2542,15 @@ describe('NavigatorCard', () => {
       button.trigger('focusin', {
         relatedTarget: document.body,
       });
-      const focusSpy = jest.spyOn(button.element, 'focus');
+      const focusSpy = vi.spyOn(button.element, 'focus');
       await flushPromises();
       // initiate a filter
-      wrapper.findComponent(FilterInput).vm.$emit('input', 'Child');
+      wrapper.findComponent(FilterInput).vm.$emit('update:modelValue', 'Child');
       await flushPromises();
       // trigger an update
       wrapper.findComponent(DynamicScroller).vm.$emit('update');
       await flushPromises();
-      expect(wrapper.vm.lastFocusTarget).toEqual(null);
+      expect(wrapper.vm.lastFocusTarget).toBe(null);
       expect(focusSpy).toHaveBeenCalledTimes(0);
     });
   });
@@ -2543,7 +2559,7 @@ describe('NavigatorCard', () => {
     it('returns -1 if item is above the scrollarea', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValueOnce({
           y: 50,
           height: 1000,
@@ -2562,7 +2578,7 @@ describe('NavigatorCard', () => {
     it('returns 1 if items is below the scrollarea', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValueOnce({
           y: 50,
           height: 1000,
@@ -2581,11 +2597,11 @@ describe('NavigatorCard', () => {
     it('takes into consideration the padding offsets', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue({
         paddingTop: '10px',
         paddingBottom: '20px',
       });
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValue({
           y: 50,
           height: 1000,
@@ -2611,7 +2627,7 @@ describe('NavigatorCard', () => {
     it('returns 0 if the item is in the scrollarea', () => {
       getChildPositionInScroller.mockRestore();
       const wrapper = createWrapper();
-      jest.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
+      vi.spyOn(wrapper.findComponent({ ref: 'scroller' }).element, 'getBoundingClientRect')
         .mockReturnValueOnce({
           y: 50,
           height: 1000,
