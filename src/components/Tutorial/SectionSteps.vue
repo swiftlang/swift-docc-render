@@ -24,6 +24,7 @@
         :key="index"
         :currentIndex="activeStep"
         ref="contentNodes"
+        @focus="onFocus"
       />
     </div>
     <!-- the asset-container is only for medium and large breakpoints -->

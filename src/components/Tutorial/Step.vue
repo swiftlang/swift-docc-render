@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <div :class="['step-container', `step-${stepNumber}`]">
+  <div :class="['step-container', `step-${stepNumber}`]" tabindex="0" @focus="onFocus">
     <div
       ref="step"
       class="step"
@@ -114,6 +114,21 @@ export default {
       return this.tutorialState.breakpoint === BreakpointName.small;
     },
     isActive: ({ index, currentIndex }) => index === currentIndex,
+  },
+  methods: {
+    onFocus() {
+      if (this.isClientMobile) return;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = this.$el.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      // make sure the element is at the top 25% of the screen
+      const offsetPosition = elementPosition - (window.innerHeight * 0.25);
+
+      // scroll to the element
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      // notify the parent it must be in focus, if for some reason it is not.
+      this.$emit('focus', this.index);
+    },
   },
 };
 </script>
