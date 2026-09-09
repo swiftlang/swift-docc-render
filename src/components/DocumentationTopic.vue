@@ -51,7 +51,7 @@
           <component :is="titleBreakComponent">{{ title }}</component>
           <template #after v-if="isSymbolDeprecated || isSymbolBeta">
             <small
-              :class="tagName"
+              :class="tagClass"
               :data-tag-name="tagName"
             />
           </template>
@@ -217,6 +217,11 @@ import Hierarchy from './DocumentationTopic/Hero/Hierarchy.vue';
 
 // size above which, the OnThisPage container is visible
 const ON_THIS_PAGE_CONTAINER_BREAKPOINT = 1050;
+
+const TagKinds = {
+  beta: 'beta',
+  deprecated: 'deprecated',
+};
 
 export default {
   name: 'DocumentationTopic',
@@ -573,6 +578,9 @@ export default {
     tagName() {
       return this.isSymbolDeprecated ? this.$t('aside-kind.deprecated') : this.$t('aside-kind.beta');
     },
+    tagClass: ({ isSymbolDeprecated }) => (
+      isSymbolDeprecated ? TagKinds.deprecated : TagKinds.beta
+    ),
     /**
      * Finds the page icon in the `pageImages` array
      * @param {Array} pageImages
