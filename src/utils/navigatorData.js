@@ -190,23 +190,32 @@ export function flattenModules(modules) {
 }
 
 function extractRootModule(modules) {
-  const flattenedModules = flattenModules(modules);
+  // most of the time, it is expected that `modules` always has a single item
+  // that represents the top-level root node of the navigation tree—return it
+  // right away, since a merged-archive root's own nested member modules
+  // should never be treated as competing root candidates
+  if (modules.length === 1) return modules[0];
+
   // note: this "root" path won't always necessarily come at the beginning of
   // the URL in situations where the renderer is being hosted at some path
   // prefix
   const rootPathPattern = /(\/documentation\/[^/]+)/;
   const rootPath = window.location.pathname.match(rootPathPattern)?.[1] ?? '';
-  // most of the time, it is expected that `data` always has a single item
-  // that represents the top-level root node of the navigation tree
-  //
+  const matchesRootPath = module => module.path.toLowerCase().endsWith(rootPath.toLowerCase());
+
   // there may be rare, unexpected scenarios where multiple top-level root
-  // nodes are provide for some reason—if that happens, we would prefer the one
-  // with a path that most closely resembles the current URL path
+  // nodes are provided for some reason—if that happens, we would prefer the
+  // one with a path that most closely resembles the current URL path
+  const topLevelMatch = modules.find(matchesRootPath);
+  if (topLevelMatch) return topLevelMatch;
+
+  // otherwise, a matching root may be nested within one of the top-level
+  // modules—only fall back to searching nested modules once none of the
+  // top-level candidates themselves match, so a nested module can never
+  // outrank its own ancestor root
   //
-  // otherwise, the first provided node will be used
-  return flattenedModules.length === 1 ? flattenedModules[0] : (flattenedModules.find(module => (
-    module.path.toLowerCase().endsWith(rootPath.toLowerCase())
-  )) ?? flattenedModules[0]);
+  // if nothing matches at all, the first provided module will be used
+  return flattenModules(modules).find(matchesRootPath) ?? modules[0];
 }
 
 /**
