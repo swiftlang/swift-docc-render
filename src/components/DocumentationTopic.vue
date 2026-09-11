@@ -61,6 +61,7 @@
           :class="{ 'minimized-abstract': enableMinimized }"
           :content="abstract"
         />
+        <slot name="below-abstract" />
         <div v-if="sampleCodeDownload">
           <DownloadButton
             class="sample-download"

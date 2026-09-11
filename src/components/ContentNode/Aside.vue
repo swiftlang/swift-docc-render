@@ -10,7 +10,9 @@
 
 <template>
   <aside :class="kind" :aria-label="kind">
-    <p class="label">{{ name || $t(label) }}</p>
+    <slot name="label">
+      <p class="label">{{ name || $t(label) }}</p>
+    </slot>
     <slot />
   </aside>
 </template>
