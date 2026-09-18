@@ -8,19 +8,14 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import {
-  shallowMount,
-  RouterLinkStub,
-} from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import AppStore from 'docc-render/stores/AppStore';
 import { getLocaleParam, getCodeForSlug } from 'docc-render/utils/i18n-utils';
 
 jest.mock('docc-render/utils/i18n-utils', () => ({
   getCodeForSlug: jest.fn(value => value),
-  getLocaleParam: jest.fn(() => ({
-    locale: undefined,
-  })),
+  getLocaleParam: jest.fn(slug => ({ params: { locale: slug } })),
 }));
 
 jest.mock('docc-render/stores/AppStore', () => ({
@@ -33,10 +28,6 @@ jest.mock('docc-render/stores/AppStore', () => ({
 window.navigator = jest.fn().mockReturnValue({
   language: 'en-GB',
 });
-
-const params = {
-  locale: undefined,
-};
 
 const {
   InlineChevronRightIcon,
@@ -51,18 +42,24 @@ const messages = {
 
 const currentLocale = 'zh-CN';
 
+const href = '/ja-JP/documentation/bar';
+
 describe('SuggestLang', () => {
   let wrapper;
   let link;
   let closeIcon;
+  const resolve = jest.fn(() => ({ href }));
 
   beforeEach(() => {
     wrapper = shallowMount(SuggestLang, {
-      stubs: { 'router-link': RouterLinkStub },
       mocks: {
         $i18n: {
           messages,
           locale: currentLocale,
+        },
+        $router: {
+          push: jest.fn(),
+          resolve,
         },
       },
     });
@@ -75,23 +72,24 @@ describe('SuggestLang', () => {
     expect(wrapper.element.matches('.suggest-lang')).toBe(true);
   });
 
-  it('renders a router link with the preferredLocale view-in text and lang tag using the matching locale', () => {
+  it('renders a link with the preferredLocale view-in text and lang tag using the matching locale', () => {
     expect(link.text()).toBe(messages[matchingLocale]['view-in']);
     expect(getCodeForSlug).toHaveBeenCalledWith(matchingLocale);
     expect(link.attributes('lang')).toBe(matchingLocale);
   });
 
-  it('sets the preferred locale when router link is clicked', () => {
+  it('sets the preferred locale when the link is clicked', () => {
     link.trigger('click');
 
     expect(AppStore.setPreferredLocale).toHaveBeenCalledWith(matchingLocale);
   });
 
-  it('takes you to the preferredLocale url when clicking in router link', async () => {
-    await link.trigger('click');
-
+  it('links to the preferredLocale url, without using the router', () => {
     expect(getLocaleParam).toHaveBeenCalledWith(matchingLocale);
-    expect(link.props('to')).toEqual(params);
+    expect(resolve).toHaveBeenCalledWith({ params: { locale: matchingLocale } });
+    expect(link.element.matches('a')).toBe(true);
+    expect(link.attributes('href')).toBe(href);
+    expect(wrapper.vm.$router.push).not.toHaveBeenCalled();
   });
 
   it('renders a InlineChevronRightIcon', () => {

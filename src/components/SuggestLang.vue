@@ -11,13 +11,13 @@
 <template>
 <div v-if="displaySuggestLang" class="suggest-lang">
   <div class="suggest-lang__wrapper">
-    <router-link
-      :to="getLocaleParam(preferredLocale)"
-      @click.native="setPreferredLocale(preferredLocale)"
+    <a
+      :href="hrefForLocale(preferredLocale)"
+      @click="setPreferredLocale(preferredLocale)"
       class="suggest-lang__link"
       :lang="getCodeForSlug(preferredLocale)"
     >{{ $i18n.messages[preferredLocale]['view-in'] }}<InlineChevronRightIcon class="icon-inline" />
-    </router-link>
+    </a>
     <div class="suggest-lang__close-icon-wrapper">
       <button
         class="suggest-lang__close-icon-button"
@@ -64,11 +64,13 @@ export default {
     ),
   },
   methods: {
+    hrefForLocale(slug) {
+      return this.$router.resolve(getLocaleParam(slug)).href;
+    },
     setPreferredLocale: (locale) => {
       AppStore.setPreferredLocale(locale);
     },
     getCodeForSlug,
-    getLocaleParam,
   },
 };
 </script>

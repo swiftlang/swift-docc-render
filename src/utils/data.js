@@ -17,6 +17,7 @@ import { defaultLocale } from 'theme/lang/index';
 import { localeIsValid } from 'docc-render/utils/i18n-utils';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
+import AppStore from 'docc-render/stores/AppStore';
 
 export async function fetchData(path, params = {}, options = {}) {
   function isBadResponse(response) {
@@ -100,6 +101,9 @@ export async function fetchDataForRouteEnter(to, from, next) {
       // Destructure the locale out of the route params, leaving the rest.
       const { locale, ...paramsWithoutLocale } = to.params ?? {};
       if (locale && locale !== defaultLocale && localeIsValid(locale)) {
+        // The page has no data for that locale, so stop preferring it and avoid
+        // suggesting it again on the page we redirect to.
+        AppStore.setPreferredLocale(defaultLocale);
         // Call `next` with the same route but without the locale param,
         // redirecting to the non-localized version of the route.
         next({ ...to, params: paramsWithoutLocale });

@@ -13,7 +13,7 @@
     <select
       :value="$i18n.locale"
       :aria-label="$t('select-language')"
-      @change="updateRouter"
+      @change="navigateToLocale"
     >
       <option
         v-for="{ slug, name, code } in locales"
@@ -31,7 +31,7 @@
 <script>
 import ChevronThickIcon from 'theme/components/Icons/ChevronThickIcon.vue';
 import appLocales from 'theme/lang/locales.json';
-import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
+import { getLocaleParam } from 'docc-render/utils/i18n-utils';
 import AppStore from 'docc-render/stores/AppStore';
 
 export default {
@@ -40,10 +40,12 @@ export default {
     ChevronThickIcon,
   },
   methods: {
-    updateRouter({ target: { value: slug } }) {
-      this.$router.push(getLocaleParam(slug));
+    hrefForLocale(slug) {
+      return this.$router.resolve(getLocaleParam(slug)).href;
+    },
+    navigateToLocale({ target: { value: slug } }) {
       AppStore.setPreferredLocale(slug);
-      updateLocale(slug, this);
+      window.location.assign(this.hrefForLocale(slug));
     },
   },
   computed: {

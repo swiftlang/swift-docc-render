@@ -19,6 +19,7 @@ import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-versio
 import FetchError from 'docc-render/errors/FetchError';
 import RedirectError from 'docc-render/errors/RedirectError';
 import { defaultLocale } from 'theme/lang/index';
+import AppStore from 'docc-render/stores/AppStore';
 
 jest.mock('docc-render/utils/schema-version-check', () => jest.fn());
 
@@ -238,6 +239,7 @@ describe('fetchDataForRouteEnter', () => {
     await fetchDataForRouteEnter(localizedTo, from, next);
     expect(window.fetch).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith({ ...localizedTo, params: {} });
+    expect(AppStore.state.preferredLocale).toBe(defaultLocale);
 
     window.fetch.mockRestore();
   });
