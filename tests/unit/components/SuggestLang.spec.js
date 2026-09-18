@@ -8,19 +8,14 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import {
-  shallowMount,
-  RouterLinkStub,
-} from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import AppStore from 'docc-render/stores/AppStore';
 import { getLocaleParam, getCodeForSlug } from 'docc-render/utils/i18n-utils';
 
 jest.mock('docc-render/utils/i18n-utils', () => ({
   getCodeForSlug: jest.fn(value => value),
-  getLocaleParam: jest.fn(() => ({
-    locale: undefined,
-  })),
+  getLocaleParam: jest.fn(slug => ({ params: { locale: slug } })),
 }));
 
 jest.mock('docc-render/stores/AppStore', () => ({
@@ -29,14 +24,6 @@ jest.mock('docc-render/stores/AppStore', () => ({
     preferredLocale: '',
   },
 }));
-
-window.navigator = jest.fn().mockReturnValue({
-  language: 'en-GB',
-});
-
-const params = {
-  locale: undefined,
-};
 
 const {
   InlineChevronRightIcon,
@@ -51,47 +38,66 @@ const messages = {
 
 const currentLocale = 'zh-CN';
 
+const href = '/en-US/documentation/bar';
+
+const $route = { path: '/documentation/bar', params: {}, query: { language: 'objc' } };
+
 describe('SuggestLang', () => {
   let wrapper;
   let link;
   let closeIcon;
+  const resolve = jest.fn(() => ({ href }));
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(window.navigator, 'language', 'get').mockReturnValue('en-GB');
     wrapper = shallowMount(SuggestLang, {
-      stubs: { 'router-link': RouterLinkStub },
       mocks: {
         $i18n: {
           messages,
           locale: currentLocale,
         },
+        $router: {
+          push: jest.fn(),
+          resolve,
+        },
+        $route,
       },
     });
 
-    link = wrapper.findComponent('.suggest-lang__link');
-    closeIcon = wrapper.findComponent('.suggest-lang__close-icon-button');
+    link = wrapper.find('.suggest-lang__link');
+    closeIcon = wrapper.find('.suggest-lang__close-icon-button');
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('renders a <SuggestLang> if preferredLocale is different to currentLocale', () => {
     expect(wrapper.element.matches('.suggest-lang')).toBe(true);
   });
 
-  it('renders a router link with the preferredLocale view-in text and lang tag using the matching locale', () => {
+  it('renders a link with the preferredLocale view-in text and lang tag using the matching locale', () => {
     expect(link.text()).toBe(messages[matchingLocale]['view-in']);
     expect(getCodeForSlug).toHaveBeenCalledWith(matchingLocale);
     expect(link.attributes('lang')).toBe(matchingLocale);
   });
 
-  it('sets the preferred locale when router link is clicked', () => {
+  it('sets the preferred locale when the link is clicked', () => {
     link.trigger('click');
 
     expect(AppStore.setPreferredLocale).toHaveBeenCalledWith(matchingLocale);
   });
 
-  it('takes you to the preferredLocale url when clicking in router link', async () => {
-    await link.trigger('click');
-
+  it('links to the preferredLocale url with a page load', () => {
     expect(getLocaleParam).toHaveBeenCalledWith(matchingLocale);
-    expect(link.props('to')).toEqual(params);
+    expect(resolve).toHaveBeenCalledWith({
+      params: { locale: matchingLocale },
+      query: $route.query,
+    });
+    expect(link.element.matches('a')).toBe(true);
+    expect(link.attributes('href')).toBe(href);
+    expect(wrapper.vm.$router.push).not.toHaveBeenCalled();
   });
 
   it('renders a InlineChevronRightIcon', () => {
