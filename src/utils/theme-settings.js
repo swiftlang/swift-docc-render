@@ -9,7 +9,7 @@
 */
 
 import get from 'docc-render/utils/get';
-import { resolveAbsoluteUrl } from 'docc-render/utils/url-helper';
+import { resolveAbsoluteUrl } from 'theme/utils/url-helper';
 
 /**
  * Theme settings state.
