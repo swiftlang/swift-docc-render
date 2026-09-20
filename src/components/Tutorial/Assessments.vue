@@ -144,7 +144,11 @@ export default {
       element.scrollIntoView(true);
 
       // Scroll down to display the content below the navigation bar.
-      window.scrollBy(0, -this.navigationBarHeight - additionalOffset);
+      window.scrollBy({
+        top: -this.navigationBarHeight - additionalOffset,
+        left: 0,
+        behavior: 'smooth',
+      });
     },
     onSubmit() {
       this.$nextTick(() => {
