@@ -13,6 +13,7 @@ import { mount } from '@vue/test-utils';
 import { TopicRole } from '@/constants/roles';
 import ArticleIcon from '@/components/Icons/ArticleIcon.vue';
 import TechnologyIcon from '@/components/Icons/TechnologyIcon.vue';
+import OverridableAsset from '@/components/OverridableAsset.vue';
 
 const defaultProps = {
   role: TopicRole.article,
@@ -32,9 +33,31 @@ describe('TopicLinkBlockIcon', () => {
     expect(wrapper.findComponent('.topic-icon').findComponent(ArticleIcon).exists()).toBe(true);
   });
 
-  it('renders nothing if no role', () => {
+  it('renders an override icon from an image override', () => {
+    const imageOverride = {
+      variants: [{
+        url: '/foo/bar',
+        svgID: 'foo',
+      }],
+    };
     const wrapper = createWrapper({
       propsData: {
+        imageOverride,
+      },
+    });
+    const icon = wrapper.find('.topic-icon');
+    expect(icon.classes('icon-override')).toBe(true);
+    expect(icon.is(ArticleIcon)).toBe(false);
+    expect(icon.is(OverridableAsset)).toBe(true);
+    expect(icon.props()).toMatchObject({
+      imageOverride,
+    });
+  });
+
+  it('renders nothing if no role or image override', () => {
+    const wrapper = createWrapper({
+      propsData: {
+        imageOverride: null,
         role: TopicRole.devLink, // no icon for this
       },
     });
