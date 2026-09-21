@@ -40,10 +40,17 @@ export default {
     ChevronThickIcon,
   },
   methods: {
-    updateRouter({ target: { value: slug } }) {
-      this.$router.push(getLocaleParam(slug));
-      AppStore.setPreferredLocale(slug);
-      updateLocale(slug, this);
+    async updateRouter({ target: { value: slug } }) {
+      try {
+        await this.$router.push(getLocaleParam(slug));
+        AppStore.setPreferredLocale(slug);
+        updateLocale(slug, this);
+      } catch (_) {
+        // if navigating to a different locale variant for a page fails,
+        // silently ignore the 404 error and scroll to the top of the page
+        // (no need to navigate to the same default locale variant page)
+        window.scrollTo(0, 0);
+      }
     },
   },
   computed: {

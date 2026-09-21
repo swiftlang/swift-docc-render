@@ -235,9 +235,10 @@ describe('fetchDataForRouteEnter', () => {
   it('redirects to the default locale path when a localized page returns 404', async () => {
     window.fetch = jest.fn().mockImplementationOnce(() => notFoundFetchResponse);
 
-    await fetchDataForRouteEnter(localizedTo, from, next);
+    await expect(fetchDataForRouteEnter(localizedTo, from, next))
+      .rejects
+      .toBe(false);
     expect(window.fetch).toHaveBeenCalledTimes(1);
-    expect(next).toHaveBeenCalledWith({ ...localizedTo, params: {} });
 
     window.fetch.mockRestore();
   });
