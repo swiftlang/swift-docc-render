@@ -117,7 +117,7 @@ describe('App', () => {
     const wrapper = createWrapper();
     const skipNavigation = wrapper.findComponent('#skip-nav');
     expect(skipNavigation.text()).toBe('accessibility.skip-navigation');
-    expect(skipNavigation.attributes('href')).toBe('#app-main');
+    expect(skipNavigation.attributes('href')).toBe('/the/old/path#app-main');
   });
 
   it('exposes a header slot', () => {

@@ -15,6 +15,15 @@ import CallToActionButton from 'docc-render/components/CallToActionButton.vue';
 const { ButtonLink, DestinationDataProvider } = CallToActionButton.components;
 
 describe('CallToActionButton', () => {
+  beforeEach(() => {
+    const base = document.createElement('base');
+    document.head.appendChild(base);
+  });
+
+  afterEach(() => {
+    document.head.querySelector('base')?.remove();
+  });
+
   const propsData = {
     action: {
       identifier: 'topic://com.example.foo/bar',
@@ -65,7 +74,7 @@ describe('CallToActionButton', () => {
   });
 
   it('prefixes `ButtonLink` URL if baseUrl is provided', () => {
-    window.baseUrl = baseUrl;
+    document.head.querySelector('base').setAttribute('href', baseUrl);
     wrapper = createWrapper();
 
     const btn = wrapper.findComponent(ButtonLink);
@@ -73,7 +82,7 @@ describe('CallToActionButton', () => {
   });
 
   it('prefixes `ButtonLink` URL if baseUrl is provided and path is a simple-relative path', () => {
-    window.baseUrl = baseUrl;
+    document.head.querySelector('base').setAttribute('href', baseUrl);
     wrapper = createWrapper({
       provide: createProvide(createReferences({ url: simpleRelativePath })),
     });
@@ -83,7 +92,7 @@ describe('CallToActionButton', () => {
   });
 
   it('does not prefixes `ButtonLink` URL if path does not link to asset', async () => {
-    window.baseUrl = baseUrl;
+    document.head.querySelector('base').setAttribute('href', baseUrl);
     wrapper = createWrapper();
     await wrapper.setProps({
       linksToAsset: false,
@@ -94,7 +103,7 @@ describe('CallToActionButton', () => {
   });
 
   it('does not prefix `ButtonLink` URL if baseUrl is provided but URL is absolute', () => {
-    window.baseUrl = baseUrl;
+    document.head.querySelector('base').setAttribute('href', baseUrl);
     wrapper = createWrapper({ provide: createProvide(createReferences({ url: absolutePath })) });
     expect(wrapper.findComponent(ButtonLink).props('url')).toBe(absolutePath);
   });
