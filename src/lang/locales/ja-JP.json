@@ -180,7 +180,8 @@
   "error": {
     "unknown": "原因不明のエラーが起きました。",
     "image": "イメージを読み込めませんでした",
-    "not-found": "探しているページが見つかりません。"
+    "not-found": "探しているページが見つかりません。",
+    "back-to-documentation": "ドキュメントに戻る"
   },
   "color-scheme": {
     "select": "カラースキーム環境設定を選択",
