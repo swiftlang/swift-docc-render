@@ -15,7 +15,7 @@
 
 <script>
 const AlignmentMap = {
-  leading: 'flex-start',
+  leading: 'normal',
   center: 'center',
   trailing: 'flex-end',
 };
