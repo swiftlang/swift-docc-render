@@ -98,12 +98,13 @@ export async function fetchDataForRouteEnter(to, from, next) {
 
     if (error.status && error.status === 404) {
       // Destructure the locale out of the route params, leaving the rest.
-      const { locale, ...paramsWithoutLocale } = to.params ?? {};
+      const { locale } = to.params ?? {};
       if (locale && locale !== defaultLocale && localeIsValid(locale)) {
-        // Call `next` with the same route but without the locale param,
-        // redirecting to the non-localized version of the route.
-        next({ ...to, params: paramsWithoutLocale });
-        return null;
+        // if attempting to fetch data for a locale variant and there is no
+        // data found, throwing `false` here will allow the caller to stop
+        // the navigation with `next(false)`, which can be used as a fallback
+        // mechanism to remain on the default locale variant
+        throw false;
       }
       // route to 404 page if missing data, but not in IDE build
       next({

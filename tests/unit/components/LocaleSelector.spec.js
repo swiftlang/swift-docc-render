@@ -12,6 +12,7 @@ import { shallowMount } from '@vue/test-utils';
 import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
 import AppStore from 'docc-render/stores/AppStore';
+import { flushPromises } from '../../../test-utils';
 
 jest.mock('theme/lang/locales.json', () => (
   [
@@ -58,7 +59,7 @@ describe('LocaleSelector', () => {
     wrapper = shallowMount(LocaleSelector, {
       mocks: {
         $router: {
-          push: jest.fn(),
+          push: jest.fn().mockResolvedValue({}),
         },
       },
       propsData: {
@@ -72,10 +73,11 @@ describe('LocaleSelector', () => {
     expect(wrapper.findComponent('select').exists()).toBe(true);
   });
 
-  it('updates router when option is selected', () => {
+  it('updates router when option is selected', async () => {
     const cnOption = wrapper.findAll('option').at(1);
     const slug = cnOption.attributes('value');
     cnOption.trigger('change');
+    await flushPromises();
 
     expect(updateLocale).toHaveBeenCalledTimes(1);
     expect(getLocaleParam).toHaveBeenCalledTimes(1);
@@ -98,5 +100,29 @@ describe('LocaleSelector', () => {
     expect(options.at(1).text()).toBe('简体中文');
     expect(options.at(1).attributes('value')).toBe('cn');
     expect(options.at(1).attributes('lang')).toBe('zh-CN');
+  });
+
+  describe('when selecting a locale fails', () => {
+    it('scrolls to top of existing page as a fallback', async () => {
+      global.scrollTo = jest.fn();
+      const mockRouter = {
+        push: jest.fn().mockRejectedValue(new Error('bad push')),
+      };
+      const wrapper2 = shallowMount(LocaleSelector, {
+        mocks: {
+          $router: mockRouter,
+        },
+        propsData: {
+          availableLocales,
+        },
+      });
+
+      const cnOption = wrapper2.findAll('option').at(1);
+      cnOption.trigger('change');
+      await flushPromises();
+
+      expect(mockRouter.push).toHaveBeenCalled();
+      expect(global.scrollTo).toHaveBeenCalledWith(0, 0);
+    });
   });
 });
