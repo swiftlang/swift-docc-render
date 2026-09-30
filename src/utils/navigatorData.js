@@ -201,21 +201,14 @@ function extractRootModule(modules) {
   // prefix
   const rootPathPattern = /(\/documentation\/[^/]+)/;
   const rootPath = window.location.pathname.match(rootPathPattern)?.[1] ?? '';
-  const matchesRootPath = module => module.path.toLowerCase().endsWith(rootPath.toLowerCase());
+  const matchesRootPath = ({ path }) => path.toLowerCase().endsWith(rootPath.toLowerCase());
 
-  // there may be rare, unexpected scenarios where multiple top-level root
-  // nodes are provided for some reason—if that happens, we would prefer the
-  // one with a path that most closely resembles the current URL path
-  const topLevelMatch = modules.find(matchesRootPath);
-  if (topLevelMatch) return topLevelMatch;
-
-  // otherwise, a matching root may be nested within one of the top-level
-  // modules—only fall back to searching nested modules once none of the
-  // top-level candidates themselves match, so a nested module can never
-  // outrank its own ancestor root
-  //
-  // if nothing matches at all, the first provided module will be used
-  return flattenModules(modules).find(matchesRootPath) ?? modules[0];
+  // in rare cases multiple top-level roots are provided
+  // prefer the one whose path matches the current URL, then a matching
+  // nested module, and finally the first module
+  return modules.find(matchesRootPath)
+    ?? flattenModules(modules).find(matchesRootPath)
+    ?? modules[0];
 }
 
 /**
