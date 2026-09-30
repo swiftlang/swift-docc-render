@@ -67,7 +67,7 @@ small {
     content: attr(data-tag-name);
   }
 
-  &.Beta {
+  &.beta {
     color: var(--color-badge-beta);
 
     @include prefers-dark {
@@ -75,7 +75,7 @@ small {
     }
   }
 
-  &.Deprecated {
+  &.deprecated {
     color: var(--color-badge-deprecated);
 
     @include prefers-dark {

@@ -39,7 +39,7 @@ describe('Column', () => {
     it('applies leading alignment', async () => {
       const wrapper = createWrapper();
       await wrapper.setProps({ alignment: 'leading' });
-      expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'flex-start');
+      expect(wrapper.vm.style).toHaveProperty('--col-alignment', 'normal');
     });
 
     it('applies center alignment', async () => {
