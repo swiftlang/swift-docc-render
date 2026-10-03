@@ -23,7 +23,7 @@ export const themeSettingsState = {
 export const baseUrl = new URL(document.baseURI).pathname;
 
 /**
- * Method to fetch the theme settings and store in local module state.
+ * Fetches the theme settings and store in local module state.
  * Method is called before Vue boots in `main.js`.
  * @return {Promise<{}>}
  */
