@@ -126,13 +126,13 @@ describe('DocumentationTopicStore', () => {
     });
 
     it('updates API changes counts', async () => {
-      const spy = jest.spyOn(document, 'querySelectorAll');
+      const spy = vi.spyOn(document, 'querySelectorAll');
       await DocumentationTopicStore.updateApiChangesCounts();
       expect(spy).toHaveBeenCalledTimes(3);
       expect(spy).toHaveBeenNthCalledWith(1, '.changed-modified:not(.changed-total)');
       expect(spy).toHaveBeenNthCalledWith(2, '.changed-added:not(.changed-total)');
       expect(spy).toHaveBeenNthCalledWith(3, '.changed-deprecated:not(.changed-total)');
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
 
     it('resets API changes counts', () => {

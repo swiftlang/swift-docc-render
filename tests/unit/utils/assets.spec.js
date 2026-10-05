@@ -10,18 +10,12 @@
 import {
   Orientation,
   pathJoin,
+  normalizePath,
   normalizeRelativePath,
   getOrientation,
 } from 'docc-render/utils/assets';
 
-let normalizePath;
 const absoluteBaseUrl = 'https://foo.com';
-
-function importDeps() {
-  jest.resetModules();
-  // eslint-disable-next-line global-require
-  ({ normalizePath } = require('@/utils/assets'));
-}
 
 Object.defineProperty(window, 'location', {
   value: {
@@ -58,19 +52,16 @@ describe('assets', () => {
   describe('normalizePath', () => {
     it('works correctly if baseurl is just a slash', () => {
       document.head.querySelector('base').setAttribute('href', '/');
-      importDeps();
       expect(normalizePath('/foo')).toBe('/foo');
     });
 
     it('works correctly with multiple urls', () => {
       document.head.querySelector('base').setAttribute('href', '/');
-      importDeps();
       expect(normalizePath(['/foo', 'blah'])).toBe('/foo/blah');
     });
 
     it('works when both have slashes leading', () => {
       document.head.querySelector('base').setAttribute('href', '/base');
-      importDeps();
       expect(normalizePath('/foo')).toBe('/base/foo');
     });
 
@@ -81,13 +72,11 @@ describe('assets', () => {
 
     it('does not change, if path is relative', () => {
       document.head.querySelector('base').setAttribute('href', '/base');
-      importDeps();
       expect(normalizePath('foo/bar')).toBe('foo/bar');
     });
 
     it('does not change, if the path is already prefixed', () => {
       document.head.querySelector('base').setAttribute('href', '/base');
-      importDeps();
       expect(normalizePath('/base/foo')).toBe('/base/foo');
     });
 

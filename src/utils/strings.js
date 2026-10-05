@@ -22,7 +22,6 @@ const HTML_UNSAFE_RE = /["'&<>]/g;
  * Transforms a string into a valid anchor by removing all uppercase letters
  * @param {string} str string to transform to kebab case
  */
-// eslint-disable-next-line import/prefer-default-export
 export function anchorize(str) {
   return str
     .trim()

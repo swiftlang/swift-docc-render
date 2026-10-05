@@ -580,9 +580,11 @@ export default {
   mounted() {
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', this.updateKeyboardType);
-      this.$once('hook:beforeDestroy', () => {
-        window.visualViewport.removeEventListener('resize', this.updateKeyboardType);
-      });
+    }
+  },
+  beforeUnmount() {
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', this.updateKeyboardType);
     }
   },
 };

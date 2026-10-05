@@ -34,7 +34,7 @@
           <QuickNavigationModal
             v-if="enableQuickNavigation"
             :children="quickNavNodes || indexNodes"
-            :showQuickNavigationModal.sync="showQuickNavigationModal"
+            v-model:showQuickNavigationModal="showQuickNavigationModal"
             :technology="technology ? technology.title : ''"
             :placeholder="quickNavPlaceholder"
             :initialFilterText="quickNavigationInitialFilter"
@@ -62,7 +62,7 @@
                 @close="handleToggleSidenav(breakpoint)"
               >
                 <template v-if="enableQuickNavigation" #filter>
-                  <QuickNavigationButton @click.native="openQuickNavigationModal" />
+                  <QuickNavigationButton @click="openQuickNavigationModal" />
                 </template>
                 <template #above-navigator-head>
                   <slot name="above-navigator-head"/>
@@ -234,7 +234,7 @@ export default {
     if (this.enableQuickNavigation) window.addEventListener('keydown', this.onQuickNavigationKeydown);
     this.handleInitialQueryFilter();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.enableQuickNavigation) window.removeEventListener('keydown', this.onQuickNavigationKeydown);
   },
   inject: {

@@ -14,10 +14,8 @@ import HierarchyItem
 import NavMenuItemBase from 'docc-render/components/NavMenuItemBase.vue';
 
 const mountWithProps = props => shallowMount(HierarchyItem, {
-  context: {
-    children: ['Foobar'],
-    props,
-  },
+  propsData: props,
+  slots: { default: 'Foobar' },
   stubs: { 'router-link': RouterLinkStub },
 });
 

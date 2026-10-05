@@ -16,6 +16,7 @@
 <script>
 export default {
   name: 'LanguageSwitcherLink',
+  emits: ['click'],
   props: {
     url: [String, Object],
   },

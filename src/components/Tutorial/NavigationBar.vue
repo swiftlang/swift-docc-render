@@ -18,7 +18,7 @@
       <ReferenceUrlProvider :reference="rootReference" v-slot="{ urlWithParams }">
         <NavTitleContainer :to="urlWithParams">
           <template #default>{{ technology }}</template>
-          <template #subhead>{{ $tc('tutorials.title', 2) }}</template>
+          <template #subhead>{{ $t('tutorials.title', 2) }}</template>
         </NavTitleContainer>
       </ReferenceUrlProvider>
     </template>

@@ -9,5 +9,5 @@
 */
 
 const baseUrl = '';
-const getSetting = jest.fn(() => ({}));
+const getSetting = vi.fn(() => ({}));
 export { baseUrl, getSetting };

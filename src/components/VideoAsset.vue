@@ -68,6 +68,7 @@ import DeviceFrame from 'docc-render/components/ContentNode/DeviceFrame.vue';
 
 export default {
   name: 'VideoAsset',
+  emits: ['ended', 'pause', 'playing'],
   components: { ConditionalWrapper },
   props: {
     variants: {

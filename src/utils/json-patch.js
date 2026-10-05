@@ -329,5 +329,4 @@ function applyPatch(document, patch) {
   return patch.reduce(applyOperation, document);
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export { applyPatch as apply };

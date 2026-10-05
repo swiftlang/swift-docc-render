@@ -25,11 +25,12 @@ export default function throttle(func, limit) {
       return;
     }
     clearTimeout(timer);
+    const remaining = Math.max(0, limit - (Date.now() - ranLastTimeOn));
     timer = setTimeout(() => {
       if ((Date.now() - ranLastTimeOn) >= limit) {
         func.apply(context, args);
         ranLastTimeOn = Date.now();
       }
-    }, limit - (Date.now() - ranLastTimeOn));
+    }, remaining);
   };
 }

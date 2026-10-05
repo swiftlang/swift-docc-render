@@ -27,7 +27,7 @@ describe('Tag', () => {
   beforeEach(() => {
     wrapper = shallowMount(Tag, { propsData, attachTo: document.body });
     button = wrapper.findComponent('button');
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   afterEach(() => {
     // remove global even listeners before each test begins
@@ -46,6 +46,22 @@ describe('Tag', () => {
     button.trigger('click');
 
     expect(wrapper.emitted().click).toBeTruthy();
+  });
+
+  it('invokes a parent click listener only once', async () => {
+    const onClick = vi.fn();
+    wrapper.destroy();
+    wrapper = shallowMount(Tag, {
+      propsData,
+      attrs: { onClick },
+      attachTo: document.body,
+    });
+    button = wrapper.findComponent('button');
+
+    await button.trigger('click');
+
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledWith(expect.objectContaining({ tagName: propsData.name }));
   });
 
   it('emits `delete-tag` when being double clicked', () => {
@@ -142,29 +158,20 @@ describe('Tag', () => {
   });
 
   describe('copy/cut', () => {
-    const setData = jest.fn();
+    const setData = vi.fn();
     const clipboardData = {
       setData,
     };
-    const { Event } = window;
-
     function triggerGlobalEvent(eventName, data = clipboardData) {
-      const clipboardEvent = new Event(eventName);
+      const clipboardEvent = new window.Event(eventName);
       clipboardEvent.clipboardData = data;
       document.dispatchEvent(clipboardEvent);
       return clipboardEvent;
     }
 
-    beforeEach(() => {
-      // TODO: remove hack for VueTestUtils to overwrite `clipboardData`, when we update version.
-      window.Event = null;
-    });
-    afterEach(() => {
-      window.Event = Event;
-    });
     it('adds and removes event listeners on mounted and destroyed', () => {
-      const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
-      const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
+      const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
+      const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
       wrapper = shallowMount(Tag, { propsData });
       // assert `copy` and `cut` are added
       expect(addEventListenerSpy).toHaveBeenCalledTimes(3);

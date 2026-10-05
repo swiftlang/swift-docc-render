@@ -76,6 +76,7 @@ import { TopicTypes } from 'docc-render/constants/TopicTypes';
  */
 export default {
   name: 'Navigator',
+  emits: ['close'],
   components: {
     NavigatorCard,
     LoadingNavigatorCard,

@@ -49,7 +49,7 @@ describe('Volume', () => {
           [topics.c.identifier]: topics.c,
         },
       },
-      setActiveVolume: jest.fn(),
+      setActiveVolume: vi.fn(),
     },
   };
 

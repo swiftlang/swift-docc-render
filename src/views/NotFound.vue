@@ -25,10 +25,10 @@ export default {
   created() {
     AppStore.setAllLocalesAreAvailable();
   },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
+  beforeRouteEnter(to) {
+    return (vm) => {
       updateLocale(to.params.locale, vm);
-    });
+    };
   },
   beforeRouteUpdate(to) {
     updateLocale(to.params.locale, this);

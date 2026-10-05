@@ -29,6 +29,7 @@ import CodeListing from 'docc-render/components/ContentNode/CodeListing.vue';
 
 export default {
   name: 'MobileCodeListing',
+  emits: ['file-name-click'],
   components: { CodeListing },
   props: {
     fileName: String,

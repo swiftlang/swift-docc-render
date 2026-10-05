@@ -44,8 +44,7 @@ export default {
       };
     },
   },
-  async mounted() {
-    await import('intersection-observer');
+  mounted() {
     this.intersectionObserver = new IntersectionObserver((entries) => {
       this.detectIntersectionScrollDirection();
       const callback = this.onIntersect;
@@ -60,7 +59,7 @@ export default {
       this.intersectionObserver.observe(child);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.intersectionObserver) {
       this.intersectionObserver.disconnect();
     }

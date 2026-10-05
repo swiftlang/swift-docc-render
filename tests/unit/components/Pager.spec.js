@@ -23,13 +23,15 @@ describe('Pager', () => {
   };
 
   beforeEach(() => {
-    window.IntersectionObserver = jest.fn().mockReturnValue({
-      disconnect: jest.fn(),
-      observe: jest.fn(),
-      unobserve: jest.fn(),
+    window.IntersectionObserver = vi.fn().mockImplementation(class MockIntersectionObserver {
+      disconnect = vi.fn();
+
+      observe = vi.fn();
+
+      unobserve = vi.fn();
     });
-    window.HTMLElement.prototype.scrollIntoView = jest.fn();
-    jest.spyOn(window, 'requestAnimationFrame').mockImplementation(fn => fn());
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(fn => fn());
   });
 
   afterEach(() => {

@@ -18,13 +18,13 @@ import DropdownCustom from 'docc-render/components/DropdownCustom.vue';
 
 const { OptionClass, ActiveOptionClass } = DropdownCustom.constants;
 
-const navigate = jest.fn();
+const navigate = vi.fn();
 
 const RouterLinkStub = {
   name: 'RouterLink',
   props: ['to', 'custom'],
   render() {
-    return this.$scopedSlots.default({
+    return this.$slots.default({
       navigate: () => navigate(this.to),
     });
   },
@@ -79,7 +79,7 @@ describe('SecondaryDropdown', () => {
           query,
         },
         $router: {
-          push: jest.fn(),
+          push: vi.fn(),
         },
       },
       stubs: { 'router-link': RouterLinkStub },
@@ -160,7 +160,7 @@ describe('SecondaryDropdown', () => {
 
     it('focuses back the button', async () => {
       await wrapper.vm.$nextTick();
-      expect(document.activeElement).toEqual(btn.element);
+      expect(document.activeElement).toBe(btn.element);
     });
 
     it('emits the "select-section" event', () => {
@@ -219,15 +219,15 @@ describe('SecondaryDropdown', () => {
   it('focuses the next element, when the down key is used on the first link', async () => {
     await btn.trigger('click');
     await firstLink.trigger('keydown.down');
-    expect(document.activeElement).toEqual(optionElements.at(1).element);
+    expect(document.activeElement).toBe(optionElements.at(1).element);
   });
 
   it('focuses the previous element, when the up key is used on the second link', async () => {
     await btn.trigger('click');
     await firstLink.trigger('keydown.down');
     const secondLink = optionElements.at(1);
-    expect(document.activeElement).toEqual(secondLink.element);
+    expect(document.activeElement).toBe(secondLink.element);
     await secondLink.trigger('keydown.up');
-    expect(document.activeElement).toEqual(firstLink.element);
+    expect(document.activeElement).toBe(firstLink.element);
   });
 });

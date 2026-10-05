@@ -112,7 +112,7 @@ describe('CallToActionButton', () => {
     wrapper = createWrapper();
     const provider = wrapper.findComponent(DestinationDataProvider);
     expect(provider.exists()).toBe(true);
-    expect(provider.props('destination')).toBe(propsData.action);
+    expect(provider.props('destination')).toEqual(propsData.action);
   });
 
   it('passes the `linksToAsset` prop to `ButtonLink`', () => {

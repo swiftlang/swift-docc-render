@@ -12,6 +12,7 @@ import {
   baseNavHeight,
   baseNavHeightSmallBreakpoint,
 } from 'docc-render/constants/nav';
+import { nextTick } from 'vue';
 import { documentationTopicName } from 'docc-render/constants/router';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import { waitFrames } from 'docc-render/utils/loading';
@@ -45,7 +46,7 @@ export async function scrollBehavior(to, from, savedPosition) {
     // outside the bounds of the app's non-rendered page, which is
     // header + loading-placeholder + footer. This would result in the
     // browser displaying the top of the page and no scrolling to occur.
-    await this.app.$nextTick();
+    await nextTick();
     return savedPosition;
   }
   if (to.meta && to.meta.preventScrolling) {
@@ -62,15 +63,15 @@ export async function scrollBehavior(to, from, savedPosition) {
     // compensate for the nav sticky height and add any extra scroll offset we may need
     const offset = baseNavOffset + apiChangesNavHeight + getExtraScrollOffset(to);
 
-    const y = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
-    return { selector: cssEscapeTopicIdHash(hash), offset: { x: 0, y } };
+    const top = process.env.VUE_APP_TARGET === 'ide' ? 0 : offset;
+    return { el: cssEscapeTopicIdHash(hash), left: 0, top };
   }
   if (areEquivalentLocations(to, from)) {
     // Do not change the scroll position if the location hasn't changed
     // Note: `areEquivalentLocations` doesn't detect hash differences
     return false;
   }
-  return { x: 0, y: 0 };
+  return { left: 0, top: 0 };
 }
 
 export async function restoreScrollOnReload() {

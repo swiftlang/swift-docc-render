@@ -50,7 +50,7 @@ describe('FocusTrap', () => {
     focusInstance.destroy();
   });
   it('warns if no elements to focus', () => {
-    const warnSpy = jest.spyOn(console, 'warn').mockReturnValue('');
+    const warnSpy = vi.spyOn(console, 'warn').mockReturnValue('');
     const emptyDOM = parseHTMLString('<div>Just Text</div>');
     const emptyFocusInstance = new FocusTrap(emptyDOM);
     emptyFocusInstance.start();
@@ -61,7 +61,7 @@ describe('FocusTrap', () => {
   });
 
   it('on start, moves focuses the first tabbable element, if `activeElement` is not in container', () => {
-    expect(document.activeElement).toEqual(firstElement);
+    expect(document.activeElement).toBe(firstElement);
   });
 
   it('on start, moves focuses the first tabbable element, if `activeElement` is in container, but its not tabbable', () => {
@@ -69,24 +69,24 @@ describe('FocusTrap', () => {
     focusInstance.stop();
     // focus a none tabbable element
     noneTabbable.focus();
-    expect(document.activeElement).toEqual(noneTabbable);
+    expect(document.activeElement).toBe(noneTabbable);
     // start the focus tracking again
     focusInstance.start();
-    expect(document.activeElement).toEqual(firstElement);
+    expect(document.activeElement).toBe(firstElement);
   });
 
   it('on start, does not focus the first target, if active element is inside container', () => {
     focusInstance.stop();
-    expect(document.activeElement).toEqual(firstElement);
+    expect(document.activeElement).toBe(firstElement);
     thirdElement.focus();
-    expect(document.activeElement).toEqual(thirdElement);
+    expect(document.activeElement).toBe(thirdElement);
     focusInstance.start();
-    expect(document.activeElement).toEqual(thirdElement);
+    expect(document.activeElement).toBe(thirdElement);
   });
 
   it('on focus, does nothing if new focus target is inside container', () => {
     secondElement.focus();
-    expect(document.activeElement).toEqual(secondElement);
+    expect(document.activeElement).toBe(secondElement);
   });
 
   it('on focus, moves focus the first element if focusing outer element after reaching the end', () => {
@@ -95,7 +95,7 @@ describe('FocusTrap', () => {
     // move focus outside
     afterElement.focus();
     // assert the new focus target is the first available element
-    expect(document.activeElement).toEqual(firstElement);
+    expect(document.activeElement).toBe(firstElement);
   });
 
   it('on focus, moves the focus to the last element if in the beginning', () => {
@@ -103,7 +103,7 @@ describe('FocusTrap', () => {
     // focus the first element, before the container
     beforeElement.focus();
     // assert the new focus target is the last available element
-    expect(document.activeElement).toEqual(thirdElement);
+    expect(document.activeElement).toBe(thirdElement);
   });
 
   it('on focus, moves focus the first element if focusing element that was focused last, but is no longer in DOM', () => {
@@ -114,7 +114,7 @@ describe('FocusTrap', () => {
     // move focus outside
     afterElement.focus();
     // assert the new focus target is the first available element
-    expect(document.activeElement).toEqual(firstElement);
+    expect(document.activeElement).toBe(firstElement);
     // revert the removal
     containerElement.appendChild(thirdElement);
   });
@@ -122,7 +122,7 @@ describe('FocusTrap', () => {
   it('updates the container', () => {
     focusInstance.updateFocusContainer(afterElement);
     afterElement.focus();
-    expect(document.activeElement).toEqual(afterElement);
+    expect(document.activeElement).toBe(afterElement);
     expect(focusInstance.focusContainer).toEqual(afterElement);
   });
 
@@ -130,6 +130,6 @@ describe('FocusTrap', () => {
     focusInstance.destroy();
     // assert focusing works like normal
     beforeElement.focus();
-    expect(document.activeElement).toEqual(beforeElement);
+    expect(document.activeElement).toBe(beforeElement);
   });
 });

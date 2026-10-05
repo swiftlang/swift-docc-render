@@ -9,6 +9,7 @@
 */
 
 import hljs from 'highlight.js/lib/core';
+import HighlightLanguageLoaders from 'virtual:swift-docc-highlight-languages';
 
 /** A map of custom aliases for supported languages (additions to default hljs aliases) */
 const CustomLanguageAliases = {
@@ -83,20 +84,7 @@ async function importHighlightFileForLanguage(language) {
       // The first iteration uses an already resolved Promise
       // so, it will immediately continue.
       await previousPromise;
-      let languageFile;
-
-      if (CustomLanguagesSet.has(file)) {
-        languageFile = await import(
-          /* webpackChunkName: "highlight-js-custom-[request]" */
-          `../utils/custom-highlight-lang/${file}`
-        );
-      } else {
-        languageFile = await import(
-          // See bug https://github.com/webpack/webpack/issues/13865
-          /* webpackChunkName: "highlight-js-[request]" */
-          `highlight-js-alias/lib/languages/${file}.js`
-        );
-      }
+      const languageFile = await HighlightLanguageLoaders[file]();
 
       hljs.registerLanguage(file, languageFile.default);
     }, Promise.resolve());

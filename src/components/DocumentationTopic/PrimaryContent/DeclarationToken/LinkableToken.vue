@@ -12,11 +12,12 @@
 // This component renders token text as a link to a given type.
 import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
+import createElement from 'docc-render/utils/create-element';
 
 export default {
   name: 'LinkableToken',
   mixins: [referencesProvider],
-  render(createElement) {
+  render() {
     const reference = this.references[this.identifier];
     // internal and external link
     if (reference && reference.url) {

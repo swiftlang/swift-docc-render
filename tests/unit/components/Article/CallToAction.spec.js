@@ -10,7 +10,6 @@
 
 import { shallowMount } from '@vue/test-utils';
 import CallToAction from 'docc-render/components/Article/CallToAction.vue';
-// eslint-disable-next-line import/no-named-default
 import { default as TutorialCTA } from 'docc-render/components/Tutorial/CallToAction.vue';
 
 describe('CallToAction', () => {

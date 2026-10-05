@@ -40,7 +40,7 @@ describe('Mentions', () => {
         },
       },
     });
-    expect(wrapper.findComponent('linkableheading-stub').attributes()).toEqual({
+    expect(wrapper.findComponent('linkable-heading-stub').attributes()).toEqual({
       level: '2',
       anchor: 'mentions',
     });
@@ -70,7 +70,7 @@ describe('Mentions', () => {
       },
     });
 
-    expect(wrapper.findComponent('linkableheading-stub').attributes()).toEqual({
+    expect(wrapper.findComponent('linkable-heading-stub').attributes()).toEqual({
       level: '2',
       anchor: 'mentions',
     });
@@ -85,7 +85,7 @@ describe('Mentions', () => {
       },
       mentions: [],
     });
-    expect(wrapper.findComponent('linkableheading-stub').exists()).toBe(false);
+    expect(wrapper.findComponent('linkable-heading-stub').exists()).toBe(false);
     expect(wrapper.findAllComponents(Mention).length).toBe(0);
   });
 
@@ -96,7 +96,7 @@ describe('Mentions', () => {
       },
       mentions: [],
     });
-    expect(wrapper.findComponent('linkableheading-stub').exists()).toBe(false);
+    expect(wrapper.findComponent('linkable-heading-stub').exists()).toBe(false);
     expect(wrapper.findAllComponents(Mention).length).toBe(0);
   });
 });

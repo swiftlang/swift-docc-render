@@ -10,6 +10,7 @@
 
 <script>
 import WordBreak from 'docc-render/components/WordBreak.vue';
+import createElement from 'docc-render/utils/create-element';
 import ChangedToken from './DeclarationToken/ChangedToken.vue';
 import LinkableToken from './DeclarationToken/LinkableToken.vue';
 import RawText from './DeclarationToken/RawText.vue';
@@ -33,7 +34,7 @@ const TokenKind = {
 
 export default {
   name: 'DeclarationToken',
-  render: function _render(createElement) {
+  render() {
     const {
       kind,
       text,

@@ -8,4 +8,4 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-export default jest.fn(fn => fn);
+export default vi.fn(fn => fn);

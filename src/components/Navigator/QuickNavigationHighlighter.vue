@@ -9,6 +9,8 @@
 -->
 
 <script>
+import createElement from 'docc-render/utils/create-element';
+
 /**
  * Component used to mark plain text.
  */
@@ -24,7 +26,7 @@ export default {
       default: '',
     },
   },
-  render(createElement) {
+  render() {
     const { matcherText, text } = this;
     const children = [];
     let lastIndex = 0;

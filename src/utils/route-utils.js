@@ -20,7 +20,6 @@ const localEnvs = [
  * @param {{ pathPrefix: string, nameSuffix: string}[]} envs
  * @return {RouteRecord[]}
  */
-// eslint-disable-next-line import/prefer-default-export
 export function addPrefixedRoutes(routes, skipRoutes = [], envs = localEnvs) {
   return envs.reduce((all, current) => all.concat(
     routes

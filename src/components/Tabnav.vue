@@ -23,15 +23,16 @@
 const ProvideKey = 'tabnavData';
 export default {
   name: 'Tabnav',
+  emits: ['input', 'update:modelValue'],
   constants: { ProvideKey },
   provide() {
     const tabnavData = {
       selectTab: this.selectTab,
     };
-    // allows passing the `value` prop as a reactive property
+    // Expose the active model value reactively to each injected tab item.
     Object.defineProperty(tabnavData, 'activeTab', {
       enumerable: true,
-      get: () => this.value,
+      get: () => this.activeValue,
     });
     return {
       [ProvideKey]: tabnavData,
@@ -47,13 +48,23 @@ export default {
       type: Boolean,
       default: false,
     },
+    modelValue: {
+      type: [String, Number],
+      default: undefined,
+    },
     value: {
       type: [String, Number],
-      required: true,
+      default: undefined,
     },
+  },
+  computed: {
+    activeValue: ({ modelValue, value }) => (
+      modelValue === undefined ? value : modelValue
+    ),
   },
   methods: {
     selectTab(value) {
+      this.$emit('update:modelValue', value);
       this.$emit('input', value);
     },
   },

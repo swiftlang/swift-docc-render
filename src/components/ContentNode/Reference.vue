@@ -65,14 +65,10 @@ export default {
       if (linksToAsset) return false;
 
       // Resolve the URL using the router.
-      const {
-        resolved: {
-          name,
-        } = {},
-      } = this.$router.resolve(url) || {};
+      const { name } = this.$router.resolve(url) || {};
 
       // Resolved internal URLs don't have the "not found" route.
-      return !name.startsWith(notFoundRouteName);
+      return typeof name === 'string' && !name.startsWith(notFoundRouteName);
     },
     isSymbolReference() {
       return this.kind === 'symbol' && !this.hasInlineFormatting

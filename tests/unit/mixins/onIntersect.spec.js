@@ -10,17 +10,18 @@
 
 import { shallowMount } from '@vue/test-utils';
 import onIntersect from 'docc-render/mixins/onIntersect';
+import { flushPromises } from '../../../test-utils';
 
-jest.mock('intersection-observer', () => ({}));
-
-window.IntersectionObserver = jest.fn((cb, props) => ({
-  // return mocks
-  disconnect: jest.fn(),
-  observe: jest.fn(),
-  // mimic config
-  ...props,
-  thresholds: props.threshold,
-}));
+window.IntersectionObserver = vi.fn(function MockIntersectionObserver(cb, props) {
+  return {
+    // return mocks
+    disconnect: vi.fn(),
+    observe: vi.fn(),
+    // mimic config
+    ...props,
+    thresholds: props.threshold,
+  };
+});
 
 const { IntersectionDirections } = onIntersect.constants;
 
@@ -34,15 +35,15 @@ const createWrapper = async (options) => {
     ...options,
   });
   // await the observer to download
-  await wrapper.vm.$nextTick();
+  await flushPromises();
   return wrapper;
 };
-const spyScrollTo = jest.fn();
+const spyScrollTo = vi.fn();
 
 describe('onIntersect', () => {
   let wrapper;
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     Object.defineProperty(window, 'scrollY', { get: spyScrollTo });
   });
 
@@ -114,7 +115,7 @@ describe('onIntersect', () => {
   });
 
   it('calls `onIntersect` method', async () => {
-    const onIntersectMock = jest.fn();
+    const onIntersectMock = vi.fn();
     const entries = ['foo', 'bar', 'baz'];
     wrapper = await createWrapper({
       methods: {
@@ -130,7 +131,7 @@ describe('onIntersect', () => {
   });
 
   it('figures out the scroll direction', async () => {
-    const onIntersectMock = jest.fn();
+    const onIntersectMock = vi.fn();
     const entries = ['foo', 'bar', 'baz'];
     spyScrollTo.mockReturnValue(10);
     wrapper = await createWrapper({

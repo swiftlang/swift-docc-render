@@ -14,7 +14,7 @@
       href="#"
       class="tabnav-link"
       :class="{ 'active': isActive }"
-      :aria-current="isActive ? 'true' : 'false'"
+      :aria-current="isActive ? 'true' : null"
       @click.prevent="tabnavData.selectTab(value)"
     >
       <slot />

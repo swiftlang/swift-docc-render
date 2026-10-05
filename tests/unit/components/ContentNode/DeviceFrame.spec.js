@@ -13,48 +13,50 @@ import { shallowMount } from '@vue/test-utils';
 import DeviceFrames from '@/constants/DeviceFrames';
 import { getSetting } from '@/utils/theme-settings';
 
-jest.mock('@/utils/theme-settings');
-jest.mock('@/constants/DeviceFrames', () => ({
-  phone: {
-    screenTop: 15,
-    screenWidth: 210,
-    screenHeight: 460,
-    screenLeft: 15,
+vi.mock('@/utils/theme-settings');
+vi.mock('@/constants/DeviceFrames', () => ({
+  default: {
+    phone: {
+      screenTop: 15,
+      screenWidth: 210,
+      screenHeight: 460,
+      screenLeft: 15,
 
-    frameWidth: 240,
-    frameHeight: 490,
-    lightUrl: 'path/to/phone.svg',
-  },
-  tablet: {
-    screenTop: 22,
-    screenWidth: 590,
-    screenHeight: 410,
-    screenLeft: 22,
+      frameWidth: 240,
+      frameHeight: 490,
+      lightUrl: 'path/to/phone.svg',
+    },
+    tablet: {
+      screenTop: 22,
+      screenWidth: 590,
+      screenHeight: 410,
+      screenLeft: 22,
 
-    frameWidth: 640,
-    frameHeight: 460,
-    lightUrl: 'path/to/tablet.svg',
-  },
-  // the TV may have a stand, which means it has diff top/bottom offsets
-  tv: {
-    screenTop: 8,
-    screenWidth: 600,
-    screenHeight: 300,
-    screenLeft: 8,
+      frameWidth: 640,
+      frameHeight: 460,
+      lightUrl: 'path/to/tablet.svg',
+    },
+    // the TV may have a stand, which means it has diff top/bottom offsets
+    tv: {
+      screenTop: 8,
+      screenWidth: 600,
+      screenHeight: 300,
+      screenLeft: 8,
 
-    frameWidth: 630,
-    frameHeight: 370,
-    lightUrl: 'path/to/tv.svg',
-  },
-  invalid: {
-    screenTop: 8,
-    screenWidth: 600,
-    screenHeight: 300,
-    screenLeft: 8,
+      frameWidth: 630,
+      frameHeight: 370,
+      lightUrl: 'path/to/tv.svg',
+    },
+    invalid: {
+      screenTop: 8,
+      screenWidth: 600,
+      screenHeight: 300,
+      screenLeft: 8,
 
-    framewidth: 630, // invalid name
-    'frame-height': '370',
-    lightUrl: 'path/to/tv.svg',
+      framewidth: 630, // invalid name
+      'frame-height': '370',
+      lightUrl: 'path/to/tv.svg',
+    },
   },
 }));
 

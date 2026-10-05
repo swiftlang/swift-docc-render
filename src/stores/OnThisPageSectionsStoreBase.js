@@ -8,11 +8,13 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { reactive } from 'vue';
+
 export default {
-  state: {
+  state: reactive({
     onThisPageSections: [],
     currentPageAnchor: null,
-  },
+  }),
   resetPageSections() {
     this.state.onThisPageSections = [];
     this.state.currentPageAnchor = null;

@@ -26,7 +26,7 @@
       @keydown.ctrl.exact="$emit('keydown', { event: $event, tagName: name })"
       @keydown.delete.prevent="deleteTag"
       @mousedown.prevent="focusButton"
-      @copy="handleCopy"
+      @copy.stop="handleCopy"
     >
       <span v-if="!isRemovableTag" class="visuallyhidden">
         {{ $t('filter.add-tag') }} -
@@ -48,6 +48,7 @@ import { prepareDataForHTMLClipboard } from 'docc-render/utils/clipboard';
 
 export default {
   name: 'Tag',
+  emits: ['click', 'delete-tag', 'focus', 'keydown', 'paste-content', 'prevent-blur'],
   props: {
     name: {
       type: String,
@@ -90,12 +91,11 @@ export default {
     document.addEventListener('copy', this.handleCopy);
     document.addEventListener('cut', this.handleCut);
     document.addEventListener('paste', this.handlePaste);
-
-    this.$once('hook:beforeDestroy', () => {
-      document.removeEventListener('copy', this.handleCopy);
-      document.removeEventListener('cut', this.handleCut);
-      document.removeEventListener('paste', this.handlePaste);
-    });
+  },
+  beforeUnmount() {
+    document.removeEventListener('copy', this.handleCopy);
+    document.removeEventListener('cut', this.handleCut);
+    document.removeEventListener('paste', this.handlePaste);
   },
   methods: {
     isCurrentlyActiveElement() {

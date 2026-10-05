@@ -8,5 +8,4 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-// eslint-disable-next-line import/prefer-default-export
 export const multipleLinesClass = 'displays-multiple-lines';

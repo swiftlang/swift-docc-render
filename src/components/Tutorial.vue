@@ -32,6 +32,7 @@
 
 <script>
 import { PortalTarget } from 'portal-vue';
+import { h } from 'vue';
 
 import AppStore from 'docc-render/stores/AppStore';
 import CodeThemeStore from 'docc-render/stores/CodeThemeStore';
@@ -53,7 +54,7 @@ const ValidSectionTypes = new Set(Object.keys(SectionComponents));
 
 const TutorialSection = {
   name: 'TutorialSection',
-  render: function render(createElement) {
+  render() {
     // Dynamically map each section to a static Vue component based on the
     // `kind` value of the section payload. Sections with unrecognized `kind`
     // values should be ignored.
@@ -62,7 +63,7 @@ const TutorialSection = {
       ...props
     } = this.section;
     const component = SectionComponents[kind];
-    return component ? createElement(component, { props }) : null;
+    return component ? h(component, props) : null;
   },
   props: {
     section: {
@@ -157,7 +158,7 @@ export default {
     this.$bridge.on('codeColors', this.handleCodeColorsChange);
     this.$bridge.send({ type: 'requestCodeColors' });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$bridge.off('codeColors', this.handleCodeColorsChange);
   },
 };

@@ -8,7 +8,6 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-/* eslint-disable import/prefer-default-export */
 export const TopicSectionsStyle = {
   list: 'list',
   compactGrid: 'compactGrid',

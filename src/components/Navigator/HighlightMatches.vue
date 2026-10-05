@@ -9,6 +9,8 @@
 -->
 
 <script>
+import createElement from 'docc-render/utils/create-element';
+
 /**
  * Component used to mark plain text, based on a provided matcher string.
  */
@@ -24,7 +26,7 @@ export default {
       default: undefined,
     },
   },
-  render(createElement) {
+  render() {
     // Return a simple p when no text is being highlighted
     const { matcher, text } = this;
     if (!matcher) {

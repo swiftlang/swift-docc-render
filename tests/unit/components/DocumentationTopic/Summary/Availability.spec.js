@@ -48,8 +48,8 @@ describe('Availability', () => {
   };
 
   const store = {
-    reset: jest.fn(),
-    setAPIChanges: jest.fn(),
+    reset: vi.fn(),
+    setAPIChanges: vi.fn(),
     state: {
       onThisPageSections: [],
       apiChanges: null,

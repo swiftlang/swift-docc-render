@@ -13,7 +13,7 @@
 #
 # Example Output:
 # Node version: v11.5.0
-# NPM version: 6.4.1
+# pnpm version: 11.17.0
 # Browser version: <!-- If applicable, insert your browser name and version number -->
 # URL: <!-- If applicable, insert the URL where the bug was reproducible -->
 # Xcode: Xcode 13.0
@@ -21,9 +21,9 @@
 echo "Gathering you system's environment information..."
 
 node_version=$(node --version)
-npm_version=$(npm --version)
+pnpm_version=$(pnpm --version)
 i="${i}Node version: ${node_version}\n"
-i="${i}NPM version: ${npm_version}\n"
+i="${i}pnpm version: ${pnpm_version}\n"
 i="${i}Browser version: <!-- If applicable, insert your browser name and version number -->\n"
 i="${i}URL: <!-- If applicable, insert the URL where the bug was reproducible -->"
 

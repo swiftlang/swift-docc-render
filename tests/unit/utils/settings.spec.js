@@ -11,18 +11,18 @@
 let Settings;
 
 describe('Settings', () => {
-  const getItem = jest.fn();
-  const setItem = jest.fn();
+  const getItem = vi.fn();
+  const setItem = vi.fn();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     Object.defineProperty(window, 'localStorage', {
       value: {
         getItem,
         setItem,
       },
     });
-    // eslint-disable-next-line global-require
-    Settings = require('docc-render/utils/settings').default;
+    vi.resetModules();
+    Settings = (await import('docc-render/utils/settings')).default;
   });
 
   it('sets and gets `preferredColorScheme` from localStorage', () => {
