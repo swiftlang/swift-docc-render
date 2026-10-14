@@ -51,6 +51,10 @@ describe('SwiftDocCRenderRouter', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('creates a new VueRouter instance and attaches the correct hooks', () => {
     const routerInstance = SwiftDocCRenderRouter();
     expect(routerInstance).toEqual(mockInstance);
@@ -84,7 +88,7 @@ describe('SwiftDocCRenderRouter', () => {
   });
 
   it('does not have an error handler for IDE targets', () => {
-    process.env.VUE_APP_TARGET = 'ide';
+    vi.stubEnv('VUE_APP_TARGET', 'ide');
     expect(SwiftDocCRenderRouter().onError.mock.calls.length).toBe(0);
   });
 

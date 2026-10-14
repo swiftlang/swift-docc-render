@@ -17,11 +17,7 @@ import {
 
 const absoluteBaseUrl = 'https://foo.com';
 
-Object.defineProperty(window, 'location', {
-  value: {
-    href: absoluteBaseUrl,
-  },
-});
+globalThis.jsdom.reconfigure({ url: absoluteBaseUrl });
 
 describe('assets', () => {
   beforeEach(() => {

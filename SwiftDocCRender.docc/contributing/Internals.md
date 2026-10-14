@@ -150,9 +150,9 @@ DocC-Render is unit tested using the [Vitest](https://vitest.dev/) testing frame
 
 Unit tests can be run via:
 
-* `pnpm test:unit`  - run all unit tests
-* `pnpm test:unit:watch`  - run only the modified files and watch for changes
-* `pnpm test:unit tests/unit/path/to/spec.js`  - run an individual test file
+* `npm run test:unit`  - run all unit tests
+* `npm run test:unit:watch`  - run only the modified files and watch for changes
+* `npm run test:unit tests/unit/path/to/spec.js`  - run an individual test file
 
 #### Code style
 
@@ -160,11 +160,11 @@ DocC-Render uses [ESLint](https://eslint.org/) to format the code and avoid synt
 
 To run the linter run:
 
-`pnpm lint`
+`npm run lint`
 
 To automatically fix any error, run:
 
-`pnpm lint:fix`
+`npm run lint:fix`
 
 Read more about configuring the linter in the [ESLint configuration documentation](https://eslint.org/docs/latest/use/configure/).
 
@@ -180,7 +180,7 @@ DocC-Render has a few build-time environment flags that allow you to set configu
 
 #### Available Scripts
 
-These are the most commonly used pnpm scripts you would need to develop DocC-Render:
+These are the most commonly used npm scripts you would need to develop DocC-Render:
 
 * **dev** - used while developing DocC-Render or a theme. Starts up a custom live-reloading server, which serves a local DocC-Render instance.
 * **build** - builds DocC-Render, in a state ready for `docc`.

@@ -529,7 +529,7 @@ function renderNode(createElement, references) {
  *
  * - Parameter content: `Array` (**required**) — A list of
  *    [`RenderBlockContent`](https://github.com/apple/swift-docc/blob/5ad35a3107ca0443b81ada917b73b950d89bf396/Sources/SwiftDocC/SwiftDocC.docc/Resources/RenderNode.spec.json#L420).
- * - Parameter tag: `String` — An optional HTML tag to wrap the
+ * - Parameter tag: `String` — An optional HTML tag to wrap the
  *    content in instead of the default `<div>`.
  */
 export default {

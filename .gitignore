@@ -46,8 +46,6 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
-.pnpm-store
-
 # local env files
 .env.local
 .env.*.local

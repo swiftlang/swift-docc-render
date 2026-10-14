@@ -373,9 +373,7 @@ describe('when multiple top-level children are provided', () => {
 
   describe('flattenNavigationIndex', () => {
     it('prefers the root child with the same url path prefix', () => {
-      Object.defineProperty(window, 'location', {
-        value: new URL('http://localhost/documentation/b/b42?language=objc'),
-      });
+      window.history.replaceState(null, '', '/documentation/b/b42?language=objc');
 
       // use first root node if only one is provided
       let flattenedIndex = flattenNavigationIndex({ swift: [a] });
@@ -409,9 +407,7 @@ describe('when multiple top-level children are provided', () => {
 
   describe('extractTechnologyProps', () => {
     it('prefers the root child with the same url path prefix', () => {
-      Object.defineProperty(window, 'location', {
-        value: new URL('http://localhost/documentation/b/b42?language=objc'),
-      });
+      window.history.replaceState(null, '', '/documentation/b/b42?language=objc');
 
       // use first root node if only one is provided
       let props = extractTechnologyProps({ swift: [a] });

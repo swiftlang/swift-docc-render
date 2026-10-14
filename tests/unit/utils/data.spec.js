@@ -400,12 +400,22 @@ describe('fetchAPIChangesForRoute', () => {
 });
 
 describe('fetchIndexPathsData', () => {
+  const originalUrl = window.location.href;
+
+  beforeEach(() => {
+    const base = document.createElement('base');
+    base.setAttribute('href', '/');
+    document.head.appendChild(base);
+  });
+
+  afterEach(() => {
+    document.head.querySelector('base')?.remove();
+    window.history.replaceState(null, '', originalUrl);
+  });
+
   it('fetches the data for the index/index.json', async () => {
-    // prepare the location object for the test
-    const backup = window.location;
-    delete window.location;
     // change the location to a deep page
-    window.location = new URL('http://localhost/some/deep/path/');
+    window.history.replaceState(null, '', '/some/deep/path/');
     window.fetch = vi.fn().mockImplementation(() => goodFetchResponse);
     // fetch data with default locale
     const data = await fetchIndexPathsData({ currentLocale: defaultLocale });
@@ -416,6 +426,5 @@ describe('fetchIndexPathsData', () => {
     const slug = 'zh-CN';
     await fetchIndexPathsData({ slug });
     expect(fetch).toHaveBeenLastCalledWith(`http://localhost/index/${slug}/index.json`, {});
-    window.location = backup;
   });
 });

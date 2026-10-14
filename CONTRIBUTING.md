@@ -51,10 +51,9 @@ more details.
 ### Run Steps
 
 > Note: requires [Node.js](https://nodejs.org/en/download/) v24
-> and [pnpm](https://pnpm.io/) v11.17. An easy way to select Node.js is to install
+> and [npm](https://www.npmjs.com/package/npm) v11.19. An easy way to set these up is to install
 > [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
-> repository. Then run `corepack enable pnpm` to activate the package manager version declared
-> by this project.
+> repository. To use these versions as the default, add `--default` to the installation command.
 
 1. Checkout this repository using:
 
@@ -71,7 +70,7 @@ more details.
 3. Install dependencies:
 
     ```shell
-    pnpm install
+    npm install
     ```
 
 4. Run a local server with hot reload at [localhost:5173](http://localhost:5173/)
@@ -79,17 +78,17 @@ more details.
     You may want to set an http endpoint as a proxy to handle data requests while developing locally.
 
     ```shell
-    VITE_DEV_SERVER_PROXY=https://localhost:8000 pnpm dev
+    VITE_DEV_SERVER_PROXY=https://localhost:8000 npm run dev
     ```
 
-    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` environment variable so you don't have to set it in the `pnpm dev` script each time.
+    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` environment variable so you don't have to set it in the `npm run dev` script each time.
     
 ### Build Steps
 
 To build Swift-DocC-Render for deployment, run the command below. The output will be generated inside the `dist` folder:
 
 ```shell
-pnpm build
+npm run build
 ```
 
 ## Testing Swift-DocC-Render using data from Swift-DocC
@@ -116,7 +115,7 @@ When you're ready to have your change reviewed, please make sure you've complete
 
 - [x] Add tests to cover any new functionality or to prevent regressions of a bug fix.
 
-- [x] Run the `pnpm test` script and confirm that the unit test, lint and license header checks pass.
+- [x] Run the `npm run test` script and confirm that the unit test, lint and license header checks pass.
 
 - [x] Add source code documentation to all added coded that explains
   the new behavior.
@@ -155,31 +154,31 @@ Run the following script to:
 - Check that all files have license headers
 
 ```shell
-pnpm test
+npm run test
 ```
 
 Run an individual unit test suite:
 
 ```shell
-pnpm test:unit tests/unit/path/to/spec.js
+npm run test:unit tests/unit/path/to/spec.js
 ```
 
 Run unit tests and watch for changes:
 
 ```shell
-pnpm test:unit:watch
+npm run test:unit:watch
 ```
 
 To manually lint your code for style issues, you can run the [ESLint](https://eslint.org/) suite:
 
 ```shell
-pnpm lint
+npm run lint
 ```
 
 If you want the linter to automatically fix the errors it finds, run:
 
 ```shell
-pnpm lint:fix
+npm run lint:fix
 ```
 
 ## Your First Contribution

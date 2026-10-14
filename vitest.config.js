@@ -48,6 +48,7 @@ export default defineConfig(configEnv => mergeConfig(
     test: {
       css: false,
       environment: 'jsdom',
+      pool: 'vmThreads',
       environmentOptions: {
         jsdom: {
           url: 'http://localhost/',

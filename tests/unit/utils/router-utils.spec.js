@@ -28,24 +28,17 @@ const sessionStorage = {
   setItem: vi.fn(),
 };
 const scrollToSpy = vi.fn();
-const mockLocation = vi.fn().mockReturnValue({
-  pathname: '/foo',
-  search: '?bar',
-  hash: '#baz',
-});
 Object.defineProperty(window, 'scrollTo', {
   value: scrollToSpy,
 });
 Object.defineProperty(window, 'sessionStorage', {
   value: sessionStorage,
 });
-Object.defineProperty(window, 'location', {
-  get: mockLocation,
-});
 
 describe('router-utils', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.history.replaceState(null, '', '/foo?bar#baz');
   });
 
   describe('scrollBehavior', () => {
@@ -181,7 +174,7 @@ describe('router-utils', () => {
     });
 
     it('stores the last position in `sessionStorage`', () => {
-      mockLocation.mockReturnValueOnce({ hash: null });
+      window.history.replaceState(null, '', '/foo?bar');
       window.pageXOffset = 100;
       window.pageYOffset = 200;
       saveScrollOnReload();

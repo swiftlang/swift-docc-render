@@ -41,10 +41,10 @@ import { h, Text } from 'vue';
  * By _default_, the following patterns will be used to determine where to add
  * word-break hints:
  *
- * * between lower/uppercase character pairs — **aA**
+ * * between lower/uppercase character pairs — **aA**
  * * after colon characters — **a:b**
  * * before dot characters — **a.b**
- * * before underscore characters — **a_b**
+ * * before underscore characters — **a_b**
  *
  * You can also provide a `RegExp` object that defines an alternate pattern if
  * the default one doesn't fit your needs.

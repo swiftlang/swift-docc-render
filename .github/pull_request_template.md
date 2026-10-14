@@ -23,5 +23,5 @@ Steps:
 Make sure you check off the following items. If they cannot be completed, provide a reason.
 
 - [ ] Added tests
-- [ ] Ran `pnpm test`, and it succeeded
+- [ ] Ran `npm test`, and it succeeded
 - [ ] Updated documentation if necessary

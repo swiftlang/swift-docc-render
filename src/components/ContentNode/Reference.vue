@@ -47,7 +47,7 @@ import ReferenceInternal from './ReferenceInternal.vue';
  *     symbols. See
  *     [TopicRenderReference.type](https://github.com/apple/swift-docc/blob/5ad35a3107ca0443b81ada917b73b950d89bf396/Sources/SwiftDocC/SwiftDocC.docc/Resources/RenderNode.spec.json#L1761)
  *     for valid values.
- * - Parameter hasInlineFormatting: `Boolean` — Whether the display content has
+ * - Parameter hasInlineFormatting: `Boolean` — Whether the display content has
  *     inline formatting or not.
  */
 export default {
