@@ -106,7 +106,8 @@ $close-icon-padding: 5px;
       align-items: center;
     }
 
-    > a, span {
+    :slotted(a),
+    :slotted(span) {
       color: var(--color-figure-gray);
       width: 100%;
     }
