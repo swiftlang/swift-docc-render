@@ -26,4 +26,4 @@ app.use(PortalVue, {
 app.use(SwiftDocCRenderPlugin);
 app.use(SwiftDocCRenderRouter());
 app.use(SwiftDocCRenderi18n());
-app.mount('#app');
+app.mount('#app-mount');
