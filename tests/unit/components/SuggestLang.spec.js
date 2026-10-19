@@ -77,6 +77,24 @@ describe('SuggestLang', () => {
     expect(wrapper.element.matches('.suggest-lang')).toBe(true);
   });
 
+  it('does not render if preferredLocale is the currentLocale', () => {
+    wrapper = shallowMount(SuggestLang, {
+      mocks: {
+        $i18n: {
+          messages,
+          locale: matchingLocale,
+        },
+        $router: {
+          push: jest.fn(),
+          resolve,
+        },
+        $route,
+      },
+    });
+
+    expect(wrapper.find('.suggest-lang').exists()).toBe(false);
+  });
+
   it('renders a link with the preferredLocale view-in text and lang tag using the matching locale', () => {
     expect(link.text()).toBe(messages[matchingLocale]['view-in']);
     expect(getCodeForSlug).toHaveBeenCalledWith(matchingLocale);
