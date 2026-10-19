@@ -42,28 +42,32 @@ const href = '/en-US/documentation/bar';
 
 const $route = { path: '/documentation/bar', params: {}, query: { language: 'objc' } };
 
+const resolve = jest.fn(() => ({ href }));
+
+const createWrapper = (mocks = {}) => shallowMount(SuggestLang, {
+  mocks: {
+    $i18n: {
+      messages,
+      locale: currentLocale,
+    },
+    $router: {
+      push: jest.fn(),
+      resolve,
+    },
+    $route,
+    ...mocks,
+  },
+});
+
 describe('SuggestLang', () => {
   let wrapper;
   let link;
   let closeIcon;
-  const resolve = jest.fn(() => ({ href }));
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(window.navigator, 'language', 'get').mockReturnValue('en-GB');
-    wrapper = shallowMount(SuggestLang, {
-      mocks: {
-        $i18n: {
-          messages,
-          locale: currentLocale,
-        },
-        $router: {
-          push: jest.fn(),
-          resolve,
-        },
-        $route,
-      },
-    });
+    wrapper = createWrapper();
 
     link = wrapper.find('.suggest-lang__link');
     closeIcon = wrapper.find('.suggest-lang__close-icon-button');
@@ -78,17 +82,10 @@ describe('SuggestLang', () => {
   });
 
   it('does not render if preferredLocale is the currentLocale', () => {
-    wrapper = shallowMount(SuggestLang, {
-      mocks: {
-        $i18n: {
-          messages,
-          locale: matchingLocale,
-        },
-        $router: {
-          push: jest.fn(),
-          resolve,
-        },
-        $route,
+    wrapper = createWrapper({
+      $i18n: {
+        messages,
+        locale: matchingLocale,
       },
     });
 
