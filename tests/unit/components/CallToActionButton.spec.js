@@ -54,8 +54,9 @@ describe('CallToActionButton', () => {
     },
   });
 
-  const createWrapper = ({ provide } = {}) => (
+  const createWrapper = ({ attrs, provide } = {}) => (
     shallowMount(CallToActionButton, {
+      attrs,
       propsData,
       stubs: { DestinationDataProvider },
       provide: provide || createProvide(createReferences({ url: rootRelativePath })),
@@ -119,5 +120,18 @@ describe('CallToActionButton', () => {
     wrapper = createWrapper();
     const btn = wrapper.findComponent(ButtonLink);
     expect(btn.props('linksToAsset')).toBe(propsData.linksToAsset);
+  });
+
+  it('passes non-prop attributes to `ButtonLink`', () => {
+    wrapper = createWrapper({
+      attrs: {
+        'aria-label': 'Download the sample',
+        class: 'sample-download',
+      },
+    });
+
+    const btn = wrapper.findComponent(ButtonLink);
+    expect(btn.attributes('aria-label')).toBe('Download the sample');
+    expect(btn.classes()).toContain('sample-download');
   });
 });
