@@ -780,7 +780,10 @@ describe('DocumentationTopic', () => {
     it('renders a `DownloadButton` if there is sample code to download', async () => {
       expect(wrapper.findComponent(DownloadButton).exists()).toBe(false);
       await wrapper.setProps({ sampleCodeDownload });
-      expect(wrapper.findComponent(DownloadButton).exists()).toBe(true);
+
+      const downloadContainer = wrapper.find('.sample-download');
+      expect(downloadContainer.element.tagName).toBe('DIV');
+      expect(downloadContainer.findComponent(DownloadButton).exists()).toBe(true);
     });
 
     it('renders a `RequirementMetadata` if the symbol is required', async () => {

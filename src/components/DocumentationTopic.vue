@@ -62,9 +62,8 @@
           :content="abstract"
         />
         <slot name="below-abstract" />
-        <div v-if="sampleCodeDownload">
+        <div v-if="sampleCodeDownload" class="sample-download">
           <DownloadButton
-            class="sample-download"
             :action="sampleCodeDownload.action"
             linksToAsset
           />
