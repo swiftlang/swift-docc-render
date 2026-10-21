@@ -61,6 +61,18 @@ describe('WordBreak', () => {
         '<span>foo<wbr>Bar<wbr>Baz<wbr>Qux</span>',
       );
     });
+
+    it('renders breaks when text is forwarded through a slot fragment', () => {
+      const ForwardingComponent = {
+        components: { WordBreak },
+        template: '<WordBreak><slot /></WordBreak>',
+      };
+      const wrapper = mount(ForwardingComponent, {
+        slots: { default: 'fooBarBaz' },
+      });
+
+      expect(wrapper.html()).toBe('<span>foo<wbr>Bar<wbr>Baz</span>');
+    });
   });
 
   describe('with ":" character boundaries', () => {

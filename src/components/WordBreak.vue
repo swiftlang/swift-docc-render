@@ -9,7 +9,13 @@
 -->
 
 <script>
-import { h, Text } from 'vue';
+import { Fragment, h, Text } from 'vue';
+
+const flattenFragments = nodes => nodes.flatMap(node => (
+  node.type === Fragment && Array.isArray(node.children)
+    ? flattenFragments(node.children)
+    : node
+));
 
 /**
  * Indicate safe places to break apart words across multiple lines when necessary.
@@ -74,7 +80,9 @@ export default {
   name: 'WordBreak',
   inheritAttrs: false,
   render() {
-    const childNodes = this.$slots.default ? this.$slots.default() : [];
+    const childNodes = flattenFragments(
+      this.$slots.default ? this.$slots.default() : [],
+    );
     const textNodes = childNodes.filter(node => node.type === Text);
 
     // Don't attempt word breaking unless this component wraps raw strings
