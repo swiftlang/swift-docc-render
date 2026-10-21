@@ -105,7 +105,7 @@ function contentType(file) {
   }[path.extname(file).toLowerCase()] || 'application/octet-stream';
 }
 
-function localDocCArchive(archivePath) {
+export function localDocCArchive(archivePath) {
   return {
     name: 'swift-docc-render-local-archive',
     configureServer(server) {
@@ -130,7 +130,8 @@ function localDocCArchive(archivePath) {
         const file = path.resolve(archivePath, `.${archiveRelativePath}`);
         const archiveRoot = `${path.resolve(archivePath)}${path.sep}`;
         if (!file.startsWith(archiveRoot) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
-          next();
+          Reflect.set(response, 'statusCode', 404);
+          response.end();
           return;
         }
 
