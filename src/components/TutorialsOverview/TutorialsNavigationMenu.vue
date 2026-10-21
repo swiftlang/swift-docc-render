@@ -130,7 +130,7 @@ $line-height: 21px;
     opacity: 0;
   }
 
-  .tutorials-navigation-list {
+  :deep(.tutorials-navigation-list) {
     padding: 24px 0 12px 0;
   }
 }
