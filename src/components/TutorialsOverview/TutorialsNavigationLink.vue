@@ -13,7 +13,7 @@
     class="tutorials-navigation-link"
     :class="{ active }"
     :to="fragment"
-    @click="handleFocusAndScroll(fragment.hash)"
+    @click="handleFocusAndScroll(anchor)"
   >
     <slot />
   </router-link>
@@ -39,7 +39,8 @@ export default {
       state: { activeTutorialLink },
       text,
     }) => text === activeTutorialLink,
-    fragment: ({ text, $route }) => ({ hash: anchorize(text), query: $route.query }),
+    anchor: ({ text }) => anchorize(text),
+    fragment: ({ anchor, $route }) => ({ hash: `#${anchor}`, query: $route.query }),
     text() {
       const content = this.$slots.default ? this.$slots.default() : [];
       return content.map(({ children }) => (
