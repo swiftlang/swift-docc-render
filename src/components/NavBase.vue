@@ -691,7 +691,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     line-height: initial;
   }
 
-  a {
+  :deep(a) {
     letter-spacing: inherit;
     line-height: initial;
     margin: 0;
@@ -707,7 +707,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     }
   }
 
-  &, a {
+  &, :deep(a) {
     color: var(--color-figure-gray);
     transition: color $nav-bg-color-transition;
 
