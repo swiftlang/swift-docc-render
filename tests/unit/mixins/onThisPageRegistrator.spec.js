@@ -45,6 +45,10 @@ const topicData = () => ({
   },
   primaryContentSections: [
     {
+      kind: SectionKind.mentions,
+      mentions: ['doc://example/mentioned-topic'],
+    },
+    {
       kind: SectionKind.content,
       content: contentSections,
     }, {
@@ -213,7 +217,7 @@ describe('OnThisPageRegistrator', () => {
 
   it('watches for changes, clears the store and extracts sections again', async () => {
     const wrapper = createWrapper();
-    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(16);
+    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(17);
     wrapper.vm.topicData = {
       metadata: { title: 'Foo' },
       kind: 'symbol',

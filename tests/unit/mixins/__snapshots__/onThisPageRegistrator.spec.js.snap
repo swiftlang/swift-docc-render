@@ -10,6 +10,12 @@ exports[`OnThisPageRegistrator > extracts the sections from the JSON 1`] = `
     "title": "PageTitle",
   },
   {
+    "anchor": "mentions",
+    "i18n": true,
+    "level": 2,
+    "title": "mentioned-in",
+  },
+  {
     "anchor": "provided-heading-anchor",
     "i18n": false,
     "level": 2,
