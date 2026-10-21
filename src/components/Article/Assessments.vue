@@ -17,7 +17,6 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-named-default
 import { default as TutorialAssessments } from 'docc-render/components/Tutorial/Assessments.vue';
 
 export default {

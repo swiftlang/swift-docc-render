@@ -14,7 +14,7 @@ import Assessments from 'docc-render/components/Tutorial/Assessments.vue';
 const { LinkableSection } = Assessments.components;
 const { SuccessMessage } = Assessments.constants;
 
-// Stub scrolling APIs not implemented in Jest.
+// Stub scrolling APIs not implemented in jsdom.
 window.HTMLElement.prototype.scrollIntoView = () => {};
 window.scrollBy = () => {};
 
@@ -164,7 +164,7 @@ describe('Assessments', () => {
     expect(assessment.exists()).toBe(true);
     expect(assessment.props('choices')).toEqual(assessments[0].choices);
     expect(assessment.props('isLast')).toBe(false);
-    expect(assessment.props('title')).toBe(assessments[0].title);
+    expect(assessment.props('title')).toEqual(assessments[0].title);
   });
 
   describe('when the user advances to the next assessment', () => {
@@ -184,7 +184,7 @@ describe('Assessments', () => {
       expect(assessment.props('choices')).toEqual(assessments[1].choices);
       expect(assessment.props('content')).toEqual(assessments[1].content);
       expect(assessment.props('isLast')).toBe(true);
-      expect(assessment.props('title')).toBe(assessments[1].title);
+      expect(assessment.props('title')).toEqual(assessments[1].title);
     });
   });
 
@@ -200,10 +200,10 @@ describe('Assessments', () => {
     let scrollByMock;
 
     beforeEach(() => {
-      scrollIntoViewMock = jest.fn();
+      scrollIntoViewMock = vi.fn();
       window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
-      scrollByMock = jest.fn();
+      scrollByMock = vi.fn();
       window.scrollBy = scrollByMock;
     });
 
@@ -292,7 +292,7 @@ describe('success slot for completed assessment', () => {
     const wrapper = shallowMount(Assessments, {
       ...options,
       slots: {
-        success: '<marquee>Success Slot</marquee>',
+        success: '<div class="success-slot">Success Slot</div>',
       },
     });
     await wrapper.setData({ completed: true });
@@ -301,7 +301,7 @@ describe('success slot for completed assessment', () => {
     expect(success.exists()).toBe(true);
     expect(success.find('p').exists()).toBe(false);
 
-    const message = success.find('marquee');
+    const message = success.find('.success-slot');
     expect(message.exists()).toBe(true);
     expect(message.text()).toBe('Success Slot');
 

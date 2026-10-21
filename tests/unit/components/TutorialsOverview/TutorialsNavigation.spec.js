@@ -41,12 +41,12 @@ describe('TutorialsNavigation', () => {
   const provide = {
     store: {
       state: { activeVolume: 'Volume A' },
-      setActiveVolume: jest.fn(),
+      setActiveVolume: vi.fn(),
     },
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(TutorialsNavigation, {
       propsData,
       provide,

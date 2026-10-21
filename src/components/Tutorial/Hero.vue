@@ -37,7 +37,7 @@
                 </a>
               </p>
               <GenericModal
-                :visible.sync="callToActionModalVisible"
+                v-model:visible="callToActionModalVisible"
                 isFullscreen
                 theme="dark"
               >
@@ -75,6 +75,7 @@ import GenericModal from 'docc-render/components/GenericModal.vue';
 import PlayIcon from 'theme/components/Icons/PlayIcon.vue';
 import { normalizePath, toCSSUrl } from 'docc-render/utils/assets';
 import referencesProvider from 'docc-render/mixins/referencesProvider';
+import createElement from 'docc-render/utils/create-element';
 import HeroMetadata from './HeroMetadata.vue';
 
 export default {
@@ -83,7 +84,7 @@ export default {
     PlayIcon,
     GenericModal,
     Column: {
-      render(createElement) {
+      render() {
         return createElement(GridColumn, {
           props: {
             span: {

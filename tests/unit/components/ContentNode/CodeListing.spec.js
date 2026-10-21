@@ -39,6 +39,9 @@ describe('CodeListing', () => {
     fileNameComponent.vm.$emit('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()['file-name-click']).toBeTruthy();
+    await vi.waitFor(() => {
+      expect(wrapper.find('.code-line').exists()).toBe(true);
+    });
   });
 
   it('renders a <span> with <pre><code>', async () => {
@@ -50,7 +53,9 @@ describe('CodeListing', () => {
       },
     });
 
-    await flushPromises();
+    await vi.waitFor(() => {
+      expect(wrapper.find('.code-line').exists()).toBe(true);
+    });
 
     const listing = wrapper.findComponent('div.code-listing');
     expect(listing.attributes('data-syntax')).toBe('swift');
@@ -75,7 +80,9 @@ describe('CodeListing', () => {
       },
     });
 
-    await flushPromises();
+    await vi.waitFor(() => {
+      expect(wrapper.findAll('span.code-line-container')).toHaveLength(content.length);
+    });
 
     const pre = wrapper.findComponent('pre');
     expect(pre.exists()).toBe(true);
@@ -115,7 +122,9 @@ describe('CodeListing', () => {
       },
     });
 
-    await flushPromises();
+    await vi.waitFor(() => {
+      expect(wrapper.findAll('span.code-line-container')).toHaveLength(content.length);
+    });
 
     const pre = wrapper.find('pre');
     expect(pre.exists()).toBe(true);
@@ -154,7 +163,9 @@ describe('CodeListing', () => {
         content: ['let foo = "bar"'],
       },
     });
-    await flushPromises();
+    await vi.waitFor(() => {
+      expect(wrapper.findComponent('.syntax-keyword').exists()).toBe(true);
+    });
 
     const syntaxToken = wrapper.findComponent('.syntax-keyword');
     expect(syntaxToken.exists()).toBe(true);
@@ -169,7 +180,9 @@ describe('CodeListing', () => {
       },
     });
 
-    await flushPromises();
+    await vi.waitFor(() => {
+      expect(wrapper.findComponent('.syntax-keyword').exists()).toBe(true);
+    });
 
     const syntaxToken = wrapper.findComponent('.syntax-keyword');
     expect(syntaxToken.exists()).toBe(true);

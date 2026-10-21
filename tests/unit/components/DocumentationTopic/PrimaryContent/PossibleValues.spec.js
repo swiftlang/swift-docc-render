@@ -53,7 +53,7 @@ describe('PossibleValues', () => {
     expect(content).toHaveLength(1);
     const contentNode = wrapper.findComponent(ContentNode);
     expect(contentNode.exists()).toBe(true);
-    expect(contentNode.props('content')).toBe(propsData.values[1].content);
+    expect(contentNode.props('content')).toEqual(propsData.values[1].content);
   });
 
   it('renders <WordBreak> with a <code> tag', () => {

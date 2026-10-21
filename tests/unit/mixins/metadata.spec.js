@@ -13,8 +13,8 @@ import { addOrUpdateMetadata } from 'docc-render/utils/metadata';
 import { defaultLocale } from 'theme/lang/index';
 import metadata from 'docc-render/mixins/metadata';
 
-jest.mock('docc-render/utils/metadata', () => ({
-  addOrUpdateMetadata: jest.fn(),
+vi.mock('docc-render/utils/metadata', () => ({
+  addOrUpdateMetadata: vi.fn(),
 }));
 
 const pageData = {

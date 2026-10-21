@@ -50,8 +50,8 @@ more details.
 
 ### Run Steps
 
-> Note: requires [Node.js](https://nodejs.org/en/download/) v18
-> and [npm](https://www.npmjs.com/package/npm) v9.5. An easy way to set these up is to install
+> Note: requires [Node.js](https://nodejs.org/en/download/) v24
+> and [npm](https://www.npmjs.com/package/npm) v11.19. An easy way to set these up is to install
 > [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
 > repository. To use these versions as the default, add `--default` to the installation command.
 
@@ -73,15 +73,15 @@ more details.
     npm install
     ```
 
-4. Run a local server with hot reload at [localhost:8080](http://localhost:8080/)
+4. Run a local server with hot reload at [localhost:5173](http://localhost:5173/)
 
     You may want to set an http endpoint as a proxy to handle data requests while developing locally.
 
     ```shell
-    VUE_APP_DEV_SERVER_PROXY=https://localhost:8000 npm run serve
+    VITE_DEV_SERVER_PROXY=https://localhost:8000 npm run dev
     ```
 
-    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VUE_APP_DEV_SERVER_PROXY` env varible so you don't have to set it in the `npm run serve` script each time.
+    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` environment variable so you don't have to set it in the `npm run dev` script each time.
     
 ### Build Steps
 
@@ -149,7 +149,7 @@ Before opening a pull request, we ask that you:
 ### Tests and linting
 
 Run the following script to:
-- Run unit tests with [Jest](https://jestjs.io/)
+- Run unit tests with [Vitest](https://vitest.dev/)
 - Find syntax errors with [ESLint](https://eslint.org/)
 - Check that all files have license headers
 

@@ -10,28 +10,24 @@
 
 import { shallowMount } from '@vue/test-utils';
 import onIntersectViewport from 'docc-render/mixins/onIntersectViewport';
+import { flushPromises } from '../../../test-utils';
 
 describe('onIntersectViewport', () => {
   let wrapper;
 
-  beforeEach(() => (
-    import('intersection-observer').then(() => {
-      // mock methods that can fail in jsdom
-      IntersectionObserver.prototype.disconnect = jest.fn();
-      IntersectionObserver.prototype.observe = jest.fn();
-
-      wrapper = shallowMount({
-        name: 'TestComponentForOnIntersectViewportCenter',
-        mixins: [onIntersectViewport],
-        render() {
-          return null;
-        },
-        methods: {
-          onIntersectViewport() {},
-        },
-      });
-    })
-  ));
+  beforeEach(async () => {
+    wrapper = shallowMount({
+      name: 'TestComponentForOnIntersectViewportCenter',
+      mixins: [onIntersectViewport],
+      render() {
+        return null;
+      },
+      methods: {
+        onIntersectViewport() {},
+      },
+    });
+    await flushPromises();
+  });
 
   it('provides an `intersectionObserver', () => {
     expect(wrapper.vm.intersectionObserver).toBeDefined();
@@ -54,7 +50,7 @@ describe('onIntersectViewport', () => {
   });
 
   it('calls the `onIntersectViewport callback when appropriate`', () => {
-    wrapper.vm.onIntersectViewport = jest.fn();
+    wrapper.vm.onIntersectViewport = vi.fn();
     wrapper.vm.onIntersect({ isIntersecting: true });
     expect(wrapper.vm.onIntersectViewport.mock.calls.length)
       .toBe(1);

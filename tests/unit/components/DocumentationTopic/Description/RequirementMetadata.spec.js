@@ -16,7 +16,7 @@ describe('RequirementMetadata', () => {
     const wrapper = shallowMount(RequirementMetadata);
     expect(wrapper.element.matches('p.requirement-metadata')).toBe(true);
 
-    const strong = wrapper.findComponent('strong');
+    const strong = wrapper.find('strong');
     expect(strong.exists()).toBe(true);
     expect(strong.text()).toBe('required');
 
@@ -25,10 +25,8 @@ describe('RequirementMetadata', () => {
 
   it('adds "Default implementation provided." text with a default implementation', () => {
     const wrapper = shallowMount(RequirementMetadata, {
-      context: {
-        props: {
-          defaultImplementationsCount: 1,
-        },
+      props: {
+        defaultImplementationsCount: 1,
       },
     });
     expect(wrapper.text().startsWith('required')).toBe(true);
@@ -37,10 +35,8 @@ describe('RequirementMetadata', () => {
 
   it('adds "Default implementations provided." text with multiple default implementations', () => {
     const wrapper = shallowMount(RequirementMetadata, {
-      context: {
-        props: {
-          defaultImplementationsCount: 2,
-        },
+      props: {
+        defaultImplementationsCount: 2,
       },
     });
     expect(wrapper.text().startsWith('required')).toBe(true);

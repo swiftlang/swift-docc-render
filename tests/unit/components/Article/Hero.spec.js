@@ -10,7 +10,6 @@
 
 import { shallowMount } from '@vue/test-utils';
 import Hero from 'docc-render/components/Article/Hero.vue';
-// eslint-disable-next-line import/no-named-default
 import { default as TutorialHero } from 'docc-render/components/Tutorial/Hero.vue';
 
 describe('Hero', () => {

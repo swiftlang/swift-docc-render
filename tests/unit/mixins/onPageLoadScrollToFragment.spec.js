@@ -13,9 +13,11 @@ import { shallowMount } from '@vue/test-utils';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 import { flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/utils/loading', () => ({ waitFrames: () => {} }));
-jest.mock('docc-render/mixins/scrollToElement', () => ({
-  methods: { scrollToElement: jest.fn() },
+vi.mock('docc-render/utils/loading', () => ({ waitFrames: () => {} }));
+vi.mock('docc-render/mixins/scrollToElement', () => ({
+  default: {
+    methods: { scrollToElement: vi.fn() },
+  },
 }));
 
 const Component = {
@@ -39,7 +41,7 @@ const createWrapper = ({ mocks } = {}) => {
 
 describe('onPageLoadScrollToFragment', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('calls scrollToElement on mounted/updated if route has a hash', async () => {

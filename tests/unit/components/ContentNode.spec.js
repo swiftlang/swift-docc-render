@@ -32,6 +32,7 @@ import { TopicSectionsStyle } from '@/constants/TopicSectionsStyle';
 import LinksBlock from '@/components/ContentNode/LinksBlock.vue';
 import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 import ThematicBreak from 'docc-render/components/ContentNode/ThematicBreak.vue';
+import OverviewCard from 'docc-render/components/ContentNode/OverviewCard.vue';
 
 const { TableHeaderStyle, TableColumnAlignments } = ContentNode.constants;
 
@@ -638,7 +639,7 @@ describe('ContentNode', () => {
         vertical: false,
       });
       // assert we passed the correct scoped slots
-      expect(tabs.vm.$scopedSlots).toEqual({
+      expect(tabs.vm.$slots).toEqual({
         Foo: expect.any(Function),
         Bar: expect.any(Function),
       });
@@ -838,12 +839,12 @@ describe('ContentNode', () => {
       expect(caption.text()).toContain('blah');
       // assert figurercaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
-        <figure-stub>
-          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-          <caption-stub tag="figcaption" position="trailing">
+        "<figure-stub>
+          <inline-image-stub variants="[object Object],[object Object]" alt=""></inline-image-stub>
+          <content-caption-stub tag="figcaption" position="trailing">
             <p>blah</p>
-          </caption-stub>
-        </figure-stub>
+          </content-caption-stub>
+        </figure-stub>"
       `);
     });
 
@@ -861,12 +862,12 @@ describe('ContentNode', () => {
         metadata,
       }, references);
       expect(wrapper.findComponent(Figure).html()).toMatchInlineSnapshot(`
-        <figure-stub>
-          <caption-stub title="foo" tag="figcaption" position="leading">
+        "<figure-stub>
+          <content-caption-stub title="foo" tag="figcaption" position="leading">
             <p>blah</p>
-          </caption-stub>
-          <inlineimage-stub alt="" variants="[object Object],[object Object]"></inlineimage-stub>
-        </figure-stub>
+          </content-caption-stub>
+          <inline-image-stub variants="[object Object],[object Object]" alt=""></inline-image-stub>
+        </figure-stub>"
       `);
     });
 
@@ -1016,12 +1017,12 @@ describe('ContentNode', () => {
       expect(caption.text()).toContain('blah');
       // assert figcaption is below the image
       expect(figure.html()).toMatchInlineSnapshot(`
-        <figure-stub>
-          <blockvideo-stub identifier="video.mp4"></blockvideo-stub>
-          <caption-stub tag="figcaption" position="trailing">
+        "<figure-stub>
+          <block-video-stub identifier="video.mp4"></block-video-stub>
+          <content-caption-stub tag="figcaption" position="trailing">
             <p>blah</p>
-          </caption-stub>
-        </figure-stub>
+          </content-caption-stub>
+        </figure-stub>"
       `);
     });
 
@@ -1568,10 +1569,11 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
+          "<table-stub spanned="true">
             <tbody>
               <tr>
                 <td colspan="2">row0col0</td>
+                <!---->
                 <td>row0col2</td>
               </tr>
               <tr>
@@ -1582,9 +1584,10 @@ describe('ContentNode', () => {
               <tr>
                 <td>row2col0</td>
                 <td>row2col1</td>
+                <!---->
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
 
@@ -1597,10 +1600,11 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
+          "<table-stub spanned="true">
             <thead>
               <tr>
                 <th scope="col" colspan="2">row0col0</th>
+                <!---->
                 <th scope="col">row0col2</th>
               </tr>
             </thead>
@@ -1613,9 +1617,10 @@ describe('ContentNode', () => {
               <tr>
                 <th scope="row">row2col0</th>
                 <td>row2col1</td>
+                <!---->
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
 
@@ -1628,10 +1633,11 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
+          "<table-stub spanned="true">
             <thead>
               <tr>
                 <th scope="col" colspan="2">row0col0</th>
+                <!---->
                 <th scope="col">row0col2</th>
               </tr>
             </thead>
@@ -1644,9 +1650,10 @@ describe('ContentNode', () => {
               <tr>
                 <td>row2col0</td>
                 <td>row2col1</td>
+                <!---->
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
 
@@ -1659,10 +1666,11 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub spanned="true">
+          "<table-stub spanned="true">
             <tbody>
               <tr>
                 <th scope="row" colspan="2">row0col0</th>
+                <!---->
                 <td>row0col2</td>
               </tr>
               <tr>
@@ -1673,9 +1681,10 @@ describe('ContentNode', () => {
               <tr>
                 <th scope="row">row2col0</th>
                 <td>row2col1</td>
+                <!---->
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
     });
@@ -1711,7 +1720,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          "<table-stub spanned="false">
             <tbody>
               <tr>
                 <td class="left-cell">row0col0</td>
@@ -1726,7 +1735,7 @@ describe('ContentNode', () => {
                 <td>row1col3</td>
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
 
@@ -1739,7 +1748,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          "<table-stub spanned="false">
             <thead>
               <tr>
                 <th scope="col" class="left-cell">row0col0</th>
@@ -1756,7 +1765,7 @@ describe('ContentNode', () => {
                 <td>row1col3</td>
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
 
@@ -1769,7 +1778,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          "<table-stub spanned="false">
             <thead>
               <tr>
                 <th scope="col" class="left-cell">row0col0</th>
@@ -1786,7 +1795,7 @@ describe('ContentNode', () => {
                 <td>row1col3</td>
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
 
@@ -1799,7 +1808,7 @@ describe('ContentNode', () => {
         });
         const table = wrapper.findComponent('.content').findComponent(Table);
         expect(table.html()).toMatchInlineSnapshot(`
-          <table-stub>
+          "<table-stub spanned="false">
             <tbody>
               <tr>
                 <th scope="row" class="left-cell">row0col0</th>
@@ -1814,7 +1823,7 @@ describe('ContentNode', () => {
                 <td>row1col3</td>
               </tr>
             </tbody>
-          </table-stub>
+          </table-stub>"
         `);
       });
     });
@@ -1896,6 +1905,33 @@ describe('ContentNode', () => {
       const wrapper = mountWithItem({ type: ContentNode.BlockType.thematicBreak });
       const tbreak = wrapper.findComponent(ThematicBreak);
       expect(tbreak.exists()).toBe(true);
+    });
+  });
+
+  describe('with type="overviewCard"', () => {
+    it('passes head and content through their respective slots', () => {
+      const wrapper = mount(ContentNode, {
+        propsData: {
+          content: [{
+            type: 'overviewCard',
+            head: [{
+              type: 'paragraph',
+              inlineContent: [{ type: 'text', text: 'Card heading' }],
+            }],
+            content: [{
+              type: 'paragraph',
+              inlineContent: [{ type: 'text', text: 'Card content' }],
+            }],
+          }],
+        },
+        provide: {
+          store: { state: { references: {} } },
+        },
+      });
+
+      const card = wrapper.findComponent(OverviewCard);
+      expect(card.find('.overviewcard-head').text()).toBe('Card heading');
+      expect(card.find('.overviewcard-content').text()).toBe('Card content');
     });
   });
 
@@ -1983,7 +2019,7 @@ describe('ContentNode', () => {
       const content = wrapper.findComponent(StrikeThrough);
       // assert the `strong` tag is rendered
       expect(content.html())
-        .toBe('<strikethrough-stub>2<strong>strong</strong></strikethrough-stub>');
+        .toBe('<strike-through-stub>2<strong>strong</strong></strike-through-stub>');
     });
   });
 

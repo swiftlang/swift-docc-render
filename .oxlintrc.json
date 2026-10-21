@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    "coverage/**",
+    "dist/**",
+    "docs/**",
+    "node_modules/**",
+    "tmp/**"
+  ],
+  "plugins": ["eslint", "unicorn", "oxc", "vue", "vitest"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "no-unused-vars": "off",
+    "unicorn/no-thenable": "off",
+    "vitest/expect-expect": "off",
+    "vitest/no-conditional-expect": "off",
+    "vitest/require-to-throw-message": "off",
+    "vitest/valid-expect": "off",
+    "vitest/valid-title": "off",
+    "vue/no-reserved-component-names": "off"
+  }
+}

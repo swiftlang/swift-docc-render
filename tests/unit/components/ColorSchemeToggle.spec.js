@@ -13,8 +13,10 @@ import AppStore from 'docc-render/stores/AppStore';
 import ColorScheme from 'docc-render/constants/ColorScheme';
 import ColorSchemeToggle from 'docc-render/components/ColorSchemeToggle.vue';
 
-jest.mock('docc-render/stores/AppStore', () => ({
-  setPreferredColorScheme: jest.fn(),
+vi.mock('docc-render/stores/AppStore', () => ({
+  default: {
+    setPreferredColorScheme: vi.fn(),
+  },
 }));
 
 describe('ColorSchemeToggle', () => {

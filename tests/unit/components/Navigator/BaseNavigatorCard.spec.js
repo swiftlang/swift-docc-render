@@ -48,7 +48,7 @@ describe('BaseNavigatorCard', () => {
     await flushPromises();
     expect(button.attributes('aria-label')).toBe('navigator.close-navigator');
     expect(wrapper.emitted('close')).toHaveLength(1);
-    expect(document.activeElement).toEqual(btn);
+    expect(document.activeElement).toBe(btn);
   });
 
   it('exposes a #body slot', () => {

@@ -14,11 +14,11 @@
       {{ $t(contentSectionData.title) }}
     </LinkableHeading>
     <dl class="datalist">
-      <template v-for="value in values">
-        <dt class="param-name" :key="`${value.name}:name`">
+      <template v-for="value in values" :key="value.name">
+        <dt class="param-name">
           <WordBreak tag="code">{{ value.name }}</WordBreak>
         </dt>
-        <dd v-if="value.content" class="value-content" :key="`${value.name}:content`">
+        <dd v-if="value.content" class="value-content">
           <ContentNode :content="value.content" />
         </dd>
       </template>

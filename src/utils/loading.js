@@ -13,7 +13,6 @@
  * @param numFrames
  * @returns {Promise<any>}
  */
-// eslint-disable-next-line import/prefer-default-export
 export function waitFrames(numFrames) {
   let resolve = null;
   let framesLeft = numFrames - 1;

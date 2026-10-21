@@ -19,19 +19,24 @@ import CodePreview from 'docc-render/components/Tutorial/CodePreview.vue';
 import BackgroundTheme from 'docc-render/components/Tutorial/BackgroundTheme.vue';
 import TopicStore from 'docc-render/stores/TopicStore';
 
-// mock out the intersection observer
-jest.mock('docc-render/mixins/onIntersect', () => ({
-  constants: {
-    IntersectionDirections: {
-      up: 'up',
-      down: 'down',
-    },
+const { IntersectionDirections } = vi.hoisted(() => ({
+  IntersectionDirections: {
+    up: 'up',
+    down: 'down',
   },
 }));
-jest.mock('docc-render/utils/loading', () => ({ waitFrames: jest.fn() }));
 
-const onIntersect = jest.requireActual('docc-render/mixins/onIntersect');
-const { constants: { IntersectionDirections } } = onIntersect.default;
+// mock out the intersection observer
+vi.mock('docc-render/mixins/onIntersect', () => ({
+  default: {
+    constants: { IntersectionDirections },
+  },
+  constants: {
+    IntersectionDirections,
+  },
+}));
+vi.mock('docc-render/utils/loading', () => ({ waitFrames: vi.fn() }));
+
 const { IntersectionMargins } = SectionSteps.constants;
 
 describe('SectionSteps', () => {
@@ -141,13 +146,13 @@ describe('SectionSteps', () => {
     expect(steps.length).toBe(5);
 
     let step = steps.at(0);
-    expect(step.props('content')).toBe(exampleStepWithMedia.content);
+    expect(step.props('content')).toEqual(exampleStepWithMedia.content);
     expect(step.props('media')).toBe(exampleStepWithMedia.media);
     expect(step.props('currentIndex')).toBe(1);
 
     step = steps.at(1);
     expect(step.props('code')).toBe(exampleStepWithCode.code);
-    expect(step.props('content')).toBe(exampleStepWithCode.content);
+    expect(step.props('content')).toEqual(exampleStepWithCode.content);
     expect(step.props('runtimePreview')).toBe(exampleStepWithCode.runtimePreview);
     expect(step.props('currentIndex')).toBe(1);
   });
@@ -159,11 +164,11 @@ describe('SectionSteps', () => {
   it('by default, assigns the first step section index as active', () => {
     // assert the active step is the second element in the content, which is the first step
     expect(wrapper.vm.activeStep).toBe(1);
-    const nodes = wrapper.findAllComponents({ ref: 'contentNodes' });
+    const nodes = wrapper.vm.$refs.contentNodes;
     // the first node is not a step
-    expect(nodes.at(0).props()).not.toHaveProperty('currentIndex');
+    expect(nodes.at(0).$props).not.toHaveProperty('currentIndex');
     // second node gets the current index
-    expect(nodes.at(1).props()).toHaveProperty('currentIndex', 1);
+    expect(nodes.at(1).$props).toHaveProperty('currentIndex', 1);
   });
 
   it('provides a custom array of intersectionTargets, with each content node step', async () => {
@@ -173,12 +178,13 @@ describe('SectionSteps', () => {
       provide: {
         isTargetIDE: false,
         store: TopicStore,
-        references: {},
       },
       stubs: {
         Asset: true,
+        CodePreview: true,
         CodeListing: true,
         MobileCodeListing: true,
+        MobileCodePreview: true,
         GenericModal: true,
       },
     });
@@ -195,7 +201,7 @@ describe('SectionSteps', () => {
 
   it('on mount, finds the closest step and assigns it as an active one.', async () => {
     wrapper.destroy();
-    const getBoundingClientRect = jest.fn();
+    const getBoundingClientRect = vi.fn();
     window.HTMLElement.prototype.getBoundingClientRect = getBoundingClientRect;
     getBoundingClientRect.mockReturnValue({ top: 500, bottom: 700 });
     getBoundingClientRect.mockReturnValueOnce({ top: 20, bottom: 100 });
@@ -207,12 +213,13 @@ describe('SectionSteps', () => {
       provide: {
         isTargetIDE: false,
         store: TopicStore,
-        references: {},
       },
       stubs: {
         Asset: true,
+        CodePreview: true,
         CodeListing: true,
         MobileCodeListing: true,
+        MobileCodePreview: true,
         GenericModal: true,
       },
     });
@@ -238,7 +245,7 @@ describe('SectionSteps', () => {
       let playMock;
 
       beforeEach(() => {
-        playMock = jest.fn(() => new Promise(jest.fn));
+        playMock = vi.fn(() => new Promise(vi.fn));
         window.HTMLMediaElement.prototype.play = playMock;
       });
 

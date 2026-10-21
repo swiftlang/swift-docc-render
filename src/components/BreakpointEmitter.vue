@@ -30,6 +30,7 @@ function breakpointMediaQuery({ maxWidth, minWidth }) {
 
 export default {
   name: 'BreakpointEmitter',
+  emits: ['change'],
   constants: {
     BreakpointAttributes,
     BreakpointName,
@@ -43,12 +44,13 @@ export default {
     },
   },
   render() {
-    if (this.$scopedSlots.default) {
-      return this.$scopedSlots.default({ matchingBreakpoint: this.matchingBreakpoint });
+    if (this.$slots.default) {
+      return this.$slots.default({ matchingBreakpoint: this.matchingBreakpoint });
     }
     return null;
   },
   data: () => ({
+    mediaQueryCleanups: [],
     matchingBreakpoint: null,
   }),
   methods: {
@@ -59,7 +61,7 @@ export default {
       const changeHandler = event => this.handleMediaQueryChange(event, breakpointName);
       // init listener. Use the deprecated method as `addEventListener` is not supported by Safari
       query.addListener(changeHandler);
-      this.$once('hook:beforeDestroy', () => {
+      this.mediaQueryCleanups.push(() => {
         query.removeListener(changeHandler);
       });
       // invoke the handler
@@ -77,6 +79,9 @@ export default {
     Object.entries(breakpoints).forEach(([breakpointName, breakpointValues]) => {
       this.initMediaQuery(breakpointName, breakpointValues);
     });
+  },
+  beforeUnmount() {
+    this.mediaQueryCleanups.forEach(cleanup => cleanup());
   },
 };
 </script>

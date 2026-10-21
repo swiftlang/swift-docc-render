@@ -19,32 +19,46 @@
  *
  * This process is part of the docc static-hostable transformation.
  */
-const fs = require('fs');
-const path = require('path');
-const BASE_URL_PLACEHOLDER = require('./baseUrlPlaceholder');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import BASE_URL_PLACEHOLDER from './baseUrlPlaceholder.js';
 
-const indexFile = path.join(__dirname, '../dist/index.html');
-const templateFile = path.resolve(__dirname, '../dist/index-template.html');
+const binDirectory = path.dirname(fileURLToPath(import.meta.url));
+const indexFile = path.resolve(binDirectory, '../dist/index.html');
+const templateFile = path.resolve(binDirectory, '../dist/index-template.html');
 const baseUrl = process.env.BASE_URL || '/';
 
-try {
-  // read the template file
-  const data = fs.readFileSync(indexFile, 'utf8');
+function transformIndex() {
+  try {
+    // read the template file
+    const data = fs.readFileSync(indexFile, 'utf8');
 
-  if (!data.includes(BASE_URL_PLACEHOLDER)) {
-    // stop if the placeholder is not found
-    return;
+    if (!data.includes(BASE_URL_PLACEHOLDER)) {
+      // stop if the placeholder is not found
+      return;
+    }
+
+    // Vite normalizes its base URL with a leading slash. DocC's placeholder is
+    // replaced with a complete base path, so keep the placeholder itself
+    // root-relative to avoid producing protocol-relative URLs after replacement.
+    const template = data.replace(
+      new RegExp(`/${BASE_URL_PLACEHOLDER}/`, 'g'),
+      `${BASE_URL_PLACEHOLDER}/`,
+    );
+
+    // copy it to a new file
+    fs.writeFileSync(templateFile, template, 'utf8');
+
+    // do the replacement
+    const result = template.replace(new RegExp(`${BASE_URL_PLACEHOLDER}/`, 'g'), baseUrl);
+
+    // replace the file
+    fs.writeFileSync(indexFile, result, 'utf8');
+  } catch (err) {
+    console.error(err);
+    throw new Error('index.html template processing could not finish.');
   }
-
-  // copy it to a new file
-  fs.writeFileSync(templateFile, data, 'utf8');
-
-  // do the replacement
-  const result = data.replace(new RegExp(`${BASE_URL_PLACEHOLDER}/`, 'g'), baseUrl);
-
-  // replace the file
-  fs.writeFileSync(indexFile, result, 'utf8');
-} catch (err) {
-  console.error(err);
-  throw new Error('index.html template processing could not finish.');
 }
+
+transformIndex();

@@ -11,6 +11,7 @@
 <template>
   <PortalSource to="modal-destination" :disabled="!isVisible">
     <div
+      v-bind="$attrs"
       v-show="isVisible"
       class="generic-modal"
       role="dialog"
@@ -56,10 +57,8 @@ const Theme = {
 
 export default {
   name: 'GenericModal',
-  model: {
-    prop: 'visible',
-    event: 'update:visible',
-  },
+  emits: ['close', 'open', 'update:visible'],
+  inheritAttrs: false,
   components: { CloseIcon, PortalSource: Portal },
   props: {
     visible: {
@@ -97,6 +96,7 @@ export default {
       lastFocusItem: null,
       prefersDarkStyle: false,
       focusTrapInstance: null,
+      colorSchemeMediaQuery: null,
     };
   },
   computed: {
@@ -145,22 +145,22 @@ export default {
     document.addEventListener('keydown', this.onKeydown);
     // add listeners for dynamic themes
     if (this.isThemeDynamic) {
-      const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
-      matchMedia.addListener(this.onColorSchemePreferenceChange);
-      this.$once('hook:beforeDestroy', () => {
-        matchMedia.removeListener(this.onColorSchemePreferenceChange);
-      });
+      this.colorSchemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      this.colorSchemeMediaQuery.addListener(this.onColorSchemePreferenceChange);
 
       // Trigger a theme update when the modal is first loaded.
-      this.onColorSchemePreferenceChange(matchMedia);
+      this.onColorSchemePreferenceChange(this.colorSchemeMediaQuery);
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     // make sure we unlock scrolling before navigating to a new page.
     if (this.isVisible) {
       scrollLock.unlockScroll(this.$refs.container);
     }
     document.removeEventListener('keydown', this.onKeydown);
+    if (this.colorSchemeMediaQuery) {
+      this.colorSchemeMediaQuery.removeListener(this.onColorSchemePreferenceChange);
+    }
     this.focusTrapInstance.destroy();
   },
   methods: {

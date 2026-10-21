@@ -63,10 +63,10 @@ describe('MobileCodePreview', () => {
 
   it('renders a MobileCodeListing', () => {
     const codeListing = wrapper.findComponent(MobileCodeListing);
-    expect(codeListing.props('content')).toBe(content);
+    expect(codeListing.props('content')).toEqual(content);
     expect(codeListing.props('fileName')).toBe(fileName);
     expect(codeListing.props('syntax')).toBe(syntax);
-    expect(codeListing.props('highlights')).toBe(highlights);
+    expect(codeListing.props('highlights')).toEqual(highlights);
   });
 
   it('displays a modal to show the full code listing when the file name is clicked', async () => {
@@ -84,10 +84,10 @@ describe('MobileCodePreview', () => {
     const listing = modal.findComponent(CodeListing);
     expect(listing.exists()).toBe(true);
     expect(listing.classes('full-code-listing')).toBe(true);
-    expect(listing.props('content')).toBe(content);
+    expect(listing.props('content')).toEqual(content);
     expect(listing.props('fileName')).toBe(fileName);
     expect(listing.props('syntax')).toBe(syntax);
-    expect(listing.props('highlights')).toBe(highlights);
+    expect(listing.props('highlights')).toEqual(highlights);
   });
 
   describe('runtime previews', () => {

@@ -240,10 +240,10 @@ describe('Declaration', () => {
 
     const declarationList = wrapper.findComponent(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
-    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
+    expect(declarationList.props('declaration')).toEqual(propsData.declarations[0]);
   });
 
-  it('passes `added` type change prop if no declarations are present in the diff ', () => {
+  it('passes `added` type change prop if no declarations are present in the diff', () => {
     const provide = provideFactory({
       [identifier]: {
         change: ChangeTypes.added,
@@ -259,7 +259,7 @@ describe('Declaration', () => {
 
     const declarationList = wrapper.findComponent(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.added);
-    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
+    expect(declarationList.props('declaration')).toEqual(propsData.declarations[0]);
   });
 
   it('renders a `DeclarationList` with `deprecated` change type prop', () => {
@@ -281,6 +281,6 @@ describe('Declaration', () => {
 
     const declarationList = wrapper.findComponent(DeclarationList);
     expect(declarationList.props('changeType')).toBe(ChangeTypes.deprecated);
-    expect(declarationList.props('declaration')).toBe(propsData.declarations[0]);
+    expect(declarationList.props('declaration')).toEqual(propsData.declarations[0]);
   });
 });

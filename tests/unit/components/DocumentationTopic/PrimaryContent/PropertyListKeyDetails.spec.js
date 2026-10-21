@@ -54,7 +54,7 @@ describe('PropertyKeyListDetails', () => {
     expect(dl.exists()).toBe(true);
   });
 
-  it('renders a <dt> with the name or key ', async () => {
+  it('renders a <dt> with the name or key', async () => {
     let detailType = wrapper.findComponent('dl dt.detail-type');
     expect(detailType.exists()).toBe(true);
     expect(detailType.text()).toBe('metadata.details.key');
@@ -85,13 +85,13 @@ describe('PropertyKeyListDetails', () => {
     expect(detailTypes.at(0).text).not.toBe('Name');
   });
 
-  it('renders a <dd> with the content related to the name or key ', () => {
+  it('renders a <dd> with the content related to the name or key', () => {
     const detailContent = wrapper.findComponent('dl dd.detail-content');
     expect(detailContent.exists()).toBe(true);
     expect(detailContent.text()).toBe(propsData.details.name);
   });
 
-  it('renders a <dd> with the Property List Key Type ', () => {
+  it('renders a <dd> with the Property List Key Type', () => {
     const pListKeyType = wrapper.findComponent(PropertyListKeyType);
     expect(pListKeyType.exists()).toBe(true);
     expect(pListKeyType.typeOutput).toEqual(propsData.details.value.baseType);

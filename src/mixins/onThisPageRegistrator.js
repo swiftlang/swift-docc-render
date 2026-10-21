@@ -59,7 +59,7 @@ export default {
           switch (section.kind) {
           case SectionKind.mentions:
             this.store.addOnThisPageSection({
-              title: this.$t('mentioned-in'), anchor: anchorize('mentions'), level: 2,
+              title: 'mentioned-in', anchor: anchorize('mentions'), level: 2,
             });
             break;
           case SectionKind.content:

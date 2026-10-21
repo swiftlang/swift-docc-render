@@ -295,27 +295,27 @@ describe('index data', () => {
     ).toEqual(flatTechnology);
   });
 
-  it('it generates a map of the flattenIndex, with the uid as the key', () => {
+  it('generates a map of the flattenIndex, with the uid as the key', () => {
     const childrenObjects = convertChildrenArrayToObject(children);
     expect(childrenObjects).toEqual(childrenMap);
   });
 
-  it('it gets all children of a node recursively', () => {
+  it('gets all children of a node recursively', () => {
     const childNodes = getAllChildren(root0.uid, childrenMap);
     expect(childNodes).toEqual([root0, root0Child0, root0Child1, root0Child1GrandChild0]);
   });
 
-  it('it gets the direct child nodes of a node.', () => {
+  it('gets the direct child nodes of a node.', () => {
     const childNodes = getChildren(root0.uid, childrenMap, children);
     expect(childNodes).toEqual([root0Child0, root0Child1]);
   });
 
-  it('it gets all the parents of a node, up to the root', () => {
+  it('gets all the parents of a node, up to the root', () => {
     const childNodes = getParents(root0Child1GrandChild0.uid, childrenMap);
     expect(childNodes).toEqual([root0, root0Child1, root0Child1GrandChild0]);
   });
 
-  it('it gets all sibling nodes of a node', () => {
+  it('gets all sibling nodes of a node', () => {
     const childNodes = getSiblings(root0Child1.uid, childrenMap, children);
     expect(childNodes).toEqual([root0Child0, root0Child1]);
   });
@@ -373,9 +373,7 @@ describe('when multiple top-level children are provided', () => {
 
   describe('flattenNavigationIndex', () => {
     it('prefers the root child with the same url path prefix', () => {
-      Object.defineProperty(window, 'location', {
-        value: new URL('http://localhost/documentation/b/b42?language=objc'),
-      });
+      window.history.replaceState(null, '', '/documentation/b/b42?language=objc');
 
       // use first root node if only one is provided
       let flattenedIndex = flattenNavigationIndex({ swift: [a] });
@@ -446,9 +444,7 @@ describe('when multiple top-level children are provided', () => {
 
   describe('extractTechnologyProps', () => {
     it('prefers the root child with the same url path prefix', () => {
-      Object.defineProperty(window, 'location', {
-        value: new URL('http://localhost/documentation/b/b42?language=objc'),
-      });
+      window.history.replaceState(null, '', '/documentation/b/b42?language=objc');
 
       // use first root node if only one is provided
       let props = extractTechnologyProps({ swift: [a] });

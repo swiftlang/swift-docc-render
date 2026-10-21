@@ -12,7 +12,6 @@
 export const notFoundRouteName = 'not-found';
 // The name of the "server error" route.
 export const serverErrorRouteName = 'server-error';
-// The dynamic imports with special `webpackChunkName` comments are used to
-// take advantage of webpack's code-splitting functionality to break apart
-// optimized JavaScript bundles for each route on demand.
+// Route components are dynamically imported so Vite can split each route into
+// an optimized JavaScript bundle that is loaded on demand.
 export const documentationTopicName = 'documentation-topic';

@@ -12,13 +12,13 @@
   <code class="decorated-title">
     <template
       v-for="(token, i) in tokens"
+      :key="i"
     >
        <component
         :class="[classFor(token), emptyTokenClass(token)]"
         :is="componentFor(token)"
-        :key="i"
       >{{ token.text }}</component>
-      <wbr :key="`wbr-${i}`"/>
+      <wbr/>
     </template>
   </code>
 </template>

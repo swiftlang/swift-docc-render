@@ -8,4 +8,4 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-module.exports = '{{BASE_PATH}}';
+export default '{{BASE_PATH}}';

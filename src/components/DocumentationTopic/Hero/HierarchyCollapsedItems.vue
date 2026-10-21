@@ -55,7 +55,7 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     // ensure global "click" listener never lingers beyond life of instance
     document.removeEventListener('click', this.handleDocumentClick, false);
   },

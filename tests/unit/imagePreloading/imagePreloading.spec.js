@@ -24,7 +24,7 @@ import createRouterInstance from 'docc-render/setup-utils/SwiftDocCRenderRouter'
 
 const router = createRouterInstance();
 
-jest.mock('docc-render/utils/theme-settings');
+vi.mock('docc-render/utils/theme-settings');
 
 const topicData = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'tutorial.json')));
 window.scrollTo = () => ({});
@@ -34,17 +34,17 @@ localVue.directive('hide', hide);
 localVue.use(Router);
 
 // Mock DOM APIs.
-window.matchMedia = jest.fn(() => ({
-  addListener: jest.fn(),
-  addEventListener: jest.fn(),
+window.matchMedia = vi.fn(() => ({
+  addListener: vi.fn(),
+  addEventListener: vi.fn(),
   matches: true,
 }));
-window.MediaSource = jest.fn(() => ({
-  isTypeSupported: jest.fn(),
-  addEventListener: jest.fn(),
+window.MediaSource = vi.fn(() => ({
+  isTypeSupported: vi.fn(),
+  addEventListener: vi.fn(),
 }));
-window.URL.createObjectURL = jest.fn();
-window.HTMLMediaElement.prototype.addNextTrack = jest.fn();
+window.URL.createObjectURL = vi.fn();
+window.HTMLMediaElement.prototype.addNextTrack = vi.fn();
 
 // Retrieves all the image URLs from the references dictionary.
 const allImageURLsFrom = references => (
@@ -84,9 +84,9 @@ describe('image preloading', () => {
     },
     mocks: {
       $bridge: {
-        on: jest.fn(),
-        off: jest.fn(),
-        send: jest.fn(),
+        on: vi.fn(),
+        off: vi.fn(),
+        send: vi.fn(),
       },
     },
     stubs: {

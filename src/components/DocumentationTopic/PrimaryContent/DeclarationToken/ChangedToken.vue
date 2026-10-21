@@ -10,6 +10,7 @@
 
 <script>
 import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryContent/DeclarationToken.vue';
+import createElement from 'docc-render/utils/create-element';
 
 /**
  * Wraps a DeclarationToken in a `token-changed` span.
@@ -17,7 +18,7 @@ import DeclarationToken from 'docc-render/components/DocumentationTopic/PrimaryC
  */
 export default {
   name: 'ChangedToken',
-  render(createElement) {
+  render() {
     const {
       kind,
       tokens,

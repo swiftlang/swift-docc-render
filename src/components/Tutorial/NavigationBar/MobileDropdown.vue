@@ -45,7 +45,7 @@
                     :to="{ path: section.path, query: $route.query }"
                     :value="section.title"
                     :class="classesFor(section)"
-                    @click.native="onClick(section)"
+                    @click="onClick(section)"
                   >
                     {{ section.title}}
                   </router-link>
@@ -66,6 +66,7 @@ import NavMenuItems from 'docc-render/components/NavMenuItems.vue';
 
 export default {
   name: 'MobileDropdown',
+  emits: ['select-section'],
   components: { NavMenuItems, NavMenuItemBase, ReferenceUrlProvider },
   props: {
     options: {

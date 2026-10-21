@@ -8,6 +8,7 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { toRaw } from 'vue';
 import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { shallowMount } from '@vue/test-utils';
 import { SectionKind } from '@/constants/PrimaryContentSection';
@@ -43,6 +44,10 @@ const topicData = () => ({
     title: 'PageTitle',
   },
   primaryContentSections: [
+    {
+      kind: SectionKind.mentions,
+      mentions: ['doc://example/mentioned-topic'],
+    },
     {
       kind: SectionKind.content,
       content: contentSections,
@@ -100,7 +105,7 @@ describe('OnThisPageRegistrator', () => {
 
   it('extracts the sections from the JSON', () => {
     createWrapper();
-    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toMatchSnapshot();
+    expect(toRaw(onThisPageSectionsStoreBase.state.onThisPageSections)).toMatchSnapshot();
   });
 
   it('only stores headings up to level 3, anchorising `title` if no `anchor` is provided', async () => {
@@ -212,7 +217,7 @@ describe('OnThisPageRegistrator', () => {
 
   it('watches for changes, clears the store and extracts sections again', async () => {
     const wrapper = createWrapper();
-    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(16);
+    expect(onThisPageSectionsStoreBase.state.onThisPageSections).toHaveLength(17);
     wrapper.vm.topicData = {
       metadata: { title: 'Foo' },
       kind: 'symbol',

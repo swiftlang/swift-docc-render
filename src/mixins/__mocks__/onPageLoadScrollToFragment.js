@@ -9,5 +9,5 @@
 */
 
 export default {
-  mounted: jest.fn(),
+  mounted: vi.fn(),
 };

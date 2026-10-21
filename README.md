@@ -7,8 +7,8 @@ SPAs are web apps that render dynamically at runtime entirely in the browser, us
 
 ## Getting Started
 
-> Note: requires [Node.js](https://nodejs.org/en/download/) v22.17.0
-> and [npm](https://www.npmjs.com/package/npm) v10.9.2. An easy way to set these up is to install
+> Note: requires [Node.js](https://nodejs.org/en/download/) v24.12.0
+> and [npm](https://www.npmjs.com/package/npm) v11.19. An easy way to set these up is to install
 > [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
 > repository. To use these versions as the default, add `--default` to the installation command.
 
@@ -25,15 +25,26 @@ SPAs are web apps that render dynamically at runtime entirely in the browser, us
     npm install
     ```
 
-3. **Run a local server with hot reload at [localhost:8080](http://localhost:8080/)**
+3. **Run a local server with hot reload at [localhost:5173](http://localhost:5173/)**
 
-    You may want to set a proxy to handle data requests while developing locally by setting the VUE_APP_DEV_SERVER_PROXY env variable to a documentation archive (.doccarchive or .docc-build) on your disk or served in a HTTP endpoint:
+    You may want to set a proxy to handle data requests while developing locally by setting the VITE_DEV_SERVER_PROXY environment variable to a documentation archive (.doccarchive or .docc-build) on your disk or served at an HTTP endpoint:
 
     ```shell
-    VUE_APP_DEV_SERVER_PROXY=[path to documentation archive] npm run serve
+    VITE_DEV_SERVER_PROXY=[path to documentation archive] npm run dev
     ```
 
-    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VUE_APP_DEV_SERVER_PROXY` env variable so you don't have to set it in the `npm run serve` script each time.
+    As an alternative you can just create a `.env.development.local` file on the root of the project to add the `VITE_DEV_SERVER_PROXY` env variable so you don't have to set it in the `npm run dev` script each time.
+
+    `SwiftDocCRender.docc` is a source catalog, not a rendered documentation archive.
+    To use this repository's documentation while developing the renderer, generate its
+    data first and open the documentation route rather than the site root:
+
+    ```shell
+    npm run docs:build
+    VITE_DEV_SERVER_PROXY=docs npm run dev
+    ```
+
+    Then visit [localhost:5173/documentation/swiftdoccrender](http://localhost:5173/documentation/swiftdoccrender).
 
 ## Using Swift-DocC-Render to render documentation
 

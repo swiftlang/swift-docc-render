@@ -13,8 +13,8 @@ import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
 import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
 import AppStore from 'docc-render/stores/AppStore';
 
-jest.mock('theme/lang/locales.json', () => (
-  [
+vi.mock('theme/lang/locales.json', () => ({
+  default: [
     {
       code: 'en-US',
       name: 'English',
@@ -35,17 +35,19 @@ jest.mock('theme/lang/locales.json', () => (
       name: '한국어',
       slug: 'ko-KR',
     },
-  ]
-));
-
-jest.mock('docc-render/utils/i18n-utils', () => ({
-  updateLocale: jest.fn(),
-  getLocaleParam: jest.fn(),
+  ],
 }));
 
-jest.mock('docc-render/stores/AppStore', () => ({
-  setPreferredLocale: jest.fn(),
-  state: { availableLocales: ['en-US', 'zh-CN'] },
+vi.mock('docc-render/utils/i18n-utils', () => ({
+  updateLocale: vi.fn(),
+  getLocaleParam: vi.fn(),
+}));
+
+vi.mock('docc-render/stores/AppStore', () => ({
+  default: {
+    setPreferredLocale: vi.fn(),
+    state: { availableLocales: ['en-US', 'zh-CN'] },
+  },
 }));
 
 const { ChevronThickIcon } = LocaleSelector.components;
@@ -58,7 +60,7 @@ describe('LocaleSelector', () => {
     wrapper = shallowMount(LocaleSelector, {
       mocks: {
         $router: {
-          push: jest.fn(),
+          push: vi.fn(),
         },
       },
       propsData: {

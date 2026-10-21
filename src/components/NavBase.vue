@@ -108,6 +108,7 @@ const NavStateClasses = {
 
 export default {
   name: 'NavBase',
+  emits: ['change', 'changed', 'close', 'closed', 'open', 'opened'],
   components: { NavMenuItems, BreakpointEmitter },
   constants: { NavStateClasses, NoBGTransitionFrames },
   props: {
@@ -206,7 +207,7 @@ export default {
     this.handleFlashOnMount();
     await this.$nextTick();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('keydown', this.onEscape);
     window.removeEventListener('popstate', this.closeNav);
     window.removeEventListener('orientationchange', this.closeNav);
@@ -569,7 +570,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   z-index: 1;
 }
 
-.pre-title {
+:slotted(.pre-title) {
   display: flex;
 }
 
@@ -662,7 +663,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
   }
 }
 
-.pre-title + .nav-title {
+:slotted(.pre-title) + .nav-title {
   @include nav-in-breakpoint {
     grid-area: title;
 
@@ -690,7 +691,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     line-height: initial;
   }
 
-  a {
+  :deep(a) {
     letter-spacing: inherit;
     line-height: initial;
     margin: 0;
@@ -706,7 +707,7 @@ $content-max-width: map-deep-get($breakpoint-attributes, (nav, large, content-wi
     }
   }
 
-  &, a {
+  &, :deep(a) {
     color: var(--color-figure-gray);
     transition: color $nav-bg-color-transition;
 

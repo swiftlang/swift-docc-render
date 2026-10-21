@@ -42,8 +42,8 @@ describe('storage', () => {
     beforeAll(() => {
       Object.defineProperty(window, 'localStorage', {
         value: {
-          getItem: jest.fn(),
-          setItem: jest.fn(),
+          getItem: vi.fn(),
+          setItem: vi.fn(),
         },
       });
       localStorage.getItem.mockImplementation(() => {

@@ -48,9 +48,11 @@ import ContentNode from 'docc-render/components/ContentNode.vue';
 import GridRow from 'docc-render/components/GridRow.vue';
 import GridColumn from 'docc-render/components/GridColumn.vue';
 import Headline from 'docc-render/components/Headline.vue';
+import createElement from 'docc-render/utils/create-element';
 
 export default {
   name: 'SectionIntro',
+  emits: ['focus'],
   inject: {
     isTargetIDE: {
       default: () => false,
@@ -63,7 +65,7 @@ export default {
     Headline,
     Row: GridRow,
     Column: {
-      render(createElement) {
+      render() {
         return createElement(GridColumn, {
           props: {
             span: {

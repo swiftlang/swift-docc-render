@@ -73,7 +73,7 @@ describe('PossiblyChangedTextAttribute', () => {
 
   it('renders a `Required` text', () => {
     const wrapper = createWrapper();
-    expect(wrapper.findComponent('.property-text').element.textContent).toEqual('(Required) ');
+    expect(wrapper.findComponent('.property-text').element.textContent).toEqual('(Required)');
   });
 
   it('renders slot content', () => {
@@ -82,6 +82,6 @@ describe('PossiblyChangedTextAttribute', () => {
         default: '(Read only) ',
       },
     });
-    expect(wrapper.findComponent('.property-text').element.textContent).toEqual('(Read only) ');
+    expect(wrapper.findComponent('.property-text').element.textContent).toEqual('(Read only)');
   });
 });

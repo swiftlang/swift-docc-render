@@ -31,6 +31,7 @@
 
 <script>
 import scrollToElement from 'docc-render/mixins/scrollToElement';
+import { buildUrl } from 'docc-render/utils/url-helper';
 import LinkIcon from 'theme/components/Icons/LinkIcon.vue';
 
 export default {
@@ -64,7 +65,9 @@ export default {
       enableMinimized,
       isTargetIDE,
     }) => !!anchor && !enableMinimized && !isTargetIDE,
-    linkWithAnchor: ({ anchor, $route }) => ({ hash: `#${anchor}`, query: $route.query }),
+    // Use a URL string so Vue Router doesn't encode an already percent-encoded
+    // heading anchor a second time (for example, `%2F` becoming `%252F`).
+    linkWithAnchor: ({ anchor, $route }) => buildUrl(`#${anchor}`, $route.query),
   },
 };
 </script>

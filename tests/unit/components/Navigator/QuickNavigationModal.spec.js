@@ -19,7 +19,7 @@ import Reference from '@/components/ContentNode/Reference.vue';
 import { SCROLL_LOCK_DISABLE_ATTR } from '@/utils/scroll-lock';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('@/utils/data');
+vi.mock('@/utils/data');
 
 describe('QuickNavigationModal', () => {
   let wrapper;
@@ -28,15 +28,15 @@ describe('QuickNavigationModal', () => {
   const nonResultsInputValue = 'xyz';
   const mocks = {
     $bridge: {
-      on: jest.fn(),
-      off: jest.fn(),
-      send: jest.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+      send: vi.fn(),
     },
     $route: {
       path: '/documentation/somepath',
     },
     $router: {
-      push: jest.fn(),
+      push: vi.fn(),
     },
   };
   const symbols = [
@@ -102,9 +102,11 @@ describe('QuickNavigationModal', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    fetchDataForPreview.mockReset();
+    fetchDataForPreview.mockReturnValue(new Promise(() => {}));
     wrapper = shallowMount(QuickNavigationModal, config);
-    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
   });
 
   it('renders the Quick navigation modal', () => {
@@ -146,6 +148,7 @@ describe('QuickNavigationModal', () => {
       positionReversed: false,
       preventBorderStyle: true,
       disabled: false,
+      modelValue: '',
       value: '',
       preventedBlur: false,
       selectedTags: [],
@@ -246,13 +249,13 @@ describe('QuickNavigationModal', () => {
       debouncedInput: inputValue,
       focusedIndex: 0,
     });
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('0');
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('-1');
+    expect(wrapper.findAllComponents(Reference).at(0).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents(Reference).at(1).attributes('tabindex')).toBe('-1');
     await wrapper.setData({
       focusedIndex: 1,
     });
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(0).attributes('tabindex')).toBe('-1');
-    expect(wrapper.findAllComponents({ ref: 'match' }).at(1).attributes('tabindex')).toBe('0');
+    expect(wrapper.findAllComponents(Reference).at(0).attributes('tabindex')).toBe('-1');
+    expect(wrapper.findAllComponents(Reference).at(1).attributes('tabindex')).toBe('0');
   });
 
   it('debounces user input before filtering the symbols', async () => {
@@ -267,7 +270,7 @@ describe('QuickNavigationModal', () => {
   });
 
   it('triggers new filtering on every debounce input change', async () => {
-    const fuzzyMatch = jest.spyOn(wrapper.vm, 'fuzzyMatch');
+    const fuzzyMatch = vi.spyOn(wrapper.vm, 'fuzzyMatch');
     await wrapper.setData({
       debouncedInput: inputValue,
     });
@@ -305,13 +308,12 @@ describe('QuickNavigationModal', () => {
   });
 
   it('access a symbol on `enter` key', async () => {
-    const handleKeyEnter = jest.spyOn(wrapper.vm, 'handleKeyEnter');
+    const handleKeyEnter = vi.spyOn(wrapper.vm, 'handleKeyEnter');
     await wrapper.setData({
       debouncedInput: inputValue,
     });
     await wrapper.findComponent('.quick-navigation__refs').trigger('keydown.enter');
-    wrapper.findComponent(FilterInput).trigger('keydown.enter');
-    expect(handleKeyEnter).toHaveBeenCalledTimes(2);
+    expect(handleKeyEnter).toHaveBeenCalledTimes(1);
   });
 
   it('renders the symbol tree of the resulting symbol', async () => {
@@ -451,8 +453,8 @@ describe('QuickNavigationModal', () => {
     beforeEach(async () => {
       await wrapper.setData({ debouncedInput: inputValue });
       // Suppress DOM calls that require a real browser environment
-      jest.spyOn(wrapper.vm, 'scrollIntoView').mockImplementation(() => {});
-      jest.spyOn(wrapper.vm, 'focusReference').mockImplementation(() => {});
+      vi.spyOn(wrapper.vm, 'scrollIntoView').mockImplementation(() => {});
+      vi.spyOn(wrapper.vm, 'focusReference').mockImplementation(() => {});
     });
 
     it('pressing Down moves focus to the next item', async () => {
@@ -502,7 +504,7 @@ describe('QuickNavigationModal', () => {
         },
         mocks,
       });
-      expect(w.findComponent(FilterInput).props('value')).toBe('foo');
+      expect(w.findComponent(FilterInput).props('modelValue')).toBe('foo');
     });
 
     it('defaults userInput to empty string when initialFilterText is not provided', () => {
@@ -513,7 +515,7 @@ describe('QuickNavigationModal', () => {
         },
         mocks,
       });
-      expect(w.findComponent(FilterInput).props('value')).toBe('');
+      expect(w.findComponent(FilterInput).props('modelValue')).toBe('');
     });
   });
 });

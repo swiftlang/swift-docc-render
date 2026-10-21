@@ -17,7 +17,7 @@
         <TimerIcon />
         <span class="meta-content">
           <strong class="time">{{estimatedTime}}</strong>
-          <span> {{ $t('tutorials.estimated-time') }}</span>
+          <span>&nbsp;{{ $t('tutorials.estimated-time') }}</span>
         </span>
       </p>
       <CallToActionButton
@@ -147,7 +147,7 @@ export default {
   margin-top: rem(30px);
 }
 
-* + .asset {
+.asset:not(:first-child) {
   margin-top: rem(70px);
 }
 
@@ -175,7 +175,7 @@ export default {
     margin-top: rem(24px);
   }
 
-  * + .asset {
+  .asset:not(:first-child) {
     margin-top: rem(38px);
   }
 }

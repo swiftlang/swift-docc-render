@@ -52,45 +52,45 @@ describe("TabManager", () => {
     expect(tabElements).toHaveLength(8);
     expect(tabElements.find(el => el.matches(".outside"))).toBeFalsy();
     expect(tabElements).toMatchInlineSnapshot(`
-      Array [
-        <a
-          class="a-href"
-          href="#"
-        >
-          A with HREF
-        </a>,
-        <button
-          class="button"
-        >
-          Button
-        </button>,
-        <div
-          class="div-tabindex"
-          tabindex="0"
-        >
-          Div with tabindex
-        </div>,
-        <select
-          class="select"
-        />,
-        <fieldset>
-          Fieldset
-        </fieldset>,
-        <div
-          class="div-contenteditable"
-          contenteditable="true"
-        >
-          Editable Content
-        </div>,
-        <input
-          class="input"
-          type="text"
-        />,
-        <object>
-          Something
-        </object>,
-      ]
-    `);
+[
+  <a
+    class="a-href"
+    href="#"
+  >
+    A with HREF
+  </a>,
+  <button
+    class="button"
+  >
+    Button
+  </button>,
+  <div
+    class="div-tabindex"
+    tabindex="0"
+  >
+    Div with tabindex
+  </div>,
+  <select
+    class="select"
+  />,
+  <fieldset>
+    Fieldset
+  </fieldset>,
+  <div
+    class="div-contenteditable"
+    contenteditable="true"
+  >
+    Editable Content
+  </div>,
+  <input
+    class="input"
+    type="text"
+  />,
+  <object>
+    Something
+  </object>,
+]
+`);
   });
 
   it("checks if an element is tabbable", () => {

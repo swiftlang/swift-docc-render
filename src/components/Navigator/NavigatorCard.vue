@@ -37,7 +37,7 @@
           :id="INDEX_ROOT_KEY"
           :url="technologyPath"
           :class="['technology-title', { 'router-link-exact-active': isTechnologyRoute }]"
-          @click.alt.native.prevent="toggleAllNodes"
+          @click.alt.prevent="toggleAllNodes"
         >
           <h2 class="card-link">
             {{ technology }}
@@ -55,13 +55,9 @@
           emit-update
           key-field="uid"
           v-slot="{ item, active, index }"
-          @focusin.native="handleFocusIn"
-          @focusout.native="handleFocusOut"
+          @focusin="handleFocusIn"
+          @focusout="handleFocusOut"
           @update="handleScrollerUpdate"
-          @keydown.alt.up.capture.prevent="focusFirst"
-          @keydown.alt.down.capture.prevent="focusLast"
-          @keydown.up.exact.capture.prevent="focusPrev"
-          @keydown.down.exact.capture.prevent="focusNext"
         >
           <DynamicScrollerItem
             v-bind="{ active, item, dataIndex: index }"
@@ -91,7 +87,7 @@
           {{ politeAriaLive }}
         </div>
         <div aria-live="assertive" class="no-items-wrapper">
-          <p class="no-items">{{ $t(assertiveAriaLive) }}</p>
+          <p v-if="assertiveAriaLive" class="no-items">{{ $t(assertiveAriaLive) }}</p>
         </div>
       </div>
       <div class="filter-wrapper" v-if="!errorFetching">
@@ -101,7 +97,8 @@
               v-model="filter"
               :tags="suggestedTags"
               :translatableTags="translatableTags"
-              :selected-tags.sync="selectedTags"
+              :selected-tags="selectedTags"
+              @update:selected-tags="selectedTags = $event"
               :placeholder="$t('filter.title')"
               :should-keep-open-on-blur="false"
               :shouldTruncateTags="shouldTruncateTags"
@@ -162,6 +159,7 @@ const ITEMS_FOUND = 'navigator.items-found';
  */
 export default {
   name: 'NavigatorCard',
+  emits: ['close', 'navigate'],
   constants: {
     STORAGE_KEY,
     ERROR_FETCHING,
@@ -252,7 +250,11 @@ export default {
     politeAriaLive() {
       const { hasNodes, navigatorItems } = this;
       if (!hasNodes) return '';
-      return this.$tc(ITEMS_FOUND, navigatorItems.length, { number: navigatorItems.length });
+      return this.$t(
+        ITEMS_FOUND,
+        { number: navigatorItems.length },
+        navigatorItems.length,
+      );
     },
     assertiveAriaLive: ({
       hasNodes, hasFilter, errorFetching,
@@ -978,9 +980,12 @@ export default {
 };
 </script>
 
+<style lang="scss">
+@import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+</style>
+
 <style scoped lang='scss'>
 @import 'docc-render/styles/_core.scss';
-@import '~vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 // unfortunately we need to hard-code the filter height
 $filter-height: 71px;

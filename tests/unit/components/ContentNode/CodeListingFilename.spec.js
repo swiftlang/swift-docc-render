@@ -44,6 +44,22 @@ describe('CodeListingFilename', () => {
     expect(wrapper.emitted().click).toBeTruthy();
   });
 
+  it('invokes a parent click listener only once', async () => {
+    const onClick = vi.fn();
+    const wrapper = shallowMount(CodeListingFilename, {
+      propsData: {
+        isActionable: true,
+        fileType: 'swift',
+      },
+      attrs: { onClick },
+      slots: { default: fileName },
+    });
+
+    await wrapper.findComponent('a').trigger('click');
+
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
   it('renders a file icon', () => {
     const wrapper = mount(fileName, false);
 

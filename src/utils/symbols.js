@@ -16,7 +16,6 @@ import SymbolKind from 'docc-render/constants/SymbolKind';
 // that may contain child symbol members for any of its
 // properties/functions/initializers/etc for example.
 //
-// eslint-disable-next-line import/prefer-default-export
 export function isParentSymbolKind(kind) {
   switch (kind) {
   case SymbolKind.class:

@@ -28,11 +28,11 @@ describe('DeclarationTokenGroup', () => {
 
   it('does not render anything if `type` is not provided', () => {
     const wrapper = shallowMount(DeclarationTokenGroup);
-    expect(wrapper.html()).toBeFalsy();
+    expect(wrapper.html()).toBe('<!--v-if-->');
   });
 
   it('does not render anything if `type` is an empty array', () => {
     const wrapper = shallowMount(DeclarationTokenGroup, { propsData: { type: [] } });
-    expect(wrapper.html()).toBeFalsy();
+    expect(wrapper.html()).toBe('<!--v-if-->');
   });
 });

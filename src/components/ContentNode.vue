@@ -10,6 +10,7 @@
 
 <script>
 import referencesProvider from 'docc-render/mixins/referencesProvider';
+import createVNode from 'docc-render/utils/create-element';
 import Aside from './ContentNode/Aside.vue';
 import CodeListing from './ContentNode/CodeListing.vue';
 import LinkableHeading from './ContentNode/LinkableHeading.vue';
@@ -433,13 +434,10 @@ function renderNode(createElement, references) {
     case BlockType.thematicBreak:
       return createElement(ThematicBreak);
     case BlockType.overviewCard:
-      return createElement(OverviewCard, {}, ([
-        ...renderChildren(node.head ?? []).map(vnode => ({
-          ...vnode,
-          data: { ...vnode.data, slot: 'head' },
-        })),
-        ...renderChildren(node.content),
-      ]));
+      return createElement(OverviewCard, {}, {
+        head: () => renderChildren(node.head ?? []),
+        default: () => renderChildren(node.content),
+      });
     case InlineType.codeVoice:
       return createElement(CodeVoice, {
         class: 'inline-code',
@@ -531,18 +529,18 @@ function renderNode(createElement, references) {
  *
  * - Parameter content: `Array` (**required**) — A list of
  *    [`RenderBlockContent`](https://github.com/apple/swift-docc/blob/5ad35a3107ca0443b81ada917b73b950d89bf396/Sources/SwiftDocC/SwiftDocC.docc/Resources/RenderNode.spec.json#L420).
- * - Parameter tag: `String` — An optional HTML tag to wrap the
+ * - Parameter tag: `String` — An optional HTML tag to wrap the
  *    content in instead of the default `<div>`.
  */
 export default {
   name: 'ContentNode',
   constants: { TableHeaderStyle, TableColumnAlignments },
   mixins: [referencesProvider],
-  render: function render(createElement) {
+  render() {
     // Dynamically map each content item and any children to their
     // corresponding components, and wrap the whole tree in a <div>
-    return createElement(this.tag, { class: 'content' }, (
-      this.content.map(renderNode(createElement, this.references), this)
+    return createVNode(this.tag, { class: 'content' }, (
+      this.content.map(renderNode(createVNode, this.references), this)
     ));
   },
   props: {

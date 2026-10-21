@@ -13,10 +13,10 @@
   <div class="suggest-lang__wrapper">
     <router-link
       :to="getLocaleParam(preferredLocale)"
-      @click.native="setPreferredLocale(preferredLocale)"
+      @click="setPreferredLocale(preferredLocale)"
       class="suggest-lang__link"
       :lang="getCodeForSlug(preferredLocale)"
-    >{{ $i18n.messages[preferredLocale]['view-in'] }}<InlineChevronRightIcon class="icon-inline" />
+    >{{ $t('view-in', {}, { locale: preferredLocale }) }}<InlineChevronRightIcon class="icon-inline" />
     </router-link>
     <div class="suggest-lang__close-icon-wrapper">
       <button

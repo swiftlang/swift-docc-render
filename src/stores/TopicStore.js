@@ -9,15 +9,16 @@
 */
 
 import BreakpointEmitter from 'docc-render/components/BreakpointEmitter.vue';
+import { reactive } from 'vue';
 
 const { BreakpointName } = BreakpointEmitter.constants;
 
 export default {
-  state: {
+  state: reactive({
     linkableSections: [],
     breakpoint: BreakpointName.large,
     references: {},
-  },
+  }),
   addLinkableSection(section) {
     const newLinkableSection = {
       ...section,

@@ -225,7 +225,7 @@ export default {
     }
     this.handleWindowResize();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('resize', this.handleWindowResize);
   },
 };
