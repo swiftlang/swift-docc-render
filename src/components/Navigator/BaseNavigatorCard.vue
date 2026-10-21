@@ -106,8 +106,7 @@ $close-icon-padding: 5px;
       align-items: center;
     }
 
-    :slotted(a),
-    :slotted(span) {
+    :deep(.nav-title) {
       color: var(--color-figure-gray);
       width: 100%;
     }
