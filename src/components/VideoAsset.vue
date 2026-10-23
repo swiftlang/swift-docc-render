@@ -204,3 +204,9 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+video {
+  border-radius: var(--video-border-radius, 0px);
+}
+</style>
