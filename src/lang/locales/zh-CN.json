@@ -180,7 +180,8 @@
   "error": {
     "unknown": "出现未知错误。",
     "image": "图像无法载入",
-    "not-found": "找不到你所查找的页面。"
+    "not-found": "找不到你所查找的页面。",
+    "back-to-documentation": "返回文档"
   },
   "color-scheme": {
     "select": "选择首选颜色方案",
