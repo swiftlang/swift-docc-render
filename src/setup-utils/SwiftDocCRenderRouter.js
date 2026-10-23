@@ -14,12 +14,13 @@ import {
   restoreScrollOnReload,
   scrollBehavior,
 } from 'docc-render/utils/router-utils';
-import routes, { fallbackRoutes } from 'docc-render/routes';
+import { homeRoute, pagesRoutes, fallbackRoutes } from 'docc-render/routes';
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import { addPrefixedRoutes } from 'docc-render/utils/route-utils';
 
 const defaultRoutes = [
-  ...addPrefixedRoutes(routes),
+  homeRoute,
+  ...addPrefixedRoutes(pagesRoutes),
   ...fallbackRoutes,
 ];
 
