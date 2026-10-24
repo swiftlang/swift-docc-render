@@ -69,6 +69,15 @@ function urlGivenScriptName(customScriptName) {
 }
 
 /**
+ * Describes a custom script, for error messages.
+ * @param {object} customScript
+ * @returns {string} The script's URL or name, or its JSON representation if it has neither.
+ */
+function describe(customScript) {
+  return customScript.url || customScript.name || JSON.stringify(customScript);
+}
+
+/**
  * Creates an HTMLScriptElement for the custom script.
  * @param {object} customScript The custom script.
  * @returns {HTMLScriptElement} A script element that runs the custom script once it's added to the
@@ -127,31 +136,38 @@ function addScriptElement(customScript) {
  * Unlike evaluating the script's source code with `eval` or `new Function`, this works on websites
  * whose Content Security Policy disallows `unsafe-eval`.
  * @param {object} customScript The custom script, assuming it should be run on navigate.
+ * @returns {Promise<void>} A promise that resolves once the script has run, or rejects if the
+ * custom script is invalid or fails to load.
  */
-function rerunScriptElement(customScript) {
+async function rerunScriptElement(customScript) {
   const scriptElement = createScriptElement(customScript);
 
-  const removeScriptElement = () => scriptElement.remove();
-  scriptElement.addEventListener('load', removeScriptElement, { once: true });
-  scriptElement.addEventListener('error', removeScriptElement, { once: true });
+  try {
+    await new Promise((resolve, reject) => {
+      scriptElement.addEventListener('load', resolve, { once: true });
+      scriptElement.addEventListener('error', () => {
+        reject(new Error(`Failed to load ${scriptElement.src}.`));
+      }, { once: true });
 
-  document.head.appendChild(scriptElement);
+      document.head.appendChild(scriptElement);
+    });
+  } finally {
+    scriptElement.remove();
+  }
 }
 
 /**
- * Run all custom scripts that pass the `predicate` using the `executor`.
- * @param {(customScript: object) => boolean} predicate
- * @param {(customScript: object) => void} executor
- * @returns {Promise<void>}
+ * Fetches the custom scripts declared in custom-scripts.json.
+ * @returns {Promise<object[]>} The custom scripts, or an empty array if the file is absent.
  */
-async function runCustomScripts(predicate, executor) {
+async function fetchCustomScripts() {
   const customScriptsFileName = 'custom-scripts.json';
   const url = resolveAbsoluteUrl(`/${customScriptsFileName}`);
 
   const response = await fetch(url);
   if (!response.ok) {
     // If the file is absent, fail silently.
-    return;
+    return [];
   }
 
   const customScripts = await response.json();
@@ -159,7 +175,7 @@ async function runCustomScripts(predicate, executor) {
     throw new Error(`Content of ${customScriptsFileName} should be an array.`);
   }
 
-  customScripts.filter(predicate).forEach(executor);
+  return customScripts;
 }
 
 /**
@@ -167,15 +183,38 @@ async function runCustomScripts(predicate, executor) {
  * @returns {Promise<void>}
  */
 export async function runCustomPageLoadScripts() {
-  await runCustomScripts(shouldRunOnPageLoad, addScriptElement);
+  const customScripts = await fetchCustomScripts();
+
+  // An invalid script doesn't prevent the other scripts from running.
+  customScripts.filter(shouldRunOnPageLoad).forEach((customScript) => {
+    try {
+      addScriptElement(customScript);
+    } catch (error) {
+      console.error(`Failed to add custom script (${describe(customScript)}):`, error);
+    }
+  });
 }
 
 /**
  * Runs all "on-navigate" and "on-load-and-navigate" scripts.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} A promise that resolves once all the scripts have run or failed.
  */
 export async function runCustomNavigateScripts() {
-  await runCustomScripts(shouldRunOnNavigate, rerunScriptElement);
+  const customScripts = (await fetchCustomScripts()).filter(shouldRunOnNavigate);
+
+  // The script elements are all added at once so that the browser loads the scripts in parallel,
+  // but since they aren't `async` (unless explicitly enabled), the scripts still run in the order
+  // in which they're listed. A script that's invalid or fails to load doesn't prevent the other
+  // scripts from running.
+  const results = await Promise.allSettled(customScripts.map(rerunScriptElement));
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      console.error(
+        `Failed to run custom script (${describe(customScripts[index])}):`,
+        result.reason,
+      );
+    }
+  });
 }
 
 /** Whether the page load scripts have run, meaning that any new content is from a navigation. */

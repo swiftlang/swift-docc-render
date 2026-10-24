@@ -49,13 +49,44 @@ function addedScriptElements() {
   return appendChildSpy.mock.calls.map(([element]) => element);
 }
 
+/**
+ * Waits for pending promises, like the mocked fetch of custom-scripts.json, to settle.
+ * @returns {Promise<void>}
+ */
+function flushPromises() {
+  return new Promise((resolve) => {
+    setTimeout(resolve);
+  });
+}
+
+/**
+ * Runs the navigation scripts, simulating each added script element loading, since jsdom doesn't
+ * load scripts.
+ * @param {(element: HTMLScriptElement) => string} eventType The event to dispatch on each element.
+ * @returns {Promise<void>}
+ */
+async function runNavigateScripts(eventType = () => 'load') {
+  const promise = runCustomNavigateScripts();
+  await flushPromises();
+  addedScriptElements().forEach(element => element.dispatchEvent(new Event(eventType(element))));
+  return promise;
+}
+
 describe('custom-scripts', () => {
+  let consoleErrorSpy;
+
   beforeEach(() => {
     jest.clearAllMocks();
+
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     jest.resetModules();
 
     document.head.innerHTML = '';
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   describe('runCustomPageLoadScripts', () => {
@@ -122,6 +153,23 @@ describe('custom-scripts', () => {
       expect(asyncScript.src).toMatch(/\/custom-scripts\/my-async-script\.js$/);
       expect(asyncScript.async).toBe(true);
     });
+
+    it('skips invalid scripts, adding the other scripts', async () => {
+      setCustomScripts([
+        // A script must have either a `url` or a `name`.
+        { async: true },
+        // A script can't have both a `url` and a `name`.
+        { url: 'https://www.example.com/script.js', name: 'my-local-script' },
+        { name: 'my-other-local-script' },
+      ]);
+
+      await runCustomPageLoadScripts();
+
+      const scriptElements = addedScriptElements();
+      expect(scriptElements).toHaveLength(1);
+      expect(scriptElements[0].src).toMatch(/\/custom-scripts\/my-other-local-script\.js$/);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('runCustomNavigateScripts', () => {
@@ -141,7 +189,7 @@ describe('custom-scripts', () => {
         },
       ]);
 
-      await runCustomNavigateScripts();
+      await runNavigateScripts();
 
       expect(addedScriptElements()).toHaveLength(3);
     });
@@ -152,7 +200,7 @@ describe('custom-scripts', () => {
         { url: 'https://www.example.com/second.js', run: 'on-navigate' },
       ]);
 
-      await runCustomNavigateScripts();
+      await runNavigateScripts();
 
       const scriptElements = addedScriptElements();
       expect(scriptElements.map(element => element.src)).toEqual([
@@ -166,8 +214,8 @@ describe('custom-scripts', () => {
     it('adds a new script element each time the reader navigates', async () => {
       setCustomScripts([{ name: 'my-script.js', run: 'on-navigate' }]);
 
-      await runCustomNavigateScripts();
-      await runCustomNavigateScripts();
+      await runNavigateScripts();
+      await runNavigateScripts();
 
       const scriptElements = addedScriptElements();
       expect(scriptElements).toHaveLength(2);
@@ -181,7 +229,8 @@ describe('custom-scripts', () => {
         { name: 'fails.js', run: 'on-navigate' },
       ]);
 
-      await runCustomNavigateScripts();
+      const promise = runCustomNavigateScripts();
+      await flushPromises();
 
       const [loads, fails] = addedScriptElements();
       expect(document.head.contains(loads)).toBe(true);
@@ -189,9 +238,50 @@ describe('custom-scripts', () => {
 
       loads.dispatchEvent(new Event('load'));
       fails.dispatchEvent(new Event('error'));
+      await promise;
 
       expect(document.head.contains(loads)).toBe(false);
       expect(document.head.contains(fails)).toBe(false);
+    });
+
+    it('waits for the scripts to run before resolving', async () => {
+      setCustomScripts([{ name: 'my-script.js', run: 'on-navigate' }]);
+
+      let hasResolved = false;
+      const promise = runCustomNavigateScripts().then(() => { hasResolved = true; });
+      await flushPromises();
+      expect(hasResolved).toBe(false);
+
+      addedScriptElements()[0].dispatchEvent(new Event('load'));
+      await promise;
+      expect(hasResolved).toBe(true);
+    });
+
+    it('runs the other scripts when one of them fails to load', async () => {
+      setCustomScripts([
+        { name: 'missing.js', run: 'on-navigate' },
+        { name: 'present.js', run: 'on-navigate' },
+      ]);
+
+      await runNavigateScripts(element => (element.src.endsWith('missing.js') ? 'error' : 'load'));
+
+      expect(addedScriptElements()).toHaveLength(2);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('runs the other scripts when one of them is invalid', async () => {
+      setCustomScripts([
+        // A script must have either a `url` or a `name`.
+        { run: 'on-navigate' },
+        { name: 'valid.js', run: 'on-navigate' },
+      ]);
+
+      await runNavigateScripts();
+
+      const scriptElements = addedScriptElements();
+      expect(scriptElements).toHaveLength(1);
+      expect(scriptElements[0].src).toMatch(/\/custom-scripts\/valid\.js$/);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     });
 
     it('does not run scripts without a `run` property', async () => {
@@ -215,7 +305,11 @@ describe('custom-scripts', () => {
         expect.stringMatching(/\/on-load\.js$/),
       ]);
 
-      await runCustomScriptsForNewContent();
+      // Navigation scripts are awaited, so simulate the script loading.
+      const promise = runCustomScriptsForNewContent();
+      await flushPromises();
+      addedScriptElements()[1].dispatchEvent(new Event('load'));
+      await promise;
       expect(addedScriptElements().map(element => element.src)).toEqual([
         expect.stringMatching(/\/on-load\.js$/),
         expect.stringMatching(/\/on-navigate\.js$/),
