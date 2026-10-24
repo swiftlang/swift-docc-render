@@ -8,11 +8,9 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import {
-  runCustomPageLoadScripts,
-  runCustomNavigateScripts,
-  runCustomScriptsForNewContent,
-} from 'docc-render/utils/custom-scripts';
+let runCustomPageLoadScripts;
+let runCustomNavigateScripts;
+let runCustomScriptsForNewContent;
 
 let jsonMock;
 let fetchMock;
@@ -80,7 +78,15 @@ describe('custom-scripts', () => {
 
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
+    // The module caches custom-scripts.json, so load a fresh copy of it for each test.
     jest.resetModules();
+    /* eslint-disable global-require */
+    ({
+      runCustomPageLoadScripts,
+      runCustomNavigateScripts,
+      runCustomScriptsForNewContent,
+    } = require('docc-render/utils/custom-scripts'));
+    /* eslint-enable global-require */
 
     document.head.innerHTML = '';
   });
@@ -314,6 +320,35 @@ describe('custom-scripts', () => {
         expect.stringMatching(/\/on-load\.js$/),
         expect.stringMatching(/\/on-navigate\.js$/),
       ]);
+    });
+  });
+
+  describe('fetching custom-scripts.json', () => {
+    it('only requests the file once', async () => {
+      setCustomScripts([{ name: 'my-script.js', run: 'on-load-and-navigate' }]);
+
+      await runCustomPageLoadScripts();
+      await runNavigateScripts();
+      await runNavigateScripts();
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      // The script still runs on page load and on each navigation.
+      expect(addedScriptElements()).toHaveLength(3);
+    });
+
+    it('requests the file again after failing to fetch it', async () => {
+      setCustomScripts([{ name: 'my-script.js', run: 'on-navigate' }]);
+      const successfulFetch = fetchMock;
+      fetchMock = jest.fn()
+        .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+        .mockImplementation(successfulFetch);
+      window.fetch = fetchMock;
+
+      await expect(runCustomNavigateScripts()).rejects.toThrow('Failed to fetch');
+      await runNavigateScripts();
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(addedScriptElements()).toHaveLength(1);
     });
   });
 });

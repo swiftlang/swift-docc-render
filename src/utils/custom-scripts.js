@@ -157,10 +157,10 @@ async function rerunScriptElement(customScript) {
 }
 
 /**
- * Fetches the custom scripts declared in custom-scripts.json.
+ * Fetches the custom scripts declared in custom-scripts.json from the server.
  * @returns {Promise<object[]>} The custom scripts, or an empty array if the file is absent.
  */
-async function fetchCustomScripts() {
+async function fetchCustomScriptsFromServer() {
   const customScriptsFileName = 'custom-scripts.json';
   const url = resolveAbsoluteUrl(`/${customScriptsFileName}`);
 
@@ -178,12 +178,30 @@ async function fetchCustomScripts() {
   return customScripts;
 }
 
+/** A promise for the custom scripts, fetched once and then reused whenever there's new content. */
+let cachedCustomScriptsPromise;
+
+/**
+ * Fetches the custom scripts declared in custom-scripts.json, only requesting the file once.
+ * @returns {Promise<object[]>} The custom scripts, or an empty array if the file is absent.
+ */
+function getCustomScripts() {
+  if (!cachedCustomScriptsPromise) {
+    cachedCustomScriptsPromise = fetchCustomScriptsFromServer().catch((error) => {
+      // Don't cache the failure, so that the next new content tries again.
+      cachedCustomScriptsPromise = undefined;
+      throw error;
+    });
+  }
+  return cachedCustomScriptsPromise;
+}
+
 /**
  * Runs all "on-load" and "on-load-and-navigate" scripts.
  * @returns {Promise<void>}
  */
 export async function runCustomPageLoadScripts() {
-  const customScripts = await fetchCustomScripts();
+  const customScripts = await getCustomScripts();
 
   // An invalid script doesn't prevent the other scripts from running.
   customScripts.filter(shouldRunOnPageLoad).forEach((customScript) => {
@@ -200,7 +218,7 @@ export async function runCustomPageLoadScripts() {
  * @returns {Promise<void>} A promise that resolves once all the scripts have run or failed.
  */
 export async function runCustomNavigateScripts() {
-  const customScripts = (await fetchCustomScripts()).filter(shouldRunOnNavigate);
+  const customScripts = (await getCustomScripts()).filter(shouldRunOnNavigate);
 
   // The script elements are all added at once so that the browser loads the scripts in parallel,
   // but since they aren't `async` (unless explicitly enabled), the scripts still run in the order
