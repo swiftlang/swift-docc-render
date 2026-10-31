@@ -225,7 +225,7 @@ export default {
       await waitForScrollIntoView(ref);
       this.startObservingPages();
 
-      this.activePageIndex = index;
+      this.activePageIndex = Math.min(index, this.pages.length - 1);
     },
     next(event) {
       this.setActivePage(event, this.activePageIndex + 1);
@@ -258,6 +258,20 @@ export default {
         this.observer?.unobserve(page);
       });
     },
+    async resetObserver() {
+      // the viewport and page elements are replaced when going to or from a
+      // single page, so the observer has to be rebuilt against the new ones
+      this.observer?.disconnect();
+      this.observer = null;
+      this.activePageIndex = Math.min(this.activePageIndex, this.pages.length - 1);
+      await this.$nextTick();
+      if (this.pages.length > 1 && this.$refs.viewport) {
+        this.setupObserver();
+      }
+    },
+  },
+  watch: {
+    'pages.length': 'resetObserver',
   },
   mounted() {
     if (this.pages.length > 1) {
