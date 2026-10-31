@@ -157,6 +157,14 @@ describe('ReplayableVideoAsset', () => {
     expect(replayButton.text()).toBe('video.play');
   });
 
+  it('re-emits `ended` when the video ends', async () => {
+    const wrapper = mountWithProps();
+
+    expect(wrapper.emitted('ended')).toBeFalsy();
+    await wrapper.findComponent(VideoAsset).vm.$emit('ended');
+    expect(wrapper.emitted('ended')).toHaveLength(1);
+  });
+
   it('plays the video if replay button is clicked', async () => {
     const wrapper = mountWithProps();
 
