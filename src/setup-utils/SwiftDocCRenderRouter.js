@@ -17,6 +17,8 @@ import {
 import routes, { fallbackRoutes } from 'docc-render/routes';
 import { baseUrl } from 'docc-render/utils/theme-settings';
 import { addPrefixedRoutes } from 'docc-render/utils/route-utils';
+import { localeIsValid } from 'docc-render/utils/i18n-utils';
+import { serverErrorRouteName } from 'docc-render/constants/router';
 
 const defaultRoutes = [
   ...addPrefixedRoutes(routes),
@@ -45,8 +47,13 @@ export default function createRouterInstance(routerConfig = {}) {
   if (process.env.VUE_APP_TARGET !== 'ide') {
     router.onError((error) => {
       const { route = { path: '/' } } = error;
-      router.replace({
-        name: 'server-error',
+      const { locale } = route.params ?? {};
+      // Keep the requested locale, so the error page renders in it.
+      router.replace(localeIsValid(locale) ? {
+        name: `${serverErrorRouteName}-locale`,
+        params: { locale, pathMatch: route.path.slice(locale.length + 2) },
+      } : {
+        name: serverErrorRouteName,
         params: [route.path],
       });
     });
