@@ -115,6 +115,11 @@ export async function fetchDataForRouteEnter(to, from, next) {
             });
             return null;
           }
+          // A redirect is followed by the non-localized route's own guard.
+          if (!(checkError instanceof RedirectError)) {
+            next(new FetchError(to));
+            return null;
+          }
         }
         // Redirect to the non-localized version of the route.
         next({ ...to, params: paramsWithoutLocale });

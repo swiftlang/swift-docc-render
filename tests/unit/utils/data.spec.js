@@ -261,6 +261,44 @@ describe('fetchDataForRouteEnter', () => {
     window.fetch.mockRestore();
   });
 
+  it('calls the `next` fn with a `FetchError` for the localized route when the default locale page fails', async () => {
+    window.fetch = jest.fn()
+      .mockImplementationOnce(() => notFoundFetchResponse)
+      .mockImplementationOnce(() => badFetchResponse);
+
+    await fetchDataForRouteEnter(localizedTo, from, next);
+    expect(window.fetch).toHaveBeenCalledTimes(2);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(next).toHaveBeenCalledWith(new FetchError(localizedTo));
+    expect(next.mock.calls[0][0].route).toBe(localizedTo);
+
+    window.fetch.mockRestore();
+  });
+
+  it('calls the `next` fn with a `FetchError` for the localized route when the default locale fetch rejects', async () => {
+    window.fetch = jest.fn()
+      .mockImplementationOnce(() => notFoundFetchResponse)
+      .mockImplementationOnce(() => Promise.reject(new TypeError('Failed to fetch')));
+
+    await fetchDataForRouteEnter(localizedTo, from, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(next).toHaveBeenCalledWith(new FetchError(localizedTo));
+    expect(next.mock.calls[0][0].route).toBe(localizedTo);
+
+    window.fetch.mockRestore();
+  });
+
+  it('redirects to the default locale path when the default locale page is redirected', async () => {
+    window.fetch = jest.fn()
+      .mockImplementationOnce(() => notFoundFetchResponse)
+      .mockImplementationOnce(() => redirectResponse);
+
+    await fetchDataForRouteEnter(localizedTo, from, next);
+    expect(next).toHaveBeenCalledWith({ ...localizedTo, params: {} });
+
+    window.fetch.mockRestore();
+  });
+
   it('routes to 404 page when a page with an unsupported locale param returns 404', async () => {
     window.fetch = jest.fn().mockImplementationOnce(() => notFoundFetchResponse);
 
