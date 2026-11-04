@@ -37,7 +37,7 @@ describe('shared Vite plugins', () => {
     expect(baseConfig.resolve.alias['docc-render']).toBe(sourceRoot);
     expect(baseConfig.resolve.dedupe).toEqual(['vue', 'vue-router', 'vue-i18n']);
     expect(baseConfig.optimizeDeps).toEqual({
-      exclude: ['swift-docc-render', 'docc-render'],
+      exclude: ['swift-docc-render', 'docc-render', 'theme'],
       include: [
         'swift-docc-render > css.escape',
         'swift-docc-render > highlight.js/lib/core',

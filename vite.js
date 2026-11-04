@@ -321,7 +321,7 @@ function baseConfiguration({
       const isBuild = command === 'build';
       const userScss = userConfig.css?.preprocessorOptions?.scss;
       const userOutput = userConfig.build?.rolldownOptions?.output;
-      const optimizeDepsExclude = ['swift-docc-render', 'docc-render']
+      const optimizeDepsExclude = ['swift-docc-render', 'docc-render', 'theme']
         .filter(dependency => !userConfig.optimizeDeps?.exclude?.includes(dependency));
       const optimizeDepsInclude = [
         'swift-docc-render > css.escape',
