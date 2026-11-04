@@ -68,6 +68,13 @@ function resolveFile(candidate) {
   ].find(file => fs.existsSync(file));
 }
 
+const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+const exactAlias = (id, file) => ({
+  find: new RegExp(`^${escapeRegExp(id)}$`, 'u'),
+  // Regex alias replacements treat dollar signs as substitution syntax.
+  replacement: file.replaceAll('$', '$$$$'),
+});
+
 function themeAliases(root, relativePath = '') {
   const directory = path.join(root, relativePath);
   if (!fs.existsSync(directory)) return [];
@@ -75,22 +82,14 @@ function themeAliases(root, relativePath = '') {
     const entryPath = path.posix.join(relativePath, entry.name);
     if (entry.isDirectory()) return themeAliases(root, entryPath);
     if (!entry.isFile()) return [];
-    const aliases = [{
-      find: `theme/${entryPath}`,
-      replacement: path.join(root, entryPath),
-    }];
+    const file = path.join(root, entryPath);
+    const aliases = [exactAlias(`theme/${entryPath}`, file)];
     const extension = path.extname(entry.name);
     if (extension) {
-      aliases.push({
-        find: `theme/${entryPath.slice(0, -extension.length)}`,
-        replacement: path.join(root, entryPath),
-      });
+      aliases.push(exactAlias(`theme/${entryPath.slice(0, -extension.length)}`, file));
     }
     if (entry.name === 'index.js') {
-      aliases.push({
-        find: `theme/${relativePath}`,
-        replacement: path.join(root, entryPath),
-      });
+      aliases.push(exactAlias(`theme/${relativePath}`, file));
     }
     return aliases;
   });

@@ -126,19 +126,23 @@ describe('theme fallback', () => {
   });
 
   it('prefers files from a consuming application theme', () => {
-    const component = path.join(themeRoot, 'components', 'Custom.vue');
+    const component = path.join(themeRoot, '$theme', 'components', 'Custom.vue');
     fs.mkdirSync(path.dirname(component), { recursive: true });
     fs.writeFileSync(component, '<template />');
-    const plugin = themeFallback({ themeRoots: [themeRoot] });
+    const plugin = themeFallback({ themeRoots: [path.join(themeRoot, '$theme')] });
     plugin.configResolved({ root: '/consumer' });
     const pluginConfig = plugin.config();
     const overrideAlias = pluginConfig.resolve.alias
-      .find(({ find }) => find === 'theme/components/Custom.vue');
+      .find(({ find }) => (
+        find instanceof RegExp
+        && find.test('theme/components/Custom.vue')
+        && !find.test('theme/components/Custom.vue/child')
+      ));
     const fallbackAlias = pluginConfig.resolve.alias
-      .find(({ find }) => find instanceof RegExp);
+      .find(({ find }) => find.source === '^theme\\/(.*)$');
 
     expect(plugin.resolveId('theme/components/Custom.vue')).toBe(component);
-    expect(overrideAlias.replacement).toBe(component);
+    expect(overrideAlias.replacement).toBe(component.replaceAll('$', '$$$$'));
     expect(fallbackAlias.find.test('theme/components/Icons/CloseIcon.vue')).toBe(true);
   });
 
