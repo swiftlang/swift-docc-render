@@ -8,31 +8,28 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-let fetchThemeSettings;
-let getSetting;
-let themeSettingsState;
+import {
+  fetchThemeSettings,
+  getSetting,
+  themeSettingsState,
+} from '@/utils/theme-settings';
 
 const themeSettings = {
   theme: 'foo',
 };
 
-const jsonMock = jest.fn().mockResolvedValue(themeSettings);
-const fetchMock = jest.fn().mockResolvedValue({
+const jsonMock = vi.fn().mockResolvedValue(themeSettings);
+const fetchMock = vi.fn().mockResolvedValue({
   json: jsonMock,
 });
 
-const resolveAbsoluteUrlMock = jest.fn();
-const mockUrlHelper = {
+const { resolveAbsoluteUrlMock } = vi.hoisted(() => ({
+  resolveAbsoluteUrlMock: vi.fn(),
+}));
+
+vi.mock('docc-render/utils/url-helper', () => ({
   resolveAbsoluteUrl: resolveAbsoluteUrlMock,
-};
-
-jest.mock('docc-render/utils/url-helper', () => (mockUrlHelper));
-
-function importDeps() {
-  jest.resetModules();
-  // eslint-disable-next-line global-require
-  ({ fetchThemeSettings, getSetting, themeSettingsState } = require('@/utils/theme-settings'));
-}
+}));
 
 window.fetch = fetchMock;
 
@@ -40,8 +37,8 @@ describe('theme-settings', () => {
   beforeEach(() => {
     const base = document.createElement('base');
     document.head.appendChild(base);
-    importDeps();
-    jest.clearAllMocks();
+    themeSettingsState.theme = {};
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -51,7 +48,6 @@ describe('theme-settings', () => {
   it('fetches the theme settings from a remote path', async () => {
     document.head.querySelector('base').setAttribute('href', '/');
     resolveAbsoluteUrlMock.mockReturnValue('http://localhost/theme-settings.json');
-    importDeps();
     await fetchThemeSettings();
     expect(resolveAbsoluteUrlMock).toHaveBeenCalledWith('/theme-settings.json');
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -62,7 +58,6 @@ describe('theme-settings', () => {
   it('uses the base href for the json path', async () => {
     document.head.querySelector('base').setAttribute('href', '/bar/foo/');
     resolveAbsoluteUrlMock.mockReturnValue('http://localhost/bar/foo/theme-settings.json');
-    importDeps();
     await fetchThemeSettings();
     expect(resolveAbsoluteUrlMock).toHaveBeenCalledWith('/theme-settings.json');
     expect(fetchMock).toHaveBeenCalledTimes(1);

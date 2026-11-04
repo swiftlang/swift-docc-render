@@ -13,7 +13,6 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-named-default
 import { default as TutorialCTA } from 'docc-render/components/Tutorial/CallToAction.vue';
 
 export default {

@@ -14,11 +14,11 @@
       {{ $t(contentSectionData.title) }}
     </LinkableHeading>
     <dl>
-      <template v-for="param in parameters">
-        <dt class="param-name" :key="`${param.name}:name`">
+      <template v-for="param in parameters" :key="param.name">
+        <dt class="param-name">
           <code>{{ param.name }}</code>
         </dt>
-        <dd class="param-content" :key="`${param.name}:content`">
+        <dd class="param-content">
           <ContentNode :content="param.content" />
         </dd>
       </template>

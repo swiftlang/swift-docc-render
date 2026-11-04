@@ -82,7 +82,7 @@ export class CommunicationBridge {
 }
 
 export default {
-  install(Vue, options) {
+  install(app, options) {
     let backend;
 
     if (options.performanceMetricsEnabled || options.appTarget === 'ide') {
@@ -92,6 +92,6 @@ export default {
     }
 
     // eslint-disable-next-line no-param-reassign
-    Vue.prototype.$bridge = new CommunicationBridge(backend);
+    app.config.globalProperties.$bridge = new CommunicationBridge(backend);
   },
 };

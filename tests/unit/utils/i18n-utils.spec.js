@@ -11,8 +11,8 @@
 import { localeIsValid, updateLocale, getLocaleParam } from '@/utils/i18n-utils';
 import { updateLangTag } from 'docc-render/utils/metadata';
 
-jest.mock('theme/lang/locales.json', () => (
-  [
+vi.mock('theme/lang/locales.json', () => ({
+  default: [
     {
       code: 'en-US',
       name: 'English',
@@ -23,14 +23,14 @@ jest.mock('theme/lang/locales.json', () => (
       name: '简体中文',
       slug: 'cn',
     },
-  ]
-));
-
-jest.mock('docc-render/utils/metadata', () => ({
-  updateLangTag: jest.fn(),
+  ],
 }));
 
-jest.mock('theme/lang/index.js', () => ({
+vi.mock('docc-render/utils/metadata', () => ({
+  updateLangTag: vi.fn(),
+}));
+
+vi.mock('theme/lang/index.js', () => ({
   defaultLocale: 'en',
 }));
 

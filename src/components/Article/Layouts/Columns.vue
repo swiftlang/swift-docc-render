@@ -13,16 +13,14 @@
     class="columns"
     :class="classes"
   >
-    <template v-for="(column, i) in columns">
+    <template v-for="(column, i) in columns" :key="column.media || i">
       <Asset
         :identifier="column.media"
-        :key="column.media"
         :videoAutoplays="false"
       />
       <ContentNode
         v-if="column.content"
         :content="column.content"
-        :key="i"
       />
     </template>
   </div>

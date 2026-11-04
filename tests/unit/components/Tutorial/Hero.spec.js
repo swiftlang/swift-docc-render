@@ -153,7 +153,7 @@ describe('Hero', () => {
     let wrapper;
 
     beforeEach(() => {
-      pauseMock = jest.fn();
+      pauseMock = vi.fn();
       wrapper = mountWithProps();
     });
 

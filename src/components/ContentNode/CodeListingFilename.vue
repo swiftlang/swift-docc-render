@@ -30,6 +30,7 @@ import CodeListingFileIcon from './CodeListingFileIcon.vue';
 
 export default {
   name: 'CodeListingFilename',
+  emits: ['click'],
   components: { FileIcon: CodeListingFileIcon },
   props: {
     // Whether the file name can be clicked. If set, a 'click'

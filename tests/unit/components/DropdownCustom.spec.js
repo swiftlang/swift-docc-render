@@ -57,7 +57,7 @@ describe('DropdownCustom', () => {
     // assert exist
     expect(root.exists()).toBe(true);
     // assert value
-    expect(root.props()).toHaveProperty('value', defaultProps.value);
+    expect(root.props()).toHaveProperty('modelValue', defaultProps.value);
     // assert isOpen class
     expect(root.classes()).not.toContain(OpenedClass);
     wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
@@ -76,7 +76,10 @@ describe('DropdownCustom', () => {
     wrapper = createWrapper();
     const label = wrapper.findComponent('.visuallyhidden');
     expect(label.text()).toBe(defaultProps.ariaLabel);
-    expect(label.attributes()).toHaveProperty('id', expect.stringMatching(/DropdownLabel_\d/));
+    expect(label.attributes()).toHaveProperty(
+      'id',
+      expect.stringMatching(/DropdownLabel_[\w-]+/),
+    );
   });
 
   describe('toggle button', () => {
@@ -95,7 +98,7 @@ describe('DropdownCustom', () => {
       expect(attrs)
         .toHaveProperty('aria-labelledby', expect.stringMatching(/(DropdownLabel_).*(DropdownToggle_)/));
       // id
-      expect(attrs).toHaveProperty('id', expect.stringMatching(/DropdownToggle_\d/));
+      expect(attrs).toHaveProperty('id', expect.stringMatching(/DropdownToggle_[\w-]+/));
       // content
       expect(toggle.find('.form-dropdown-title').text()).toEqual(defaultProps.value);
     });
@@ -163,7 +166,7 @@ describe('DropdownCustom', () => {
       expect(wrapper.emitted('open')).toBeTruthy();
       expect(wrapper.emitted('close')).toBeTruthy();
       // assert the active element is the toggle
-      expect(document.activeElement).toEqual(toggle.element);
+      expect(document.activeElement).toBe(toggle.element);
     });
   });
 
@@ -212,10 +215,10 @@ describe('DropdownCustom', () => {
       const target2 = targets.at(1);
       // go down
       slotProps.navigateOverOptions({ target: target1.element }, +1);
-      expect(document.activeElement).toEqual(target2.element);
+      expect(document.activeElement).toBe(target2.element);
       // go up
       slotProps.navigateOverOptions({ target: target2.element }, -1);
-      expect(document.activeElement).toEqual(target1.element);
+      expect(document.activeElement).toBe(target1.element);
     });
 
     it('does nothing if going `up` from the first element', () => {
@@ -225,7 +228,7 @@ describe('DropdownCustom', () => {
       // go down
       slotProps.navigateOverOptions({ target: target0.element }, -1);
       // nothing changes
-      expect(document.activeElement).toEqual(target0.element);
+      expect(document.activeElement).toBe(target0.element);
     });
 
     it('does nothing if going `down` from the last element', () => {
@@ -235,7 +238,7 @@ describe('DropdownCustom', () => {
       // go down
       slotProps.navigateOverOptions({ target: target1.element }, +1);
       // nothing changes
-      expect(document.activeElement).toEqual(target1.element);
+      expect(document.activeElement).toBe(target1.element);
     });
 
     it('provides the `value`', () => {
@@ -280,7 +283,7 @@ describe('DropdownCustom', () => {
       expect(wrapper.classes()).toContain(OpenedClass);
       await slotProps.closeAndFocusToggler();
       expect(wrapper.classes()).not.toContain(OpenedClass);
-      expect(document.activeElement).toEqual(toggle.element);
+      expect(document.activeElement).toBe(toggle.element);
     });
   });
 
@@ -305,6 +308,6 @@ describe('DropdownCustom', () => {
     wrapper = createWrapper();
     await wrapper.findComponent({ ref: 'dropdownToggle' }).trigger('click');
     const activeElement = wrapper.findComponent(`.${ActiveOptionClass}`);
-    expect(document.activeElement).toEqual(activeElement.element);
+    expect(document.activeElement).toBe(activeElement.element);
   });
 });

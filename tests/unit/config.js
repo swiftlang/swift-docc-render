@@ -8,13 +8,73 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
-import { config } from '@vue/test-utils';
+import { config, RouterLinkStub } from '@vue/test-utils';
+import PortalVue from 'portal-vue';
 import { defaultLocale } from 'theme/lang/index';
+import { vi } from 'vitest';
+import { defineComponent, h } from 'vue';
 
-config.mocks = {
+const readOnlyElementProperties = new Set(['attributes', 'children', 'prefix']);
+const I18nTStub = defineComponent({
+  name: 'I18nTStub',
+  setup(_props, { slots }) {
+    return () => h('span', Object.values(slots).flatMap(slot => slot()));
+  },
+});
+
+process.env.VUE_APP_TITLE = 'Documentation';
+window.TransitionEvent = window.TransitionEvent || window.Event;
+window.IntersectionObserver = vi.fn().mockImplementation(class MockIntersectionObserver {
+  constructor(callback, options = {}) {
+    this.callback = callback;
+    this.root = options.root ?? null;
+    this.rootMargin = options.rootMargin ?? '0px';
+    this.thresholds = options.threshold ?? [0];
+  }
+
+  disconnect = vi.fn();
+
+  observe = vi.fn();
+
+  unobserve = vi.fn();
+});
+
+config.global.mocks = {
   $t: (tKey, secondParam) => (secondParam ? [tKey, ...Object.values(secondParam)].join(' ') : tKey),
-  $tc: tKey => tKey,
   $i18n: {
     locale: defaultLocale,
+  },
+};
+config.global.renderStubDefaultSlot = true;
+config.global.plugins = [PortalVue];
+config.global.stubs = {
+  'i18n-t': I18nTStub,
+  'router-link': RouterLinkStub,
+};
+config.plugins.createStubs = ({ name, component, registerStub }) => {
+  const componentOptions = component.__vccOpts || component;
+  const stub = defineComponent({
+    name: name || 'AnonymousStub',
+    props: componentOptions.props || {},
+    setup(props, { slots }) {
+      return () => {
+        const forwardedProps = Object.fromEntries(
+          Object.entries(props).filter(([key]) => !readOnlyElementProperties.has(key)),
+        );
+        return h(
+          `${(name || 'anonymous').replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase()}-stub`,
+          forwardedProps,
+          config.global.renderStubDefaultSlot ? slots.default?.({}) : undefined,
+        );
+      };
+    },
+  });
+
+  registerStub({ source: component, stub });
+  return stub;
+};
+config.global.config = {
+  warnHandler(message, instance, trace) {
+    throw new Error(`[Vue warn]: ${message}${trace}`);
   },
 };

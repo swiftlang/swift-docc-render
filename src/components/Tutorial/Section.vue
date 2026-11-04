@@ -33,6 +33,7 @@ import SectionSteps from './SectionSteps.vue';
 
 export default {
   name: 'Section',
+  emits: ['runtime-preview-toggle'],
   components: {
     Intro: SectionIntro,
     LinkableSection: LinkableElement,

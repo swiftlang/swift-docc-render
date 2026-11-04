@@ -26,7 +26,9 @@ describe('CallToAction', () => {
 
     const cta = wrapper.findComponent(BaseCTA);
     expect(cta.exists()).toBe(true);
-    expect(cta.props()).toEqual(propsData);
-    expect(cta.attributes('label')).toBe('tutorials.next');
+    expect(cta.props()).toEqual({
+      ...propsData,
+      label: 'tutorials.next',
+    });
   });
 });

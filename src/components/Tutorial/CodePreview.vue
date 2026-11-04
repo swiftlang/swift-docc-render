@@ -65,6 +65,7 @@ function scaledSize({ width, height }, scale = 1) {
 
 export default {
   name: 'CodePreview',
+  emits: ['runtime-preview-toggle'],
   inject: {
     isTargetIDE: {
       default: false,
@@ -171,7 +172,7 @@ export default {
       return this.hasRuntimePreview ? null : this.$t('tutorials.preview.no-preview-available-step');
     },
     togglePreviewText() {
-      return this.$tc('tutorials.preview.title', this.hasRuntimePreview ? 1 : 0);
+      return this.$t('tutorials.preview.title', this.hasRuntimePreview ? 1 : 0);
     },
     textAriaLabel() {
       return `${this.togglePreviewText}, ${

@@ -17,13 +17,13 @@ import PrimaryDropdown from 'docc-render/components/Tutorial/NavigationBar/Prima
 import ReferenceUrlProvider from 'docc-render/components/ReferenceUrlProvider.vue';
 import DropdownCustom from 'docc-render/components/DropdownCustom.vue';
 
-const navigate = jest.fn();
+const navigate = vi.fn();
 
 const RouterLinkStub = {
   name: 'RouterLink',
   props: ['to', 'custom'],
   render() {
-    return this.$scopedSlots.default({
+    return this.$slots.default({
       navigate: () => navigate(this.to),
       isActive: this.to === '/tutorials/technologyx/testtutorialarticle?context=foo', // simulate `isActive`
     });
@@ -105,7 +105,7 @@ describe('Primary Dropdown', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     const localVue = createLocalVue();
     localVue.directive('hide', hide);
 
@@ -117,7 +117,7 @@ describe('Primary Dropdown', () => {
       },
       mocks: {
         $router: {
-          push: jest.fn(),
+          push: vi.fn(),
         },
         $route: {
           query,
@@ -199,7 +199,7 @@ describe('Primary Dropdown', () => {
     // use the down key on the first link
     await firstLink.trigger('keydown.down');
     const secondOption = wrapper.findAll(`.${OptionClass}`).at(1).element;
-    expect(document.activeElement).toEqual(secondOption);
+    expect(document.activeElement).toBe(secondOption);
   });
 
   it('focuses the previous element, when `up` key is used on opened dropdown link', async () => {
@@ -210,11 +210,11 @@ describe('Primary Dropdown', () => {
     // use the down key on the first link
     await firstLink.trigger('keydown.down');
     // assert it is focused
-    expect(document.activeElement).toEqual(secondOption.element);
+    expect(document.activeElement).toBe(secondOption.element);
     // now click up on the active element
     await secondOption.trigger('keydown.up');
     // assert the first element is active now
-    expect(document.activeElement).toEqual(firstLink.element);
+    expect(document.activeElement).toBe(firstLink.element);
   });
 
   describe('when `esc` key is used on opened dropdown link', () => {

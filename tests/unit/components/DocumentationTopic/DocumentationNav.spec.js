@@ -18,9 +18,9 @@ import BreakpointEmitter from '@/components/BreakpointEmitter.vue';
 import { SIDEBAR_HIDE_BUTTON_ID } from 'docc-render/constants/sidebar';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('docc-render/utils/changeElementVOVisibility');
-jest.mock('docc-render/utils/scroll-lock');
-jest.mock('docc-render/utils/FocusTrap');
+vi.mock('docc-render/utils/changeElementVOVisibility');
+vi.mock('docc-render/utils/scroll-lock');
+vi.mock('docc-render/utils/FocusTrap');
 
 const {
   NavBase,
@@ -35,7 +35,7 @@ const stubs = {
 
 const mocks = {
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
   },
   $route: {
     query: {},
@@ -161,7 +161,7 @@ describe('DocumentationNav', () => {
     expect(wrapper.findComponent(LanguageToggle).exists()).toBe(false);
   });
 
-  it('exposes a `menu-items` slot ', () => {
+  it('exposes a `menu-items` slot', () => {
     wrapper = shallowMount(DocumentationNav, {
       stubs,
       propsData,
@@ -173,7 +173,7 @@ describe('DocumentationNav', () => {
     expect(wrapper.text()).toContain(menuItems);
   });
 
-  it('exposes a `after-content` slot ', () => {
+  it('exposes a `after-content` slot', () => {
     const afterContent = 'After Content';
     wrapper = shallowMount(DocumentationNav, {
       stubs,
@@ -214,13 +214,10 @@ describe('DocumentationNav', () => {
     expect(button.attributes('aria-label')).toBe('navigator.open-navigator');
     expect(wrapper.emitted('toggle-sidenav')).toBeTruthy();
     // assert the nav-hide button is focused
-    expect(document.activeElement).toEqual(btn);
+    expect(document.activeElement).toBe(btn);
   });
 
   it('closes the nav, if open and clicking on the sidenav-toggle', async () => {
-    const backup = window.Event;
-    window.Event = null;
-
     wrapper.findComponent(BreakpointEmitter).vm.$emit('change', BreakpointName.medium);
     await flushPromises();
     await wrapper.findComponent('.nav-menucta').trigger('click');
@@ -234,7 +231,6 @@ describe('DocumentationNav', () => {
     await flushPromises();
     expect(wrapper.emitted('toggle-sidenav')).toEqual([[BreakpointName.medium]]);
     expect(toggle.attributes()).not.toHaveProperty('tabindex');
-    window.Event = backup;
   });
 
   it('does not render the sidenav toggle if displaySidenav is false', async () => {

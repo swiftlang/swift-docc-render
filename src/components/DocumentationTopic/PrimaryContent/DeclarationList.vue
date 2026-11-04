@@ -50,6 +50,7 @@ import { buildUrl } from 'docc-render/utils/url-helper';
  */
 export default {
   name: 'DeclarationList',
+  emits: ['update:declListExpanded'],
   components: {
     DeclarationGroup,
     TransitionExpand,

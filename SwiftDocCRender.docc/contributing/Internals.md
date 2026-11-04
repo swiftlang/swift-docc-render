@@ -12,6 +12,23 @@ Each page fetches its required render JSON asynchronously, from the `/data` dire
 
 Even though `swift-docc-render` is a Vue.js application, it defines a variety of components and utilities, that could also be used in a modular fashion by some other Vue application. All components are packaged as raw Vue files, so Vue applications can utilize them as needed.
 
+The package also exports its reusable Vite plugins from `swift-docc-render/vite.js`. A consuming application can use the same aliases, Sass configuration, theme fallback, syntax-highlighting loaders, index template, and distribution license handling as this application:
+
+```js
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import swiftDocCRender from 'swift-docc-render/vite.js';
+
+export default defineConfig({
+  plugins: [
+    ...swiftDocCRender(),
+    vue(),
+  ],
+});
+```
+
+By default, imports with the `theme/` prefix first resolve against the consuming application's `src/theme` directory and then fall back to the files packaged by `swift-docc-render`. Pass a `themeRoots` array to `swiftDocCRender` to use different override directories.
+
 ### Vue Page Structure
 
 Routing in DocC-Render is handled by [Vue Router](https://router.vuejs.org), with routes defined in `src/routes.js`. Pages can be dynamic, meaning a single page can match many urls, but still be rendered by the same Vue Page Component. For example the `/tutorials/:id` route is rendered by the **TutorialOverview** page.
@@ -146,13 +163,13 @@ If you need access to a global mixin or var, from `_core.scss` you have to impor
 
 #### Unit tests
 
-DocC-Render is unit tested, using the [Jest](https://jestjs.io/) testing framework. All components and utilities strive to have a corresponding test file inside the  `tests` folder, mirroring the file's location.
+DocC-Render is unit tested using the [Vitest](https://vitest.dev/) testing framework. All components and utilities strive to have a corresponding test file inside the `tests` folder, mirroring the file's location.
 
 Unit tests can be run via:
 
-* `npm run test:unit`  - run all unittests
+* `npm run test:unit`  - run all unit tests
 * `npm run test:unit:watch`  - run only the modified files and watch for changes
-* `npx run test:unit tests/unit/path/to/spec.js`  - run an individual test file
+* `npm run test:unit tests/unit/path/to/spec.js`  - run an individual test file
 
 #### Code style
 
@@ -166,23 +183,23 @@ To automatically fix any error, run:
 
 `npm run lint:fix`
 
-If you use the development server via `npm run serve`, files are linted on each change. Read more about configuring your linter [here](https://cli.vuejs.org/core-plugins/eslint.html#configuration).
+Read more about configuring the linter in the [ESLint configuration documentation](https://eslint.org/docs/latest/use/configure/).
 
 #### Environment flags
 
-DocC-Render has a few build-time environment flags, that allow you to set configuration parameters before building. Read [How to set Environment Variables in Vue CLI](https://cli.vuejs.org/guide/mode-and-env.html#environment-variables).
+DocC-Render has a few build-time environment flags that allow you to set configuration parameters before building. Read [Vite's environment variable documentation](https://vite.dev/guide/env-and-mode.html).
 
 **List of env variables:**
 
-* **VUE_APP_DEV_SERVER_PROXY** - The HTTP endpoint or  local filepath to read render JSON from when using the development server
-* **VUE_APP_TITLE** - An optional default page title to apply to pages
-* **VUE_APP_HLJS_LANGUAGES** - An optional comma-separated list of highlight.js languages to include in the build
+* **VITE_DEV_SERVER_PROXY** - The HTTP endpoint or local filepath to read render JSON from when using the development server
+* **VITE_APP_TITLE** - An optional default page title to apply to pages
+* **VITE_APP_HLJS_LANGUAGES** - An optional comma-separated list of highlight.js languages to include in the build
 
 #### Available Scripts
 
 These are the most commonly used npm scripts you would need to develop DocC-Render:
 
-* **serve** - used while developing DocC-Render or a theme. Starts up a custom live-reloading server, which serves a local DocC-Render instance.
+* **dev** - used while developing DocC-Render or a theme. Starts up a custom live-reloading server, which serves a local DocC-Render instance.
 * **build** - builds DocC-Render, in a state ready for `docc`.
 * **test** - run the entire DocC-Render test suite.
 * **lint** - run the linter, to check for code styling errors.

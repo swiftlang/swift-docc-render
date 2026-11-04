@@ -16,7 +16,7 @@ import DeviceFrame from '@/components/ContentNode/DeviceFrame.vue';
 import ConditionalWrapper from '@/components/ConditionalWrapper.vue';
 import { flushPromises } from '../../../test-utils';
 
-const getIntrinsicDimensionsSpy = jest.spyOn(assetUtils, 'getIntrinsicDimensions').mockResolvedValue({
+const getIntrinsicDimensionsSpy = vi.spyOn(assetUtils, 'getIntrinsicDimensions').mockResolvedValue({
   width: 100,
   height: 100,
 });
@@ -49,7 +49,7 @@ describe('VideoAsset', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = shallowMount(VideoAsset, { data, propsData, stubs: { ConditionalWrapper } });
   });
 
@@ -62,7 +62,7 @@ describe('VideoAsset', () => {
   });
 
   it('renders a hidden description with unique id for AX purposes if video provides an alt text', () => {
-    const hiddenDesc = wrapper.findComponent('span[hidden=hidden]');
+    const hiddenDesc = wrapper.findComponent('span[hidden]');
     expect(hiddenDesc.exists()).toBe(true);
     expect(hiddenDesc.attributes('id')).toBe(altTextId);
     expect(hiddenDesc.text()).toBe(`video.description ${propsData.alt}`);
@@ -177,14 +177,14 @@ describe('VideoAsset', () => {
 
     expect(video.attributes('autoplay')).toBeFalsy();
     await wrapper.setProps({ autoplays: true });
-    expect(video.attributes('autoplay')).toBe('autoplay');
+    expect(video.attributes('autoplay')).toBe('');
   });
 
   it('sets `controls` using `showsDefaultControls`', async () => {
     const video = wrapper.findComponent('video');
     expect(video.attributes('controls')).toBe(undefined);
     await wrapper.setProps({ showsDefaultControls: true });
-    expect(video.attributes('controls')).toBe('controls');
+    expect(video.attributes('controls')).toBe('');
   });
 
   it('renders a source for the light variant when applicable', async () => {
@@ -249,7 +249,10 @@ describe('VideoAsset', () => {
     const video = wrapper.findComponent('video');
     expect(video.attributes('data-orientation')).toBeFalsy();
 
-    wrapper.vm.$refs.video = { videoWidth: 300, videoHeight: 200 };
+    Object.defineProperties(video.element, {
+      videoWidth: { configurable: true, value: 300 },
+      videoHeight: { configurable: true, value: 200 },
+    });
 
     await video.trigger('loadedmetadata');
     expect(video.attributes('data-orientation')).toBe('landscape');

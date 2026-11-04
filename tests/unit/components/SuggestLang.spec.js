@@ -13,15 +13,17 @@ import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import AppStore from 'docc-render/stores/AppStore';
 import { getLocaleParam, getCodeForSlug } from 'docc-render/utils/i18n-utils';
 
-jest.mock('docc-render/utils/i18n-utils', () => ({
-  getCodeForSlug: jest.fn(value => value),
-  getLocaleParam: jest.fn(slug => ({ params: { locale: slug } })),
+vi.mock('docc-render/utils/i18n-utils', () => ({
+  getCodeForSlug: vi.fn(value => value),
+  getLocaleParam: vi.fn(slug => ({ params: { locale: slug } })),
 }));
 
-jest.mock('docc-render/stores/AppStore', () => ({
-  setPreferredLocale: jest.fn(),
-  state: {
-    preferredLocale: '',
+vi.mock('docc-render/stores/AppStore', () => ({
+  default: {
+    setPreferredLocale: vi.fn(),
+    state: {
+      preferredLocale: '',
+    },
   },
 }));
 
@@ -42,16 +44,16 @@ const href = '/en-US/documentation/bar';
 
 const $route = { path: '/documentation/bar', params: {}, query: { language: 'objc' } };
 
-const resolve = jest.fn(() => ({ href }));
+const resolve = vi.fn(() => ({ href }));
 
 const createWrapper = (mocks = {}) => shallowMount(SuggestLang, {
   mocks: {
+    $t: (key, _values, { locale } = {}) => messages[locale]?.[key] ?? key,
     $i18n: {
-      messages,
       locale: currentLocale,
     },
     $router: {
-      push: jest.fn(),
+      push: vi.fn(),
       resolve,
     },
     $route,
@@ -65,8 +67,8 @@ describe('SuggestLang', () => {
   let closeIcon;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(window.navigator, 'language', 'get').mockReturnValue('en-GB');
+    vi.clearAllMocks();
+    vi.spyOn(window.navigator, 'language', 'get').mockReturnValue('en-GB');
     wrapper = createWrapper();
 
     link = wrapper.find('.suggest-lang__link');
@@ -74,7 +76,7 @@ describe('SuggestLang', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('renders a <SuggestLang> if preferredLocale is different to currentLocale', () => {
@@ -84,7 +86,6 @@ describe('SuggestLang', () => {
   it('does not render if preferredLocale is the currentLocale', () => {
     wrapper = createWrapper({
       $i18n: {
-        messages,
         locale: matchingLocale,
       },
     });
@@ -99,6 +100,7 @@ describe('SuggestLang', () => {
   });
 
   it('sets the preferred locale when the link is clicked', () => {
+    link.element.addEventListener('click', event => event.preventDefault());
     link.trigger('click');
 
     expect(AppStore.setPreferredLocale).toHaveBeenCalledWith(matchingLocale);

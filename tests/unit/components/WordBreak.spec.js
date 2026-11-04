@@ -61,6 +61,18 @@ describe('WordBreak', () => {
         '<span>foo<wbr>Bar<wbr>Baz<wbr>Qux</span>',
       );
     });
+
+    it('renders breaks when text is forwarded through a slot fragment', () => {
+      const ForwardingComponent = {
+        components: { WordBreak },
+        template: '<WordBreak><slot /></WordBreak>',
+      };
+      const wrapper = mount(ForwardingComponent, {
+        slots: { default: 'fooBarBaz' },
+      });
+
+      expect(wrapper.html()).toBe('<span>foo<wbr>Bar<wbr>Baz</span>');
+    });
   });
 
   describe('with ":" character boundaries', () => {
@@ -129,7 +141,7 @@ describe('WordBreak', () => {
 
   describe('with a `tag` prop', () => {
     const mountWithTextAndTag = (text, tag) => mountWithText(text, {
-      context: { props: { tag } },
+      propsData: { tag },
     });
 
     it('renders with that tag instead of <span>', () => {
@@ -164,7 +176,7 @@ describe('WordBreak', () => {
     it('renders with <wbr> inserted where appropriate given the pattern', () => {
       expect(mountWithText(
         'https://foo.bar/baz/qux',
-        { context: { props: { safeBoundaryPattern: /(\w(?=\.\w)|\w(?=\/))/g } } },
+        { propsData: { safeBoundaryPattern: /(\w(?=\.\w)|\w(?=\/))/g } },
       ).html()).toBe(
         '<span>https://foo<wbr>.bar<wbr>/baz<wbr>/qux</span>',
       );

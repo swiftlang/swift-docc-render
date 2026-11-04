@@ -74,7 +74,7 @@ describe('QuickNavigationPreview', () => {
       state: PreviewState.success,
     });
     // eslint-disable-next-line no-underscore-dangle
-    expect(wrapper.vm._provided).toHaveProperty('store', PreviewStore);
+    expect(wrapper.vm.$.provides).toHaveProperty('store', PreviewStore);
   });
 
   it('renders a "Preview unavailable" message for errors', () => {

@@ -54,9 +54,9 @@ describe('Card', () => {
     ...options,
   });
 
-  const cardTitleIdRE = /card_title_[0-9]+/;
-  const cardEyebrowIdRE = /card_eyebrow_[0-9]+/;
-  const cardContentIdRE = /card_content_[0-9]+/;
+  const cardTitleIdRE = /card_title_[\w-]+/;
+  const cardEyebrowIdRE = /card_eyebrow_[\w-]+/;
+  const cardContentIdRE = /card_content_[\w-]+/;
 
   it('renders a .card root', () => {
     const card = mountCard();
@@ -66,7 +66,8 @@ describe('Card', () => {
 
   it('applies the correct AX tags', () => {
     const card = mountCard();
-    expect(card.attributes('aria-labelledby')).toMatch(/card_title_[0-9]+ card_eyebrow_[0-9]+/);
+    expect(card.attributes('aria-labelledby'))
+      .toMatch(/card_title_[\w-]+ card_eyebrow_[\w-]+/);
     expect(card.attributes('aria-describedby')).toMatch(cardContentIdRE);
 
     const eyebrow = card.find('.eyebrow');

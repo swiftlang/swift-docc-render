@@ -13,7 +13,7 @@ import LinkableHeading from 'docc-render/components/ContentNode/LinkableHeading.
 
 describe('LinkableHeading', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   const stubs = { 'router-link': RouterLinkStub };
 
@@ -58,9 +58,22 @@ describe('LinkableHeading', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.attributes('id')).toBe('title');
     const headerAnchor = wrapper.findComponent('.header-anchor');
-    expect(headerAnchor.props('to')).toEqual({ hash: '#title', query: mocks.$route.query });
+    expect(headerAnchor.props('to')).toBe('?context=foo#title');
     expect(headerAnchor.text()).toBe('Title');
     expect(headerAnchor.attributes('data-after-text')).toBe('accessibility.in-page-link');
+  });
+
+  it('does not double-encode percent-encoded characters in an anchor', () => {
+    const wrapper = shallowMount(LinkableHeading, {
+      stubs,
+      mocks,
+      propsData: {
+        anchor: 'operator%2F(_%3A_%3A)',
+      },
+    });
+
+    expect(wrapper.findComponent('.header-anchor').props('to'))
+      .toBe('?context=foo#operator%2F(_%3A_%3A)');
   });
 
   it('does not render anchor if there is no anchor', () => {

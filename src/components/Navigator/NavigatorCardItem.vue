@@ -16,10 +16,10 @@
     :id="`container-${item.uid}`"
     :aria-hidden="isRendered ? null : 'true'"
     :hideNavigatorIcon="isGroupMarker"
-    @keydown.left.native.prevent="handleLeftKeydown"
-    @keydown.right.exact.native.prevent="handleRightKeydown"
-    @keydown.enter.native.prevent="clickReference"
-    @keydown.alt.right.native.prevent="toggleEntireTree"
+    @keydown.left.prevent="handleLeftKeydown"
+    @keydown.right.exact.prevent="handleRightKeydown"
+    @keydown.enter.prevent="clickReference"
+    @keydown.alt.right.prevent="toggleEntireTree"
   >
     <template #depth-spacer>
       <span
@@ -64,15 +64,15 @@
         v-if="isParent"
         hidden
         :id="parentLabel"
-      >{{ $tc(
+      >{{ $t(
         'filter.parent-label',
-        item.childUIDs.length,
         {
           'number-siblings': item.index + 1,
           'total-siblings': item.siblingsCount,
           'parent-siblings': item.parent,
           'number-parent': item.childUIDs.length
-        }
+        },
+        item.childUIDs.length
       ) }}</span>
       <span
         v-if="!isParent"
@@ -94,8 +94,8 @@
         :aria-describedby="`${ariaDescribedBy} ${usageLabel}`"
         class="leaf-link"
         ref="reference"
-        @click.exact.native="handleClick"
-        @click.alt.native.prevent="toggleEntireTree"
+        @click.exact="handleClick"
+        @click.alt.prevent="toggleEntireTree"
       >
         <HighlightMatches
           :text="item.title"
@@ -120,16 +120,17 @@ import Reference from 'docc-render/components/ContentNode/Reference.vue';
 import Badge from 'docc-render/components/Badge.vue';
 import { TopicTypes } from 'docc-render/constants/TopicTypes';
 import { ChangeTypesOrder } from 'docc-render/constants/Changes';
-import { IdState } from 'vue-virtual-scroller';
+import { useIdState } from 'vue-virtual-scroller';
 import { waitFrames } from 'docc-render/utils/loading';
 
 export default {
   name: 'NavigatorCardItem',
-  mixins: [
-    IdState({
+  emits: ['focus-parent', 'navigate', 'toggle', 'toggle-full', 'toggle-siblings'],
+  setup() {
+    return useIdState({
       idProp: vm => vm.item.uid,
-    }),
-  ],
+    });
+  },
   components: {
     BaseNavigatorCardItem,
     HighlightMatches,

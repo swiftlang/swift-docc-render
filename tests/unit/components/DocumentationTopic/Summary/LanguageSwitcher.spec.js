@@ -19,8 +19,8 @@ const {
   Title,
 } = LanguageSwitcher.components;
 
-jest.mock('docc-render/utils/assets', () => ({
-  normalizeRelativePath: jest.fn(name => `/${name}`),
+vi.mock('docc-render/utils/assets', () => ({
+  normalizeRelativePath: vi.fn(name => `/${name}`),
 }));
 
 describe('LanguageSwitcher', () => {
@@ -40,7 +40,7 @@ describe('LanguageSwitcher', () => {
       },
     },
     $router: {
-      push: jest.fn(),
+      push: vi.fn(),
     },
   };
 
@@ -129,7 +129,7 @@ describe('LanguageSwitcher', () => {
   });
 
   it('stores the preferred language when a link is clicked', async () => {
-    const store = { setPreferredLanguage: jest.fn() };
+    const store = { setPreferredLanguage: vi.fn() };
     wrapper = shallowMount(LanguageSwitcher, {
       mocks,
       propsData,
@@ -147,7 +147,7 @@ describe('LanguageSwitcher', () => {
   });
 
   it('does not store the preferred language when links are clicked for IDE targets', () => {
-    const store = { setPreferredLanguage: jest.fn() };
+    const store = { setPreferredLanguage: vi.fn() };
     wrapper = shallowMount(LanguageSwitcher, {
       mocks,
       propsData,

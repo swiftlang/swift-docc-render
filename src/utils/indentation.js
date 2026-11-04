@@ -61,7 +61,6 @@ function indentObjcDeclaration(codeElement) {
  * @param {HTMLElement} codeElement
  * @param {('occ'|'swift')} language
  */
-// eslint-disable-next-line import/prefer-default-export
 export function indentDeclaration(codeElement, language) {
   const originalHtml = codeElement.innerHTML;
 

@@ -15,7 +15,7 @@ const section2 = { title: 'Bar', level: 3, anchor: 'bar' };
 
 describe('OnThisPageSectionsStoreBase', () => {
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
   it('adds sections to the state with i18n true by default', () => {
     OnThisPageSectionsStoreBase.addOnThisPageSection(section);

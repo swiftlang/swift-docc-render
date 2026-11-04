@@ -39,8 +39,8 @@
       <!-- Do not add newlines in <pre>, as they'll appear in the rendered HTML. -->
       <pre><CodeBlock><template
         v-for="(line, index) in syntaxHighlightedLines"
-      ><span
         :key="index"
+      ><span
         :class="[
           'code-line-container',
           {
@@ -85,6 +85,7 @@ export const LineStyle = {
 
 export default {
   name: 'CodeListing',
+  emits: ['file-name-click'],
   components: {
     Filename: CodeListingFilename,
     CodeBlock,

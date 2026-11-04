@@ -21,10 +21,9 @@
     <div class="tabs-content">
       <div class="tabs-content-container">
         <transition-group name="fade">
-          <template v-for="title in titles">
+          <template v-for="title in titles" :key="title">
             <div
               v-show="title === currentTitle"
-              :key="title"
               :class="{ active: title === currentTitle }"
               class="tab-container"
             >

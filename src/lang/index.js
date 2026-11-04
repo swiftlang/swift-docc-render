@@ -23,7 +23,7 @@ import locales from './locales.json';
 
 // default locale
 export const defaultLocale = process.env.VUE_APP_DEFAULT_LOCALE
- ?? locales.find(locale => locale.default).slug;
+ || locales.find(locale => locale.default).slug;
 // translated locales
 export const messages = {
   ar,

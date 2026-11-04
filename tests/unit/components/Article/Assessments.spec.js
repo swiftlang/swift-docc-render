@@ -9,7 +9,6 @@
 */
 
 import { shallowMount } from '@vue/test-utils';
-// eslint-disable-next-line import/no-named-default
 import { default as TutorialAssessments } from 'docc-render/components/Tutorial/Assessments.vue';
 import Assessments from 'docc-render/components/Article/Assessments.vue';
 
@@ -30,6 +29,7 @@ describe('Assessments', () => {
       propsData,
       stubs: {
         TutorialAssessments: {
+          props: TutorialAssessments.props,
           template: '<div><slot name="success"></slot></div>',
         },
       },

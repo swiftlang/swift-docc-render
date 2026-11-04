@@ -33,8 +33,8 @@ describe('TopicsLinkBlock', () => {
   let wrapper;
 
   const store = {
-    reset: jest.fn(),
-    setAPIChanges: jest.fn(),
+    reset: vi.fn(),
+    setAPIChanges: vi.fn(),
     state: {
       onThisPageSections: [],
       apiChanges: null,
@@ -508,30 +508,30 @@ describe('TopicsLinkBlock', () => {
         });
       });
 
-      it('attaches changed classes if the topic has been modified', () => {
-        assertHasAPIChanges('modified', false);
+      it('attaches changed classes if the topic has been modified', async () => {
+        await assertHasAPIChanges('modified', false);
       });
 
-      it('attaches changed classes if the topic has been added', () => {
-        assertHasAPIChanges('added', false);
+      it('attaches changed classes if the topic has been added', async () => {
+        await assertHasAPIChanges('added', false);
       });
 
-      it('attaches changed classes if the topic has been deprecated', () => {
-        assertHasAPIChanges('deprecated', false);
+      it('attaches changed classes if the topic has been deprecated', async () => {
+        await assertHasAPIChanges('deprecated', false);
       });
     });
 
     describe('when the topic has an abstract', () => {
-      it('attaches changed classes if the topic has been modified', () => {
-        assertHasAPIChanges('modified', true);
+      it('attaches changed classes if the topic has been modified', async () => {
+        await assertHasAPIChanges('modified', true);
       });
 
-      it('attaches changed classes if the topic has been added', () => {
-        assertHasAPIChanges('added', true);
+      it('attaches changed classes if the topic has been added', async () => {
+        await assertHasAPIChanges('added', true);
       });
 
-      it('attaches changed classes if the topic has been deprecated', () => {
-        assertHasAPIChanges('deprecated', true);
+      it('attaches changed classes if the topic has been deprecated', async () => {
+        await assertHasAPIChanges('deprecated', true);
       });
     });
   });

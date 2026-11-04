@@ -50,7 +50,8 @@ describe('TabNavigator.spec', () => {
     expect(wrapper.findComponent(Tabnav).props()).toEqual({
       position: 'start',
       vertical: false,
-      value: titles[0],
+      modelValue: titles[0],
+      value: undefined,
     });
     expect(wrapper.findAllComponents(TabnavItem)).toHaveLength(3);
     const tabs = wrapper.findAll('.tab-container');
@@ -77,10 +78,10 @@ describe('TabNavigator.spec', () => {
     const wrapper = createWrapper();
     await flushPromises();
     const tabnav = wrapper.findComponent(Tabnav);
-    tabnav.vm.$emit('input', titles[1]);
+    tabnav.vm.$emit('update:modelValue', titles[1]);
     await wrapper.vm.$nextTick();
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('Second');
-    expect(tabnav.props('value')).toEqual(titles[1]);
+    expect(tabnav.props('modelValue')).toEqual(titles[1]);
   });
 
   it('selects the added tab when adding a tab', async () => {
@@ -90,7 +91,7 @@ describe('TabNavigator.spec', () => {
     await wrapper.setProps({ titles: longerTitles });
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('Fourth');
     const tabnav = wrapper.findComponent(Tabnav);
-    expect(tabnav.props('value')).toEqual(longerTitles[3]);
+    expect(tabnav.props('modelValue')).toEqual(longerTitles[3]);
   });
 
   it('selects first tab when deleting current tab', async () => {
@@ -101,7 +102,7 @@ describe('TabNavigator.spec', () => {
     await wrapper.setProps({ titles });
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('First');
     const tabnav = wrapper.findComponent(Tabnav);
-    expect(tabnav.props('value')).toEqual(titles[0]);
+    expect(tabnav.props('modelValue')).toEqual(titles[0]);
   });
 
   it('keep currently selected tab when deleting a tab', async () => {
@@ -114,7 +115,7 @@ describe('TabNavigator.spec', () => {
     await wrapper.setProps({ titles: removedTitles });
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('Fourth'); // Keeps current tab
     const tabnav = wrapper.findComponent(Tabnav);
-    expect(tabnav.props('value')).toEqual(longerTitles[3]);
+    expect(tabnav.props('modelValue')).toEqual(longerTitles[3]);
   });
 
   it('selects correct tab when changing a tab', async () => {
@@ -125,20 +126,20 @@ describe('TabNavigator.spec', () => {
     await wrapper.setProps({ titles: changedLastTab });
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('Last');
     let tabnav = wrapper.findComponent(Tabnav);
-    expect(tabnav.props('value')).toEqual(changedLastTab[2]);
+    expect(tabnav.props('modelValue')).toEqual(changedLastTab[2]);
 
     const changedFirstTab = ['changed first tab',
       'A Longer tab title', 'changed last tab'];
     await wrapper.setProps({ titles: changedFirstTab });
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('First');
     tabnav = wrapper.findComponent(Tabnav);
-    expect(tabnav.props('value')).toEqual(changedFirstTab[0]);
+    expect(tabnav.props('modelValue')).toEqual(changedFirstTab[0]);
 
     const changedMidTab = ['changed first tab',
       'changed middle tab', 'changed last tab'];
     await wrapper.setProps({ titles: changedMidTab });
     expect(wrapper.findComponent('.tab-container.active').text()).toBe('Middle');
     tabnav = wrapper.findComponent(Tabnav);
-    expect(tabnav.props('value')).toEqual(changedMidTab[1]);
+    expect(tabnav.props('modelValue')).toEqual(changedMidTab[1]);
   });
 });

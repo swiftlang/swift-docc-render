@@ -15,11 +15,11 @@ import LanguageToggle
 import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.vue';
 import { createEvent, flushPromises } from '../../../../../test-utils';
 
-jest.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/loading');
 
 const { NavMenuItemBase } = LanguageToggle.components;
 
-const closeNav = jest.fn().mockResolvedValue('');
+const closeNav = vi.fn().mockResolvedValue('');
 
 describe('LanguageToggle', () => {
   let wrapper;
@@ -37,13 +37,13 @@ describe('LanguageToggle', () => {
       path: '/documentation/foo',
     },
     $router: {
-      push: jest.fn(),
+      push: vi.fn(),
     },
   };
 
   const provide = {
     store: {
-      setPreferredLanguage: jest.fn(),
+      setPreferredLanguage: vi.fn(),
     },
   };
 
@@ -63,7 +63,7 @@ describe('LanguageToggle', () => {
 
   beforeEach(() => {
     wrapper = createWrapper();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders `NavMenuItemBase` at the root', () => {

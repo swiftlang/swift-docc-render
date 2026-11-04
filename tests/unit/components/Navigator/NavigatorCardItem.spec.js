@@ -17,7 +17,7 @@ import Reference from '@/components/ContentNode/Reference.vue';
 import { waitFrames } from 'docc-render/utils/loading';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('docc-render/utils/loading');
+vi.mock('docc-render/utils/loading');
 
 const {
   Badge,
@@ -59,7 +59,7 @@ const createWrapper = ({ propsData, ...others } = {}) => shallowMount(NavigatorC
 
 describe('NavigatorCardItem', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     if (document.activeElement) document.activeElement.blur();
   });
   it('renders the NavigatorCardItem', () => {
@@ -84,6 +84,22 @@ describe('NavigatorCardItem', () => {
     expect(cardItem.attributes('id'))
       .toBe(`container-${defaultProps.item.uid}`);
     expect(cardItem.attributes('data-nesting-index')).toBe(String(defaultProps.item.depth));
+  });
+
+  it('passes plural interpolation values to the parent-label translation', () => {
+    const $t = vi.fn(key => key);
+    createWrapper({ mocks: { $t } });
+
+    expect($t).toHaveBeenCalledWith(
+      'filter.parent-label',
+      {
+        'number-siblings': defaultProps.item.index + 1,
+        'total-siblings': defaultProps.item.siblingsCount,
+        'parent-siblings': defaultProps.item.parent,
+        'number-parent': defaultProps.item.childUIDs.length,
+      },
+      defaultProps.item.childUIDs.length,
+    );
   });
 
   it('renders the NavigationCardItem with an icon override', () => {
@@ -219,7 +235,7 @@ describe('NavigatorCardItem', () => {
   it('emits a `toggle` event, when clicking the tree-toggle button', () => {
     const wrapper = createWrapper();
     wrapper.findComponent('.tree-toggle').trigger('click');
-    expect(wrapper.emitted()).toEqual({ toggle: [[defaultProps.item]] });
+    expect(wrapper.emitted('toggle')).toEqual([[defaultProps.item]]);
   });
 
   it('emits a `toggle-full` event, when alt + clicking the tree-toggle button', () => {
@@ -227,7 +243,7 @@ describe('NavigatorCardItem', () => {
     wrapper.findComponent('.tree-toggle').trigger('click', {
       altKey: true,
     });
-    expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
+    expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
   });
 
   it('emits a `toggle-full` event, when @keydown.right + alt/option the tree-toggle button', () => {
@@ -235,7 +251,7 @@ describe('NavigatorCardItem', () => {
     wrapper.findComponent('.tree-toggle').trigger('keydown.right', {
       altKey: true,
     });
-    expect(wrapper.emitted()).toEqual({ 'toggle-full': [[defaultProps.item]] });
+    expect(wrapper.emitted('toggle-full')).toEqual([[defaultProps.item]]);
   });
 
   it('emits a `toggle-siblings` event, when cmd + clicking the tree-toggle button', () => {
@@ -243,7 +259,7 @@ describe('NavigatorCardItem', () => {
     wrapper.findComponent('.tree-toggle').trigger('click', {
       metaKey: true,
     });
-    expect(wrapper.emitted()).toEqual({ 'toggle-siblings': [[defaultProps.item]] });
+    expect(wrapper.emitted('toggle-siblings')).toEqual([[defaultProps.item]]);
   });
 
   it('adds a temporary `animating` class, on `@toggle`', async () => {
@@ -339,7 +355,7 @@ describe('NavigatorCardItem', () => {
   describe('keyboard navigation', () => {
     it('clicks the reference link on `@keydown.enter`', () => {
       const wrapper = createWrapper();
-      const spy = jest.spyOn(wrapper.findComponent(Reference).vm.$el, 'click');
+      const spy = vi.spyOn(wrapper.findComponent(Reference).vm.$el, 'click');
       wrapper.trigger('keydown.enter');
       expect(spy).toHaveBeenCalledTimes(1);
     });
@@ -434,7 +450,7 @@ describe('NavigatorCardItem', () => {
     it('renders a hidden span telling how to use the key arrows', () => {
       const wrapper = createWrapper();
       const label = wrapper.findComponent(`#usage-${defaultProps.item.uid}`);
-      expect(label.attributes('hidden')).toBe('hidden');
+      expect(label.attributes('hidden')).toBe('');
       expect(label.text())
         .toBe('filter.navigate');
     });
@@ -479,8 +495,8 @@ describe('NavigatorCardItem', () => {
     it('renders a aria-describedby with parent label if it is a parent', () => {
       const wrapper = createWrapper();
       const label = wrapper.findComponent(`#label-parent-${defaultProps.item.uid}`);
-      expect(label.attributes('hidden')).toBe('hidden');
-      expect(label.text()).toBe('filter.parent-label');
+      expect(label.attributes('hidden')).toBe('');
+      expect(label.text()).toBe('filter.parent-label 2 5 Foo 3');
     });
 
     it('renders a aria-describedby with sibling label if it is not a parent', () => {
@@ -493,7 +509,7 @@ describe('NavigatorCardItem', () => {
         },
       });
       const label = wrapper.findComponent(`#label-${defaultProps.item.uid}`);
-      expect(label.attributes('hidden')).toBe('hidden');
+      expect(label.attributes('hidden')).toBe('');
       expect(label.text())
         .toBe('filter.siblings-label 2 5 Foo');
 
@@ -510,7 +526,7 @@ describe('NavigatorCardItem', () => {
         },
       });
       await flushPromises();
-      expect(document.activeElement).not.toEqual(wrapper.element);
+      expect(document.activeElement).not.toBe(wrapper.element);
       await wrapper.setProps({
         isFocused: true,
         enableFocus: true,
@@ -519,7 +535,7 @@ describe('NavigatorCardItem', () => {
       expect(waitFrames).toHaveBeenCalledTimes(1);
       expect(waitFrames).toHaveBeenCalledWith(8);
       const leafLink = wrapper.findComponent('.leaf-link');
-      expect(document.activeElement).toEqual(leafLink.element);
+      expect(document.activeElement).toBe(leafLink.element);
     });
 
     it('does not focus itself, if `isRendered` or `enableFocus` are `false`', async () => {
@@ -531,12 +547,12 @@ describe('NavigatorCardItem', () => {
         },
       });
       await flushPromises();
-      expect(document.activeElement).not.toEqual(wrapper.element);
+      expect(document.activeElement).not.toBe(wrapper.element);
       await wrapper.setProps({ isFocused: true });
       await flushPromises();
       expect(waitFrames).toHaveBeenCalledTimes(1);
       expect(waitFrames).toHaveBeenCalledWith(8);
-      expect(document.activeElement).not.toEqual(wrapper.element);
+      expect(document.activeElement).not.toBe(wrapper.element);
     });
 
     it('exposes a #card-item-content slot', () => {

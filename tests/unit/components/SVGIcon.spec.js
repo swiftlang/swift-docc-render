@@ -12,14 +12,14 @@ import SVGIcon from '@/components/SVGIcon.vue';
 import { shallowMount } from '@vue/test-utils';
 import { getSetting } from 'docc-render/utils/theme-settings';
 
-jest.mock('docc-render/utils/theme-settings');
+vi.mock('docc-render/utils/theme-settings');
 
 getSetting.mockReturnValue(undefined);
 
 const mockBaseUrl = '/developer/';
 
-jest.mock('docc-render/utils/assets', () => ({
-  normalizePath: jest.fn(name => mockBaseUrl + name),
+vi.mock('docc-render/utils/assets', () => ({
+  normalizePath: vi.fn(name => mockBaseUrl + name),
 }));
 
 const createWrapper = attrs => shallowMount(SVGIcon, {

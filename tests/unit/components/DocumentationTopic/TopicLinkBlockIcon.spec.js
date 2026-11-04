@@ -38,7 +38,7 @@ describe('TopicLinkBlockIcon', () => {
         role: TopicRole.devLink, // no icon for this
       },
     });
-    expect(wrapper.html()).toBeFalsy();
+    expect(wrapper.html()).toBe('<!--v-if-->');
   });
 
   it('uses the technology icon for collections', () => {

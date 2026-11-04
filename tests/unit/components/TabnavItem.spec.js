@@ -20,7 +20,7 @@ const createWrapper = ({ propsData, ...other } = {}) => {
     provide: {
       tabnavData: {
         activeTab: 'foo',
-        selectTab: jest.fn(),
+        selectTab: vi.fn(),
       },
     },
     slots: {
@@ -58,7 +58,7 @@ describe('TabnavItem', () => {
     const { wrapper, config } = createWrapper();
     const link = wrapper.findComponent('a.tabnav-link');
     expect(link.classes()).not.toContain('active');
-    expect(link.attributes('aria-current')).toBe('false');
+    expect(link.attributes('aria-current')).toBeUndefined();
     await wrapper.setProps({
       value: config.provide.tabnavData.activeTab,
     });

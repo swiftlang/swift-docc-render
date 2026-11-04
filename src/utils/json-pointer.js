@@ -59,5 +59,4 @@ function* tokenize(pointer) {
   yield decode(encodedToken);
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export { tokenize };

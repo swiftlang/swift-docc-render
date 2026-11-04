@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import Card from 'docc-render/components/Card.vue';
 import TopicTypeIcon from 'docc-render/components/TopicTypeIcon.vue';
 import { TopicRole } from 'docc-render/constants/roles';
@@ -51,7 +52,9 @@ export default {
   components: {
     TopicTypeIcon,
     Card,
-    ContentNode: () => import('docc-render/components/ContentNode.vue'),
+    ContentNode: defineAsyncComponent(
+      () => import('docc-render/components/ContentNode.vue'),
+    ),
   },
   mixins: [referencesProvider],
   props: {

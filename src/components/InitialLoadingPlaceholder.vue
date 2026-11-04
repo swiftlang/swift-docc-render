@@ -21,8 +21,8 @@ export default {
     };
   },
   created() {
-    const cb = () => { this.loaded = true; };
-    this.$router.onReady(cb, cb);
+    const markAsLoaded = () => { this.loaded = true; };
+    this.$router.isReady().then(markAsLoaded, markAsLoaded);
   },
 };
 </script>

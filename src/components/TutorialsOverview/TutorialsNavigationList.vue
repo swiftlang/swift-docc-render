@@ -23,11 +23,11 @@ export default { name: 'TutorialsNavigationList' };
   list-style-type: none;
   margin: 0;
 
-  li + li:not(.volume--named) {
+  > :deep(li + li:not(.volume--named)) {
     margin-top: 24px;
   }
 
-  .volume--named + .volume--named {
+  > :deep(.volume--named + .volume--named) {
     margin-top: 12px;
   }
 }
