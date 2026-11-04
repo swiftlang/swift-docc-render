@@ -70,6 +70,23 @@ describe('SwiftDocCRenderRouter', () => {
     });
   });
 
+  it('keeps a valid locale in the "server-error" route', () => {
+    const routerInstance = SwiftDocCRenderRouter();
+    const onError = routerInstance.onError.mock.calls[0][0];
+
+    onError(new FetchError({ path: '/ja-JP/documentation/foo', params: { locale: 'ja-JP' } }));
+    expect(routerInstance.replace).toHaveBeenCalledWith({
+      name: 'server-error-locale',
+      params: { locale: 'ja-JP', pathMatch: 'documentation/foo' },
+    });
+
+    onError(new FetchError({ path: '/fake/documentation/foo', params: { locale: 'fake' } }));
+    expect(routerInstance.replace).toHaveBeenCalledWith({
+      name: 'server-error',
+      params: ['/fake/documentation/foo'],
+    });
+  });
+
   it('does not have an error handler for IDE targets', () => {
     process.env.VUE_APP_TARGET = 'ide';
     expect(SwiftDocCRenderRouter().onError.mock.calls.length).toBe(0);

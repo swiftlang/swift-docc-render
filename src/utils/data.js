@@ -15,6 +15,7 @@ import {
 import emitWarningForSchemaVersionMismatch from 'docc-render/utils/schema-version-check';
 import { defaultLocale } from 'theme/lang/index';
 import { localeIsValid } from 'docc-render/utils/i18n-utils';
+import { notFoundRouteName } from 'docc-render/constants/router';
 import RedirectError from 'docc-render/errors/RedirectError';
 import FetchError from 'docc-render/errors/FetchError';
 
@@ -100,14 +101,33 @@ export async function fetchDataForRouteEnter(to, from, next) {
       // Destructure the locale out of the route params, leaving the rest.
       const { locale, ...paramsWithoutLocale } = to.params ?? {};
       if (locale && locale !== defaultLocale && localeIsValid(locale)) {
-        // Call `next` with the same route but without the locale param,
-        // redirecting to the non-localized version of the route.
+        // Dropping the locale prefix gives the non-localized version of the path.
+        const pathWithoutLocale = to.path.slice(locale.length + 1);
+        try {
+          await fetchData(createDataPath(pathWithoutLocale), to.query);
+        } catch (checkError) {
+          if (checkError?.status === 404) {
+            // The page doesn't exist in the default locale either, so show the
+            // 404 page in the requested locale.
+            next({
+              name: `${notFoundRouteName}-locale`,
+              params: { locale, pathMatch: pathWithoutLocale.slice(1) },
+            });
+            return null;
+          }
+          // A redirect is followed by the non-localized route's own guard.
+          if (!(checkError instanceof RedirectError)) {
+            next(new FetchError(to));
+            return null;
+          }
+        }
+        // Redirect to the non-localized version of the route.
         next({ ...to, params: paramsWithoutLocale });
         return null;
       }
       // route to 404 page if missing data, but not in IDE build
       next({
-        name: 'not-found',
+        name: notFoundRouteName,
         params: [to.path],
       });
     } else {
