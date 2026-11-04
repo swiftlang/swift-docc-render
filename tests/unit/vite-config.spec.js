@@ -31,7 +31,7 @@ describe('shared Vite plugins', () => {
     const baseConfig = plugins.find(({ name }) => name === 'swift-docc-render-base-config')
       .config({}, { command: 'build' });
     const indexPlugin = plugins.find(({ name }) => name === 'swift-docc-render-index-template');
-    indexPlugin.configResolved({ command: 'build' });
+    indexPlugin.configResolved({ base: `/${encodeURI(BASE_URL_PLACEHOLDER)}/` });
 
     expect(baseConfig.base).toBe(`/${BASE_URL_PLACEHOLDER}/`);
     expect(baseConfig.resolve.alias['docc-render']).toBe(sourceRoot);
@@ -53,6 +53,17 @@ describe('shared Vite plugins', () => {
     expect(baseConfig.css.preprocessorOptions.scss.additionalData).toContain("$build-target: 'ide'");
     expect(indexPlugin.transformIndexHtml.handler('__SWIFT_DOCC_RENDER_TITLE__'))
       .toBe('Custom Documentation');
+    expect(indexPlugin.transformIndexHtml.handler('__SWIFT_DOCC_RENDER_BASE_URL__'))
+      .toBe(`${BASE_URL_PLACEHOLDER}/`);
+  });
+
+  it('uses the consuming application base in the index template', () => {
+    const indexPlugin = swiftDocCRender()
+      .find(({ name }) => name === 'swift-docc-render-index-template');
+    indexPlugin.configResolved({ base: '/otherbase/' });
+
+    expect(indexPlugin.transformIndexHtml.handler('__SWIFT_DOCC_RENDER_BASE_URL__'))
+      .toBe('/otherbase/');
   });
 
   it('preserves consuming application configuration', () => {

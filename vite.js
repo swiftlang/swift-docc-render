@@ -210,7 +210,7 @@ export function localDocCArchive(archivePath) {
 }
 
 export function indexTemplate({ title }) {
-  let isBuild;
+  let baseUrl;
   const noScript = fs.readFileSync(
     path.join(sourceRoot, 'assets/global-elements/noscript.html'),
     'utf8',
@@ -219,12 +219,14 @@ export function indexTemplate({ title }) {
   return {
     name: 'swift-docc-render-index-template',
     configResolved(config) {
-      isBuild = config.command === 'build';
+      // Vite URL-encodes the placeholder; keep it root-relative for transformIndex.js.
+      baseUrl = decodeURI(config.base) === `/${BASE_URL_PLACEHOLDER}/`
+        ? `${BASE_URL_PLACEHOLDER}/`
+        : config.base;
     },
     transformIndexHtml: {
       order: 'pre',
       handler(html) {
-        const baseUrl = isBuild ? `${BASE_URL_PLACEHOLDER}/` : '/';
         return html
           .replaceAll('__SWIFT_DOCC_RENDER_BASE_URL__', baseUrl)
           .replace('__SWIFT_DOCC_RENDER_TITLE__', title)
