@@ -7,7 +7,7 @@ SPAs are web apps that render dynamically at runtime entirely in the browser, us
 
 ## Getting Started
 
-> Note: requires [Node.js](https://nodejs.org/en/download/) v22.17.0
+> Note: requires [Node.js](https://nodejs.org/en/download/) v22.23.4
 > and [npm](https://www.npmjs.com/package/npm) v10.9.2. An easy way to set these up is to install
 > [nvm](https://github.com/nvm-sh/nvm) and run `nvm install` from within the Swift-DocC-Render
 > repository. To use these versions as the default, add `--default` to the installation command.
