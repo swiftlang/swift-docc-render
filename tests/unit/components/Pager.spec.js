@@ -10,6 +10,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Pager from 'docc-render/components/Pager.vue';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
+import { flushPromises } from '../../../test-utils';
 
 const GUTTERS_WIDTH = 174;
 
@@ -179,5 +180,40 @@ describe('Pager', () => {
     const p = wrapper.findComponent('.pager p');
     expect(p.exists()).toBe(true);
     expect(p.text()).toBe('test: foobar');
+  });
+
+  it('starts observing the pages when a single page becomes several', async () => {
+    const wrapper = shallowMount(Pager, { propsData: { pages: ['foo'] } });
+    expect(window.IntersectionObserver).not.toHaveBeenCalled();
+
+    await wrapper.setProps({ pages: ['foo', 'bar', 'qux'] });
+    await flushPromises();
+
+    expect(window.IntersectionObserver).toHaveBeenCalledTimes(1);
+    const { observe } = window.IntersectionObserver.mock.results[0].value;
+    expect(observe).toHaveBeenCalledTimes(3);
+  });
+
+  it('keeps the active page in range when there are fewer pages', async () => {
+    const wrapper = shallowMount(Pager, { propsData });
+    await wrapper.findAll('.indicator').at(2).trigger('click');
+    await flushPromises();
+    expect(wrapper.findAll('.page').at(2).classes()).toContain('active');
+
+    await wrapper.setProps({ pages: ['foo', 'bar'] });
+    await flushPromises();
+
+    expect(wrapper.findAll('.page').at(1).classes()).toContain('active');
+  });
+
+  it('stops observing when the pages collapse into a single page', async () => {
+    const wrapper = shallowMount(Pager, { propsData });
+    const { disconnect } = window.IntersectionObserver.mock.results[0].value;
+
+    await wrapper.setProps({ pages: ['foo'] });
+    await flushPromises();
+
+    expect(disconnect).toHaveBeenCalled();
+    expect(window.IntersectionObserver).toHaveBeenCalledTimes(1);
   });
 });
