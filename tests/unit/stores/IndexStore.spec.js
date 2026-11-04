@@ -57,6 +57,7 @@ describe('IndexStore', () => {
     errorFetching: false,
     errorFetchingDiffs: false,
     technologyProps: {},
+    topLevelNodes: [],
   };
 
   beforeEach(() => {

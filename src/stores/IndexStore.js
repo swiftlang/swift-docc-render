@@ -11,6 +11,7 @@
 export default {
   state: {
     flatChildren: null,
+    topLevelNodes: [],
     references: {},
     apiChanges: null,
     apiChangesVersion: null,
@@ -21,6 +22,7 @@ export default {
   },
   reset() {
     this.state.flatChildren = null;
+    this.state.topLevelNodes = [];
     this.state.references = {};
     this.state.apiChanges = null;
     this.state.apiChangesVersion = null;
@@ -34,6 +36,9 @@ export default {
   },
   setReferences(references) {
     this.state.references = references;
+  },
+  setTopLevelNodes(nodes) {
+    this.state.topLevelNodes = nodes || [];
   },
   setApiChanges(diff) {
     this.state.apiChanges = diff;
