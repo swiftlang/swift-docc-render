@@ -126,6 +126,7 @@ export default {
     onVideoEnd() {
       this.isPlaying = false;
       this.videoEnded = true;
+      this.$emit('ended');
     },
     onVideoPlaying() {
       const { video } = this.$refs.asset.$refs;
