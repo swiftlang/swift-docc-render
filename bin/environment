@@ -12,8 +12,8 @@
 # Prints system environment information.
 #
 # Example Output:
-# Node version: v24.21.0
-# npm version: 11.19.0
+# Node version: v26.13.0
+# npm version: 11.20.0
 # Browser version: <!-- If applicable, insert your browser name and version number -->
 # URL: <!-- If applicable, insert the URL where the bug was reproducible -->
 # Xcode: Xcode 13.0
