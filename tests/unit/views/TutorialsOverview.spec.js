@@ -12,6 +12,11 @@ import { shallowMount } from '@vue/test-utils';
 import TutorialsOverview from 'docc-render/views/TutorialsOverview.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 
+// Custom scripts are tested separately; don't fetch custom-scripts.json when content is rendered.
+jest.mock('docc-render/utils/custom-scripts', () => ({
+  runCustomScriptsForNewContent: jest.fn().mockResolvedValue(),
+}));
+
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 const { Overview } = TutorialsOverview.components;
 

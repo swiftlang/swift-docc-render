@@ -22,6 +22,11 @@ import hide from 'docc-render/directives/hide';
 import Topic from 'docc-render/views/Topic.vue';
 import createRouterInstance from 'docc-render/setup-utils/SwiftDocCRenderRouter';
 
+// Custom scripts are tested separately; don't fetch custom-scripts.json when content is rendered.
+jest.mock('docc-render/utils/custom-scripts', () => ({
+  runCustomScriptsForNewContent: jest.fn().mockResolvedValue(),
+}));
+
 const router = createRouterInstance();
 
 jest.mock('docc-render/utils/theme-settings');

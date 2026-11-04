@@ -16,6 +16,11 @@ import Tutorial from 'docc-render/components/Tutorial.vue';
 import onPageLoadScrollToFragment from 'docc-render/mixins/onPageLoadScrollToFragment';
 import { fetchDataForRouteEnter } from '@/utils/data';
 
+// Custom scripts are tested separately; don't fetch custom-scripts.json when content is rendered.
+jest.mock('docc-render/utils/custom-scripts', () => ({
+  runCustomScriptsForNewContent: jest.fn().mockResolvedValue(),
+}));
+
 jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
 jest.mock('@/utils/data');
 

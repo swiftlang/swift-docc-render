@@ -8,6 +8,8 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { runCustomScriptsForNewContent } from 'docc-render/utils/custom-scripts';
+
 export default {
   inject: {
     performanceMetricsEnabled: {
@@ -40,6 +42,13 @@ export default {
           time,
         },
       });
+
+      // Run custom scripts if the topic data is in the DOM
+      if (this.topicData) {
+        runCustomScriptsForNewContent().catch((error) => {
+          console.error('Failed to run custom scripts:', error);
+        });
+      }
     },
     /**
      * @param {Object} data

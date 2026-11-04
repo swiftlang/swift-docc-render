@@ -19,6 +19,11 @@ import onThisPageRegistrator from '@/mixins/onThisPageRegistrator';
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
+// Custom scripts are tested separately; don't fetch custom-scripts.json when content is rendered.
+jest.mock('docc-render/utils/custom-scripts', () => ({
+  runCustomScriptsForNewContent: jest.fn().mockResolvedValue(),
+}));
+
 jest.mock('docc-render/mixins/onThisPageRegistrator');
 jest.mock('docc-render/utils/theme-settings');
 
