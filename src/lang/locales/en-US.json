@@ -184,7 +184,8 @@
   "error": {
     "unknown": "An unknown error occurred.",
     "image": "Image failed to load",
-    "not-found": "The page you're looking for can't be found."
+    "not-found": "The page you're looking for can't be found.",
+    "back-to-documentation": "Back to Documentation"
   },
   "color-scheme": {
     "select": "Select a color scheme preference",

@@ -183,7 +183,8 @@
   "error": {
     "unknown": "Es ist ein unbekannter Fehler aufgetreten.",
     "image": "Laden des Bildes fehlgeschlagen",
-    "not-found": "Die von dir gesuchte Seite wurde nicht gefunden."
+    "not-found": "Die von dir gesuchte Seite wurde nicht gefunden.",
+    "back-to-documentation": "Zurück zur Dokumentation"
   },
   "color-scheme": {
     "select": "Bevorzugtes Farbschema auswählen",
