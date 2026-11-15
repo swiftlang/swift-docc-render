@@ -160,7 +160,10 @@ export default {
       document.body.style.removeProperty('width');
 
       // restore scrolled Y position after resetting the position property
-      window.scrollTo(0, Math.abs(scrolledClientY));
+      window.scrollTo({
+        top: Math.abs(scrolledClientY),
+        left: 0,
+      });
     }
     isLocked = false;
   },
