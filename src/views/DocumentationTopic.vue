@@ -142,8 +142,8 @@ export default {
         this.topicDataDefault = data;
       },
     },
-    topicKey: ({ $route, topicProps }) => [
-      $route.path,
+    topicKey: ({ topicProps }) => [
+      topicProps.identifier,
       topicProps.interfaceLanguage,
     ].join(),
     topicProps() {

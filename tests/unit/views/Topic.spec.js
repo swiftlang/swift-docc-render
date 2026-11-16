@@ -51,6 +51,25 @@ describe('Topic', () => {
     expect(wrapper.element.childElementCount === 0).toBe(true);
   });
 
+  it('keys the topic using its render data identifier', async () => {
+    const identifier = {
+      interfaceLanguage: 'swift',
+      url: '/tutorials/new-page',
+    };
+    await wrapper.setData({
+      topicData: {
+        hierarchy: {},
+        identifier,
+        kind: 'project',
+        metadata: {},
+        references: {},
+        sections: [],
+      },
+    });
+
+    expect(wrapper.vm.topicKey).toBe([identifier.url, identifier.interfaceLanguage].join());
+  });
+
   it('provides a positive offset for `navigationBarHeight`', () => {
     // eslint-disable-next-line no-underscore-dangle
     expect(wrapper.vm.$.provides.navigationBarHeight).toBe(52);

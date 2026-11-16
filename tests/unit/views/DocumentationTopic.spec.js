@@ -256,6 +256,15 @@ describe('DocumentationTopic', () => {
     });
   });
 
+  it('keys the topic using its render data identifier', async () => {
+    await wrapper.setData({ topicData });
+
+    expect(wrapper.vm.topicKey).toBe([
+      topicData.identifier.url,
+      topicData.identifier.interfaceLanguage,
+    ].join());
+  });
+
   it('renders an inactive link, when no technologies root paths', async () => {
     wrapper = createWrapper();
 

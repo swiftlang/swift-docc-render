@@ -46,6 +46,21 @@ describe('TutorialsOverview', () => {
     expect(overview.exists()).toBe(true);
   });
 
+  it('keys the overview using its render data identifier', async () => {
+    const identifier = {
+      interfaceLanguage: 'swift',
+      url: '/tutorials/new-overview',
+    };
+    await wrapper.setData({
+      topicData: {
+        ...topicData,
+        identifier,
+      },
+    });
+
+    expect(wrapper.vm.topicKey).toBe([identifier.url, identifier.interfaceLanguage].join());
+  });
+
   it('uses the onPageLoadScrollToFragment mixin', () => {
     expect(onPageLoadScrollToFragment.mounted).toHaveBeenCalled();
   });

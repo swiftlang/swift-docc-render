@@ -41,8 +41,8 @@ export default {
       references,
       sections,
     }),
-    topicKey: ({ $route, topicData }) => [
-      $route.path,
+    topicKey: ({ topicData }) => [
+      topicData.identifier.url,
       topicData.identifier.interfaceLanguage,
     ].join(),
   },

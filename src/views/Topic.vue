@@ -70,8 +70,8 @@ export default {
         technologyNavigation,
       };
     },
-    topicKey: ({ $route, topicData }) => [
-      $route.path,
+    topicKey: ({ topicData }) => [
+      topicData.identifier.url,
       topicData.identifier.interfaceLanguage,
     ].join(),
   },
