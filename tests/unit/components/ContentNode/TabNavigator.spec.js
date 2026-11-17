@@ -59,7 +59,9 @@ describe('TabNavigator.spec', () => {
     expect(tabs.at(0).classes()).toContain('active');
     expect(tabs.at(0).isVisible()).toBe(true);
     expect(tabs.at(1).classes()).not.toContain('active');
-    expect(tabs.at(1).isVisible()).toBe(false);
+    // TODO: Restore isVisible() after the jsdom 31 computed-style regression is fixed.
+    // expect(tabs.at(1).isVisible()).toBe(false);
+    expect(tabs.at(1).element.style.display).toBe('none');
     expect(tabs.at(0).text()).toEqual('First');
   });
 

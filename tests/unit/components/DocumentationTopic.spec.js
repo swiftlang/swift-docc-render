@@ -1158,7 +1158,9 @@ describe('DocumentationTopic', () => {
     });
     let container = wrapper.findComponent(OnThisPageStickyContainer);
     expect(container.exists()).toBe(true);
-    expect(container.isVisible()).toBe(false);
+    // TODO: Restore isVisible() after the jsdom 31 computed-style regression is fixed.
+    // expect(container.isVisible()).toBe(false);
+    expect(container.element.style.display).toBe('none');
     await wrapper.setData({
       topicState: {
         contentWidth: ON_THIS_PAGE_CONTAINER_BREAKPOINT + 10,

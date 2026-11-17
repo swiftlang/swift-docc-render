@@ -12,9 +12,22 @@ import { fileURLToPath } from 'node:url';
 import { configDefaults, defineConfig, mergeConfig } from 'vitest/config';
 import viteConfig from './vite.config.js';
 
+const assetPattern = /\.(gif|jpe?g|png|svg|webp)$/u;
+const fileMock = fileURLToPath(new URL('./tests/unit/file-mock.js', import.meta.url));
+
 export default defineConfig(configEnv => mergeConfig(
   viteConfig(configEnv),
   defineConfig({
+    plugins: [{
+      name: 'swift-docc-render-test-asset-mock',
+      enforce: 'pre',
+      resolveId: {
+        order: 'pre',
+        handler(id) {
+          return assetPattern.test(id) ? fileMock : null;
+        },
+      },
+    }],
     resolve: {
       alias: [
         {
@@ -22,14 +35,6 @@ export default defineConfig(configEnv => mergeConfig(
           replacement: fileURLToPath(
             new URL('./tests/unit/vue-test-utils-compat.js', import.meta.url),
           ),
-        },
-        {
-          find: /^theme\/.*\.(gif|jpe?g|png|svg|webp)$/,
-          replacement: fileURLToPath(new URL('./tests/unit/file-mock.js', import.meta.url)),
-        },
-        {
-          find: /\.(gif|jpe?g|png|svg|webp)$/,
-          replacement: fileURLToPath(new URL('./tests/unit/file-mock.js', import.meta.url)),
         },
         {
           find: 'vue-virtual-scroller',
