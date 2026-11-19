@@ -61,11 +61,18 @@ describe('updateLocale', () => {
     expect(env.$i18n.locale).toBe('cn');
     expect(updateLangTag).toHaveBeenCalledTimes(1);
   });
+
+  it.each([undefined, ''])('uses the default locale for a %j locale param', (slug) => {
+    const defaultEnv = { $i18n: { locale: 'cn' } };
+    updateLocale(slug, defaultEnv);
+    expect(defaultEnv.$i18n.locale).toBe('en');
+    expect(updateLangTag).toHaveBeenLastCalledWith('en-US');
+  });
 });
 
 describe('getLocaleParam', () => {
   it('returns a params object', () => {
     expect(getLocaleParam('cn')).toEqual(params('cn'));
-    expect(getLocaleParam('en')).toEqual(params(undefined));
+    expect(getLocaleParam('en')).toEqual(params(''));
   });
 });

@@ -38,14 +38,14 @@ export const pagesRoutes = [
     ),
   },
   {
-    path: '/tutorials/:id/:pathMatch(.*)',
+    path: '/tutorials/:id/:pathMatch(.*)+',
     name: 'topic',
     component: () => import(
       'theme/views/Topic.vue'
     ),
   },
   {
-    path: '/documentation:pathMatch(.*)',
+    path: '/documentation/:pathMatch(.*)*',
     name: documentationTopicName,
     component: () => import(
       'theme/views/DocumentationTopic.vue'
