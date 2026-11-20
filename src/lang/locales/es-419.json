@@ -183,7 +183,8 @@
   "error": {
     "unknown": "Ocurrió un error desconocido.",
     "image": "Error al cargar la imagen",
-    "not-found": "No se encuentra la página que buscas."
+    "not-found": "No se encuentra la página que buscas.",
+    "back-to-documentation": "Volver a la documentación"
   },
   "color-scheme": {
     "select": "Selecciona el esquema de colores que prefieras",

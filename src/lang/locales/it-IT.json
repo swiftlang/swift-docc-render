@@ -183,7 +183,8 @@
   "error": {
     "unknown": "Si è verificato un errore sconosciuto.",
     "image": "Impossibile caricare l'immagine",
-    "not-found": "La pagina richiesta non è stata trovata."
+    "not-found": "La pagina richiesta non è stata trovata.",
+    "back-to-documentation": "Torna alla documentazione"
   },
   "color-scheme": {
     "select": "Seleziona una preferenza per lo schema colore",
