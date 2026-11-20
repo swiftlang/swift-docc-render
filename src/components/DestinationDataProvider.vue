@@ -87,12 +87,13 @@ export default {
     },
   },
   render() {
-    return this.$slots.default({
+    const nodes = this.$slots.default({
       url: this.linkUrl || '',
       title: this.linkTitle || '',
       formatAriaLabel: this.formatAriaLabel,
       isExternal: this.isExternal,
     });
+    return nodes.length === 1 ? nodes[0] : nodes;
   },
 };
 </script>
