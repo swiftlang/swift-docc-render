@@ -190,23 +190,25 @@ export function flattenModules(modules) {
 }
 
 function extractRootModule(modules) {
-  const flattenedModules = flattenModules(modules);
+  // most of the time, it is expected that `modules` always has a single item
+  // that represents the top-level root node of the navigation tree—return it
+  // right away, since a merged-archive root's own nested member modules
+  // should never be treated as competing root candidates
+  if (modules.length === 1) return modules[0];
+
   // note: this "root" path won't always necessarily come at the beginning of
   // the URL in situations where the renderer is being hosted at some path
   // prefix
   const rootPathPattern = /(\/documentation\/[^/]+)/;
   const rootPath = window.location.pathname.match(rootPathPattern)?.[1] ?? '';
-  // most of the time, it is expected that `data` always has a single item
-  // that represents the top-level root node of the navigation tree
-  //
-  // there may be rare, unexpected scenarios where multiple top-level root
-  // nodes are provide for some reason—if that happens, we would prefer the one
-  // with a path that most closely resembles the current URL path
-  //
-  // otherwise, the first provided node will be used
-  return flattenedModules.length === 1 ? flattenedModules[0] : (flattenedModules.find(module => (
-    module.path.toLowerCase().endsWith(rootPath.toLowerCase())
-  )) ?? flattenedModules[0]);
+  const matchesRootPath = ({ path }) => path.toLowerCase().endsWith(rootPath.toLowerCase());
+
+  // in rare cases multiple top-level roots are provided
+  // prefer the one whose path matches the current URL, then a matching
+  // nested module, and finally the first module
+  return modules.find(matchesRootPath)
+    ?? flattenModules(modules).find(matchesRootPath)
+    ?? modules[0];
 }
 
 /**

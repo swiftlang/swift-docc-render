@@ -25,7 +25,7 @@
       "current": "Current {thing}"
     },
     "assessment": {
-      "check-your-understanding": "Check Your Understanding",
+      "check-your-understanding": "Check your understanding",
       "success-message": "Great job, you've answered all the questions for this tutorial.",
       "answer-result": "Answer {answer} is {result}",
       "correct": "correct",
@@ -177,7 +177,7 @@
     "maximum": "Maximum",
     "maximumLength": "Maximum length",
     "possible-types": "Type | Possible types",
-    "possible-values": "Value | Possible Values"
+    "possible-values": "Value | Possible values"
   },
   "content-type": "Content-Type: {value}",
   "read-only": "Read-only",

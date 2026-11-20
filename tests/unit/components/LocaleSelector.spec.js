@@ -10,7 +10,7 @@
 
 import { shallowMount } from '@vue/test-utils';
 import LocaleSelector from 'docc-render/components/LocaleSelector.vue';
-import { updateLocale, getLocaleParam } from 'docc-render/utils/i18n-utils';
+import { getLocaleParam } from 'docc-render/utils/i18n-utils';
 import AppStore from 'docc-render/stores/AppStore';
 
 jest.mock('theme/lang/locales.json', () => (
@@ -39,8 +39,7 @@ jest.mock('theme/lang/locales.json', () => (
 ));
 
 jest.mock('docc-render/utils/i18n-utils', () => ({
-  updateLocale: jest.fn(),
-  getLocaleParam: jest.fn(),
+  getLocaleParam: jest.fn(slug => ({ params: { locale: slug } })),
 }));
 
 jest.mock('docc-render/stores/AppStore', () => ({
@@ -51,15 +50,23 @@ jest.mock('docc-render/stores/AppStore', () => ({
 const { ChevronThickIcon } = LocaleSelector.components;
 const availableLocales = ['en-US', 'zh-CN', 'ja-JP', 'ko-KR'];
 
+const $route = { path: '/documentation/bar', params: {}, query: { language: 'objc' } };
+
 describe('LocaleSelector', () => {
   let wrapper;
+  const resolve = jest.fn(({ params }) => ({ href: `/${params.locale}${$route.path}` }));
+  const locationAssignSpy = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(window, 'location', 'get').mockReturnValue({ assign: locationAssignSpy });
     wrapper = shallowMount(LocaleSelector, {
       mocks: {
         $router: {
           push: jest.fn(),
+          resolve,
         },
+        $route,
       },
       propsData: {
         availableLocales,
@@ -67,19 +74,27 @@ describe('LocaleSelector', () => {
     });
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('renders the locale selector', () => {
     expect(wrapper.element.matches('div.locale-selector')).toBe(true);
     expect(wrapper.findComponent('select').exists()).toBe(true);
   });
 
-  it('updates router when option is selected', () => {
+  it('navigates with a normal page load when option is selected', () => {
     const cnOption = wrapper.findAll('option').at(1);
     const slug = cnOption.attributes('value');
     cnOption.trigger('change');
 
-    expect(updateLocale).toHaveBeenCalledTimes(1);
     expect(getLocaleParam).toHaveBeenCalledTimes(1);
     expect(getLocaleParam).toHaveBeenCalledWith(slug);
+    expect(resolve).toHaveBeenCalledWith({ params: { locale: slug }, query: $route.query });
+    expect(locationAssignSpy).toHaveBeenCalledTimes(1);
+    expect(locationAssignSpy).toHaveBeenCalledWith('/cn/documentation/bar');
+    // navigation does not go through the router
+    expect(wrapper.vm.$router.push).not.toHaveBeenCalled();
     expect(AppStore.setPreferredLocale).toHaveBeenCalledTimes(1);
     expect(AppStore.setPreferredLocale).toHaveBeenCalledWith(slug);
   });

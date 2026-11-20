@@ -405,6 +405,43 @@ describe('when multiple top-level children are provided', () => {
       expect(flattenedIndex.swift.length).toBe(1);
       expect(flattenedIndex.swift[0].title).toBe(a.children[0].title);
     });
+
+    it('does not let a nested module outrank the sole top-level root (merged archive)', () => {
+      const alphaKit = {
+        type: 'module',
+        title: 'AlphaKit',
+        path: '/documentation/alphakit',
+        children: [
+          { type: 'article', title: 'AlphaArticle', path: '/documentation/alphakit/alphaarticle' },
+        ],
+      };
+      const betaKit = {
+        type: 'module',
+        title: 'BetaKit',
+        path: '/documentation/betakit',
+        children: [
+          { type: 'article', title: 'BetaArticle', path: '/documentation/betakit/betaarticle' },
+        ],
+      };
+      const packageRoot = {
+        type: 'module',
+        title: 'Spec SDK',
+        path: '/documentation/specsdk',
+        children: [alphaKit, betaKit],
+      };
+
+      // simulate a direct/hard load of a page nested under one of the
+      // member modules, which used to cause that module's own path to
+      // match instead of the package root's
+      Object.defineProperty(window, 'location', {
+        value: new URL('http://localhost/documentation/alphakit/alphaarticle'),
+      });
+
+      const flattenedIndex = flattenNavigationIndex({ swift: [packageRoot] });
+      const titles = flattenedIndex.swift.map(item => item.title);
+      expect(titles).toContain('AlphaKit');
+      expect(titles).toContain('BetaKit');
+    });
   });
 
   describe('extractTechnologyProps', () => {
@@ -434,6 +471,38 @@ describe('when multiple top-level children are provided', () => {
     it('skips empty languages', () => {
       const props = extractTechnologyProps({ occ: [], swift: [a] });
       expect(props.swift.technology).toBe(a.title);
+    });
+
+    it('does not let a nested module outrank the sole top-level root (merged archive)', () => {
+      const alphaKit = {
+        type: 'module',
+        title: 'AlphaKit',
+        path: '/documentation/alphakit',
+        children: [
+          { type: 'article', title: 'AlphaArticle', path: '/documentation/alphakit/alphaarticle' },
+        ],
+      };
+      const betaKit = {
+        type: 'module',
+        title: 'BetaKit',
+        path: '/documentation/betakit',
+        children: [
+          { type: 'article', title: 'BetaArticle', path: '/documentation/betakit/betaarticle' },
+        ],
+      };
+      const packageRoot = {
+        type: 'module',
+        title: 'Spec SDK',
+        path: '/documentation/specsdk',
+        children: [alphaKit, betaKit],
+      };
+
+      Object.defineProperty(window, 'location', {
+        value: new URL('http://localhost/documentation/alphakit/alphaarticle'),
+      });
+
+      const props = extractTechnologyProps({ swift: [packageRoot] });
+      expect(props.swift.technology).toBe('Spec SDK');
     });
   });
 });

@@ -554,6 +554,7 @@ describe('DocumentationTopic', () => {
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
     expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
+    expect(smalls.at(0).classes()).toContain('deprecated');
 
     // only beta
     await wrapper.setProps({
@@ -563,6 +564,7 @@ describe('DocumentationTopic', () => {
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
     expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.beta');
+    expect(smalls.at(0).classes()).toContain('beta');
 
     // only deprecated
     await wrapper.setProps({
@@ -572,6 +574,7 @@ describe('DocumentationTopic', () => {
     smalls = title.findAll('small');
     expect(smalls.length).toBe(1);
     expect(smalls.at(0).attributes('data-tag-name')).toBe('aside-kind.deprecated');
+    expect(smalls.at(0).classes()).toContain('deprecated');
   });
 
   it('renders an abstract', () => {
