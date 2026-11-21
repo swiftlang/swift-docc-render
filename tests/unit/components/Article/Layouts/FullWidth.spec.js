@@ -95,7 +95,7 @@ describe('FullWidth', () => {
       ]);
 
       expect(groups.at(1).findComponent(LinkableElement).exists()).toBe(true);
-      expect(groups.at(1).props()).toEqual({
+      expect(groups.at(1).findComponent(LinkableElement).props()).toEqual({
         anchor: content[1].anchor,
         depth: 0,
         tag: 'div',
@@ -107,7 +107,7 @@ describe('FullWidth', () => {
       ]);
 
       expect(groups.at(2).findComponent(LinkableElement).exists()).toBe(true);
-      expect(groups.at(2).props()).toEqual({
+      expect(groups.at(2).findComponent(LinkableElement).props()).toEqual({
         anchor: content[3].anchor,
         depth: 1,
         tag: 'div',

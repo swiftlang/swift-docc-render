@@ -29,6 +29,7 @@ import Asset from 'docc-render/components/Asset.vue';
 import ContentNode from 'docc-render/components/ContentNode.vue';
 import GridRow from 'docc-render/components/GridRow.vue';
 import GridColumn from 'docc-render/components/GridColumn.vue';
+import createElement from 'docc-render/utils/create-element';
 
 import CallToActionButton from './CallToActionButton.vue';
 
@@ -39,7 +40,7 @@ export default {
     Button: CallToActionButton,
     ContentNode,
     LeftColumn: {
-      render(createElement) {
+      render() {
         return createElement(
           GridColumn,
           {
@@ -55,7 +56,7 @@ export default {
       },
     },
     RightColumn: {
-      render(createElement) {
+      render() {
         return createElement(
           GridColumn,
           {

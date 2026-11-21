@@ -297,7 +297,7 @@
 }
 
 @mixin space-out-between-siblings($margin) {
-  * + &, & + :deep(*) {
+  &:not(:first-child), & + :deep(:where(*)) {
     margin-top: $margin;
   }
 }

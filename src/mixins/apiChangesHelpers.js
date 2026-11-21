@@ -28,10 +28,14 @@ export const APIChangesMultipleLines = {
     };
   },
   computed: {
-    displaysMultipleLinesAfterAPIChanges: ({ change, changeType, $refs }) => {
+    displaysMultipleLinesAfterAPIChanges() {
+      const change = this.$options.computed?.change ? this.change : undefined;
+      const hasChangeType = this.$options.props?.changeType
+        || this.$options.computed?.changeType;
+      const changeType = hasChangeType ? this.changeType : undefined;
       if (!change && !changeType) return false;
 
-      return displaysMultipleLines($refs.apiChangesDiff);
+      return displaysMultipleLines(this.$refs.apiChangesDiff);
     },
   },
 };

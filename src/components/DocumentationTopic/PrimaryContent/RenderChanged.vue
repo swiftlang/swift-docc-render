@@ -9,6 +9,8 @@
 -->
 
 <script>
+import createElement from 'docc-render/utils/create-element';
+
 const ChangedClasses = {
   added: 'change-added',
   removed: 'change-removed',
@@ -56,7 +58,7 @@ export default {
       default: false,
     },
   },
-  render(h) {
+  render() {
     const {
       value, changes = {}, wrapChanges, renderSingleChange,
     } = this;
@@ -69,9 +71,11 @@ export default {
     // renders the default scoped slot, providing a `value`,
     // conditionally wrapping it in a changed div
     const generateContent = (renderData, className) => {
-      const content = this.$scopedSlots.default({ value: renderData });
+      const content = this.$slots.default({ value: renderData });
 
-      if (className && wrapChanges) return h('div', { class: className }, [content]);
+      if (className && wrapChanges) {
+        return createElement('div', { class: className }, [content]);
+      }
       return content ? content[0] : null;
     };
 
@@ -88,7 +92,7 @@ export default {
           : previousContent;
       }
       // render both `new` and `previous` content
-      return h('div', { class: 'property-changegroup' }, [
+      return createElement('div', { class: 'property-changegroup' }, [
         newData ? newContent : '',
         previousData ? previousContent : '',
       ]);

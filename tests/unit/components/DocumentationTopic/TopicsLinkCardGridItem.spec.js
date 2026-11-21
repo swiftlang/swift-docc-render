@@ -145,7 +145,7 @@ describe('TopicsLinkCardGridItem', () => {
       size: 'large',
       linkText: ROLE_LINK_TEXT[TopicRole.article],
     });
-    expect(wrapper.findComponent(ContentNode).props('content')).toBe(defaultProps.item.abstract);
+    expect(wrapper.findComponent(ContentNode).props('content')).toEqual(defaultProps.item.abstract);
   });
 
   it('renders different text for diff roles', async () => {

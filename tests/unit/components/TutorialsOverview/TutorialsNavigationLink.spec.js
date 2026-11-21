@@ -16,8 +16,10 @@ import TutorialsNavigationLink
   from 'docc-render/components/TutorialsOverview/TutorialsNavigationLink.vue';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 
-jest.mock('docc-render/mixins/scrollToElement', () => ({
-  methods: { handleFocusAndScroll: jest.fn() },
+vi.mock('docc-render/mixins/scrollToElement', () => ({
+  default: {
+    methods: { handleFocusAndScroll: vi.fn() },
+  },
 }));
 
 describe('TutorialsNavigationLink', () => {
@@ -53,7 +55,7 @@ describe('TutorialsNavigationLink', () => {
 
   it('renders the anchorized slot text as the url fragment location', () => {
     const link = wrapper.findComponent(RouterLinkStub);
-    expect(link.props('to')).toEqual({ hash: 'hello-world', query });
+    expect(link.props('to')).toEqual({ hash: '#hello-world', query });
   });
 
   it('renders an .active modifier if the text matches the active tutorial link', () => {

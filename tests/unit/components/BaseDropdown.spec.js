@@ -66,7 +66,27 @@ describe('BaseDropdown', () => {
     });
 
     await wrapper.findComponent('select').setValue(value);
-    expect(wrapper.emitted('input')).toEqual([[value]]);
+    const emitted = wrapper.emitted('input');
+    expect(emitted).toHaveLength(1);
+    expect(emitted[0][0]).toBe(value);
+  });
+
+  it('invokes a parent input listener only once per select change', async () => {
+    const onInput = vi.fn();
+    const wrapper = createWrapper({
+      attrs: { onInput },
+      slots: {
+        default: [
+          '<option value="foo">Foo</option>',
+          '<option value="bar">Bar</option>',
+        ],
+      },
+    });
+
+    await wrapper.findComponent('select').setValue('bar');
+
+    expect(onInput).toHaveBeenCalledTimes(1);
+    expect(onInput).toHaveBeenCalledWith('bar');
   });
 
   it('passes all extra attrs to the `select` component', () => {
@@ -78,7 +98,7 @@ describe('BaseDropdown', () => {
     });
     const attrs = wrapper.findComponent('select').attributes();
     expect(attrs).toHaveProperty('aria-label', 'Some label');
-    expect(attrs).toHaveProperty('disabled', 'disabled');
+    expect(attrs).toHaveProperty('disabled', '');
   });
 
   it('renders the `dropdown` scoped slot and provides the correct data', () => {

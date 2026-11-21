@@ -73,6 +73,7 @@ import LanguageToggle from './DocumentationNav/LanguageToggle.vue';
 
 export default {
   name: 'DocumentationNav',
+  emits: ['toggle-sidenav'],
   components: {
     SidenavIcon,
     NavBase,

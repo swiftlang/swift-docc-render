@@ -48,7 +48,7 @@ function registerCustomComponent(name) {
   }
 }
 
-export default function CustomComponents(Vue, options = {
+export default function CustomComponents(app, options = {
   names: [
     'header',
     'footer',
@@ -56,15 +56,8 @@ export default function CustomComponents(Vue, options = {
 }) {
   const { names } = options;
 
-  // Force Vue to ignore any components that start with the "custom-" prefix,
-  // which will be used to signify custom web components defined outside of this
-  // application.
-  //
-  // Example: <custom-header>
-  //
-  // eslint-disable-next-line no-param-reassign
-  Vue.config.ignoredElements = /^custom-/;
-
-  // eslint-disable-next-line no-param-reassign
+  // The Vite Vue compiler is configured to treat the "custom-" prefix as
+  // native custom elements. Register any templates provided by the host page.
+  if (!app) return;
   names.forEach(registerCustomComponent);
 }

@@ -12,18 +12,19 @@ import { filterInactiveReferences } from 'theme/utils/references';
 import ApiChangesStoreBase from 'docc-render/stores/ApiChangesStoreBase';
 import OnThisPageSectionsStoreBase from 'docc-render/stores/OnThisPageSectionsStoreBase';
 import Settings from 'docc-render/utils/settings';
+import { reactive } from 'vue';
 
 const { state: changesState, ...changesActions } = ApiChangesStoreBase;
 const { state: pageSectionsState, ...pageSectionsActions } = OnThisPageSectionsStoreBase;
 
 export default {
-  state: {
+  state: reactive({
     preferredLanguage: Settings.preferredLanguage,
     contentWidth: 0,
     ...changesState,
     ...pageSectionsState,
     references: {},
-  },
+  }),
   reset() {
     this.state.preferredLanguage = Settings.preferredLanguage;
     this.state.references = {};

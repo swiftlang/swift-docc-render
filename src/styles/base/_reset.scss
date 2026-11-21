@@ -194,3 +194,10 @@ body {
     min-width: $min-width;
   }
 }
+
+// Vue 3 preserves the element that the app is mounted to. Give that wrapper an
+// explicit height so the app's percentage-based minimum height still fills the
+// viewport on pages with little content.
+#app-mount {
+  height: 100%;
+}

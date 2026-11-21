@@ -22,40 +22,41 @@ import DocumentationLayout from 'docc-render/components/DocumentationLayout.vue'
 import { getSetting } from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/mixins/onPageLoadScrollToFragment');
-jest.mock('docc-render/utils/FocusTrap');
-jest.mock('docc-render/utils/scroll-lock');
-jest.mock('docc-render/utils/storage');
-jest.mock('docc-render/utils/theme-settings');
+vi.mock('docc-render/mixins/onPageLoadScrollToFragment');
+vi.mock('docc-render/utils/FocusTrap');
+vi.mock('docc-render/utils/scroll-lock');
+vi.mock('docc-render/utils/storage');
+vi.mock('docc-render/utils/theme-settings');
 
-const swiftChildren = [
-  'swiftChildrenMock',
-];
+const { swiftChildren, swiftProps } = vi.hoisted(() => ({
+  swiftChildren: ['swiftChildrenMock'],
+  swiftProps: {
+    technology: 'swift',
+    technologyPath: '/documentation/swift',
+    isTechnologyBeta: false,
+  },
+}));
 const objcChildren = [
   'objcChildrenMock',
 ];
 
-const swiftProps = {
-  technology: 'swift',
-  technologyPath: '/documentation/swift',
-  isTechnologyBeta: false,
-};
-
-jest.mock('docc-render/stores/IndexStore', () => ({
-  state: {
-    flatChildren: {
-      swift: swiftChildren,
-    },
-    references: { foo: {} },
-    apiChanges: {
-      interfaceLanguages: {
-        swift: [],
+vi.mock('docc-render/stores/IndexStore', () => ({
+  default: {
+    state: {
+      flatChildren: {
+        swift: swiftChildren,
       },
-    },
-    includedArchiveIdentifiers: ['foo', 'bar'],
-    errorFetching: false,
-    technologyProps: {
-      swift: swiftProps,
+      references: { foo: {} },
+      apiChanges: {
+        interfaceLanguages: {
+          swift: [],
+        },
+      },
+      includedArchiveIdentifiers: ['foo', 'bar'],
+      errorFetching: false,
+      technologyProps: {
+        swift: swiftProps,
+      },
     },
   },
 }));
@@ -79,9 +80,9 @@ const references = {
 
 const mocks = {
   $bridge: {
-    on: jest.fn(),
-    off: jest.fn(),
-    send: jest.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
+    send: vi.fn(),
   },
   $route: {
     path: '/documentation/somepath',
@@ -112,8 +113,9 @@ const propsData = {
 };
 
 const AdjustableSidebarWidthSmallStub = {
+  inheritAttrs: false,
   render() {
-    return this.$scopedSlots.aside({
+    return this.$slots.aside({
       scrollLockID: AdjustableSidebarWidth.constants.SCROLL_LOCK_ID,
       breakpoint: BreakpointName.small,
     });
@@ -144,7 +146,7 @@ describe('DocumentationLayout', () => {
   let wrapper;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     wrapper = createWrapper();
   });
 
@@ -552,7 +554,7 @@ describe('DocumentationLayout', () => {
         mocks: {
           ...mocks,
           $route: { path: '/documentation/somepath', query: { q: 'foo' } },
-          $router: { replace: jest.fn() },
+          $router: { replace: vi.fn() },
         },
       });
       await w.setProps({ enableNavigator: true });
@@ -563,7 +565,7 @@ describe('DocumentationLayout', () => {
 
     it('removes ?q= from the URL via $router.replace', () => {
       getSetting.mockReturnValueOnce(true);
-      const replace = jest.fn();
+      const replace = vi.fn();
       const $route = { path: '/documentation/somepath', query: { q: 'foo', changes: 'latest_minor' } };
       createWrapper({
         mocks: {
@@ -591,7 +593,7 @@ describe('DocumentationLayout', () => {
         mocks: {
           ...mocks,
           $route: { path: '/documentation/somepath', query: { q: 'foo' } },
-          $router: { replace: jest.fn() },
+          $router: { replace: vi.fn() },
         },
       });
       await w.setProps({

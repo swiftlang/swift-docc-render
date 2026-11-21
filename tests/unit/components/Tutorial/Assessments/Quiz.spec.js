@@ -13,7 +13,7 @@ import ContentNode from 'docc-render/components/ContentNode.vue';
 import Quiz from 'docc-render/components/Tutorial/Assessments/Quiz.vue';
 
 const i18nStub = {
-  name: 'i18n',
+  name: 'I18nT',
   template: '<span>Answer is <slot name="result"/></span>',
 };
 
@@ -112,7 +112,7 @@ describe('Quiz', () => {
     beforeEach(() => {
       wrapper = shallowMount(Quiz, {
         propsData,
-        stubs: { i18n: i18nStub },
+        stubs: { 'i18n-t': i18nStub },
       });
     });
 
@@ -123,7 +123,7 @@ describe('Quiz', () => {
     it('renders a title', () => {
       const node = wrapper.findComponent('.title');
       expect(node.exists()).toBe(true);
-      expect(node.props('content')).toBe(propsData.title);
+      expect(node.props('content')).toEqual(propsData.title);
     });
 
     it('renders a `ContentNode`', () => {
@@ -174,7 +174,7 @@ describe('Quiz', () => {
     beforeEach(() => {
       wrapper = shallowMount(Quiz, {
         propsData,
-        stubs: { i18n: i18nStub },
+        stubs: { 'i18n-t': i18nStub },
         attachTo: document.body,
       });
       choices = wrapper.findAll('.choice');
@@ -197,7 +197,7 @@ describe('Quiz', () => {
       expect(choice.classes()).toContain('correct');
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
       // cant match directly with element, VTU is buggy
-      expect(choice.find('.choice-icon').html()).toContain('<checkcircleicon');
+      expect(choice.find('.choice-icon').html()).toContain('<check-circle-icon-stub');
     });
 
     it('renders an error icon only for the chosen choice', async () => {
@@ -207,7 +207,7 @@ describe('Quiz', () => {
 
       expect(wrapper.findAll('.choice-icon')).toHaveLength(1);
       // cant match directly with element, VTU is buggy
-      expect(choice.find('.choice-icon').html()).toContain('<resetcircleicon');
+      expect(choice.find('.choice-icon').html()).toContain('<reset-circle-icon-stub');
     });
 
     it('updates the aria live text telling the user if the answer chosen is correct or incorrect', async () => {

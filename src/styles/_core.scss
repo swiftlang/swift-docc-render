@@ -14,7 +14,7 @@
 @import "./core/selectors";
 
 // import the current `theme_vars` here, so they have access to all generic helpers above, while overriding all `!default` variables below.
-@import "~theme/styles/_theme_vars.scss";
+@import "theme/styles/_theme_vars.scss";
 
 // load the rest of the helpers and vars here
 @import "./core/vars";
@@ -30,4 +30,4 @@
 @import './core/buttons';
 
 // import the current theme _core file
-@import "~theme/styles/_theme_core.scss";
+@import "theme/styles/_theme_core.scss";

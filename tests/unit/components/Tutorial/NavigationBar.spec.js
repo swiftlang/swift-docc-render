@@ -17,7 +17,7 @@ import TopicStore from 'docc-render/stores/TopicStore';
 import scrollToElement from 'docc-render/mixins/scrollToElement';
 import { flushPromises } from '../../../../test-utils';
 
-jest.mock('docc-render/mixins/scrollToElement');
+vi.mock('docc-render/mixins/scrollToElement');
 
 scrollToElement.methods.handleFocusAndScroll.mockResolvedValue(true);
 
@@ -115,7 +115,7 @@ describe('NavigationBar', () => {
 
   beforeEach(() => {
     TopicStore.setReferences(references);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {

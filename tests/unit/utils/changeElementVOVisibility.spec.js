@@ -50,20 +50,18 @@ describe("changeElementVOVisibility", () => {
     expect(document.querySelector(".footer").getAttribute("tabindex")).toBe("-1");
 
     expect(document.body.outerHTML).toMatchInlineSnapshot(`
-      <body>
-        <div>
-          <div>
-            <div class="header" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Header</div>
-            <main class="main">
-              <nav class="navigation" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Navigation</nav>
-              <div class="target">
-                <div class="inside">Inside</div>
-              </div>
-            </main>
-            <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
-          </div>
-        </div>
-      </body>
+      "<body><div>
+            <div>
+              <div class="header" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Header</div>
+              <main class="main">
+                  <nav class="navigation" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Navigation</nav>
+                  <div class="target">
+                      <div class="inside">Inside</div>
+                  </div>
+              </main>
+              <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
+            </div>
+          </div></body>"
     `);
   });
 
@@ -79,20 +77,18 @@ describe("changeElementVOVisibility", () => {
     // assert the content is identical
     expect(document.body.outerHTML).toEqual(previousHTML);
     expect(document.body.outerHTML).toMatchInlineSnapshot(`
-      <body>
-        <div>
-          <div>
-            <div class="header">Header</div>
-            <main class="main">
-              <nav class="navigation">Navigation</nav>
-              <div class="target">
-                <div class="inside">Inside</div>
-              </div>
-            </main>
-            <div class="footer">Footer</div>
-          </div>
-        </div>
-      </body>
+      "<body><div>
+            <div>
+              <div class="header">Header</div>
+              <main class="main">
+                  <nav class="navigation">Navigation</nav>
+                  <div class="target">
+                      <div class="inside">Inside</div>
+                  </div>
+              </main>
+              <div class="footer">Footer</div>
+            </div>
+          </div></body>"
     `);
   });
 
@@ -112,20 +108,18 @@ describe("changeElementVOVisibility", () => {
       "false"
     );
     expect(document.body.outerHTML).toMatchInlineSnapshot(`
-      <body>
-        <div>
-          <div>
-            <div class="header" aria-hidden="true" data-original-aria-hidden="true" data-original-tabindex="" tabindex="-1">Header</div>
-            <main class="main">
-              <nav class="navigation" aria-hidden="true" data-original-aria-hidden="false" data-original-tabindex="" tabindex="-1">Navigation</nav>
-              <div class="target">
-                <div class="inside">Inside</div>
-              </div>
-            </main>
-            <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
-          </div>
-        </div>
-      </body>
+      "<body><div>
+            <div>
+              <div class="header" aria-hidden="true" data-original-aria-hidden="true" data-original-tabindex="" tabindex="-1">Header</div>
+              <main class="main">
+                  <nav class="navigation" aria-hidden="true" data-original-aria-hidden="false" data-original-tabindex="" tabindex="-1">Navigation</nav>
+                  <div class="target">
+                      <div class="inside">Inside</div>
+                  </div>
+              </main>
+              <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
+            </div>
+          </div></body>"
     `);
     changeElementVOVisibility.show(target);
     expect(document.body.outerHTML).toEqual(cachedHTML);
@@ -147,20 +141,18 @@ describe("changeElementVOVisibility", () => {
       "-1"
     );
     expect(document.body.outerHTML).toMatchInlineSnapshot(`
-      <body>
-        <div>
-          <div>
-            <div class="header" tabindex="-1" data-original-aria-hidden="" data-original-tabindex="2" aria-hidden="true">Header</div>
-            <main class="main">
-              <nav class="navigation" tabindex="-1" data-original-aria-hidden="" data-original-tabindex="-1" aria-hidden="true">Navigation</nav>
-              <div class="target">
-                <div class="inside">Inside</div>
-              </div>
-            </main>
-            <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
-          </div>
-        </div>
-      </body>
+      "<body><div>
+            <div>
+              <div class="header" tabindex="-1" data-original-aria-hidden="" data-original-tabindex="2" aria-hidden="true">Header</div>
+              <main class="main">
+                  <nav class="navigation" tabindex="-1" data-original-aria-hidden="" data-original-tabindex="-1" aria-hidden="true">Navigation</nav>
+                  <div class="target">
+                      <div class="inside">Inside</div>
+                  </div>
+              </main>
+              <div class="footer" data-original-aria-hidden="" data-original-tabindex="" aria-hidden="true" tabindex="-1">Footer</div>
+            </div>
+          </div></body>"
     `);
     changeElementVOVisibility.show(target);
     expect(document.body.outerHTML).toEqual(cachedHTML);

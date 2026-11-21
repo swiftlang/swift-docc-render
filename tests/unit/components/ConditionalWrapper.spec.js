@@ -14,15 +14,15 @@ import { shallowMount } from '@vue/test-utils';
 describe('ConditionalWrapper', () => {
   it('renders the `ConditionalWrapper`, with the `tag`', () => {
     const wrapper = shallowMount(ConditionalWrapper, {
-      context: {
-        props: {
-          tag: 'span',
-          shouldWrap: true,
-        },
-        children: ['Some text'],
+      propsData: {
+        tag: 'span',
+        shouldWrap: true,
       },
       attrs: {
         'aria-hidden': 'true',
+      },
+      slots: {
+        default: 'Some text',
       },
     });
     const span = wrapper.findComponent('span');

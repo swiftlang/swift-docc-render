@@ -62,9 +62,8 @@
           :content="abstract"
         />
         <slot name="below-abstract" />
-        <div v-if="sampleCodeDownload">
+        <div v-if="sampleCodeDownload" class="sample-download">
           <DownloadButton
-            class="sample-download"
             :action="sampleCodeDownload.action"
             linksToAsset
           />
@@ -84,7 +83,7 @@
             :conformance="conformance"
             :declarations="declaration.declarations"
             :source="remoteSource"
-            :declListExpanded.sync="declListExpanded"
+            v-model:declListExpanded="declListExpanded"
           />
         </div>
       </DocumentationHero>
@@ -524,13 +523,13 @@ export default {
       roleHeading,
       abstract,
       sampleCodeDownload,
-      hasAvailability,
+      shouldShowAvailability,
       shouldShowLanguageSwitcher,
       declarations,
     }) => (
       // apply extra padding when there are less than 2 items in the Hero section other than `title`
       (!!roleHeading + !!abstract + !!sampleCodeDownload + !!declarations.length
-        + !!hasAvailability + shouldShowLanguageSwitcher) <= 1
+        + !!shouldShowAvailability + shouldShowLanguageSwitcher) <= 1
     ),
     technologies({ modules = [] }) {
       const technologyList = modules.reduce((list, module) => {

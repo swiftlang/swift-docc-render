@@ -53,6 +53,7 @@
 import GridColumn from 'docc-render/components/GridColumn.vue';
 import GridRow from 'docc-render/components/GridRow.vue';
 import LinkableElement from 'docc-render/components/LinkableElement.vue';
+import createElement from 'docc-render/utils/create-element';
 
 import AssessmentsProgress from './AssessmentsProgress.vue';
 import Quiz from './Assessments/Quiz.vue';
@@ -69,7 +70,7 @@ export default {
     Progress: AssessmentsProgress,
     Row: GridRow,
     HeaderColumn: {
-      render(createElement) {
+      render() {
         return createElement(
           GridColumn,
           {
@@ -85,7 +86,7 @@ export default {
       },
     },
     MainColumn: {
-      render(createElement) {
+      render() {
         return createElement(
           GridColumn,
           {

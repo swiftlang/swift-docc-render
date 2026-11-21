@@ -108,7 +108,7 @@ export async function fetchDataForRouteEnter(to, from, next) {
       // route to 404 page if missing data, but not in IDE build
       next({
         name: 'not-found',
-        params: [to.path],
+        params: { pathMatch: to.path.split('/').filter(Boolean) },
       });
     } else {
       next(new FetchError(to));

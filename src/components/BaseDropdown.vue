@@ -9,16 +9,20 @@
 -->
 
 <template>
-  <div class="form-element">
+  <div
+    class="form-element"
+    :class="$attrs.class"
+    :style="$attrs.style"
+  >
     <slot
       name="dropdown"
       :dropdownClasses="dropdownClasses"
-      :value="value"
+      :value="effectiveValue"
     >
       <select
-        v-model="modelValue"
+        v-model="selectedValue"
         :class="dropdownClasses"
-        v-bind="$attrs"
+        v-bind="selectAttrs"
       >
         <slot />
       </select>
@@ -45,8 +49,13 @@ import InlineChevronDownIcon from 'theme/components/Icons/InlineChevronDownIcon.
  */
 export default {
   name: 'BaseDropdown',
+  emits: ['input', 'update:modelValue'],
   inheritAttrs: false,
   props: {
+    modelValue: {
+      type: String,
+      default: undefined,
+    },
     value: {
       type: String,
       default: '',
@@ -56,15 +65,25 @@ export default {
     InlineChevronDownIcon,
   },
   computed: {
-    modelValue: {
-      get: ({ value }) => value,
+    selectedValue: {
+      get: ({ effectiveValue }) => effectiveValue,
       set(value) {
+        this.$emit('update:modelValue', value);
         this.$emit('input', value);
       },
     },
-    dropdownClasses({ value }) {
+    effectiveValue: ({ modelValue, value }) => (
+      modelValue === undefined ? value : modelValue
+    ),
+    selectAttrs() {
+      const attrs = { ...this.$attrs };
+      delete attrs.class;
+      delete attrs.style;
+      return attrs;
+    },
+    dropdownClasses({ effectiveValue }) {
       return ['form-dropdown', {
-        'form-dropdown-selectnone': value === '',
+        'form-dropdown-selectnone': effectiveValue === '',
         'no-eyebrow': !this.$slots.eyebrow,
       }];
     },
@@ -86,7 +105,7 @@ $form-textbox-background-color: var(--color-dropdown-background) !default;
 
 // Styles the main element to click and open the dropdown.
 // Its applied to the `select` or `button` elements in `DropdownCustom`
-.form-dropdown {
+:deep(.form-dropdown) {
   @include font-styles(form-default-text);
   display: block;
   box-sizing: border-box;
@@ -160,12 +179,12 @@ $form-textbox-background-color: var(--color-dropdown-background) !default;
     z-index: 1;
   }
 
-  :deep(option) {
+  option {
     color: $form-dropdown-text-color;
   }
 }
 
-.form-dropdown-selectnone {
+:deep(.form-dropdown-selectnone) {
   color: transparent;
 
   ~ .form-label {
@@ -192,7 +211,7 @@ $form-textbox-background-color: var(--color-dropdown-background) !default;
   $dropdown-label-small: dark-color(figure-gray-secondary);
   $dropdown-label: dark-color(figure-gray-tertiary);
 
-  .form-dropdown {
+  :deep(.form-dropdown) {
     color: $text-color;
     background-color: $background-color;
     border-color: $border-color;
@@ -215,7 +234,7 @@ $form-textbox-background-color: var(--color-dropdown-background) !default;
     }
   }
 
-  .form-dropdown-selectnone ~ .form-label {
+  :deep(.form-dropdown-selectnone) ~ .form-label {
     color: $dropdown-label;
   }
 }

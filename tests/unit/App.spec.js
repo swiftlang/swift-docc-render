@@ -12,32 +12,35 @@ import ColorScheme from 'docc-render/constants/ColorScheme';
 import Footer from 'docc-render/components/Footer.vue';
 import SuggestLang from 'docc-render/components/SuggestLang.vue';
 import InitialLoadingPlaceholder from 'docc-render/components/InitialLoadingPlaceholder.vue';
+import App from 'docc-render/App.vue';
 import { shallowMount } from '@vue/test-utils';
 import { baseNavStickyAnchorId } from 'docc-render/constants/nav';
 import { AppTopID } from '@/constants/AppTopID';
+import AppStore from '@/stores/AppStore';
+import {
+  fetchThemeSettings,
+  getSetting,
+  themeSettingsState,
+} from 'docc-render/utils/theme-settings';
 import { flushPromises } from '../../test-utils';
 
-jest.mock('docc-render/utils/theme-settings', () => ({
-  fetchThemeSettings: jest.fn(),
+vi.mock('docc-render/utils/theme-settings', () => ({
+  fetchThemeSettings: vi.fn(),
   themeSettingsState: { theme: {} },
-  getSetting: jest.fn(() => {}),
+  getSetting: vi.fn(() => {}),
 }));
-
-let App;
-let fetchThemeSettings = jest.fn();
-let getSetting = jest.fn(() => {});
 
 const matchMedia = {
   matches: false,
-  addListener: jest.fn(),
-  removeListener: jest.fn(),
+  addListener: vi.fn(),
+  removeListener: vi.fn(),
 };
 
-const setPropertySpy = jest.spyOn(document.body.style, 'setProperty');
-const removePropertySpy = jest.spyOn(document.body.style, 'removeProperty');
+const setPropertySpy = vi.spyOn(document.body.style, 'setProperty');
+const removePropertySpy = vi.spyOn(document.body.style, 'removeProperty');
 
 const path = '/the/new/path';
-const pushMock = jest.fn();
+const pushMock = vi.fn();
 
 const LightDarkModeCSSSettings = {
   text: {
@@ -55,31 +58,36 @@ const GenericCSSSettings = {
 
 const availableLocales = ['en-US', 'zh-CN'];
 
-const createWrapper = props => shallowMount(App, {
-  stubs: {
-    'custom-header': true,
-    'router-view': true,
-    'custom-footer': true,
-    Footer,
-  },
-  mocks: {
-    $bridge: {
-      on(type, handler) {
-        if (type === 'navigation') {
-          handler(path);
-        }
+const mountedWrappers = [];
+const createWrapper = (props) => {
+  const wrapper = shallowMount(App, {
+    stubs: {
+      'custom-header': true,
+      'router-view': true,
+      'custom-footer': true,
+      Footer,
+    },
+    mocks: {
+      $bridge: {
+        on(type, handler) {
+          if (type === 'navigation') {
+            handler(path);
+          }
+        },
+        off: () => {},
       },
-      off: () => {},
+      $route: {
+        path: '/the/old/path',
+      },
+      $router: {
+        push: pushMock,
+      },
     },
-    $route: {
-      path: '/the/old/path',
-    },
-    $router: {
-      push: pushMock,
-    },
-  },
-  ...props,
-});
+    ...props,
+  });
+  mountedWrappers.push(wrapper);
+  return wrapper;
+};
 
 function setThemeSetting(theme) {
   fetchThemeSettings.mockResolvedValue({ theme });
@@ -87,14 +95,18 @@ function setThemeSetting(theme) {
 
 describe('App', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
-    /* eslint-disable global-require */
-    App = require('docc-render/App.vue').default;
-    ({ fetchThemeSettings } = require('docc-render/utils/theme-settings'));
+    vi.clearAllMocks();
 
+    getSetting.mockReset();
+    themeSettingsState.theme = {};
+    AppStore.state.preferredColorScheme = ColorScheme.light;
+    AppStore.state.systemColorScheme = ColorScheme.light;
+    AppStore.state.availableLocales = [];
     setThemeSetting({});
-    window.matchMedia = jest.fn().mockReturnValue(matchMedia);
+    window.matchMedia = vi.fn().mockReturnValue(matchMedia);
+  });
+  afterEach(() => {
+    mountedWrappers.splice(0).forEach(wrapper => wrapper.destroy());
   });
 
   it('does not render a <custom-header> or <custom-footer> if they have not been defined', () => {
@@ -131,7 +143,6 @@ describe('App', () => {
   });
 
   it('renders SuggestLang if enablei18n is true', async () => {
-    ({ getSetting } = require('docc-render/utils/theme-settings'));
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
@@ -148,7 +159,6 @@ describe('App', () => {
 
   it('renders LocaleSelector if enablei18n is true', async () => {
     const { LocaleSelector } = App.components;
-    ({ getSetting } = require('docc-render/utils/theme-settings'));
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
@@ -165,7 +175,6 @@ describe('App', () => {
 
   it('does not render LocaleSelector if there is less than two available locales', async () => {
     const { LocaleSelector } = App.components;
-    ({ getSetting } = require('docc-render/utils/theme-settings'));
     getSetting.mockReturnValue(true);
 
     const wrapper = createWrapper();
@@ -295,12 +304,8 @@ describe('App', () => {
         matches: true,
       });
       const wrapper = createWrapper();
-      await wrapper.setData({
-        appState: {
-          ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto,
-        },
-      });
+      wrapper.vm.appState.preferredColorScheme = ColorScheme.auto;
+      await wrapper.vm.$nextTick();
       await flushPromises();
       expect(setPropertySpy)
         .toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.dark);
@@ -308,12 +313,8 @@ describe('App', () => {
 
     it('dynamically changes the data, upon color scheme change (in auto mode)', async () => {
       const wrapper = createWrapper();
-      await wrapper.setData({
-        appState: {
-          ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto,
-        },
-      });
+      wrapper.vm.appState.preferredColorScheme = ColorScheme.auto;
+      await wrapper.vm.$nextTick();
       await flushPromises();
       expect(setPropertySpy).toHaveBeenCalledWith('--text', LightDarkModeCSSSettings.text.light);
       matchMedia.addListener.mock.calls[0][0].call(wrapper.vm, { matches: true });
@@ -324,12 +325,8 @@ describe('App', () => {
 
     it('updates the values applied to the root, if the colors update', async () => {
       const wrapper = createWrapper();
-      await wrapper.setData({
-        appState: {
-          ...wrapper.vm.appState,
-          preferredColorScheme: ColorScheme.auto,
-        },
-      });
+      wrapper.vm.appState.preferredColorScheme = ColorScheme.auto;
+      await wrapper.vm.$nextTick();
       await flushPromises();
       expect(removePropertySpy).toHaveBeenCalledTimes(1);
       expect(setPropertySpy).toHaveBeenCalledTimes(1);
@@ -358,7 +355,7 @@ describe('App', () => {
       let wrapper;
 
       beforeEach(() => {
-        jest.spyOn(window.customElements, 'get').mockImplementation(name => name === 'custom-header');
+        vi.spyOn(window.customElements, 'get').mockImplementation(name => name === 'custom-header');
         wrapper = createWrapper();
       });
 
@@ -367,7 +364,7 @@ describe('App', () => {
       });
 
       it('renders a <custom-header>', () => {
-        const header = wrapper.findComponent('custom-header-stub');
+        const header = wrapper.find('custom-header');
         expect(header.exists()).toBe(true);
         expect(header.attributes('data-color-scheme')).toBeDefined();
       });
@@ -378,7 +375,7 @@ describe('App', () => {
             header: '<div class="header">Header</div>',
           },
         });
-        const header = wrapper.findComponent('custom-header-stub');
+        const header = wrapper.find('custom-header');
         expect(header.exists()).toBe(false);
       });
     });
@@ -386,7 +383,7 @@ describe('App', () => {
     it('renders a <custom-footer> if one has been defined', () => {
       window.customElements.get.mockImplementation(name => name === 'custom-footer');
       const wrapper = createWrapper();
-      const footer = wrapper.findComponent('custom-footer-stub');
+      const footer = wrapper.find('custom-footer');
       expect(footer.exists()).toBe(true);
       expect(footer.attributes('data-color-scheme')).toBeDefined();
     });

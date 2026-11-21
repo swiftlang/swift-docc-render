@@ -9,6 +9,14 @@
 -->
 
 <script>
+import { Fragment, h, Text } from 'vue';
+
+const flattenFragments = nodes => nodes.flatMap(node => (
+  node.type === Fragment && Array.isArray(node.children)
+    ? flattenFragments(node.children)
+    : node
+));
+
 /**
  * Indicate safe places to break apart words across multiple lines when necessary.
  *
@@ -39,10 +47,10 @@
  * By _default_, the following patterns will be used to determine where to add
  * word-break hints:
  *
- * * between lower/uppercase character pairs — **aA**
+ * * between lower/uppercase character pairs — **aA**
  * * after colon characters — **a:b**
  * * before dot characters — **a.b**
- * * before underscore characters — **a_b**
+ * * before underscore characters — **a_b**
  *
  * You can also provide a `RegExp` object that defines an alternate pattern if
  * the default one doesn't fit your needs.
@@ -69,18 +77,20 @@
  * ```
  */
 export default {
-  functional: true,
   name: 'WordBreak',
-  render(createElement, { props, slots, data }) {
-    const childNodes = (slots().default || []);
-    const textNodes = childNodes.filter(node => node.text && !node.tag);
+  inheritAttrs: false,
+  render() {
+    const childNodes = flattenFragments(
+      this.$slots.default ? this.$slots.default() : [],
+    );
+    const textNodes = childNodes.filter(node => node.type === Text);
 
     // Don't attempt word breaking unless this component wraps raw strings
     if (textNodes.length === 0 || textNodes.length !== childNodes.length) {
-      return createElement(props.tag, data, childNodes);
+      return h(this.tag, this.$attrs, childNodes);
     }
 
-    const word = textNodes.map(({ text }) => text).join();
+    const word = textNodes.map(({ children }) => children).join();
     const childrenWithBreaks = [];
 
     let match = null;
@@ -88,17 +98,17 @@ export default {
     // Find each regex match in the wrapped string and create an array of each
     // individual substring along with a corresponding <wbr> element.
     // eslint-disable-next-line no-cond-assign
-    while ((match = props.safeBoundaryPattern.exec(word)) !== null) {
+    while ((match = this.safeBoundaryPattern.exec(word)) !== null) {
       const nextIndex = match.index + 1;
 
       childrenWithBreaks.push(word.slice(lastIndex, nextIndex));
-      childrenWithBreaks.push(createElement('wbr', { key: match.index }));
+      childrenWithBreaks.push(h('wbr', { key: match.index }));
 
       lastIndex = nextIndex;
     }
     childrenWithBreaks.push(word.slice(lastIndex, word.length));
 
-    return createElement(props.tag, data, childrenWithBreaks);
+    return h(this.tag, this.$attrs, childrenWithBreaks);
   },
   props: {
     safeBoundaryPattern: {

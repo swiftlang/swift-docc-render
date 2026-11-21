@@ -9,54 +9,45 @@
 */
 
 import hljs from 'highlight.js/lib/core';
+import HighlightLanguageLoaders from 'virtual:swift-docc-highlight-languages';
 
 /** A map of custom aliases for supported languages (additions to default hljs aliases) */
 const CustomLanguageAliases = {
   objectivec: ['objective-c'],
 };
 
-/** A map of supported languages and their aliases */
-const Languages = {
+/** Aliases for supported languages, keyed by language name */
+const LanguageAliases = {
   bash: ['sh', 'zsh'],
   c: ['h'],
   cpp: ['cc', 'c++', 'h++', 'hpp', 'hh', 'hxx', 'cxx'],
-  css: [],
   diff: ['patch'],
   http: ['https'],
   java: ['jsp'],
   javascript: ['js', 'jsx', 'mjs', 'cjs'],
-  json: [],
-  llvm: [],
   markdown: ['md', 'mkdown', 'mkd'],
-  objectivec: ['mm', 'objc', 'obj-c'].concat(CustomLanguageAliases.objectivec),
+  objectivec: ['mm', 'objc', 'obj-c'],
   perl: ['pl', 'pm'],
-  php: [],
-  pkl: [],
   python: ['py', 'gyp', 'ipython'],
   ruby: ['rb', 'gemspec', 'podspec', 'thor', 'irb'],
-  scss: [],
   shell: ['console', 'shellsession'],
-  swift: [],
   typescript: ['typescript', 'ts', 'tsx', 'mts', 'cts'],
   xml: ['html', 'xhtml', 'rss', 'atom', 'xjb', 'xsd', 'xsl', 'plist', 'wsf', 'svg'],
   yaml: ['yml', 'yaml'],
-  // load more languages from the environment
-  ...(
-    process.env.VUE_APP_HLJS_LANGUAGES
-      ? Object.fromEntries(process.env.VUE_APP_HLJS_LANGUAGES.split(',').map(l => [l, []]))
-      : undefined
-  ),
 };
 
-export const CustomLanguagesSet = new Set([
-  'markdown',
-  'swift',
-  'pkl',
+export const SupportedLanguagesSet = new Set(Object.keys(HighlightLanguageLoaders));
+
+const languagesWithAliases = new Set([
+  ...Object.keys(LanguageAliases),
+  ...Object.keys(CustomLanguageAliases),
 ]);
 
-export const LanguageAliasEntries = Object.entries(Languages);
-
-export const SupportedLanguagesSet = new Set(Object.keys(Languages));
+export const LanguageAliasEntries = [...languagesWithAliases]
+  .map(language => [language, [
+    ...(LanguageAliases[language] ?? []),
+    ...(CustomLanguageAliases[language] ?? []),
+  ]]);
 
 export const LanguageAliasCacheMap = new Map();
 
@@ -83,20 +74,7 @@ async function importHighlightFileForLanguage(language) {
       // The first iteration uses an already resolved Promise
       // so, it will immediately continue.
       await previousPromise;
-      let languageFile;
-
-      if (CustomLanguagesSet.has(file)) {
-        languageFile = await import(
-          /* webpackChunkName: "highlight-js-custom-[request]" */
-          `../utils/custom-highlight-lang/${file}`
-        );
-      } else {
-        languageFile = await import(
-          // See bug https://github.com/webpack/webpack/issues/13865
-          /* webpackChunkName: "highlight-js-[request]" */
-          `highlight-js-alias/lib/languages/${file}.js`
-        );
-      }
+      const languageFile = await HighlightLanguageLoaders[file]();
 
       hljs.registerLanguage(file, languageFile.default);
     }, Promise.resolve());

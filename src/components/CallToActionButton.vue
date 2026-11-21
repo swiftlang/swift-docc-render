@@ -11,6 +11,7 @@
 <template>
   <DestinationDataProvider v-if="action" :destination="action" v-slot="{ url, title }">
     <ButtonLink
+      v-bind="$attrs"
       :url="normalizeUrl(url)"
       :isDark="isDark"
       :linksToAsset="linksToAsset"
@@ -28,6 +29,7 @@ import { normalizePath, normalizeRelativePath } from 'docc-render/utils/assets';
 
 export default {
   name: 'CallToActionButton',
+  inheritAttrs: false,
   components: {
     DestinationDataProvider,
     ButtonLink,

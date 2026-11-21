@@ -8,12 +8,14 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { reactive } from 'vue';
+
 export default {
-  state: {
+  state: reactive({
     activeTutorialLink: null,
     activeVolume: null,
     references: {},
-  },
+  }),
   reset() {
     this.state.activeTutorialLink = null;
     this.state.activeVolume = null;

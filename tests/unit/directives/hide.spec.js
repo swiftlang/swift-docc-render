@@ -22,7 +22,7 @@ describe('hide', () => {
       hide(element, { value: true });
     });
 
-    it('it adds `display: none` to element style', () => {
+    it('adds `display: none` to element style', () => {
       expect(element.style.display).toBe('none');
     });
   });

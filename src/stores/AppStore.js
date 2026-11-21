@@ -12,6 +12,7 @@ import ColorScheme from 'docc-render/constants/ColorScheme';
 import ImageLoadingStrategy from 'docc-render/constants/ImageLoadingStrategy';
 import Settings from 'docc-render/utils/settings';
 import appLocales from 'theme/lang/locales.json';
+import { reactive } from 'vue';
 
 const supportsAutoColorScheme = (typeof window.matchMedia !== 'undefined') && [
   ColorScheme.light,
@@ -22,7 +23,7 @@ const supportsAutoColorScheme = (typeof window.matchMedia !== 'undefined') && [
 const defaultColorScheme = supportsAutoColorScheme ? ColorScheme.auto : ColorScheme.light;
 
 export default {
-  state: {
+  state: reactive({
     imageLoadingStrategy: process.env.VUE_APP_TARGET === 'ide'
       ? ImageLoadingStrategy.eager : ImageLoadingStrategy.lazy,
     preferredColorScheme: Settings.preferredColorScheme || defaultColorScheme,
@@ -30,7 +31,7 @@ export default {
     supportsAutoColorScheme,
     systemColorScheme: ColorScheme.light,
     availableLocales: [],
-  },
+  }),
   reset() {
     this.state.imageLoadingStrategy = process.env.VUE_APP_TARGET === 'ide'
       ? ImageLoadingStrategy.eager : ImageLoadingStrategy.lazy;

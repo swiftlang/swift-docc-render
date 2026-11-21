@@ -21,17 +21,15 @@ import multipleSelection from '@/mixins/multipleSelection';
 import keyboardNavigation from '@/mixins/keyboardNavigation';
 import { flushPromises } from '../../../../test-utils';
 
-// TODO: Remove this Event caching, once we update VTU, as there is a bug now,
-//  that prevents you from setting extra parameters
-window.Event = null;
+vi.mock('docc-render/utils/debounce', () => ({
+  default: vi.fn(fn => fn),
+}));
 
-jest.mock('docc-render/utils/debounce', () => jest.fn(fn => fn));
-
-jest.mock('@/utils/input-helper', () => ({
-  getSelectionText: jest.fn(),
-  moveCursorToEnd: jest.fn(),
-  moveCursorToStart: jest.fn(),
-  isSingleCharacter: jest.fn(),
+vi.mock('@/utils/input-helper', () => ({
+  getSelectionText: vi.fn(),
+  moveCursorToEnd: vi.fn(),
+  moveCursorToStart: vi.fn(),
+  isSingleCharacter: vi.fn(),
 }));
 
 const {
@@ -71,11 +69,11 @@ describe('FilterInput', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     window.visualViewport = {
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     };
 
     wrapper = shallowMount(FilterInput, {
@@ -167,7 +165,7 @@ describe('FilterInput', () => {
     await wrapper.setProps({ disabled: true });
     // input is disabled
     await wrapper.vm.$nextTick();
-    expect(input.attributes('disabled')).toBe('disabled');
+    expect(input.attributes('disabled')).toBe('');
   });
 
   it('emits `show-suggested-tags` if filter button is clicked', async () => {
@@ -251,7 +249,7 @@ describe('FilterInput', () => {
         value: inputValue,
       },
     });
-    jest.spyOn(wrapper.vm, 'selectInputAndTags').mockImplementation();
+    vi.spyOn(wrapper.vm, 'selectInputAndTags').mockImplementation();
     input = wrapper.find('input');
     await input.trigger('focus.native');
     expect(wrapper.vm.selectInputAndTags).toHaveBeenCalledTimes(1);
@@ -263,8 +261,8 @@ describe('FilterInput', () => {
 
     beforeEach(() => {
       clipboardData = {
-        setData: jest.fn(),
-        getData: jest.fn((param) => {
+        setData: vi.fn(),
+        getData: vi.fn((param) => {
           if (param === 'text/plain') return 'baz';
           return prepareDataForHTMLClipboard({
             input: 'baz',
@@ -273,7 +271,7 @@ describe('FilterInput', () => {
         }),
         types: ['text/plain'],
       };
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       clipboardData.types = ['text/plain'];
     });
 
@@ -365,7 +363,7 @@ describe('FilterInput', () => {
     });
 
     it('selects all tags, and focuses the first one, input is empty', async () => {
-      const spy = jest.spyOn(keyboardNavigation.methods, 'focusIndex');
+      const spy = vi.spyOn(keyboardNavigation.methods, 'focusIndex');
       await wrapper.setProps({
         selectedTags: tags,
         value: '',
@@ -396,7 +394,7 @@ describe('FilterInput', () => {
     });
 
     it('on paste, handles clipboard when copying and pasting from any HTML outside the search', () => {
-      clipboardData.getData = jest.fn((param) => {
+      clipboardData.getData = vi.fn((param) => {
         if (param === 'text/plain') return 'Title';
         return `
           <meta charset='utf-8'>
@@ -418,7 +416,7 @@ describe('FilterInput', () => {
     });
 
     it('on paste, do not emit selectedTags if there are no tags to paste', () => {
-      clipboardData.getData = jest.fn((param) => {
+      clipboardData.getData = vi.fn((param) => {
         if (param === 'text/plain') return 'Title';
         return prepareDataForHTMLClipboard({
           input: 'baz',
@@ -744,7 +742,7 @@ describe('FilterInput', () => {
         document.activeElement.blur();
         await wrapper.vm.$nextTick();
         await wrapper.setProps({ selectedTags: [] });
-        expect(document.activeElement).not.toEqual(input.element);
+        expect(document.activeElement).not.toBe(input.element);
       });
 
       it('changes the input placeholder to empty', () => {
@@ -752,7 +750,7 @@ describe('FilterInput', () => {
       });
 
       it('resets scroll on `suggestedTags` when selectedTags changes if there is suggested tags', async () => {
-        const spy = jest.spyOn(wrapper.findComponent({ ref: 'suggestedTags' }).vm, 'resetScroll');
+        const spy = vi.spyOn(wrapper.findComponent({ ref: 'suggestedTags' }).vm, 'resetScroll');
         await wrapper.setProps({
           selectedTags: [selectedTag],
         });
@@ -762,7 +760,7 @@ describe('FilterInput', () => {
       });
 
       it('select latest selected tag, if delete key is pressed on keyboard, and there is no input text', () => {
-        const spy = jest.spyOn(keyboardNavigation.methods, 'focusLast').mockReturnValueOnce();
+        const spy = vi.spyOn(keyboardNavigation.methods, 'focusLast').mockReturnValueOnce();
 
         wrapper = shallowMount(FilterInput, {
           propsData: { selectedTags: [selectedTag] },
@@ -780,7 +778,7 @@ describe('FilterInput', () => {
         wrapper.findComponent({ ref: 'selectedTags' }).vm.$emit('delete-tag', selectedTag);
         await wrapper.setProps({ selectedTags: [] });
         await flushPromises();
-        expect(document.activeElement).toEqual(input.element);
+        expect(document.activeElement).toBe(input.element);
         expect(moveCursorToStart).toHaveBeenCalledTimes(0);
       });
 
@@ -841,7 +839,7 @@ describe('FilterInput', () => {
       });
 
       it('keeps the focus on input after resetting filters', async () => {
-        const spy = jest.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
+        const spy = vi.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
 
         // add tags
         await wrapper.setProps({ value: '', selectedTags: tags });
@@ -956,7 +954,7 @@ describe('FilterInput', () => {
 
     it('focuses the first tag, if the down key is pressed on input', () => {
       const suggestedTagsComponent = wrapper.findComponent({ ref: 'suggestedTags' });
-      const spy = jest.spyOn(suggestedTagsComponent.vm, 'focusFirst');
+      const spy = vi.spyOn(suggestedTagsComponent.vm, 'focusFirst');
       input.trigger('keydown.down');
 
       expect(wrapper.emitted('keydown:down')).toBeFalsy();
@@ -992,7 +990,7 @@ describe('FilterInput', () => {
     it('focuses the first tag, if the up key is pressed on input, and `positionReversed` is true', async () => {
       await wrapper.setProps({ positionReversed: true });
       const suggestedTagsComponent = wrapper.findComponent({ ref: 'suggestedTags' });
-      const spy = jest.spyOn(suggestedTagsComponent.vm, 'focusFirst');
+      const spy = vi.spyOn(suggestedTagsComponent.vm, 'focusFirst');
       input.trigger('keydown.up');
 
       expect(wrapper.emitted('keydown:up')).toBeFalsy();
@@ -1103,7 +1101,7 @@ describe('FilterInput', () => {
     });
 
     it('focus on the first tag of selectedTags if cmd + a is triggered on an empty input, there is not a shift init tag and there are selected tags', async () => {
-      const spy = jest.spyOn(TagList.methods, 'focusTag').mockReturnValueOnce();
+      const spy = vi.spyOn(TagList.methods, 'focusTag').mockReturnValueOnce();
       wrapper = shallowMount(FilterInput, {
         propsData,
         stubs: { TagList },
@@ -1132,7 +1130,7 @@ describe('FilterInput', () => {
       await wrapper.setProps({ selectedTags: tags });
       const selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
 
-      const spy = jest.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
+      const spy = vi.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
       await flushPromises();
       input.trigger('keydown', {
         key: 'a',
@@ -1149,7 +1147,7 @@ describe('FilterInput', () => {
       await flushPromises();
       const selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
       const suggestedTagsComponent = wrapper.findComponent({ ref: 'suggestedTags' });
-      const spy = jest.spyOn(suggestedTagsComponent.vm, 'focusFirst').mockReturnValueOnce();
+      const spy = vi.spyOn(suggestedTagsComponent.vm, 'focusFirst').mockReturnValueOnce();
       selectedTagsComponent.vm.$emit('focus-prev');
       await flushPromises();
       expect(spy).toHaveBeenCalledTimes(1);
@@ -1160,7 +1158,7 @@ describe('FilterInput', () => {
       await flushPromises();
       const selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
       const suggestedTagsComponent = wrapper.findComponent({ ref: 'suggestedTags' });
-      const spy = jest.spyOn(suggestedTagsComponent.vm, 'focusFirst').mockReturnValueOnce();
+      const spy = vi.spyOn(suggestedTagsComponent.vm, 'focusFirst').mockReturnValueOnce();
       selectedTagsComponent.vm.$emit('focus-prev');
       await flushPromises();
       expect(spy).toHaveBeenCalledTimes(0);
@@ -1200,7 +1198,7 @@ describe('FilterInput', () => {
     it('focus on the last tag when the left key is triggered, on a selected input, and but tags are not highlighted', async () => {
       await wrapper.setProps({ selectedTags: tags });
 
-      const spy = jest.spyOn(wrapper.findComponent({ ref: 'selectedTags' }).vm, 'focusLast')
+      const spy = vi.spyOn(wrapper.findComponent({ ref: 'selectedTags' }).vm, 'focusLast')
         .mockReturnValueOnce();
 
       input.element.select();
@@ -1212,7 +1210,7 @@ describe('FilterInput', () => {
     it('focus on the last tag when the left key is triggered on input, with no highlighted tags', async () => {
       await wrapper.setProps({ selectedTags: tags });
 
-      const spy = jest.spyOn(wrapper.findComponent({ ref: 'selectedTags' }).vm, 'focusLast')
+      const spy = vi.spyOn(wrapper.findComponent({ ref: 'selectedTags' }).vm, 'focusLast')
         .mockReturnValueOnce();
 
       // input is is not selected, but the cursor is at the first item
@@ -1230,7 +1228,7 @@ describe('FilterInput', () => {
 
     describe('starting from input', () => {
       beforeEach(async () => {
-        jest.resetAllMocks();
+        vi.resetAllMocks();
         await wrapper.setProps({
           selectedTags,
           value: inputValue,
@@ -1238,8 +1236,8 @@ describe('FilterInput', () => {
 
         await wrapper.vm.$nextTick();
         selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
-        spyFocusTag = jest.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
-        spySetSelectionRange = jest.spyOn(input.element, 'setSelectionRange');
+        spyFocusTag = vi.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
+        spySetSelectionRange = vi.spyOn(input.element, 'setSelectionRange');
       });
 
       it('selects the whole range between the text input and tag that has been focused afterwards', () => {
@@ -1392,10 +1390,10 @@ describe('FilterInput', () => {
 
     describe('starting from tags', () => {
       beforeEach(async () => {
-        jest.resetAllMocks();
+        vi.resetAllMocks();
         await wrapper.setProps({ selectedTags });
         selectedTagsComponent = wrapper.findComponent({ ref: 'selectedTags' });
-        spyFocusTag = jest.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
+        spyFocusTag = vi.spyOn(selectedTagsComponent.vm, 'focusTag').mockReturnValueOnce();
       });
 
       it('selects the whole range between the init tag index and the focused tag index from right to left', async () => {

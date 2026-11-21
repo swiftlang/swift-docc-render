@@ -14,12 +14,14 @@ import ImageAsset from 'docc-render/components/ImageAsset.vue';
 import ImageLoadingStrategy from '@/constants/ImageLoadingStrategy';
 import { flushPromises } from '../../../test-utils';
 
-jest.mock('docc-render/stores/AppStore', () => ({
-  state: {
-    imageLoadingStrategy: 'lazy',
-    preferredColorScheme: 'auto',
-    supportsAutoColorScheme: true,
-    setPreferredColorScheme: jest.fn(),
+vi.mock('docc-render/stores/AppStore', () => ({
+  default: {
+    state: {
+      imageLoadingStrategy: 'lazy',
+      preferredColorScheme: 'auto',
+      supportsAutoColorScheme: true,
+      setPreferredColorScheme: vi.fn(),
+    },
   },
 }));
 
@@ -352,7 +354,7 @@ describe('ImageAsset', () => {
       },
     });
 
-    const calculateOptimalDimensionsSpy = jest.spyOn(wrapper.vm, 'calculateOptimalDimensions')
+    const calculateOptimalDimensionsSpy = vi.spyOn(wrapper.vm, 'calculateOptimalDimensions')
       .mockReturnValue({ width: 99 });
     const img = wrapper.findComponent('img');
 
@@ -405,7 +407,7 @@ describe('ImageAsset', () => {
       },
     });
 
-    const consoleSpy = jest
+    const consoleSpy = vi
       .spyOn(console, 'error')
       .mockImplementation(() => {});
 

@@ -8,8 +8,10 @@
  * See https://swift.org/CONTRIBUTORS.txt for Swift project authors
 */
 
+import { reactive } from 'vue';
+
 export default {
-  state: {
+  state: reactive({
     flatChildren: null,
     references: {},
     apiChanges: null,
@@ -18,7 +20,7 @@ export default {
     errorFetching: false,
     errorFetchingDiffs: false,
     technologyProps: {},
-  },
+  }),
   reset() {
     this.state.flatChildren = null;
     this.state.references = {};

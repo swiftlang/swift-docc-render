@@ -45,7 +45,6 @@ function walkThemeObject(parentKey, parentValue, accumulated, colorScheme) {
  * @param {String} [colorScheme]
  * @return {Object}
  */
-// eslint-disable-next-line import/prefer-default-export
 export function objectToCustomProperties(object, colorScheme = 'light') {
   const collector = {};
   const objectToWalk = object || {};

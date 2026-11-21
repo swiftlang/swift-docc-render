@@ -47,7 +47,7 @@ import ReferenceInternal from './ReferenceInternal.vue';
  *     symbols. See
  *     [TopicRenderReference.type](https://github.com/apple/swift-docc/blob/5ad35a3107ca0443b81ada917b73b950d89bf396/Sources/SwiftDocC/SwiftDocC.docc/Resources/RenderNode.spec.json#L1761)
  *     for valid values.
- * - Parameter hasInlineFormatting: `Boolean` — Whether the display content has
+ * - Parameter hasInlineFormatting: `Boolean` — Whether the display content has
  *     inline formatting or not.
  */
 export default {
@@ -65,14 +65,10 @@ export default {
       if (linksToAsset) return false;
 
       // Resolve the URL using the router.
-      const {
-        resolved: {
-          name,
-        } = {},
-      } = this.$router.resolve(url) || {};
+      const { name } = this.$router.resolve(url) || {};
 
       // Resolved internal URLs don't have the "not found" route.
-      return !name.startsWith(notFoundRouteName);
+      return typeof name === 'string' && !name.startsWith(notFoundRouteName);
     },
     isSymbolReference() {
       return this.kind === 'symbol' && !this.hasInlineFormatting

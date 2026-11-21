@@ -24,15 +24,15 @@ $change-coin-x-offset: $change-highlight-horizontal-space - 9px;
 // the space needed for the change icon + it's margin
 $change-icon-occupied-space: $change-icon-width + $change-highlight-horizontal-space-rem;
 // Paths to the changes icons
-$modified-svg: url('~theme/assets/img/icons/modified-icon.svg') !default;
+$modified-svg: url('theme/assets/img/icons/modified-icon.svg') !default;
 $modified-dark-svg: $modified-svg !default;
 $modified-rounded-svg: $modified-svg !default;
 $modified-dark-rounded-svg: $modified-svg !default;
-$added-svg: url('~theme/assets/img/icons/added-icon.svg') !default;
+$added-svg: url('theme/assets/img/icons/added-icon.svg') !default;
 $added-dark-svg: $added-svg !default;
 $added-rounded-svg: $added-svg !default;
 $added-dark-rounded-svg: $added-svg !default;
-$deprecated-svg: url('~theme/assets/img/icons/deprecated-icon.svg') !default;
+$deprecated-svg: url('theme/assets/img/icons/deprecated-icon.svg') !default;
 $deprecated-dark-svg: $deprecated-svg !default;
 $deprecated-rounded-svg: $deprecated-svg !default;
 $deprecated-dark-rounded-svg: $deprecated-svg !default;

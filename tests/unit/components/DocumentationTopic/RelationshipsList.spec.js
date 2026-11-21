@@ -25,8 +25,8 @@ describe('RelationshipsList', () => {
   let wrapper;
 
   const store = {
-    reset: jest.fn(),
-    setAPIChanges: jest.fn(),
+    reset: vi.fn(),
+    setAPIChanges: vi.fn(),
     state: {
       onThisPageSections: [],
       apiChanges: null,
@@ -193,15 +193,15 @@ describe('RelationshipsList', () => {
       expect(wrapper.classes()).toContain(`changed-${expectedChange}`);
     };
 
-    it('sets the correct classes for items that have been added', () => {
-      assertChange('added', 'added');
+    it('sets the correct classes for items that have been added', async () => {
+      await assertChange('added', 'added');
     });
 
-    it('sets the correct classes for items that have been deprecated', () => {
-      assertChange('deprecated', 'deprecated');
+    it('sets the correct classes for items that have been deprecated', async () => {
+      await assertChange('deprecated', 'deprecated');
     });
 
-    it('sets the correct classes for items that have been modified with no previous content', () => {
+    it('sets the correct classes for items that have been modified with no previous content', async () => {
       const types = [
         {
           type: 'conformsTo',
@@ -217,25 +217,28 @@ describe('RelationshipsList', () => {
         },
       ];
 
-      types.forEach(({ type, key }) => {
-        assertChange('modified', 'added', type, {
-          [key]: {
-            previous: [
-              {
-                content: [],
-              },
-            ],
-            new: [
-              {
-                content: ['foo'],
-              },
-            ],
-          },
-        });
-      });
+      await types.reduce(
+        (assertion, { type, key }) => assertion.then(() => (
+          assertChange('modified', 'added', type, {
+            [key]: {
+              previous: [
+                {
+                  content: [],
+                },
+              ],
+              new: [
+                {
+                  content: ['foo'],
+                },
+              ],
+            },
+          })
+        )),
+        Promise.resolve(),
+      );
     });
 
-    it('sets the correct classes for items that have been modified with previous content', () => {
+    it('sets the correct classes for items that have been modified with previous content', async () => {
       const types = [
         {
           type: 'conformsTo',
@@ -251,22 +254,25 @@ describe('RelationshipsList', () => {
         },
       ];
 
-      types.forEach(({ type, key }) => {
-        assertChange('modified', 'modified', type, {
-          [key]: {
-            previous: [
-              {
-                content: ['foo'],
-              },
-            ],
-            new: [
-              {
-                content: ['foo'],
-              },
-            ],
-          },
-        });
-      });
+      await types.reduce(
+        (assertion, { type, key }) => assertion.then(() => (
+          assertChange('modified', 'modified', type, {
+            [key]: {
+              previous: [
+                {
+                  content: ['foo'],
+                },
+              ],
+              new: [
+                {
+                  content: ['foo'],
+                },
+              ],
+            },
+          })
+        )),
+        Promise.resolve(),
+      );
     });
 
     it('does not add the .inline class', () => {

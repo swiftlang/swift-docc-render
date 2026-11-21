@@ -21,7 +21,7 @@
         <Gutter class="left">
           <ControlPrevious
             :disabled="!hasPreviousPage"
-            @click.native="previous"
+            @click="previous"
           />
         </Gutter>
         <div class="viewport" ref="viewport" role="group">
@@ -39,24 +39,24 @@
         <Gutter class="right">
           <ControlNext
             :disabled="!hasNextPage"
-            @click.native="next"
+            @click="next"
           />
         </Gutter>
       </div>
       <div class="compact-controls" role="group" aria-label="Controls">
         <ControlPrevious
           :disabled="!hasPreviousPage"
-          @click.native="previous"
+          @click="previous"
         />
         <ControlNext
           :disabled="!hasNextPage"
-          @click.native="next"
+          @click="next"
         />
       </div>
       <div class="indicators">
         <a
           v-for="({ key }, n) in keyedPages"
-          :aria-current="isActivePage(n)"
+          :aria-current="isActivePage(n) || null"
           :href="`#${key}`"
           :key="key"
           :class="['indicator', pageStates(n)]"
@@ -70,8 +70,10 @@
 
 <script>
 import PagerControl from 'docc-render/components/PagerControl.vue';
+import createElement from 'docc-render/utils/create-element';
 import { BreakpointAttributes } from 'docc-render/utils/breakpoints';
 import DocumentationTopicStore from 'docc-render/stores/DocumentationTopicStore';
+import { useId } from 'vue';
 
 const GUTTERS_WIDTH = 174;
 
@@ -149,23 +151,26 @@ function waitForScrollIntoView(element) {
  */
 export default {
   name: 'Pager',
+  setup() {
+    return { componentId: useId() };
+  },
   components: {
     ControlNext: {
-      render(createElement) {
+      render() {
         return createElement(PagerControl, {
           props: { action: PagerControl.Action.next },
         });
       },
     },
     ControlPrevious: {
-      render(createElement) {
+      render() {
         return createElement(PagerControl, {
           props: { action: PagerControl.Action.previous },
         });
       },
     },
     Gutter: {
-      render(createElement) {
+      render() {
         return createElement('div', { class: 'gutter' }, (
           this.$slots.default
         ));
@@ -188,8 +193,8 @@ export default {
       ...obj,
       [item.key]: i,
     }), {}),
-    keyedPages: ({ _uid, pages }) => pages.map((page, i) => ({
-      key: `pager-${_uid}-page-${i}`,
+    keyedPages: ({ componentId, pages }) => pages.map((page, i) => ({
+      key: `pager-${componentId}-page-${i}`,
       page,
     })),
     hasNextPage: ({ activePageIndex, pages }) => activePageIndex < (pages.length - 1),
@@ -264,7 +269,7 @@ export default {
       this.setupObserver();
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.observer?.disconnect();
   },
 };

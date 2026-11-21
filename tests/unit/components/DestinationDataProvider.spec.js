@@ -11,6 +11,7 @@
 import DestinationDataProvider
   from 'docc-render/components/DestinationDataProvider.vue';
 import { shallowMount } from '@vue/test-utils';
+import { h } from 'vue';
 
 const Destinations = {
   link: {
@@ -80,6 +81,24 @@ const createWrapper = (overrides) => {
 };
 
 describe('DestinationDataProvider', () => {
+  const renderWithNodes = nodes => DestinationDataProvider.render.call({
+    $slots: { default: () => nodes },
+    linkUrl: '',
+    linkTitle: '',
+    formatAriaLabel: vi.fn(),
+    isExternal: false,
+  });
+
+  it('unwraps a single slot node', () => {
+    const node = h('div');
+    expect(renderWithNodes([node])).toBe(node);
+  });
+
+  it('keeps multiple slot nodes in an array', () => {
+    const nodes = [h('div'), h('span')];
+    expect(renderWithNodes(nodes)).toBe(nodes);
+  });
+
   it('provides proper attributes for `type:link`', () => {
     createWrapper();
     expect(scopedSlotAssertions.url).toBe('/link');
