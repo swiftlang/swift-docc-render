@@ -59,7 +59,7 @@ export default {
     var(--colors-header-text, var(--color-header-text)));
 }
 
-small {
+:slotted(small) {
   @include font-styles(eyebrow);
   padding-inline-start: 10px;
 
